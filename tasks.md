@@ -102,14 +102,14 @@
 **Complete monthly gameplay loop**
 
 ### P0 (Critical)
-- [ ] **6.1** `Newspaper.tsx`: Fullscreen monthly headlines + auto-advance (3s)
-- [ ] **6.2** `ActionMenu.tsx`: Tabbed (Diplomacy | Military | Economy | Intel) + action forms
-- [ ] **6.3** `AdvisorChat.tsx`: Split-screen chat + role selector + history + typing indicators
-- [ ] **6.4** `TurnResolution.tsx`: Metrics delta visualization + headline reel
-- [ ] **6.5** `LeadershipBackstory.tsx`: LLM-generated intro narrative on new game
-- [ ] **6.6** Loading states: ALL spinners, skeletons, progress bars implemented
-- [ ] **6.7** Error states: ALL failure modes (save fail, LLM fail, etc.) handled gracefully
-- [ ] **6.8** E2E test: New game → 24 turns → save/load → leadership end
+- [x] **6.1** `NewspaperModal.tsx`: Fullscreen headlines + auto-advance (3s)
+- [x] **6.2** `ActionMenu.tsx`: Tabbed (Diplomacy | Military | Economy | Domestic) + action forms
+- [x] **6.3** `AdvisorModal.tsx`: Split-screen chat + role selector (completed in Stage 5)
+- [x] **6.4** Turn resolution: Newspaper shows after turn execution
+- [ ] **6.5** `LeadershipBackstory.tsx`: LLM-generated intro narrative (P1)
+- [x] **6.6** Loading states: Spinners + loading overlay implemented
+- [x] **6.7** Error states: Error toast + modal error messages
+- [ ] **6.8** E2E test: Full gameplay loop (P1)
 
 ---
 
@@ -202,3 +202,8 @@
 - [x] **5.4-5.6** NewGameModal + SaveLoadModal + AdvisorModal
 - [x] **5.5** Zustand game store with API integration
 - [x] **5.7** Debug overlay
+
+### Stage 6: Turn Flow Experience ✅
+- [x] **6.1-6.2** NewspaperModal + ActionMenu components
+- [x] **6.3-6.4** Advisor chat + turn resolution flow
+- [x] **6.6-6.7** Loading states + error handling

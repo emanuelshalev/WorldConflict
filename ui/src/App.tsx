@@ -5,6 +5,7 @@ import { MapView } from './components/MapView'
 import { NewGameModal } from './components/NewGameModal'
 import { SaveLoadModal } from './components/SaveLoadModal'
 import { AdvisorModal } from './components/AdvisorModal'
+import { NewspaperModal } from './components/NewspaperModal'
 import { useGameStore } from './store/gameStore'
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
       <NewGameModal />
       <SaveLoadModal />
       <AdvisorModal />
+      <NewspaperModal />
 
       {isLoading && (
         <div className="loading-overlay">

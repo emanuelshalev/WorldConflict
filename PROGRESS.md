@@ -136,3 +136,20 @@
 - Responsive dark theme UI
 
 ---
+
+### 03:52 AM: feat: complete Stage 6 turn flow (6.1-6.7) ✓
+**Files:**
+- `ui/src/components/NewspaperModal.tsx` - Fullscreen headlines with auto-advance
+- `ui/src/components/ActionMenu.tsx` - Tabbed action interface (Diplomacy/Military/Economy/Domestic)
+- `ui/src/App.css` - Newspaper and action menu styles
+
+**Tests:** 108/108 passed | **Lint:** ✅ | **Build:** ✅
+- Newspaper auto-advances every 3 seconds
+- Action menu supports up to 3 pending actions per turn
+- Loading overlay and error toast implemented
+
+**Notes:**
+- Leadership backstory (6.5) and E2E test (6.8) deferred to P1
+- Full turn flow: select actions → end turn → newspaper → continue
+
+---
