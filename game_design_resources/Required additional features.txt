@@ -1,0 +1,223 @@
+Below is a structured design document defining the additional features for the expanded, global remake.
+Scope and Core Vision This remake generalizes the original regional simulator into a global political, economic, and military simulation. The player may assume leadership of any country in the world, starting in a chosen historical year, and attempt to maximize a composite leadership score while navigating realistic international dynamics.
+Key pillars:
+Global scope: all countries, not just the Middle East.
+Multi‑perspective play: any country is playable.
+Asymmetric information: each country sees a different world.
+Agentic simulation: each country is driven by an autonomous agent aligned with its history, structure, and culture.
+Narrative framing: each playthrough begins with a story of how the player came to power.
+Fast turn‑based flow with optional conversational decision support.
+Rich end‑of‑term leadership report and scoring.
+Playable Countries and Global Scope 2.1 Country Coverage All UN‑recognized sovereign states plus special entities as needed (e.g., EU, Taiwan).
+Non‑playable but simulated entities:
+Supranational organizations (UN, EU, NATO, regional blocs).
+Major non‑state actors if desired (insurgent groups, multinational corporations) as simplified agents.
+2.2 Country Profiles For each country, define a structured data model:
+Identity:
+Name, ISO codes, flag, location (polygons, centroids).
+Political system:
+System type (parliamentary democracy, presidential, authoritarian, monarchy, theocracy, hybrid, etc.).
+Power centers (executive, legislature, judiciary, military, party apparatus, royal family, religious councils).
+Election cycle and mechanics (term length, electoral system).
+Historical context:
+Key historic events (wars, revolutions, regime changes, alliances).
+Baseline foreign policy orientations (alliances, rivalries, spheres of influence).
+Cultural traits:
+High‑level traits influencing behavior (risk tolerance, emphasis on prestige vs. stability, attitude to international norms).
+Internal cleavages (ethnic, religious, ideological).
+Economy:
+GDP, sector breakdown (agriculture, industry, services).
+Major resources and key exports.
+Level of development, debt profile.
+Military:
+Force structure (branches, doctrines).
+Nuclear status (none, latent, armed).
+Alliance commitments (mutual defense treaties, basing agreements).
+These profiles provide parameters for both the player’s options and the autonomous agents’ behavior.
+Starting Year and Narrative Onboarding 3.1 Player‑Chosen Starting Year Player selects:
+Starting year (e.g., any year from 1950 to near‑present, or scenario years).
+Country to lead.
+Game engine:
+Initializes global state using historical data up to that year (alliances, wars, economic levels, regimes).
+Generates existing leadership and institutions consistent with the chosen date.
+3.2 Auto‑Fabricated Leadership Story Upon game start:
+Narrative generator:
+Creates a short backstory of how the player’s character came to power, consistent with:
+Country’s political system (election, coup, appointment, revolution, succession).
+Recent historical events (economic crisis, war loss, popular movement).
+Example:
+In a parliamentary democracy: “After a snap election triggered by a corruption scandal, your reformist coalition formed a narrow majority…”
+In a military junta: “Following internal infighting, you emerged as the compromise general to lead the Supreme Council…”
+Mechanical hooks:
+Initial legitimacy level (high/medium/low).
+Initial faction support (e.g., military backing strong, unions weak).
+Public expectations (reformist mandate vs. stability mandate) affecting early score calculation.
+Turn Structure and Decision Interface 4.1 Fast Options‑First Turn Flow Each turn (e.g., one month or quarter):
+Situation Brief:
+Quick summary of key developments (domestic, foreign, economic).
+Highlighted alerts (crises, opportunities).
+Action Options List:
+Context‑aware menu of major decisions available this turn, grouped by:
+Foreign Policy & Security.
+Domestic Policy & Economy.
+Social & Cultural Policy.
+Intelligence & Covert Ops.
+Designed to be concise: each option is a short, meaningful action (e.g., “Propose ceasefire in X war”, “Announce anticorruption campaign”, “Increase interest rates”, “Negotiate base rights with Y”).
+Resolution:
+Once an action is chosen, the turn continues to resolution (with underlying simulations and AI reactions).
+4.2 Chat‑Driven Decision Support In addition to choosing from the options list, the player can open an in‑game “conversation” with characters before committing:
+Available characters per turn:
+Cabinet members (Foreign Minister, Defense Minister, Finance Minister, Interior Minister).
+Intelligence chief, military chiefs, central bank governor.
+Political allies/opposition leaders, influential business or civil society figures.
+Foreign counterparts (via diplomatic channels) when relevant.
+Conversation mode:
+Player enters a chat view with the selected character.
+They can:
+Ask for analysis of the current situation (“If we sanction this neighbor, what happens?”).
+Request alternative proposals.
+Explore consequences of different actions.
+The conversation persists until the player chooses a concrete action (from suggested or standard options), which then advances the turn.
+Constraints:
+No time passes until an action is locked in, preserving fast turn pacing.
+Characters’ advice is biased by their incentives, ideology, and information (they do not see the full “truth” state, only their country’s view and their institutional lens).
+Autonomous Country Agents 5.1 Agent Architecture Each country is controlled by an autonomous agent with:
+State:
+Internal metrics (stability, public opinion, factions).
+Perceived world state (see Section 6).
+Strategic goals and constraints.
+Policy preferences:
+Derived from:
+Government type.
+Cultural traits.
+Historical experience.
+Current leadership style (hawkish/dovish, reformist/conservative).
+Decision logic:
+A combination of:
+Long‑term objectives (survival, prestige, economic growth).
+Short‑term pressures (elections, protests, wars, sanctions).
+Heuristics or utility functions (e.g., balancing risk vs. reward of escalation).
+5.2 Behavioral Consistency The agent should:
+Respect institutional constraints:
+Democracies face electoral cycles, coalition politics, judicial review, free media.
+Autocracies rely on elite support and fear coups or uprisings.
+Theocracies or party‑states follow doctrinal or party‑line constraints.
+React to fictional events plausibly:
+Apply similar reasoning to both “realistic” and procedurally generated crises.
+Example: A natural disaster may trigger requests for aid, temporary truce initiatives, or domestic budget shifts.
+Maintain recognizable national “character”:
+A country with historically cautious foreign policy tends to avoid large offensive wars unless under extreme pressure.
+A country with an ideology of regional leadership pushes for alliances, regional institutions, and prestige projects.
+Asymmetric Information and World Views 6.1 Ground Truth vs. Country Perceptions Game manager maintains:
+The full, objective world state (true troop positions, covert operations, real economic stats, genuine public opinion values, etc.).
+Each country maintains its own belief state:
+Based on:
+Public information (media, official announcements).
+Intelligence gathering (spies, satellites, economic data).
+Alliances and shared intelligence.
+Belief state can be:
+Outdated (lagging behind real events).
+Incomplete (some variables unknown).
+Incorrect (misinformation, propaganda, deception).
+6.2 Information Channels News and media:
+Global news events visible to most countries (major wars, coups, disasters).
+Domestic media shaped by regime type (more propaganda in authoritarian states).
+Intelligence:
+Intelligence budget and capabilities influence:
+Accuracy and timeliness of military, political, and economic data.
+Ability to detect covert actions (e.g., coup attempts, nuclear programs).
+Diplomacy:
+Direct communication (summits, calls, diplomatic cables) can correct or distort perceptions.
+Public leaks and whistleblowers:
+Random or triggered events may reveal hidden information (corruption scandals, hidden treaties), updating some countries’ belief states.
+6.3 Gameplay Impact Divergent beliefs:
+Countries may act on false assumptions (e.g., overestimating enemy strength → deterrence; underestimating → miscalculated wars).
+Misinformation operations become meaningful (e.g., faking military build‑ups).
+Player experience:
+As leader, the player only sees their country’s view:
+Intelligence maps derived from their own data.
+Uncertainty ranges (e.g., “Enemy GDP likely between X and Y”).
+Actions to improve information:
+Increase intelligence spending.
+Seek data‑sharing deals with allies.
+Support international monitoring missions.
+Goals, Scoring, and Leadership Evaluation 7.1 Core Objective Primary goal: stay in power as long as possible while maximizing a multi‑dimensional leadership score.
+7.2 Score Components Leadership achievements:
+Economic performance (growth, unemployment, inflation control).
+Security outcomes (avoiding catastrophic wars, defending territory).
+Strategic gains (beneficial treaties, influence in international organizations, prestige projects).
+Crisis management (handling pandemics, disasters, financial crises).
+Internal approval:
+Average domestic approval rating over time.
+Fairness of approval (e.g., avoiding extreme repression; high approval under brutal coercion may be scored differently).
+Fulfillment of electoral or ideological promises.
+Global approval:
+Standing in international organizations.
+Global opinion indices (press freedom, human rights, corruption perception).
+Reputation as a responsible or reckless actor (e.g., use of WMDs, frequency of wars, treaty violations).
+7.3 Scoring Mechanics Continuous scoring:
+Score accumulates each turn based on state changes, with modifiers for difficulty and country starting conditions.
+Event multipliers:
+Major achievements or disasters give large positive or negative score spikes.
+Normalization:
+Scores adjusted for country size and baseline challenges (e.g., leading a small, poor state vs. a superpower).
+End‑of‑Term Report and Saveable History 8.1 Triggering End of Leadership End conditions:
+Voluntary retirement or electoral loss.
+Coup, assassination, revolution, impeachment.
+Country collapse or annexation.
+The simulation may continue, but the “run” for this leader ends.
+8.2 Report Contents At the end of a run, generate a structured, exportable report:
+Timeline of major events:
+Key dates and descriptions (wars launched, treaties signed, crises managed, coups, elections).
+Policy summary:
+High‑level overview of domestic and foreign policy directions (e.g., “Market‑liberalization and non‑alignment”, “Militarized nationalism”).
+Score breakdown:
+Final total score.
+Component scores (economic, security, internal approval, global approval).
+Historical comparisons (how this leader ranks vs. typical leaders for this country, if multiple playthroughs exist).
+Leadership style evaluation:
+Qualitative classification:
+Examples: “Pragmatic stabilizer”, “Reformist democrat”, “Risk‑taking expansionist”, “Isolationist nationalist”.
+Justification referencing key decisions.
+Charts and maps (in‑game, not necessarily in the exported file at first):
+Approval over time.
+GDP and key economic indicators.
+Military expenditure and conflict involvement.
+8.3 Export and Sharing Saveable format:
+Structured data file (JSON/HTML/PDF, depending on platform) summarizing the leadership period.
+Optional “narrative history”:
+Short textual history written in the style of a post‑hoc political biography.
+Map and Intelligence Visualization 9.1 2D Map Engine Global map:
+2D, fast‑rendering, Google‑Maps‑style (pan, zoom).
+Countries shown as filled polygons with borders; major cities, key infrastructure optionally visible.
+9.2 Layer System Each layer can be toggled on/off; multiple layers can be combined for richer insights.
+Military layer:
+Known or estimated positions of friendly and foreign forces.
+Alliance boundaries, bases, conflict zones.
+Uncertainty visualization (e.g., fuzzy edges or confidence intervals for enemy deployments).
+Economic layer:
+GDP by country (color gradient).
+Trade flows (arrows or lines with thickness representing volume).
+Debt, reserves, key commodities (oil, gas, rare earths) as icons or heat maps.
+Resources layer:
+Natural resource locations and intensities (oil fields, mines, agricultural zones).
+Strategic infrastructure (pipelines, ports, chokepoints).
+Political & social layer:
+Regime type shading.
+Protest hotspots, insurgency regions.
+Influence zones (soft power, spheres of influence).
+Environment / climate (optional expansion):
+Disaster risk zones.
+Ongoing environmental crises (droughts, floods, fires).
+9.3 Country‑Specific Intelligence View Player’s perspective:
+The map shows only what their country believes:
+Friendly regions with high certainty.
+Foreign regions with partial or outdated information.
+Fog‑of‑information:
+Unknown regions shaded differently or annotated with “insufficient data”.
+Intelligence investment reduces fog over time, especially for areas of interest.
+Integration With Original Design Intent While the scope expands from a regional to a global simulator, the design keeps:
+Turn‑based, information‑rich decision making.
+Emphasis on political, diplomatic, and covert tools, not just raw warfare.
+High stakes around escalation and global perception, including the possibility of catastrophic outcomes (e.g., nuclear war, systemic collapse).
+The features above collectively define a modern, globally scoped, agent‑driven remake that preserves the spirit of the original while significantly deepening immersion, replayability, and systemic richness.

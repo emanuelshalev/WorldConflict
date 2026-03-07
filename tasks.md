@@ -194,7 +194,27 @@
 
 ---
 
-## P1: Post-MVP Polish (After Stage 8)
+## Stage 9: Engagement Overhaul (3 days)
+**Implement lessons from original Conflict game for better player engagement**
+*Reference: game_design_resources/engagement_improvements.md*
+
+### P0 (Critical for Engagement)
+- [ ] **9.1** Flip newspaper flow: Show at turn START (events from last turn) instead of end
+- [ ] **9.2** Phase indicator bar: Visual stepper showing Briefing → Diplomacy → Military → Domestic → Confirm
+- [ ] **9.3** Action consequence preview: Show "This will anger X, please Y" before confirming
+- [ ] **9.4** Post-action feedback modal: Show results of each action with relation changes
+- [ ] **9.5** War progress bar: Visual tug-of-war indicator when at war
+- [ ] **9.6** Event response dialogs: Major events require player response (not just notifications)
+
+### P1 (System Depth)
+- [ ] **9.7** Intelligence phase UI: Covert operations (spy, destabilize, support rebels)
+- [ ] **9.8** Military procurement depth: Unit types (ground/air/defense) with budget allocation
+- [ ] **9.9** Internal affairs system: Manage internal challenges with tradeoff responses
+- [ ] **9.10** Map visual states: Pulsing war borders, alliance connection lines, threat indicators
+
+---
+
+## P1: Post-MVP Polish (After Stage 9)
 ### Quality of Life
 - [ ] Keyboard shortcuts (map pan/zoom, menu navigation, turn advance)
 - [ ] Settings panel: LLM model selector, animation speed, debug toggles

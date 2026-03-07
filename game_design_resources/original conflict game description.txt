@@ -1,0 +1,103 @@
+**Detailed Design Document: Conflict - Middle East Political Simulator**
+
+**1. Game Overview & Realism**
+*Conflict: Middle East Political Simulator* is a turn-based government and strategy simulation game released in 1990 by Virgin Mastertronic and designed by David J. Eastman. The game casts the player as the newly appointed Prime Minister of Israel following the assassination of the previous leader in December 1996. 
+
+**Realism:** While the game is framed as an amusing, stylized "Machiavellian fantasy" of cold war politics rather than a strictly realistic historical simulation, it grounds itself in real-world geopolitical tensions. It features actual regional actors (Egypt, Syria, Jordan, Lebanon, Iraq, Iran, Libya), historical global arms suppliers (the USA, UK, France, and a private dealer selling Soviet weapons), and real-world issues such as the "Palestinian problem," UN resolutions, espionage via Mossad, and nuclear proliferation.
+
+**2. Objective**
+The player's primary goal is to cause the defeat of the four bordering states—Egypt, Syria, Jordan, and Lebanon—either through military invasion or by plunging them into political destabilization and collapse. Simultaneously, the player must avoid being deposed via assassination or impeachment (triggered by public insecurity or Palestinian uprisings) and must carefully navigate nuclear brinkmanship to prevent a global nuclear holocaust.
+
+**3. Timeline and Time Step**
+*   **Setting:** The game begins on January 1, 1997.
+*   **Time Step:** The game utilizes a strictly turn-based flow where **one turn equals one month** of real time.
+*   **Annual Milestones:** Once every 12 turns, an annual UN summit occurs, allowing the player to adjust the defense budget as a percentage of GDP, increase the size of the army, and receive international aid from the United States. 
+
+**4. Game Flow & User Interaction**
+The game operates on a strictly linear, phase-by-phase monthly loop. The interface is entirely menu-driven, navigated using keyboard arrow keys and the Return key, or a mouse. Once the player transitions from the diplomatic/espionage phases to the military phases, they cannot go back until the next turn.
+1.  **News Phase:** The player reviews a newspaper displaying headlines of global events from the previous month.
+2.  **Diplomacy & Intelligence Phase:** The player reviews official briefings, checks regional stability, and sets foreign policy and covert operations.
+3.  **Military Phase:** The player allocates the monthly defense budget, procures weapons, funds nuclear research, executes airstrikes, and deploys troops to the borders.
+4.  **Resolution Phase:** If a war is ongoing, combat is resolved algorithmically based on rock-paper-scissors unit match-ups, and the world state updates.
+
+**5. Player Actions**
+The player has a wide array of tools to influence the region:
+*   **Diplomatic Actions:** The player can attempt to improve, maintain, or worsen relations with any state. If relations are "Profitable," the player can request a military pact.
+*   **Espionage/Covert Actions:** The player can spend funds to increase or decrease a target government's stability, support or suppress insurgents, or—if the target is critically weak—attempt an assassination or a coup.
+*   **Military Procurement:** Players purchase specific units (tanks, anti-tank helicopters, SAMs, fighters) from different global powers. Access to high-tech gear requires a history of consistent purchasing. 
+*   **Offensive Military Actions:** Pre-war precision airstrikes can be ordered against military, civilian, industrial, or nuclear targets. Troops can be mobilized to the borders in small or full-scale deployments.
+*   **Nuclear Program:** The player can fund nuclear research for $20M per month. Once developed, the player has the discretionary power to launch a nuclear strike during a war.
+*   **Internal Affairs:** The player manages the "Palestinian Problem" by deploying policing brigades to the West Bank and Gaza. They must choose between "soft" or "hard" policing tactics. 
+
+**6. Screens, Visual Style, and Interface**
+The visual style is low-resolution 2D, featuring solid background colors, flat colored boxes, and simple bitmap text. It uses screen-by-screen navigation rather than a continuous scrolling world.
+*   **Global Menu Bar:** A strip at the top or bottom of the screen allows navigation between Diplomacy, Intelligence, Military, Budget, and Internal Affairs panels.
+*   **Newspaper Screen:** Mimics a newspaper front page with a large banner and text-only headlines summarizing the previous turn's events. It uses no images, only text and simple line separators.
+*   **Main Map / Strategic Overview:** A blocky, stylized map of the Middle East. Countries are labeled with simple text. Text or icons near borders indicate relationship status ("WAR", "PACT") and the presence of deployed troops. 
+*   **Diplomacy/Espionage Panels:** Presented as vertical text lists of countries alongside their status (e.g., "FAVOURABLE", "SOLID", "GUERILLA"). Action buttons are rendered as outlined rectangles.
+*   **Military/Procurement Panels:** Displays a table-like layout of Israel's current unit counts and a list of available weapons from suppliers with their cost. 
+*   **Dialog Boxes:** Pop-up rectangles with solid background colors and a 1-2 pixel border alert the player to major events (e.g., "COUP ATTEMPT") and require a prompt response.
+
+**7. Visual Updates Based on Progression**
+*   **Nuclear Development:** If an enemy nation successfully tests a nuclear weapon, a small, low-detail "mushroom cloud" graphic permanently replaces their standard nuclear installation icon on the map.
+*   **War Progress Bar:** During combat, a horizontal segmented bar appears on the screen. One end is colored for Israel and the other for the enemy. The bar visually shifts left or right to track territorial gains, losses, and battle momentum.
+
+**8. Responsiveness and Impact on Outcomes**
+The game's systems are highly reactive to the player's choices, generating a cascading impact on the game world:
+*   **Geopolitical Consequences:** If the player favors purchasing arms exclusively from the private dealer (Soviet weapons), the USA and UK may lock them out of their marketplaces. Using "hard" tactics on internal insurgents causes an international outcry that damages relations with the USA and reduces annual financial aid.
+*   **Dynamic Diplomacy:** Stationing troops on a neighbor's border or executing airstrikes actively degrades diplomatic relations until war is declared. If the player maintains a military pact, their ally will automatically declare war on any mutual neighbor the player decides to fight.
+*   **Nuclear Brinkmanship:** Launching an airstrike on an enemy's nuclear facility retards their progress. However, if two consecutive strikes fail, the enemy may successfully test their weapon. Once this happens (indicated by the mushroom cloud icon), the player can no longer cripple the program conventionally. 
+*   **End-Game Triggers:** Dropping a nuclear bomb may result in instant victory, but it frequently sparks a retaliatory chain reaction ending in a global nuclear holocaust (Game Over). Even in victory, using a nuke results in an immediate UN arms embargo. 
+
+**Detailed Design Document: Conflict - Middle East Political Simulator**
+
+**1. Game Overview & Realism**
+*Conflict: Middle East Political Simulator* is a turn-based government and strategy simulation game released in 1990 by Virgin Mastertronic and designed by David J. Eastman. The game casts the player as the newly appointed Prime Minister of Israel following the assassination of the previous leader in December 1996. 
+
+**Realism:** While the game is framed as an amusing, stylized "Machiavellian fantasy" of cold war politics rather than a strictly realistic historical simulation, it grounds itself in real-world geopolitical tensions. It features actual regional actors (Egypt, Syria, Jordan, Lebanon, Iraq, Iran, Libya), historical global arms suppliers (the USA, UK, France, and a private dealer selling Soviet weapons), and real-world issues such as the "Palestinian problem," UN resolutions, espionage via Mossad, and nuclear proliferation.
+
+**2. Objective**
+The player's primary goal is to cause the defeat of the four bordering states—Egypt, Syria, Jordan, and Lebanon—either through military invasion or by plunging them into political destabilization and collapse. Simultaneously, the player must avoid being deposed via assassination or impeachment (triggered by public insecurity or Palestinian uprisings) and must carefully navigate nuclear brinkmanship to prevent a global nuclear holocaust.
+
+**3. Timeline and Time Step**
+*   **Setting:** The game begins on January 1, 1997.
+*   **Time Step:** The game utilizes a strictly turn-based flow where **one turn equals one month** of real time.
+*   **Annual Milestones:** Once every 12 turns, an annual UN summit occurs, allowing the player to adjust the defense budget as a percentage of GDP, increase the size of the army, and receive international aid from the United States. 
+
+**4. Game Flow & User Interaction**
+The game operates on a strictly linear, phase-by-phase monthly loop. The interface is entirely menu-driven, navigated using keyboard arrow keys and the Return key, or a mouse. Once the player transitions from the diplomatic/espionage phases to the military phases, they cannot go back until the next turn.
+1.  **News Phase:** The player reviews a newspaper displaying headlines of global events from the previous month.
+2.  **Diplomacy & Intelligence Phase:** The player reviews official briefings, checks regional stability, and sets foreign policy and covert operations.
+3.  **Military Phase:** The player allocates the monthly defense budget, procures weapons, funds nuclear research, executes airstrikes, and deploys troops to the borders.
+4.  **Resolution Phase:** If a war is ongoing, combat is resolved algorithmically based on rock-paper-scissors unit match-ups, and the world state updates.
+
+**5. Player Actions**
+The player has a wide array of tools to influence the region:
+*   **Diplomatic Actions:** The player can attempt to improve, maintain, or worsen relations with any state. If relations are "Profitable," the player can request a military pact.
+*   **Espionage/Covert Actions:** The player can spend funds to increase or decrease a target government's stability, support or suppress insurgents, or—if the target is critically weak—attempt an assassination or a coup.
+*   **Military Procurement:** Players purchase specific units (tanks, anti-tank helicopters, SAMs, fighters) from different global powers. Access to high-tech gear requires a history of consistent purchasing. 
+*   **Offensive Military Actions:** Pre-war precision airstrikes can be ordered against military, civilian, industrial, or nuclear targets. Troops can be mobilized to the borders in small or full-scale deployments.
+*   **Nuclear Program:** The player can fund nuclear research for $20M per month. Once developed, the player has the discretionary power to launch a nuclear strike during a war.
+*   **Internal Affairs:** The player manages the "Palestinian Problem" by deploying policing brigades to the West Bank and Gaza. They must choose between "soft" or "hard" policing tactics. 
+
+**6. Screens, Visual Style, and Interface**
+The visual style is low-resolution 2D, featuring solid background colors, flat colored boxes, and simple bitmap text. It uses screen-by-screen navigation rather than a continuous scrolling world.
+*   **Global Menu Bar:** A strip at the top or bottom of the screen allows navigation between Diplomacy, Intelligence, Military, Budget, and Internal Affairs panels.
+*   **Newspaper Screen:** Mimics a newspaper front page with a large banner and text-only headlines summarizing the previous turn's events. It uses no images, only text and simple line separators.
+*   **Main Map / Strategic Overview:** A blocky, stylized map of the Middle East. Countries are labeled with simple text. Text or icons near borders indicate relationship status ("WAR", "PACT") and the presence of deployed troops. 
+*   **Diplomacy/Espionage Panels:** Presented as vertical text lists of countries alongside their status (e.g., "FAVOURABLE", "SOLID", "GUERILLA"). Action buttons are rendered as outlined rectangles.
+*   **Military/Procurement Panels:** Displays a table-like layout of Israel's current unit counts and a list of available weapons from suppliers with their cost. 
+*   **Dialog Boxes:** Pop-up rectangles with solid background colors and a 1-2 pixel border alert the player to major events (e.g., "COUP ATTEMPT") and require a prompt response.
+
+**7. Visual Updates Based on Progression**
+*   **Nuclear Development:** If an enemy nation successfully tests a nuclear weapon, a small, low-detail "mushroom cloud" graphic permanently replaces their standard nuclear installation icon on the map.
+*   **War Progress Bar:** During combat, a horizontal segmented bar appears on the screen. One end is colored for Israel and the other for the enemy. The bar visually shifts left or right to track territorial gains, losses, and battle momentum.
+
+**8. Responsiveness and Impact on Outcomes**
+The game's systems are highly reactive to the player's choices, generating a cascading impact on the game world:
+*   **Geopolitical Consequences:** If the player favors purchasing arms exclusively from the private dealer (Soviet weapons), the USA and UK may lock them out of their marketplaces. Using "hard" tactics on internal insurgents causes an international outcry that damages relations with the USA and reduces annual financial aid.
+*   **Dynamic Diplomacy:** Stationing troops on a neighbor's border or executing airstrikes actively degrades diplomatic relations until war is declared. If the player maintains a military pact, their ally will automatically declare war on any mutual neighbor the player decides to fight.
+*   **Nuclear Brinkmanship:** Launching an airstrike on an enemy's nuclear facility retards their progress. However, if two consecutive strikes fail, the enemy may successfully test their weapon. Once this happens (indicated by the mushroom cloud icon), the player can no longer cripple the program conventionally. 
+*   **End-Game Triggers:** Dropping a nuclear bomb may result in instant victory, but it frequently sparks a retaliatory chain reaction ending in a global nuclear holocaust (Game Over). Even in victory, using a nuke results in an immediate UN arms embargo. 
+
+Would you like me to use the NotebookLM tools to generate a tailored report or a flashcard study guide based on this game design document to help structure your upcoming development tasks?

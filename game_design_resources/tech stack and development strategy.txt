@@ -1,0 +1,103 @@
+Given your constraints (fast UI, simple but scalable architecture, open‑source components, pluggable LLM provider), a web‑first, “simulation‑engine + thin client UI + pluggable AI layer” stack works very well. Below is a concise breakdown of options and a recommended baseline architecture.
+High‑level architecture Think in three layers:
+Simulation Core (Game Manager)
+Deterministic world state and rules (countries, turns, events, scoring).
+Exposed via a stable API (function calls in‑process or HTTP if you split services).
+Agent Layer (Country AIs + Advisor Chat)
+One “agent runtime” API that can call any LLM provider:
+Remote (OpenAI, Anthropic, etc.) or local (Ollama, LM Studio, etc.).
+Agents decide on actions based on a partial view of world state provided by the game manager.
+UI Layer
+Web client with fast 2D maps and data overlays.
+Talks only to the game manager API (and optionally to an “LLM proxy” service).
+This keeps the core simulation independent of both the front‑end and your specific LLM choice.
+Tech stack options 2.1 Language and runtime Recommended: TypeScript end‑to‑end.
+Backend / game core: Node.js + TypeScript
+Strong typing for complex world state.
+Well supported in agentic IDEs like Windsurf.
+Alternative: Python (FastAPI + pydantic)
+Great if you lean into data science / ML; slightly more friction for SPA frontend code‑sharing.
+Given you’re using Windsurf and want a neat web UI, TypeScript is the path of least resistance.
+UI options 3.1 Web stack (recommended) Framework: React (or Solid / Svelte; React is best supported in tools and libs).
+Rendering:
+2D maps and overlays:
+react-leaflet (Leaflet) – simple, mature, easy tile use.
+Or maplibre-gl-js (open‑source Mapbox GL) for smoother, vector maps.
+Overlays for economic/military/resource layers as Leaflet layers or custom React components.
+State management:
+Zustand or Redux Toolkit for game client state.
+UI components:
+MUI or Mantine for panels, dialogs, tables, etc.
+Why: gives you a “Google‑maps‑style” 2D map, fast enough, fully open‑source.
+3.2 Desktop options (if you ever want native) Godot 4 (GDScript/C#):
+Great for 2D strategy and map overlays.
+Would move you away from web tech; dev is a bit heavier but very solid for games.
+Electron / Tauri wrapping the web UI:
+If you want a desktop app but keep the same React UI.
+For speed of iteration with an AI IDE, web SPA is simplest.
+Storage options Your needs:
+Complex nested world state (countries, beliefs, history).
+Modest data volume (mostly structured JSON).
+You want simple, not ops‑heavy.
+4.1 Simple / MVP SQLite
+Via better-sqlite3 or Prisma ORM.
+Single file, easy to backup, transactional.
+Perfect for saves, scenarios, game logs.
+JSON files for static data
+Country definitions, events, starting scenarios in data/*.json.
+4.2 If you later want multi‑user or hosting PostgreSQL with Prisma or TypeORM.
+Same data model, more concurrency, deployment to any open‑source‑friendly host.
+For a solo dev + AI agent, SQLite + JSON is ideal.
+Running agents and LLM integration You want:
+All open‑source around the LLM, but freedom to choose paid/local models.
+5.1 Agent process model In‑process “agent manager” module in your backend:
+Exposes functions like decideCountryActions(countryId, visibleState) and advisorChatReply(characterId, conversationState).
+Internally:
+Prepares prompts from spec + visible state.
+Calls a generic LLM client interface.
+5.2 Pluggable LLM client Define one interface, e.g.:
+ts interface LlmClient { complete(params: { model: string; messages: ChatMessage[] }): Promise<ChatMessage>; } Provide implementations:
+Remote APIs:
+OpenAI, Anthropic, etc. via HTTP.
+Local:
+Ollama: call http://localhost:11434/api/chat or similar.
+LM Studio / vLLM: same pattern.
+Configuration:
+Read provider + API keys from .env or a config file.
+Allow per‑agent or per‑country model selection if you want.
+All logic around “how to talk to an LLM” lives in one small module; the rest of the game just calls LlmClient.
+Architecture sketch A minimal, clean structure with TypeScript:
+text / src / core # deterministic simulation world.ts country.ts turn.ts scoring.ts events.ts
+/ agents # autonomous country agents + advisor chat llmClient.ts agentManager.ts countryAgent.ts advisorAgent.ts prompts/...
+/ data # JSON/config loaders countries/ scenarios/ events/
+/ api # HTTP handlers / transport httpServer.ts routes/ game.ts # start game, play turn, fetch state chat.ts # advisor chat endpoints
+/ ui # (if monorepo, otherwise separate repo) # React app code
+/ infra db.ts # SQLite connection config.ts core/* has no LLM or IO dependencies; pure logic, fully testable.
+agents/* depends on core/* and llmClient.
+api/* is the transport layer; your front‑end talks here.
+Testing and development cycle 7.1 Testing types Unit tests (critical)
+Core simulation logic:
+Turn processing, war resolution, scoring, asymmetric information rules.
+Property / fuzz tests (nice to have)
+Ensure no impossible states (e.g., negative population, invalid alliances).
+Integration tests
+Game flow (start → few turns → end).
+UI tests (light)
+Smoke tests for main screens, map interactions.
+Use Jest/Vitest for backend + React Testing Library/Playwright for UI.
+7.2 Cycle with an agentic IDE For each feature:
+Update spec.md and architecture.md briefly.
+Tell the agent: “Implement X module, tests included, following files…”
+Let it code, run tests, then you review the diffs.
+Once stable, move on.
+Open‑source‑friendly choices (summary) Language: TypeScript.
+Backend: Node.js + Express/Fastify or NestJS (if you want structure).
+DB: SQLite (Prisma).
+Frontend: React + Vite + Leaflet/MapLibre.
+Maps: OpenStreetMap tiles, MapLibre / Leaflet (fully open).
+LLM integration:
+Abstract interface; support:
+Remote: OpenAI/Anthropic/etc.
+Local: Ollama, open‑source models.
+Infra: Docker for easy local + cloud runs; everything else can be open‑source.
+If you want, next step I can draft a concrete tech-stack.md and architecture.md skeleton that you can drop into your repo and give directly to Windsurf as initial context.

@@ -1,0 +1,44 @@
+Country Buckets for Global Conflict Simulation Total: 25 Tier 1 countries for MVP (scalable to 50)
+🥇 TIER 1: Core Players (20 countries + Player's choice) Always fully autonomous agents with complete simulation
+Global Superpowers (5) text
+United States
+China
+Russia
+Germany (EU anchor)
+India Americas (3) text
+Brazil
+Canada
+Mexico Europe (4) text
+France
+United Kingdom
+Poland (Eastern Europe anchor)
+Turkey (NATO + regional power) Middle East (4) text
+Saudi Arabia
+Iran
+Israel
+Egypt Asia-Pacific (4) text
+Japan
+Indonesia
+South Korea
+North Korea Player's country = always Tier 1 (brings total to 21-25)
+🥈 TIER 2: Regional Influencers (25 additional = 50 total) Semi-autonomous, simplified agent logic
+text Africa (5): South Africa, Nigeria, Algeria, Ethiopia, Morocco South America (3): Argentina, Colombia, Venezuela Europe (4): Italy, Spain, Ukraine, Sweden/Finland Middle East (3): Iraq, Syria, UAE Asia (7): Pakistan, Vietnam, Thailand, Philippines, Australia, Taiwan, Bangladesh Oceania (1): Australia (already counted) 🥉 TIER 3: Background States (~145) Passive / abstracted simulation
+Grouped behaviors:
+text
+NATO followers (non-Tier 1)
+EU followers (non-Tier 1)
+Non-Aligned Movement bloc
+OPEC members (follow Saudi lead)
+Neutral microstates
+Failed/occupied states Dynamic promotion rules:
+text Small state becomes relevant → auto-promote to Tier 2 Tier 2 becomes strategically critical → promote to Tier 1 Implementation Priority text Phase 1 MVP (Q1): Tier 1 only (21 countries)
+Perfect simulation depth
+Fast turns (<200ms)
+Stable base for expansion
+Phase 2 (Q2): Add Tier 2 (50 total)
+Simplified logic templates per region
+Group behaviors for Tier 3
+Phase 3 (Q3+): Full world coverage
+Dynamic tiering
+Event-driven activation Data Requirements text Tier 1: Full country JSON (20 files) Tier 2: Medium detail (25 files) Tier 3: Minimal profiles + group templates (10 files)
+Total: ~55 JSON files vs 195 = 72% reduction This gives you world-class strategic depth with MVP performance and clear expansion path. The 25-country core captures 95% of global conflict dynamics while keeping Windsurf productive.

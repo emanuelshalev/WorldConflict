@@ -1,0 +1,184 @@
+Game Design Specification: World Conflicts
+
+1. Product Vision and Core Pillars
+
+Narrative Opening
+
+The application will initialize with a black splash screen displaying the uncredited poem "Sweet Bird of Truth":
+
+This is your captain calling with an urgent warning We’re above the Gulf of Arabia, altitude is falling And I can’t keep her up, there’s no time for thinking All hands on deck, this bird is sinking.
+
+Mission Statement
+
+World Conflicts is a high-fidelity, agent-driven global remake of the 1990 classic Conflict: Middle East Political Simulator. We are synthesizing the original's "tongue-in-cheek realpolitik" into a worldwide simulation. The core experience is a strategic survival exercise where world leaders—both human and autonomous—navigate a landscape of power-hungry pragmatism, shifting alliances, and nuclear brinkmanship.
+
+The Three Pillars
+
+1. Global Asymmetric Simulation: Unlike traditional grand strategy games where all data is transparent, every nation is an autonomous agent with a "Belief State" filtered by its own intelligence assets.
+2. Political-Military Complexity: Priority is placed on diplomacy, covert destabilization, and the threat of escalation. Tactical combat is abstracted to resolve the high-level political consequences of war.
+3. Agentic Development Workflow: The codebase is engineered via a "mind-melt" collaboration between the Architect and the Windsurf "Cascade" agent, ensuring deep integration of LLM-driven country logic within a deterministic simulation core.
+
+Narrative Hook and Onboarding
+
+Play begins on January 1, 1997, immediately following the assassination of the player's predecessor. The onboarding engine auto-fabricates a rise-to-power backstory based on the country's political system:
+
+* Military Junta: "Following internal infighting, you emerged as the compromise general to lead the Supreme Council."
+* Parliamentary Democracy: "After a snap election triggered by a corruption scandal, your reformist coalition formed a narrow majority." This establishes initial legitimacy metrics and internal faction support.
+
+
+--------------------------------------------------------------------------------
+
+
+2. Gameplay Loop and Turn Structure
+
+The Monthly Cycle
+
+The simulation progresses in one-month intervals.
+
+1. News Phase (Headlines): A full-screen newspaper layout presents the "world view" of the previous month's events, though headlines may contain propaganda or distortion.
+2. Briefing: A summary of departmental alerts (Foreign Office, Intelligence, Treasury).
+3. Action Options: Context-aware menus for Foreign Policy, Domestic Policy, and Intelligence.
+4. Resolution: The Game Manager (Source of Truth) processes all agent heuristics and military interactions.
+
+Advisor Interaction
+
+The system utilizes Chat-Driven Decision Support. Players converse with cabinet members (Foreign Minister, Intelligence Chief, etc.) who provide departmental analysis. This advice is fundamentally biased by their institutional lens and the limited departmental "Belief State," forcing the player to synthesize conflicting reports.
+
+Scoring and Leadership Evaluation
+
+Leadership is evaluated on a 0-200 point scale. Final scores are additive components calculated at the end of a run.
+
+Metric	Impact (Points)	End-of-Term Report Component
+Economic Performance	0 - 50	GDP growth, inflation control, and debt sustainability.
+Security & Stability	0 - 50	Territorial integrity and war success/avoidance.
+Internal Approval	0 - 50	Domestic public opinion and faction legitimacy.
+World Prestige	0 - 50	Standing with Superpowers and UN relations.
+
+
+--------------------------------------------------------------------------------
+
+
+3. Diplomatic and Covert Systems
+
+Relationship Hierarchy
+
+Relations are defined by a 7-step granular hierarchy. Movements between levels are cost-restricted and stance-dependent.
+
+1. Military Pact (Best)
+2. Profitable
+3. Beneficial
+4. Favourable
+5. Satisfactory
+6. Lamentable
+7. War (Worst)
+
+Special State: "Attack means disaster." Triggered when all nuclear-capable parties in a conflict possess operational warheads. Conventional diplomacy is suspended as any strike risks a global nuclear holocaust.
+
+Diplomatic Stances and Costs
+
+* Improve: Attempt to raise relations. Reaching "Beneficial" or higher costs $100M/month from the defense budget.
+* Maintain/Worsen: No cost; used to stabilize or intentionally degrade relations for casus belli.
+
+Espionage and Internal Security
+
+Target states possess a Government Stability rating (Very Solid to Collapsing) and an Insurgency Level (None to Guerilla Force).
+
+* Tactics Choice: Players must set a Soft vs. Hard policing toggle for their own insurgencies (e.g., the Palestinian Problem). Hard tactics reduce unrest faster but severely damage US relations and global prestige.
+* Extreme Measures: If a target is "Weak" or has reached "Guerilla Force," players may attempt Assassination or Coups. Success results in government collapse or installation of a puppet regime.
+
+
+--------------------------------------------------------------------------------
+
+
+4. Military and Nuclear Procurement
+
+The Defense Budget
+
+The monthly budget acts as a "hostility indicator."
+
+* Peace-time: ~$100M.
+* Tension/War: $300M+. Rising neighbor aggression auto-triggers budget increases.
+
+Global Arms Market
+
+Suppliers require relationship building to unlock high-tier hardware.
+
+Supplier	Characteristics	Notable Hardware
+USA	High-tech; sensitive to human rights.	F-16s, M1 Abrams, AWACS.
+UK	Reliable; middle-ground hardware.	Standard armor and infantry units.
+France	Pragmatic; ignores ideology.	Diverse modern aircraft and tanks.
+Private Dealer	Exclusive source during embargoes.	T-62s, Mig-27s, Badger Bombers.
+
+Nuclear Proliferation and Brinkmanship
+
+* The Global Summit: Occurs every July. This is the fixed event for UN embargo reviews and Palestinian Homeland offers.
+* The Two-Strike Rule: A nuclear program can only be crippled by conventional airstrikes before the Mushroom Cloud (Tested) icon appears. Crippling a program requires two successful strikes in a row. Once "Tested," it is invulnerable to conventional strikes.
+* WMD Consequences: Any use of nuclear weapons triggers an immediate global arms embargo and risks the "Global Holocaust" loss condition.
+
+
+--------------------------------------------------------------------------------
+
+
+5. Agentic Simulation Architecture
+
+Deterministic Source of Truth
+
+To prevent desync between the player and the AI, the Game Manager maintains the "Ground Truth." Individual country agents operate on "Belief States" derived from their intelligence spending.
+
+Country Tiering (Core MVP List)
+
+* Tier 1: Core Players (Fully Autonomous Agents):
+  1. USA, 2. China, 3. Russia, 4. Germany, 5. India, 6. Brazil, 7. Canada, 8. Mexico, 9. France, 10. UK, 11. Poland, 12. Turkey, 13. Saudi Arabia, 14. Iran, 15. Israel, 16. Egypt, 17. Japan, 18. Indonesia, 19. South Korea, 20. North Korea.
+* Tier 2: Regional Influencers (Semi-Autonomous): 25 additional states (Ukraine, South Africa, etc.).
+* Tier 3: Background States: Abstracted via group behavior logic (OPEC, NATO followers).
+
+
+--------------------------------------------------------------------------------
+
+
+6. Technical Stack and AI-Native Development
+
+Modern Stack & Architecture
+
+* Core: TypeScript/Node.js for deterministic simulation.
+* UI: React/Vite with Leaflet/MapLibre for 2D map layers.
+* Folder Structure:
+  * src/core: Deterministic world state and rules.
+  * src/agents: Autonomous country logic and LLM interfaces.
+  * src/data: JSON-based country and scenario definitions.
+  * src/api: HTTP handlers and transport.
+  * src/ui: React frontend and map components.
+
+Windsurf IDE Integration
+
+* Cascade Write Mode: Used for Phase 0-4. Automates multi-file refactoring, debugging, and terminal execution.
+* Cascade Chat Mode: Used for Phase 5-7. Focuses on UI refinement and descriptive content.
+* Supercomplete: Specifically utilized to generate the Stance Interaction Matrix and combat resolution heuristics.
+* Memories/AI Rules: Persists coding standards and architectural "Ground Truth" rules across sessions.
+
+
+--------------------------------------------------------------------------------
+
+
+7. Development Roadmap (The Windsurf Plan)
+
+Phase 0-2: Skeleton & Core Logic (Write Mode)
+
+* Initialize TypeScript registry; implement "Ground Truth" vs. "Belief State" logic.
+* Implement 7-level relationship hierarchy and "Two-Strike" nuclear rule.
+
+Phase 3-4: Agent Heuristics (Write Mode)
+
+* Deploy autonomous logic for Tier 1 core players.
+* Build the "Advisor Chat" interface with departmental bias filters.
+
+Phase 5-7: UI, Summits, & Refinement (Chat Mode)
+
+* Implement the 2D map visualization and July Global Summit logic.
+* Build the narrative scoring engine and End-of-Term report generator.
+
+Direct Commands for Cascade Agent
+
+* Logic Isolation: "Simulation logic must remain strictly deterministic in src/core. Do not allow LLM randomness to mutate the Ground Truth directly."
+* TDD Mandate: "Every diplomatic level transition and combat resolution heuristic must have corresponding unit tests."
+* Persistence: "Update spec.md and architecture.md after any modification to agent decision-making heuristics."

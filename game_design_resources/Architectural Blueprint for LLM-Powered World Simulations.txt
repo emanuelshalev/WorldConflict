@@ -1,0 +1,24 @@
+Summary of the suggested tech stack:
+Language & core runtime:
+TypeScript everywhere (backend + frontend) on Node.js for the simulation core and API.
+Backend / game manager:
+Node.js + a light HTTP framework (Express or Fastify).
+Pure, deterministic simulation modules (world state, turns, scoring) separated from IO and LLM calls.
+Frontend / UI:
+React SPA (bundled with Vite).
+2D world map with overlays using Leaflet (react-leaflet) or MapLibre for a Google‑Maps‑style experience.
+Zustand or Redux Toolkit for client state; a component library like MUI/Mantine for panels/dialogs.
+Data & storage:
+Static JSON for country profiles, scenarios, event templates.
+SQLite (via Prisma or similar) for saves, run histories, and metadata.
+Agents & LLM integration:
+In‑process “agent manager” module on the backend.
+Single abstract LlmClient interface with pluggable implementations:
+Remote paid APIs (OpenAI, Anthropic, etc.).
+Local models via Ollama or similar HTTP endpoints.
+Game core calls agents through this interface, keeping rules independent of any specific model.
+Maps & open data:
+OpenStreetMap‑based tiles; Leaflet/MapLibre as fully open‑source map rendering.
+Testing & tooling:
+Jest/Vitest for core logic tests; React Testing Library or Playwright for basic UI tests.
+Optional Docker for easy local + cloud deployment.

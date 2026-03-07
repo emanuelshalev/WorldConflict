@@ -77,15 +77,31 @@ Semi-autonomous with simplified logic templates
 Passive simulation via group behaviors and dynamic promotion
 
 4. User Flows
-4.1 Primary Game Loop (Per Turn)
+4.1 Primary Game Loop (Per Turn) - Phase-Based Flow
+*Inspired by original Conflict game's strict phase progression*
+
 text
-1. Monthly Newspaper Summary Screen (3s auto-advance)
-2. World Map Dashboard (inspect countries, intel overlays)
-3. Action Menu (Diplomacy | Military | Economy | Intelligence)
-4. [Optional] Advisor Consultation (chat interface)
-5. Action Confirmation & End Turn
-6. Resolution Summary (headline reel)
-7. Next turn begins
+TURN START:
+1. Newspaper Summary (events from PREVIOUS turn - sets context)
+2. Briefing Phase (advisor alerts, urgent matters requiring attention)
+
+DECISION PHASES (sequential, cannot go back):
+3. Diplomacy Phase (relations overview, alliance requests, treaties)
+4. Intelligence Phase (covert ops, intel gathering) [Optional]
+5. Military Phase (procurement, deployments, strikes) [If relevant]
+6. Domestic Phase (stability, budget, reforms)
+
+TURN END:
+7. Confirmation Screen (review all queued actions)
+8. Execute Turn (resolution, AI actions, world updates)
+9. → Next turn begins with new Newspaper
+
+Key Design Principles:
+- Newspaper FIRST (not last) - creates narrative continuity
+- Phase progression is LINEAR - no going back once advanced
+- Each phase shows relevant info + available actions
+- Consequences previewed BEFORE confirmation
+- Post-action feedback shows what happened
 4.2 New Game Flow
 text
 1. Choose Starting Year (1950-2025, 5-year increments)
@@ -254,6 +270,37 @@ Deltas from:
 - Regime type modifier: Democracy (+stability), Autocracy (-volatility)
 
 stability <= 0 → Government Collapse (game over for that leader)
+
+8.5 Intelligence System (Phase 2)
+text
+Intel Budget: Percentage of GDP allocated to intelligence
+Intel Level: 0-100 (determines accuracy of belief states)
+
+Covert Operations:
+- GATHER_INTEL: Improve knowledge of target nation (+10 intel accuracy)
+- DESTABILIZE: Reduce target's stability (-5 to -15/month)
+- SUPPORT_REBELS: Fund opposition groups (creates internal challenge)
+- COUNTER_INTEL: Protect from enemy operations
+- SABOTAGE: Damage target's infrastructure (GDP -1%)
+
+Operation Success: Based on intel level, target's counter-intel, random factor
+Consequences: Failed ops may be exposed → diplomatic incident
+
+8.6 Internal Affairs System (Phase 2)
+text
+Internal Challenges:
+- Separatist movements (regional)
+- Economic protests (stability-linked)
+- Political opposition (legitimacy-linked)
+- Corruption scandals (random events)
+
+Response Options:
+- NEGOTIATE: Slow resolution, no backlash, costs legitimacy
+- REFORM: Effective but expensive, improves long-term stability
+- SUPPRESS: Fast but causes international outcry, relations penalty
+- IGNORE: Challenge escalates over time
+
+Each challenge has severity (0-100) and affects stability proportionally
 9. Data Contracts
 9.1 Save File Format
 json

@@ -1,0 +1,46 @@
+Start with ~50 countries, scale strategically.
+Simulating all 195 countries is not practical for your MVP or even medium‑term goals. Here's why and how to approach it:
+Why not all 195? Performance: Each country needs:
+Agent state (beliefs, decisions, internal politics)
+Turn processing (diplomacy, economy, military)
+UI rendering (map markers, tooltips)
+Even optimized, 195 autonomous agents running every turn kills frame rates and turn speed.
+Complexity explosion:
+Diplomacy matrix becomes 195x195 = 38,000 relationships
+Every event ripples unpredictably across the entire system
+Player gets overwhelmed by global noise
+Diminishing returns:
+80% of strategic depth comes from ~30-50 key players
+Small island nations rarely affect great power politics meaningfully
+Recommended approach: Tiered simulation Tier 1: Core Players (15-25 countries) Always fully simulated with autonomous agents:
+text
+5 Great Powers: US, China, Russia, Germany/France, India/Japan
+Regional powers: Brazil, Saudi Arabia, Iran, Turkey, Nigeria, Indonesia, etc.
+Player's country (always Tier 1) ~20 countries total
+Tier 2: Regional Influencers (25-40 additional) Semi-autonomous, simplified logic:
+text
+Medium powers in each region (South Africa, Poland, Vietnam, etc.)
+Aggregated behavior patterns rather than full agent state Total: ~50 countries
+Tier 3: The Rest (~145 "background" countries) Passive / abstracted:
+text
+Fixed alliances (NATO members move together)
+Economic blocs (EU non-leaders follow Germany/France)
+Neutral "filler" states that only activate if directly attacked/provoked Implementation strategy Phase 1 MVP: 25 countries text Major powers + 2-3 per region:
+Americas: US, Brazil, Canada, Mexico
+Europe: Germany, France, UK, Russia, Poland
+Middle East: Saudi Arabia, Iran, Israel, Turkey, Egypt
+Asia: China, India, Japan, Indonesia, North Korea
+Africa: Nigeria, South Africa, Egypt (already counted) Turn processing: <100ms even on modest hardware
+Phase 2: Scale to 50 Add regional influencers. Tier 2 logic kicks in.
+Phase 3: "All 195" (but smart) Tier 3 countries as lightweight objects
+Dynamic promotion: small country becomes relevant → becomes Tier 2
+Group behaviors for microstates
+UI impact text Map shows:
+Tier 1: full detail, agent activity, news
+Tier 2: simplified status, regional headlines
+Tier 3: minimal (just borders, basic stats) Precedents confirming this works Supremacy 1914: ~700 regions, but only ~50 meaningful players
+Geo-Politics: Focuses on ~40 major powers
+Conflict of Nations: Strategic depth from ~30 active nations despite global map
+Bottom line 50 fully simulated countries = 95% of gameplay value, 5% of complexity scaling pain
+Start with 25 for MVP. Expand to 50 when stable. The "full world" feel comes from smart abstraction of the other 145, not literally simulating them all.
+This keeps your game fast, the UI responsive, and the Windsurf agent productive rather than drowning in 195 country JSON files.
