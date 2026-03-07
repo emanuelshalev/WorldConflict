@@ -315,9 +315,9 @@
 *Reference: spec.md Section 12 - UI/UX Requirements*
 
 ### 13A: Map Overlays (2 days)
-- [ ] **13.1** [P0] Map fog-of-information: Unknown regions shaded based on intel level
-- [ ] **13.2** [P0] Alliance connection lines: Green links between allied nations
-- [ ] **13.3** [P0] War visual indicators: Red pulsing lines between nations at war
+- [x] **13.1** [P0] Map fog-of-information: Unknown regions shaded based on intel level
+- [x] **13.2** [P0] Alliance connection lines: Green links between allied nations
+- [x] **13.3** [P0] War visual indicators: Red pulsing lines between nations at war
 - [ ] **13.4** [P1] Border troop indicators: Unit icons near borders with deployment
 - [ ] **13.5** [P1] Relationship status text on map: "WAR", "PACT", "TENSE"
 - [ ] **13.6** [P1] Nuclear indicators: 🏭 facility, ☢️ mushroom cloud, ⚠️ MAD warning
