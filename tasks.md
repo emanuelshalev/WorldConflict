@@ -172,7 +172,25 @@
     - Selected actions summary before ending turn
   - **Result:** Player now sees relevant information and can choose actions each turn
 
-- [ ] **BUG-005** (placeholder for future bugs)
+- [x] **BUG-005** Clicking advisor alert doesn't focus on that specific advisor
+  - **Fix:** Added `setAdvisorRole(alert.advisorId)` before opening modal
+  - **Result:** Advisor modal now opens with the clicked advisor pre-selected and auto-fetches briefing
+
+- [x] **BUG-006** End Turn button enabled without selecting any action
+  - **Fix:** Disabled button until `selectedActions.length > 0` or `customAction.trim()` has content
+  - **Result:** Player must choose an action or describe a custom action before proceeding
+
+- [x] **BUG-007** Newspaper modal has minimal content and doesn't look like a newspaper
+  - **Fix:** Complete redesign with:
+    - Classic newspaper masthead with title, tagline, date, edition
+    - Two-column layout with main article and sidebar
+    - Drop cap, byline, sub-headlines
+    - Generated expanded content from headlines
+    - World briefing sidebar with tension bar
+    - "More Headlines" navigation
+  - **Result:** Newspaper now looks authentic with rich content
+
+- [ ] **BUG-008** (placeholder for future bugs)
 
 ---
 
