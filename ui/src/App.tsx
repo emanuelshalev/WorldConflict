@@ -1,34 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import { Header } from './components/Header'
+import { Sidebar } from './components/Sidebar'
+import { MapView } from './components/MapView'
+import { NewGameModal } from './components/NewGameModal'
+import { SaveLoadModal } from './components/SaveLoadModal'
+import { AdvisorModal } from './components/AdvisorModal'
+import { useGameStore } from './store/gameStore'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const { error, isLoading } = useGameStore()
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className="app">
+      <Header />
+      <main className="main-content">
+        <MapView />
+        <Sidebar />
+      </main>
+
+      <NewGameModal />
+      <SaveLoadModal />
+      <AdvisorModal />
+
+      {isLoading && (
+        <div className="loading-overlay">
+          <div className="loading-spinner" />
+        </div>
+      )}
+
+      {error && (
+        <div className="error-toast">
+          {error}
+          <button onClick={() => useGameStore.getState().setError(null)}>×</button>
+        </div>
+      )}
+    </div>
   )
 }
 

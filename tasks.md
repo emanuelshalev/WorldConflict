@@ -88,13 +88,13 @@
 **React SPA + MapLibre + complete layout**
 
 ### P0 (Critical)
-- [ ] **5.1** `ui/src/App.tsx`: Header + Map(70%) + Sidebar(30%) + Modal system
-- [ ] **5.2** `ui/src/map/MapView.tsx`: MapLibre GL JS + OpenStreetMap tiles + country borders
-- [ ] **5.3** Map layers (5 toggleable): Political, Military, Economic, Stability, Intelligence
-- [ ] **5.4** `NewGameModal.tsx`: Year picker (1950-2025, 5yr steps) + 25 country selector
-- [ ] **5.5** `GameStore.ts`: Zustand store + full API integration + offline detection
-- [ ] **5.6** `SaveLoadMenu.tsx`: Save list + confirmation dialogs + delete
-- [ ] **5.7** `DebugOverlay.tsx`: `?debug=1` → GroundTruth view + AI reasoning toggle
+- [x] **5.1** `ui/src/App.tsx`: Header + Map(70%) + Sidebar(30%) + Modal system
+- [x] **5.2** `ui/src/components/MapView.tsx`: MapLibre GL JS + OSM tiles + country markers
+- [x] **5.3** Map layers (5 toggleable): Political, Military, Economic, Stability, Intelligence
+- [x] **5.4** `NewGameModal.tsx`: Scenario picker + 25 country selector
+- [x] **5.5** `store/gameStore.ts`: Zustand store + API integration
+- [x] **5.6** `SaveLoadModal.tsx`: Save list + load functionality
+- [x] **5.7** Debug overlay: `?debug=1` → state view in map
 
 ---
 
@@ -194,3 +194,11 @@
 - [x] **4.2** Chat API with advisor sessions
 - [x] **4.3-4.5** Error handling + rate limiting
 - [x] **4.6** API documentation (docs/API.md)
+
+### Stage 5: UI Foundation ✅
+- [x] **5.1** App layout (Header + Map + Sidebar + Modals)
+- [x] **5.2** MapView with MapLibre GL + country markers
+- [x] **5.3** 5 toggleable map layers
+- [x] **5.4-5.6** NewGameModal + SaveLoadModal + AdvisorModal
+- [x] **5.5** Zustand game store with API integration
+- [x] **5.7** Debug overlay

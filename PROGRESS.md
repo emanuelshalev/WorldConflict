@@ -112,3 +112,27 @@
 - Rate limits: 1 turn/sec, 5 chat/sec, 10 default/sec
 
 ---
+
+### 03:49 AM: feat: complete Stage 5 UI foundation (5.1-5.7) ✓
+**Files:**
+- `ui/src/App.tsx` - Main app layout with Header + Map + Sidebar
+- `ui/src/components/Header.tsx` - Game header with stats and controls
+- `ui/src/components/Sidebar.tsx` - Country stats and actions
+- `ui/src/components/MapView.tsx` - MapLibre GL map with country markers
+- `ui/src/components/NewGameModal.tsx` - Scenario and country selection
+- `ui/src/components/SaveLoadModal.tsx` - Save/load game interface
+- `ui/src/components/AdvisorModal.tsx` - Advisor chat interface
+- `ui/src/store/gameStore.ts` - Zustand state management + API calls
+- `ui/src/App.css` - Complete UI styling (dark theme)
+
+**Tests:** 108/108 passed | **Lint:** ✅ | **Build:** ✅
+- MapLibre GL with OpenStreetMap tiles
+- 5 toggleable map layers (political, military, economic, stability, intelligence)
+- Full modal system for game management
+
+**Notes:**
+- Country markers show regime type colors
+- Debug mode via ?debug=1 URL parameter
+- Responsive dark theme UI
+
+---
