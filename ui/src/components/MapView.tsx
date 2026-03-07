@@ -268,21 +268,27 @@ export function MapView() {
         map.current.getCanvas().style.cursor = 'pointer';
         
         if (e.features && e.features[0]) {
-          const props = e.features[0].properties;
+          const props = e.features[0].properties || {};
           const coords = (e.features[0].geometry as GeoJSON.Point).coordinates.slice() as [number, number];
           
           // MapLibre serializes properties - parse them back
-          const name = props?.name || 'Unknown';
-          const stability = Number(props?.stability) || 0;
-          const gdp = Number(props?.gdp) || 0;
-          const manpower = Number(props?.manpower) || 0;
-          const isDemo = props?.isDemo === true || props?.isDemo === 'true';
+          const name = String(props.name || 'Unknown');
+          const stability = Number(props.stability) || 0;
+          const gdp = Number(props.gdp) || 0;
+          const manpower = Number(props.manpower) || 0;
+          const isDemo = props.isDemo === true || props.isDemo === 'true';
           
-          const tooltipContent = isDemo
-            ? `<strong>${name}</strong><br/>Stability: ${stability}%<br/><em>(Demo - Start a game to play)</em>`
-            : `<strong>${name}</strong><br/>Stability: ${stability}%<br/>GDP: ${formatNumber(gdp)}<br/>Military: ${formatNumber(manpower)}`;
+          const tooltipHtml = `
+            <div style="padding: 8px; font-family: sans-serif; font-size: 13px; color: #333;">
+              <div style="font-weight: bold; font-size: 14px; margin-bottom: 6px;">${name}</div>
+              <div>Stability: ${stability}%</div>
+              <div>GDP: ${formatNumber(gdp)}</div>
+              <div>Military: ${formatNumber(manpower)}</div>
+              ${isDemo ? '<div style="font-style: italic; margin-top: 4px; color: #666;">(Demo - Start a game)</div>' : ''}
+            </div>
+          `;
           
-          popup.current.setLngLat(coords).setHTML(tooltipContent).addTo(map.current);
+          popup.current.setLngLat(coords).setHTML(tooltipHtml).addTo(map.current);
         }
       });
 
