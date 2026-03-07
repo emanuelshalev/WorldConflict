@@ -73,3 +73,25 @@
 - Heuristic AI fallback implemented in game routes
 
 ---
+
+### 03:41 AM: feat: complete Stage 3 agent layer (3.1-3.9) ✓
+**Files:**
+- `src/agents/llmClient.ts` - LLM client interface (OpenAI, Ollama, Mock)
+- `src/agents/schemas.ts` - Zod schemas for agent responses
+- `src/agents/prompts/country-leader.ts` - 25 country-specific leader prompts
+- `src/agents/prompts/advisor.ts` - 6 advisor role prompts
+- `src/agents/countryAgent.ts` - Country AI with parallel intent generation
+- `src/agents/advisorAgent.ts` - Advisor chat with session management
+- `src/agents/fallback.ts` - Heuristic fallback AI
+- `tests/agents/agents.spec.ts` - 14 agent tests
+
+**Tests:** 108/108 passed | **Lint:** ✅ | **Build:** ✅
+- All agents have fallback behavior when LLM fails
+- Mock client enables testing without API keys
+
+**Notes:**
+- LLM clients support OpenAI and Ollama APIs
+- Fallback AI uses priority-based decision making
+- Advisor sessions persist conversation history
+
+---

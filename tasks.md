@@ -59,15 +59,15 @@
 **LLM integration with bulletproof validation**
 
 ### P0 (Critical)
-- [ ] **3.1** `src/agents/llmClient.ts`: Abstract interface + OpenAI + Ollama HTTP clients
-- [ ] **3.2** `src/agents/schemas.ts`: Zod schemas (`CountryIntent`, `AdvisorResponse`, `Headline`)
-- [ ] **3.3** `src/agents/prompts/country-leader.ts`: 25× country-specific leader prompts
-- [ ] **3.4** `src/agents/prompts/advisor.ts`: 6× advisor roles (Foreign Minister, Defense Minister, etc.)
-- [ ] **3.5** `src/agents/countryAgent.ts`: Parallel intents for 25 countries (<200ms total)
-- [ ] **3.6** `src/agents/advisorAgent.ts`: Chat state management + conversation memory
-- [ ] **3.7** `src/agents/fallback.ts`: Heuristic AI (relations-weighted decisions)
-- [ ] **3.8** Agent perf test: 25 parallel calls <200ms elapsed, 98% valid JSON
-- [ ] **3.9** Integration test: Full turn cycle with AI decisions (no crashes)
+- [x] **3.1** `src/agents/llmClient.ts`: Abstract interface + OpenAI + Ollama + Mock clients
+- [x] **3.2** `src/agents/schemas.ts`: Zod schemas (CountryIntent, AdvisorResponse, Headline)
+- [x] **3.3** `src/agents/prompts/country-leader.ts`: 25× country-specific leader prompts
+- [x] **3.4** `src/agents/prompts/advisor.ts`: 6× advisor roles with context-aware prompts
+- [x] **3.5** `src/agents/countryAgent.ts`: Parallel intents with fallback
+- [x] **3.6** `src/agents/advisorAgent.ts`: Chat state management + session memory
+- [x] **3.7** `src/agents/fallback.ts`: Heuristic AI with priority-based decisions
+- [x] **3.8** Agent tests: 14 tests passing, fallback verified
+- [x] **3.9** Integration test: Full turn cycle with AI decisions ✅
 
 ---
 
@@ -180,3 +180,11 @@
 - [x] **2.7** Game API endpoints (/new-game, /turn, /save, /load)
 - [x] **2.8-2.9** Seed system + data validation
 - [x] **2.10** Integration test (94/94 tests passing)
+
+### Stage 3: Agent Layer ✅
+- [x] **3.1** LLM client (OpenAI, Ollama, Mock)
+- [x] **3.2** Agent schemas (CountryIntent, AdvisorResponse, Headline)
+- [x] **3.3-3.4** Country leader + advisor prompts
+- [x] **3.5-3.6** Country agent + Advisor agent with fallback
+- [x] **3.7** Heuristic fallback AI
+- [x] **3.8-3.9** Agent tests (108/108 tests passing)

@@ -12,3 +12,9 @@ Execute the repo plan end-to-end.
 4) Keep iterating until all P0 tasks are complete and the Definition of Done in SPEC.md is satisfied.
 5) Do not ask me questions unless you are hard blocked. If blocked, make the smallest reasonable assumption consistent with SPEC.md, document it in PROGRESS.md, and continue.
 Start now with the next unchecked task.
+
+
+if pnpm not found
+npm install -g pnpm
+cd your-project/ui
+pnpm dev  # Vite restarts → localhost:5173
