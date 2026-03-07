@@ -255,7 +255,44 @@ LLM returns invalid JSON >5 attempts
 text
 **Output final status + blocker details to PROGRESS.md**
 
-## 📊 PROGRESS Tracking
+## � Bug Iteration Workflow
+
+### When user reports bugs or UX issues:
+1. **Document in TASKS.md** under `## P0 Bugs: Critical Fixes for MVP`
+   - Assign bug ID: `BUG-XXX`
+   - Document root cause analysis
+   - Define acceptance criteria
+   - Categorize: Map & Visualization | Game Flow | Data | Performance
+
+2. **Update SPEC.md** when fixing reveals:
+   - Missing feature specifications
+   - Ambiguous requirements that needed clarification
+   - New features added to make game flow workable
+   - Detailed implementation notes for future reference
+
+3. **Fix → Verify → Commit cycle:**
+   ```
+   1. Implement fix
+   2. Run verification loop (lint, test, build, dev)
+   3. Mark bug as [x] in TASKS.md
+   4. Update SPEC.md if feature was clarified/expanded
+   5. Commit: `fix: <description> (BUG-XXX)`
+   ```
+
+4. **Track in PROGRESS.md:**
+   ```
+   ### BUG-001: Map marker lag
+   - Root cause: DOM markers vs native layers
+   - Fix: Migrated to MapLibre GeoJSON layers
+   - SPEC.md updated: Section 4.2 Map Layers
+   ```
+
+### Bug Priority:
+- **P0 Bugs:** Block MVP release, fix immediately
+- **P1 Bugs:** Annoying but playable, fix after P0
+- **P2 Bugs:** Minor polish, post-MVP
+
+## �📊 PROGRESS Tracking
 
 **PROGRESS.md format:**
 2026-03-07 Session

@@ -280,6 +280,79 @@ text
 3. Economic: GDP heatmap, trade flows
 4. Stability: Stability heatmap (green→red)
 5. Intelligence: Fog of war (player's intel view)
+
+10.1.1 Map Layer Implementation (Technical Requirements)
+text
+CRITICAL: Use MapLibre native GeoJSON layers, NOT DOM markers
+- DOM markers cause lag during pan/zoom (markers don't sync with tiles)
+- GeoJSON source + circle/symbol layers render in WebGL with map tiles
+- All country data rendered as single GeoJSON FeatureCollection
+
+Layer Visualization Details:
+┌─────────────┬──────────────────────────────────────────────────────────┐
+│ Layer       │ Visualization                                            │
+├─────────────┼──────────────────────────────────────────────────────────┤
+│ Political   │ - Circle color = regime type                             │
+│             │   (Democracy=#4CAF50, Autocracy=#F44336, Communist=#E91E63│
+│             │    Monarchy=#9C27B0, Theocracy=#FF9800)                   │
+│             │ - Circle size = relative power (GDP + Military)          │
+│             │ - Label = Country name + regime icon                     │
+├─────────────┼──────────────────────────────────────────────────────────┤
+│ Military    │ - Circle color = military strength gradient (red scale)  │
+│             │ - Circle size = manpower (scaled logarithmically)        │
+│             │ - Label = Troop count (e.g., "1.4M troops")              │
+│             │ - War indicators: pulsing red border for countries at war│
+├─────────────┼──────────────────────────────────────────────────────────┤
+│ Economic    │ - Circle color = GDP gradient (green scale)              │
+│             │ - Circle size = GDP (scaled logarithmically)             │
+│             │ - Label = GDP formatted (e.g., "$25.5T", "$2.1T")        │
+│             │ - Growth indicator: up/down arrow with growth %          │
+├─────────────┼──────────────────────────────────────────────────────────┤
+│ Stability   │ - Circle color = stability gradient (green→yellow→red)   │
+│             │ - Circle size = uniform (stability is internal metric)   │
+│             │ - Label = Stability % (e.g., "75% Stable")               │
+│             │ - Warning icon for stability < 40%                       │
+├─────────────┼──────────────────────────────────────────────────────────┤
+│ Intelligence│ - Circle opacity = player's intel coverage on that nation│
+│             │ - Unknown nations: gray, blurred, "?" label              │
+│             │ - Known nations: full color, detailed info               │
+│             │ - Player's nation: always full visibility, blue highlight│
+└─────────────┴──────────────────────────────────────────────────────────┘
+
+10.1.2 Map Legend (Dynamic)
+text
+Legend panel positioned bottom-right of map, updates on layer switch:
+
+Political Legend:
+  ● Democracy (green)
+  ● Autocracy (red)
+  ● Communist (pink)
+  ● Monarchy (purple)
+  ● Theocracy (orange)
+  ★ Player's Nation (gold border)
+  ⚔ At War (red border)
+  🤝 Allied (green border)
+
+Military Legend:
+  Scale: ○ < 100K │ ◐ 100K-500K │ ● 500K-1M │ ⬤ > 1M troops
+  Color: Light red (weak) → Dark red (superpower)
+
+Economic Legend:
+  Scale: GDP ranges with color gradient
+  $0-1T │ $1-5T │ $5-15T │ $15T+
+  ↑ Growing │ ↓ Declining
+
+Stability Legend:
+  🟢 80-100% Stable
+  🟡 50-79% Moderate
+  🟠 25-49% Unstable
+  🔴 0-24% Critical
+
+Intelligence Legend:
+  ◯ No Intel (0-20%)
+  ◔ Limited (21-50%)
+  ◑ Moderate (51-75%)
+  ● Full Intel (76-100%)
 10.2 Screen States
 text
 - Newspaper Brief (full screen, auto-advance)

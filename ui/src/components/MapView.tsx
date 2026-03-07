@@ -39,6 +39,22 @@ const COUNTRY_CENTERS: Record<string, [number, number]> = {
   PRK: [127.5, 40.3],
 };
 
+// Demo data for opening screen
+const DEMO_COUNTRIES = [
+  { id: 'USA', iso3: 'USA', name: 'United States', regimeType: 'DEMOCRACY', gdp: 25e12, manpower: 1400000, stability: 75 },
+  { id: 'CHN', iso3: 'CHN', name: 'China', regimeType: 'COMMUNIST', gdp: 18e12, manpower: 2000000, stability: 80 },
+  { id: 'RUS', iso3: 'RUS', name: 'Russia', regimeType: 'AUTOCRACY', gdp: 2e12, manpower: 900000, stability: 65 },
+  { id: 'DEU', iso3: 'DEU', name: 'Germany', regimeType: 'DEMOCRACY', gdp: 4e12, manpower: 180000, stability: 85 },
+  { id: 'IND', iso3: 'IND', name: 'India', regimeType: 'DEMOCRACY', gdp: 3.5e12, manpower: 1400000, stability: 70 },
+  { id: 'GBR', iso3: 'GBR', name: 'United Kingdom', regimeType: 'DEMOCRACY', gdp: 3e12, manpower: 150000, stability: 80 },
+  { id: 'FRA', iso3: 'FRA', name: 'France', regimeType: 'DEMOCRACY', gdp: 2.8e12, manpower: 200000, stability: 75 },
+  { id: 'JPN', iso3: 'JPN', name: 'Japan', regimeType: 'DEMOCRACY', gdp: 4.2e12, manpower: 250000, stability: 90 },
+  { id: 'BRA', iso3: 'BRA', name: 'Brazil', regimeType: 'DEMOCRACY', gdp: 2e12, manpower: 360000, stability: 60 },
+  { id: 'SAU', iso3: 'SAU', name: 'Saudi Arabia', regimeType: 'MONARCHY', gdp: 1e12, manpower: 250000, stability: 75 },
+  { id: 'IRN', iso3: 'IRN', name: 'Iran', regimeType: 'THEOCRACY', gdp: 0.4e12, manpower: 600000, stability: 55 },
+  { id: 'PRK', iso3: 'PRK', name: 'North Korea', regimeType: 'AUTOCRACY', gdp: 0.03e12, manpower: 1200000, stability: 70 },
+];
+
 export function MapView() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
@@ -87,20 +103,24 @@ export function MapView() {
   }, []);
 
   useEffect(() => {
-    if (!map.current || !worldState) return;
+    if (!map.current) return;
 
     markers.current.forEach((m) => m.remove());
     markers.current = [];
 
-    const playerCountry = worldState.countries.find(
-      (c) => c.id === worldState.playerCountryId
+    // Use real game data if available, otherwise show demo markers
+    const countries = worldState?.countries ?? DEMO_COUNTRIES;
+    const isDemo = !worldState;
+
+    const playerCountry = worldState?.countries.find(
+      (c) => c.id === worldState?.playerCountryId
     );
 
-    for (const country of worldState.countries) {
+    for (const country of countries) {
       const center = COUNTRY_CENTERS[country.id];
       if (!center) continue;
 
-      const isPlayer = country.id === worldState.playerCountryId;
+      const isPlayer = !isDemo && country.id === worldState?.playerCountryId;
       const isSelected = country.id === selectedCountryId;
       const isAlly = playerCountry?.alliances.includes(country.id);
       const isAtWar = playerCountry?.atWarWith.includes(country.id);
@@ -147,7 +167,9 @@ export function MapView() {
         transition: transform 0.2s;
       `;
       el.textContent = country.iso3;
-      el.title = `${country.name}\nStability: ${country.stability}%\nRelation: ${relation}`;
+      el.title = isDemo 
+        ? `${country.name}\nStability: ${country.stability}%\n(Demo - Start a game to play)`
+        : `${country.name}\nStability: ${country.stability}%\nRelation: ${relation}`;
 
       el.addEventListener('click', () => {
         selectCountry(country.id === selectedCountryId ? null : country.id);
@@ -175,6 +197,9 @@ export function MapView() {
 
       <div className="map-controls">
         <div className="layer-selector">
+          <div className="layer-info" title="Map Layers: Change how countries are colored on the map. Political shows regime types, Military shows army strength, Economic shows GDP, Stability shows internal stability, Intelligence shows your intel coverage. Start a game to see the effects.">
+            <span className="info-icon">ⓘ</span>
+          </div>
           {(['political', 'military', 'economic', 'stability', 'intelligence'] as const).map(
             (layer) => (
               <button

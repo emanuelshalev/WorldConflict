@@ -139,6 +139,39 @@
 
 ---
 
+## P0 Bugs: Critical Fixes for MVP
+
+### Map & Visualization
+- [ ] **BUG-001** Map markers lag behind when panning/zooming (DOM markers don't sync with map tiles)
+  - **Root cause:** Using HTML DOM elements as markers instead of native MapLibre layers
+  - **Fix:** Replace DOM markers with MapLibre GeoJSON source + circle/symbol layers
+  - **Acceptance:** Markers stay perfectly positioned during all map interactions
+
+- [ ] **BUG-002** Map layers show only dots with country initials, no meaningful data visualization
+  - **Current:** Simple colored circles with ISO3 text
+  - **Required:** 
+    - Political: Flag icons or regime type icons
+    - Military: Army strength bars/icons with troop counts
+    - Economic: GDP indicators with currency formatting
+    - Stability: Stability meters/gauges
+    - Intelligence: Fog of war effect, intel coverage indicators
+  - **Acceptance:** Each layer shows distinct, informative visualization
+
+- [ ] **BUG-003** No map legend explaining layer colors and symbols
+  - **Required:** Dynamic legend panel that updates based on selected layer
+  - **Content per layer:**
+    - Political: Regime type color key (Democracy=green, Autocracy=red, etc.)
+    - Military: Strength scale (low/medium/high/superpower)
+    - Economic: GDP ranges with color gradient
+    - Stability: Stability percentage ranges
+    - Intelligence: Intel coverage levels
+  - **Acceptance:** Legend visible on map, updates on layer switch
+
+### Game Flow
+- [ ] **BUG-004** (placeholder for future bugs)
+
+---
+
 ## P1: Post-MVP Polish (After Stage 8)
 ### Quality of Life
 - [ ] Keyboard shortcuts (map pan/zoom, menu navigation, turn advance)
