@@ -2,6 +2,7 @@ import { useEffect, useRef, useCallback } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useGameStore } from '../store/gameStore';
+import { getStabilityLevel, getStabilityLabel, getInsurgencyIcon, getFogOpacity } from '../utils/gameHelpers';
 
 const REGIME_COLORS: Record<string, string> = {
   DEMOCRACY: '#4CAF50',
@@ -65,7 +66,7 @@ function formatNumber(num: number): string {
 }
 
 // Get color based on layer type
-function getLayerColor(country: typeof DEMO_COUNTRIES[0], layer: string, isPlayer: boolean): string {
+function getLayerColor(country: typeof DEMO_COUNTRIES[0], layer: string, isPlayer: boolean, intelLevel?: number): string {
   switch (layer) {
     case 'military': {
       const strength = Math.min(100, (country.manpower / 2000000) * 100);
@@ -80,7 +81,9 @@ function getLayerColor(country: typeof DEMO_COUNTRIES[0], layer: string, isPlaye
       return `hsl(${Math.round(hue)}, 70%, 45%)`;
     }
     case 'intelligence': {
-      return isPlayer ? '#2196F3' : 'rgba(100, 100, 100, 0.6)';
+      // Fog-of-information: opacity based on intel level
+      const opacity = isPlayer ? 1.0 : getFogOpacity(intelLevel ?? 50, isPlayer);
+      return isPlayer ? '#2196F3' : `rgba(100, 100, 100, ${opacity})`;
     }
     default: // political
       return REGIME_COLORS[country.regimeType] || '#607D8B';
@@ -106,6 +109,72 @@ function getLayerLabel(country: typeof DEMO_COUNTRIES[0], layer: string): string
 // Store country data for tooltip lookup (GeoJSON serializes properties)
 const countryDataMap = new Map<string, typeof DEMO_COUNTRIES[0]>();
 
+// Build GeoJSON for alliance and war connection lines
+function buildConnectionLines(countries: any[], _playerCountryId?: string): GeoJSON.FeatureCollection {
+  const features: GeoJSON.Feature[] = [];
+  const processedPairs = new Set<string>();
+
+  for (const country of countries) {
+    const countryCenter = COUNTRY_CENTERS[country.id];
+    if (!countryCenter) continue;
+
+    // Alliance lines (green)
+    if (country.alliances) {
+      for (const allyId of country.alliances) {
+        const pairKey = [country.id, allyId].sort().join('-');
+        if (processedPairs.has(pairKey)) continue;
+        processedPairs.add(pairKey);
+
+        const allyCenter = COUNTRY_CENTERS[allyId];
+        if (!allyCenter) continue;
+
+        features.push({
+          type: 'Feature',
+          geometry: {
+            type: 'LineString',
+            coordinates: [countryCenter, allyCenter],
+          },
+          properties: {
+            type: 'alliance',
+            color: '#4caf50',
+            width: 2,
+          },
+        });
+      }
+    }
+
+    // War lines (red)
+    if (country.atWarWith) {
+      for (const enemyId of country.atWarWith) {
+        const pairKey = [country.id, enemyId].sort().join('-');
+        if (processedPairs.has(pairKey)) continue;
+        processedPairs.add(pairKey);
+
+        const enemyCenter = COUNTRY_CENTERS[enemyId];
+        if (!enemyCenter) continue;
+
+        features.push({
+          type: 'Feature',
+          geometry: {
+            type: 'LineString',
+            coordinates: [countryCenter, enemyCenter],
+          },
+          properties: {
+            type: 'war',
+            color: '#f44336',
+            width: 3,
+          },
+        });
+      }
+    }
+  }
+
+  return {
+    type: 'FeatureCollection',
+    features,
+  };
+}
+
 export function MapView() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
@@ -118,11 +187,19 @@ export function MapView() {
   // Keep ref in sync for use in event handlers
   isDemoRef.current = !worldState;
 
+  // Build GeoJSON for connection lines (alliances and wars)
+  const buildConnectionGeoJSON = useCallback(() => {
+    const countries = worldState?.countries ?? [];
+    return buildConnectionLines(countries, worldState?.playerCountryId);
+  }, [worldState]);
+
   // Build GeoJSON from country data
   const buildGeoJSON = useCallback(() => {
     const countries = worldState?.countries ?? DEMO_COUNTRIES;
     const isDemo = !worldState;
     const playerCountryId = worldState?.playerCountryId;
+    const playerCountry = countries.find(c => c.id === playerCountryId);
+    const playerIntelLevel = (playerCountry as any)?.intelLevel ?? 50;
 
     // Clear and rebuild lookup map for tooltips
     countryDataMap.clear();
@@ -135,7 +212,7 @@ export function MapView() {
       countryDataMap.set(country.id, country as typeof DEMO_COUNTRIES[0]);
 
       const isPlayer = !isDemo && country.id === playerCountryId;
-      const color = getLayerColor(country, mapLayer, isPlayer);
+      const color = getLayerColor(country, mapLayer, isPlayer, playerIntelLevel);
       const label = getLayerLabel(country, mapLayer);
       
       // Calculate circle size based on layer
@@ -220,6 +297,39 @@ export function MapView() {
     map.current.on('load', () => {
       mapLoaded.current = true;
       
+      // Add GeoJSON source for connection lines (alliances and wars)
+      map.current!.addSource('connections', {
+        type: 'geojson',
+        data: buildConnectionGeoJSON(),
+      });
+
+      // Add alliance lines layer (green, dashed)
+      map.current!.addLayer({
+        id: 'alliance-lines',
+        type: 'line',
+        source: 'connections',
+        filter: ['==', ['get', 'type'], 'alliance'],
+        paint: {
+          'line-color': '#4caf50',
+          'line-width': 2,
+          'line-dasharray': [4, 2],
+          'line-opacity': 0.7,
+        },
+      });
+
+      // Add war lines layer (red, solid, animated)
+      map.current!.addLayer({
+        id: 'war-lines',
+        type: 'line',
+        source: 'connections',
+        filter: ['==', ['get', 'type'], 'war'],
+        paint: {
+          'line-color': '#f44336',
+          'line-width': 3,
+          'line-opacity': 0.9,
+        },
+      });
+
       // Add GeoJSON source
       map.current!.addSource('countries', {
         type: 'geojson',
@@ -289,12 +399,20 @@ export function MapView() {
           const countryData = countryDataMap.get(countryId);
           
           if (countryData) {
+            const stabilityLevel = getStabilityLevel(countryData.stability);
+            const stabilityLabel = getStabilityLabel(stabilityLevel);
+            const insurgencyIcon = getInsurgencyIcon((countryData as any).insurgencyLevel ?? 'NONE');
+            const atWar = (countryData as any).atWarWith?.length > 0;
+            const allianceCount = (countryData as any).alliances?.length ?? 0;
+            
             const tooltipHtml = `
               <div style="padding: 8px; font-family: sans-serif; font-size: 13px; color: #333;">
                 <div style="font-weight: bold; font-size: 14px; margin-bottom: 6px;">${countryData.name}</div>
-                <div>Stability: ${countryData.stability}%</div>
+                <div>Stability: ${stabilityLabel} (${countryData.stability}%) ${insurgencyIcon}</div>
                 <div>GDP: ${formatNumber(countryData.gdp)}</div>
                 <div>Military: ${formatNumber(countryData.manpower)}</div>
+                ${atWar ? '<div style="color: #f44336;">⚔️ AT WAR</div>' : ''}
+                ${allianceCount > 0 ? `<div style="color: #4caf50;">🤝 ${allianceCount} Alliance${allianceCount > 1 ? 's' : ''}</div>` : ''}
                 ${isDemoRef.current ? '<div style="font-style: italic; margin-top: 4px; color: #666;">(Demo - Start a game)</div>' : ''}
               </div>
             `;
@@ -322,6 +440,13 @@ export function MapView() {
   useEffect(() => {
     if (!map.current || !mapLoaded.current) return;
 
+    // Update connection lines (alliances and wars)
+    const connectionsSource = map.current.getSource('connections') as maplibregl.GeoJSONSource;
+    if (connectionsSource) {
+      connectionsSource.setData(buildConnectionGeoJSON());
+    }
+
+    // Update country markers
     const source = map.current.getSource('countries') as maplibregl.GeoJSONSource;
     if (source) {
       source.setData(buildGeoJSON());
@@ -342,7 +467,7 @@ export function MapView() {
         'rgba(0,0,0,0.3)'
       ]);
     }
-  }, [worldState, selectedCountryId, mapLayer, buildGeoJSON]);
+  }, [worldState, selectedCountryId, mapLayer, buildGeoJSON, buildConnectionGeoJSON]);
 
   return (
     <div className="map-container">
