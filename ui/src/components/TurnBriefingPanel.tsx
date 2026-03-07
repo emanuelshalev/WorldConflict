@@ -193,19 +193,48 @@ export function TurnBriefingPanel() {
       });
     }
 
-    // Add dynamic actions based on current state
+    // Generate dynamic actions based on turn number and game state
+    // Use turn number to rotate through different countries and action types
+    const turn = worldState.turn;
     
-    // Improve relations with a random country we're not allied with
-    const nonAlliedCountries = worldState.countries
-      .filter(c => c.id !== playerCountry.id && !playerCountry.alliances.includes(c.id) && !playerCountry.atWarWith.includes(c.id))
-      .sort((a, b) => (playerCountry.relations[b.id] || 0) - (playerCountry.relations[a.id] || 0))
-      .slice(0, 2);
+    // Get all countries sorted by different criteria based on turn
+    const otherCountries = worldState.countries.filter(c => c.id !== playerCountry.id);
     
-    for (const country of nonAlliedCountries) {
+    // Rotate through different diplomatic targets each turn
+    const diplomaticTargets = otherCountries
+      .filter(c => !playerCountry.alliances.includes(c.id) && !playerCountry.atWarWith.includes(c.id))
+      .sort((a, b) => {
+        // Different sorting each turn to show different countries
+        const turnMod = turn % 4;
+        if (turnMod === 0) return (playerCountry.relations[b.id] || 0) - (playerCountry.relations[a.id] || 0); // Best relations first
+        if (turnMod === 1) return (playerCountry.relations[a.id] || 0) - (playerCountry.relations[b.id] || 0); // Worst relations first
+        if (turnMod === 2) return b.gdp - a.gdp; // Richest first
+        return a.stability - b.stability; // Most unstable first
+      });
+
+    // Pick different countries based on turn
+    const startIndex = (turn - 1) % Math.max(1, diplomaticTargets.length - 2);
+    const selectedTargets = diplomaticTargets.slice(startIndex, startIndex + 2);
+
+    // Diplomatic actions - rotate type based on turn
+    for (const country of selectedTargets) {
       const relation = playerCountry.relations[country.id] || 0;
-      if (relation < 60) {
+      
+      if (relation >= 60 && !playerCountry.alliances.includes(country.id)) {
+        // Can propose alliance
         newSuggestions.push({
-          id: `improve-${country.id}`,
+          id: `ally-${country.id}-t${turn}`,
+          type: 'DIPLOMACY_PROPOSE_ALLIANCE',
+          targetCountryId: country.id,
+          label: `Propose Alliance with ${country.name}`,
+          description: `Relations: ${relation}. They are likely to accept.`,
+          icon: '🤝',
+          risk: 'low',
+        });
+      } else if (relation < 60 && relation > -50) {
+        // Improve relations
+        newSuggestions.push({
+          id: `improve-${country.id}-t${turn}`,
           type: 'DIPLOMACY_IMPROVE_RELATIONS',
           targetCountryId: country.id,
           label: `Improve Relations with ${country.name}`,
@@ -213,25 +242,83 @@ export function TurnBriefingPanel() {
           icon: '🕊️',
           risk: 'low',
         });
+      } else if (relation <= -50) {
+        // Denounce hostile nation
+        newSuggestions.push({
+          id: `denounce-${country.id}-t${turn}`,
+          type: 'DIPLOMACY_DENOUNCE',
+          targetCountryId: country.id,
+          label: `Denounce ${country.name}`,
+          description: `Relations: ${relation}. Rally domestic support against them.`,
+          icon: '📢',
+          risk: 'medium',
+        });
       }
     }
 
-    // Domestic reform option (always available)
-    newSuggestions.push({
-      id: 'reform',
-      type: 'DOMESTIC_REFORM',
-      label: 'Implement Reforms',
-      description: `Boost stability (${playerCountry.stability}%) and legitimacy`,
-      icon: '📜',
-      risk: 'low',
-    });
+    // Military actions - based on turn and state
+    if (turn % 3 === 0 || playerCountry.mobilizationLevel < 30) {
+      newSuggestions.push({
+        id: `mobilize-t${turn}`,
+        type: 'MILITARY_MOBILIZE',
+        label: 'Mobilize Forces',
+        description: `Current mobilization: ${playerCountry.mobilizationLevel}%. Increase military readiness.`,
+        icon: '📯',
+        risk: 'medium',
+      });
+    }
+    
+    if (turn % 3 === 1 && playerCountry.mobilizationLevel > 30) {
+      newSuggestions.push({
+        id: `demobilize-t${turn}`,
+        type: 'MILITARY_DEMOBILIZE',
+        label: 'Demobilize Forces',
+        description: `Current mobilization: ${playerCountry.mobilizationLevel}%. Reduce costs and improve stability.`,
+        icon: '🏠',
+        risk: 'low',
+      });
+    }
+
+    // Domestic actions - alternate between reform and propaganda
+    if (turn % 2 === 1) {
+      newSuggestions.push({
+        id: `reform-t${turn}`,
+        type: 'DOMESTIC_REFORM',
+        label: 'Implement Reforms',
+        description: `Boost stability (${Math.round(playerCountry.stability)}%) and legitimacy (${playerCountry.legitimacy}%)`,
+        icon: '📜',
+        risk: 'low',
+      });
+    } else {
+      newSuggestions.push({
+        id: `propaganda-t${turn}`,
+        type: 'DOMESTIC_PROPAGANDA',
+        label: 'Launch Propaganda Campaign',
+        description: `Boost legitimacy (${playerCountry.legitimacy}%) and public support`,
+        icon: '📺',
+        risk: 'low',
+      });
+    }
+
+    // Economic action on certain turns
+    if (turn % 4 === 0) {
+      const currentBudget = playerCountry.militaryBudgetPercent || 3;
+      newSuggestions.push({
+        id: `budget-t${turn}`,
+        type: 'ECONOMY_ADJUST_MILITARY_BUDGET',
+        label: currentBudget > 5 ? 'Reduce Military Budget' : 'Increase Military Budget',
+        description: `Current: ${currentBudget}% of GDP. ${currentBudget > 5 ? 'Free up resources for growth.' : 'Strengthen defense capabilities.'}`,
+        icon: '💰',
+        risk: 'low',
+      });
+    }
 
     // Always add a "do nothing" option
     newSuggestions.push({
-      id: 'wait',
+      id: `wait-t${turn}`,
       type: 'WAIT',
       label: 'Wait and Observe',
-      description: 'Take no action this turn, monitor the situation',
+      description: `Turn ${turn}: Monitor the situation before acting`,
       icon: '⏳',
       risk: 'low',
     });
