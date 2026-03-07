@@ -50,6 +50,19 @@ export function TurnBriefingPanel() {
 
     const newAlerts: AdvisorAlert[] = [];
     const newSuggestions: SuggestedAction[] = [];
+    
+    // Always add a turn status briefing from Chief of Staff
+    const turnStatus = worldState.turn === 1 
+      ? 'Welcome to your first turn as leader. Review the situation and choose your actions wisely.'
+      : `Turn ${worldState.turn} begins. The date is ${worldState.date}. Global tension stands at ${worldState.globalTension}%.`;
+    
+    newAlerts.push({
+      advisorId: 'CHIEF_OF_STAFF',
+      advisorName: 'Chief of Staff',
+      icon: '⭐',
+      urgency: 'info',
+      message: turnStatus,
+    });
 
     // Check for wars
     if (playerCountry.atWarWith.length > 0) {
@@ -170,6 +183,39 @@ export function TurnBriefingPanel() {
         message: `Global tension is extremely high (${worldState.globalTension}%). World war risk elevated.`,
       });
     }
+
+    // Add dynamic actions based on current state
+    
+    // Improve relations with a random country we're not allied with
+    const nonAlliedCountries = worldState.countries
+      .filter(c => c.id !== playerCountry.id && !playerCountry.alliances.includes(c.id) && !playerCountry.atWarWith.includes(c.id))
+      .sort((a, b) => (playerCountry.relations[b.id] || 0) - (playerCountry.relations[a.id] || 0))
+      .slice(0, 2);
+    
+    for (const country of nonAlliedCountries) {
+      const relation = playerCountry.relations[country.id] || 0;
+      if (relation < 60) {
+        newSuggestions.push({
+          id: `improve-${country.id}`,
+          type: 'DIPLOMACY_IMPROVE_RELATIONS',
+          targetCountryId: country.id,
+          label: `Improve Relations with ${country.name}`,
+          description: `Current relations: ${relation}. Send diplomats to improve ties.`,
+          icon: '🕊️',
+          risk: 'low',
+        });
+      }
+    }
+
+    // Domestic reform option (always available)
+    newSuggestions.push({
+      id: 'reform',
+      type: 'DOMESTIC_REFORM',
+      label: 'Implement Reforms',
+      description: `Boost stability (${playerCountry.stability}%) and legitimacy`,
+      icon: '📜',
+      risk: 'low',
+    });
 
     // Always add a "do nothing" option
     newSuggestions.push({
