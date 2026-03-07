@@ -1313,3 +1313,363 @@ body {
   display: flex;
   justify-content: center;
 }
+
+/* Turn Briefing Panel */
+.turn-briefing-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.briefing-header {
+  background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-card) 100%);
+  padding: 15px;
+  border-bottom: 2px solid var(--primary);
+}
+
+.briefing-header .turn-info {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.briefing-header .turn-info h2 {
+  margin: 0;
+  font-size: 20px;
+  color: var(--primary);
+}
+
+.briefing-header .turn-date {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.briefing-header .country-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.briefing-header .country-name {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.briefing-header .quick-stats {
+  display: flex;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.briefing-header .quick-stats .stat {
+  padding: 2px 8px;
+  background: var(--bg-dark);
+  border-radius: 4px;
+}
+
+.briefing-header .quick-stats .stat.warning {
+  background: rgba(255, 152, 0, 0.2);
+  color: #ff9800;
+}
+
+/* Advisor Alerts */
+.advisor-alerts {
+  padding: 15px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.advisor-alerts h3 {
+  font-size: 14px;
+  margin-bottom: 12px;
+  color: var(--text-secondary);
+}
+
+.alert-card {
+  background: var(--bg-dark);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: all 0.2s;
+}
+
+.alert-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.alert-card.critical {
+  border-left-color: #f44336;
+  background: rgba(244, 67, 54, 0.1);
+}
+
+.alert-card.warning {
+  border-left-color: #ff9800;
+  background: rgba(255, 152, 0, 0.1);
+}
+
+.alert-card.info {
+  border-left-color: #2196f3;
+  background: rgba(33, 150, 243, 0.1);
+}
+
+.alert-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.alert-header .advisor-icon {
+  font-size: 18px;
+}
+
+.alert-header .advisor-name {
+  font-weight: bold;
+  font-size: 13px;
+  flex: 1;
+}
+
+.alert-header .urgency-badge {
+  font-size: 14px;
+}
+
+.alert-message {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+}
+
+.alert-action-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.alert-action-btn:hover {
+  background: var(--primary-dark);
+}
+
+.consult-advisors-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px dashed var(--border-color);
+  color: var(--text-secondary);
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.consult-advisors-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* Suggested Actions */
+.suggested-actions {
+  padding: 15px;
+  flex: 1;
+}
+
+.suggested-actions h3 {
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+}
+
+.suggested-actions .action-hint {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.action-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.action-card {
+  background: var(--bg-dark);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.action-card:hover {
+  border-color: var(--border-color);
+  transform: translateY(-2px);
+}
+
+.action-card.selected {
+  border-color: var(--primary);
+  background: rgba(76, 175, 80, 0.1);
+}
+
+.action-card .action-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.action-card .action-icon {
+  font-size: 20px;
+}
+
+.action-card .risk-indicator {
+  font-size: 12px;
+}
+
+.action-card .action-label {
+  font-weight: bold;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.action-card .action-desc {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.3;
+}
+
+.action-card .selected-indicator {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--primary);
+  color: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* Custom Action Input */
+.custom-action-section {
+  margin-top: 10px;
+}
+
+.custom-action-toggle {
+  width: 100%;
+  background: transparent;
+  border: 1px dashed var(--border-color);
+  color: var(--text-secondary);
+  padding: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.custom-action-toggle:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.custom-action-input textarea {
+  width: 100%;
+  background: var(--bg-dark);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 10px;
+  color: var(--text-primary);
+  font-size: 13px;
+  resize: none;
+  margin-bottom: 10px;
+}
+
+.custom-action-input textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.custom-action-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+/* Selected Actions Summary */
+.selected-actions-summary {
+  background: var(--bg-dark);
+  padding: 12px 15px;
+  border-top: 1px solid var(--border-color);
+}
+
+.selected-actions-summary h4 {
+  font-size: 13px;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+}
+
+.selected-actions-summary ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.selected-actions-summary li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.selected-actions-summary li:last-child {
+  border-bottom: none;
+}
+
+.selected-actions-summary li button {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0 5px;
+}
+
+.selected-actions-summary li button:hover {
+  color: #f44336;
+}
+
+/* Turn Actions Footer */
+.turn-actions {
+  padding: 15px;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-card);
+}
+
+.end-turn-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 16px;
+  padding: 14px 20px;
+}
+
+.end-turn-btn .btn-arrow {
+  font-size: 18px;
+}

@@ -162,7 +162,17 @@
   - **Result:** Legend visible on map, updates automatically when switching layers
 
 ### Game Flow
-- [ ] **BUG-004** (placeholder for future bugs)
+- [x] **BUG-004** No turn briefing, advisor alerts, or action selection UI when game starts
+  - **Root cause:** Sidebar only showed basic stats, no interactive game flow
+  - **Fix:** Created TurnBriefingPanel component with:
+    - Turn header with date and quick stats
+    - Advisor alerts based on game state (wars, stability, diplomacy)
+    - Suggested actions grid with risk indicators
+    - Natural language custom action input option
+    - Selected actions summary before ending turn
+  - **Result:** Player now sees relevant information and can choose actions each turn
+
+- [ ] **BUG-005** (placeholder for future bugs)
 
 ---
 
