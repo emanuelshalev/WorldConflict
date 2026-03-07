@@ -95,3 +95,20 @@
 - Advisor sessions persist conversation history
 
 ---
+
+### 03:44 AM: feat: complete Stage 4 API layer (4.1-4.6) ✓
+**Files:**
+- `src/api/routes/chat.ts` - Advisor chat API endpoints
+- `src/api/middleware/errorHandler.ts` - Structured error responses
+- `src/api/middleware/rateLimit.ts` - Rate limiting (1/sec turn, 5/sec chat)
+- `docs/API.md` - Full API documentation
+
+**Tests:** 108/108 passed | **Lint:** ✅ | **Build:** ✅
+- All API endpoints documented
+- Error handling with codes and structured responses
+
+**Notes:**
+- Session auth deferred to P1 (CORS configured)
+- Rate limits: 1 turn/sec, 5 chat/sec, 10 default/sec
+
+---

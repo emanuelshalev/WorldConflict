@@ -1,10 +1,16 @@
 import cors from "@fastify/cors";
 import Fastify from "fastify";
+import { setupErrorHandler } from "./middleware/errorHandler.js";
+import { setupRateLimit } from "./middleware/rateLimit.js";
+import { chatRoutes } from "./routes/chat.js";
 import { gameRoutes } from "./routes/game.js";
 
 const server = Fastify({
   logger: true,
 });
+
+setupErrorHandler(server);
+setupRateLimit(server);
 
 await server.register(cors, {
   origin: ["http://localhost:3000", "http://localhost:5173"],
@@ -20,6 +26,7 @@ server.get("/health", async (_request, _reply) => {
 });
 
 await server.register(gameRoutes, { prefix: "/api" });
+await server.register(chatRoutes, { prefix: "/api/chat" });
 
 const start = async (): Promise<void> => {
   try {
