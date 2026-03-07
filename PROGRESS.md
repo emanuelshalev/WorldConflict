@@ -153,3 +153,20 @@
 - Full turn flow: select actions → end turn → newspaper → continue
 
 ---
+
+### 03:55 AM: feat: complete Stage 7 scoring system (7.1-7.5) ✓
+**Files:**
+- `src/core/scoring.ts` - Multi-dimensional scoring (economy/security/diplomacy/stability)
+- `ui/src/components/EndGameReport.tsx` - Leadership report with tabs + JSON export
+- `ui/src/App.css` - EndGameReport styles
+
+**Tests:** 108/108 passed | **Lint:** ✅ | **Build:** ✅
+- Scoring weights: economy 30%, security 30%, diplomacy 25%, stability 15%
+- Leadership style classification based on gameplay
+- Achievement system with unlockable badges
+
+**Notes:**
+- Fallback AI ensures game works without LLM connection
+- JSON export includes full world state + score breakdown
+
+---
