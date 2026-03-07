@@ -1,4 +1,4 @@
-import { WorldState, CountryState } from "./types.js";
+import type { CountryState, WorldState } from "./types.js";
 
 export interface ScoreBreakdown {
   economy: number;
@@ -34,8 +34,8 @@ export interface TurnSnapshot {
 }
 
 const WEIGHTS = {
-  economy: 0.30,
-  security: 0.30,
+  economy: 0.3,
+  security: 0.3,
   diplomacy: 0.25,
   stability: 0.15,
 };
@@ -75,7 +75,7 @@ export function calculateSecurityScore(country: CountryState, world: WorldState)
     score += 10;
   }
 
-  const militaryStrength = (country.manpower / 500000) + (country.airpower / 500);
+  const militaryStrength = country.manpower / 500000 + country.airpower / 500;
   score += Math.min(20, militaryStrength);
 
   return Math.max(0, Math.min(100, score));
@@ -108,9 +108,9 @@ export function calculateStabilityScore(country: CountryState): number {
 export function calculateTotalScore(breakdown: ScoreBreakdown): number {
   return Math.round(
     breakdown.economy * WEIGHTS.economy +
-    breakdown.security * WEIGHTS.security +
-    breakdown.diplomacy * WEIGHTS.diplomacy +
-    breakdown.stability * WEIGHTS.stability
+      breakdown.security * WEIGHTS.security +
+      breakdown.diplomacy * WEIGHTS.diplomacy +
+      breakdown.stability * WEIGHTS.stability,
   );
 }
 
@@ -127,7 +127,7 @@ export function getScoreRank(score: number): string {
 export function determineLeadershipStyle(
   breakdown: ScoreBreakdown,
   country: CountryState,
-  world: WorldState
+  world: WorldState,
 ): LeadershipStyle {
   const styles: Array<{ name: string; score: number; description: string }> = [];
 
@@ -189,7 +189,10 @@ export function determineLeadershipStyle(
 
   styles.sort((a, b) => b.score - a.score);
 
-  const primary = styles[0] || { name: "Balanced Leader", description: "Maintained equilibrium across all domains" };
+  const primary = styles[0] || {
+    name: "Balanced Leader",
+    description: "Maintained equilibrium across all domains",
+  };
   const secondary = styles[1] || { name: "Pragmatist", description: "Adapted to circumstances" };
 
   return {
@@ -202,7 +205,7 @@ export function determineLeadershipStyle(
 export function generateAchievements(
   country: CountryState,
   world: WorldState,
-  initialState: CountryState
+  initialState: CountryState,
 ): string[] {
   const achievements: string[] = [];
 
@@ -246,7 +249,7 @@ export function generateAchievements(
 export function calculateGameScore(
   world: WorldState,
   initialCountryState: CountryState,
-  turnSnapshots: TurnSnapshot[]
+  turnSnapshots: TurnSnapshot[],
 ): GameScore {
   const playerCountry = world.countries.find((c) => c.id === world.playerCountryId);
 
