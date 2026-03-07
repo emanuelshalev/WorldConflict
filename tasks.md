@@ -2,7 +2,19 @@
 
 > **Rules:** Work **top-to-bottom**. Complete **ALL P0 tasks** in a stage before next stage. One task at a time. Mark `[x]`. Move to **COMPLETED**. Follow `AGENTS_PLAN.md` verification protocol.
 
-**Total P0: 61 tasks | Est: 17-19 days | MVP Target: 3 weeks**
+## Priority Legend
+- **[P0]** = Critical for MVP - must complete
+- **[P1]** = Important enhancement - complete if time permits
+- **[P2]** = Nice to have - defer to post-MVP
+
+## Task Summary (Stages 9-15)
+| Priority | Count | Description |
+|----------|-------|-------------|
+| **P0**   | 35    | Core gameplay, essential systems |
+| **P1**   | 28    | Enhanced features, polish |
+| **P2**   | 14    | Advanced features, stretch goals |
+
+**Stages 0-8 P0: 61 tasks (COMPLETED) | Stages 9-15 P0: 35 tasks | Est: ~12 days**
 
 ---
 
@@ -106,10 +118,10 @@
 - [x] **6.2** `ActionMenu.tsx`: Tabbed (Diplomacy | Military | Economy | Domestic) + action forms
 - [x] **6.3** `AdvisorModal.tsx`: Split-screen chat + role selector (completed in Stage 5)
 - [x] **6.4** Turn resolution: Newspaper shows after turn execution
-- [ ] **6.5** `LeadershipBackstory.tsx`: LLM-generated intro narrative (P1)
+- [ ] **6.5** [P1] `LeadershipBackstory.tsx`: LLM-generated intro narrative
 - [x] **6.6** Loading states: Spinners + loading overlay implemented
 - [x] **6.7** Error states: Error toast + modal error messages
-- [ ] **6.8** E2E test: Full gameplay loop (P1)
+- [ ] **6.8** [P1] E2E test: Full gameplay loop
 
 ---
 
@@ -131,11 +143,11 @@
 ### P0 (Critical)
 - [x] **8.1** Unit tests: 108 tests passing across 8 test files
 - [x] **8.2** Integration tests: Turn execution + AI fallback modes verified
-- [ ] **8.3** Playwright E2E: Deferred to P1
+- [ ] **8.3** [P1] Playwright E2E: Deferred to P1
 - [x] **8.4** Performance: Fallback AI ensures <200ms turns
 - [x] **8.5** Documentation: PROGRESS.md tracks all changes
-- [ ] **8.6** Docker: Deferred to P1
-- [ ] **8.7** PWA manifest: Deferred to P1
+- [ ] **8.6** [P2] Docker: Deferred to P2
+- [ ] **8.7** [P2] PWA manifest: Deferred to P2
 
 ---
 
@@ -190,7 +202,7 @@
     - "More Headlines" navigation
   - **Result:** Newspaper now looks authentic with rich content
 
-- [ ] **BUG-008** (placeholder for future bugs)
+- [ ] **BUG-008** [P0] (placeholder for future bugs)
 
 ---
 
@@ -199,24 +211,24 @@
 *Reference: spec.md Section 9 - Player Engagement & Feedback Systems*
 
 ### 9A: Turn Flow Restructure (2 days)
-- [ ] **9.1** Opening splash screen: "Sweet Bird of Truth" poem with fade to title
-- [ ] **9.2** Flip newspaper flow: Show at turn START (events from last turn) instead of end
-- [ ] **9.3** Phase indicator bar: Visual stepper (News → Briefing → Diplomacy → Military → Domestic → Confirm)
-- [ ] **9.4** Phase-based UI panels: Each phase shows relevant info + available actions
-- [ ] **9.5** Linear phase progression: Cannot go back once advanced (like original Conflict)
+- [ ] **9.1** [P0] Opening splash screen: "Sweet Bird of Truth" poem with fade to title
+- [ ] **9.2** [P0] Flip newspaper flow: Show at turn START (events from last turn) instead of end
+- [ ] **9.3** [P0] Phase indicator bar: Visual stepper (News → Briefing → Diplomacy → Military → Domestic → Confirm)
+- [ ] **9.4** [P0] Phase-based UI panels: Each phase shows relevant info + available actions
+- [ ] **9.5** [P1] Linear phase progression: Cannot go back once advanced (like original Conflict)
 
 ### 9B: Annual Events (1 day)
-- [ ] **9.6** Annual Summit UI: Special screen every 12 turns (July)
-- [ ] **9.7** Budget review: Adjust defense budget as % of GDP
-- [ ] **9.8** US Aid allocation: Based on relationship and human rights record
-- [ ] **9.9** UN embargo reviews: Nuclear/Palestinian issues resolution
+- [ ] **9.6** [P1] Annual Summit UI: Special screen every 12 turns (July)
+- [ ] **9.7** [P1] Budget review: Adjust defense budget as % of GDP
+- [ ] **9.8** [P2] US Aid allocation: Based on relationship and human rights record
+- [ ] **9.9** [P2] UN embargo reviews: Nuclear/Palestinian issues resolution
 
 ### 9C: Consequence & Feedback Systems (3 days)
-- [ ] **9.10** Action consequence preview modal: Show diplomatic/economic/military effects BEFORE confirming
-- [ ] **9.11** Post-action feedback modal: Show cascading effects after turn resolution
-- [ ] **9.12** Event response dialogs: Major crises require player choice (not just notifications)
-- [ ] **9.13** War progress bar: Tug-of-war indicator showing territorial control and casualties
-- [ ] **9.14** Advisor bias system: Each advisor has institutional lens affecting recommendations
+- [ ] **9.10** [P0] Action consequence preview modal: Show diplomatic/economic/military effects BEFORE confirming
+- [ ] **9.11** [P0] Post-action feedback modal: Show cascading effects after turn resolution
+- [ ] **9.12** [P1] Event response dialogs: Major crises require player choice (not just notifications)
+- [ ] **9.13** [P0] War progress bar: Tug-of-war indicator showing territorial control and casualties
+- [ ] **9.14** [P1] Advisor bias system: Each advisor has institutional lens affecting recommendations
 
 ---
 
@@ -225,23 +237,23 @@
 *Reference: spec.md Section 10 - Historical Realism & Country Behavior*
 
 ### 10A: Enhanced Country Profiles (2 days)
-- [ ] **10.1** Expand CountryState type: Add politicalSystem, history, personality, internalDivisions
-- [ ] **10.2** Update 25 country JSON files with enhanced profiles (politicalSystem, keyEvents, historicalRivals)
-- [ ] **10.3** Add personality traits: warPropensity, allianceLoyalty, diplomaticFlexibility, redLines
-- [ ] **10.4** Add internal divisions: ethnic, religious, ideological factions with tension levels
-- [ ] **10.5** Add leadership style dimensions: hawkish/dovish, reformist/conservative, isolationist/interventionist
+- [ ] **10.1** [P0] Expand CountryState type: Add politicalSystem, history, personality, internalDivisions
+- [ ] **10.2** [P0] Update 25 country JSON files with enhanced profiles (politicalSystem, keyEvents, historicalRivals)
+- [ ] **10.3** [P0] Add personality traits: warPropensity, allianceLoyalty, diplomaticFlexibility, redLines
+- [ ] **10.4** [P1] Add internal divisions: ethnic, religious, ideological factions with tension levels
+- [ ] **10.5** [P1] Add leadership style dimensions: hawkish/dovish, reformist/conservative, isolationist/interventionist
 
 ### 10B: Country-Specific AI Behavior (2 days)
-- [ ] **10.6** Implement personality-based decision formula in countryAgent.ts
-- [ ] **10.7** Add historical pattern modifiers (actions matching history = 1.5x, contradicting = 0.5x)
-- [ ] **10.8** Implement red line triggers: Immediate strong response when crossed
-- [ ] **10.9** Add institutional constraints: Democracies need approval, autocracies fear coups
+- [ ] **10.6** [P0] Implement personality-based decision formula in countryAgent.ts
+- [ ] **10.7** [P1] Add historical pattern modifiers (actions matching history = 1.5x, contradicting = 0.5x)
+- [ ] **10.8** [P1] Implement red line triggers: Immediate strong response when crossed
+- [ ] **10.9** [P1] Add institutional constraints: Democracies need approval, autocracies fear coups
 
 ### 10C: Narrative Generation (1 day)
-- [ ] **10.10** Leadership backstory generator: Rise-to-power narrative + initial faction support
-- [ ] **10.11** Public expectations system: Reformist vs stability mandate affects scoring
-- [ ] **10.12** Historical event templates: Crisis scenarios based on real precedents
-- [ ] **10.13** Country-specific advisor responses: Advisors reflect national perspective
+- [ ] **10.10** [P0] Leadership backstory generator: Rise-to-power narrative + initial faction support
+- [ ] **10.11** [P2] Public expectations system: Reformist vs stability mandate affects scoring
+- [ ] **10.12** [P1] Historical event templates: Crisis scenarios based on real precedents
+- [ ] **10.13** [P1] Country-specific advisor responses: Advisors reflect national perspective
 
 ---
 
@@ -250,24 +262,24 @@
 *Reference: spec.md Sections 8.1, 8.5, 8.6, 8.7*
 
 ### 11A: Diplomatic System Overhaul (2 days)
-- [ ] **11.1** 7-level diplomatic hierarchy: MILITARY_PACT → PROFITABLE → BENEFICIAL → FAVOURABLE → SATISFACTORY → LAMENTABLE → WAR
-- [ ] **11.2** Diplomatic action costs: IMPROVE costs $100M/month from defense budget
-- [ ] **11.3** Diplomatic stances: IMPROVE/MAINTAIN/WORSEN with different costs and effects
-- [ ] **11.4** Alliance mechanics: Mutual defense, intel sharing, procurement discounts, betrayal penalties
+- [ ] **11.1** [P0] 7-level diplomatic hierarchy: MILITARY_PACT → PROFITABLE → BENEFICIAL → FAVOURABLE → SATISFACTORY → LAMENTABLE → WAR
+- [ ] **11.2** [P0] Diplomatic action costs: IMPROVE costs $100M/month from defense budget
+- [ ] **11.3** [P1] Diplomatic stances: IMPROVE/MAINTAIN/WORSEN with different costs and effects
+- [ ] **11.4** [P0] Alliance mechanics: Mutual defense, intel sharing, procurement discounts, betrayal penalties
 
 ### 11B: Intelligence & Covert Operations (2 days)
-- [ ] **11.5** Covert operations: GATHER_INTEL, DESTABILIZE, SUPPORT_REBELS, COUNTER_INTEL, SABOTAGE
-- [ ] **11.6** Information operations: MISINFORMATION, FAKE_BUILDUP, PROPAGANDA
-- [ ] **11.7** Belief state mechanics: Outdated, incomplete, incorrect information
-- [ ] **11.8** Public leaks/whistleblower events: Random reveals of hidden information
-- [ ] **11.9** Operation success formula: Based on intel level vs target counter-intel
-- [ ] **11.10** Failure consequences: Exposed operations cause diplomatic incidents
-- [ ] **11.11** Assassination/Coup mechanics: Available when target is weak or has guerilla insurgency
+- [ ] **11.5** [P0] Covert operations: GATHER_INTEL, DESTABILIZE, SUPPORT_REBELS, COUNTER_INTEL, SABOTAGE
+- [ ] **11.6** [P1] Information operations: MISINFORMATION, FAKE_BUILDUP, PROPAGANDA
+- [ ] **11.7** [P1] Belief state mechanics: Outdated, incomplete, incorrect information
+- [ ] **11.8** [P2] Public leaks/whistleblower events: Random reveals of hidden information
+- [ ] **11.9** [P0] Operation success formula: Based on intel level vs target counter-intel
+- [ ] **11.10** [P0] Failure consequences: Exposed operations cause diplomatic incidents
+- [ ] **11.11** [P2] Assassination/Coup mechanics: Available when target is weak or has guerilla insurgency
 
 ### 11C: Internal Affairs & Insurgency (1 day)
-- [ ] **11.12** Insurgency levels: NONE → UNREST → REBELLION → GUERILLA with stability costs
-- [ ] **11.13** Policing tactics: SOFT (slow, no backlash) vs HARD (fast, international outcry)
-- [ ] **11.14** Internal challenges: Separatists, protests, opposition, corruption, military discontent
+- [ ] **11.12** [P0] Insurgency levels: NONE → UNREST → REBELLION → GUERILLA with stability costs
+- [ ] **11.13** [P0] Policing tactics: SOFT (slow, no backlash) vs HARD (fast, international outcry)
+- [ ] **11.14** [P1] Internal challenges: Separatists, protests, opposition, corruption, military discontent
 
 ---
 
@@ -276,25 +288,25 @@
 *Reference: spec.md Sections 8.7, 8.8*
 
 ### 12A: Military Operations (2 days)
-- [ ] **12.1** Defense budget as hostility indicator: Peace ~$100M, War $300M+
-- [ ] **12.2** Auto-budget increase on neighbor aggression
-- [ ] **12.3** Pre-war precision airstrikes: MILITARY, CIVILIAN, INDUSTRIAL, NUCLEAR targets
-- [ ] **12.4** Border troop deployment: Specific borders, degrades relations
-- [ ] **12.5** Unit types: TANKS, HELICOPTERS, SAMs, FIGHTERS, INFANTRY with costs
-- [ ] **12.6** Rock-paper-scissors combat resolution
+- [ ] **12.1** [P1] Defense budget as hostility indicator: Peace ~$100M, War $300M+
+- [ ] **12.2** [P2] Auto-budget increase on neighbor aggression
+- [ ] **12.3** [P0] Pre-war precision airstrikes: MILITARY, CIVILIAN, INDUSTRIAL, NUCLEAR targets
+- [ ] **12.4** [P0] Border troop deployment: Specific borders, degrades relations
+- [ ] **12.5** [P0] Unit types: TANKS, HELICOPTERS, SAMs, FIGHTERS, INFANTRY with costs
+- [ ] **12.6** [P0] Rock-paper-scissors combat resolution
 
 ### 12B: Arms Supplier System (1 day)
-- [ ] **12.7** Supplier entities: USA, UK, France, Russia, Private Dealer with characteristics
-- [ ] **12.8** Supplier requirements: Relationship thresholds, human rights sensitivity
-- [ ] **12.9** Embargo mechanics: Actions trigger supplier lockouts
-- [ ] **12.10** Supplier loyalty: Consistent purchasing unlocks better equipment tiers
+- [ ] **12.7** [P0] Supplier entities: USA, UK, France, Russia, Private Dealer with characteristics
+- [ ] **12.8** [P0] Supplier requirements: Relationship thresholds, human rights sensitivity
+- [ ] **12.9** [P1] Embargo mechanics: Actions trigger supplier lockouts
+- [ ] **12.10** [P2] Supplier loyalty: Consistent purchasing unlocks better equipment tiers
 
 ### 12C: Nuclear System (Phase 2) (1 day)
-- [ ] **12.11** Nuclear program stages: NONE → LATENT → DEVELOPING → ARMED
-- [ ] **12.12** Two-Strike Rule: Cripple facility with two consecutive successful strikes
-- [ ] **12.13** "Attack Means Disaster" state: MAD when all parties have nukes
-- [ ] **12.14** Nuclear use consequences: Victory possible but 70% chance of global holocaust
-- [ ] **12.15** Mushroom cloud icon on map after testing
+- [ ] **12.11** [P1] Nuclear program stages: NONE → LATENT → DEVELOPING → ARMED
+- [ ] **12.12** [P1] Two-Strike Rule: Cripple facility with two consecutive successful strikes
+- [ ] **12.13** [P1] "Attack Means Disaster" state: MAD when all parties have nukes
+- [ ] **12.14** [P1] Nuclear use consequences: Victory possible but 70% chance of global holocaust
+- [ ] **12.15** [P2] Mushroom cloud icon on map after testing
 
 ---
 
@@ -303,49 +315,53 @@
 *Reference: spec.md Section 12 - UI/UX Requirements*
 
 ### 13A: Map Overlays (2 days)
-- [ ] **13.1** Map fog-of-information: Unknown regions shaded based on intel level
-- [ ] **13.2** Alliance connection lines: Green links between allied nations
-- [ ] **13.3** War visual indicators: Red pulsing lines between nations at war
-- [ ] **13.4** Border troop indicators: Unit icons near borders with deployment
-- [ ] **13.5** Relationship status text on map: "WAR", "PACT", "TENSE"
-- [ ] **13.6** Nuclear indicators: 🏭 facility, ☢️ mushroom cloud, ⚠️ MAD warning
-- [ ] **13.7** Resources layer (Phase 2): Oil, gas, minerals, infrastructure
+- [ ] **13.1** [P0] Map fog-of-information: Unknown regions shaded based on intel level
+- [ ] **13.2** [P0] Alliance connection lines: Green links between allied nations
+- [ ] **13.3** [P0] War visual indicators: Red pulsing lines between nations at war
+- [ ] **13.4** [P1] Border troop indicators: Unit icons near borders with deployment
+- [ ] **13.5** [P1] Relationship status text on map: "WAR", "PACT", "TENSE"
+- [ ] **13.6** [P1] Nuclear indicators: 🏭 facility, ☢️ mushroom cloud, ⚠️ MAD warning
+- [ ] **13.7** [P2] Resources layer (Phase 2): Oil, gas, minerals, infrastructure
 
 ### 13B: UI Enhancements (1 day)
-- [ ] **13.8** Uncertainty visualization: Confidence intervals for enemy data
-- [ ] **13.9** Insurgency/instability icons: Warning overlays on troubled nations
-- [ ] **13.10** Named stability levels: "Very Solid" → "Collapsing" (not just numbers)
+- [ ] **13.8** [P1] Uncertainty visualization: Confidence intervals for enemy data
+- [ ] **13.9** [P0] Insurgency/instability icons: Warning overlays on troubled nations
+- [ ] **13.10** [P0] Named stability levels: "Very Solid" → "Collapsing" (not just numbers)
+
+---
 
 ## Stage 14: End-Game Report Enhancement (2 days)
 **Comprehensive leadership evaluation and export**
 *Reference: spec.md Section 12.3 - End-Game Report Contents*
 
-- [ ] **14.1** Timeline of major events: Visual timeline with icons
-- [ ] **14.2** Policy summary: High-level domestic/foreign policy direction
-- [ ] **14.3** Score breakdown: 0-200 scale with 4 components (50 each)
-- [ ] **14.4** Historical comparisons: Percentile ranking across playthroughs
-- [ ] **14.5** Charts: Approval, GDP, military expenditure over time
-- [ ] **14.6** HTML export: Formatted report for sharing
-- [ ] **14.7** Narrative history: LLM-generated political biography
+- [ ] **14.1** [P0] Timeline of major events: Visual timeline with icons
+- [ ] **14.2** [P0] Policy summary: High-level domestic/foreign policy direction
+- [ ] **14.3** [P0] Score breakdown: 0-200 scale with 4 components (50 each)
+- [ ] **14.4** [P2] Historical comparisons: Percentile ranking across playthroughs
+- [ ] **14.5** [P1] Charts: Approval, GDP, military expenditure over time
+- [ ] **14.6** [P1] HTML export: Formatted report for sharing
+- [ ] **14.7** [P2] Narrative history: LLM-generated political biography
+
+---
 
 ## Stage 15: Extended Advisor System (2 days)
 **Additional advisors and direct diplomacy**
 *Reference: spec.md Section 9.5 - Advisor System*
 
-- [ ] **15.1** Interior Minister advisor: Internal stability, law enforcement
-- [ ] **15.2** Military Chiefs advisor: Available during war/mobilization
-- [ ] **15.3** Central Bank Governor: Available during economic crises
-- [ ] **15.4** Opposition Leader: Available in democracies
-- [ ] **15.5** Foreign Counterpart: Direct negotiation via diplomatic channels
+- [ ] **15.1** [P1] Interior Minister advisor: Internal stability, law enforcement
+- [ ] **15.2** [P1] Military Chiefs advisor: Available during war/mobilization
+- [ ] **15.3** [P2] Central Bank Governor: Available during economic crises
+- [ ] **15.4** [P2] Opposition Leader: Available in democracies
+- [ ] **15.5** [P1] Foreign Counterpart: Direct negotiation via diplomatic channels
 
 ---
 
 ## P1: Post-MVP Polish (After Stage 15)
 ### Quality of Life
-- [ ] Keyboard shortcuts (map pan/zoom, menu navigation, turn advance)
-- [ ] Settings panel: LLM model selector, animation speed, debug toggles
-- [ ] Data export: Full game JSON for analysis
-- [ ] Analytics: Turn completion stats, most-played scenarios
+- [ ] [P1] Keyboard shortcuts (map pan/zoom, menu navigation, turn advance)
+- [ ] [P1] Settings panel: LLM model selector, animation speed, debug toggles
+- [ ] [P2] Data export: Full game JSON for analysis
+- [ ] [P2] Analytics: Turn completion stats, most-played scenarios
 
 ---
 
