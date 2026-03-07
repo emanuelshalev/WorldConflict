@@ -154,6 +154,9 @@ export async function executeTurn(playerActions: Array<{ type: string; targetCou
       throw new Error(data.error || 'Failed to execute turn');
     }
 
+    console.log('[Turn] Before:', store.worldState?.turn, 'After:', data.worldState.turn);
+    console.log('[Turn] Date:', data.worldState.date, 'Tension:', data.worldState.globalTension);
+    
     store.setWorldState(data.worldState, saveId);
 
     // Always show newspaper after turn ends (even if no major headlines)
