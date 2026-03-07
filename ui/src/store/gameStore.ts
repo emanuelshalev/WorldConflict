@@ -157,7 +157,9 @@ export async function executeTurn(playerActions: Array<{ type: string; targetCou
     console.log('[Turn] Before:', store.worldState?.turn, 'After:', data.worldState.turn);
     console.log('[Turn] Date:', data.worldState.date, 'Tension:', data.worldState.globalTension);
     
-    store.setWorldState(data.worldState, saveId);
+    // Create a new object reference to ensure React detects the change
+    const newWorldState = { ...data.worldState };
+    store.setWorldState(newWorldState, saveId);
 
     // Always show newspaper after turn ends (even if no major headlines)
     store.openModal('newspaper');
