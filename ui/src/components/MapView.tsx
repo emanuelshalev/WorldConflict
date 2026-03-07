@@ -103,13 +103,20 @@ function getLayerLabel(country: typeof DEMO_COUNTRIES[0], layer: string): string
   }
 }
 
+// Store country data for tooltip lookup (GeoJSON serializes properties)
+const countryDataMap = new Map<string, typeof DEMO_COUNTRIES[0]>();
+
 export function MapView() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
   const popup = useRef<maplibregl.Popup | null>(null);
   const mapLoaded = useRef(false);
+  const isDemoRef = useRef(true);
 
   const { worldState, selectedCountryId, selectCountry, mapLayer, debugMode } = useGameStore();
+  
+  // Keep ref in sync for use in event handlers
+  isDemoRef.current = !worldState;
 
   // Build GeoJSON from country data
   const buildGeoJSON = useCallback(() => {
@@ -117,9 +124,15 @@ export function MapView() {
     const isDemo = !worldState;
     const playerCountryId = worldState?.playerCountryId;
 
+    // Clear and rebuild lookup map for tooltips
+    countryDataMap.clear();
+
     const features = countries.map((country) => {
       const center = COUNTRY_CENTERS[country.id];
       if (!center) return null;
+
+      // Store in lookup map for tooltip access
+      countryDataMap.set(country.id, country as typeof DEMO_COUNTRIES[0]);
 
       const isPlayer = !isDemo && country.id === playerCountryId;
       const color = getLayerColor(country, mapLayer, isPlayer);
@@ -271,24 +284,22 @@ export function MapView() {
           const props = e.features[0].properties || {};
           const coords = (e.features[0].geometry as GeoJSON.Point).coordinates.slice() as [number, number];
           
-          // MapLibre serializes properties - parse them back
-          const name = String(props.name || 'Unknown');
-          const stability = Number(props.stability) || 0;
-          const gdp = Number(props.gdp) || 0;
-          const manpower = Number(props.manpower) || 0;
-          const isDemo = props.isDemo === true || props.isDemo === 'true';
+          // Use lookup map instead of serialized GeoJSON properties
+          const countryId = String(props.id || '');
+          const countryData = countryDataMap.get(countryId);
           
-          const tooltipHtml = `
-            <div style="padding: 8px; font-family: sans-serif; font-size: 13px; color: #333;">
-              <div style="font-weight: bold; font-size: 14px; margin-bottom: 6px;">${name}</div>
-              <div>Stability: ${stability}%</div>
-              <div>GDP: ${formatNumber(gdp)}</div>
-              <div>Military: ${formatNumber(manpower)}</div>
-              ${isDemo ? '<div style="font-style: italic; margin-top: 4px; color: #666;">(Demo - Start a game)</div>' : ''}
-            </div>
-          `;
-          
-          popup.current.setLngLat(coords).setHTML(tooltipHtml).addTo(map.current);
+          if (countryData) {
+            const tooltipHtml = `
+              <div style="padding: 8px; font-family: sans-serif; font-size: 13px; color: #333;">
+                <div style="font-weight: bold; font-size: 14px; margin-bottom: 6px;">${countryData.name}</div>
+                <div>Stability: ${countryData.stability}%</div>
+                <div>GDP: ${formatNumber(countryData.gdp)}</div>
+                <div>Military: ${formatNumber(countryData.manpower)}</div>
+                ${isDemoRef.current ? '<div style="font-style: italic; margin-top: 4px; color: #666;">(Demo - Start a game)</div>' : ''}
+              </div>
+            `;
+            popup.current.setLngLat(coords).setHTML(tooltipHtml).addTo(map.current);
+          }
         }
       });
 
