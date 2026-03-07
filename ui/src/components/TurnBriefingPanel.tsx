@@ -44,9 +44,18 @@ export function TurnBriefingPanel() {
     (c) => c.id === worldState?.playerCountryId
   );
 
+  // Key values that should trigger re-generation of alerts
+  const currentTurn = worldState?.turn ?? 0;
+  const currentDate = worldState?.date ?? '';
+  const playerStability = playerCountry?.stability ?? 0;
+  const globalTension = worldState?.globalTension ?? 0;
+  
   // Generate advisor alerts and suggested actions based on game state
   useEffect(() => {
     if (!worldState || !playerCountry) return;
+
+    console.log('[TurnBriefingPanel] Regenerating alerts for turn:', currentTurn, 'date:', currentDate);
+    console.log('[TurnBriefingPanel] Player stability:', playerStability, 'tension:', globalTension);
 
     const newAlerts: AdvisorAlert[] = [];
     const newSuggestions: SuggestedAction[] = [];
@@ -229,7 +238,7 @@ export function TurnBriefingPanel() {
 
     setAlerts(newAlerts);
     setSuggestedActions(newSuggestions);
-  }, [worldState, playerCountry]);
+  }, [worldState, playerCountry, currentTurn, currentDate, playerStability, globalTension]);
 
   const toggleAction = (actionId: string) => {
     setSelectedActions(prev => 
