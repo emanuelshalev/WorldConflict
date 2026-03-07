@@ -29,3 +29,27 @@
 - Frontend runs on port 5173 (Vite default) instead of 3000
 
 ---
+
+### 03:28 AM: feat: complete Stage 1 core simulation engine (1.1-1.11) ✓
+**Files:**
+- `src/core/world.ts` - World class with 25-country initialization
+- `src/core/country.ts` - Country class with state management
+- `src/core/seed.ts` - SeededRandom for deterministic simulation
+- `src/core/events.ts` - EventSystem with random + triggered events
+- `src/core/turn.ts` - TurnEngine with complete lifecycle
+- `src/core/newspaper.ts` - NewspaperGenerator for headlines
+- `src/core/systems/diplomacy.ts` - Relations, alliances, war triggers
+- `src/core/systems/economy.ts` - GDP simulation, military budget
+- `src/core/systems/military.ts` - War resolution, casualties
+- `src/core/systems/stability.ts` - Stability decay/growth, collapse
+- `tests/core/*.spec.ts` - 6 test files
+
+**Tests:** 80/80 passed | **Lint:** ✅ | **Build:** ✅
+- Determinism verified: same seed = identical 24-turn simulation
+- Performance: 24-turn simulation < 200ms
+
+**Notes:**
+- All core systems are pure functions (no LLM/IO dependencies)
+- Turn lifecycle: events → intel → actions → wars → metrics → newspaper → advance
+
+---

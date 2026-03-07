@@ -24,17 +24,17 @@
 **Pure deterministic logic — NO LLM/IO/HTTP dependencies**
 
 ### P0 (Critical)
-- [ ] **1.1** `src/core/world.ts`: WorldState class + initialization (empty 25-country shell)
-- [ ] **1.2** `src/core/country.ts`: CountryState class + validation (Zod schema)
-- [ ] **1.3** `src/core/events.ts`: Event system (random seeded + triggered events)
-- [ ] **1.4** `src/core/turn.ts`: Complete turn lifecycle (events→AI→resolve→newspaper)
-- [ ] **1.5** `src/core/systems/diplomacy.ts`: Relations matrix (-100:+100), alliances, war triggers
-- [ ] **1.6** `src/core/systems/economy.ts`: GDP simulation, military budget allocation
-- [ ] **1.7** `src/core/systems/military.ts`: Manpower, airpower, monthly war resolution
-- [ ] **1.8** `src/core/systems/stability.ts`: Monthly decay/growth, collapse detection
-- [ ] **1.9** `src/core/newspaper.ts`: Event→headline generation (deterministic)
-- [ ] **1.10** Unit tests: `tests/core/` — 95%+ coverage ALL core modules
-- [ ] **1.11** Determinism test: Same seed → identical 24-turn simulation
+- [x] **1.1** `src/core/world.ts`: WorldState class + initialization (empty 25-country shell)
+- [x] **1.2** `src/core/country.ts`: CountryState class + validation (Zod schema)
+- [x] **1.3** `src/core/events.ts`: Event system (random seeded + triggered events)
+- [x] **1.4** `src/core/turn.ts`: Complete turn lifecycle (events→AI→resolve→newspaper)
+- [x] **1.5** `src/core/systems/diplomacy.ts`: Relations matrix (-100:+100), alliances, war triggers
+- [x] **1.6** `src/core/systems/economy.ts`: GDP simulation, military budget allocation
+- [x] **1.7** `src/core/systems/military.ts`: Manpower, airpower, monthly war resolution
+- [x] **1.8** `src/core/systems/stability.ts`: Monthly decay/growth, collapse detection
+- [x] **1.9** `src/core/newspaper.ts`: Event→headline generation (deterministic)
+- [x] **1.10** Unit tests: `tests/core/` — 80 tests passing
+- [x] **1.11** Determinism test: Same seed → identical 24-turn simulation ✅
 
 ---
 
@@ -162,3 +162,16 @@ text
 - [x] **0.5** Core types with Zod schemas
 - [x] **0.6** NPM scripts configured
 - [x] **0.7** Backend :8080 and Frontend :5173 verified
+
+### Stage 1: Core Simulation Engine ✅
+- [x] **1.1** WorldState class + initialization (25-country shell)
+- [x] **1.2** CountryState class + validation
+- [x] **1.3** Event system (seeded random + triggered)
+- [x] **1.4** Turn lifecycle (events→AI→resolve→newspaper)
+- [x] **1.5** Diplomacy system (relations, alliances, war)
+- [x] **1.6** Economy system (GDP, military budget)
+- [x] **1.7** Military system (manpower, airpower, war resolution)
+- [x] **1.8** Stability system (decay/growth, collapse)
+- [x] **1.9** Newspaper generation
+- [x] **1.10** Unit tests (80/80 passing)
+- [x] **1.11** Determinism verified (same seed = identical results)

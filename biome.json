@@ -1,12 +1,12 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.0/schema.json",
-  "organizeImports": {
-    "enabled": true
-  },
+  "$schema": "https://biomejs.dev/schemas/2.0.0/schema.json",
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "complexity": {
+        "noStaticOnlyClass": "off"
+      }
     }
   },
   "formatter": {
@@ -16,6 +16,6 @@
     "lineWidth": 100
   },
   "files": {
-    "ignore": ["node_modules", "dist", "ui/dist"]
+    "includes": ["src/**/*.ts"]
   }
 }

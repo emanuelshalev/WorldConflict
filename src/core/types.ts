@@ -1,34 +1,34 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 // ============================================================================
 // Enums
 // ============================================================================
 
 export const RegimeTypeSchema = z.enum([
-  'DEMOCRACY',
-  'AUTOCRACY',
-  'THEOCRACY',
-  'MILITARY_JUNTA',
-  'COMMUNIST',
-  'MONARCHY',
+  "DEMOCRACY",
+  "AUTOCRACY",
+  "THEOCRACY",
+  "MILITARY_JUNTA",
+  "COMMUNIST",
+  "MONARCHY",
 ]);
 export type RegimeType = z.infer<typeof RegimeTypeSchema>;
 
 export const ActionTypeSchema = z.enum([
-  'DIPLOMACY_IMPROVE_RELATIONS',
-  'DIPLOMACY_DENOUNCE',
-  'DIPLOMACY_PROPOSE_ALLIANCE',
-  'DIPLOMACY_BREAK_ALLIANCE',
-  'DIPLOMACY_DECLARE_WAR',
-  'DIPLOMACY_PROPOSE_CEASEFIRE',
-  'MILITARY_MOBILIZE',
-  'MILITARY_DEMOBILIZE',
-  'MILITARY_PROCURE',
-  'ECONOMY_ADJUST_MILITARY_BUDGET',
-  'INTEL_GATHER',
-  'INTEL_SABOTAGE',
-  'DOMESTIC_PROPAGANDA',
-  'DOMESTIC_REFORM',
+  "DIPLOMACY_IMPROVE_RELATIONS",
+  "DIPLOMACY_DENOUNCE",
+  "DIPLOMACY_PROPOSE_ALLIANCE",
+  "DIPLOMACY_BREAK_ALLIANCE",
+  "DIPLOMACY_DECLARE_WAR",
+  "DIPLOMACY_PROPOSE_CEASEFIRE",
+  "MILITARY_MOBILIZE",
+  "MILITARY_DEMOBILIZE",
+  "MILITARY_PROCURE",
+  "ECONOMY_ADJUST_MILITARY_BUDGET",
+  "INTEL_GATHER",
+  "INTEL_SABOTAGE",
+  "DOMESTIC_PROPAGANDA",
+  "DOMESTIC_REFORM",
 ]);
 export type ActionType = z.infer<typeof ActionTypeSchema>;
 
@@ -38,7 +38,7 @@ export type ActionType = z.infer<typeof ActionTypeSchema>;
 
 export const GoalSchema = z.object({
   id: z.string(),
-  type: z.enum(['TERRITORIAL', 'ECONOMIC', 'IDEOLOGICAL', 'SECURITY', 'PRESTIGE']),
+  type: z.enum(["TERRITORIAL", "ECONOMIC", "IDEOLOGICAL", "SECURITY", "PRESTIGE"]),
   targetCountryId: z.string().optional(),
   priority: z.number().min(0).max(100),
   description: z.string(),
@@ -74,7 +74,7 @@ export type CountryIntent = z.infer<typeof CountryIntentSchema>;
 
 export const EventSchema = z.object({
   id: z.string(),
-  type: z.enum(['RANDOM', 'TRIGGERED', 'WAR', 'DIPLOMACY', 'ECONOMY', 'STABILITY']),
+  type: z.enum(["RANDOM", "TRIGGERED", "WAR", "DIPLOMACY", "ECONOMY", "STABILITY"]),
   title: z.string(),
   description: z.string(),
   affectedCountries: z.array(z.string()),
@@ -201,12 +201,31 @@ export type SaveFile = z.infer<typeof SaveFileSchema>;
 // ============================================================================
 
 export const TIER1_COUNTRIES = [
-  'USA', 'CHN', 'RUS', 'DEU', 'IND', // Global Superpowers
-  'BRA', 'CAN', 'MEX', // Americas
-  'FRA', 'GBR', 'POL', 'TUR', // Europe
-  'SAU', 'IRN', 'ISR', 'EGY', // Middle East
-  'JPN', 'IDN', 'KOR', 'PRK', // Asia-Pacific
-  'AUS', 'PAK', 'NGA', 'ZAF', 'ITA', // Additional Tier 1
+  "USA",
+  "CHN",
+  "RUS",
+  "DEU",
+  "IND", // Global Superpowers
+  "BRA",
+  "CAN",
+  "MEX", // Americas
+  "FRA",
+  "GBR",
+  "POL",
+  "TUR", // Europe
+  "SAU",
+  "IRN",
+  "ISR",
+  "EGY", // Middle East
+  "JPN",
+  "IDN",
+  "KOR",
+  "PRK", // Asia-Pacific
+  "AUS",
+  "PAK",
+  "NGA",
+  "ZAF",
+  "ITA", // Additional Tier 1
 ] as const;
 
 export type Tier1CountryCode = (typeof TIER1_COUNTRIES)[number];
