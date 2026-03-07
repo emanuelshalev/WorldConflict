@@ -271,9 +271,16 @@ export function MapView() {
           const props = e.features[0].properties;
           const coords = (e.features[0].geometry as GeoJSON.Point).coordinates.slice() as [number, number];
           
-          const tooltipContent = props?.isDemo
-            ? `<strong>${props.name}</strong><br/>Stability: ${props.stability}%<br/><em>(Demo - Start a game to play)</em>`
-            : `<strong>${props?.name}</strong><br/>Stability: ${props?.stability}%<br/>GDP: ${formatNumber(props?.gdp)}<br/>Military: ${formatNumber(props?.manpower)}`;
+          // MapLibre serializes properties - parse them back
+          const name = props?.name || 'Unknown';
+          const stability = Number(props?.stability) || 0;
+          const gdp = Number(props?.gdp) || 0;
+          const manpower = Number(props?.manpower) || 0;
+          const isDemo = props?.isDemo === true || props?.isDemo === 'true';
+          
+          const tooltipContent = isDemo
+            ? `<strong>${name}</strong><br/>Stability: ${stability}%<br/><em>(Demo - Start a game to play)</em>`
+            : `<strong>${name}</strong><br/>Stability: ${stability}%<br/>GDP: ${formatNumber(gdp)}<br/>Military: ${formatNumber(manpower)}`;
           
           popup.current.setLngLat(coords).setHTML(tooltipContent).addTo(map.current);
         }
