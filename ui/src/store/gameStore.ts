@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 
+export type TurnPhase = 'news' | 'briefing' | 'diplomacy' | 'military' | 'domestic' | 'confirm';
+
 export interface CountryState {
   id: string;
   name: string;
@@ -41,16 +43,40 @@ export interface WorldState {
   }>;
 }
 
+export interface PendingAction {
+  type: string;
+  targetCountryId?: string;
+  params?: Record<string, unknown>;
+  preview?: ActionPreview;
+}
+
+export interface ActionPreview {
+  effects: Array<{
+    target: string;
+    type: 'diplomatic' | 'economic' | 'military' | 'stability';
+    change: number;
+    description: string;
+  }>;
+  risks: string[];
+  costs: { type: string; amount: number }[];
+}
+
 export interface GameState {
   isLoading: boolean;
   error: string | null;
   saveId: string | null;
   worldState: WorldState | null;
   selectedCountryId: string | null;
-  activeModal: 'newGame' | 'saveLoad' | 'newspaper' | 'advisor' | null;
+  activeModal: 'newGame' | 'saveLoad' | 'newspaper' | 'advisor' | 'actionPreview' | 'turnFeedback' | null;
   activeAdvisorRole: string | null;
   mapLayer: 'political' | 'military' | 'economic' | 'stability' | 'intelligence';
   debugMode: boolean;
+  
+  // Phase-based turn flow
+  showSplash: boolean;
+  currentPhase: TurnPhase;
+  pendingActions: PendingAction[];
+  lastTurnFeedback: Array<{ headline: string; effects: string[] }> | null;
 
   // Actions
   setLoading: (loading: boolean) => void;
@@ -63,9 +89,20 @@ export interface GameState {
   setMapLayer: (layer: GameState['mapLayer']) => void;
   toggleDebugMode: () => void;
   reset: () => void;
+  
+  // Phase flow actions
+  completeSplash: () => void;
+  setPhase: (phase: TurnPhase) => void;
+  advancePhase: () => void;
+  addPendingAction: (action: PendingAction) => void;
+  removePendingAction: (index: number) => void;
+  clearPendingActions: () => void;
+  setLastTurnFeedback: (feedback: GameState['lastTurnFeedback']) => void;
 }
 
 const API_BASE = 'http://localhost:8080/api';
+
+const PHASE_ORDER: TurnPhase[] = ['news', 'briefing', 'diplomacy', 'military', 'domestic', 'confirm'];
 
 export const useGameStore = create<GameState>((set) => ({
   isLoading: false,
@@ -77,6 +114,12 @@ export const useGameStore = create<GameState>((set) => ({
   activeAdvisorRole: null,
   mapLayer: 'political',
   debugMode: new URLSearchParams(window.location.search).get('debug') === '1',
+  
+  // Phase-based turn flow
+  showSplash: true,
+  currentPhase: 'news',
+  pendingActions: [],
+  lastTurnFeedback: null,
 
   setLoading: (loading) => set({ isLoading: loading }),
   setError: (error) => set({ error }),
@@ -95,7 +138,29 @@ export const useGameStore = create<GameState>((set) => ({
     selectedCountryId: null,
     activeModal: null,
     activeAdvisorRole: null,
+    currentPhase: 'news',
+    pendingActions: [],
+    lastTurnFeedback: null,
   }),
+  
+  // Phase flow actions
+  completeSplash: () => set({ showSplash: false }),
+  setPhase: (phase) => set({ currentPhase: phase }),
+  advancePhase: () => set((state) => {
+    const currentIndex = PHASE_ORDER.indexOf(state.currentPhase);
+    if (currentIndex < PHASE_ORDER.length - 1) {
+      return { currentPhase: PHASE_ORDER[currentIndex + 1] };
+    }
+    return state;
+  }),
+  addPendingAction: (action) => set((state) => ({
+    pendingActions: [...state.pendingActions, action]
+  })),
+  removePendingAction: (index) => set((state) => ({
+    pendingActions: state.pendingActions.filter((_, i) => i !== index)
+  })),
+  clearPendingActions: () => set({ pendingActions: [] }),
+  setLastTurnFeedback: (feedback) => set({ lastTurnFeedback: feedback }),
 }));
 
 export async function createNewGame(
@@ -161,7 +226,18 @@ export async function executeTurn(playerActions: Array<{ type: string; targetCou
     const newWorldState = { ...data.worldState };
     store.setWorldState(newWorldState, saveId);
 
-    // Always show newspaper after turn ends (even if no major headlines)
+    // Generate turn feedback from newspaper headlines
+    const feedback = newWorldState.newspaper?.map((entry: { headline: string; content: string }) => ({
+      headline: entry.headline,
+      effects: [entry.content]
+    })) || [];
+    store.setLastTurnFeedback(feedback);
+
+    // Clear pending actions and reset to news phase for next turn
+    store.clearPendingActions();
+    store.setPhase('news');
+    
+    // Show newspaper at START of next turn (showing events from the turn that just ended)
     store.openModal('newspaper');
   } catch (error) {
     store.setError(error instanceof Error ? error.message : 'Failed to execute turn');

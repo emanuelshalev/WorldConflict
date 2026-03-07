@@ -1,0 +1,72 @@
+.splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  cursor: pointer;
+}
+
+.splash-poem {
+  text-align: center;
+  color: #c4a77d;
+  font-family: 'Georgia', serif;
+  font-style: italic;
+  transition: opacity 0.5s ease-in-out;
+  max-width: 600px;
+  padding: 2rem;
+}
+
+.poem-line {
+  font-size: 1.3rem;
+  line-height: 2;
+  margin: 0;
+  opacity: 0.9;
+}
+
+.poem-attribution {
+  margin-top: 2rem;
+  font-size: 1rem;
+  color: #8b7355;
+}
+
+.splash-title {
+  text-align: center;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.splash-title h1 {
+  font-size: 4rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  color: #d4af37;
+  text-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+  margin: 0;
+  font-family: 'Times New Roman', serif;
+}
+
+.splash-subtitle {
+  font-size: 1.2rem;
+  color: #888;
+  letter-spacing: 0.2em;
+  margin-top: 1rem;
+  text-transform: uppercase;
+}
+
+.splash-skip {
+  position: absolute;
+  bottom: 2rem;
+  color: #444;
+  font-size: 0.9rem;
+  transition: color 0.3s;
+}
+
+.splash-screen:hover .splash-skip {
+  color: #666;
+}

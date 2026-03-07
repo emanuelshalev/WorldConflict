@@ -1,0 +1,162 @@
+.war-progress-bar {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.war-progress-bar.player-involved {
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.war-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.combatant {
+  font-weight: 500;
+  color: #aaa;
+}
+
+.combatant.attacker {
+  color: #f44336;
+}
+
+.combatant.defender {
+  color: #2196f3;
+}
+
+.combatant.player {
+  color: #d4af37;
+  font-weight: 600;
+}
+
+.vs {
+  font-size: 1.2rem;
+}
+
+.progress-track {
+  display: flex;
+  height: 24px;
+  background: #1a1a2e;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+  transition: width 0.5s ease;
+}
+
+.progress-fill.attacker {
+  background: linear-gradient(90deg, #c62828 0%, #f44336 100%);
+}
+
+.progress-fill.defender {
+  background: linear-gradient(90deg, #2196f3 0%, #1565c0 100%);
+}
+
+.progress-center-marker {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateX(-50%);
+}
+
+.war-stats {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.75rem;
+  font-size: 0.8rem;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.stat.attacker {
+  text-align: left;
+}
+
+.stat.defender {
+  text-align: right;
+}
+
+.stat-label {
+  color: #666;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+}
+
+.stat-value {
+  color: #f44336;
+  font-weight: 500;
+}
+
+.war-status {
+  margin-top: 0.75rem;
+  text-align: center;
+  padding: 0.4rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.war-status.winning {
+  background: rgba(76, 175, 80, 0.2);
+  color: #4caf50;
+}
+
+.war-status.losing {
+  background: rgba(244, 67, 54, 0.2);
+  color: #f44336;
+}
+
+.war-status.stalemate {
+  background: rgba(255, 152, 0, 0.2);
+  color: #ff9800;
+}
+
+.war-progress-list {
+  padding: 1rem;
+}
+
+.war-progress-list.empty {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  padding: 2rem;
+}
+
+.war-section {
+  margin-bottom: 1.5rem;
+}
+
+.war-section:last-child {
+  margin-bottom: 0;
+}
+
+.war-section h4 {
+  margin: 0 0 0.75rem;
+  color: #888;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
