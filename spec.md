@@ -3,16 +3,22 @@ spec.md: World Conflicts
 1.1 Vision
 World Conflicts is a deterministic, turn-based global political-military simulation where players lead any country through diplomacy, economics, military strategy, and intelligence operations in a living world of autonomous AI-driven nations. Each country operates from its own imperfect worldview, creating realistic miscalculations, escalations, and opportunities.
 
+*Inspired by the 1990 classic "Conflict: Middle East Political Simulator" - we preserve its tongue-in-cheek realpolitik while expanding to global scope with modern AI-driven country behavior.*
+
 1.2 Design Pillars
-Global Agentic Simulation: Every country runs as an autonomous agent with persistent goals, beliefs, and decision-making capacity
+1. **Global Agentic Simulation**: Every country runs as an autonomous agent with persistent goals, beliefs, historical patterns, and decision-making capacity that reflects its real-world national character
 
-Asymmetric Information: Nations see different versions of reality based on intelligence capabilities and biases
+2. **Asymmetric Information**: Nations see different versions of reality based on intelligence capabilities and biases - players only see what their country believes, not ground truth
 
-Fast Monthly Turns: Complete turn resolution <200ms for MVP scale (25 countries)
+3. **Consequential Actions**: Every player decision has visible, cascading consequences shown BEFORE commitment - actions feel weighty and meaningful
 
-Leadership Legacy: Comprehensive end-of-term scoring and historical report generation
+4. **Historical Plausibility**: Countries behave according to historical patterns, institutional constraints, and cultural traits - the simulation produces believable alternate histories
 
-Scalable World Model: Tiered country simulation (Tier 1 fully autonomous → Tier 3 abstracted)
+5. **Fast Monthly Turns**: Complete turn resolution <200ms for MVP scale (25 countries)
+
+6. **Leadership Legacy**: Comprehensive end-of-term scoring and historical report generation
+
+7. **Scalable World Model**: Tiered country simulation (Tier 1 fully autonomous → Tier 3 abstracted)
 
 1.3 Target Platforms
 Primary: Desktop web application (Chrome, Firefox, Safari, Edge)
@@ -29,29 +35,42 @@ Strategy gamers, geopolitical enthusiasts, political science students, 4X player
 text
 ✅ 25 Tier 1 countries with full autonomous agents
 ✅ Monthly turn system (1 month = 1 turn)
-✅ Diplomacy system (relations matrix, alliances, war declarations)  
-✅ Basic military system (procurement, manpower, airpower, simple war resolution)
+✅ Phase-based turn flow (News → Briefing → Diplomacy → Military → Domestic → Confirm)
+✅ 7-level diplomatic hierarchy (Military Pact → War)
+✅ Diplomacy system with action costs and consequence previews
+✅ Basic military system (procurement, manpower, airpower, war resolution)
 ✅ Economy system (GDP growth, military budget allocation)
 ✅ Internal stability system (public approval, regime legitimacy)
 ✅ Asymmetric intelligence (belief states vs ground truth)
-✅ 2D political world map with 5 overlay layers
-✅ Newspaper-style monthly event summaries
-✅ Advisor chat system (LLM-driven conversations)
+✅ 2D political world map with 5 overlay layers + fog-of-information
+✅ Newspaper-style monthly event summaries (shown at turn START)
+✅ Advisor chat system (LLM-driven with departmental bias)
+✅ Action consequence preview system
+✅ Post-action feedback with cascading effects
+✅ Event response dialogs for major crises
 ✅ Save/load system (SQLite)
 ✅ Comprehensive leadership scoring
 ✅ End-of-term historical report generation
+✅ Leadership backstory generation
 ✅ Deterministic simulation (seed-based)
-2.2 MVP Explicitly Excludes (Future Phases)
+
+2.2 Phase 2 Features
 text
-❌ Nuclear weapons/escalation (Phase 2)
-❌ Insurgencies/terrorism/coups (Phase 2) 
-❌ Tier 2/3 countries (Phase 2)
-❌ Naval warfare (Phase 2)
-❌ Trade/commerce systems (Phase 3)
-❌ Multiplayer (Phase 3)
-❌ Modding support (Phase 3)
-❌ Factional politics (Phase 3)
-❌ Real-time elements (Phase 3)
+⏳ Nuclear weapons/escalation (Two-Strike Rule, MAD)
+⏳ Covert operations (destabilize, support rebels, assassination, coups)
+⏳ Insurgency system with policing tactics
+⏳ Arms supplier system (USA/UK/France/Private Dealer)
+⏳ Tier 2/3 countries (+25 = 50 total)
+⏳ Naval warfare
+⏳ Enhanced country profiles with full historical context
+
+2.3 Phase 3 Features
+text
+❌ Trade/commerce systems
+❌ Multiplayer
+❌ Modding support
+❌ Factional politics
+❌ Real-time elements
 3. Tiered Country Classification
 3.1 Tier 1: Core Players (25 countries)
 Always fully autonomous with complete state tracking
@@ -150,41 +169,116 @@ interface WorldState {
   seed: number;
   playerCountryId: string;
 }
-6.3 CountryState Structure
+6.3 CountryState Structure (Enhanced)
 typescript
 interface CountryState {
   id: string;
   name: string;
+  iso3: string;
   
-  // Economy
-  gdp: number;
+  // ============ POLITICAL SYSTEM ============
+  politicalSystem: {
+    type: 'PARLIAMENTARY' | 'PRESIDENTIAL' | 'AUTHORITARIAN' | 'MONARCHY' | 'THEOCRACY' | 'COMMUNIST' | 'MILITARY_JUNTA';
+    powerCenters: ('EXECUTIVE' | 'LEGISLATURE' | 'MILITARY' | 'PARTY' | 'RELIGIOUS' | 'MONARCHY')[];
+    electionCycle: number;        // years, 0 for non-democracies
+    nextElection?: string;        // YYYY-MM
+    rulingParty?: string;
+  };
+  regimeType: RegimeType;         // Simplified for display
+  legitimacy: number;             // 0-100
+  
+  // ============ HISTORICAL CONTEXT ============
+  history: {
+    keyEvents: { year: number; event: string; impact: string }[];
+    historicalRivals: string[];   // Country IDs
+    historicalAllies: string[];   // Country IDs
+    sphereOfInfluence: string[];  // Countries they consider in their sphere
+    foreignPolicyOrientation: 'EXPANSIONIST' | 'DEFENSIVE' | 'ISOLATIONIST' | 'INTERVENTIONIST';
+  };
+  
+  // ============ NATIONAL CHARACTER ============
+  personality: {
+    warPropensity: number;        // 0-100: How likely to start wars
+    allianceLoyalty: number;      // 0-100: Honor commitments
+    diplomaticFlexibility: number;// 0-100: Willingness to negotiate
+    ideologicalRigidity: number;  // 0-100: Ideology over pragmatism
+    internationalNormsRespect: number; // 0-100
+    nationalPride: number;        // 0-100
+    redLines: string[];           // Actions that trigger strong response
+  };
+  riskTolerance: number;          // 0-100
+  
+  // ============ INTERNAL DIVISIONS ============
+  internalDivisions: {
+    ethnic: { group: string; percentage: number; tension: number }[];
+    religious: { group: string; percentage: number; tension: number }[];
+    ideological: { faction: string; strength: number }[];
+  };
+  insurgencyLevel: 'NONE' | 'UNREST' | 'REBELLION' | 'GUERILLA';
+  stability: number;              // 0-100
+  
+  // ============ ECONOMY ============
+  economy: {
+    gdp: number;
+    growthRate: number;
+    sectors: { agriculture: number; industry: number; services: number };
+    keyResources: string[];       // oil, gas, minerals, agriculture
+    keyExports: string[];
+    debtGdpRatio: number;
+    developmentLevel: 'DEVELOPED' | 'EMERGING' | 'DEVELOPING';
+  };
+  gdp: number;                    // Shorthand access
   growthRate: number;
   debtGdpRatio: number;
-  militaryBudgetPercent: number; // 0-20%
+  militaryBudgetPercent: number;  // 0-20%
   
-  // Military
-  manpower: number;
+  // ============ MILITARY ============
+  military: {
+    manpower: number;
+    airpower: number;
+    navalPower: number;
+    doctrine: 'OFFENSIVE' | 'DEFENSIVE' | 'EXPEDITIONARY' | 'GUERILLA';
+    nuclearStatus: 'NONE' | 'LATENT' | 'DEVELOPING' | 'ARMED';
+    foreignBases: string[];       // Countries with bases
+  };
+  manpower: number;               // Shorthand access
   airpower: number;
-  mobilizationLevel: number; // 0-100%
+  mobilizationLevel: number;      // 0-100%
   
-  // Diplomacy (matrix with other countries)
-  relations: Record<string, number>; // -100 to +100
+  // ============ DIPLOMACY ============
+  relations: Record<string, number>;  // -100 to +100
+  relationLevel: Record<string, RelationLevel>; // 7-level hierarchy
   alliances: string[];
   atWarWith: string[];
   
-  // Internal
-  stability: number;     // 0-100
-  regimeType: RegimeType;
-  legitimacy: number;    // 0-100
-  
-  // Intelligence & Beliefs
-  intelLevel: number;    // 0-100 (budget/capability)
+  // ============ INTELLIGENCE ============
+  intelLevel: number;             // 0-100 (budget/capability)
   beliefState: Partial<WorldState>; // What THIS country believes
   
-  // Goals & Personality
+  // ============ GOALS ============
   goals: Goal[];
-  riskTolerance: number; // 0-100
 }
+
+// 7-Level Diplomatic Hierarchy (from original Conflict)
+type RelationLevel = 
+  | 'MILITARY_PACT'   // Best: Mutual defense, intel sharing
+  | 'PROFITABLE'      // Strong ally, trade benefits
+  | 'BENEFICIAL'      // Good relations, cooperation
+  | 'FAVOURABLE'      // Positive but limited
+  | 'SATISFACTORY'    // Neutral
+  | 'LAMENTABLE'      // Poor relations
+  | 'WAR';            // Worst: Active conflict
+
+// Thresholds for relation levels
+const RELATION_THRESHOLDS = {
+  MILITARY_PACT: 80,    // +80 to +100
+  PROFITABLE: 60,       // +60 to +79
+  BENEFICIAL: 40,       // +40 to +59
+  FAVOURABLE: 20,       // +20 to +39
+  SATISFACTORY: -20,    // -19 to +19
+  LAMENTABLE: -60,      // -59 to -20
+  WAR: -100             // -100 to -60 (war eligible)
+};
 6.4 Turn Lifecycle (Canonical Order)
 text
 1. Event Injection (random + triggered events)
@@ -225,20 +319,35 @@ text
 - Token limits per request (<8k input, <1k output)
 - Parallel processing for all countries
 8. Core Systems Specification
-8.1 Diplomacy System
+8.1 Diplomacy System (Enhanced)
 text
-Relations: -100 (War) → +100 (Ironclad Ally)
-Thresholds:
-- -60 → War eligible
-- -20 → Hostile
-- +20 → Friendly  
-- +60 → Alliance eligible
-- +80 → Military Pact
+7-Level Relationship Hierarchy (from original Conflict):
+┌─────────────────┬────────────┬─────────────────────────────────────────┐
+│ Level           │ Threshold  │ Mechanics                               │
+├─────────────────┼────────────┼─────────────────────────────────────────┤
+│ MILITARY_PACT   │ +80 to +100│ Mutual defense, intel sharing, discounts│
+│ PROFITABLE      │ +60 to +79 │ Trade benefits, diplomatic support      │
+│ BENEFICIAL      │ +40 to +59 │ Cooperation possible, no obligations    │
+│ FAVOURABLE      │ +20 to +39 │ Positive but limited engagement         │
+│ SATISFACTORY    │ -19 to +19 │ Neutral, no special treatment           │
+│ LAMENTABLE      │ -59 to -20 │ Hostile rhetoric, sanctions possible    │
+│ WAR             │ -100 to -60│ War eligible, active conflict possible  │
+└─────────────────┴────────────┴─────────────────────────────────────────┘
+
+Diplomatic Stances & Costs:
+- IMPROVE: Attempt to raise relations. Costs $100M/month from defense budget
+- MAINTAIN: No cost, relations drift toward natural equilibrium
+- WORSEN: No cost, intentionally degrade for casus belli
+
+Special States:
+- "Attack Means Disaster": When all parties in conflict have nuclear weapons
+  → Conventional diplomacy suspended, any strike risks global holocaust
 
 Alliance Rules:
-- Mutual defense obligation
-- Intelligence sharing
-- Joint military procurement discounts
+- Mutual defense obligation (automatic war declaration)
+- Intelligence sharing (+20 intel accuracy on shared targets)
+- Joint military procurement discounts (-15% cost)
+- Alliance betrayal: -40 relations with ALL allies, -20 global prestige
 8.2 War System
 text
 Monthly Resolution:
@@ -271,38 +380,342 @@ Deltas from:
 
 stability <= 0 → Government Collapse (game over for that leader)
 
-8.5 Intelligence System (Phase 2)
+8.5 Intelligence System
 text
-Intel Budget: Percentage of GDP allocated to intelligence
+Intel Budget: Percentage of GDP allocated to intelligence (0.5% - 3%)
 Intel Level: 0-100 (determines accuracy of belief states)
 
 Covert Operations:
-- GATHER_INTEL: Improve knowledge of target nation (+10 intel accuracy)
-- DESTABILIZE: Reduce target's stability (-5 to -15/month)
-- SUPPORT_REBELS: Fund opposition groups (creates internal challenge)
-- COUNTER_INTEL: Protect from enemy operations
-- SABOTAGE: Damage target's infrastructure (GDP -1%)
+┌─────────────────┬─────────────┬────────────────────────────────────────┐
+│ Operation       │ Cost/Month  │ Effect                                 │
+├─────────────────┼─────────────┼────────────────────────────────────────┤
+│ GATHER_INTEL    │ $50M        │ +10 intel accuracy on target           │
+│ DESTABILIZE     │ $100M       │ Target stability -5 to -15/month       │
+│ SUPPORT_REBELS  │ $150M       │ Creates/escalates insurgency           │
+│ COUNTER_INTEL   │ $75M        │ +20 defense against enemy ops          │
+│ SABOTAGE        │ $200M       │ Target GDP -1%, infrastructure damage  │
+│ ASSASSINATION   │ $300M       │ If target leader weak, regime change   │
+│ COUP            │ $500M       │ If target has Guerilla insurgency      │
+└─────────────────┴─────────────┴────────────────────────────────────────┘
 
-Operation Success: Based on intel level, target's counter-intel, random factor
-Consequences: Failed ops may be exposed → diplomatic incident
+Operation Success Formula:
+  success_chance = (your_intel / 100) × (1 - target_counter_intel / 100) × base_chance
+  
+Consequences of Failure:
+- 30% chance operation exposed → diplomatic incident
+- Relations with target: -30
+- Relations with target's allies: -15
+- Global prestige: -10
 
-8.6 Internal Affairs System (Phase 2)
+8.6 Internal Affairs System
 text
+Insurgency Levels:
+┌─────────────┬────────────────┬─────────────────────────────────────────┐
+│ Level       │ Stability Cost │ Description                             │
+├─────────────┼────────────────┼─────────────────────────────────────────┤
+│ NONE        │ 0              │ No active insurgency                    │
+│ UNREST      │ -3/month       │ Protests, strikes, civil disobedience   │
+│ REBELLION   │ -8/month       │ Armed resistance, regional control loss │
+│ GUERILLA    │ -15/month      │ Full insurgency, coup/collapse risk     │
+└─────────────┴────────────────┴─────────────────────────────────────────┘
+
+Policing Tactics (Soft vs Hard):
+┌─────────────┬─────────────────────────────────────────────────────────┐
+│ SOFT        │ Slow resolution (-1 insurgency/3 months)                │
+│             │ No international backlash                               │
+│             │ Costs legitimacy (-2/month)                             │
+├─────────────┼─────────────────────────────────────────────────────────┤
+│ HARD        │ Fast resolution (-1 insurgency/month)                   │
+│             │ International outcry (relations with democracies -10)  │
+│             │ US aid reduced by 50%                                   │
+│             │ Global prestige -5/month                                │
+└─────────────┴─────────────────────────────────────────────────────────┘
+
 Internal Challenges:
-- Separatist movements (regional)
-- Economic protests (stability-linked)
-- Political opposition (legitimacy-linked)
+- Separatist movements (ethnic/regional)
+- Economic protests (triggered by negative growth)
+- Political opposition (triggered by low legitimacy)
 - Corruption scandals (random events)
+- Military discontent (triggered by budget cuts during war)
 
 Response Options:
-- NEGOTIATE: Slow resolution, no backlash, costs legitimacy
-- REFORM: Effective but expensive, improves long-term stability
-- SUPPRESS: Fast but causes international outcry, relations penalty
+- NEGOTIATE: Slow, sustainable, costs legitimacy
+- REFORM: Expensive but effective, improves long-term
+- SUPPRESS: Fast but international backlash
 - IGNORE: Challenge escalates over time
 
-Each challenge has severity (0-100) and affects stability proportionally
-9. Data Contracts
-9.1 Save File Format
+8.7 Arms Supplier System
+text
+Global Arms Market (from original Conflict):
+┌─────────────────┬─────────────────────────────────────────────────────┐
+│ Supplier        │ Characteristics                                     │
+├─────────────────┼─────────────────────────────────────────────────────┤
+│ USA             │ High-tech (F-16, M1 Abrams, AWACS)                  │
+│                 │ Requires: Relations ≥ BENEFICIAL                    │
+│                 │ Sensitive to: Human rights record, democracy        │
+│                 │ Embargo trigger: Hard policing, WMD use             │
+├─────────────────┼─────────────────────────────────────────────────────┤
+│ UK              │ Reliable middle-ground hardware                     │
+│                 │ Requires: Relations ≥ FAVOURABLE                    │
+│                 │ Follows US embargo decisions                        │
+├─────────────────┼─────────────────────────────────────────────────────┤
+│ France          │ Pragmatic, ignores ideology                         │
+│                 │ Requires: Relations ≥ SATISFACTORY                  │
+│                 │ Sells to anyone with money                          │
+├─────────────────┼─────────────────────────────────────────────────────┤
+│ Russia          │ Alternative to Western suppliers                    │
+│                 │ Requires: Relations ≥ SATISFACTORY                  │
+│                 │ Buying locks out US/UK suppliers                    │
+├─────────────────┼─────────────────────────────────────────────────────┤
+│ Private Dealer  │ Exclusive source during embargoes                   │
+│                 │ No requirements, 50% markup                         │
+│                 │ T-62s, MiG-27s, older equipment                     │
+└─────────────────┴─────────────────────────────────────────────────────┘
+
+Supplier Loyalty: Consistent purchasing unlocks better equipment tiers
+
+8.8 Nuclear System (Phase 2)
+text
+Nuclear Program Stages:
+1. NONE: No program
+2. LATENT: Civilian nuclear capability, could weaponize
+3. DEVELOPING: Active weapons program ($20M/month to fund)
+4. ARMED: Operational nuclear weapons
+
+The Two-Strike Rule:
+- Nuclear facility can be crippled by airstrikes BEFORE testing
+- Requires TWO successful consecutive strikes
+- Once "Mushroom Cloud" icon appears (tested), invulnerable to conventional strikes
+
+Nuclear Use Consequences:
+- Instant victory possible BUT:
+- 70% chance of retaliatory chain reaction → Global Holocaust (Game Over)
+- Immediate global arms embargo
+- Relations with ALL countries: -50
+- Global prestige: 0
+
+"Attack Means Disaster" State:
+- Triggered when all parties in conflict have operational nukes
+- Conventional diplomacy suspended
+- Any military action risks escalation to nuclear exchange
+9. Player Engagement & Feedback Systems
+
+9.1 Action Consequence Preview
+text
+Before any action is confirmed, show player:
+┌─────────────────────────────────────────────────────────────────────────┐
+│ ACTION: Deploy troops to Iranian border                                 │
+├─────────────────────────────────────────────────────────────────────────┤
+│ IMMEDIATE EFFECTS:                                                      │
+│ • Mobilization: +15%                                                    │
+│ • Defense budget: -$200M                                                │
+├─────────────────────────────────────────────────────────────────────────┤
+│ DIPLOMATIC CONSEQUENCES:                                                │
+│ • Iran: -15 relations (now: LAMENTABLE)                                │
+│ • Russia: -5 relations (ally of Iran)                                  │
+│ • Israel: +5 relations (appreciates pressure)                          │
+│ • Global Tension: +3 (now: 58%)                                        │
+├─────────────────────────────────────────────────────────────────────────┤
+│ ⚠️ WARNING: Iran may retaliate next turn                               │
+│ ⚠️ WARNING: This may trigger alliance obligations                      │
+└─────────────────────────────────────────────────────────────────────────┘
+│                    [CONFIRM]  [CANCEL]                                  │
+└─────────────────────────────────────────────────────────────────────────┘
+
+9.2 Post-Action Feedback Modal
+text
+After turn resolution, show cascading effects:
+┌─────────────────────────────────────────────────────────────────────────┐
+│ 📋 TURN 5 RESULTS                                                       │
+├─────────────────────────────────────────────────────────────────────────┤
+│ YOUR ACTIONS:                                                           │
+│ ✓ Troops deployed to Iranian border                                    │
+│   → Iran relations: -15 (now: LAMENTABLE)                              │
+│   → Russia issued condemnation (-5)                                    │
+│   → Israel praised the move (+5)                                       │
+│   → Global tension: +3 (now: 58%)                                      │
+│                                                                         │
+│ WORLD REACTIONS:                                                        │
+│ • Iran mobilized forces in response                                    │
+│ • Russia proposed emergency UN session                                 │
+│ • China remained neutral but concerned                                 │
+│                                                                         │
+│ CASCADING EFFECTS:                                                      │
+│ • Oil prices increased 5% (your GDP +0.2%)                             │
+│ • NATO allies expressed support                                        │
+└─────────────────────────────────────────────────────────────────────────┘
+
+9.3 Event Response Dialogs
+text
+Major events require player response (not just notifications):
+┌─────────────────────────────────────────────────────────────────────────┐
+│ ⚠️ CRISIS: China mobilizing on Taiwan border                           │
+├─────────────────────────────────────────────────────────────────────────┤
+│ Intelligence reports 500,000 troops massing near the Taiwan Strait.    │
+│ Invasion appears likely within 2 months.                               │
+│                                                                         │
+│ Your Response:                                                          │
+│ ┌─────────────────┐ ┌─────────────────┐                                │
+│ │ Condemn Publicly│ │ Private Warning │                                │
+│ │ Relations: -20  │ │ Relations: -5   │                                │
+│ │ Prestige: +5    │ │ Prestige: 0     │                                │
+│ └─────────────────┘ └─────────────────┘                                │
+│ ┌─────────────────┐ ┌─────────────────┐                                │
+│ │ Mobilize Forces │ │ Do Nothing      │                                │
+│ │ Tension: +10    │ │ Taiwan: -15     │                                │
+│ │ Cost: $500M     │ │ Prestige: -10   │                                │
+│ └─────────────────┘ └─────────────────┘                                │
+└─────────────────────────────────────────────────────────────────────────┘
+
+9.4 War Progress Visualization
+text
+When at war, sidebar shows tug-of-war indicator:
+┌─────────────────────────────────────────────────────────────────────────┐
+│ WAR: USA vs IRAN (Month 3)                                             │
+├─────────────────────────────────────────────────────────────────────────┤
+│ Territory Control:                                                      │
+│ USA ████████████░░░░░░░░ IRAN                                          │
+│     65%              35%                                                │
+│                                                                         │
+│ Casualties:                                                             │
+│ USA: 12,400 killed    IRAN: 45,200 killed                              │
+│                                                                         │
+│ War Weariness:                                                          │
+│ USA: 23%              IRAN: 67%                                        │
+│                                                                         │
+│ [Propose Ceasefire]                                                     │
+└─────────────────────────────────────────────────────────────────────────┘
+
+9.5 Advisor Bias System
+text
+Each advisor has institutional bias affecting their recommendations:
+
+Foreign Minister:
+- Bias: Diplomatic solutions, alliance preservation
+- Blind spots: Military necessity, domestic politics
+- Example: "We should negotiate, war would damage our alliances"
+
+Defense Minister:
+- Bias: Military strength, deterrence
+- Blind spots: Economic costs, diplomatic fallout
+- Example: "We need to mobilize now, show strength"
+
+Intelligence Chief:
+- Bias: Covert solutions, information gathering
+- Blind spots: Public opinion, legitimacy
+- Example: "We could destabilize them quietly"
+
+Treasury Secretary:
+- Bias: Economic stability, budget constraints
+- Blind spots: Security threats, prestige
+- Example: "We can't afford another war"
+
+Advisors see only their department's belief state, not full picture.
+Player must synthesize conflicting advice.
+
+10. Historical Realism & Country Behavior
+
+10.1 Country-Specific AI Behavior
+text
+Each country agent uses personality traits to make decisions:
+
+Decision Formula:
+  action_score = base_utility 
+    × (1 + personality.warPropensity / 100)      // if military action
+    × (1 + personality.allianceLoyalty / 100)    // if alliance-related
+    × (1 - personality.riskTolerance / 100)      // if risky action
+    × historical_pattern_modifier                 // based on past behavior
+
+Historical Pattern Modifiers:
+- If action matches historical behavior: ×1.5
+- If action contradicts historical behavior: ×0.5
+- If action crosses a "red line": immediate strong response
+
+Example - USA Behavior:
+- High interventionism → likely to respond to threats to allies
+- High alliance loyalty → will honor NATO commitments
+- Red lines: Attack on NATO ally, nuclear proliferation
+- Historical pattern: Sanctions before military action
+
+Example - Russia Behavior:
+- Defensive orientation → aggressive when sphere threatened
+- Low international norms respect → willing to use force
+- Red lines: NATO expansion, Ukraine alignment
+- Historical pattern: Hybrid warfare, deniable operations
+
+10.2 Institutional Constraints
+text
+Countries face different constraints based on regime type:
+
+DEMOCRACIES:
+- Election pressure: Must maintain approval before elections
+- Legislative approval: War declarations need support (stability > 50)
+- Media scrutiny: Actions become public, harder to hide
+- Coup immunity: Cannot be couped (only voted out)
+
+AUTOCRACIES:
+- Elite loyalty: Must keep military/party happy
+- Coup risk: Low legitimacy + military discontent = coup chance
+- Repression costs: Stability through force has limits
+- No elections: But legitimacy still matters
+
+THEOCRACIES:
+- Religious mandate: Actions must align with doctrine
+- Clerical approval: Religious leaders can veto
+- Ideological rigidity: Less diplomatic flexibility
+- Legitimacy from faith: Different stability dynamics
+
+MILITARY JUNTAS:
+- Military budget priority: Must maintain high spending
+- Internal rivalries: Factions compete for power
+- Coup risk: Very high if military unhappy
+- Short-term focus: Less long-term planning
+
+10.3 Historical Event Templates
+text
+Crisis scenarios based on real historical precedents:
+
+CUBAN_MISSILE_CRISIS_TEMPLATE:
+- Trigger: Nuclear weapons placed near superpower
+- Escalation path: Blockade → Ultimatum → Brinkmanship
+- Resolution options: Negotiated withdrawal, war, MAD
+- Historical outcome: Negotiated resolution
+
+SUEZ_CRISIS_TEMPLATE:
+- Trigger: Regional power nationalizes strategic asset
+- Escalation path: Diplomatic protest → Military intervention
+- Resolution options: UN intervention, superpower pressure
+- Historical outcome: Colonial powers forced to withdraw
+
+GULF_WAR_TEMPLATE:
+- Trigger: Invasion of smaller neighbor
+- Escalation path: Sanctions → Coalition building → Liberation
+- Resolution options: Withdrawal, limited war, regime change
+- Historical outcome: Coalition victory, limited objectives
+
+These templates guide AI behavior and create plausible scenarios.
+
+10.4 Leadership Backstory Generation
+text
+On game start, generate rise-to-power narrative:
+
+Input: Country, regime type, starting year, recent events
+Output: 2-3 paragraph backstory + initial conditions
+
+Example (USA, Democracy, 1997):
+"Following a narrow victory in the 1996 election, you assumed office 
+amid economic optimism but growing concerns about terrorism. Your 
+predecessor's foreign policy of engagement with China and Russia faces 
+criticism from hawks in Congress. The military, fresh from Gulf War 
+success, expects continued investment..."
+
+Initial Conditions Set:
+- Legitimacy: 65 (narrow mandate)
+- Military relations: 70 (expects investment)
+- Key challenge: Balance engagement vs. hawkish pressure
+
+11. Data Contracts
+11.1 Save File Format
 json
 {
   "version": "1.0",
@@ -311,7 +724,8 @@ json
   "seed": 123456,
   "turnLog": TurnLog[]
 }
-9.2 Newspaper Entry Format
+
+11.2 Newspaper Entry Format
 json
 {
   "headline": "China declares war on Taiwan",
@@ -319,8 +733,8 @@ json
   "relatedCountries": ["CHN", "TWN"],
   "impact": "GLOBAL_TENSION +15"
 }
-10. UI/UX Requirements
-10.1 Map Layers (Toggleable)
+12. UI/UX Requirements
+12.1 Map Layers (Toggleable)
 text
 1. Political: Country borders, capitals, regime colors
 2. Military: Troop concentrations, war zones, alliances
@@ -328,7 +742,7 @@ text
 4. Stability: Stability heatmap (green→red)
 5. Intelligence: Fog of war (player's intel view)
 
-10.1.1 Map Layer Implementation (Technical Requirements)
+12.1.1 Map Layer Implementation (Technical Requirements)
 text
 CRITICAL: Use MapLibre native GeoJSON layers, NOT DOM markers
 - DOM markers cause lag during pan/zoom (markers don't sync with tiles)
@@ -366,7 +780,7 @@ Layer Visualization Details:
 │             │ - Player's nation: always full visibility, blue highlight│
 └─────────────┴──────────────────────────────────────────────────────────┘
 
-10.1.2 Map Legend (Dynamic)
+12.1.2 Map Legend (Dynamic)
 text
 Legend panel positioned bottom-right of map, updates on layer switch:
 
@@ -400,7 +814,7 @@ Intelligence Legend:
   ◔ Limited (21-50%)
   ◑ Moderate (51-75%)
   ● Full Intel (76-100%)
-10.2 Screen States
+12.2 Screen States
 text
 - Newspaper Brief (full screen, auto-advance)
 - World Dashboard (map + country panels)
@@ -408,7 +822,7 @@ text
 - Advisor Chat (split screen)
 - Resolution Summary (headline reel)
 - End Game Report (multi-page)
-11. Performance Targets
+13. Performance Targets
 text
 MVP (25 countries):
 - Turn resolution: <200ms
@@ -418,7 +832,8 @@ MVP (25 countries):
 
 Stretch (50 countries):
 - Turn resolution: <500ms
-12. High-Level Architecture
+
+14. High-Level Architecture
 text
 src/
 ├── core/              # Pure deterministic logic ⭐ NO LLM/IO
@@ -446,7 +861,7 @@ src/
 └── infra/             # DB, config
     ├── db.ts
     └── config.ts
-13. Tech Stack (Locked)
+15. Tech Stack (Locked)
 text
 Language: TypeScript (strict mode)
 Backend: Node.js 20+ / Fastify
@@ -459,12 +874,12 @@ Validation: Zod (JSON schemas)
 Testing: Vitest + React Testing Library + Playwright E2E
 Build: Vite (frontend) / tsc + esbuild (backend)
 Deployment: Single Node binary OR Docker
-13.1 LLM Providers (Pluggable)
+15.1 LLM Providers (Pluggable)
 text
 Primary: OpenAI GPT-4o / Anthropic Claude 3.5 (remote APIs)
 Fallback: Ollama local models (Llama 3.1, Mistral)
 Emergency: Heuristic rules
-14. Testing Strategy
+16. Testing Strategy
 text
 Unit Tests (95% coverage required):
 - Core simulation logic
@@ -479,7 +894,7 @@ Integration Tests:
 E2E Tests:
 - New game → 12 turns → save → load → end game
 - All UI flows
-15. Definition of Done (MVP)
+17. Definition of Done (MVP)
 MVP ships when ALL are true:
 
 text

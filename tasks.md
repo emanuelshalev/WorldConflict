@@ -194,41 +194,102 @@
 
 ---
 
-## Stage 9: Engagement & Realism Overhaul (7-10 days)
-**Implement lessons from original Conflict game + comprehensive gap analysis**
-*Reference: game_design_resources/comprehensive_gap_analysis.md*
+## Stage 9: Player Engagement Systems (5 days)
+**Make actions feel consequential and feedback visible**
+*Reference: spec.md Section 9 - Player Engagement & Feedback Systems*
 
-### Phase A: Critical Engagement (2-3 days)
+### 9A: Turn Flow Restructure (2 days)
 - [ ] **9.1** Flip newspaper flow: Show at turn START (events from last turn) instead of end
-- [ ] **9.2** Phase indicator bar: Visual stepper showing News → Briefing → Diplomacy → Military → Domestic → Confirm
-- [ ] **9.3** Action consequence preview: Show "This will affect: Country A (-15), Country B (+5)" before confirming
-- [ ] **9.4** Post-action feedback modal: Show results with cascading effects visualization
-- [ ] **9.5** Event response dialogs: Major crises require player response (not just notifications)
+- [ ] **9.2** Phase indicator bar: Visual stepper (News → Briefing → Diplomacy → Military → Domestic → Confirm)
+- [ ] **9.3** Phase-based UI panels: Each phase shows relevant info + available actions
+- [ ] **9.4** Linear phase progression: Cannot go back once advanced (like original Conflict)
 
-### Phase B: Country Depth & Historical Realism (3-4 days)
-- [ ] **9.6** Expand country JSON profiles: Add politicalSystem, history, culture, internalDivisions, personality
-- [ ] **9.7** Country-specific AI behavior: Each country acts according to historical patterns and national character
-- [ ] **9.8** Institutional constraints: Democracies face elections, autocracies fear coups, theocracies need clerical approval
-- [ ] **9.9** Historical event templates: Create crisis scenarios based on real precedents (Cuban Missile Crisis, Suez, etc.)
-- [ ] **9.10** Leadership backstory generation: Auto-fabricate rise-to-power narrative based on regime type
-
-### Phase C: Systems Depth (3-4 days)
-- [ ] **9.11** 7-level diplomatic hierarchy: Military Pact → Profitable → Beneficial → Favourable → Satisfactory → Lamentable → War
-- [ ] **9.12** Diplomatic action costs: Improving relations costs $100M/month from defense budget
-- [ ] **9.13** Covert operations system: DESTABILIZE, SUPPORT_REBELS, ASSASSINATE, COUP mechanics
-- [ ] **9.14** Insurgency system: Add insurgency level (None/Unrest/Rebellion/Guerilla) with policing tactics
-- [ ] **9.15** Arms supplier system: USA/UK/France/Private Dealer with relationship requirements
-- [ ] **9.16** Nuclear program mechanics (Phase 2): Two-Strike Rule, Mushroom Cloud icon, MAD state
-
-### Phase D: Visual Feedback (2 days)
-- [ ] **9.17** War progress bar: Tug-of-war indicator showing territorial control
-- [ ] **9.18** Map fog-of-information: Unknown regions shaded based on intel level
-- [ ] **9.19** Alliance/war visual indicators: Connection lines, pulsing borders
-- [ ] **9.20** Uncertainty visualization: Confidence intervals for enemy data
+### 9B: Consequence & Feedback Systems (3 days)
+- [ ] **9.5** Action consequence preview modal: Show diplomatic/economic/military effects BEFORE confirming
+- [ ] **9.6** Post-action feedback modal: Show cascading effects after turn resolution
+- [ ] **9.7** Event response dialogs: Major crises require player choice (not just notifications)
+- [ ] **9.8** War progress bar: Tug-of-war indicator showing territorial control and casualties
+- [ ] **9.9** Advisor bias system: Each advisor has institutional lens affecting recommendations
 
 ---
 
-## P1: Post-MVP Polish (After Stage 9)
+## Stage 10: Country Depth & Historical Realism (5 days)
+**Make countries behave according to historical patterns and national character**
+*Reference: spec.md Section 10 - Historical Realism & Country Behavior*
+
+### 10A: Enhanced Country Profiles (2 days)
+- [ ] **10.1** Expand CountryState type: Add politicalSystem, history, personality, internalDivisions
+- [ ] **10.2** Update 25 country JSON files with enhanced profiles (politicalSystem, keyEvents, historicalRivals)
+- [ ] **10.3** Add personality traits: warPropensity, allianceLoyalty, diplomaticFlexibility, redLines
+- [ ] **10.4** Add internal divisions: ethnic, religious, ideological factions with tension levels
+
+### 10B: Country-Specific AI Behavior (2 days)
+- [ ] **10.5** Implement personality-based decision formula in countryAgent.ts
+- [ ] **10.6** Add historical pattern modifiers (actions matching history = 1.5x, contradicting = 0.5x)
+- [ ] **10.7** Implement red line triggers: Immediate strong response when crossed
+- [ ] **10.8** Add institutional constraints: Democracies need approval, autocracies fear coups
+
+### 10C: Narrative Generation (1 day)
+- [ ] **10.9** Leadership backstory generator: Rise-to-power narrative based on regime type
+- [ ] **10.10** Historical event templates: Crisis scenarios based on real precedents
+- [ ] **10.11** Country-specific advisor responses: Advisors reflect national perspective
+
+---
+
+## Stage 11: Core Systems Enhancement (5 days)
+**Add depth to diplomacy, intelligence, and military systems**
+*Reference: spec.md Sections 8.1, 8.5, 8.6, 8.7*
+
+### 11A: Diplomatic System Overhaul (2 days)
+- [ ] **11.1** 7-level diplomatic hierarchy: MILITARY_PACT → PROFITABLE → BENEFICIAL → FAVOURABLE → SATISFACTORY → LAMENTABLE → WAR
+- [ ] **11.2** Diplomatic action costs: IMPROVE costs $100M/month from defense budget
+- [ ] **11.3** Diplomatic stances: IMPROVE/MAINTAIN/WORSEN with different costs and effects
+- [ ] **11.4** Alliance mechanics: Mutual defense, intel sharing, procurement discounts, betrayal penalties
+
+### 11B: Intelligence & Covert Operations (2 days)
+- [ ] **11.5** Covert operations: GATHER_INTEL, DESTABILIZE, SUPPORT_REBELS, COUNTER_INTEL, SABOTAGE
+- [ ] **11.6** Operation success formula: Based on intel level vs target counter-intel
+- [ ] **11.7** Failure consequences: Exposed operations cause diplomatic incidents
+- [ ] **11.8** Assassination/Coup mechanics: Available when target is weak or has guerilla insurgency
+
+### 11C: Internal Affairs & Insurgency (1 day)
+- [ ] **11.9** Insurgency levels: NONE → UNREST → REBELLION → GUERILLA with stability costs
+- [ ] **11.10** Policing tactics: SOFT (slow, no backlash) vs HARD (fast, international outcry)
+- [ ] **11.11** Internal challenges: Separatists, protests, opposition, corruption, military discontent
+
+---
+
+## Stage 12: Arms & Nuclear Systems (3 days)
+**Add procurement depth and nuclear brinkmanship**
+*Reference: spec.md Sections 8.7, 8.8*
+
+### 12A: Arms Supplier System (2 days)
+- [ ] **12.1** Supplier entities: USA, UK, France, Russia, Private Dealer with characteristics
+- [ ] **12.2** Supplier requirements: Relationship thresholds, human rights sensitivity
+- [ ] **12.3** Embargo mechanics: Actions trigger supplier lockouts
+- [ ] **12.4** Supplier loyalty: Consistent purchasing unlocks better equipment tiers
+
+### 12B: Nuclear System (Phase 2) (1 day)
+- [ ] **12.5** Nuclear program stages: NONE → LATENT → DEVELOPING → ARMED
+- [ ] **12.6** Two-Strike Rule: Cripple facility with two consecutive successful strikes
+- [ ] **12.7** "Attack Means Disaster" state: MAD when all parties have nukes
+- [ ] **12.8** Nuclear use consequences: Victory possible but 70% chance of global holocaust
+
+---
+
+## Stage 13: Visual Feedback & Map Enhancement (2 days)
+**Make game state changes visible on map and UI**
+*Reference: spec.md Section 12 - UI/UX Requirements*
+
+- [ ] **13.1** Map fog-of-information: Unknown regions shaded based on intel level
+- [ ] **13.2** Alliance connection lines: Visual links between allied nations
+- [ ] **13.3** War visual indicators: Pulsing red borders for countries at war
+- [ ] **13.4** Uncertainty visualization: Confidence intervals for enemy data
+- [ ] **13.5** Insurgency/instability icons: Warning overlays on troubled nations
+
+---
+
+## P1: Post-MVP Polish (After Stage 13)
 ### Quality of Life
 - [ ] Keyboard shortcuts (map pan/zoom, menu navigation, turn advance)
 - [ ] Settings panel: LLM model selector, animation speed, debug toggles
