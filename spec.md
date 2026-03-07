@@ -20,14 +20,24 @@ World Conflicts is a deterministic, turn-based global political-military simulat
 
 7. **Scalable World Model**: Tiered country simulation (Tier 1 fully autonomous → Tier 3 abstracted)
 
-1.3 Target Platforms
+1.3 Opening Experience
+The application initializes with a black splash screen displaying the uncredited poem "Sweet Bird of Truth":
+
+> *This is your captain calling with an urgent warning*
+> *We're above the Gulf of Arabia, altitude is falling*
+> *And I can't keep her up, there's no time for thinking*
+> *All hands on deck, this bird is sinking.*
+
+This sets the tone for the game's "tongue-in-cheek realpolitik" atmosphere.
+
+1.4 Target Platforms
 Primary: Desktop web application (Chrome, Firefox, Safari, Edge)
 
 Secondary: Progressive Web App (PWA) for offline play
 
 Stretch: Native desktop via Tauri/Electron
 
-1.4 Target Audience
+1.5 Target Audience
 Strategy gamers, geopolitical enthusiasts, political science students, 4X players seeking deeper diplomatic systems
 
 2. MVP Scope Definition
@@ -115,6 +125,12 @@ TURN END:
 8. Execute Turn (resolution, AI actions, world updates)
 9. → Next turn begins with new Newspaper
 
+ANNUAL EVENTS (every 12 turns - July):
+- Global Summit: UN embargo reviews, Palestinian Homeland offers
+- Budget Review: Adjust defense budget as % of GDP
+- US Aid Allocation: Based on relationship and human rights record
+- Army Size Adjustment: Increase/decrease standing forces
+
 Key Design Principles:
 - Newspaper FIRST (not last) - creates narrative continuity
 - Phase progression is LINEAR - no going back once advanced
@@ -125,7 +141,12 @@ Key Design Principles:
 text
 1. Choose Starting Year (1950-2025, 5-year increments)
 2. Choose Country (from Tier 1 list)
-3. Generated Leadership Backstory (narrative + initial legitimacy)
+3. Generated Leadership Backstory:
+   - Rise-to-power narrative (election, coup, succession, revolution)
+   - Initial legitimacy level (high/medium/low)
+   - Initial faction support (military, business, unions, religious)
+   - Public expectations (reformist mandate vs stability mandate)
+   - Leadership style seed (hawkish/dovish, reformist/conservative)
 4. First Turn Briefing
 4.3 Save/Load Flow
 text
@@ -385,6 +406,26 @@ text
 Intel Budget: Percentage of GDP allocated to intelligence (0.5% - 3%)
 Intel Level: 0-100 (determines accuracy of belief states)
 
+Belief State Mechanics:
+- Outdated: Information lags behind reality (staleness based on intel level)
+- Incomplete: Some variables unknown (fog-of-information)
+- Incorrect: Misinformation, propaganda, deception possible
+
+Information Operations:
+┌─────────────────┬─────────────┬────────────────────────────────────────┐
+│ Operation       │ Cost/Month  │ Effect                                 │
+├─────────────────┼─────────────┼────────────────────────────────────────┤
+│ MISINFORMATION  │ $100M       │ Plant false intel in target's belief  │
+│ FAKE_BUILDUP    │ $150M       │ Make target believe you're mobilizing │
+│ PROPAGANDA      │ $75M        │ Reduce target's stability via media   │
+└─────────────────┴─────────────┴────────────────────────────────────────┘
+
+Random Events - Public Leaks:
+- Whistleblowers may reveal hidden information
+- Corruption scandals expose internal issues
+- Spy captures reveal covert operations
+- These update multiple countries' belief states simultaneously
+
 Covert Operations:
 ┌─────────────────┬─────────────┬────────────────────────────────────────┐
 │ Operation       │ Cost/Month  │ Effect                                 │
@@ -444,7 +485,47 @@ Response Options:
 - SUPPRESS: Fast but international backlash
 - IGNORE: Challenge escalates over time
 
-8.7 Arms Supplier System
+8.7 Military Operations System
+text
+Defense Budget as Hostility Indicator:
+- Peace-time baseline: ~$100M/month
+- Tension/War: $300M+/month
+- Auto-increase: Rising neighbor aggression triggers automatic budget proposals
+
+Pre-War Precision Airstrikes:
+┌─────────────────┬─────────────────────────────────────────────────────┐
+│ Target Type     │ Effect                                              │
+├─────────────────┼─────────────────────────────────────────────────────┤
+│ MILITARY        │ Reduce target's military strength (-10% manpower)  │
+│ CIVILIAN        │ Reduce target's stability (-15), war crime risk    │
+│ INDUSTRIAL      │ Reduce target's GDP (-2%), infrastructure damage   │
+│ NUCLEAR         │ Delay nuclear program (Two-Strike Rule applies)    │
+└─────────────────┴─────────────────────────────────────────────────────┘
+
+Border Troop Deployment:
+- Deploy troops to specific borders (not just general mobilization)
+- Border deployment degrades relations with that neighbor (-5/month)
+- Full mobilization on border = war imminent signal (-15 relations)
+- Allies auto-declare war if player attacks mutual neighbor
+
+Unit Types for Procurement:
+┌─────────────────┬─────────────┬─────────────────────────────────────────┐
+│ Unit Type       │ Cost        │ Combat Role                             │
+├─────────────────┼─────────────┼─────────────────────────────────────────┤
+│ TANKS           │ $50M/unit   │ Ground offense, countered by helicopters│
+│ HELICOPTERS     │ $40M/unit   │ Anti-tank, countered by SAMs            │
+│ SAMs            │ $30M/unit   │ Anti-air defense, countered by fighters │
+│ FIGHTERS        │ $80M/unit   │ Air superiority, countered by SAMs      │
+│ INFANTRY        │ $10M/unit   │ Occupation, defense, versatile          │
+└─────────────────┴─────────────┴─────────────────────────────────────────┘
+
+Combat Resolution (Rock-Paper-Scissors):
+- Tanks beat Infantry, lose to Helicopters
+- Helicopters beat Tanks, lose to SAMs
+- SAMs beat Helicopters/Fighters, lose to ground assault
+- Fighters beat SAMs (SEAD), provide air cover
+
+8.8 Arms Supplier System
 text
 Global Arms Market (from original Conflict):
 ┌─────────────────┬─────────────────────────────────────────────────────┐
@@ -586,29 +667,42 @@ When at war, sidebar shows tug-of-war indicator:
 │ [Propose Ceasefire]                                                     │
 └─────────────────────────────────────────────────────────────────────────┘
 
-9.5 Advisor Bias System
+9.5 Advisor System (Extended)
 text
 Each advisor has institutional bias affecting their recommendations:
 
-Foreign Minister:
-- Bias: Diplomatic solutions, alliance preservation
-- Blind spots: Military necessity, domestic politics
-- Example: "We should negotiate, war would damage our alliances"
+CABINET ADVISORS (Always Available):
+┌─────────────────────┬─────────────────────────────────────────────────────┐
+│ Foreign Minister    │ Bias: Diplomatic solutions, alliance preservation  │
+│                     │ Blind spots: Military necessity, domestic politics │
+├─────────────────────┼─────────────────────────────────────────────────────┤
+│ Defense Minister    │ Bias: Military strength, deterrence                │
+│                     │ Blind spots: Economic costs, diplomatic fallout    │
+├─────────────────────┼─────────────────────────────────────────────────────┤
+│ Intelligence Chief  │ Bias: Covert solutions, information gathering      │
+│                     │ Blind spots: Public opinion, legitimacy            │
+├─────────────────────┼─────────────────────────────────────────────────────┤
+│ Treasury Secretary  │ Bias: Economic stability, budget constraints       │
+│                     │ Blind spots: Security threats, prestige            │
+├─────────────────────┼─────────────────────────────────────────────────────┤
+│ Interior Minister   │ Bias: Internal stability, law enforcement          │
+│                     │ Blind spots: International perception, civil rights│
+└─────────────────────┴─────────────────────────────────────────────────────┘
 
-Defense Minister:
-- Bias: Military strength, deterrence
-- Blind spots: Economic costs, diplomatic fallout
-- Example: "We need to mobilize now, show strength"
-
-Intelligence Chief:
-- Bias: Covert solutions, information gathering
-- Blind spots: Public opinion, legitimacy
-- Example: "We could destabilize them quietly"
-
-Treasury Secretary:
-- Bias: Economic stability, budget constraints
-- Blind spots: Security threats, prestige
-- Example: "We can't afford another war"
+ADDITIONAL ADVISORS (Context-Dependent):
+┌─────────────────────┬─────────────────────────────────────────────────────┐
+│ Military Chiefs     │ Available during war/mobilization                  │
+│                     │ Bias: Operational success, force protection        │
+├─────────────────────┼─────────────────────────────────────────────────────┤
+│ Central Bank Gov.   │ Available during economic crises                   │
+│                     │ Bias: Monetary stability, inflation control        │
+├─────────────────────┼─────────────────────────────────────────────────────┤
+│ Opposition Leader   │ Available in democracies                           │
+│                     │ Bias: Criticize government, propose alternatives   │
+├─────────────────────┼─────────────────────────────────────────────────────┤
+│ Foreign Counterpart │ Available via diplomatic channels                  │
+│                     │ Direct negotiation with other country's leader     │
+└─────────────────────┴─────────────────────────────────────────────────────┘
 
 Advisors see only their department's belief state, not full picture.
 Player must synthesize conflicting advice.
@@ -618,6 +712,20 @@ Player must synthesize conflicting advice.
 10.1 Country-Specific AI Behavior
 text
 Each country agent uses personality traits to make decisions:
+
+Leadership Style (Generated at Game Start):
+┌─────────────────┬─────────────────────────────────────────────────────┐
+│ Dimension       │ Range                                               │
+├─────────────────┼─────────────────────────────────────────────────────┤
+│ Hawkish/Dovish  │ Military-first vs Diplomatic-first approach        │
+│ Reformist/Cons. │ Change-seeking vs Status-quo preserving            │
+│ Isolationist/   │ Inward-focused vs Globally-engaged                 │
+│ Interventionist │                                                     │
+│ Pragmatic/      │ Flexible vs Principle-driven                       │
+│ Ideological     │                                                     │
+└─────────────────┴─────────────────────────────────────────────────────┘
+
+These traits affect AI decision weights and player scoring expectations.
 
 Decision Formula:
   action_score = base_utility 
@@ -741,6 +849,24 @@ text
 3. Economic: GDP heatmap, trade flows
 4. Stability: Stability heatmap (green→red)
 5. Intelligence: Fog of war (player's intel view)
+6. Resources: Oil, gas, minerals, strategic infrastructure (Phase 2)
+
+12.1.0 Map Overlays & Icons
+text
+Border Indicators:
+- Deployed troops shown as unit icons near borders
+- Relationship status text: "WAR", "PACT", "TENSE"
+- Mobilization arrows pointing toward borders
+
+Nuclear Indicators:
+- 🏭 Nuclear facility icon (program in progress)
+- ☢️ Mushroom cloud icon (tested - invulnerable to strikes)
+- ⚠️ "Attack Means Disaster" warning when MAD state
+
+Alliance/War Visuals:
+- Green lines connecting allied nations
+- Red pulsing lines between nations at war
+- Dashed lines for pending alliance requests
 
 12.1.1 Map Layer Implementation (Technical Requirements)
 text
@@ -816,12 +942,56 @@ Intelligence Legend:
   ● Full Intel (76-100%)
 12.2 Screen States
 text
+- Opening Splash (poem, fade to title)
 - Newspaper Brief (full screen, auto-advance)
 - World Dashboard (map + country panels)
 - Action Selection (tabbed interface)
 - Advisor Chat (split screen)
 - Resolution Summary (headline reel)
-- End Game Report (multi-page)
+- Annual Summit (every 12 turns - special UI)
+- End Game Report (multi-page with charts)
+
+12.3 End-Game Report Contents
+text
+The end-of-term report includes:
+
+1. Timeline of Major Events:
+   - Key dates and descriptions (wars, treaties, crises, coups, elections)
+   - Visual timeline with icons
+
+2. Policy Summary:
+   - High-level overview of domestic and foreign policy directions
+   - Example: "Market-liberalization and non-alignment"
+
+3. Score Breakdown (0-200 scale):
+   ┌─────────────────────┬────────┬─────────────────────────────────────┐
+   │ Component           │ Points │ Factors                             │
+   ├─────────────────────┼────────┼─────────────────────────────────────┤
+   │ Economic Performance│ 0-50   │ GDP growth, inflation, debt         │
+   │ Security & Stability│ 0-50   │ Territory, war success/avoidance    │
+   │ Internal Approval   │ 0-50   │ Public opinion, faction legitimacy  │
+   │ World Prestige      │ 0-50   │ Superpower standing, UN relations   │
+   └─────────────────────┴────────┴─────────────────────────────────────┘
+
+4. Historical Comparisons:
+   - How this leader ranks vs typical leaders for this country
+   - Percentile ranking across all playthroughs
+
+5. Leadership Style Classification:
+   - Examples: "Pragmatic stabilizer", "Reformist democrat", 
+     "Risk-taking expansionist", "Isolationist nationalist"
+   - Justification referencing key decisions
+
+6. Charts & Visualizations:
+   - Approval rating over time
+   - GDP and economic indicators
+   - Military expenditure and conflict involvement
+   - Relations with major powers over time
+
+7. Export Options:
+   - JSON (full data)
+   - HTML (formatted report)
+   - "Narrative History" - LLM-generated political biography
 13. Performance Targets
 text
 MVP (25 countries):
