@@ -1,0 +1,24 @@
+{
+  "id": "CAN",
+  "iso3": "CAN",
+  "name": "Canada",
+  "population": 40000000,
+  "gdp": 2140000000000,
+  "gdpGrowth": 0.018,
+  "militaryBudgetPct": 1.4,
+  "manpower": 72000,
+  "airpower": 391,
+  "regimeType": "DEMOCRACY",
+  "riskTolerance": 20,
+  "stability": 85,
+  "legitimacy": 82,
+  "intelLevel": 72,
+  "goals": [
+    { "id": "can_g1", "type": "SECURITY", "priority": 70, "description": "Maintain close alliance with United States" },
+    { "id": "can_g2", "type": "IDEOLOGICAL", "priority": 65, "description": "Promote peacekeeping and multilateralism" }
+  ],
+  "geo": {
+    "bounds": [-141.0, 41.7, -52.6, 83.1],
+    "capital": { "name": "Ottawa", "coordinates": [-75.6972, 45.4215] }
+  }
+}

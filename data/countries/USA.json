@@ -1,0 +1,25 @@
+{
+  "id": "USA",
+  "iso3": "USA",
+  "name": "United States",
+  "population": 335000000,
+  "gdp": 27360000000000,
+  "gdpGrowth": 0.024,
+  "militaryBudgetPct": 3.5,
+  "manpower": 1390000,
+  "airpower": 13300,
+  "regimeType": "DEMOCRACY",
+  "riskTolerance": 45,
+  "stability": 72,
+  "legitimacy": 75,
+  "intelLevel": 95,
+  "goals": [
+    { "id": "usa_g1", "type": "SECURITY", "priority": 90, "description": "Maintain global military supremacy" },
+    { "id": "usa_g2", "type": "IDEOLOGICAL", "priority": 70, "description": "Promote democratic values worldwide" },
+    { "id": "usa_g3", "type": "ECONOMIC", "priority": 80, "description": "Protect trade interests and dollar hegemony" }
+  ],
+  "geo": {
+    "bounds": [-125.0, 24.5, -66.9, 49.4],
+    "capital": { "name": "Washington D.C.", "coordinates": [-77.0369, 38.9072] }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "AUS",
+  "iso3": "AUS",
+  "name": "Australia",
+  "population": 26000000,
+  "gdp": 1690000000000,
+  "gdpGrowth": 0.024,
+  "militaryBudgetPct": 2.0,
+  "manpower": 60000,
+  "airpower": 465,
+  "regimeType": "DEMOCRACY",
+  "riskTolerance": 30,
+  "stability": 85,
+  "legitimacy": 82,
+  "intelLevel": 75,
+  "goals": [
+    { "id": "aus_g1", "type": "SECURITY", "priority": 80, "description": "Strengthen AUKUS alliance and Indo-Pacific presence" },
+    { "id": "aus_g2", "type": "ECONOMIC", "priority": 75, "description": "Diversify trade away from China dependence" }
+  ],
+  "geo": {
+    "bounds": [113.3, -43.6, 153.6, -10.7],
+    "capital": { "name": "Canberra", "coordinates": [149.1300, -35.2809] }
+  }
+}

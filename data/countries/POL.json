@@ -1,0 +1,24 @@
+{
+  "id": "POL",
+  "iso3": "POL",
+  "name": "Poland",
+  "population": 38000000,
+  "gdp": 842000000000,
+  "gdpGrowth": 0.035,
+  "militaryBudgetPct": 4.0,
+  "manpower": 150000,
+  "airpower": 468,
+  "regimeType": "DEMOCRACY",
+  "riskTolerance": 35,
+  "stability": 75,
+  "legitimacy": 73,
+  "intelLevel": 65,
+  "goals": [
+    { "id": "pol_g1", "type": "SECURITY", "targetCountryId": "RUS", "priority": 95, "description": "Deter Russian aggression" },
+    { "id": "pol_g2", "type": "SECURITY", "priority": 85, "description": "Strengthen NATO eastern flank" }
+  ],
+  "geo": {
+    "bounds": [14.1, 49.0, 24.2, 54.8],
+    "capital": { "name": "Warsaw", "coordinates": [21.0122, 52.2297] }
+  }
+}

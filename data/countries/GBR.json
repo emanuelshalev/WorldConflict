@@ -1,0 +1,24 @@
+{
+  "id": "GBR",
+  "iso3": "GBR",
+  "name": "United Kingdom",
+  "population": 67000000,
+  "gdp": 3340000000000,
+  "gdpGrowth": 0.012,
+  "militaryBudgetPct": 2.3,
+  "manpower": 150000,
+  "airpower": 693,
+  "regimeType": "DEMOCRACY",
+  "riskTolerance": 40,
+  "stability": 75,
+  "legitimacy": 72,
+  "intelLevel": 88,
+  "goals": [
+    { "id": "gbr_g1", "type": "SECURITY", "priority": 85, "description": "Maintain special relationship with United States" },
+    { "id": "gbr_g2", "type": "PRESTIGE", "priority": 70, "description": "Project global influence post-Brexit" }
+  ],
+  "geo": {
+    "bounds": [-8.6, 49.9, 1.8, 60.9],
+    "capital": { "name": "London", "coordinates": [-0.1276, 51.5074] }
+  }
+}

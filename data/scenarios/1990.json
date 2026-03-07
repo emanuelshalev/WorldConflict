@@ -1,0 +1,21 @@
+{
+  "id": "1990",
+  "name": "Post-Cold War (1990)",
+  "description": "End of Cold War, Soviet collapse, unipolar moment",
+  "startYear": 1990,
+  "globalTension": 25,
+  "multipliers": {
+    "gdpGrowth": 0.8,
+    "militarySpending": 0.9,
+    "stability": 1.1
+  },
+  "initialRelations": {
+    "USA": { "RUS": 20, "CHN": 30, "GBR": 85, "DEU": 75, "FRA": 70, "JPN": 80 },
+    "RUS": { "USA": 20, "CHN": 40, "DEU": 30, "GBR": 15 }
+  },
+  "alliances": [
+    ["USA", "GBR", "CAN"],
+    ["USA", "JPN"],
+    ["DEU", "FRA", "ITA"]
+  ]
+}

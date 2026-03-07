@@ -1,0 +1,25 @@
+{
+  "id": "CHN",
+  "iso3": "CHN",
+  "name": "China",
+  "population": 1412000000,
+  "gdp": 18530000000000,
+  "gdpGrowth": 0.048,
+  "militaryBudgetPct": 1.7,
+  "manpower": 2035000,
+  "airpower": 3285,
+  "regimeType": "COMMUNIST",
+  "riskTolerance": 55,
+  "stability": 78,
+  "legitimacy": 82,
+  "intelLevel": 85,
+  "goals": [
+    { "id": "chn_g1", "type": "TERRITORIAL", "targetCountryId": "TWN", "priority": 95, "description": "Reunification with Taiwan" },
+    { "id": "chn_g2", "type": "PRESTIGE", "priority": 85, "description": "Become dominant regional power in Asia-Pacific" },
+    { "id": "chn_g3", "type": "ECONOMIC", "priority": 90, "description": "Achieve technological self-sufficiency" }
+  ],
+  "geo": {
+    "bounds": [73.5, 18.2, 135.0, 53.6],
+    "capital": { "name": "Beijing", "coordinates": [116.4074, 39.9042] }
+  }
+}

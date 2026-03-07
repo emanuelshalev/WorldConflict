@@ -1,0 +1,25 @@
+{
+  "id": "DEU",
+  "iso3": "DEU",
+  "name": "Germany",
+  "population": 84000000,
+  "gdp": 4430000000000,
+  "gdpGrowth": 0.014,
+  "militaryBudgetPct": 2.1,
+  "manpower": 184000,
+  "airpower": 617,
+  "regimeType": "DEMOCRACY",
+  "riskTolerance": 25,
+  "stability": 82,
+  "legitimacy": 85,
+  "intelLevel": 78,
+  "goals": [
+    { "id": "deu_g1", "type": "ECONOMIC", "priority": 90, "description": "Maintain EU economic leadership" },
+    { "id": "deu_g2", "type": "SECURITY", "priority": 70, "description": "Strengthen European defense cooperation" },
+    { "id": "deu_g3", "type": "IDEOLOGICAL", "priority": 65, "description": "Promote multilateralism and international law" }
+  ],
+  "geo": {
+    "bounds": [5.9, 47.3, 15.0, 55.1],
+    "capital": { "name": "Berlin", "coordinates": [13.4050, 52.5200] }
+  }
+}

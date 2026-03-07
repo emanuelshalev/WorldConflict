@@ -1,0 +1,25 @@
+{
+  "id": "IRN",
+  "iso3": "IRN",
+  "name": "Iran",
+  "population": 88000000,
+  "gdp": 388000000000,
+  "gdpGrowth": 0.025,
+  "militaryBudgetPct": 2.5,
+  "manpower": 610000,
+  "airpower": 551,
+  "regimeType": "THEOCRACY",
+  "riskTolerance": 65,
+  "stability": 60,
+  "legitimacy": 55,
+  "intelLevel": 75,
+  "goals": [
+    { "id": "irn_g1", "type": "SECURITY", "priority": 95, "description": "Develop nuclear deterrent capability" },
+    { "id": "irn_g2", "type": "IDEOLOGICAL", "priority": 85, "description": "Export Islamic Revolution and support proxies" },
+    { "id": "irn_g3", "type": "SECURITY", "targetCountryId": "ISR", "priority": 80, "description": "Counter Israeli influence" }
+  ],
+  "geo": {
+    "bounds": [44.0, 25.1, 63.3, 39.8],
+    "capital": { "name": "Tehran", "coordinates": [51.3890, 35.6892] }
+  }
+}

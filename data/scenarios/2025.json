@@ -1,0 +1,31 @@
+{
+  "id": "2025",
+  "name": "Modern Era (2025)",
+  "description": "Current geopolitical landscape with ongoing tensions",
+  "startYear": 2025,
+  "globalTension": 55,
+  "multipliers": {
+    "gdpGrowth": 1.0,
+    "militarySpending": 1.0,
+    "stability": 1.0
+  },
+  "initialRelations": {
+    "USA": { "CHN": -35, "RUS": -60, "GBR": 85, "DEU": 70, "FRA": 65, "JPN": 80, "KOR": 75, "AUS": 80, "CAN": 90, "ISR": 85, "POL": 70, "ITA": 65, "TUR": 40, "SAU": 50, "IND": 55, "BRA": 40, "MEX": 60, "EGY": 45, "PAK": 30, "IDN": 35, "NGA": 30, "ZAF": 35, "IRN": -80, "PRK": -90 },
+    "CHN": { "USA": -35, "RUS": 60, "PRK": 55, "PAK": 65, "IRN": 45, "JPN": -40, "KOR": -20, "IND": -45, "AUS": -25, "GBR": -15, "DEU": 20, "FRA": 15 },
+    "RUS": { "USA": -60, "CHN": 60, "IRN": 50, "PRK": 40, "IND": 45, "GBR": -55, "POL": -70, "DEU": -30, "FRA": -25, "TUR": 15 },
+    "IND": { "PAK": -75, "CHN": -45, "USA": 55, "RUS": 45, "JPN": 50, "AUS": 45, "GBR": 40, "FRA": 40, "ISR": 50 },
+    "PAK": { "IND": -75, "CHN": 65, "USA": 30, "SAU": 55, "TUR": 50, "IRN": 35 },
+    "ISR": { "IRN": -90, "USA": 85, "SAU": 25, "EGY": 40, "TUR": -20, "GBR": 60, "DEU": 55 },
+    "IRN": { "ISR": -90, "USA": -80, "SAU": -70, "RUS": 50, "CHN": 45 },
+    "SAU": { "IRN": -70, "USA": 50, "EGY": 55, "PAK": 55, "ISR": 25, "TUR": 30 },
+    "KOR": { "PRK": -85, "USA": 75, "JPN": 45, "CHN": -20 },
+    "PRK": { "KOR": -85, "USA": -90, "JPN": -80, "CHN": 55, "RUS": 40 },
+    "JPN": { "USA": 80, "KOR": 45, "AUS": 60, "IND": 50, "CHN": -40, "PRK": -80, "RUS": -35 }
+  },
+  "alliances": [
+    ["USA", "GBR", "CAN", "AUS"],
+    ["USA", "JPN"],
+    ["USA", "KOR"],
+    ["DEU", "FRA", "ITA", "POL"]
+  ]
+}

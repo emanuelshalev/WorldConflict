@@ -1,0 +1,24 @@
+{
+  "id": "NGA",
+  "iso3": "NGA",
+  "name": "Nigeria",
+  "population": 223000000,
+  "gdp": 477000000000,
+  "gdpGrowth": 0.029,
+  "militaryBudgetPct": 0.6,
+  "manpower": 223000,
+  "airpower": 124,
+  "regimeType": "DEMOCRACY",
+  "riskTolerance": 35,
+  "stability": 52,
+  "legitimacy": 48,
+  "intelLevel": 45,
+  "goals": [
+    { "id": "nga_g1", "type": "SECURITY", "priority": 90, "description": "Combat Boko Haram and internal insurgencies" },
+    { "id": "nga_g2", "type": "PRESTIGE", "priority": 70, "description": "Lead African Union and ECOWAS" }
+  ],
+  "geo": {
+    "bounds": [2.7, 4.3, 14.7, 13.9],
+    "capital": { "name": "Abuja", "coordinates": [7.4951, 9.0579] }
+  }
+}

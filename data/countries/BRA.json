@@ -1,0 +1,24 @@
+{
+  "id": "BRA",
+  "iso3": "BRA",
+  "name": "Brazil",
+  "population": 216000000,
+  "gdp": 2130000000000,
+  "gdpGrowth": 0.029,
+  "militaryBudgetPct": 1.3,
+  "manpower": 367000,
+  "airpower": 679,
+  "regimeType": "DEMOCRACY",
+  "riskTolerance": 30,
+  "stability": 68,
+  "legitimacy": 65,
+  "intelLevel": 60,
+  "goals": [
+    { "id": "bra_g1", "type": "PRESTIGE", "priority": 75, "description": "Gain permanent UN Security Council seat" },
+    { "id": "bra_g2", "type": "ECONOMIC", "priority": 85, "description": "Develop domestic industry and reduce inequality" }
+  ],
+  "geo": {
+    "bounds": [-73.9, -33.8, -34.8, 5.3],
+    "capital": { "name": "Brasília", "coordinates": [-47.9292, -15.7801] }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "EGY",
+  "iso3": "EGY",
+  "name": "Egypt",
+  "population": 105000000,
+  "gdp": 476000000000,
+  "gdpGrowth": 0.038,
+  "militaryBudgetPct": 1.2,
+  "manpower": 440000,
+  "airpower": 1062,
+  "regimeType": "AUTOCRACY",
+  "riskTolerance": 40,
+  "stability": 65,
+  "legitimacy": 60,
+  "intelLevel": 65,
+  "goals": [
+    { "id": "egy_g1", "type": "SECURITY", "priority": 80, "description": "Maintain Suez Canal control and regional stability" },
+    { "id": "egy_g2", "type": "ECONOMIC", "priority": 85, "description": "Attract foreign investment and reduce debt" }
+  ],
+  "geo": {
+    "bounds": [24.7, 22.0, 36.9, 31.7],
+    "capital": { "name": "Cairo", "coordinates": [31.2357, 30.0444] }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "SAU",
+  "iso3": "SAU",
+  "name": "Saudi Arabia",
+  "population": 36000000,
+  "gdp": 1110000000000,
+  "gdpGrowth": 0.038,
+  "militaryBudgetPct": 6.0,
+  "manpower": 257000,
+  "airpower": 897,
+  "regimeType": "MONARCHY",
+  "riskTolerance": 50,
+  "stability": 78,
+  "legitimacy": 75,
+  "intelLevel": 70,
+  "goals": [
+    { "id": "sau_g1", "type": "SECURITY", "targetCountryId": "IRN", "priority": 90, "description": "Counter Iranian influence" },
+    { "id": "sau_g2", "type": "ECONOMIC", "priority": 85, "description": "Diversify economy away from oil (Vision 2030)" }
+  ],
+  "geo": {
+    "bounds": [34.5, 16.4, 55.7, 32.2],
+    "capital": { "name": "Riyadh", "coordinates": [46.6753, 24.7136] }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "ITA",
+  "iso3": "ITA",
+  "name": "Italy",
+  "population": 59000000,
+  "gdp": 2190000000000,
+  "gdpGrowth": 0.012,
+  "militaryBudgetPct": 1.5,
+  "manpower": 165000,
+  "airpower": 862,
+  "regimeType": "DEMOCRACY",
+  "riskTolerance": 25,
+  "stability": 70,
+  "legitimacy": 65,
+  "intelLevel": 70,
+  "goals": [
+    { "id": "ita_g1", "type": "ECONOMIC", "priority": 85, "description": "Reduce public debt and stimulate growth" },
+    { "id": "ita_g2", "type": "SECURITY", "priority": 70, "description": "Manage Mediterranean migration flows" }
+  ],
+  "geo": {
+    "bounds": [6.6, 36.6, 18.5, 47.1],
+    "capital": { "name": "Rome", "coordinates": [12.4964, 41.9028] }
+  }
+}

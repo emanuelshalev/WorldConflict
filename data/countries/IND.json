@@ -1,0 +1,25 @@
+{
+  "id": "IND",
+  "iso3": "IND",
+  "name": "India",
+  "population": 1428000000,
+  "gdp": 3940000000000,
+  "gdpGrowth": 0.065,
+  "militaryBudgetPct": 2.4,
+  "manpower": 1455000,
+  "airpower": 2182,
+  "regimeType": "DEMOCRACY",
+  "riskTolerance": 40,
+  "stability": 70,
+  "legitimacy": 72,
+  "intelLevel": 75,
+  "goals": [
+    { "id": "ind_g1", "type": "SECURITY", "targetCountryId": "PAK", "priority": 85, "description": "Counter Pakistan threat" },
+    { "id": "ind_g2", "type": "PRESTIGE", "priority": 80, "description": "Achieve great power recognition" },
+    { "id": "ind_g3", "type": "ECONOMIC", "priority": 90, "description": "Sustain rapid economic growth" }
+  ],
+  "geo": {
+    "bounds": [68.2, 6.8, 97.4, 35.5],
+    "capital": { "name": "New Delhi", "coordinates": [77.2090, 28.6139] }
+  }
+}

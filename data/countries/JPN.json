@@ -1,0 +1,24 @@
+{
+  "id": "JPN",
+  "iso3": "JPN",
+  "name": "Japan",
+  "population": 124000000,
+  "gdp": 4230000000000,
+  "gdpGrowth": 0.018,
+  "militaryBudgetPct": 2.0,
+  "manpower": 247000,
+  "airpower": 1480,
+  "regimeType": "DEMOCRACY",
+  "riskTolerance": 25,
+  "stability": 88,
+  "legitimacy": 85,
+  "intelLevel": 80,
+  "goals": [
+    { "id": "jpn_g1", "type": "SECURITY", "targetCountryId": "CHN", "priority": 85, "description": "Counter Chinese expansion in East Asia" },
+    { "id": "jpn_g2", "type": "SECURITY", "targetCountryId": "PRK", "priority": 80, "description": "Deter North Korean threats" }
+  ],
+  "geo": {
+    "bounds": [122.9, 24.2, 153.9, 45.5],
+    "capital": { "name": "Tokyo", "coordinates": [139.6917, 35.6895] }
+  }
+}

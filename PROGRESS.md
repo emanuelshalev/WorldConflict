@@ -53,3 +53,23 @@
 - Turn lifecycle: events → intel → actions → wars → metrics → newspaper → advance
 
 ---
+
+### 03:34 AM: feat: complete Stage 2 data infrastructure (2.1-2.10) ✓
+**Files:**
+- `data/countries/*.json` - 25 country profiles (USA, CHN, RUS, etc.)
+- `data/scenarios/*.json` - 1960, 1990, 2025 scenarios
+- `src/core/data-loader.ts` - DataLoader class for countries/scenarios
+- `src/infra/db.ts` - GameDatabase with Prisma serialization
+- `src/api/routes/game.ts` - Game API endpoints
+- `tests/core/data-loader.spec.ts` - Integration tests
+
+**Tests:** 94/94 passed | **Lint:** ✅ | **Build:** ✅
+- Integration test: Load 25 countries → 5 turns verified
+- Data validation: GDP/military ratios realistic
+
+**Notes:**
+- GeoJSON borders deferred (using bounds in country JSON instead)
+- Scenarios include initial relations and alliance groups
+- Heuristic AI fallback implemented in game routes
+
+---

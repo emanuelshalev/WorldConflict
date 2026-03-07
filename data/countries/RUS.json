@@ -1,0 +1,25 @@
+{
+  "id": "RUS",
+  "iso3": "RUS",
+  "name": "Russia",
+  "population": 144000000,
+  "gdp": 2240000000000,
+  "gdpGrowth": 0.012,
+  "militaryBudgetPct": 5.9,
+  "manpower": 1150000,
+  "airpower": 4173,
+  "regimeType": "AUTOCRACY",
+  "riskTolerance": 70,
+  "stability": 65,
+  "legitimacy": 68,
+  "intelLevel": 88,
+  "goals": [
+    { "id": "rus_g1", "type": "TERRITORIAL", "priority": 90, "description": "Maintain sphere of influence in former Soviet states" },
+    { "id": "rus_g2", "type": "SECURITY", "priority": 85, "description": "Prevent NATO expansion" },
+    { "id": "rus_g3", "type": "PRESTIGE", "priority": 75, "description": "Restore great power status" }
+  ],
+  "geo": {
+    "bounds": [19.6, 41.2, 180.0, 81.9],
+    "capital": { "name": "Moscow", "coordinates": [37.6173, 55.7558] }
+  }
+}

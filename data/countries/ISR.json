@@ -1,0 +1,24 @@
+{
+  "id": "ISR",
+  "iso3": "ISR",
+  "name": "Israel",
+  "population": 9800000,
+  "gdp": 525000000000,
+  "gdpGrowth": 0.035,
+  "militaryBudgetPct": 5.2,
+  "manpower": 170000,
+  "airpower": 612,
+  "regimeType": "DEMOCRACY",
+  "riskTolerance": 70,
+  "stability": 68,
+  "legitimacy": 70,
+  "intelLevel": 95,
+  "goals": [
+    { "id": "isr_g1", "type": "SECURITY", "targetCountryId": "IRN", "priority": 95, "description": "Prevent Iranian nuclear capability" },
+    { "id": "isr_g2", "type": "SECURITY", "priority": 90, "description": "Maintain qualitative military edge in region" }
+  ],
+  "geo": {
+    "bounds": [34.3, 29.5, 35.9, 33.3],
+    "capital": { "name": "Jerusalem", "coordinates": [35.2137, 31.7683] }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "TUR",
+  "iso3": "TUR",
+  "name": "Turkey",
+  "population": 85000000,
+  "gdp": 1150000000000,
+  "gdpGrowth": 0.042,
+  "militaryBudgetPct": 1.9,
+  "manpower": 425000,
+  "airpower": 1067,
+  "regimeType": "AUTOCRACY",
+  "riskTolerance": 60,
+  "stability": 65,
+  "legitimacy": 62,
+  "intelLevel": 72,
+  "goals": [
+    { "id": "tur_g1", "type": "PRESTIGE", "priority": 85, "description": "Become regional hegemon in Middle East" },
+    { "id": "tur_g2", "type": "SECURITY", "priority": 80, "description": "Suppress Kurdish separatism" }
+  ],
+  "geo": {
+    "bounds": [26.0, 36.0, 45.0, 42.1],
+    "capital": { "name": "Ankara", "coordinates": [32.8597, 39.9334] }
+  }
+}

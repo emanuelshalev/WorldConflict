@@ -1,0 +1,24 @@
+{
+  "id": "PAK",
+  "iso3": "PAK",
+  "name": "Pakistan",
+  "population": 235000000,
+  "gdp": 376000000000,
+  "gdpGrowth": 0.02,
+  "militaryBudgetPct": 3.7,
+  "manpower": 654000,
+  "airpower": 1372,
+  "regimeType": "DEMOCRACY",
+  "riskTolerance": 55,
+  "stability": 55,
+  "legitimacy": 50,
+  "intelLevel": 70,
+  "goals": [
+    { "id": "pak_g1", "type": "SECURITY", "targetCountryId": "IND", "priority": 95, "description": "Counter Indian military superiority" },
+    { "id": "pak_g2", "type": "TERRITORIAL", "priority": 85, "description": "Resolve Kashmir dispute favorably" }
+  ],
+  "geo": {
+    "bounds": [60.9, 23.7, 77.8, 37.1],
+    "capital": { "name": "Islamabad", "coordinates": [73.0479, 33.6844] }
+  }
+}

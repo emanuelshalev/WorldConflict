@@ -1,0 +1,24 @@
+{
+  "id": "KOR",
+  "iso3": "KOR",
+  "name": "South Korea",
+  "population": 52000000,
+  "gdp": 1710000000000,
+  "gdpGrowth": 0.025,
+  "militaryBudgetPct": 2.8,
+  "manpower": 500000,
+  "airpower": 1595,
+  "regimeType": "DEMOCRACY",
+  "riskTolerance": 35,
+  "stability": 78,
+  "legitimacy": 75,
+  "intelLevel": 78,
+  "goals": [
+    { "id": "kor_g1", "type": "SECURITY", "targetCountryId": "PRK", "priority": 95, "description": "Deter North Korean aggression" },
+    { "id": "kor_g2", "type": "ECONOMIC", "priority": 80, "description": "Maintain technological leadership" }
+  ],
+  "geo": {
+    "bounds": [125.1, 33.1, 131.9, 38.6],
+    "capital": { "name": "Seoul", "coordinates": [126.9780, 37.5665] }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "PRK",
+  "iso3": "PRK",
+  "name": "North Korea",
+  "population": 26000000,
+  "gdp": 40000000000,
+  "gdpGrowth": 0.01,
+  "militaryBudgetPct": 15.0,
+  "manpower": 1280000,
+  "airpower": 946,
+  "regimeType": "AUTOCRACY",
+  "riskTolerance": 85,
+  "stability": 70,
+  "legitimacy": 80,
+  "intelLevel": 60,
+  "goals": [
+    { "id": "prk_g1", "type": "SECURITY", "priority": 95, "description": "Maintain nuclear deterrent and regime survival" },
+    { "id": "prk_g2", "type": "TERRITORIAL", "targetCountryId": "KOR", "priority": 70, "description": "Reunification under DPRK leadership" }
+  ],
+  "geo": {
+    "bounds": [124.2, 37.7, 130.7, 43.0],
+    "capital": { "name": "Pyongyang", "coordinates": [125.7625, 39.0392] }
+  }
+}

@@ -1,5 +1,6 @@
 import cors from "@fastify/cors";
 import Fastify from "fastify";
+import { gameRoutes } from "./routes/game.js";
 
 const server = Fastify({
   logger: true,
@@ -17,6 +18,8 @@ server.get("/health", async (_request, _reply) => {
     version: "1.0.0",
   };
 });
+
+await server.register(gameRoutes, { prefix: "/api" });
 
 const start = async (): Promise<void> => {
   try {

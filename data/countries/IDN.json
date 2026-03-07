@@ -1,0 +1,24 @@
+{
+  "id": "IDN",
+  "iso3": "IDN",
+  "name": "Indonesia",
+  "population": 277000000,
+  "gdp": 1420000000000,
+  "gdpGrowth": 0.051,
+  "militaryBudgetPct": 0.8,
+  "manpower": 400000,
+  "airpower": 444,
+  "regimeType": "DEMOCRACY",
+  "riskTolerance": 30,
+  "stability": 72,
+  "legitimacy": 70,
+  "intelLevel": 55,
+  "goals": [
+    { "id": "idn_g1", "type": "PRESTIGE", "priority": 75, "description": "Lead ASEAN and maintain regional neutrality" },
+    { "id": "idn_g2", "type": "ECONOMIC", "priority": 85, "description": "Develop manufacturing and reduce commodity dependence" }
+  ],
+  "geo": {
+    "bounds": [95.0, -11.0, 141.0, 6.1],
+    "capital": { "name": "Jakarta", "coordinates": [106.8456, -6.2088] }
+  }
+}

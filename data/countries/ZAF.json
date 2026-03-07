@@ -1,0 +1,24 @@
+{
+  "id": "ZAF",
+  "iso3": "ZAF",
+  "name": "South Africa",
+  "population": 60000000,
+  "gdp": 405000000000,
+  "gdpGrowth": 0.018,
+  "militaryBudgetPct": 0.7,
+  "manpower": 73000,
+  "airpower": 214,
+  "regimeType": "DEMOCRACY",
+  "riskTolerance": 30,
+  "stability": 58,
+  "legitimacy": 55,
+  "intelLevel": 55,
+  "goals": [
+    { "id": "zaf_g1", "type": "PRESTIGE", "priority": 75, "description": "Lead African development and BRICS participation" },
+    { "id": "zaf_g2", "type": "ECONOMIC", "priority": 85, "description": "Address unemployment and inequality" }
+  ],
+  "geo": {
+    "bounds": [16.5, -34.8, 32.9, -22.1],
+    "capital": { "name": "Pretoria", "coordinates": [28.1881, -25.7461] }
+  }
+}
