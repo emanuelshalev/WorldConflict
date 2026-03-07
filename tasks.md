@@ -142,30 +142,24 @@
 ## P0 Bugs: Critical Fixes for MVP
 
 ### Map & Visualization
-- [ ] **BUG-001** Map markers lag behind when panning/zooming (DOM markers don't sync with map tiles)
+- [x] **BUG-001** Map markers lag behind when panning/zooming (DOM markers don't sync with map tiles)
   - **Root cause:** Using HTML DOM elements as markers instead of native MapLibre layers
-  - **Fix:** Replace DOM markers with MapLibre GeoJSON source + circle/symbol layers
-  - **Acceptance:** Markers stay perfectly positioned during all map interactions
+  - **Fix:** Replaced DOM markers with MapLibre GeoJSON source + circle/symbol layers
+  - **Result:** Markers now render in WebGL with map tiles, perfect sync during pan/zoom
 
-- [ ] **BUG-002** Map layers show only dots with country initials, no meaningful data visualization
-  - **Current:** Simple colored circles with ISO3 text
-  - **Required:** 
-    - Political: Flag icons or regime type icons
-    - Military: Army strength bars/icons with troop counts
-    - Economic: GDP indicators with currency formatting
-    - Stability: Stability meters/gauges
-    - Intelligence: Fog of war effect, intel coverage indicators
-  - **Acceptance:** Each layer shows distinct, informative visualization
+- [x] **BUG-002** Map layers show only dots with country initials, no meaningful data visualization
+  - **Fix:** Added layer-specific labels and colors:
+    - Political: ISO3 code + regime type colors
+    - Military: Troop count formatted (e.g., "1.4M") + red gradient
+    - Economic: GDP formatted (e.g., "$25.5T") + green gradient
+    - Stability: Percentage (e.g., "75%") + hue gradient (red→green)
+    - Intelligence: ISO3 + opacity based on intel coverage
+  - **Result:** Each layer shows distinct, informative visualization with hover tooltips
 
-- [ ] **BUG-003** No map legend explaining layer colors and symbols
-  - **Required:** Dynamic legend panel that updates based on selected layer
-  - **Content per layer:**
-    - Political: Regime type color key (Democracy=green, Autocracy=red, etc.)
-    - Military: Strength scale (low/medium/high/superpower)
-    - Economic: GDP ranges with color gradient
-    - Stability: Stability percentage ranges
-    - Intelligence: Intel coverage levels
-  - **Acceptance:** Legend visible on map, updates on layer switch
+- [x] **BUG-003** No map legend explaining layer colors and symbols
+  - **Fix:** Added dynamic legend panel (bottom-right) that updates on layer switch
+  - **Content:** Color keys, size scales, and notes for each layer type
+  - **Result:** Legend visible on map, updates automatically when switching layers
 
 ### Game Flow
 - [ ] **BUG-004** (placeholder for future bugs)

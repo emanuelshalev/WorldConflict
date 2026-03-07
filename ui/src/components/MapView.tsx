@@ -1,9 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useGameStore } from '../store/gameStore';
 
-const COUNTRY_COLORS: Record<string, string> = {
+const REGIME_COLORS: Record<string, string> = {
   DEMOCRACY: '#4CAF50',
   AUTOCRACY: '#F44336',
   COMMUNIST: '#E91E63',
@@ -55,13 +55,115 @@ const DEMO_COUNTRIES = [
   { id: 'PRK', iso3: 'PRK', name: 'North Korea', regimeType: 'AUTOCRACY', gdp: 0.03e12, manpower: 1200000, stability: 70 },
 ];
 
+// Helper to format large numbers
+function formatNumber(num: number): string {
+  if (num >= 1e12) return `$${(num / 1e12).toFixed(1)}T`;
+  if (num >= 1e9) return `$${(num / 1e9).toFixed(1)}B`;
+  if (num >= 1e6) return `${(num / 1e6).toFixed(1)}M`;
+  if (num >= 1e3) return `${(num / 1e3).toFixed(0)}K`;
+  return num.toString();
+}
+
+// Get color based on layer type
+function getLayerColor(country: typeof DEMO_COUNTRIES[0], layer: string, isPlayer: boolean): string {
+  switch (layer) {
+    case 'military': {
+      const strength = Math.min(100, (country.manpower / 2000000) * 100);
+      return `hsl(0, ${Math.round(strength)}%, ${40 + strength * 0.2}%)`;
+    }
+    case 'economic': {
+      const gdpScale = Math.min(100, (country.gdp / 25e12) * 100);
+      return `hsl(120, ${Math.round(gdpScale)}%, ${30 + gdpScale * 0.2}%)`;
+    }
+    case 'stability': {
+      const hue = country.stability * 1.2; // 0=red, 120=green
+      return `hsl(${Math.round(hue)}, 70%, 45%)`;
+    }
+    case 'intelligence': {
+      return isPlayer ? '#2196F3' : 'rgba(100, 100, 100, 0.6)';
+    }
+    default: // political
+      return REGIME_COLORS[country.regimeType] || '#607D8B';
+  }
+}
+
+// Get label based on layer type
+function getLayerLabel(country: typeof DEMO_COUNTRIES[0], layer: string): string {
+  switch (layer) {
+    case 'military':
+      return formatNumber(country.manpower);
+    case 'economic':
+      return formatNumber(country.gdp);
+    case 'stability':
+      return `${country.stability}%`;
+    case 'intelligence':
+      return country.iso3;
+    default: // political
+      return country.iso3;
+  }
+}
+
 export function MapView() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
-  const markers = useRef<maplibregl.Marker[]>([]);
+  const popup = useRef<maplibregl.Popup | null>(null);
+  const mapLoaded = useRef(false);
 
   const { worldState, selectedCountryId, selectCountry, mapLayer, debugMode } = useGameStore();
 
+  // Build GeoJSON from country data
+  const buildGeoJSON = useCallback(() => {
+    const countries = worldState?.countries ?? DEMO_COUNTRIES;
+    const isDemo = !worldState;
+    const playerCountryId = worldState?.playerCountryId;
+
+    const features = countries.map((country) => {
+      const center = COUNTRY_CENTERS[country.id];
+      if (!center) return null;
+
+      const isPlayer = !isDemo && country.id === playerCountryId;
+      const color = getLayerColor(country, mapLayer, isPlayer);
+      const label = getLayerLabel(country, mapLayer);
+      
+      // Calculate circle size based on layer
+      let radius = 12;
+      if (mapLayer === 'military') {
+        radius = 8 + Math.log10(country.manpower + 1) * 2;
+      } else if (mapLayer === 'economic') {
+        radius = 8 + Math.log10(country.gdp / 1e9 + 1) * 2;
+      }
+      if (isPlayer) radius += 4;
+
+      return {
+        type: 'Feature' as const,
+        geometry: {
+          type: 'Point' as const,
+          coordinates: center,
+        },
+        properties: {
+          id: country.id,
+          name: country.name,
+          iso3: country.iso3,
+          color,
+          label,
+          radius,
+          isPlayer,
+          stability: country.stability,
+          gdp: country.gdp,
+          manpower: country.manpower,
+          regimeType: country.regimeType,
+          isDemo,
+        },
+      };
+    }).filter((f): f is NonNullable<typeof f> => f !== null);
+
+    return {
+      type: 'FeatureCollection' as const,
+      features,
+    } as GeoJSON.FeatureCollection;
+  }, [worldState, mapLayer]);
+
+  // Initialize map
   useEffect(() => {
     if (!mapContainer.current || map.current) return;
 
@@ -95,101 +197,128 @@ export function MapView() {
 
     map.current.addControl(new maplibregl.NavigationControl(), 'top-right');
 
+    // Create popup for hover
+    popup.current = new maplibregl.Popup({
+      closeButton: false,
+      closeOnClick: false,
+      offset: 15,
+    });
+
+    map.current.on('load', () => {
+      mapLoaded.current = true;
+      
+      // Add GeoJSON source
+      map.current!.addSource('countries', {
+        type: 'geojson',
+        data: buildGeoJSON(),
+      });
+
+      // Add circle layer for country markers
+      map.current!.addLayer({
+        id: 'country-circles',
+        type: 'circle',
+        source: 'countries',
+        paint: {
+          'circle-radius': ['get', 'radius'],
+          'circle-color': ['get', 'color'],
+          'circle-stroke-width': [
+            'case',
+            ['get', 'isPlayer'], 3,
+            ['==', ['get', 'id'], selectedCountryId || ''], 2,
+            1
+          ],
+          'circle-stroke-color': [
+            'case',
+            ['get', 'isPlayer'], '#FFD700',
+            ['==', ['get', 'id'], selectedCountryId || ''], '#FFFFFF',
+            'rgba(0,0,0,0.3)'
+          ],
+        },
+      });
+
+      // Add text labels
+      map.current!.addLayer({
+        id: 'country-labels',
+        type: 'symbol',
+        source: 'countries',
+        layout: {
+          'text-field': ['get', 'label'],
+          'text-size': 11,
+          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+          'text-allow-overlap': true,
+        },
+        paint: {
+          'text-color': '#FFFFFF',
+          'text-halo-color': 'rgba(0,0,0,0.8)',
+          'text-halo-width': 1.5,
+        },
+      });
+
+      // Click handler
+      map.current!.on('click', 'country-circles', (e) => {
+        if (e.features && e.features[0]) {
+          const id = e.features[0].properties?.id;
+          selectCountry(id === selectedCountryId ? null : id);
+        }
+      });
+
+      // Hover handlers
+      map.current!.on('mouseenter', 'country-circles', (e) => {
+        if (!map.current || !popup.current) return;
+        map.current.getCanvas().style.cursor = 'pointer';
+        
+        if (e.features && e.features[0]) {
+          const props = e.features[0].properties;
+          const coords = (e.features[0].geometry as GeoJSON.Point).coordinates.slice() as [number, number];
+          
+          const tooltipContent = props?.isDemo
+            ? `<strong>${props.name}</strong><br/>Stability: ${props.stability}%<br/><em>(Demo - Start a game to play)</em>`
+            : `<strong>${props?.name}</strong><br/>Stability: ${props?.stability}%<br/>GDP: ${formatNumber(props?.gdp)}<br/>Military: ${formatNumber(props?.manpower)}`;
+          
+          popup.current.setLngLat(coords).setHTML(tooltipContent).addTo(map.current);
+        }
+      });
+
+      map.current!.on('mouseleave', 'country-circles', () => {
+        if (!map.current || !popup.current) return;
+        map.current.getCanvas().style.cursor = '';
+        popup.current.remove();
+      });
+    });
+
     return () => {
-      markers.current.forEach((m) => m.remove());
+      popup.current?.remove();
       map.current?.remove();
       map.current = null;
+      mapLoaded.current = false;
     };
   }, []);
 
+  // Update GeoJSON when data changes
   useEffect(() => {
-    if (!map.current) return;
+    if (!map.current || !mapLoaded.current) return;
 
-    markers.current.forEach((m) => m.remove());
-    markers.current = [];
-
-    // Use real game data if available, otherwise show demo markers
-    const countries = worldState?.countries ?? DEMO_COUNTRIES;
-    const isDemo = !worldState;
-
-    const playerCountry = worldState?.countries.find(
-      (c) => c.id === worldState?.playerCountryId
-    );
-
-    for (const country of countries) {
-      const center = COUNTRY_CENTERS[country.id];
-      if (!center) continue;
-
-      const isPlayer = !isDemo && country.id === worldState?.playerCountryId;
-      const isSelected = country.id === selectedCountryId;
-      const isAlly = playerCountry?.alliances.includes(country.id);
-      const isAtWar = playerCountry?.atWarWith.includes(country.id);
-      const relation = playerCountry?.relations[country.id] ?? 0;
-
-      let markerColor = COUNTRY_COLORS[country.regimeType] || '#607D8B';
-
-      if (mapLayer === 'military') {
-        const strength = Math.min(100, (country.manpower / 1000000) * 50);
-        markerColor = `hsl(0, ${strength}%, 50%)`;
-      } else if (mapLayer === 'economic') {
-        const gdpScale = Math.min(100, (country.gdp / 30e12) * 100);
-        markerColor = `hsl(120, ${gdpScale}%, 40%)`;
-      } else if (mapLayer === 'stability') {
-        markerColor = `hsl(${country.stability * 1.2}, 70%, 50%)`;
-      } else if (mapLayer === 'intelligence') {
-        if (isPlayer) {
-          markerColor = '#2196F3';
-        } else {
-          const opacity = playerCountry ? playerCountry.intelLevel / 100 : 0.5;
-          markerColor = `rgba(100, 100, 100, ${opacity})`;
-        }
-      }
-
-      const el = document.createElement('div');
-      el.className = 'country-marker';
-      el.style.cssText = `
-        width: ${isPlayer ? 40 : 30}px;
-        height: ${isPlayer ? 40 : 30}px;
-        background-color: ${markerColor};
-        border: 3px solid ${
-          isPlayer ? '#FFD700' : isSelected ? '#FFF' : isAtWar ? '#F00' : isAlly ? '#0F0' : 'transparent'
-        };
-        border-radius: 50%;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        font-size: ${isPlayer ? 14 : 12}px;
-        color: white;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-        transition: transform 0.2s;
-      `;
-      el.textContent = country.iso3;
-      el.title = isDemo 
-        ? `${country.name}\nStability: ${country.stability}%\n(Demo - Start a game to play)`
-        : `${country.name}\nStability: ${country.stability}%\nRelation: ${relation}`;
-
-      el.addEventListener('click', () => {
-        selectCountry(country.id === selectedCountryId ? null : country.id);
-      });
-
-      el.addEventListener('mouseenter', () => {
-        el.style.transform = 'scale(1.2)';
-      });
-
-      el.addEventListener('mouseleave', () => {
-        el.style.transform = 'scale(1)';
-      });
-
-      const marker = new maplibregl.Marker({ element: el })
-        .setLngLat(center)
-        .addTo(map.current!);
-
-      markers.current.push(marker);
+    const source = map.current.getSource('countries') as maplibregl.GeoJSONSource;
+    if (source) {
+      source.setData(buildGeoJSON());
     }
-  }, [worldState, selectedCountryId, mapLayer, selectCountry]);
+
+    // Update selection styling
+    if (map.current.getLayer('country-circles')) {
+      map.current.setPaintProperty('country-circles', 'circle-stroke-width', [
+        'case',
+        ['get', 'isPlayer'], 3,
+        ['==', ['get', 'id'], selectedCountryId || ''], 2,
+        1
+      ]);
+      map.current.setPaintProperty('country-circles', 'circle-stroke-color', [
+        'case',
+        ['get', 'isPlayer'], '#FFD700',
+        ['==', ['get', 'id'], selectedCountryId || ''], '#FFFFFF',
+        'rgba(0,0,0,0.3)'
+      ]);
+    }
+  }, [worldState, selectedCountryId, mapLayer, buildGeoJSON]);
 
   return (
     <div className="map-container">
@@ -212,6 +341,58 @@ export function MapView() {
             )
           )}
         </div>
+      </div>
+
+      {/* Dynamic Legend */}
+      <div className="map-legend">
+        <div className="legend-title">
+          {mapLayer.charAt(0).toUpperCase() + mapLayer.slice(1)} Layer
+        </div>
+        {mapLayer === 'political' && (
+          <div className="legend-items">
+            <div className="legend-item"><span className="legend-color" style={{background: '#4CAF50'}}></span> Democracy</div>
+            <div className="legend-item"><span className="legend-color" style={{background: '#F44336'}}></span> Autocracy</div>
+            <div className="legend-item"><span className="legend-color" style={{background: '#E91E63'}}></span> Communist</div>
+            <div className="legend-item"><span className="legend-color" style={{background: '#9C27B0'}}></span> Monarchy</div>
+            <div className="legend-item"><span className="legend-color" style={{background: '#FF9800'}}></span> Theocracy</div>
+            <div className="legend-divider"></div>
+            <div className="legend-item"><span className="legend-border" style={{borderColor: '#FFD700'}}></span> Your Nation</div>
+            <div className="legend-item"><span className="legend-border" style={{borderColor: '#FFFFFF'}}></span> Selected</div>
+          </div>
+        )}
+        {mapLayer === 'military' && (
+          <div className="legend-items">
+            <div className="legend-item"><span className="legend-color" style={{background: 'hsl(0, 20%, 45%)'}}></span> &lt; 100K troops</div>
+            <div className="legend-item"><span className="legend-color" style={{background: 'hsl(0, 40%, 50%)'}}></span> 100K - 500K</div>
+            <div className="legend-item"><span className="legend-color" style={{background: 'hsl(0, 70%, 55%)'}}></span> 500K - 1M</div>
+            <div className="legend-item"><span className="legend-color" style={{background: 'hsl(0, 100%, 60%)'}}></span> &gt; 1M troops</div>
+            <div className="legend-note">Circle size = army strength</div>
+          </div>
+        )}
+        {mapLayer === 'economic' && (
+          <div className="legend-items">
+            <div className="legend-item"><span className="legend-color" style={{background: 'hsl(120, 20%, 35%)'}}></span> &lt; $1T GDP</div>
+            <div className="legend-item"><span className="legend-color" style={{background: 'hsl(120, 50%, 40%)'}}></span> $1T - $5T</div>
+            <div className="legend-item"><span className="legend-color" style={{background: 'hsl(120, 75%, 45%)'}}></span> $5T - $15T</div>
+            <div className="legend-item"><span className="legend-color" style={{background: 'hsl(120, 100%, 50%)'}}></span> &gt; $15T GDP</div>
+            <div className="legend-note">Circle size = GDP</div>
+          </div>
+        )}
+        {mapLayer === 'stability' && (
+          <div className="legend-items">
+            <div className="legend-item"><span className="legend-color" style={{background: 'hsl(0, 70%, 45%)'}}></span> 0-24% Critical</div>
+            <div className="legend-item"><span className="legend-color" style={{background: 'hsl(30, 70%, 45%)'}}></span> 25-49% Unstable</div>
+            <div className="legend-item"><span className="legend-color" style={{background: 'hsl(60, 70%, 45%)'}}></span> 50-74% Moderate</div>
+            <div className="legend-item"><span className="legend-color" style={{background: 'hsl(120, 70%, 45%)'}}></span> 75-100% Stable</div>
+          </div>
+        )}
+        {mapLayer === 'intelligence' && (
+          <div className="legend-items">
+            <div className="legend-item"><span className="legend-color" style={{background: '#2196F3'}}></span> Your Nation</div>
+            <div className="legend-item"><span className="legend-color" style={{background: 'rgba(100,100,100,0.6)'}}></span> Other Nations</div>
+            <div className="legend-note">Opacity = intel coverage</div>
+          </div>
+        )}
       </div>
 
       {debugMode && worldState && (
