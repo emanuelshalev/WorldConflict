@@ -1,0 +1,30 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model SaveGame {
+  id          String   @id @default(uuid())
+  name        String
+  worldState  String   // JSON serialized WorldState
+  playerCountry String
+  seed        Int
+  turn        Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model TurnLog {
+  id         String   @id @default(uuid())
+  saveGameId String
+  turn       Int
+  events     String   // JSON serialized events
+  actions    String   // JSON serialized actions
+  createdAt  DateTime @default(now())
+}

@@ -1,0 +1,14 @@
+starting development prompt
+
+Execute the repo plan end-to-end.
+
+1) Read AGENTS_PLAN.md, SPEC.md, and TASKS.md.
+2) Work through TASKS.md top-to-bottom: complete all P0 tasks first, then P1 if time permits.
+3) After each task:
+   - run the verification loop from AGENTS_PLAN.md,
+   - update TASKS.md (check + move to Completed),
+   - append an entry to PROGRESS.md,
+   - git commit using the required message format.
+4) Keep iterating until all P0 tasks are complete and the Definition of Done in SPEC.md is satisfied.
+5) Do not ask me questions unless you are hard blocked. If blocked, make the smallest reasonable assumption consistent with SPEC.md, document it in PROGRESS.md, and continue.
+Start now with the next unchecked task.

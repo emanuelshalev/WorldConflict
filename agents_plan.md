@@ -115,6 +115,22 @@ tests/core/
 
 text
 
+**Primary Sources (2025 data):**
+1. SIPRI Military Expenditure [web:65] → militaryBudgetPct
+2. World Bank MS.MIL.TOTL.P1 [web:72] → manpower  
+3. CIA World Factbook → regime types, risk tolerance
+4. IMF GDP forecasts → gdp, growthRate
+5. Global Firepower Index [web:69] → airpower ratios
+
+**Historical Scenarios:**
+1. Correlates of War [web:71] → 1950-2025 baselines
+2. Penn World Tables → GDP historical
+3. Scenario multipliers: Cold War (+tension), Post-1991 (+globalization)
+
+**Geo Data:**
+1. NaturalEarth 110m → simplified country borders
+2. country-borders/datasets/country-borders [GitHub] → GeoJSON
+
 ## 🎮 Implementation Priority (P0 Tasks)
 
 **Phase 0: Foundation (Week 1)**

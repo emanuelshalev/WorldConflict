@@ -1,0 +1,56 @@
+{
+  "name": "worldconflict",
+  "version": "1.0.0",
+  "description": "World politics simulation and game",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:api\" \"npm run dev:ui\"",
+    "dev:api": "tsx watch src/api/server.ts",
+    "dev:ui": "cd ui && npm run dev",
+    "build": "tsc && cd ui && npm run build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "biome check src",
+    "lint:fix": "biome check --write src",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "perf": "vitest run tests/perf --reporter=verbose",
+    "db:push": "prisma db push",
+    "db:generate": "prisma generate"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emanuelshalev/WorldConflict.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/emanuelshalev/WorldConflict/issues"
+  },
+  "homepage": "https://github.com/emanuelshalev/WorldConflict#readme",
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.6",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^25.3.5",
+    "@typescript-eslint/eslint-plugin": "^8.56.1",
+    "@typescript-eslint/parser": "^8.56.1",
+    "@vitest/coverage-v8": "^4.0.18",
+    "concurrently": "^9.2.1",
+    "dotenv": "^17.3.1",
+    "eslint": "^10.0.3",
+    "prettier": "^3.8.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.2.0",
+    "@prisma/client": "^7.4.2",
+    "better-sqlite3": "^12.6.2",
+    "fastify": "^5.8.2",
+    "prisma": "^7.4.2",
+    "zod": "^4.3.6"
+  }
+}
