@@ -33,7 +33,7 @@ const ADVISORS = {
 };
 
 export function TurnBriefingPanel() {
-  const { worldState, openModal, isLoading } = useGameStore();
+  const { worldState, openModal, setAdvisorRole, isLoading } = useGameStore();
   const [selectedActions, setSelectedActions] = useState<string[]>([]);
   const [customAction, setCustomAction] = useState('');
   const [showCustomInput, setShowCustomInput] = useState(false);
@@ -249,7 +249,10 @@ export function TurnBriefingPanel() {
             <div 
               key={i} 
               className={`alert-card ${alert.urgency}`}
-              onClick={() => openModal('advisor')}
+              onClick={() => {
+                setAdvisorRole(alert.advisorId);
+                openModal('advisor');
+              }}
             >
               <div className="alert-header">
                 <span className="advisor-icon">{alert.icon}</span>
@@ -375,10 +378,12 @@ export function TurnBriefingPanel() {
         <button
           className="btn btn-primary btn-large end-turn-btn"
           onClick={handleEndTurn}
-          disabled={isLoading}
+          disabled={isLoading || (selectedActions.length === 0 && !customAction.trim())}
         >
           {isLoading ? (
             <>⏳ Processing Turn...</>
+          ) : selectedActions.length === 0 && !customAction.trim() ? (
+            <>Select an action to continue</>
           ) : (
             <>
               End Turn {selectedActions.length > 0 && `(${selectedActions.length} actions)`}

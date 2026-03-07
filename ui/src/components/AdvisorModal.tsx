@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useGameStore } from '../store/gameStore';
 
 const ADVISORS = [
@@ -29,17 +29,26 @@ export function AdvisorModal() {
   const [response, setResponse] = useState<AdvisorResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const initialFetchDone = useRef(false);
 
-  if (activeModal !== 'advisor') return null;
+  // Auto-fetch briefing when modal opens with a pre-selected advisor
+  useEffect(() => {
+    if (activeModal === 'advisor' && activeAdvisorRole && saveId && !initialFetchDone.current) {
+      initialFetchDone.current = true;
+      fetchAdvisorBriefing(activeAdvisorRole);
+    }
+    if (activeModal !== 'advisor') {
+      initialFetchDone.current = false;
+      setResponse(null);
+      setError(null);
+    }
+  }, [activeModal, activeAdvisorRole, saveId]);
 
-  const handleSelectAdvisor = async (advisorId: string) => {
-    setAdvisorRole(advisorId);
-    setResponse(null);
-    setError(null);
-
+  const fetchAdvisorBriefing = async (advisorId: string) => {
     if (!saveId) return;
 
     setLoading(true);
+    setError(null);
     try {
       const res = await fetch('http://localhost:8080/api/chat/advisor', {
         method: 'POST',
@@ -57,6 +66,15 @@ export function AdvisorModal() {
     } finally {
       setLoading(false);
     }
+  };
+
+  if (activeModal !== 'advisor') return null;
+
+  const handleSelectAdvisor = async (advisorId: string) => {
+    setAdvisorRole(advisorId);
+    setResponse(null);
+    setError(null);
+    await fetchAdvisorBriefing(advisorId);
   };
 
   const handleSendMessage = async () => {

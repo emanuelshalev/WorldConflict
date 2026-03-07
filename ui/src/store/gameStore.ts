@@ -156,9 +156,8 @@ export async function executeTurn(playerActions: Array<{ type: string; targetCou
 
     store.setWorldState(data.worldState, saveId);
 
-    if (data.newspaper && data.newspaper.length > 0) {
-      store.openModal('newspaper');
-    }
+    // Always show newspaper after turn ends (even if no major headlines)
+    store.openModal('newspaper');
   } catch (error) {
     store.setError(error instanceof Error ? error.message : 'Failed to execute turn');
   } finally {
