@@ -166,6 +166,67 @@ function generateChatResponse(advisorId: string, userQuestion: string, worldStat
   }
 }
 
+// Generate a contextual response that acknowledges the user's specific question
+function generateContextualResponse(advisorId: string, userQuestion: string, worldState: any): string {
+  const playerCountry = worldState?.countries?.find((c: any) => c.id === worldState?.playerCountryId);
+  if (!playerCountry) return "I'm unable to assess the situation at this time.";
+
+  const persona = ADVISOR_PERSONAS[advisorId] || ADVISOR_PERSONAS.CHIEF_OF_STAFF;
+  const question = userQuestion.toLowerCase();
+  
+  // First try the keyword-based response
+  const keywordResponse = generateChatResponse(advisorId, userQuestion, worldState);
+  
+  // Check if we got a generic "I can advise on..." response (fallback)
+  const isGenericResponse = keywordResponse.includes('I can advise on') || 
+                            keywordResponse.includes('I stand ready') ||
+                            keywordResponse.includes('I am prepared to advise') ||
+                            keywordResponse.includes('I monitor threats') ||
+                            keywordResponse.includes('What aspect of');
+  
+  if (!isGenericResponse) {
+    return keywordResponse;
+  }
+  
+  // Generate a more contextual response based on the question
+  const countries = worldState.countries || [];
+  const mentionedCountry = countries.find((c: any) => 
+    question.includes(c.name.toLowerCase()) || question.includes(c.id.toLowerCase())
+  );
+  
+  // Provide a thoughtful response that references the question
+  const questionAck = userQuestion.length > 50 
+    ? `Regarding your question about "${userQuestion.substring(0, 40)}..."` 
+    : `You ask: "${userQuestion}"`;
+  
+  switch (advisorId) {
+    case 'FOREIGN_MINISTER':
+      if (mentionedCountry) {
+        const rel = playerCountry.relations?.[mentionedCountry.id] || 0;
+        return `${persona.greeting}, ${questionAck} - Let me address this. ${mentionedCountry.name} has relations of ${rel} with us. ${rel > 30 ? 'They are favorably disposed.' : rel < -20 ? 'Relations are strained.' : 'They are neutral toward us.'} Their stability is ${mentionedCountry.stability}%. I recommend ${rel < 0 ? 'diplomatic outreach to improve ties.' : 'maintaining our current approach.'}`;
+      }
+      return `${persona.greeting}, ${questionAck} - From a diplomatic perspective, our international standing is ${playerCountry.stability > 60 ? 'strong' : 'in need of attention'}. We have ${(playerCountry.alliances || []).length} alliance(s). Global tension is at ${worldState.globalTension}%. What specific nation or diplomatic matter should I focus on?`;
+      
+    case 'DEFENSE_MINISTER':
+      return `${persona.greeting}, ${questionAck} - Militarily speaking, we stand at ${playerCountry.mobilizationLevel}% readiness with ${playerCountry.manpower?.toLocaleString() || 'adequate'} troops. ${playerCountry.atWarWith?.length > 0 ? 'We are currently at war - this is our primary concern.' : 'No active conflicts, but we must remain vigilant.'} Is there a specific military matter you wish me to address?`;
+      
+    case 'FINANCE_MINISTER':
+      return `${persona.greeting}, ${questionAck} - Economically, our GDP is $${(playerCountry.gdp / 1e9).toFixed(1)}B with ${(playerCountry.growthRate * 100).toFixed(1)}% growth. Military spending is ${playerCountry.militaryBudgetPercent}% of GDP. ${playerCountry.growthRate < 0 ? 'The economy needs attention.' : 'Finances are stable.'} What economic aspect concerns you most?`;
+      
+    case 'INTELLIGENCE_CHIEF':
+      if (mentionedCountry) {
+        return `${persona.greeting}, ${questionAck} - Our intelligence on ${mentionedCountry.name}: Stability ${mentionedCountry.stability}%, mobilization ${mentionedCountry.mobilizationLevel}%, regime type ${mentionedCountry.regimeType}. ${mentionedCountry.stability < 50 ? 'They appear vulnerable to internal pressure.' : 'They seem internally stable.'} Shall I recommend any covert actions?`;
+      }
+      return `${persona.greeting}, ${questionAck} - Our intelligence network is monitoring global developments. Current global tension: ${worldState.globalTension}%. We have ${countries.filter((c: any) => (playerCountry.relations?.[c.id] || 0) < -30).length} potentially hostile nations under surveillance. What specific intelligence do you require?`;
+      
+    case 'DOMESTIC_ADVISOR':
+      return `${persona.greeting}, ${questionAck} - Domestically, stability is at ${playerCountry.stability}% and public legitimacy at ${playerCountry.legitimacy}%. ${playerCountry.stability < 50 ? 'The people are restless - we should consider reforms or security measures.' : 'The nation is relatively stable.'} What domestic concern should I address?`;
+      
+    default:
+      return `${persona.greeting}, ${questionAck} - Let me provide my assessment. Our nation's stability: ${playerCountry.stability}%. Global tension: ${worldState.globalTension}%. ${playerCountry.atWarWith?.length > 0 ? 'We are at war.' : 'We are at peace.'} Economy: ${playerCountry.growthRate > 0 ? 'growing' : 'struggling'}. How can I help you further?`;
+  }
+}
+
 // Generate detailed local briefings based on game state
 function generateLocalBriefing(advisorId: string, worldState: any): AdvisorResponse {
   const playerCountry = worldState?.countries?.find((c: any) => c.id === worldState?.playerCountryId);
@@ -548,7 +609,7 @@ export function AdvisorModal() {
 
     // Fallback to local response generation based on user's question
     if (worldState) {
-      const chatResponse = generateChatResponse(activeAdvisorRole, userMessage, worldState);
+      const chatResponse = generateContextualResponse(activeAdvisorRole, userMessage, worldState);
       addAdvisorMessage(activeAdvisorRole, { role: 'advisor', content: chatResponse });
     }
     setLoading(false);
@@ -583,22 +644,22 @@ export function AdvisorModal() {
             ))}
           </div>
 
-          <div className="advisor-chat">
+          {/* Center: Briefing panel */}
+          <div className="advisor-briefing">
             {!activeAdvisorRole ? (
               <div className="chat-placeholder">
                 <p>Select an advisor to consult</p>
               </div>
             ) : (
               <>
-                <div className="chat-header">
+                <div className="briefing-header">
                   <span className="advisor-icon">{selectedAdvisor?.icon}</span>
-                  <h3>{selectedAdvisor?.name}</h3>
+                  <h3>{selectedAdvisor?.name}'s Briefing</h3>
                 </div>
 
                 {error && <div className="error-message">{error}</div>}
 
-                <div className="chat-response">
-                  {/* Initial briefing */}
+                <div className="briefing-content">
                   {response && (
                     <>
                       <div className="response-section">
@@ -649,62 +710,62 @@ export function AdvisorModal() {
                       )}
                     </>
                   )}
-
-                </div>
-
-                {/* Chat panel on the right */}
-                <div className="advisor-chat-panel">
-                  <div className="chat-panel-header">
-                    <h4>💬 Chat with {selectedAdvisor?.name}</h4>
-                  </div>
-                  
-                  <div className="chat-messages-container">
-                    {currentChatHistory.length === 0 ? (
-                      <div className="chat-empty">
-                        <p>Ask {selectedAdvisor?.name} any questions about their area of expertise.</p>
-                      </div>
-                    ) : (
-                      <div className="chat-messages">
-                        {currentChatHistory.map((msg: StoredChatMessage, i: number) => (
-                          <div key={i} className={`chat-message ${msg.role}`}>
-                            <div className="message-header">
-                              <span className="message-role">
-                                {msg.role === 'user' ? '👤 You' : `${selectedAdvisor?.icon} ${selectedAdvisor?.name}`}
-                              </span>
-                            </div>
-                            <p className="message-content">{msg.content}</p>
-                          </div>
-                        ))}
-                        <div ref={chatEndRef} />
-                      </div>
-                    )}
-                    
-                    {/* Loading indicator */}
-                    {loading && (
-                      <div className="chat-loading">Consulting advisor...</div>
-                    )}
-                  </div>
-
-                  <div className="chat-input">
-                    <input
-                      type="text"
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      placeholder="Ask a question..."
-                      onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                    />
-                    <button
-                      className="btn btn-primary"
-                      onClick={handleSendMessage}
-                      disabled={loading || !message.trim()}
-                    >
-                      Send
-                    </button>
-                  </div>
                 </div>
               </>
             )}
           </div>
+
+          {/* Right: Chat panel */}
+          {activeAdvisorRole && (
+            <div className="advisor-chat-panel">
+              <div className="chat-panel-header">
+                <h4>💬 Chat with {selectedAdvisor?.name}</h4>
+              </div>
+              
+              <div className="chat-messages-container">
+                {currentChatHistory.length === 0 ? (
+                  <div className="chat-empty">
+                    <p>Ask {selectedAdvisor?.name} any questions about their area of expertise.</p>
+                  </div>
+                ) : (
+                  <div className="chat-messages">
+                    {currentChatHistory.map((msg: StoredChatMessage, i: number) => (
+                      <div key={i} className={`chat-message ${msg.role}`}>
+                        <div className="message-header">
+                          <span className="message-role">
+                            {msg.role === 'user' ? '👤 You' : `${selectedAdvisor?.icon} ${selectedAdvisor?.name}`}
+                          </span>
+                        </div>
+                        <p className="message-content">{msg.content}</p>
+                      </div>
+                    ))}
+                    <div ref={chatEndRef} />
+                  </div>
+                )}
+                
+                {loading && (
+                  <div className="chat-loading">Consulting advisor...</div>
+                )}
+              </div>
+
+              <div className="chat-input">
+                <input
+                  type="text"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder="Ask a question..."
+                  onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                />
+                <button
+                  className="btn btn-primary"
+                  onClick={handleSendMessage}
+                  disabled={loading || !message.trim()}
+                >
+                  Send
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
