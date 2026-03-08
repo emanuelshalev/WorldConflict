@@ -15,6 +15,19 @@ interface OllamaResponse {
   prompt_eval_count?: number;
 }
 
+interface GeminiResponse {
+  candidates?: Array<{
+    content?: {
+      parts?: Array<{ text?: string }>;
+    };
+  }>;
+  usageMetadata?: {
+    promptTokenCount: number;
+    candidatesTokenCount: number;
+    totalTokenCount: number;
+  };
+}
+
 export interface LLMMessage {
   role: "system" | "user" | "assistant";
   content: string;
@@ -191,6 +204,101 @@ export class OllamaClient implements LLMClient {
   }
 }
 
+export class GeminiClient implements LLMClient {
+  private config: LLMClientConfig;
+
+  constructor(config: Partial<LLMClientConfig> = {}) {
+    this.config = {
+      apiKey: config.apiKey ?? process.env.GEMINI_API_KEY,
+      baseUrl: config.baseUrl ?? "https://generativelanguage.googleapis.com/v1beta",
+      model: config.model ?? "gemini-1.5-flash",
+      temperature: config.temperature ?? 0.7,
+      maxTokens: config.maxTokens ?? 1000,
+      timeout: config.timeout ?? 30000,
+    };
+  }
+
+  async chat(messages: LLMMessage[]): Promise<LLMResponse> {
+    // Convert messages to Gemini format
+    // Gemini uses "user" and "model" roles, and system prompt goes in systemInstruction
+    const systemMessage = messages.find(m => m.role === "system");
+    const chatMessages = messages.filter(m => m.role !== "system");
+
+    const contents = chatMessages.map(m => ({
+      role: m.role === "assistant" ? "model" : "user",
+      parts: [{ text: m.content }],
+    }));
+
+    const requestBody: Record<string, unknown> = {
+      contents,
+      generationConfig: {
+        temperature: this.config.temperature,
+        maxOutputTokens: this.config.maxTokens,
+      },
+    };
+
+    if (systemMessage) {
+      requestBody.systemInstruction = {
+        parts: [{ text: systemMessage.content }],
+      };
+    }
+
+    const url = `${this.config.baseUrl}/models/${this.config.model}:generateContent?key=${this.config.apiKey}`;
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+      signal: AbortSignal.timeout(this.config.timeout!),
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(`Gemini API error: ${response.status} - ${error}`);
+    }
+
+    const data = (await response.json()) as GeminiResponse;
+
+    const content = data.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+
+    return {
+      content,
+      usage: data.usageMetadata
+        ? {
+            promptTokens: data.usageMetadata.promptTokenCount,
+            completionTokens: data.usageMetadata.candidatesTokenCount,
+            totalTokens: data.usageMetadata.totalTokenCount,
+          }
+        : undefined,
+    };
+  }
+
+  async chatWithSchema<T>(messages: LLMMessage[], schema: z.ZodSchema<T>): Promise<T> {
+    const schemaPrompt = `You must respond with valid JSON that matches this schema. Do not include any text outside the JSON object.\n\nSchema: ${JSON.stringify(zodToJsonSchema(schema))}`;
+
+    const messagesWithSchema: LLMMessage[] = [
+      { role: "system", content: schemaPrompt },
+      ...messages,
+    ];
+
+    const response = await this.chat(messagesWithSchema);
+
+    const jsonMatch = response.content.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error("No JSON object found in response");
+    }
+
+    const parsed = JSON.parse(jsonMatch[0]);
+    return schema.parse(parsed);
+  }
+
+  getConfig(): LLMClientConfig {
+    return { ...this.config };
+  }
+}
+
 export class MockLLMClient implements LLMClient {
   private responses: Map<string, string> = new Map();
   private defaultResponse: string;
@@ -241,13 +349,30 @@ function zodToJsonSchema(_schema: z.ZodType): object {
   };
 }
 
+/**
+ * Create an LLM client for the specified provider.
+ * 
+ * Supported providers:
+ * - "openai": OpenAI API (requires OPENAI_API_KEY env var)
+ * - "gemini": Google Gemini API (requires GEMINI_API_KEY env var)
+ * - "ollama": Local Ollama server (no API key needed)
+ * - "mock": Mock client for testing
+ * 
+ * Example usage:
+ *   // Gemini
+ *   const client = createLLMClient('gemini');
+ *   // or with custom model
+ *   const client = createLLMClient('gemini', { model: 'gemini-1.5-pro' });
+ */
 export function createLLMClient(
-  provider: "openai" | "ollama" | "mock" = "openai",
+  provider: "openai" | "gemini" | "ollama" | "mock" = "openai",
   config?: Partial<LLMClientConfig>,
 ): LLMClient {
   switch (provider) {
     case "openai":
       return new OpenAIClient(config);
+    case "gemini":
+      return new GeminiClient(config);
     case "ollama":
       return new OllamaClient(config);
     case "mock":
