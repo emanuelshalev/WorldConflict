@@ -158,11 +158,16 @@
   padding: 16px;
   margin-bottom: 12px;
   border: 1px solid var(--border-color);
-  transition: border-color 0.2s;
+  transition: all 0.2s;
 }
 
-.news-card:hover {
+.news-card.clickable {
+  cursor: pointer;
+}
+
+.news-card.clickable:hover {
   border-color: var(--primary);
+  background: rgba(33, 150, 243, 0.1);
 }
 
 .news-header {
@@ -198,17 +203,7 @@
 
 .news-read-more {
   display: inline-block;
-  padding: 6px 12px;
-  background: transparent;
-  border: none;
   color: var(--primary);
   font-size: 12px;
   font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  padding-left: 0;
-}
-
-.news-read-more:hover {
-  text-decoration: underline;
 }

@@ -266,18 +266,17 @@ export function TabbedSidebar() {
             </div>
             <div className="news-list">
               {newsItems.map((news) => (
-                <div key={news.id} className="news-card">
+                <div 
+                  key={news.id} 
+                  className="news-card clickable"
+                  onClick={() => handleReadMore(news.id)}
+                >
                   <div className="news-header">
                     <span className="news-category">{news.category}</span>
                   </div>
                   <h3 className="news-headline">{news.headline}</h3>
                   <p className="news-preview">{news.content.slice(0, 100)}...</p>
-                  <button 
-                    className="news-read-more"
-                    onClick={() => handleReadMore(news.id)}
-                  >
-                    Read More →
-                  </button>
+                  <span className="news-read-more">Read More →</span>
                 </div>
               ))}
             </div>
