@@ -134,3 +134,56 @@
 .llm-permission-footer .btn {
   min-width: 200px;
 }
+
+/* No API key found state */
+.no-key-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  background: rgba(255, 152, 0, 0.1);
+  border: 1px solid rgba(255, 152, 0, 0.3);
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.no-key-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.no-key-message p {
+  margin: 0;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.no-key-message strong {
+  color: var(--warning);
+}
+
+.fallback-features {
+  background: rgba(76, 175, 80, 0.1);
+}
+
+.fallback-features h4 {
+  color: var(--success);
+}
+
+.setup-hint {
+  font-size: 13px;
+  color: var(--text-secondary);
+  background: var(--bg-dark);
+  padding: 12px;
+  border-radius: 6px;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.setup-hint code {
+  background: rgba(33, 150, 243, 0.2);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: monospace;
+  color: var(--primary);
+}

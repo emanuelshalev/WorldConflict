@@ -15,7 +15,7 @@ interface LLMStatus {
 }
 
 export function LLMPermissionModal() {
-  const { llmPermissionGranted, setLLMPermission, setLLMProvider } = useGameStore();
+  const { setLLMPermission, setLLMProvider } = useGameStore();
   const [status, setStatus] = useState<LLMStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [_error, setError] = useState<string | null>(null);
@@ -82,91 +82,120 @@ export function LLMPermissionModal() {
     setDismissed(true);
   };
 
-  // Debug render conditions
-  console.log('[LLM] Render check:', { 
-    llmPermissionGranted, 
-    dismissed, 
-    loading, 
-    hasApiKey: status?.hasApiKey,
-    status 
-  });
-
-  // Don't show if already granted or dismissed
-  if (llmPermissionGranted || dismissed) {
-    console.log('[LLM] Not showing: already granted or dismissed');
+  // Don't show if already dismissed (user made a choice)
+  if (dismissed) {
     return null;
   }
   
   // Don't show while loading
   if (loading) {
-    console.log('[LLM] Not showing: still loading');
     return null;
   }
 
-  // Don't show if no API keys found
-  if (!status?.hasApiKey) {
-    console.log('[LLM] Not showing: no API keys found');
-    return null;
+  const hasApiKey = status?.hasApiKey ?? false;
+  const availableProviders = status?.providers.filter(p => p.available && p.provider !== 'ollama') ?? [];
+
+  // Show different content based on whether API key was found
+  if (hasApiKey) {
+    return (
+      <div className="modal-overlay llm-permission-overlay">
+        <div className="llm-permission-modal">
+          <div className="llm-permission-header">
+            <span className="llm-icon">🤖</span>
+            <h2>AI Provider Detected</h2>
+          </div>
+
+          <div className="llm-permission-body">
+            <p>
+              We found API key(s) for AI services on your system. Would you like to enable 
+              AI-powered features for a more dynamic gameplay experience?
+            </p>
+
+            <div className="provider-list">
+              {availableProviders.map((p) => (
+                <div key={p.provider} className="provider-card">
+                  <div className="provider-info">
+                    <span className="provider-icon">
+                      {p.provider === 'gemini' ? '✨' : p.provider === 'openai' ? '🧠' : '🦙'}
+                    </span>
+                    <div className="provider-details">
+                      <strong>{p.provider.charAt(0).toUpperCase() + p.provider.slice(1)}</strong>
+                      <span className="provider-model">{p.model}</span>
+                    </div>
+                  </div>
+                  <button 
+                    className="btn btn-primary"
+                    onClick={() => handleApprove(p.provider)}
+                  >
+                    Use {p.provider.charAt(0).toUpperCase() + p.provider.slice(1)}
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <div className="llm-features">
+              <h4>AI Features Include:</h4>
+              <ul>
+                <li>🌍 Dynamic country AI behavior</li>
+                <li>📋 Intelligent advisor responses</li>
+                <li>📰 Context-aware news generation</li>
+                <li>🎭 Realistic diplomatic interactions</li>
+              </ul>
+            </div>
+
+            <p className="privacy-note">
+              <strong>Privacy:</strong> Your API key stays on your machine. 
+              Game data is sent to the AI provider for processing.
+            </p>
+          </div>
+
+          <div className="llm-permission-footer">
+            <button className="btn btn-secondary" onClick={handleDecline}>
+              No Thanks, Use Basic AI
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
-  console.log('[LLM] Showing modal!');
-  const availableProviders = status.providers.filter(p => p.available && p.provider !== 'ollama');
-
+  // No API key found - show fallback message
   return (
     <div className="modal-overlay llm-permission-overlay">
       <div className="llm-permission-modal">
         <div className="llm-permission-header">
-          <span className="llm-icon">🤖</span>
-          <h2>AI Provider Detected</h2>
+          <span className="llm-icon">🎮</span>
+          <h2>AI Mode</h2>
         </div>
 
         <div className="llm-permission-body">
-          <p>
-            We found API key(s) for AI services on your system. Would you like to enable 
-            AI-powered features for a more dynamic gameplay experience?
-          </p>
-
-          <div className="provider-list">
-            {availableProviders.map((p) => (
-              <div key={p.provider} className="provider-card">
-                <div className="provider-info">
-                  <span className="provider-icon">
-                    {p.provider === 'gemini' ? '✨' : p.provider === 'openai' ? '🧠' : '🦙'}
-                  </span>
-                  <div className="provider-details">
-                    <strong>{p.provider.charAt(0).toUpperCase() + p.provider.slice(1)}</strong>
-                    <span className="provider-model">{p.model}</span>
-                  </div>
-                </div>
-                <button 
-                  className="btn btn-primary"
-                  onClick={() => handleApprove(p.provider)}
-                >
-                  Use {p.provider.charAt(0).toUpperCase() + p.provider.slice(1)}
-                </button>
-              </div>
-            ))}
+          <div className="no-key-message">
+            <span className="no-key-icon">ℹ️</span>
+            <p>
+              No LLM API key detected. The game will use the <strong>backup AI engine</strong> for 
+              country behavior and advisor responses.
+            </p>
           </div>
 
-          <div className="llm-features">
-            <h4>AI Features Include:</h4>
+          <div className="llm-features fallback-features">
+            <h4>Backup Engine Features:</h4>
             <ul>
-              <li>🌍 Dynamic country AI behavior</li>
-              <li>📋 Intelligent advisor responses</li>
-              <li>📰 Context-aware news generation</li>
-              <li>🎭 Realistic diplomatic interactions</li>
+              <li>🎯 Rule-based country AI</li>
+              <li>📋 Pre-configured advisor responses</li>
+              <li>⚡ Fast, offline gameplay</li>
+              <li>🔒 No external API calls</li>
             </ul>
           </div>
 
-          <p className="privacy-note">
-            <strong>Privacy:</strong> Your API key stays on your machine. 
-            Game data is sent to the AI provider for processing.
+          <p className="setup-hint">
+            <strong>Want AI-powered features?</strong> Add your Gemini or OpenAI API key to a 
+            <code>.env</code> file in the project root and restart the server.
           </p>
         </div>
 
         <div className="llm-permission-footer">
-          <button className="btn btn-secondary" onClick={handleDecline}>
-            No Thanks, Use Basic AI
+          <button className="btn btn-primary" onClick={handleDecline}>
+            Continue with Backup Engine
           </button>
         </div>
       </div>
