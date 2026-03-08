@@ -9,6 +9,7 @@ import { NewspaperModal } from './components/NewspaperModal'
 import { SplashScreen } from './components/SplashScreen'
 import { ActionPreviewModal } from './components/ActionPreviewModal'
 import { TurnFeedbackModal } from './components/TurnFeedbackModal'
+import { LLMPermissionModal } from './components/LLMPermissionModal'
 import { useGameStore } from './store/gameStore'
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
       <NewspaperModal />
       <ActionPreviewModal />
       <TurnFeedbackModal />
+      <LLMPermissionModal />
 
       {isLoading && (
         <div className="loading-overlay">

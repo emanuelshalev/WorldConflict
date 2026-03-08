@@ -25,6 +25,29 @@ server.get("/health", async (_request, _reply) => {
   };
 });
 
+// Check for available LLM API keys
+server.get("/api/llm/status", async (_request, _reply) => {
+  const geminiKey = process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY_PERSONAL;
+  const openaiKey = process.env.OPENAI_API_KEY;
+  
+  const providers: Array<{ provider: string; available: boolean; model: string }> = [];
+  
+  if (geminiKey && geminiKey.startsWith('AIza')) {
+    providers.push({ provider: 'gemini', available: true, model: 'gemini-1.5-flash' });
+  }
+  if (openaiKey && openaiKey.startsWith('sk-')) {
+    providers.push({ provider: 'openai', available: true, model: 'gpt-4o-mini' });
+  }
+  // Ollama is always potentially available (local)
+  providers.push({ provider: 'ollama', available: true, model: 'llama3.2' });
+  
+  return {
+    hasApiKey: providers.some(p => p.provider !== 'ollama' && p.available),
+    providers,
+    recommended: providers.find(p => p.provider !== 'ollama' && p.available)?.provider || 'ollama',
+  };
+});
+
 await server.register(gameRoutes, { prefix: "/api" });
 await server.register(chatRoutes, { prefix: "/api/chat" });
 

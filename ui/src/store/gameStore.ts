@@ -78,6 +78,10 @@ export interface GameState {
   pendingActions: PendingAction[];
   lastTurnFeedback: Array<{ headline: string; effects: string[] }> | null;
 
+  // LLM settings
+  llmPermissionGranted: boolean;
+  llmProvider: string | null;
+
   // Actions
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
@@ -98,6 +102,10 @@ export interface GameState {
   removePendingAction: (index: number) => void;
   clearPendingActions: () => void;
   setLastTurnFeedback: (feedback: GameState['lastTurnFeedback']) => void;
+
+  // LLM actions
+  setLLMPermission: (granted: boolean) => void;
+  setLLMProvider: (provider: string | null) => void;
 }
 
 const API_BASE = 'http://localhost:8080/api';
@@ -120,6 +128,10 @@ export const useGameStore = create<GameState>((set) => ({
   currentPhase: 'news',
   pendingActions: [],
   lastTurnFeedback: null,
+
+  // LLM settings
+  llmPermissionGranted: false,
+  llmProvider: null,
 
   setLoading: (loading) => set({ isLoading: loading }),
   setError: (error) => set({ error }),
@@ -161,6 +173,10 @@ export const useGameStore = create<GameState>((set) => ({
   })),
   clearPendingActions: () => set({ pendingActions: [] }),
   setLastTurnFeedback: (feedback) => set({ lastTurnFeedback: feedback }),
+
+  // LLM actions
+  setLLMPermission: (granted) => set({ llmPermissionGranted: granted }),
+  setLLMProvider: (provider) => set({ llmProvider: provider }),
 }));
 
 export async function createNewGame(

@@ -1,0 +1,136 @@
+.llm-permission-overlay {
+  z-index: 1000;
+}
+
+.llm-permission-modal {
+  background: var(--bg-card);
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90%;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--border-color);
+}
+
+.llm-permission-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 24px;
+  background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-card) 100%);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.llm-icon {
+  font-size: 32px;
+}
+
+.llm-permission-header h2 {
+  margin: 0;
+  font-size: 22px;
+  color: var(--primary);
+}
+
+.llm-permission-body {
+  padding: 24px;
+}
+
+.llm-permission-body > p {
+  margin: 0 0 20px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.provider-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.provider-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background: var(--bg-dark);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.provider-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.provider-icon {
+  font-size: 28px;
+}
+
+.provider-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.provider-details strong {
+  font-size: 16px;
+  color: var(--text-primary);
+}
+
+.provider-model {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.llm-features {
+  background: rgba(33, 150, 243, 0.1);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.llm-features h4 {
+  margin: 0 0 12px;
+  font-size: 14px;
+  color: var(--primary);
+}
+
+.llm-features ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.llm-features li {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.privacy-note {
+  font-size: 12px;
+  color: var(--text-secondary);
+  background: var(--bg-dark);
+  padding: 12px;
+  border-radius: 6px;
+  margin: 0;
+}
+
+.privacy-note strong {
+  color: var(--warning);
+}
+
+.llm-permission-footer {
+  padding: 16px 24px;
+  background: var(--bg-dark);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: center;
+}
+
+.llm-permission-footer .btn {
+  min-width: 200px;
+}
