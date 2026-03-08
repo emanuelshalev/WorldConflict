@@ -36,9 +36,10 @@ export function TabbedSidebar() {
   const player = worldState.countries.find(c => c.id === worldState.playerCountryId);
 
   // Generate advisor briefings based on current state
+  // Role IDs must match AdvisorModal's ADVISORS array
   const advisorBriefings: AdvisorBriefing[] = [
     {
-      role: 'foreign',
+      role: 'FOREIGN_MINISTER',
       icon: '🌐',
       name: 'Foreign Minister',
       summary: player?.alliances.length 
@@ -46,7 +47,7 @@ export function TabbedSidebar() {
         : 'No formal alliances established. Diplomatic outreach recommended to strengthen our position.',
     },
     {
-      role: 'defense',
+      role: 'DEFENSE_MINISTER',
       icon: '🎖️',
       name: 'Defense Minister',
       summary: player?.atWarWith.length 
@@ -54,23 +55,23 @@ export function TabbedSidebar() {
         : `Forces at ${player?.mobilizationLevel ?? 0}% readiness. ${player?.mobilizationLevel && player.mobilizationLevel < 50 ? 'Recommend increased mobilization.' : 'Adequate for current threat level.'}`,
     },
     {
-      role: 'intelligence',
+      role: 'INTELLIGENCE_CHIEF',
       icon: '🕵️',
       name: 'Intelligence Chief',
       summary: `Intel coverage at ${player?.intelLevel ?? 50}%. Monitoring regional threats. Covert options available if needed.`,
     },
     {
-      role: 'treasury',
+      role: 'FINANCE_MINISTER',
       icon: '💰',
-      name: 'Treasury Secretary',
+      name: 'Finance Minister',
       summary: player?.growthRate 
         ? `GDP growth: ${(player.growthRate * 100).toFixed(1)}%. Debt at ${player.debtGdpRatio?.toFixed(0) ?? 0}% of GDP. ${player.growthRate > 0 ? 'Economy performing well.' : 'Economic concerns noted.'}`
         : 'Economic indicators nominal. Budget allocation stable.',
     },
     {
-      role: 'interior',
+      role: 'DOMESTIC_ADVISOR',
       icon: '🏛️',
-      name: 'Interior Minister',
+      name: 'Domestic Advisor',
       summary: player?.stability 
         ? `National stability at ${player.stability}%. ${player.stability < 50 ? 'Internal unrest requires attention.' : 'Domestic situation under control.'}`
         : 'Internal affairs stable. No major concerns.',
@@ -133,7 +134,7 @@ export function TabbedSidebar() {
               <h2>Cabinet Briefings</h2>
               <span className="turn-info">Turn {worldState.turn}</span>
             </div>
-            <div className="advisor-list">
+            <div className="advisors-list">
               {advisorBriefings.map((advisor) => (
                 <div key={advisor.role} className="advisor-card">
                   <div className="advisor-header">

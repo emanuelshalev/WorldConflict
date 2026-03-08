@@ -90,10 +90,11 @@
   height: 100%;
 }
 
-.advisor-list {
+.advisors-tab .advisors-list {
   flex: 1;
   overflow-y: auto;
   padding: 12px;
+  width: 100%;
 }
 
 .advisor-card {
