@@ -1,343 +1,480 @@
-spec.md: World Conflicts
-1. Product Overview
-1.1 Vision
-World Conflicts is a deterministic, turn-based global political-military simulation where players lead any country through diplomacy, economics, military strategy, and intelligence operations in a living world of autonomous AI-driven nations. Each country operates from its own imperfect worldview, creating realistic miscalculations, escalations, and opportunities.
+<div align="center">
 
-*Inspired by the 1990 classic "Conflict: Middle East Political Simulator" - we preserve its tongue-in-cheek realpolitik while expanding to global scope with modern AI-driven country behavior.*
+# 🌍 World Conflict — Game Design Specification
 
-1.2 Design Pillars
-1. **Global Agentic Simulation**: Every country runs as an autonomous agent with persistent goals, beliefs, historical patterns, and decision-making capacity that reflects its real-world national character
+### *The Complete Technical & Design Document*
 
-2. **Asymmetric Information**: Nations see different versions of reality based on intelligence capabilities and biases - players only see what their country believes, not ground truth
+</div>
 
-3. **Consequential Actions**: Every player decision has visible, cascading consequences shown BEFORE commitment - actions feel weighty and meaningful
+---
 
-4. **Historical Plausibility**: Countries behave according to historical patterns, institutional constraints, and cultural traits - the simulation produces believable alternate histories
+## 📋 Table of Contents
 
-5. **Fast Monthly Turns**: Complete turn resolution <200ms for MVP scale (25 countries)
+1. [Product Overview](#1-product-overview)
+2. [MVP Scope Definition](#2-mvp-scope-definition)
+3. [Tiered Country Classification](#3-tiered-country-classification)
+4. [User Flows](#4-user-flows)
+5. [UI States](#5-ui-states)
+6. [Core Simulation Model](#6-core-simulation-model)
+7. [Agent System Specification](#7-agent-system-specification)
+8. [Core Systems Specification](#8-core-systems-specification)
+9. [Player Engagement & Feedback](#9-player-engagement--feedback-systems)
+10. [Historical Realism](#10-historical-realism--country-behavior)
+11. [Data Contracts](#11-data-contracts)
+12. [UI/UX Requirements](#12-uiux-requirements)
+13. [Performance Targets](#13-performance-targets)
+14. [Architecture](#14-high-level-architecture)
+15. [Tech Stack](#15-tech-stack)
+16. [Testing Strategy](#16-testing-strategy)
+17. [Definition of Done](#17-definition-of-done-mvp)
 
-6. **Leadership Legacy**: Comprehensive end-of-term scoring and historical report generation
+---
 
-7. **Scalable World Model**: Tiered country simulation (Tier 1 fully autonomous → Tier 3 abstracted)
+# 1. Product Overview
 
-1.3 Opening Experience
-The application initializes with a black splash screen displaying the uncredited poem "Sweet Bird of Truth":
+## 1.1 Vision
 
-> *This is your captain calling with an urgent warning*
-> *We're above the Gulf of Arabia, altitude is falling*
-> *And I can't keep her up, there's no time for thinking*
-> *All hands on deck, this bird is sinking.*
+**World Conflict** is a deterministic, turn-based global political-military simulation where players lead any country through diplomacy, economics, military strategy, and intelligence operations in a living world of autonomous AI-driven nations.
 
-This sets the tone for the game's "tongue-in-cheek realpolitik" atmosphere.
+Each country operates from its own **imperfect worldview**, creating realistic miscalculations, escalations, and opportunities.
 
-1.4 Target Platforms
-Primary: Desktop web application (Chrome, Firefox, Safari, Edge)
+> *Inspired by the 1990 classic "Conflict: Middle East Political Simulator" — we preserve its tongue-in-cheek realpolitik while expanding to global scope with modern AI-driven country behavior.*
 
-Secondary: Progressive Web App (PWA) for offline play
+---
 
-Stretch: Native desktop via Tauri/Electron
+## 1.2 Design Pillars
 
-1.5 Target Audience
-Strategy gamers, geopolitical enthusiasts, political science students, 4X players seeking deeper diplomatic systems
+| # | Pillar | Description |
+|---|--------|-------------|
+| 1 | **Global Agentic Simulation** | Every country runs as an autonomous agent with persistent goals, beliefs, historical patterns, and decision-making capacity that reflects its real-world national character |
+| 2 | **Asymmetric Information** | Nations see different versions of reality based on intelligence capabilities and biases — players only see what their country believes, not ground truth |
+| 3 | **Consequential Actions** | Every player decision has visible, cascading consequences shown BEFORE commitment — actions feel weighty and meaningful |
+| 4 | **Historical Plausibility** | Countries behave according to historical patterns, institutional constraints, and cultural traits — the simulation produces believable alternate histories |
+| 5 | **Fast Monthly Turns** | Complete turn resolution <200ms for MVP scale (25 countries) |
+| 6 | **Leadership Legacy** | Comprehensive end-of-term scoring and historical report generation |
+| 7 | **Scalable World Model** | Tiered country simulation (Tier 1 fully autonomous → Tier 3 abstracted) |
 
-2. MVP Scope Definition
-2.1 MVP Includes (Phase 1)
-text
-✅ 25 Tier 1 countries with full autonomous agents
-✅ Monthly turn system (1 month = 1 turn)
-✅ Phase-based turn flow (News → Briefing → Diplomacy → Military → Domestic → Confirm)
-✅ 7-level diplomatic hierarchy (Military Pact → War)
-✅ Diplomacy system with action costs and consequence previews
-✅ Basic military system (procurement, manpower, airpower, war resolution)
-✅ Economy system (GDP growth, military budget allocation)
-✅ Internal stability system (public approval, regime legitimacy)
-✅ Asymmetric intelligence (belief states vs ground truth)
-✅ 2D political world map with 5 overlay layers + fog-of-information
-✅ Newspaper-style monthly event summaries (shown at turn START)
-✅ Advisor chat system (LLM-driven with departmental bias)
-✅ Action consequence preview system
-✅ Post-action feedback with cascading effects
-✅ Event response dialogs for major crises
-✅ Save/load system (SQLite)
-✅ Comprehensive leadership scoring
-✅ End-of-term historical report generation
-✅ Leadership backstory generation
-✅ Deterministic simulation (seed-based)
+---
 
-2.2 Phase 2 Features
-text
-⏳ Nuclear weapons/escalation (Two-Strike Rule, MAD)
-⏳ Covert operations (destabilize, support rebels, assassination, coups)
-⏳ Insurgency system with policing tactics
-⏳ Arms supplier system (USA/UK/France/Private Dealer)
-⏳ Tier 2/3 countries (+25 = 50 total)
-⏳ Naval warfare
-⏳ Enhanced country profiles with full historical context
+## 1.3 Opening Experience
 
-2.3 Phase 3 Features
-text
-❌ Trade/commerce systems
-❌ Multiplayer
-❌ Modding support
-❌ Factional politics
-❌ Real-time elements
-3. Tiered Country Classification
-3.1 Tier 1: Core Players (25 countries)
-Always fully autonomous with complete state tracking
+The application initializes with a black splash screen displaying the uncredited poem *"Sweet Bird of Truth"*:
 
-text
-Global Superpowers (5):
-├── United States
-├── China  
-├── Russia
-├── Germany (EU anchor)
-└── India
+> *"This is your captain calling with an urgent warning*  
+> *We're above the Gulf of Arabia, altitude is falling*  
+> *And I can't keep her up, there's no time for thinking*  
+> *All hands on deck, this bird is sinking."*
 
-Regional Powers by Geography:
-├── Americas (3): Brazil, Canada, Mexico
-├── Europe (4): France, UK, Poland, Turkey
-├── Middle East (4): Saudi Arabia, Iran, Israel, Egypt  
-├── Asia-Pacific (4): Japan, Indonesia, South Korea, North Korea
-└── Player's country (always Tier 1)
-3.2 Tier 2: Regional Influencers (Phase 2, +25 = 50 total)
+This sets the tone for the game's **tongue-in-cheek realpolitik** atmosphere.
+
+---
+
+## 1.4 Target Platforms
+
+| Priority | Platform |
+|----------|----------|
+| **Primary** | Desktop web application (Chrome, Firefox, Safari, Edge) |
+| **Secondary** | Progressive Web App (PWA) for offline play |
+| **Stretch** | Native desktop via Tauri/Electron |
+
+---
+
+## 1.5 Target Audience
+
+- Strategy gamers
+- Geopolitical enthusiasts
+- Political science students
+- 4X players seeking deeper diplomatic systems
+
+---
+
+# 2. MVP Scope Definition
+
+## 2.1 Phase 1 — MVP Features ✅
+
+| Category | Features |
+|----------|----------|
+| **Countries** | 25 Tier 1 countries with full autonomous agents |
+| **Turn System** | Monthly turns (1 month = 1 turn) |
+| **Turn Flow** | Phase-based: News → Briefing → Diplomacy → Military → Domestic → Confirm |
+| **Diplomacy** | 7-level hierarchy (Military Pact → War), action costs, consequence previews |
+| **Military** | Procurement, manpower, airpower, war resolution |
+| **Economy** | GDP growth, military budget allocation |
+| **Stability** | Public approval, regime legitimacy |
+| **Intelligence** | Asymmetric belief states vs ground truth |
+| **Map** | 2D political world map with 5 overlay layers + fog-of-information |
+| **News** | Newspaper-style monthly event summaries (shown at turn START) |
+| **Advisors** | LLM-driven chat system with departmental bias |
+| **Feedback** | Action consequence preview, post-action cascading effects |
+| **Events** | Response dialogs for major crises |
+| **Persistence** | Save/load system (SQLite) |
+| **Endgame** | Leadership scoring, historical report generation, backstory generation |
+| **Core** | Deterministic simulation (seed-based) |
+
+---
+
+## 2.2 Phase 2 Features ⏳
+
+| Feature | Description |
+|---------|-------------|
+| Nuclear System | Two-Strike Rule, MAD mechanics |
+| Covert Ops | Destabilize, support rebels, assassination, coups |
+| Insurgency | Policing tactics system |
+| Arms Market | USA/UK/France/Russia/Private Dealer suppliers |
+| More Countries | Tier 2/3 countries (+25 = 50 total) |
+| Naval Warfare | Sea-based military operations |
+| Enhanced Profiles | Full historical context for countries |
+
+---
+
+## 2.3 Phase 3 Features ❌
+
+- Trade/commerce systems
+- Multiplayer
+- Modding support
+- Factional politics
+- Real-time elements
+
+---
+
+# 3. Tiered Country Classification
+
+## 3.1 Tier 1: Core Players (25 countries)
+
+*Always fully autonomous with complete state tracking*
+
+```
+🌐 Global Superpowers (5):
+├── 🇺🇸 United States
+├── 🇨🇳 China  
+├── 🇷🇺 Russia
+├── 🇩🇪 Germany (EU anchor)
+└── 🇮🇳 India
+
+🗺️ Regional Powers by Geography:
+├── Americas (3):     🇧🇷 Brazil, 🇨🇦 Canada, 🇲🇽 Mexico
+├── Europe (4):       🇫🇷 France, 🇬🇧 UK, 🇵🇱 Poland, 🇹🇷 Turkey
+├── Middle East (4):  🇸🇦 Saudi Arabia, 🇮🇷 Iran, 🇮🇱 Israel, 🇪🇬 Egypt  
+├── Asia-Pacific (4): 🇯🇵 Japan, 🇮🇩 Indonesia, 🇰🇷 South Korea, 🇰🇵 North Korea
+└── 🎮 Player's country (always Tier 1)
+```
+
+## 3.2 Tier 2: Regional Influencers
+
+*Phase 2: +25 countries = 50 total*
+
 Semi-autonomous with simplified logic templates
 
-3.3 Tier 3: Background States (~145)
+## 3.3 Tier 3: Background States
+
+*~145 countries*
+
 Passive simulation via group behaviors and dynamic promotion
 
-4. User Flows
-4.1 Primary Game Loop (Per Turn) - Phase-Based Flow
+---
+
+# 4. User Flows
+
+## 4.1 Primary Game Loop (Per Turn)
+
 *Inspired by original Conflict game's strict phase progression*
 
-text
-TURN START:
-1. Newspaper Summary (events from PREVIOUS turn - sets context)
-2. Briefing Phase (advisor alerts, urgent matters requiring attention)
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      🔄 TURN CYCLE                          │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  📰 TURN START                                              │
+│  ├── 1. Newspaper Summary (events from PREVIOUS turn)       │
+│  └── 2. Briefing Phase (advisor alerts, urgent matters)     │
+│                                                             │
+│  ⚡ DECISION PHASES (sequential, cannot go back)            │
+│  ├── 3. Diplomacy Phase (relations, alliances, treaties)    │
+│  ├── 4. Intelligence Phase (covert ops) [Optional]         │
+│  ├── 5. Military Phase (procurement, deployments) [If war] │
+│  └── 6. Domestic Phase (stability, budget, reforms)        │
+│                                                             │
+│  ✅ TURN END                                                │
+│  ├── 7. Confirmation Screen (review queued actions)        │
+│  ├── 8. Execute Turn (resolution, AI actions, updates)     │
+│  └── 9. → Next turn begins with new Newspaper              │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
 
-DECISION PHASES (sequential, cannot go back):
-3. Diplomacy Phase (relations overview, alliance requests, treaties)
-4. Intelligence Phase (covert ops, intel gathering) [Optional]
-5. Military Phase (procurement, deployments, strikes) [If relevant]
-6. Domestic Phase (stability, budget, reforms)
+### 📅 Annual Events (Every 12 Turns — July)
 
-TURN END:
-7. Confirmation Screen (review all queued actions)
-8. Execute Turn (resolution, AI actions, world updates)
-9. → Next turn begins with new Newspaper
+| Event | Description |
+|-------|-------------|
+| Global Summit | UN embargo reviews, Palestinian Homeland offers |
+| Budget Review | Adjust defense budget as % of GDP |
+| US Aid Allocation | Based on relationship and human rights record |
+| Army Size Adjustment | Increase/decrease standing forces |
 
-ANNUAL EVENTS (every 12 turns - July):
-- Global Summit: UN embargo reviews, Palestinian Homeland offers
-- Budget Review: Adjust defense budget as % of GDP
-- US Aid Allocation: Based on relationship and human rights record
-- Army Size Adjustment: Increase/decrease standing forces
+### 🎯 Key Design Principles
 
-Key Design Principles:
-- Newspaper FIRST (not last) - creates narrative continuity
-- Phase progression is LINEAR - no going back once advanced
-- Each phase shows relevant info + available actions
-- Consequences previewed BEFORE confirmation
-- Post-action feedback shows what happened
-4.2 New Game Flow
-text
-1. Choose Starting Year (1950-2025, 5-year increments)
-2. Choose Country (from Tier 1 list)
-3. Generated Leadership Backstory:
-   - Rise-to-power narrative (election, coup, succession, revolution)
-   - Initial legitimacy level (high/medium/low)
-   - Initial faction support (military, business, unions, religious)
-   - Public expectations (reformist mandate vs stability mandate)
-   - Leadership style seed (hawkish/dovish, reformist/conservative)
-4. First Turn Briefing
-4.3 Save/Load Flow
-text
-Save: Current → Snapshot → SQLite
-Load: List → Select → Validate → Resume
-5. UI States (Explicit Requirements)
-5.1 Loading States
-text
-- Initial game boot (country data, world state)
-- AI decision processing ("Computing world reactions...")
-- Turn resolution ("Resolving month X...")
-- Save/load operations
-5.2 Error States
-text
-- Failed save/load → "Save corrupted. Create new game?"
-- LLM response invalid → "AI temporarily unavailable. Using backup logic."
-- State corruption → Emergency save + restart
-- API failure → Offline mode warning
-5.3 Empty States
-text
-- No active wars → "World at peace"
-- No alliances → "Diplomatic isolation"
-- No available actions → "Quiet month ahead"
-6. Core Simulation Model
-6.1 Determinism Requirements
-Simulation MUST be deterministic given:
+- **Newspaper FIRST** (not last) — creates narrative continuity
+- **LINEAR progression** — no going back once advanced
+- **Consequences previewed** BEFORE confirmation
+- **Post-action feedback** shows what happened
 
-text
-WorldState snapshot + Seed + Player actions + AI intents
-No network calls during resolution. Pure computation.
+---
 
-6.2 WorldState Structure
-typescript
+## 4.2 New Game Flow
+
+```
+1️⃣ Choose Starting Year (1950-2025, 5-year increments)
+         ↓
+2️⃣ Choose Country (from Tier 1 list)
+         ↓
+3️⃣ Generated Leadership Backstory:
+   ├── Rise-to-power narrative (election, coup, succession, revolution)
+   ├── Initial legitimacy level (high/medium/low)
+   ├── Initial faction support (military, business, unions, religious)
+   ├── Public expectations (reformist vs stability mandate)
+   └── Leadership style seed (hawkish/dovish, reformist/conservative)
+         ↓
+4️⃣ First Turn Briefing
+```
+
+---
+
+## 4.3 Save/Load Flow
+
+```
+💾 Save: Current State → Snapshot → SQLite
+📂 Load: List → Select → Validate → Resume
+```
+
+---
+
+# 5. UI States
+
+## 5.1 Loading States
+
+| State | Message |
+|-------|---------|
+| Initial boot | Loading country data, world state... |
+| AI processing | "Computing world reactions..." |
+| Turn resolution | "Resolving month X..." |
+| Save/load | Saving/Loading game... |
+
+## 5.2 Error States
+
+| Error | Recovery |
+|-------|----------|
+| Failed save/load | "Save corrupted. Create new game?" |
+| LLM invalid | "AI temporarily unavailable. Using backup logic." |
+| State corruption | Emergency save + restart |
+| API failure | Offline mode warning |
+
+## 5.3 Empty States
+
+| Condition | Display |
+|-----------|---------|
+| No active wars | "World at peace" |
+| No alliances | "Diplomatic isolation" |
+| No available actions | "Quiet month ahead" |
+---
+
+# 6. Core Simulation Model
+
+## 6.1 Determinism Requirements
+
+> ⚠️ **CRITICAL:** Simulation MUST be deterministic given:
+> ```
+> WorldState snapshot + Seed + Player actions + AI intents
+> ```
+> **No network calls during resolution. Pure computation.**
+
+---
+
+## 6.2 WorldState Structure
+
+```typescript
 interface WorldState {
   turn: number;
-  date: Date;           // YYYY-MM
+  date: Date;                    // YYYY-MM
   countries: CountryState[];
   wars: ActiveWar[];
-  globalTension: number; // 0-100
+  globalTension: number;         // 0-100
   eventQueue: Event[];
   seed: number;
   playerCountryId: string;
 }
-6.3 CountryState Structure (Enhanced)
-typescript
+```
+
+---
+
+## 6.3 CountryState Structure
+
+```typescript
 interface CountryState {
   id: string;
   name: string;
   iso3: string;
   
-  // ============ POLITICAL SYSTEM ============
+  // ═══════════════ POLITICAL SYSTEM ═══════════════
   politicalSystem: {
-    type: 'PARLIAMENTARY' | 'PRESIDENTIAL' | 'AUTHORITARIAN' | 'MONARCHY' | 'THEOCRACY' | 'COMMUNIST' | 'MILITARY_JUNTA';
-    powerCenters: ('EXECUTIVE' | 'LEGISLATURE' | 'MILITARY' | 'PARTY' | 'RELIGIOUS' | 'MONARCHY')[];
-    electionCycle: number;        // years, 0 for non-democracies
-    nextElection?: string;        // YYYY-MM
+    type: 'PARLIAMENTARY' | 'PRESIDENTIAL' | 'AUTHORITARIAN' | 
+          'MONARCHY' | 'THEOCRACY' | 'COMMUNIST' | 'MILITARY_JUNTA';
+    powerCenters: ('EXECUTIVE' | 'LEGISLATURE' | 'MILITARY' | 
+                   'PARTY' | 'RELIGIOUS' | 'MONARCHY')[];
+    electionCycle: number;       // years, 0 for non-democracies
+    nextElection?: string;       // YYYY-MM
     rulingParty?: string;
   };
-  regimeType: RegimeType;         // Simplified for display
-  legitimacy: number;             // 0-100
+  regimeType: RegimeType;        // Simplified for display
+  legitimacy: number;            // 0-100
   
-  // ============ HISTORICAL CONTEXT ============
+  // ═══════════════ HISTORICAL CONTEXT ═══════════════
   history: {
     keyEvents: { year: number; event: string; impact: string }[];
-    historicalRivals: string[];   // Country IDs
-    historicalAllies: string[];   // Country IDs
-    sphereOfInfluence: string[];  // Countries they consider in their sphere
-    foreignPolicyOrientation: 'EXPANSIONIST' | 'DEFENSIVE' | 'ISOLATIONIST' | 'INTERVENTIONIST';
+    historicalRivals: string[];  // Country IDs
+    historicalAllies: string[];  // Country IDs
+    sphereOfInfluence: string[]; // Countries in their sphere
+    foreignPolicyOrientation: 'EXPANSIONIST' | 'DEFENSIVE' | 
+                              'ISOLATIONIST' | 'INTERVENTIONIST';
   };
   
-  // ============ NATIONAL CHARACTER ============
+  // ═══════════════ NATIONAL CHARACTER ═══════════════
   personality: {
-    warPropensity: number;        // 0-100: How likely to start wars
-    allianceLoyalty: number;      // 0-100: Honor commitments
-    diplomaticFlexibility: number;// 0-100: Willingness to negotiate
-    ideologicalRigidity: number;  // 0-100: Ideology over pragmatism
+    warPropensity: number;           // 0-100: Likelihood to start wars
+    allianceLoyalty: number;         // 0-100: Honor commitments
+    diplomaticFlexibility: number;   // 0-100: Willingness to negotiate
+    ideologicalRigidity: number;     // 0-100: Ideology over pragmatism
     internationalNormsRespect: number; // 0-100
-    nationalPride: number;        // 0-100
-    redLines: string[];           // Actions that trigger strong response
+    nationalPride: number;           // 0-100
+    redLines: string[];              // Actions triggering strong response
   };
-  riskTolerance: number;          // 0-100
+  riskTolerance: number;             // 0-100
   
-  // ============ INTERNAL DIVISIONS ============
+  // ═══════════════ INTERNAL DIVISIONS ═══════════════
   internalDivisions: {
     ethnic: { group: string; percentage: number; tension: number }[];
     religious: { group: string; percentage: number; tension: number }[];
     ideological: { faction: string; strength: number }[];
   };
   insurgencyLevel: 'NONE' | 'UNREST' | 'REBELLION' | 'GUERILLA';
-  stability: number;              // 0-100
+  stability: number;                 // 0-100
   
-  // ============ ECONOMY ============
+  // ═══════════════ ECONOMY ═══════════════
   economy: {
     gdp: number;
     growthRate: number;
     sectors: { agriculture: number; industry: number; services: number };
-    keyResources: string[];       // oil, gas, minerals, agriculture
+    keyResources: string[];          // oil, gas, minerals
     keyExports: string[];
     debtGdpRatio: number;
     developmentLevel: 'DEVELOPED' | 'EMERGING' | 'DEVELOPING';
   };
-  gdp: number;                    // Shorthand access
+  gdp: number;                       // Shorthand
   growthRate: number;
   debtGdpRatio: number;
-  militaryBudgetPercent: number;  // 0-20%
+  militaryBudgetPercent: number;     // 0-20%
   
-  // ============ MILITARY ============
+  // ═══════════════ MILITARY ═══════════════
   military: {
     manpower: number;
     airpower: number;
     navalPower: number;
     doctrine: 'OFFENSIVE' | 'DEFENSIVE' | 'EXPEDITIONARY' | 'GUERILLA';
     nuclearStatus: 'NONE' | 'LATENT' | 'DEVELOPING' | 'ARMED';
-    foreignBases: string[];       // Countries with bases
+    foreignBases: string[];          // Countries with bases
   };
-  manpower: number;               // Shorthand access
+  manpower: number;                  // Shorthand
   airpower: number;
-  mobilizationLevel: number;      // 0-100%
+  mobilizationLevel: number;         // 0-100%
   
-  // ============ DIPLOMACY ============
-  relations: Record<string, number>;  // -100 to +100
-  relationLevel: Record<string, RelationLevel>; // 7-level hierarchy
+  // ═══════════════ DIPLOMACY ═══════════════
+  relations: Record<string, number>; // -100 to +100
+  relationLevel: Record<string, RelationLevel>;
   alliances: string[];
   atWarWith: string[];
   
-  // ============ INTELLIGENCE ============
-  intelLevel: number;             // 0-100 (budget/capability)
-  beliefState: Partial<WorldState>; // What THIS country believes
+  // ═══════════════ INTELLIGENCE ═══════════════
+  intelLevel: number;                // 0-100 (budget/capability)
+  beliefState: Partial<WorldState>;  // What THIS country believes
   
-  // ============ GOALS ============
+  // ═══════════════ GOALS ═══════════════
   goals: Goal[];
 }
+```
 
-// 7-Level Diplomatic Hierarchy (from original Conflict)
-type RelationLevel = 
-  | 'MILITARY_PACT'   // Best: Mutual defense, intel sharing
-  | 'PROFITABLE'      // Strong ally, trade benefits
-  | 'BENEFICIAL'      // Good relations, cooperation
-  | 'FAVOURABLE'      // Positive but limited
-  | 'SATISFACTORY'    // Neutral
-  | 'LAMENTABLE'      // Poor relations
-  | 'WAR';            // Worst: Active conflict
+---
 
-// Thresholds for relation levels
-const RELATION_THRESHOLDS = {
-  MILITARY_PACT: 80,    // +80 to +100
-  PROFITABLE: 60,       // +60 to +79
-  BENEFICIAL: 40,       // +40 to +59
-  FAVOURABLE: 20,       // +20 to +39
-  SATISFACTORY: -20,    // -19 to +19
-  LAMENTABLE: -60,      // -59 to -20
-  WAR: -100             // -100 to -60 (war eligible)
-};
-6.4 Turn Lifecycle (Canonical Order)
-text
-1. Event Injection (random + triggered events)
-2. Intelligence Update (belief states refresh)
-3. AI Intent Generation (all countries decide actions)
-4. Player Action Submission (overridden for player country)
-5. Action Validation (schema + rules checks)
-6. Resolution Phase (ONLY mutations happen here)
-7. Metrics Update (GDP, stability, relations)
-8. Newspaper Generation
-9. Advance Turn (turn++, date++)
-7. Agent System Specification
-7.1 Agent Contract
-typescript
+## 6.4 Diplomatic Hierarchy
+
+*7-Level system from original Conflict*
+
+| Level | Threshold | Description |
+|-------|-----------|-------------|
+| 🤝 **MILITARY_PACT** | +80 to +100 | Mutual defense, intel sharing |
+| 💰 **PROFITABLE** | +60 to +79 | Strong ally, trade benefits |
+| 👍 **BENEFICIAL** | +40 to +59 | Good relations, cooperation |
+| 😊 **FAVOURABLE** | +20 to +39 | Positive but limited |
+| 😐 **SATISFACTORY** | -19 to +19 | Neutral |
+| 😠 **LAMENTABLE** | -59 to -20 | Poor relations |
+| ⚔️ **WAR** | -100 to -60 | Active conflict eligible |
+
+---
+
+## 6.5 Turn Lifecycle
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                   ⚙️ TURN RESOLUTION                        │
+├─────────────────────────────────────────────────────────────┤
+│  1. 🎲 Event Injection (random + triggered events)          │
+│  2. 🔍 Intelligence Update (belief states refresh)          │
+│  3. 🤖 AI Intent Generation (all countries decide)          │
+│  4. 🎮 Player Action Submission (override for player)       │
+│  5. ✅ Action Validation (schema + rules checks)            │
+│  6. ⚡ Resolution Phase (ONLY mutations happen here)        │
+│  7. 📊 Metrics Update (GDP, stability, relations)           │
+│  8. 📰 Newspaper Generation                                 │
+│  9. ➡️ Advance Turn (turn++, date++)                        │
+└─────────────────────────────────────────────────────────────┘
+```
+---
+
+# 7. Agent System Specification
+
+## 7.1 Agent Contract
+
+```typescript
 interface CountryIntent {
   countryId: string;
   actions: Action[];     // Validated against schema
   reasoning?: string;    // Optional, for debug
 }
-7.2 Agent Constraints
-text
-✅ Operate ONLY on country's BeliefState
-✅ Respect budget constraints
-✅ Honor alliance commitments  
-✅ Cannot access GroundTruth
-✅ Cannot directly mutate state
-✅ Structured JSON output only
-7.3 Agent Types
-text
-1. CountryAgent: Generates CountryIntent for autonomous nations
-2. AdvisorAgent: Generates chat responses for player advisors
-3. NarrativeAgent: Generates backstories, newspaper headlines
-7.4 LLM Integration Rules
-text
-- Abstract LlmClient interface
+```
+
+## 7.2 Agent Constraints
+
+| Rule | Description |
+|------|-------------|
+| ✅ BeliefState Only | Operate ONLY on country's BeliefState |
+| ✅ Budget Limits | Respect budget constraints |
+| ✅ Honor Alliances | Honor alliance commitments |
+| ❌ No GroundTruth | Cannot access GroundTruth |
+| ❌ No Direct Mutation | Cannot directly mutate state |
+| ✅ Structured Output | JSON output only |
+
+## 7.3 Agent Types
+
+| Agent | Purpose |
+|-------|---------|
+| **CountryAgent** | Generates CountryIntent for autonomous nations |
+| **AdvisorAgent** | Generates chat responses for player advisors |
+| **NarrativeAgent** | Generates backstories, newspaper headlines |
+
+## 7.4 LLM Integration Rules
+
+- Abstract `LlmClient` interface
 - Structured output validation (JSON Schema / Zod)
 - Fallback to heuristic AI if LLM fails
-- Token limits per request (<8k input, <1k output)
+- Token limits: **<8k input, <1k output**
 - Parallel processing for all countries
 8. Core Systems Specification
 8.1 Diplomacy System (Enhanced)
