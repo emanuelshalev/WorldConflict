@@ -24,8 +24,10 @@ export function LLMPermissionModal() {
   useEffect(() => {
     // Check if we already have permission stored
     const stored = localStorage.getItem('llmPermissionGranted');
-    if (stored === 'true') {
-      setLLMPermission(true);
+    console.log('[LLM] Stored permission:', stored);
+    
+    if (stored === 'true' || stored === 'false') {
+      setLLMPermission(stored === 'true');
       const storedProvider = localStorage.getItem('llmProvider');
       if (storedProvider) {
         setLLMProvider(storedProvider);
@@ -36,16 +38,21 @@ export function LLMPermissionModal() {
 
     // Fetch LLM status from backend
     const checkStatus = async () => {
+      console.log('[LLM] Checking backend for API keys...');
       try {
         const res = await fetch('http://localhost:8080/api/llm/status');
+        console.log('[LLM] Backend response status:', res.status);
         if (res.ok) {
           const data = await res.json();
+          console.log('[LLM] Backend data:', data);
           setStatus(data);
         } else {
+          console.log('[LLM] Backend error:', res.statusText);
           setError('Could not check LLM status');
         }
       } catch (err) {
         // Backend not running - that's okay, we'll use fallback AI
+        console.log('[LLM] Backend not reachable, using fallback');
         setStatus({
           hasApiKey: false,
           providers: [{ provider: 'ollama', available: true, model: 'llama3.2' }],
@@ -75,15 +82,34 @@ export function LLMPermissionModal() {
     setDismissed(true);
   };
 
+  // Debug render conditions
+  console.log('[LLM] Render check:', { 
+    llmPermissionGranted, 
+    dismissed, 
+    loading, 
+    hasApiKey: status?.hasApiKey,
+    status 
+  });
+
   // Don't show if already granted or dismissed
-  if (llmPermissionGranted || dismissed) return null;
+  if (llmPermissionGranted || dismissed) {
+    console.log('[LLM] Not showing: already granted or dismissed');
+    return null;
+  }
   
   // Don't show while loading
-  if (loading) return null;
+  if (loading) {
+    console.log('[LLM] Not showing: still loading');
+    return null;
+  }
 
   // Don't show if no API keys found
-  if (!status?.hasApiKey) return null;
+  if (!status?.hasApiKey) {
+    console.log('[LLM] Not showing: no API keys found');
+    return null;
+  }
 
+  console.log('[LLM] Showing modal!');
   const availableProviders = status.providers.filter(p => p.available && p.provider !== 'ollama');
 
   return (
