@@ -213,15 +213,17 @@
 ### 9A: Turn Flow Restructure (2 days)
 - [x] **9.1** [P0] Opening splash screen: "Sweet Bird of Truth" poem with fade to title
 - [x] **9.2** [P0] Flip newspaper flow: Show at turn START (events from last turn) instead of end
-- [x] **9.3** [P0] Phase indicator bar: Visual stepper (News → Briefing → Diplomacy → Military → Domestic → Confirm)
-- [x] **9.4** [P0] Phase-based UI panels: Each phase shows relevant info + available actions
-- [ ] **9.5** [P1] Linear phase progression: Cannot go back once advanced (like original Conflict)
+- [x] **9.3** [P0] ~~Phase indicator bar~~ → Replaced with InfoBar (News/Media + Advisor Briefings)
+- [x] **9.4** [P0] ~~Phase-based UI panels~~ → Replaced with ActionPanel (grouped Diplomacy/Military/Domestic)
+- [x] **9.5** [P0] NEW: InfoBar component with clickable headlines and advisor summaries
+- [x] **9.6** [P0] NEW: ActionPanel with accordion action groups and pending actions list
+- [ ] **9.7** [P1] Custom action input: Free-form text input for each action category
 
 ### 9B: Annual Events (1 day)
-- [ ] **9.6** [P1] Annual Summit UI: Special screen every 12 turns (July)
-- [ ] **9.7** [P1] Budget review: Adjust defense budget as % of GDP
-- [ ] **9.8** [P2] US Aid allocation: Based on relationship and human rights record
-- [ ] **9.9** [P2] UN embargo reviews: Nuclear/Palestinian issues resolution
+- [ ] **9.8** [P1] Annual Summit UI: Special screen every 12 turns (July)
+- [ ] **9.9** [P1] Budget review: Adjust defense budget as % of GDP
+- [ ] **9.10** [P2] US Aid allocation: Based on relationship and human rights record
+- [ ] **9.11** [P2] UN embargo reviews: Nuclear/Palestinian issues resolution
 
 ### 9C: Consequence & Feedback Systems (3 days)
 - [x] **9.10** [P0] Action consequence preview modal: Show diplomatic/economic/military effects BEFORE confirming
