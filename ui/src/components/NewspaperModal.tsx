@@ -1,81 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useGameStore } from '../store/gameStore';
-
-interface NewspaperHeadline {
-  headline: string;
-  description?: string;
-  content?: string;
-  category?: string;
-  relatedCountries?: string[];
-  impact?: string;
-  turn?: number;
-}
-
-// Generate expanded content for headlines
-function generateExpandedContent(headline: NewspaperHeadline, worldState: any): {
-  mainHeadline: string;
-  subHeadline: string;
-  leadParagraph: string;
-  bodyText: string;
-  sidebar?: string;
-} {
-  const title = headline.headline || 'Breaking News';
-  const desc = headline.description || headline.content || '';
-  const countries = headline.relatedCountries || [];
-  const impact = headline.impact || '';
-  
-  // Generate a compelling sub-headline
-  let subHeadline = '';
-  if (title.includes('WAR') || title.includes('Declares War')) {
-    subHeadline = 'International community calls for emergency UN session as tensions escalate';
-  } else if (title.includes('ALLIANCE') || title.includes('Pact')) {
-    subHeadline = 'Historic agreement reshapes regional power dynamics';
-  } else if (title.includes('PEACE') || title.includes('Ceasefire')) {
-    subHeadline = 'Diplomatic breakthrough brings hope for lasting stability';
-  } else if (title.includes('Economy') || title.includes('GDP')) {
-    subHeadline = 'Markets react as economic indicators shift global outlook';
-  } else if (title.includes('Stability') || title.includes('Unrest')) {
-    subHeadline = 'Government faces mounting pressure amid domestic challenges';
-  } else {
-    subHeadline = 'Analysts weigh in on implications for global affairs';
-  }
-
-  // Generate lead paragraph
-  const leadParagraph = desc || `In a significant development that has captured international attention, ${
-    countries.length > 0 ? countries.join(' and ') : 'world leaders'
-  } have made headlines with actions that could reshape the geopolitical landscape for years to come.`;
-
-  // Generate body text with more detail
-  let bodyText = '';
-  if (impact) {
-    bodyText = `According to our analysts, this development is expected to have the following effects: ${impact}. `;
-  }
-  bodyText += `Sources close to the situation indicate that this marks a pivotal moment in international relations. `;
-  if (countries.length > 0) {
-    bodyText += `Representatives from ${countries.join(', ')} have yet to issue formal statements, but diplomatic channels remain active. `;
-  }
-  bodyText += `Our correspondents on the ground report heightened activity as governments assess their strategic options. The full ramifications of these events will likely unfold over the coming weeks.`;
-
-  // Generate sidebar info
-  let sidebar = '';
-  if (worldState) {
-    sidebar = `Global Tension: ${worldState.globalTension}% | Active Conflicts: ${worldState.wars?.length || 0}`;
-  }
-
-  return {
-    mainHeadline: title,
-    subHeadline,
-    leadParagraph,
-    bodyText,
-    sidebar,
-  };
-}
+import { generateNews, type NewsArticle } from '../utils/newsGenerator';
 
 export function NewspaperModal() {
   const { activeModal, closeModal, worldState } = useGameStore();
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const headlines = (worldState?.newspaper ?? []) as NewspaperHeadline[];
+  // Use shared news generator for consistent news across panel and modal
+  const headlines: NewsArticle[] = worldState ? generateNews(worldState) : [];
 
   useEffect(() => {
     if (activeModal === 'newspaper') {
@@ -89,23 +21,45 @@ export function NewspaperModal() {
   const hasHeadlines = headlines.length > 0;
   
   const currentHeadline = hasHeadlines ? headlines[currentIndex] : null;
+  
+  // Generate sub-headline based on category
+  const getSubHeadline = (article: NewsArticle | null): string => {
+    if (!article) return 'No major developments reported as nations maintain status quo';
+    switch (article.category) {
+      case 'WAR': return 'International community calls for emergency UN session as tensions escalate';
+      case 'DIPLO': return 'Historic agreement reshapes regional power dynamics';
+      case 'CRISIS': return 'Government faces mounting pressure amid domestic challenges';
+      case 'ECON': return 'Markets react as economic indicators shift global outlook';
+      case 'SEC': return 'Defense analysts monitor developments with concern';
+      default: return 'Analysts weigh in on implications for global affairs';
+    }
+  };
+
   const expandedContent = currentHeadline 
-    ? generateExpandedContent(currentHeadline, worldState)
+    ? {
+        mainHeadline: currentHeadline.headline,
+        subHeadline: getSubHeadline(currentHeadline),
+        leadParagraph: currentHeadline.summary,
+        bodyText: currentHeadline.content,
+        impact: currentHeadline.impact,
+      }
     : {
         mainHeadline: 'A Quiet Day in World Affairs',
         subHeadline: 'No major developments reported as nations maintain status quo',
         leadParagraph: 'In a rare moment of calm, the international community enjoys a period of relative stability. Diplomats express cautious optimism while remaining vigilant.',
         bodyText: 'Markets showed steady performance as investors await the next major development. Government officials continue routine operations while monitoring global situations closely.',
-        sidebar: `Global Tension: ${worldState?.globalTension || 0}%`,
+        impact: undefined,
       };
 
   const getCategoryLabel = (category?: string) => {
     switch (category) {
       case 'WAR': return 'BREAKING: MILITARY';
-      case 'DIPLOMACY': return 'DIPLOMATIC AFFAIRS';
-      case 'ECONOMY': return 'BUSINESS & ECONOMY';
-      case 'DOMESTIC': return 'NATIONAL NEWS';
-      case 'INTERNATIONAL': return 'WORLD NEWS';
+      case 'DIPLO': return 'DIPLOMATIC AFFAIRS';
+      case 'ECON': return 'BUSINESS & ECONOMY';
+      case 'LOCAL': return 'NATIONAL NEWS';
+      case 'WORLD': return 'WORLD NEWS';
+      case 'CRISIS': return 'BREAKING: CRISIS';
+      case 'SEC': return 'SECURITY & DEFENSE';
       default: return 'TOP STORY';
     }
   };
