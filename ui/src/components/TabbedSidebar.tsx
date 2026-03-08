@@ -136,18 +136,16 @@ export function TabbedSidebar() {
             </div>
             <div className="advisors-list">
               {advisorBriefings.map((advisor) => (
-                <div key={advisor.role} className="advisor-card">
+                <div 
+                  key={advisor.role} 
+                  className="advisor-card clickable"
+                  onClick={() => handleAdvisorChat(advisor.role)}
+                >
                   <div className="advisor-header">
                     <span className="advisor-icon">{advisor.icon}</span>
                     <span className="advisor-name">{advisor.name}</span>
                   </div>
                   <p className="advisor-summary">{advisor.summary}</p>
-                  <button 
-                    className="advisor-chat-btn"
-                    onClick={() => handleAdvisorChat(advisor.role)}
-                  >
-                    Chat →
-                  </button>
                 </div>
               ))}
             </div>
