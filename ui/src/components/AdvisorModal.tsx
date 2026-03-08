@@ -23,6 +23,40 @@ interface AdvisorResponse {
   opportunities?: string[];
 }
 
+// Advisor personas for realistic chat responses
+const ADVISOR_PERSONAS: Record<string, { greeting: string; style: string; expertise: string[] }> = {
+  FOREIGN_MINISTER: {
+    greeting: "Excellency",
+    style: "diplomatic and measured, using formal language",
+    expertise: ["alliances", "treaties", "diplomatic relations", "international standing", "negotiations"]
+  },
+  DEFENSE_MINISTER: {
+    greeting: "Commander",
+    style: "direct and military-focused, using strategic terminology",
+    expertise: ["military readiness", "troop deployments", "defense strategy", "threats", "warfare"]
+  },
+  FINANCE_MINISTER: {
+    greeting: "Sir",
+    style: "analytical and numbers-focused, citing statistics",
+    expertise: ["economy", "budget", "GDP", "trade", "sanctions", "fiscal policy"]
+  },
+  INTELLIGENCE_CHIEF: {
+    greeting: "Director",
+    style: "cautious and secretive, speaking in measured terms",
+    expertise: ["intelligence", "espionage", "covert operations", "threats", "surveillance"]
+  },
+  DOMESTIC_ADVISOR: {
+    greeting: "Leader",
+    style: "concerned with public opinion and internal stability",
+    expertise: ["stability", "reforms", "public approval", "protests", "legitimacy"]
+  },
+  CHIEF_OF_STAFF: {
+    greeting: "Chief",
+    style: "strategic and comprehensive, considering all factors",
+    expertise: ["overall strategy", "coordination", "priorities", "national security"]
+  }
+};
+
 // Generate a response to a user's question based on advisor role and game state
 function generateChatResponse(advisorId: string, userQuestion: string, worldState: any): string {
   const playerCountry = worldState?.countries?.find((c: any) => c.id === worldState?.playerCountryId);
@@ -30,6 +64,7 @@ function generateChatResponse(advisorId: string, userQuestion: string, worldStat
 
   const question = userQuestion.toLowerCase();
   const countries = worldState.countries || [];
+  const persona = ADVISOR_PERSONAS[advisorId] || ADVISOR_PERSONAS.CHIEF_OF_STAFF;
   
   // Find relevant context based on question keywords
   const mentionedCountry = countries.find((c: any) => 
@@ -41,81 +76,92 @@ function generateChatResponse(advisorId: string, userQuestion: string, worldStat
       if (question.includes('alliance') || question.includes('ally')) {
         const allies = playerCountry.alliances || [];
         return allies.length > 0 
-          ? `We currently have alliances with ${allies.length} nation(s). These partnerships provide mutual defense and diplomatic support. ${mentionedCountry ? `Regarding ${mentionedCountry.name}: our relations stand at ${playerCountry.relations?.[mentionedCountry.id] || 0}.` : ''}`
-          : 'We have no formal alliances at this time. I recommend pursuing diplomatic ties with nations that share our interests.';
+          ? `${persona.greeting}, we currently maintain formal alliances with ${allies.length} nation(s). These partnerships form the backbone of our collective security framework. ${mentionedCountry ? `As for ${mentionedCountry.name}, our bilateral relations stand at ${playerCountry.relations?.[mentionedCountry.id] || 0} - ${(playerCountry.relations?.[mentionedCountry.id] || 0) > 50 ? 'quite favorable for deepening ties.' : 'requiring careful diplomatic cultivation.'}` : 'Shall I elaborate on any specific partnership?'}`
+          : `${persona.greeting}, I must report that we currently lack formal alliance commitments. This leaves us diplomatically isolated. I strongly recommend pursuing strategic partnerships with nations sharing our interests and values.`;
       }
       if (question.includes('war') || question.includes('conflict')) {
         const atWar = playerCountry.atWarWith?.length > 0;
         return atWar 
-          ? `We are currently at war with ${playerCountry.atWarWith.length} nation(s). This requires our full diplomatic attention to either resolve or manage international perception.`
-          : 'We are not currently engaged in any armed conflicts. I recommend maintaining this peace through active diplomacy.';
+          ? `${persona.greeting}, we are presently engaged in armed conflict with ${playerCountry.atWarWith.length} nation(s). The international community is watching closely. I am working through diplomatic channels to either find a resolution or ensure our allies remain committed to our cause.`
+          : `${persona.greeting}, I am pleased to report we are not currently engaged in any armed conflicts. However, global tensions remain at ${worldState.globalTension}%. I recommend we continue our diplomatic efforts to maintain this peace.`;
       }
       if (mentionedCountry) {
         const rel = playerCountry.relations?.[mentionedCountry.id] || 0;
-        return `Our relations with ${mentionedCountry.name} stand at ${rel}. ${rel > 50 ? 'They are friendly toward us.' : rel < -30 ? 'They are hostile. Caution is advised.' : 'Relations are neutral.'} Their stability is at ${mentionedCountry.stability}%.`;
+        const relStatus = rel > 60 ? 'excellent - they are a trusted partner' : rel > 30 ? 'positive - room for growth' : rel > -20 ? 'neutral - neither friend nor foe' : rel > -50 ? 'strained - caution advised' : 'hostile - they pose a diplomatic threat';
+        return `${persona.greeting}, regarding ${mentionedCountry.name}: Our relations stand at ${rel}, which I would characterize as ${relStatus}. Their internal stability is ${mentionedCountry.stability}%, and they maintain a ${mentionedCountry.regimeType} government. ${rel < 0 ? 'I recommend diplomatic outreach to improve this relationship.' : 'We should nurture this relationship further.'}`;
       }
-      return 'I can advise on diplomatic matters, alliances, and international relations. What specific aspect would you like to discuss?';
+      return `${persona.greeting}, I stand ready to advise on all matters of diplomacy, international relations, and alliance strategy. What specific aspect of our foreign policy concerns you?`;
     }
     
     case 'DEFENSE_MINISTER': {
       if (question.includes('military') || question.includes('army') || question.includes('force')) {
-        return `Our military readiness is at ${playerCountry.mobilizationLevel}% mobilization. We have ${playerCountry.manpower?.toLocaleString() || 'substantial'} troops and ${playerCountry.airpower || 0} air units. ${playerCountry.mobilizationLevel < 50 ? 'Consider increasing mobilization if threats emerge.' : 'We are well-prepared for conflict.'}`;
+        return `${persona.greeting}, our military stands at ${playerCountry.mobilizationLevel}% mobilization. We field ${playerCountry.manpower?.toLocaleString() || 'substantial'} ground forces and ${playerCountry.airpower || 0} air assets. ${playerCountry.mobilizationLevel < 40 ? 'Frankly, we are underprepared. I recommend increasing mobilization immediately.' : playerCountry.mobilizationLevel < 70 ? 'We have adequate defensive capability, but offensive operations would strain our resources.' : 'We are combat-ready and capable of projecting power if needed.'}`;
       }
       if (question.includes('war') || question.includes('attack') || question.includes('invade')) {
         const atWar = playerCountry.atWarWith?.length > 0;
         if (atWar) {
-          return `We are engaged in active combat. Our forces are committed. I recommend focusing resources on the war effort and monitoring enemy movements.`;
+          return `${persona.greeting}, we are currently engaged in combat operations. Our forces are committed and performing their duty. I recommend we focus all available resources on the war effort. Victory requires sustained commitment.`;
         }
         if (mentionedCountry) {
-          return `An attack on ${mentionedCountry.name} would require significant military resources. Their stability is ${mentionedCountry.stability}%. ${mentionedCountry.mobilizationLevel > 60 ? 'They appear well-defended.' : 'Their defenses may be vulnerable.'}`;
+          const theirMil = mentionedCountry.mobilizationLevel || 50;
+          return `${persona.greeting}, you ask about military action against ${mentionedCountry.name}. Their military readiness is at ${theirMil}% mobilization. ${theirMil > playerCountry.mobilizationLevel ? 'I must caution - they appear stronger than us currently. We would need to mobilize further before any offensive.' : 'Our forces are superior, but war always carries risks. Are you certain diplomatic options are exhausted?'}`;
         }
-        return 'Military action should be a last resort. If you have a specific target in mind, I can assess our chances.';
+        return `${persona.greeting}, military action is always an option, but it should be the last resort. If you have a specific adversary in mind, I can provide a tactical assessment.`;
       }
       if (question.includes('defend') || question.includes('threat')) {
         const threats = countries.filter((c: any) => (playerCountry.relations?.[c.id] || 0) < -40 && c.mobilizationLevel > 50);
         return threats.length > 0 
-          ? `I've identified ${threats.length} potential threat(s): ${threats.map((t: any) => t.name).join(', ')}. They have hostile relations and high military readiness.`
-          : 'No immediate military threats detected. However, vigilance is always advised.';
+          ? `${persona.greeting}, I've identified ${threats.length} potential military threat(s): ${threats.map((t: any) => `${t.name} (${t.mobilizationLevel}% mobilized)`).join(', ')}. These nations have hostile intent and significant military capability. I recommend we increase our own readiness.`
+          : `${persona.greeting}, I detect no immediate military threats to our nation. However, a wise commander never lets their guard down. I recommend maintaining current readiness levels.`;
       }
-      return 'I can advise on military matters, defense strategy, and threat assessment. What would you like to know?';
+      return `${persona.greeting}, I am prepared to advise on all military matters - force readiness, threat assessment, and strategic planning. What concerns you?`;
     }
     
     case 'FINANCE_MINISTER': {
       if (question.includes('economy') || question.includes('gdp') || question.includes('money') || question.includes('budget')) {
-        return `Our GDP stands at $${(playerCountry.gdp / 1e9).toFixed(1)}B with a growth rate of ${(playerCountry.growthRate * 100).toFixed(1)}%. Military spending is ${playerCountry.militaryBudgetPercent}% of GDP. Debt-to-GDP ratio: ${playerCountry.debtGdpRatio || 0}%.`;
+        const growth = playerCountry.growthRate * 100;
+        const growthStatus = growth > 3 ? 'robust expansion' : growth > 1 ? 'healthy growth' : growth > 0 ? 'modest growth' : 'concerning contraction';
+        return `${persona.greeting}, the economic indicators: GDP at $${(playerCountry.gdp / 1e9).toFixed(1)} billion, with ${growth.toFixed(1)}% growth - I would characterize this as ${growthStatus}. Military expenditure consumes ${playerCountry.militaryBudgetPercent}% of GDP. Our debt-to-GDP ratio stands at ${playerCountry.debtGdpRatio || 0}%. ${growth < 0 ? 'We must take action to stimulate the economy.' : 'The treasury is in acceptable condition.'}`;
       }
       if (question.includes('trade') || question.includes('sanction')) {
-        return 'Trade relations are tied to our diplomatic standing. Improving relations with key partners can boost economic growth. Sanctions can weaken adversaries but may have blowback effects.';
+        return `${persona.greeting}, trade policy is intimately linked to our diplomatic standing. Nations with positive relations offer better trade terms. Sanctions are a powerful economic weapon - they can cripple an adversary's economy, but may invite retaliation. I recommend careful cost-benefit analysis before any trade actions.`;
       }
-      return `Our economy is ${playerCountry.growthRate > 0.02 ? 'growing healthily' : playerCountry.growthRate < 0 ? 'contracting - action needed' : 'stable'}. What specific economic matter concerns you?`;
+      return `${persona.greeting}, the economy is ${playerCountry.growthRate > 0.02 ? 'performing well' : playerCountry.growthRate < 0 ? 'struggling - we need intervention' : 'stable but could improve'}. What specific fiscal matter requires my attention?`;
     }
     
     case 'INTELLIGENCE_CHIEF': {
       if (question.includes('spy') || question.includes('intel') || question.includes('covert')) {
-        return `Our intelligence network is operational. We have varying levels of intel on neighboring nations. Covert operations can destabilize rivals or gather critical information, but carry risks of exposure.`;
+        return `${persona.greeting}, our intelligence apparatus is... operational. I cannot discuss specifics in detail, but we maintain assets in key regions. Covert operations are available - destabilization, intelligence gathering, even sabotage. Each carries risks of exposure. What did you have in mind?`;
       }
       if (mentionedCountry) {
         const intel = playerCountry.intelLevel || 50;
-        return `Our intelligence on ${mentionedCountry.name}: They have ${mentionedCountry.stability}% stability, ${mentionedCountry.mobilizationLevel}% military mobilization, and their regime type is ${mentionedCountry.regimeType}. ${intel > 70 ? 'We have good visibility on their activities.' : 'Our intel is limited - consider espionage operations.'}`;
+        return `${persona.greeting}, I can share what we know about ${mentionedCountry.name}. Internal stability: ${mentionedCountry.stability}%. Military mobilization: ${mentionedCountry.mobilizationLevel}%. Government type: ${mentionedCountry.regimeType}. ${intel > 70 ? 'Our sources there are reliable.' : intel > 40 ? 'Our intelligence is adequate but could be improved.' : 'Frankly, we are operating somewhat blind. I recommend deploying assets to gather more information.'}`;
       }
-      return 'I monitor threats and opportunities across the globe. Ask me about specific nations or potential covert operations.';
+      return `${persona.greeting}, I monitor threats both foreign and domestic. My network provides eyes and ears across the globe. Ask me about specific nations, or if you wish to discuss... special operations.`;
     }
     
     case 'DOMESTIC_ADVISOR': {
       if (question.includes('stability') || question.includes('unrest') || question.includes('protest')) {
-        return `National stability is at ${playerCountry.stability}%. ${playerCountry.stability < 50 ? 'This is concerning - civil unrest may occur. Consider reforms or increased security.' : 'The population is relatively content.'} Public approval (legitimacy) is ${playerCountry.legitimacy}%.`;
+        const stab = playerCountry.stability;
+        return `${persona.greeting}, national stability currently sits at ${stab}%. ${stab < 30 ? 'This is critical - we risk civil unrest or worse. Immediate action is required: either reforms to address grievances, or security measures to maintain order.' : stab < 50 ? 'The situation is concerning. The people are restless. I recommend addressing their concerns before discontent spreads.' : stab < 70 ? 'Stability is adequate, though there is always room for improvement.' : 'The nation is stable and the people content. A good foundation for ambitious policies.'}`;
       }
       if (question.includes('reform') || question.includes('policy')) {
-        return `Reforms can improve stability and legitimacy but may have short-term costs. Our current legitimacy is ${playerCountry.legitimacy}%. ${playerCountry.legitimacy < 50 ? 'The government needs to rebuild public trust.' : 'Public support is adequate.'}`;
+        return `${persona.greeting}, reforms are a double-edged sword. They can improve long-term stability and legitimacy, but may cause short-term disruption. Our current legitimacy stands at ${playerCountry.legitimacy}%. ${playerCountry.legitimacy < 40 ? 'The government desperately needs to rebuild public trust. Bold reforms may be necessary.' : 'We have adequate public support to pursue moderate reforms if desired.'}`;
       }
-      return `Domestic situation: ${playerCountry.stability}% stability, ${playerCountry.legitimacy}% legitimacy. What aspect of internal affairs would you like to discuss?`;
+      return `${persona.greeting}, the domestic situation: ${playerCountry.stability}% stability, ${playerCountry.legitimacy}% public approval. The people are ${playerCountry.stability > 60 ? 'generally content' : 'showing signs of discontent'}. What aspect of internal affairs shall we discuss?`;
     }
     
     case 'CHIEF_OF_STAFF':
     default: {
       const atWar = playerCountry.atWarWith?.length > 0;
       const threats = countries.filter((c: any) => (playerCountry.relations?.[c.id] || 0) < -40);
-      return `Strategic overview: ${atWar ? 'We are at war - this is our priority.' : 'We are at peace.'} Global tension: ${worldState.globalTension}%. Stability: ${playerCountry.stability}%. ${threats.length > 0 ? `${threats.length} hostile nation(s) require monitoring.` : 'No major threats detected.'} What strategic matter would you like to discuss?`;
+      const priorities = [];
+      if (atWar) priorities.push('the ongoing war effort');
+      if (playerCountry.stability < 50) priorities.push('domestic stability');
+      if (threats.length > 0) priorities.push('external threats');
+      if (playerCountry.growthRate < 0) priorities.push('economic recovery');
+      
+      return `${persona.greeting}, here is my strategic assessment: ${atWar ? 'We are at war - this dominates all other concerns.' : 'We are at peace, but must remain vigilant.'} Global tension: ${worldState.globalTension}%. Our stability: ${playerCountry.stability}%. ${priorities.length > 0 ? `Key priorities: ${priorities.join(', ')}.` : 'No critical issues require immediate attention.'} How may I assist with strategic planning?`;
     }
   }
 }
@@ -386,21 +432,23 @@ function generateLocalBriefing(advisorId: string, worldState: any): AdvisorRespo
   }
 }
 
-interface ChatMessage {
+interface StoredChatMessage {
   role: 'user' | 'advisor';
   content: string;
-  timestamp: Date;
+  timestamp: string;
 }
 
 export function AdvisorModal() {
-  const { activeModal, activeAdvisorRole, closeModal, setAdvisorRole, saveId, worldState } = useGameStore();
+  const { activeModal, activeAdvisorRole, closeModal, setAdvisorRole, saveId, worldState, advisorChatHistory, addAdvisorMessage } = useGameStore();
   const [message, setMessage] = useState('');
   const [response, setResponse] = useState<AdvisorResponse | null>(null);
-  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const initialFetchDone = useRef(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
+
+  // Get chat history for current advisor from store
+  const currentChatHistory = activeAdvisorRole ? (advisorChatHistory[activeAdvisorRole] || []) : [];
 
   // Auto-generate briefing when modal opens with a pre-selected advisor
   useEffect(() => {
@@ -455,8 +503,6 @@ export function AdvisorModal() {
   const handleSelectAdvisor = (advisorId: string) => {
     setAdvisorRole(advisorId);
     setError(null);
-    // Clear chat history when switching advisors
-    setChatHistory([]);
     // Immediately show local briefing
     if (worldState) {
       const localBriefing = generateLocalBriefing(advisorId, worldState);
@@ -471,12 +517,8 @@ export function AdvisorModal() {
 
     const userMessage = message.trim();
     
-    // Add user message to chat history
-    setChatHistory(prev => [...prev, {
-      role: 'user',
-      content: userMessage,
-      timestamp: new Date(),
-    }]);
+    // Add user message to chat history in store
+    addAdvisorMessage(activeAdvisorRole, { role: 'user', content: userMessage });
     setMessage('');
     setLoading(true);
     setError(null);
@@ -492,11 +534,10 @@ export function AdvisorModal() {
         const data = await res.json();
         if (data.success && data.response) {
           setResponse(data.response);
-          setChatHistory(prev => [...prev, {
+          addAdvisorMessage(activeAdvisorRole, {
             role: 'advisor',
             content: data.response.analysis || 'I understand your question. Let me analyze the situation.',
-            timestamp: new Date(),
-          }]);
+          });
           setLoading(false);
           return;
         }
@@ -508,11 +549,7 @@ export function AdvisorModal() {
     // Fallback to local response generation based on user's question
     if (worldState) {
       const chatResponse = generateChatResponse(activeAdvisorRole, userMessage, worldState);
-      setChatHistory(prev => [...prev, {
-        role: 'advisor',
-        content: chatResponse,
-        timestamp: new Date(),
-      }]);
+      addAdvisorMessage(activeAdvisorRole, { role: 'advisor', content: chatResponse });
     }
     setLoading(false);
   };
@@ -562,7 +599,7 @@ export function AdvisorModal() {
 
                 <div className="chat-response">
                   {/* Initial briefing */}
-                  {response && chatHistory.length === 0 && (
+                  {response && (
                     <>
                       <div className="response-section">
                         <h4>Analysis</h4>
@@ -613,44 +650,57 @@ export function AdvisorModal() {
                     </>
                   )}
 
-                  {/* Chat history */}
-                  {chatHistory.length > 0 && (
-                    <div className="chat-messages">
-                      {chatHistory.map((msg, i) => (
-                        <div key={i} className={`chat-message ${msg.role}`}>
-                          <div className="message-header">
-                            <span className="message-role">
-                              {msg.role === 'user' ? '👤 You' : `${selectedAdvisor?.icon} ${selectedAdvisor?.name}`}
-                            </span>
-                          </div>
-                          <p className="message-content">{msg.content}</p>
-                        </div>
-                      ))}
-                      <div ref={chatEndRef} />
-                    </div>
-                  )}
-
-                  {/* Loading indicator */}
-                  {loading && (
-                    <div className="chat-loading">Consulting advisor...</div>
-                  )}
                 </div>
 
-                <div className="chat-input">
-                  <input
-                    type="text"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Ask a question..."
-                    onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                  />
-                  <button
-                    className="btn btn-primary"
-                    onClick={handleSendMessage}
-                    disabled={loading || !message.trim()}
-                  >
-                    Send
-                  </button>
+                {/* Chat panel on the right */}
+                <div className="advisor-chat-panel">
+                  <div className="chat-panel-header">
+                    <h4>💬 Chat with {selectedAdvisor?.name}</h4>
+                  </div>
+                  
+                  <div className="chat-messages-container">
+                    {currentChatHistory.length === 0 ? (
+                      <div className="chat-empty">
+                        <p>Ask {selectedAdvisor?.name} any questions about their area of expertise.</p>
+                      </div>
+                    ) : (
+                      <div className="chat-messages">
+                        {currentChatHistory.map((msg: StoredChatMessage, i: number) => (
+                          <div key={i} className={`chat-message ${msg.role}`}>
+                            <div className="message-header">
+                              <span className="message-role">
+                                {msg.role === 'user' ? '👤 You' : `${selectedAdvisor?.icon} ${selectedAdvisor?.name}`}
+                              </span>
+                            </div>
+                            <p className="message-content">{msg.content}</p>
+                          </div>
+                        ))}
+                        <div ref={chatEndRef} />
+                      </div>
+                    )}
+                    
+                    {/* Loading indicator */}
+                    {loading && (
+                      <div className="chat-loading">Consulting advisor...</div>
+                    )}
+                  </div>
+
+                  <div className="chat-input">
+                    <input
+                      type="text"
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      placeholder="Ask a question..."
+                      onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                    />
+                    <button
+                      className="btn btn-primary"
+                      onClick={handleSendMessage}
+                      disabled={loading || !message.trim()}
+                    >
+                      Send
+                    </button>
+                  </div>
                 </div>
               </>
             )}

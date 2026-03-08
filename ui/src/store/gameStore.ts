@@ -82,6 +82,9 @@ export interface GameState {
   llmPermissionGranted: boolean;
   llmProvider: string | null;
 
+  // Advisor chat history (persisted per advisor for game duration)
+  advisorChatHistory: Record<string, Array<{ role: 'user' | 'advisor'; content: string; timestamp: string }>>;
+
   // Actions
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
@@ -106,6 +109,10 @@ export interface GameState {
   // LLM actions
   setLLMPermission: (granted: boolean) => void;
   setLLMProvider: (provider: string | null) => void;
+
+  // Advisor chat actions
+  addAdvisorMessage: (advisorId: string, message: { role: 'user' | 'advisor'; content: string }) => void;
+  clearAdvisorChat: (advisorId: string) => void;
 }
 
 const API_BASE = 'http://localhost:8080/api';
@@ -132,6 +139,9 @@ export const useGameStore = create<GameState>((set) => ({
   // LLM settings
   llmPermissionGranted: false,
   llmProvider: null,
+
+  // Advisor chat history
+  advisorChatHistory: {},
 
   setLoading: (loading) => set({ isLoading: loading }),
   setError: (error) => set({ error }),
@@ -177,6 +187,23 @@ export const useGameStore = create<GameState>((set) => ({
   // LLM actions
   setLLMPermission: (granted) => set({ llmPermissionGranted: granted }),
   setLLMProvider: (provider) => set({ llmProvider: provider }),
+
+  // Advisor chat actions
+  addAdvisorMessage: (advisorId, message) => set((state) => ({
+    advisorChatHistory: {
+      ...state.advisorChatHistory,
+      [advisorId]: [
+        ...(state.advisorChatHistory[advisorId] || []),
+        { ...message, timestamp: new Date().toISOString() },
+      ],
+    },
+  })),
+  clearAdvisorChat: (advisorId) => set((state) => ({
+    advisorChatHistory: {
+      ...state.advisorChatHistory,
+      [advisorId]: [],
+    },
+  })),
 }));
 
 export async function createNewGame(
