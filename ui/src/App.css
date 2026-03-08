@@ -6,7 +6,9 @@
 
 :root {
   --header-height: 60px;
-  --sidebar-width: 320px;
+  --sidebar-width: 50vw;
+  --sidebar-min-width: 400px;
+  --sidebar-max-width: 800px;
   --primary: #2196F3;
   --primary-dark: #1976D2;
   --secondary: #607D8B;
@@ -249,11 +251,73 @@ body {
 
 .sidebar {
   width: var(--sidebar-width);
+  min-width: var(--sidebar-min-width);
+  max-width: var(--sidebar-max-width);
   background: var(--bg-card);
   border-left: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  position: relative;
+  transition: width 0.3s ease, min-width 0.3s ease;
+}
+
+.sidebar.collapsed {
+  width: 0;
+  min-width: 0;
+  max-width: 0;
+  overflow: hidden;
+  border-left: none;
+}
+
+.sidebar-toggle {
+  position: absolute;
+  left: -32px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 64px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-right: none;
+  border-radius: 8px 0 0 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-size: 16px;
+  z-index: 10;
+  transition: all 0.2s;
+}
+
+.sidebar-toggle:hover {
+  background: var(--primary);
+  color: white;
+}
+
+.sidebar.collapsed .sidebar-toggle {
+  left: 0;
+  border-radius: 0 8px 8px 0;
+  border-right: 1px solid var(--border-color);
+  border-left: none;
+}
+
+.sidebar-resize-handle {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  cursor: ew-resize;
+  background: transparent;
+  transition: background 0.2s;
+  z-index: 5;
+}
+
+.sidebar-resize-handle:hover,
+.sidebar-resize-handle.dragging {
+  background: var(--primary);
 }
 
 .sidebar-empty {
