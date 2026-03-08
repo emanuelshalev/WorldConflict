@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 import { useGameStore } from '../store/gameStore';
-import { TurnBriefingPanel } from './TurnBriefingPanel';
+import { ActionPanel } from './ActionPanel';
 
 export function Sidebar() {
   const { worldState } = useGameStore();
@@ -75,7 +75,7 @@ export function Sidebar() {
       {!isCollapsed && (
         <>
           <div className="sidebar-resize-handle" onMouseDown={handleMouseDown} />
-          <TurnBriefingPanel />
+          <ActionPanel />
         </>
       )}
     </aside>

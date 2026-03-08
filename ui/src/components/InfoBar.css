@@ -1,0 +1,134 @@
+.info-bar {
+  display: flex;
+  gap: 1px;
+  background: var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.info-panel {
+  flex: 1;
+  background: var(--bg-card);
+  display: flex;
+  flex-direction: column;
+  min-height: 100px;
+  max-height: 140px;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--bg-dark);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.panel-icon {
+  font-size: 16px;
+}
+
+.panel-title {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+}
+
+.panel-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+.headline-list,
+.advisor-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.headline-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.headline-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.headline-category {
+  flex-shrink: 0;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  background: var(--primary);
+  color: white;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.headline-title {
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.advisor-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-size: 12px;
+}
+
+.advisor-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.advisor-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.advisor-name {
+  font-weight: 600;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.advisor-summary {
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.panel-action {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  border-top: 1px solid var(--border-color);
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 600;
+  text-align: right;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.panel-action:hover {
+  background: rgba(33, 150, 243, 0.1);
+}

@@ -940,14 +940,91 @@ Intelligence Legend:
   ◔ Limited (21-50%)
   ◑ Moderate (51-75%)
   ● Full Intel (76-100%)
-12.2 Screen States
+12.2 Main Game Layout
+text
+The main game screen is divided into three areas:
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ HEADER BAR (fixed height ~60px)                                             │
+│ Logo | Turn Info | Quick Stats | Menu Buttons                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ INFO BAR (expandable, ~80px collapsed, expands to modal)                    │
+│ ┌─────────────────────────────┐ ┌─────────────────────────────────────────┐ │
+│ │ 📰 NEWS & MEDIA             │ │ 📋 ADVISOR BRIEFINGS                    │ │
+│ │ • Headline 1 (click expand) │ │ • Foreign Min: "Relations with..."     │ │
+│ │ • Headline 2                │ │ • Defense Min: "Military readiness..." │ │
+│ │ • Headline 3                │ │ • Intel Chief: "Operations report..."  │ │
+│ │ [View All News]             │ │ [Consult Advisors]                      │ │
+│ └─────────────────────────────┘ └─────────────────────────────────────────┘ │
+├───────────────────────────────────┬─────────────────────────────────────────┤
+│ MAP VIEW (flexible, ~50%)         │ ACTION PANEL (flexible, ~50%)           │
+│                                   │                                         │
+│ Interactive world map             │ ┌─────────────────────────────────────┐ │
+│ - Country markers                 │ │ 🤝 DIPLOMACY                        │ │
+│ - Alliance/war lines              │ │ • Improve Relations with [select]   │ │
+│ - Layer toggles                   │ │ • Propose Alliance                  │ │
+│ - Click to select country         │ │ • Declare War                       │ │
+│                                   │ │ • Custom Diplomatic Action...       │ │
+│                                   │ └─────────────────────────────────────┘ │
+│                                   │ ┌─────────────────────────────────────┐ │
+│                                   │ │ ⚔️ MILITARY                         │ │
+│                                   │ │ • Mobilize Forces                   │ │
+│                                   │ │ • Deploy to Border                  │ │
+│                                   │ │ • Launch Airstrike                  │ │
+│                                   │ │ • Custom Military Action...         │ │
+│                                   │ └─────────────────────────────────────┘ │
+│                                   │ ┌─────────────────────────────────────┐ │
+│                                   │ │ 🏛️ DOMESTIC                         │ │
+│                                   │ │ • Adjust Budget                     │ │
+│                                   │ │ • Address Insurgency                │ │
+│                                   │ │ • Economic Policy                   │ │
+│                                   │ │ • Custom Domestic Action...         │ │
+│                                   │ └─────────────────────────────────────┘ │
+│                                   │                                         │
+│                                   │ [CONFIRM TURN] (requires 1+ action)     │
+│ [◀ Collapse] [Resize ↔]          │                                         │
+└───────────────────────────────────┴─────────────────────────────────────────┘
+
+12.2.1 Info Bar Behavior
+text
+NEWS & MEDIA PANEL:
+- Shows 3-5 recent headlines in collapsed state
+- Click headline → expands to News Modal showing full article
+- News Modal allows browsing all headlines with full details
+- Headlines sourced from last turn's events + global events
+
+ADVISOR BRIEFINGS PANEL:
+- Shows summary one-liner from each advisor
+- Click advisor summary → opens Advisor Modal
+- Advisor Modal shows full briefing + allows chat interaction
+- Advisors provide department-specific analysis
+
+12.2.2 Action Panel Structure
+text
+Each action group (Diplomacy, Military, Domestic) is collapsible accordion:
+- Header shows group name + icon + pending action count
+- Expanded shows available actions as clickable buttons
+- Each action shows brief description + cost/consequence hint
+- "Custom Action" option in each group for free-form input
+- Selected actions appear in "Pending Actions" section at bottom
+- Must select at least one action to enable "Confirm Turn"
+
+Action Flow:
+1. Player clicks action → Action Preview Modal shows consequences
+2. Player confirms → Action added to pending list
+3. Player can add multiple actions across groups
+4. Player clicks "Confirm Turn" → Turn resolves
+5. Turn Feedback Modal shows results
+6. Next turn begins with new News/Advisor updates
+
+12.2.3 Screen States
 text
 - Opening Splash (poem, fade to title)
-- Newspaper Brief (full screen, auto-advance)
-- World Dashboard (map + country panels)
-- Action Selection (tabbed interface)
-- Advisor Chat (split screen)
-- Resolution Summary (headline reel)
+- Main Game (layout above)
+- News Modal (browse headlines, read full articles)
+- Advisor Modal (chat with advisors)
+- Action Preview Modal (confirm action with consequences)
+- Turn Feedback Modal (results of turn resolution)
 - Annual Summit (every 12 turns - special UI)
 - End Game Report (multi-page with charts)
 
