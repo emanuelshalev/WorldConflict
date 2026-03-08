@@ -1,0 +1,226 @@
+.tabbed-sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.sidebar-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-secondary);
+}
+
+.tab-bar {
+  display: flex;
+  background: var(--bg-dark);
+  border-bottom: 2px solid var(--primary);
+  flex-shrink: 0;
+}
+
+.tab-button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 16px;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+}
+
+.tab-button:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+.tab-button.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  background: rgba(33, 150, 243, 0.1);
+}
+
+.tab-icon {
+  font-size: 16px;
+}
+
+.tab-label {
+  font-weight: 600;
+}
+
+.tab-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.tab-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: var(--bg-dark);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.tab-header h2 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--primary);
+}
+
+.turn-info {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* Advisors Tab */
+.advisors-tab {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.advisor-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+.advisor-card {
+  background: var(--bg-dark);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border-color);
+  transition: border-color 0.2s;
+}
+
+.advisor-card:hover {
+  border-color: var(--primary);
+}
+
+.advisor-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.advisor-icon {
+  font-size: 24px;
+}
+
+.advisor-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.advisor-summary {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin: 0 0 12px;
+}
+
+.advisor-chat-btn {
+  display: inline-block;
+  padding: 8px 16px;
+  background: transparent;
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.advisor-chat-btn:hover {
+  background: var(--primary);
+  color: white;
+}
+
+/* News Tab */
+.news-tab {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.news-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+.news-card {
+  background: var(--bg-dark);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border-color);
+  transition: border-color 0.2s;
+}
+
+.news-card:hover {
+  border-color: var(--primary);
+}
+
+.news-header {
+  margin-bottom: 8px;
+}
+
+.news-category {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  background: var(--primary);
+  color: white;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.news-headline {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 8px;
+  line-height: 1.3;
+}
+
+.news-preview {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin: 0 0 12px;
+}
+
+.news-read-more {
+  display: inline-block;
+  padding: 6px 12px;
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding-left: 0;
+}
+
+.news-read-more:hover {
+  text-decoration: underline;
+}

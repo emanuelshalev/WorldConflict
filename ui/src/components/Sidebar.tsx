@@ -1,9 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
-import { useGameStore } from '../store/gameStore';
-import { ActionPanel } from './ActionPanel';
+import { TabbedSidebar } from './TabbedSidebar';
 
 export function Sidebar() {
-  const { worldState } = useGameStore();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [width, setWidth] = useState<number | null>(null);
   const sidebarRef = useRef<HTMLElement>(null);
@@ -41,28 +39,6 @@ export function Sidebar() {
 
   const sidebarStyle = width && !isCollapsed ? { width: `${width}px`, minWidth: `${width}px`, maxWidth: `${width}px` } : {};
 
-  if (!worldState) {
-    return (
-      <aside 
-        ref={sidebarRef}
-        className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}
-        style={sidebarStyle}
-      >
-        <button className="sidebar-toggle" onClick={toggleCollapse} title={isCollapsed ? 'Expand panel' : 'Collapse panel'}>
-          {isCollapsed ? '◀' : '▶'}
-        </button>
-        {!isCollapsed && (
-          <>
-            <div className="sidebar-resize-handle" onMouseDown={handleMouseDown} />
-            <div className="sidebar-empty">
-              <p>Start a new game to begin</p>
-            </div>
-          </>
-        )}
-      </aside>
-    );
-  }
-
   return (
     <aside 
       ref={sidebarRef}
@@ -75,7 +51,7 @@ export function Sidebar() {
       {!isCollapsed && (
         <>
           <div className="sidebar-resize-handle" onMouseDown={handleMouseDown} />
-          <ActionPanel />
+          <TabbedSidebar />
         </>
       )}
     </aside>

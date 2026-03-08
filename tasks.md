@@ -213,10 +213,10 @@
 ### 9A: Turn Flow Restructure (2 days)
 - [x] **9.1** [P0] Opening splash screen: "Sweet Bird of Truth" poem with fade to title
 - [x] **9.2** [P0] Flip newspaper flow: Show at turn START (events from last turn) instead of end
-- [x] **9.3** [P0] ~~Phase indicator bar~~ → Replaced with InfoBar (News/Media + Advisor Briefings)
-- [x] **9.4** [P0] ~~Phase-based UI panels~~ → Replaced with ActionPanel (grouped Diplomacy/Military/Domestic)
-- [x] **9.5** [P0] NEW: InfoBar component with clickable headlines and advisor summaries
-- [x] **9.6** [P0] NEW: ActionPanel with accordion action groups and pending actions list
+- [x] **9.3** [P0] Tabbed Sidebar with three tabs: Actions, Advisors, News
+- [x] **9.4** [P0] Actions Tab: Accordion groups (Diplomacy/Military/Domestic) + pending list + confirm
+- [x] **9.5** [P0] Advisors Tab: Cabinet briefings with chat button for each advisor
+- [x] **9.6** [P0] News Tab: Headlines from previous turn with read more option
 - [ ] **9.7** [P1] Custom action input: Free-form text input for each action category
 
 ### 9B: Annual Events (1 day)

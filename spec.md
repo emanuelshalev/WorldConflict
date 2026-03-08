@@ -946,93 +946,120 @@ Intelligence Legend:
 ┌─────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                    HEADER BAR                                               │
 │  🌍 World Conflicts    │ Turn 5 - March 1997 │ 💰 $2.1T │ ⚔️ 1.2M │ 📊 72% │  [💾] [⚙️]   │
-├─────────────────────────────────────────────────────────────────────────────────────────────┤
-│                                     INFO BAR                                                │
-│ ┌───────────────────────────────────────────┐ ┌───────────────────────────────────────────┐ │
-│ │ 📰 NEWS & MEDIA                           │ │ 📋 ADVISOR BRIEFINGS                      │ │
-│ │                                           │ │                                           │ │
-│ │ WORLD  China increases military spending  │ │ 🌐 Foreign Min: "Relations with Russia   │ │
-│ │ ECON   Oil prices surge amid Gulf tension │ │    improving. Consider alliance talks."  │ │
-│ │ SEC    NATO exercises near Russian border │ │ 🎖️ Defense Min: "Forces at 45% ready.    │ │
-│ │ LOCAL  Opposition protests in capital     │ │    Recommend increased mobilization."    │ │
-│ │                                           │ │ 🕵️ Intel Chief: "Iranian nuclear program │ │
-│ │                     [View All News →]     │ │    advancing. Covert options available." │ │
-│ │                                           │ │                  [Consult Advisors →]    │ │
-│ └───────────────────────────────────────────┘ └───────────────────────────────────────────┘ │
 ├─────────────────────────────────────────────────┬───────────────────────────────────────────┤
 │                                                 │                                           │
-│                    MAP VIEW                     │              ACTION PANEL                 │
-│                   (flexible)                    │               (flexible)                  │
+│                    MAP VIEW                     │            TABBED SIDEBAR                 │
+│                   (flexible)                    │             (flexible)                    │
 │                                                 │                                           │
 │         ┌─────────────────────────┐             │  ┌─────────────────────────────────────┐  │
-│         │     🇺🇸                 │             │  │ ▼ 🤝 DIPLOMACY                  [2] │  │
+│         │     🇺🇸                 │             │  │ [⚡ Actions] [📋 Advisors] [📰 News]│  │
 │         │         🇬🇧              │             │  ├─────────────────────────────────────┤  │
-│         │    🇫🇷      🇩🇪    🇵🇱    │             │  │ 🤝 Improve Relations    [select →] │  │
-│         │              🇺🇦         │             │  │ 📜 Propose Alliance     [select →] │  │
-│         │         🇮🇹    🇷🇺        │             │  │ 💔 Break Alliance       [select →] │  │
-│         │    🇪🇸          ═══🔴═══ │             │  │ ⚔️ Declare War          [select →] │  │
-│         │              🇹🇷    🇮🇷   │             │  │ 🕊️ Propose Ceasefire    [select →] │  │
-│         │         🇪🇬    🇸🇦       │             │  │ ✏️ Custom Action...               │  │
-│         │              🇮🇱         │             │  └─────────────────────────────────────┘  │
-│         │    🇳🇬                   │             │  ┌─────────────────────────────────────┐  │
-│         │         🇿🇦              │             │  │ ▶ ⚔️ MILITARY                   [0] │  │
-│         └─────────────────────────┘             │  └─────────────────────────────────────┘  │
-│                                                 │  ┌─────────────────────────────────────┐  │
-│    ═══🟢═══ Alliance    ═══🔴═══ War            │  │ ▶ 🏛️ DOMESTIC                   [0] │  │
-│    ● Player   ○ Selected   ⚠️ Unstable          │  └─────────────────────────────────────┘  │
-│                                                 │                                           │
-│    Layers: [Political] [Military] [Economic]   │  ┌─────────────────────────────────────┐  │
-│            [Stability] [Intelligence]          │  │ PENDING ACTIONS (2)                 │  │
-│                                                 │  │ ├─ DIPLOMACY: Improve → Russia     │  │
-│                                                 │  │ └─ DIPLOMACY: Alliance → UK    [×] │  │
-│                                                 │  └─────────────────────────────────────┘  │
-│                                                 │                                           │
-│  [◀ Collapse Panel]              [↔ Resize]    │  ┌─────────────────────────────────────┐  │
-│                                                 │  │      ✓ CONFIRM TURN (2 actions)    │  │
-│                                                 │  └─────────────────────────────────────┘  │
+│         │    🇫🇷      🇩🇪    🇵🇱    │             │  │                                     │  │
+│         │              🇺🇦         │             │  │  ▼ 🤝 DIPLOMACY                 [2] │  │
+│         │         🇮🇹    🇷🇺        │             │  │  ├─ 🤝 Improve Relations  [select]  │  │
+│         │    🇪🇸          ═══🔴═══ │             │  │  ├─ 📜 Propose Alliance   [select]  │  │
+│         │              🇹🇷    🇮🇷   │             │  │  ├─ ⚔️ Declare War       [select]  │  │
+│         │         🇪🇬    🇸🇦       │             │  │  └─ ✏️ Custom Action...            │  │
+│         │              🇮🇱         │             │  │                                     │  │
+│         │    🇳🇬                   │             │  │  ▶ ⚔️ MILITARY                  [0] │  │
+│         │         🇿🇦              │             │  │  ▶ 🏛️ DOMESTIC                  [0] │  │
+│         └─────────────────────────┘             │  │                                     │  │
+│                                                 │  │  ─────────────────────────────────  │  │
+│    ═══🟢═══ Alliance    ═══🔴═══ War            │  │  PENDING (2):                       │  │
+│    ● Player   ○ Selected   ⚠️ Unstable          │  │  • Improve Relations → Russia   [×] │  │
+│                                                 │  │  • Propose Alliance → UK        [×] │  │
+│    Layers: [Political] [Military] [Economic]   │  │                                     │  │
+│            [Stability] [Intelligence]          │  │  ┌─────────────────────────────────┐│  │
+│                                                 │  │  │   ✓ CONFIRM TURN (2 actions)   ││  │
+│                                                 │  │  └─────────────────────────────────┘│  │
+│  [◀ Collapse]                      [↔ Resize]  │  └─────────────────────────────────────┘  │
 └─────────────────────────────────────────────────┴───────────────────────────────────────────┘
+```
+
+**Tabbed Sidebar - Three Tabs:**
+
+```
+┌─────────────────────────────────────┐   ┌─────────────────────────────────────┐
+│ [⚡ Actions] [📋 Advisors] [📰 News]│   │ [⚡ Actions] [📋 Advisors] [📰 News]│
+├─────────────────────────────────────┤   ├─────────────────────────────────────┤
+│                                     │   │                                     │
+│  ACTIONS TAB (default)              │   │  ADVISORS TAB                       │
+│                                     │   │                                     │
+│  ▼ 🤝 DIPLOMACY                 [2] │   │  🌐 Foreign Minister                │
+│  ├─ Improve Relations               │   │  "Relations with Russia improving.  │
+│  ├─ Propose Alliance                │   │   Consider formalizing alliance."   │
+│  ├─ Declare War                     │   │                      [Chat →]       │
+│  └─ Custom...                       │   │  ─────────────────────────────────  │
+│                                     │   │  🎖️ Defense Minister                │
+│  ▶ ⚔️ MILITARY                  [0] │   │  "Forces at 45% readiness. Budget   │
+│  ▶ 🏛️ DOMESTIC                  [0] │   │   increase recommended."            │
+│                                     │   │                      [Chat →]       │
+│  ─────────────────────────────────  │   │  ─────────────────────────────────  │
+│  PENDING (2):                       │   │  🕵️ Intelligence Chief              │
+│  • Improve → Russia             [×] │   │  "Iranian nuclear program active.   │
+│  • Alliance → UK                [×] │   │   Covert options available."        │
+│  ─────────────────────────────────  │   │                      [Chat →]       │
+│  [    ✓ CONFIRM TURN (2)        ]   │   │  ─────────────────────────────────  │
+│                                     │   │  💰 Treasury Secretary              │
+└─────────────────────────────────────┘   │  "GDP growth 2.1%. Debt manageable." │
+                                          │                      [Chat →]       │
+┌─────────────────────────────────────┐   └─────────────────────────────────────┘
+│ [⚡ Actions] [📋 Advisors] [📰 News]│
+├─────────────────────────────────────┤
+│                                     │
+│  NEWS & MEDIA TAB                   │
+│                                     │
+│  📰 WORLD NEWS                      │
+│  ─────────────────────────────────  │
+│  WORLD  China increases military    │
+│         spending by 15%             │
+│                        [Read More]  │
+│  ─────────────────────────────────  │
+│  ECON   Oil prices surge amid Gulf  │
+│         tensions, $45/barrel        │
+│                        [Read More]  │
+│  ─────────────────────────────────  │
+│  SEC    NATO exercises near Russian │
+│         border draw criticism       │
+│                        [Read More]  │
+│  ─────────────────────────────────  │
+│  LOCAL  Opposition protests grow in │
+│         capital over reforms        │
+│                        [Read More]  │
+│                                     │
+└─────────────────────────────────────┘
 ```
 
 **Layout Principles:**
 - **Header**: Fixed 60px, shows game title, turn info, quick stats, menu buttons
-- **Info Bar**: ~120px, two panels side-by-side for information consumption
-- **Main Area**: Flexible split between Map (left) and Actions (right)
-- **Default Split**: 50/50, but sidebar can be resized (300px min, 80% max) or collapsed entirely
-- **Action Focus**: Sidebar is the primary interaction area for taking actions
+- **Main Area**: Two-panel split - Map (left) and Tabbed Sidebar (right)
+- **Default Split**: 50/50, sidebar can be resized (300px min, 80% max) or collapsed
+- **Tabbed Sidebar**: Three tabs consolidate all player interaction in one place
+  - **Actions Tab** (default): Grouped actions + pending list + confirm button
+  - **Advisors Tab**: Department briefings with chat option for each
+  - **News Tab**: Headlines from last turn with expandable details
 
-12.2.1 Info Bar Behavior
+12.2.1 Tabbed Sidebar Behavior
 text
-NEWS & MEDIA PANEL:
-- Shows 3-5 recent headlines in collapsed state
-- Click headline → expands to News Modal showing full article
-- News Modal allows browsing all headlines with full details
-- Headlines sourced from last turn's events + global events
+ACTIONS TAB (Default):
+- Accordion groups: Diplomacy, Military, Domestic
+- Each group shows available actions with target selection
+- Pending actions list at bottom with remove option
+- "Confirm Turn" button requires at least one action
 
-ADVISOR BRIEFINGS PANEL:
-- Shows summary one-liner from each advisor
-- Click advisor summary → opens Advisor Modal
-- Advisor Modal shows full briefing + allows chat interaction
-- Advisors provide department-specific analysis
+ADVISORS TAB:
+- List of cabinet advisors with summary briefings
+- Each advisor shows department-specific analysis
+- "Chat" button opens full advisor modal for conversation
+- Advisors: Foreign, Defense, Intelligence, Treasury, Interior
 
-12.2.2 Action Panel Structure
-text
-Each action group (Diplomacy, Military, Domestic) is collapsible accordion:
-- Header shows group name + icon + pending action count
-- Expanded shows available actions as clickable buttons
-- Each action shows brief description + cost/consequence hint
-- "Custom Action" option in each group for free-form input
-- Selected actions appear in "Pending Actions" section at bottom
-- Must select at least one action to enable "Confirm Turn"
+NEWS & MEDIA TAB:
+- Headlines from previous turn's events
+- Categorized: WORLD, ECON, SEC, LOCAL
+- "Read More" expands to full article in modal
+- Keeps player informed of global situation
 
-Action Flow:
-1. Player clicks action → Action Preview Modal shows consequences
-2. Player confirms → Action added to pending list
-3. Player can add multiple actions across groups
-4. Player clicks "Confirm Turn" → Turn resolves
-5. Turn Feedback Modal shows results
-6. Next turn begins with new News/Advisor updates
-
-12.2.3 Screen States
+12.2.2 Action Flow
 text
 - Opening Splash (poem, fade to title)
 - Main Game (layout above)

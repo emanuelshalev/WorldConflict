@@ -2,7 +2,6 @@ import './App.css'
 import { Header } from './components/Header'
 import { Sidebar } from './components/Sidebar'
 import { MapView } from './components/MapView'
-import { InfoBar } from './components/InfoBar'
 import { NewGameModal } from './components/NewGameModal'
 import { SaveLoadModal } from './components/SaveLoadModal'
 import { AdvisorModal } from './components/AdvisorModal'
@@ -13,7 +12,7 @@ import { TurnFeedbackModal } from './components/TurnFeedbackModal'
 import { useGameStore } from './store/gameStore'
 
 function App() {
-  const { error, isLoading, showSplash, worldState, completeSplash } = useGameStore()
+  const { error, isLoading, showSplash, completeSplash } = useGameStore()
 
   if (showSplash) {
     return <SplashScreen onComplete={completeSplash} />
@@ -22,7 +21,6 @@ function App() {
   return (
     <div className="app">
       <Header />
-      {worldState && <InfoBar />}
       <main className="main-content">
         <MapView />
         <Sidebar />
