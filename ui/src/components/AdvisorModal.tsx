@@ -289,13 +289,21 @@ function generateLocalBriefing(advisorId: string, worldState: any): AdvisorRespo
   }
 }
 
+interface ChatMessage {
+  role: 'user' | 'advisor';
+  content: string;
+  timestamp: Date;
+}
+
 export function AdvisorModal() {
   const { activeModal, activeAdvisorRole, closeModal, setAdvisorRole, saveId, worldState } = useGameStore();
   const [message, setMessage] = useState('');
   const [response, setResponse] = useState<AdvisorResponse | null>(null);
+  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const initialFetchDone = useRef(false);
+  const chatEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-generate briefing when modal opens with a pre-selected advisor
   useEffect(() => {
@@ -360,28 +368,55 @@ export function AdvisorModal() {
   };
 
   const handleSendMessage = async () => {
-    if (!message.trim() || !activeAdvisorRole || !saveId) return;
+    if (!message.trim() || !activeAdvisorRole) return;
 
+    const userMessage = message.trim();
+    
+    // Add user message to chat history
+    setChatHistory(prev => [...prev, {
+      role: 'user',
+      content: userMessage,
+      timestamp: new Date(),
+    }]);
+    setMessage('');
     setLoading(true);
     setError(null);
-    try {
-      const res = await fetch('http://localhost:8080/api/chat/advisor', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ saveId, role: activeAdvisorRole, message }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        setResponse(data.response);
-        setMessage('');
-      } else {
-        setError(data.error || 'Failed to get response');
+
+    // Try backend first if saveId exists
+    if (saveId) {
+      try {
+        const res = await fetch('http://localhost:8080/api/chat/advisor', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ saveId, role: activeAdvisorRole, message: userMessage }),
+        });
+        const data = await res.json();
+        if (data.success && data.response) {
+          setResponse(data.response);
+          setChatHistory(prev => [...prev, {
+            role: 'advisor',
+            content: data.response.analysis || 'I understand your question. Let me analyze the situation.',
+            timestamp: new Date(),
+          }]);
+          setLoading(false);
+          return;
+        }
+      } catch (err) {
+        console.log('Backend chat failed, using local response');
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to send message');
-    } finally {
-      setLoading(false);
     }
+
+    // Fallback to local response generation
+    if (worldState) {
+      const localResponse = generateLocalBriefing(activeAdvisorRole, worldState);
+      setResponse(localResponse);
+      setChatHistory(prev => [...prev, {
+        role: 'advisor',
+        content: localResponse.analysis,
+        timestamp: new Date(),
+      }]);
+    }
+    setLoading(false);
   };
 
   const selectedAdvisor = ADVISORS.find((a) => a.id === activeAdvisorRole);
@@ -427,58 +462,81 @@ export function AdvisorModal() {
 
                 {error && <div className="error-message">{error}</div>}
 
-                {loading ? (
-                  <div className="chat-loading">Consulting advisor...</div>
-                ) : response ? (
-                  <div className="chat-response">
-                    <div className="response-section">
-                      <h4>Analysis</h4>
-                      <p>{response.analysis}</p>
-                    </div>
-
-                    {response.warnings && response.warnings.length > 0 && (
-                      <div className="response-section warnings">
-                        <h4>⚠️ Warnings</h4>
-                        <ul>
-                          {response.warnings.map((w, i) => (
-                            <li key={i}>{w}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-
-                    {response.opportunities && response.opportunities.length > 0 && (
-                      <div className="response-section opportunities">
-                        <h4>✨ Opportunities</h4>
-                        <ul>
-                          {response.opportunities.map((o, i) => (
-                            <li key={i}>{o}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-
-                    {response.recommendations.length > 0 && (
+                <div className="chat-response">
+                  {/* Initial briefing */}
+                  {response && chatHistory.length === 0 && (
+                    <>
                       <div className="response-section">
-                        <h4>Recommendations</h4>
-                        {response.recommendations.map((rec, i) => (
-                          <div key={i} className={`recommendation risk-${rec.riskLevel.toLowerCase()}`}>
-                            <div className="rec-header">
-                              <span className="rec-action">{rec.action.type}</span>
-                              <span className={`risk-badge ${rec.riskLevel.toLowerCase()}`}>
-                                {rec.riskLevel}
-                              </span>
-                            </div>
-                            <p className="rec-rationale">{rec.rationale}</p>
-                            <p className="rec-outcome">
-                              <em>Expected: {rec.expectedOutcome}</em>
-                            </p>
-                          </div>
-                        ))}
+                        <h4>Analysis</h4>
+                        <p>{response.analysis}</p>
                       </div>
-                    )}
-                  </div>
-                ) : null}
+
+                      {response.warnings && response.warnings.length > 0 && (
+                        <div className="response-section warnings">
+                          <h4>⚠️ Warnings</h4>
+                          <ul>
+                            {response.warnings.map((w, i) => (
+                              <li key={i}>{w}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {response.opportunities && response.opportunities.length > 0 && (
+                        <div className="response-section opportunities">
+                          <h4>✨ Opportunities</h4>
+                          <ul>
+                            {response.opportunities.map((o, i) => (
+                              <li key={i}>{o}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {response.recommendations.length > 0 && (
+                        <div className="response-section">
+                          <h4>Recommendations</h4>
+                          {response.recommendations.map((rec, i) => (
+                            <div key={i} className={`recommendation risk-${rec.riskLevel.toLowerCase()}`}>
+                              <div className="rec-header">
+                                <span className="rec-action">{rec.action.type}</span>
+                                <span className={`risk-badge ${rec.riskLevel.toLowerCase()}`}>
+                                  {rec.riskLevel}
+                                </span>
+                              </div>
+                              <p className="rec-rationale">{rec.rationale}</p>
+                              <p className="rec-outcome">
+                                <em>Expected: {rec.expectedOutcome}</em>
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  {/* Chat history */}
+                  {chatHistory.length > 0 && (
+                    <div className="chat-messages">
+                      {chatHistory.map((msg, i) => (
+                        <div key={i} className={`chat-message ${msg.role}`}>
+                          <div className="message-header">
+                            <span className="message-role">
+                              {msg.role === 'user' ? '👤 You' : `${selectedAdvisor?.icon} ${selectedAdvisor?.name}`}
+                            </span>
+                          </div>
+                          <p className="message-content">{msg.content}</p>
+                        </div>
+                      ))}
+                      <div ref={chatEndRef} />
+                    </div>
+                  )}
+
+                  {/* Loading indicator */}
+                  {loading && (
+                    <div className="chat-loading">Consulting advisor...</div>
+                  )}
+                </div>
 
                 <div className="chat-input">
                   <input
