@@ -18,24 +18,10 @@ export function LLMPermissionModal() {
   const { setLLMPermission, setLLMProvider } = useGameStore();
   const [status, setStatus] = useState<LLMStatus | null>(null);
   const [loading, setLoading] = useState(true);
-  const [_error, setError] = useState<string | null>(null);
+  const [_error, _setError] = useState<string | null>(null);
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
-    // Check if we already have permission stored
-    const stored = localStorage.getItem('llmPermissionGranted');
-    console.log('[LLM] Stored permission:', stored);
-    
-    if (stored === 'true' || stored === 'false') {
-      setLLMPermission(stored === 'true');
-      const storedProvider = localStorage.getItem('llmProvider');
-      if (storedProvider) {
-        setLLMProvider(storedProvider);
-      }
-      setDismissed(true);
-      return;
-    }
-
     // Fetch LLM status from backend
     const checkStatus = async () => {
       console.log('[LLM] Checking backend for API keys...');
@@ -48,7 +34,12 @@ export function LLMPermissionModal() {
           setStatus(data);
         } else {
           console.log('[LLM] Backend error:', res.statusText);
-          setError('Could not check LLM status');
+          // Still show the modal with fallback info
+          setStatus({
+            hasApiKey: false,
+            providers: [{ provider: 'ollama', available: true, model: 'llama3.2' }],
+            recommended: 'fallback',
+          });
         }
       } catch (err) {
         // Backend not running - that's okay, we'll use fallback AI
@@ -64,7 +55,7 @@ export function LLMPermissionModal() {
     };
 
     checkStatus();
-  }, [setLLMPermission, setLLMProvider]);
+  }, []);
 
   const handleApprove = (provider: string) => {
     setLLMPermission(true);
