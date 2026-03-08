@@ -941,49 +941,64 @@ Intelligence Legend:
   ◑ Moderate (51-75%)
   ● Full Intel (76-100%)
 12.2 Main Game Layout
-text
-The main game screen is divided into three areas:
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ HEADER BAR (fixed height ~60px)                                             │
-│ Logo | Turn Info | Quick Stats | Menu Buttons                               │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ INFO BAR (expandable, ~80px collapsed, expands to modal)                    │
-│ ┌─────────────────────────────┐ ┌─────────────────────────────────────────┐ │
-│ │ 📰 NEWS & MEDIA             │ │ 📋 ADVISOR BRIEFINGS                    │ │
-│ │ • Headline 1 (click expand) │ │ • Foreign Min: "Relations with..."     │ │
-│ │ • Headline 2                │ │ • Defense Min: "Military readiness..." │ │
-│ │ • Headline 3                │ │ • Intel Chief: "Operations report..."  │ │
-│ │ [View All News]             │ │ [Consult Advisors]                      │ │
-│ └─────────────────────────────┘ └─────────────────────────────────────────┘ │
-├───────────────────────────────────┬─────────────────────────────────────────┤
-│ MAP VIEW (flexible, ~50%)         │ ACTION PANEL (flexible, ~50%)           │
-│                                   │                                         │
-│ Interactive world map             │ ┌─────────────────────────────────────┐ │
-│ - Country markers                 │ │ 🤝 DIPLOMACY                        │ │
-│ - Alliance/war lines              │ │ • Improve Relations with [select]   │ │
-│ - Layer toggles                   │ │ • Propose Alliance                  │ │
-│ - Click to select country         │ │ • Declare War                       │ │
-│                                   │ │ • Custom Diplomatic Action...       │ │
-│                                   │ └─────────────────────────────────────┘ │
-│                                   │ ┌─────────────────────────────────────┐ │
-│                                   │ │ ⚔️ MILITARY                         │ │
-│                                   │ │ • Mobilize Forces                   │ │
-│                                   │ │ • Deploy to Border                  │ │
-│                                   │ │ • Launch Airstrike                  │ │
-│                                   │ │ • Custom Military Action...         │ │
-│                                   │ └─────────────────────────────────────┘ │
-│                                   │ ┌─────────────────────────────────────┐ │
-│                                   │ │ 🏛️ DOMESTIC                         │ │
-│                                   │ │ • Adjust Budget                     │ │
-│                                   │ │ • Address Insurgency                │ │
-│                                   │ │ • Economic Policy                   │ │
-│                                   │ │ • Custom Domestic Action...         │ │
-│                                   │ └─────────────────────────────────────┘ │
-│                                   │                                         │
-│                                   │ [CONFIRM TURN] (requires 1+ action)     │
-│ [◀ Collapse] [Resize ↔]          │                                         │
-└───────────────────────────────────┴─────────────────────────────────────────┘
+```
+┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                    HEADER BAR                                               │
+│  🌍 World Conflicts    │ Turn 5 - March 1997 │ 💰 $2.1T │ ⚔️ 1.2M │ 📊 72% │  [💾] [⚙️]   │
+├─────────────────────────────────────────────────────────────────────────────────────────────┤
+│                                     INFO BAR                                                │
+│ ┌───────────────────────────────────────────┐ ┌───────────────────────────────────────────┐ │
+│ │ 📰 NEWS & MEDIA                           │ │ 📋 ADVISOR BRIEFINGS                      │ │
+│ │                                           │ │                                           │ │
+│ │ WORLD  China increases military spending  │ │ 🌐 Foreign Min: "Relations with Russia   │ │
+│ │ ECON   Oil prices surge amid Gulf tension │ │    improving. Consider alliance talks."  │ │
+│ │ SEC    NATO exercises near Russian border │ │ 🎖️ Defense Min: "Forces at 45% ready.    │ │
+│ │ LOCAL  Opposition protests in capital     │ │    Recommend increased mobilization."    │ │
+│ │                                           │ │ 🕵️ Intel Chief: "Iranian nuclear program │ │
+│ │                     [View All News →]     │ │    advancing. Covert options available." │ │
+│ │                                           │ │                  [Consult Advisors →]    │ │
+│ └───────────────────────────────────────────┘ └───────────────────────────────────────────┘ │
+├─────────────────────────────────────────────────┬───────────────────────────────────────────┤
+│                                                 │                                           │
+│                    MAP VIEW                     │              ACTION PANEL                 │
+│                   (flexible)                    │               (flexible)                  │
+│                                                 │                                           │
+│         ┌─────────────────────────┐             │  ┌─────────────────────────────────────┐  │
+│         │     🇺🇸                 │             │  │ ▼ 🤝 DIPLOMACY                  [2] │  │
+│         │         🇬🇧              │             │  ├─────────────────────────────────────┤  │
+│         │    🇫🇷      🇩🇪    🇵🇱    │             │  │ 🤝 Improve Relations    [select →] │  │
+│         │              🇺🇦         │             │  │ 📜 Propose Alliance     [select →] │  │
+│         │         🇮🇹    🇷🇺        │             │  │ 💔 Break Alliance       [select →] │  │
+│         │    🇪🇸          ═══🔴═══ │             │  │ ⚔️ Declare War          [select →] │  │
+│         │              🇹🇷    🇮🇷   │             │  │ 🕊️ Propose Ceasefire    [select →] │  │
+│         │         🇪🇬    🇸🇦       │             │  │ ✏️ Custom Action...               │  │
+│         │              🇮🇱         │             │  └─────────────────────────────────────┘  │
+│         │    🇳🇬                   │             │  ┌─────────────────────────────────────┐  │
+│         │         🇿🇦              │             │  │ ▶ ⚔️ MILITARY                   [0] │  │
+│         └─────────────────────────┘             │  └─────────────────────────────────────┘  │
+│                                                 │  ┌─────────────────────────────────────┐  │
+│    ═══🟢═══ Alliance    ═══🔴═══ War            │  │ ▶ 🏛️ DOMESTIC                   [0] │  │
+│    ● Player   ○ Selected   ⚠️ Unstable          │  └─────────────────────────────────────┘  │
+│                                                 │                                           │
+│    Layers: [Political] [Military] [Economic]   │  ┌─────────────────────────────────────┐  │
+│            [Stability] [Intelligence]          │  │ PENDING ACTIONS (2)                 │  │
+│                                                 │  │ ├─ DIPLOMACY: Improve → Russia     │  │
+│                                                 │  │ └─ DIPLOMACY: Alliance → UK    [×] │  │
+│                                                 │  └─────────────────────────────────────┘  │
+│                                                 │                                           │
+│  [◀ Collapse Panel]              [↔ Resize]    │  ┌─────────────────────────────────────┐  │
+│                                                 │  │      ✓ CONFIRM TURN (2 actions)    │  │
+│                                                 │  └─────────────────────────────────────┘  │
+└─────────────────────────────────────────────────┴───────────────────────────────────────────┘
+```
+
+**Layout Principles:**
+- **Header**: Fixed 60px, shows game title, turn info, quick stats, menu buttons
+- **Info Bar**: ~120px, two panels side-by-side for information consumption
+- **Main Area**: Flexible split between Map (left) and Actions (right)
+- **Default Split**: 50/50, but sidebar can be resized (300px min, 80% max) or collapsed entirely
+- **Action Focus**: Sidebar is the primary interaction area for taking actions
 
 12.2.1 Info Bar Behavior
 text
