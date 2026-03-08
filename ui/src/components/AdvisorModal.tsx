@@ -23,40 +23,6 @@ interface AdvisorResponse {
   opportunities?: string[];
 }
 
-// Advisor personas for realistic chat responses
-const ADVISOR_PERSONAS: Record<string, { greeting: string; style: string; expertise: string[] }> = {
-  FOREIGN_MINISTER: {
-    greeting: "Excellency",
-    style: "diplomatic and measured, using formal language",
-    expertise: ["alliances", "treaties", "diplomatic relations", "international standing", "negotiations"]
-  },
-  DEFENSE_MINISTER: {
-    greeting: "Commander",
-    style: "direct and military-focused, using strategic terminology",
-    expertise: ["military readiness", "troop deployments", "defense strategy", "threats", "warfare"]
-  },
-  FINANCE_MINISTER: {
-    greeting: "Sir",
-    style: "analytical and numbers-focused, citing statistics",
-    expertise: ["economy", "budget", "GDP", "trade", "sanctions", "fiscal policy"]
-  },
-  INTELLIGENCE_CHIEF: {
-    greeting: "Director",
-    style: "cautious and secretive, speaking in measured terms",
-    expertise: ["intelligence", "espionage", "covert operations", "threats", "surveillance"]
-  },
-  DOMESTIC_ADVISOR: {
-    greeting: "Leader",
-    style: "concerned with public opinion and internal stability",
-    expertise: ["stability", "reforms", "public approval", "protests", "legitimacy"]
-  },
-  CHIEF_OF_STAFF: {
-    greeting: "Chief",
-    style: "strategic and comprehensive, considering all factors",
-    expertise: ["overall strategy", "coordination", "priorities", "national security"]
-  }
-};
-
 // Generate a contextual response that acknowledges the user's specific question
 function generateContextualResponse(advisorId: string, userQuestion: string, worldState: any): string {
   const playerCountry = worldState?.countries?.find((c: any) => c.id === worldState?.playerCountryId);
@@ -73,14 +39,17 @@ function generateContextualResponse(advisorId: string, userQuestion: string, wor
     question.includes(c.name.toLowerCase()) || question.includes(c.id.toLowerCase())
   );
   
-  // Analyze question intent
-  const isAboutWar = question.includes('war') || question.includes('attack') || question.includes('invade') || question.includes('fight');
-  const isAboutPeace = question.includes('peace') || question.includes('treaty') || question.includes('ceasefire');
-  const isAboutAlliance = question.includes('alliance') || question.includes('ally') || question.includes('allies');
-  const isAboutMilitary = question.includes('military') || question.includes('army') || question.includes('troops') || question.includes('force');
-  const isAboutEconomy = question.includes('economy') || question.includes('money') || question.includes('gdp') || question.includes('budget') || question.includes('trade');
-  const isAboutStability = question.includes('stability') || question.includes('unrest') || question.includes('protest') || question.includes('people');
-  const isAboutSpy = question.includes('spy') || question.includes('intel') || question.includes('covert') || question.includes('secret');
+  // Analyze question intent - expanded keywords
+  const isAboutWar = question.includes('war') || question.includes('attack') || question.includes('invade') || question.includes('fight') || question.includes('battle') || question.includes('combat');
+  const isAboutPeace = question.includes('peace') || question.includes('treaty') || question.includes('ceasefire') || question.includes('negotiate') || question.includes('diplomacy');
+  const isAboutAlliance = question.includes('alliance') || question.includes('ally') || question.includes('allies') || question.includes('partner') || question.includes('friend');
+  const isAboutMilitary = question.includes('military') || question.includes('army') || question.includes('troops') || question.includes('force') || question.includes('soldier') || question.includes('weapon') || question.includes('defense') || question.includes('mobiliz');
+  const isAboutEconomy = question.includes('economy') || question.includes('money') || question.includes('gdp') || question.includes('budget') || question.includes('trade') || question.includes('tax') || question.includes('spend') || question.includes('cost') || question.includes('financ');
+  const isAboutStability = question.includes('stability') || question.includes('unrest') || question.includes('protest') || question.includes('people') || question.includes('riot') || question.includes('rebel') || question.includes('civil');
+  const isAboutSpy = question.includes('spy') || question.includes('intel') || question.includes('covert') || question.includes('secret') || question.includes('espionage') || question.includes('sabotage');
+  
+  // Include the user's actual question in the response for variety
+  const questionSnippet = userQuestion.length > 30 ? userQuestion.substring(0, 30) + '...' : userQuestion;
   
   // Build response based on advisor type and question content
   switch (advisorId) {
@@ -98,7 +67,7 @@ function generateContextualResponse(advisorId: string, userQuestion: string, wor
         const atWar = playerCountry.atWarWith?.length > 0;
         return `${atWar ? `We are at war with ${playerCountry.atWarWith.length} nation(s). Diplomatic resolution is possible but requires concessions.` : 'We are at peace. I advise maintaining this through active diplomacy.'} Global tension: ${worldState.globalTension}%. ${isAboutPeace ? 'Peace serves our long-term interests.' : 'War should be a last resort.'}`;
       }
-      return `You raise an important diplomatic question. Currently: ${(playerCountry.alliances || []).length} allies, global tension at ${worldState.globalTension}%. Our relations vary across nations. Which specific country or diplomatic matter should I analyze?`;
+      return `You ask: "${questionSnippet}" - From a diplomatic perspective: We have ${(playerCountry.alliances || []).length} allies, global tension at ${worldState.globalTension}%. Our relations vary across nations. Which specific country or diplomatic matter should I analyze?`;
     }
     
     case 'DEFENSE_MINISTER': {
@@ -114,7 +83,7 @@ function generateContextualResponse(advisorId: string, userQuestion: string, wor
         const atWar = playerCountry.atWarWith?.length > 0;
         return `${atWar ? 'We are engaged in active combat. All resources should focus on victory.' : 'We are not at war.'} Our readiness: ${playerCountry.mobilizationLevel}%. ${!atWar ? 'If you contemplate war, name the target and I will assess our chances.' : 'Current priority: winning the ongoing conflict.'}`;
       }
-      return `Commander, our forces stand at ${playerCountry.mobilizationLevel}% readiness. ${playerCountry.atWarWith?.length > 0 ? 'We are at war - this demands attention.' : 'No active conflicts.'} What military matter requires my assessment?`;
+      return `You ask: "${questionSnippet}" - Commander, our forces stand at ${playerCountry.mobilizationLevel}% readiness. ${playerCountry.atWarWith?.length > 0 ? 'We are at war.' : 'No active conflicts.'} What military matter requires my assessment?`;
     }
     
     case 'FINANCE_MINISTER': {
@@ -126,7 +95,7 @@ function generateContextualResponse(advisorId: string, userQuestion: string, wor
       if (isAboutWar) {
         return `War is expensive. Current military spending: ${playerCountry.militaryBudgetPercent}% of GDP. ${parseFloat(growth) > 0 ? 'We can sustain a short conflict.' : 'Our economy cannot support prolonged warfare.'} Consider the fiscal implications carefully.`;
       }
-      return `Sir, the treasury reports: GDP $${gdpB}B at ${growth}% growth. ${parseFloat(growth) < 0 ? 'Economic intervention needed.' : 'Finances are manageable.'} How may I advise on fiscal matters?`;
+      return `You ask: "${questionSnippet}" - The treasury reports: GDP $${gdpB}B at ${growth}% growth. ${parseFloat(growth) < 0 ? 'Economic intervention needed.' : 'Finances are manageable.'} How may I advise on fiscal matters?`;
     }
     
     case 'INTELLIGENCE_CHIEF': {
@@ -137,20 +106,20 @@ function generateContextualResponse(advisorId: string, userQuestion: string, wor
         return `Our intelligence capabilities are operational. Options: espionage (gather intel), destabilization (weaken rivals), sabotage (damage infrastructure). Each carries exposure risk. Name a target nation for specific recommendations.`;
       }
       const hostileCount = countries.filter((c: any) => (playerCountry.relations?.[c.id] || 0) < -30).length;
-      return `Director's briefing: ${hostileCount} potentially hostile nations under surveillance. Global tension: ${worldState.globalTension}%. Our networks are active. Which nation or operation interests you?`;
+      return `You ask: "${questionSnippet}" - Director's briefing: ${hostileCount} potentially hostile nations under surveillance. Global tension: ${worldState.globalTension}%. Our networks are active. Which nation or operation interests you?`;
     }
     
     case 'DOMESTIC_ADVISOR': {
       if (isAboutStability) {
         return `Domestic assessment: Stability ${playerCountry.stability}%, legitimacy ${playerCountry.legitimacy}%. ${playerCountry.stability < 40 ? 'CRITICAL: Civil unrest likely. Recommend immediate reforms or security measures.' : playerCountry.stability < 60 ? 'Some discontent exists. Monitor closely.' : 'The people are content.'} What domestic policy do you wish to pursue?`;
       }
-      return `Leader, the domestic situation: ${playerCountry.stability}% stability, ${playerCountry.legitimacy}% public approval. ${playerCountry.stability < 50 ? 'Attention needed - the people grow restless.' : 'Internal affairs are stable.'} What domestic matter concerns you?`;
+      return `You ask: "${questionSnippet}" - The domestic situation: ${playerCountry.stability}% stability, ${playerCountry.legitimacy}% public approval. ${playerCountry.stability < 50 ? 'Attention needed - the people grow restless.' : 'Internal affairs are stable.'} What domestic matter concerns you?`;
     }
     
     default: {
       const atWar = playerCountry.atWarWith?.length > 0;
       const threats = countries.filter((c: any) => (playerCountry.relations?.[c.id] || 0) < -40).length;
-      return `Chief, addressing your question: ${atWar ? 'War is our priority.' : 'We are at peace.'} Stability: ${playerCountry.stability}%. Threats: ${threats} hostile nations. Economy: ${playerCountry.growthRate > 0 ? 'growing' : 'struggling'}. Global tension: ${worldState.globalTension}%. What strategic matter requires deeper analysis?`;
+      return `You ask: "${questionSnippet}" - ${atWar ? 'War is our priority.' : 'We are at peace.'} Stability: ${playerCountry.stability}%. Threats: ${threats} hostile nations. Economy: ${playerCountry.growthRate > 0 ? 'growing' : 'struggling'}. Global tension: ${worldState.globalTension}%. What strategic matter requires deeper analysis?`;
     }
   }
 }
@@ -512,40 +481,19 @@ export function AdvisorModal() {
     setLoading(true);
     setError(null);
 
-    // Try backend first if saveId exists
-    if (saveId) {
-      try {
-        const res = await fetch('http://localhost:8080/api/chat/advisor', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ saveId, role: activeAdvisorRole, message: userMessage }),
-        });
-        const data = await res.json();
-        if (data.success && data.response) {
-          setResponse(data.response);
-          addAdvisorMessage(activeAdvisorRole, {
-            role: 'advisor',
-            content: data.response.analysis || 'I understand your question. Let me analyze the situation.',
-          });
-          setLoading(false);
-          return;
-        }
-      } catch (err) {
-        console.log('Backend chat failed, using local response');
-      }
-    }
-
-    // Fallback to local response generation based on user's question
+    // Generate response based on user's question
     if (worldState) {
-      console.log('[AdvisorChat] Generating response for:', { advisorId: activeAdvisorRole, question: userMessage });
+      // Pass the actual user question to generate a contextual response
       const chatResponse = generateContextualResponse(activeAdvisorRole, userMessage, worldState);
-      console.log('[AdvisorChat] Generated response:', chatResponse);
-      addAdvisorMessage(activeAdvisorRole, { role: 'advisor', content: chatResponse });
+      // Add a small delay to make it feel more natural
+      setTimeout(() => {
+        addAdvisorMessage(activeAdvisorRole, { role: 'advisor', content: chatResponse });
+        setLoading(false);
+      }, 300);
     } else {
-      console.log('[AdvisorChat] No worldState available!');
       addAdvisorMessage(activeAdvisorRole, { role: 'advisor', content: "I'm unable to assess the situation - no game state available." });
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const selectedAdvisor = ADVISORS.find((a) => a.id === activeAdvisorRole);
