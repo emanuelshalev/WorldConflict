@@ -1,0 +1,16 @@
+game_start.jpg
+Play as the leader of your country of choice during your favorite period
+
+byo_LLM.jpg
+Agentic AI based logic based on your LLM service of choice, or algorithmic based.
+
+advisors.jpg
+Get briefed by your advisors, have an actual conversation with them
+
+news.jpg
+Research news and media coverage
+
+actions.jpg
+Take different type of actions to lead your country in relationship to a variety of topics: Diplomacy. Military, Domestic...
+you will have suggested options and the ability to give custom directions simply based on natural language.
+
