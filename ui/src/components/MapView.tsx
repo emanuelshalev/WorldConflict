@@ -4,6 +4,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { useGameStore } from '../store/gameStore';
 import type { PlayerViewCountry, War } from '../store/gameStore';
 import { CountryDetailPanel } from './CountryDetailPanel';
+import { MapGuide } from './MapGuide';
 
 // Capital/centroid anchors for labels, icons and relationship lines
 export const COUNTRY_CENTERS: Record<string, [number, number]> = {
@@ -98,6 +99,7 @@ export function MapView() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const [mapReady, setMapReady] = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
   const geoRef = useRef<GeoJSON.FeatureCollection | null>(null);
   const popupRef = useRef<maplibregl.Popup | null>(null);
   const pulseRef = useRef<number>(0);
@@ -139,7 +141,8 @@ export function MapView() {
       maxZoom: 7,
       attributionControl: false,
     });
-    map.addControl(new maplibregl.AttributionControl({ compact: true }));
+    // Credits as a discreet watermark, bottom left
+    map.addControl(new maplibregl.AttributionControl({ compact: false }), 'bottom-left');
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-left');
     mapRef.current = map;
 
@@ -396,10 +399,48 @@ export function MapView() {
             {l.icon} {l.label}
           </button>
         ))}
+        <button
+          onClick={() => setShowGuide((v) => !v)}
+          title="Map guide: what the colors, icons and lines mean"
+          style={{
+            background: showGuide ? '#2a6dd9' : 'transparent',
+            color: '#eee',
+            border: '1px solid #3a3e4a',
+            borderRadius: 6,
+            padding: '4px 9px',
+            cursor: 'pointer',
+            fontSize: 12,
+            marginLeft: 4,
+            fontWeight: 700,
+          }}
+        >
+          ℹ Guide
+        </button>
       </div>
+
+      {/* Map rubric: colors, icons, interactions */}
+      {showGuide && <MapGuide onClose={() => setShowGuide(false)} />}
 
       {/* Country dossier panel */}
       {selectedCountryId && <CountryDetailPanel />}
+
+      {/* Watermark styling for map credits */}
+      <style>{`
+        .maplibregl-ctrl-bottom-left .maplibregl-ctrl-attrib {
+          background: rgba(13, 15, 20, 0.55);
+          border-radius: 4px;
+          padding: 1px 6px;
+        }
+        .maplibregl-ctrl-bottom-left .maplibregl-ctrl-attrib,
+        .maplibregl-ctrl-bottom-left .maplibregl-ctrl-attrib a {
+          color: rgba(180, 190, 205, 0.45);
+          font-size: 10px;
+          text-decoration: none;
+        }
+        .maplibregl-ctrl-bottom-left .maplibregl-ctrl-attrib a:hover {
+          color: rgba(220, 228, 240, 0.85);
+        }
+      `}</style>
     </div>
   );
 }
