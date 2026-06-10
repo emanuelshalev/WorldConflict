@@ -349,7 +349,11 @@ export function answerQuestion(
   const q = question.toLowerCase();
   const target = findMentionedCountry(ctx, question);
   const voice = VOICES[advisorId] ?? VOICES.CHIEF_OF_STAFF;
-  const opener = voice.opener[question.length % voice.opener.length];
+  let opener = voice.opener[question.length % voice.opener.length];
+  // Advisors address the leader by title and name
+  if (opener === 'Commander, ') {
+    opener = `${ctx.player.leader.title} ${ctx.player.leader.name}, `;
+  }
 
   const asksWhy = /\bwhy\b|\bhow come\b|\breason\b|\bexplain\b/.test(q);
   const asksImprove = /improve|better|fix|repair|mend|warm|friend|reconcil/.test(q);

@@ -3,6 +3,7 @@ import cors from "@fastify/cors";
 import Fastify from "fastify";
 import { setupErrorHandler } from "./middleware/errorHandler.js";
 import { setupRateLimit } from "./middleware/rateLimit.js";
+import { authRoutes } from "./routes/auth.js";
 import { chatRoutes } from "./routes/chat.js";
 import { gameRoutes } from "./routes/game.js";
 
@@ -63,6 +64,7 @@ server.get("/api/llm/status", async (_request, _reply) => {
 
 await server.register(gameRoutes, { prefix: "/api" });
 await server.register(chatRoutes, { prefix: "/api/chat" });
+await server.register(authRoutes, { prefix: "/api/auth" });
 
 const start = async (): Promise<void> => {
   try {

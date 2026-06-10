@@ -15,6 +15,8 @@ const NewGameSchema = z.object({
   playerCountryId: z.string(),
   seed: z.number().optional(),
   saveName: z.string().optional(),
+  playerId: z.string().optional(),
+  leaderName: z.string().min(1).max(40).optional(),
 });
 
 const TurnRequestSchema = z.object({
@@ -62,14 +64,22 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
     ) => {
       try {
         const body = NewGameSchema.parse(request.body);
-        const { scenarioId, playerCountryId, saveName } = body;
-        const seed = body.seed ?? createSeed(Number.parseInt(scenarioId, 10), playerCountryId);
+        const { scenarioId, playerCountryId, saveName, playerId, leaderName } = body;
+        const seed =
+          body.seed ??
+          createSeed(Number.parseInt(scenarioId, 10), playerCountryId) +
+            (leaderName ? createSeed(7, leaderName) % 1000 : 0);
 
         const dataLoader = createDataLoader();
-        const worldState = dataLoader.initializeWorldState(scenarioId, playerCountryId, seed);
+        const worldState = dataLoader.initializeWorldState(
+          scenarioId,
+          playerCountryId,
+          seed,
+          leaderName,
+        );
 
-        const name = saveName ?? `${playerCountryId} - ${scenarioId}`;
-        const saveId = await gameDb.saveGame(name, worldState);
+        const name = saveName ?? `${leaderName ?? "Leader"} of ${playerCountryId} (${scenarioId})`;
+        const saveId = await gameDb.saveGame(name, worldState, [], playerId, leaderName);
 
         return reply.send({ success: true, saveId, ...turnPayload(worldState) });
       } catch (error) {
@@ -228,9 +238,11 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
   );
 
   // ------------------------------------------------------------------
-  fastify.get("/saves", async (_request, reply: FastifyReply) => {
+  fastify.get(
+    "/saves",
+    async (request: FastifyRequest<{ Querystring: { playerId?: string } }>, reply: FastifyReply) => {
     try {
-      const saves = await gameDb.listSaves();
+      const saves = await gameDb.listSaves(request.query.playerId);
       return reply.send({ success: true, saves });
     } catch (error) {
       fastify.log.error(error);

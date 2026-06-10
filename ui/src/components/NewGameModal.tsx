@@ -37,12 +37,14 @@ const COUNTRIES = [
 ];
 
 export function NewGameModal() {
-  const { activeModal, closeModal, isLoading, error } = useGameStore();
+  const { activeModal, closeModal, isLoading, error, player } = useGameStore();
   const [scenarios, setScenarios] = useState<Scenario[]>([]);
   const [scenariosLoading, setScenariosLoading] = useState(false);
   const [scenario, setScenario] = useState<string | null>(null);
   const [country, setCountry] = useState('USA');
   const [saveName, setSaveName] = useState('');
+  const [useAccountName, setUseAccountName] = useState(true);
+  const [customLeaderName, setCustomLeaderName] = useState('');
 
   useEffect(() => {
     if (activeModal !== 'newGame') return;
@@ -58,10 +60,13 @@ export function NewGameModal() {
 
   if (activeModal !== 'newGame') return null;
 
+  const leaderName = useAccountName ? (player?.name ?? '') : customLeaderName.trim();
+
   const handleStart = async () => {
     if (!scenario) return;
+    if (!useAccountName && !customLeaderName.trim()) return;
     // createNewGame closes the modal itself on success
-    await createNewGame(scenario, country, saveName || undefined);
+    await createNewGame(scenario, country, saveName || undefined, leaderName || undefined);
   };
 
   return (
@@ -76,6 +81,43 @@ export function NewGameModal() {
 
         <div className="modal-body">
           {error && <div className="error-message">{error}</div>}
+
+          <div className="form-group">
+            <label>Your leader name</label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 4 }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 14 }}>
+                <input
+                  type="radio"
+                  name="leader-name"
+                  checked={useAccountName}
+                  onChange={() => setUseAccountName(true)}
+                />
+                Rule as <b>{player?.name ?? 'yourself'}</b>
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 14 }}>
+                <input
+                  type="radio"
+                  name="leader-name"
+                  checked={!useAccountName}
+                  onChange={() => setUseAccountName(false)}
+                />
+                Rule under a different name:
+              </label>
+              {!useAccountName && (
+                <input
+                  type="text"
+                  value={customLeaderName}
+                  maxLength={40}
+                  onChange={(e) => setCustomLeaderName(e.target.value)}
+                  placeholder="e.g. Winston Goldberg"
+                  autoFocus
+                />
+              )}
+            </div>
+            <p style={{ fontSize: 11, color: '#778', margin: 0 }}>
+              Advisors, newspapers and history will address you by this name.
+            </p>
+          </div>
 
           <div className="form-group">
             <label>Save Name (optional)</label>
@@ -137,9 +179,9 @@ export function NewGameModal() {
           <button
             className="btn btn-primary"
             onClick={handleStart}
-            disabled={isLoading || !scenario}
+            disabled={isLoading || !scenario || (!useAccountName && !customLeaderName.trim())}
           >
-            {isLoading ? 'Starting...' : 'Start Game'}
+            {isLoading ? 'Starting...' : `Begin your rule${leaderName ? ` as ${leaderName}` : ''}`}
           </button>
         </div>
       </div>

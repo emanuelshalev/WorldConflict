@@ -126,6 +126,7 @@ export class DataLoader {
     scenario: ScenarioData,
     seed: number,
     playerCountryId: string,
+    playerLeaderName?: string,
   ): CountryState {
     const override = scenario.countryOverrides[profile.id] ?? {};
     const { multipliers } = scenario;
@@ -142,7 +143,7 @@ export class DataLoader {
 
     const scenarioLeader = scenario.leaders[profile.id];
     const leader = {
-      name: isPlayer ? "You" : (scenarioLeader?.name ?? "Unknown Leader"),
+      name: isPlayer ? (playerLeaderName ?? "You") : (scenarioLeader?.name ?? "Unknown Leader"),
       title: scenarioLeader?.title ?? override.leaderTitle ?? profile.politicalSystem.leaderTitle,
       style: scenarioLeader?.style ?? "PRAGMATIC",
       origin: scenarioLeader?.origin ?? "ELECTED",
@@ -231,7 +232,12 @@ export class DataLoader {
     });
   }
 
-  initializeWorldState(scenarioId: string, playerCountryId: string, seed: number): WorldState {
+  initializeWorldState(
+    scenarioId: string,
+    playerCountryId: string,
+    seed: number,
+    playerLeaderName?: string,
+  ): WorldState {
     const scenario = this.loadScenario(scenarioId);
     const allCountries = this.loadAllCountries();
 
@@ -240,7 +246,7 @@ export class DataLoader {
     );
 
     const countries = tier1.map((profile) =>
-      this.createCountryState(profile, scenario, seed, playerCountryId),
+      this.createCountryState(profile, scenario, seed, playerCountryId, playerLeaderName),
     );
 
     this.applyScenarioRelations(countries, scenario);

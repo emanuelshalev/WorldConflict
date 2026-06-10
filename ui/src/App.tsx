@@ -13,13 +13,18 @@ import { CrisisDecisionModal } from './components/CrisisDecisionModal'
 import { BackstoryModal } from './components/BackstoryModal'
 import { EndGameReport } from './components/EndGameReport'
 import { SettingsModal } from './components/SettingsModal'
+import { LoginScreen } from './components/LoginScreen'
 import { useGameStore } from './store/gameStore'
 
 function App() {
-  const { error, isLoading, showSplash, completeSplash } = useGameStore()
+  const { error, isLoading, showSplash, completeSplash, player } = useGameStore()
 
   if (showSplash) {
     return <SplashScreen onComplete={completeSplash} />
+  }
+
+  if (!player) {
+    return <LoginScreen />
   }
 
   return (

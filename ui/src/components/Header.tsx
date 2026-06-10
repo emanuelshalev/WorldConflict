@@ -1,4 +1,4 @@
-import { useGameStore, usePlayerCountry } from '../store/gameStore';
+import { logout, useGameStore, usePlayerCountry } from '../store/gameStore';
 
 function tensionColor(tension: number): string {
   if (tension >= 70) return '#ff4040';
@@ -13,7 +13,7 @@ function scoreColor(total: number): string {
 }
 
 export function Header() {
-  const { worldState, score, openModal } = useGameStore();
+  const { worldState, score, openModal, player: account } = useGameStore();
   const player = usePlayerCountry();
 
   if (!worldState) {
@@ -46,10 +46,11 @@ export function Header() {
       <div className="header-center">
         <div className="header-stats">
           {player && (
-            <span className="stat">
+            <span className="stat" title={`You rule ${player.name} as ${player.leader.title} ${player.leader.name}`}>
               <strong>
-                {player.leader.title} {player.name}
-              </strong>
+                {player.leader.title} {player.leader.name}
+              </strong>{' '}
+              <span style={{ color: '#99a' }}>of {player.name}</span>
             </span>
           )}
           <span className="stat">
@@ -90,6 +91,16 @@ export function Header() {
         <button className="btn btn-primary" onClick={() => openModal('newGame')}>
           New Game
         </button>
+        {account && (
+          <button
+            className="btn btn-secondary"
+            onClick={logout}
+            title={`Signed in as ${account.name} — click to sign out`}
+            style={{ fontSize: 12 }}
+          >
+            👤 {account.name} ⏏
+          </button>
+        )}
       </div>
     </header>
   );

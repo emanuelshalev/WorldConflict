@@ -204,9 +204,16 @@ export interface TurnFeedback {
 // Store
 // ============================================================================
 
+export interface PlayerAccount {
+  id: string;
+  name: string;
+}
+
 export interface GameState {
   isLoading: boolean;
   error: string | null;
+  player: PlayerAccount | null;
+  setPlayer: (player: PlayerAccount | null) => void;
   saveId: string | null;
   worldState: WorldState | null;
   playerView: PlayerViewCountry[];
@@ -325,9 +332,29 @@ export const PHASE_LABELS: Record<TurnPhase, string> = {
   confirm: 'Confirm',
 };
 
+function loadPlayer(): PlayerAccount | null {
+  try {
+    const raw = localStorage.getItem('worldconflict.player');
+    if (raw) return JSON.parse(raw);
+  } catch {
+    /* corrupted → re-login */
+  }
+  return null;
+}
+
 export const useGameStore = create<GameState>((set) => ({
   isLoading: false,
   error: null,
+  player: loadPlayer(),
+  setPlayer: (player) => {
+    try {
+      if (player) localStorage.setItem('worldconflict.player', JSON.stringify(player));
+      else localStorage.removeItem('worldconflict.player');
+    } catch {
+      /* storage unavailable */
+    }
+    set({ player });
+  },
   saveId: null,
   worldState: null,
   playerView: [],
@@ -445,10 +472,37 @@ export async function fetchScenarios(): Promise<
   return data.success ? data.scenarios : [];
 }
 
+export async function loginOrRegister(
+  mode: 'login' | 'register',
+  name: string,
+  password: string,
+): Promise<{ ok: boolean; error?: string }> {
+  try {
+    const response = await fetch(`${API_BASE}/auth/${mode}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, password }),
+    });
+    const data = await response.json();
+    if (!data.success) return { ok: false, error: data.error ?? 'Failed' };
+    useGameStore.getState().setPlayer(data.player);
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : 'Connection failed' };
+  }
+}
+
+export function logout(): void {
+  const store = useGameStore.getState();
+  store.setPlayer(null);
+  store.reset();
+}
+
 export async function createNewGame(
   scenarioId: string,
   playerCountryId: string,
   saveName?: string,
+  leaderName?: string,
 ): Promise<void> {
   const store = useGameStore.getState();
   store.setLoading(true);
@@ -457,7 +511,13 @@ export async function createNewGame(
     const response = await fetch(`${API_BASE}/new-game`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ scenarioId, playerCountryId, saveName }),
+      body: JSON.stringify({
+        scenarioId,
+        playerCountryId,
+        saveName,
+        playerId: store.player?.id,
+        leaderName: leaderName || store.player?.name,
+      }),
     });
     const data = await response.json();
     if (!data.success) throw new Error(data.error || 'Failed to create game');
@@ -578,9 +638,11 @@ export async function loadGame(saveId: string): Promise<void> {
 }
 
 export async function fetchSaves(): Promise<
-  Array<{ id: string; name: string; turn: number; playerCountry: string }>
+  Array<{ id: string; name: string; turn: number; playerCountry: string; leaderName?: string }>
 > {
-  const response = await fetch(`${API_BASE}/saves`);
+  const { player } = useGameStore.getState();
+  const query = player ? `?playerId=${encodeURIComponent(player.id)}` : '';
+  const response = await fetch(`${API_BASE}/saves${query}`);
   const data = await response.json();
   if (!data.success) throw new Error(data.error || 'Failed to fetch saves');
   return data.saves;

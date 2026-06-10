@@ -29,7 +29,7 @@ export function BackstoryModal() {
           {worldState.date} — {player.name.toUpperCase()}
         </div>
         <h1 style={{ fontSize: 26, color: '#fff', margin: '0 0 18px 0', fontWeight: 400 }}>
-          You are the new {player.politicalSystem.leaderTitle} of {player.name}
+          You are {player.leader.name}, the new {player.politicalSystem.leaderTitle} of {player.name}
         </h1>
         <p style={{ fontSize: 16, lineHeight: 1.7, color: '#bbc', fontStyle: 'italic' }}>
           {playerBackstory}

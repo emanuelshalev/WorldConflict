@@ -85,7 +85,7 @@ function generateLocalBriefing(advisorId: string, worldState: any): AdvisorRespo
 
       return {
         role: 'FOREIGN_MINISTER',
-        analysis: `Your Excellency, our diplomatic position is as follows: We maintain ${allies.length} formal alliance${allies.length !== 1 ? 's' : ''}. ${hostileCountries.length > 0 ? `${hostileCountries.length} nation${hostileCountries.length !== 1 ? 's' : ''} hold${hostileCountries.length === 1 ? 's' : ''} hostile views toward us.` : 'No nations currently hold hostile views.'} Global tension stands at ${worldState.globalTension}%, which ${worldState.globalTension > 60 ? 'is concerning and requires vigilance' : worldState.globalTension > 30 ? 'is moderate' : 'is relatively calm'}.`,
+        analysis: `${playerCountry.leader?.title ?? ''} ${playerCountry.leader?.name ?? ''}, our diplomatic position is as follows: We maintain ${allies.length} formal alliance${allies.length !== 1 ? 's' : ''}. ${hostileCountries.length > 0 ? `${hostileCountries.length} nation${hostileCountries.length !== 1 ? 's' : ''} hold${hostileCountries.length === 1 ? 's' : ''} hostile views toward us.` : 'No nations currently hold hostile views.'} Global tension stands at ${worldState.globalTension}%, which ${worldState.globalTension > 60 ? 'is concerning and requires vigilance' : worldState.globalTension > 30 ? 'is moderate' : 'is relatively calm'}.`,
         recommendations,
         warnings: warnings.length > 0 ? warnings : undefined,
         opportunities: opportunities.length > 0 ? opportunities : undefined,
