@@ -3,20 +3,77 @@
   "iso3": "USA",
   "name": "United States",
   "population": 335000000,
-  "gdp": 27360000000000,
-  "gdpGrowth": 0.024,
-  "militaryBudgetPct": 3.5,
-  "manpower": 1390000,
-  "airpower": 13300,
   "regimeType": "DEMOCRACY",
-  "riskTolerance": 45,
+  "politicalSystem": {
+    "type": "PRESIDENTIAL_DEMOCRACY",
+    "powerCenters": ["EXECUTIVE", "LEGISLATURE", "JUDICIARY"],
+    "electionCycleMonths": 48,
+    "nextElectionTurn": null,
+    "leaderTitle": "President"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1945, "event": "Victory in World War II", "impact": "Emerged as global superpower with nuclear monopoly" },
+      { "year": 1962, "event": "Cuban Missile Crisis", "impact": "Learned the cost of nuclear brinkmanship; established crisis hotlines" },
+      { "year": 1975, "event": "Fall of Saigon", "impact": "Vietnam syndrome: public wariness of long foreign wars" },
+      { "year": 1991, "event": "Cold War victory", "impact": "Sole superpower; unipolar moment and NATO expansion" },
+      { "year": 2001, "event": "9/11 attacks", "impact": "War on Terror; two decades of Middle East intervention" },
+      { "year": 2008, "event": "Global financial crisis", "impact": "Economic credibility damaged; domestic polarization deepened" },
+      { "year": 2021, "event": "Withdrawal from Afghanistan", "impact": "Pivot from counterinsurgency to great-power competition with China" }
+    ],
+    "historicalRivals": ["RUS", "CHN", "IRN", "PRK"],
+    "historicalAllies": ["GBR", "CAN", "AUS", "JPN", "KOR", "DEU", "FRA", "ISR", "POL", "ITA"],
+    "sphereOfInfluence": ["CAN", "MEX", "GBR", "JPN", "KOR", "AUS", "ISR"],
+    "foreignPolicyOrientation": "INTERVENTIONIST",
+    "narrative": "The architect and guarantor of the post-1945 liberal order, accustomed to global leadership and uneasy about relative decline. Acts through alliances and overwhelming military superiority, but a polarized public limits appetite for long wars."
+  },
+  "personality": {
+    "warPropensity": 55,
+    "allianceLoyalty": 80,
+    "diplomaticFlexibility": 55,
+    "riskTolerance": 45,
+    "expansionism": 35,
+    "isolationism": 30,
+    "ideologicalRigidity": 45,
+    "prestigeEmphasis": 85
+  },
+  "redLines": [
+    { "type": "ALLIANCE", "description": "Armed attack on a NATO member or treaty ally", "severity": 10 },
+    { "type": "NUCLEAR", "description": "Nuclear proliferation to hostile states (Iran, North Korea)", "severity": 8 },
+    { "type": "TERRITORIAL", "targetCountryId": "ISR", "description": "Existential threat to Israel", "severity": 8 },
+    { "type": "ECONOMIC", "description": "Closure of strategic sea lanes (Hormuz, Taiwan Strait)", "severity": 7 }
+  ],
+  "internalDivisions": [
+    { "kind": "IDEOLOGICAL", "name": "Conservative-progressive polarization", "strength": 90, "tension": 65 },
+    { "kind": "REGIONAL", "name": "Urban-rural divide", "strength": 60, "tension": 45 }
+  ],
+  "economy": {
+    "gdp": 27360000000000,
+    "growthRate": 0.024,
+    "debtGdpRatio": 123,
+    "sectors": { "agriculture": 1, "industry": 18, "services": 81 },
+    "keyResources": ["oil", "natural_gas", "coal", "agriculture", "technology"],
+    "keyExports": ["technology", "aircraft", "machinery", "pharmaceuticals", "financial_services"],
+    "developmentLevel": "DEVELOPED"
+  },
+  "military": {
+    "manpower": 1390000,
+    "airpower": 13300,
+    "doctrine": "EXPEDITIONARY",
+    "nuclearStatus": "ARMED",
+    "warheads": 5044,
+    "arms_suppliers": ["USA"]
+  },
+  "militaryBudgetPct": 3.5,
   "stability": 72,
   "legitimacy": 75,
   "intelLevel": 95,
+  "insurgencyLevel": "NONE",
   "goals": [
-    { "id": "usa_g1", "type": "SECURITY", "priority": 90, "description": "Maintain global military supremacy" },
-    { "id": "usa_g2", "type": "IDEOLOGICAL", "priority": 70, "description": "Promote democratic values worldwide" },
-    { "id": "usa_g3", "type": "ECONOMIC", "priority": 80, "description": "Protect trade interests and dollar hegemony" }
+    { "id": "usa_g1", "type": "SECURITY", "priority": 90, "description": "Maintain global military supremacy and deter peer competitors" },
+    { "id": "usa_g2", "type": "SECURITY", "targetCountryId": "CHN", "priority": 85, "description": "Contain Chinese expansion in the Indo-Pacific" },
+    { "id": "usa_g3", "type": "ECONOMIC", "priority": 80, "description": "Protect trade interests and dollar hegemony" },
+    { "id": "usa_g4", "type": "IDEOLOGICAL", "priority": 60, "description": "Promote democratic values and the rules-based order" }
   ],
   "geo": {
     "bounds": [-125.0, 24.5, -66.9, 49.4],

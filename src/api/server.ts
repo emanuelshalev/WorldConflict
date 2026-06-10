@@ -31,32 +31,33 @@ server.get("/api/llm/status", async (_request, _reply) => {
   // Check both possible Gemini key env vars
   const geminiKey = process.env.GEMINI_API_KEY_PERSONAL || process.env.GEMINI_API_KEY;
   const openaiKey = process.env.OPENAI_API_KEY;
-  
+
   const providers: Array<{ provider: string; available: boolean; model: string }> = [];
-  
+
   // Log for debugging
-  console.log('LLM Status Check:', {
+  console.log("LLM Status Check:", {
     hasGeminiKey: !!geminiKey,
     geminiKeyPrefix: geminiKey?.substring(0, 8),
     hasOpenaiKey: !!openaiKey,
   });
-  
-  if (geminiKey && geminiKey.startsWith('AIza')) {
-    providers.push({ provider: 'gemini', available: true, model: 'gemini-1.5-flash' });
+
+  if (geminiKey && geminiKey.startsWith("AIza")) {
+    providers.push({ provider: "gemini", available: true, model: "gemini-1.5-flash" });
   }
-  if (openaiKey && openaiKey.startsWith('sk-')) {
-    providers.push({ provider: 'openai', available: true, model: 'gpt-4o-mini' });
+  if (openaiKey && openaiKey.startsWith("sk-")) {
+    providers.push({ provider: "openai", available: true, model: "gpt-4o-mini" });
   }
   // Ollama is always potentially available (local)
-  providers.push({ provider: 'ollama', available: true, model: 'llama3.2' });
-  
+  providers.push({ provider: "ollama", available: true, model: "llama3.2" });
+
   const result = {
-    hasApiKey: providers.some(p => p.provider !== 'ollama' && p.available),
+    hasApiKey: providers.some((p) => p.provider !== "ollama" && p.available),
     providers,
-    recommended: providers.find(p => p.provider !== 'ollama' && p.available)?.provider || 'ollama',
+    recommended:
+      providers.find((p) => p.provider !== "ollama" && p.available)?.provider || "ollama",
   };
-  
-  console.log('LLM Status Result:', result);
+
+  console.log("LLM Status Result:", result);
   return result;
 });
 

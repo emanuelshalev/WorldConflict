@@ -1,14 +1,13 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
+import { generateDeterministicIntents } from "../../agents/fallback.js";
 import { createDataLoader } from "../../core/data-loader.js";
+import { previewAction } from "../../core/preview.js";
+import { classifyLeadership } from "../../core/scoring.js";
 import { createSeed } from "../../core/seed.js";
+import { buildPlayerView } from "../../core/systems/intelligence.js";
 import { TurnEngine } from "../../core/turn.js";
-import {
-  type Action,
-  ActionSchema,
-  type CountryIntent,
-  type WorldState,
-} from "../../core/types.js";
+import { ActionSchema, type WorldState } from "../../core/types.js";
 import { gameDb } from "../../infra/db.js";
 
 const NewGameSchema = z.object({
@@ -21,18 +20,40 @@ const NewGameSchema = z.object({
 const TurnRequestSchema = z.object({
   saveId: z.string(),
   playerActions: z.array(ActionSchema),
+  decisions: z.array(z.object({ decisionId: z.string(), optionId: z.string() })).default([]),
 });
 
-const SaveRequestSchema = z.object({
-  saveId: z.string().optional(),
-  name: z.string(),
-  worldState: z.any(),
+const PreviewRequestSchema = z.object({
+  saveId: z.string(),
+  action: ActionSchema,
 });
 
-let currentGameState: WorldState | null = null;
-let currentSaveId: string | null = null;
+function turnPayload(worldState: WorldState) {
+  return {
+    worldState,
+    playerView: buildPlayerView(worldState),
+    pendingDecisions: worldState.pendingDecisions,
+    score: worldState.score,
+    gameOver: worldState.gameOver,
+    playerBackstory: worldState.playerBackstory,
+  };
+}
 
 export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
+  // ------------------------------------------------------------------
+  fastify.get("/scenarios", async (_request, reply: FastifyReply) => {
+    const dataLoader = createDataLoader();
+    const scenarios = dataLoader.loadAvailableScenarios().map((s) => ({
+      id: s.id,
+      name: s.name,
+      description: s.description,
+      startYear: s.startYear,
+      globalTension: s.globalTension,
+    }));
+    return reply.send({ success: true, scenarios });
+  });
+
+  // ------------------------------------------------------------------
   fastify.post(
     "/new-game",
     async (
@@ -42,8 +63,7 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
       try {
         const body = NewGameSchema.parse(request.body);
         const { scenarioId, playerCountryId, saveName } = body;
-
-        const seed = body.seed ?? createSeed(parseInt(scenarioId, 10), playerCountryId);
+        const seed = body.seed ?? createSeed(Number.parseInt(scenarioId, 10), playerCountryId);
 
         const dataLoader = createDataLoader();
         const worldState = dataLoader.initializeWorldState(scenarioId, playerCountryId, seed);
@@ -51,14 +71,7 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
         const name = saveName ?? `${playerCountryId} - ${scenarioId}`;
         const saveId = await gameDb.saveGame(name, worldState);
 
-        currentGameState = worldState;
-        currentSaveId = saveId;
-
-        return reply.send({
-          success: true,
-          saveId,
-          worldState,
-        });
+        return reply.send({ success: true, saveId, ...turnPayload(worldState) });
       } catch (error) {
         fastify.log.error(error);
         return reply.status(500).send({
@@ -69,6 +82,7 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
     },
   );
 
+  // ------------------------------------------------------------------
   fastify.post(
     "/turn",
     async (
@@ -77,32 +91,44 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
     ) => {
       try {
         const body = TurnRequestSchema.parse(request.body);
-        const { saveId, playerActions } = body;
+        const { saveId, playerActions, decisions } = body;
 
         const saveData = await gameDb.loadGame(saveId);
         if (!saveData) {
-          return reply.status(404).send({
-            success: false,
-            error: "Save game not found",
-          });
+          return reply.status(404).send({ success: false, error: "Save game not found" });
         }
 
         const { worldState } = saveData;
-        const engine = new TurnEngine(worldState.seed);
+        if (worldState.gameOver) {
+          return reply.status(400).send({
+            success: false,
+            error: "The game is over. Start a new game or load an earlier save.",
+          });
+        }
 
-        const aiIntents: CountryIntent[] = generateHeuristicIntents(worldState);
-
-        const result = engine.executeTurn(worldState, playerActions, aiIntents);
+        const engine = new TurnEngine();
+        const aiIntents = generateDeterministicIntents(worldState);
+        const result = engine.executeTurn(worldState, playerActions, aiIntents, decisions);
 
         await gameDb.updateSave(saveId, result.newState);
-
-        currentGameState = result.newState;
+        await gameDb.addTurnLog(saveId, {
+          number: result.newState.turn,
+          date: result.newState.date,
+          events: result.events,
+          intents: aiIntents,
+          playerActions,
+          newspaper: result.newspaper,
+        });
 
         return reply.send({
           success: true,
-          worldState: result.newState,
+          saveId,
+          ...turnPayload(result.newState),
           events: result.events,
           newspaper: result.newspaper,
+          governmentChanges: result.governmentChanges,
+          resolvedActions: Object.fromEntries(result.resolvedActions),
+          rejectedActions: Object.fromEntries(result.rejectedActions),
         });
       } catch (error) {
         fastify.log.error(error);
@@ -114,119 +140,82 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
     },
   );
 
-  fastify.get("/state", async (_request: FastifyRequest, reply: FastifyReply) => {
-    if (!currentGameState) {
-      return reply.status(404).send({
-        success: false,
-        error: "No active game",
-      });
-    }
-
-    return reply.send({
-      success: true,
-      worldState: currentGameState,
-      saveId: currentSaveId,
-    });
-  });
-
-  fastify.get(
-    "/state/:saveId",
-    async (request: FastifyRequest<{ Params: { saveId: string } }>, reply: FastifyReply) => {
-      try {
-        const { saveId } = request.params;
-        const saveData = await gameDb.loadGame(saveId);
-
-        if (!saveData) {
-          return reply.status(404).send({
-            success: false,
-            error: "Save game not found",
-          });
-        }
-
-        return reply.send({
-          success: true,
-          worldState: saveData.worldState,
-          turnLogs: saveData.turnLogs,
-        });
-      } catch (error) {
-        fastify.log.error(error);
-        return reply.status(500).send({
-          success: false,
-          error: error instanceof Error ? error.message : "Failed to load game state",
-        });
-      }
-    },
-  );
-
+  // ------------------------------------------------------------------
   fastify.post(
-    "/save",
+    "/preview-action",
     async (
-      request: FastifyRequest<{ Body: z.infer<typeof SaveRequestSchema> }>,
+      request: FastifyRequest<{ Body: z.infer<typeof PreviewRequestSchema> }>,
       reply: FastifyReply,
     ) => {
       try {
-        const body = SaveRequestSchema.parse(request.body);
-
-        if (body.saveId) {
-          await gameDb.updateSave(body.saveId, body.worldState);
-          return reply.send({
-            success: true,
-            saveId: body.saveId,
-          });
+        const body = PreviewRequestSchema.parse(request.body);
+        const saveData = await gameDb.loadGame(body.saveId);
+        if (!saveData) {
+          return reply.status(404).send({ success: false, error: "Save game not found" });
         }
-
-        const saveId = await gameDb.saveGame(body.name, body.worldState);
-        return reply.send({
-          success: true,
-          saveId,
-        });
+        const preview = previewAction(saveData.worldState, body.action);
+        return reply.send({ success: true, preview });
       } catch (error) {
         fastify.log.error(error);
         return reply.status(500).send({
           success: false,
-          error: error instanceof Error ? error.message : "Failed to save game",
+          error: error instanceof Error ? error.message : "Failed to preview action",
         });
       }
     },
   );
 
-  fastify.get("/saves", async (_request: FastifyRequest, reply: FastifyReply) => {
-    try {
-      const saves = await gameDb.listSaves();
-      return reply.send({
-        success: true,
-        saves,
-      });
-    } catch (error) {
-      fastify.log.error(error);
-      return reply.status(500).send({
-        success: false,
-        error: error instanceof Error ? error.message : "Failed to list saves",
-      });
-    }
-  });
+  // ------------------------------------------------------------------
+  fastify.get(
+    "/report/:saveId",
+    async (request: FastifyRequest<{ Params: { saveId: string } }>, reply: FastifyReply) => {
+      try {
+        const saveData = await gameDb.loadGame(request.params.saveId);
+        if (!saveData) {
+          return reply.status(404).send({ success: false, error: "Save game not found" });
+        }
+        const world = saveData.worldState;
+        const player = world.countries.find((c) => c.id === world.playerCountryId);
+        const assessment = classifyLeadership(world);
+        return reply.send({
+          success: true,
+          report: {
+            country: player?.name ?? world.playerCountryId,
+            leader: player?.leader ?? null,
+            turnsServed: world.turn,
+            finalDate: world.date,
+            gameOver: world.gameOver,
+            score: world.score,
+            assessment,
+            timeline: world.timeline,
+            scoreHistory: world.scoreHistory,
+            backstory: world.playerBackstory,
+          },
+        });
+      } catch (error) {
+        fastify.log.error(error);
+        return reply.status(500).send({
+          success: false,
+          error: error instanceof Error ? error.message : "Failed to build report",
+        });
+      }
+    },
+  );
 
+  // ------------------------------------------------------------------
   fastify.get(
     "/load/:saveId",
     async (request: FastifyRequest<{ Params: { saveId: string } }>, reply: FastifyReply) => {
       try {
-        const { saveId } = request.params;
-        const saveData = await gameDb.loadGame(saveId);
-
+        const saveData = await gameDb.loadGame(request.params.saveId);
         if (!saveData) {
-          return reply.status(404).send({
-            success: false,
-            error: "Save game not found",
-          });
+          return reply.status(404).send({ success: false, error: "Save game not found" });
         }
-
-        currentGameState = saveData.worldState;
-        currentSaveId = saveId;
-
         return reply.send({
           success: true,
-          saveId,
-          worldState: saveData.worldState,
+          saveId: request.params.saveId,
+          ...turnPayload(saveData.worldState),
+          newspaper: saveData.worldState.newspaper,
         });
       } catch (error) {
         fastify.log.error(error);
@@ -238,66 +227,34 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
     },
   );
 
+  // ------------------------------------------------------------------
+  fastify.get("/saves", async (_request, reply: FastifyReply) => {
+    try {
+      const saves = await gameDb.listSaves();
+      return reply.send({ success: true, saves });
+    } catch (error) {
+      fastify.log.error(error);
+      return reply.status(500).send({
+        success: false,
+        error: error instanceof Error ? error.message : "Failed to list saves",
+      });
+    }
+  });
+
+  // ------------------------------------------------------------------
   fastify.delete(
-    "/game/:saveId",
+    "/save/:saveId",
     async (request: FastifyRequest<{ Params: { saveId: string } }>, reply: FastifyReply) => {
       try {
-        const { saveId } = request.params;
-        await gameDb.deleteSave(saveId);
-
-        if (currentSaveId === saveId) {
-          currentGameState = null;
-          currentSaveId = null;
-        }
-
-        return reply.send({
-          success: true,
-        });
+        await gameDb.deleteSave(request.params.saveId);
+        return reply.send({ success: true });
       } catch (error) {
         fastify.log.error(error);
         return reply.status(500).send({
           success: false,
-          error: error instanceof Error ? error.message : "Failed to delete game",
+          error: error instanceof Error ? error.message : "Failed to delete save",
         });
       }
     },
   );
-}
-
-function generateHeuristicIntents(worldState: WorldState): CountryIntent[] {
-  const intents: CountryIntent[] = [];
-
-  for (const country of worldState.countries) {
-    if (country.id === worldState.playerCountryId) continue;
-
-    const actions: Action[] = [];
-
-    if (country.stability < 40) {
-      actions.push({ type: "DOMESTIC_REFORM" });
-    } else if (country.legitimacy < 50) {
-      actions.push({ type: "DOMESTIC_PROPAGANDA" });
-    }
-
-    if (country.atWarWith.length > 0 && country.mobilizationLevel < 80) {
-      actions.push({ type: "MILITARY_MOBILIZE" });
-    }
-
-    if (country.atWarWith.length === 0 && country.mobilizationLevel > 30) {
-      actions.push({ type: "MILITARY_DEMOBILIZE" });
-    }
-
-    for (const [otherId, relation] of Object.entries(country.relations)) {
-      if (relation > 40 && relation < 60 && !country.alliances.includes(otherId)) {
-        actions.push({ type: "DIPLOMACY_IMPROVE_RELATIONS", targetCountryId: otherId });
-        break;
-      }
-    }
-
-    intents.push({
-      countryId: country.id,
-      actions: actions.slice(0, 2),
-    });
-  }
-
-  return intents;
 }

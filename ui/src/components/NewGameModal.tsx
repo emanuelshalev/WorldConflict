@@ -1,11 +1,12 @@
-import { useState } from 'react';
-import { useGameStore, createNewGame } from '../store/gameStore';
+import { useEffect, useState } from 'react';
+import { useGameStore, createNewGame, fetchScenarios } from '../store/gameStore';
 
-const SCENARIOS = [
-  { id: '2025', name: '2025 - Modern Era', description: 'Current geopolitical situation' },
-  { id: '1990', name: '1990 - Post Cold War', description: 'Fall of the Soviet Union' },
-  { id: '1960', name: '1960 - Cold War', description: 'Height of US-Soviet tensions' },
-];
+interface Scenario {
+  id: string;
+  name: string;
+  description: string;
+  startYear: number;
+}
 
 const COUNTRIES = [
   { id: 'USA', name: 'United States', flag: '🇺🇸' },
@@ -37,13 +38,29 @@ const COUNTRIES = [
 
 export function NewGameModal() {
   const { activeModal, closeModal, isLoading, error } = useGameStore();
-  const [scenario, setScenario] = useState('2025');
+  const [scenarios, setScenarios] = useState<Scenario[]>([]);
+  const [scenariosLoading, setScenariosLoading] = useState(false);
+  const [scenario, setScenario] = useState<string | null>(null);
   const [country, setCountry] = useState('USA');
   const [saveName, setSaveName] = useState('');
+
+  useEffect(() => {
+    if (activeModal !== 'newGame') return;
+    setScenariosLoading(true);
+    fetchScenarios()
+      .then((list) => {
+        setScenarios(list);
+        setScenario((current) => current ?? list[0]?.id ?? null);
+      })
+      .catch(console.error)
+      .finally(() => setScenariosLoading(false));
+  }, [activeModal]);
 
   if (activeModal !== 'newGame') return null;
 
   const handleStart = async () => {
+    if (!scenario) return;
+    // createNewGame closes the modal itself on success
     await createNewGame(scenario, country, saveName || undefined);
   };
 
@@ -72,18 +89,28 @@ export function NewGameModal() {
 
           <div className="form-group">
             <label>Scenario</label>
-            <div className="scenario-list">
-              {SCENARIOS.map((s) => (
-                <div
-                  key={s.id}
-                  className={`scenario-option ${scenario === s.id ? 'selected' : ''}`}
-                  onClick={() => setScenario(s.id)}
-                >
-                  <strong>{s.name}</strong>
-                  <span>{s.description}</span>
-                </div>
-              ))}
-            </div>
+            {scenariosLoading ? (
+              <p style={{ color: '#778', fontSize: 13 }}>Loading scenarios…</p>
+            ) : scenarios.length === 0 ? (
+              <p style={{ color: '#ff4040', fontSize: 13 }}>
+                No scenarios available — is the server running?
+              </p>
+            ) : (
+              <div className="scenario-list">
+                {scenarios.map((s) => (
+                  <div
+                    key={s.id}
+                    className={`scenario-option ${scenario === s.id ? 'selected' : ''}`}
+                    onClick={() => setScenario(s.id)}
+                  >
+                    <strong>
+                      {s.name} ({s.startYear})
+                    </strong>
+                    <span>{s.description}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="form-group">
@@ -110,7 +137,7 @@ export function NewGameModal() {
           <button
             className="btn btn-primary"
             onClick={handleStart}
-            disabled={isLoading}
+            disabled={isLoading || !scenario}
           >
             {isLoading ? 'Starting...' : 'Start Game'}
           </button>

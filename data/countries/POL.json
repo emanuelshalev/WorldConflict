@@ -3,19 +3,77 @@
   "iso3": "POL",
   "name": "Poland",
   "population": 38000000,
-  "gdp": 842000000000,
-  "gdpGrowth": 0.035,
-  "militaryBudgetPct": 4.0,
-  "manpower": 150000,
-  "airpower": 468,
   "regimeType": "DEMOCRACY",
-  "riskTolerance": 35,
+  "politicalSystem": {
+    "type": "PARLIAMENTARY_DEMOCRACY",
+    "powerCenters": ["LEGISLATURE", "EXECUTIVE", "JUDICIARY"],
+    "electionCycleMonths": 48,
+    "nextElectionTurn": null,
+    "leaderTitle": "Prime Minister"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1795, "event": "Third Partition erases Poland from the map", "impact": "Existential memory of being divided by Russia and Germany; sovereignty is never assumed" },
+      { "year": 1918, "event": "Independence regained after 123 years", "impact": "National rebirth; fierce protectiveness of statehood" },
+      { "year": 1939, "event": "Joint German-Soviet invasion", "impact": "Betrayal by distant allies; conviction that only hard power and binding guarantees deter aggression" },
+      { "year": 1980, "event": "Solidarity movement founded in Gdansk", "impact": "Mass resistance to communist rule; deep anti-Russian and pro-Western identity" },
+      { "year": 1989, "event": "Round Table talks end communist rule", "impact": "Rapid democratic and market transition; model post-communist success story" },
+      { "year": 1999, "event": "NATO accession", "impact": "Long-sought security anchor; Article 5 becomes the cornerstone of national survival strategy" },
+      { "year": 2004, "event": "European Union accession", "impact": "Economic convergence with the West; EU funds power two decades of growth" },
+      { "year": 2022, "event": "Russian full-scale invasion of Ukraine", "impact": "Frontline logistics hub for Ukraine; crash rearmament to build NATO's largest European land army" }
+    ],
+    "historicalRivals": ["RUS", "DEU"],
+    "historicalAllies": ["USA", "GBR", "FRA"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "DEFENSIVE",
+    "narrative": "Shaped by partitions, invasion, and Soviet domination, Poland treats Russian aggression as an existential certainty to be deterred, not a risk to be managed. It is NATO's most committed eastern member, spending more of its GDP on defense than any other ally and binding the United States to its soil as the ultimate guarantee that 1939 never repeats."
+  },
+  "personality": {
+    "warPropensity": 35,
+    "allianceLoyalty": 85,
+    "diplomaticFlexibility": 50,
+    "riskTolerance": 40,
+    "expansionism": 15,
+    "isolationism": 10,
+    "ideologicalRigidity": 60,
+    "prestigeEmphasis": 55
+  },
+  "redLines": [
+    { "type": "TERRITORIAL", "targetCountryId": "RUS", "description": "Any Russian or Belarusian military incursion onto Polish territory", "severity": 10 },
+    { "type": "ALLIANCE", "description": "Russian attack on a NATO member, especially the Baltic states", "severity": 10 },
+    { "type": "NUCLEAR", "targetCountryId": "RUS", "description": "Russian nuclear weapons deployment or use threatening Central Europe", "severity": 8 }
+  ],
+  "internalDivisions": [
+    { "kind": "IDEOLOGICAL", "name": "National-conservative vs liberal pro-EU divide", "strength": 80, "tension": 60 }
+  ],
+  "economy": {
+    "gdp": 845000000000,
+    "growthRate": 0.029,
+    "debtGdpRatio": 50,
+    "sectors": { "agriculture": 2, "industry": 30, "services": 68 },
+    "keyResources": ["coal", "copper", "silver", "agriculture"],
+    "keyExports": ["machinery", "vehicles", "electronics", "furniture", "food_products"],
+    "developmentLevel": "DEVELOPED"
+  },
+  "military": {
+    "manpower": 200000,
+    "airpower": 468,
+    "doctrine": "DEFENSIVE",
+    "nuclearStatus": "NONE",
+    "warheads": 0,
+    "arms_suppliers": ["USA"]
+  },
+  "militaryBudgetPct": 4.0,
   "stability": 75,
   "legitimacy": 73,
   "intelLevel": 65,
+  "insurgencyLevel": "NONE",
   "goals": [
-    { "id": "pol_g1", "type": "SECURITY", "targetCountryId": "RUS", "priority": 95, "description": "Deter Russian aggression" },
-    { "id": "pol_g2", "type": "SECURITY", "priority": 85, "description": "Strengthen NATO eastern flank" }
+    { "id": "pol_g1", "type": "SECURITY", "targetCountryId": "RUS", "priority": 95, "description": "Deter Russian aggression through forward defense and overwhelming readiness" },
+    { "id": "pol_g2", "type": "SECURITY", "targetCountryId": "USA", "priority": 85, "description": "Anchor permanent US and NATO forces on Polish territory" },
+    { "id": "pol_g3", "type": "SECURITY", "priority": 80, "description": "Build the largest land army in Europe through mass procurement and expansion" },
+    { "id": "pol_g4", "type": "ECONOMIC", "priority": 65, "description": "Sustain rapid growth and full economic convergence with Western Europe" },
+    { "id": "pol_g5", "type": "IDEOLOGICAL", "priority": 55, "description": "Lead the region in supporting Ukraine and containing Russian influence in Eastern Europe" }
   ],
   "geo": {
     "bounds": [14.1, 49.0, 24.2, 54.8],

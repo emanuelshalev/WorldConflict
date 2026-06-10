@@ -3,19 +3,78 @@
   "iso3": "PRK",
   "name": "North Korea",
   "population": 26000000,
-  "gdp": 40000000000,
-  "gdpGrowth": 0.01,
-  "militaryBudgetPct": 15.0,
-  "manpower": 1280000,
-  "airpower": 946,
   "regimeType": "AUTOCRACY",
-  "riskTolerance": 85,
-  "stability": 70,
-  "legitimacy": 80,
+  "politicalSystem": {
+    "type": "PERSONALIST_AUTOCRACY",
+    "powerCenters": ["EXECUTIVE", "PARTY", "MILITARY"],
+    "electionCycleMonths": 0,
+    "nextElectionTurn": null,
+    "leaderTitle": "Supreme Leader"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1945, "event": "Division of Korea at the 38th parallel", "impact": "Soviet-backed state founded under Kim Il-sung; the divided peninsula defines all strategy" },
+      { "year": 1953, "event": "Korean War armistice", "impact": "Devastating US bombing seared anti-American siege mentality into regime ideology; war never formally ended" },
+      { "year": 1972, "event": "Juche enshrined as state ideology", "impact": "Self-reliance doctrine justified autarky, militarization, and the Kim personality cult" },
+      { "year": 1994, "event": "Death of Kim Il-sung and dynastic succession", "impact": "First hereditary communist succession; regime survival became synonymous with Kim family rule" },
+      { "year": 1997, "event": "Arduous March famine", "impact": "Hundreds of thousands died after Soviet subsidies ended; regime learned it can survive total economic collapse" },
+      { "year": 2006, "event": "First nuclear test", "impact": "Crossed the nuclear threshold; deterrent became the regime's ultimate insurance against invasion" },
+      { "year": 2011, "event": "Kim Jong-un succession", "impact": "Third-generation rule consolidated through purges, including execution of Jang Song-thaek" },
+      { "year": 2017, "event": "Thermonuclear test and ICBM launches", "impact": "Demonstrated ability to threaten the US mainland; brinkmanship followed by summit diplomacy" }
+    ],
+    "historicalRivals": ["USA", "KOR", "JPN"],
+    "historicalAllies": ["CHN", "RUS"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "ISOLATIONIST",
+    "narrative": "The Kim dynasty values regime survival above all else, having concluded from Iraq and Libya that only a nuclear deterrent guarantees it. Brinkmanship is a deliberate negotiating tool: manufacture crisis, extract concessions, repeat. Dependent on China and increasingly Russia, but trusts no one and isolates its population to maintain absolute control."
+  },
+  "personality": {
+    "warPropensity": 45,
+    "allianceLoyalty": 40,
+    "diplomaticFlexibility": 30,
+    "riskTolerance": 80,
+    "expansionism": 35,
+    "isolationism": 90,
+    "ideologicalRigidity": 95,
+    "prestigeEmphasis": 75
+  },
+  "redLines": [
+    { "type": "IDEOLOGICAL", "description": "Any credible attempt at regime change or fomenting internal uprising", "severity": 10 },
+    { "type": "TERRITORIAL", "description": "Decapitation strike or military action against the Kim leadership", "severity": 10 },
+    { "type": "NUCLEAR", "description": "Preemptive strike on nuclear facilities or forced denuclearization", "severity": 9 },
+    { "type": "ECONOMIC", "description": "Total blockade including Chinese border trade lifeline", "severity": 8 }
+  ],
+  "internalDivisions": [
+    { "kind": "IDEOLOGICAL", "name": "Elite loyalty fragility beneath surface conformity", "strength": 80, "tension": 25 },
+    { "kind": "REGIONAL", "name": "Pyongyang privileged class versus deprived provinces", "strength": 60, "tension": 30 }
+  ],
+  "economy": {
+    "gdp": 28000000000,
+    "growthRate": 0.01,
+    "debtGdpRatio": 0,
+    "sectors": { "agriculture": 22, "industry": 47, "services": 31 },
+    "keyResources": ["coal", "iron_ore", "rare_earths", "magnesite"],
+    "keyExports": ["coal", "minerals", "textiles", "arms", "labor"],
+    "developmentLevel": "DEVELOPING"
+  },
+  "military": {
+    "manpower": 1280000,
+    "airpower": 950,
+    "doctrine": "DETERRENCE",
+    "nuclearStatus": "ARMED",
+    "warheads": 50,
+    "arms_suppliers": ["RUS", "PRIVATE"]
+  },
+  "militaryBudgetPct": 15.0,
+  "stability": 60,
+  "legitimacy": 30,
   "intelLevel": 60,
+  "insurgencyLevel": "NONE",
   "goals": [
-    { "id": "prk_g1", "type": "SECURITY", "priority": 95, "description": "Maintain nuclear deterrent and regime survival" },
-    { "id": "prk_g2", "type": "TERRITORIAL", "targetCountryId": "KOR", "priority": 70, "description": "Reunification under DPRK leadership" }
+    { "id": "prk_g1", "type": "SECURITY", "priority": 100, "description": "Ensure survival of the Kim regime against all internal and external threats" },
+    { "id": "prk_g2", "type": "SECURITY", "targetCountryId": "USA", "priority": 90, "description": "Expand and leverage the nuclear arsenal to deter the US and extract concessions" },
+    { "id": "prk_g3", "type": "ECONOMIC", "priority": 75, "description": "Obtain sanctions relief and foreign currency without surrendering the nuclear program" },
+    { "id": "prk_g4", "type": "TERRITORIAL", "targetCountryId": "KOR", "priority": 50, "description": "Maintain long-term claim to the whole peninsula and undermine the South's alliance with the US" }
   ],
   "geo": {
     "bounds": [124.2, 37.7, 130.7, 43.0],

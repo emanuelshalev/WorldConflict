@@ -3,19 +3,77 @@
   "iso3": "MEX",
   "name": "Mexico",
   "population": 130000000,
-  "gdp": 1470000000000,
-  "gdpGrowth": 0.032,
-  "militaryBudgetPct": 0.5,
-  "manpower": 277000,
-  "airpower": 478,
   "regimeType": "DEMOCRACY",
-  "riskTolerance": 25,
+  "politicalSystem": {
+    "type": "PRESIDENTIAL_DEMOCRACY",
+    "powerCenters": ["EXECUTIVE", "LEGISLATURE", "JUDICIARY"],
+    "electionCycleMonths": 72,
+    "nextElectionTurn": null,
+    "leaderTitle": "President"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1910, "event": "Mexican Revolution", "impact": "Decade of upheaval forged revolutionary nationalism and the principle of non-intervention" },
+      { "year": 1938, "event": "Oil expropriation under Cárdenas", "impact": "Nationalized petroleum became a sacred symbol of economic sovereignty" },
+      { "year": 1929, "event": "PRI hegemony established", "impact": "Seven decades of one-party rule created a strong presidency and corporatist state machinery" },
+      { "year": 1994, "event": "NAFTA enters into force", "impact": "Economy bound irrevocably to the United States; manufacturing export boom and deep interdependence" },
+      { "year": 2000, "event": "PRI loses presidency to Vicente Fox", "impact": "Peaceful democratic alternation ended one-party rule after 71 years" },
+      { "year": 2006, "event": "Calderón launches the drug war", "impact": "Military deployment against cartels unleashed enduring violence claiming hundreds of thousands of lives" },
+      { "year": 2018, "event": "AMLO landslide and Morena dominance", "impact": "Left-populist realignment, expanded military role in civilian tasks, and friction with judicial institutions" }
+    ],
+    "historicalRivals": [],
+    "historicalAllies": ["USA", "BRA"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "NON_ALIGNED",
+    "narrative": "Bound to the United States by trade, migration, and geography yet fiercely protective of its sovereignty, Mexico practices a non-interventionist diplomacy rooted in revolutionary nationalism. Its central struggle is internal: cartel violence and weak rule of law sap the state, while the US relationship must be managed without appearing subordinate."
+  },
+  "personality": {
+    "warPropensity": 10,
+    "allianceLoyalty": 55,
+    "diplomaticFlexibility": 70,
+    "riskTolerance": 25,
+    "expansionism": 10,
+    "isolationism": 50,
+    "ideologicalRigidity": 40,
+    "prestigeEmphasis": 50
+  },
+  "redLines": [
+    { "type": "TERRITORIAL", "targetCountryId": "USA", "description": "Unilateral US military intervention on Mexican soil against cartels", "severity": 9 },
+    { "type": "ECONOMIC", "description": "US withdrawal from USMCA or punitive blanket tariffs on Mexican exports", "severity": 8 },
+    { "type": "IDEOLOGICAL", "description": "Foreign interference in Mexican elections or energy sovereignty", "severity": 6 }
+  ],
+  "internalDivisions": [
+    { "kind": "REGIONAL", "name": "Cartel-controlled territories and endemic violence", "strength": 70, "tension": 75 },
+    { "kind": "IDEOLOGICAL", "name": "Morena populism versus opposition over institutions and judiciary", "strength": 60, "tension": 50 },
+    { "kind": "REGIONAL", "name": "Industrialized north versus impoverished south", "strength": 50, "tension": 30 }
+  ],
+  "economy": {
+    "gdp": 1800000000000,
+    "growthRate": 0.02,
+    "debtGdpRatio": 50,
+    "sectors": { "agriculture": 4, "industry": 31, "services": 65 },
+    "keyResources": ["oil", "silver", "agriculture", "manufacturing_base"],
+    "keyExports": ["automobiles", "electronics", "machinery", "crude_oil", "agricultural_products"],
+    "developmentLevel": "EMERGING"
+  },
+  "military": {
+    "manpower": 277000,
+    "airpower": 480,
+    "doctrine": "DEFENSIVE",
+    "nuclearStatus": "NONE",
+    "warheads": 0,
+    "arms_suppliers": ["USA"]
+  },
+  "militaryBudgetPct": 0.7,
   "stability": 62,
   "legitimacy": 58,
   "intelLevel": 55,
+  "insurgencyLevel": "UNREST",
   "goals": [
-    { "id": "mex_g1", "type": "ECONOMIC", "priority": 90, "description": "Strengthen trade ties with US and diversify economy" },
-    { "id": "mex_g2", "type": "SECURITY", "priority": 80, "description": "Combat organized crime and improve stability" }
+    { "id": "mex_g1", "type": "ECONOMIC", "targetCountryId": "USA", "priority": 90, "description": "Preserve USMCA trade access and capture nearshoring investment" },
+    { "id": "mex_g2", "type": "SECURITY", "priority": 85, "description": "Contain cartel violence and rebuild state authority in contested regions" },
+    { "id": "mex_g3", "type": "IDEOLOGICAL", "priority": 60, "description": "Defend national sovereignty and non-intervention against US pressure" },
+    { "id": "mex_g4", "type": "PRESTIGE", "priority": 45, "description": "Lead Latin American diplomacy as a bridge between North and South" }
   ],
   "geo": {
     "bounds": [-118.4, 14.5, -86.7, 32.7],

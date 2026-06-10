@@ -3,20 +3,78 @@
   "iso3": "DEU",
   "name": "Germany",
   "population": 84000000,
-  "gdp": 4430000000000,
-  "gdpGrowth": 0.014,
-  "militaryBudgetPct": 2.1,
-  "manpower": 184000,
-  "airpower": 617,
   "regimeType": "DEMOCRACY",
-  "riskTolerance": 25,
+  "politicalSystem": {
+    "type": "PARLIAMENTARY_DEMOCRACY",
+    "powerCenters": ["EXECUTIVE", "LEGISLATURE", "JUDICIARY"],
+    "electionCycleMonths": 48,
+    "nextElectionTurn": null,
+    "leaderTitle": "Chancellor"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1945, "event": "Defeat in World War II and division", "impact": "Profound culture of military restraint and atonement; 'never again' as a foreign policy axiom" },
+      { "year": 1955, "event": "West Germany joins NATO", "impact": "Security permanently anchored in the Atlantic alliance rather than national rearmament" },
+      { "year": 1957, "event": "Treaty of Rome and European integration", "impact": "National interest pursued through the EU; economic power as a substitute for military power" },
+      { "year": 1990, "event": "Reunification", "impact": "Became Europe's economic anchor while reassuring neighbors of its benign intentions" },
+      { "year": 2011, "event": "Eurozone debt crisis leadership", "impact": "Reluctant hegemon of the EU; fiscal discipline as ideology" },
+      { "year": 2015, "event": "Refugee crisis and one million arrivals", "impact": "Deepened polarization and fueled the rise of the far-right AfD" },
+      { "year": 2022, "event": "Zeitenwende after Russia's invasion of Ukraine", "impact": "Historic break: 100bn euro rearmament fund, end of Russian energy dependence" }
+    ],
+    "historicalRivals": ["RUS"],
+    "historicalAllies": ["FRA", "USA", "GBR", "POL", "ITA"],
+    "sphereOfInfluence": ["POL", "ITA"],
+    "foreignPolicyOrientation": "BALANCING",
+    "narrative": "Europe's economic engine and reluctant leader, conditioned by its past to abhor military adventurism and pursue power through trade, institutions, and consensus. The Zeitenwende is slowly forcing it to accept hard-power responsibilities it spent decades avoiding."
+  },
+  "personality": {
+    "warPropensity": 15,
+    "allianceLoyalty": 85,
+    "diplomaticFlexibility": 75,
+    "riskTolerance": 25,
+    "expansionism": 15,
+    "isolationism": 30,
+    "ideologicalRigidity": 45,
+    "prestigeEmphasis": 45
+  },
+  "redLines": [
+    { "type": "ALLIANCE", "description": "Armed attack on a NATO or EU member state", "severity": 9 },
+    { "type": "ECONOMIC", "description": "Collapse or fragmentation of the EU single market and eurozone", "severity": 8 },
+    { "type": "TERRITORIAL", "targetCountryId": "POL", "description": "Russian aggression against NATO's eastern flank", "severity": 9 }
+  ],
+  "internalDivisions": [
+    { "kind": "REGIONAL", "name": "East-West divide (former DDR alienation)", "strength": 35, "tension": 45 },
+    { "kind": "IDEOLOGICAL", "name": "Far-right AfD surge vs centrist consensus", "strength": 40, "tension": 55 },
+    { "kind": "IDEOLOGICAL", "name": "Pacifist tradition vs rearmament advocates", "strength": 45, "tension": 35 }
+  ],
+  "economy": {
+    "gdp": 4430000000000,
+    "growthRate": 0.014,
+    "debtGdpRatio": 63,
+    "sectors": { "agriculture": 1, "industry": 27, "services": 72 },
+    "keyResources": ["industrial_base", "engineering", "chemicals", "skilled_labor"],
+    "keyExports": ["vehicles", "machinery", "chemicals", "pharmaceuticals", "electronics"],
+    "developmentLevel": "DEVELOPED"
+  },
+  "military": {
+    "manpower": 184000,
+    "airpower": 617,
+    "doctrine": "DEFENSIVE",
+    "nuclearStatus": "LATENT",
+    "warheads": 0,
+    "arms_suppliers": ["USA", "PRIVATE"]
+  },
+  "militaryBudgetPct": 2.1,
   "stability": 82,
   "legitimacy": 85,
   "intelLevel": 78,
+  "insurgencyLevel": "NONE",
   "goals": [
-    { "id": "deu_g1", "type": "ECONOMIC", "priority": 90, "description": "Maintain EU economic leadership" },
-    { "id": "deu_g2", "type": "SECURITY", "priority": 70, "description": "Strengthen European defense cooperation" },
-    { "id": "deu_g3", "type": "IDEOLOGICAL", "priority": 65, "description": "Promote multilateralism and international law" }
+    { "id": "deu_g1", "type": "ECONOMIC", "priority": 90, "description": "Preserve EU economic leadership and export-led industrial model" },
+    { "id": "deu_g2", "type": "SECURITY", "targetCountryId": "RUS", "priority": 80, "description": "Deter Russian aggression by rebuilding the Bundeswehr and arming Ukraine" },
+    { "id": "deu_g3", "type": "SECURITY", "priority": 70, "description": "Build European strategic autonomy in defense and energy" },
+    { "id": "deu_g4", "type": "IDEOLOGICAL", "priority": 60, "description": "Defend multilateralism, international law, and EU cohesion" },
+    { "id": "deu_g5", "type": "ECONOMIC", "targetCountryId": "CHN", "priority": 55, "description": "De-risk supply chains from China without losing its largest export market" }
   ],
   "geo": {
     "bounds": [5.9, 47.3, 15.0, 55.1],

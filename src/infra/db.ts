@@ -1,5 +1,5 @@
-import { PrismaClient } from "@prisma/client";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaClient } from "@prisma/client";
 import { type Turn, type WorldState, WorldStateSchema } from "../core/types.js";
 
 const adapter = new PrismaBetterSqlite3({

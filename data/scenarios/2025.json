@@ -1,31 +1,70 @@
 {
   "id": "2025",
   "name": "Modern Era (2025)",
-  "description": "Current geopolitical landscape with ongoing tensions",
+  "description": "A multipolar world on edge: great-power competition between the US and China, war fatigue in Europe, a nuclear-threshold Iran, and an international order under strain.",
   "startYear": 2025,
+  "startMonth": 1,
   "globalTension": 55,
-  "multipliers": {
-    "gdpGrowth": 1.0,
-    "militarySpending": 1.0,
-    "stability": 1.0
+  "multipliers": { "gdpGrowth": 1.0, "militarySpending": 1.0, "stability": 1.0 },
+  "leaders": {
+    "USA": { "name": "Donald Trump", "title": "President", "style": "HAWKISH", "origin": "ELECTED" },
+    "CHN": { "name": "Xi Jinping", "title": "General Secretary", "style": "HARDLINER", "origin": "APPOINTED" },
+    "RUS": { "name": "Vladimir Putin", "title": "President", "style": "HAWKISH", "origin": "ELECTED" },
+    "DEU": { "name": "Olaf Scholz", "title": "Chancellor", "style": "DOVISH", "origin": "ELECTED" },
+    "IND": { "name": "Narendra Modi", "title": "Prime Minister", "style": "HAWKISH", "origin": "ELECTED" },
+    "BRA": { "name": "Luiz Inácio Lula da Silva", "title": "President", "style": "DOVISH", "origin": "ELECTED" },
+    "CAN": { "name": "Justin Trudeau", "title": "Prime Minister", "style": "DOVISH", "origin": "ELECTED" },
+    "MEX": { "name": "Claudia Sheinbaum", "title": "President", "style": "PRAGMATIC", "origin": "ELECTED" },
+    "FRA": { "name": "Emmanuel Macron", "title": "President", "style": "PRAGMATIC", "origin": "ELECTED" },
+    "GBR": { "name": "Keir Starmer", "title": "Prime Minister", "style": "PRAGMATIC", "origin": "ELECTED" },
+    "POL": { "name": "Donald Tusk", "title": "Prime Minister", "style": "PRAGMATIC", "origin": "ELECTED" },
+    "TUR": { "name": "Recep Tayyip Erdoğan", "title": "President", "style": "HAWKISH", "origin": "ELECTED" },
+    "SAU": { "name": "Mohammed bin Salman", "title": "Crown Prince", "style": "PRAGMATIC", "origin": "SUCCESSION" },
+    "IRN": { "name": "Ali Khamenei", "title": "Supreme Leader", "style": "HARDLINER", "origin": "APPOINTED" },
+    "ISR": { "name": "Benjamin Netanyahu", "title": "Prime Minister", "style": "HAWKISH", "origin": "ELECTED" },
+    "EGY": { "name": "Abdel Fattah el-Sisi", "title": "President", "style": "HARDLINER", "origin": "COUP" },
+    "JPN": { "name": "Shigeru Ishiba", "title": "Prime Minister", "style": "PRAGMATIC", "origin": "ELECTED" },
+    "IDN": { "name": "Prabowo Subianto", "title": "President", "style": "PRAGMATIC", "origin": "ELECTED" },
+    "KOR": { "name": "Yoon Suk-yeol", "title": "President", "style": "HAWKISH", "origin": "ELECTED" },
+    "PRK": { "name": "Kim Jong Un", "title": "Supreme Leader", "style": "HARDLINER", "origin": "SUCCESSION" },
+    "AUS": { "name": "Anthony Albanese", "title": "Prime Minister", "style": "DOVISH", "origin": "ELECTED" },
+    "PAK": { "name": "Shehbaz Sharif", "title": "Prime Minister", "style": "PRAGMATIC", "origin": "ELECTED" },
+    "NGA": { "name": "Bola Tinubu", "title": "President", "style": "PRAGMATIC", "origin": "ELECTED" },
+    "ZAF": { "name": "Cyril Ramaphosa", "title": "President", "style": "PRAGMATIC", "origin": "ELECTED" },
+    "ITA": { "name": "Giorgia Meloni", "title": "Prime Minister", "style": "PRAGMATIC", "origin": "ELECTED" }
+  },
+  "countryOverrides": {
+    "IRN": { "nuclearProgress": 65 }
   },
   "initialRelations": {
     "USA": { "CHN": -35, "RUS": -60, "GBR": 85, "DEU": 70, "FRA": 65, "JPN": 80, "KOR": 75, "AUS": 80, "CAN": 90, "ISR": 85, "POL": 70, "ITA": 65, "TUR": 40, "SAU": 50, "IND": 55, "BRA": 40, "MEX": 60, "EGY": 45, "PAK": 30, "IDN": 35, "NGA": 30, "ZAF": 35, "IRN": -80, "PRK": -90 },
-    "CHN": { "USA": -35, "RUS": 60, "PRK": 55, "PAK": 65, "IRN": 45, "JPN": -40, "KOR": -20, "IND": -45, "AUS": -25, "GBR": -15, "DEU": 20, "FRA": 15 },
-    "RUS": { "USA": -60, "CHN": 60, "IRN": 50, "PRK": 40, "IND": 45, "GBR": -55, "POL": -70, "DEU": -30, "FRA": -25, "TUR": 15 },
+    "CHN": { "USA": -35, "RUS": 60, "PRK": 55, "PAK": 65, "IRN": 45, "JPN": -40, "KOR": -20, "IND": -45, "AUS": -25, "GBR": -15, "DEU": 20, "FRA": 15, "BRA": 40, "ZAF": 45, "NGA": 40, "IDN": 35, "SAU": 35, "EGY": 30 },
+    "RUS": { "USA": -60, "CHN": 60, "IRN": 50, "PRK": 40, "IND": 45, "GBR": -55, "POL": -70, "DEU": -30, "FRA": -25, "TUR": 15, "SAU": 25, "EGY": 25, "BRA": 20, "ZAF": 25 },
     "IND": { "PAK": -75, "CHN": -45, "USA": 55, "RUS": 45, "JPN": 50, "AUS": 45, "GBR": 40, "FRA": 40, "ISR": 50 },
     "PAK": { "IND": -75, "CHN": 65, "USA": 30, "SAU": 55, "TUR": 50, "IRN": 35 },
     "ISR": { "IRN": -90, "USA": 85, "SAU": 25, "EGY": 40, "TUR": -20, "GBR": 60, "DEU": 55 },
-    "IRN": { "ISR": -90, "USA": -80, "SAU": -70, "RUS": 50, "CHN": 45 },
-    "SAU": { "IRN": -70, "USA": 50, "EGY": 55, "PAK": 55, "ISR": 25, "TUR": 30 },
+    "IRN": { "ISR": -90, "USA": -80, "SAU": -70, "RUS": 50, "CHN": 45, "TUR": 10, "PAK": 35 },
+    "SAU": { "IRN": -70, "USA": 50, "EGY": 55, "PAK": 55, "ISR": 25, "TUR": 30, "CHN": 35 },
     "KOR": { "PRK": -85, "USA": 75, "JPN": 45, "CHN": -20 },
     "PRK": { "KOR": -85, "USA": -90, "JPN": -80, "CHN": 55, "RUS": 40 },
-    "JPN": { "USA": 80, "KOR": 45, "AUS": 60, "IND": 50, "CHN": -40, "PRK": -80, "RUS": -35 }
+    "JPN": { "USA": 80, "KOR": 45, "AUS": 60, "IND": 50, "CHN": -40, "PRK": -80, "RUS": -35 },
+    "TUR": { "USA": 40, "RUS": 15, "GBR": 45, "DEU": 40, "FRA": 25, "ISR": -20, "SAU": 30, "EGY": 15, "IRN": 10 },
+    "POL": { "RUS": -70, "USA": 70, "DEU": 55, "GBR": 60, "FRA": 50 },
+    "EGY": { "USA": 45, "SAU": 55, "ISR": 40, "RUS": 25, "TUR": 15 },
+    "BRA": { "USA": 40, "CHN": 40, "RUS": 20, "MEX": 45, "ZAF": 40, "IND": 40 },
+    "MEX": { "USA": 60, "BRA": 45, "CAN": 55 },
+    "NGA": { "USA": 30, "CHN": 40, "GBR": 45, "ZAF": 40 },
+    "ZAF": { "USA": 35, "CHN": 45, "RUS": 25, "NGA": 40, "BRA": 40, "IND": 40 },
+    "IDN": { "USA": 35, "CHN": 35, "AUS": 40, "JPN": 45, "IND": 35 }
   },
   "alliances": [
-    ["USA", "GBR", "CAN", "AUS"],
+    ["USA", "GBR", "CAN", "FRA", "DEU", "ITA", "POL", "TUR"],
     ["USA", "JPN"],
     ["USA", "KOR"],
-    ["DEU", "FRA", "ITA", "POL"]
-  ]
+    ["USA", "AUS"],
+    ["USA", "ISR"],
+    ["RUS", "PRK"],
+    ["CHN", "PRK"]
+  ],
+  "startingWars": []
 }

@@ -3,19 +3,76 @@
   "iso3": "ITA",
   "name": "Italy",
   "population": 59000000,
-  "gdp": 2190000000000,
-  "gdpGrowth": 0.012,
-  "militaryBudgetPct": 1.5,
-  "manpower": 165000,
-  "airpower": 862,
   "regimeType": "DEMOCRACY",
-  "riskTolerance": 25,
+  "politicalSystem": {
+    "type": "PARLIAMENTARY_DEMOCRACY",
+    "powerCenters": ["LEGISLATURE", "EXECUTIVE", "JUDICIARY"],
+    "electionCycleMonths": 60,
+    "nextElectionTurn": null,
+    "leaderTitle": "Prime Minister"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1861, "event": "Italian unification", "impact": "Young nation-state with deep regional differences never fully reconciled" },
+      { "year": 1922, "event": "Mussolini's March on Rome", "impact": "Fascist dictatorship; lasting constitutional safeguards against strongman rule" },
+      { "year": 1946, "event": "Republic established by referendum", "impact": "Monarchy abolished; fragmented parliamentary system with frequent government turnover" },
+      { "year": 1957, "event": "Treaty of Rome founds the EEC", "impact": "European integration becomes the anchor of Italian foreign policy and economic strategy" },
+      { "year": 1978, "event": "Years of Lead and the Moro assassination", "impact": "Domestic terrorism trauma; aversion to political extremism and instability" },
+      { "year": 1992, "event": "Tangentopoli corruption scandals", "impact": "Collapse of the postwar party system; chronic distrust of the political class" },
+      { "year": 2011, "event": "Sovereign debt crisis", "impact": "Near-default; public debt constrains every strategic ambition since" }
+    ],
+    "historicalRivals": ["RUS", "TUR"],
+    "historicalAllies": ["USA", "FRA", "DEU", "GBR", "POL"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "DEFENSIVE",
+    "narrative": "A founding member of NATO and the EU that punches below its economic weight, constrained by massive public debt and unstable coalition governments. Its strategic horizon is the 'enlarged Mediterranean': energy routes from North Africa, migration flows, and rivalry with Turkey for influence in Libya, all managed through multilateral frameworks rather than unilateral action."
+  },
+  "personality": {
+    "warPropensity": 25,
+    "allianceLoyalty": 70,
+    "diplomaticFlexibility": 75,
+    "riskTolerance": 25,
+    "expansionism": 15,
+    "isolationism": 35,
+    "ideologicalRigidity": 35,
+    "prestigeEmphasis": 55
+  },
+  "redLines": [
+    { "type": "ALLIANCE", "description": "Armed attack on a NATO or EU member state", "severity": 9 },
+    { "type": "ECONOMIC", "description": "Closure of Mediterranean shipping lanes or cutoff of North African energy supplies", "severity": 7 },
+    { "type": "TERRITORIAL", "description": "Hostile power establishing military dominance over Libya or the central Mediterranean", "severity": 6 }
+  ],
+  "internalDivisions": [
+    { "kind": "REGIONAL", "name": "North-South economic divide (Mezzogiorno gap)", "strength": 70, "tension": 45 },
+    { "kind": "IDEOLOGICAL", "name": "Populist-establishment polarization", "strength": 55, "tension": 45 }
+  ],
+  "economy": {
+    "gdp": 2250000000000,
+    "growthRate": 0.007,
+    "debtGdpRatio": 137,
+    "sectors": { "agriculture": 2, "industry": 24, "services": 74 },
+    "keyResources": ["agriculture", "natural_gas", "tourism", "design_manufacturing"],
+    "keyExports": ["machinery", "pharmaceuticals", "fashion", "vehicles", "food_products"],
+    "developmentLevel": "DEVELOPED"
+  },
+  "military": {
+    "manpower": 165000,
+    "airpower": 862,
+    "doctrine": "DEFENSIVE",
+    "nuclearStatus": "NONE",
+    "warheads": 0,
+    "arms_suppliers": ["USA"]
+  },
+  "militaryBudgetPct": 1.5,
   "stability": 70,
   "legitimacy": 65,
   "intelLevel": 70,
+  "insurgencyLevel": "NONE",
   "goals": [
-    { "id": "ita_g1", "type": "ECONOMIC", "priority": 85, "description": "Reduce public debt and stimulate growth" },
-    { "id": "ita_g2", "type": "SECURITY", "priority": 70, "description": "Manage Mediterranean migration flows" }
+    { "id": "ita_g1", "type": "ECONOMIC", "priority": 85, "description": "Reduce public debt and revive chronically stagnant growth" },
+    { "id": "ita_g2", "type": "SECURITY", "priority": 70, "description": "Manage Mediterranean migration flows and stabilize Libya" },
+    { "id": "ita_g3", "type": "ECONOMIC", "priority": 65, "description": "Secure diversified energy supplies as a Mediterranean gas hub" },
+    { "id": "ita_g4", "type": "PRESTIGE", "priority": 55, "description": "Preserve standing as a G7 power and core EU founding member" }
   ],
   "geo": {
     "bounds": [6.6, 36.6, 18.5, 47.1],

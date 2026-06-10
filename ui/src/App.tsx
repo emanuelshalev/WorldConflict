@@ -9,7 +9,9 @@ import { NewspaperModal } from './components/NewspaperModal'
 import { SplashScreen } from './components/SplashScreen'
 import { ActionPreviewModal } from './components/ActionPreviewModal'
 import { TurnFeedbackModal } from './components/TurnFeedbackModal'
-import { LLMPermissionModal } from './components/LLMPermissionModal'
+import { CrisisDecisionModal } from './components/CrisisDecisionModal'
+import { BackstoryModal } from './components/BackstoryModal'
+import { EndGameReport } from './components/EndGameReport'
 import { useGameStore } from './store/gameStore'
 
 function App() {
@@ -33,7 +35,9 @@ function App() {
       <NewspaperModal />
       <ActionPreviewModal />
       <TurnFeedbackModal />
-      <LLMPermissionModal />
+      <CrisisDecisionModal />
+      <BackstoryModal />
+      <EndGameReport />
 
       {isLoading && (
         <div className="loading-overlay">

@@ -1,247 +1,166 @@
+import type { SeededRandom } from "../seed.js";
 import type { CountryState, WorldState } from "../types.js";
+import { isNuclearStandoff } from "./nuclear.js";
 
-export const RELATION_THRESHOLDS = {
-  WAR_ELIGIBLE: -60,
-  HOSTILE: -20,
-  NEUTRAL: 0,
-  FRIENDLY: 20,
-  ALLIANCE_ELIGIBLE: 60,
-  MILITARY_PACT: 80,
-} as const;
+export const IMPROVE_RELATIONS_COST_M = 100; // $100M/month from the spec
 
-export interface DiplomacyResult {
-  success: boolean;
-  newRelation?: number;
-  message: string;
+export function getRelation(a: CountryState, bId: string): number {
+  return a.relations[bId] ?? 0;
 }
 
-export class DiplomacySystem {
-  static getRelation(country: CountryState, targetId: string): number {
-    return country.relations[targetId] ?? 0;
-  }
+export function shiftRelation(a: CountryState, bId: string, delta: number): void {
+  a.relations[bId] = Math.max(-100, Math.min(100, (a.relations[bId] ?? 0) + delta));
+}
 
-  static setRelation(country: CountryState, targetId: string, value: number): CountryState {
-    const clampedValue = Math.max(-100, Math.min(100, value));
+export function improveRelations(actor: CountryState, target: CountryState): void {
+  // Diminishing returns at high relations
+  const current = getRelation(actor, target.id);
+  const gain = current > 60 ? 3 : current > 20 ? 5 : 7;
+  shiftRelation(actor, target.id, gain);
+  shiftRelation(target, actor.id, Math.ceil(gain * 0.7));
+}
+
+export function denounce(world: WorldState, actor: CountryState, target: CountryState): void {
+  shiftRelation(actor, target.id, -12);
+  shiftRelation(target, actor.id, -15);
+  world.globalTension = Math.min(100, world.globalTension + 0.8);
+  // Target's allies disapprove
+  for (const allyId of target.alliances) {
+    const ally = world.countries.find((c) => c.id === allyId);
+    if (ally) shiftRelation(ally, actor.id, -5);
+  }
+  // Actor's public enjoys strength
+  actor.approval = Math.min(100, actor.approval + 2);
+}
+
+export interface AllianceResult {
+  accepted: boolean;
+  reason: string;
+}
+
+export function proposeAlliance(
+  actor: CountryState,
+  target: CountryState,
+  rng: SeededRandom,
+): AllianceResult {
+  if (actor.alliances.includes(target.id)) {
+    return { accepted: false, reason: "Already allied" };
+  }
+  const relation = getRelation(target, actor.id);
+  if (relation < 60) {
     return {
-      ...country,
-      relations: {
-        ...country.relations,
-        [targetId]: clampedValue,
-      },
+      accepted: false,
+      reason: `${target.name} rebuffed the proposal — relations must reach PROFITABLE first (currently ${relation}).`,
     };
   }
-
-  static modifyRelation(country: CountryState, targetId: string, delta: number): CountryState {
-    const current = DiplomacySystem.getRelation(country, targetId);
-    return DiplomacySystem.setRelation(country, targetId, current + delta);
+  // Historical rivals are reluctant even at decent relations
+  const isRival = (target.history.historicalRivals ?? []).includes(actor.id);
+  const loyaltyFactor = target.personality.allianceLoyalty / 100;
+  const chance = Math.min(
+    0.9,
+    (relation / 100) * (0.5 + loyaltyFactor * 0.5) * (isRival ? 0.4 : 1),
+  );
+  if (rng.next() < chance) {
+    actor.alliances.push(target.id);
+    target.alliances.push(actor.id);
+    shiftRelation(actor, target.id, 10);
+    shiftRelation(target, actor.id, 10);
+    return { accepted: true, reason: `${target.name} agreed to a mutual defense pact.` };
   }
+  return {
+    accepted: false,
+    reason: `${target.name} declined — not yet convinced of the partnership's value.`,
+  };
+}
 
-  static getRelationStatus(relation: number): string {
-    if (relation <= RELATION_THRESHOLDS.WAR_ELIGIBLE) return "WAR_ELIGIBLE";
-    if (relation <= RELATION_THRESHOLDS.HOSTILE) return "HOSTILE";
-    if (relation < RELATION_THRESHOLDS.FRIENDLY) return "NEUTRAL";
-    if (relation < RELATION_THRESHOLDS.ALLIANCE_ELIGIBLE) return "FRIENDLY";
-    if (relation < RELATION_THRESHOLDS.MILITARY_PACT) return "ALLIANCE_ELIGIBLE";
-    return "MILITARY_PACT";
+export function breakAlliance(world: WorldState, actor: CountryState, target: CountryState): void {
+  actor.alliances = actor.alliances.filter((id) => id !== target.id);
+  target.alliances = target.alliances.filter((id) => id !== actor.id);
+  shiftRelation(actor, target.id, -25);
+  shiftRelation(target, actor.id, -35);
+  // Reputation: other allies trust the actor less
+  for (const allyId of actor.alliances) {
+    const ally = world.countries.find((c) => c.id === allyId);
+    if (ally) shiftRelation(ally, actor.id, -8);
   }
+}
 
-  static canDeclareWar(country: CountryState, targetId: string): boolean {
-    if (country.atWarWith.includes(targetId)) return false;
-    if (country.alliances.includes(targetId)) return false;
+export interface WarDeclarationCheck {
+  allowed: boolean;
+  nuclearStandoff: boolean;
+  reason: string;
+}
+
+export function canDeclareWar(actor: CountryState, target: CountryState): WarDeclarationCheck {
+  if (actor.atWarWith.includes(target.id)) {
+    return { allowed: false, nuclearStandoff: false, reason: "Already at war" };
+  }
+  if (isNuclearStandoff(actor, target)) {
+    return {
+      allowed: true, // allowed but suicidal — UI shows "ATTACK MEANS DISASTER"
+      nuclearStandoff: true,
+      reason:
+        "ATTACK MEANS DISASTER: both arsenals are operational. Any strike risks global nuclear holocaust.",
+    };
+  }
+  return { allowed: true, nuclearStandoff: false, reason: "" };
+}
+
+export function proposeCeasefire(
+  world: WorldState,
+  actor: CountryState,
+  target: CountryState,
+  rng: SeededRandom,
+): boolean {
+  const war = world.wars.find(
+    (w) =>
+      (w.attackerId === actor.id && w.defenderId === target.id) ||
+      (w.attackerId === target.id && w.defenderId === actor.id),
+  );
+  if (!war) return false;
+  // Acceptance depends on who is winning and exhaustion
+  const actorIsAttacker = war.attackerId === actor.id;
+  const targetWinning = actorIsAttacker ? war.frontline < 45 : war.frontline > 55;
+  let chance = 0.35 + war.exhaustion / 200;
+  if (targetWinning) chance -= 0.25;
+  chance += target.personality.diplomaticFlexibility / 400;
+  if (rng.next() < chance) {
+    world.wars = world.wars.filter((w) => w.id !== war.id);
+    actor.atWarWith = actor.atWarWith.filter((id) => id !== target.id);
+    target.atWarWith = target.atWarWith.filter((id) => id !== actor.id);
+    actor.relations[target.id] = -50;
+    target.relations[actor.id] = -50;
+    actor.mobilizationLevel = Math.max(20, actor.mobilizationLevel - 25);
+    target.mobilizationLevel = Math.max(20, target.mobilizationLevel - 25);
+    world.globalTension = Math.max(0, world.globalTension - 6);
     return true;
   }
+  return false;
+}
 
-  static canFormAlliance(country: CountryState, targetId: string): boolean {
-    if (country.alliances.includes(targetId)) return false;
-    if (country.atWarWith.includes(targetId)) return false;
-    const relation = DiplomacySystem.getRelation(country, targetId);
-    return relation >= RELATION_THRESHOLDS.ALLIANCE_ELIGIBLE;
-  }
-
-  static declareWar(
-    attacker: CountryState,
-    defender: CountryState,
-  ): { attacker: CountryState; defender: CountryState } {
-    if (!DiplomacySystem.canDeclareWar(attacker, defender.id)) {
-      throw new Error(`${attacker.id} cannot declare war on ${defender.id}`);
-    }
-
-    const newAttacker: CountryState = {
-      ...attacker,
-      atWarWith: [...attacker.atWarWith, defender.id],
-      relations: {
-        ...attacker.relations,
-        [defender.id]: -100,
-      },
-    };
-
-    const newDefender: CountryState = {
-      ...defender,
-      atWarWith: [...defender.atWarWith, attacker.id],
-      relations: {
-        ...defender.relations,
-        [attacker.id]: -100,
-      },
-    };
-
-    return { attacker: newAttacker, defender: newDefender };
-  }
-
-  static formAlliance(
-    country1: CountryState,
-    country2: CountryState,
-  ): { country1: CountryState; country2: CountryState } {
-    if (!DiplomacySystem.canFormAlliance(country1, country2.id)) {
-      throw new Error(`${country1.id} cannot form alliance with ${country2.id}`);
-    }
-
-    const newCountry1: CountryState = {
-      ...country1,
-      alliances: [...country1.alliances, country2.id],
-    };
-
-    const newCountry2: CountryState = {
-      ...country2,
-      alliances: [...country2.alliances, country1.id],
-    };
-
-    return { country1: newCountry1, country2: newCountry2 };
-  }
-
-  static breakAlliance(
-    country1: CountryState,
-    country2: CountryState,
-  ): { country1: CountryState; country2: CountryState } {
-    if (!country1.alliances.includes(country2.id)) {
-      throw new Error(`${country1.id} is not allied with ${country2.id}`);
-    }
-
-    const newCountry1: CountryState = {
-      ...country1,
-      alliances: country1.alliances.filter((a) => a !== country2.id),
-      relations: {
-        ...country1.relations,
-        [country2.id]: Math.max(-100, (country1.relations[country2.id] ?? 0) - 30),
-      },
-    };
-
-    const newCountry2: CountryState = {
-      ...country2,
-      alliances: country2.alliances.filter((a) => a !== country1.id),
-      relations: {
-        ...country2.relations,
-        [country1.id]: Math.max(-100, (country2.relations[country1.id] ?? 0) - 30),
-      },
-    };
-
-    return { country1: newCountry1, country2: newCountry2 };
-  }
-
-  static proposeCeasefire(
-    country1: CountryState,
-    country2: CountryState,
-  ): { country1: CountryState; country2: CountryState } | null {
-    if (!country1.atWarWith.includes(country2.id)) {
-      return null;
-    }
-
-    const newCountry1: CountryState = {
-      ...country1,
-      atWarWith: country1.atWarWith.filter((w) => w !== country2.id),
-      relations: {
-        ...country1.relations,
-        [country2.id]: -20,
-      },
-    };
-
-    const newCountry2: CountryState = {
-      ...country2,
-      atWarWith: country2.atWarWith.filter((w) => w !== country1.id),
-      relations: {
-        ...country2.relations,
-        [country1.id]: -20,
-      },
-    };
-
-    return { country1: newCountry1, country2: newCountry2 };
-  }
-
-  static improveRelations(country: CountryState, targetId: string): CountryState {
-    return DiplomacySystem.modifyRelation(country, targetId, 5);
-  }
-
-  static denounce(country: CountryState, targetId: string): CountryState {
-    return DiplomacySystem.modifyRelation(country, targetId, -10);
-  }
-
-  static generateInitialRelations(countries: CountryState[]): Map<string, Record<string, number>> {
-    const relations = new Map<string, Record<string, number>>();
-
-    const historicalAllies: Record<string, string[]> = {
-      USA: ["GBR", "CAN", "DEU", "FRA", "JPN", "KOR", "AUS", "ISR", "ITA", "POL"],
-      CHN: ["PRK", "RUS", "PAK"],
-      RUS: ["CHN", "IRN", "PRK"],
-      DEU: ["FRA", "GBR", "USA", "POL", "ITA"],
-      IND: ["USA", "JPN", "AUS", "FRA"],
-      GBR: ["USA", "FRA", "DEU", "CAN", "AUS"],
-      FRA: ["DEU", "GBR", "USA", "ITA"],
-      JPN: ["USA", "KOR", "AUS", "IND"],
-      SAU: ["USA", "EGY", "PAK"],
-      IRN: ["RUS", "CHN"],
-      ISR: ["USA"],
-      TUR: ["USA", "GBR"],
-    };
-
-    const historicalRivals: Record<string, string[]> = {
-      USA: ["RUS", "CHN", "IRN", "PRK"],
-      CHN: ["USA", "JPN", "IND"],
-      RUS: ["USA", "GBR", "POL"],
-      IND: ["PAK", "CHN"],
-      PAK: ["IND"],
-      ISR: ["IRN", "SAU"],
-      IRN: ["USA", "ISR", "SAU"],
-      KOR: ["PRK"],
-      PRK: ["USA", "KOR", "JPN"],
-      SAU: ["IRN"],
-    };
-
-    for (const country of countries) {
-      const countryRelations: Record<string, number> = {};
-
-      for (const other of countries) {
-        if (other.id === country.id) continue;
-
-        let baseRelation = 0;
-
-        if (historicalAllies[country.id]?.includes(other.id)) {
-          baseRelation = 50 + Math.floor(Math.random() * 30);
-        } else if (historicalRivals[country.id]?.includes(other.id)) {
-          baseRelation = -50 - Math.floor(Math.random() * 30);
-        } else {
-          baseRelation = Math.floor(Math.random() * 40) - 20;
-        }
-
-        countryRelations[other.id] = Math.max(-100, Math.min(100, baseRelation));
+/**
+ * Monthly diplomatic drift: shared/opposed interests slowly pull relations.
+ */
+export function applyDiplomaticDrift(world: WorldState): void {
+  for (const country of world.countries) {
+    for (const other of world.countries) {
+      if (country.id === other.id) continue;
+      let drift = 0;
+      // Allies drift together
+      if (country.alliances.includes(other.id)) drift += 0.5;
+      // Historical rivals drift apart absent active diplomacy
+      if ((country.history.historicalRivals ?? []).includes(other.id)) drift -= 0.4;
+      // Regime affinity
+      if (country.regimeType === other.regimeType) drift += 0.1;
+      if (
+        (country.regimeType === "DEMOCRACY" &&
+          (other.regimeType === "AUTOCRACY" || other.regimeType === "COMMUNIST")) ||
+        (other.regimeType === "DEMOCRACY" &&
+          (country.regimeType === "AUTOCRACY" || country.regimeType === "COMMUNIST"))
+      ) {
+        drift -= 0.15;
       }
-
-      relations.set(country.id, countryRelations);
+      if (drift !== 0) shiftRelation(country, other.id, drift);
     }
-
-    return relations;
-  }
-
-  static applyRelationsToWorld(
-    world: WorldState,
-    relations: Map<string, Record<string, number>>,
-  ): WorldState {
-    const newCountries = world.countries.map((country) => ({
-      ...country,
-      relations: relations.get(country.id) ?? country.relations,
-    }));
-
-    return {
-      ...world,
-      countries: newCountries,
-    };
   }
 }

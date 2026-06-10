@@ -3,20 +3,79 @@
   "iso3": "IND",
   "name": "India",
   "population": 1428000000,
-  "gdp": 3940000000000,
-  "gdpGrowth": 0.065,
-  "militaryBudgetPct": 2.4,
-  "manpower": 1455000,
-  "airpower": 2182,
   "regimeType": "DEMOCRACY",
-  "riskTolerance": 40,
+  "politicalSystem": {
+    "type": "PARLIAMENTARY_DEMOCRACY",
+    "powerCenters": ["EXECUTIVE", "LEGISLATURE", "JUDICIARY"],
+    "electionCycleMonths": 60,
+    "nextElectionTurn": null,
+    "leaderTitle": "Prime Minister"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1947, "event": "Independence and Partition", "impact": "Birth trauma of communal violence; permanent rivalry with Pakistan over Kashmir" },
+      { "year": 1962, "event": "Defeat in border war with China", "impact": "Lasting distrust of Beijing and focus on Himalayan border defense" },
+      { "year": 1971, "event": "Victory over Pakistan and creation of Bangladesh", "impact": "Confirmed regional military dominance in South Asia" },
+      { "year": 1974, "event": "First nuclear test (Smiling Buddha)", "impact": "Pursuit of strategic autonomy outside the non-proliferation order" },
+      { "year": 1991, "event": "Economic liberalization", "impact": "Shift from socialist autarky to rapid market-driven growth and global integration" },
+      { "year": 1998, "event": "Pokhran-II tests and overt nuclearization", "impact": "Open nuclear deterrent against both Pakistan and China" },
+      { "year": 2020, "event": "Galwan Valley clash with China", "impact": "Hardened anti-China posture; deepened Quad cooperation with US, Japan, Australia" }
+    ],
+    "historicalRivals": ["PAK", "CHN"],
+    "historicalAllies": ["RUS", "USA", "FRA", "JPN", "AUS"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "NON_ALIGNED",
+    "narrative": "A civilizational state determined to rise on its own terms, guarding strategic autonomy by balancing among all great powers rather than joining blocs. Restrained but unyielding on Kashmir and the Chinese border, it converts demographic weight and rapid growth into great power claims."
+  },
+  "personality": {
+    "warPropensity": 40,
+    "allianceLoyalty": 50,
+    "diplomaticFlexibility": 80,
+    "riskTolerance": 45,
+    "expansionism": 30,
+    "isolationism": 35,
+    "ideologicalRigidity": 40,
+    "prestigeEmphasis": 80
+  },
+  "redLines": [
+    { "type": "TERRITORIAL", "targetCountryId": "PAK", "description": "Major Pakistan-sponsored terrorist attack on Indian soil", "severity": 9 },
+    { "type": "TERRITORIAL", "targetCountryId": "CHN", "description": "Chinese attempts to alter the Line of Actual Control by force", "severity": 9 },
+    { "type": "NUCLEAR", "description": "Nuclear first use or nuclear blackmail against India", "severity": 10 },
+    { "type": "ECONOMIC", "description": "Blockade of Indian Ocean sea lanes vital to energy imports", "severity": 7 }
+  ],
+  "internalDivisions": [
+    { "kind": "RELIGIOUS", "name": "Hindu-Muslim communal tensions", "strength": 55, "tension": 60 },
+    { "kind": "REGIONAL", "name": "Kashmir insurgency and Northeast separatism", "strength": 20, "tension": 60 },
+    { "kind": "IDEOLOGICAL", "name": "Hindu nationalism vs secular constitutionalism", "strength": 60, "tension": 50 }
+  ],
+  "economy": {
+    "gdp": 3940000000000,
+    "growthRate": 0.065,
+    "debtGdpRatio": 83,
+    "sectors": { "agriculture": 16, "industry": 25, "services": 59 },
+    "keyResources": ["coal", "iron_ore", "agriculture", "it_workforce", "pharmaceuticals"],
+    "keyExports": ["it_services", "pharmaceuticals", "petroleum_products", "gems_jewelry", "textiles"],
+    "developmentLevel": "EMERGING"
+  },
+  "military": {
+    "manpower": 1455000,
+    "airpower": 2182,
+    "doctrine": "DEFENSIVE",
+    "nuclearStatus": "ARMED",
+    "warheads": 172,
+    "arms_suppliers": ["RUS", "FRA", "USA"]
+  },
+  "militaryBudgetPct": 2.4,
   "stability": 70,
   "legitimacy": 72,
   "intelLevel": 75,
+  "insurgencyLevel": "UNREST",
   "goals": [
-    { "id": "ind_g1", "type": "SECURITY", "targetCountryId": "PAK", "priority": 85, "description": "Counter Pakistan threat" },
-    { "id": "ind_g2", "type": "PRESTIGE", "priority": 80, "description": "Achieve great power recognition" },
-    { "id": "ind_g3", "type": "ECONOMIC", "priority": 90, "description": "Sustain rapid economic growth" }
+    { "id": "ind_g1", "type": "ECONOMIC", "priority": 90, "description": "Sustain rapid growth and become the world's third-largest economy" },
+    { "id": "ind_g2", "type": "SECURITY", "targetCountryId": "PAK", "priority": 85, "description": "Deter Pakistan and eliminate cross-border terrorism" },
+    { "id": "ind_g3", "type": "SECURITY", "targetCountryId": "CHN", "priority": 80, "description": "Counter Chinese encirclement on the Himalayan border and in the Indian Ocean" },
+    { "id": "ind_g4", "type": "PRESTIGE", "priority": 75, "description": "Win recognition as a great power, including a permanent UN Security Council seat" },
+    { "id": "ind_g5", "type": "ECONOMIC", "priority": 60, "description": "Build domestic defense and manufacturing capacity to cut import dependence" }
   ],
   "geo": {
     "bounds": [68.2, 6.8, 97.4, 35.5],

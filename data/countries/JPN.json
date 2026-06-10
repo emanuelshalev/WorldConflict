@@ -3,19 +3,78 @@
   "iso3": "JPN",
   "name": "Japan",
   "population": 124000000,
-  "gdp": 4230000000000,
-  "gdpGrowth": 0.018,
-  "militaryBudgetPct": 2.0,
-  "manpower": 247000,
-  "airpower": 1480,
   "regimeType": "DEMOCRACY",
-  "riskTolerance": 25,
+  "politicalSystem": {
+    "type": "PARLIAMENTARY_DEMOCRACY",
+    "powerCenters": ["EXECUTIVE", "LEGISLATURE", "JUDICIARY"],
+    "electionCycleMonths": 48,
+    "nextElectionTurn": null,
+    "leaderTitle": "Prime Minister"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1945, "event": "Defeat in World War II and atomic bombings", "impact": "Constitutional pacifism (Article 9) and unique nuclear allergy as the only nation attacked with atomic weapons" },
+      { "year": 1951, "event": "US-Japan Security Treaty", "impact": "Security outsourced to the American alliance; focus shifted entirely to economic recovery" },
+      { "year": 1968, "event": "Becomes world's second-largest economy", "impact": "Economic miracle validated the Yoshida Doctrine of trade over arms" },
+      { "year": 1991, "event": "Asset bubble collapse and Lost Decades", "impact": "Prolonged stagnation, deflation, and demographic decline constrain ambition" },
+      { "year": 2011, "event": "Fukushima triple disaster", "impact": "Energy insecurity deepened; reliance on imported fuel and sea lanes underscored" },
+      { "year": 2015, "event": "Reinterpretation allowing collective self-defense", "impact": "Gradual normalization of the military role within the US alliance" },
+      { "year": 2022, "event": "New National Security Strategy doubles defense spending", "impact": "Counterstrike capability and 2% GDP defense budget in response to China and North Korea" }
+    ],
+    "historicalRivals": ["CHN", "RUS", "PRK"],
+    "historicalAllies": ["USA", "AUS", "GBR", "IND", "KOR"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "DEFENSIVE",
+    "narrative": "A pacifist trading state slowly shedding postwar restraints as China's rise and North Korean missiles erode its sense of safety. Acts almost exclusively through the US alliance and economic statecraft, with deep reluctance toward any use of force but a first-class latent military-industrial base."
+  },
+  "personality": {
+    "warPropensity": 15,
+    "allianceLoyalty": 90,
+    "diplomaticFlexibility": 60,
+    "riskTolerance": 25,
+    "expansionism": 10,
+    "isolationism": 35,
+    "ideologicalRigidity": 40,
+    "prestigeEmphasis": 60
+  },
+  "redLines": [
+    { "type": "TERRITORIAL", "targetCountryId": "CHN", "description": "Chinese seizure of the Senkaku Islands or attack on Japanese territory", "severity": 10 },
+    { "type": "NUCLEAR", "targetCountryId": "PRK", "description": "North Korean missile strike or nuclear threat against Japan", "severity": 10 },
+    { "type": "ALLIANCE", "targetCountryId": "USA", "description": "Collapse of the US security guarantee in the Pacific", "severity": 9 },
+    { "type": "ECONOMIC", "description": "Closure of sea lanes carrying energy and food imports", "severity": 8 }
+  ],
+  "internalDivisions": [
+    { "kind": "IDEOLOGICAL", "name": "Pacifists vs constitutional revisionists over Article 9", "strength": 50, "tension": 40 },
+    { "kind": "REGIONAL", "name": "Okinawan opposition to US base burden", "strength": 15, "tension": 45 }
+  ],
+  "economy": {
+    "gdp": 4230000000000,
+    "growthRate": 0.018,
+    "debtGdpRatio": 255,
+    "sectors": { "agriculture": 1, "industry": 29, "services": 70 },
+    "keyResources": ["industrial_base", "robotics", "shipbuilding", "fisheries"],
+    "keyExports": ["vehicles", "machinery", "electronics", "semiconductor_equipment", "steel"],
+    "developmentLevel": "DEVELOPED"
+  },
+  "military": {
+    "manpower": 247000,
+    "airpower": 1480,
+    "doctrine": "DEFENSIVE",
+    "nuclearStatus": "LATENT",
+    "warheads": 0,
+    "arms_suppliers": ["USA"]
+  },
+  "militaryBudgetPct": 2.0,
   "stability": 88,
   "legitimacy": 85,
   "intelLevel": 80,
+  "insurgencyLevel": "NONE",
   "goals": [
-    { "id": "jpn_g1", "type": "SECURITY", "targetCountryId": "CHN", "priority": 85, "description": "Counter Chinese expansion in East Asia" },
-    { "id": "jpn_g2", "type": "SECURITY", "targetCountryId": "PRK", "priority": 80, "description": "Deter North Korean threats" }
+    { "id": "jpn_g1", "type": "SECURITY", "targetCountryId": "CHN", "priority": 85, "description": "Deter Chinese expansion in the East China Sea and a Taiwan contingency" },
+    { "id": "jpn_g2", "type": "SECURITY", "targetCountryId": "PRK", "priority": 80, "description": "Defend against North Korean missile and nuclear threats" },
+    { "id": "jpn_g3", "type": "SECURITY", "targetCountryId": "USA", "priority": 85, "description": "Keep the US committed to Indo-Pacific security" },
+    { "id": "jpn_g4", "type": "ECONOMIC", "priority": 70, "description": "Secure energy supplies and semiconductor supply chains" },
+    { "id": "jpn_g5", "type": "PRESTIGE", "priority": 55, "description": "Shape regional order through the Quad and economic diplomacy" }
   ],
   "geo": {
     "bounds": [122.9, 24.2, 153.9, 45.5],

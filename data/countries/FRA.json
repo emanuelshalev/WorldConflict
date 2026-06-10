@@ -3,19 +3,77 @@
   "iso3": "FRA",
   "name": "France",
   "population": 68000000,
-  "gdp": 3030000000000,
-  "gdpGrowth": 0.017,
-  "militaryBudgetPct": 2.1,
-  "manpower": 205000,
-  "airpower": 1055,
   "regimeType": "DEMOCRACY",
-  "riskTolerance": 45,
+  "politicalSystem": {
+    "type": "SEMI_PRESIDENTIAL",
+    "powerCenters": ["EXECUTIVE", "LEGISLATURE", "JUDICIARY"],
+    "electionCycleMonths": 60,
+    "nextElectionTurn": null,
+    "leaderTitle": "President"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1940, "event": "Fall of France", "impact": "National humiliation; enduring determination never to depend on others for survival" },
+      { "year": 1958, "event": "Founding of the Fifth Republic", "impact": "De Gaulle's strong presidency; executive dominance in foreign and defense policy" },
+      { "year": 1960, "event": "First nuclear test in the Sahara", "impact": "Independent force de frappe; deterrence answering to Paris alone" },
+      { "year": 1962, "event": "Algerian independence after eight years of war", "impact": "End of empire; pivot to influence networks in Africa rather than direct rule" },
+      { "year": 1966, "event": "Withdrawal from NATO integrated military command", "impact": "Gaullist strategic autonomy; ally of the West but never a subordinate" },
+      { "year": 1992, "event": "Maastricht Treaty", "impact": "Bet on European integration as a multiplier of French power" },
+      { "year": 2015, "event": "Paris terror attacks", "impact": "Intensified counterterrorism interventions in the Sahel and Middle East" }
+    ],
+    "historicalRivals": ["DEU", "GBR", "RUS"],
+    "historicalAllies": ["USA", "GBR", "DEU", "ITA", "POL", "CAN"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "INTERVENTIONIST",
+    "narrative": "A former great power that compensates for relative decline with nuclear independence, a permanent Security Council seat, and an activist military posture from the Sahel to the Mediterranean. Pursues 'strategic autonomy' for itself and Europe: allied with Washington but allergic to subordination, and convinced that France must speak with its own voice in every crisis."
+  },
+  "personality": {
+    "warPropensity": 50,
+    "allianceLoyalty": 60,
+    "diplomaticFlexibility": 65,
+    "riskTolerance": 50,
+    "expansionism": 30,
+    "isolationism": 20,
+    "ideologicalRigidity": 55,
+    "prestigeEmphasis": 85
+  },
+  "redLines": [
+    { "type": "ALLIANCE", "description": "Armed attack on an EU or NATO member state", "severity": 10 },
+    { "type": "TERRITORIAL", "description": "Threat to French overseas territories or citizens abroad", "severity": 8 },
+    { "type": "NUCLEAR", "description": "Any attempt to constrain or neutralize the independent French deterrent", "severity": 8 },
+    { "type": "ECONOMIC", "description": "Hostile power dominating the Mediterranean or French interests in Africa", "severity": 6 }
+  ],
+  "internalDivisions": [
+    { "kind": "IDEOLOGICAL", "name": "Nationalist-populist surge vs centrist establishment", "strength": 65, "tension": 60 },
+    { "kind": "RELIGIOUS", "name": "Laicite and integration tensions in the banlieues", "strength": 35, "tension": 50 }
+  ],
+  "economy": {
+    "gdp": 3050000000000,
+    "growthRate": 0.011,
+    "debtGdpRatio": 111,
+    "sectors": { "agriculture": 2, "industry": 17, "services": 81 },
+    "keyResources": ["agriculture", "nuclear_energy", "aerospace", "tourism"],
+    "keyExports": ["aircraft", "luxury_goods", "pharmaceuticals", "weapons", "wine"],
+    "developmentLevel": "DEVELOPED"
+  },
+  "military": {
+    "manpower": 205000,
+    "airpower": 1055,
+    "doctrine": "EXPEDITIONARY",
+    "nuclearStatus": "ARMED",
+    "warheads": 290,
+    "arms_suppliers": ["FRA"]
+  },
+  "militaryBudgetPct": 2.1,
   "stability": 72,
   "legitimacy": 70,
-  "intelLevel": 82,
+  "intelLevel": 85,
+  "insurgencyLevel": "NONE",
   "goals": [
-    { "id": "fra_g1", "type": "PRESTIGE", "priority": 85, "description": "Maintain independent foreign policy and nuclear deterrent" },
-    { "id": "fra_g2", "type": "SECURITY", "priority": 75, "description": "Lead European strategic autonomy" }
+    { "id": "fra_g1", "type": "PRESTIGE", "priority": 85, "description": "Maintain independent foreign policy and a credible sovereign nuclear deterrent" },
+    { "id": "fra_g2", "type": "SECURITY", "priority": 75, "description": "Lead European strategic autonomy and a stronger EU defense pillar" },
+    { "id": "fra_g3", "type": "SECURITY", "priority": 65, "description": "Preserve influence and counterterrorism reach in Africa and the Mediterranean" },
+    { "id": "fra_g4", "type": "ECONOMIC", "priority": 60, "description": "Expand defense and aerospace exports to sustain the industrial base" }
   ],
   "geo": {
     "bounds": [-5.1, 41.3, 9.6, 51.1],

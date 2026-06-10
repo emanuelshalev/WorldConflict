@@ -108,7 +108,7 @@ export function generateAdvisorUserPrompt(context: AdvisorPromptContext): string
       for (const war of activeWars) {
         const isAttacker = war.attackerId === playerCountry.id;
         const enemy = isAttacker ? war.defenderId : war.attackerId;
-        prompt += `- War with ${enemy}: ${isAttacker ? war.attackerProgress : war.defenderProgress}% progress\n`;
+        prompt += `- War with ${enemy}: ${isAttacker ? war.frontline : 100 - war.frontline}% progress\n`;
       }
       prompt += "\n";
     }

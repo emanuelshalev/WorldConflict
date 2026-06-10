@@ -1,224 +1,140 @@
-import {
-  type Action,
-  type ActiveWar,
-  type GameEvent,
-  type NewspaperEntry,
-  NewspaperEntrySchema,
-  type WorldState,
-} from "./types.js";
+import type { SeededRandom } from "./seed.js";
+import type { GovernmentChange } from "./systems/government.js";
+import type { WarMonthSummary } from "./systems/military.js";
+import type { GameEvent, NewspaperEntry, WorldState } from "./types.js";
 
-export interface NewspaperContext {
-  turn: number;
-  events: GameEvent[];
-  wars: ActiveWar[];
-  actions: Map<string, Action[]>;
-  previousState: WorldState;
-  currentState: WorldState;
-}
+/**
+ * Turns the month's happenings into front-page copy. The newspaper is the
+ * player's primary window on the world — written with drama, names, and
+ * consequence, like the original game's News Phase.
+ */
 
-export class NewspaperGenerator {
-  static generate(context: NewspaperContext): NewspaperEntry[] {
-    const entries: NewspaperEntry[] = [];
+const WAR_VERBS_ADVANCE = [
+  "smashes through defenses",
+  "makes sweeping gains",
+  "advances on all fronts",
+  "breaks the stalemate",
+];
+const WAR_VERBS_STALL = [
+  "grinds to a halt",
+  "bogs down in attrition",
+  "trades trenches at terrible cost",
+  "bleeds for every mile",
+];
 
-    entries.push(...NewspaperGenerator.generateEventHeadlines(context));
+export function generateNewspaper(
+  world: WorldState,
+  events: GameEvent[],
+  warSummaries: WarMonthSummary[],
+  governmentChanges: GovernmentChange[],
+  rng: SeededRandom,
+): NewspaperEntry[] {
+  const entries: NewspaperEntry[] = [];
+  const turn = world.turn;
 
-    entries.push(...NewspaperGenerator.generateWarHeadlines(context));
-
-    entries.push(...NewspaperGenerator.generateDiplomacyHeadlines(context));
-
-    entries.push(...NewspaperGenerator.generateEconomyHeadlines(context));
-
-    entries.push(...NewspaperGenerator.generateStabilityHeadlines(context));
-
-    return entries.map((entry) => NewspaperEntrySchema.parse(entry));
+  // Government changes are always front-page
+  for (const change of governmentChanges) {
+    const country = world.countries.find((c) => c.id === change.countryId);
+    entries.push({
+      headline:
+        change.kind === "COUP"
+          ? `COUP D'ÉTAT IN ${country?.name.toUpperCase() ?? change.countryId}`
+          : change.kind === "REVOLUTION"
+            ? `REVOLUTION TOPPLES ${(country?.name ?? change.countryId).toUpperCase()} GOVERNMENT`
+            : change.kind === "ASSASSINATION"
+              ? `LEADER OF ${(country?.name ?? change.countryId).toUpperCase()} ASSASSINATED`
+              : `${(country?.name ?? change.countryId).toUpperCase()} VOTES FOR CHANGE`,
+      description: change.description,
+      relatedCountries: [change.countryId],
+      turn,
+      category: "GOVERNMENT",
+    });
   }
 
-  private static generateEventHeadlines(context: NewspaperContext): NewspaperEntry[] {
-    return context.events.map((event) => ({
+  // Wars: dramatic frontline reporting
+  for (const summary of warSummaries) {
+    const attacker = world.countries.find((c) => c.id === summary.war.attackerId);
+    const defender = world.countries.find((c) => c.id === summary.war.defenderId);
+    if (!attacker || !defender) continue;
+
+    if (summary.ended) {
+      entries.push({
+        headline: summary.ended.winnerId
+          ? `${(summary.ended.winnerId === attacker.id ? attacker : defender).name.toUpperCase()} VICTORIOUS`
+          : `GUNS FALL SILENT: CEASEFIRE IN ${attacker.name.toUpperCase()}-${defender.name.toUpperCase()} WAR`,
+        description: summary.ended.description,
+        relatedCountries: [attacker.id, defender.id],
+        turn,
+        category: "WAR",
+      });
+      continue;
+    }
+
+    const attackerAdvancing = summary.delta > 1.5;
+    const stalemate = Math.abs(summary.delta) <= 1.5;
+    const monthCasualties = summary.attackerCasualties + summary.defenderCasualties;
+    const verb = stalemate ? rng.pick(WAR_VERBS_STALL) : rng.pick(WAR_VERBS_ADVANCE);
+    const leader = attackerAdvancing ? attacker : defender;
+    entries.push({
+      headline: stalemate
+        ? `WAR OF ATTRITION: ${attacker.name} offensive ${verb}`
+        : `${leader.name.toUpperCase()} ${verb.toUpperCase()}`,
+      description: `Fighting between ${attacker.name} and ${defender.name} claimed an estimated ${monthCasualties.toLocaleString()} casualties this month. ${
+        stalemate
+          ? "Military analysts see no end in sight."
+          : `${leader.name}'s forces hold the initiative; pressure mounts on ${leader.id === attacker.id ? defender.name : attacker.name} to seek terms.`
+      }`,
+      relatedCountries: [attacker.id, defender.id],
+      turn,
+      category: "WAR",
+    });
+  }
+
+  // Events become stories
+  for (const event of events) {
+    entries.push({
       headline: event.title,
       description: event.description,
       relatedCountries: event.affectedCountries,
-      impact: event.effects ? NewspaperGenerator.formatEffects(event.effects) : undefined,
-      turn: context.turn,
-    }));
+      turn,
+      category:
+        event.type === "NUCLEAR"
+          ? "NUCLEAR"
+          : event.type === "COVERT"
+            ? "COVERT"
+            : event.type === "ECONOMY"
+              ? "ECONOMY"
+              : event.type === "GOVERNMENT"
+                ? "GOVERNMENT"
+                : event.type === "WAR"
+                  ? "WAR"
+                  : event.type === "DIPLOMACY" || event.type === "SUMMIT"
+                    ? "DIPLOMACY"
+                    : "WORLD",
+    });
   }
 
-  private static generateWarHeadlines(context: NewspaperContext): NewspaperEntry[] {
-    const entries: NewspaperEntry[] = [];
-
-    for (const war of context.wars) {
-      if (war.startTurn === context.turn) {
-        entries.push({
-          headline: `WAR: ${NewspaperGenerator.getCountryName(war.attackerId)} Declares War on ${NewspaperGenerator.getCountryName(war.defenderId)}`,
-          description: `In a dramatic escalation of tensions, ${NewspaperGenerator.getCountryName(war.attackerId)} has officially declared war on ${NewspaperGenerator.getCountryName(war.defenderId)}. The international community watches with concern as military forces mobilize.`,
-          relatedCountries: [war.attackerId, war.defenderId],
-          impact: "GLOBAL_TENSION +15",
-          turn: context.turn,
-        });
-      } else {
-        const progressChange = NewspaperGenerator.getWarProgressChange(war, context);
-        if (Math.abs(progressChange) > 5) {
-          const advancing = progressChange > 0 ? war.attackerId : war.defenderId;
-          entries.push({
-            headline: `${NewspaperGenerator.getCountryName(advancing)} Forces Advance in ${NewspaperGenerator.getCountryName(war.attackerId)}-${NewspaperGenerator.getCountryName(war.defenderId)} Conflict`,
-            description: `Military analysts report significant territorial changes as ${NewspaperGenerator.getCountryName(advancing)} forces make gains on the battlefield.`,
-            relatedCountries: [war.attackerId, war.defenderId],
-            turn: context.turn,
-          });
-        }
-      }
-    }
-
-    const _previousWarIds = new Set(context.previousState.wars.map((w) => w.id));
-    const currentWarIds = new Set(context.currentState.wars.map((w) => w.id));
-
-    for (const prevWar of context.previousState.wars) {
-      if (!currentWarIds.has(prevWar.id)) {
-        entries.push({
-          headline: `PEACE: ${NewspaperGenerator.getCountryName(prevWar.attackerId)} and ${NewspaperGenerator.getCountryName(prevWar.defenderId)} End Hostilities`,
-          description: `After months of conflict, a ceasefire has been declared between ${NewspaperGenerator.getCountryName(prevWar.attackerId)} and ${NewspaperGenerator.getCountryName(prevWar.defenderId)}. Diplomatic efforts have finally borne fruit.`,
-          relatedCountries: [prevWar.attackerId, prevWar.defenderId],
-          impact: "GLOBAL_TENSION -10",
-          turn: context.turn,
-        });
-      }
-    }
-
-    return entries;
+  // World mood piece when quiet
+  if (entries.length < 3) {
+    const tension = world.globalTension;
+    entries.push({
+      headline:
+        tension > 70
+          ? "EDITORIAL: A world holding its breath"
+          : tension > 40
+            ? "EDITORIAL: Uneasy calm in world affairs"
+            : "EDITORIAL: A rare quiet month for diplomacy",
+      description:
+        tension > 70
+          ? "Foreign ministries from Washington to Beijing report crisis staffing. Markets twitch at every communiqué. Historians note that months like these often precede the storm."
+          : tension > 40
+            ? "No new wars, no fallen governments — yet diplomats privately admit the great questions of our era remain unresolved."
+            : "Trade flows, summits conclude amicably, and for one month at least, the world's leaders found more reasons to talk than to fight.",
+      relatedCountries: [],
+      turn,
+      category: "WORLD",
+    });
   }
 
-  private static generateDiplomacyHeadlines(context: NewspaperContext): NewspaperEntry[] {
-    const entries: NewspaperEntry[] = [];
-
-    for (const current of context.currentState.countries) {
-      const previous = context.previousState.countries.find((c) => c.id === current.id);
-      if (!previous) continue;
-
-      const newAlliances = current.alliances.filter((a) => !previous.alliances.includes(a));
-      for (const allyId of newAlliances) {
-        if (current.id < allyId) {
-          entries.push({
-            headline: `ALLIANCE: ${NewspaperGenerator.getCountryName(current.id)} and ${NewspaperGenerator.getCountryName(allyId)} Form Military Pact`,
-            description: `In a significant diplomatic development, ${NewspaperGenerator.getCountryName(current.id)} and ${NewspaperGenerator.getCountryName(allyId)} have announced a formal military alliance, pledging mutual defense.`,
-            relatedCountries: [current.id, allyId],
-            turn: context.turn,
-          });
-        }
-      }
-
-      const brokenAlliances = previous.alliances.filter((a) => !current.alliances.includes(a));
-      for (const formerAllyId of brokenAlliances) {
-        if (current.id < formerAllyId && !current.atWarWith.includes(formerAllyId)) {
-          entries.push({
-            headline: `DIPLOMACY: ${NewspaperGenerator.getCountryName(current.id)} Ends Alliance with ${NewspaperGenerator.getCountryName(formerAllyId)}`,
-            description: `The alliance between ${NewspaperGenerator.getCountryName(current.id)} and ${NewspaperGenerator.getCountryName(formerAllyId)} has been dissolved, marking a shift in regional power dynamics.`,
-            relatedCountries: [current.id, formerAllyId],
-            turn: context.turn,
-          });
-        }
-      }
-    }
-
-    return entries;
-  }
-
-  private static generateEconomyHeadlines(context: NewspaperContext): NewspaperEntry[] {
-    const entries: NewspaperEntry[] = [];
-
-    for (const current of context.currentState.countries) {
-      const previous = context.previousState.countries.find((c) => c.id === current.id);
-      if (!previous) continue;
-
-      const gdpChange = (current.gdp - previous.gdp) / previous.gdp;
-
-      if (gdpChange > 0.05) {
-        entries.push({
-          headline: `ECONOMY: ${NewspaperGenerator.getCountryName(current.id)} Experiences Economic Boom`,
-          description: `${NewspaperGenerator.getCountryName(current.id)}'s economy shows remarkable growth this month, with GDP increasing by ${(gdpChange * 100).toFixed(1)}%.`,
-          relatedCountries: [current.id],
-          turn: context.turn,
-        });
-      } else if (gdpChange < -0.05) {
-        entries.push({
-          headline: `ECONOMY: ${NewspaperGenerator.getCountryName(current.id)} Faces Economic Downturn`,
-          description: `${NewspaperGenerator.getCountryName(current.id)} reports significant economic contraction, with GDP falling by ${(Math.abs(gdpChange) * 100).toFixed(1)}%.`,
-          relatedCountries: [current.id],
-          turn: context.turn,
-        });
-      }
-    }
-
-    return entries;
-  }
-
-  private static generateStabilityHeadlines(context: NewspaperContext): NewspaperEntry[] {
-    const entries: NewspaperEntry[] = [];
-
-    for (const current of context.currentState.countries) {
-      const previous = context.previousState.countries.find((c) => c.id === current.id);
-      if (!previous) continue;
-
-      if (current.stability <= 0 && previous.stability > 0) {
-        entries.push({
-          headline: `CRISIS: Government Collapse in ${NewspaperGenerator.getCountryName(current.id)}`,
-          description: `The government of ${NewspaperGenerator.getCountryName(current.id)} has collapsed amid widespread instability. The international community calls for calm as the nation faces an uncertain future.`,
-          relatedCountries: [current.id],
-          impact: "GOVERNMENT_COLLAPSE",
-          turn: context.turn,
-        });
-      } else if (current.stability < 20 && previous.stability >= 20) {
-        entries.push({
-          headline: `UNREST: ${NewspaperGenerator.getCountryName(current.id)} Faces Growing Instability`,
-          description: `Reports of civil unrest and political turmoil emerge from ${NewspaperGenerator.getCountryName(current.id)} as stability reaches critical levels.`,
-          relatedCountries: [current.id],
-          turn: context.turn,
-        });
-      }
-    }
-
-    return entries;
-  }
-
-  private static getCountryName(iso3: string): string {
-    const names: Record<string, string> = {
-      USA: "United States",
-      CHN: "China",
-      RUS: "Russia",
-      DEU: "Germany",
-      IND: "India",
-      BRA: "Brazil",
-      CAN: "Canada",
-      MEX: "Mexico",
-      FRA: "France",
-      GBR: "United Kingdom",
-      POL: "Poland",
-      TUR: "Turkey",
-      SAU: "Saudi Arabia",
-      IRN: "Iran",
-      ISR: "Israel",
-      EGY: "Egypt",
-      JPN: "Japan",
-      IDN: "Indonesia",
-      KOR: "South Korea",
-      PRK: "North Korea",
-      AUS: "Australia",
-      PAK: "Pakistan",
-      NGA: "Nigeria",
-      ZAF: "South Africa",
-      ITA: "Italy",
-    };
-    return names[iso3] ?? iso3;
-  }
-
-  private static formatEffects(effects: Record<string, number>): string {
-    return Object.entries(effects)
-      .map(([key, value]) => `${key.toUpperCase()} ${value >= 0 ? "+" : ""}${value}`)
-      .join(", ");
-  }
-
-  private static getWarProgressChange(war: ActiveWar, context: NewspaperContext): number {
-    const previousWar = context.previousState.wars.find((w) => w.id === war.id);
-    if (!previousWar) return 0;
-    return war.attackerProgress - previousWar.attackerProgress;
-  }
+  return entries;
 }

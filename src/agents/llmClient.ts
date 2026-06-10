@@ -221,10 +221,10 @@ export class GeminiClient implements LLMClient {
   async chat(messages: LLMMessage[]): Promise<LLMResponse> {
     // Convert messages to Gemini format
     // Gemini uses "user" and "model" roles, and system prompt goes in systemInstruction
-    const systemMessage = messages.find(m => m.role === "system");
-    const chatMessages = messages.filter(m => m.role !== "system");
+    const systemMessage = messages.find((m) => m.role === "system");
+    const chatMessages = messages.filter((m) => m.role !== "system");
 
-    const contents = chatMessages.map(m => ({
+    const contents = chatMessages.map((m) => ({
       role: m.role === "assistant" ? "model" : "user",
       parts: [{ text: m.content }],
     }));
@@ -351,13 +351,13 @@ function zodToJsonSchema(_schema: z.ZodType): object {
 
 /**
  * Create an LLM client for the specified provider.
- * 
+ *
  * Supported providers:
  * - "openai": OpenAI API (requires OPENAI_API_KEY env var)
  * - "gemini": Google Gemini API (requires GEMINI_API_KEY env var)
  * - "ollama": Local Ollama server (no API key needed)
  * - "mock": Mock client for testing
- * 
+ *
  * Example usage:
  *   // Gemini
  *   const client = createLLMClient('gemini');

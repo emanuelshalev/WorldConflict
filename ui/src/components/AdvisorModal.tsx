@@ -113,7 +113,7 @@ function generateContextualResponse(advisorId: string, userQuestion: string, wor
       if (isAboutStability) {
         return `Domestic assessment: Stability ${playerCountry.stability}%, legitimacy ${playerCountry.legitimacy}%. ${playerCountry.stability < 40 ? 'CRITICAL: Civil unrest likely. Recommend immediate reforms or security measures.' : playerCountry.stability < 60 ? 'Some discontent exists. Monitor closely.' : 'The people are content.'} What domestic policy do you wish to pursue?`;
       }
-      return `You ask: "${questionSnippet}" - The domestic situation: ${playerCountry.stability}% stability, ${playerCountry.legitimacy}% public approval. ${playerCountry.stability < 50 ? 'Attention needed - the people grow restless.' : 'Internal affairs are stable.'} What domestic matter concerns you?`;
+      return `You ask: "${questionSnippet}" - The domestic situation: ${playerCountry.stability}% stability, ${playerCountry.approval}% public approval, ${playerCountry.legitimacy}% legitimacy. ${playerCountry.stability < 50 ? 'Attention needed - the people grow restless.' : 'Internal affairs are stable.'} What domestic matter concerns you?`;
     }
     
     default: {
@@ -140,9 +140,13 @@ function generateLocalBriefing(advisorId: string, worldState: any): AdvisorRespo
   switch (advisorId) {
     case 'FOREIGN_MINISTER': {
       const allies = playerCountry.alliances || [];
-      const hostileCountries = Object.entries(playerCountry.relations || {})
+      const hostileCountryObjs = Object.entries(playerCountry.relations || {})
         .filter(([_, rel]) => (rel as number) < -50)
-        .map(([id]) => countries.find((c: any) => c.id === id)?.name || id);
+        .map(([id]) => countries.find((c: any) => c.id === id))
+        .filter(Boolean);
+      const hostileCountries = hostileCountryObjs.map((c: any) =>
+        c.leader?.name ? `${c.name} (under ${c.leader.title} ${c.leader.name})` : c.name,
+      );
       const friendlyCountries = Object.entries(playerCountry.relations || {})
         .filter(([id, rel]) => (rel as number) >= 40 && (rel as number) < 60 && !allies.includes(id))
         .map(([id]) => ({ id, name: countries.find((c: any) => c.id === id)?.name || id, rel: playerCountry.relations[id] }));
@@ -214,8 +218,9 @@ function generateLocalBriefing(advisorId: string, worldState: any): AdvisorRespo
             (w.defenderId === playerCountry.id && w.attackerId === enemyId)
           );
           if (war) {
+            // frontline is 0-100; >50 means the attacker is advancing
             const isAttacker = war.attackerId === playerCountry.id;
-            const progress = isAttacker ? war.attackerProgress : war.defenderProgress;
+            const progress = isAttacker ? war.frontline : 100 - war.frontline;
             if (progress < 40) {
               recommendations.push({
                 action: { type: 'DIPLOMACY_PROPOSE_CEASEFIRE', targetCountryId: enemyId },
@@ -242,6 +247,26 @@ function generateLocalBriefing(advisorId: string, worldState: any): AdvisorRespo
       );
       if (threats.length > 0) {
         warnings.push(`Potential military threats identified: ${threats.map((t: any) => t.name).join(', ')}. These nations have very hostile relations with us.`);
+      }
+
+      const nuclearHostiles = countries.filter(
+        (c: any) =>
+          c.id !== playerCountry.id &&
+          (playerCountry.relations?.[c.id] || 0) < -30 &&
+          ['ARMED', 'TESTED', 'DEVELOPING'].includes(c.nuclear?.status),
+      );
+      if (nuclearHostiles.length > 0) {
+        warnings.push(
+          `Nuclear threat assessment: ${nuclearHostiles
+            .map((c: any) =>
+              c.nuclear.status === 'ARMED'
+                ? `${c.name} is nuclear-armed (${c.nuclear.warheads} warheads)`
+                : c.nuclear.status === 'TESTED'
+                  ? `${c.name} has tested a nuclear device`
+                  : `${c.name} is developing nuclear weapons`,
+            )
+            .join('; ')}. These hostile programs must factor into all military planning.`,
+        );
       }
 
       return {
@@ -322,6 +347,12 @@ function generateLocalBriefing(advisorId: string, worldState: any): AdvisorRespo
     case 'DOMESTIC_ADVISOR': {
       const stability = playerCountry.stability || 0;
       const legitimacy = playerCountry.legitimacy || 0;
+      const approval = playerCountry.approval || 0;
+      const insurgency = playerCountry.insurgencyLevel || 'NONE';
+      const policing = playerCountry.policingTactic;
+      const nextElectionTurn = playerCountry.politicalSystem?.nextElectionTurn ?? null;
+      const monthsToElection =
+        nextElectionTurn !== null ? nextElectionTurn - (worldState.turn || 0) : null;
       const recommendations: AdvisorResponse['recommendations'] = [];
       const warnings: string[] = [];
 
@@ -342,17 +373,29 @@ function generateLocalBriefing(advisorId: string, worldState: any): AdvisorRespo
           expectedOutcome: 'Legitimacy +5, Stability +2',
         });
       }
-      if (stability > 70 && legitimacy > 70) {
-        return {
-          role: 'DOMESTIC_ADVISOR',
-          analysis: `Domestic situation is stable. Public support at ${legitimacy}%, stability at ${stability}%. No immediate concerns.`,
-          recommendations: [],
-        };
+      if (monthsToElection !== null && monthsToElection <= 6 && approval < 50) {
+        warnings.push(
+          `Elections are only ${monthsToElection} month${monthsToElection === 1 ? '' : 's'} away and approval stands at ${Math.round(approval)}%. We risk losing power at the ballot box.`,
+        );
       }
+      if (insurgency !== 'NONE') {
+        warnings.push(
+          `An insurgency is active (level: ${insurgency}). Current policing tactic: ${policing || 'standard'}. ${stability < 50 ? 'Heavy-handed measures may further inflame the population.' : 'The security services have it contained for now.'}`,
+        );
+      }
+
+      const electionNote =
+        monthsToElection !== null
+          ? ` Next elections are ${monthsToElection} month${monthsToElection === 1 ? '' : 's'} away.`
+          : ' No elections are scheduled under the current system.';
+      const insurgencyNote =
+        insurgency !== 'NONE'
+          ? ` Insurgency level: ${insurgency} (policing: ${policing || 'standard'}).`
+          : '';
 
       return {
         role: 'DOMESTIC_ADVISOR',
-        analysis: `Domestic report: Stability at ${stability}%, government legitimacy at ${legitimacy}%. ${stability < 50 ? 'The public mood is restless.' : 'The situation is manageable.'}`,
+        analysis: `Domestic report: Approval at ${Math.round(approval)}%, stability at ${Math.round(stability)}%, government legitimacy at ${Math.round(legitimacy)}%.${electionNote}${insurgencyNote} ${stability < 50 ? 'The public mood is restless.' : 'The situation is manageable.'}`,
         recommendations,
         warnings: warnings.length > 0 ? warnings : undefined,
       };

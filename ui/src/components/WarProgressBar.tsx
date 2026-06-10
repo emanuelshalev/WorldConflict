@@ -1,55 +1,48 @@
+import { useGameStore, type War } from '../store/gameStore';
 import './WarProgressBar.css';
 
-interface War {
-  id: string;
-  attackerId: string;
-  defenderId: string;
-  attackerProgress: number;
-  defenderProgress: number;
-  attackerName?: string;
-  defenderName?: string;
-  attackerCasualties?: number;
-  defenderCasualties?: number;
+function formatCasualties(num: number): string {
+  if (num >= 1_000_000) return `${(num / 1_000_000).toFixed(1)}M`;
+  if (num >= 1_000) return `${(num / 1_000).toFixed(1)}k`;
+  return Math.round(num).toString();
 }
 
 interface WarProgressBarProps {
   war: War;
+  attackerName: string;
+  defenderName: string;
   playerCountryId: string;
 }
 
-export function WarProgressBar({ war, playerCountryId }: WarProgressBarProps) {
+export function WarProgressBar({ war, attackerName, defenderName, playerCountryId }: WarProgressBarProps) {
   const isPlayerAttacker = war.attackerId === playerCountryId;
   const isPlayerDefender = war.defenderId === playerCountryId;
-  
-  const totalProgress = war.attackerProgress + war.defenderProgress;
-  const attackerPercent = totalProgress > 0 ? (war.attackerProgress / totalProgress) * 100 : 50;
+  const playerSide = isPlayerAttacker ? 'attacker' : isPlayerDefender ? 'defender' : null;
+
+  // frontline: 0-100, >50 means the attacker is advancing
+  const attackerPercent = Math.max(0, Math.min(100, war.frontline));
   const defenderPercent = 100 - attackerPercent;
 
-  const playerSide = isPlayerAttacker ? 'attacker' : isPlayerDefender ? 'defender' : null;
+  const exhaustion = Math.max(0, Math.min(100, war.exhaustion));
+  const exhaustionColor = exhaustion > 66 ? '#ff4040' : exhaustion > 33 ? '#e8b932' : '#3fbf6f';
 
   return (
     <div className={`war-progress-bar ${playerSide ? 'player-involved' : ''}`}>
       <div className="war-header">
         <span className={`combatant attacker ${isPlayerAttacker ? 'player' : ''}`}>
-          {war.attackerName || war.attackerId}
+          {attackerName}
         </span>
         <span className="vs">⚔️</span>
         <span className={`combatant defender ${isPlayerDefender ? 'player' : ''}`}>
-          {war.defenderName || war.defenderId}
+          {defenderName}
         </span>
       </div>
 
       <div className="progress-track">
-        <div 
-          className="progress-fill attacker" 
-          style={{ width: `${attackerPercent}%` }}
-        >
+        <div className="progress-fill attacker" style={{ width: `${attackerPercent}%` }}>
           {attackerPercent > 15 && <span>{attackerPercent.toFixed(0)}%</span>}
         </div>
-        <div 
-          className="progress-fill defender" 
-          style={{ width: `${defenderPercent}%` }}
-        >
+        <div className="progress-fill defender" style={{ width: `${defenderPercent}%` }}>
           {defenderPercent > 15 && <span>{defenderPercent.toFixed(0)}%</span>}
         </div>
         <div className="progress-center-marker" />
@@ -58,76 +51,90 @@ export function WarProgressBar({ war, playerCountryId }: WarProgressBarProps) {
       <div className="war-stats">
         <div className="stat attacker">
           <span className="stat-label">Casualties</span>
-          <span className="stat-value">
-            {formatCasualties(war.attackerCasualties || 0)}
+          <span className="stat-value">{formatCasualties(war.attackerCasualties)}</span>
+        </div>
+        <div
+          className="stat"
+          style={{ alignItems: 'center' }}
+          title={`War fatigue: ${exhaustion.toFixed(0)}%`}
+        >
+          <span className="stat-label">War Fatigue</span>
+          <span className="stat-value" style={{ color: exhaustionColor }}>
+            {exhaustion.toFixed(0)}%
           </span>
         </div>
         <div className="stat defender">
           <span className="stat-label">Casualties</span>
-          <span className="stat-value">
-            {formatCasualties(war.defenderCasualties || 0)}
-          </span>
+          <span className="stat-value">{formatCasualties(war.defenderCasualties)}</span>
         </div>
       </div>
 
       {playerSide && (
-        <div className={`war-status ${attackerPercent > 55 ? 'winning' : attackerPercent < 45 ? 'losing' : 'stalemate'}`}>
-          {playerSide === 'attacker' 
-            ? (attackerPercent > 55 ? 'Advancing' : attackerPercent < 45 ? 'Retreating' : 'Stalemate')
-            : (defenderPercent > 55 ? 'Holding' : defenderPercent < 45 ? 'Falling Back' : 'Stalemate')
-          }
+        <div
+          className={`war-status ${
+            attackerPercent > 55
+              ? isPlayerAttacker
+                ? 'winning'
+                : 'losing'
+              : attackerPercent < 45
+                ? isPlayerAttacker
+                  ? 'losing'
+                  : 'winning'
+                : 'stalemate'
+          }`}
+        >
+          {playerSide === 'attacker'
+            ? attackerPercent > 55
+              ? 'Advancing'
+              : attackerPercent < 45
+                ? 'Retreating'
+                : 'Stalemate'
+            : defenderPercent > 55
+              ? 'Holding'
+              : defenderPercent < 45
+                ? 'Falling Back'
+                : 'Stalemate'}
         </div>
       )}
     </div>
   );
 }
 
-function formatCasualties(num: number): string {
-  if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
-  if (num >= 1000) return `${(num / 1000).toFixed(0)}K`;
-  return num.toString();
-}
+export function WarList() {
+  const worldState = useGameStore((s) => s.worldState);
 
-interface WarProgressListProps {
-  wars: War[];
-  playerCountryId: string;
-  countries: Array<{ id: string; name: string }>;
-}
+  if (!worldState) return null;
 
-export function WarProgressList({ wars, playerCountryId, countries }: WarProgressListProps) {
-  const getCountryName = (id: string) => countries.find(c => c.id === id)?.name || id;
-
-  const enrichedWars = wars.map(war => ({
-    ...war,
-    attackerName: getCountryName(war.attackerId),
-    defenderName: getCountryName(war.defenderId),
-  }));
-
-  const playerWars = enrichedWars.filter(
-    w => w.attackerId === playerCountryId || w.defenderId === playerCountryId
-  );
-  const otherWars = enrichedWars.filter(
-    w => w.attackerId !== playerCountryId && w.defenderId !== playerCountryId
-  );
+  const { wars, countries, playerCountryId } = worldState;
+  const getCountryName = (id: string) => countries.find((c) => c.id === id)?.name ?? id;
 
   if (wars.length === 0) {
     return (
       <div className="war-progress-list empty">
-        <p>🕊️ No active conflicts</p>
+        <p>No active wars — for now.</p>
       </div>
     );
   }
+
+  const playerWars = wars.filter(
+    (w) => w.attackerId === playerCountryId || w.defenderId === playerCountryId,
+  );
+  const otherWars = wars.filter(
+    (w) => w.attackerId !== playerCountryId && w.defenderId !== playerCountryId,
+  );
 
   return (
     <div className="war-progress-list">
       {playerWars.length > 0 && (
         <div className="war-section">
           <h4>Your Conflicts</h4>
-          {playerWars.map(war => (
-            <WarProgressBar 
-              key={war.id} 
-              war={war} 
-              playerCountryId={playerCountryId} 
+          {playerWars.map((war) => (
+            <WarProgressBar
+              key={war.id}
+              war={war}
+              attackerName={getCountryName(war.attackerId)}
+              defenderName={getCountryName(war.defenderId)}
+              playerCountryId={playerCountryId}
             />
           ))}
         </div>
@@ -136,11 +143,13 @@ export function WarProgressList({ wars, playerCountryId, countries }: WarProgres
       {otherWars.length > 0 && (
         <div className="war-section">
           <h4>Global Conflicts</h4>
-          {otherWars.map(war => (
-            <WarProgressBar 
-              key={war.id} 
-              war={war} 
-              playerCountryId={playerCountryId} 
+          {otherWars.map((war) => (
+            <WarProgressBar
+              key={war.id}
+              war={war}
+              attackerName={getCountryName(war.attackerId)}
+              defenderName={getCountryName(war.defenderId)}
+              playerCountryId={playerCountryId}
             />
           ))}
         </div>

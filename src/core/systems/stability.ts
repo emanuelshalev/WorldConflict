@@ -1,157 +1,134 @@
-import type { CountryState, RegimeType } from "../types.js";
+import type { SeededRandom } from "../seed.js";
+import type { CountryState, GameEvent, WorldState } from "../types.js";
+import { deescalateInsurgency, escalateInsurgency } from "./covert.js";
+import { shiftRelation } from "./diplomacy.js";
 
-export interface StabilityFactors {
-  warEffect: number;
-  economicEffect: number;
-  legitimacyEffect: number;
-  regimeEffect: number;
-  totalDelta: number;
+/**
+ * Monthly domestic update: stability, legitimacy, approval, insurgencies.
+ */
+export function updateDomestic(world: WorldState, rng: SeededRandom): GameEvent[] {
+  const events: GameEvent[] = [];
+
+  for (const country of world.countries) {
+    if (country.collapsed) continue;
+
+    // --- Stability drift ---
+    let delta = 0;
+    if (country.growthRate > 0.025) delta += 0.6;
+    if (country.growthRate < 0) delta -= 0.8;
+    if (country.legitimacy > 65) delta += 0.4;
+    if (country.legitimacy < 40) delta -= 0.6;
+    if (country.atWarWith.length === 0) delta += 0.3;
+    switch (country.insurgencyLevel) {
+      case "UNREST":
+        delta -= 0.7;
+        break;
+      case "REBELLION":
+        delta -= 1.8;
+        break;
+      case "GUERILLA":
+        delta -= 3.2;
+        break;
+      default:
+        break;
+    }
+    // Aggravated internal divisions simmer
+    for (const division of country.internalDivisions) {
+      if (division.tension > 60) delta -= 0.3;
+    }
+    // States fight for their survival: weak governments consolidate, crack down,
+    // call in favors — preventing every fragile state from spiraling to collapse
+    if (country.stability < 35) delta += 1.0;
+    if (country.stability < 20) delta += 0.8;
+    country.stability = clamp(country.stability + delta);
+
+    // --- Approval drift (public mood tracks economy and peace) ---
+    let approvalDelta = 0;
+    approvalDelta += country.growthRate > 0.02 ? 0.5 : country.growthRate < 0 ? -1 : 0;
+    approvalDelta += country.stability > 60 ? 0.3 : country.stability < 35 ? -0.8 : 0;
+    if (country.underGlobalEmbargo) approvalDelta -= 0.5;
+    country.approval = clamp(country.approval + approvalDelta);
+
+    // --- Legitimacy converges slowly toward approval for democracies ---
+    if (country.regimeType === "DEMOCRACY") {
+      country.legitimacy = clamp(
+        country.legitimacy + (country.approval - country.legitimacy) * 0.05,
+      );
+    } else {
+      // Autocracies sustain legitimacy via control, eroded by instability
+      if (country.stability < 30) country.legitimacy = clamp(country.legitimacy - 0.8);
+    }
+
+    // --- Insurgency dynamics ---
+    if (country.insurgencyLevel !== "NONE") {
+      const result = deescalateInsurgency(
+        country.insurgencyLevel,
+        country.policingTactic === "HARD" ? 2 : 1,
+      );
+      if (country.policingTactic === "HARD") {
+        // Fast suppression, international outcry
+        if (rng.nextBool(0.35)) {
+          country.insurgencyLevel = result;
+        }
+        country.stability = clamp(country.stability - 0.5);
+        for (const other of world.countries) {
+          if (other.id === country.id) continue;
+          if (other.regimeType === "DEMOCRACY") shiftRelation(other, country.id, -1.5);
+        }
+      } else {
+        // Soft approach: slow, steady, no backlash
+        if (rng.nextBool(0.12)) {
+          country.insurgencyLevel = result;
+        }
+      }
+    } else if (country.stability < 30 && rng.nextBool(0.12)) {
+      country.insurgencyLevel = escalateInsurgency(country.insurgencyLevel);
+      events.push({
+        id: `evt_unrest_${country.id}_${world.turn}`,
+        type: "STABILITY",
+        title: `Unrest spreads in ${country.name}`,
+        description: `Mass protests and strikes erupt across ${country.name} as faith in ${country.leader.title} ${country.leader.name}'s government collapses.`,
+        affectedCountries: [country.id],
+        turn: world.turn,
+        severity: "MAJOR",
+      });
+    }
+
+    // --- Collapse check ---
+    if (country.stability <= 2 && country.legitimacy <= 10) {
+      country.collapsed = true;
+      country.mobilizationLevel = 0;
+      events.push({
+        id: `evt_collapse_${country.id}_${world.turn}`,
+        type: "STABILITY",
+        title: `STATE COLLAPSE: ${country.name}`,
+        description: `${country.name} has ceased to function as a state. Government authority has evaporated; armed factions carve up the country.`,
+        affectedCountries: [country.id],
+        turn: world.turn,
+        severity: "CRITICAL",
+      });
+    }
+  }
+
+  return events;
 }
 
-export class StabilitySystem {
-  static calculateStabilityDelta(country: CountryState): StabilityFactors {
-    const warEffect = StabilitySystem.calculateWarEffect(country);
-    const economicEffect = StabilitySystem.calculateEconomicEffect(country);
-    const legitimacyEffect = StabilitySystem.calculateLegitimacyEffect(country);
-    const regimeEffect = StabilitySystem.calculateRegimeEffect(country);
+export function applyPropaganda(country: CountryState): void {
+  country.legitimacy = clamp(country.legitimacy + 5);
+  country.approval = clamp(country.approval + 4);
+  country.stability = clamp(country.stability + 2);
+}
 
-    const totalDelta = warEffect + economicEffect + legitimacyEffect + regimeEffect;
-
-    return {
-      warEffect,
-      economicEffect,
-      legitimacyEffect,
-      regimeEffect,
-      totalDelta,
-    };
+export function applyReform(country: CountryState): void {
+  country.stability = clamp(country.stability + 6);
+  country.legitimacy = clamp(country.legitimacy + 4);
+  country.approval = clamp(country.approval + 2);
+  // Reform slightly aggravates hardline factions in rigid systems
+  if (country.personality.ideologicalRigidity > 70) {
+    country.legitimacy = clamp(country.legitimacy - 2);
   }
+}
 
-  private static calculateWarEffect(country: CountryState): number {
-    if (country.atWarWith.length === 0) return 0;
-
-    const baseWarPenalty = -8;
-    const perWarPenalty = -3;
-    return baseWarPenalty + (country.atWarWith.length - 1) * perWarPenalty;
-  }
-
-  private static calculateEconomicEffect(country: CountryState): number {
-    const growthRate = country.growthRate;
-
-    if (growthRate >= 0.05) return 3;
-    if (growthRate >= 0.02) return 2;
-    if (growthRate >= 0) return 0;
-    if (growthRate >= -0.02) return -2;
-    return -5;
-  }
-
-  private static calculateLegitimacyEffect(country: CountryState): number {
-    const legitimacy = country.legitimacy;
-
-    if (legitimacy >= 80) return 2;
-    if (legitimacy >= 60) return 1;
-    if (legitimacy >= 40) return 0;
-    if (legitimacy >= 20) return -2;
-    return -5;
-  }
-
-  private static calculateRegimeEffect(country: CountryState): number {
-    const regimeModifiers: Record<RegimeType, number> = {
-      DEMOCRACY: 1,
-      AUTOCRACY: 0,
-      THEOCRACY: 0,
-      MILITARY_JUNTA: -1,
-      COMMUNIST: 0,
-      MONARCHY: 1,
-    };
-
-    return regimeModifiers[country.regimeType] ?? 0;
-  }
-
-  static applyStabilityUpdate(country: CountryState): CountryState {
-    const factors = StabilitySystem.calculateStabilityDelta(country);
-    const newStability = Math.max(0, Math.min(100, country.stability + factors.totalDelta));
-
-    return {
-      ...country,
-      stability: newStability,
-    };
-  }
-
-  static isCollapsed(country: CountryState): boolean {
-    return country.stability <= 0;
-  }
-
-  static getStabilityStatus(stability: number): string {
-    if (stability >= 80) return "STABLE";
-    if (stability >= 60) return "SECURE";
-    if (stability >= 40) return "UNCERTAIN";
-    if (stability >= 20) return "UNSTABLE";
-    return "CRITICAL";
-  }
-
-  static applyDiplomaticSuccess(country: CountryState, magnitude: number): CountryState {
-    const bonus = Math.min(5, Math.max(2, magnitude));
-    return {
-      ...country,
-      stability: Math.min(100, country.stability + bonus),
-      legitimacy: Math.min(100, country.legitimacy + Math.floor(bonus / 2)),
-    };
-  }
-
-  static applyDiplomaticFailure(country: CountryState, magnitude: number): CountryState {
-    const penalty = Math.min(10, Math.max(2, magnitude));
-    return {
-      ...country,
-      stability: Math.max(0, country.stability - penalty),
-      legitimacy: Math.max(0, country.legitimacy - Math.floor(penalty / 2)),
-    };
-  }
-
-  static applyPropaganda(country: CountryState): CountryState {
-    return {
-      ...country,
-      legitimacy: Math.min(100, country.legitimacy + 5),
-      stability: Math.min(100, country.stability + 2),
-    };
-  }
-
-  static applyReform(country: CountryState): CountryState {
-    return {
-      ...country,
-      stability: Math.min(100, country.stability + 8),
-      legitimacy: Math.min(100, country.legitimacy + 3),
-    };
-  }
-
-  static handleCollapse(country: CountryState): CountryState {
-    return {
-      ...country,
-      stability: 0,
-      legitimacy: 0,
-      mobilizationLevel: 0,
-      atWarWith: [],
-      alliances: [],
-    };
-  }
-
-  static checkAndHandleCollapse(country: CountryState): {
-    country: CountryState;
-    collapsed: boolean;
-  } {
-    if (StabilitySystem.isCollapsed(country)) {
-      return {
-        country: StabilitySystem.handleCollapse(country),
-        collapsed: true,
-      };
-    }
-    return { country, collapsed: false };
-  }
-
-  static applyAllStabilityUpdates(countries: CountryState[]): CountryState[] {
-    return countries.map((country) => {
-      const updated = StabilitySystem.applyStabilityUpdate(country);
-      const { country: finalCountry } = StabilitySystem.checkAndHandleCollapse(updated);
-      return finalCountry;
-    });
-  }
+function clamp(v: number, min = 0, max = 100): number {
+  return Math.max(min, Math.min(max, v));
 }

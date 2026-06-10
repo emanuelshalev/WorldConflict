@@ -3,19 +3,77 @@
   "iso3": "EGY",
   "name": "Egypt",
   "population": 105000000,
-  "gdp": 476000000000,
-  "gdpGrowth": 0.038,
-  "militaryBudgetPct": 1.2,
-  "manpower": 440000,
-  "airpower": 1062,
   "regimeType": "AUTOCRACY",
-  "riskTolerance": 40,
-  "stability": 65,
-  "legitimacy": 60,
-  "intelLevel": 65,
+  "politicalSystem": {
+    "type": "PERSONALIST_AUTOCRACY",
+    "powerCenters": ["MILITARY", "EXECUTIVE", "SECURITY_SERVICES"],
+    "electionCycleMonths": 72,
+    "nextElectionTurn": null,
+    "leaderTitle": "President"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1952, "event": "Free Officers revolution topples the monarchy", "impact": "Established the army as the permanent core of the Egyptian state under Nasser" },
+      { "year": 1956, "event": "Suez Crisis", "impact": "Nationalizing the canal and surviving Anglo-French-Israeli attack made Egypt the leader of Arab nationalism" },
+      { "year": 1967, "event": "Six-Day War defeat", "impact": "Catastrophic loss of Sinai shattered Nasserist prestige and the pan-Arab project" },
+      { "year": 1973, "event": "October War crossing of the Suez Canal", "impact": "Restored military honor and created the leverage for negotiated return of Sinai" },
+      { "year": 1979, "event": "Camp David peace treaty with Israel", "impact": "Traded the Arab leadership mantle for Sinai and massive US military aid; cold peace ever since" },
+      { "year": 2011, "event": "Arab Spring uprising ousts Mubarak", "impact": "Mass revolt showed the street could topple a pharaoh; brief Muslim Brotherhood rule followed" },
+      { "year": 2013, "event": "Sisi-led takeover removes President Morsi", "impact": "Military reasserted control, crushed the Brotherhood, and rebuilt a harder security state" }
+    ],
+    "historicalRivals": ["ISR", "TUR"],
+    "historicalAllies": ["USA", "SAU", "RUS"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "DEFENSIVE",
+    "narrative": "The Arab world's demographic heavyweight, ruled by a military establishment that prizes stability over ambition and lives off Suez Canal rents, Gulf bailouts, and American aid. Its strategic horizons are defensive: the Nile's waters, Sinai's security, and keeping chaos in Libya, Sudan, and Gaza from spilling across its borders."
+  },
+  "personality": {
+    "warPropensity": 30,
+    "allianceLoyalty": 60,
+    "diplomaticFlexibility": 65,
+    "riskTolerance": 40,
+    "expansionism": 25,
+    "isolationism": 35,
+    "ideologicalRigidity": 45,
+    "prestigeEmphasis": 65
+  },
+  "redLines": [
+    { "type": "ECONOMIC", "description": "Threats to Nile water security, including unilateral upstream dam operations", "severity": 10 },
+    { "type": "TERRITORIAL", "description": "Loss of control over Sinai or mass displacement from Gaza into Egyptian territory", "severity": 9 },
+    { "type": "ECONOMIC", "description": "Closure or attack on the Suez Canal", "severity": 8 }
+  ],
+  "internalDivisions": [
+    { "kind": "IDEOLOGICAL", "name": "Suppressed Muslim Brotherhood and Islamist opposition", "strength": 40, "tension": 55 },
+    { "kind": "RELIGIOUS", "name": "Coptic Christian minority facing sectarian violence", "strength": 10, "tension": 40 },
+    { "kind": "REGIONAL", "name": "Sinai insurgency and neglected periphery", "strength": 15, "tension": 50 }
+  ],
+  "economy": {
+    "gdp": 390000000000,
+    "growthRate": 0.038,
+    "debtGdpRatio": 92,
+    "sectors": { "agriculture": 11, "industry": 34, "services": 55 },
+    "keyResources": ["natural_gas", "oil", "suez_canal", "agriculture"],
+    "keyExports": ["natural_gas", "refined_petroleum", "textiles", "agricultural_products", "gold"],
+    "developmentLevel": "EMERGING"
+  },
+  "military": {
+    "manpower": 440000,
+    "airpower": 1062,
+    "doctrine": "DEFENSIVE",
+    "nuclearStatus": "NONE",
+    "warheads": 0,
+    "arms_suppliers": ["USA", "RUS", "FRA"]
+  },
+  "militaryBudgetPct": 1.2,
+  "stability": 55,
+  "legitimacy": 55,
+  "intelLevel": 60,
+  "insurgencyLevel": "UNREST",
   "goals": [
-    { "id": "egy_g1", "type": "SECURITY", "priority": 80, "description": "Maintain Suez Canal control and regional stability" },
-    { "id": "egy_g2", "type": "ECONOMIC", "priority": 85, "description": "Attract foreign investment and reduce debt" }
+    { "id": "egy_g1", "type": "SECURITY", "priority": 90, "description": "Secure Nile water rights against upstream dam projects" },
+    { "id": "egy_g2", "type": "ECONOMIC", "priority": 85, "description": "Stabilize debt and currency through Gulf investment and IMF support" },
+    { "id": "egy_g3", "type": "SECURITY", "priority": 80, "description": "Crush the Sinai insurgency and insulate Egypt from Gaza and Libya spillover" },
+    { "id": "egy_g4", "type": "PRESTIGE", "priority": 60, "description": "Reclaim leadership of the Arab world as its indispensable mediator" }
   ],
   "geo": {
     "bounds": [24.7, 22.0, 36.9, 31.7],

@@ -42,9 +42,9 @@ function checkRateLimit(clientId: string, path: string, config: RateLimitConfig)
 }
 
 const RATE_LIMITS: Record<string, RateLimitConfig> = {
-  "/api/turn": { windowMs: 1000, maxRequests: 1 },
+  "/api/turn": { windowMs: 1000, maxRequests: 4 },
   "/api/chat/advisor": { windowMs: 1000, maxRequests: 5 },
-  default: { windowMs: 1000, maxRequests: 10 },
+  default: { windowMs: 1000, maxRequests: 30 },
 };
 
 export function setupRateLimit(fastify: FastifyInstance): void {

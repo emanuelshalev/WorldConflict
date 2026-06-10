@@ -3,19 +3,78 @@
   "iso3": "TUR",
   "name": "Turkey",
   "population": 85000000,
-  "gdp": 1150000000000,
-  "gdpGrowth": 0.042,
-  "militaryBudgetPct": 1.9,
-  "manpower": 425000,
-  "airpower": 1067,
   "regimeType": "AUTOCRACY",
-  "riskTolerance": 60,
+  "politicalSystem": {
+    "type": "PRESIDENTIAL_DEMOCRACY",
+    "powerCenters": ["EXECUTIVE", "PARTY", "SECURITY_SERVICES"],
+    "electionCycleMonths": 60,
+    "nextElectionTurn": null,
+    "leaderTitle": "President"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1922, "event": "Collapse of the Ottoman Empire", "impact": "Loss of imperial domains; lingering ambition to reclaim regional leadership" },
+      { "year": 1923, "event": "Ataturk founds the secular Republic", "impact": "Radical Westernizing reforms; secular-Islamist fault line defines politics ever since" },
+      { "year": 1952, "event": "NATO accession", "impact": "Anchored to the West as the alliance's southeastern bastion against the Soviets" },
+      { "year": 1974, "event": "Military intervention in Cyprus", "impact": "Willingness to use force unilaterally for perceived national interests despite Western censure" },
+      { "year": 1980, "event": "Military coup", "impact": "Army as self-appointed guardian of the state; cycles of intervention and civilian pushback" },
+      { "year": 2005, "event": "EU accession talks open then stall", "impact": "Disillusionment with Europe; pivot toward independent regional power role" },
+      { "year": 2016, "event": "Failed coup attempt", "impact": "Mass purges of military and bureaucracy; deepened distrust of Western allies" },
+      { "year": 2017, "event": "Referendum creates executive presidential system", "impact": "Erdogan concentrates power; personalized, transactional foreign policy" }
+    ],
+    "historicalRivals": ["RUS", "IRN", "EGY"],
+    "historicalAllies": ["USA", "PAK"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "BALANCING",
+    "narrative": "A swing power straddling NATO membership and a transactional relationship with Russia, extracting concessions from both sides while answering to neither. Neo-Ottoman ambitions drive military reach into Syria, Libya, and the Caucasus, a booming drone industry underwrites strategic independence, and the Kurdish question remains the non-negotiable core of its security doctrine."
+  },
+  "personality": {
+    "warPropensity": 60,
+    "allianceLoyalty": 45,
+    "diplomaticFlexibility": 70,
+    "riskTolerance": 65,
+    "expansionism": 55,
+    "isolationism": 15,
+    "ideologicalRigidity": 55,
+    "prestigeEmphasis": 80
+  },
+  "redLines": [
+    { "type": "TERRITORIAL", "description": "Establishment of a Kurdish autonomous entity along Turkey's southern border", "severity": 9 },
+    { "type": "TERRITORIAL", "description": "Challenge to Turkish sovereignty claims in the Aegean and Cyprus", "severity": 8 },
+    { "type": "IDEOLOGICAL", "description": "Foreign support for groups Ankara designates as coup plotters or PKK affiliates", "severity": 7 }
+  ],
+  "internalDivisions": [
+    { "kind": "IDEOLOGICAL", "name": "Secular Kemalists vs political Islamists", "strength": 75, "tension": 60 },
+    { "kind": "ETHNIC", "name": "Kurdish question in the southeast", "strength": 20, "tension": 70 }
+  ],
+  "economy": {
+    "gdp": 1150000000000,
+    "growthRate": 0.030,
+    "debtGdpRatio": 30,
+    "sectors": { "agriculture": 6, "industry": 31, "services": 63 },
+    "keyResources": ["agriculture", "chromium", "coal", "boron"],
+    "keyExports": ["vehicles", "machinery", "textiles", "steel", "drones"],
+    "developmentLevel": "EMERGING"
+  },
+  "military": {
+    "manpower": 425000,
+    "airpower": 1067,
+    "doctrine": "OFFENSIVE",
+    "nuclearStatus": "NONE",
+    "warheads": 0,
+    "arms_suppliers": ["USA", "RUS"]
+  },
+  "militaryBudgetPct": 1.9,
   "stability": 65,
   "legitimacy": 62,
-  "intelLevel": 72,
+  "intelLevel": 75,
+  "insurgencyLevel": "UNREST",
   "goals": [
-    { "id": "tur_g1", "type": "PRESTIGE", "priority": 85, "description": "Become regional hegemon in Middle East" },
-    { "id": "tur_g2", "type": "SECURITY", "priority": 80, "description": "Suppress Kurdish separatism" }
+    { "id": "tur_g1", "type": "PRESTIGE", "priority": 85, "description": "Establish Turkey as the indispensable regional hegemon of the Middle East and Eastern Mediterranean" },
+    { "id": "tur_g2", "type": "SECURITY", "priority": 90, "description": "Suppress Kurdish separatism at home and prevent PKK-linked entities abroad" },
+    { "id": "tur_g3", "type": "SECURITY", "targetCountryId": "RUS", "priority": 75, "description": "Balance between NATO and Russia to maximize leverage over both" },
+    { "id": "tur_g4", "type": "ECONOMIC", "priority": 70, "description": "Build a fully independent defense industry led by drone and missile exports" },
+    { "id": "tur_g5", "type": "ECONOMIC", "priority": 65, "description": "Tame inflation and stabilize the lira to sustain regional ambitions" }
   ],
   "geo": {
     "bounds": [26.0, 36.0, 45.0, 42.1],

@@ -3,19 +3,77 @@
   "iso3": "SAU",
   "name": "Saudi Arabia",
   "population": 36000000,
-  "gdp": 1110000000000,
-  "gdpGrowth": 0.038,
-  "militaryBudgetPct": 6.0,
-  "manpower": 257000,
-  "airpower": 897,
   "regimeType": "MONARCHY",
-  "riskTolerance": 50,
-  "stability": 78,
+  "politicalSystem": {
+    "type": "ABSOLUTE_MONARCHY",
+    "powerCenters": ["MONARCHY", "RELIGIOUS", "SECURITY_SERVICES"],
+    "electionCycleMonths": 0,
+    "nextElectionTurn": null,
+    "leaderTitle": "King"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1932, "event": "Founding of the Kingdom by Ibn Saud", "impact": "Al Saud dynasty unified the peninsula in pact with Wahhabi clerics; religion underwrites royal legitimacy" },
+      { "year": 1938, "event": "Discovery of oil at Dammam", "impact": "Transformed a desert kingdom into the world's pivotal petroleum power and rentier state" },
+      { "year": 1945, "event": "Quincy meeting with President Roosevelt", "impact": "Founded the oil-for-security bargain with the United States that anchors Saudi defense" },
+      { "year": 1979, "event": "Grand Mosque seizure in Mecca", "impact": "Shocked the monarchy into empowering conservative clergy and exporting Wahhabism abroad" },
+      { "year": 1991, "event": "Gulf War basing of US troops", "impact": "Deepened reliance on American protection but fueled jihadist backlash against the dynasty" },
+      { "year": 2015, "event": "Intervention in Yemen against the Houthis", "impact": "Costly proxy quagmire with Iran; exposed limits of Saudi military power and oil infrastructure to attack" },
+      { "year": 2017, "event": "Rise of Crown Prince Mohammed bin Salman and Vision 2030", "impact": "Centralized power, curbed clergy, and launched sweeping economic diversification away from oil" }
+    ],
+    "historicalRivals": ["IRN"],
+    "historicalAllies": ["USA", "EGY", "PAK", "GBR"],
+    "sphereOfInfluence": ["EGY", "PAK"],
+    "foreignPolicyOrientation": "BALANCING",
+    "narrative": "Custodian of Islam's holiest sites and the swing producer of world oil, ruling through a bargain of petro-wealth, religious legitimacy, and American protection. Avoids direct wars but wages influence campaigns and proxy conflicts against Iran, while hedging between Washington, Beijing, and Moscow as it races to diversify its economy before the oil era ends."
+  },
+  "personality": {
+    "warPropensity": 30,
+    "allianceLoyalty": 60,
+    "diplomaticFlexibility": 70,
+    "riskTolerance": 50,
+    "expansionism": 35,
+    "isolationism": 25,
+    "ideologicalRigidity": 55,
+    "prestigeEmphasis": 80
+  },
+  "redLines": [
+    { "type": "TERRITORIAL", "targetCountryId": "IRN", "description": "Iranian regional dominance or military presence on the Arabian Peninsula", "severity": 9 },
+    { "type": "ECONOMIC", "description": "Attacks on Saudi oil infrastructure or closure of Gulf export routes", "severity": 9 },
+    { "type": "NUCLEAR", "targetCountryId": "IRN", "description": "An Iranian nuclear weapon would trigger Saudi pursuit of matching capability", "severity": 8 }
+  ],
+  "internalDivisions": [
+    { "kind": "RELIGIOUS", "name": "Wahhabi establishment vs. top-down social liberalization", "strength": 50, "tension": 40 },
+    { "kind": "RELIGIOUS", "name": "Shia minority in oil-rich Eastern Province", "strength": 12, "tension": 45 },
+    { "kind": "IDEOLOGICAL", "name": "Royal family factions sidelined by MBS power consolidation", "strength": 30, "tension": 35 }
+  ],
+  "economy": {
+    "gdp": 1110000000000,
+    "growthRate": 0.038,
+    "debtGdpRatio": 26,
+    "sectors": { "agriculture": 2, "industry": 45, "services": 53 },
+    "keyResources": ["oil", "natural_gas", "phosphates", "gold"],
+    "keyExports": ["crude_oil", "refined_petroleum", "petrochemicals", "plastics"],
+    "developmentLevel": "EMERGING"
+  },
+  "military": {
+    "manpower": 257000,
+    "airpower": 897,
+    "doctrine": "DEFENSIVE",
+    "nuclearStatus": "LATENT",
+    "warheads": 0,
+    "arms_suppliers": ["USA", "GBR", "FRA"]
+  },
+  "militaryBudgetPct": 6.0,
+  "stability": 70,
   "legitimacy": 75,
-  "intelLevel": 70,
+  "intelLevel": 65,
+  "insurgencyLevel": "NONE",
   "goals": [
-    { "id": "sau_g1", "type": "SECURITY", "targetCountryId": "IRN", "priority": 90, "description": "Counter Iranian influence" },
-    { "id": "sau_g2", "type": "ECONOMIC", "priority": 85, "description": "Diversify economy away from oil (Vision 2030)" }
+    { "id": "sau_g1", "type": "SECURITY", "targetCountryId": "IRN", "priority": 90, "description": "Counter Iranian influence and proxy networks across the region" },
+    { "id": "sau_g2", "type": "ECONOMIC", "priority": 88, "description": "Diversify the economy away from oil under Vision 2030" },
+    { "id": "sau_g3", "type": "PRESTIGE", "priority": 75, "description": "Lead the Arab and Islamic worlds as custodian of the holy cities" },
+    { "id": "sau_g4", "type": "SECURITY", "priority": 70, "description": "Secure the Yemen border and end the Houthi missile threat" }
   ],
   "geo": {
     "bounds": [34.5, 16.4, 55.7, 32.2],

@@ -3,20 +3,79 @@
   "iso3": "RUS",
   "name": "Russia",
   "population": 144000000,
-  "gdp": 2240000000000,
-  "gdpGrowth": 0.012,
-  "militaryBudgetPct": 5.9,
-  "manpower": 1150000,
-  "airpower": 4173,
   "regimeType": "AUTOCRACY",
-  "riskTolerance": 70,
+  "politicalSystem": {
+    "type": "PERSONALIST_AUTOCRACY",
+    "powerCenters": ["EXECUTIVE", "SECURITY_SERVICES", "MILITARY", "OLIGARCHS"],
+    "electionCycleMonths": 72,
+    "nextElectionTurn": null,
+    "leaderTitle": "President"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1945, "event": "Victory in the Great Patriotic War", "impact": "Core legitimating myth; willingness to absorb enormous costs in existential conflict" },
+      { "year": 1962, "event": "Cuban Missile Crisis", "impact": "Established nuclear parity as the foundation of great power status" },
+      { "year": 1991, "event": "Collapse of the Soviet Union", "impact": "Framed by leadership as the greatest geopolitical catastrophe of the century; revanchist drive to restore lost sphere" },
+      { "year": 1998, "event": "Financial default and ruble collapse", "impact": "Deep distrust of Western economic prescriptions; preference for state-controlled strategic sectors" },
+      { "year": 1999, "event": "NATO intervention in Kosovo and eastward expansion", "impact": "Conviction that NATO enlargement is an existential encirclement threat" },
+      { "year": 2014, "event": "Annexation of Crimea", "impact": "Demonstrated willingness to redraw borders by force and absorb sanctions for territorial gains" },
+      { "year": 2022, "event": "Full-scale invasion of Ukraine", "impact": "Open confrontation with the West; war economy, isolation from Europe, and pivot to China" }
+    ],
+    "historicalRivals": ["USA", "GBR", "DEU", "POL", "TUR", "JPN"],
+    "historicalAllies": ["CHN", "IRN", "PRK"],
+    "sphereOfInfluence": ["IRN", "PRK"],
+    "foreignPolicyOrientation": "EXPANSIONIST",
+    "narrative": "A wounded great power that equates security with buffer zones and respect with fear. Highly risk-acceptant, skilled at hybrid warfare and intelligence operations, and willing to endure isolation and economic pain to reverse the post-Cold War settlement."
+  },
+  "personality": {
+    "warPropensity": 75,
+    "allianceLoyalty": 40,
+    "diplomaticFlexibility": 45,
+    "riskTolerance": 75,
+    "expansionism": 80,
+    "isolationism": 20,
+    "ideologicalRigidity": 55,
+    "prestigeEmphasis": 90
+  },
+  "redLines": [
+    { "type": "ALLIANCE", "description": "NATO expansion into the post-Soviet sphere or NATO forces near Russian borders", "severity": 10 },
+    { "type": "TERRITORIAL", "description": "Military threats to Crimea, Kaliningrad, or claimed annexed territories", "severity": 9 },
+    { "type": "IDEOLOGICAL", "description": "Western-backed color revolutions in Russia or allied states", "severity": 8 },
+    { "type": "NUCLEAR", "description": "Conventional strikes threatening strategic nuclear forces or early-warning systems", "severity": 10 }
+  ],
+  "internalDivisions": [
+    { "kind": "ETHNIC", "name": "North Caucasus separatism (Chechnya, Dagestan)", "strength": 20, "tension": 45 },
+    { "kind": "IDEOLOGICAL", "name": "Siloviki hardliners vs technocratic elites", "strength": 40, "tension": 35 },
+    { "kind": "REGIONAL", "name": "Moscow/St. Petersburg vs impoverished regions", "strength": 45, "tension": 30 }
+  ],
+  "economy": {
+    "gdp": 2240000000000,
+    "growthRate": 0.012,
+    "debtGdpRatio": 20,
+    "sectors": { "agriculture": 4, "industry": 33, "services": 63 },
+    "keyResources": ["oil", "natural_gas", "metals", "grain", "uranium"],
+    "keyExports": ["oil", "natural_gas", "weapons", "grain", "fertilizers"],
+    "developmentLevel": "EMERGING"
+  },
+  "military": {
+    "manpower": 1150000,
+    "airpower": 4173,
+    "doctrine": "OFFENSIVE",
+    "nuclearStatus": "ARMED",
+    "warheads": 5580,
+    "arms_suppliers": ["RUS"]
+  },
+  "militaryBudgetPct": 5.9,
   "stability": 65,
   "legitimacy": 68,
   "intelLevel": 88,
+  "insurgencyLevel": "NONE",
   "goals": [
-    { "id": "rus_g1", "type": "TERRITORIAL", "priority": 90, "description": "Maintain sphere of influence in former Soviet states" },
-    { "id": "rus_g2", "type": "SECURITY", "priority": 85, "description": "Prevent NATO expansion" },
-    { "id": "rus_g3", "type": "PRESTIGE", "priority": 75, "description": "Restore great power status" }
+    { "id": "rus_g1", "type": "TERRITORIAL", "priority": 90, "description": "Restore dominance over the former Soviet space, starting with Ukraine and Belarus" },
+    { "id": "rus_g2", "type": "SECURITY", "targetCountryId": "USA", "priority": 85, "description": "Roll back NATO presence in Eastern Europe and split the Atlantic alliance" },
+    { "id": "rus_g3", "type": "PRESTIGE", "priority": 80, "description": "Force recognition as an indispensable great power in a multipolar order" },
+    { "id": "rus_g4", "type": "ECONOMIC", "priority": 70, "description": "Evade Western sanctions via energy leverage and trade pivots to China, India, and the Gulf" },
+    { "id": "rus_g5", "type": "IDEOLOGICAL", "priority": 55, "description": "Undermine Western liberal democracies through disinformation and election interference" }
   ],
   "geo": {
     "bounds": [19.6, 41.2, 180.0, 81.9],

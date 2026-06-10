@@ -1,128 +1,94 @@
-import { describe, it, expect } from 'vitest';
+import { readFileSync, readdirSync } from "node:fs";
+import { join } from "node:path";
+import { describe, expect, it } from "vitest";
 import {
-  CountryStateSchema,
-  WorldStateSchema,
   ActionSchema,
-  CountryIntentSchema,
+  CountryProfileSchema,
   TIER1_COUNTRIES,
-} from '../../src/core/types.js';
+  relationToLevel,
+  stabilityToLevel,
+} from "../../src/core/types.js";
+import { ScenarioSchema } from "../../src/core/data-loader.js";
 
-describe('Core Types', () => {
-  describe('TIER1_COUNTRIES', () => {
-    it('should have exactly 25 countries', () => {
+describe("Core Types", () => {
+  describe("TIER1_COUNTRIES", () => {
+    it("has exactly 25 countries including the major powers", () => {
       expect(TIER1_COUNTRIES.length).toBe(25);
-    });
-
-    it('should include major powers', () => {
-      expect(TIER1_COUNTRIES).toContain('USA');
-      expect(TIER1_COUNTRIES).toContain('CHN');
-      expect(TIER1_COUNTRIES).toContain('RUS');
+      expect(TIER1_COUNTRIES).toContain("USA");
+      expect(TIER1_COUNTRIES).toContain("CHN");
+      expect(TIER1_COUNTRIES).toContain("RUS");
     });
   });
 
-  describe('ActionSchema', () => {
-    it('should validate a valid action', () => {
-      const action = {
-        type: 'DIPLOMACY_IMPROVE_RELATIONS',
-        targetCountryId: 'CHN',
-        value: 10,
-      };
-      const result = ActionSchema.safeParse(action);
-      expect(result.success).toBe(true);
-    });
-
-    it('should reject invalid action type', () => {
-      const action = {
-        type: 'INVALID_ACTION',
-        targetCountryId: 'CHN',
-      };
-      const result = ActionSchema.safeParse(action);
-      expect(result.success).toBe(false);
+  describe("diplomatic level mapping", () => {
+    it("maps the 7-level hierarchy from relations", () => {
+      expect(relationToLevel(0, true, false)).toBe("WAR");
+      expect(relationToLevel(0, false, true)).toBe("MILITARY_PACT");
+      expect(relationToLevel(80, false, false)).toBe("PROFITABLE");
+      expect(relationToLevel(50, false, false)).toBe("BENEFICIAL");
+      expect(relationToLevel(20, false, false)).toBe("FAVOURABLE");
+      expect(relationToLevel(0, false, false)).toBe("SATISFACTORY");
+      expect(relationToLevel(-50, false, false)).toBe("LAMENTABLE");
     });
   });
 
-  describe('CountryIntentSchema', () => {
-    it('should validate a valid intent', () => {
-      const intent = {
-        countryId: 'USA',
-        actions: [
-          { type: 'DIPLOMACY_IMPROVE_RELATIONS', targetCountryId: 'GBR' },
-        ],
-        reasoning: 'Strengthen NATO alliance',
-      };
-      const result = CountryIntentSchema.safeParse(intent);
-      expect(result.success).toBe(true);
+  describe("stability levels", () => {
+    it("maps named levels", () => {
+      expect(stabilityToLevel(90)).toBe("VERY_SOLID");
+      expect(stabilityToLevel(65)).toBe("SOLID");
+      expect(stabilityToLevel(45)).toBe("MODERATE");
+      expect(stabilityToLevel(25)).toBe("UNSTABLE");
+      expect(stabilityToLevel(5)).toBe("COLLAPSING");
     });
   });
 
-  describe('CountryStateSchema', () => {
-    it('should validate a valid country state', () => {
-      const country = {
-        id: 'USA',
-        name: 'United States',
-        iso3: 'USA',
-        gdp: 25000000000000,
-        growthRate: 0.02,
-        debtGdpRatio: 1.2,
-        militaryBudgetPercent: 3.5,
-        manpower: 1400000,
-        airpower: 13000,
-        mobilizationLevel: 10,
-        relations: { CHN: -20, GBR: 80, CAN: 90 },
-        alliances: ['GBR', 'CAN', 'DEU'],
-        atWarWith: [],
-        stability: 75,
-        regimeType: 'DEMOCRACY',
-        legitimacy: 80,
-        intelLevel: 95,
-        goals: [],
-        riskTolerance: 40,
-      };
-      const result = CountryStateSchema.safeParse(country);
-      expect(result.success).toBe(true);
-    });
-
-    it('should reject invalid military budget percent', () => {
-      const country = {
-        id: 'USA',
-        name: 'United States',
-        iso3: 'USA',
-        gdp: 25000000000000,
-        growthRate: 0.02,
-        debtGdpRatio: 1.2,
-        militaryBudgetPercent: 25, // Invalid: max is 20
-        manpower: 1400000,
-        airpower: 13000,
-        mobilizationLevel: 10,
-        relations: {},
-        alliances: [],
-        atWarWith: [],
-        stability: 75,
-        regimeType: 'DEMOCRACY',
-        legitimacy: 80,
-        intelLevel: 95,
-        goals: [],
-        riskTolerance: 40,
-      };
-      const result = CountryStateSchema.safeParse(country);
-      expect(result.success).toBe(false);
+  describe("ActionSchema", () => {
+    it("accepts new action types", () => {
+      expect(() => ActionSchema.parse({ type: "NUCLEAR_FUND_PROGRAM" })).not.toThrow();
+      expect(() => ActionSchema.parse({ type: "INTEL_COUP", targetCountryId: "IRN" })).not.toThrow();
+      expect(() =>
+        ActionSchema.parse({
+          type: "MILITARY_AIRSTRIKE",
+          targetCountryId: "IRN",
+          params: { targetType: "NUCLEAR" },
+        }),
+      ).not.toThrow();
     });
   });
 
-  describe('WorldStateSchema', () => {
-    it('should validate a minimal world state', () => {
-      const worldState = {
-        turn: 0,
-        date: '2025-01',
-        countries: [],
-        wars: [],
-        globalTension: 50,
-        eventQueue: [],
-        seed: 12345,
-        playerCountryId: 'USA',
-      };
-      const result = WorldStateSchema.safeParse(worldState);
-      expect(result.success).toBe(true);
+  describe("data file conformance", () => {
+    const dataPath = join(process.cwd(), "data");
+
+    it("every country profile parses against CountryProfileSchema", () => {
+      const files = readdirSync(join(dataPath, "countries")).filter((f) => f.endsWith(".json"));
+      expect(files.length).toBeGreaterThanOrEqual(25);
+      for (const file of files) {
+        const raw = JSON.parse(readFileSync(join(dataPath, "countries", file), "utf-8"));
+        expect(() => CountryProfileSchema.parse(raw), `parsing ${file}`).not.toThrow();
+      }
+    });
+
+    it("every country profile has historical context", () => {
+      const files = readdirSync(join(dataPath, "countries")).filter((f) => f.endsWith(".json"));
+      for (const file of files) {
+        const profile = CountryProfileSchema.parse(
+          JSON.parse(readFileSync(join(dataPath, "countries", file), "utf-8")),
+        );
+        expect(profile.history.keyEvents.length, `${file} keyEvents`).toBeGreaterThanOrEqual(4);
+        expect(profile.goals.length, `${file} goals`).toBeGreaterThanOrEqual(3);
+        expect(profile.history.narrative, `${file} narrative`).toBeTruthy();
+      }
+    });
+
+    it("every scenario parses against ScenarioSchema and has 25 leaders", () => {
+      const files = readdirSync(join(dataPath, "scenarios")).filter((f) => f.endsWith(".json"));
+      expect(files.length).toBe(3);
+      for (const file of files) {
+        const scenario = ScenarioSchema.parse(
+          JSON.parse(readFileSync(join(dataPath, "scenarios", file), "utf-8")),
+        );
+        expect(Object.keys(scenario.leaders).length, `${file} leaders`).toBe(25);
+      }
     });
   });
 });

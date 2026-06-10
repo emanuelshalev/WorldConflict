@@ -3,23 +3,80 @@
   "iso3": "IRN",
   "name": "Iran",
   "population": 88000000,
-  "gdp": 388000000000,
-  "gdpGrowth": 0.025,
-  "militaryBudgetPct": 2.5,
-  "manpower": 610000,
-  "airpower": 551,
   "regimeType": "THEOCRACY",
-  "riskTolerance": 65,
-  "stability": 60,
-  "legitimacy": 55,
+  "politicalSystem": {
+    "type": "THEOCRACY",
+    "powerCenters": ["RELIGIOUS", "SECURITY_SERVICES", "EXECUTIVE"],
+    "electionCycleMonths": 0,
+    "nextElectionTurn": null,
+    "leaderTitle": "Supreme Leader"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1953, "event": "CIA-backed coup against Prime Minister Mossadegh", "impact": "Seeded enduring distrust of the United States and fear of foreign-engineered regime change" },
+      { "year": 1979, "event": "Islamic Revolution overthrows the Shah", "impact": "Established clerical rule under velayat-e faqih and a foreign policy of revolutionary export" },
+      { "year": 1988, "event": "End of the eight-year Iran-Iraq War", "impact": "A million casualties taught reliance on self-sufficiency, missiles, and proxies over conventional parity" },
+      { "year": 2006, "event": "UN sanctions over the nuclear program", "impact": "Decades of escalating sanctions hardened a resistance economy and siege mentality" },
+      { "year": 2015, "event": "JCPOA nuclear agreement", "impact": "Brief sanctions relief in exchange for enrichment limits; showed diplomacy could pay" },
+      { "year": 2018, "event": "US withdrawal from the JCPOA and maximum pressure", "impact": "Vindicated hardliners, crashed the economy, and pushed enrichment toward weapons-grade" },
+      { "year": 2020, "event": "US assassination of IRGC commander Qasem Soleimani", "impact": "Demonstrated vulnerability of the proxy architecture and deepened confrontation with Washington" }
+    ],
+    "historicalRivals": ["ISR", "SAU", "USA"],
+    "historicalAllies": ["RUS", "CHN"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "EXPANSIONIST",
+    "narrative": "A revolutionary theocracy that compensates for conventional weakness with ballistic missiles, nuclear hedging, and an axis of armed proxies stretching from Lebanon to Yemen. Sanctions and isolation have bred a resilient siege economy and a leadership convinced that only deterrence and forward defense keep the regime alive."
+  },
+  "personality": {
+    "warPropensity": 55,
+    "allianceLoyalty": 60,
+    "diplomaticFlexibility": 35,
+    "riskTolerance": 65,
+    "expansionism": 70,
+    "isolationism": 25,
+    "ideologicalRigidity": 80,
+    "prestigeEmphasis": 70
+  },
+  "redLines": [
+    { "type": "IDEOLOGICAL", "description": "Foreign-backed regime change attempts or support for internal uprisings", "severity": 10 },
+    { "type": "NUCLEAR", "description": "Military attack on Iranian nuclear facilities", "severity": 9 },
+    { "type": "TERRITORIAL", "description": "Direct strikes on Iranian soil or assassination of senior leadership", "severity": 9 }
+  ],
+  "internalDivisions": [
+    { "kind": "IDEOLOGICAL", "name": "Reformist-hardliner struggle over the revolution's direction", "strength": 60, "tension": 70 },
+    { "kind": "ETHNIC", "name": "Kurdish, Baloch, Azeri, and Arab minority grievances", "strength": 40, "tension": 55 },
+    { "kind": "IDEOLOGICAL", "name": "Secular youth alienation from clerical rule", "strength": 50, "tension": 65 }
+  ],
+  "economy": {
+    "gdp": 400000000000,
+    "growthRate": 0.02,
+    "debtGdpRatio": 34,
+    "sectors": { "agriculture": 12, "industry": 38, "services": 50 },
+    "keyResources": ["oil", "natural_gas", "copper", "iron_ore"],
+    "keyExports": ["crude_oil", "petrochemicals", "pistachios", "carpets"],
+    "developmentLevel": "EMERGING"
+  },
+  "military": {
+    "manpower": 610000,
+    "airpower": 551,
+    "doctrine": "DETERRENCE",
+    "nuclearStatus": "DEVELOPING",
+    "warheads": 0,
+    "arms_suppliers": ["RUS", "PRIVATE"]
+  },
+  "militaryBudgetPct": 2.5,
+  "stability": 45,
+  "legitimacy": 45,
   "intelLevel": 75,
+  "insurgencyLevel": "UNREST",
   "goals": [
-    { "id": "irn_g1", "type": "SECURITY", "priority": 95, "description": "Develop nuclear deterrent capability" },
-    { "id": "irn_g2", "type": "IDEOLOGICAL", "priority": 85, "description": "Export Islamic Revolution and support proxies" },
-    { "id": "irn_g3", "type": "SECURITY", "targetCountryId": "ISR", "priority": 80, "description": "Counter Israeli influence" }
+    { "id": "irn_g1", "type": "SECURITY", "priority": 95, "description": "Achieve a nuclear deterrent to guarantee regime survival" },
+    { "id": "irn_g2", "type": "SECURITY", "targetCountryId": "ISR", "priority": 85, "description": "Counter Israeli power and intelligence operations through the axis of resistance" },
+    { "id": "irn_g3", "type": "IDEOLOGICAL", "priority": 70, "description": "Export the Islamic Revolution and sustain proxy networks in Lebanon, Iraq, Syria, and Yemen" },
+    { "id": "irn_g4", "type": "ECONOMIC", "priority": 65, "description": "Break sanctions isolation through energy ties with China and Russia" }
   ],
   "geo": {
     "bounds": [44.0, 25.1, 63.3, 39.8],
-    "capital": { "name": "Tehran", "coordinates": [51.3890, 35.6892] }
+    "capital": { "name": "Tehran", "coordinates": [51.389, 35.6892] }
   }
 }
