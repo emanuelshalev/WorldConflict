@@ -5,6 +5,14 @@ import { createLLMClient } from "../../agents/llmClient.js";
 import { ADVISOR_ROLES, type AdvisorRole } from "../../agents/schemas.js";
 import { gameDb } from "../../infra/db.js";
 
+const LLMConfigSchema = z.object({
+  provider: z.enum(["openai", "gemini", "ollama"]),
+  apiKey: z.string().optional(),
+  model: z.string().optional(),
+  baseUrl: z.string().optional(),
+});
+export type LLMConfigInput = z.infer<typeof LLMConfigSchema>;
+
 const ChatRequestSchema = z.object({
   saveId: z.string(),
   role: z.enum([
@@ -16,17 +24,44 @@ const ChatRequestSchema = z.object({
     "CHIEF_OF_STAFF",
   ]),
   message: z.string().optional(),
+  llm: LLMConfigSchema.optional(),
 });
 
 const advisorAgents: Map<string, AdvisorAgent> = new Map();
 
-function getAdvisorAgent(saveId: string): AdvisorAgent {
-  if (!advisorAgents.has(saveId)) {
-    const llmProvider = (process.env.LLM_PROVIDER as "openai" | "ollama" | "mock") ?? "mock";
-    const llmClient = createLLMClient(llmProvider);
-    advisorAgents.set(saveId, new AdvisorAgent(llmClient));
+function agentKey(saveId: string, llm?: LLMConfigInput): string {
+  if (!llm) return `${saveId}:env`;
+  return `${saveId}:${llm.provider}:${llm.model ?? "default"}:${llm.apiKey?.slice(0, 8) ?? "nokey"}`;
+}
+
+function getAdvisorAgent(saveId: string, llm?: LLMConfigInput): AdvisorAgent {
+  const key = agentKey(saveId, llm);
+  let agent = advisorAgents.get(key);
+  if (!agent) {
+    const llmClient = llm
+      ? createLLMClient(llm.provider, {
+          apiKey: llm.apiKey,
+          model: llm.model ?? defaultModel(llm.provider),
+          baseUrl: llm.baseUrl,
+        })
+      : createLLMClient((process.env.LLM_PROVIDER as "openai" | "ollama" | "mock") ?? "mock");
+    agent = new AdvisorAgent(llmClient);
+    advisorAgents.set(key, agent);
   }
-  return advisorAgents.get(saveId)!;
+  return agent;
+}
+
+function defaultModel(provider: string): string {
+  switch (provider) {
+    case "openai":
+      return "gpt-4o-mini";
+    case "gemini":
+      return "gemini-1.5-flash";
+    case "ollama":
+      return "llama3.2";
+    default:
+      return "gpt-4o-mini";
+  }
 }
 
 export async function chatRoutes(fastify: FastifyInstance): Promise<void> {
@@ -38,7 +73,7 @@ export async function chatRoutes(fastify: FastifyInstance): Promise<void> {
     ) => {
       try {
         const body = ChatRequestSchema.parse(request.body);
-        const { saveId, role, message } = body;
+        const { saveId, role, message, llm } = body;
 
         const saveData = await gameDb.loadGame(saveId);
         if (!saveData) {
@@ -58,7 +93,7 @@ export async function chatRoutes(fastify: FastifyInstance): Promise<void> {
           });
         }
 
-        const agent = getAdvisorAgent(saveId);
+        const agent = getAdvisorAgent(saveId, llm);
         const response = await agent.chat(role, playerCountry, worldState, message);
 
         return reply.send({
@@ -70,6 +105,37 @@ export async function chatRoutes(fastify: FastifyInstance): Promise<void> {
         return reply.status(500).send({
           success: false,
           error: error instanceof Error ? error.message : "Failed to get advisor response",
+        });
+      }
+    },
+  );
+
+  // Connection test for the Settings screen: sends a tiny prompt, reports success
+  fastify.post(
+    "/test",
+    async (
+      request: FastifyRequest<{ Body: z.infer<typeof LLMConfigSchema> }>,
+      reply: FastifyReply,
+    ) => {
+      try {
+        const llm = LLMConfigSchema.parse(request.body);
+        const client = createLLMClient(llm.provider, {
+          apiKey: llm.apiKey,
+          model: llm.model ?? defaultModel(llm.provider),
+          baseUrl: llm.baseUrl,
+          maxTokens: 20,
+          timeout: 15000,
+        });
+        const response = await client.chat([{ role: "user", content: "Reply with exactly: OK" }]);
+        return reply.send({
+          success: true,
+          model: client.getConfig().model,
+          sample: response.content.slice(0, 60),
+        });
+      } catch (error) {
+        return reply.send({
+          success: false,
+          error: error instanceof Error ? error.message : "Connection failed",
         });
       }
     },

@@ -12,6 +12,7 @@ import { TurnFeedbackModal } from './components/TurnFeedbackModal'
 import { CrisisDecisionModal } from './components/CrisisDecisionModal'
 import { BackstoryModal } from './components/BackstoryModal'
 import { EndGameReport } from './components/EndGameReport'
+import { SettingsModal } from './components/SettingsModal'
 import { useGameStore } from './store/gameStore'
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
       <CrisisDecisionModal />
       <BackstoryModal />
       <EndGameReport />
+      <SettingsModal />
 
       {isLoading && (
         <div className="loading-overlay">

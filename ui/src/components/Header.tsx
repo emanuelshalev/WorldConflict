@@ -23,6 +23,9 @@ export function Header() {
           <h1 className="header-title">WORLD CONFLICT</h1>
         </div>
         <div className="header-right">
+          <button className="btn btn-secondary" onClick={() => openModal('settings')} title="Settings">
+            ⚙
+          </button>
           <button className="btn btn-primary" onClick={() => openModal('newGame')}>
             New Game
           </button>
@@ -80,6 +83,9 @@ export function Header() {
         </button>
         <button className="btn btn-secondary" onClick={() => openModal('advisor')}>
           Advisors
+        </button>
+        <button className="btn btn-secondary" onClick={() => openModal('settings')} title="Settings — plug in your LLM">
+          ⚙
         </button>
         <button className="btn btn-primary" onClick={() => openModal('newGame')}>
           New Game

@@ -336,7 +336,7 @@ export function MapView() {
       icons.push({
         type: 'Feature',
         geometry: { type: 'Point', coordinates: center },
-        properties: { kind: 'label', icon: view.id, size: 11, color: '#e8e8e8' },
+        properties: { kind: 'label', icon: view.name, size: 11, color: '#e8e8e8' },
       });
       if (view.nuclearStatus === 'ARMED' || view.nuclearStatus === 'TESTED') {
         icons.push({

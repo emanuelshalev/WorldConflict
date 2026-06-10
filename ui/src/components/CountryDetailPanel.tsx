@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { fetchPreview, useGameStore, useViewCountry } from '../store/gameStore';
+import { countryNames, fetchPreview, useGameStore, useViewCountry } from '../store/gameStore';
 import type { UncertainRange } from '../store/gameStore';
 
 function fmtMoney(n: number): string {
@@ -167,10 +167,10 @@ export function CountryDetailPanel() {
           </b>
         </div>
         {view.alliances.length > 0 && (
-          <div style={S.row}><span>Pacts</span><b>{view.alliances.join(', ')}</b></div>
+          <div style={S.row}><span>Pacts</span><b>{countryNames(view.alliances)}</b></div>
         )}
         {view.atWarWith.length > 0 && (
-          <div style={S.row}><span>⚔️ At war with</span><b style={{ color: '#ff4040' }}>{view.atWarWith.join(', ')}</b></div>
+          <div style={S.row}><span>⚔️ At war with</span><b style={{ color: '#ff4040' }}>{countryNames(view.atWarWith)}</b></div>
         )}
       </div>
 

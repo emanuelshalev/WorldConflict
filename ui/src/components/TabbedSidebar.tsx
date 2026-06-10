@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useGameStore, usePlayerCountry } from '../store/gameStore';
+import { countryNames, useGameStore, usePlayerCountry } from '../store/gameStore';
 import { ActionPanel } from './ActionPanel';
 import { WarList } from './WarProgressBar';
 import './TabbedSidebar.css';
@@ -27,7 +27,7 @@ export function TabbedSidebar() {
       icon: '🌐',
       name: 'Foreign Minister',
       summary: player.alliances.length
-        ? `${player.alliances.length} active pact(s): ${player.alliances.join(', ')}. ${player.atWarWith.length ? 'Wartime diplomacy is consuming the ministry.' : 'Diplomatic channels open.'}`
+        ? `${player.alliances.length} active pact(s): ${countryNames(player.alliances)}. ${player.atWarWith.length ? 'Wartime diplomacy is consuming the ministry.' : 'Diplomatic channels open.'}`
         : 'No formal alliances. We stand alone — diplomatic outreach recommended.',
     },
     {
@@ -35,7 +35,7 @@ export function TabbedSidebar() {
       icon: '🎖️',
       name: 'Defense Minister',
       summary: player.atWarWith.length
-        ? `At war with ${player.atWarWith.join(', ')}. Mobilization ${player.mobilizationLevel}%.`
+        ? `At war with ${countryNames(player.atWarWith)}. Mobilization ${player.mobilizationLevel}%.`
         : `Forces at ${player.mobilizationLevel}% readiness; budget ${player.militaryBudgetPercent.toFixed(1)}% of GDP. ${player.nuclear.status === 'ARMED' ? `Arsenal: ${player.nuclear.warheads} warheads.` : ''}`,
     },
     {

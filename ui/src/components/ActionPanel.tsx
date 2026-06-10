@@ -1,4 +1,4 @@
-import { executeTurn, fetchPreview, useGameStore, usePlayerCountry, PHASE_ORDER, PHASE_LABELS } from '../store/gameStore';
+import { countryName, countryNames, executeTurn, fetchPreview, useGameStore, usePlayerCountry, PHASE_ORDER, PHASE_LABELS } from '../store/gameStore';
 import type { TurnPhase } from '../store/gameStore';
 import './ActionPanel.css';
 
@@ -97,7 +97,7 @@ export function ActionPanel() {
     const preview = await fetchPreview(action);
     addPendingAction({
       ...action,
-      label: opt.requiresTarget ? `${opt.label} → ${selectedCountryId}` : opt.label,
+      label: opt.requiresTarget ? `${opt.label} → ${countryName(selectedCountryId)}` : opt.label,
       preview: preview ?? undefined,
     });
     openModal('actionPreview');
@@ -152,7 +152,7 @@ export function ActionPanel() {
           <div style={{ fontSize: 13, color: '#bbc', marginBottom: 8 }}>
             <div>Approval: <b style={{ color: player.approval > 50 ? '#8c8' : '#e88' }}>{Math.round(player.approval)}%</b> · Stability: <b>{Math.round(player.stability)}%</b></div>
             <div>GDP: <b>${(player.gdp / 1e12).toFixed(2)}T</b> ({(player.growthRate * 100).toFixed(1)}%/yr) · Budget: <b>{player.militaryBudgetPercent.toFixed(1)}% GDP</b></div>
-            {player.atWarWith.length > 0 && <div style={{ color: '#ff8080' }}>⚔️ At war with {player.atWarWith.join(', ')}</div>}
+            {player.atWarWith.length > 0 && <div style={{ color: '#ff8080' }}>⚔️ At war with {countryNames(player.atWarWith)}</div>}
             {player.insurgencyLevel !== 'NONE' && <div style={{ color: '#e8a13c' }}>🔥 Insurgency: {player.insurgencyLevel} (policing: {player.policingTactic})</div>}
             {player.underGlobalEmbargo && <div style={{ color: '#ff8080' }}>🚫 Under global arms embargo</div>}
             {player.politicalSystem.nextElectionTurn !== null && (
@@ -180,7 +180,7 @@ export function ActionPanel() {
           </h3>
           {currentPhase !== 'domestic' && (
             <p style={{ fontSize: 11, color: '#778', margin: '0 0 8px 0' }}>
-              {selectedCountryId ? `Target: ${selectedCountryId}` : 'Select a country on the map to target it'}
+              {selectedCountryId ? `Target: ${countryName(selectedCountryId)}` : 'Select a country on the map to target it'}
             </p>
           )}
           <div style={{ maxHeight: 320, overflowY: 'auto' }}>

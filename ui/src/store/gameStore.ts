@@ -57,8 +57,10 @@ export interface CountryFull {
   alliances: string[];
   atWarWith: string[];
   intelLevel: number;
+  counterIntelLevel: number;
   insurgencyLevel: string;
   policingTactic: string;
+  internalDivisions: Array<{ kind: string; name: string; strength: number; tension: number }>;
   nuclear: { status: string; progress: number; funded: boolean; warheads: number };
   borderDeployments: Array<{ targetCountryId: string; troops: number }>;
   underGlobalEmbargo: boolean;
@@ -225,6 +227,7 @@ export interface GameState {
     | 'actionPreview'
     | 'turnFeedback'
     | 'endGame'
+    | 'settings'
     | null;
   activeAdvisorRole: string | null;
   mapLayer: 'political' | 'military' | 'economic' | 'stability' | 'intelligence' | 'nuclear';
@@ -237,6 +240,8 @@ export interface GameState {
 
   llmPermissionGranted: boolean;
   llmProvider: string | null;
+  llmSettings: LLMSettings;
+  setLLMSettings: (settings: LLMSettings) => void;
   advisorChatHistory: Record<string, Array<{ role: 'user' | 'advisor'; content: string; timestamp: string }>>;
 
   setLoading: (loading: boolean) => void;
@@ -264,6 +269,50 @@ export interface GameState {
 }
 
 const API_BASE = 'http://localhost:8080/api';
+
+// ============================================================================
+// LLM settings (BYO model): persisted in localStorage
+// ============================================================================
+
+export interface LLMSettings {
+  provider: 'builtin' | 'openai' | 'gemini' | 'ollama';
+  apiKey: string;
+  model: string;
+  baseUrl: string;
+}
+
+export const DEFAULT_LLM_SETTINGS: LLMSettings = {
+  provider: 'builtin',
+  apiKey: '',
+  model: '',
+  baseUrl: '',
+};
+
+export const LLM_MODEL_DEFAULTS: Record<string, string> = {
+  openai: 'gpt-4o-mini',
+  gemini: 'gemini-1.5-flash',
+  ollama: 'llama3.2',
+};
+
+function loadLLMSettings(): LLMSettings {
+  try {
+    const raw = localStorage.getItem('worldconflict.llm');
+    if (raw) return { ...DEFAULT_LLM_SETTINGS, ...JSON.parse(raw) };
+  } catch {
+    /* corrupted settings → defaults */
+  }
+  return DEFAULT_LLM_SETTINGS;
+}
+
+export function llmRequestBody(settings: LLMSettings) {
+  if (settings.provider === 'builtin') return undefined;
+  return {
+    provider: settings.provider,
+    apiKey: settings.apiKey || undefined,
+    model: settings.model || LLM_MODEL_DEFAULTS[settings.provider],
+    baseUrl: settings.baseUrl || undefined,
+  };
+}
 
 export const PHASE_ORDER: TurnPhase[] = ['news', 'briefing', 'diplomacy', 'military', 'domestic', 'confirm'];
 
@@ -303,6 +352,15 @@ export const useGameStore = create<GameState>((set) => ({
 
   llmPermissionGranted: false,
   llmProvider: null,
+  llmSettings: loadLLMSettings(),
+  setLLMSettings: (settings) => {
+    try {
+      localStorage.setItem('worldconflict.llm', JSON.stringify(settings));
+    } catch {
+      /* storage unavailable */
+    }
+    set({ llmSettings: settings });
+  },
   advisorChatHistory: {},
 
   setLoading: (loading) => set({ isLoading: loading }),
@@ -526,6 +584,17 @@ export async function fetchSaves(): Promise<
   const data = await response.json();
   if (!data.success) throw new Error(data.error || 'Failed to fetch saves');
   return data.saves;
+}
+
+/** Resolve a country id to its display name from the current world state. */
+export function countryName(id: string | null | undefined): string {
+  if (!id) return '';
+  const { worldState } = useGameStore.getState();
+  return worldState?.countries.find((c) => c.id === id)?.name ?? id;
+}
+
+export function countryNames(ids: string[]): string {
+  return ids.map((id) => countryName(id)).join(', ');
 }
 
 // Convenience selectors
