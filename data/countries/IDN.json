@@ -3,19 +3,77 @@
   "iso3": "IDN",
   "name": "Indonesia",
   "population": 277000000,
-  "gdp": 1420000000000,
-  "gdpGrowth": 0.051,
-  "militaryBudgetPct": 0.8,
-  "manpower": 400000,
-  "airpower": 444,
   "regimeType": "DEMOCRACY",
-  "riskTolerance": 30,
-  "stability": 72,
+  "politicalSystem": {
+    "type": "PRESIDENTIAL_DEMOCRACY",
+    "powerCenters": ["EXECUTIVE", "LEGISLATURE", "MILITARY"],
+    "electionCycleMonths": 60,
+    "nextElectionTurn": null,
+    "leaderTitle": "President"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1945, "event": "Proclamation of independence from the Netherlands", "impact": "Four-year revolutionary war forged national identity around anti-colonialism and unity in diversity" },
+      { "year": 1955, "event": "Bandung Conference", "impact": "Hosted the founding moment of the Non-Aligned Movement; neutrality became doctrinal" },
+      { "year": 1965, "event": "Failed coup and anti-communist massacres", "impact": "Army-led purges killed hundreds of thousands and installed Suharto's New Order for three decades" },
+      { "year": 1997, "event": "Asian financial crisis", "impact": "Economic collapse toppled Suharto and seared a lasting caution about external economic dependence" },
+      { "year": 1998, "event": "Reformasi democratic transition", "impact": "Successful democratization of the world's largest Muslim-majority nation; military pulled back from politics" },
+      { "year": 2002, "event": "Loss of East Timor and Bali bombings", "impact": "Separatism and jihadist terror pushed counterterrorism and territorial integrity to the fore" },
+      { "year": 2014, "event": "Rise of Jokowi and infrastructure decade", "impact": "Development-first pragmatism, nickel-driven industrial policy, and hedging between the US and China" }
+    ],
+    "historicalRivals": [],
+    "historicalAllies": ["AUS", "JPN", "IND"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "NON_ALIGNED",
+    "narrative": "A sprawling archipelago of 17,000 islands practicing a 'free and active' foreign policy: friends with all, allied with none, and instinctively suspicious of great-power blocs. Its energies go to economic development, ASEAN centrality, and holding a vast multiethnic nation together rather than projecting power abroad."
+  },
+  "personality": {
+    "warPropensity": 20,
+    "allianceLoyalty": 50,
+    "diplomaticFlexibility": 75,
+    "riskTolerance": 30,
+    "expansionism": 15,
+    "isolationism": 60,
+    "ideologicalRigidity": 35,
+    "prestigeEmphasis": 55
+  },
+  "redLines": [
+    { "type": "TERRITORIAL", "description": "Foreign support for separatism in Papua or any challenge to archipelagic territorial integrity", "severity": 9 },
+    { "type": "TERRITORIAL", "targetCountryId": "CHN", "description": "Incursions into the Natuna Islands exclusive economic zone", "severity": 7 },
+    { "type": "ECONOMIC", "description": "Blockage of vital sea lanes through the Malacca and Sunda straits", "severity": 7 }
+  ],
+  "internalDivisions": [
+    { "kind": "REGIONAL", "name": "Papuan separatism and periphery resentment of Java", "strength": 15, "tension": 45 },
+    { "kind": "RELIGIOUS", "name": "Islamist conservatism vs. pluralist Pancasila state", "strength": 40, "tension": 40 },
+    { "kind": "ETHNIC", "name": "Tensions around the Chinese-Indonesian commercial minority", "strength": 10, "tension": 25 }
+  ],
+  "economy": {
+    "gdp": 1400000000000,
+    "growthRate": 0.051,
+    "debtGdpRatio": 39,
+    "sectors": { "agriculture": 13, "industry": 41, "services": 46 },
+    "keyResources": ["nickel", "coal", "palm_oil", "natural_gas", "copper"],
+    "keyExports": ["coal", "palm_oil", "nickel_products", "electronics", "rubber"],
+    "developmentLevel": "EMERGING"
+  },
+  "military": {
+    "manpower": 400000,
+    "airpower": 444,
+    "doctrine": "DEFENSIVE",
+    "nuclearStatus": "NONE",
+    "warheads": 0,
+    "arms_suppliers": ["USA", "RUS"]
+  },
+  "militaryBudgetPct": 0.8,
+  "stability": 65,
   "legitimacy": 70,
-  "intelLevel": 55,
+  "intelLevel": 50,
+  "insurgencyLevel": "NONE",
   "goals": [
-    { "id": "idn_g1", "type": "PRESTIGE", "priority": 75, "description": "Lead ASEAN and maintain regional neutrality" },
-    { "id": "idn_g2", "type": "ECONOMIC", "priority": 85, "description": "Develop manufacturing and reduce commodity dependence" }
+    { "id": "idn_g1", "type": "ECONOMIC", "priority": 90, "description": "Industrialize through downstream processing of nickel and critical minerals" },
+    { "id": "idn_g2", "type": "PRESTIGE", "priority": 75, "description": "Lead ASEAN and keep Southeast Asia out of great-power blocs" },
+    { "id": "idn_g3", "type": "SECURITY", "priority": 70, "description": "Defend the Natuna EEZ and maritime sovereignty across the archipelago" },
+    { "id": "idn_g4", "type": "SECURITY", "priority": 60, "description": "Contain Papuan separatism and jihadist terrorism at home" }
   ],
   "geo": {
     "bounds": [95.0, -11.0, 141.0, 6.1],

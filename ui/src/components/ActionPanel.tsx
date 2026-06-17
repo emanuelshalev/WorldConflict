@@ -1,204 +1,254 @@
-import { useState } from 'react';
-import { useGameStore } from '../store/gameStore';
+import { countryName, countryNames, executeTurn, fetchPreview, useGameStore, usePlayerCountry, PHASE_ORDER, PHASE_LABELS } from '../store/gameStore';
+import type { TurnPhase } from '../store/gameStore';
 import './ActionPanel.css';
 
 interface ActionOption {
   id: string;
   label: string;
-  description: string;
   icon: string;
   requiresTarget?: boolean;
-  category?: 'warning' | 'danger';
+  danger?: boolean;
+  params?: Record<string, unknown>;
+  value?: number;
 }
 
-const DIPLOMACY_ACTIONS: ActionOption[] = [
-  { id: 'DIPLOMACY_IMPROVE_RELATIONS', label: 'Improve Relations', description: 'Invest in diplomatic ties', icon: '🤝', requiresTarget: true },
-  { id: 'DIPLOMACY_PROPOSE_ALLIANCE', label: 'Propose Alliance', description: 'Formal mutual defense pact', icon: '📜', requiresTarget: true },
-  { id: 'DIPLOMACY_BREAK_ALLIANCE', label: 'Break Alliance', description: 'End existing alliance', icon: '💔', requiresTarget: true, category: 'warning' },
-  { id: 'DIPLOMACY_DECLARE_WAR', label: 'Declare War', description: 'Military conflict', icon: '⚔️', requiresTarget: true, category: 'danger' },
-  { id: 'DIPLOMACY_PROPOSE_CEASEFIRE', label: 'Propose Ceasefire', description: 'End active conflict', icon: '🕊️', requiresTarget: true },
-  { id: 'DIPLOMACY_CUSTOM', label: 'Custom Action...', description: 'Describe your diplomatic move', icon: '✏️' },
-];
-
-const MILITARY_ACTIONS: ActionOption[] = [
-  { id: 'MILITARY_MOBILIZE', label: 'Mobilize Forces', description: 'Increase military readiness', icon: '🎖️' },
-  { id: 'MILITARY_DEMOBILIZE', label: 'Demobilize', description: 'Reduce military spending', icon: '🏠' },
-  { id: 'MILITARY_DEPLOY_BORDER', label: 'Deploy to Border', description: 'Position troops at border', icon: '🚧', requiresTarget: true, category: 'warning' },
-  { id: 'MILITARY_AIRSTRIKE', label: 'Launch Airstrike', description: 'Precision strike on target', icon: '✈️', requiresTarget: true, category: 'danger' },
-  { id: 'MILITARY_PURCHASE', label: 'Purchase Equipment', description: 'Buy military hardware', icon: '🛒' },
-  { id: 'MILITARY_CUSTOM', label: 'Custom Action...', description: 'Describe your military move', icon: '✏️' },
-];
-
-const DOMESTIC_ACTIONS: ActionOption[] = [
-  { id: 'DOMESTIC_ADJUST_BUDGET', label: 'Adjust Budget', description: 'Change military spending %', icon: '💰' },
-  { id: 'DOMESTIC_ADDRESS_INSURGENCY', label: 'Address Insurgency', description: 'Deal with internal unrest', icon: '🛡️' },
-  { id: 'DOMESTIC_ECONOMIC_POLICY', label: 'Economic Policy', description: 'Stimulus or austerity', icon: '📊' },
-  { id: 'DOMESTIC_INTEL_OPERATION', label: 'Intel Operation', description: 'Covert activities', icon: '🕵️', requiresTarget: true },
-  { id: 'DOMESTIC_CUSTOM', label: 'Custom Action...', description: 'Describe your domestic move', icon: '✏️' },
-];
-
-interface ActionGroupProps {
-  title: string;
-  icon: string;
-  actions: ActionOption[];
-  isExpanded: boolean;
-  onToggle: () => void;
-  pendingCount: number;
-  onActionClick: (action: ActionOption) => void;
-}
-
-function ActionGroup({ title, icon, actions, isExpanded, onToggle, pendingCount, onActionClick }: ActionGroupProps) {
-  return (
-    <div className={`action-group ${isExpanded ? 'expanded' : ''}`}>
-      <button className="action-group-header" onClick={onToggle}>
-        <span className="group-icon">{icon}</span>
-        <span className="group-title">{title}</span>
-        {pendingCount > 0 && <span className="pending-badge">{pendingCount}</span>}
-        <span className="expand-icon">{isExpanded ? '▼' : '▶'}</span>
-      </button>
-      {isExpanded && (
-        <div className="action-group-content">
-          {actions.map((action) => (
-            <button
-              key={action.id}
-              className={`action-option ${action.category || ''}`}
-              onClick={() => onActionClick(action)}
-            >
-              <span className="action-icon">{action.icon}</span>
-              <div className="action-details">
-                <span className="action-label">{action.label}</span>
-                <span className="action-desc">{action.description}</span>
-              </div>
-              {action.requiresTarget && <span className="target-indicator">→</span>}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
+const PHASE_ACTIONS: Partial<Record<TurnPhase, ActionOption[]>> = {
+  diplomacy: [
+    { id: 'DIPLOMACY_IMPROVE_RELATIONS', label: 'Improve Relations', icon: '🤝', requiresTarget: true },
+    { id: 'DIPLOMACY_DENOUNCE', label: 'Denounce', icon: '📢', requiresTarget: true },
+    { id: 'DIPLOMACY_PROPOSE_ALLIANCE', label: 'Propose Military Pact', icon: '🛡', requiresTarget: true },
+    { id: 'DIPLOMACY_BREAK_ALLIANCE', label: 'Break Alliance', icon: '💔', requiresTarget: true, danger: true },
+    { id: 'DIPLOMACY_PROPOSE_CEASEFIRE', label: 'Propose Ceasefire', icon: '🕊', requiresTarget: true },
+    { id: 'DIPLOMACY_DECLARE_WAR', label: 'Declare War', icon: '⚔️', requiresTarget: true, danger: true },
+  ],
+  military: [
+    { id: 'MILITARY_MOBILIZE', label: 'Mobilize Forces', icon: '📯' },
+    { id: 'MILITARY_DEMOBILIZE', label: 'Demobilize', icon: '🏠' },
+    { id: 'MILITARY_PROCURE', label: 'Procure Arms ($500M)', icon: '🛒', value: 500 },
+    { id: 'MILITARY_DEPLOY_BORDER', label: 'Deploy to Border', icon: '🪖', requiresTarget: true, danger: true },
+    { id: 'MILITARY_WITHDRAW_BORDER', label: 'Withdraw from Border', icon: '↩️', requiresTarget: true },
+    { id: 'MILITARY_AIRSTRIKE', label: 'Airstrike: Military', icon: '✈️', requiresTarget: true, danger: true, params: { targetType: 'MILITARY' } },
+    { id: 'MILITARY_AIRSTRIKE', label: 'Airstrike: Nuclear Sites', icon: '☢', requiresTarget: true, danger: true, params: { targetType: 'NUCLEAR' } },
+    { id: 'NUCLEAR_FUND_PROGRAM', label: 'Fund Nuclear Program ($20M/mo)', icon: '⚛️', danger: true },
+    { id: 'NUCLEAR_STRIKE', label: 'NUCLEAR STRIKE', icon: '☢️', requiresTarget: true, danger: true },
+  ],
+  domestic: [
+    { id: 'DOMESTIC_REFORM', label: 'Structural Reform', icon: '🏗' },
+    { id: 'DOMESTIC_PROPAGANDA', label: 'State Propaganda', icon: '📺' },
+    { id: 'DOMESTIC_POLICING', label: 'Soft Policing', icon: '👮', params: { tactic: 'SOFT' } },
+    { id: 'DOMESTIC_POLICING', label: 'Hard Crackdown', icon: '🔨', danger: true, params: { tactic: 'HARD' } },
+    { id: 'ECONOMY_ADJUST_MILITARY_BUDGET', label: 'Raise Military Budget', icon: '📈', value: -1 },
+    { id: 'INTEL_GATHER', label: 'Intel Operation', icon: '🕵', requiresTarget: true },
+    { id: 'INTEL_COUNTER_INTEL', label: 'Counter-Intelligence', icon: '🛡' },
+  ],
+};
 
 export function ActionPanel() {
-  const { worldState, pendingActions, addPendingAction, removePendingAction, openModal, selectedCountryId } = useGameStore();
-  const [expandedGroup, setExpandedGroup] = useState<string | null>('diplomacy');
+  const currentPhase = useGameStore((s) => s.currentPhase);
+  const setPhase = useGameStore((s) => s.setPhase);
+  const advancePhase = useGameStore((s) => s.advancePhase);
+  const pendingActions = useGameStore((s) => s.pendingActions);
+  const removePendingAction = useGameStore((s) => s.removePendingAction);
+  const addPendingAction = useGameStore((s) => s.addPendingAction);
+  const openModal = useGameStore((s) => s.openModal);
+  const selectedCountryId = useGameStore((s) => s.selectedCountryId);
+  const setError = useGameStore((s) => s.setError);
+  const gameOver = useGameStore((s) => s.gameOver);
+  const pendingDecisions = useGameStore((s) => s.pendingDecisions);
+  const decisionChoices = useGameStore((s) => s.decisionChoices);
+  const worldState = useGameStore((s) => s.worldState);
+  const player = usePlayerCountry();
 
-  if (!worldState) return null;
+  if (!worldState || !player) {
+    return (
+      <div className="action-panel">
+        <p className="empty-text">Start a new game to take command.</p>
+      </div>
+    );
+  }
 
-  const player = worldState.countries.find(c => c.id === worldState.playerCountryId);
-  if (!player) return null;
+  if (gameOver) {
+    return (
+      <div className="action-panel">
+        <h3 style={{ color: '#ff8080' }}>Your rule has ended</h3>
+        <p style={{ fontSize: 13, color: '#bba' }}>{gameOver.description}</p>
+        <button className="btn btn-primary" style={{ width: '100%' }} onClick={() => openModal('endGame')}>
+          📜 View your place in history
+        </button>
+      </div>
+    );
+  }
 
-  const handleActionClick = (action: ActionOption) => {
-    if (action.id.endsWith('_CUSTOM')) {
-      // TODO: Open custom action modal
+  const handleAction = async (opt: ActionOption) => {
+    if (opt.requiresTarget && !selectedCountryId) {
+      setError('Select a target country on the map first');
       return;
     }
-
-    if (action.requiresTarget && !selectedCountryId) {
-      // Prompt to select a country on the map
-      alert('Please select a target country on the map first.');
+    if (opt.requiresTarget && selectedCountryId === player.id) {
+      setError('Select a foreign country as the target');
       return;
     }
-
-    // Add to pending actions with preview
-    const pendingAction = {
-      type: action.id,
-      targetCountryId: action.requiresTarget ? selectedCountryId ?? undefined : undefined,
-      preview: {
-        effects: [],
-        risks: [],
-        costs: [],
-      },
+    const action = {
+      type: opt.id,
+      targetCountryId: opt.requiresTarget ? (selectedCountryId ?? undefined) : undefined,
+      value: opt.value === -1 ? Math.min(20, player.militaryBudgetPercent + 1) : opt.value,
+      params: opt.params,
     };
-
-    addPendingAction(pendingAction);
-    
-    // Open preview modal
+    const preview = await fetchPreview(action);
+    addPendingAction({
+      ...action,
+      label: opt.requiresTarget ? `${opt.label} → ${countryName(selectedCountryId)}` : opt.label,
+      preview: preview ?? undefined,
+    });
     openModal('actionPreview');
   };
 
-  const handleConfirmTurn = async () => {
-    if (pendingActions.length === 0) {
-      alert('Please select at least one action before confirming your turn.');
-      return;
-    }
-
-    // TODO: Submit turn to backend
-    openModal('turnFeedback');
-  };
-
-  const diplomacyPending = pendingActions.filter(a => a.type.startsWith('DIPLOMACY_')).length;
-  const militaryPending = pendingActions.filter(a => a.type.startsWith('MILITARY_')).length;
-  const domesticPending = pendingActions.filter(a => a.type.startsWith('DOMESTIC_')).length;
+  const phaseIndex = PHASE_ORDER.indexOf(currentPhase);
+  const actions = PHASE_ACTIONS[currentPhase] ?? [];
+  const unansweredCrises = pendingDecisions.filter((d) => !decisionChoices[d.id]).length;
 
   return (
     <div className="action-panel">
-      <div className="action-panel-header">
-        <h2>Actions</h2>
-        <span className="turn-info">Turn {worldState.turn} - {worldState.date}</span>
+      {/* Phase stepper */}
+      <div style={{ display: 'flex', gap: 2, marginBottom: 12 }}>
+        {PHASE_ORDER.map((phase, i) => (
+          <button
+            key={phase}
+            onClick={() => i <= phaseIndex + 1 && setPhase(phase)}
+            style={{
+              flex: 1,
+              padding: '5px 2px',
+              fontSize: 10,
+              border: 'none',
+              borderRadius: 4,
+              cursor: 'pointer',
+              background: phase === currentPhase ? '#2a6dd9' : i < phaseIndex ? '#1d3a5f' : '#1a1e28',
+              color: phase === currentPhase ? '#fff' : i < phaseIndex ? '#7ab' : '#667',
+              fontWeight: phase === currentPhase ? 700 : 400,
+            }}
+          >
+            {PHASE_LABELS[phase]}
+          </button>
+        ))}
       </div>
 
-      <div className="action-groups">
-        <ActionGroup
-          title="Diplomacy"
-          icon="🤝"
-          actions={DIPLOMACY_ACTIONS}
-          isExpanded={expandedGroup === 'diplomacy'}
-          onToggle={() => setExpandedGroup(expandedGroup === 'diplomacy' ? null : 'diplomacy')}
-          pendingCount={diplomacyPending}
-          onActionClick={handleActionClick}
-        />
-        <ActionGroup
-          title="Military"
-          icon="⚔️"
-          actions={MILITARY_ACTIONS}
-          isExpanded={expandedGroup === 'military'}
-          onToggle={() => setExpandedGroup(expandedGroup === 'military' ? null : 'military')}
-          pendingCount={militaryPending}
-          onActionClick={handleActionClick}
-        />
-        <ActionGroup
-          title="Domestic"
-          icon="🏛️"
-          actions={DOMESTIC_ACTIONS}
-          isExpanded={expandedGroup === 'domestic'}
-          onToggle={() => setExpandedGroup(expandedGroup === 'domestic' ? null : 'domestic')}
-          pendingCount={domesticPending}
-          onActionClick={handleActionClick}
-        />
-      </div>
-
-      {pendingActions.length > 0 && (
-        <div className="pending-actions-section">
-          <h3>Pending Actions ({pendingActions.length})</h3>
-          <ul className="pending-list">
-            {pendingActions.map((action, index) => (
-              <li key={index} className="pending-item">
-                <span className="pending-type">{action.type.replace(/_/g, ' ')}</span>
-                {action.targetCountryId && (
-                  <span className="pending-target">→ {action.targetCountryId}</span>
-                )}
-                <button 
-                  className="remove-action" 
-                  onClick={() => removePendingAction(index)}
-                  title="Remove action"
-                >
-                  ×
-                </button>
-              </li>
-            ))}
-          </ul>
+      {/* Phase content */}
+      {currentPhase === 'news' && (
+        <div>
+          <h3>📰 The World This Month</h3>
+          <p style={{ fontSize: 13, color: '#aab' }}>Review the newspaper before making decisions.</p>
+          <button className="btn btn-secondary" style={{ width: '100%', marginBottom: 8 }} onClick={() => openModal('newspaper')}>
+            Read the newspaper
+          </button>
+          <button className="btn btn-primary" style={{ width: '100%' }} onClick={() => setPhase('briefing')}>
+            Continue to briefing →
+          </button>
         </div>
       )}
 
-      <div className="action-panel-footer">
-        <button 
-          className="btn btn-primary btn-large confirm-turn-btn"
-          onClick={handleConfirmTurn}
-          disabled={pendingActions.length === 0}
-        >
-          Confirm Turn ({pendingActions.length} action{pendingActions.length !== 1 ? 's' : ''})
-        </button>
-      </div>
+      {currentPhase === 'briefing' && (
+        <div>
+          <h3>📋 Morning Briefing — {worldState.date}</h3>
+          <div style={{ fontSize: 13, color: '#bbc', marginBottom: 8 }}>
+            <div>Approval: <b style={{ color: player.approval > 50 ? '#8c8' : '#e88' }}>{Math.round(player.approval)}%</b> · Stability: <b>{Math.round(player.stability)}%</b></div>
+            <div>GDP: <b>${(player.gdp / 1e12).toFixed(2)}T</b> ({(player.growthRate * 100).toFixed(1)}%/yr) · Budget: <b>{player.militaryBudgetPercent.toFixed(1)}% GDP</b></div>
+            {player.atWarWith.length > 0 && <div style={{ color: '#ff8080' }}>⚔️ At war with {countryNames(player.atWarWith)}</div>}
+            {player.insurgencyLevel !== 'NONE' && <div style={{ color: '#e8a13c' }}>🔥 Insurgency: {player.insurgencyLevel} (policing: {player.policingTactic})</div>}
+            {player.underGlobalEmbargo && <div style={{ color: '#ff8080' }}>🚫 Under global arms embargo</div>}
+            {player.politicalSystem.nextElectionTurn !== null && (
+              <div>🗳 Next election in {player.politicalSystem.nextElectionTurn - worldState.turn} months</div>
+            )}
+          </div>
+          {unansweredCrises > 0 && (
+            <div style={{ background: '#2a1518', border: '1px solid #a33', borderRadius: 6, padding: 8, marginBottom: 8, fontSize: 13, color: '#ff9090' }}>
+              ⚠ {unansweredCrises} crisis decision{unansweredCrises > 1 ? 's' : ''} await{unansweredCrises === 1 ? 's' : ''} your response
+            </div>
+          )}
+          <button className="btn btn-secondary" style={{ width: '100%', marginBottom: 8 }} onClick={() => openModal('advisor')}>
+            💬 Consult your cabinet
+          </button>
+          <button className="btn btn-primary" style={{ width: '100%' }} onClick={advancePhase}>
+            Begin diplomacy →
+          </button>
+        </div>
+      )}
+
+      {(currentPhase === 'diplomacy' || currentPhase === 'military' || currentPhase === 'domestic') && (
+        <div>
+          <h3>
+            {currentPhase === 'diplomacy' ? '🤝 Diplomacy' : currentPhase === 'military' ? '🎖 Military' : '🏛 Domestic'}
+          </h3>
+          {currentPhase !== 'domestic' && (
+            <p style={{ fontSize: 11, color: '#778', margin: '0 0 8px 0' }}>
+              {selectedCountryId ? `Target: ${countryName(selectedCountryId)}` : 'Select a country on the map to target it'}
+            </p>
+          )}
+          <div style={{ maxHeight: 320, overflowY: 'auto' }}>
+            {actions.map((opt) => (
+              <button
+                key={opt.id + opt.label}
+                onClick={() => handleAction(opt)}
+                style={{
+                  display: 'block',
+                  width: '100%',
+                  textAlign: 'left',
+                  background: '#1a1e28',
+                  border: `1px solid ${opt.danger ? '#5a2a2a' : '#2a2e3a'}`,
+                  color: opt.danger ? '#f99' : '#dde',
+                  borderRadius: 6,
+                  padding: '7px 10px',
+                  marginBottom: 4,
+                  cursor: 'pointer',
+                  fontSize: 13,
+                }}
+              >
+                {opt.icon} {opt.label}
+              </button>
+            ))}
+          </div>
+          <button className="btn btn-primary" style={{ width: '100%', marginTop: 8 }} onClick={advancePhase}>
+            {currentPhase === 'domestic' ? 'Review & confirm →' : 'Next phase →'}
+          </button>
+        </div>
+      )}
+
+      {currentPhase === 'confirm' && (
+        <div>
+          <h3>✅ Confirm Orders — {worldState.date}</h3>
+          {pendingActions.length === 0 && unansweredCrises === 0 && (
+            <p style={{ fontSize: 13, color: '#888' }}>No actions queued. The month will pass; the world will not wait.</p>
+          )}
+          {pendingActions.map((a, i) => (
+            <div
+              key={i}
+              style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#1a1e28', borderRadius: 6, padding: '6px 10px', marginBottom: 4, fontSize: 13 }}
+            >
+              <span>
+                {a.label}
+                {a.preview?.successChance != null && <span style={{ color: '#778' }}> ({a.preview.successChance}%)</span>}
+              </span>
+              <button onClick={() => removePendingAction(i)} style={{ background: 'none', border: 'none', color: '#a66', cursor: 'pointer' }}>
+                ✕
+              </button>
+            </div>
+          ))}
+          {unansweredCrises > 0 && (
+            <div style={{ fontSize: 12, color: '#e8a13c', margin: '6px 0' }}>
+              ⚠ Unanswered crises will resolve themselves — usually badly.
+            </div>
+          )}
+          <button
+            className="btn btn-primary"
+            style={{ width: '100%', marginTop: 8, background: '#b8762a' }}
+            onClick={() => executeTurn()}
+          >
+            ⏵ Execute month — issue all orders
+          </button>
+          <button className="btn btn-secondary" style={{ width: '100%', marginTop: 6 }} onClick={() => setPhase('diplomacy')}>
+            ← Back to planning
+          </button>
+        </div>
+      )}
     </div>
   );
 }

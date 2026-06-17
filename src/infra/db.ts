@@ -1,5 +1,5 @@
-import { PrismaClient } from "@prisma/client";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaClient } from "@prisma/client";
 import { type Turn, type WorldState, WorldStateSchema } from "../core/types.js";
 
 const adapter = new PrismaBetterSqlite3({
@@ -12,6 +12,7 @@ export interface SaveGameRecord {
   id: string;
   name: string;
   playerCountry: string;
+  leaderName?: string | null;
   seed: number;
   turn: number;
   createdAt: Date;
@@ -19,12 +20,20 @@ export interface SaveGameRecord {
 }
 
 export class GameDatabase {
-  async saveGame(name: string, worldState: WorldState, turnLogs: Turn[] = []): Promise<string> {
+  async saveGame(
+    name: string,
+    worldState: WorldState,
+    turnLogs: Turn[] = [],
+    playerId?: string,
+    leaderName?: string,
+  ): Promise<string> {
     const saveGame = await prisma.saveGame.create({
       data: {
         name,
         worldState: JSON.stringify(worldState),
         playerCountry: worldState.playerCountryId,
+        playerId: playerId ?? null,
+        leaderName: leaderName ?? null,
         seed: worldState.seed,
         turn: worldState.turn,
       },
@@ -92,13 +101,15 @@ export class GameDatabase {
     });
   }
 
-  async listSaves(): Promise<SaveGameRecord[]> {
+  async listSaves(playerId?: string): Promise<SaveGameRecord[]> {
     const saves = await prisma.saveGame.findMany({
+      where: playerId ? { playerId } : undefined,
       orderBy: { updatedAt: "desc" },
       select: {
         id: true,
         name: true,
         playerCountry: true,
+        leaderName: true,
         seed: true,
         turn: true,
         createdAt: true,

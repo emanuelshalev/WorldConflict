@@ -3,19 +3,76 @@
   "iso3": "CAN",
   "name": "Canada",
   "population": 40000000,
-  "gdp": 2140000000000,
-  "gdpGrowth": 0.018,
-  "militaryBudgetPct": 1.4,
-  "manpower": 72000,
-  "airpower": 391,
   "regimeType": "DEMOCRACY",
-  "riskTolerance": 20,
+  "politicalSystem": {
+    "type": "PARLIAMENTARY_DEMOCRACY",
+    "powerCenters": ["LEGISLATURE", "EXECUTIVE", "JUDICIARY"],
+    "electionCycleMonths": 48,
+    "nextElectionTurn": null,
+    "leaderTitle": "Prime Minister"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1867, "event": "Confederation", "impact": "Federal state built on English-French compromise; accommodation as a governing instinct" },
+      { "year": 1917, "event": "Battle of Vimy Ridge", "impact": "Coming-of-age moment; national identity forged through contribution to allied wars" },
+      { "year": 1949, "event": "Founding member of NATO", "impact": "Security permanently tied to collective defense alongside the US and Europe" },
+      { "year": 1956, "event": "Pearson invents UN peacekeeping during Suez", "impact": "Middle-power identity; multilateralism and honest-broker diplomacy as national brand" },
+      { "year": 1982, "event": "Patriation of the Constitution and Charter of Rights", "impact": "Full sovereignty from Britain; rights-based liberal political culture" },
+      { "year": 1995, "event": "Quebec independence referendum fails by one percent", "impact": "Near-breakup of the country; permanent sensitivity to Quebec's status" },
+      { "year": 1994, "event": "NAFTA enters into force", "impact": "Economy irrevocably integrated with the United States; trade dependence shapes all foreign policy" }
+    ],
+    "historicalRivals": ["RUS"],
+    "historicalAllies": ["USA", "GBR", "FRA", "AUS"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "BALANCING",
+    "narrative": "A wealthy middle power whose security and prosperity are inseparable from the United States, expressed through NORAD, NATO, and the world's largest bilateral trade relationship. It projects influence through multilateralism, peacekeeping tradition, and coalition contributions rather than independent hard power, while a warming Arctic turns its vast northern frontier into a growing strategic concern."
+  },
+  "personality": {
+    "warPropensity": 20,
+    "allianceLoyalty": 85,
+    "diplomaticFlexibility": 80,
+    "riskTolerance": 20,
+    "expansionism": 5,
+    "isolationism": 30,
+    "ideologicalRigidity": 40,
+    "prestigeEmphasis": 45
+  },
+  "redLines": [
+    { "type": "ALLIANCE", "description": "Armed attack on the United States or any NATO member", "severity": 9 },
+    { "type": "TERRITORIAL", "targetCountryId": "RUS", "description": "Violation of Canadian Arctic sovereignty or militarization of the Northwest Passage", "severity": 8 },
+    { "type": "ECONOMIC", "description": "Severing of North American trade and supply-chain integration", "severity": 7 }
+  ],
+  "internalDivisions": [
+    { "kind": "REGIONAL", "name": "Quebec sovereignty movement", "strength": 22, "tension": 35 },
+    { "kind": "REGIONAL", "name": "Western alienation over energy and federal policy", "strength": 30, "tension": 40 }
+  ],
+  "economy": {
+    "gdp": 2140000000000,
+    "growthRate": 0.015,
+    "debtGdpRatio": 107,
+    "sectors": { "agriculture": 2, "industry": 26, "services": 72 },
+    "keyResources": ["oil", "natural_gas", "uranium", "timber", "minerals", "fresh_water"],
+    "keyExports": ["oil", "vehicles", "machinery", "gold", "lumber"],
+    "developmentLevel": "DEVELOPED"
+  },
+  "military": {
+    "manpower": 72000,
+    "airpower": 391,
+    "doctrine": "EXPEDITIONARY",
+    "nuclearStatus": "LATENT",
+    "warheads": 0,
+    "arms_suppliers": ["USA"]
+  },
+  "militaryBudgetPct": 1.4,
   "stability": 85,
   "legitimacy": 82,
   "intelLevel": 72,
+  "insurgencyLevel": "NONE",
   "goals": [
-    { "id": "can_g1", "type": "SECURITY", "priority": 70, "description": "Maintain close alliance with United States" },
-    { "id": "can_g2", "type": "IDEOLOGICAL", "priority": 65, "description": "Promote peacekeeping and multilateralism" }
+    { "id": "can_g1", "type": "SECURITY", "targetCountryId": "USA", "priority": 80, "description": "Maintain the US alliance and modernize NORAD continental defense" },
+    { "id": "can_g2", "type": "TERRITORIAL", "priority": 75, "description": "Assert Arctic sovereignty as melting ice opens northern waters to rivals" },
+    { "id": "can_g3", "type": "ECONOMIC", "priority": 65, "description": "Protect trade access to the US market while diversifying toward Asia and Europe" },
+    { "id": "can_g4", "type": "IDEOLOGICAL", "priority": 60, "description": "Champion multilateral institutions, peacekeeping, and the rules-based order" }
   ],
   "geo": {
     "bounds": [-141.0, 41.7, -52.6, 83.1],

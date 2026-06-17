@@ -1,321 +1,249 @@
-import { useState, useMemo } from 'react';
 import { useGameStore } from '../store/gameStore';
 
-interface ScoreBreakdown {
-  economy: number;
-  security: number;
-  diplomacy: number;
-  stability: number;
-  intelligence: number;
-  total: number;
+const CATEGORY_ICONS: Record<string, string> = {
+  WAR: '⚔️',
+  GOVERNMENT: '🏛',
+  NUCLEAR: '☢',
+  COVERT: '🕵',
+  ECONOMY: '💰',
+  DIPLOMACY: '🤝',
+};
+
+function gradeColor(grade: string): string {
+  const g = grade.charAt(0).toUpperCase();
+  if (g === 'A' || g === 'S') return '#3fbf6f';
+  if (g === 'B') return '#9ec24a';
+  if (g === 'C') return '#e8b932';
+  if (g === 'D') return '#e07b30';
+  return '#ff4040';
 }
 
-interface LeadershipStyle {
-  primary: string;
-  secondary: string;
-  description: string;
-}
-
-interface TurnSnapshot {
-  turn: number;
-  date: string;
-  score: number;
-  gdp: number;
-  stability: number;
-  allies: number;
-  wars: number;
-  events: string[];
-}
-
-interface PolicyDecision {
-  turn: number;
-  date: string;
-  action: string;
-  target?: string;
-  outcome: 'success' | 'failure' | 'neutral';
-  impact: string;
-}
-
-interface GameScore {
-  breakdown: ScoreBreakdown;
-  rank: string;
-  leadershipStyle: LeadershipStyle;
-  achievements: string[];
-  timeline: TurnSnapshot[];
-  policies: PolicyDecision[];
-}
-
-// Score calculation based on spec
-function calculateScore(worldState: any): ScoreBreakdown {
-  const player = worldState.countries.find((c: any) => c.id === worldState.playerCountryId);
-  if (!player) return { economy: 0, security: 0, diplomacy: 0, stability: 0, intelligence: 0, total: 0 };
-
-  // Economy: GDP growth, debt ratio
-  const economyScore = Math.min(100, Math.max(0,
-    50 + (player.growthRate * 500) - (player.debtGdpRatio / 2)
-  ));
-
-  // Security: Military strength, no active wars, mobilization
-  const atWar = player.atWarWith.length > 0;
-  const securityScore = Math.min(100, Math.max(0,
-    (atWar ? 30 : 70) + (player.mobilizationLevel / 5) + (player.manpower / 100000)
-  ));
-
-  // Diplomacy: Alliances, positive relations
-  const positiveRelations = Object.values(player.relations).filter((r: any) => r > 0).length;
-  const diplomacyScore = Math.min(100, Math.max(0,
-    (player.alliances.length * 15) + (positiveRelations * 5)
-  ));
-
-  // Stability: Internal stability, legitimacy
-  const stabilityScore = Math.min(100, Math.max(0,
-    (player.stability * 0.6) + (player.legitimacy * 0.4)
-  ));
-
-  // Intelligence: Intel level
-  const intelligenceScore = player.intelLevel ?? 50;
-
-  // Total weighted average
-  const total = Math.round(
-    (economyScore * 0.25) +
-    (securityScore * 0.2) +
-    (diplomacyScore * 0.2) +
-    (stabilityScore * 0.25) +
-    (intelligenceScore * 0.1)
+function ScoreBar({ label, value }: { label: string; value: number }) {
+  const pct = Math.max(0, Math.min(100, (value / 50) * 100));
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+      <span style={{ width: 90, fontSize: 12, color: '#aab', textTransform: 'capitalize' }}>
+        {label}
+      </span>
+      <div
+        style={{
+          flex: 1,
+          height: 10,
+          background: '#12151d',
+          border: '1px solid #2a2e3a',
+          borderRadius: 5,
+          overflow: 'hidden',
+        }}
+      >
+        <div
+          style={{
+            width: `${pct}%`,
+            height: '100%',
+            background: 'linear-gradient(90deg, #2a6dd9, #4d8ef0)',
+          }}
+        />
+      </div>
+      <span style={{ width: 50, fontSize: 12, color: '#ddd', textAlign: 'right' }}>
+        {Math.round(value)} / 50
+      </span>
+    </div>
   );
-
-  return {
-    economy: Math.round(economyScore),
-    security: Math.round(securityScore),
-    diplomacy: Math.round(diplomacyScore),
-    stability: Math.round(stabilityScore),
-    intelligence: Math.round(intelligenceScore),
-    total,
-  };
 }
 
-function getRank(score: number): string {
-  if (score >= 90) return 'S - Legendary';
-  if (score >= 80) return 'A - Excellent';
-  if (score >= 70) return 'B - Competent';
-  if (score >= 60) return 'C - Adequate';
-  if (score >= 50) return 'D - Struggling';
-  return 'F - Failed';
-}
+function Sparkline({ history }: { history: Array<{ turn: number; score: number }> }) {
+  if (history.length < 2) return null;
+  const w = 600;
+  const h = 80;
+  const pad = 4;
+  const minTurn = history[0].turn;
+  const maxTurn = history[history.length - 1].turn;
+  const scores = history.map((p) => p.score);
+  const minScore = Math.min(...scores);
+  const maxScore = Math.max(...scores);
+  const spanTurn = Math.max(1, maxTurn - minTurn);
+  const spanScore = Math.max(1, maxScore - minScore);
+  const points = history
+    .map((p) => {
+      const x = pad + ((p.turn - minTurn) / spanTurn) * (w - 2 * pad);
+      const y = h - pad - ((p.score - minScore) / spanScore) * (h - 2 * pad);
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    })
+    .join(' ');
 
-function getLeadershipStyle(worldState: any): LeadershipStyle {
-  const player = worldState.countries.find((c: any) => c.id === worldState.playerCountryId);
-  if (!player) return { primary: 'Unknown', secondary: '', description: '' };
-
-  const styles: { style: string; score: number }[] = [];
-
-  // Analyze player's tendencies
-  if (player.alliances.length >= 3) styles.push({ style: 'Master Diplomat', score: player.alliances.length * 10 });
-  if (player.atWarWith.length > 0) styles.push({ style: 'War Leader', score: 50 });
-  if (player.stability > 80) styles.push({ style: 'Pillar of Stability', score: player.stability });
-  if (player.growthRate > 0.03) styles.push({ style: 'Economic Visionary', score: player.growthRate * 1000 });
-  if (player.mobilizationLevel > 60) styles.push({ style: 'Military Strongman', score: player.mobilizationLevel });
-  if (player.intelLevel > 70) styles.push({ style: 'Spymaster', score: player.intelLevel });
-
-  styles.sort((a, b) => b.score - a.score);
-
-  const primary = styles[0]?.style ?? 'Pragmatist';
-  const secondary = styles[1]?.style ?? '';
-
-  const descriptions: Record<string, string> = {
-    'Master Diplomat': 'Built strong international relationships through careful diplomacy.',
-    'War Leader': 'Led the nation through military conflict with determination.',
-    'Pillar of Stability': 'Maintained internal order and public confidence.',
-    'Economic Visionary': 'Prioritized economic growth and prosperity.',
-    'Military Strongman': 'Kept the nation on a war footing, ready for any threat.',
-    'Spymaster': 'Developed extensive intelligence networks.',
-    'Pragmatist': 'Balanced competing priorities with practical decisions.',
-  };
-
-  return {
-    primary,
-    secondary,
-    description: descriptions[primary] ?? 'A balanced approach to leadership.',
-  };
+  return (
+    <div>
+      <div style={{ fontSize: 11, color: '#778', marginBottom: 4 }}>
+        Leadership score over time ({minScore.toFixed(0)}–{maxScore.toFixed(0)})
+      </div>
+      <svg
+        width="100%"
+        viewBox={`0 0 ${w} ${h}`}
+        style={{ background: '#12151d', border: '1px solid #2a2e3a', borderRadius: 6 }}
+      >
+        <polyline points={points} fill="none" stroke="#2a6dd9" strokeWidth={2} />
+      </svg>
+    </div>
+  );
 }
 
 export function EndGameReport() {
-  const { worldState } = useGameStore();
-  const [activeTab, setActiveTab] = useState<'overview' | 'timeline' | 'achievements' | 'policies'>('overview');
+  const { activeModal, endReport, reset, openModal } = useGameStore();
 
-  if (!worldState) return null;
+  if (activeModal !== 'endGame' || !endReport) return null;
 
-  // Calculate actual scores from game state
-  const breakdown = useMemo(() => calculateScore(worldState), [worldState]);
-  const rank = useMemo(() => getRank(breakdown.total), [breakdown.total]);
-  const leadershipStyle = useMemo(() => getLeadershipStyle(worldState), [worldState]);
+  const { gameOver, assessment, score, timeline, scoreHistory } = endReport;
 
-  // Generate achievements based on game state
-  const achievements = useMemo(() => {
-    const player = worldState.countries.find(c => c.id === worldState.playerCountryId);
-    if (!player) return [];
-    
-    const achieved: string[] = [];
-    if (player.alliances.length >= 5) achieved.push('🤝 Coalition Builder - Formed 5+ alliances');
-    if (player.alliances.length >= 3) achieved.push('🤝 Alliance Maker - Formed 3+ alliances');
-    if (player.stability >= 90) achieved.push('🏛️ Pillar of Stability - Achieved 90%+ stability');
-    if (player.atWarWith.length === 0 && worldState.turn >= 12) achieved.push('🕊️ Peacekeeper - Avoided wars for a year');
-    if (player.growthRate > 0.05) achieved.push('📈 Economic Boom - Achieved 5%+ GDP growth');
-    if (player.intelLevel >= 80) achieved.push('🕵️ Intelligence Master - 80%+ intel coverage');
-    if (worldState.wars.length === 0) achieved.push('🌍 World Peace - No active global conflicts');
-    
-    return achieved;
-  }, [worldState]);
-
-  const gameScore: GameScore = {
-    breakdown,
-    rank,
-    leadershipStyle,
-    achievements,
-    timeline: [],
-    policies: [],
-  };
-
-  const handleExportJSON = () => {
-    const data = {
-      worldState,
-      score: gameScore,
-      exportedAt: new Date().toISOString(),
-    };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `world-conflicts-report-${worldState.date}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
+  const handleNewGame = () => {
+    reset();
+    openModal('newGame');
   };
 
   return (
-    <div className="end-game-report">
-      <div className="report-header">
-        <h2>Leadership Report</h2>
-        <p className="report-subtitle">
-          {worldState.playerCountryId} | {worldState.date} | Turn {worldState.turn}
-        </p>
-      </div>
-
-      <div className="report-tabs">
-        <button
-          className={`tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
-          onClick={() => setActiveTab('overview')}
+    <div className="modal-overlay">
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          background: '#12151d',
+          border: '1px solid #2a2e3a',
+          borderRadius: 10,
+          width: 'min(720px, 94vw)',
+          maxHeight: '90vh',
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+          color: '#ddd',
+        }}
+      >
+        {/* Dramatic header */}
+        <div
+          style={{
+            padding: '24px 28px',
+            background: 'linear-gradient(180deg, #1a1e28, #12151d)',
+            borderBottom: '1px solid #2a2e3a',
+            textAlign: 'center',
+          }}
         >
-          Overview
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'timeline' ? 'active' : ''}`}
-          onClick={() => setActiveTab('timeline')}
-        >
-          Timeline
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'achievements' ? 'active' : ''}`}
-          onClick={() => setActiveTab('achievements')}
-        >
-          Achievements
-        </button>
-      </div>
+          <div style={{ fontSize: 11, letterSpacing: 3, color: '#778', marginBottom: 6 }}>
+            END OF AN ERA
+          </div>
+          <h2 style={{ margin: 0, fontSize: 24, color: '#fff' }}>
+            {gameOver?.description ?? `The reign over ${endReport.country} has ended.`}
+          </h2>
+          <div style={{ marginTop: 8, fontSize: 13, color: '#aab' }}>
+            {endReport.leader ? `${endReport.leader.title} ${endReport.leader.name} — ` : ''}
+            {endReport.country} · {endReport.turnsServed} turns served · {endReport.finalDate}
+          </div>
+        </div>
 
-      <div className="report-content">
-        {activeTab === 'overview' && (
-          <div className="overview-tab">
-            <div className="score-card">
-              <div className="total-score">
-                <span className="score-value">{gameScore.breakdown.total}</span>
-                <span className="score-label">Overall Score</span>
-                <span className="score-rank">{gameScore.rank}</span>
-              </div>
-
-              <div className="score-breakdown">
-                <div className="score-item">
-                  <span className="score-category">Economy</span>
-                  <div className="score-bar">
-                    <div className="score-fill" style={{ width: `${gameScore.breakdown.economy}%` }} />
-                  </div>
-                  <span className="score-value">{gameScore.breakdown.economy}</span>
-                </div>
-                <div className="score-item">
-                  <span className="score-category">Security</span>
-                  <div className="score-bar">
-                    <div className="score-fill" style={{ width: `${gameScore.breakdown.security}%` }} />
-                  </div>
-                  <span className="score-value">{gameScore.breakdown.security}</span>
-                </div>
-                <div className="score-item">
-                  <span className="score-category">Diplomacy</span>
-                  <div className="score-bar">
-                    <div className="score-fill" style={{ width: `${gameScore.breakdown.diplomacy}%` }} />
-                  </div>
-                  <span className="score-value">{gameScore.breakdown.diplomacy}</span>
-                </div>
-                <div className="score-item">
-                  <span className="score-category">Stability</span>
-                  <div className="score-bar">
-                    <div className="score-fill" style={{ width: `${gameScore.breakdown.stability}%` }} />
-                  </div>
-                  <span className="score-value">{gameScore.breakdown.stability}</span>
-                </div>
-              </div>
+        <div style={{ padding: '20px 28px', overflowY: 'auto', flex: 1 }}>
+          {/* Grade + assessment */}
+          <div style={{ display: 'flex', gap: 20, alignItems: 'center', marginBottom: 20 }}>
+            <div
+              style={{
+                width: 84,
+                height: 84,
+                flexShrink: 0,
+                borderRadius: 10,
+                border: `2px solid ${gradeColor(assessment.grade)}`,
+                background: '#1a1e28',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: 44,
+                fontWeight: 800,
+                color: gradeColor(assessment.grade),
+              }}
+            >
+              {assessment.grade}
             </div>
-
-            <div className="leadership-card">
-              <h3>Leadership Style</h3>
-              <div className="leadership-badges">
-                <span className="badge primary">{gameScore.leadershipStyle.primary}</span>
-                <span className="badge secondary">{gameScore.leadershipStyle.secondary}</span>
+            <div>
+              <div style={{ fontSize: 17, fontWeight: 700, color: '#fff' }}>
+                {assessment.classification}
               </div>
-              <p className="leadership-description">{gameScore.leadershipStyle.description}</p>
+              <p style={{ margin: '6px 0 0', fontSize: 13, color: '#aab', lineHeight: 1.5 }}>
+                {assessment.justification}
+              </p>
             </div>
           </div>
-        )}
 
-        {activeTab === 'timeline' && (
-          <div className="timeline-tab">
-            <p className="timeline-placeholder">
-              Timeline visualization will show score progression over turns.
-            </p>
-            <div className="timeline-stats">
-              <div className="stat-card">
-                <span className="stat-value">{worldState.turn}</span>
-                <span className="stat-label">Turns Played</span>
-              </div>
-              <div className="stat-card">
-                <span className="stat-value">{worldState.wars.length}</span>
-                <span className="stat-label">Active Wars</span>
-              </div>
-              <div className="stat-card">
-                <span className="stat-value">{worldState.globalTension}%</span>
-                <span className="stat-label">Global Tension</span>
-              </div>
+          {/* Score breakdown */}
+          <div
+            style={{
+              background: '#1a1e28',
+              border: '1px solid #2a2e3a',
+              borderRadius: 8,
+              padding: '14px 16px',
+              marginBottom: 20,
+            }}
+          >
+            <div style={{ fontSize: 12, color: '#778', marginBottom: 10, letterSpacing: 1 }}>
+              FINAL SCORE — {Math.round(score.total)}
             </div>
+            <ScoreBar label="economic" value={score.economic} />
+            <ScoreBar label="security" value={score.security} />
+            <ScoreBar label="approval" value={score.approval} />
+            <ScoreBar label="prestige" value={score.prestige} />
           </div>
-        )}
 
-        {activeTab === 'achievements' && (
-          <div className="achievements-tab">
-            <div className="achievements-list">
-              {gameScore.achievements.map((achievement, i) => (
-                <div key={i} className="achievement-item">
-                  {achievement}
-                </div>
-              ))}
+          {/* Sparkline */}
+          {scoreHistory.length > 1 && (
+            <div style={{ marginBottom: 20 }}>
+              <Sparkline history={scoreHistory} />
             </div>
-            {gameScore.achievements.length === 0 && (
-              <p className="no-achievements">No achievements unlocked yet. Keep playing!</p>
+          )}
+
+          {/* Timeline */}
+          <div style={{ fontSize: 12, color: '#778', marginBottom: 8, letterSpacing: 1 }}>
+            TIMELINE OF YOUR RULE
+          </div>
+          <div
+            style={{
+              maxHeight: 220,
+              overflowY: 'auto',
+              border: '1px solid #2a2e3a',
+              borderRadius: 8,
+              background: '#1a1e28',
+            }}
+          >
+            {timeline.length === 0 ? (
+              <p style={{ padding: 14, margin: 0, fontSize: 13, color: '#778' }}>
+                History will little note nor long remember this tenure.
+              </p>
+            ) : (
+              timeline.map((event, i) => (
+                <div
+                  key={i}
+                  style={{
+                    display: 'flex',
+                    gap: 10,
+                    padding: '8px 14px',
+                    borderBottom: i < timeline.length - 1 ? '1px solid #2a2e3a' : 'none',
+                    fontSize: 13,
+                  }}
+                >
+                  <span style={{ flexShrink: 0 }}>
+                    {CATEGORY_ICONS[event.category] ?? '•'}
+                  </span>
+                  <span style={{ color: '#778', flexShrink: 0, width: 80 }}>{event.date}</span>
+                  <span style={{ color: '#ddd' }}>{event.description}</span>
+                </div>
+              ))
             )}
           </div>
-        )}
-      </div>
+        </div>
 
-      <div className="report-footer">
-        <button className="btn btn-secondary" onClick={handleExportJSON}>
-          Export JSON
-        </button>
+        <div
+          style={{
+            padding: '16px 28px',
+            borderTop: '1px solid #2a2e3a',
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
+          <button className="btn btn-primary btn-large" onClick={handleNewGame}>
+            Start a new game
+          </button>
+        </div>
       </div>
     </div>
   );

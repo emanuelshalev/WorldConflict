@@ -1,11 +1,12 @@
-import { useState } from 'react';
-import { useGameStore, createNewGame } from '../store/gameStore';
+import { useEffect, useState } from 'react';
+import { useGameStore, createNewGame, fetchScenarios } from '../store/gameStore';
 
-const SCENARIOS = [
-  { id: '2025', name: '2025 - Modern Era', description: 'Current geopolitical situation' },
-  { id: '1990', name: '1990 - Post Cold War', description: 'Fall of the Soviet Union' },
-  { id: '1960', name: '1960 - Cold War', description: 'Height of US-Soviet tensions' },
-];
+interface Scenario {
+  id: string;
+  name: string;
+  description: string;
+  startYear: number;
+}
 
 const COUNTRIES = [
   { id: 'USA', name: 'United States', flag: '🇺🇸' },
@@ -36,15 +37,36 @@ const COUNTRIES = [
 ];
 
 export function NewGameModal() {
-  const { activeModal, closeModal, isLoading, error } = useGameStore();
-  const [scenario, setScenario] = useState('2025');
+  const { activeModal, closeModal, isLoading, error, player } = useGameStore();
+  const [scenarios, setScenarios] = useState<Scenario[]>([]);
+  const [scenariosLoading, setScenariosLoading] = useState(false);
+  const [scenario, setScenario] = useState<string | null>(null);
   const [country, setCountry] = useState('USA');
   const [saveName, setSaveName] = useState('');
+  const [useAccountName, setUseAccountName] = useState(true);
+  const [customLeaderName, setCustomLeaderName] = useState('');
+
+  useEffect(() => {
+    if (activeModal !== 'newGame') return;
+    setScenariosLoading(true);
+    fetchScenarios()
+      .then((list) => {
+        setScenarios(list);
+        setScenario((current) => current ?? list[0]?.id ?? null);
+      })
+      .catch(console.error)
+      .finally(() => setScenariosLoading(false));
+  }, [activeModal]);
 
   if (activeModal !== 'newGame') return null;
 
+  const leaderName = useAccountName ? (player?.name ?? '') : customLeaderName.trim();
+
   const handleStart = async () => {
-    await createNewGame(scenario, country, saveName || undefined);
+    if (!scenario) return;
+    if (!useAccountName && !customLeaderName.trim()) return;
+    // createNewGame closes the modal itself on success
+    await createNewGame(scenario, country, saveName || undefined, leaderName || undefined);
   };
 
   return (
@@ -61,6 +83,43 @@ export function NewGameModal() {
           {error && <div className="error-message">{error}</div>}
 
           <div className="form-group">
+            <label>Your leader name</label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 4 }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 14 }}>
+                <input
+                  type="radio"
+                  name="leader-name"
+                  checked={useAccountName}
+                  onChange={() => setUseAccountName(true)}
+                />
+                Rule as <b>{player?.name ?? 'yourself'}</b>
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 14 }}>
+                <input
+                  type="radio"
+                  name="leader-name"
+                  checked={!useAccountName}
+                  onChange={() => setUseAccountName(false)}
+                />
+                Rule under a different name:
+              </label>
+              {!useAccountName && (
+                <input
+                  type="text"
+                  value={customLeaderName}
+                  maxLength={40}
+                  onChange={(e) => setCustomLeaderName(e.target.value)}
+                  placeholder="e.g. Winston Goldberg"
+                  autoFocus
+                />
+              )}
+            </div>
+            <p style={{ fontSize: 11, color: '#778', margin: 0 }}>
+              Advisors, newspapers and history will address you by this name.
+            </p>
+          </div>
+
+          <div className="form-group">
             <label>Save Name (optional)</label>
             <input
               type="text"
@@ -72,18 +131,28 @@ export function NewGameModal() {
 
           <div className="form-group">
             <label>Scenario</label>
-            <div className="scenario-list">
-              {SCENARIOS.map((s) => (
-                <div
-                  key={s.id}
-                  className={`scenario-option ${scenario === s.id ? 'selected' : ''}`}
-                  onClick={() => setScenario(s.id)}
-                >
-                  <strong>{s.name}</strong>
-                  <span>{s.description}</span>
-                </div>
-              ))}
-            </div>
+            {scenariosLoading ? (
+              <p style={{ color: '#778', fontSize: 13 }}>Loading scenarios…</p>
+            ) : scenarios.length === 0 ? (
+              <p style={{ color: '#ff4040', fontSize: 13 }}>
+                No scenarios available — is the server running?
+              </p>
+            ) : (
+              <div className="scenario-list">
+                {scenarios.map((s) => (
+                  <div
+                    key={s.id}
+                    className={`scenario-option ${scenario === s.id ? 'selected' : ''}`}
+                    onClick={() => setScenario(s.id)}
+                  >
+                    <strong>
+                      {s.name} ({s.startYear})
+                    </strong>
+                    <span>{s.description}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="form-group">
@@ -110,9 +179,9 @@ export function NewGameModal() {
           <button
             className="btn btn-primary"
             onClick={handleStart}
-            disabled={isLoading}
+            disabled={isLoading || !scenario || (!useAccountName && !customLeaderName.trim())}
           >
-            {isLoading ? 'Starting...' : 'Start Game'}
+            {isLoading ? 'Starting...' : `Begin your rule${leaderName ? ` as ${leaderName}` : ''}`}
           </button>
         </div>
       </div>

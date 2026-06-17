@@ -9,11 +9,20 @@ datasource db {
   provider = "sqlite"
 }
 
+model Player {
+  id           String   @id @default(uuid())
+  name         String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
 model SaveGame {
   id          String   @id @default(uuid())
   name        String
   worldState  String   // JSON serialized WorldState
   playerCountry String
+  playerId    String?  // owning player account
+  leaderName  String?  // how the player is addressed in this game
   seed        Int
   turn        Int
   createdAt   DateTime @default(now())

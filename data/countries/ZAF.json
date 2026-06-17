@@ -3,19 +3,77 @@
   "iso3": "ZAF",
   "name": "South Africa",
   "population": 60000000,
-  "gdp": 405000000000,
-  "gdpGrowth": 0.018,
-  "militaryBudgetPct": 0.7,
-  "manpower": 73000,
-  "airpower": 214,
   "regimeType": "DEMOCRACY",
-  "riskTolerance": 30,
-  "stability": 58,
+  "politicalSystem": {
+    "type": "PARLIAMENTARY_DEMOCRACY",
+    "powerCenters": ["EXECUTIVE", "LEGISLATURE", "JUDICIARY"],
+    "electionCycleMonths": 60,
+    "nextElectionTurn": null,
+    "leaderTitle": "President"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1948, "event": "Apartheid formally instituted", "impact": "Racial segregation made South Africa a global pariah and defined its politics for half a century" },
+      { "year": 1976, "event": "Soweto uprising", "impact": "Student massacre galvanized internal resistance and international sanctions against the regime" },
+      { "year": 1989, "event": "Voluntary dismantling of nuclear weapons program", "impact": "Only state ever to build and then give up nuclear weapons; cornerstone of non-proliferation identity" },
+      { "year": 1994, "event": "First democratic elections end apartheid", "impact": "Mandela's negotiated transition averted civil war and made reconciliation the founding national myth" },
+      { "year": 1996, "event": "Truth and Reconciliation Commission", "impact": "Restorative justice model earned moral authority that underpins South Africa's global voice" },
+      { "year": 2009, "event": "Zuma era and state capture", "impact": "Systemic corruption hollowed out state enterprises and eroded ANC legitimacy and service delivery" },
+      { "year": 2024, "event": "ANC loses its parliamentary majority", "impact": "First coalition government of national unity since 1994; era of dominant-party rule ended" }
+    ],
+    "historicalRivals": [],
+    "historicalAllies": ["NGA", "BRA", "IND", "CHN", "RUS"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "NON_ALIGNED",
+    "narrative": "Drawing moral authority from its negotiated escape from apartheid, South Africa positions itself as the conscience of the Global South and Africa's diplomatic heavyweight, active in BRICS and international courts. Its ambitions are hobbled at home by extreme inequality, unemployment, power shortages, and the legacy of state capture, so it wields law and diplomacy rather than force."
+  },
+  "personality": {
+    "warPropensity": 10,
+    "allianceLoyalty": 55,
+    "diplomaticFlexibility": 75,
+    "riskTolerance": 30,
+    "expansionism": 10,
+    "isolationism": 30,
+    "ideologicalRigidity": 45,
+    "prestigeEmphasis": 70
+  },
+  "redLines": [
+    { "type": "IDEOLOGICAL", "description": "Foreign coercion to abandon non-aligned positions or BRICS membership", "severity": 6 },
+    { "type": "ECONOMIC", "description": "Sanctions or trade exclusion targeting South African exports and finance", "severity": 7 },
+    { "type": "TERRITORIAL", "description": "Foreign military intervention in southern Africa without African consent", "severity": 7 }
+  ],
+  "internalDivisions": [
+    { "kind": "IDEOLOGICAL", "name": "World's highest inequality fueling radical redistribution politics", "strength": 85, "tension": 65 },
+    { "kind": "ETHNIC", "name": "Xenophobic violence against African migrants", "strength": 45, "tension": 55 },
+    { "kind": "REGIONAL", "name": "KwaZulu-Natal unrest and Zulu nationalist currents", "strength": 40, "tension": 40 }
+  ],
+  "economy": {
+    "gdp": 380000000000,
+    "growthRate": 0.012,
+    "debtGdpRatio": 74,
+    "sectors": { "agriculture": 3, "industry": 25, "services": 72 },
+    "keyResources": ["gold", "platinum", "coal", "diamonds", "chromium"],
+    "keyExports": ["platinum", "gold", "vehicles", "coal", "iron_ore", "wine"],
+    "developmentLevel": "EMERGING"
+  },
+  "military": {
+    "manpower": 73000,
+    "airpower": 214,
+    "doctrine": "DEFENSIVE",
+    "nuclearStatus": "LATENT",
+    "warheads": 0,
+    "arms_suppliers": ["PRIVATE", "FRA"]
+  },
+  "militaryBudgetPct": 0.7,
+  "stability": 50,
   "legitimacy": 55,
   "intelLevel": 55,
+  "insurgencyLevel": "NONE",
   "goals": [
-    { "id": "zaf_g1", "type": "PRESTIGE", "priority": 75, "description": "Lead African development and BRICS participation" },
-    { "id": "zaf_g2", "type": "ECONOMIC", "priority": 85, "description": "Address unemployment and inequality" }
+    { "id": "zaf_g1", "type": "ECONOMIC", "priority": 90, "description": "Tackle unemployment, inequality, and the electricity crisis to restart growth" },
+    { "id": "zaf_g2", "type": "PRESTIGE", "priority": 75, "description": "Lead African diplomacy and amplify the Global South through BRICS and international law" },
+    { "id": "zaf_g3", "type": "IDEOLOGICAL", "priority": 60, "description": "Defend strategic non-alignment between Western and Eastern blocs" },
+    { "id": "zaf_g4", "type": "SECURITY", "priority": 50, "description": "Stabilize southern Africa and contain regional insurgencies and migration pressures" }
   ],
   "geo": {
     "bounds": [16.5, -34.8, 32.9, -22.1],

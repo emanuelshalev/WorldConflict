@@ -3,19 +3,77 @@
   "iso3": "ISR",
   "name": "Israel",
   "population": 9800000,
-  "gdp": 525000000000,
-  "gdpGrowth": 0.035,
-  "militaryBudgetPct": 5.2,
-  "manpower": 170000,
-  "airpower": 612,
   "regimeType": "DEMOCRACY",
-  "riskTolerance": 70,
-  "stability": 68,
+  "politicalSystem": {
+    "type": "PARLIAMENTARY_DEMOCRACY",
+    "powerCenters": ["EXECUTIVE", "LEGISLATURE", "JUDICIARY"],
+    "electionCycleMonths": 48,
+    "nextElectionTurn": null,
+    "leaderTitle": "Prime Minister"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1948, "event": "Declaration of independence and first Arab-Israeli war", "impact": "Born in war and surrounded by hostile neighbors; security became the organizing principle of the state" },
+      { "year": 1967, "event": "Six-Day War", "impact": "Preemptive victory captured Sinai, Golan, West Bank, and Gaza; cemented doctrine of striking first" },
+      { "year": 1973, "event": "Yom Kippur War surprise attack", "impact": "Near-disaster seared intelligence vigilance and early-warning obsession into national doctrine" },
+      { "year": 1979, "event": "Camp David peace treaty with Egypt", "impact": "Removed the largest Arab army from the conflict in exchange for Sinai; land-for-peace precedent" },
+      { "year": 1993, "event": "Oslo Accords with the PLO", "impact": "Created the Palestinian Authority but collapsed into the Second Intifada, discrediting the peace camp" },
+      { "year": 2020, "event": "Abraham Accords with Gulf states", "impact": "Normalization with the UAE and Bahrain reframed regional alignment against Iran" },
+      { "year": 2023, "event": "October 7 Hamas attack and Gaza war", "impact": "Worst single-day loss in state history shattered deterrence assumptions and ignited a multi-front war with Iran's proxies" }
+    ],
+    "historicalRivals": ["IRN"],
+    "historicalAllies": ["USA"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "DEFENSIVE",
+    "narrative": "A small state with existential memory, compensating for lack of strategic depth with a qualitative military edge, world-class intelligence, and a doctrine of preemption. Backed by an ironclad American alliance and an undeclared nuclear arsenal, it treats an Iranian bomb as a threat it cannot live with."
+  },
+  "personality": {
+    "warPropensity": 65,
+    "allianceLoyalty": 80,
+    "diplomaticFlexibility": 45,
+    "riskTolerance": 70,
+    "expansionism": 40,
+    "isolationism": 10,
+    "ideologicalRigidity": 55,
+    "prestigeEmphasis": 60
+  },
+  "redLines": [
+    { "type": "NUCLEAR", "targetCountryId": "IRN", "description": "Iranian acquisition of a nuclear weapon", "severity": 10 },
+    { "type": "TERRITORIAL", "description": "Large-scale attack on Israeli population centers or existential military threat", "severity": 10 },
+    { "type": "ALLIANCE", "targetCountryId": "USA", "description": "Rupture of the American security relationship and qualitative military edge", "severity": 8 }
+  ],
+  "internalDivisions": [
+    { "kind": "RELIGIOUS", "name": "Secular-Haredi divide over conscription and the character of the state", "strength": 55, "tension": 70 },
+    { "kind": "IDEOLOGICAL", "name": "Judicial overhaul crisis and left-right polarization", "strength": 65, "tension": 75 },
+    { "kind": "ETHNIC", "name": "Arab citizens of Israel and the occupied territories conflict", "strength": 25, "tension": 65 }
+  ],
+  "economy": {
+    "gdp": 520000000000,
+    "growthRate": 0.03,
+    "debtGdpRatio": 62,
+    "sectors": { "agriculture": 1, "industry": 19, "services": 80 },
+    "keyResources": ["natural_gas", "potash", "technology", "diamonds_cutting"],
+    "keyExports": ["technology", "cybersecurity", "defense_systems", "pharmaceuticals", "cut_diamonds"],
+    "developmentLevel": "DEVELOPED"
+  },
+  "military": {
+    "manpower": 170000,
+    "airpower": 612,
+    "doctrine": "OFFENSIVE",
+    "nuclearStatus": "ARMED",
+    "warheads": 90,
+    "arms_suppliers": ["USA"]
+  },
+  "militaryBudgetPct": 5.2,
+  "stability": 65,
   "legitimacy": 70,
   "intelLevel": 95,
+  "insurgencyLevel": "UNREST",
   "goals": [
-    { "id": "isr_g1", "type": "SECURITY", "targetCountryId": "IRN", "priority": 95, "description": "Prevent Iranian nuclear capability" },
-    { "id": "isr_g2", "type": "SECURITY", "priority": 90, "description": "Maintain qualitative military edge in region" }
+    { "id": "isr_g1", "type": "SECURITY", "targetCountryId": "IRN", "priority": 98, "description": "Prevent Iran from acquiring a nuclear weapon, by force if necessary" },
+    { "id": "isr_g2", "type": "SECURITY", "priority": 90, "description": "Maintain the qualitative military edge over all regional adversaries" },
+    { "id": "isr_g3", "type": "SECURITY", "priority": 85, "description": "Dismantle Iranian proxy threats on the northern and southern borders" },
+    { "id": "isr_g4", "type": "PRESTIGE", "targetCountryId": "SAU", "priority": 70, "description": "Normalize relations with Saudi Arabia and expand the Abraham Accords" }
   ],
   "geo": {
     "bounds": [34.3, 29.5, 35.9, 33.3],

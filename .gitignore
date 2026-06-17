@@ -139,3 +139,7 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 /src/generated/prisma
+
+# Local SQLite database (created by 'npx prisma db push')
+dev.db
+dev.db-journal

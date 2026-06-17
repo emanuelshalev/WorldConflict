@@ -9,14 +9,22 @@ import { NewspaperModal } from './components/NewspaperModal'
 import { SplashScreen } from './components/SplashScreen'
 import { ActionPreviewModal } from './components/ActionPreviewModal'
 import { TurnFeedbackModal } from './components/TurnFeedbackModal'
-import { LLMPermissionModal } from './components/LLMPermissionModal'
+import { CrisisDecisionModal } from './components/CrisisDecisionModal'
+import { BackstoryModal } from './components/BackstoryModal'
+import { EndGameReport } from './components/EndGameReport'
+import { SettingsModal } from './components/SettingsModal'
+import { LoginScreen } from './components/LoginScreen'
 import { useGameStore } from './store/gameStore'
 
 function App() {
-  const { error, isLoading, showSplash, completeSplash } = useGameStore()
+  const { error, isLoading, showSplash, completeSplash, player } = useGameStore()
 
   if (showSplash) {
     return <SplashScreen onComplete={completeSplash} />
+  }
+
+  if (!player) {
+    return <LoginScreen />
   }
 
   return (
@@ -33,7 +41,10 @@ function App() {
       <NewspaperModal />
       <ActionPreviewModal />
       <TurnFeedbackModal />
-      <LLMPermissionModal />
+      <CrisisDecisionModal />
+      <BackstoryModal />
+      <EndGameReport />
+      <SettingsModal />
 
       {isLoading && (
         <div className="loading-overlay">

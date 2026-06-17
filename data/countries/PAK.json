@@ -3,19 +3,77 @@
   "iso3": "PAK",
   "name": "Pakistan",
   "population": 235000000,
-  "gdp": 376000000000,
-  "gdpGrowth": 0.02,
-  "militaryBudgetPct": 3.7,
-  "manpower": 654000,
-  "airpower": 1372,
   "regimeType": "DEMOCRACY",
-  "riskTolerance": 55,
-  "stability": 55,
-  "legitimacy": 50,
+  "politicalSystem": {
+    "type": "PARLIAMENTARY_DEMOCRACY",
+    "powerCenters": ["MILITARY", "EXECUTIVE", "LEGISLATURE"],
+    "electionCycleMonths": 60,
+    "nextElectionTurn": null,
+    "leaderTitle": "Prime Minister"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1947, "event": "Partition of British India and independence", "impact": "Born in mass violence as a homeland for Muslims; rivalry with India over Kashmir defined the state from day one" },
+      { "year": 1965, "event": "Second war with India over Kashmir", "impact": "Stalemate entrenched the Kashmir dispute and the army's central political role" },
+      { "year": 1971, "event": "Loss of East Pakistan (Bangladesh)", "impact": "Dismemberment by Indian intervention traumatized the state and drove the quest for an equalizer" },
+      { "year": 1979, "event": "Frontline role in the anti-Soviet Afghan jihad", "impact": "ISI became patron of jihadist proxies, a tool later turned on Kashmir and ultimately on Pakistan itself" },
+      { "year": 1998, "event": "Nuclear tests at Chagai", "impact": "Matched India's tests and achieved the nuclear deterrent seen as the ultimate guarantee against conventional defeat" },
+      { "year": 1999, "event": "Kargil conflict and Musharraf coup", "impact": "Nuclear-shadowed adventurism in Kashmir and the fourth military takeover confirmed army supremacy" },
+      { "year": 2021, "event": "Taliban return in Kabul and TTP resurgence", "impact": "Strategic-depth doctrine backfired as the Pakistani Taliban renewed its insurgency from Afghan soil" }
+    ],
+    "historicalRivals": ["IND"],
+    "historicalAllies": ["CHN", "SAU"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "BALANCING",
+    "narrative": "A nuclear-armed state whose grand strategy is existential balancing against a far larger India, using nuclear deterrence, Chinese patronage, and asymmetric proxies to offset conventional inferiority. The army is the real arbiter of politics, while economic fragility and Islamist militancy gnaw at the foundations."
+  },
+  "personality": {
+    "warPropensity": 50,
+    "allianceLoyalty": 55,
+    "diplomaticFlexibility": 55,
+    "riskTolerance": 70,
+    "expansionism": 35,
+    "isolationism": 25,
+    "ideologicalRigidity": 60,
+    "prestigeEmphasis": 65
+  },
+  "redLines": [
+    { "type": "TERRITORIAL", "targetCountryId": "IND", "description": "Indian conventional invasion of Pakistani territory; doctrine reserves nuclear first use", "severity": 10 },
+    { "type": "TERRITORIAL", "targetCountryId": "IND", "description": "Indian attempt to permanently alter Kashmir by force across the Line of Control", "severity": 8 },
+    { "type": "NUCLEAR", "description": "Attack on Pakistani nuclear forces or command and control", "severity": 10 }
+  ],
+  "internalDivisions": [
+    { "kind": "IDEOLOGICAL", "name": "Civil-military struggle over who rules Pakistan", "strength": 70, "tension": 75 },
+    { "kind": "RELIGIOUS", "name": "TTP and Islamist militancy against the state", "strength": 35, "tension": 70 },
+    { "kind": "ETHNIC", "name": "Baloch separatist insurgency and Sindhi-Pashtun grievances", "strength": 30, "tension": 60 }
+  ],
+  "economy": {
+    "gdp": 340000000000,
+    "growthRate": 0.02,
+    "debtGdpRatio": 75,
+    "sectors": { "agriculture": 23, "industry": 19, "services": 58 },
+    "keyResources": ["agriculture", "cotton", "coal", "copper"],
+    "keyExports": ["textiles", "rice", "leather_goods", "surgical_instruments"],
+    "developmentLevel": "DEVELOPING"
+  },
+  "military": {
+    "manpower": 654000,
+    "airpower": 1372,
+    "doctrine": "DETERRENCE",
+    "nuclearStatus": "ARMED",
+    "warheads": 170,
+    "arms_suppliers": ["PRIVATE", "USA"]
+  },
+  "militaryBudgetPct": 3.7,
+  "stability": 40,
+  "legitimacy": 45,
   "intelLevel": 70,
+  "insurgencyLevel": "REBELLION",
   "goals": [
-    { "id": "pak_g1", "type": "SECURITY", "targetCountryId": "IND", "priority": 95, "description": "Counter Indian military superiority" },
-    { "id": "pak_g2", "type": "TERRITORIAL", "priority": 85, "description": "Resolve Kashmir dispute favorably" }
+    { "id": "pak_g1", "type": "SECURITY", "targetCountryId": "IND", "priority": 95, "description": "Deter Indian conventional superiority through credible nuclear and asymmetric means" },
+    { "id": "pak_g2", "type": "TERRITORIAL", "targetCountryId": "IND", "priority": 80, "description": "Keep the Kashmir dispute alive and internationalized" },
+    { "id": "pak_g3", "type": "ECONOMIC", "targetCountryId": "CHN", "priority": 78, "description": "Deepen the China corridor (CPEC) and avoid default through IMF and Gulf lifelines" },
+    { "id": "pak_g4", "type": "SECURITY", "priority": 75, "description": "Suppress the TTP and Baloch insurgencies and secure the Afghan frontier" }
   ],
   "geo": {
     "bounds": [60.9, 23.7, 77.8, 37.1],

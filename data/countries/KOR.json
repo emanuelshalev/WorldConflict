@@ -3,22 +3,81 @@
   "iso3": "KOR",
   "name": "South Korea",
   "population": 52000000,
-  "gdp": 1710000000000,
-  "gdpGrowth": 0.025,
-  "militaryBudgetPct": 2.8,
-  "manpower": 500000,
-  "airpower": 1595,
   "regimeType": "DEMOCRACY",
-  "riskTolerance": 35,
+  "politicalSystem": {
+    "type": "PRESIDENTIAL_DEMOCRACY",
+    "powerCenters": ["EXECUTIVE", "LEGISLATURE", "JUDICIARY"],
+    "electionCycleMonths": 60,
+    "nextElectionTurn": null,
+    "leaderTitle": "President"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1910, "event": "Japanese colonization of Korea", "impact": "Deep historical grievance toward Japan that still complicates relations with a natural security partner" },
+      { "year": 1953, "event": "Korean War armistice", "impact": "Peninsula divided at the DMZ; permanent existential threat from the North and reliance on US security guarantee" },
+      { "year": 1965, "event": "Park Chung-hee export-led industrialization", "impact": "Miracle on the Han River: chaebol-driven growth transformed a war-ruined country into an industrial power" },
+      { "year": 1987, "event": "June Democratic Uprising", "impact": "Mass protests ended military rule; direct presidential elections and a vibrant, contentious democracy" },
+      { "year": 1997, "event": "Asian financial crisis and IMF bailout", "impact": "National humiliation followed by reform; lasting sensitivity about economic sovereignty and chaebol power" },
+      { "year": 2010, "event": "Cheonan sinking and Yeonpyeong shelling", "impact": "North Korean provocations killed dozens; hardened deterrence posture and conventional retaliation doctrine" },
+      { "year": 2017, "event": "Impeachment of President Park Geun-hye", "impact": "Candlelight protests demonstrated democratic resilience but deepened partisan polarization" }
+    ],
+    "historicalRivals": ["PRK"],
+    "historicalAllies": ["USA"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "DEFENSIVE",
+    "narrative": "A trading powerhouse living under the artillery of a nuclear-armed neighbor, South Korea anchors its security in the US alliance while hedging economically with China. Its relationship with Japan is complicated by colonial memory despite shared threats. Strategy is fundamentally defensive: deter the North, keep export markets open, and avoid being trampled in great-power competition."
+  },
+  "personality": {
+    "warPropensity": 25,
+    "allianceLoyalty": 80,
+    "diplomaticFlexibility": 65,
+    "riskTolerance": 35,
+    "expansionism": 15,
+    "isolationism": 20,
+    "ideologicalRigidity": 40,
+    "prestigeEmphasis": 65
+  },
+  "redLines": [
+    { "type": "TERRITORIAL", "targetCountryId": "PRK", "description": "North Korean armed attack on South Korean territory or vessels", "severity": 10 },
+    { "type": "NUCLEAR", "targetCountryId": "PRK", "description": "North Korean nuclear use or imminent nuclear strike preparations", "severity": 10 },
+    { "type": "ALLIANCE", "targetCountryId": "USA", "description": "Withdrawal of US forces or abandonment of the mutual defense treaty", "severity": 8 },
+    { "type": "ECONOMIC", "description": "Blockade of sea lanes carrying Korean trade and energy imports", "severity": 7 }
+  ],
+  "internalDivisions": [
+    { "kind": "IDEOLOGICAL", "name": "Progressive-conservative divide over North Korea policy", "strength": 70, "tension": 55 },
+    { "kind": "REGIONAL", "name": "Honam-Yeongnam regional rivalry", "strength": 45, "tension": 30 },
+    { "kind": "IDEOLOGICAL", "name": "Generational and gender divides over economy and conscription", "strength": 50, "tension": 40 }
+  ],
+  "economy": {
+    "gdp": 1710000000000,
+    "growthRate": 0.022,
+    "debtGdpRatio": 55,
+    "sectors": { "agriculture": 2, "industry": 33, "services": 65 },
+    "keyResources": ["technology", "shipbuilding", "skilled_labor"],
+    "keyExports": ["semiconductors", "automobiles", "ships", "electronics", "petrochemicals"],
+    "developmentLevel": "DEVELOPED"
+  },
+  "military": {
+    "manpower": 500000,
+    "airpower": 1600,
+    "doctrine": "DEFENSIVE",
+    "nuclearStatus": "LATENT",
+    "warheads": 0,
+    "arms_suppliers": ["USA"]
+  },
+  "militaryBudgetPct": 2.8,
   "stability": 78,
   "legitimacy": 75,
-  "intelLevel": 78,
+  "intelLevel": 80,
+  "insurgencyLevel": "NONE",
   "goals": [
-    { "id": "kor_g1", "type": "SECURITY", "targetCountryId": "PRK", "priority": 95, "description": "Deter North Korean aggression" },
-    { "id": "kor_g2", "type": "ECONOMIC", "priority": 80, "description": "Maintain technological leadership" }
+    { "id": "kor_g1", "type": "SECURITY", "targetCountryId": "PRK", "priority": 95, "description": "Deter North Korean aggression and survive its provocations without escalation to war" },
+    { "id": "kor_g2", "type": "SECURITY", "targetCountryId": "USA", "priority": 85, "description": "Keep the US alliance and extended nuclear deterrence credible" },
+    { "id": "kor_g3", "type": "ECONOMIC", "priority": 80, "description": "Maintain leadership in semiconductors, shipbuilding, and high-tech exports" },
+    { "id": "kor_g4", "type": "PRESTIGE", "priority": 55, "description": "Expand global influence as a middle power through trade, culture, and defense exports" }
   ],
   "geo": {
     "bounds": [125.1, 33.1, 131.9, 38.6],
-    "capital": { "name": "Seoul", "coordinates": [126.9780, 37.5665] }
+    "capital": { "name": "Seoul", "coordinates": [126.978, 37.5665] }
   }
 }

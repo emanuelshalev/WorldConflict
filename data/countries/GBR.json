@@ -3,19 +3,79 @@
   "iso3": "GBR",
   "name": "United Kingdom",
   "population": 67000000,
-  "gdp": 3340000000000,
-  "gdpGrowth": 0.012,
-  "militaryBudgetPct": 2.3,
-  "manpower": 150000,
-  "airpower": 693,
   "regimeType": "DEMOCRACY",
-  "riskTolerance": 40,
+  "politicalSystem": {
+    "type": "PARLIAMENTARY_DEMOCRACY",
+    "powerCenters": ["EXECUTIVE", "LEGISLATURE", "JUDICIARY"],
+    "electionCycleMonths": 60,
+    "nextElectionTurn": null,
+    "leaderTitle": "Prime Minister"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1940, "event": "Battle of Britain and standing alone against Hitler", "impact": "Finest-hour mythos; self-image as defender of freedom punching above its weight" },
+      { "year": 1947, "event": "Beginning of decolonization with Indian independence", "impact": "Managed imperial retreat; influence repurposed through the Commonwealth and diplomacy" },
+      { "year": 1956, "event": "Suez Crisis", "impact": "Hard lesson that the UK cannot act without Washington; the 'special relationship' becomes doctrine" },
+      { "year": 1982, "event": "Falklands War", "impact": "Demonstrated will and expeditionary ability to defend overseas territories" },
+      { "year": 2003, "event": "Iraq War alongside the US", "impact": "Public scarred by intelligence failures; parliamentary skepticism of foreign interventions" },
+      { "year": 2016, "event": "Brexit referendum", "impact": "Departure from the EU; 'Global Britain' rebrand and tilt to the Indo-Pacific (AUKUS)" },
+      { "year": 2022, "event": "Leading European support for Ukraine", "impact": "Reasserted role as Europe's most forward-leaning power against Russian aggression" }
+    ],
+    "historicalRivals": ["RUS"],
+    "historicalAllies": ["USA", "FRA", "CAN", "AUS", "POL", "JPN", "DEU"],
+    "sphereOfInfluence": ["CAN", "AUS"],
+    "foreignPolicyOrientation": "INTERVENTIONIST",
+    "narrative": "A former imperial power that converts world-class diplomacy, intelligence, and finance into outsized influence, almost always operating shoulder-to-shoulder with Washington. Post-Brexit, it compensates for European estrangement with Atlanticism, AUKUS, and a hawkish line on Russia."
+  },
+  "personality": {
+    "warPropensity": 45,
+    "allianceLoyalty": 90,
+    "diplomaticFlexibility": 65,
+    "riskTolerance": 45,
+    "expansionism": 20,
+    "isolationism": 20,
+    "ideologicalRigidity": 40,
+    "prestigeEmphasis": 80
+  },
+  "redLines": [
+    { "type": "ALLIANCE", "description": "Armed attack on a NATO member (Article 5)", "severity": 10 },
+    { "type": "TERRITORIAL", "description": "Threats to overseas territories (Falklands, Gibraltar)", "severity": 8 },
+    { "type": "NUCLEAR", "targetCountryId": "RUS", "description": "Nuclear use or blackmail against the UK or NATO allies", "severity": 10 },
+    { "type": "ECONOMIC", "description": "Disruption of the City of London's role in global finance", "severity": 6 }
+  ],
+  "internalDivisions": [
+    { "kind": "REGIONAL", "name": "Scottish independence movement", "strength": 40, "tension": 45 },
+    { "kind": "REGIONAL", "name": "Northern Ireland post-Brexit tensions", "strength": 20, "tension": 40 },
+    { "kind": "IDEOLOGICAL", "name": "Leave-Remain cultural divide", "strength": 60, "tension": 40 }
+  ],
+  "economy": {
+    "gdp": 3340000000000,
+    "growthRate": 0.012,
+    "debtGdpRatio": 100,
+    "sectors": { "agriculture": 1, "industry": 18, "services": 81 },
+    "keyResources": ["financial_services", "north_sea_oil", "natural_gas", "higher_education"],
+    "keyExports": ["financial_services", "pharmaceuticals", "aircraft_engines", "vehicles", "whisky"],
+    "developmentLevel": "DEVELOPED"
+  },
+  "military": {
+    "manpower": 150000,
+    "airpower": 693,
+    "doctrine": "EXPEDITIONARY",
+    "nuclearStatus": "ARMED",
+    "warheads": 225,
+    "arms_suppliers": ["GBR", "USA"]
+  },
+  "militaryBudgetPct": 2.3,
   "stability": 75,
   "legitimacy": 72,
-  "intelLevel": 88,
+  "intelLevel": 90,
+  "insurgencyLevel": "NONE",
   "goals": [
-    { "id": "gbr_g1", "type": "SECURITY", "priority": 85, "description": "Maintain special relationship with United States" },
-    { "id": "gbr_g2", "type": "PRESTIGE", "priority": 70, "description": "Project global influence post-Brexit" }
+    { "id": "gbr_g1", "type": "SECURITY", "targetCountryId": "USA", "priority": 85, "description": "Preserve the special relationship and remain America's indispensable ally" },
+    { "id": "gbr_g2", "type": "SECURITY", "targetCountryId": "RUS", "priority": 80, "description": "Lead European resistance to Russian aggression and hybrid warfare" },
+    { "id": "gbr_g3", "type": "PRESTIGE", "priority": 70, "description": "Project global influence post-Brexit via AUKUS, the Commonwealth, and the UN Security Council" },
+    { "id": "gbr_g4", "type": "ECONOMIC", "priority": 70, "description": "Secure trade deals and defend the City of London as a global financial hub" },
+    { "id": "gbr_g5", "type": "TERRITORIAL", "priority": 55, "description": "Hold the Union together against Scottish secession and defend overseas territories" }
   ],
   "geo": {
     "bounds": [-8.6, 49.9, 1.8, 60.9],

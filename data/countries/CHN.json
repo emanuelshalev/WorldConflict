@@ -3,20 +3,79 @@
   "iso3": "CHN",
   "name": "China",
   "population": 1412000000,
-  "gdp": 18530000000000,
-  "gdpGrowth": 0.048,
-  "militaryBudgetPct": 1.7,
-  "manpower": 2035000,
-  "airpower": 3285,
   "regimeType": "COMMUNIST",
-  "riskTolerance": 55,
+  "politicalSystem": {
+    "type": "ONE_PARTY_STATE",
+    "powerCenters": ["PARTY", "MILITARY", "EXECUTIVE"],
+    "electionCycleMonths": 0,
+    "nextElectionTurn": null,
+    "leaderTitle": "General Secretary"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1839, "event": "Start of the Century of Humiliation (Opium Wars)", "impact": "Deep national narrative of victimhood by foreign powers; obsession with sovereignty and territorial integrity" },
+      { "year": 1949, "event": "Communist revolution and founding of the PRC", "impact": "Party legitimacy rooted in national rejuvenation and ending foreign domination" },
+      { "year": 1960, "event": "Sino-Soviet split", "impact": "Strategic self-reliance; distrust of formal alliances even with ideological partners" },
+      { "year": 1989, "event": "Tiananmen Square crackdown", "impact": "Regime survival prioritized above all; social stability treated as existential" },
+      { "year": 2001, "event": "WTO accession", "impact": "Export-led boom made China the world's factory and deeply integrated into global trade" },
+      { "year": 2012, "event": "Xi Jinping becomes General Secretary", "impact": "Centralization of power, assertive 'wolf warrior' diplomacy, and the China Dream of rejuvenation by 2049" },
+      { "year": 2018, "event": "US-China trade and technology war begins", "impact": "Drive for technological self-sufficiency in chips, AI, and critical supply chains" }
+    ],
+    "historicalRivals": ["USA", "JPN", "IND"],
+    "historicalAllies": ["RUS", "PAK", "PRK"],
+    "sphereOfInfluence": ["PRK", "PAK", "IDN"],
+    "foreignPolicyOrientation": "EXPANSIONIST",
+    "narrative": "A rising superpower convinced that its return to centrality is the correction of a historical aberration. Plays a patient long game, preferring economic leverage and gray-zone coercion to open war, but regards Taiwan and territorial integrity as non-negotiable core interests."
+  },
+  "personality": {
+    "warPropensity": 40,
+    "allianceLoyalty": 45,
+    "diplomaticFlexibility": 60,
+    "riskTolerance": 55,
+    "expansionism": 75,
+    "isolationism": 25,
+    "ideologicalRigidity": 70,
+    "prestigeEmphasis": 90
+  },
+  "redLines": [
+    { "type": "TERRITORIAL", "description": "Formal Taiwanese independence or foreign military presence on Taiwan", "severity": 10 },
+    { "type": "TERRITORIAL", "description": "Challenges to sovereignty claims in the South China Sea and over Tibet/Xinjiang", "severity": 8 },
+    { "type": "IDEOLOGICAL", "description": "Foreign-backed attempts to undermine Communist Party rule", "severity": 9 },
+    { "type": "ECONOMIC", "description": "Blockade of energy imports or strategic technology embargo", "severity": 7 }
+  ],
+  "internalDivisions": [
+    { "kind": "ETHNIC", "name": "Uyghur and Tibetan minority repression", "strength": 25, "tension": 55 },
+    { "kind": "REGIONAL", "name": "Coastal-interior wealth gap", "strength": 50, "tension": 35 },
+    { "kind": "IDEOLOGICAL", "name": "Party orthodoxy vs market liberalizers", "strength": 30, "tension": 25 }
+  ],
+  "economy": {
+    "gdp": 18530000000000,
+    "growthRate": 0.048,
+    "debtGdpRatio": 84,
+    "sectors": { "agriculture": 7, "industry": 38, "services": 55 },
+    "keyResources": ["rare_earths", "coal", "steel", "manufacturing_base", "hydropower"],
+    "keyExports": ["electronics", "machinery", "textiles", "vehicles", "solar_panels"],
+    "developmentLevel": "EMERGING"
+  },
+  "military": {
+    "manpower": 2035000,
+    "airpower": 3285,
+    "doctrine": "OFFENSIVE",
+    "nuclearStatus": "ARMED",
+    "warheads": 500,
+    "arms_suppliers": ["RUS"]
+  },
+  "militaryBudgetPct": 1.7,
   "stability": 78,
   "legitimacy": 82,
-  "intelLevel": 85,
+  "intelLevel": 88,
+  "insurgencyLevel": "NONE",
   "goals": [
-    { "id": "chn_g1", "type": "TERRITORIAL", "targetCountryId": "TWN", "priority": 95, "description": "Reunification with Taiwan" },
-    { "id": "chn_g2", "type": "PRESTIGE", "priority": 85, "description": "Become dominant regional power in Asia-Pacific" },
-    { "id": "chn_g3", "type": "ECONOMIC", "priority": 90, "description": "Achieve technological self-sufficiency" }
+    { "id": "chn_g1", "type": "TERRITORIAL", "priority": 95, "description": "Achieve reunification with Taiwan, by force if necessary" },
+    { "id": "chn_g2", "type": "ECONOMIC", "priority": 90, "description": "Achieve technological self-sufficiency in semiconductors, AI, and aerospace" },
+    { "id": "chn_g3", "type": "PRESTIGE", "priority": 85, "description": "Displace the United States as the dominant power in the Asia-Pacific" },
+    { "id": "chn_g4", "type": "SECURITY", "targetCountryId": "USA", "priority": 80, "description": "Break US containment via the first island chain and alliance network" },
+    { "id": "chn_g5", "type": "ECONOMIC", "priority": 70, "description": "Expand Belt and Road influence and de-dollarize trade with the Global South" }
   ],
   "geo": {
     "bounds": [73.5, 18.2, 135.0, 53.6],

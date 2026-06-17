@@ -3,19 +3,77 @@
   "iso3": "NGA",
   "name": "Nigeria",
   "population": 223000000,
-  "gdp": 477000000000,
-  "gdpGrowth": 0.029,
-  "militaryBudgetPct": 0.6,
-  "manpower": 223000,
-  "airpower": 124,
   "regimeType": "DEMOCRACY",
-  "riskTolerance": 35,
-  "stability": 52,
+  "politicalSystem": {
+    "type": "PRESIDENTIAL_DEMOCRACY",
+    "powerCenters": ["EXECUTIVE", "LEGISLATURE", "JUDICIARY"],
+    "electionCycleMonths": 48,
+    "nextElectionTurn": null,
+    "leaderTitle": "President"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1960, "event": "Independence from Britain", "impact": "Africa's most populous state born with deep regional, ethnic, and religious fault lines" },
+      { "year": 1967, "event": "Biafra civil war", "impact": "Secessionist war killed over a million; national unity became the supreme political imperative" },
+      { "year": 1973, "event": "Oil boom transforms the economy", "impact": "Petroleum wealth fueled growth but entrenched corruption, rent-seeking, and neglect of agriculture" },
+      { "year": 1983, "event": "Military coup ends Second Republic", "impact": "Cycles of military rule normalized the army's political role and weakened civilian institutions" },
+      { "year": 1999, "event": "Return to democracy under the Fourth Republic", "impact": "Civilian rule restored with an informal north-south power rotation to manage regional rivalry" },
+      { "year": 2009, "event": "Boko Haram insurgency erupts", "impact": "Jihadist violence devastated the northeast; banditry and separatism spread insecurity nationwide" },
+      { "year": 2020, "event": "EndSARS protests", "impact": "Youth-led uprising against police brutality exposed a deep generational legitimacy gap" }
+    ],
+    "historicalRivals": [],
+    "historicalAllies": ["GBR", "USA", "ZAF"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "BALANCING",
+    "narrative": "The giant of Africa aspires to continental leadership through ECOWAS and sheer demographic weight, but is consumed by internal insecurity, oil dependence, and the perpetual balancing act between its Muslim north and Christian south. It plays the US, China, and Russia against each other for investment and arms while guarding its autonomy."
+  },
+  "personality": {
+    "warPropensity": 30,
+    "allianceLoyalty": 50,
+    "diplomaticFlexibility": 70,
+    "riskTolerance": 40,
+    "expansionism": 25,
+    "isolationism": 30,
+    "ideologicalRigidity": 25,
+    "prestigeEmphasis": 65
+  },
+  "redLines": [
+    { "type": "TERRITORIAL", "description": "Secessionist breakup of the federation (Biafra redux)", "severity": 10 },
+    { "type": "ECONOMIC", "description": "Foreign seizure or blockade of Niger Delta oil infrastructure", "severity": 8 },
+    { "type": "IDEOLOGICAL", "description": "Foreign sponsorship of jihadist or separatist insurgents on Nigerian soil", "severity": 8 }
+  ],
+  "internalDivisions": [
+    { "kind": "RELIGIOUS", "name": "Muslim north versus Christian south", "strength": 80, "tension": 60 },
+    { "kind": "ETHNIC", "name": "Hausa-Fulani, Yoruba, and Igbo rivalry with Igbo separatist undercurrent", "strength": 75, "tension": 55 },
+    { "kind": "REGIONAL", "name": "Northeast insurgency, northwest banditry, and Delta militancy", "strength": 60, "tension": 70 }
+  ],
+  "economy": {
+    "gdp": 390000000000,
+    "growthRate": 0.029,
+    "debtGdpRatio": 50,
+    "sectors": { "agriculture": 24, "industry": 31, "services": 45 },
+    "keyResources": ["oil", "natural_gas", "agriculture", "tin"],
+    "keyExports": ["crude_oil", "liquefied_natural_gas", "cocoa", "petroleum_products"],
+    "developmentLevel": "DEVELOPING"
+  },
+  "military": {
+    "manpower": 223000,
+    "airpower": 130,
+    "doctrine": "DEFENSIVE",
+    "nuclearStatus": "NONE",
+    "warheads": 0,
+    "arms_suppliers": ["USA", "RUS", "PRIVATE"]
+  },
+  "militaryBudgetPct": 0.9,
+  "stability": 40,
   "legitimacy": 48,
   "intelLevel": 45,
+  "insurgencyLevel": "REBELLION",
   "goals": [
-    { "id": "nga_g1", "type": "SECURITY", "priority": 90, "description": "Combat Boko Haram and internal insurgencies" },
-    { "id": "nga_g2", "type": "PRESTIGE", "priority": 70, "description": "Lead African Union and ECOWAS" }
+    { "id": "nga_g1", "type": "SECURITY", "priority": 95, "description": "Defeat Boko Haram, ISWAP, and banditry to restore control of the north" },
+    { "id": "nga_g2", "type": "ECONOMIC", "priority": 85, "description": "Diversify beyond oil, fix power and refining capacity, and create jobs for a booming population" },
+    { "id": "nga_g3", "type": "PRESTIGE", "priority": 70, "description": "Lead West Africa through ECOWAS and claim Africa's seat at global tables" },
+    { "id": "nga_g4", "type": "SECURITY", "priority": 60, "description": "Hold the federation together against separatist and communal pressures" }
   ],
   "geo": {
     "bounds": [2.7, 4.3, 14.7, 13.9],

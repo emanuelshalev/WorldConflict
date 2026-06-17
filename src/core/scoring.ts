@@ -1,305 +1,142 @@
-import type { CountryState, WorldState } from "./types.js";
+import type { CountryState, Score, WorldState } from "./types.js";
 
-export interface ScoreBreakdown {
-  economy: number;
-  security: number;
-  diplomacy: number;
-  stability: number;
-  total: number;
+/**
+ * Leadership evaluated on a 0-200 scale: four components of 0-50 each
+ * (economic, security, internal approval, world prestige). Scores move
+ * incrementally each turn toward the level the current situation deserves.
+ */
+
+function targetEconomic(player: CountryState): number {
+  let target = 20;
+  target += player.growthRate * 450; // +3% growth → +13.5
+  target -= Math.max(0, (player.debtGdpRatio - 100) / 10);
+  if (player.underGlobalEmbargo) target -= 10;
+  return clamp50(target);
 }
 
-export interface LeadershipStyle {
-  primary: string;
-  secondary: string;
-  description: string;
+function targetSecurity(world: WorldState, player: CountryState): number {
+  let target = 26;
+  for (const war of world.wars) {
+    if (war.attackerId === player.id) target -= war.frontline > 60 ? 2 : 10;
+    if (war.defenderId === player.id) target -= war.frontline < 40 ? 4 : 12;
+  }
+  if (player.insurgencyLevel === "REBELLION") target -= 6;
+  if (player.insurgencyLevel === "GUERILLA") target -= 12;
+  target += player.stability > 65 ? 8 : 0;
+  if (player.atWarWith.length === 0 && player.stability > 50) target += 6;
+  return clamp50(target);
 }
 
-export interface GameScore {
-  breakdown: ScoreBreakdown;
-  rank: string;
-  leadershipStyle: LeadershipStyle;
-  achievements: string[];
-  timeline: TurnSnapshot[];
+function targetApproval(player: CountryState): number {
+  return clamp50(player.approval / 2);
 }
 
-export interface TurnSnapshot {
-  turn: number;
-  date: string;
-  score: number;
-  gdp: number;
-  stability: number;
-  allies: number;
-  wars: number;
-  events: string[];
+function targetPrestige(world: WorldState, player: CountryState): number {
+  let target = 0;
+  // Standing with the great powers and the world at large
+  const others = world.countries.filter((c) => c.id !== player.id);
+  const avgRelation =
+    others.reduce((sum, c) => sum + (c.relations[player.id] ?? 0), 0) / Math.max(1, others.length);
+  target += 20 + avgRelation / 4;
+  const pacts = player.alliances.length;
+  target += Math.min(8, pacts * 2);
+  if (player.underGlobalEmbargo) target -= 20;
+  if (player.nuclear.status === "ARMED" || player.nuclear.status === "TESTED") target += 3; // a seat at the table
+  return clamp50(target);
 }
 
-const WEIGHTS = {
-  economy: 0.3,
-  security: 0.3,
-  diplomacy: 0.25,
-  stability: 0.15,
-};
-
-export function calculateEconomyScore(country: CountryState, initialGdp: number): number {
-  const gdpGrowth = (country.gdp - initialGdp) / initialGdp;
-  const growthScore = Math.min(100, Math.max(0, 50 + gdpGrowth * 200));
-
-  const debtPenalty = Math.max(0, (country.debtGdpRatio - 0.6) * 50);
-
-  const budgetBalance = country.militaryBudgetPercent <= 6 ? 10 : 0;
-
-  return Math.max(0, Math.min(100, growthScore - debtPenalty + budgetBalance));
+function clamp50(v: number): number {
+  return Math.max(0, Math.min(50, v));
 }
 
-export function calculateSecurityScore(country: CountryState, world: WorldState): number {
-  let score = 50;
+export function updateScore(world: WorldState): void {
+  const player = world.countries.find((c) => c.id === world.playerCountryId);
+  if (!player) return;
 
-  if (country.atWarWith.length === 0) {
-    score += 20;
-  } else {
-    score -= country.atWarWith.length * 15;
-  }
+  const score = world.score;
+  // Each component drifts 15% toward its target each month: sustained
+  // performance matters more than single good months.
+  score.economic += (targetEconomic(player) * 0.9 - score.economic) * 0.15;
+  score.security += (targetSecurity(world, player) * 0.9 - score.security) * 0.15;
+  score.approval += (targetApproval(player) * 0.9 - score.approval) * 0.15;
+  score.prestige += (targetPrestige(world, player) * 0.9 - score.prestige) * 0.15;
+  score.total = Math.round(score.economic + score.security + score.approval + score.prestige);
 
-  const warsWon = world.wars.filter((w) => {
-    const isAttacker = w.attackerId === country.id;
-    const isDefender = w.defenderId === country.id;
-    if (!isAttacker && !isDefender) return false;
-
-    const progress = isAttacker ? w.attackerProgress : w.defenderProgress;
-    return progress >= 100;
-  }).length;
-
-  score += warsWon * 10;
-
-  if (country.mobilizationLevel >= 30 && country.mobilizationLevel <= 60) {
-    score += 10;
-  }
-
-  const militaryStrength = country.manpower / 500000 + country.airpower / 500;
-  score += Math.min(20, militaryStrength);
-
-  return Math.max(0, Math.min(100, score));
-}
-
-export function calculateDiplomacyScore(country: CountryState, world: WorldState): number {
-  let score = 50;
-
-  score += country.alliances.length * 8;
-
-  const positiveRelations = Object.values(country.relations).filter((r) => r > 30).length;
-  const negativeRelations = Object.values(country.relations).filter((r) => r < -30).length;
-
-  score += positiveRelations * 3;
-  score -= negativeRelations * 2;
-
-  const globalTensionPenalty = Math.max(0, (world.globalTension - 50) * 0.3);
-  score -= globalTensionPenalty;
-
-  return Math.max(0, Math.min(100, score));
-}
-
-export function calculateStabilityScore(country: CountryState): number {
-  const stabilityWeight = 0.6;
-  const legitimacyWeight = 0.4;
-
-  return country.stability * stabilityWeight + country.legitimacy * legitimacyWeight;
-}
-
-export function calculateTotalScore(breakdown: ScoreBreakdown): number {
-  return Math.round(
-    breakdown.economy * WEIGHTS.economy +
-      breakdown.security * WEIGHTS.security +
-      breakdown.diplomacy * WEIGHTS.diplomacy +
-      breakdown.stability * WEIGHTS.stability,
-  );
-}
-
-export function getScoreRank(score: number): string {
-  if (score >= 90) return "S - Legendary Leader";
-  if (score >= 80) return "A - Outstanding";
-  if (score >= 70) return "B - Competent";
-  if (score >= 60) return "C - Average";
-  if (score >= 50) return "D - Struggling";
-  if (score >= 40) return "E - Poor";
-  return "F - Failed State";
-}
-
-export function determineLeadershipStyle(
-  breakdown: ScoreBreakdown,
-  country: CountryState,
-  world: WorldState,
-): LeadershipStyle {
-  const styles: Array<{ name: string; score: number; description: string }> = [];
-
-  if (breakdown.economy >= 70) {
-    styles.push({
-      name: "Economic Visionary",
-      score: breakdown.economy,
-      description: "Prioritized economic growth and prosperity",
-    });
-  }
-
-  if (breakdown.security >= 70 && country.atWarWith.length === 0) {
-    styles.push({
-      name: "Peace Through Strength",
-      score: breakdown.security,
-      description: "Maintained powerful military deterrence",
-    });
-  }
-
-  if (country.atWarWith.length > 0 || world.wars.some((w) => w.attackerId === country.id)) {
-    styles.push({
-      name: "Warmonger",
-      score: 60 + country.atWarWith.length * 10,
-      description: "Pursued aggressive military expansion",
-    });
-  }
-
-  if (breakdown.diplomacy >= 70) {
-    styles.push({
-      name: "Master Diplomat",
-      score: breakdown.diplomacy,
-      description: "Built strong international relationships",
-    });
-  }
-
-  if (country.alliances.length >= 5) {
-    styles.push({
-      name: "Alliance Builder",
-      score: 70 + country.alliances.length * 2,
-      description: "Created extensive alliance networks",
-    });
-  }
-
-  if (breakdown.stability >= 80) {
-    styles.push({
-      name: "Stabilizer",
-      score: breakdown.stability,
-      description: "Maintained domestic harmony and legitimacy",
-    });
-  }
-
-  if (country.stability < 40) {
-    styles.push({
-      name: "Crisis Manager",
-      score: 50,
-      description: "Struggled with internal instability",
-    });
-  }
-
-  styles.sort((a, b) => b.score - a.score);
-
-  const primary = styles[0] || {
-    name: "Balanced Leader",
-    description: "Maintained equilibrium across all domains",
-  };
-  const secondary = styles[1] || { name: "Pragmatist", description: "Adapted to circumstances" };
-
-  return {
-    primary: primary.name,
-    secondary: secondary.name,
-    description: `${primary.description}. ${secondary.description}.`,
-  };
-}
-
-export function generateAchievements(
-  country: CountryState,
-  world: WorldState,
-  initialState: CountryState,
-): string[] {
-  const achievements: string[] = [];
-
-  if (country.gdp > initialState.gdp * 1.5) {
-    achievements.push("🏆 Economic Miracle - Grew GDP by 50%+");
-  }
-
-  if (country.alliances.length >= 5) {
-    achievements.push("🤝 Coalition Builder - Formed 5+ alliances");
-  }
-
-  if (country.stability >= 90) {
-    achievements.push("🏛️ Pillar of Stability - Achieved 90%+ stability");
-  }
-
-  if (country.atWarWith.length === 0 && world.turn >= 12) {
-    achievements.push("🕊️ Peacekeeper - Avoided all wars for a year");
-  }
-
-  const warsWon = world.wars.filter((w) => {
-    const isAttacker = w.attackerId === country.id;
-    if (!isAttacker) return false;
-    return w.attackerProgress >= 100;
-  }).length;
-
-  if (warsWon >= 1) {
-    achievements.push("⚔️ Victorious - Won a military conflict");
-  }
-
-  if (country.mobilizationLevel <= 20 && country.stability >= 70) {
-    achievements.push("🌿 Demilitarized Peace - Low military, high stability");
-  }
-
-  if (Object.values(country.relations).every((r) => r >= 0)) {
-    achievements.push("🌍 Global Friend - No negative relations");
-  }
-
-  return achievements;
-}
-
-export function calculateGameScore(
-  world: WorldState,
-  initialCountryState: CountryState,
-  turnSnapshots: TurnSnapshot[],
-): GameScore {
-  const playerCountry = world.countries.find((c) => c.id === world.playerCountryId);
-
-  if (!playerCountry) {
-    throw new Error("Player country not found");
-  }
-
-  const breakdown: ScoreBreakdown = {
-    economy: calculateEconomyScore(playerCountry, initialCountryState.gdp),
-    security: calculateSecurityScore(playerCountry, world),
-    diplomacy: calculateDiplomacyScore(playerCountry, world),
-    stability: calculateStabilityScore(playerCountry),
-    total: 0,
-  };
-
-  breakdown.total = calculateTotalScore(breakdown);
-
-  return {
-    breakdown,
-    rank: getScoreRank(breakdown.total),
-    leadershipStyle: determineLeadershipStyle(breakdown, playerCountry, world),
-    achievements: generateAchievements(playerCountry, world, initialCountryState),
-    timeline: turnSnapshots,
-  };
-}
-
-export function createTurnSnapshot(world: WorldState, events: string[] = []): TurnSnapshot {
-  const playerCountry = world.countries.find((c) => c.id === world.playerCountryId);
-
-  if (!playerCountry) {
-    throw new Error("Player country not found");
-  }
-
-  const breakdown: ScoreBreakdown = {
-    economy: 50,
-    security: calculateSecurityScore(playerCountry, world),
-    diplomacy: calculateDiplomacyScore(playerCountry, world),
-    stability: calculateStabilityScore(playerCountry),
-    total: 0,
-  };
-  breakdown.total = calculateTotalScore(breakdown);
-
-  return {
+  world.scoreHistory.push({
     turn: world.turn,
-    date: world.date,
-    score: breakdown.total,
-    gdp: playerCountry.gdp,
-    stability: playerCountry.stability,
-    allies: playerCountry.alliances.length,
-    wars: playerCountry.atWarWith.length,
-    events,
-  };
+    gdp: player.gdp,
+    stability: player.stability,
+    approval: player.approval,
+    globalTension: world.globalTension,
+    score: score.total,
+  });
+}
+
+export interface LeadershipAssessment {
+  classification: string;
+  justification: string;
+  grade: string;
+}
+
+export function classifyLeadership(world: WorldState): LeadershipAssessment {
+  const player = world.countries.find((c) => c.id === world.playerCountryId);
+  const score = world.score;
+  if (!player) {
+    return { classification: "Unknown", justification: "", grade: "F" };
+  }
+
+  const warsStarted = world.timeline.filter(
+    (t) => t.category === "WAR" && t.description.includes(`${player.name} declared war`),
+  ).length;
+  const nukeUsed = world.timeline.some(
+    (t) =>
+      t.category === "NUCLEAR" &&
+      t.description.includes(player.name) &&
+      t.description.toLowerCase().includes("nuclear weapon"),
+  );
+
+  let classification: string;
+  let justification: string;
+
+  if (nukeUsed) {
+    classification = "The Destroyer";
+    justification =
+      "History will remember one decision above all others: the day you reached for the nuclear option.";
+  } else if (warsStarted >= 2 && score.security > 30) {
+    classification = "Risk-Taking Expansionist";
+    justification = "You treated war as policy by other means — and largely got away with it.";
+  } else if (warsStarted >= 2) {
+    classification = "Reckless Adventurer";
+    justification =
+      "Repeated military gambles drained the nation's blood and treasure for little gain.";
+  } else if (score.economic > 35 && score.approval > 30) {
+    classification = "Pragmatic Stabilizer";
+    justification = "Steady economic stewardship and broad public support defined your tenure.";
+  } else if (score.prestige > 35) {
+    classification = "Master Diplomat";
+    justification =
+      "You made your nation respected abroad — alliances, summits, and standing carried your legacy.";
+  } else if (score.approval < 15) {
+    classification = "The Unloved";
+    justification = "Whatever your achievements, your people never forgave you for the costs.";
+  } else {
+    classification = "Cautious Caretaker";
+    justification = "You kept the ship of state afloat without redirecting its course.";
+  }
+
+  const total = score.total;
+  const grade =
+    total >= 160
+      ? "S"
+      : total >= 140
+        ? "A"
+        : total >= 110
+          ? "B"
+          : total >= 80
+            ? "C"
+            : total >= 50
+              ? "D"
+              : "F";
+
+  return { classification, justification, grade };
 }

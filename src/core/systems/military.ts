@@ -1,511 +1,325 @@
 import type { SeededRandom } from "../seed.js";
-import type { ActiveWar, CountryState, WorldState, MilitaryUnits, BorderDeployment, UnitType } from "../types.js";
+import type { ActiveWar, CountryState, WorldState } from "../types.js";
 
-// Unit costs (from spec)
-export const UNIT_COSTS: Record<string, number> = {
-  tanks: 50,        // $50M per unit
-  helicopters: 30,  // $30M per unit
-  sams: 25,         // $25M per unit
-  fighters: 80,     // $80M per unit
-  infantry: 5,      // $5M per 1000 troops
-};
+export type AirstrikeTarget = "MILITARY" | "INDUSTRIAL" | "NUCLEAR";
 
-// Rock-paper-scissors combat effectiveness (from spec)
-export const UNIT_EFFECTIVENESS: Record<string, Record<string, number>> = {
-  tanks: { infantry: 2.0, helicopters: 0.5, sams: 1.0, fighters: 0.3, tanks: 1.0 },
-  helicopters: { tanks: 2.0, infantry: 1.5, sams: 0.3, fighters: 0.5, helicopters: 1.0 },
-  sams: { fighters: 2.5, helicopters: 2.0, tanks: 0.5, infantry: 0.5, sams: 1.0 },
-  fighters: { helicopters: 2.0, tanks: 1.5, infantry: 1.0, sams: 0.3, fighters: 1.0 },
-  infantry: { sams: 1.5, tanks: 0.5, helicopters: 0.7, fighters: 0.3, infantry: 1.0 },
-};
-
-// Airstrike target types (from spec)
-export type AirstrikeTarget = 'MILITARY' | 'CIVILIAN' | 'INDUSTRIAL' | 'NUCLEAR';
-
-export interface AirstrikeResult {
+export interface AirstrikeOutcome {
   success: boolean;
-  targetType: AirstrikeTarget;
-  damage: number;
-  effects: {
-    manpowerLoss?: number;
-    stabilityLoss?: number;
-    gdpLoss?: number;
-    nuclearDelay?: number;
-  };
-  warCrimeRisk: boolean;
+  description: string;
+  crippledNuclearProgram: boolean;
+}
+
+export interface WarEndResult {
+  war: ActiveWar;
+  winnerId: string | null; // null = ceasefire/stalemate
+  loserId: string | null;
   description: string;
 }
 
-export interface WarResolutionResult {
-  war: ActiveWar;
-  attackerCasualties: number;
-  defenderCasualties: number;
-  progressDelta: number;
-  isOver: boolean;
-  winner?: string;
+const DOCTRINE_ATTACK: Record<string, number> = {
+  OFFENSIVE: 1.15,
+  EXPEDITIONARY: 1.1,
+  DEFENSIVE: 0.95,
+  DETERRENCE: 0.9,
+  GUERILLA: 0.85,
+};
+const DOCTRINE_DEFENSE: Record<string, number> = {
+  OFFENSIVE: 1.0,
+  EXPEDITIONARY: 0.95,
+  DEFENSIVE: 1.2,
+  DETERRENCE: 1.05,
+  GUERILLA: 1.25,
+};
+
+export function militaryStrength(country: CountryState): number {
+  const mobilization = 0.25 + 0.75 * (country.mobilizationLevel / 100);
+  const manpowerStrength = country.manpower * mobilization;
+  const airStrength = country.airpower * 60;
+  const budgetQuality = 0.7 + (country.militaryBudgetPercent / 10) * 0.6; // tech/readiness proxy
+  return (manpowerStrength + airStrength) * budgetQuality;
 }
 
-export class MilitarySystem {
-  static calculateMilitaryStrength(country: CountryState): number {
-    const mobilizationFactor = country.mobilizationLevel / 100;
-    const manpowerStrength = country.manpower * mobilizationFactor;
-    const airpowerStrength = country.airpower * 10;
-    return manpowerStrength + airpowerStrength;
-  }
+export function effectiveForce(country: CountryState, attacking: boolean): number {
+  const base = militaryStrength(country);
+  const cohesion = (0.5 + country.stability / 200) * (0.6 + country.legitimacy / 250);
+  const doctrine = attacking
+    ? (DOCTRINE_ATTACK[country.doctrine] ?? 1)
+    : (DOCTRINE_DEFENSE[country.doctrine] ?? 1);
+  return base * cohesion * doctrine;
+}
 
-  static getEffectiveForce(country: CountryState): number {
-    const baseStrength = MilitarySystem.calculateMilitaryStrength(country);
-    const stabilityModifier = country.stability / 100;
-    const legitimacyModifier = country.legitimacy / 100;
-    return baseStrength * stabilityModifier * legitimacyModifier;
-  }
+export function monthlyDefenseBudgetM(country: CountryState): number {
+  // Monthly defense budget in $M
+  return (country.gdp * (country.militaryBudgetPercent / 100)) / 12 / 1_000_000;
+}
 
-  static mobilize(country: CountryState, targetLevel: number): CountryState {
-    const newLevel = Math.max(0, Math.min(100, targetLevel));
-    const levelChange = newLevel - country.mobilizationLevel;
+export function startWar(
+  world: WorldState,
+  attackerId: string,
+  defenderId: string,
+): ActiveWar | null {
+  const attacker = world.countries.find((c) => c.id === attackerId);
+  const defender = world.countries.find((c) => c.id === defenderId);
+  if (!attacker || !defender) return null;
+  if (attacker.atWarWith.includes(defenderId)) return null;
 
-    let stabilityDelta = 0;
-    if (levelChange > 0) {
-      stabilityDelta = -Math.floor(levelChange / 10);
+  attacker.atWarWith.push(defenderId);
+  defender.atWarWith.push(attackerId);
+  attacker.relations[defenderId] = -100;
+  defender.relations[attackerId] = -100;
+  // Alliances with the enemy dissolve
+  attacker.alliances = attacker.alliances.filter((a) => a !== defenderId);
+  defender.alliances = defender.alliances.filter((a) => a !== attackerId);
+  attacker.mobilizationLevel = Math.max(attacker.mobilizationLevel, 60);
+  defender.mobilizationLevel = Math.max(defender.mobilizationLevel, 50);
+  // War footing: budgets surge (hostility indicator)
+  attacker.militaryBudgetPercent = Math.min(20, attacker.militaryBudgetPercent * 1.5);
+  defender.militaryBudgetPercent = Math.min(20, defender.militaryBudgetPercent * 1.4);
+
+  const war: ActiveWar = {
+    id: `war_${attackerId}_${defenderId}_${world.turn}`,
+    attackerId,
+    defenderId,
+    startTurn: world.turn,
+    frontline: 50,
+    attackerCasualties: 0,
+    defenderCasualties: 0,
+    exhaustion: 0,
+  };
+  world.wars.push(war);
+  world.globalTension = Math.min(100, world.globalTension + 15);
+  return war;
+}
+
+/** Defensive pact allies of the defender join the war against the attacker. */
+export function activateDefensivePacts(
+  world: WorldState,
+  war: ActiveWar,
+  rng: SeededRandom,
+): string[] {
+  const defender = world.countries.find((c) => c.id === war.defenderId);
+  const joined: string[] = [];
+  if (!defender) return joined;
+  for (const allyId of defender.alliances) {
+    const ally = world.countries.find((c) => c.id === allyId);
+    if (!ally || ally.collapsed) continue;
+    if (ally.atWarWith.includes(war.attackerId)) continue;
+    if (allyId === war.attackerId) continue;
+    const loyaltyRoll = rng.next() * 100;
+    if (loyaltyRoll < ally.personality.allianceLoyalty) {
+      startWar(world, allyId, war.attackerId);
+      joined.push(allyId);
     } else {
-      stabilityDelta = Math.floor(Math.abs(levelChange) / 20);
+      // Refused the call: alliance strained
+      ally.relations[defender.id] = Math.max(-100, (ally.relations[defender.id] ?? 0) - 25);
+      defender.relations[allyId] = Math.max(-100, (defender.relations[allyId] ?? 0) - 25);
+      ally.alliances = ally.alliances.filter((a) => a !== defender.id);
+      defender.alliances = defender.alliances.filter((a) => a !== allyId);
     }
+  }
+  return joined;
+}
 
-    return {
-      ...country,
-      mobilizationLevel: newLevel,
-      stability: Math.max(0, Math.min(100, country.stability + stabilityDelta)),
-    };
+export interface WarMonthSummary {
+  war: ActiveWar;
+  delta: number;
+  attackerCasualties: number;
+  defenderCasualties: number;
+  ended: WarEndResult | null;
+}
+
+export function resolveWarMonth(
+  world: WorldState,
+  war: ActiveWar,
+  rng: SeededRandom,
+): WarMonthSummary | null {
+  const attacker = world.countries.find((c) => c.id === war.attackerId);
+  const defender = world.countries.find((c) => c.id === war.defenderId);
+  if (!attacker || !defender) return null;
+
+  const atkForce = effectiveForce(attacker, true);
+  const defForce = effectiveForce(defender, false);
+  const total = atkForce + defForce;
+  if (total <= 0) return null;
+
+  const advantage = atkForce / total - 0.5; // -0.5..0.5
+  const fortune = (rng.next() - 0.5) * 4; // battlefield luck
+  const delta = advantage * 14 + fortune;
+  war.frontline = Math.max(0, Math.min(100, war.frontline + delta));
+
+  // Casualties scale with combat intensity and enemy strength
+  const intensity = 0.0015 + Math.abs(delta) * 0.0004;
+  const attackerCasualties = Math.floor(attacker.manpower * intensity * (defForce / total) * 2);
+  const defenderCasualties = Math.floor(defender.manpower * intensity * (atkForce / total) * 2);
+  war.attackerCasualties += attackerCasualties;
+  war.defenderCasualties += defenderCasualties;
+  attacker.manpower = Math.max(0, attacker.manpower - attackerCasualties);
+  defender.manpower = Math.max(0, defender.manpower - defenderCasualties);
+
+  // War weighs on both societies; losing side suffers more
+  const attackerLosing = war.frontline < 45;
+  const defenderLosing = war.frontline > 55;
+  attacker.stability = clamp(attacker.stability - (attackerLosing ? 2.5 : 1));
+  defender.stability = clamp(defender.stability - (defenderLosing ? 2.5 : 1));
+  attacker.approval = clamp(attacker.approval - (attackerLosing ? 2 : 0.5));
+  defender.approval = clamp(defender.approval + (defenderLosing ? -2 : 1)); // rally round the flag while holding
+
+  // Economic damage proportional to how badly the war is going
+  attacker.gdp *= attackerLosing ? 0.985 : 0.993;
+  defender.gdp *= defenderLosing ? 0.975 : 0.988; // war fought on defender's soil
+
+  war.exhaustion = clamp(war.exhaustion + 2 + (Math.abs(delta) < 2 ? 2 : 0));
+
+  // End conditions
+  let ended: WarEndResult | null = null;
+  if (war.frontline >= 85) {
+    ended = endWar(world, war, war.attackerId, war.defenderId, rng);
+  } else if (war.frontline <= 15) {
+    ended = endWar(world, war, war.defenderId, war.attackerId, rng);
+  } else if (war.exhaustion >= 80 && rng.nextBool(0.35)) {
+    ended = endWar(world, war, null, null, rng);
   }
 
-  static demobilize(country: CountryState, amount: number): CountryState {
-    const newLevel = Math.max(0, country.mobilizationLevel - amount);
-    return {
-      ...country,
-      mobilizationLevel: newLevel,
-      stability: Math.min(100, country.stability + 1),
-    };
+  return { war, delta, attackerCasualties, defenderCasualties, ended };
+}
+
+function endWar(
+  world: WorldState,
+  war: ActiveWar,
+  winnerId: string | null,
+  loserId: string | null,
+  _rng: SeededRandom,
+): WarEndResult {
+  const attacker = world.countries.find((c) => c.id === war.attackerId);
+  const defender = world.countries.find((c) => c.id === war.defenderId);
+  world.wars = world.wars.filter((w) => w.id !== war.id);
+  if (attacker && defender) {
+    attacker.atWarWith = attacker.atWarWith.filter((id) => id !== defender.id);
+    defender.atWarWith = defender.atWarWith.filter((id) => id !== attacker.id);
+    attacker.relations[defender.id] = -60;
+    defender.relations[attacker.id] = -60;
+    attacker.mobilizationLevel = Math.max(20, attacker.mobilizationLevel - 30);
+    defender.mobilizationLevel = Math.max(20, defender.mobilizationLevel - 30);
   }
 
-  static resolveWarMonth(
-    war: ActiveWar,
-    attacker: CountryState,
-    defender: CountryState,
-    rng: SeededRandom,
-  ): WarResolutionResult {
-    const attackerStrength = MilitarySystem.getEffectiveForce(attacker);
-    const defenderStrength = MilitarySystem.getEffectiveForce(defender);
-    const totalStrength = attackerStrength + defenderStrength;
-
-    if (totalStrength === 0) {
-      return {
-        war,
-        attackerCasualties: 0,
-        defenderCasualties: 0,
-        progressDelta: 0,
-        isOver: false,
-      };
+  let description: string;
+  if (winnerId && loserId && attacker && defender) {
+    const winner = winnerId === attacker.id ? attacker : defender;
+    const loser = loserId === attacker.id ? attacker : defender;
+    // Spoils and humiliation
+    const reparations = loser.gdp * 0.05;
+    loser.gdp -= reparations;
+    winner.gdp += reparations * 0.6;
+    loser.stability = clamp(loser.stability - 15);
+    loser.legitimacy = clamp(loser.legitimacy - 20);
+    loser.approval = clamp(loser.approval - 15);
+    winner.approval = clamp(winner.approval + 12);
+    winner.legitimacy = clamp(winner.legitimacy + 8);
+    loser.insurgencyLevel = loser.insurgencyLevel === "NONE" ? "UNREST" : loser.insurgencyLevel;
+    description = `${winner.name} has defeated ${loser.name}. ${loser.name} accepts humiliating terms; its government totters.`;
+  } else {
+    if (attacker && defender) {
+      attacker.approval = clamp(attacker.approval - 5);
+      description = `Exhausted and bleeding, ${attacker.name} and ${defender.name} accept a ceasefire along the current lines.`;
+    } else {
+      description = "A ceasefire has taken hold.";
     }
+  }
+  world.globalTension = clamp(world.globalTension - 8);
+  return { war, winnerId, loserId, description };
+}
 
-    const attackerRatio = attackerStrength / totalStrength;
-    const defenderRatio = defenderStrength / totalStrength;
+export function executeAirstrike(
+  world: WorldState,
+  attacker: CountryState,
+  defender: CountryState,
+  targetType: AirstrikeTarget,
+  rng: SeededRandom,
+): AirstrikeOutcome {
+  const offensive = attacker.airpower;
+  const defensive = defender.airpower * 0.6 + defender.intelLevel * 5;
+  const successChance = Math.min(0.9, Math.max(0.25, 0.55 + (offensive - defensive) / 20000));
+  const success = rng.next() < successChance;
 
-    const battleRoll = rng.next();
-    const progressDelta = (battleRoll - 0.5) * 10 * (attackerRatio - defenderRatio + 0.5);
+  // Diplomatic fallout regardless of outcome
+  defender.relations[attacker.id] = Math.max(-100, (defender.relations[attacker.id] ?? 0) - 30);
+  attacker.relations[defender.id] = Math.max(-100, (attacker.relations[defender.id] ?? 0) - 20);
+  world.globalTension = clamp(world.globalTension + 5, 0, 100);
 
-    const newAttackerProgress = Math.max(0, Math.min(100, war.attackerProgress + progressDelta));
+  let crippledNuclearProgram = false;
+  let description: string;
 
-    const baseCasualtyRate = 0.001;
-    const attackerCasualties = Math.floor(attacker.manpower * baseCasualtyRate * defenderRatio);
-    const defenderCasualties = Math.floor(defender.manpower * baseCasualtyRate * attackerRatio);
+  if (!success) {
+    if (targetType === "NUCLEAR") defender.nuclear.consecutiveStrikesTaken = 0;
+    description = `${attacker.name}'s airstrike against ${defender.name} was repelled by air defenses.`;
+    return { success, description, crippledNuclearProgram };
+  }
 
-    const updatedWar: ActiveWar = {
-      ...war,
-      attackerProgress: newAttackerProgress,
-      defenderProgress: 100 - newAttackerProgress,
-      attackerCasualties: war.attackerCasualties + attackerCasualties,
-      defenderCasualties: war.defenderCasualties + defenderCasualties,
-    };
-
-    let isOver = false;
-    let winner: string | undefined;
-
-    if (newAttackerProgress >= 100) {
-      isOver = true;
-      winner = war.attackerId;
-    } else if (newAttackerProgress <= 0) {
-      isOver = true;
-      winner = war.defenderId;
+  switch (targetType) {
+    case "MILITARY": {
+      const loss = Math.floor(defender.manpower * 0.04);
+      defender.manpower -= loss;
+      defender.airpower = Math.floor(defender.airpower * 0.95);
+      description = `${attacker.name} jets struck ${defender.name} military installations, destroying bases and equipment.`;
+      break;
     }
-
-    return {
-      war: updatedWar,
-      attackerCasualties,
-      defenderCasualties,
-      progressDelta,
-      isOver,
-      winner,
-    };
-  }
-
-  static applyWarAttrition(country: CountryState, casualties: number): CountryState {
-    const stabilityLoss = 5;
-    const gdpPenalty = 0.02;
-
-    return {
-      ...country,
-      manpower: Math.max(0, country.manpower - casualties),
-      stability: Math.max(0, country.stability - stabilityLoss),
-      gdp: country.gdp * (1 - gdpPenalty),
-    };
-  }
-
-  static resolveAllWars(
-    world: WorldState,
-    rng: SeededRandom,
-  ): { world: WorldState; results: WarResolutionResult[] } {
-    const results: WarResolutionResult[] = [];
-    const newWars: ActiveWar[] = [];
-    const newCountries = [...world.countries];
-
-    for (const war of world.wars) {
-      const attackerIndex = newCountries.findIndex((c) => c.id === war.attackerId);
-      const defenderIndex = newCountries.findIndex((c) => c.id === war.defenderId);
-
-      if (attackerIndex === -1 || defenderIndex === -1) {
-        newWars.push(war);
-        continue;
-      }
-
-      const attacker = newCountries[attackerIndex];
-      const defender = newCountries[defenderIndex];
-
-      const result = MilitarySystem.resolveWarMonth(war, attacker, defender, rng);
-      results.push(result);
-
-      newCountries[attackerIndex] = MilitarySystem.applyWarAttrition(
-        attacker,
-        result.attackerCasualties,
-      );
-      newCountries[defenderIndex] = MilitarySystem.applyWarAttrition(
-        defender,
-        result.defenderCasualties,
-      );
-
-      if (!result.isOver) {
-        newWars.push(result.war);
-      } else {
-        newCountries[attackerIndex] = {
-          ...newCountries[attackerIndex],
-          atWarWith: newCountries[attackerIndex].atWarWith.filter((w) => w !== war.defenderId),
-        };
-        newCountries[defenderIndex] = {
-          ...newCountries[defenderIndex],
-          atWarWith: newCountries[defenderIndex].atWarWith.filter((w) => w !== war.attackerId),
-        };
-      }
+    case "INDUSTRIAL": {
+      defender.gdp *= 0.985;
+      defender.stability = clamp(defender.stability - 4);
+      description = `${attacker.name} bombed ${defender.name}'s industrial heartland, crippling factories and power plants.`;
+      break;
     }
-
-    return {
-      world: {
-        ...world,
-        countries: newCountries,
-        wars: newWars,
-      },
-      results,
-    };
-  }
-
-  static canDeclareWar(attacker: CountryState, defender: CountryState): boolean {
-    if (attacker.atWarWith.includes(defender.id)) return false;
-    if (attacker.alliances.includes(defender.id)) return false;
-    return true;
-  }
-
-  static startWar(world: WorldState, attackerId: string, defenderId: string): WorldState {
-    const attackerIndex = world.countries.findIndex((c) => c.id === attackerId);
-    const defenderIndex = world.countries.findIndex((c) => c.id === defenderId);
-
-    if (attackerIndex === -1 || defenderIndex === -1) {
-      throw new Error("Invalid country IDs");
-    }
-
-    const attacker = world.countries[attackerIndex];
-    const defender = world.countries[defenderIndex];
-
-    if (!MilitarySystem.canDeclareWar(attacker, defender)) {
-      throw new Error(`${attackerId} cannot declare war on ${defenderId}`);
-    }
-
-    const newWar: ActiveWar = {
-      id: `war_${attackerId}_${defenderId}_${world.turn}`,
-      attackerId,
-      defenderId,
-      startTurn: world.turn,
-      attackerProgress: 50,
-      defenderProgress: 50,
-      attackerCasualties: 0,
-      defenderCasualties: 0,
-    };
-
-    const newCountries = [...world.countries];
-    newCountries[attackerIndex] = {
-      ...attacker,
-      atWarWith: [...attacker.atWarWith, defenderId],
-      relations: { ...attacker.relations, [defenderId]: -100 },
-    };
-    newCountries[defenderIndex] = {
-      ...defender,
-      atWarWith: [...defender.atWarWith, attackerId],
-      relations: { ...defender.relations, [attackerId]: -100 },
-    };
-
-    return {
-      ...world,
-      countries: newCountries,
-      wars: [...world.wars, newWar],
-      globalTension: Math.min(100, world.globalTension + 15),
-    };
-  }
-
-  static getMilitaryRanking(countries: CountryState[]): CountryState[] {
-    return [...countries].sort(
-      (a, b) =>
-        MilitarySystem.calculateMilitaryStrength(b) - MilitarySystem.calculateMilitaryStrength(a),
-    );
-  }
-
-  // ============================================================================
-  // NEW: Precision Airstrikes (Pre-war)
-  // ============================================================================
-
-  static executeAirstrike(
-    attacker: CountryState,
-    defender: CountryState,
-    targetType: AirstrikeTarget,
-    rng: SeededRandom
-  ): AirstrikeResult {
-    // Success based on attacker airpower vs defender SAMs
-    const attackerAir = attacker.airpower + (attacker.units?.fighters ?? 0) * 10;
-    const defenderAir = (defender.units?.sams ?? 0) * 15 + (defender.units?.fighters ?? 0) * 5;
-    
-    const successChance = Math.min(90, Math.max(20, 50 + (attackerAir - defenderAir) / 100));
-    const success = rng.next() * 100 < successChance;
-
-    if (!success) {
-      return {
-        success: false,
-        targetType,
-        damage: 0,
-        effects: {},
-        warCrimeRisk: false,
-        description: `Airstrike on ${defender.name} ${targetType} targets failed - intercepted by air defenses`
-      };
-    }
-
-    const effects: AirstrikeResult['effects'] = {};
-    let warCrimeRisk = false;
-    let description = '';
-
-    switch (targetType) {
-      case 'MILITARY':
-        effects.manpowerLoss = Math.floor(defender.manpower * 0.1);
-        description = `Airstrike destroys ${defender.name} military installations (-10% manpower)`;
-        break;
-      case 'CIVILIAN':
-        effects.stabilityLoss = 15;
-        warCrimeRisk = true;
-        description = `Airstrike hits ${defender.name} civilian areas (-15 stability, WAR CRIME RISK)`;
-        break;
-      case 'INDUSTRIAL':
-        effects.gdpLoss = 0.02;
-        description = `Airstrike damages ${defender.name} industrial capacity (-2% GDP)`;
-        break;
-      case 'NUCLEAR':
-        if (defender.nuclearStatus === 'DEVELOPING') {
-          const currentStrikes = defender.nuclearStrikesReceived ?? 0;
-          effects.nuclearDelay = 1;
-          if (currentStrikes >= 1) {
-            description = `Second strike on ${defender.name} nuclear facility - PROGRAM CRIPPLED (Two-Strike Rule)`;
-          } else {
-            description = `Airstrike damages ${defender.name} nuclear facility - program delayed`;
-          }
+    case "NUCLEAR": {
+      if (defender.nuclear.status === "DEVELOPING") {
+        defender.nuclear.consecutiveStrikesTaken += 1;
+        defender.nuclear.progress = Math.max(0, defender.nuclear.progress - 25);
+        if (defender.nuclear.consecutiveStrikesTaken >= 2) {
+          defender.nuclear.status = "LATENT";
+          defender.nuclear.progress = 0;
+          defender.nuclear.funded = false;
+          defender.nuclear.consecutiveStrikesTaken = 0;
+          crippledNuclearProgram = true;
+          description = `Second consecutive strike on ${defender.name}'s enrichment facilities — the nuclear program is CRIPPLED.`;
         } else {
-          description = `Airstrike on ${defender.name} - no active nuclear program to target`;
+          description = `${attacker.name} struck ${defender.name}'s nuclear facilities, setting the program back. One more successful strike could cripple it.`;
         }
-        break;
-    }
-
-    return {
-      success: true,
-      targetType,
-      damage: 1,
-      effects,
-      warCrimeRisk,
-      description
-    };
-  }
-
-  static applyAirstrikeEffects(country: CountryState, result: AirstrikeResult): CountryState {
-    if (!result.success) return country;
-
-    let updated = { ...country };
-
-    if (result.effects.manpowerLoss) {
-      updated.manpower = Math.max(0, updated.manpower - result.effects.manpowerLoss);
-    }
-    if (result.effects.stabilityLoss) {
-      updated.stability = Math.max(0, updated.stability - result.effects.stabilityLoss);
-    }
-    if (result.effects.gdpLoss) {
-      updated.gdp = updated.gdp * (1 - result.effects.gdpLoss);
-    }
-    if (result.effects.nuclearDelay && updated.nuclearStatus === 'DEVELOPING') {
-      updated.nuclearStrikesReceived = (updated.nuclearStrikesReceived ?? 0) + 1;
-      if (updated.nuclearStrikesReceived >= 2) {
-        updated.nuclearStatus = 'LATENT'; // Program crippled
+      } else if (defender.nuclear.status === "TESTED" || defender.nuclear.status === "ARMED") {
+        description = `${attacker.name} struck ${defender.name}'s nuclear sites — but the arsenal is dispersed and hardened. No meaningful damage.`;
+      } else {
+        description = `${attacker.name} struck suspected nuclear sites in ${defender.name}, but found no active program.`;
       }
+      break;
     }
-
-    return updated;
   }
+  return { success, description, crippledNuclearProgram };
+}
 
-  // ============================================================================
-  // NEW: Border Troop Deployment
-  // ============================================================================
+export function deployToBorder(country: CountryState, targetId: string, troops: number): void {
+  const existing = country.borderDeployments.find((d) => d.targetCountryId === targetId);
+  if (existing) existing.troops += troops;
+  else country.borderDeployments.push({ targetCountryId: targetId, troops });
+}
 
-  static deployToBorder(
-    country: CountryState,
-    targetCountryId: string,
-    troops: number
-  ): { country: CountryState; relationPenalty: number } {
-    const existingDeployments = country.borderDeployments ?? [];
-    const existingIndex = existingDeployments.findIndex(d => d.targetCountryId === targetCountryId);
+export function withdrawFromBorder(country: CountryState, targetId: string): void {
+  country.borderDeployments = country.borderDeployments.filter(
+    (d) => d.targetCountryId !== targetId,
+  );
+}
 
-    let newDeployments: BorderDeployment[];
-    if (existingIndex >= 0) {
-      newDeployments = [...existingDeployments];
-      newDeployments[existingIndex] = {
-        ...newDeployments[existingIndex],
-        troops: newDeployments[existingIndex].troops + troops
-      };
-    } else {
-      newDeployments = [...existingDeployments, { targetCountryId, troops }];
+/** Border deployments continuously degrade relations (dynamic diplomacy from the original game). */
+export function applyBorderTensions(world: WorldState): void {
+  for (const country of world.countries) {
+    for (const dep of country.borderDeployments) {
+      const target = world.countries.find((c) => c.id === dep.targetCountryId);
+      if (!target || country.atWarWith.includes(target.id)) continue;
+      target.relations[country.id] = Math.max(-100, (target.relations[country.id] ?? 0) - 3);
+      world.globalTension = clamp(world.globalTension + 0.5, 0, 100);
+      // Threatened countries arm in response (budget as hostility indicator)
+      target.militaryBudgetPercent = Math.min(20, target.militaryBudgetPercent + 0.1);
     }
-
-    return {
-      country: { ...country, borderDeployments: newDeployments },
-      relationPenalty: -5 // Deploying troops degrades relations
-    };
   }
+}
 
-  static withdrawFromBorder(
-    country: CountryState,
-    targetCountryId: string,
-    troops: number
-  ): CountryState {
-    const existingDeployments = country.borderDeployments ?? [];
-    const newDeployments = existingDeployments
-      .map(d => {
-        if (d.targetCountryId === targetCountryId) {
-          return { ...d, troops: Math.max(0, d.troops - troops) };
-        }
-        return d;
-      })
-      .filter(d => d.troops > 0);
-
-    return { ...country, borderDeployments: newDeployments };
-  }
-
-  // ============================================================================
-  // NEW: Unit-based Combat Resolution (Rock-Paper-Scissors)
-  // ============================================================================
-
-  static calculateUnitStrength(units: MilitaryUnits | undefined): number {
-    if (!units) return 0;
-    return (
-      units.tanks * 100 +
-      units.helicopters * 80 +
-      units.sams * 60 +
-      units.fighters * 120 +
-      units.infantry * 10
-    );
-  }
-
-  static resolveUnitCombat(
-    attackerUnits: MilitaryUnits | undefined,
-    defenderUnits: MilitaryUnits | undefined,
-    rng: SeededRandom
-  ): { attackerAdvantage: number; description: string } {
-    if (!attackerUnits || !defenderUnits) {
-      return { attackerAdvantage: 0, description: 'No unit data available' };
-    }
-
-    let attackerScore = 0;
-    let defenderScore = 0;
-
-    // Calculate effectiveness based on unit matchups
-    const unitTypes = ['tanks', 'helicopters', 'sams', 'fighters', 'infantry'] as const;
-    
-    for (const attackerType of unitTypes) {
-      const attackerCount = attackerUnits[attackerType];
-      if (attackerCount === 0) continue;
-
-      for (const defenderType of unitTypes) {
-        const defenderCount = defenderUnits[defenderType];
-        if (defenderCount === 0) continue;
-
-        const effectiveness = UNIT_EFFECTIVENESS[attackerType][defenderType];
-        attackerScore += attackerCount * effectiveness;
-      }
-    }
-
-    for (const defenderType of unitTypes) {
-      const defenderCount = defenderUnits[defenderType];
-      if (defenderCount === 0) continue;
-
-      for (const attackerType of unitTypes) {
-        const attackerCount = attackerUnits[attackerType];
-        if (attackerCount === 0) continue;
-
-        const effectiveness = UNIT_EFFECTIVENESS[defenderType][attackerType];
-        defenderScore += defenderCount * effectiveness;
-      }
-    }
-
-    const total = attackerScore + defenderScore;
-    if (total === 0) return { attackerAdvantage: 0, description: 'Stalemate' };
-
-    const advantage = ((attackerScore - defenderScore) / total) * 100;
-    
-    let description = '';
-    if (advantage > 20) description = 'Attacker has significant unit advantage';
-    else if (advantage > 5) description = 'Attacker has slight unit advantage';
-    else if (advantage < -20) description = 'Defender has significant unit advantage';
-    else if (advantage < -5) description = 'Defender has slight unit advantage';
-    else description = 'Forces are evenly matched';
-
-    return { attackerAdvantage: advantage, description };
-  }
-
-  // ============================================================================
-  // NEW: Defense Budget as Hostility Indicator
-  // ============================================================================
-
-  static calculateDefenseBudget(country: CountryState): number {
-    // Base: percentage of GDP
-    const baseBudget = country.gdp * (country.militaryBudgetPercent / 100);
-    
-    // War multiplier
-    const atWar = country.atWarWith.length > 0;
-    const warMultiplier = atWar ? 3.0 : 1.0;
-    
-    return baseBudget * warMultiplier;
-  }
-
-  static getDefenseBudgetLevel(budget: number): 'PEACE' | 'TENSION' | 'WAR' {
-    if (budget < 150) return 'PEACE';      // ~$100M baseline
-    if (budget < 400) return 'TENSION';    // Elevated
-    return 'WAR';                          // $300M+ indicates war footing
-  }
+function clamp(v: number, min = 0, max = 100): number {
+  return Math.max(min, Math.min(max, v));
 }
