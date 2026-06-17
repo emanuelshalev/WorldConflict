@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { llmRequestBody, useGameStore } from '../store/gameStore';
 import { answerQuestion } from '../utils/advisorBrain';
 
+const ADVISOR_API_URL = `${(import.meta.env.VITE_API_BASE ?? '/api').replace(/\/$/, '')}/chat/advisor`;
+
 const ADVISORS = [
   { id: 'FOREIGN_MINISTER', name: 'Foreign Minister', icon: '🌍', description: 'Diplomatic relations and alliances' },
   { id: 'DEFENSE_MINISTER', name: 'Defense Minister', icon: '🛡️', description: 'Military strategy and readiness' },
@@ -379,7 +381,7 @@ export function AdvisorModal() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('http://localhost:8080/api/chat/advisor', {
+      const res = await fetch(ADVISOR_API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ saveId, role: advisorId }),
@@ -432,7 +434,7 @@ export function AdvisorModal() {
       const llm = llmRequestBody(llmSettings);
       if (llm && saveId) {
         try {
-          const res = await fetch('http://localhost:8080/api/chat/advisor', {
+          const res = await fetch(ADVISOR_API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ saveId, role: activeAdvisorRole, message: userMessage, llm }),

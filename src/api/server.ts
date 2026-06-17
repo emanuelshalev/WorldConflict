@@ -11,11 +11,19 @@ const server = Fastify({
   logger: true,
 });
 
+const allowedOrigins = (
+  process.env.CORS_ORIGINS ??
+  "http://localhost:3000,http://localhost:5173,http://localhost:4173,https://conflict.ucent.ai"
+)
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
 setupErrorHandler(server);
 setupRateLimit(server);
 
 await server.register(cors, {
-  origin: ["http://localhost:3000", "http://localhost:5173"],
+  origin: allowedOrigins,
   methods: ["GET", "POST", "PUT", "DELETE"],
 });
 

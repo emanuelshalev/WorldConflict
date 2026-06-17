@@ -275,7 +275,7 @@ export interface GameState {
   addAdvisorMessage: (advisorId: string, message: { role: 'user' | 'advisor'; content: string }) => void;
 }
 
-const API_BASE = 'http://localhost:8080/api';
+const API_BASE = (import.meta.env.VITE_API_BASE ?? '/api').replace(/\/$/, '');
 
 // ============================================================================
 // LLM settings (BYO model): persisted in localStorage

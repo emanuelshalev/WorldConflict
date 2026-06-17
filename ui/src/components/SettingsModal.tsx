@@ -7,6 +7,8 @@ import {
 } from '../store/gameStore';
 import type { LLMSettings } from '../store/gameStore';
 
+const CHAT_TEST_URL = `${(import.meta.env.VITE_API_BASE ?? '/api').replace(/\/$/, '')}/chat/test`;
+
 const PROVIDERS: Array<{ id: LLMSettings['provider']; name: string; blurb: string }> = [
   {
     id: 'builtin',
@@ -63,7 +65,7 @@ export function SettingsModal() {
     setTesting(true);
     setTestResult(null);
     try {
-      const res = await fetch('http://localhost:8080/api/chat/test', {
+      const res = await fetch(CHAT_TEST_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),

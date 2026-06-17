@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useGameStore } from '../store/gameStore';
 import './LLMPermissionModal.css';
 
+const LLM_STATUS_URL = `${(import.meta.env.VITE_API_BASE ?? '/api').replace(/\/$/, '')}/llm/status`;
+
 interface LLMProvider {
   provider: string;
   available: boolean;
@@ -26,7 +28,7 @@ export function LLMPermissionModal() {
     const checkStatus = async () => {
       console.log('[LLM] Checking backend for API keys...');
       try {
-        const res = await fetch('http://localhost:8080/api/llm/status');
+        const res = await fetch(LLM_STATUS_URL);
         console.log('[LLM] Backend response status:', res.status);
         if (res.ok) {
           const data = await res.json();
