@@ -78,7 +78,7 @@
         {"kind": "RELATION_MIN", "targetId": "IRN", "min": -90, "label": "A door left open in Tehran (Iran relations -90+)"},
         {"kind": "RELATION_MIN", "targetId": "USA", "min": 60, "label": "Still Washington's partner (US relations 60+)"},
         {"kind": "SCORE_PAR", "min": 122, "label": "Leadership score of 122+: business as usual"},
-        {"kind": "STAT_MIN", "stat": "approval", "min": 85, "label": "Confidence at home (approval 85%+)"}
+        {"kind": "STAT_MIN", "stat": "approval", "min": 80, "label": "Confidence at home (approval 80%+)"}
       ],
       "bonus": [
         {"kind": "RELATION_MIN", "targetId": "IRN", "min": -40, "label": "A real channel to Tehran (Iran relations -40+)"}

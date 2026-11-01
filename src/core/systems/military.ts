@@ -190,7 +190,7 @@ export function resolveWarMonth(
   return { war, delta, attackerCasualties, defenderCasualties, ended };
 }
 
-function endWar(
+export function endWar(
   world: WorldState,
   war: ActiveWar,
   winnerId: string | null,
@@ -216,7 +216,8 @@ function endWar(
     // Spoils and humiliation
     const reparations = loser.gdp * 0.05;
     loser.gdp -= reparations;
-    winner.gdp += reparations * 0.6;
+    // A small winner cannot absorb a large loser's economy: transfers cap at 4% of its own GDP
+    winner.gdp += Math.min(reparations * 0.6, winner.gdp * 0.04);
     loser.stability = clamp(loser.stability - 15);
     loser.legitimacy = clamp(loser.legitimacy - 20);
     loser.approval = clamp(loser.approval - 15);

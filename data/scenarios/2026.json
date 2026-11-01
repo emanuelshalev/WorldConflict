@@ -60,6 +60,7 @@
     "ETH": {"name": "Abiy Ahmed", "title": "Prime Minister", "style": "HAWKISH", "origin": "ELECTED", "sinceDate": "2018-04"}
   },
   "countryOverrides": {
+    "TWN": {"approval": 44, "stability": 62},
     "USA": {"gdp": 31000000000000, "militaryBudgetPct": 3.3, "stability": 58, "approval": 42, "warheads": 5177},
     "RUS": {"growthRate": 0.009, "militaryBudgetPct": 6.5, "stability": 60, "warheads": 5459, "mobilization": 70, "embargoedBy": ["USA", "GBR", "FRA"]},
     "CHN": {"gdp": 21500000000000, "growthRate": 0.045, "warheads": 620},

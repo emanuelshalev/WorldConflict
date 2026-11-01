@@ -263,7 +263,7 @@
         {"kind": "NOT_COLLAPSED", "targetId": "SDN", "label": "Sudan's state survives"},
         {"kind": "RELATION_MIN", "targetId": "SDN", "min": 40, "label": "Khartoum's army leans on you (relations 40+)"},
         {"kind": "STAT_MIN", "stat": "approval", "min": 45, "label": "Bread on the table (approval 45%+)"},
-        {"kind": "SCORE_PAR", "min": 109, "label": "Leadership score of 109+"}
+        {"kind": "SCORE_PAR", "min": 107, "label": "Leadership score of 107+"}
       ],
       "bonus": [
         {"kind": "RELATION_MIN", "targetId": "ARE", "min": 40, "label": "The Gulf still lending (UAE relations 40+)"},

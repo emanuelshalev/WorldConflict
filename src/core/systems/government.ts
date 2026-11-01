@@ -8,6 +8,7 @@ import type {
   LeaderStyle,
   WorldState,
 } from "../types.js";
+import { growthMood } from "./economy.js";
 
 export interface GovernmentChange {
   countryId: string;
@@ -243,6 +244,14 @@ export interface GovernmentTickResult {
   events: GameEvent[];
 }
 
+/** A wealthy democracy whose army stays out of politics (USA, Germany, Japan...). */
+export function isConsolidatedDemocracy(country: CountryState): boolean {
+  if (country.regimeType !== "DEMOCRACY") return false;
+  if (country.politicalSystem.powerCenters.includes("MILITARY")) return false;
+  const perCapita = country.gdp / Math.max(1, country.population);
+  return perCapita >= 15000;
+}
+
 /**
  * Runs once per turn after wars/metrics: elections, coup risk, revolutions.
  */
@@ -288,8 +297,13 @@ export function runGovernmentDynamics(world: WorldState, rng: SeededRandom): Gov
       country.regimeType === "AUTOCRACY" ||
       country.regimeType === "MILITARY_JUNTA" ||
       country.regimeType === "COMMUNIST";
+    const consolidated = isConsolidatedDemocracy(country);
     const crisis = country.legitimacy < 30 || country.stability < 22;
-    if (crisis && (coupProne || country.stability < 15)) {
+    // Rich, long-standing democracies don't do coups: institutions absorb even deep crises
+    const coupPossible = consolidated
+      ? country.stability < 8 && country.legitimacy < 15
+      : coupProne || country.stability < 15;
+    if (crisis && coupPossible) {
       const losingWar = world.wars.some(
         (w) =>
           (w.attackerId === country.id && w.frontline < 35) ||
@@ -325,10 +339,13 @@ export function runGovernmentDynamics(world: WorldState, rng: SeededRandom): Gov
     }
 
     // --- Revolution ---
-    if (
-      country.stability < 15 &&
-      (country.insurgencyLevel === "REBELLION" || country.insurgencyLevel === "GUERILLA")
-    ) {
+    // Consolidated democracies channel anger into elections and courts: a revolution
+    // needs an armed insurgency AND a government that has lost almost all legitimacy
+    const revolutionary = consolidated
+      ? country.stability < 10 && country.insurgencyLevel === "GUERILLA" && country.legitimacy < 20
+      : country.stability < 15 &&
+        (country.insurgencyLevel === "REBELLION" || country.insurgencyLevel === "GUERILLA");
+    if (revolutionary) {
       if (isPlayer) {
         const d = world.director;
         const warned = d.revoltWarnedTurn !== null && world.turn - d.revoltWarnedTurn <= 8;
@@ -358,7 +375,8 @@ function holdElection(
 ): GovernmentChange | null {
   // Incumbent score: approval dominates, modified by economy and war fatigue
   let score = country.approval;
-  score += country.growthRate > 0.02 ? 8 : country.growthRate < 0 ? -10 : 0;
+  const mood = growthMood(country);
+  score += mood > 0 ? 8 : mood < 0 ? -10 : 0;
   const atWar = country.atWarWith.length > 0;
   if (atWar) {
     const losing = world.wars.some(

@@ -2,6 +2,7 @@ import type { SeededRandom } from "../seed.js";
 import type { CountryState, GameEvent, WorldState } from "../types.js";
 import { deescalateInsurgency, escalateInsurgency } from "./covert.js";
 import { shiftRelation } from "./diplomacy.js";
+import { growthMood } from "./economy.js";
 
 /**
  * Monthly domestic update: stability, legitimacy, approval, insurgencies.
@@ -45,17 +46,27 @@ export function updateDomestic(world: WorldState, rng: SeededRandom): GameEvent[
       if (country.stability < 20) delta += 0.8;
     } else if (country.stability < 30) {
       delta += 0.5; // institutions still push back a little
+      // A legitimate government is not stuck at rock bottom: the state slowly reasserts itself
+      if (country.stability < 15)
+        delta += (15 - country.stability) * 0.06 * (country.legitimacy / 60);
     }
+    // No society stays perfectly calm: complacency, factions and news cycles erode the top
+    if (country.stability > 85) delta -= (country.stability - 85) * 0.1;
     country.stability = clamp(country.stability + delta);
+    if (country.legitimacy > 88)
+      country.legitimacy = clamp(country.legitimacy - (country.legitimacy - 88) * 0.12);
 
     // --- Approval drift (public mood tracks economy and peace) ---
     let approvalDelta = 0;
-    approvalDelta += country.growthRate > 0.02 ? 0.5 : country.growthRate < 0 ? -1 : 0;
+    const mood = growthMood(country);
+    approvalDelta += mood > 0 ? 0.5 : mood < 0 ? -1 : 0;
     approvalDelta += country.stability > 60 ? 0.3 : country.stability < 35 ? -0.8 : 0;
     if (country.underGlobalEmbargo) approvalDelta -= 0.5;
     if (country.atWarWith.length > 0) approvalDelta -= 0.6; // war weariness
     // Public opinion is fickle: approval drifts back toward the middle
     approvalDelta += (50 - country.approval) * 0.04;
+    // Sky-high approval is a bubble: honeymoons and rallies fade faster than they form
+    if (country.approval > 75) approvalDelta -= (country.approval - 75) * 0.06;
     // Incumbency fatigue: voters tire of the same face after two years
     if (isPlayer && world.turn - country.leader.sinceTurn > 24) approvalDelta -= 0.3;
     country.approval = clamp(country.approval + approvalDelta);
@@ -137,8 +148,10 @@ export function applyPropaganda(country: CountryState, effect = 1): void {
 }
 
 export function applyReform(country: CountryState): void {
-  country.stability = clamp(country.stability + 6);
-  country.legitimacy = clamp(country.legitimacy + 4);
+  // Diminishing returns: the last points toward a perfect state are the hardest
+  const headroom = (v: number) => Math.min(1, Math.max(0.15, (100 - v) / 45));
+  country.stability = clamp(country.stability + 6 * headroom(country.stability));
+  country.legitimacy = clamp(country.legitimacy + 4 * headroom(country.legitimacy));
   country.approval = clamp(country.approval + 2);
   // Reform slightly aggravates hardline factions in rigid systems
   if (country.personality.ideologicalRigidity > 70) {

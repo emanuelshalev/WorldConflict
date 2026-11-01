@@ -8,7 +8,7 @@ import type { CountryState, Score, WorldState } from "./types.js";
 
 function targetEconomic(player: CountryState): number {
   let target = 20;
-  target += player.growthRate * 450; // +3% growth → +13.5
+  target += player.growthRate * 450; // +3% growth → +13.5 (shocks fade back to trend)
   target -= Math.max(0, (player.debtGdpRatio - 100) / 10);
   if (player.underGlobalEmbargo) target -= 10;
   return clamp50(target);

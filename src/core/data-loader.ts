@@ -377,7 +377,10 @@ export class DataLoader {
       if (o.approval !== undefined) c.approval = o.approval;
       if (o.legitimacy !== undefined) c.legitimacy = o.legitimacy;
       if (o.mobilization !== undefined) c.mobilizationLevel = o.mobilization;
-      if (o.growthRate !== undefined) c.growthRate = o.growthRate;
+      if (o.growthRate !== undefined) {
+        c.growthRate = o.growthRate;
+        c.trendGrowth = o.growthRate;
+      }
       if (o.insurgencyLevel) c.insurgencyLevel = o.insurgencyLevel as InsurgencyLevel;
       if (o.nuclearStatus) c.nuclear.status = o.nuclearStatus as NuclearStatus;
       if (o.nuclearProgress !== undefined) {
@@ -480,6 +483,7 @@ export class DataLoader {
 
       gdp: override.gdp ?? profile.economy.gdp,
       growthRate: (override.growthRate ?? profile.economy.growthRate) * multipliers.gdpGrowth,
+      trendGrowth: (override.growthRate ?? profile.economy.growthRate) * multipliers.gdpGrowth,
       debtGdpRatio: override.debtGdpRatio ?? profile.economy.debtGdpRatio,
       militaryBudgetPercent: Math.min(
         40,

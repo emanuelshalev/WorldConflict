@@ -3,6 +3,9 @@ import { generateDeterministicIntents } from "../../src/agents/fallback.js";
 import { createDataLoader } from "../../src/core/data-loader.js";
 import { previewAction } from "../../src/core/preview.js";
 import { classifyLeadership } from "../../src/core/scoring.js";
+import { SeededRandom } from "../../src/core/seed.js";
+import { isConsolidatedDemocracy } from "../../src/core/systems/government.js";
+import { endWar } from "../../src/core/systems/military.js";
 import { TurnEngine } from "../../src/core/turn.js";
 import type { WorldState } from "../../src/core/types.js";
 
@@ -127,5 +130,62 @@ describe("Mission warnings in previews", () => {
   it("does not warn outside objectives", () => {
     const w = loader.newGame({ scenarioId: "2026", playerCountryId: "DEU", seed: 1, mode: "LEGACY" });
     expect(previewAction(w, { type: "DIPLOMACY_DENOUNCE", targetCountryId: "RUS" }).missionWarning).toBeNull();
+  });
+});
+
+describe("Regime realism", () => {
+  it("does not let a revolution topple a consolidated democracy on unrest alone", () => {
+    let w = loader.newGame({ scenarioId: "2026", playerCountryId: "DEU", seed: 8, mode: "LEGACY" });
+    const usa = get(w, "USA");
+    expect(isConsolidatedDemocracy(usa)).toBe(true);
+    let toppled = 0;
+    for (let t = 0; t < 24; t++) {
+      for (const c of w.countries)
+        if (c.id === "USA") {
+          c.stability = 5;
+          c.insurgencyLevel = "REBELLION";
+          c.legitimacy = 45;
+        }
+      const r = engine.executeTurn(w, [], generateDeterministicIntents(w));
+      toppled += r.governmentChanges.filter(
+        (g) => g.countryId === "USA" && (g.kind === "REVOLUTION" || g.kind === "COUP"),
+      ).length;
+      w = r.newState;
+    }
+    expect(toppled).toBe(0);
+  });
+
+  it("caps reparations relative to the winner's economy", () => {
+    const w = loader.newGame({ scenarioId: "2026", playerCountryId: "PRK", seed: 8, mode: "LEGACY" });
+    const prk = get(w, "PRK");
+    const usa = get(w, "USA");
+    const war = { id: "w1", attackerId: "PRK", defenderId: "USA", frontline: 90, exhaustion: 0, startTurn: 0 } as never;
+    w.wars.push(war);
+    prk.atWarWith.push("USA");
+    usa.atWarWith.push("PRK");
+    const before = prk.gdp;
+    endWar(w, war, "PRK", "USA", new SeededRandom(1));
+    expect(prk.gdp / before).toBeLessThanOrEqual(1.041);
+  });
+});
+
+describe("Long-game economy and stats", () => {
+  it("lets growth shocks fade back toward the structural trend", () => {
+    let w = loader.newGame({ scenarioId: "2026", playerCountryId: "DEU", seed: 5, mode: "TERM" });
+    const deu = get(w, "DEU");
+    deu.growthRate = (deu.trendGrowth ?? 0.012) - 0.04; // a deep shock
+    for (let t = 0; t < 24; t++) w = engine.executeTurn(w, [], generateDeterministicIntents(w)).newState;
+    const after = get(w, "DEU");
+    expect(Math.abs(after.growthRate - (after.trendGrowth ?? 0))).toBeLessThan(0.02);
+  });
+
+  it("does not saturate stability at 100 under constant reform", () => {
+    let w = loader.newGame({ scenarioId: "2026", playerCountryId: "TUR", seed: 5, mode: "TERM" });
+    let maxStability = 0;
+    for (let t = 12; t < 36 && !w.gameOver; t++) {
+      w = engine.executeTurn(w, [{ type: "DOMESTIC_REFORM" }], generateDeterministicIntents(w)).newState;
+      if (t > 18) maxStability = Math.max(maxStability, get(w, "TUR").stability);
+    }
+    expect(maxStability).toBeLessThan(98);
   });
 });

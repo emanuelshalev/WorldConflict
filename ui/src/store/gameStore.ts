@@ -44,6 +44,7 @@ export interface CountryFull {
   iso3: string;
   gdp: number;
   growthRate: number;
+  trendGrowth?: number;
   debtGdpRatio: number;
   militaryBudgetPercent: number;
   manpower: number;

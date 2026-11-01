@@ -485,6 +485,7 @@ export const CountryStateSchema = z.object({
   // Economy
   gdp: z.number().min(0),
   growthRate: z.number(),
+  trendGrowth: z.number().optional(), // structural growth that shocks decay back toward
   debtGdpRatio: z.number().min(0),
   militaryBudgetPercent: z.number().min(0).max(40), // wartime states exceed 20% (Ukraine ~26–30%)
   economyProfile: EconomyProfileSchema.optional(),
