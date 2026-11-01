@@ -73,6 +73,7 @@ flowchart TB
 | Turn engine | `src/core/turn.ts` | Pipeline above; orders, decisions, tension, game over |
 | Drama director | `src/core/crises.ts` | ~30 player-facing crisis templates, follow-ups, shocks, cadence per mode, telegraphed coups |
 | World events | `src/core/events.ts` | AI-world events (border incidents, oil shocks, leaks, summits) |
+| Geography | `src/core/geography.ts` | Land borders and landlocked states (neighbour crises, refugee flows, naval vs air incidents) |
 | Costs | `src/core/costs.ts` | Political capital & budget-share costs |
 | Objectives | `src/core/objectives.ts` | Conditions, early failure, stars |
 | Systems | `src/core/systems/*` | military, diplomacy, covert, nuclear, economy, stability, intelligence, government |

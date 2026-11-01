@@ -55,7 +55,8 @@ Diplomatic, domestic and covert orders cost **political capital**. You get about
 | Threat | Warning sign |
 |---|---|
 | **Coup** | A *Coup plot uncovered* crisis. Purge, buy off or concede — before the officers move. |
-| **Revolution** | *The streets are boiling* crisis when stability is very low and an insurgency is active. |
+| **Impeachment / no confidence** | In consolidated democracies (USA, Germany, Japan…) there are no coups: an *Impeachment looms* / *A vote of no confidence* card appears instead when legitimacy or stability collapses. |
+| **Revolution** | *The streets are boiling* crisis when stability is very low and an insurgency is active. Consolidated democracies only fall to revolution in an armed (guerrilla) uprising with legitimacy under 20. |
 | **Election defeat** | The HUD counts down to the election; *Campaign endgame* card; the screen pulses red if you trail. |
 | **Objective failure** | The mission chip shows each condition live (○ pending · ✓ met · ✗ failed). |
 | **Nuclear holocaust** | Using a nuclear weapon can trigger retaliation chains. Don't. |
@@ -77,7 +78,13 @@ A red heartbeat around the screen means you are in danger: approval, stability o
 
 ## 5. Scoring
 
-Four components, 0–50 each: **Economy**, **Security**, **Approval**, **Prestige** (total 0–200, start 100). They drift each month toward what your situation deserves, so sustained performance matters more than one good month. Your end screen shows a **grade**, **stars**, a leadership **archetype** (*Pragmatic Stabilizer*, *Reckless Adventurer*…), a month-by-month emoji strip, and — for flashpoints — what really happened.
+The **grade** follows the verdict: a won session is never below C, a failed or deposed one never above D, and an early failure is an F; within that band, score versus par decides. "Stay in power" is only failed if you were removed.
+
+You play as the era's **real leader** by default (type a name on the title screen to be someone else).
+
+Economy: growth shocks (oil spikes, crises, financial panics) fade back toward each country's structural trend within about a year, and voters judge growth against what is normal for *their* country. Stability, legitimacy and approval are hard to keep at the very top and recover slowly from the very bottom.
+
+Four components, 0–50 each: **Economy**, **Security**, **Approval**, **Prestige** (total 0–200, start 100). They drift each month toward what your situation deserves, so sustained performance matters more than one good month. Your end screen shows a **grade**, **stars**, a leadership **archetype** read from what you actually did (*Warmonger*, *The Gambler*, *Shadow Operator*, *Iron Fist*, *Peacemaker*, *The Reformer*, *Master Diplomat*, *Steady Hand*…), a month-by-month emoji strip, and — for flashpoints — what really happened.
 
 ---
 

@@ -43,6 +43,7 @@ describe("Drama director", () => {
       for (const d of w.pendingDecisions) {
         if ([
             "coup_plot",
+            "ouster_vote",
             "streets_boiling",
             "foreign_interference",
             // follow-ups are scheduled consequences, exempt from the cooldown

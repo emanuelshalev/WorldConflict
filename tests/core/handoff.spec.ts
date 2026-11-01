@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { generateDeterministicIntents } from "../../src/agents/fallback.js";
+import { ownActions } from "../../src/api/routes/game.js";
+import { areNeighbors, encounterAtSea } from "../../src/core/crises.js";
 import { createDataLoader } from "../../src/core/data-loader.js";
 import { previewAction } from "../../src/core/preview.js";
 import { classifyLeadership } from "../../src/core/scoring.js";
@@ -187,5 +189,54 @@ describe("Long-game economy and stats", () => {
       if (t > 18) maxStability = Math.max(maxStability, get(w, "TUR").stability);
     }
     expect(maxStability).toBeLessThan(98);
+  });
+});
+
+describe("Geography", () => {
+  it("uses real land borders, not capital distance", () => {
+    const w = loader.newGame({ scenarioId: "2026", playerCountryId: "EGY", seed: 1, mode: "TERM" });
+    expect(areNeighbors(get(w, "EGY"), get(w, "IRN"))).toBe(false);
+    expect(areNeighbors(get(w, "EGY"), get(w, "SDN"))).toBe(true);
+    expect(areNeighbors(get(w, "POL"), get(w, "UKR"))).toBe(true);
+  });
+
+  it("keeps landlocked states out of naval encounters", () => {
+    const w = loader.newGame({ scenarioId: "2026", playerCountryId: "EGY", seed: 1, mode: "TERM" });
+    expect(encounterAtSea(get(w, "EGY"), get(w, "ETH"))).toBe(false);
+    expect(encounterAtSea(get(w, "CHN"), get(w, "PHL"))).toBe(true);
+  });
+});
+
+describe("Covert reporting", () => {
+  it("reports a failed assassination as failed, not carried out", () => {
+    const w = loader.newGame({
+      scenarioId: "2026",
+      playerCountryId: "PAK",
+      seed: 2,
+      mode: "FLASHPOINT",
+      flashpointId: "water-war",
+    });
+    const next = engine.executeTurn(
+      w,
+      [{ type: "INTEL_ASSASSINATE", targetCountryId: "IND" }],
+      generateDeterministicIntents(w),
+    ).newState;
+    const order = next.turnReport?.orders.find((o) => o.label.startsWith("Assassinate"));
+    const modi = get(next, "IND").leader.name === get(w, "IND").leader.name;
+    expect(order).toBeDefined();
+    expect(order?.ok).toBe(!modi);
+    expect(order?.detail).toMatch(modi ? /^Failed: / : /^Success: /);
+    expect(order?.detail).not.toBe("Carried out");
+  });
+});
+
+describe("API fog of war", () => {
+  it("returns only the player's resolved and rejected actions", () => {
+    const w = loader.newGame({ scenarioId: "2026", playerCountryId: "PAK", seed: 6, mode: "TERM" });
+    const r = engine.executeTurn(w, [{ type: "DOMESTIC_REFORM" }], generateDeterministicIntents(w));
+    expect(r.resolvedActions.size).toBeGreaterThan(1);
+    const own = ownActions(r.resolvedActions, "PAK");
+    expect(Object.keys(own)).toEqual(["PAK"]);
+    expect(Object.keys(ownActions(r.rejectedActions, "PAK")).every((k) => k === "PAK")).toBe(true);
   });
 });

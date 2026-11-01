@@ -107,11 +107,15 @@ Only `playerCountryId` is required. Without `flashpointId`, `mode` + `scenarioId
 | Intelligence | `INTEL_GATHER`, `INTEL_COUNTER_INTEL`, `INTEL_SABOTAGE`, `INTEL_DESTABILIZE`, `INTEL_SUPPORT_REBELS`, `INTEL_MISINFORMATION`, `INTEL_PROPAGANDA`, `INTEL_ASSASSINATE`, `INTEL_COUP` |
 | Domestic | `DOMESTIC_PROPAGANDA`, `DOMESTIC_REFORM`, `DOMESTIC_POLICING` (`params.tactic`: `SOFT\|HARD`), `ECONOMY_ADJUST_MILITARY_BUDGET` (`value` = % of GDP) |
 
-Orders the player can't afford (political capital or defense budget) come back in `rejectedActions` with a reason.
+Orders the player can't afford (political capital or defense budget) come back in `rejectedActions` with a reason. `resolvedActions` / `rejectedActions` contain **only the player's own entry** (keyed by the player's country id): AI plans are never sent to the client.
+
+`leaderName` is optional: omit it to govern as the scenario's real leader (e.g. Volodymyr Zelensky); flashpoints then use the objective briefing as `playerBackstory`.
+
+`turnReport.orders[].ok` is the order's real outcome: covert operations that were carried out but failed report `ok: false` with `detail` starting `Failed:`; Court orders report the relation change (`Relations -41 → -34`).
 
 ## POST `/api/preview-action`
 
-`{ "saveId": "…", "action": { … } }` → `preview: { summary, costM, budgetM, costPC, pcAvailable, affordable, successChance (0–100 or null), effects[], risks[], blocked }`.
+`{ "saveId": "…", "action": { … } }` → `preview: { summary, costM, budgetM, costPC, pcAvailable, affordable, successChance (0–100 or null), effects[], risks[], blocked, missionWarning }`. `missionWarning` is non-null when the order would fail ("This ends your mission: …"), endanger ("Mission at risk: …") or cost a bonus star of the session objective; the desk asks for confirmation before queuing it.
 
 ## POST `/api/chat/advisor`
 

@@ -68,7 +68,7 @@ export function updateDomestic(world: WorldState, rng: SeededRandom): GameEvent[
     // Sky-high approval is a bubble: honeymoons and rallies fade faster than they form
     if (country.approval > 75) approvalDelta -= (country.approval - 75) * 0.06;
     // Incumbency fatigue: voters tire of the same face after two years
-    if (isPlayer && world.turn - country.leader.sinceTurn > 24) approvalDelta -= 0.3;
+    if (isPlayer && world.turn - country.leader.sinceTurn > 24) approvalDelta -= 0.6;
     country.approval = clamp(country.approval + approvalDelta);
 
     // --- Legitimacy converges slowly toward approval for democracies ---

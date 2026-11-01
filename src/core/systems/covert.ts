@@ -148,7 +148,7 @@ export function resolveCovertOp(
         governmentChange = replaceLeaderAfterAssassination(world, target, rng);
         description = `${target.name}'s leader is dead. No one has claimed responsibility — yet.`;
       } else {
-        description = `Assassination attempt against ${target.name}'s leader failed.`;
+        description = `The attempt on ${target.leader.title} ${target.leader.name} failed; ${target.leader.name} survived.`;
       }
       exposureChanceOnFail = 0.75;
       exposureChanceOnSuccess = 0.4;

@@ -303,6 +303,28 @@ export function runGovernmentDynamics(world: WorldState, rng: SeededRandom): Gov
     const coupPossible = consolidated
       ? country.stability < 8 && country.legitimacy < 15
       : coupProne || country.stability < 15;
+    // A consolidated democracy removes a failing leader through its institutions
+    if (isPlayer && consolidated && crisis && !coupPossible) {
+      const d = world.director;
+      const warned = d.coupWarnedTurn !== null && world.turn - d.coupWarnedTurn <= 8;
+      if (!warned) {
+        const warning = raiseCrisis(world, "ouster_vote", rng);
+        if (warning) events.push(warning);
+        d.coupWarnedTurn = world.turn;
+        continue;
+      }
+      let risk =
+        (30 - Math.min(30, country.legitimacy)) * 0.0022 +
+        (25 - Math.min(25, country.stability)) * 0.0022;
+      if (world.turn < d.coupShieldUntil) risk *= 0.25;
+      if (world.difficulty === "ANALYST") risk *= 0.6;
+      if (rng.next() < risk) {
+        const change = executeOuster(world, country, rng);
+        changes.push(change);
+        events.push(governmentEvent(world, change, "GOVERNMENT"));
+        continue;
+      }
+    }
     if (crisis && coupPossible) {
       const losingWar = world.wars.some(
         (w) =>
@@ -414,6 +436,31 @@ function holdElection(
       ? `You were defeated at the polls. ${country.name}'s voters chose change.`
       : `${country.name} voted out ${oldLeader.title} ${oldLeader.name}; ${newLeader.name} takes office on a ${style.toLowerCase()} platform.`,
     isPlayerDeposed: isPlayer,
+  };
+}
+
+function executeOuster(
+  world: WorldState,
+  country: CountryState,
+  rng: SeededRandom,
+): GovernmentChange {
+  const oldLeader = { ...country.leader };
+  const presidential = country.politicalSystem.type === "PRESIDENTIAL_DEMOCRACY";
+  return {
+    countryId: country.id,
+    kind: "IMPEACHMENT",
+    oldLeader,
+    newLeader: {
+      name: generateLeaderName(country.id, rng),
+      title: country.leader.title,
+      style: "PRAGMATIC",
+      origin: "ELECTED",
+      sinceTurn: world.turn,
+    },
+    description: presidential
+      ? "The votes were there. Impeached and convicted, you leave office in disgrace."
+      : "Your own benches voted with the opposition. The government falls, and with it, your premiership.",
+    isPlayerDeposed: true,
   };
 }
 

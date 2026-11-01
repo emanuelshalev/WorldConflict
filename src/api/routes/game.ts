@@ -308,8 +308,9 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
           events: result.events,
           newspaper: result.newspaper,
           governmentChanges: result.governmentChanges,
-          resolvedActions: Object.fromEntries(result.resolvedActions),
-          rejectedActions: Object.fromEntries(result.rejectedActions),
+          // Fog of war: only the player's own orders come back, never the AI's plans
+          resolvedActions: ownActions(result.resolvedActions, result.newState.playerCountryId),
+          rejectedActions: ownActions(result.rejectedActions, result.newState.playerCountryId),
           ai: {
             tier: ai?.tier ?? "ALGORITHMIC",
             turnUsage: plan.usage,
@@ -457,4 +458,10 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
       }
     },
   );
+}
+
+/** Keep only the player's entry of a per-country action map. */
+export function ownActions<T>(byCountry: Map<string, T[]>, playerId: string): Record<string, T[]> {
+  const mine = byCountry.get(playerId);
+  return mine ? { [playerId]: mine } : {};
 }

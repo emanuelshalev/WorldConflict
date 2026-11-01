@@ -194,11 +194,18 @@ export class TurnEngine {
         }
         if (isPlayer) tensionAfterPlayer = world.globalTension;
         if (isPlayer && !injected.has(action)) {
+          const covert = outcome.covert;
           report.orders.push({
             label: orderLabel(world, action),
-            ok: outcome.ok,
-            detail: outcome.ok ? outcome.reason || "Carried out" : outcome.reason,
+            ok: covert ? covert.success : outcome.ok,
+            detail: covert
+              ? `${covert.success ? "Success" : "Failed"}: ${outcome.reason}`
+              : outcome.ok
+                ? outcome.reason || "Carried out"
+                : outcome.reason,
           });
+          if (covert?.toppled)
+            report.moments.push(action.type === "INTEL_COUP" ? "REGIME CHANGE" : "ASSASSINATION");
         }
       }
     }
@@ -364,7 +371,11 @@ export class TurnEngine {
     rng: SeededRandom,
     events: GameEvent[],
     governmentChanges: GovernmentChange[],
-  ): { ok: boolean; reason: string } {
+  ): {
+    ok: boolean;
+    reason: string;
+    covert?: { success: boolean; exposed: boolean; toppled: boolean };
+  } {
     const target = action.targetCountryId
       ? world.countries.find((c) => c.id === action.targetCountryId)
       : undefined;
@@ -608,7 +619,17 @@ export class TurnEngine {
         if (outcome.governmentChange) governmentChanges.push(outcome.governmentChange);
         const event = covertEvent(world, actor, target, outcome, action.type);
         if (event) events.push(event);
-        return { ok: true, reason: "" };
+        // The order was carried out (and paid for) either way; the report says how it went
+        const exposure = outcome.exposed ? ` ${target.name} knows it was us.` : "";
+        return {
+          ok: true,
+          reason: `${outcome.description}${exposure}`,
+          covert: {
+            success: outcome.success,
+            exposed: outcome.exposed,
+            toppled: !!outcome.governmentChange,
+          },
+        };
       }
       case "DOMESTIC_PROPAGANDA": {
         if (actor.id !== world.playerCountryId) {

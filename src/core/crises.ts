@@ -1,3 +1,4 @@
+import { isLandlocked, sharesLandBorder } from "./geography.js";
 import type { SeededRandom } from "./seed.js";
 import type {
   CountryState,
@@ -102,8 +103,14 @@ export function distanceKm(a?: [number, number], b?: [number, number]): number {
   return 2 * 6371 * Math.asin(Math.sqrt(h));
 }
 
+/** Shared land frontier (static table), falling back to capital distance for unknown states. */
 export function areNeighbors(a: CountryState, b: CountryState): boolean {
-  return distanceKm(a.capital, b.capital) < 2200;
+  return sharesLandBorder(a.id, b.id) ?? distanceKm(a.capital, b.capital) < 1500;
+}
+
+/** How a non-border encounter happens: at sea only if both states have a navy's coastline. */
+export function encounterAtSea(a: CountryState, b: CountryState): boolean {
+  return !isLandlocked(a.id) && !isLandlocked(b.id);
 }
 
 const leaderOf = (c: CountryState) => `${c.leader.title} ${c.leader.name}`;
@@ -126,7 +133,9 @@ const TEMPLATES: CrisisTemplate[] = [
       const border = areNeighbors(ctx.player, r);
       const what = border
         ? `Your border units exchanged fire with ${r.name}'s forces`
-        : `A ${r.name} warship and one of your patrol aircraft came within meters of collision in international waters`;
+        : encounterAtSea(ctx.player, r)
+          ? `A ${r.name} warship and one of your patrol aircraft came within meters of collision in international waters`
+          : `A ${r.name} military drone was intercepted at the edge of your airspace, and your jets nearly fired`;
       return {
         headline: border
           ? `Firefight on the ${ctx.player.name}–${r.name} frontier`
@@ -291,6 +300,52 @@ const TEMPLATES: CrisisTemplate[] = [
         defaultOptionId: "sacrifice",
       },
     }),
+  },
+
+  // --- Telegraphed ouster in a consolidated democracy: impeachment / no-confidence ---
+  {
+    id: "ouster_vote",
+    weight: () => 0,
+    build: (ctx) => {
+      const presidential = ctx.player.politicalSystem.type === "PRESIDENTIAL_DEMOCRACY";
+      const what = presidential ? "articles of impeachment" : "a motion of no confidence";
+      return {
+        headline: presidential
+          ? `Lawmakers draft articles of impeachment against ${ctx.player.leader.name}`
+          : `${ctx.player.leader.name}'s own backbenchers move against the government`,
+        text: `With legitimacy at ${Math.round(ctx.player.legitimacy)}%, your opponents smell blood.`,
+        decision: {
+          title: presidential ? "Impeachment looms" : "A vote of no confidence",
+          situation: `Your chief whip warns that ${what} will be tabled within weeks, and enough of your own side may vote for it. Stability ${Math.round(ctx.player.stability)}%, legitimacy ${Math.round(ctx.player.legitimacy)}%. Lose the vote and you are out.`,
+          affectedCountries: [ctx.player.id],
+          urgency: "EXISTENTIAL",
+          options: [
+            opt(
+              "whip",
+              "Whip the votes",
+              "Committee seats, pork projects, phone calls at midnight. It works, once.",
+              { coupShield: 5, pc: -2, legitimacy: -2 },
+              { backedBy: ["CHIEF_OF_STAFF"] },
+            ),
+            opt(
+              "inquiry",
+              "Concede an independent inquiry",
+              "Take the charge head-on and let investigators work. Humbling, but it splits the rebels.",
+              { approval: 5, legitimacy: 4, coupShield: 3, stability: -2 },
+              { backedBy: ["DOMESTIC_ADVISOR"] },
+            ),
+            opt(
+              "rally",
+              "Take it to the country",
+              "A prime-time address and a tour of the swing districts: make the vote a referendum on you.",
+              { approval: 7, coupShield: 2, pc: -1 },
+              { backedBy: ["CHIEF_OF_STAFF"] },
+            ),
+          ],
+          defaultOptionId: "whip",
+        },
+      };
+    },
   },
 
   // --- Telegraphed coup (raised by government.ts when coup risk appears) ---
@@ -1521,6 +1576,8 @@ export function raiseCrisis(
   const player = world.countries.find((c) => c.id === world.playerCountryId);
   const template = TEMPLATES.find((t) => t.id === templateId);
   if (!player || !template) return null;
+  // Never stack the same crisis twice on one desk
+  if (world.pendingDecisions.some((d) => d.templateId === templateId)) return null;
   const draft = template.build({ world, player, rng });
   if (!draft) return null;
   const event = toEvent(world, player, templateId, draft, 9);

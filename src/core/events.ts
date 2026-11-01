@@ -1,4 +1,4 @@
-import { areNeighbors } from "./crises.js";
+import { areNeighbors, encounterAtSea } from "./crises.js";
 import type { SeededRandom } from "./seed.js";
 import { getRelation } from "./systems/diplomacy.js";
 import type { CountryState, GameEvent, PendingDecision, WorldState } from "./types.js";
@@ -69,7 +69,9 @@ const TEMPLATES: EventTemplate[] = [
           : `${a.name} and ${b.name} in tense military encounter`,
         description: border
           ? `Patrols exchanged fire along the contested frontier between ${a.name} and ${b.name}. Casualties are reported on both sides; state media in both capitals are demanding retribution.`
-          : `Warships and aircraft from ${a.name} and ${b.name} came dangerously close in international waters. Both sides accuse the other of reckless provocation.`,
+          : encounterAtSea(a, b)
+            ? `Warships and aircraft from ${a.name} and ${b.name} came dangerously close in international waters. Both sides accuse the other of reckless provocation.`
+            : `Military aircraft and drones from ${a.name} and ${b.name} came dangerously close over contested airspace. Both sides accuse the other of reckless provocation.`,
         affectedCountries: [a.id, b.id],
         turn: ctx.world.turn,
         severity: "MAJOR",
