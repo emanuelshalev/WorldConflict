@@ -585,7 +585,7 @@ export function generatePlayerBackstory(country: CountryState, rng: SeededRandom
   const templates: Record<string, string[]> = {
     PRESIDENTIAL_DEMOCRACY: [
       `After a snap election triggered by a corruption scandal that consumed your predecessor, your reformist coalition swept to power. The public expects change — and quickly.`,
-      `A narrow electoral-college victory after the sudden death of the incumbent has made you ${country.politicalSystem.leaderTitle} of ${country.name}. Half the country celebrates; the other half doubts your mandate.`,
+      `A razor-thin election victory after the sudden death of the incumbent has made you ${country.politicalSystem.leaderTitle} of ${country.name}. Half the country celebrates; the other half doubts your mandate.`,
     ],
     PARLIAMENTARY_DEMOCRACY: [
       `After a snap election triggered by a corruption scandal, your coalition formed a narrow majority. Your government survives at the pleasure of restless coalition partners.`,

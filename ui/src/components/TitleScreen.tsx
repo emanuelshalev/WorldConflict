@@ -337,7 +337,7 @@ export function TitleScreen() {
           </div>
           <input
             className="leader-input"
-            placeholder="Your name (optional)"
+            placeholder="Play as the real leader, or type a name"
             value={leaderName}
             maxLength={40}
             onChange={(e) => setLeaderName(e.target.value)}

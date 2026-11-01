@@ -395,6 +395,14 @@ export class DataLoader {
     }
     world.objective = fp.objectives[world.playerCountryId] ?? null;
     if (world.objective && !world.objective.debrief) world.objective.debrief = fp.debrief;
+    // The flashpoint's own brief is the backstory: a generic rise-to-power story would contradict it
+    if (player) {
+      const role = fp.playable.find((p) => p.countryId === player.id)?.role;
+      const who = `You are ${player.leader.title} ${player.leader.name} of ${player.name}.`;
+      world.playerBackstory = [who, world.objective?.briefing ?? role ?? fp.hook]
+        .filter(Boolean)
+        .join(" ");
+    }
     world.director.scheduled = (fp.scripted[world.playerCountryId] ?? []).map((sc) => ({
       templateId: sc.templateId,
       turn: sc.turn,
@@ -433,8 +441,9 @@ export class DataLoader {
 
     const scenarioLeader = scenario.leaders[profile.id];
     const leader = {
+      // The player governs as the real leader of the era unless they name their own
       name: isPlayer
-        ? (playerLeaderName ?? generateLeaderName(profile.id, rng))
+        ? (playerLeaderName ?? scenarioLeader?.name ?? generateLeaderName(profile.id, rng))
         : (scenarioLeader?.name ?? generateLeaderName(profile.id, rng)),
       title: scenarioLeader?.title ?? override.leaderTitle ?? profile.politicalSystem.leaderTitle,
       style: scenarioLeader?.style ?? "PRAGMATIC",
@@ -598,7 +607,10 @@ export class DataLoader {
     const player = world.countries.find((c) => c.id === playerCountryId);
     if (player) {
       const rng = new SeededRandom(combineSeed(seed, 7777));
-      world.playerBackstory = generatePlayerBackstory(player, rng);
+      const realLeader = !playerLeaderName && !!scenario.leaders[playerCountryId]?.name;
+      world.playerBackstory = realLeader
+        ? realLeaderBackstory(player)
+        : generatePlayerBackstory(player, rng);
       player.leader.sinceTurn = 0;
     }
 
@@ -670,4 +682,15 @@ export class DataLoader {
 export function createDataLoader(dataPath?: string): DataLoader {
   const path = dataPath ?? join(process.cwd(), "data");
   return new DataLoader(path);
+}
+
+/** Backstory for the era's real leader: who they are and what they inherit, no invented coronation. */
+function realLeaderBackstory(player: CountryState): string {
+  const context =
+    player.atWarWith.length > 0
+      ? "The country is at war, and every decision now carries a body count."
+      : player.stability < 45
+        ? "The streets are restless and your security chiefs deliver grim briefings."
+        : "Allies and rivals alike are watching what you do next.";
+  return `You are ${player.leader.title} ${player.leader.name} of ${player.name}. The office, the record and the enemies are yours. ${context}`;
 }

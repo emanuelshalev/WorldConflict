@@ -77,3 +77,33 @@ describe("End-screen verdict", () => {
     expect(classifyLeadership(busy).classification).not.toBe("Cautious Caretaker");
   });
 });
+
+describe("Player leader", () => {
+  it("plays as the era's real leader by default, with a backstory that fits the flashpoint", () => {
+    const w = loader.newGame({
+      scenarioId: "2026",
+      playerCountryId: "IRN",
+      seed: 3,
+      mode: "FLASHPOINT",
+      flashpointId: "hormuz-convoy",
+    });
+    expect(get(w, "IRN").leader.name).toBe("Mojtaba Khamenei");
+    expect(w.playerBackstory).toContain("Mojtaba Khamenei");
+    expect(w.playerBackstory).toContain(w.objective?.briefing ?? "?");
+    expect(w.playerBackstory).not.toMatch(/Assembly of Experts has elevated you/);
+  });
+
+  it("keeps a custom name when the player gives one", () => {
+    const w = loader.newGame({
+      scenarioId: "2026",
+      playerCountryId: "UKR",
+      seed: 3,
+      mode: "TERM",
+      leaderName: "Olena Test",
+    });
+    expect(get(w, "UKR").leader.name).toBe("Olena Test");
+    const real = loader.newGame({ scenarioId: "2026", playerCountryId: "UKR", seed: 3, mode: "TERM" });
+    expect(get(real, "UKR").leader.name).toBe("Volodymyr Zelensky");
+    expect(real.playerBackstory).toMatch(/^You are .*Volodymyr Zelensky of Ukraine/);
+  });
+});
