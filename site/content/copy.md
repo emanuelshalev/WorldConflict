@@ -148,7 +148,7 @@ World Conflict is a work of fiction and a political simulation. It draws on publ
 
 ## SEO and social
 
-**SEO title (58 chars):** World Conflict: Geopolitical Strategy Game, November 2026
+**SEO title (57 chars):** World Conflict: Geopolitical Strategy Game, November 2026
 
 **Meta description (153 chars):**
 Lead one of 41 nations through the real crises of November 2026, from Hormuz to Taiwan. A turn-based strategy game of fog of war, coups and hard choices.
