@@ -159,10 +159,23 @@ export class TurnEngine {
           !isPlayer &&
           action.targetCountryId === world.playerCountryId &&
           action.type.startsWith("INTEL_");
+        const covertTarget =
+          !isPlayer && !hitsPlayer && action.type.startsWith("INTEL_") && action.targetCountryId
+            ? world.countries.find((c) => c.id === action.targetCountryId)
+            : undefined;
         const stabilityBefore = playerState?.stability ?? 0;
+        const targetStabilityBefore = covertTarget?.stability ?? 0;
         const outcome = this.applyAction(world, actor, action, rng, events, governmentChanges);
         if (hitsPlayer && playerState) {
           covertDamage += Math.max(0, stabilityBefore - playerState.stability);
+        } else if (covertTarget) {
+          // Several services piling onto one AI state: cap its monthly damage at 8
+          const lost = Math.max(0, targetStabilityBefore - covertTarget.stability);
+          const soFar = covertHits.get(covertTarget.id) ?? 0;
+          const allowed = Math.max(0, 8 - soFar);
+          if (lost > allowed)
+            covertTarget.stability = clamp01(covertTarget.stability + (lost - allowed));
+          covertHits.set(covertTarget.id, soFar + Math.min(lost, allowed));
         }
         if (outcome.ok) {
           budgetLeft -= cost;
