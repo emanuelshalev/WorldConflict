@@ -72,34 +72,31 @@ export interface AllianceResult {
   reason: string;
 }
 
-export function proposeAlliance(
+/**
+ * Will `target` sign a defence pact with `actor`? Shared by the engine and the
+ * preview so the odds the player sees are the odds that apply.
+ */
+export function allianceOdds(
   actor: CountryState,
   target: CountryState,
-  rng: SeededRandom,
-): AllianceResult {
-  if (actor.alliances.includes(target.id)) {
-    return { accepted: false, reason: "Already allied" };
-  }
+): { chance: number; refusal: string | null } {
+  if (actor.alliances.includes(target.id)) return { chance: 0, refusal: "Already allied" };
   // Formal mutual-defence treaties are rare and deliberate
-  if (NO_FORMAL_PACTS.has(target.id) || NO_FORMAL_PACTS.has(actor.id)) {
-    return { accepted: false, reason: "No state signs a formal defence treaty with Taiwan." };
-  }
-  if (target.atWarWith.length > 0 || actor.atWarWith.length > 0) {
+  if (NO_FORMAL_PACTS.has(target.id) || NO_FORMAL_PACTS.has(actor.id))
+    return { chance: 0, refusal: "No state signs a formal defence treaty with Taiwan." };
+  if (target.atWarWith.length > 0 || actor.atWarWith.length > 0)
     return {
-      accepted: false,
-      reason: `${target.name} won't sign a mutual-defence treaty in the middle of a war.`,
+      chance: 0,
+      refusal: `${target.name} won't sign a mutual-defence treaty in the middle of a war.`,
     };
-  }
-  if (target.alliances.length >= MAX_PACTS || actor.alliances.length >= MAX_PACTS) {
-    return { accepted: false, reason: `${target.name} won't take on another treaty commitment.` };
-  }
+  if (target.alliances.length >= MAX_PACTS || actor.alliances.length >= MAX_PACTS)
+    return { chance: 0, refusal: `${target.name} won't take on another treaty commitment.` };
   const relation = getRelation(target, actor.id);
-  if (relation < 60) {
+  if (relation < 60)
     return {
-      accepted: false,
-      reason: `${target.name} rebuffed the proposal — relations must reach PROFITABLE first (currently ${relation}).`,
+      chance: 0,
+      refusal: `${target.name} rebuffed the proposal — relations must reach PROFITABLE (60+) first (currently ${Math.round(relation)}).`,
     };
-  }
   // Historical rivals are reluctant even at decent relations
   const isRival = (target.history.historicalRivals ?? []).includes(actor.id);
   const loyaltyFactor = target.personality.allianceLoyalty / 100;
@@ -107,6 +104,16 @@ export function proposeAlliance(
     0.9,
     (relation / 100) * (0.5 + loyaltyFactor * 0.5) * (isRival ? 0.4 : 1) * PACT_RARITY,
   );
+  return { chance, refusal: null };
+}
+
+export function proposeAlliance(
+  actor: CountryState,
+  target: CountryState,
+  rng: SeededRandom,
+): AllianceResult {
+  const { chance, refusal } = allianceOdds(actor, target);
+  if (refusal) return { accepted: false, reason: refusal };
   if (rng.next() < chance) {
     actor.alliances.push(target.id);
     target.alliances.push(actor.id);

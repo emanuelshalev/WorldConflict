@@ -98,8 +98,10 @@ export function CountryDetailPanel() {
   const queueAction = async (type: string, label: string, params?: Record<string, unknown>) => {
     const action = { type, targetCountryId: view.isPlayer ? undefined : view.id, params };
     const preview = await fetchPreview(action);
+    const before = useGameStore.getState().pendingActions.length;
     addPendingAction({ ...action, label, preview: preview ?? undefined });
-    openModal('actionPreview');
+    // Duplicates and a 7th order are refused by the store: only preview what was queued
+    if (useGameStore.getState().pendingActions.length > before) openModal('actionPreview');
   };
 
   const sys = view.politicalSystem;

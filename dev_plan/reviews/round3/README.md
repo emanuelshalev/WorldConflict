@@ -58,6 +58,15 @@ UX expert: visual polish 7, usability 6, accessibility 3.
 | Intel estimates above 100% | Priya | Percentage ranges capped at 100 |
 | "2 crisises", "2 crisis unanswered", React duplicate key | Maya, UX | Fixed |
 
+**Release code review:** five confirmed bugs, all fixed:
+- a forged `alliedWith` on a war order now has to name a real principal at war with the target;
+- term limits use real term rules (2026 incumbents, then 2 terms for the USA, France and Brazil, 1 for Mexico, Korea and the Philippines) instead of applying forever;
+- the alliance preview now uses the engine's `allianceOdds`;
+- Escape drops a blocked order;
+- the share text skips every decision headline.
+
+Also fixed: the UI enforces the one-per-target and 6-order limits, negative order values are rejected, the pact card names the real proposer, and old saves seed real growth.
+
 **Code review (minor):** share-card grid cap, multi-word surnames, legacy-save war count and harness spy-hunt timing were all fixed. The denounce-preview fix was superseded by the once-a-month rule.
 
 ## Not fixed (logged as P2 in HANDOFF)

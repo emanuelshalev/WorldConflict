@@ -150,7 +150,7 @@ export class TurnEngine {
         // One of each order per target per month, and at most MAX_ORDERS orders: the desk is
         // a month of a leader's attention, not a macro to spam
         if (isPlayer && !injected.has(action)) {
-          const key = `${action.type}:${action.targetCountryId ?? ""}:${JSON.stringify(action.params ?? {})}`;
+          const key = `${action.type}:${action.targetCountryId ?? ""}:${String(action.params?.targetType ?? action.params?.tactic ?? "")}`;
           const reason = ordered.has(key)
             ? "Already ordered this month"
             : orderCount >= MAX_ORDERS
@@ -163,6 +163,20 @@ export class TurnEngine {
           }
           ordered.add(key);
           orderCount++;
+        }
+        if (
+          action.value !== undefined &&
+          (!Number.isFinite(action.value) || action.value < 0) &&
+          action.type !== "ECONOMY_ADJUST_MILITARY_BUDGET"
+        ) {
+          push(rejectedActions, actor.id, { action, reason: "Invalid order value" });
+          if (isPlayer)
+            report.orders.push({
+              label: orderLabel(world, action),
+              ok: false,
+              detail: "Invalid order value",
+            });
+          continue;
         }
         const cost = actionCostM(action, actor);
         // Orders that come from crisis decisions were already paid for by the choice
@@ -344,7 +358,7 @@ export class TurnEngine {
       if (before <= 0) continue;
       const annual = Math.max(-0.6, Math.min(0.3, (c.gdp / before) ** 12 - 1));
       // Heavily smoothed: a one-off hit annualised x12 must not read as a recession
-      c.realGrowth = c.realGrowth === undefined ? annual : c.realGrowth * 0.85 + annual * 0.15;
+      c.realGrowth = (c.realGrowth ?? c.growthRate) * 0.85 + annual * 0.15;
     }
 
     // Phase 8: scoring & timeline
@@ -519,6 +533,7 @@ export class TurnEngine {
         if (target.id === world.playerCountryId && actor.id !== world.playerCountryId) {
           const lastOffer = world.director.lastUsed.pact_offer ?? -99;
           if ((target.relations[actor.id] ?? 0) >= 40 && world.turn - lastOffer >= 6) {
+            world.director.pactSuitor = actor.id;
             const offer = raiseCrisis(world, "pact_offer", rng);
             if (offer) events.push(offer);
           }
@@ -550,8 +565,13 @@ export class TurnEngine {
         if (!check.allowed) return { ok: false, reason: check.reason };
         const war = startWar(world, actor.id, target.id);
         if (!war) return { ok: false, reason: "Could not start war" };
-        if (typeof action.params?.alliedWith === "string")
-          war.alliedWith = action.params.alliedWith;
+        // Only a real principal counts: a country already at war with this target
+        const principalId = action.params?.alliedWith;
+        if (
+          typeof principalId === "string" &&
+          world.countries.find((c) => c.id === principalId)?.atWarWith.includes(target.id)
+        )
+          war.alliedWith = principalId;
         const joined = activateDefensivePacts(world, war, rng);
         if (target.id === world.playerCountryId) {
           // Rally 'round the flag: being attacked unites a nation, for a while

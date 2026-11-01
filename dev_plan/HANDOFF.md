@@ -13,20 +13,20 @@ State as of 2026-11-01:
 
 | | USA | UKR | ISR | TWN | DEU | Pooled | Target |
 |---|---|---|---|---|---|---|---|
-| Smart | 100% | 83% | 94% | 97% | 94% | **94%** | 70–95 |
-| Random | 3% | 0% | 0% | 39% | 42% | **17%** | 15–45 |
+| Smart | 92% | 83% | 94% | 97% | 94% | **92%** | 70–95 |
+| Random | 0% | 0% | 0% | 39% | 42% | **16%** | 15–45 |
 | None | 0% | 0% | 0% | 0% | 0% | **0%** | ≤20 |
 
 - Tension: median 44–55, with 0% of months at 80+.
 - Iran (exempt, labelled Brutal): smart 3%.
 
 **Flashpoints**, all 22 seats, 12 games each:
-- Smart: 75–100%, 96% pooled.
+- Smart: 58–100%, 94% pooled. The two low 12-game rows, re-run at 36 games, are Caracas USA 69% and Hormuz UAE 81%.
 - None: 0–8%, 0% pooled.
-- Random: 0–50%, 13% pooled.
-- Tension: medians 54–73, with at most 19% of months at 80+.
+- Random: 0–50%, 12% pooled.
+- Tension: medians 54–73, with at most 21% of months at 80+.
 
-**Against the criteria:** Term meets every band. Flashpoints are fractionally outside two of them: smart is 96% pooled (target ≤95) and random 13% pooled (target ≥15). No seat is below 65%.
+**Against the criteria:** Term meets every band. Flashpoints meet them except random play, which is 12% pooled against a floor of 15% (random orders are punished hard in a 12-month crisis). No seat is below 65% at 36 games.
 
 **Known balance issue, "greedy" play.** A harness policy that gives no orders and always takes the best-looking crisis option wins:
 - 75% of Terms as Taiwan or Germany (8% or less elsewhere);

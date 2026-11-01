@@ -1,5 +1,6 @@
 import { actionCostM, actionCostPC } from "./costs.js";
 import {
+  allianceOdds,
   canDeclareWar,
   ceasefireChance,
   denounceApprovalDelta,
@@ -113,18 +114,9 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
     }
     case "DIPLOMACY_PROPOSE_ALLIANCE": {
       if (!target) return blocked(base, "Select a target country");
-      const relation = target.relations[actor.id] ?? 0;
-      if (relation < 60) {
-        return blocked(
-          base,
-          `${possessive(tname)} government would refuse outright — relations are ${Math.round(relation)}, must be 60+ (PROFITABLE).`,
-        );
-      }
-      const isRival = (target.history.historicalRivals ?? []).includes(actor.id);
-      const loyalty = target.personality.allianceLoyalty / 100;
-      base.successChance = Math.round(
-        Math.min(0.9, (relation / 100) * (0.5 + loyalty * 0.5) * (isRival ? 0.4 : 1)) * 100,
-      );
+      const odds = allianceOdds(actor, target);
+      if (odds.refusal) return blocked(base, odds.refusal);
+      base.successChance = Math.round(odds.chance * 100);
       base.summary = `Propose a mutual defense pact with ${tname}.`;
       effects.push(
         eff(tname, "Status", "→ MILITARY PACT", "An attack on one is an attack on both"),

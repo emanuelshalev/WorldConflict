@@ -679,8 +679,16 @@ export const useGameStore = create<GameState>((set) => ({
     }),
   chooseDecision: (decisionId, optionId) =>
     set((state) => ({ decisionChoices: { ...state.decisionChoices, [decisionId]: optionId } })),
+  // Same rules as the engine (turn.ts): one of each order per target, at most 6 a month
   addPendingAction: (action) =>
-    set((state) => ({ pendingActions: [...state.pendingActions, action] })),
+    set((state) => {
+      const key = (a: PendingAction) =>
+        `${a.type}:${a.targetCountryId ?? ''}:${String(a.params?.targetType ?? a.params?.tactic ?? '')}`;
+      if (state.pendingActions.some((a) => key(a) === key(action)))
+        return { error: `"${action.label}" is already on your desk this month` };
+      if (state.pendingActions.length >= 6) return { error: 'At most 6 orders a month' };
+      return { pendingActions: [...state.pendingActions, action] };
+    }),
   removePendingAction: (index) =>
     set((state) => ({ pendingActions: state.pendingActions.filter((_, i) => i !== index) })),
   clearPendingActions: () => set({ pendingActions: [] }),

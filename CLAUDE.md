@@ -67,7 +67,7 @@ Static data is JSON in `data/`: 41 country profiles in `data/countries/` (valida
 - AI defence pacts: rare, never with a belligerent, max 4, none with TWN. AI proposals to the player become a `pact_offer` crisis. Wars joined to help someone carry `alliedWith` and end with the principal's war.
 - Scripted flashpoint crises can declare `requiresWar: [a, b]` and are skipped once that war is over.
 - Generated prose uses `possessive()` / `withArticle()` from `src/core/text.ts` (the UI has a copy of `withArticle` in `ui/src/lib/format.ts`). The order vocabulary and ◆ costs live in `ui/src/lib/actions.ts`.
-- Balance targets (harness): smart 55–85% wins, none ≤20%, random 15–45%.
+- Balance targets (harness): smart 70–95% wins pooled (no seat below 65%), none ≤20%, random 15–45%; Iran's Term is exempt. Use `--games 36` near a band edge.
 
 ## Conventions
 

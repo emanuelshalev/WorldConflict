@@ -1533,6 +1533,8 @@ function losingAlly(ctx: Ctx): { ally: CountryState; enemy: CountryState } | und
 
 /** The country most eager for a defence pact with the player (it likes us, we don't hate it). */
 function pactSuitor(ctx: Ctx): CountryState | undefined {
+  const proposer = find(ctx.world, ctx.world.director.pactSuitor ?? "");
+  if (proposer && alive(proposer) && !ctx.player.alliances.includes(proposer.id)) return proposer;
   return ctx.world.countries
     .filter(
       (c) =>

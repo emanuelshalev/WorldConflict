@@ -130,7 +130,7 @@ function fit(g: CanvasRenderingContext2D, text: string, width: number): string {
 /** The story of the session in one line: the latest world headline that isn't the player's own order. */
 function storyHeadline(news: Array<{ headline: string }>, playerName: string): string {
   const pick =
-    news.find((n) => !/'S ANSWER TO|’S ANSWER TO/i.test(n.headline) && !n.headline.toUpperCase().startsWith(playerName.toUpperCase())) ??
+    news.find((n) => !/ ANSWER TO /i.test(n.headline) && !n.headline.toUpperCase().startsWith(playerName.toUpperCase())) ??
     news[0];
   return (pick?.headline ?? '').replace(/["“”]/g, '');
 }

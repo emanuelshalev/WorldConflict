@@ -92,7 +92,12 @@ function useEscapeToClose() {
       if (e.key !== 'Escape') return
       const s = useGameStore.getState()
       if (s.showLogin) useGameStore.setState({ showLogin: false })
-      else if (s.activeModal && s.activeModal !== 'endGame') s.closeModal()
+      else if (s.activeModal === 'actionPreview') {
+        // Same as the backdrop: a blocked order never stays queued
+        const last = s.pendingActions.length - 1
+        if (last >= 0 && s.pendingActions[last].preview?.blocked) s.removePendingAction(last)
+        s.closeModal()
+      } else if (s.activeModal && s.activeModal !== 'endGame') s.closeModal()
       else if (s.showChronicle) {
         s.setShowChronicle(false)
         if (s.gameOver) s.openModal('endGame')

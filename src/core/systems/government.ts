@@ -1,6 +1,6 @@
 import { raiseCrisis } from "../crises.js";
 import type { SeededRandom } from "../seed.js";
-import { possessive } from "../text.js";
+import { possessive, withArticle } from "../text.js";
 import type {
   CountryState,
   GameEvent,
@@ -426,7 +426,23 @@ function collapseAdjusted(risk: number, country: CountryState, world: WorldState
  * limits): USA, France, Mexico, South Korea, Philippines, Brazil. The player is exempt:
  * in a Term, "your" election is your party's verdict.
  */
-const TERM_LIMITED = new Set(["USA", "FRA", "MEX", "KOR", "PHL", "BRA"]);
+const MAX_TERMS: Record<string, number> = { USA: 2, FRA: 2, BRA: 2, MEX: 1, KOR: 1, PHL: 1 };
+/** Leaders already at their limit when the 2026 scenario opens (Trump, Macron, Lula, Sheinbaum, Lee, Marcos). */
+const AT_LIMIT_IN_2026 = new Set(["USA", "FRA", "MEX", "KOR", "PHL", "BRA"]);
+
+function termLimited(world: WorldState, country: CountryState): boolean {
+  const max = MAX_TERMS[country.id];
+  if (!max) return false;
+  if (
+    world.scenarioId === "2026" &&
+    country.leader.sinceTurn === 0 &&
+    AT_LIMIT_IN_2026.has(country.id)
+  )
+    return true;
+  // Leaders elected in-game: out once they have served their maximum number of full terms
+  const cycle = country.politicalSystem.electionCycleMonths;
+  return cycle > 0 && world.turn - country.leader.sinceTurn >= max * cycle - 1;
+}
 
 /** AI coup and revolution odds relative to the player's (playtests saw a Sudan coup every run). */
 const AI_UPHEAVAL = 0.35;
@@ -458,7 +474,7 @@ function holdElection(
 
   // Term limits: the incumbent can't stand again. The ruling side's candidate inherits
   // the record, so a popular government usually keeps power under a new leader.
-  if (!isPlayer && TERM_LIMITED.has(country.id)) {
+  if (!isPlayer && termLimited(world, country)) {
     const oldLeader = { ...country.leader };
     const continuity = score >= 45;
     const style = continuity ? country.leader.style : pickSuccessorStyle(country, "ELECTION", rng);
@@ -478,8 +494,8 @@ function holdElection(
       oldLeader,
       newLeader: country.leader,
       description: continuity
-        ? `Term-limited, ${oldLeader.name} hands over: ${country.leader.name} wins ${possessive(country.name)} election for the governing side.`
-        : `Term-limited ${oldLeader.name} steps down, and the opposition's ${country.leader.name} wins ${possessive(country.name)} election.`,
+        ? `Term-limited, ${oldLeader.name} hands over: ${country.leader.name} wins the election in ${withArticle(country.name)} for the governing side.`
+        : `Term-limited ${oldLeader.name} steps down, and the opposition's ${country.leader.name} wins the election in ${withArticle(country.name)}.`,
       isPlayerDeposed: false,
     };
   }

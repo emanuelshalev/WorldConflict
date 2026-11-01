@@ -142,3 +142,44 @@ describe("Collapse has consequences (persona round 3)", () => {
     expect(removed).toBe(true);
   });
 });
+
+describe("Release review fixes", () => {
+  it("ignores a forged alliedWith on the player's own war declaration", () => {
+    const w = loader.newGame({ scenarioId: "2026", playerCountryId: "USA", seed: 1, mode: "LEGACY" });
+    w.politicalCapital = 6;
+    const next = engine.executeTurn(w, [
+      { type: "DIPLOMACY_DECLARE_WAR", targetCountryId: "VEN", params: { alliedWith: "ZZZ" } },
+    ], []).newState;
+    expect(get(next, "USA").atWarWith).toContain("VEN");
+  });
+
+  it("applies term limits to the 2026 incumbents, not forever", () => {
+    const w = loader.newGame({ scenarioId: "2026", playerCountryId: "CHN", seed: 1, mode: "LEGACY" });
+    const usa = get(w, "USA");
+    w.turn = 24; // November 2028
+    usa.politicalSystem.nextElectionTurn = w.turn;
+    runGovernmentDynamics(w, new SeededRandom(2));
+    const successor = usa.leader.name;
+    expect(successor).not.toBe("Donald Trump");
+    // A first-term successor four years later can stand again
+    w.turn = usa.leader.sinceTurn + 48;
+    usa.politicalSystem.nextElectionTurn = w.turn;
+    usa.approval = 90;
+    runGovernmentDynamics(w, new SeededRandom(2));
+    expect(usa.leader.name).toBe(successor);
+  });
+
+  it("previews alliance odds the engine actually uses", () => {
+    const w = loader.newGame({ scenarioId: "2026", playerCountryId: "UKR", seed: 1, mode: "TERM" });
+    get(w, "CAN").relations.UKR = 95;
+    const p = previewAction(w, { type: "DIPLOMACY_PROPOSE_ALLIANCE", targetCountryId: "CAN" });
+    expect(p.blocked).toMatch(/war/);
+  });
+
+  it("rejects a negative order value instead of corrupting the world", () => {
+    const w = loader.newGame({ scenarioId: "2026", playerCountryId: "USA", seed: 1, mode: "LEGACY" });
+    const next = engine.executeTurn(w, [{ type: "MILITARY_DEPLOY_BORDER", targetCountryId: "VEN", value: -1 }], []).newState;
+    expect(next.turnReport?.orders[0]?.detail).toBe("Invalid order value");
+    for (const d of get(next, "USA").borderDeployments) expect(d.troops).toBeGreaterThanOrEqual(0);
+  });
+});
