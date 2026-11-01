@@ -12,6 +12,7 @@ import {
   canDeclareWar,
   denounce,
   improveRelations,
+  mediate,
   proposeAlliance,
   proposeCeasefire,
 } from "./systems/diplomacy.js";
@@ -465,6 +466,27 @@ export class TurnEngine {
           ? { ok: true, reason: "" }
           : { ok: false, reason: `${target.name} rejected the ceasefire proposal` };
       }
+      case "DIPLOMACY_MEDIATE": {
+        if (!target) return { ok: false, reason: "No target" };
+        const result = mediate(world, actor, target, rng);
+        if (result.ended && result.otherId) {
+          const other = world.countries.find((c) => c.id === result.otherId);
+          if (actor.id === world.playerCountryId) {
+            actor.approval = clamp01(actor.approval + 5);
+            this.report?.moments.push("PEACEMAKER");
+          }
+          events.push({
+            id: `evt_mediation_${actor.id}_${target.id}_${world.turn}`,
+            type: "DIPLOMACY",
+            title: `${actor.name} brokers ceasefire between ${target.name} and ${other?.name ?? result.otherId}`,
+            description: `After marathon talks hosted by ${actor.leader.title} ${actor.leader.name}, ${target.name} and ${other?.name ?? result.otherId} agreed to stop fighting along current lines. Diplomats call it fragile; the guns are silent for now.`,
+            affectedCountries: [actor.id, target.id, result.otherId],
+            turn: world.turn,
+            severity: "MAJOR",
+          });
+        }
+        return { ok: result.ok, reason: result.reason };
+      }
       case "MILITARY_MOBILIZE": {
         actor.mobilizationLevel = clamp01(actor.mobilizationLevel + 20);
         actor.stability = clamp01(actor.stability - 2);
@@ -822,6 +844,7 @@ const ORDER_VERBS: Partial<Record<Action["type"], string>> = {
   DIPLOMACY_BREAK_ALLIANCE: "Break pact with",
   DIPLOMACY_DECLARE_WAR: "Declare war on",
   DIPLOMACY_PROPOSE_CEASEFIRE: "Propose ceasefire to",
+  DIPLOMACY_MEDIATE: "Mediate peace for",
   MILITARY_MOBILIZE: "Mobilize forces",
   MILITARY_DEMOBILIZE: "Stand down forces",
   MILITARY_PROCURE: "Buy weapons",

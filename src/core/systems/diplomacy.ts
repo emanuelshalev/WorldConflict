@@ -107,6 +107,82 @@ export function canDeclareWar(actor: CountryState, target: CountryState): WarDec
   return { allowed: true, nuclearStandoff: false, reason: "" };
 }
 
+/**
+ * Wars rarely end on the first offer: exhaustion, flexibility and who holds
+ * the initiative decide. A side that is winning seldom stops.
+ */
+export function ceasefireChance(
+  war: { attackerId: string; frontline: number; exhaustion: number },
+  actor: CountryState,
+  target: CountryState,
+): number {
+  const actorIsAttacker = war.attackerId === actor.id;
+  const targetWinning = actorIsAttacker ? war.frontline < 45 : war.frontline > 55;
+  let chance =
+    0.05 +
+    Math.max(0, war.exhaustion - 40) / 200 +
+    target.personality.diplomaticFlexibility / 600 -
+    target.personality.warPropensity / 700;
+  if (targetWinning) chance *= 0.3;
+  return Math.max(0.02, Math.min(0.9, chance));
+}
+
+/** A third party brokering talks between two belligerents. */
+export function mediationChance(
+  war: { exhaustion: number },
+  mediator: CountryState,
+  a: CountryState,
+  b: CountryState,
+): number {
+  const trust =
+    (Math.max(0, a.relations[mediator.id] ?? 0) + Math.max(0, b.relations[mediator.id] ?? 0)) / 2;
+  const flex = (a.personality.diplomaticFlexibility + b.personality.diplomaticFlexibility) / 2;
+  const chance = 0.03 + Math.max(0, war.exhaustion - 35) / 170 + trust / 350 + flex / 900;
+  return Math.max(0.03, Math.min(0.75, chance));
+}
+
+export function mediate(
+  world: WorldState,
+  mediator: CountryState,
+  target: CountryState,
+  rng: SeededRandom,
+): { ok: boolean; ended: boolean; otherId?: string; reason: string } {
+  const war = world.wars.find((w) => w.attackerId === target.id || w.defenderId === target.id);
+  if (!war) return { ok: false, ended: false, reason: `${target.name} is not at war` };
+  if (war.attackerId === mediator.id || war.defenderId === mediator.id) {
+    return {
+      ok: false,
+      ended: false,
+      reason: "You are a party to this war — propose a ceasefire instead",
+    };
+  }
+  const otherId = war.attackerId === target.id ? war.defenderId : war.attackerId;
+  const other = world.countries.find((c) => c.id === otherId);
+  if (!other) return { ok: false, ended: false, reason: "No counterpart" };
+  const chance = mediationChance(war, mediator, target, other);
+  shiftRelation(target, mediator.id, 3);
+  shiftRelation(other, mediator.id, 3);
+  if (rng.next() < chance) {
+    world.wars = world.wars.filter((w) => w.id !== war.id);
+    target.atWarWith = target.atWarWith.filter((id) => id !== other.id);
+    other.atWarWith = other.atWarWith.filter((id) => id !== target.id);
+    target.relations[other.id] = -40;
+    other.relations[target.id] = -40;
+    shiftRelation(target, mediator.id, 10);
+    shiftRelation(other, mediator.id, 10);
+    world.globalTension = Math.max(0, world.globalTension - 8);
+    return { ok: true, ended: true, otherId, reason: `Talks succeeded: the guns fall silent` };
+  }
+  // Failed talks still build pressure toward peace
+  war.exhaustion = Math.min(100, war.exhaustion + 5);
+  return {
+    ok: true,
+    ended: false,
+    otherId,
+    reason: `Talks stalled — but both sides are wearier (exhaustion ${Math.round(war.exhaustion)})`,
+  };
+}
+
 export function proposeCeasefire(
   world: WorldState,
   actor: CountryState,
@@ -119,18 +195,7 @@ export function proposeCeasefire(
       (w.attackerId === target.id && w.defenderId === actor.id),
   );
   if (!war) return false;
-  // Acceptance depends on who is winning and exhaustion
-  const actorIsAttacker = war.attackerId === actor.id;
-  const targetWinning = actorIsAttacker ? war.frontline < 45 : war.frontline > 55;
-  // Wars rarely end on the first offer: exhaustion, flexibility and who holds
-  // the initiative decide. A side that is winning seldom stops.
-  let chance =
-    0.05 +
-    Math.max(0, war.exhaustion - 40) / 200 +
-    target.personality.diplomaticFlexibility / 600 -
-    target.personality.warPropensity / 700;
-  if (targetWinning) chance *= 0.3;
-  chance = Math.max(0.02, chance);
+  const chance = ceasefireChance(war, actor, target);
   if (rng.next() < chance) {
     world.wars = world.wars.filter((w) => w.id !== war.id);
     actor.atWarWith = actor.atWarWith.filter((id) => id !== target.id);

@@ -39,6 +39,7 @@ const games = Number(args.get("games") ?? 12);
 const policies = (args.get("policy") ?? "smart").split(",");
 const verbose = args.get("verbose") === "1";
 const json = args.get("json") === "1";
+const why = args.get("why") === "1"; // count which objective conditions fail
 
 // ----------------------------------------------------------------------------
 // Player policies
@@ -70,6 +71,13 @@ function smartOrders(world: WorldState, me: CountryState): Action[] {
     const fromMe = war ? (war.attackerId === me.id ? war.frontline : 100 - war.frontline) : 50;
     if (fromMe < 55) orders.push({ type: "DIPLOMACY_PROPOSE_CEASEFIRE", targetCountryId: enemy });
   }
+  // Broker the war our mission needs ended
+  for (const c of [...(world.objective?.primary ?? []), ...(world.objective?.bonus ?? [])]) {
+    if (c.kind !== "WAR_ENDED" || !c.targetId) continue;
+    const ongoing = world.wars.some((w) => [w.attackerId, w.defenderId].includes(c.targetId as string));
+    if (ongoing && !me.atWarWith.includes(c.targetId))
+      orders.push({ type: "DIPLOMACY_MEDIATE", targetCountryId: c.targetId });
+  }
   // Shore up the home front
   if (me.stability < 50 || me.legitimacy < 45) orders.push({ type: "DOMESTIC_REFORM" });
   const election = me.politicalSystem.nextElectionTurn;
@@ -79,6 +87,20 @@ function smartOrders(world: WorldState, me: CountryState): Action[] {
     orders.push({ type: "DOMESTIC_PROPAGANDA" });
   if (me.insurgencyLevel === "REBELLION" || me.insurgencyLevel === "GUERILLA") {
     orders.push({ type: "DOMESTIC_POLICING", params: { tactic: "SOFT" } });
+  }
+  // Mission stat goals at risk come first: reform for stability/legitimacy, address for approval
+  for (const c of [...(world.objective?.primary ?? [])]) {
+    if (c.kind !== "STAT_MIN" || !c.stat) continue;
+    if ((me[c.stat] ?? 0) >= (c.min ?? 50) + 8) continue;
+    if (c.stat === "approval") {
+      if (world.turn - (world.director.propagandaTurns.at(-1) ?? -99) >= 2)
+        orders.unshift({ type: "DOMESTIC_PROPAGANDA" });
+    } else orders.unshift({ type: "DOMESTIC_REFORM" });
+  }
+  // Keep mission-critical relationships above their thresholds
+  for (const c of [...(world.objective?.primary ?? []), ...(world.objective?.bonus ?? [])]) {
+    if (c.kind === "RELATION_MIN" && c.targetId && (me.relations[c.targetId] ?? 0) < (c.min ?? 0) + 10)
+      orders.push({ type: "DIPLOMACY_IMPROVE_RELATIONS", targetCountryId: c.targetId });
   }
   // Defuse the worst relationship; strengthen alliances
   const worst = Object.entries(me.relations)
@@ -97,7 +119,7 @@ function smartOrders(world: WorldState, me: CountryState): Action[] {
   return affordable(world, orders);
 }
 
-function optionValue(o: DecisionOption): number {
+function optionValue(o: DecisionOption, keyRelations: Set<string> = new Set()): number {
   const e = o.effects;
   let v =
     (e.approval ?? 0) +
@@ -109,19 +131,31 @@ function optionValue(o: DecisionOption): number {
     (e.coupShield ?? 0) * 1.5 +
     (e.relationsAllies ?? 0) * 0.3 -
     o.tensionDelta * 0.6;
-  for (const [k, val] of Object.entries(e)) if (k.startsWith("relations:")) v += val * 0.15;
+  // A player reads the mission: relationships named in the objective matter a lot
+  for (const [k, val] of Object.entries(e)) {
+    if (k.startsWith("relations:")) v += val * (keyRelations.has(k.split(":")[1]) ? 1.2 : 0.15);
+  }
   if (o.actions.some((a) => a.type === "DIPLOMACY_DECLARE_WAR")) v -= 20;
   return v;
 }
 
-function decide(policy: string, decisions: PendingDecision[], rng: SeededRandom) {
+function objectiveRelations(world: WorldState): Set<string> {
+  const ids = new Set<string>();
+  for (const c of [...(world.objective?.primary ?? []), ...(world.objective?.bonus ?? [])]) {
+    if (c.kind === "RELATION_MIN" && c.targetId) ids.add(c.targetId);
+  }
+  return ids;
+}
+
+function decide(policy: string, decisions: PendingDecision[], rng: SeededRandom, world: WorldState) {
   if (policy === "none" || policy === "propaganda") return []; // crises resolve by default
+  const key = objectiveRelations(world);
   return decisions.map((d) => ({
     decisionId: d.id,
     optionId:
       policy === "random"
         ? rng.pick(d.options).id
-        : [...d.options].sort((a, b) => optionValue(b) - optionValue(a))[0].id,
+        : [...d.options].sort((a, b) => optionValue(b, key) - optionValue(a, key))[0].id,
   }));
 }
 
@@ -196,6 +230,7 @@ const summary: Record<string, unknown>[] = [];
 for (const policy of policies) {
   for (const country of countries) {
     const results: GameMetrics[] = [];
+    const failedConditions: Record<string, number> = {};
     for (let g = 0; g < games; g++) {
       const seed = 1000 + g * 7919;
       const rng = new SeededRandom(combineSeed(seed, 99));
@@ -222,7 +257,7 @@ for (const policy of policies) {
       };
       let lastWarning = -99;
       for (let t = 0; t < 130 && !world.gameOver; t++) {
-        const decisions = decide(policy, world.pendingDecisions, rng);
+        const decisions = decide(policy, world.pendingDecisions, rng, world);
         const result = engine.executeTurn(
           world,
           playerOrders(policy, world, rng),
@@ -245,6 +280,11 @@ for (const policy of policies) {
               .map((n) => n.headline)
               .join(" · ")}`,
           );
+        }
+      }
+      if (why) {
+        for (const c of world.outcome?.conditions ?? []) {
+          if (!c.met) failedConditions[c.label] = (failedConditions[c.label] ?? 0) + 1;
         }
       }
       m.turns = world.turn;
@@ -288,6 +328,7 @@ for (const policy of policies) {
       tension80: pct(allTension.filter((t) => t >= 80).length, allTension.length),
       telegraphed: deposed.length ? pct(deposed.filter((r) => r.warnedBeforeDeposed).length, deposed.length) : "-",
       endings,
+      ...(why ? { failed: failedConditions } : {}),
     };
     summary.push(row);
     if (!json) console.log(JSON.stringify(row));

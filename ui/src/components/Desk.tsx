@@ -18,6 +18,7 @@ const PC: Record<string, number> = {
   DIPLOMACY_BREAK_ALLIANCE: 1,
   DIPLOMACY_DECLARE_WAR: 2,
   DIPLOMACY_PROPOSE_CEASEFIRE: 1,
+  DIPLOMACY_MEDIATE: 2,
   MILITARY_MOBILIZE: 1,
   MILITARY_AIRSTRIKE: 1,
   NUCLEAR_FUND_PROGRAM: 1,
@@ -50,6 +51,7 @@ const CATALOG: Record<string, OrderDef[]> = {
     { type: 'DIPLOMACY_DENOUNCE', label: 'Denounce', target: true },
     { type: 'DIPLOMACY_PROPOSE_ALLIANCE', label: 'Offer defense pact', target: true },
     { type: 'DIPLOMACY_PROPOSE_CEASEFIRE', label: 'Propose ceasefire', target: true },
+    { type: 'DIPLOMACY_MEDIATE', label: 'Mediate peace for', target: true },
     { type: 'DIPLOMACY_BREAK_ALLIANCE', label: 'Break pact', target: true, danger: true },
     { type: 'DIPLOMACY_DECLARE_WAR', label: 'Declare war', target: true, danger: true },
   ],
@@ -148,6 +150,12 @@ function useSuggestions(): Suggestion[] {
           : { p: 70, who: 'Defense Minister', label: 'Mobilize forces', why: 'We hold the initiative. Press it.', action: { type: 'MILITARY_MOBILIZE', label: 'Mobilize forces' } },
       );
     }
+    // Mission requires a war between others to end: offer to broker talks
+    const peaceGoal = [...(world.objective?.primary ?? []), ...(world.objective?.bonus ?? [])].find(
+      (c) => c.kind === 'WAR_ENDED' && c.targetId && world.wars.some((w) => [w.attackerId, w.defenderId].includes(c.targetId as string)),
+    );
+    if (peaceGoal?.targetId && !me.atWarWith.includes(peaceGoal.targetId))
+      out.push({ p: 90, who: 'Foreign Minister', label: `Mediate peace for ${countryName(peaceGoal.targetId)}`, why: 'Your mission needs this war to end. Every round of talks wears both sides down.', action: { type: 'DIPLOMACY_MEDIATE', label: `Mediate peace for ${countryName(peaceGoal.targetId)}`, targetCountryId: peaceGoal.targetId } });
     if (me.stability < 50 || me.legitimacy < 45)
       out.push({ p: 85, who: 'Interior Minister', label: 'Reform program', why: `Stability ${Math.round(me.stability)}%: the state needs shoring up.`, action: { type: 'DOMESTIC_REFORM', label: 'Reform program' } });
     if (me.approval < 55)

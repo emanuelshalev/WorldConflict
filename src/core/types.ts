@@ -115,6 +115,7 @@ export const ActionTypeSchema = z.enum([
   "DIPLOMACY_BREAK_ALLIANCE",
   "DIPLOMACY_DECLARE_WAR",
   "DIPLOMACY_PROPOSE_CEASEFIRE",
+  "DIPLOMACY_MEDIATE", // broker talks between two belligerents (target = one of them)
   // Military
   "MILITARY_MOBILIZE",
   "MILITARY_DEMOBILIZE",

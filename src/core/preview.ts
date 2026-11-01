@@ -1,5 +1,5 @@
 import { actionCostM, actionCostPC } from "./costs.js";
-import { canDeclareWar } from "./systems/diplomacy.js";
+import { canDeclareWar, ceasefireChance, mediationChance } from "./systems/diplomacy.js";
 import { effectiveForce, monthlyDefenseBudgetM } from "./systems/military.js";
 import { isNuclearOperational } from "./systems/nuclear.js";
 import type { Action, WorldState } from "./types.js";
@@ -163,13 +163,32 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
       if (!war) return blocked(base, `You are not at war with ${tname}`);
       const actorIsAttacker = war.attackerId === actor.id;
       const targetWinning = actorIsAttacker ? war.frontline < 45 : war.frontline > 55;
-      let chance = 0.35 + war.exhaustion / 200;
-      if (targetWinning) chance -= 0.25;
-      chance += target.personality.diplomaticFlexibility / 400;
-      base.successChance = Math.round(Math.max(0, Math.min(1, chance)) * 100);
+      base.successChance = Math.round(ceasefireChance(war, actor, target) * 100);
       base.summary = `Seek an end to the war with ${tname} along current lines.`;
       effects.push(eff("Both nations", "War", "ends if accepted", "Mobilization winds down"));
       if (targetWinning) risks.push(`${tname} is winning — they have little reason to stop now.`);
+      break;
+    }
+    case "DIPLOMACY_MEDIATE": {
+      if (!target) return blocked(base, "Select a country at war");
+      const war = world.wars.find((w) => w.attackerId === target.id || w.defenderId === target.id);
+      if (!war) return blocked(base, `${tname} is not at war`);
+      if (war.attackerId === actor.id || war.defenderId === actor.id)
+        return blocked(base, "You are a party to this war — propose a ceasefire instead");
+      const otherId = war.attackerId === target.id ? war.defenderId : war.attackerId;
+      const other = world.countries.find((c) => c.id === otherId);
+      if (!other) return blocked(base, "No counterpart");
+      base.successChance = Math.round(mediationChance(war, actor, target, other) * 100);
+      base.summary = `Host talks between ${tname} and ${other.name}. Trust in you and their exhaustion decide.`;
+      effects.push(
+        eff(
+          `${tname} & ${other.name}`,
+          "War",
+          "ends if talks succeed",
+          "Failed talks still raise war-weariness",
+        ),
+      );
+      effects.push(eff("You", "Approval", "+5 if peace", "Both sides warm to you"));
       break;
     }
     case "MILITARY_MOBILIZE": {

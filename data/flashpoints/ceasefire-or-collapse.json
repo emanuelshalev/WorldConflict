@@ -15,23 +15,65 @@
   "turns": 12,
   "globalTension": 72,
   "playable": [
-    {"countryId": "UKR", "role": "Hold the line through a blackout winter and sign only a peace that will last.", "difficulty": "TOUGH"},
-    {"countryId": "RUS", "role": "Turn a stalled offensive into a political victory before the economy cracks.", "difficulty": "TOUGH"},
-    {"countryId": "USA", "role": "Broker the deal of the century without owning the war, or the peace.", "difficulty": "STEADY"}
+    {
+      "countryId": "UKR",
+      "role": "Hold the line through a blackout winter and sign only a peace that will last.",
+      "difficulty": "TOUGH"
+    },
+    {
+      "countryId": "RUS",
+      "role": "Turn a stalled offensive into a political victory before the economy cracks.",
+      "difficulty": "TOUGH"
+    },
+    {
+      "countryId": "USA",
+      "role": "Broker the deal of the century without owning the war, or the peace.",
+      "difficulty": "STEADY"
+    }
   ],
   "setup": {
     "wars": [
-      {"attackerId": "RUS", "defenderId": "UKR", "frontline": 55, "exhaustion": 58}
+      {
+        "attackerId": "RUS",
+        "defenderId": "UKR",
+        "frontline": 55,
+        "exhaustion": 58
+      }
     ],
     "relations": [
-      {"a": "USA", "b": "UKR", "value": 45},
-      {"a": "USA", "b": "RUS", "value": -40},
-      {"a": "UKR", "b": "GBR", "value": 85},
-      {"a": "UKR", "b": "FRA", "value": 80}
+      {
+        "a": "USA",
+        "b": "UKR",
+        "value": 45
+      },
+      {
+        "a": "USA",
+        "b": "RUS",
+        "value": -40
+      },
+      {
+        "a": "UKR",
+        "b": "GBR",
+        "value": 85
+      },
+      {
+        "a": "UKR",
+        "b": "FRA",
+        "value": 80
+      }
     ],
     "countries": {
-      "UKR": {"stability": 50, "approval": 56, "mobilization": 75},
-      "RUS": {"stability": 58, "approval": 60, "mobilization": 70, "growthRate": 0.006}
+      "UKR": {
+        "stability": 50,
+        "approval": 56,
+        "mobilization": 75
+      },
+      "RUS": {
+        "stability": 58,
+        "approval": 60,
+        "mobilization": 70,
+        "growthRate": 0.006
+      }
     }
   },
   "objectives": {
@@ -39,14 +81,43 @@
       "title": "A peace that holds",
       "briefing": "You are Ukraine's president under martial law, with half your power grid gone and the Americans pushing a map across the table. Keep the front from breaking, keep the country standing through the winter and keep Washington in the room. A ceasefire counts only if Ukraine is still on its feet when the ink dries.",
       "primary": [
-        {"kind": "WAR_RESULT", "targetId": "RUS", "min": 42, "label": "Hold the front: Russia never past 58 (or a ceasefire)"},
-        {"kind": "RELATION_MIN", "targetId": "USA", "min": 33, "label": "Keep Washington engaged (relations 33+)"},
-        {"kind": "RELATION_MIN", "targetId": "GBR", "min": 93, "label": "Coalition of the willing locked in (UK relations 93+)"},
-        {"kind": "SCORE_PAR", "min": 85, "label": "Leadership score of 85+: a country still standing"}
+        {
+          "kind": "WAR_RESULT",
+          "targetId": "RUS",
+          "min": 42,
+          "label": "Hold the front: Russia never past 58 (or a ceasefire)"
+        },
+        {
+          "kind": "RELATION_MIN",
+          "targetId": "USA",
+          "min": 33,
+          "label": "Keep Washington engaged (relations 33+)"
+        },
+        {
+          "kind": "RELATION_MIN",
+          "targetId": "GBR",
+          "min": 93,
+          "label": "Coalition of the willing locked in (UK relations 93+)"
+        },
+        {
+          "kind": "SCORE_PAR",
+          "min": 85,
+          "label": "Leadership score of 85+: a country still standing"
+        }
       ],
       "bonus": [
-        {"kind": "STAT_MIN", "stat": "stability", "min": 55, "label": "Lights on, nerves steady (stability 55%+)"},
-        {"kind": "STAT_MIN", "stat": "approval", "min": 75, "label": "A united home front (approval 75%+)"}
+        {
+          "kind": "STAT_MIN",
+          "stat": "stability",
+          "min": 55,
+          "label": "Lights on, nerves steady (stability 55%+)"
+        },
+        {
+          "kind": "STAT_MIN",
+          "stat": "approval",
+          "min": 75,
+          "label": "A united home front (approval 75%+)"
+        }
       ],
       "par": 105,
       "debrief": "What really happened: by late 2026 the war had become attritional and drone-dominated. Russia gained under 1% of Ukraine in 2025 and almost nothing in 2026 at enormous cost, while diplomacy oscillated between US-drafted plans (28 points, then 19, then Kyiv's 20) and Russian maximalism over Donetsk. What experts fear: a ceasefire with no guarantees that becomes a rearmament pause, a 'Minsk III'; or a collapse of Ukrainian manpower and grid resilience that turns a stalemate into a breakthrough."
@@ -55,13 +126,36 @@
       "title": "Victory on paper",
       "briefing": "You are the Kremlin. The army is still advancing, slowly, at a price nobody publishes, and the budget is starting to creak. Push the line forward or extract a settlement that looks like a win, without dragging NATO into the war or letting the home front sour.",
       "primary": [
-        {"kind": "WAR_RESULT", "targetId": "UKR", "min": 58, "label": "Front at 58+ in your favour (or a ceasefire on your terms)"},
-        {"kind": "NO_WAR_WITH", "targetId": "POL", "label": "No war with NATO's front-line state"},
-        {"kind": "STAT_MIN", "stat": "stability", "min": 66, "label": "Stability of 66%+: no cracks at home"}
+        {
+          "kind": "WAR_RESULT",
+          "targetId": "UKR",
+          "min": 58,
+          "label": "Front at 58+ in your favour (or a ceasefire on your terms)"
+        },
+        {
+          "kind": "NO_WAR_WITH",
+          "targetId": "POL",
+          "label": "No war with NATO's front-line state"
+        },
+        {
+          "kind": "STAT_MIN",
+          "stat": "stability",
+          "min": 66,
+          "label": "Stability of 66%+: no cracks at home"
+        }
       ],
       "bonus": [
-        {"kind": "RELATION_MIN", "targetId": "USA", "min": -25, "label": "A thaw with Washington (relations -25+)"},
-        {"kind": "SCORE_PAR", "min": 108, "label": "Leadership score of 108+"}
+        {
+          "kind": "RELATION_MIN",
+          "targetId": "USA",
+          "min": -25,
+          "label": "A thaw with Washington (relations -25+)"
+        },
+        {
+          "kind": "SCORE_PAR",
+          "min": 108,
+          "label": "Leadership score of 108+"
+        }
       ],
       "par": 105,
       "debrief": "What really happened: Russia held about 19% of Ukraine at the start of 2026 but gained almost nothing all year; Peskov said Russia 'needs peace, not a ceasefire', the Duma election in September 2026 handed United Russia a constitutional majority, and growth slid below 1%. What experts fear: that a frozen line simply resets the clock for the next offensive, or that a wartime economy running on reserves cracks faster than the front."
@@ -70,14 +164,42 @@
       "title": "The dealmaker",
       "briefing": "You are the President of the United States, two days before the midterms, with a peace plan in your pocket and a war with Iran on the side. Get Moscow and Kyiv to stop shooting on terms both can live with, without American troops on the ground and without wrecking the alliance. Voters are watching the price of gas, not the map.",
       "primary": [
-        {"kind": "NO_WAR_WITH", "targetId": "RUS", "label": "No US war with Russia"},
-        {"kind": "WAR_ENDED", "targetId": "RUS", "otherId": "UKR", "label": "The guns fall silent: no Russia–Ukraine war at the end"},
-        {"kind": "RELATION_MIN", "targetId": "UKR", "min": 40, "label": "Kyiv still trusts you (relations 40+)"},
-        {"kind": "STAT_MIN", "stat": "approval", "min": 75, "label": "Approval of 75%+: the voters credit you with peace"}
+        {
+          "kind": "NO_WAR_WITH",
+          "targetId": "RUS",
+          "label": "No US war with Russia"
+        },
+        {
+          "kind": "WAR_ENDED",
+          "targetId": "RUS",
+          "otherId": "UKR",
+          "label": "The guns fall silent: no Russia–Ukraine war at the end"
+        },
+        {
+          "kind": "RELATION_MIN",
+          "targetId": "UKR",
+          "min": 40,
+          "label": "Kyiv still trusts you (relations 40+)"
+        },
+        {
+          "kind": "STAT_MIN",
+          "stat": "approval",
+          "min": 65,
+          "label": "Approval of 65%+: the voters credit you with peace"
+        }
       ],
       "bonus": [
-        {"kind": "RELATION_MIN", "targetId": "DEU", "min": 60, "label": "Europe on board (Germany relations 60+)"},
-        {"kind": "SCORE_PAR", "min": 115, "label": "Leadership score of 115+"}
+        {
+          "kind": "RELATION_MIN",
+          "targetId": "DEU",
+          "min": 60,
+          "label": "Europe on board (Germany relations 60+)"
+        },
+        {
+          "kind": "SCORE_PAR",
+          "min": 115,
+          "label": "Leadership score of 115+"
+        }
       ],
       "par": 108,
       "debrief": "What really happened: the 2025 Alaska summit, the 28-point plan and three trilateral rounds in Abu Dhabi and Geneva in early 2026 produced prisoner swaps, short holiday truces and the Oleshky local ceasefire, but no settlement; the Iran war then swallowed Washington's attention. What experts fear: a deal that trades Ukrainian territory for a pause without guarantees, teaching every revisionist power that patience beats deterrence."
@@ -93,13 +215,64 @@
         "decision": {
           "title": "The free economic zone",
           "situation": "Washington wants an answer before the midterms. Accepting in principle keeps the Americans close but hands Moscow the fortress belt without a shot. Demanding a referendum first is constitutionally correct and politically safe, and the White House will read it as a no. Rejecting outright and attacking shows the world Ukraine can still fight, at a cost in men you are running short of.",
-          "affectedCountries": ["UKR", "RUS", "USA"],
+          "affectedCountries": [
+            "UKR",
+            "RUS",
+            "USA"
+          ],
           "urgency": "URGENT",
           "defaultOptionId": "referendum",
           "options": [
-            {"id": "accept", "label": "Accept in principle", "description": "Keep Washington on side. The street, the army and the Rada will not forgive you quickly.", "effects": {"relations:USA": 12, "approval": -10, "legitimacy": -5, "stability": -2}, "tensionDelta": -5, "backedBy": ["FOREIGN_MINISTER"]},
-            {"id": "referendum", "label": "Only by referendum", "description": "No inch ceded without a national vote. Legally airtight, and a polite way of saying no.", "effects": {"approval": 5, "legitimacy": 3, "relations:USA": -9}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF", "DOMESTIC_ADVISOR"]},
-            {"id": "counter", "label": "Reject it and strike", "description": "Launch a limited counteroffensive on the Pokrovsk axis to change the facts before the talks.", "effects": {"approval": 6, "mobilization": 8, "stability": -4, "relations:USA": -6}, "tensionDelta": 5, "actions": [{"type": "MILITARY_MOBILIZE"}], "backedBy": ["DEFENSE_MINISTER"]}
+            {
+              "id": "accept",
+              "label": "Accept in principle",
+              "description": "Keep Washington on side. The street, the army and the Rada will not forgive you quickly.",
+              "effects": {
+                "relations:USA": 12,
+                "approval": -10,
+                "legitimacy": -5,
+                "stability": -2
+              },
+              "tensionDelta": -5,
+              "backedBy": [
+                "FOREIGN_MINISTER"
+              ]
+            },
+            {
+              "id": "referendum",
+              "label": "Only by referendum",
+              "description": "No inch ceded without a national vote. Legally airtight, and a polite way of saying no.",
+              "effects": {
+                "approval": 5,
+                "legitimacy": 3,
+                "relations:USA": -9
+              },
+              "tensionDelta": 0,
+              "backedBy": [
+                "CHIEF_OF_STAFF",
+                "DOMESTIC_ADVISOR"
+              ]
+            },
+            {
+              "id": "counter",
+              "label": "Reject it and strike",
+              "description": "Launch a limited counteroffensive on the Pokrovsk axis to change the facts before the talks.",
+              "effects": {
+                "approval": 6,
+                "mobilization": 8,
+                "stability": -4,
+                "relations:USA": -6
+              },
+              "tensionDelta": 5,
+              "actions": [
+                {
+                  "type": "MILITARY_MOBILIZE"
+                }
+              ],
+              "backedBy": [
+                "DEFENSE_MINISTER"
+              ]
+            }
           ]
         }
       },
@@ -111,13 +284,65 @@
         "decision": {
           "title": "Blackout winter",
           "situation": "Your air defence is out of interceptors and the grid is failing. Washington could release more Patriot batteries, but wants quiet in return. Your long-range drones could set Russian refineries ablaze tonight, which Washington has asked you not to do while oil is above $100. Or you can ration power, ask Brussels for generators and let the cold do its work on morale.",
-          "affectedCountries": ["UKR", "RUS", "USA"],
+          "affectedCountries": [
+            "UKR",
+            "RUS",
+            "USA"
+          ],
           "urgency": "URGENT",
           "defaultOptionId": "ration",
           "options": [
-            {"id": "patriots", "label": "Beg for Patriots", "description": "Go hat in hand to Washington. Interceptors arrive, and so does the bill: 'flexibility' at the table.", "effects": {"relations:USA": 6, "stability": 4, "approval": -4, "pc": -1}, "tensionDelta": 0, "backedBy": ["FOREIGN_MINISTER"]},
-            {"id": "refineries", "label": "Burn their refineries", "description": "Long-range drones on Russian oil. Moscow feels the winter too; oil spikes and the White House is furious.", "effects": {"approval": 7, "relations:USA": -8, "stability": -3}, "tensionDelta": 6, "actions": [{"type": "INTEL_SABOTAGE", "targetCountryId": "RUS"}], "backedBy": ["DEFENSE_MINISTER", "INTELLIGENCE_CHIEF"]},
-            {"id": "ration", "label": "Ration and appeal to Europe", "description": "Rolling blackouts, school closures and a plea to Berlin and Paris. No escalation, but a long, dark, angry winter.", "effects": {"stability": -8, "approval": -3, "relations:DEU": 6, "relations:FRA": 5}, "tensionDelta": 0, "backedBy": ["DOMESTIC_ADVISOR"]}
+            {
+              "id": "patriots",
+              "label": "Beg for Patriots",
+              "description": "Go hat in hand to Washington. Interceptors arrive, and so does the bill: 'flexibility' at the table.",
+              "effects": {
+                "relations:USA": 6,
+                "stability": 4,
+                "approval": -4,
+                "pc": -1
+              },
+              "tensionDelta": 0,
+              "backedBy": [
+                "FOREIGN_MINISTER"
+              ]
+            },
+            {
+              "id": "refineries",
+              "label": "Burn their refineries",
+              "description": "Long-range drones on Russian oil. Moscow feels the winter too; oil spikes and the White House is furious.",
+              "effects": {
+                "approval": 7,
+                "relations:USA": -8,
+                "stability": -3
+              },
+              "tensionDelta": 6,
+              "actions": [
+                {
+                  "type": "INTEL_SABOTAGE",
+                  "targetCountryId": "RUS"
+                }
+              ],
+              "backedBy": [
+                "DEFENSE_MINISTER",
+                "INTELLIGENCE_CHIEF"
+              ]
+            },
+            {
+              "id": "ration",
+              "label": "Ration and appeal to Europe",
+              "description": "Rolling blackouts, school closures and a plea to Berlin and Paris. No escalation, but a long, dark, angry winter.",
+              "effects": {
+                "stability": -8,
+                "approval": -3,
+                "relations:DEU": 6,
+                "relations:FRA": 5
+              },
+              "tensionDelta": 0,
+              "backedBy": [
+                "DOMESTIC_ADVISOR"
+              ]
+            }
           ]
         }
       },
@@ -129,13 +354,75 @@
         "decision": {
           "title": "The manpower wall",
           "situation": "The army wants the mobilisation age lowered from 25 to 23, the one thing you have refused for three years. The alternative is a fighting withdrawal to the next fortified line, giving up villages the Russians will televise. A third option is to ask London and Paris to put trainers and air-defence crews inside Ukraine, freeing your own men for the front and dragging the coalition closer to the war.",
-          "affectedCountries": ["UKR", "RUS", "GBR", "FRA"],
+          "affectedCountries": [
+            "UKR",
+            "RUS",
+            "GBR",
+            "FRA"
+          ],
           "urgency": "EXISTENTIAL",
           "defaultOptionId": "withdraw",
           "options": [
-            {"id": "draft23", "label": "Lower the draft age to 23", "description": "Fresh brigades by spring. Parents will not forgive it, and neither will the opinion polls.", "effects": {"mobilization": 14, "approval": -12, "stability": -6, "legitimacy": -3}, "tensionDelta": 2, "actions": [{"type": "MILITARY_MOBILIZE"}], "backedBy": ["DEFENSE_MINISTER", "CHIEF_OF_STAFF"], "followUp": {"templateId": "streets_boiling", "delay": 1}},
-            {"id": "withdraw", "label": "Fall back to the next line", "description": "Trade villages for lives. The front shortens; Russian television gets its victory montage, and some of your own generals start talking about who really runs the war.", "effects": {"stability": -7, "approval": -6, "mobilization": -5}, "tensionDelta": 0, "backedBy": ["DOMESTIC_ADVISOR"], "followUp": {"templateId": "coup_plot", "delay": 1}},
-            {"id": "trainers", "label": "Invite coalition trainers in", "description": "British and French crews on Ukrainian soil: a tripwire and a lifeline. Moscow calls it NATO entering the war.", "effects": {"relations:GBR": 6, "relations:FRA": 6, "stability": -8, "relations:RUS": -10, "relations:USA": -4, "approval": -4}, "tensionDelta": 8, "backedBy": ["FOREIGN_MINISTER"]}
+            {
+              "id": "draft23",
+              "label": "Lower the draft age to 23",
+              "description": "Fresh brigades by spring. Parents will not forgive it, and neither will the opinion polls.",
+              "effects": {
+                "mobilization": 14,
+                "approval": -12,
+                "stability": -6,
+                "legitimacy": -3
+              },
+              "tensionDelta": 2,
+              "actions": [
+                {
+                  "type": "MILITARY_MOBILIZE"
+                }
+              ],
+              "backedBy": [
+                "DEFENSE_MINISTER",
+                "CHIEF_OF_STAFF"
+              ],
+              "followUp": {
+                "templateId": "streets_boiling",
+                "delay": 1
+              }
+            },
+            {
+              "id": "withdraw",
+              "label": "Fall back to the next line",
+              "description": "Trade villages for lives. The front shortens; Russian television gets its victory montage, and some of your own generals start talking about who really runs the war.",
+              "effects": {
+                "stability": -7,
+                "approval": -6,
+                "mobilization": -5
+              },
+              "tensionDelta": 0,
+              "backedBy": [
+                "DOMESTIC_ADVISOR"
+              ],
+              "followUp": {
+                "templateId": "coup_plot",
+                "delay": 1
+              }
+            },
+            {
+              "id": "trainers",
+              "label": "Invite coalition trainers in",
+              "description": "British and French crews on Ukrainian soil: a tripwire and a lifeline. Moscow calls it NATO entering the war.",
+              "effects": {
+                "relations:GBR": 6,
+                "relations:FRA": 6,
+                "stability": -8,
+                "relations:RUS": -10,
+                "relations:USA": -4,
+                "approval": -4
+              },
+              "tensionDelta": 8,
+              "backedBy": [
+                "FOREIGN_MINISTER"
+              ]
+            }
           ]
         }
       },
@@ -147,13 +434,61 @@
         "decision": {
           "title": "Coalition of the willing",
           "situation": "A European guarantee is the closest thing to NATO membership on offer. Accepting it publicly now hardens Moscow and annoys Washington, which wants the deal first and the guarantees later. Keeping it in reserve keeps everyone calm and promises nothing. Or trade it: offer a neutrality clause in a future treaty in exchange for the force being written into the ceasefire.",
-          "affectedCountries": ["UKR", "GBR", "FRA", "RUS", "USA"],
+          "affectedCountries": [
+            "UKR",
+            "GBR",
+            "FRA",
+            "RUS",
+            "USA"
+          ],
           "urgency": "URGENT",
           "defaultOptionId": "reserve",
           "options": [
-            {"id": "accept", "label": "Accept it publicly", "description": "European boots as a guarantee. Moscow's red line, Europe's credibility, your insurance policy.", "effects": {"relations:GBR": 8, "relations:FRA": 8, "relations:RUS": -10, "approval": 6, "relations:USA": -4}, "tensionDelta": 8, "backedBy": ["FOREIGN_MINISTER", "DEFENSE_MINISTER"]},
-            {"id": "reserve", "label": "Keep it in the drawer", "description": "Thank them warmly and say nothing binding. Nobody escalates; nobody is reassured.", "effects": {"relations:GBR": -3, "approval": -2}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]},
-            {"id": "neutral", "label": "Trade neutrality for the force", "description": "Offer to shelve NATO membership in the treaty if the force is written into the ceasefire. Clever, and nationalists will call it Minsk III.", "effects": {"relations:USA": 8, "relations:RUS": 5, "approval": -7, "legitimacy": -3}, "tensionDelta": -6, "backedBy": ["FOREIGN_MINISTER"]}
+            {
+              "id": "accept",
+              "label": "Accept it publicly",
+              "description": "European boots as a guarantee. Moscow's red line, Europe's credibility, your insurance policy.",
+              "effects": {
+                "relations:GBR": 8,
+                "relations:FRA": 8,
+                "relations:RUS": -10,
+                "approval": 6,
+                "relations:USA": -4
+              },
+              "tensionDelta": 8,
+              "backedBy": [
+                "FOREIGN_MINISTER",
+                "DEFENSE_MINISTER"
+              ]
+            },
+            {
+              "id": "reserve",
+              "label": "Keep it in the drawer",
+              "description": "Thank them warmly and say nothing binding. Nobody escalates; nobody is reassured.",
+              "effects": {
+                "relations:GBR": -3,
+                "approval": -2
+              },
+              "tensionDelta": 0,
+              "backedBy": [
+                "CHIEF_OF_STAFF"
+              ]
+            },
+            {
+              "id": "neutral",
+              "label": "Trade neutrality for the force",
+              "description": "Offer to shelve NATO membership in the treaty if the force is written into the ceasefire. Clever, and nationalists will call it Minsk III.",
+              "effects": {
+                "relations:USA": 8,
+                "relations:RUS": 5,
+                "approval": -7,
+                "legitimacy": -3
+              },
+              "tensionDelta": -6,
+              "backedBy": [
+                "FOREIGN_MINISTER"
+              ]
+            }
           ]
         }
       },
@@ -165,13 +500,65 @@
         "decision": {
           "title": "The signing table",
           "situation": "Sign and the guns may fall silent with a fifth of your country behind the line and your guarantees in an unwritten annex. Refuse and you keep your principles and lose your patron. Put it to a referendum and you share the burden with the nation, and give the Kremlin a month to shape the vote.",
-          "affectedCountries": ["UKR", "RUS", "USA"],
+          "affectedCountries": [
+            "UKR",
+            "RUS",
+            "USA"
+          ],
           "urgency": "EXISTENTIAL",
           "defaultOptionId": "refuse",
           "options": [
-            {"id": "sign", "label": "Sign the ceasefire", "description": "The shooting stops. The occupied land is lost for a generation, and so may be your coalition.", "effects": {"relations:USA": 10, "approval": -8, "stability": 6, "legitimacy": -4}, "tensionDelta": -10, "actions": [{"type": "DIPLOMACY_PROPOSE_CEASEFIRE", "targetCountryId": "RUS"}], "backedBy": ["FOREIGN_MINISTER", "CHIEF_OF_STAFF"]},
-            {"id": "refuse", "label": "Refuse without guarantees", "description": "No signature without the annex. Kyiv applauds; Washington threatens to walk away.", "effects": {"relations:USA": -12, "approval": 6, "stability": -4}, "tensionDelta": 4, "backedBy": ["DEFENSE_MINISTER"]},
-            {"id": "referendum", "label": "Put it to the people", "description": "A national vote in a country at war, under drones. Legitimacy if you win; chaos either way.", "effects": {"legitimacy": 8, "stability": -6, "approval": 3, "relations:USA": -3}, "tensionDelta": 0, "backedBy": ["DOMESTIC_ADVISOR"]}
+            {
+              "id": "sign",
+              "label": "Sign the ceasefire",
+              "description": "The shooting stops. The occupied land is lost for a generation, and so may be your coalition.",
+              "effects": {
+                "relations:USA": 10,
+                "approval": -8,
+                "stability": 6,
+                "legitimacy": -4
+              },
+              "tensionDelta": -10,
+              "actions": [
+                {
+                  "type": "DIPLOMACY_PROPOSE_CEASEFIRE",
+                  "targetCountryId": "RUS"
+                }
+              ],
+              "backedBy": [
+                "FOREIGN_MINISTER",
+                "CHIEF_OF_STAFF"
+              ]
+            },
+            {
+              "id": "refuse",
+              "label": "Refuse without guarantees",
+              "description": "No signature without the annex. Kyiv applauds; Washington threatens to walk away.",
+              "effects": {
+                "relations:USA": -12,
+                "approval": 6,
+                "stability": -4
+              },
+              "tensionDelta": 4,
+              "backedBy": [
+                "DEFENSE_MINISTER"
+              ]
+            },
+            {
+              "id": "referendum",
+              "label": "Put it to the people",
+              "description": "A national vote in a country at war, under drones. Legitimacy if you win; chaos either way.",
+              "effects": {
+                "legitimacy": 8,
+                "stability": -6,
+                "approval": 3,
+                "relations:USA": -3
+              },
+              "tensionDelta": 0,
+              "backedBy": [
+                "DOMESTIC_ADVISOR"
+              ]
+            }
           ]
         }
       }
@@ -185,13 +572,62 @@
         "decision": {
           "title": "The free economic zone",
           "situation": "Taking the deal banks the fortress belt without assaulting it, and annoys every hawk on state television who promised Odesa. Holding out for the whole oblast keeps the war going into a winter your economy can barely afford. Stalling while hitting the grid might soften Kyiv, or harden Washington.",
-          "affectedCountries": ["RUS", "UKR", "USA"],
+          "affectedCountries": [
+            "RUS",
+            "UKR",
+            "USA"
+          ],
           "urgency": "URGENT",
           "defaultOptionId": "maximal",
           "options": [
-            {"id": "accept", "label": "Accept as 'a basis'", "description": "Pocket the gain and let the Americans pressure Kyiv. The war bloggers will howl.", "effects": {"relations:USA": 12, "approval": -6, "legitimacy": -3}, "tensionDelta": -6, "backedBy": ["FOREIGN_MINISTER"]},
-            {"id": "maximal", "label": "All of Donetsk or nothing", "description": "Peskov's line: Russia needs peace, not a ceasefire. Talks continue, so does the war.", "effects": {"approval": 3, "relations:USA": -6}, "tensionDelta": 2, "backedBy": ["CHIEF_OF_STAFF", "DEFENSE_MINISTER"]},
-            {"id": "grid", "label": "Talk, and hit the grid", "description": "Smile in Abu Dhabi, launch the winter strike campaign at home. Leverage, or evidence of bad faith.", "effects": {"approval": 4, "relations:USA": -10, "relations:DEU": -6}, "tensionDelta": 6, "actions": [{"type": "INTEL_SABOTAGE", "targetCountryId": "UKR"}], "backedBy": ["INTELLIGENCE_CHIEF"]}
+            {
+              "id": "accept",
+              "label": "Accept as 'a basis'",
+              "description": "Pocket the gain and let the Americans pressure Kyiv. The war bloggers will howl.",
+              "effects": {
+                "relations:USA": 12,
+                "approval": -6,
+                "legitimacy": -3
+              },
+              "tensionDelta": -6,
+              "backedBy": [
+                "FOREIGN_MINISTER"
+              ]
+            },
+            {
+              "id": "maximal",
+              "label": "All of Donetsk or nothing",
+              "description": "Peskov's line: Russia needs peace, not a ceasefire. Talks continue, so does the war.",
+              "effects": {
+                "approval": 3,
+                "relations:USA": -6
+              },
+              "tensionDelta": 2,
+              "backedBy": [
+                "CHIEF_OF_STAFF",
+                "DEFENSE_MINISTER"
+              ]
+            },
+            {
+              "id": "grid",
+              "label": "Talk, and hit the grid",
+              "description": "Smile in Abu Dhabi, launch the winter strike campaign at home. Leverage, or evidence of bad faith.",
+              "effects": {
+                "approval": 4,
+                "relations:USA": -10,
+                "relations:DEU": -6
+              },
+              "tensionDelta": 6,
+              "actions": [
+                {
+                  "type": "INTEL_SABOTAGE",
+                  "targetCountryId": "UKR"
+                }
+              ],
+              "backedBy": [
+                "INTELLIGENCE_CHIEF"
+              ]
+            }
           ]
         }
       },
@@ -203,13 +639,59 @@
         "decision": {
           "title": "Guns or butter",
           "situation": "Raising taxes keeps the war funded and the regions grumbling. Cutting the signing bonuses saves money and slows recruitment just as the front needs it. Or print the money and let inflation do the taxing, quietly, for now.",
-          "affectedCountries": ["RUS"],
+          "affectedCountries": [
+            "RUS"
+          ],
           "urgency": "URGENT",
           "defaultOptionId": "print",
           "options": [
-            {"id": "tax", "label": "Raise VAT and corporate tax", "description": "Responsible and unpopular. The budget balances on paper; the provinces notice.", "effects": {"approval": -7, "gdp": -0.6, "stability": 2}, "tensionDelta": 0, "backedBy": ["FINANCE_MINISTER"]},
-            {"id": "cut", "label": "Cut the recruitment bonuses", "description": "Fewer volunteers, fewer funerals in Buryatia. The general staff will be on the phone tonight, and not only to complain.", "effects": {"mobilization": -10, "growth": 0.4, "approval": 2, "coupShield": -2}, "tensionDelta": -2, "backedBy": ["DOMESTIC_ADVISOR"], "followUp": {"templateId": "coup_plot", "delay": 2}},
-            {"id": "print", "label": "Print and pretend", "description": "Monetise the deficit. Inflation will tax the pensioners for you, until it doesn't.", "effects": {"growth": -0.8, "stability": -4, "approval": 1}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]}
+            {
+              "id": "tax",
+              "label": "Raise VAT and corporate tax",
+              "description": "Responsible and unpopular. The budget balances on paper; the provinces notice.",
+              "effects": {
+                "approval": -7,
+                "gdp": -0.6,
+                "stability": 2
+              },
+              "tensionDelta": 0,
+              "backedBy": [
+                "FINANCE_MINISTER"
+              ]
+            },
+            {
+              "id": "cut",
+              "label": "Cut the recruitment bonuses",
+              "description": "Fewer volunteers, fewer funerals in Buryatia. The general staff will be on the phone tonight, and not only to complain.",
+              "effects": {
+                "mobilization": -10,
+                "growth": 0.4,
+                "approval": 2,
+                "coupShield": -2
+              },
+              "tensionDelta": -2,
+              "backedBy": [
+                "DOMESTIC_ADVISOR"
+              ],
+              "followUp": {
+                "templateId": "coup_plot",
+                "delay": 2
+              }
+            },
+            {
+              "id": "print",
+              "label": "Print and pretend",
+              "description": "Monetise the deficit. Inflation will tax the pensioners for you, until it doesn't.",
+              "effects": {
+                "growth": -0.8,
+                "stability": -4,
+                "approval": 1
+              },
+              "tensionDelta": 0,
+              "backedBy": [
+                "CHIEF_OF_STAFF"
+              ]
+            }
           ]
         }
       },
@@ -221,13 +703,65 @@
         "decision": {
           "title": "The Suwałki question",
           "situation": "You can apologise through back channels and lose face with the hawks. You can deny everything and move Iskanders closer to the gap, which will play well at home and terribly in Brussels. Or you can test NATO's nerve with a 'snap exercise' in Belarus, the kind of move that ends careers on one side or the other.",
-          "affectedCountries": ["RUS", "POL", "BLR", "USA"],
+          "affectedCountries": [
+            "RUS",
+            "POL",
+            "BLR",
+            "USA"
+          ],
           "urgency": "EXISTENTIAL",
           "defaultOptionId": "deny",
           "options": [
-            {"id": "quiet", "label": "Quiet apology via Ankara", "description": "Calm Warsaw through the Turks. Hawks will call it weakness; NATO will call it a start.", "effects": {"approval": -5, "relations:POL": 10, "relations:USA": 5}, "tensionDelta": -6, "backedBy": ["FOREIGN_MINISTER"]},
-            {"id": "deny", "label": "Deny and deploy Iskanders", "description": "Blame Ukrainian spoofing, move missiles to Kaliningrad. Good television, bad sleep in Warsaw.", "effects": {"approval": 5, "relations:POL": -10, "relations:DEU": -6}, "tensionDelta": 6, "actions": [{"type": "MILITARY_DEPLOY_BORDER", "targetCountryId": "POL"}], "backedBy": ["DEFENSE_MINISTER"]},
-            {"id": "exercise", "label": "Snap exercise in Belarus", "description": "Oreshnik launchers on parade near the gap. Maximum pressure, minimum margin for error.", "effects": {"approval": 7, "stability": -3, "relations:POL": -14, "relations:USA": -8, "mobilization": 6}, "tensionDelta": 10, "backedBy": ["CHIEF_OF_STAFF"]}
+            {
+              "id": "quiet",
+              "label": "Quiet apology via Ankara",
+              "description": "Calm Warsaw through the Turks. Hawks will call it weakness; NATO will call it a start.",
+              "effects": {
+                "approval": -5,
+                "relations:POL": 10,
+                "relations:USA": 5
+              },
+              "tensionDelta": -6,
+              "backedBy": [
+                "FOREIGN_MINISTER"
+              ]
+            },
+            {
+              "id": "deny",
+              "label": "Deny and deploy Iskanders",
+              "description": "Blame Ukrainian spoofing, move missiles to Kaliningrad. Good television, bad sleep in Warsaw.",
+              "effects": {
+                "approval": 5,
+                "relations:POL": -10,
+                "relations:DEU": -6
+              },
+              "tensionDelta": 6,
+              "actions": [
+                {
+                  "type": "MILITARY_DEPLOY_BORDER",
+                  "targetCountryId": "POL"
+                }
+              ],
+              "backedBy": [
+                "DEFENSE_MINISTER"
+              ]
+            },
+            {
+              "id": "exercise",
+              "label": "Snap exercise in Belarus",
+              "description": "Oreshnik launchers on parade near the gap. Maximum pressure, minimum margin for error.",
+              "effects": {
+                "approval": 7,
+                "stability": -3,
+                "relations:POL": -14,
+                "relations:USA": -8,
+                "mobilization": 6
+              },
+              "tensionDelta": 10,
+              "backedBy": [
+                "CHIEF_OF_STAFF"
+              ]
+            }
           ]
         }
       },
@@ -239,13 +773,63 @@
         "decision": {
           "title": "Minsk ghosts",
           "situation": "Proposing a freeze now trades prestige for time. Pressing on keeps the narrative of inevitable victory alive, and the casualty lists growing. A third path is to offer the freeze through Washington only, so the Americans have to sell it to Kyiv for you.",
-          "affectedCountries": ["RUS", "UKR", "USA"],
+          "affectedCountries": [
+            "RUS",
+            "UKR",
+            "USA"
+          ],
           "urgency": "URGENT",
           "defaultOptionId": "press",
           "options": [
-            {"id": "freeze", "label": "Propose a freeze", "description": "Stop on the current line. The army breathes; the prestige meter does not.", "effects": {"approval": -6, "stability": 5, "relations:USA": 8}, "tensionDelta": -8, "actions": [{"type": "DIPLOMACY_PROPOSE_CEASEFIRE", "targetCountryId": "UKR"}], "backedBy": ["DEFENSE_MINISTER"]},
-            {"id": "press", "label": "Press the offensive", "description": "Another summer of assaults. Victory is always one more oblast away.", "effects": {"approval": 3, "stability": -5, "mobilization": 6}, "tensionDelta": 4, "backedBy": ["CHIEF_OF_STAFF"]},
-            {"id": "via_usa", "label": "Sell it through Washington", "description": "Let the White House pitch your freeze as its own peace plan. Elegant, if they bite.", "effects": {"relations:USA": 12, "relations:UKR": 4, "approval": -3}, "tensionDelta": -4, "backedBy": ["FOREIGN_MINISTER", "INTELLIGENCE_CHIEF"]}
+            {
+              "id": "freeze",
+              "label": "Propose a freeze",
+              "description": "Stop on the current line. The army breathes; the prestige meter does not.",
+              "effects": {
+                "approval": -6,
+                "stability": 5,
+                "relations:USA": 8
+              },
+              "tensionDelta": -8,
+              "actions": [
+                {
+                  "type": "DIPLOMACY_PROPOSE_CEASEFIRE",
+                  "targetCountryId": "UKR"
+                }
+              ],
+              "backedBy": [
+                "DEFENSE_MINISTER"
+              ]
+            },
+            {
+              "id": "press",
+              "label": "Press the offensive",
+              "description": "Another summer of assaults. Victory is always one more oblast away.",
+              "effects": {
+                "approval": 3,
+                "stability": -5,
+                "mobilization": 6
+              },
+              "tensionDelta": 4,
+              "backedBy": [
+                "CHIEF_OF_STAFF"
+              ]
+            },
+            {
+              "id": "via_usa",
+              "label": "Sell it through Washington",
+              "description": "Let the White House pitch your freeze as its own peace plan. Elegant, if they bite.",
+              "effects": {
+                "relations:USA": 12,
+                "relations:UKR": 4,
+                "approval": -3
+              },
+              "tensionDelta": -4,
+              "backedBy": [
+                "FOREIGN_MINISTER",
+                "INTELLIGENCE_CHIEF"
+              ]
+            }
           ]
         }
       },
@@ -257,13 +841,59 @@
         "decision": {
           "title": "Echoes of Prigozhin",
           "situation": "Paying them sets a price every unit in the army will notice. Crushing them sends a message and creates martyrs. Giving the cameras to a loyal general and promising a 'commission' buys time and costs nothing, if it works.",
-          "affectedCountries": ["RUS"],
+          "affectedCountries": [
+            "RUS"
+          ],
           "urgency": "EXISTENTIAL",
           "defaultOptionId": "crush",
           "options": [
-            {"id": "pay", "label": "Pay them in full", "description": "Cash on the highway. Every other unit learns the lesson.", "effects": {"gdp": -0.5, "stability": 4, "approval": 3, "coupShield": 3}, "tensionDelta": 0, "backedBy": ["FINANCE_MINISTER"]},
-            {"id": "crush", "label": "Send in the Rosgvardia", "description": "Clear the road, arrest the organisers. Order restored; resentment banked.", "effects": {"stability": -6, "approval": -5, "legitimacy": -4}, "tensionDelta": 0, "backedBy": ["INTELLIGENCE_CHIEF"]},
-            {"id": "commission", "label": "A general, a camera, a commission", "description": "Theatre of concern. Works beautifully until someone checks.", "effects": {"approval": 2, "legitimacy": -2, "pc": -1}, "tensionDelta": 0, "followUp": {"templateId": "scandal_second_leak", "delay": 1}, "backedBy": ["CHIEF_OF_STAFF"]}
+            {
+              "id": "pay",
+              "label": "Pay them in full",
+              "description": "Cash on the highway. Every other unit learns the lesson.",
+              "effects": {
+                "gdp": -0.5,
+                "stability": 4,
+                "approval": 3,
+                "coupShield": 3
+              },
+              "tensionDelta": 0,
+              "backedBy": [
+                "FINANCE_MINISTER"
+              ]
+            },
+            {
+              "id": "crush",
+              "label": "Send in the Rosgvardia",
+              "description": "Clear the road, arrest the organisers. Order restored; resentment banked.",
+              "effects": {
+                "stability": -6,
+                "approval": -5,
+                "legitimacy": -4
+              },
+              "tensionDelta": 0,
+              "backedBy": [
+                "INTELLIGENCE_CHIEF"
+              ]
+            },
+            {
+              "id": "commission",
+              "label": "A general, a camera, a commission",
+              "description": "Theatre of concern. Works beautifully until someone checks.",
+              "effects": {
+                "approval": 2,
+                "legitimacy": -2,
+                "pc": -1
+              },
+              "tensionDelta": 0,
+              "followUp": {
+                "templateId": "scandal_second_leak",
+                "delay": 1
+              },
+              "backedBy": [
+                "CHIEF_OF_STAFF"
+              ]
+            }
           ]
         }
       }
@@ -277,13 +907,58 @@
         "decision": {
           "title": "Peace by Tuesday",
           "situation": "Announcing the 'free economic zone' as an agreed framework would make headlines and might bounce Kyiv into it. Leaning on Moscow with new sanctions on its oil buyers shows strength, and annoys China, India and the oil price. Or wait until after the vote and let the diplomats do it properly.",
-          "affectedCountries": ["USA", "UKR", "RUS"],
+          "affectedCountries": [
+            "USA",
+            "UKR",
+            "RUS"
+          ],
           "urgency": "URGENT",
           "defaultOptionId": "wait",
           "options": [
-            {"id": "announce", "label": "Announce a framework", "description": "Declare a deal before it exists. Voters like it; Kyiv feels ambushed.", "effects": {"approval": 6, "relations:UKR": -10, "relations:RUS": 6, "relations:DEU": -4}, "tensionDelta": -4, "backedBy": ["CHIEF_OF_STAFF"]},
-            {"id": "sanction", "label": "Squeeze Moscow's oil buyers", "description": "Secondary tariffs on Russian crude. Leverage, and higher prices at the pump in an election week.", "effects": {"relations:RUS": -8, "relations:UKR": 6, "relations:IND": -6, "growth": -0.2, "approval": -2}, "tensionDelta": 3, "backedBy": ["FINANCE_MINISTER", "FOREIGN_MINISTER"]},
-            {"id": "wait", "label": "Wait until after the vote", "description": "No stunts. Your opponents call it drift.", "effects": {"approval": -3}, "tensionDelta": 0, "backedBy": ["FOREIGN_MINISTER"]}
+            {
+              "id": "announce",
+              "label": "Announce a framework",
+              "description": "Declare a deal before it exists. Voters like it; Kyiv feels ambushed.",
+              "effects": {
+                "approval": 6,
+                "relations:UKR": -10,
+                "relations:RUS": 6,
+                "relations:DEU": -4
+              },
+              "tensionDelta": -4,
+              "backedBy": [
+                "CHIEF_OF_STAFF"
+              ]
+            },
+            {
+              "id": "sanction",
+              "label": "Squeeze Moscow's oil buyers",
+              "description": "Secondary tariffs on Russian crude. Leverage, and higher prices at the pump in an election week.",
+              "effects": {
+                "relations:RUS": -8,
+                "relations:UKR": 6,
+                "relations:IND": -6,
+                "growth": -0.2,
+                "approval": -2
+              },
+              "tensionDelta": 3,
+              "backedBy": [
+                "FINANCE_MINISTER",
+                "FOREIGN_MINISTER"
+              ]
+            },
+            {
+              "id": "wait",
+              "label": "Wait until after the vote",
+              "description": "No stunts. Your opponents call it drift.",
+              "effects": {
+                "approval": -3
+              },
+              "tensionDelta": 0,
+              "backedBy": [
+                "FOREIGN_MINISTER"
+              ]
+            }
           ]
         }
       },
@@ -295,13 +970,59 @@
         "decision": {
           "title": "Patriots for Kyiv",
           "situation": "Sending them saves Ukrainian cities and strips air defence from troops facing Iran. Selling them through Europe, Germany pays and you deliver, keeps the books clean and takes months. Refusing keeps your options open with Moscow and makes you the man who let Kyiv freeze.",
-          "affectedCountries": ["USA", "UKR", "RUS", "DEU"],
+          "affectedCountries": [
+            "USA",
+            "UKR",
+            "RUS",
+            "DEU"
+          ],
           "urgency": "URGENT",
           "defaultOptionId": "europe",
           "options": [
-            {"id": "send", "label": "Send them now", "description": "Fly the batteries in. Kyiv is grateful; CENTCOM is not; Moscow takes note.", "effects": {"relations:UKR": 10, "relations:RUS": -8, "mobilization": -4, "approval": 2}, "tensionDelta": 3, "backedBy": ["DEFENSE_MINISTER"]},
-            {"id": "europe", "label": "Sell them via Germany", "description": "Europe pays, America delivers, eventually. Good business, slow comfort.", "effects": {"relations:DEU": 6, "relations:UKR": -4, "gdp": 0.1}, "tensionDelta": 0, "backedBy": ["FINANCE_MINISTER"]},
-            {"id": "leverage", "label": "Hold them as leverage", "description": "Interceptors after Kyiv shows 'flexibility' on Donetsk. Effective, and widely reported.", "effects": {"relations:UKR": -12, "relations:RUS": 6, "approval": -4, "relationsAllies": -3}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]}
+            {
+              "id": "send",
+              "label": "Send them now",
+              "description": "Fly the batteries in. Kyiv is grateful; CENTCOM is not; Moscow takes note.",
+              "effects": {
+                "relations:UKR": 10,
+                "relations:RUS": -8,
+                "mobilization": -4,
+                "approval": 2
+              },
+              "tensionDelta": 3,
+              "backedBy": [
+                "DEFENSE_MINISTER"
+              ]
+            },
+            {
+              "id": "europe",
+              "label": "Sell them via Germany",
+              "description": "Europe pays, America delivers, eventually. Good business, slow comfort.",
+              "effects": {
+                "relations:DEU": 6,
+                "relations:UKR": -4,
+                "gdp": 0.1
+              },
+              "tensionDelta": 0,
+              "backedBy": [
+                "FINANCE_MINISTER"
+              ]
+            },
+            {
+              "id": "leverage",
+              "label": "Hold them as leverage",
+              "description": "Interceptors after Kyiv shows 'flexibility' on Donetsk. Effective, and widely reported.",
+              "effects": {
+                "relations:UKR": -12,
+                "relations:RUS": 6,
+                "approval": -4,
+                "relationsAllies": -3
+              },
+              "tensionDelta": 0,
+              "backedBy": [
+                "CHIEF_OF_STAFF"
+              ]
+            }
           ]
         }
       },
@@ -313,13 +1034,57 @@
         "decision": {
           "title": "Article 4",
           "situation": "Surging troops to Poland reassures the alliance and puts American soldiers closer to a war you promised to end. A firm statement without troops costs nothing and convinces no one in Warsaw. Treating it as an accident and calling Moscow keeps the peace talks alive, and makes allies wonder what Article 5 is worth.",
-          "affectedCountries": ["USA", "POL", "RUS"],
+          "affectedCountries": [
+            "USA",
+            "POL",
+            "RUS"
+          ],
           "urgency": "EXISTENTIAL",
           "defaultOptionId": "statement",
           "options": [
-            {"id": "brigade", "label": "Move a brigade to Poland", "description": "Boots on the eastern flank. Allies cheer; the Kremlin calls it escalation.", "effects": {"relations:POL": 10, "relations:RUS": -10, "relationsAllies": 3, "mobilization": 5}, "tensionDelta": 6, "backedBy": ["DEFENSE_MINISTER"]},
-            {"id": "statement", "label": "A strong statement", "description": "Words, firmly worded. Warsaw is unimpressed.", "effects": {"relations:POL": -4, "approval": -2}, "tensionDelta": 0, "backedBy": ["FOREIGN_MINISTER"]},
-            {"id": "call", "label": "Call it an accident, call Putin", "description": "De-escalate personally. The talks survive; the alliance's nerves do not.", "effects": {"relations:RUS": 8, "relations:POL": -10, "relationsAllies": -4, "approval": -3}, "tensionDelta": -5, "backedBy": ["CHIEF_OF_STAFF"]}
+            {
+              "id": "brigade",
+              "label": "Move a brigade to Poland",
+              "description": "Boots on the eastern flank. Allies cheer; the Kremlin calls it escalation.",
+              "effects": {
+                "relations:POL": 10,
+                "relations:RUS": -10,
+                "relationsAllies": 3,
+                "mobilization": 5
+              },
+              "tensionDelta": 6,
+              "backedBy": [
+                "DEFENSE_MINISTER"
+              ]
+            },
+            {
+              "id": "statement",
+              "label": "A strong statement",
+              "description": "Words, firmly worded. Warsaw is unimpressed.",
+              "effects": {
+                "relations:POL": -4,
+                "approval": -2
+              },
+              "tensionDelta": 0,
+              "backedBy": [
+                "FOREIGN_MINISTER"
+              ]
+            },
+            {
+              "id": "call",
+              "label": "Call it an accident, call Putin",
+              "description": "De-escalate personally. The talks survive; the alliance's nerves do not.",
+              "effects": {
+                "relations:RUS": 8,
+                "relations:POL": -10,
+                "relationsAllies": -4,
+                "approval": -3
+              },
+              "tensionDelta": -5,
+              "backedBy": [
+                "CHIEF_OF_STAFF"
+              ]
+            }
           ]
         }
       },
@@ -331,13 +1096,62 @@
         "decision": {
           "title": "The backstop",
           "situation": "Giving the backstop probably closes the deal and makes American credibility the guarantee. Refusing it keeps the US out and probably kills the ceasefire. Offering a cheaper substitute, a minerals partnership with American contractors on the ground, is a guarantee by other means and Moscow may not notice.",
-          "affectedCountries": ["USA", "UKR", "RUS", "GBR", "FRA"],
+          "affectedCountries": [
+            "USA",
+            "UKR",
+            "RUS",
+            "GBR",
+            "FRA"
+          ],
           "urgency": "URGENT",
           "defaultOptionId": "refuse",
           "options": [
-            {"id": "backstop", "label": "Give the backstop", "description": "Air cover and intelligence if Russia breaks the ceasefire. The deal lives; so does a new commitment.", "effects": {"relations:UKR": 10, "relations:RUS": -10, "relationsAllies": 4, "approval": -3}, "tensionDelta": 4, "backedBy": ["FOREIGN_MINISTER", "DEFENSE_MINISTER"]},
-            {"id": "refuse", "label": "No American guarantee", "description": "Europe's war, Europe's guarantee. Kyiv balks and Europe fumes.", "effects": {"relations:UKR": -10, "relations:RUS": 6, "relationsAllies": -3, "approval": 2}, "tensionDelta": 2, "backedBy": ["CHIEF_OF_STAFF"]},
-            {"id": "minerals", "label": "Contractors, not troops", "description": "A minerals partnership with US firms in the east: a tripwire with a profit margin.", "effects": {"relations:UKR": 6, "relations:RUS": -3, "gdp": 0.2, "approval": 2}, "tensionDelta": 0, "backedBy": ["FINANCE_MINISTER"]}
+            {
+              "id": "backstop",
+              "label": "Give the backstop",
+              "description": "Air cover and intelligence if Russia breaks the ceasefire. The deal lives; so does a new commitment.",
+              "effects": {
+                "relations:UKR": 10,
+                "relations:RUS": -10,
+                "relationsAllies": 4,
+                "approval": -3
+              },
+              "tensionDelta": 4,
+              "backedBy": [
+                "FOREIGN_MINISTER",
+                "DEFENSE_MINISTER"
+              ]
+            },
+            {
+              "id": "refuse",
+              "label": "No American guarantee",
+              "description": "Europe's war, Europe's guarantee. Kyiv balks and Europe fumes.",
+              "effects": {
+                "relations:UKR": -10,
+                "relations:RUS": 6,
+                "relationsAllies": -3,
+                "approval": 2
+              },
+              "tensionDelta": 2,
+              "backedBy": [
+                "CHIEF_OF_STAFF"
+              ]
+            },
+            {
+              "id": "minerals",
+              "label": "Contractors, not troops",
+              "description": "A minerals partnership with US firms in the east: a tripwire with a profit margin.",
+              "effects": {
+                "relations:UKR": 6,
+                "relations:RUS": -3,
+                "gdp": 0.2,
+                "approval": 2
+              },
+              "tensionDelta": 0,
+              "backedBy": [
+                "FINANCE_MINISTER"
+              ]
+            }
           ]
         }
       },
@@ -349,13 +1163,59 @@
         "decision": {
           "title": "The ballroom is booked",
           "situation": "Lifting sanctions up front gets Putin to the table and outrages Europe and Kyiv. Forcing Kyiv to sign without the annex gets the photo and possibly breaks the coalition. Splitting the difference, phased relief and a signed annex, is sound and may mean no ceremony at all.",
-          "affectedCountries": ["USA", "UKR", "RUS"],
+          "affectedCountries": [
+            "USA",
+            "UKR",
+            "RUS"
+          ],
           "urgency": "EXISTENTIAL",
           "defaultOptionId": "split",
           "options": [
-            {"id": "relief", "label": "Sanctions relief up front", "description": "Give Moscow what it wants first. A ceremony, a photo, and furious allies.", "effects": {"relations:RUS": 12, "relations:UKR": -10, "relationsAllies": -4, "approval": 5}, "tensionDelta": -8, "backedBy": ["CHIEF_OF_STAFF"]},
-            {"id": "push_kyiv", "label": "Lean on Kyiv", "description": "No annex, no aid. It works, and every ally watches how you treat friends.", "effects": {"relations:UKR": -12, "relations:RUS": 8, "approval": 3, "relations:DEU": -6}, "tensionDelta": -6, "backedBy": ["CHIEF_OF_STAFF", "FINANCE_MINISTER"]},
-            {"id": "split", "label": "Phased relief, signed annex", "description": "The sensible version. Slower, sounder, and possibly no ceremony this year.", "effects": {"relations:UKR": 5, "relations:RUS": -2, "approval": -3}, "tensionDelta": -2, "backedBy": ["FOREIGN_MINISTER"]}
+            {
+              "id": "relief",
+              "label": "Sanctions relief up front",
+              "description": "Give Moscow what it wants first. A ceremony, a photo, and furious allies.",
+              "effects": {
+                "relations:RUS": 12,
+                "relations:UKR": -10,
+                "relationsAllies": -4,
+                "approval": 5
+              },
+              "tensionDelta": -8,
+              "backedBy": [
+                "CHIEF_OF_STAFF"
+              ]
+            },
+            {
+              "id": "push_kyiv",
+              "label": "Lean on Kyiv",
+              "description": "No annex, no aid. It works, and every ally watches how you treat friends.",
+              "effects": {
+                "relations:UKR": -12,
+                "relations:RUS": 8,
+                "approval": 3,
+                "relations:DEU": -6
+              },
+              "tensionDelta": -6,
+              "backedBy": [
+                "CHIEF_OF_STAFF",
+                "FINANCE_MINISTER"
+              ]
+            },
+            {
+              "id": "split",
+              "label": "Phased relief, signed annex",
+              "description": "The sensible version. Slower, sounder, and possibly no ceremony this year.",
+              "effects": {
+                "relations:UKR": 5,
+                "relations:RUS": -2,
+                "approval": -3
+              },
+              "tensionDelta": -2,
+              "backedBy": [
+                "FOREIGN_MINISTER"
+              ]
+            }
           ]
         }
       }
