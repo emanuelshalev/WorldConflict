@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { generateDeterministicIntents } from "../../src/agents/fallback.js";
+import { politicalCapitalIncome } from "../../src/core/costs.js";
 import { createDataLoader, monthsUntil } from "../../src/core/data-loader.js";
 import { previewAction } from "../../src/core/preview.js";
 import { classifyLeadership } from "../../src/core/scoring.js";
@@ -13,6 +14,7 @@ import {
   targetAdvantage,
 } from "../../src/core/systems/diplomacy.js";
 import { generateLeaderName, runGovernmentDynamics } from "../../src/core/systems/government.js";
+import { autoBudgetResponse, threatCeiling } from "../../src/core/systems/economy.js";
 import { applyBorderTensions } from "../../src/core/systems/military.js";
 import { possessive } from "../../src/core/text.js";
 import { TurnEngine } from "../../src/core/turn.js";
@@ -245,5 +247,56 @@ describe("Verdicts", () => {
     expect(classifyLeadership(w).classification).toBe("Loyal Ally");
     w.director.record.DIPLOMACY_DECLARE_WAR = 1;
     expect(classifyLeadership(w).classification).toBe("Warmonger");
+  });
+});
+
+describe("Release-candidate fixes", () => {
+  it("never reuses a multi-word surname", () => {
+    for (let seed = 1; seed < 200; seed++) {
+      expect(generateLeaderName("ZAF", new SeededRandom(seed), "Pieter van Wyk")).not.toMatch(/van Wyk/);
+    }
+  });
+
+  it("previews two denunciations in one month the way the engine applies them", () => {
+    const w = loader.newGame({ scenarioId: "2026", playerCountryId: "USA", seed: 1, mode: "TERM" });
+    const next = engine.executeTurn(
+      w,
+      [
+        { type: "DIPLOMACY_DENOUNCE", targetCountryId: "IRN" },
+        { type: "DIPLOMACY_DENOUNCE", targetCountryId: "PRK" },
+      ],
+      generateDeterministicIntents(w),
+    ).newState;
+    const details = (next.turnReport?.orders ?? []).filter((o) => o.label.startsWith("Denounce")).map((o) => o.detail);
+    expect(details).toEqual(["Approval +2: the public enjoys strength", "Approval +2: the public enjoys strength"]);
+    expect(next.director.denounceTurns).toEqual([w.turn]);
+  });
+
+  it("makes political capital scarce: a calm month brings 2", () => {
+    const w = loader.newGame({ scenarioId: "2026", playerCountryId: "DEU", seed: 1, mode: "TERM" });
+    const deu = get(w, "DEU");
+    deu.approval = 50;
+    deu.legitimacy = 60;
+    expect(politicalCapitalIncome(w, deu)).toBe(2);
+  });
+
+  it("caps threat-driven defence spending relative to the peacetime budget", () => {
+    const w = loader.newGame({ scenarioId: "2026", playerCountryId: "DEU", seed: 1, mode: "TERM" });
+    const deu = get(w, "DEU");
+    const base = deu.baseMilitaryBudget ?? 0;
+    expect(base).toBeGreaterThan(2);
+    for (let t = 0; t < 60; t++) autoBudgetResponse(w);
+    expect(deu.militaryBudgetPercent).toBeLessThanOrEqual(threatCeiling(deu) + 1e-9);
+    expect(threatCeiling(deu)).toBeLessThan(6);
+  });
+
+  it("does not fire oil shocks every few months for a war that started years ago", () => {
+    let s = loader.newGame({ scenarioId: "2026", playerCountryId: "DEU", seed: 3, mode: "TERM" });
+    let shocks = 0;
+    for (let t = 0; t < 36 && !s.gameOver; t++) {
+      s = engine.executeTurn(s, [], generateDeterministicIntents(s)).newState;
+      if (s.eventQueue.some((e) => e.title.startsWith("OIL SHOCK")) || s.newspaper.some((n) => n.headline.includes("OIL SHOCK"))) shocks++;
+    }
+    expect(shocks).toBeLessThanOrEqual(3); // the old rule fired 5 times on this seed
   });
 });

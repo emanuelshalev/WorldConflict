@@ -80,12 +80,14 @@ function drawCard(opts: {
     g.fillStyle = '#e8ecf2';
     g.fillText(fit(g, `“${opts.headline}”`, 840), 60, 340);
   }
-  g.font = '34px sans-serif';
-  const perLine = 24;
+  // Every month gets a cell: long games use smaller cells and more per row
   const cells = [...opts.grid];
+  const perLine = cells.length > 96 ? 30 : 24;
   const rows = Math.ceil(cells.length / perLine);
-  const rowH = rows > 3 ? 38 : 46;
-  for (let i = 0; i < cells.length && i / perLine < 4; i += perLine) {
+  const size = rows > 4 ? 26 : 34;
+  const rowH = rows > 4 ? 30 : rows > 3 ? 38 : 46;
+  g.font = `${size}px sans-serif`;
+  for (let i = 0; i < cells.length; i += perLine) {
     g.fillText(cells.slice(i, i + perLine).join(''), 60, 400 + (i / perLine) * rowH);
   }
   g.strokeStyle = '#f2a93b';

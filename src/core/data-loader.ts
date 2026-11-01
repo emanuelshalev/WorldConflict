@@ -506,6 +506,10 @@ export class DataLoader {
         40,
         (override.militaryBudgetPct ?? profile.militaryBudgetPct) * multipliers.militarySpending,
       ),
+      baseMilitaryBudget: Math.min(
+        40,
+        (override.militaryBudgetPct ?? profile.militaryBudgetPct) * multipliers.militarySpending,
+      ),
       economyProfile: profile.economy,
 
       manpower: override.manpower ?? profile.military.manpower,

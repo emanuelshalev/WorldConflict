@@ -87,7 +87,7 @@ function smartOrders(world: WorldState, me: CountryState): Action[] {
     orders.push({ type: "DOMESTIC_PROPAGANDA" });
   // Foreign services working on us: hunt them before they topple us
   const meddled = (world.turnReport?.causes ?? []).some((c) => c.startsWith("Foreign covert"));
-  if (meddled && world.turn >= world.director.counterIntelUntil)
+  if (meddled && world.turn > world.director.counterIntelUntil)
     orders.unshift({ type: "INTEL_COUNTER_INTEL" });
   if (me.insurgencyLevel === "REBELLION" || me.insurgencyLevel === "GUERILLA") {
     orders.push({ type: "DOMESTIC_POLICING", params: { tactic: "SOFT" } });
@@ -221,6 +221,8 @@ interface GameMetrics {
   firstDecisionTurn: number;
   tensionMonths: number[];
   warnedBeforeDeposed: boolean | null;
+  pcCappedMonths: number;
+  pcRefusals: number;
 }
 
 const loader = createDataLoader();
@@ -258,6 +260,8 @@ for (const policy of policies) {
         firstDecisionTurn: -1,
         tensionMonths: [],
         warnedBeforeDeposed: null,
+        pcCappedMonths: 0,
+        pcRefusals: 0,
       };
       let lastWarning = -99;
       for (let t = 0; t < 130 && !world.gameOver; t++) {
@@ -269,6 +273,10 @@ for (const policy of policies) {
           decisions,
         );
         world = result.newState;
+        if (world.politicalCapital >= 6) m.pcCappedMonths++;
+        m.pcRefusals += (world.turnReport?.orders ?? []).filter((o) =>
+          o.detail.startsWith("Not enough political capital"),
+        ).length;
         if (world.pendingDecisions.length > 0) {
           m.turnsWithDecision++;
           if (m.firstDecisionTurn < 0) m.firstDecisionTurn = world.turn;
@@ -330,6 +338,11 @@ for (const policy of policies) {
       firstDecision: median(results.map((r) => r.firstDecisionTurn)),
       tensionMedian: Math.round(median(allTension)),
       tension80: pct(allTension.filter((t) => t >= 80).length, allTension.length),
+      pcCapped: pct(
+        results.reduce((s, r) => s + r.pcCappedMonths, 0),
+        results.reduce((s, r) => s + r.turns, 0),
+      ),
+      pcRefusalsPerGame: (results.reduce((s, r) => s + r.pcRefusals, 0) / results.length).toFixed(1),
       telegraphed: deposed.length ? pct(deposed.filter((r) => r.warnedBeforeDeposed).length, deposed.length) : "-",
       endings,
       ...(why ? { failed: failedConditions } : {}),

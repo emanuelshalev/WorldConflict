@@ -7,6 +7,16 @@ State as of 2026-11-01: every round-2 P0, P1 and P2 handoff item is done.
 - **Where things are:** plan, tasks, blockers and decisions are in `dev_plan/project_status.html`. Reviews are in `dev_plan/reviews/`.
 - **Tests:** this round's tests are in `tests/core/round3.spec.ts`; round 2's are in `tests/core/handoff.spec.ts`.
 
+## Release-candidate criteria
+
+A build is a release candidate when all of these hold:
+
+1. **Checks:** `npm test`, both linters (no errors), `npm run build`, and the determinism spec all pass.
+2. **Balance:** Term (36 games per seat) and every flashpoint seat (12 games, 36 for any seat near a band edge) meet the targets: smart 70–95% pooled with no seat below 65%, none ≤20%, random 15–45% pooled, tension median 45–70 with ≤20% of months at 80+. Iran's Term is exempt as a deliberately brutal seat.
+3. **Playtest:** a four-persona UI playtest (Maya phone casual, Priya geopolitics expert, Dan long-game strategist, Leo chaos player) finds no P0 or P1 issue left unfixed, and no persona's "recommend" score is below 6.
+4. **Review:** an independent code review of the release diff finds no unfixed correctness bug.
+5. **Docs:** README, `docs/` and the status page describe the build, and a `CHANGELOG.md` entry exists.
+
 ## Done in round 3
 
 | # | Item | Where |

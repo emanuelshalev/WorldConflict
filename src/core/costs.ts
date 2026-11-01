@@ -60,7 +60,7 @@ export function actionCostM(action: Action, actor?: CountryState): number {
 
 /** Political Capital earned this month. */
 export function politicalCapitalIncome(world: WorldState, player: CountryState): number {
-  let pc = 3;
+  let pc = 2;
   if (world.difficulty === "ANALYST") pc += 1;
   if (player.approval > 70) pc += 1;
   if (player.approval < 35) pc -= 1;

@@ -85,10 +85,15 @@ const TEMPLATES: EventTemplate[] = [
     id: "oil_shock",
     baseChance: 0.15,
     trigger: (ctx) => {
+      // Markets price in a long war: shocks come from new wars and fresh collapses
+      const newWar = (id: string) =>
+        ctx.world.wars.some(
+          (w) => (w.attackerId === id || w.defenderId === id) && ctx.world.turn - w.startTurn <= 6,
+        );
       const exporterAtWar = ctx.world.countries.filter(
         (c) =>
           (c.economyProfile?.keyResources ?? []).includes("oil") &&
-          (c.atWarWith.length > 0 || c.stability < 30) &&
+          newWar(c.id) &&
           ["SAU", "IRN", "RUS", "NGA"].includes(c.id),
       );
       return exporterAtWar.length > 0 ? exporterAtWar.slice(0, 1) : null;

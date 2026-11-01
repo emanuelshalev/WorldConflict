@@ -74,6 +74,16 @@ export function adjustMilitaryBudget(country: CountryState, newPercent: number):
  * Hostility indicator from the original game: rising neighbor aggression
  * auto-triggers budget increases.
  */
+/**
+ * How far a threatened country raises defence spending without a war: half again
+ * its peacetime share plus a point (Germany ~2.9% -> ~5.3%), never above 8%.
+ * Actual war is handled by war-start budget bumps, not by this drift.
+ */
+export function threatCeiling(country: CountryState): number {
+  const base = country.baseMilitaryBudget ?? country.militaryBudgetPercent;
+  return Math.min(8, Math.max(base, base * 1.5 + 1));
+}
+
 export function autoBudgetResponse(world: WorldState): void {
   for (const country of world.countries) {
     const threatened =
@@ -87,8 +97,14 @@ export function autoBudgetResponse(world: WorldState): void {
       const rival = world.countries.find((c) => c.id === rid);
       return rival && rival.mobilizationLevel > 60;
     });
-    if ((threatened || rivalAtHighMobilization) && country.militaryBudgetPercent < 8) {
-      country.militaryBudgetPercent = Math.min(40, country.militaryBudgetPercent + 0.2);
+    if (
+      (threatened || rivalAtHighMobilization) &&
+      country.militaryBudgetPercent < threatCeiling(country)
+    ) {
+      country.militaryBudgetPercent = Math.min(
+        threatCeiling(country),
+        country.militaryBudgetPercent + 0.2,
+      );
     } else if (!threatened && !rivalAtHighMobilization && country.atWarWith.length === 0) {
       // Peace dividend drift back down
       if (country.militaryBudgetPercent > 2.5) {

@@ -437,12 +437,13 @@ export class TurnEngine {
         if (!target) return { ok: false, reason: "No target" };
         const isPlayer = actor.id === world.playerCountryId;
         const recent = isPlayer
-          ? world.director.denounceTurns.filter((t) => world.turn - t < 6).length
+          ? world.director.denounceTurns.filter((t) => t < world.turn && world.turn - t < 6).length
           : 0;
         const delta = denounce(world, actor, target, recent);
         if (isPlayer) {
+          // One entry per month: two denunciations this month count as one repeat next month
           world.director.denounceTurns = [
-            ...world.director.denounceTurns.filter((t) => world.turn - t < 6),
+            ...world.director.denounceTurns.filter((t) => world.turn - t < 6 && t !== world.turn),
             world.turn,
           ];
         }

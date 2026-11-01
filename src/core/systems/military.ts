@@ -1,6 +1,7 @@
 import type { SeededRandom } from "../seed.js";
 import { possessive } from "../text.js";
 import type { ActiveWar, CountryState, WorldState } from "../types.js";
+import { threatCeiling } from "./economy.js";
 
 export type AirstrikeTarget = "MILITARY" | "INDUSTRIAL" | "NUCLEAR";
 
@@ -329,10 +330,11 @@ export function applyBorderTensions(world: WorldState): void {
       target.relations[country.id] = Math.max(-100, (target.relations[country.id] ?? 0) - 3);
       standing++;
       // Threatened countries arm in response (budget as hostility indicator)
-      target.militaryBudgetPercent = Math.min(
-        Math.max(20, target.militaryBudgetPercent),
-        target.militaryBudgetPercent + 0.1,
-      );
+      if (target.atWarWith.length === 0)
+        target.militaryBudgetPercent = Math.min(
+          Math.max(threatCeiling(target), target.militaryBudgetPercent),
+          target.militaryBudgetPercent + 0.1,
+        );
     }
   }
   world.globalTension = clamp(world.globalTension + Math.min(1.5, standing * 0.15), 0, 100);

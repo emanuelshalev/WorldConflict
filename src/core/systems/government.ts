@@ -195,7 +195,13 @@ export function generateLeaderName(countryId: string, rng: SeededRandom, avoid =
   const pool = NAME_POOLS[countryId] ?? { first: ["Alex"], last: ["Novak"] };
   const taken = new Set(avoid.toLowerCase().split(/\s+/));
   const free = (names: string[]) => {
-    const ok = names.filter((n) => !taken.has(n.toLowerCase()));
+    const ok = names.filter(
+      (n) =>
+        !n
+          .toLowerCase()
+          .split(/\s+/)
+          .some((w) => taken.has(w)),
+    );
     return ok.length ? ok : names;
   };
   return `${rng.pick(free(pool.first))} ${rng.pick(free(pool.last))}`;

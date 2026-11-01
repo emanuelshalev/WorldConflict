@@ -108,7 +108,10 @@ function playerRecord(world: WorldState, player: CountryState) {
   // The record is authoritative; the timeline is only a fallback for saves made before it existed
   const recorded = Object.keys(rec).length > 0;
   return {
-    wars: recorded ? n("DIPLOMACY_DECLARE_WAR") : timelineWars,
+    // Timeline "attacks" include pact wars entered through crises; subtract those
+    wars: recorded
+      ? Math.max(n("DIPLOMACY_DECLARE_WAR"), timelineWars - n("DIPLOMACY_DECLARE_WAR:ally"))
+      : timelineWars,
     allyWars: n("DIPLOMACY_DECLARE_WAR:ally"),
     nukes: n("NUCLEAR_STRIKE"),
     strikes: n("MILITARY_AIRSTRIKE"),

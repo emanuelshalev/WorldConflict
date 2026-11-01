@@ -488,6 +488,7 @@ export const CountryStateSchema = z.object({
   trendGrowth: z.number().optional(), // structural growth that shocks decay back toward
   debtGdpRatio: z.number().min(0),
   militaryBudgetPercent: z.number().min(0).max(40), // wartime states exceed 20% (Ukraine ~26–30%)
+  baseMilitaryBudget: z.number().optional(), // peacetime share at the start: threats raise spending relative to it
   economyProfile: EconomyProfileSchema.optional(),
   embargoedBy: z.array(z.string()).default([]), // supplier/country ids enforcing embargo
   underGlobalEmbargo: z.boolean().default(false),

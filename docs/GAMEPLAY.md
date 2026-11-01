@@ -38,7 +38,7 @@ The **Daily Flashpoint** is the same crisis, nation and world for everyone that 
 
 ### Political capital ◆
 
-Diplomatic, domestic and covert orders cost **political capital**. You get about 3 ◆ a month (more when popular, less when not) and can bank up to 6. Military hardware and nuclear work cost money as a share of your defense budget instead.
+Diplomatic, domestic and covert orders cost **political capital**. You get 2 ◆ a month (+1 above 70% approval or on Story difficulty, −1 below 35% approval or 30% legitimacy, never less than 1) and can bank up to 6. It's meant to be scarce: a reform (2 ◆) is most of a month's budget. Military hardware and nuclear work cost money as a share of your defense budget instead.
 
 | Order | ◆ | Order | ◆ |
 |---|---|---|---|

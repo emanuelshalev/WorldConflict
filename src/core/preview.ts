@@ -85,7 +85,9 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
       if (!target) return blocked(base, "Select a target country");
       base.summary = `Publicly condemn ${tname} before the world.`;
       effects.push(eff(tname, "Relations", "-12 to -15", "They will not forget this"));
-      const recent = (world.director.denounceTurns ?? []).filter((t) => world.turn - t < 6).length;
+      const recent = (world.director.denounceTurns ?? []).filter(
+        (t) => t < world.turn && world.turn - t < 6,
+      ).length;
       const mood = denounceApprovalDelta(actor, target, recent);
       effects.push(
         eff(
