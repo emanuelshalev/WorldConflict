@@ -7,7 +7,7 @@ import { CountryDetailPanel } from './CountryDetailPanel';
 import { MapGuide } from './MapGuide';
 
 // Capital/centroid anchors for labels, icons and relationship lines
-export const COUNTRY_CENTERS: Record<string, [number, number]> = {
+const COUNTRY_CENTERS: Record<string, [number, number]> = {
   USA: [-98.5, 39.8], CHN: [104.1, 35.8], RUS: [60.0, 58.0], DEU: [10.4, 51.1],
   IND: [78.9, 22.0], BRA: [-51.9, -10.0], CAN: [-106.3, 56.1], MEX: [-102.5, 23.6],
   FRA: [2.2, 46.2], GBR: [-1.5, 52.3], POL: [19.1, 51.9], TUR: [35.2, 38.9],

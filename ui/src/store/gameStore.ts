@@ -459,7 +459,8 @@ function loadLLMSettings(): LLMSettings {
 }
 
 export function llmRequestBody(settings: LLMSettings) {
-  if (settings.provider === 'builtin') return undefined;
+  // The free tier never calls an LLM — advisors use the built-in brain
+  if (settings.provider === 'builtin' || settings.tier === 'ALGORITHMIC') return undefined;
   return {
     provider: settings.provider,
     apiKey: settings.apiKey || undefined,

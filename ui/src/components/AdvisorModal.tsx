@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { llmRequestBody, useGameStore } from '../store/gameStore';
+import { llmRequestBody, useGameStore } from '../store/gameStore'
+import type { CountryFull, War, WorldState } from '../store/gameStore';
 import { answerQuestion } from '../utils/advisorBrain';
 
 const ADVISOR_API_URL = `${(import.meta.env.VITE_API_BASE ?? '/api').replace(/\/$/, '')}/chat/advisor`;
@@ -27,8 +28,8 @@ interface AdvisorResponse {
 }
 
 // Generate detailed local briefings based on game state
-function generateLocalBriefing(advisorId: string, worldState: any): AdvisorResponse {
-  const playerCountry = worldState?.countries?.find((c: any) => c.id === worldState?.playerCountryId);
+function generateLocalBriefing(advisorId: string, worldState: WorldState | null): AdvisorResponse {
+  const playerCountry = worldState?.countries?.find((c: CountryFull) => c.id === worldState?.playerCountryId);
   if (!playerCountry || !worldState) {
     return {
       role: advisorId,
@@ -43,15 +44,15 @@ function generateLocalBriefing(advisorId: string, worldState: any): AdvisorRespo
     case 'FOREIGN_MINISTER': {
       const allies = playerCountry.alliances || [];
       const hostileCountryObjs = Object.entries(playerCountry.relations || {})
-        .filter(([_, rel]) => (rel as number) < -50)
-        .map(([id]) => countries.find((c: any) => c.id === id))
-        .filter(Boolean);
-      const hostileCountries = hostileCountryObjs.map((c: any) =>
+        .filter(([, rel]) => (rel as number) < -50)
+        .map(([id]) => countries.find((c: CountryFull) => c.id === id))
+        .filter((c): c is CountryFull => !!c);
+      const hostileCountries = hostileCountryObjs.map((c: CountryFull) =>
         c.leader?.name ? `${c.name} (under ${c.leader.title} ${c.leader.name})` : c.name,
       );
       const friendlyCountries = Object.entries(playerCountry.relations || {})
         .filter(([id, rel]) => (rel as number) >= 40 && (rel as number) < 60 && !allies.includes(id))
-        .map(([id]) => ({ id, name: countries.find((c: any) => c.id === id)?.name || id, rel: playerCountry.relations[id] }));
+        .map(([id]) => ({ id, name: countries.find((c: CountryFull) => c.id === id)?.name || id, rel: playerCountry.relations[id] }));
       
       const recommendations: AdvisorResponse['recommendations'] = [];
       const warnings: string[] = [];
@@ -76,7 +77,7 @@ function generateLocalBriefing(advisorId: string, worldState: any): AdvisorRespo
         .slice(0, 1);
       
       for (const [allyId] of potentialAllies) {
-        const allyName = countries.find((c: any) => c.id === allyId)?.name || allyId;
+        const allyName = countries.find((c: CountryFull) => c.id === allyId)?.name || allyId;
         recommendations.push({
           action: { type: 'DIPLOMACY_PROPOSE_ALLIANCE', targetCountryId: allyId },
           rationale: `${allyName} has excellent relations with us. They are likely to accept an alliance proposal.`,
@@ -102,7 +103,7 @@ function generateLocalBriefing(advisorId: string, worldState: any): AdvisorRespo
       const warnings: string[] = [];
 
       if (atWar.length > 0) {
-        const enemyNames = atWar.map((id: string) => countries.find((c: any) => c.id === id)?.name || id);
+        const enemyNames = atWar.map((id: string) => countries.find((c: CountryFull) => c.id === id)?.name || id);
         warnings.push(`We are currently at war with ${enemyNames.join(', ')}. This demands our full military attention.`);
         
         if (mobilization < 70) {
@@ -115,7 +116,7 @@ function generateLocalBriefing(advisorId: string, worldState: any): AdvisorRespo
         }
 
         for (const enemyId of atWar) {
-          const war = worldState.wars?.find((w: any) => 
+          const war = worldState.wars?.find((w: War) => 
             (w.attackerId === playerCountry.id && w.defenderId === enemyId) ||
             (w.defenderId === playerCountry.id && w.attackerId === enemyId)
           );
@@ -126,7 +127,7 @@ function generateLocalBriefing(advisorId: string, worldState: any): AdvisorRespo
             if (progress < 40) {
               recommendations.push({
                 action: { type: 'DIPLOMACY_PROPOSE_CEASEFIRE', targetCountryId: enemyId },
-                rationale: `The war against ${countries.find((c: any) => c.id === enemyId)?.name || enemyId} is not going well (${progress}% progress). A ceasefire may be prudent.`,
+                rationale: `The war against ${countries.find((c: CountryFull) => c.id === enemyId)?.name || enemyId} is not going well (${progress}% progress). A ceasefire may be prudent.`,
                 riskLevel: 'MEDIUM',
                 expectedOutcome: 'War ends, relations reset to -20',
               });
@@ -144,15 +145,15 @@ function generateLocalBriefing(advisorId: string, worldState: any): AdvisorRespo
         }
       }
 
-      const threats = countries.filter((c: any) => 
+      const threats = countries.filter((c: CountryFull) => 
         c.id !== playerCountry.id && (playerCountry.relations?.[c.id] || 0) < -60
       );
       if (threats.length > 0) {
-        warnings.push(`Potential military threats identified: ${threats.map((t: any) => t.name).join(', ')}. These nations have very hostile relations with us.`);
+        warnings.push(`Potential military threats identified: ${threats.map((t: CountryFull) => t.name).join(', ')}. These nations have very hostile relations with us.`);
       }
 
       const nuclearHostiles = countries.filter(
-        (c: any) =>
+        (c: CountryFull) =>
           c.id !== playerCountry.id &&
           (playerCountry.relations?.[c.id] || 0) < -30 &&
           ['ARMED', 'TESTED', 'DEVELOPING'].includes(c.nuclear?.status),
@@ -160,7 +161,7 @@ function generateLocalBriefing(advisorId: string, worldState: any): AdvisorRespo
       if (nuclearHostiles.length > 0) {
         warnings.push(
           `Nuclear threat assessment: ${nuclearHostiles
-            .map((c: any) =>
+            .map((c: CountryFull) =>
               c.nuclear.status === 'ARMED'
                 ? `${c.name} is nuclear-armed (${c.nuclear.warheads} warheads)`
                 : c.nuclear.status === 'TESTED'
@@ -225,12 +226,12 @@ function generateLocalBriefing(advisorId: string, worldState: any): AdvisorRespo
         warnings.push(`Global tension is elevated at ${worldState.globalTension}%. Monitor the situation closely.`);
       }
 
-      const unstableCountries = countries.filter((c: any) => c.id !== playerCountry.id && c.stability < 30);
+      const unstableCountries = countries.filter((c: CountryFull) => c.id !== playerCountry.id && c.stability < 30);
       if (unstableCountries.length > 0) {
-        opportunities.push(`Intelligence indicates instability in ${unstableCountries.map((c: any) => c.name).join(', ')}. This may present opportunities.`);
+        opportunities.push(`Intelligence indicates instability in ${unstableCountries.map((c: CountryFull) => c.name).join(', ')}. This may present opportunities.`);
       }
 
-      const activeWars = worldState.wars?.filter((w: any) => 
+      const activeWars = worldState.wars?.filter((w: War) => 
         w.attackerId !== playerCountry.id && w.defenderId !== playerCountry.id
       ) || [];
       if (activeWars.length > 0) {
@@ -393,7 +394,7 @@ export function AdvisorModal() {
           setResponse(data.response);
         }
       }
-    } catch (err) {
+    } catch {
       // Silently fail - we already have local briefing
       console.log('Backend advisor fetch failed, using local briefing');
     } finally {
