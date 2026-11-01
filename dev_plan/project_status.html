@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>World Conflict — Project Status</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #ffffff;
+    --panel: #f7f8fb;
+    --ink: #1b2030;
+    --muted: #5b6478;
+    --line: #e3e6ee;
+    --brand: #b3261e;      /* situation-room red */
+    --brand-soft: #fdecea;
+    --navy: #1f3a5f;
+    --navy-soft: #e8eef7;
+    --done: #1e7d4f;   --done-soft: #e3f4ea;
+    --doing: #b06d00;  --doing-soft: #fff3dc;
+    --planned: #3c5a99; --planned-soft: #e7edf9;
+    --updated: #7a3fa0; --updated-soft: #f2e9f8;
+    --blocked: #b3261e; --blocked-soft: #fdecea;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.55 Inter, system-ui, sans-serif; }
+  header { background: linear-gradient(120deg, #13233b 0%, #1f3a5f 60%, #2b4d7a 100%); color: #fff; padding: 28px 32px 0; }
+  header h1 { margin: 0; font-size: 26px; letter-spacing: .5px; }
+  header h1 span { color: #ff8a80; }
+  header .sub { color: #c9d6ea; margin: 4px 0 18px; font-size: 14px; }
+  .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+  .chip { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); border-radius: 999px; padding: 4px 12px; font-size: 12.5px; }
+  nav { display: flex; gap: 4px; overflow-x: auto; }
+  nav button { background: transparent; color: #c9d6ea; border: 0; padding: 12px 18px; font: 600 14px Inter, sans-serif; border-radius: 10px 10px 0 0; cursor: pointer; white-space: nowrap; }
+  nav button.active { background: var(--bg); color: var(--navy); }
+  nav button:hover:not(.active) { color: #fff; background: rgba(255,255,255,.08); }
+  main { max-width: 1180px; margin: 0 auto; padding: 28px 24px 80px; }
+  section.tab { display: none; }
+  section.tab.active { display: block; }
+  h2 { font-size: 21px; margin: 28px 0 10px; color: var(--navy); }
+  h2:first-child { margin-top: 0; }
+  h3 { font-size: 16px; margin: 22px 0 8px; }
+  p { margin: 8px 0; }
+  .muted { color: var(--muted); }
+  .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
+  .card h4 { margin: 0 0 6px; font-size: 15px; }
+  .kpi { font-size: 28px; font-weight: 700; color: var(--navy); }
+  .kpi small { font-size: 13px; color: var(--muted); font-weight: 500; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 18px; font-size: 14px; }
+  th { text-align: left; background: var(--navy-soft); color: var(--navy); font-weight: 600; padding: 9px 12px; border-bottom: 2px solid #cdd8ea; }
+  td { padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:hover td { background: #fafbfd; }
+  code, .mono { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; background: #f1f3f8; padding: 1px 5px; border-radius: 4px; }
+  td.mono { background: none; color: var(--muted); font-weight: 600; }
+  .badge { display: inline-block; font-size: 11.5px; font-weight: 700; letter-spacing: .3px; padding: 2px 9px; border-radius: 999px; text-transform: uppercase; white-space: nowrap; }
+  .b-done { background: var(--done-soft); color: var(--done); }
+  .b-doing { background: var(--doing-soft); color: var(--doing); }
+  .b-planned { background: var(--planned-soft); color: var(--planned); }
+  .b-updated { background: var(--updated-soft); color: var(--updated); }
+  .b-blocked, .b-open { background: var(--blocked-soft); color: var(--blocked); }
+  .b-resolved { background: var(--done-soft); color: var(--done); }
+  .b-p0 { background: #fde2e1; color: #9b1c15; } .b-p1 { background: #fff0d6; color: #8a5300; } .b-p2 { background: #eef0f4; color: #4b5468; }
+  .callout { border-left: 4px solid var(--brand); background: var(--brand-soft); padding: 12px 16px; border-radius: 0 10px 10px 0; margin: 14px 0; }
+  .callout.info { border-color: var(--navy); background: var(--navy-soft); }
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 4px; }
+  .filters button { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 5px 13px; font: 500 13px Inter, sans-serif; cursor: pointer; color: var(--muted); }
+  .filters button.on { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .progress { height: 10px; background: #edf0f5; border-radius: 999px; overflow: hidden; display: flex; margin: 8px 0 4px; }
+  .progress > div { height: 100%; }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--muted); }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+  .mermaid { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin: 12px 0 20px; overflow-x: auto; text-align: center; }
+  .timeline { border-left: 3px solid var(--line); margin: 10px 0 0 6px; padding-left: 18px; }
+  .timeline .ev { position: relative; margin-bottom: 14px; }
+  .timeline .ev::before { content: ''; position: absolute; left: -26px; top: 5px; width: 13px; height: 13px; border-radius: 50%; background: var(--navy); border: 3px solid #fff; box-shadow: 0 0 0 1px var(--line); }
+  .timeline .ev.done::before { background: var(--done); }
+  .timeline .ev.doing::before { background: var(--doing); }
+  .timeline .date { font-size: 12px; color: var(--muted); font-weight: 600; }
+  details { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; margin: 8px 0; }
+  details summary { cursor: pointer; font-weight: 600; }
+  footer { text-align: center; color: var(--muted); font-size: 12.5px; padding: 30px; }
+  @media (max-width: 640px) { header { padding: 20px 16px 0; } main { padding: 20px 16px 60px; } td, th { padding: 7px 8px; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>🌍 World Conflict — <span>Project Status</span></h1>
+  <div class="sub">Engagement overhaul · branch <code style="background:rgba(255,255,255,.15);color:#fff">feat/engagement-overhaul</code> · autonomous development log for owner review</div>
+  <div class="meta" id="meta"></div>
+  <nav id="tabs">
+    <button data-tab="plan" class="active">🧭 Plan Overview</button>
+    <button data-tab="arch">🏗 Architecture</button>
+    <button data-tab="tasks">✅ Development Status</button>
+    <button data-tab="blockers">🚧 Blockers</button>
+    <button data-tab="decisions">⚖️ Decision Points</button>
+  </nav>
+</header>
+
+<main>
+<!-- ============================================================ PLAN -->
+<section class="tab active" id="plan">
+  <h2>Mission</h2>
+  <p>Turn World Conflict from a working systems prototype into a game people <b>finish, share and come back to</b>: a geopolitical sim rooted in the real world of <b>November 2026</b>, playable in a <b>10–15 minute Flashpoint</b> or a <b>multi-day Campaign</b>, beautiful on desktop and mobile, with optional LLM intelligence whose cost is always visible.</p>
+
+  <div class="grid" id="kpis"></div>
+
+  <h2>Pillars of the overhaul</h2>
+  <div class="grid">
+    <div class="card"><h4>⏱ Sessions that fit a life</h4>Player picks a mode up front with an honest time estimate: <b>Flashpoint</b> (short, goal-driven, clear win/lose), <b>Campaign</b> (a full term, autosaved across days). Tuned with the headless harness.</div>
+    <div class="card"><h4>🎢 Drama by design</h4>Crisis cadence, escalation curves, near-loss moments and comeback mechanics measured by <code>npm run sim</code> — not left to chance.</div>
+    <div class="card"><h4>🌐 The real world, today</h4>Roster 25 → ~40 countries with current hotspots; a 2026 scenario with active wars; current leaders; flashpoints grounded in real events with "what really happened" debriefs.</div>
+    <div class="card"><h4>🎨 Beautiful &amp; intuitive</h4>Keyless stylized map, situation-room visual identity, progressive onboarding, juicy feedback, shareable end card, mobile layout.</div>
+    <div class="card"><h4>🤖 Three AI tiers</h4><b>Algorithmic</b> (free, offline) · <b>LLM for key decisions</b> · <b>Full LLM</b>. API key or local model; tokens &amp; estimated cost shown live.</div>
+    <div class="card"><h4>🧪 Expert &amp; player feedback loop</h4>Game-design, UX/visual and geopolitics experts plus four player personas review each milestone; findings feed the backlog.</div>
+  </div>
+
+  <h2>Roadmap</h2>
+  <div class="mermaid">
+gantt
+  dateFormat YYYY-MM-DD
+  axisFormat %b %d
+  section Discover
+  Baseline review & harness        :done,    m0, 2026-11-01, 1d
+  Expert + persona reviews         :active,  m1, 2026-11-01, 1d
+  section Build
+  M1 Foundations (bugs, map, flow) :         m2, after m1, 2d
+  M2 Modes & pacing                :         m3, after m2, 2d
+  M3 World 2026 (roster, scenarios):         m4, after m2, 2d
+  M4 AI tiers & cost meter         :         m5, after m3, 1d
+  M5 Visual & juice pass           :         m6, after m4, 2d
+  section Validate
+  Persona re-test & tuning         :         m7, after m6, 1d
+  Docs & release candidate         :         m8, after m7, 1d
+  </div>
+
+  <h2>Milestone log</h2>
+  <div class="timeline" id="timeline"></div>
+</section>
+
+<!-- ============================================================ ARCHITECTURE -->
+<section class="tab" id="arch">
+  <h2>System overview</h2>
+  <p class="muted">Three layers: a pure deterministic engine, an agent layer (algorithmic or LLM), and a React client. The engine is the only source of truth; LLMs can propose but never mutate state directly.</p>
+  <div class="mermaid">
+flowchart LR
+  subgraph Client["🖥 React 19 client (ui/)"]
+    UI[Screens & HUD] --> Store[(Zustand store)]
+    Map[MapLibre map<br/>Natural Earth polygons] --- Store
+    Adv[Advisor chat<br/>local brain / BYO LLM] --- Store
+  end
+  subgraph API["⚡ Fastify API (src/api)"]
+    R1[/game routes/]
+    R2[/chat routes/]
+    R3[/auth routes/]
+  end
+  subgraph Core["⚙️ Deterministic engine (src/core)"]
+    TE[TurnEngine.executeTurn]
+    SYS[Systems: military · diplomacy · covert<br/>nuclear · economy · stability<br/>intelligence · government]
+    EV[Event engine<br/>historical templates]
+    SC[Scoring & report]
+    PV[Action preview]
+  end
+  subgraph Agents["🤖 Agent layer (src/agents)"]
+    PAI[PersonalityAI<br/>algorithmic]
+    LLM[LLM client<br/>OpenAI · Gemini · Ollama]
+  end
+  DB[(SQLite via Prisma<br/>saves · players · turn logs)]
+  DATA[[data/ countries · scenarios]]
+  Store <-->|JSON| R1 & R2 & R3
+  R1 --> TE --> SYS & EV & SC
+  R1 --> PV
+  R1 --> PAI
+  R2 --> LLM
+  R1 <--> DB
+  DATA --> TE
+  </div>
+
+  <h2>Turn pipeline</h2>
+  <div class="mermaid">
+flowchart TB
+  A["Clone state + seed RNG<br/>combineSeed(worldSeed, turn)"] --> B[0 · Resolve crisis decisions]
+  B --> C[1 · World events<br/>may raise player crises]
+  C --> D[2 · Belief updates<br/>intel vs counter-intel]
+  D --> E[3 · Actions: player first, then AI]
+  E --> F[4 · Wars: frontline 0–100]
+  F --> G[5 · Nuclear programs]
+  G --> H[6 · Economy · domestic · drift · tension]
+  H --> I[7 · Government dynamics<br/>elections · coups · revolutions]
+  I --> J[8 · Score & timeline]
+  J --> K[9 · Newspaper]
+  K --> L{10 · Game over?}
+  L -->|no| M[Advance month]
+  L -->|yes| N[End-of-term report]
+  </div>
+
+  <h2>Target: AI tiers (planned)</h2>
+  <div class="mermaid">
+flowchart LR
+  T{AI tier} -->|Algorithmic| P[PersonalityAI only<br/>$0 · offline · reproducible]
+  T -->|Key decisions| K[PersonalityAI every turn<br/>+ LLM for crises, wars,<br/>nukes, summits, advisors]
+  T -->|Full LLM| F[LLM intents for major powers<br/>+ news & advisors]
+  K & F --> V[Engine validates every<br/>LLM proposal]
+  V --> M[Usage meter<br/>tokens · est. cost · budget cap]
+  K & F --> PR{Provider}
+  PR --> K1[API key: OpenAI · Gemini · Anthropic]
+  PR --> K2[Local: Ollama / LM Studio]
+  </div>
+
+  <h2>Modules</h2>
+  <table>
+    <thead><tr><th>Module</th><th>Path</th><th>Responsibility</th><th>Status</th></tr></thead>
+    <tbody id="modules"></tbody>
+  </table>
+
+  <h2>Key data contracts</h2>
+  <table>
+    <thead><tr><th>Contract</th><th>Defined in</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><b>WorldState</b></td><td><code>src/core/types.ts</code></td><td>Ground truth; stored as JSON in <code>SaveGame.worldState</code>, re-validated on load</td></tr>
+      <tr><td><b>CountryProfile</b></td><td><code>src/core/types.ts</code></td><td>Static JSON in <code>data/countries/*.json</code></td></tr>
+      <tr><td><b>Scenario</b></td><td><code>src/core/data-loader.ts</code></td><td>Era overrides: leaders, relations, alliances, wars</td></tr>
+      <tr><td><b>PlayerView</b></td><td><code>systems/intelligence.ts</code></td><td>Belief-filtered world with uncertainty ranges</td></tr>
+      <tr><td><b>UI types</b></td><td><code>ui/src/store/gameStore.ts</code></td><td>⚠ duplicated from backend — must be kept in sync</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============================================================ TASKS -->
+<section class="tab" id="tasks">
+  <h2>Development status</h2>
+  <div class="progress" id="bar"></div>
+  <div class="legend">
+    <span><i style="background:var(--done)"></i>Done</span>
+    <span><i style="background:var(--doing)"></i>In progress</span>
+    <span><i style="background:var(--updated)"></i>Updated (scope changed)</span>
+    <span><i style="background:var(--planned)"></i>Planned</span>
+  </div>
+  <div class="filters" id="filters"></div>
+  <table>
+    <thead><tr><th style="width:70px">ID</th><th>Task</th><th style="width:110px">Milestone</th><th style="width:60px">Pri</th><th style="width:110px">Status</th></tr></thead>
+    <tbody id="taskrows"></tbody>
+  </table>
+</section>
+
+<!-- ============================================================ BLOCKERS -->
+<section class="tab" id="blockers">
+  <h2>Blockers &amp; resolutions</h2>
+  <p class="muted">Anything that stopped progress, and how it was handled.</p>
+  <table>
+    <thead><tr><th style="width:60px">ID</th><th>Blocker</th><th>Resolution</th><th style="width:100px">Status</th></tr></thead>
+    <tbody id="blockrows"></tbody>
+  </table>
+</section>
+
+<!-- ============================================================ DECISIONS -->
+<section class="tab" id="decisions">
+  <h2>Decision points</h2>
+  <div class="callout info">Decisions taken along the way. <b>Owner</b> = you decided; <b>Agent</b> = taken autonomously and open for your review — comment on any you'd like changed.</div>
+  <div id="decisionlist"></div>
+</section>
+</main>
+<footer>Last updated <span id="updated"></span> · generated by the development agent · single-file page, edit the <code>STATUS</code> object to update</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script>
+// =====================================================================
+// STATUS DATA — the only part that changes between updates
+// =====================================================================
+const STATUS = {
+  updated: "2026-11-01",
+  branch: "feat/engagement-overhaul",
+  phase: "Discover — expert & persona reviews",
+  timeline: [
+    { date: "2026-11-01", state: "done", title: "Kick-off & baseline", text: "Branch created; Node 22 toolchain; baseline tests 52/52 green; build OK; fixed broken dev proxy; headless playtest harness <code>npm run sim</code>; UI screenshot tour." },
+    { date: "2026-11-01", state: "doing", title: "Expert & persona reviews", text: "Game-design, UX/visual and geopolitics experts plus a four-persona player panel review the baseline. Reports land in <code>dev_plan/reviews/</code>." },
+  ],
+  modules: [
+    ["Turn engine", "src/core/turn.ts", "Deterministic monthly pipeline", "stable"],
+    ["Systems", "src/core/systems/*", "Military, diplomacy, covert, nuclear, economy, stability, intelligence, government", "stable"],
+    ["Events", "src/core/events.ts", "Historical-pattern events & crisis decisions", "to extend"],
+    ["Scoring", "src/core/scoring.ts", "4×50 score, leadership classification", "to rework for modes"],
+    ["Country AI", "src/agents/fallback.ts", "PersonalityAI (algorithmic)", "stable"],
+    ["LLM client", "src/agents/llmClient.ts", "OpenAI / Gemini / Ollama", "to extend: tiers + usage meter"],
+    ["API", "src/api/routes/*", "game · chat · auth", "stable"],
+    ["Store", "ui/src/store/gameStore.ts", "Zustand state, phase machine, API calls", "to extend"],
+    ["Map", "ui/src/components/MapView.tsx", "Choropleth layers on Natural Earth", "basemap broken (API key)"],
+    ["Playtest harness", "scripts/simulate.ts", "Headless pacing/difficulty metrics", "new"],
+  ],
+  tasks: [
+    { id: "B-1", t: "Baseline: install, test, build, lint inventory", d: "52/52 tests pass; build OK; Biome + ESLint report pre-existing errors to clean up.", m: "M0", p: "P0", s: "done" },
+    { id: "B-2", t: "Fix dev proxy (register/login broken on main)", d: "main switched API base to relative /api without a Vite proxy → JSON parse error at sign-up.", m: "M0", p: "P0", s: "done" },
+    { id: "B-3", t: "Headless playtest harness", d: "scripts/simulate.ts — endings, close calls, comebacks, tension arc per player policy.", m: "M0", p: "P0", s: "done" },
+    { id: "B-4", t: "Expert & persona reviews", d: "Game design, UX/visual, geopolitics, four player personas → dev_plan/reviews/.", m: "M0", p: "P0", s: "doing" },
+    { id: "M1-1", t: "Keyless basemap", d: "Current CARTO tiles show 'API KEY REQUIRED' watermarks across the map.", m: "M1", p: "P0", s: "planned" },
+    { id: "M1-2", t: "Play without an account", d: "Guest play by default; account optional for cross-device saves.", m: "M1", p: "P0", s: "planned" },
+    { id: "M2-1", t: "Mode select: Flashpoint vs Campaign", d: "Explicit choice with time expectations.", m: "M2", p: "P0", s: "planned" },
+    { id: "M2-2", t: "Difficulty & drama tuning", d: "Passive play must be able to lose; near-loss/comeback beats measured by the harness.", m: "M2", p: "P0", s: "planned" },
+    { id: "M3-1", t: "Roster 25 → ~40 countries", d: "Add current hotspots (Ukraine, Taiwan, Venezuela, Syria, Iraq, Palestine, Sudan…).", m: "M3", p: "P0", s: "planned" },
+    { id: "M3-2", t: "2026 scenario with real starting state", d: "Active wars, current leaders, alliances, sanctions as of Nov 2026.", m: "M3", p: "P0", s: "planned" },
+    { id: "M4-1", t: "AI tiers + cost meter", d: "Algorithmic / LLM key decisions / full LLM; API key or local; live usage & cost.", m: "M4", p: "P0", s: "planned" },
+    { id: "M5-1", t: "Visual identity & juice pass", d: "Palette, typography, motion, breaking-news moments, shareable end card, mobile layout.", m: "M5", p: "P0", s: "planned" },
+    { id: "M6-1", t: "Public docs refresh", d: "README landing page, setup, API, architecture — visual and current.", m: "M6", p: "P1", s: "planned" },
+  ],
+  blockers: [
+    { id: "X-1", b: "System Node is v18 — Vite 7 and Prisma 7 need ≥ 20.19.", r: "Installed a user-local Node 22 LTS (aarch64) under ~/.local/share/node; system Node untouched.", s: "resolved" },
+    { id: "X-2", b: "Account registration fails in dev (\"Unexpected end of JSON input\").", r: "Root cause: last main commit made API base relative without a dev proxy. Added Vite proxy for /api.", s: "resolved" },
+  ],
+  decisions: [
+    { id: "D-1", who: "Owner", title: "Push feature branch at milestones", text: "Work on <code>feat/engagement-overhaul</code>; push to origin at significant points; never touch main or deploy." },
+    { id: "D-2", who: "Owner", title: "Expand roster to ~40 countries", text: "Add current hotspots so today's conflicts are playable." },
+    { id: "D-3", who: "Owner", title: "Explicit session modes", text: "Most players want 10–15 min with an outcome; some want multi-day campaigns. Player picks the mode with clear time expectations; validated with experts and personas." },
+    { id: "D-4", who: "Owner", title: "Three AI tiers with visible cost", text: "Fully algorithmic (free) · LLM for important decisions · full LLM. API key or local model. Cost/usage visible throughout." },
+    { id: "D-5", who: "Agent", title: "User-local Node 22 instead of downgrading deps", text: "Keeps the project on current Vite/Prisma; documented in docs/SETUP.md prerequisites (Node ≥ 20.19)." },
+  ],
+};
+
+// =====================================================================
+// Rendering
+// =====================================================================
+const $ = (id) => document.getElementById(id);
+const badge = (s) => `<span class="badge b-${s.toLowerCase()}">${s === 'doing' ? 'in progress' : s}</span>`;
+$('updated').textContent = STATUS.updated;
+$('meta').innerHTML = [
+  `📅 ${STATUS.updated}`, `🌿 ${STATUS.branch}`, `🚦 ${STATUS.phase}`,
+].map((x) => `<span class="chip">${x}</span>`).join('');
+
+const counts = STATUS.tasks.reduce((a, t) => (a[t.s] = (a[t.s] || 0) + 1, a), {});
+const total = STATUS.tasks.length;
+$('kpis').innerHTML = [
+  ['Tasks done', `${counts.done || 0}<small> / ${total}</small>`],
+  ['In progress', counts.doing || 0],
+  ['Open blockers', STATUS.blockers.filter((b) => b.s !== 'resolved').length],
+  ['Decisions to review', STATUS.decisions.filter((d) => d.who === 'Agent').length],
+].map(([k, v]) => `<div class="card"><div class="muted">${k}</div><div class="kpi">${v}</div></div>`).join('');
+
+$('timeline').innerHTML = STATUS.timeline.map((e) =>
+  `<div class="ev ${e.state}"><div class="date">${e.date}</div><b>${e.title}</b><div>${e.text}</div></div>`).join('');
+
+$('modules').innerHTML = STATUS.modules.map(([n, p, r, s]) =>
+  `<tr><td><b>${n}</b></td><td><code>${p}</code></td><td>${r}</td><td>${s}</td></tr>`).join('');
+
+const colors = { done: 'var(--done)', doing: 'var(--doing)', updated: 'var(--updated)', planned: 'var(--planned)' };
+$('bar').innerHTML = ['done', 'doing', 'updated', 'planned'].map((s) =>
+  `<div style="width:${(100 * (counts[s] || 0)) / total}%;background:${colors[s]}"></div>`).join('');
+
+let filter = 'all';
+const renderTasks = () => {
+  $('taskrows').innerHTML = STATUS.tasks.filter((t) => filter === 'all' || t.s === filter).map((t) =>
+    `<tr><td class="mono">${t.id}</td><td><b>${t.t}</b><div class="muted">${t.d}</div></td><td>${t.m}</td><td>${badge(t.p)}</td><td>${badge(t.s)}</td></tr>`).join('');
+  $('filters').innerHTML = ['all', 'done', 'doing', 'updated', 'planned'].map((f) =>
+    `<button class="${f === filter ? 'on' : ''}" data-f="${f}">${f === 'doing' ? 'in progress' : f} (${f === 'all' ? total : counts[f] || 0})</button>`).join('');
+};
+$('filters').addEventListener('click', (e) => { const f = e.target.dataset.f; if (f) { filter = f; renderTasks(); } });
+renderTasks();
+
+$('blockrows').innerHTML = STATUS.blockers.map((b) =>
+  `<tr><td class="mono">${b.id}</td><td>${b.b}</td><td>${b.r}</td><td>${badge(b.s)}</td></tr>`).join('');
+
+$('decisionlist').innerHTML = STATUS.decisions.map((d) =>
+  `<details ${d.who === 'Agent' ? 'open' : ''}><summary><span class="mono">${d.id}</span> ${d.title} <span class="badge ${d.who === 'Agent' ? 'b-updated' : 'b-done'}">${d.who}</span></summary><p>${d.text}</p></details>`).join('');
+
+// Tabs + lazy mermaid rendering (hidden diagrams render with zero size)
+mermaid.initialize({ startOnLoad: false, theme: 'base', themeVariables: {
+  primaryColor: '#e8eef7', primaryBorderColor: '#1f3a5f', primaryTextColor: '#1b2030',
+  lineColor: '#5b6478', secondaryColor: '#fdecea', tertiaryColor: '#f7f8fb', fontFamily: 'Inter' } });
+const rendered = new Set();
+const show = async (id) => {
+  document.querySelectorAll('section.tab').forEach((s) => s.classList.toggle('active', s.id === id));
+  document.querySelectorAll('#tabs button').forEach((b) => b.classList.toggle('active', b.dataset.tab === id));
+  if (!rendered.has(id)) { rendered.add(id); await mermaid.run({ nodes: document.querySelectorAll(`#${id} .mermaid`) }); }
+  history.replaceState(null, '', `#${id}`);
+};
+$('tabs').addEventListener('click', (e) => { const t = e.target.closest('button')?.dataset.tab; if (t) show(t); });
+show(location.hash.slice(1) || 'plan');
+</script>
+</body>
+</html>
