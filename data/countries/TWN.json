@@ -1,0 +1,84 @@
+{
+  "id": "TWN",
+  "iso3": "TWN",
+  "name": "Taiwan",
+  "population": 23300000,
+  "regimeType": "DEMOCRACY",
+  "politicalSystem": {
+    "type": "SEMI_PRESIDENTIAL",
+    "powerCenters": ["EXECUTIVE", "LEGISLATURE", "JUDICIARY"],
+    "electionCycleMonths": 48,
+    "nextElectionTurn": null,
+    "leaderTitle": "President"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1949, "event": "Nationalist government retreats to Taiwan after losing the Chinese Civil War", "impact": "Created two rival governments claiming China and an unresolved sovereignty dispute that defines everything since" },
+      { "year": 1971, "event": "UN General Assembly Resolution 2758 transfers China's seat to Beijing", "impact": "Began diplomatic isolation; today only a dozen states recognize Taipei" },
+      { "year": 1979, "event": "US switches recognition to Beijing and passes the Taiwan Relations Act", "impact": "Replaced a defense treaty with arms sales and 'strategic ambiguity' that still underpins deterrence" },
+      { "year": 1987, "event": "Martial law lifted, beginning democratization", "impact": "Transformed a one-party KMT state into a vibrant democracy with a distinct Taiwanese identity" },
+      { "year": 1996, "event": "First direct presidential election amid Third Taiwan Strait Crisis missile tests", "impact": "Showed Beijing's coercion backfires at the ballot box and that US carriers matter" },
+      { "year": 2022, "event": "PLA live-fire encirclement drills after Speaker Pelosi's visit", "impact": "Normalized large-scale PLA exercises around the island and erased the Strait median line" },
+      { "year": 2024, "event": "Lai Ching-te elected president; DPP loses legislative majority", "impact": "Third straight DPP term but divided government with a KMT-TPP legislature that can block budgets" },
+      { "year": 2025, "event": "Mass recall campaign against KMT legislators fails; PLA 'Strait Thunder-2025A' and 'Justice Mission-2025' blockade drills", "impact": "Opposition kept control of the legislature while Beijing rehearsed port blockades after a record US$11.1B US arms package" },
+      { "year": 2026, "event": "Opposition legislature pares Lai's NT$1.25 trillion special defense budget; Trump warns Taipei against independence after Beijing summit", "impact": "Raised doubts about both domestic defense consensus and the reliability of US backing" }
+    ],
+    "historicalRivals": ["CHN"],
+    "historicalAllies": ["USA", "JPN"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "DEFENSIVE",
+    "narrative": "A prosperous island democracy and the world's indispensable chipmaker, living under the constant threat of invasion or blockade by a vastly larger neighbor that claims it. Its survival rests on a 'silicon shield', an ambiguous American commitment, and a deeply polarized domestic debate over how hard to arm and how much to talk to Beijing."
+  },
+  "personality": {
+    "warPropensity": 10,
+    "allianceLoyalty": 85,
+    "diplomaticFlexibility": 55,
+    "riskTolerance": 30,
+    "expansionism": 0,
+    "isolationism": 20,
+    "ideologicalRigidity": 45,
+    "prestigeEmphasis": 40
+  },
+  "redLines": [
+    { "type": "TERRITORIAL", "targetCountryId": "CHN", "description": "PLA blockade, quarantine, or seizure of Taiwan or its outlying islands (Kinmen, Matsu, Penghu, Pratas)", "severity": 10 },
+    { "type": "IDEOLOGICAL", "targetCountryId": "CHN", "description": "Forced unification under 'one country, two systems' or coerced political talks", "severity": 9 },
+    { "type": "ALLIANCE", "targetCountryId": "USA", "description": "US abandonment of the Taiwan Relations Act commitments or a US-China deal over Taiwan's head", "severity": 9 }
+  ],
+  "internalDivisions": [
+    { "kind": "IDEOLOGICAL", "name": "Green-Blue split: DPP presidency versus KMT-TPP legislature over China policy and defense spending", "strength": 60, "tension": 75 },
+    { "kind": "ETHNIC", "name": "Taiwanese versus Chinese identity, waning but politically salient among older mainlander families", "strength": 25, "tension": 35 },
+    { "kind": "REGIONAL", "name": "Exposed offshore islands (Kinmen, Matsu) economically tied to the mainland", "strength": 5, "tension": 40 }
+  ],
+  "economy": {
+    "gdp": 860000000000,
+    "growthRate": 0.04,
+    "debtGdpRatio": 27,
+    "sectors": { "agriculture": 1, "industry": 37, "services": 62 },
+    "keyResources": ["semiconductor_fabs", "advanced_manufacturing", "human_capital"],
+    "keyExports": ["semiconductors", "ai_servers", "electronics", "machinery", "petrochemicals"],
+    "developmentLevel": "DEVELOPED"
+  },
+  "military": {
+    "manpower": 170000,
+    "airpower": 740,
+    "doctrine": "DEFENSIVE",
+    "nuclearStatus": "LATENT",
+    "warheads": 0,
+    "arms_suppliers": ["USA"]
+  },
+  "militaryBudgetPct": 3.3,
+  "stability": 70,
+  "legitimacy": 75,
+  "intelLevel": 70,
+  "insurgencyLevel": "NONE",
+  "goals": [
+    { "id": "twn_g1", "type": "SECURITY", "targetCountryId": "CHN", "priority": 98, "description": "Deter a PLA invasion or blockade through 'porcupine' asymmetric defense and US support" },
+    { "id": "twn_g2", "type": "SECURITY", "targetCountryId": "USA", "priority": 90, "description": "Keep Washington committed, arms flowing, and Taiwan off the US-China bargaining table" },
+    { "id": "twn_g3", "type": "ECONOMIC", "priority": 80, "description": "Preserve semiconductor leadership as a 'silicon shield' while reducing dependence on the mainland market" },
+    { "id": "twn_g4", "type": "PRESTIGE", "priority": 55, "description": "Expand international space and unofficial ties with Japan, Europe, and the Philippines" }
+  ],
+  "geo": {
+    "bounds": [118.2, 21.9, 122.1, 26.4],
+    "capital": { "name": "Taipei", "coordinates": [121.5654, 25.033] }
+  }
+}

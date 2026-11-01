@@ -117,6 +117,70 @@ const NAME_POOLS: Record<string, { first: string[]; last: string[] }> = {
     first: ["Marco", "Giulia", "Alessandro", "Francesca", "Luca"],
     last: ["Rossi", "Conti", "Ricci", "Marino", "Greco"],
   },
+  UKR: {
+    first: ["Oleksandr", "Olena", "Andriy", "Iryna", "Taras"],
+    last: ["Kovalenko", "Shevchenko", "Bondarenko", "Melnyk", "Tkachenko"],
+  },
+  TWN: {
+    first: ["Chia-hao", "Mei-ling", "Wen-chieh", "Hsiu-ying", "Kuo-wei"],
+    last: ["Chen", "Lin", "Huang", "Chang", "Wu"],
+  },
+  BLR: {
+    first: ["Alyaksandr", "Sviatlana", "Viktar", "Maryna", "Dzmitry"],
+    last: ["Kavalchuk", "Novik", "Sharko", "Zhuk", "Barysau"],
+  },
+  DNK: {
+    first: ["Mette", "Lars", "Anders", "Pia", "Rasmus"],
+    last: ["Jensen", "Nielsen", "Hansen", "Pedersen", "Larsen"],
+  },
+  SYR: {
+    first: ["Ahmad", "Rania", "Omar", "Lina", "Khaled"],
+    last: ["al-Hasan", "Haddad", "Khoury", "al-Ali", "Saleh"],
+  },
+  IRQ: {
+    first: ["Haider", "Zainab", "Mustafa", "Noor", "Ammar"],
+    last: ["al-Abadi", "al-Maliki", "Jabouri", "Hashemi", "Rubaie"],
+  },
+  PSX: {
+    first: ["Mohammad", "Hanan", "Mustafa", "Rawan", "Yousef"],
+    last: ["Barghouti", "Shtayyeh", "Abbas", "Nusseibeh", "Masri"],
+  },
+  LBN: {
+    first: ["Nawaf", "Rima", "Joseph", "Maya", "Najib"],
+    last: ["Salam", "Aoun", "Hariri", "Gemayel", "Frangieh"],
+  },
+  YEM: {
+    first: ["Abdulmalik", "Tawakkol", "Ahmed", "Amat", "Rashad"],
+    last: ["al-Houthi", "al-Alimi", "Saleh", "Hadi", "al-Ahmar"],
+  },
+  ARE: {
+    first: ["Mohamed", "Hamdan", "Mansour", "Saif", "Khaled"],
+    last: ["Al Nahyan", "Al Maktoum", "Al Nahyan", "Al Qasimi", "Al Nahyan"],
+  },
+  AFG: {
+    first: ["Hibatullah", "Sirajuddin", "Abdul", "Mohammad", "Amir"],
+    last: ["Akhundzada", "Haqqani", "Baradar", "Muttaqi", "Yaqoob"],
+  },
+  PHL: {
+    first: ["Ferdinand", "Sara", "Leni", "Manuel", "Risa"],
+    last: ["Santos", "Reyes", "Cruz", "Bautista", "Villanueva"],
+  },
+  VEN: {
+    first: ["Delcy", "María", "Juan", "Edmundo", "Leopoldo"],
+    last: ["Rodríguez", "Machado", "González", "López", "Pérez"],
+  },
+  CUB: {
+    first: ["Miguel", "Yamila", "Raúl", "Ernesto", "Lis"],
+    last: ["Díaz", "Fernández", "Cruz", "Morales", "Valdés"],
+  },
+  SDN: {
+    first: ["Abdel", "Amna", "Mohamed", "Hamdok", "Yasir"],
+    last: ["al-Burhan", "Dagalo", "Hamdok", "al-Atta", "Osman"],
+  },
+  ETH: {
+    first: ["Abiy", "Sahle-Work", "Debretsion", "Lemma", "Birtukan"],
+    last: ["Ahmed", "Zewde", "Gebremichael", "Megersa", "Mideksa"],
+  },
 };
 
 const STYLES: LeaderStyle[] = ["HAWKISH", "DOVISH", "PRAGMATIC", "REFORMIST", "HARDLINER"];

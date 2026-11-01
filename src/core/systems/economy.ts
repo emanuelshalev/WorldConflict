@@ -41,7 +41,7 @@ export function updateEconomies(world: WorldState): void {
 }
 
 export function adjustMilitaryBudget(country: CountryState, newPercent: number): void {
-  country.militaryBudgetPercent = Math.max(0.5, Math.min(20, newPercent));
+  country.militaryBudgetPercent = Math.max(0.5, Math.min(40, newPercent));
 }
 
 /**
@@ -62,7 +62,7 @@ export function autoBudgetResponse(world: WorldState): void {
       return rival && rival.mobilizationLevel > 60;
     });
     if ((threatened || rivalAtHighMobilization) && country.militaryBudgetPercent < 8) {
-      country.militaryBudgetPercent = Math.min(20, country.militaryBudgetPercent + 0.2);
+      country.militaryBudgetPercent = Math.min(40, country.militaryBudgetPercent + 0.2);
     } else if (!threatened && !rivalAtHighMobilization && country.atWarWith.length === 0) {
       // Peace dividend drift back down
       if (country.militaryBudgetPercent > 2.5) {

@@ -12,8 +12,8 @@ import { ScenarioSchema } from "../../src/core/data-loader.js";
 
 describe("Core Types", () => {
   describe("TIER1_COUNTRIES", () => {
-    it("has exactly 25 countries including the major powers", () => {
-      expect(TIER1_COUNTRIES.length).toBe(25);
+    it("has 41 countries including the major powers and 2026 hotspots", () => {
+      expect(TIER1_COUNTRIES.length).toBe(41);
       expect(TIER1_COUNTRIES).toContain("USA");
       expect(TIER1_COUNTRIES).toContain("CHN");
       expect(TIER1_COUNTRIES).toContain("RUS");
@@ -82,12 +82,15 @@ describe("Core Types", () => {
 
     it("every scenario parses against ScenarioSchema and has 25 leaders", () => {
       const files = readdirSync(join(dataPath, "scenarios")).filter((f) => f.endsWith(".json"));
-      expect(files.length).toBe(3);
+      expect(files.length).toBeGreaterThanOrEqual(3);
       for (const file of files) {
         const scenario = ScenarioSchema.parse(
           JSON.parse(readFileSync(join(dataPath, "scenarios", file), "utf-8")),
         );
-        expect(Object.keys(scenario.leaders).length, `${file} leaders`).toBe(25);
+        expect(Object.keys(scenario.leaders).length, `${file} leaders`).toBeGreaterThanOrEqual(25);
+        for (const id of Object.keys(scenario.leaders)) {
+          expect(TIER1_COUNTRIES as readonly string[], `${file}: ${id}`).toContain(id);
+        }
       }
     });
   });

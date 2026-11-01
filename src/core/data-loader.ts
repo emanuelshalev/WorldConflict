@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { z } from "zod";
+import { runDirector } from "./crises.js";
 import { combineSeed, createSeed, SeededRandom } from "./seed.js";
 import { generateLeaderName, generatePlayerBackstory } from "./systems/government.js";
 import { updateBeliefs } from "./systems/intelligence.js";
@@ -48,6 +49,11 @@ const CountryOverrideSchema = z
     nuclearProgress: z.number(),
     insurgencyLevel: z.string(),
     debtGdpRatio: z.number(),
+    approval: z.number(),
+    mobilization: z.number(),
+    underGlobalEmbargo: z.boolean(),
+    embargoedBy: z.array(z.string()),
+    leaderStyle: z.string(),
   })
   .partial();
 export type CountryOverride = z.infer<typeof CountryOverrideSchema>;
@@ -81,9 +87,16 @@ export const ScenarioSchema = z.object({
         attackerId: z.string(),
         defenderId: z.string(),
         frontline: z.number().default(50),
+        exhaustion: z.number().min(0).max(100).default(0),
+        note: z.string().optional(),
       }),
     )
     .default([]),
+  borderDeployments: z
+    .array(z.object({ from: z.string(), to: z.string(), troops: z.number() }))
+    .default([]),
+  // Short "state of the world" briefing shown when the scenario starts
+  briefing: z.array(z.string()).default([]),
 });
 export type ScenarioData = z.infer<typeof ScenarioSchema>;
 
@@ -216,6 +229,15 @@ export class DataLoader {
 
   /** Start any session: a scenario in a mode, or an authored flashpoint. */
   newGame(options: NewGameOptions): WorldState {
+    const world = this.buildSession(options);
+    // Cold open: the first crisis is on the desk the moment you take office
+    const opening = runDirector(world, new SeededRandom(combineSeed(world.seed, 31337)));
+    world.pendingDecisions = opening.decisions;
+    world.eventQueue = opening.events;
+    return world;
+  }
+
+  private buildSession(options: NewGameOptions): WorldState {
     const { playerCountryId, seed, leaderName, difficulty = "STATESMAN" } = options;
     if (options.flashpointId) {
       const fp = this.loadFlashpoint(options.flashpointId);
@@ -401,20 +423,20 @@ export class DataLoader {
         leaderTitle: override.leaderTitle ?? profile.politicalSystem.leaderTitle,
       },
       leader: { ...leader },
-      approval: Math.round((legitimacy + stability) / 2),
+      approval: override.approval ?? Math.round((legitimacy + stability) / 2),
 
       gdp: override.gdp ?? profile.economy.gdp,
       growthRate: (override.growthRate ?? profile.economy.growthRate) * multipliers.gdpGrowth,
       debtGdpRatio: override.debtGdpRatio ?? profile.economy.debtGdpRatio,
       militaryBudgetPercent: Math.min(
-        20,
+        40,
         (override.militaryBudgetPct ?? profile.militaryBudgetPct) * multipliers.militarySpending,
       ),
       economyProfile: profile.economy,
 
       manpower: override.manpower ?? profile.military.manpower,
       airpower: override.airpower ?? profile.military.airpower,
-      mobilizationLevel: 10,
+      mobilizationLevel: override.mobilization ?? 10,
       doctrine: profile.military.doctrine,
       borderDeployments: [],
       supplierRelations: Object.fromEntries(profile.military.arms_suppliers.map((s) => [s, 50])),
@@ -454,8 +476,8 @@ export class DataLoader {
 
       capital: profile.geo?.capital?.coordinates,
       collapsed: false,
-      embargoedBy: [],
-      underGlobalEmbargo: false,
+      embargoedBy: override.embargoedBy ?? [],
+      underGlobalEmbargo: override.underGlobalEmbargo ?? false,
     });
   }
 
@@ -517,8 +539,14 @@ export class DataLoader {
           frontline: sw.frontline,
           attackerCasualties: 0,
           defenderCasualties: 0,
-          exhaustion: 0,
+          exhaustion: sw.exhaustion,
         });
+      }
+    }
+    for (const bd of scenario.borderDeployments) {
+      const from = world.countries.find((c) => c.id === bd.from);
+      if (from && world.countries.some((c) => c.id === bd.to)) {
+        from.borderDeployments.push({ targetCountryId: bd.to, troops: bd.troops });
       }
     }
 

@@ -529,7 +529,7 @@ export class TurnEngine {
       case "ECONOMY_ADJUST_MILITARY_BUDGET": {
         actor.militaryBudgetPercent = Math.max(
           0.5,
-          Math.min(20, action.value ?? actor.militaryBudgetPercent),
+          Math.min(40, action.value ?? actor.militaryBudgetPercent),
         );
         return { ok: true, reason: "" };
       }

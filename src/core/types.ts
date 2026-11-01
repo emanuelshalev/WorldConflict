@@ -446,7 +446,7 @@ export const CountryProfileSchema = z.object({
 
   economy: EconomyProfileSchema,
   military: MilitaryProfileSchema,
-  militaryBudgetPct: z.number().min(0).max(20),
+  militaryBudgetPct: z.number().min(0).max(40),
 
   stability: z.number().min(0).max(100),
   legitimacy: z.number().min(0).max(100),
@@ -485,7 +485,7 @@ export const CountryStateSchema = z.object({
   gdp: z.number().min(0),
   growthRate: z.number(),
   debtGdpRatio: z.number().min(0),
-  militaryBudgetPercent: z.number().min(0).max(20),
+  militaryBudgetPercent: z.number().min(0).max(40), // wartime states exceed 20% (Ukraine ~26–30%)
   economyProfile: EconomyProfileSchema.optional(),
   embargoedBy: z.array(z.string()).default([]), // supplier/country ids enforcing embargo
   underGlobalEmbargo: z.boolean().default(false),
@@ -842,35 +842,53 @@ export const SaveFileSchema = z.object({
 export type SaveFile = z.infer<typeof SaveFileSchema>;
 
 // ============================================================================
-// Tier 1 Countries (25 total)
+// Simulated countries (41): every one is playable and fully agent-driven
 // ============================================================================
 
 export const TIER1_COUNTRIES = [
+  // Great powers & original roster
   "USA",
   "CHN",
   "RUS",
   "DEU",
-  "IND", // Global Superpowers
+  "IND",
   "BRA",
   "CAN",
-  "MEX", // Americas
+  "MEX",
   "FRA",
   "GBR",
   "POL",
-  "TUR", // Europe
+  "TUR",
   "SAU",
   "IRN",
   "ISR",
-  "EGY", // Middle East
+  "EGY",
   "JPN",
   "IDN",
   "KOR",
-  "PRK", // Asia-Pacific
+  "PRK",
   "AUS",
   "PAK",
   "NGA",
   "ZAF",
-  "ITA", // Additional Tier 1
+  "ITA",
+  // 2026 hotspots (Natural Earth ADM0_A3 codes: Palestine is PSX)
+  "UKR",
+  "TWN",
+  "BLR",
+  "DNK",
+  "SYR",
+  "IRQ",
+  "PSX",
+  "LBN",
+  "YEM",
+  "ARE",
+  "AFG",
+  "PHL",
+  "VEN",
+  "CUB",
+  "SDN",
+  "ETH",
 ] as const;
 
 export type Tier1CountryCode = (typeof TIER1_COUNTRIES)[number];

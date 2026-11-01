@@ -1,0 +1,84 @@
+{
+  "id": "UKR",
+  "iso3": "UKR",
+  "name": "Ukraine",
+  "population": 33000000,
+  "regimeType": "DEMOCRACY",
+  "politicalSystem": {
+    "type": "SEMI_PRESIDENTIAL",
+    "powerCenters": ["EXECUTIVE", "MILITARY", "LEGISLATURE", "SECURITY_SERVICES"],
+    "electionCycleMonths": 60,
+    "nextElectionTurn": null,
+    "leaderTitle": "President"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1932, "event": "Holodomor famine under Stalin", "impact": "Millions starved; anchors a national memory of Russian imperial domination and existential threat" },
+      { "year": 1991, "event": "Independence referendum and Soviet collapse", "impact": "Over 90% voted for independence; Ukraine emerged with the world's third-largest nuclear arsenal" },
+      { "year": 1994, "event": "Budapest Memorandum: nuclear arsenal surrendered for security assurances", "impact": "Assurances proved worthless in 2014 and 2022; drives today's insistence on binding guarantees" },
+      { "year": 2014, "event": "Maidan revolution, Russian annexation of Crimea and war in Donbas", "impact": "Pro-European turn cost territory; eight years of frozen war built a Western-trained army" },
+      { "year": 2022, "event": "Russian full-scale invasion repelled from Kyiv; Kharkiv and Kherson counteroffensives", "impact": "National survival against the odds made resistance the core of identity and earned EU candidate status" },
+      { "year": 2023, "event": "Failed southern counteroffensive", "impact": "War settled into attritional drone-dominated trench warfare; Russia regained initiative" },
+      { "year": 2024, "event": "Kursk incursion into Russian territory", "impact": "First foreign occupation of Russian soil since 1941; reversed by Russian and North Korean troops in 2025" },
+      { "year": 2025, "event": "Oval Office clash, US minerals deal and the 28-point peace plan", "impact": "Dependence on a transactional Washington; Europe's EUR 90bn loan became the main financial lifeline" },
+      { "year": 2026, "event": "Trilateral US-Ukraine-Russia talks stall over Donbas; local Oleshky ceasefire", "impact": "Kyiv refuses to cede the rest of Donetsk without a referendum; war of attrition continues under martial law" }
+    ],
+    "historicalRivals": ["RUS", "BLR"],
+    "historicalAllies": ["POL", "GBR", "USA", "DEU", "FRA", "DNK"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "DEFENSIVE",
+    "narrative": "A nation forged in war, fighting for survival against a far larger neighbor while about a fifth of its land is occupied. Mobilized society, drone innovation and Western money keep it in the fight, but manpower, an exhausted grid and dependence on fickle partners define its limits."
+  },
+  "personality": {
+    "warPropensity": 45,
+    "allianceLoyalty": 85,
+    "diplomaticFlexibility": 45,
+    "riskTolerance": 70,
+    "expansionism": 10,
+    "isolationism": 5,
+    "ideologicalRigidity": 65,
+    "prestigeEmphasis": 60
+  },
+  "redLines": [
+    { "type": "TERRITORIAL", "targetCountryId": "RUS", "description": "Legal recognition of Russian sovereignty over occupied territories or withdrawal from unoccupied Donetsk without a referendum", "severity": 10 },
+    { "type": "ALLIANCE", "description": "Imposed neutrality, caps on the army or a ceasefire without enforceable Western security guarantees", "severity": 9 },
+    { "type": "TERRITORIAL", "targetCountryId": "BLR", "description": "A renewed northern offensive on Kyiv from Belarusian territory", "severity": 9 }
+  ],
+  "internalDivisions": [
+    { "kind": "IDEOLOGICAL", "name": "War fatigue and mobilization resentment versus fight-to-victory camp", "strength": 55, "tension": 65 },
+    { "kind": "IDEOLOGICAL", "name": "Anti-corruption institutions versus presidential office power (Yermak/Energoatom scandal)", "strength": 45, "tension": 60 },
+    { "kind": "REGIONAL", "name": "Front-line east and south versus relatively safe west; displaced millions", "strength": 40, "tension": 50 }
+  ],
+  "economy": {
+    "gdp": 210000000000,
+    "growthRate": 0.02,
+    "debtGdpRatio": 100,
+    "sectors": { "agriculture": 9, "industry": 21, "services": 70 },
+    "keyResources": ["wheat", "corn", "sunflower", "iron_ore", "lithium", "titanium", "natural_gas"],
+    "keyExports": ["grain", "sunflower_oil", "iron_and_steel", "it_services", "drones"],
+    "developmentLevel": "DEVELOPING"
+  },
+  "military": {
+    "manpower": 880000,
+    "airpower": 320,
+    "doctrine": "DEFENSIVE",
+    "nuclearStatus": "NONE",
+    "warheads": 0,
+    "arms_suppliers": ["USA", "GBR", "FRA", "PRIVATE"]
+  },
+  "militaryBudgetPct": 20,
+  "stability": 50,
+  "legitimacy": 70,
+  "intelLevel": 75,
+  "insurgencyLevel": "NONE",
+  "goals": [
+    { "id": "ukr_g1", "type": "SECURITY", "targetCountryId": "RUS", "priority": 98, "description": "Survive as a sovereign state and hold the front line against Russian offensives" },
+    { "id": "ukr_g2", "type": "SECURITY", "priority": 90, "description": "Secure binding Western security guarantees (NATO or coalition-of-the-willing troops) before any ceasefire" },
+    { "id": "ukr_g3", "type": "TERRITORIAL", "targetCountryId": "RUS", "priority": 75, "description": "Never legally cede occupied land; restore territorial integrity over the long term" },
+    { "id": "ukr_g4", "type": "ECONOMIC", "priority": 70, "description": "Keep the economy and energy grid alive with EU financing and advance EU accession" }
+  ],
+  "geo": {
+    "bounds": [22.1, 44.4, 40.2, 52.4],
+    "capital": { "name": "Kyiv", "coordinates": [30.5234, 50.4501] }
+  }
+}
