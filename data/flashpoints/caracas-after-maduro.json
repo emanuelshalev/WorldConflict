@@ -70,7 +70,7 @@
         {"kind": "NO_WAR_WITH", "targetId": "CUB", "label": "No war with Cuba"},
         {"kind": "RELATION_MIN", "targetId": "VEN", "min": -10, "label": "Caracas still takes your calls (relations -10+)"},
         {"kind": "STAT_MIN", "stat": "approval", "min": 72, "label": "Approval of 72%+: voters see a win, not a quagmire"},
-        {"kind": "STAT_MIN", "stat": "stability", "min": 30, "label": "No unrest at home over the Caribbean (stability 30%+)"}
+        {"kind": "STAT_MIN", "stat": "stability", "min": 25, "label": "No unrest at home over the Caribbean (stability 25%+)"}
       ],
       "bonus": [
         {"kind": "RELATION_MIN", "targetId": "MEX", "min": 50, "label": "Mexico still on side (relations 50+)"},

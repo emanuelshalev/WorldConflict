@@ -59,7 +59,7 @@
       "primary": [
         {"kind": "WAR_RESULT", "targetId": "SAU", "min": 22, "label": "Sanaa and Hodeidah never fall (front no worse than 22, or a settlement)"},
         {"kind": "STAT_MIN", "stat": "legitimacy", "min": 30, "label": "Sanaa still obeys (legitimacy 30%+)"},
-        {"kind": "RELATION_MIN", "targetId": "IRN", "min": 70, "label": "The Axis keeps faith with you (Iran relations 70+)"},
+        {"kind": "RELATION_MIN", "targetId": "IRN", "min": 76, "label": "The Axis keeps faith with you (Iran relations 76+)"},
         {"kind": "SCORE_PAR", "min": 62, "label": "Leadership score of 62+: a state, not a ruin"}
       ],
       "bonus": [
