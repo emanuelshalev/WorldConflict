@@ -104,6 +104,7 @@ node dist/api/server.js    # serve the API
 | `Unexpected end of JSON input` when starting a game | The UI can't reach the API. Is `npm run dev:api` running on :8080? |
 | Vite / Prisma error about the Node version | Upgrade to Node ≥ 20.19 (see prerequisites). |
 | `The table main.SaveGame does not exist` | Run `npx prisma db push`. |
+| `Cannot find module '.prisma/client/default'` | Run `npx prisma generate` (then `npx prisma db push`). |
 | Port already in use | `lsof -i :8080` / `lsof -i :5173` (macOS/Linux), or set `PORT` in `.env`. |
 | "Connection failed" testing an LLM | Check the key; for Ollama/LM Studio the URL is resolved **by the game server**, not your browser. |
 | Saves missing after clearing site data | Guest saves are tied to a browser id. Sign in (optional) to keep saves across browsers. |
