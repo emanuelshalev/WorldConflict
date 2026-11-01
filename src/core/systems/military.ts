@@ -168,7 +168,8 @@ export function resolveWarMonth(
   attacker.gdp *= attackerLosing ? 0.985 : 0.993;
   defender.gdp *= defenderLosing ? 0.975 : 0.988; // war fought on defender's soil
 
-  war.exhaustion = clamp(war.exhaustion + 2 + (Math.abs(delta) < 2 ? 2 : 0));
+  // Exhaustion builds slowly — fastest in a stalemate that kills for nothing
+  war.exhaustion = clamp(war.exhaustion + 1 + (Math.abs(delta) < 2 ? 1 : 0));
 
   // End conditions
   let ended: WarEndResult | null = null;
@@ -176,7 +177,7 @@ export function resolveWarMonth(
     ended = endWar(world, war, war.attackerId, war.defenderId, rng);
   } else if (war.frontline <= 15) {
     ended = endWar(world, war, war.defenderId, war.attackerId, rng);
-  } else if (war.exhaustion >= 80 && rng.nextBool(0.35)) {
+  } else if (war.exhaustion >= 90 && rng.nextBool(0.25)) {
     ended = endWar(world, war, null, null, rng);
   }
 
@@ -244,7 +245,9 @@ export function executeAirstrike(
   // Diplomatic fallout regardless of outcome
   defender.relations[attacker.id] = Math.max(-100, (defender.relations[attacker.id] ?? 0) - 30);
   attacker.relations[defender.id] = Math.max(-100, (attacker.relations[defender.id] ?? 0) - 20);
-  world.globalTension = clamp(world.globalTension + 5, 0, 100);
+  // A strike that opens hostilities shocks the world; one inside an ongoing war barely registers
+  const alreadyAtWar = attacker.atWarWith.includes(defender.id);
+  world.globalTension = clamp(world.globalTension + (alreadyAtWar ? 1 : 5), 0, 100);
 
   let crippledNuclearProgram = false;
   let description: string;

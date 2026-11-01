@@ -23,7 +23,8 @@ export function improveRelations(actor: CountryState, target: CountryState): voi
 export function denounce(world: WorldState, actor: CountryState, target: CountryState): void {
   shiftRelation(actor, target.id, -12);
   shiftRelation(target, actor.id, -15);
-  world.globalTension = Math.min(100, world.globalTension + 0.8);
+  // Words are cheap: denunciations add a little tension, not a crisis
+  world.globalTension = Math.min(100, world.globalTension + 0.25);
   // Target's allies disapprove
   for (const allyId of target.alliances) {
     const ally = world.countries.find((c) => c.id === allyId);
@@ -121,9 +122,15 @@ export function proposeCeasefire(
   // Acceptance depends on who is winning and exhaustion
   const actorIsAttacker = war.attackerId === actor.id;
   const targetWinning = actorIsAttacker ? war.frontline < 45 : war.frontline > 55;
-  let chance = 0.35 + war.exhaustion / 200;
-  if (targetWinning) chance -= 0.25;
-  chance += target.personality.diplomaticFlexibility / 400;
+  // Wars rarely end on the first offer: exhaustion, flexibility and who holds
+  // the initiative decide. A side that is winning seldom stops.
+  let chance =
+    0.05 +
+    Math.max(0, war.exhaustion - 40) / 200 +
+    target.personality.diplomaticFlexibility / 600 -
+    target.personality.warPropensity / 700;
+  if (targetWinning) chance *= 0.3;
+  chance = Math.max(0.02, chance);
   if (rng.next() < chance) {
     world.wars = world.wars.filter((w) => w.id !== war.id);
     actor.atWarWith = actor.atWarWith.filter((id) => id !== target.id);
@@ -141,26 +148,32 @@ export function proposeCeasefire(
 /**
  * Monthly diplomatic drift: shared/opposed interests slowly pull relations.
  */
+/**
+ * Relations relax toward a structural equilibrium (alliances, rivalries,
+ * regime affinity) instead of sliding forever: events and diplomacy push
+ * relations around; absent new pushes they settle back. Rivals stay cold,
+ * but courting them can make a lasting difference.
+ */
 export function applyDiplomaticDrift(world: WorldState): void {
   for (const country of world.countries) {
     for (const other of world.countries) {
       if (country.id === other.id) continue;
-      let drift = 0;
-      // Allies drift together
-      if (country.alliances.includes(other.id)) drift += 0.5;
-      // Historical rivals drift apart absent active diplomacy
-      if ((country.history.historicalRivals ?? []).includes(other.id)) drift -= 0.4;
-      // Regime affinity
-      if (country.regimeType === other.regimeType) drift += 0.1;
+      let target = 0;
+      if (country.alliances.includes(other.id)) target += 55;
+      if ((country.history.historicalAllies ?? []).includes(other.id)) target += 25;
+      if ((country.history.historicalRivals ?? []).includes(other.id)) target -= 45;
+      if (country.regimeType === other.regimeType) target += 8;
       if (
         (country.regimeType === "DEMOCRACY" &&
           (other.regimeType === "AUTOCRACY" || other.regimeType === "COMMUNIST")) ||
         (other.regimeType === "DEMOCRACY" &&
           (country.regimeType === "AUTOCRACY" || country.regimeType === "COMMUNIST"))
       ) {
-        drift -= 0.15;
+        target -= 12;
       }
-      if (drift !== 0) shiftRelation(country, other.id, drift);
+      if (country.atWarWith.includes(other.id)) target = -100;
+      const current = country.relations[other.id] ?? 0;
+      shiftRelation(country, other.id, (target - current) * 0.02);
     }
   }
 }

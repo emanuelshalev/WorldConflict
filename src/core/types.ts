@@ -633,8 +633,12 @@ export const ObjectiveConditionSchema = z.object({
     "RELATION_MIN", // player relation with target >= min at the end
     "SCORE_PAR", // final score >= par
     "NOT_COLLAPSED", // target state still standing
+    "WAR_ENDED", // no war between targetId and otherId (third-party mediation goals)
+    "INSURGENCY_MAX", // player's insurgency at or below `level`
   ]),
   targetId: z.string().optional(),
+  otherId: z.string().optional(),
+  level: z.enum(["NONE", "UNREST", "REBELLION", "GUERILLA"]).optional(),
   stat: z.enum(["approval", "stability", "legitimacy"]).optional(),
   min: z.number().optional(),
   maxStatus: z.enum(["LATENT", "DEVELOPING", "TESTED", "ARMED"]).optional(),

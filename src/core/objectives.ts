@@ -69,6 +69,19 @@ export function evaluateCondition(
       return status(world.score.total >= (cond.min ?? world.objective?.par ?? 100));
     case "NOT_COLLAPSED":
       return status(!!target && !target.collapsed, !!target?.collapsed);
+    case "WAR_ENDED": {
+      const a = cond.targetId;
+      const b = cond.otherId;
+      const ongoing = world.wars.some(
+        (w) =>
+          (w.attackerId === a && w.defenderId === b) || (w.attackerId === b && w.defenderId === a),
+      );
+      return status(!ongoing);
+    }
+    case "INSURGENCY_MAX": {
+      const order = ["NONE", "UNREST", "REBELLION", "GUERILLA"];
+      return status(order.indexOf(me.insurgencyLevel) <= order.indexOf(cond.level ?? "UNREST"));
+    }
     default:
       return status(false);
   }

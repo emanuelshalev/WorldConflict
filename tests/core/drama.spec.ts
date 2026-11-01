@@ -41,7 +41,18 @@ describe("Drama director", () => {
     for (let t = 0; t < 36 && !w.gameOver; t++) {
       w = engine.executeTurn(w, [], generateDeterministicIntents(w)).newState;
       for (const d of w.pendingDecisions) {
-        if (["coup_plot", "streets_boiling", "foreign_interference", "general_strike"].includes(d.templateId))
+        if ([
+            "coup_plot",
+            "streets_boiling",
+            "foreign_interference",
+            // follow-ups are scheduled consequences, exempt from the cooldown
+            "general_strike",
+            "crackdown_aftermath",
+            "scandal_second_leak",
+            "standoff_escalates",
+            "ultimatum_expires",
+            "deal_strings",
+          ].includes(d.templateId))
           continue;
         const last = seen.get(d.templateId);
         if (last !== undefined) expect(w.turn - last, d.templateId).toBeGreaterThanOrEqual(9);

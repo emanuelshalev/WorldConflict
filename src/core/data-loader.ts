@@ -134,8 +134,17 @@ export const FlashpointSchema = z.object({
   setup: z
     .object({
       wars: z
-        .array(z.object({ attackerId: z.string(), defenderId: z.string(), frontline: z.number() }))
+        .array(
+          z.object({
+            attackerId: z.string(),
+            defenderId: z.string(),
+            frontline: z.number(),
+            exhaustion: z.number().min(0).max(100).optional(),
+          }),
+        )
         .default([]),
+      // Wars from the base scenario that are over in this flashpoint's timeline
+      endWars: z.array(z.object({ a: z.string(), b: z.string() })).default([]),
       relations: z.array(z.object({ a: z.string(), b: z.string(), value: z.number() })).default([]),
       countries: z
         .record(
@@ -155,7 +164,7 @@ export const FlashpointSchema = z.object({
         )
         .default({}),
     })
-    .default({ wars: [], relations: [], countries: {} }),
+    .default({ wars: [], endWars: [], relations: [], countries: {} }),
   objectives: z.record(z.string(), ObjectiveSchema),
   scripted: z.record(z.string(), z.array(ScriptedCrisisSchema)).default({}),
   debrief: z.string().default(""),
@@ -296,7 +305,7 @@ export class DataLoader {
                 min: 35,
                 label: "Stability of 35%+ at the review",
               },
-              { kind: "SCORE_PAR", min: 105, label: "Leadership score of 105+ at the review" },
+              { kind: "SCORE_PAR", min: 100, label: "Leadership score of 100+ at the review" },
             ],
         bonus: [
           { kind: "SCORE_PAR", min: 115, label: "Leadership score of 115+" },
@@ -315,9 +324,30 @@ export class DataLoader {
     if (fp.date) world.date = fp.date;
     if (fp.globalTension !== undefined) world.globalTension = fp.globalTension;
     const byId = new Map(world.countries.map((c) => [c.id, c]));
+    for (const e of fp.setup.endWars) {
+      world.wars = world.wars.filter(
+        (w) =>
+          !(
+            (w.attackerId === e.a && w.defenderId === e.b) ||
+            (w.attackerId === e.b && w.defenderId === e.a)
+          ),
+      );
+      const a = byId.get(e.a);
+      const b = byId.get(e.b);
+      if (a) a.atWarWith = a.atWarWith.filter((id) => id !== e.b);
+      if (b) b.atWarWith = b.atWarWith.filter((id) => id !== e.a);
+    }
     for (const w of fp.setup.wars) {
       const a = byId.get(w.attackerId);
       const d = byId.get(w.defenderId);
+      const existing = world.wars.find(
+        (x) => x.attackerId === w.attackerId && x.defenderId === w.defenderId,
+      );
+      if (existing) {
+        existing.frontline = w.frontline;
+        if (w.exhaustion !== undefined) existing.exhaustion = w.exhaustion;
+        continue;
+      }
       if (!a || !d || a.atWarWith.includes(d.id)) continue;
       a.atWarWith.push(d.id);
       d.atWarWith.push(a.id);
@@ -331,7 +361,7 @@ export class DataLoader {
         frontline: w.frontline,
         attackerCasualties: 0,
         defenderCasualties: 0,
-        exhaustion: 0,
+        exhaustion: w.exhaustion ?? 0,
       });
     }
     for (const r of fp.setup.relations) {
@@ -614,8 +644,18 @@ export class DataLoader {
           if (!a || !b) continue;
           if (!a.alliances.includes(b.id)) a.alliances.push(b.id);
           if (!b.alliances.includes(a.id)) b.alliances.push(a.id);
-          if ((a.relations[b.id] ?? 0) < 60) a.relations[b.id] = 70;
-          if ((b.relations[a.id] ?? 0) < 60) b.relations[a.id] = 70;
+          // Allies start warm — unless the scenario authored a cooler relationship
+          // (e.g. US–Denmark over Greenland, Russia–China in 1960)
+          if (
+            scenario.initialRelations[a.id]?.[b.id] === undefined &&
+            (a.relations[b.id] ?? 0) < 60
+          )
+            a.relations[b.id] = 70;
+          if (
+            scenario.initialRelations[b.id]?.[a.id] === undefined &&
+            (b.relations[a.id] ?? 0) < 60
+          )
+            b.relations[a.id] = 70;
         }
       }
     }

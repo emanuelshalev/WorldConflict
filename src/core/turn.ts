@@ -130,6 +130,8 @@ export class TurnEngine {
 
     const playerState = world.countries.find((c) => c.id === world.playerCountryId);
     let covertDamage = 0;
+    let tensionAfterPlayer = world.globalTension;
+    const covertHits = new Map<string, number>(); // stability lost to covert ops, per target
     for (const intent of allIntents) {
       const actor = world.countries.find((c) => c.id === intent.countryId);
       if (!actor || actor.collapsed) continue;
@@ -169,6 +171,7 @@ export class TurnEngine {
         } else {
           push(rejectedActions, actor.id, { action, reason: outcome.reason });
         }
+        if (isPlayer) tensionAfterPlayer = world.globalTension;
         if (isPlayer && !injected.has(action)) {
           report.orders.push({
             label: orderLabel(world, action),
@@ -177,6 +180,12 @@ export class TurnEngine {
           });
         }
       }
+    }
+
+    // AI states posture constantly (denunciations, deployments, strikes inside
+    // existing wars): count half of the tension they generate this month
+    if (world.globalTension > tensionAfterPlayer) {
+      world.globalTension = tensionAfterPlayer + (world.globalTension - tensionAfterPlayer) * 0.5;
     }
 
     // Hidden foreign meddling: cap the monthly damage and surface it
@@ -222,10 +231,12 @@ export class TurnEngine {
     applyDiplomaticDrift(world);
     // Tension naturally relaxes toward a baseline absent fresh provocations
     const tensionFloor = Math.min(60, 25 + world.wars.length * 6);
-    world.globalTension = Math.max(
-      tensionFloor > world.globalTension ? world.globalTension : tensionFloor,
-      world.globalTension - Math.max(0, (world.globalTension - tensionFloor) * 0.2),
-    );
+    const nuclearUse = events.some((e) => e.type === "NUCLEAR" && e.severity === "CRITICAL");
+    if (!nuclearUse)
+      world.globalTension = Math.max(
+        tensionFloor > world.globalTension ? world.globalTension : tensionFloor,
+        world.globalTension - Math.max(0, (world.globalTension - tensionFloor) * 0.26),
+      );
     // Even an eventful month only moves the global mood so far — unless war or
     // nuclear use shocked the system
     const hadShock = events.some(
