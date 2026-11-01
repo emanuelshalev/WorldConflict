@@ -680,6 +680,8 @@ export const DirectorStateSchema = z.object({
   rallies: z.number().default(0), // comebacks achieved
   closeCalls: z.number().default(0),
   inDanger: z.boolean().default(false),
+  // What the player actually did: action type → times carried out ("TYPE:tried" counts attempts)
+  record: z.record(z.string(), z.number()).default({}),
 });
 export type DirectorState = z.infer<typeof DirectorStateSchema>;
 
@@ -742,6 +744,7 @@ export const WorldStateSchema = z.object({
     rallies: 0,
     closeCalls: 0,
     inDanger: false,
+    record: {},
   }),
   turnReport: PlayerTurnReportSchema.nullable().default(null),
   outcome: z

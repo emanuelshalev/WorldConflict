@@ -36,7 +36,7 @@ export function evaluateCondition(
 
   switch (cond.kind) {
     case "SURVIVE":
-      return status(!world.gameOver || world.gameOver.reason === "TERM_COMPLETED");
+      return status(stayedInPower(world));
     case "NO_NUCLEAR": {
       if (!target) return status(true);
       const max = NUCLEAR_ORDER.indexOf(cond.maxStatus ?? "DEVELOPING");
@@ -87,6 +87,12 @@ export function evaluateCondition(
   }
 }
 
+/** Still in office: only depositions, collapse and nuclear holocaust remove the player. */
+export function stayedInPower(world: WorldState): boolean {
+  return !world.gameOver || STILL_IN_OFFICE.includes(world.gameOver.reason);
+}
+const STILL_IN_OFFICE: string[] = ["TERM_COMPLETED", "OBJECTIVE_FAILED"];
+
 function hasFought(world: WorldState, a: string, b: string): boolean {
   return world.timeline.some(
     (t) =>
@@ -107,7 +113,7 @@ export function objectiveStatus(world: WorldState): ConditionStatus[] {
 
 /** Stars: 0 = failed; 1 = primary objectives met; +1 per bonus met (max 3). */
 export function computeOutcome(world: WorldState): NonNullable<WorldState["outcome"]> {
-  const survived = !world.gameOver || ["TERM_COMPLETED"].includes(world.gameOver.reason);
+  const survived = stayedInPower(world);
   const statuses = objectiveStatus(world);
   const primary = statuses.filter((s) => !s.bonus);
   const bonuses = statuses.filter((s) => s.bonus);

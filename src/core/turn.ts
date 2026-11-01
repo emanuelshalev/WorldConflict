@@ -178,6 +178,13 @@ export class TurnEngine {
             covertTarget.stability = clamp01(covertTarget.stability + (lost - allowed));
           covertHits.set(covertTarget.id, soFar + Math.min(lost, allowed));
         }
+        if (isPlayer) {
+          const rec = world.director.record;
+          rec[`${action.type}:tried`] = (rec[`${action.type}:tried`] ?? 0) + 1;
+          if (outcome.ok) rec[action.type] = (rec[action.type] ?? 0) + 1;
+          if (outcome.ok && action.type === "DOMESTIC_POLICING" && action.params?.tactic === "HARD")
+            rec["DOMESTIC_POLICING:hard"] = (rec["DOMESTIC_POLICING:hard"] ?? 0) + 1;
+        }
         if (outcome.ok) {
           budgetLeft -= cost;
           if (isPlayer) world.politicalCapital -= pc;

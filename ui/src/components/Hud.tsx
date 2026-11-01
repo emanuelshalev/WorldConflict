@@ -61,7 +61,7 @@ export function Hud() {
         <span>
           {me.name} · <span className="num">{monthLabel(world.date)}</span> · month{' '}
           <span className="num">
-            {world.turn + 1}/{world.maxTurns}
+            {Math.min(world.turn + 1, world.maxTurns)}/{world.maxTurns}
           </span>
           {monthsToElection !== null && (
             <span style={{ color: me.approval < 45 ? 'var(--war)' : 'var(--accent)' }}>

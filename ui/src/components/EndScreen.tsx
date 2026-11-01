@@ -123,7 +123,7 @@ export function EndScreen() {
   const verdict = REASON_TEXT[gameOver.reason] ?? gameOver.reason;
   const title = world.objective?.title ?? (world.mode === 'TERM' ? 'One Term' : 'Legacy');
   const archetype = report?.assessment.classification ?? '';
-  const shareText = `WORLD CONFLICT${isDaily ? ` · Daily ${new Date().toISOString().slice(0, 10)}` : ''} — ${flag(me.id)} ${me.name}: ${title}\n${verdict} · ${'★'.repeat(stars)}${'☆'.repeat(3 - stars)} · grade ${grade}\n${grid}\n${archetype}`;
+  const shareText = `WORLD CONFLICT${isDaily ? ` · Daily ${new Date().toISOString().slice(0, 10)}` : ''} — ${flag(me.id)} ${me.name}: ${title}\n${verdict} · ${'★'.repeat(stars)}${'☆'.repeat(3 - stars)} · grade ${grade} · score ${world.score?.total ?? 0}\nMonth ${Math.min(world.turn, world.maxTurns)}/${world.maxTurns}${world.newspaper?.[0]?.headline ? ` · "${world.newspaper[0].headline}"` : ''}\n${grid}\n${archetype}${typeof window !== 'undefined' ? `\n${window.location.origin}` : ''}`;
 
   const share = async () => {
     try {
@@ -183,7 +183,7 @@ export function EndScreen() {
           )}
           <div>
             <div className="display" style={{ fontSize: 12, color: 'var(--text-3)', letterSpacing: '0.16em' }}>
-              Your {world.turn} months · score {world.score?.total ?? '—'} · {report?.closeCalls ?? world.director?.closeCalls ?? 0} close calls · {report?.comebacks ?? 0} comebacks
+              Your {Math.min(world.turn, world.maxTurns)} months · score {world.score?.total ?? '—'} · {report?.closeCalls ?? world.director?.closeCalls ?? 0} close calls · {report?.comebacks ?? 0} comebacks
             </div>
             <div className="month-grid">{grid}</div>
           </div>

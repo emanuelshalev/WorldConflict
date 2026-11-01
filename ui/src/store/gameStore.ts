@@ -247,7 +247,7 @@ export interface WorldState {
   flashpointId: string | null;
   objective: Objective | null;
   politicalCapital: number;
-  director: { closeCalls: number; rallies: number; inDanger: boolean; lowPoint: number };
+  director: { closeCalls: number; rallies: number; inDanger: boolean; lowPoint: number; record?: Record<string, number> };
   turnReport: TurnReport | null;
   outcome: Outcome | null;
   pendingDecisions: PendingDecision[];
