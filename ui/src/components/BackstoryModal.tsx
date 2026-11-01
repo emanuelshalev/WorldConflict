@@ -27,7 +27,7 @@ export function BackstoryModal() {
         </div>
         <div style={{ fontSize: 56, margin: '10px 0 0' }}>{flag(player.id)}</div>
         <h1 className="display" style={{ fontSize: 'clamp(28px,5vw,40px)', margin: '6px 0 14px', lineHeight: 1.05 }}>
-          {player.leader.name}, {player.politicalSystem.leaderTitle} of {withArticle(player.name)}
+          {player.leader.name}, {player.leader.title || player.politicalSystem.leaderTitle} of {withArticle(player.name)}
         </h1>
         <p style={{ fontFamily: 'var(--font-serif)', fontSize: 17, lineHeight: 1.65, color: 'var(--text-2)', fontStyle: 'italic' }}>
           {playerBackstory}

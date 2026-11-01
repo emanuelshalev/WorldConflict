@@ -62,12 +62,17 @@ export function updateBeliefs(world: WorldState, rng: SeededRandom): void {
   }
 }
 
-function range(estimate: number, confidence: number): UncertainRange {
+/** Estimate with an uncertainty band; percentages (stability, nuclear progress) cap at 100. */
+function range(
+  estimate: number,
+  confidence: number,
+  max = Number.POSITIVE_INFINITY,
+): UncertainRange {
   const spread = (1 - confidence / 100) * 0.5;
   return {
-    estimate,
-    low: Math.max(0, estimate * (1 - spread)),
-    high: estimate * (1 + spread),
+    estimate: Math.min(max, estimate),
+    low: Math.max(0, Math.min(max, estimate * (1 - spread))),
+    high: Math.min(max, estimate * (1 + spread)),
     confidence,
   };
 }
@@ -143,7 +148,7 @@ export function buildPlayerView(world: WorldState): PlayerViewCountry[] {
           (belief ? belief.militaryStrength / Math.max(1, militaryStrength(country)) : 1),
         confidence,
       ),
-      stability: range(belief?.stability ?? 50, confidence),
+      stability: range(belief?.stability ?? 50, confidence, 100),
       nuclearStatus: publicNuclear
         ? country.nuclear.status
         : (belief?.nuclearProgress ?? 0) > 10
@@ -153,7 +158,7 @@ export function buildPlayerView(world: WorldState): PlayerViewCountry[] {
             : "NONE",
       nuclearProgress:
         publicNuclear || (belief?.nuclearProgress ?? 0) > 10
-          ? range(belief?.nuclearProgress ?? 0, confidence)
+          ? range(belief?.nuclearProgress ?? 0, confidence, 100)
           : null,
       intelConfidence: confidence,
     };

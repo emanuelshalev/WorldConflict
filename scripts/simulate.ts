@@ -10,6 +10,7 @@
  *   propaganda  — a national address every month (the old dominant strategy)
  *   smart       — a heuristic competent player: fixes weaknesses, courts rivals, picks good crisis options
  *   random      — random affordable orders and random crisis options
+ *   greedy      — no orders, always the crisis option with the best-looking effects
  *   hawk        — mobilizes then attacks the main rival
  *   ai          — the player's country is driven by PersonalityAI
  */
@@ -168,6 +169,7 @@ function playerOrders(policy: string, world: WorldState, rng: SeededRandom): Act
   if (!me) return [];
   switch (policy) {
     case "none":
+    case "greedy":
       return [];
     case "propaganda":
       return [{ type: "DOMESTIC_PROPAGANDA" }];

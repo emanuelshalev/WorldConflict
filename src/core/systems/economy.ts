@@ -61,8 +61,13 @@ export function effectiveGrowth(country: CountryState): number {
  */
 export function growthMood(country: CountryState): -1 | 0 | 1 {
   const expected = country.trendGrowth ?? country.economyProfile?.growthRate ?? 0.02;
-  // Voters feel what actually happens to the economy, drags included
-  const felt = country.realGrowth ?? effectiveGrowth(country);
+  // In peacetime voters feel what actually happens to the economy. In wartime they
+  // judge the war itself (war weariness is applied separately), not the GDP statistics.
+  const felt =
+    country.atWarWith.length > 0
+      ? country.growthRate
+      : // half what GDP actually did, half the underlying pace: a post-war rebound is felt early
+        ((country.realGrowth ?? effectiveGrowth(country)) + country.growthRate) / 2;
   if (felt > Math.max(0.02, expected + 0.005)) return 1;
   if (felt < Math.min(0, expected - 0.015)) return -1;
   return 0;

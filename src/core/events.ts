@@ -363,7 +363,9 @@ function julySummit(world: WorldState, _rng: SeededRandom): GameEvent | null {
           .filter((c) => c.id !== country.id)
           .reduce((sum, c) => sum + (c.relations[country.id] ?? 0), 0) /
         Math.max(1, world.countries.length - 1);
-      if (behaved && avgRelation > -30) {
+      // A nuclear-armed pariah (North Korea) needs a real thaw, not just a quiet year
+      const armed = country.nuclear.status === "ARMED" || country.nuclear.status === "TESTED";
+      if (behaved && avgRelation > (armed ? 10 : -30)) {
         country.underGlobalEmbargo = false;
         liftedEmbargoes.push(country.name);
       }

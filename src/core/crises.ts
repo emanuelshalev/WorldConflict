@@ -1712,6 +1712,14 @@ export function runDirector(world: WorldState, rng: SeededRandom): DirectorOutpu
   const due = director.scheduled.filter((s) => s.turn <= world.turn);
   director.scheduled = director.scheduled.filter((s) => s.turn > world.turn);
   for (const item of due) {
+    if (item.requiresWar) {
+      const [a, b] = item.requiresWar;
+      const fighting = world.wars.some(
+        (w) =>
+          (w.attackerId === a && w.defenderId === b) || (w.attackerId === b && w.defenderId === a),
+      );
+      if (!fighting) continue; // the war this card is about has ended
+    }
     if (item.decision) {
       const event: GameEvent = {
         id: `evt_scripted_${item.templateId}_${world.turn}`,

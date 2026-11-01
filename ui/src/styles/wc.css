@@ -1374,6 +1374,27 @@ button {
     min-width: 0;
   }
 }
+@media (max-width: 900px) {
+  /* Title: the launch bar sits at the end of the flow instead of covering the page */
+  .launch-bar {
+    position: static;
+  }
+  .launch-bar .summary p {
+    display: none;
+  }
+  /* Dossier: a scrollable bottom sheet over the desk, not a sliver on the map */
+  .dossier {
+    position: fixed !important;
+    top: auto !important;
+    left: 8px !important;
+    right: 8px !important;
+    bottom: 8px !important;
+    width: auto !important;
+    max-height: 62vh !important;
+    z-index: 40 !important;
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.5);
+  }
+}
 @media (max-width: 600px) {
   .hud-stats .stat .val small {
     display: none; /* growth % and deltas would collide in a 52px column */

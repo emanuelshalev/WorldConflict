@@ -670,6 +670,8 @@ export const ScheduledCrisisSchema = z.object({
   decision: z.lazy(() => PendingDecisionSchema).optional(),
   headline: z.string().optional(),
   text: z.string().optional(),
+  // Authored crises that assume a war: skipped once that war is over
+  requiresWar: z.tuple([z.string(), z.string()]).optional(),
 });
 export type ScheduledCrisis = z.infer<typeof ScheduledCrisisSchema>;
 

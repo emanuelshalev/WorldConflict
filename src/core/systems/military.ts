@@ -178,16 +178,21 @@ export function resolveWarMonth(
   // (Ukraine 2022: about -29% in a year) is far worse than fighting abroad, and a
   // distant air/naval campaign barely dents a large attacker's economy.
   const groundWar = sharesLandBorder(attacker.id, defender.id) !== false;
+  // Economies adapt to a long war (Ukraine: -29% in 2022, then +5% in 2023); losing ground ruins them
   const defenderMonthly = groundWar
     ? defenderLosing
-      ? 0.022
-      : 0.01
+      ? 0.015
+      : 0.004
     : defenderLosing
-      ? 0.008
-      : 0.004;
+      ? 0.006
+      : 0.002;
   const attackerMonthly = attackerLosing ? 0.006 : 0.002;
-  attacker.gdp *= 1 - attackerMonthly;
-  defender.gdp *= 1 - defenderMonthly;
+  // A small enemy can only hurt a big economy so much (Russia grew through its war on Ukraine;
+  // the US barely feels an air war with Iran)
+  const reach = (self: CountryState, enemy: CountryState) =>
+    Math.min(1, Math.max(0.1, (3 * enemy.gdp) / Math.max(1, self.gdp)));
+  attacker.gdp *= 1 - attackerMonthly * reach(attacker, defender);
+  defender.gdp *= 1 - defenderMonthly * reach(defender, attacker);
 
   // Exhaustion builds slowly — fastest in a stalemate that kills for nothing
   war.exhaustion = clamp(war.exhaustion + 1 + (Math.abs(delta) < 2 ? 1 : 0));

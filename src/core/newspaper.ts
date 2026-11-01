@@ -1,3 +1,4 @@
+import { sharesLandBorder } from "./geography.js";
 import type { SeededRandom } from "./seed.js";
 import type { GovernmentChange } from "./systems/government.js";
 import type { WarMonthSummary } from "./systems/military.js";
@@ -21,6 +22,17 @@ const WAR_VERBS_STALL = [
   "bogs down in attrition",
   "trades trenches at terrible cost",
   "bleeds for every mile",
+];
+
+const AIR_VERBS_ADVANCE = [
+  "gains the upper hand in the air war",
+  "strikes deep and unanswered",
+  "tightens its grip on the sea lanes",
+];
+const AIR_VERBS_STALL = [
+  "trades missile barrages, no end in sight",
+  "air campaign settles into grim routine",
+  "strikes and counter-strikes change little",
 ];
 
 export function generateNewspaper(
@@ -80,11 +92,17 @@ export function generateNewspaper(
     const attackerAdvancing = summary.delta > 1.5;
     const stalemate = Math.abs(summary.delta) <= 1.5;
     const monthCasualties = summary.attackerCasualties + summary.defenderCasualties;
-    const verb = stalemate ? rng.pick(WAR_VERBS_STALL) : rng.pick(WAR_VERBS_ADVANCE);
+    // No shared border, no trenches: air and sea campaigns get their own vocabulary
+    const ground = sharesLandBorder(attacker.id, defender.id) !== false;
+    const verb = stalemate
+      ? rng.pick(ground ? WAR_VERBS_STALL : AIR_VERBS_STALL)
+      : rng.pick(ground ? WAR_VERBS_ADVANCE : AIR_VERBS_ADVANCE);
     const leader = attackerAdvancing ? attacker : defender;
     entries.push({
       headline: stalemate
-        ? `WAR OF ATTRITION: ${attacker.name} offensive ${verb}`
+        ? ground
+          ? `WAR OF ATTRITION: ${attacker.name} offensive ${verb}`
+          : `${attacker.name.toUpperCase()}-${defender.name.toUpperCase()}: ${verb.toUpperCase()}`
         : `${leader.name.toUpperCase()} ${verb.toUpperCase()}`,
       description: `Fighting between ${attacker.name} and ${defender.name} claimed an estimated ${monthCasualties.toLocaleString()} casualties this month. ${
         stalemate

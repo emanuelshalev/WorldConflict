@@ -13,10 +13,8 @@ function targetEconomic(player: CountryState): number {
   // matching your structural trend is par, beating it scores
   const trend = player.trendGrowth ?? player.economyProfile?.growthRate ?? 0.02;
   const real = player.realGrowth ?? effectiveGrowth(player);
-  target +=
-    6 +
-    Math.max(-0.06, Math.min(0.06, real - trend)) * 300 +
-    Math.min(0.04, Math.max(0, trend)) * 150;
+  // Growing at your trend scores what it always did (+3% -> +13.5); beating or missing it moves you
+  target += trend * 450 + Math.max(-0.08, Math.min(0.06, real - trend)) * 120;
   target -= Math.max(0, (player.debtGdpRatio - 100) / 10);
   if (player.underGlobalEmbargo) target -= 10;
   return clamp50(target);

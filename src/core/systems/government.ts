@@ -367,6 +367,8 @@ export function runGovernmentDynamics(world: WorldState, rng: SeededRandom): Gov
         }
         risk = collapseAdjusted(risk, country, world);
       }
+      // AI regimes: coups are real but rare events, not a monthly lottery
+      if (!isPlayer) risk *= AI_UPHEAVAL;
       if (rng.next() < risk) {
         const change = executeCoup(world, country, rng, isPlayer);
         changes.push(change);
@@ -393,7 +395,10 @@ export function runGovernmentDynamics(world: WorldState, rng: SeededRandom): Gov
           continue;
         }
       }
-      if (rng.next() < (isPlayer && world.difficulty === "ANALYST" ? 0.03 : 0.05)) {
+      if (
+        rng.next() <
+        (isPlayer ? (world.difficulty === "ANALYST" ? 0.03 : 0.05) : 0.05 * AI_UPHEAVAL)
+      ) {
         const change = executeRevolution(world, country, rng, isPlayer);
         changes.push(change);
         events.push(governmentEvent(world, change, "GOVERNMENT"));
@@ -415,6 +420,16 @@ function collapseAdjusted(risk: number, country: CountryState, world: WorldState
   if (world.difficulty === "ANALYST") r *= 0.6;
   return r;
 }
+
+/**
+ * Presidencies whose 2026 incumbent cannot run again (second-term or single-term
+ * limits): USA, France, Mexico, South Korea, Philippines, Brazil. The player is exempt:
+ * in a Term, "your" election is your party's verdict.
+ */
+const TERM_LIMITED = new Set(["USA", "FRA", "MEX", "KOR", "PHL", "BRA"]);
+
+/** AI coup and revolution odds relative to the player's (playtests saw a Sudan coup every run). */
+const AI_UPHEAVAL = 0.35;
 
 const INCUMBENCY_FATIGUE = 7;
 
@@ -440,6 +455,34 @@ function holdElection(
   // "Time for a change": a government that has served a full term pays for it
   if (world.turn - country.leader.sinceTurn >= 36) score -= INCUMBENCY_FATIGUE;
   score += rng.nextFloat(-8, 8); // campaign dynamics
+
+  // Term limits: the incumbent can't stand again. The ruling side's candidate inherits
+  // the record, so a popular government usually keeps power under a new leader.
+  if (!isPlayer && TERM_LIMITED.has(country.id)) {
+    const oldLeader = { ...country.leader };
+    const continuity = score >= 45;
+    const style = continuity ? country.leader.style : pickSuccessorStyle(country, "ELECTION", rng);
+    country.leader = {
+      name: generateLeaderName(country.id, rng, country.leader.name),
+      title: country.politicalSystem.leaderTitle,
+      style,
+      origin: "ELECTED",
+      sinceTurn: world.turn,
+    };
+    applyLeaderStyleModifiers(country);
+    country.legitimacy = clamp(country.legitimacy + 10);
+    country.approval = 55;
+    return {
+      countryId: country.id,
+      kind: "ELECTION",
+      oldLeader,
+      newLeader: country.leader,
+      description: continuity
+        ? `Term-limited, ${oldLeader.name} hands over: ${country.leader.name} wins ${possessive(country.name)} election for the governing side.`
+        : `Term-limited ${oldLeader.name} steps down, and the opposition's ${country.leader.name} wins ${possessive(country.name)} election.`,
+      isPlayerDeposed: false,
+    };
+  }
 
   if (score >= 45) return null; // incumbent survives
 

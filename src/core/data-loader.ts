@@ -115,6 +115,7 @@ const ScriptedCrisisSchema = z.object({
   templateId: z.string(),
   headline: z.string(),
   text: z.string(),
+  requiresWar: z.tuple([z.string(), z.string()]).optional(),
   decision: PendingDecisionSchema.omit({ id: true, turn: true, deadlineTurn: true }).extend({
     templateId: z.string().optional(),
   }),
@@ -386,6 +387,7 @@ export class DataLoader {
       if (o.mobilization !== undefined) c.mobilizationLevel = o.mobilization;
       if (o.growthRate !== undefined) {
         c.growthRate = o.growthRate;
+        c.realGrowth = o.growthRate;
         c.trendGrowth = o.trendGrowth ?? o.growthRate;
       } else if (o.trendGrowth !== undefined) c.trendGrowth = o.trendGrowth;
       if (o.insurgencyLevel) c.insurgencyLevel = o.insurgencyLevel as InsurgencyLevel;
@@ -418,6 +420,7 @@ export class DataLoader {
       turn: sc.turn,
       headline: sc.headline,
       text: sc.text,
+      requiresWar: sc.requiresWar,
       decision: {
         ...sc.decision,
         id: `dec_${sc.templateId}`,
@@ -499,6 +502,7 @@ export class DataLoader {
 
       gdp: override.gdp ?? profile.economy.gdp,
       growthRate: (override.growthRate ?? profile.economy.growthRate) * multipliers.gdpGrowth,
+      realGrowth: (override.growthRate ?? profile.economy.growthRate) * multipliers.gdpGrowth,
       trendGrowth:
         (override.trendGrowth ?? override.growthRate ?? profile.economy.growthRate) *
         multipliers.gdpGrowth,

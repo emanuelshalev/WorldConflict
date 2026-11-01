@@ -36,13 +36,13 @@
       "primary": [
         {"kind": "NO_WAR_WITH", "targetId": "CHN", "label": "No shooting war with China"},
         {"kind": "RELATION_MIN", "targetId": "USA", "min": 78, "label": "The treaty means something (US relations 78+)"},
-        {"kind": "SCORE_PAR", "min": 100, "label": "Leadership score of 100+: the republic holds"}
+        {"kind": "SCORE_PAR", "min": 97, "label": "Leadership score of 97+: the republic holds"}
       ],
       "bonus": [
         {"kind": "RELATION_MIN", "targetId": "JPN", "min": 85, "label": "A Tokyo–Manila axis (Japan relations 85+)"},
         {"kind": "STAT_MIN", "stat": "stability", "min": 55, "label": "Stability of 55%+ through the Duterte trial"}
       ],
-      "par": 106,
+      "par": 103,
       "debrief": "What really happened: since 2012, when China took control of Scarborough Shoal after a standoff, Manila has faced a decade of gray-zone pressure, water cannon, lasers, rammings and blockades of resupply runs, that stopped just short of lethal force; 2026 brought a warship standoff in June and water-cannon attacks in July. What experts fear: the first death at sea that forces Washington to say, in public and under pressure, whether the Mutual Defense Treaty applies, and turns a reef into the trigger for a US–China clash outside Taiwan."
     },
     "CHN": {
@@ -52,13 +52,13 @@
         {"kind": "NO_WAR_WITH", "targetId": "PHL", "label": "No shooting war with the Philippines"},
         {"kind": "NO_WAR_WITH", "targetId": "USA", "label": "No war with the United States"},
         {"kind": "RELATION_MIN", "targetId": "PHL", "min": -62, "label": "Manila bruised but still talking (relations -62+)"},
-        {"kind": "SCORE_PAR", "min": 118, "label": "Leadership score of 118+"}
+        {"kind": "SCORE_PAR", "min": 115, "label": "Leadership score of 115+"}
       ],
       "bonus": [
         {"kind": "RELATION_MIN", "targetId": "USA", "min": -80, "label": "Washington stays out (relations -80+)"},
-        {"kind": "SCORE_PAR", "min": 125, "label": "Leadership score of 125+"}
+        {"kind": "SCORE_PAR", "min": 122, "label": "Leadership score of 122+"}
       ],
-      "par": 118,
+      "par": 115,
       "debrief": "What really happened: China has controlled access to Scarborough Shoal since 2012, ignored the 2016 arbitral ruling against its claims, and steadily raised the pressure on Philippine vessels with coast guard and maritime militia ships rather than its navy. What experts fear: that reclamation turns the shoal into a militarised island 220 km from Manila, that a coast guard captain's ramming goes one step too far, and that a dispute managed in the gray zone for a decade suddenly involves the US Seventh Fleet."
     }
   },

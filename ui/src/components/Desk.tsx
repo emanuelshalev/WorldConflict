@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { IconAlertTriangle, IconChevronDown, IconChevronUp, IconSend, IconX } from '@tabler/icons-react';
 import {
   type PendingAction,
+  type DecisionOption,
+  type Objective,
   type PendingDecision,
   countryName,
   executeTurn,

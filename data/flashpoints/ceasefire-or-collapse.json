@@ -42,13 +42,13 @@
         {"kind": "WAR_RESULT", "targetId": "RUS", "min": 42, "label": "Hold the front: Russia never past 58 (or a ceasefire)"},
         {"kind": "RELATION_MIN", "targetId": "USA", "min": 33, "label": "Keep Washington engaged (relations 33+)"},
         {"kind": "RELATION_MIN", "targetId": "GBR", "min": 93, "label": "Coalition of the willing locked in (UK relations 93+)"},
-        {"kind": "SCORE_PAR", "min": 85, "label": "Leadership score of 85+: a country still standing"}
+        {"kind": "SCORE_PAR", "min": 82, "label": "Leadership score of 82+: a country still standing"}
       ],
       "bonus": [
         {"kind": "STAT_MIN", "stat": "stability", "min": 55, "label": "Lights on, nerves steady (stability 55%+)"},
         {"kind": "STAT_MIN", "stat": "approval", "min": 75, "label": "A united home front (approval 75%+)"}
       ],
-      "par": 105,
+      "par": 102,
       "debrief": "What really happened: by late 2026 the war had become attritional and drone-dominated. Russia gained under 1% of Ukraine in 2025 and almost nothing in 2026 at enormous cost, while diplomacy oscillated between US-drafted plans (28 points, then 19, then Kyiv's 20) and Russian maximalism over Donetsk. What experts fear: a ceasefire with no guarantees that becomes a rearmament pause, a 'Minsk III'; or a collapse of Ukrainian manpower and grid resilience that turns a stalemate into a breakthrough."
     },
     "RUS": {
@@ -61,9 +61,9 @@
       ],
       "bonus": [
         {"kind": "RELATION_MIN", "targetId": "USA", "min": -25, "label": "A thaw with Washington (relations -25+)"},
-        {"kind": "SCORE_PAR", "min": 108, "label": "Leadership score of 108+"}
+        {"kind": "SCORE_PAR", "min": 105, "label": "Leadership score of 105+"}
       ],
-      "par": 105,
+      "par": 102,
       "debrief": "What really happened: Russia held about 19% of Ukraine at the start of 2026 but gained almost nothing all year; Peskov said Russia 'needs peace, not a ceasefire', the Duma election in September 2026 handed United Russia a constitutional majority, and growth slid below 1%. What experts fear: that a frozen line simply resets the clock for the next offensive, or that a wartime economy running on reserves cracks faster than the front."
     },
     "USA": {
@@ -77,9 +77,9 @@
         {"kind": "RELATION_MIN", "targetId": "DEU", "min": 60, "label": "Europe on board (Germany relations 60+)"}
       ],
       "bonus": [
-        {"kind": "SCORE_PAR", "min": 115, "label": "Leadership score of 115+"}
+        {"kind": "SCORE_PAR", "min": 112, "label": "Leadership score of 112+"}
       ],
-      "par": 108,
+      "par": 105,
       "debrief": "What really happened: the 2025 Alaska summit, the 28-point plan and three trilateral rounds in Abu Dhabi and Geneva in early 2026 produced prisoner swaps, short holiday truces and the Oleshky local ceasefire, but no settlement; the Iran war then swallowed Washington's attention. What experts fear: a deal that trades Ukrainian territory for a pause without guarantees, teaching every revisionist power that patience beats deterrence."
     }
   },
@@ -105,6 +105,7 @@
       },
       {
         "turn": 2,
+        "requiresWar": ["RUS", "UKR"],
         "templateId": "ua_blackout",
         "headline": "Blackout winter: Russian strikes knock out 40% of generation",
         "text": "A combined drone and missile salvo, the largest of the war, has hit thermal plants and substations across the country. Kyiv has power four hours a day. It is minus twelve outside.",
@@ -123,6 +124,7 @@
       },
       {
         "turn": 5,
+        "requiresWar": ["RUS", "UKR"],
         "templateId": "ua_manpower",
         "headline": "Front cracks near Huliaipole as brigades run out of infantry",
         "text": "Two mechanised brigades are holding a sector meant for four. Commanders report the Russians are infiltrating in groups of three and four between drone-covered positions, and that the reserve brigades exist mostly on paper.",
@@ -159,6 +161,7 @@
       },
       {
         "turn": 10,
+        "requiresWar": ["RUS", "UKR"],
         "templateId": "ua_signing_table",
         "headline": "The signing table: Washington presents a ceasefire on current lines",
         "text": "After eleven months of shuttle diplomacy the Americans have produced a text: a ceasefire on the present contact line, prisoner exchanges, frozen sanctions relief, and the security guarantees in an annex 'to be negotiated'. Moscow has signalled it will sign. Everyone is looking at you.",
@@ -197,6 +200,7 @@
       },
       {
         "turn": 3,
+        "requiresWar": ["RUS", "UKR"],
         "templateId": "ru_budget",
         "headline": "Finance ministry: the National Wealth Fund's liquid reserves are nearly spent",
         "text": "Oil revenue is down, the deficit is up and the central bank's key rate is strangling everyone who is not a defence contractor. The finance minister wants VAT raised again; the generals want another 300,000 contract soldiers at triple the regional wage.",
@@ -289,6 +293,7 @@
       },
       {
         "turn": 2,
+        "requiresWar": ["RUS", "UKR"],
         "templateId": "us_patriots",
         "headline": "Kyiv in the dark: Ukraine begs for Patriot batteries",
         "text": "Russia's largest strike of the war has knocked out 40% of Ukraine's generation. Zelensky wants two more Patriot batteries and interceptors now. The Pentagon says the Gulf, where Iranian drones still fly, needs them more.",
@@ -343,6 +348,7 @@
       },
       {
         "turn": 10,
+        "requiresWar": ["RUS", "UKR"],
         "templateId": "us_nobel",
         "headline": "Signing ceremony planned; both sides threaten to walk out",
         "text": "Your envoys have a text both delegations have initialled: a ceasefire on current lines, a prisoner exchange, sanctions relief in phases. Moscow wants sanctions relief up front. Kyiv wants the guarantees annex signed the same day. The ballroom is booked.",

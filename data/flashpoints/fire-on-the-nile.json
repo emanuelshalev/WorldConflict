@@ -246,13 +246,13 @@
         {"kind": "INSURGENCY_MAX", "level": "REBELLION", "label": "Contain the RSF: insurgency pushed back to rebellion or less (El Obeid holds)"},
         {"kind": "RELATION_MIN", "targetId": "EGY", "min": 37, "label": "Cairo still in your corner (relations 37+)"},
         {"kind": "STAT_MIN", "stat": "approval", "min": 50, "label": "Sudanese still back the army (approval 50%+)"},
-        {"kind": "SCORE_PAR", "min": 66, "label": "Leadership score of 66+: a state that still feeds and governs"}
+        {"kind": "SCORE_PAR", "min": 63, "label": "Leadership score of 63+: a state that still feeds and governs"}
       ],
       "bonus": [
         {"kind": "STAT_MIN", "stat": "legitimacy", "min": 35, "label": "A government Sudanese can recognise (legitimacy 35%+)"},
-        {"kind": "SCORE_PAR", "min": 74, "label": "Leadership score of 74+"}
+        {"kind": "SCORE_PAR", "min": 71, "label": "Leadership score of 71+"}
       ],
-      "par": 100,
+      "par": 97,
       "debrief": "What really happened: a power struggle between two generals who had seized power together in 2021 became, from April 2023, the world's largest displacement and hunger crisis. The army retook Khartoum in March 2025, but the RSF took El Fasher in October 2025 with mass atrocities, built a parallel government in Nyala and besieged El Obeid in 2026, while gold, Gulf money and drones kept both sides fighting and the Quad truce never held. What experts fear: a Libya-style permanent east-west partition, famine on a historic scale, and spillover into a Horn of Africa war involving Ethiopia, Eritrea and Egypt."
     },
     "EGY": {
@@ -263,13 +263,13 @@
         {"kind": "NOT_COLLAPSED", "targetId": "SDN", "label": "Sudan's state survives"},
         {"kind": "RELATION_MIN", "targetId": "SDN", "min": 40, "label": "Khartoum's army leans on you (relations 40+)"},
         {"kind": "STAT_MIN", "stat": "approval", "min": 45, "label": "Bread on the table (approval 45%+)"},
-        {"kind": "SCORE_PAR", "min": 107, "label": "Leadership score of 107+"}
+        {"kind": "SCORE_PAR", "min": 104, "label": "Leadership score of 104+"}
       ],
       "bonus": [
         {"kind": "RELATION_MIN", "targetId": "ARE", "min": 40, "label": "The Gulf still lending (UAE relations 40+)"},
         {"kind": "RELATION_MIN", "targetId": "SDN", "min": 60, "label": "Cairo is Port Sudan's first call (relations 60+)"}
       ],
-      "par": 105,
+      "par": 102,
       "debrief": "What really happened: Egypt backed Sudan's army as its natural ally against an RSF tied to the UAE, Cairo's biggest investor, while Suez revenue collapsed under the Red Sea crisis and Ethiopia inaugurated the GERD in September 2025, hardening a dispute Cairo calls existential. What experts fear: that Sudan's partition, the GERD and Ethiopia's push for the Red Sea merge into one regional war, with Egypt's economy too weak to fight it and too exposed to stay out."
     }
   }

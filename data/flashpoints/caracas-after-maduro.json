@@ -38,13 +38,13 @@
       "primary": [
         {"kind": "RELATION_MIN", "targetId": "USA", "min": 15, "label": "Sanctions relief holds (US relations 15+)"},
         {"kind": "STAT_MIN", "stat": "legitimacy", "min": 35, "label": "A transition people believe in (legitimacy 35%+)"},
-        {"kind": "SCORE_PAR", "min": 99, "label": "Leadership score of 99+"}
+        {"kind": "SCORE_PAR", "min": 96, "label": "Leadership score of 96+"}
       ],
       "bonus": [
         {"kind": "STAT_MIN", "stat": "legitimacy", "min": 50, "label": "Ready to win a real vote (legitimacy 50%+)"},
         {"kind": "STAT_MIN", "stat": "approval", "min": 50, "label": "Approval of 50%+"}
       ],
-      "par": 105,
+      "par": 102,
       "debrief": "What really happened: Maduro's capture in January 2026 decapitated the regime without dismantling it. Delcy Rodríguez kept the chavista state together by becoming useful to Washington: a new hydrocarbons law, deportation flights, an embassy reopened and US sanctions on her lifted in April, with elections promised but undated and the opposition sidelined. What experts fear: an 'authoritarian transition without democracy', in which oil deals buy a protectorate's permanence and Venezuelans' votes are postponed indefinitely."
     },
     "CUB": {
@@ -59,7 +59,7 @@
         {"kind": "RELATION_MIN", "targetId": "USA", "min": -50, "label": "A thaw with Washington (relations -50+)"},
         {"kind": "STAT_MIN", "stat": "stability", "min": 40, "label": "Streets calm (stability 40%+)"}
       ],
-      "par": 100,
+      "par": 97,
       "debrief": "What really happened: after Maduro's fall cut Cuba's last oil lifeline, the US blockade from January 2026 and Mexico's halt to shipments brought total grid collapse in March, protests and a burned Party office in Morón. Havana answered with talks, a pardon of 2,010 prisoners and a private-enterprise package, while Washington indicted Raúl Castro and sanctioned Díaz-Canel. What experts fear: a humanitarian collapse and a new mass exodus across the Florida Straits, or a hard-line crackdown that ends any chance of a managed transition."
     },
     "USA": {
@@ -74,9 +74,9 @@
       ],
       "bonus": [
         {"kind": "RELATION_MIN", "targetId": "MEX", "min": 50, "label": "Mexico still on side (relations 50+)"},
-        {"kind": "SCORE_PAR", "min": 112, "label": "Leadership score of 112+"}
+        {"kind": "SCORE_PAR", "min": 109, "label": "Leadership score of 109+"}
       ],
-      "par": 110,
+      "par": 107,
       "debrief": "What really happened: the January 2026 raid removed Maduro but Washington chose oil and order over a democratic handover, lifting sanctions on Rodríguez and sidelining Machado, while an oil blockade pushed Cuba into blackouts and talks. What experts fear: that 'decapitation without regime change' becomes the template, leaving a dependent autocracy in Caracas, a humanitarian collapse in Havana and a hemisphere newly convinced that sovereignty is negotiable."
     }
   },

@@ -40,6 +40,11 @@ function ObjectiveChip() {
         {(primary.length ? primary : status.slice(0, 2)).map((c) => (
           <li key={c.label} className={c.failed ? 'failed' : c.met ? 'met' : ''}>
             {c.failed ? '✗' : c.met ? '✓' : '○'} {c.label}
+            {/score/i.test(c.label) && (
+              <span className="num" style={{ color: c.met ? 'var(--good)' : 'var(--accent)' }}>
+                {' '}· now {world.score?.total ?? 0}
+              </span>
+            )}
           </li>
         ))}
         {primary.length === 0 && status.length === 0 && <li>Stay in power until the end.</li>}

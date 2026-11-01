@@ -343,7 +343,8 @@ export class TurnEngine {
       const before = gdpAtStart.get(c.id) ?? c.gdp;
       if (before <= 0) continue;
       const annual = Math.max(-0.6, Math.min(0.3, (c.gdp / before) ** 12 - 1));
-      c.realGrowth = c.realGrowth === undefined ? annual : c.realGrowth * 0.6 + annual * 0.4;
+      // Heavily smoothed: a one-off hit annualised x12 must not read as a recession
+      c.realGrowth = c.realGrowth === undefined ? annual : c.realGrowth * 0.85 + annual * 0.15;
     }
 
     // Phase 8: scoring & timeline
@@ -1060,7 +1061,7 @@ function playerHeadline(
   const order = report.orders.find((o) => o.ok) ?? report.orders[0];
   if (!decision && !order) return null;
   const headline = decision
-    ? `${possessive(surname).toUpperCase()} ANSWER TO ${decision.title.replace(/["“”]/g, "").toUpperCase()}: ${decision.choice.replace(" (no decision taken)", "").toUpperCase()}`
+    ? `${possessive(player.leader.name.split(" ").length <= 3 ? player.leader.name : surname).toUpperCase()} ANSWER TO ${decision.title.replace(/["“”]/g, "").toUpperCase()}: ${decision.choice.replace(" (no decision taken)", "").toUpperCase()}`
     : `${player.name.toUpperCase()}: ${order.label.toUpperCase()}${order.ok ? "" : " — BLOCKED"}`;
   const lines = [
     ...report.decisions.map((d) => `Faced with “${d.title}”, ${who} decided: ${d.choice}.`),

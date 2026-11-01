@@ -61,6 +61,12 @@ export function denounce(
   return approvalDelta;
 }
 
+/** Taiwan has no formal defence treaties (the US relationship is the Taiwan Relations Act). */
+const NO_FORMAL_PACTS = new Set(["TWN"]);
+const MAX_PACTS = 4;
+/** Real governments sign few new defence pacts: a third of the old acceptance rate. */
+const PACT_RARITY = 0.35;
+
 export interface AllianceResult {
   accepted: boolean;
   reason: string;
@@ -74,6 +80,19 @@ export function proposeAlliance(
   if (actor.alliances.includes(target.id)) {
     return { accepted: false, reason: "Already allied" };
   }
+  // Formal mutual-defence treaties are rare and deliberate
+  if (NO_FORMAL_PACTS.has(target.id) || NO_FORMAL_PACTS.has(actor.id)) {
+    return { accepted: false, reason: "No state signs a formal defence treaty with Taiwan." };
+  }
+  if (target.atWarWith.length > 0 || actor.atWarWith.length > 0) {
+    return {
+      accepted: false,
+      reason: `${target.name} won't sign a mutual-defence treaty in the middle of a war.`,
+    };
+  }
+  if (target.alliances.length >= MAX_PACTS || actor.alliances.length >= MAX_PACTS) {
+    return { accepted: false, reason: `${target.name} won't take on another treaty commitment.` };
+  }
   const relation = getRelation(target, actor.id);
   if (relation < 60) {
     return {
@@ -86,7 +105,7 @@ export function proposeAlliance(
   const loyaltyFactor = target.personality.allianceLoyalty / 100;
   const chance = Math.min(
     0.9,
-    (relation / 100) * (0.5 + loyaltyFactor * 0.5) * (isRival ? 0.4 : 1),
+    (relation / 100) * (0.5 + loyaltyFactor * 0.5) * (isRival ? 0.4 : 1) * PACT_RARITY,
   );
   if (rng.next() < chance) {
     actor.alliances.push(target.id);

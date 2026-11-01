@@ -49,10 +49,10 @@
         {"kind": "RELATION_MIN", "targetId": "ISR", "min": 61, "label": "Israel stays on side (relations 61+)"}
       ],
       "bonus": [
-        {"kind": "SCORE_PAR", "min": 114, "label": "Leadership score of 114+"},
+        {"kind": "SCORE_PAR", "min": 111, "label": "Leadership score of 111+"},
         {"kind": "STAT_MIN", "stat": "stability", "min": 60, "label": "Stability of 60%+"}
       ],
-      "par": 110,
+      "par": 107,
       "debrief": "What really happened: the 2026 Iran war killed a Supreme Leader but did not topple the regime. Hormuz was closed and reopened several times, a two-week ceasefire and the Islamabad framework both collapsed, and by November the conflict had settled into blockade versus harassment, at a cost of about $47bn and 23 American dead. What experts fear: a surviving hardline regime sitting on 200-plus kilograms of 60% uranium with every incentive for a crash bomb programme, or a Gulf energy shock that tips a 3%-growth world into recession."
     },
     "IRN": {
@@ -61,13 +61,13 @@
       "primary": [
         {"kind": "WAR_RESULT", "targetId": "USA", "min": 38, "label": "Outlast the Americans (a ceasefire, or the front no worse than 38)"},
         {"kind": "STAT_MIN", "stat": "legitimacy", "min": 25, "label": "The system still commands obedience (legitimacy 25%+)"},
-        {"kind": "SCORE_PAR", "min": 60, "label": "Leadership score of 60+: a state, not a ruin"}
+        {"kind": "SCORE_PAR", "min": 57, "label": "Leadership score of 57+: a state, not a ruin"}
       ],
       "bonus": [
         {"kind": "INSURGENCY_MAX", "level": "UNREST", "label": "The streets stay quiet (no rebellion)"},
         {"kind": "RELATION_MIN", "targetId": "CHN", "min": 55, "label": "Beijing's lifeline secured (China relations 55+)"}
       ],
-      "par": 100,
+      "par": 97,
       "debrief": "What really happened: the Islamic Republic absorbed the killing of Ali Khamenei, named his son Mojtaba Supreme Leader within ten days, crushed the January protests and kept firing at shipping under a US blockade; the new leader's health and grip on power remained the subject of rumour. What experts fear: a regime that concludes only a bomb guarantees survival, with a stockpile inspectors cannot see, or a sudden collapse that leaves that stockpile in nobody's hands."
     },
     "ARE": {
@@ -77,13 +77,13 @@
         {"kind": "WAR_ENDED", "targetId": "IRN", "otherId": "ARE", "label": "No open war with Iran at the end"},
         {"kind": "RELATION_MIN", "targetId": "IRN", "min": -90, "label": "A door left open in Tehran (Iran relations -90+)"},
         {"kind": "RELATION_MIN", "targetId": "USA", "min": 60, "label": "Still Washington's partner (US relations 60+)"},
-        {"kind": "SCORE_PAR", "min": 122, "label": "Leadership score of 122+: business as usual"},
+        {"kind": "SCORE_PAR", "min": 119, "label": "Leadership score of 119+: business as usual"},
         {"kind": "STAT_MIN", "stat": "approval", "min": 80, "label": "Confidence at home (approval 80%+)"}
       ],
       "bonus": [
         {"kind": "RELATION_MIN", "targetId": "IRN", "min": -40, "label": "A real channel to Tehran (Iran relations -40+)"}
       ],
-      "par": 112,
+      "par": 109,
       "debrief": "What really happened: the UAE was reportedly among the Gulf states that struck Iran or its proxies during the 2026 war, while deepening its ties with Israel and absorbing missile and drone attacks on its own soil. What experts fear: that the Gulf's model of glittering neutrality cannot survive a long war at its doorstep: one successful strike on a desalination plant or a port, and the hedge becomes a front line."
     }
   },

@@ -38,7 +38,7 @@ The **Daily Flashpoint** is the same crisis, nation and world for everyone that 
 
 ### Political capital ◆
 
-Diplomatic, domestic and covert orders cost **political capital**. You get 2 ◆ a month (+1 above 70% approval or on Story difficulty, −1 below 35% approval or 30% legitimacy, never less than 1) and can bank up to 6. It's meant to be scarce: a reform (2 ◆) is most of a month's budget. Military hardware and nuclear work cost money as a share of your defense budget instead.
+Diplomatic, domestic and covert orders cost **political capital**. You get 2 ◆ a month (3 in a Flashpoint, +1 on Story difficulty) and can bank up to 6. It's meant to be scarce: a reform (2 ◆) is a month's budget, so every month is a choice. Popularity doesn't pay extra capital, and trouble doesn't take it away. You can give at most 6 orders a month, and each order only once per target. Military hardware and nuclear work cost money as a share of your defense budget instead.
 
 | Order | ◆ | Order | ◆ |
 |---|---|---|---|
@@ -48,7 +48,7 @@ Diplomatic, domestic and covert orders cost **political capital**. You get 2 ◆
 | Propose ceasefire | 1 | Sabotage / destabilize / arm rebels | 2 |
 | Declare war | 2 | Assassination / back a coup | 3 |
 
-Denouncing is free, but it only rallies voters against an adversary (a historical rival or a country you are at odds with), and less with each denunciation in a six-month window. Condemning a partner costs approval, and repeated grandstanding against bystanders starts to cost it too.
+Denouncing is free, but it only rallies voters against an adversary (a historical rival or a country you are at odds with), only the first denunciation each month counts, and it counts less with each month you repeat it within six months. Condemning a partner costs approval, and repeated grandstanding against bystanders starts to cost it too.
 
 ---
 
@@ -57,8 +57,9 @@ Denouncing is free, but it only rallies voters against an adversary (a historica
 | Threat | Warning sign |
 |---|---|
 | **Coup** | A *Coup plot uncovered* crisis. Purge, buy off or concede — before the officers move. |
-| **Impeachment / no confidence** | In consolidated democracies (USA, Germany, Japan…) there are no coups: an *Impeachment looms* / *A vote of no confidence* card appears instead when legitimacy or stability collapses. |
+| **Impeachment / no confidence** | In democracies where the army isn't a political player, there are no coups: an *Impeachment looms* / *A vote of no confidence* card appears instead when legitimacy or stability collapses. Below 10 legitimacy, nothing shields you, not even the promises you made to survive the last plot. |
 | **Revolution** | *The streets are boiling* crisis when stability is very low and an insurgency is active. Consolidated democracies only fall to revolution in an armed (guerrilla) uprising with legitimacy under 20. |
+| **Defence pacts** | Nobody signs you into a treaty: when a government wants a pact, it lands on your desk as a crisis card. Pacts are rare, never signed with a country at war, and nobody has a formal treaty with Taiwan. If you join an ally's war, you go home when their war ends. |
 | **Election defeat** | The HUD counts down to the election; *Campaign endgame* card; the screen pulses red if you trail. Voters weigh approval first, then the economy and any war, and a government that has served three years or more pays a "time for a change" penalty. In the 2026 world, foreign elections fall on their real dates (US November 2028, Pakistan February 2029…). |
 | **Objective failure** | The mission chip shows each condition live (○ pending · ✓ met · ✗ failed). |
 | **Nuclear holocaust** | Using a nuclear weapon can trigger retaliation chains. Don't. |
@@ -85,7 +86,7 @@ The **grade** follows the verdict: a won session is never below C, a failed or d
 
 You play as the era's **real leader** by default (type a name on the title screen to be someone else).
 
-Economy: growth shocks (oil spikes, crises, financial panics) fade back toward each country's structural trend within about a year, and voters judge growth against what is normal for *their* country. Stability, legitimacy and approval are hard to keep at the very top and recover slowly from the very bottom.
+Economy: growth shocks (oil spikes, crises, financial panics) fade back toward each country's structural trend within about a year, and voters judge growth against what is normal for *their* country. The growth figure in the HUD is **real growth**: what actually happened to GDP, including war damage, crisis hits and reparations. A ground war on your own soil is ruinous; a distant air and naval campaign costs far less. Defence budgets rise when rivals mobilise, but only to about one and a half times their peacetime level without a war. Stability, legitimacy and approval are hard to keep at the very top and recover slowly from the very bottom.
 
 Four components, 0–50 each: **Economy**, **Security**, **Approval**, **Prestige** (total 0–200, start 100). They drift each month toward what your situation deserves, so sustained performance matters more than one good month. Your end screen shows a **grade**, **stars**, a leadership **archetype** read from what you actually did (*Warmonger*, *The Gambler*, *Shadow Operator*, *Iron Fist*, *Peacemaker*, *The Reformer*, *Master Diplomat*, *Steady Hand*…), a month-by-month emoji strip, and — for flashpoints — what really happened.
 

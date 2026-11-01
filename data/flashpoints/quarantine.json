@@ -41,13 +41,13 @@
       "primary": [
         {"kind": "NO_WAR_WITH", "targetId": "CHN", "label": "Never fire the first shot: no war with China"},
         {"kind": "RELATION_MIN", "targetId": "USA", "min": 56, "label": "Washington firmly in your corner (relations 56+)"},
-        {"kind": "SCORE_PAR", "min": 92, "label": "Leadership score of 92+: the island still works"}
+        {"kind": "SCORE_PAR", "min": 89, "label": "Leadership score of 89+: the island still works"}
       ],
       "bonus": [
         {"kind": "RELATION_MIN", "targetId": "JPN", "min": 95, "label": "Tokyo stands with you (relations 95+)"},
         {"kind": "STAT_MIN", "stat": "stability", "min": 60, "label": "Lights on, nerves steady (stability 60%+)"}
       ],
-      "par": 100,
+      "par": 97,
       "debrief": "What really happened (to 2026): PLA blockade drills grew more realistic every year, from Joint Sword in 2024 to Strait Thunder-2025A and Justice Mission-2025, while Taiwan's divided government stalled its own defence budget and US policy swung between record arms sales and summit deals with Beijing. What experts fear: a gray-zone 'quarantine' run by coast guards and customs law rather than warships, legally deniable and never quite an act of war, that slowly strangles an island importing almost all of its energy, and forces Taipei or Washington to choose between capitulation and firing first."
     },
     "CHN": {
@@ -61,9 +61,9 @@
       ],
       "bonus": [
         {"kind": "STAT_MIN", "stat": "stability", "min": 88, "label": "Iron discipline at home (stability 88%+)"},
-        {"kind": "SCORE_PAR", "min": 125, "label": "Leadership score of 125+"}
+        {"kind": "SCORE_PAR", "min": 122, "label": "Leadership score of 122+"}
       ],
-      "par": 118,
+      "par": 115,
       "debrief": "What really happened (to 2026): Beijing rehearsed a blockade of Taiwan's two great ports in December 2025, punished Japan's prime minister for calling a Taiwan contingency 'survival-threatening' with seafood bans and a dual-use export ban, and extracted a public US warning to Taipei at the May 2026 summit. Meanwhile the Central Military Commission was reportedly hollowed out by purges, including Zhang Youxia in January 2026. What experts fear: that a quarantine designed to stay below the threshold of war meets a jittery commander, an untested chain of command and an ally that decides to escort."
     },
     "USA": {
@@ -73,13 +73,13 @@
         {"kind": "NO_WAR_WITH", "targetId": "CHN", "label": "No US war with China"},
         {"kind": "WAR_ENDED", "targetId": "CHN", "otherId": "TWN", "label": "No shooting war across the Strait at the end"},
         {"kind": "RELATION_MIN", "targetId": "TWN", "min": 50, "label": "Taipei still trusts you (relations 50+)"},
-        {"kind": "STAT_MIN", "stat": "approval", "min": 70, "label": "Approval of 70%+: the public backs your handling"}
+        {"kind": "STAT_MIN", "stat": "approval", "min": 66, "label": "Approval of 66%+: the public backs your handling"}
       ],
       "bonus": [
         {"kind": "RELATION_MIN", "targetId": "JPN", "min": 75, "label": "Alliance with Japan rock-solid (relations 75+)"},
-        {"kind": "SCORE_PAR", "min": 115, "label": "Leadership score of 115+"}
+        {"kind": "SCORE_PAR", "min": 112, "label": "Leadership score of 112+"}
       ],
-      "par": 110,
+      "par": 107,
       "debrief": "What really happened (to 2026): Washington approved a record US$11.1bn arms package for Taiwan in December 2025, then struck a trade truce with Beijing at Busan and extended it at the May 2026 Beijing summit, after which the President warned Taipei against independence. The Taiwan Relations Act still promises arms, not rescue. What experts fear: a quarantine that forces a binary choice the policy of ambiguity was built to avoid, escort and risk war or stand aside and watch every ally in Asia recalculate."
     }
   },

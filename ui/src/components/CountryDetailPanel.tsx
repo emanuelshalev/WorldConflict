@@ -109,7 +109,7 @@ export function CountryDetailPanel() {
       : 'none scheduled';
 
   return (
-    <div style={S.panel}>
+    <div className="dossier" style={S.panel} role="region" aria-label={`Dossier: ${view.name}`}>
       <button
         onClick={() => selectCountry(null)}
         style={{ float: 'right', background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: 16 }}

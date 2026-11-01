@@ -44,13 +44,13 @@
         {"kind": "WAR_RESULT", "targetId": "YEM", "min": 58, "label": "The Houthis pushed off the coast (front 58+ your way, or a ceasefire)"},
         {"kind": "NO_WAR_WITH", "targetId": "ARE", "label": "No open war with the Emirates"},
         {"kind": "STAT_MIN", "stat": "stability", "min": 78, "label": "The kingdom holds its nerve (stability 78%+)"},
-        {"kind": "SCORE_PAR", "min": 117, "label": "Leadership score of 117+: Vision 2030 survives the war"}
+        {"kind": "SCORE_PAR", "min": 114, "label": "Leadership score of 114+: Vision 2030 survives the war"}
       ],
       "bonus": [
         {"kind": "WAR_ENDED", "targetId": "YEM", "otherId": "SAU", "label": "A signed settlement: the Houthi war is over"},
         {"kind": "RELATION_MIN", "targetId": "USA", "min": 70, "label": "Washington firmly behind you (US relations 70+)"}
       ],
-      "par": 120,
+      "par": 117,
       "debrief": "What really happened: the Iran war turned the Houthis from a shipping nuisance into a force contesting the strait itself; by October 2026 they held Mokha, reportedly Perim, and could hit Riyadh, while the Saudi-backed counteroffensive ground forward slowly. What experts fear: a permanent closure of Bab al-Mandab that, together with Hormuz, cuts both of the Gulf's sea exits, and a Saudi–Emirati rift that hands the south of Yemen to whoever has the most guns."
     },
     "YEM": {
@@ -60,13 +60,13 @@
         {"kind": "WAR_RESULT", "targetId": "SAU", "min": 22, "label": "Sanaa and Hodeidah never fall (front no worse than 22, or a settlement)"},
         {"kind": "STAT_MIN", "stat": "legitimacy", "min": 30, "label": "Sanaa still obeys (legitimacy 30%+)"},
         {"kind": "RELATION_MIN", "targetId": "IRN", "min": 76, "label": "The Axis keeps faith with you (Iran relations 76+)"},
-        {"kind": "SCORE_PAR", "min": 62, "label": "Leadership score of 62+: a state, not a ruin"}
+        {"kind": "SCORE_PAR", "min": 59, "label": "Leadership score of 59+: a state, not a ruin"}
       ],
       "bonus": [
-        {"kind": "SCORE_PAR", "min": 86, "label": "Leadership score of 86+"},
+        {"kind": "SCORE_PAR", "min": 83, "label": "Leadership score of 83+"},
         {"kind": "STAT_MIN", "stat": "stability", "min": 35, "label": "No bread riots in Sanaa (stability 35%+)"}
       ],
-      "par": 100,
+      "par": 97,
       "debrief": "What really happened: after the 2022 truce the Houthis built a missile and drone arsenal, used the Gaza war and then the 2026 Iran war to attack shipping and Israel, and in September 2026 seized Mokha in a push on Bab al-Mandab. A Saudi-backed counteroffensive followed in October. What experts fear: a movement that controls the strait and the hunger of millions, which can hold world trade hostage for salaries and recognition, and finds that it works."
     },
     "ARE": {
@@ -76,13 +76,13 @@
         {"kind": "NO_WAR_WITH", "targetId": "SAU", "label": "No open war with Saudi Arabia"},
         {"kind": "NO_WAR_WITH", "targetId": "YEM", "label": "No open war with the Houthis"},
         {"kind": "RELATION_MIN", "targetId": "SAU", "min": 15, "label": "Riyadh still calls you an ally (Saudi relations 15+)"},
-        {"kind": "SCORE_PAR", "min": 116, "label": "Leadership score of 116+: business as usual"}
+        {"kind": "SCORE_PAR", "min": 113, "label": "Leadership score of 113+: business as usual"}
       ],
       "bonus": [
         {"kind": "RELATION_MIN", "targetId": "USA", "min": 90, "label": "Washington's indispensable partner (US relations 90+)"},
-        {"kind": "STAT_MIN", "stat": "approval", "min": 85, "label": "Confidence at home (approval 85%+)"}
+        {"kind": "STAT_MIN", "stat": "approval", "min": 80, "label": "Confidence at home (approval 80%+)"}
       ],
-      "par": 115,
+      "par": 112,
       "debrief": "What really happened: the UAE built a southern Yemeni network around the STC and island bases, then watched it fracture in January 2026 when the STC leader fled to Abu Dhabi and the council announced its own dissolution. The Saudi–Emirati partnership that launched the 2015 intervention is now a rivalry fought through proxies from Aden to Khartoum. What experts fear: that the two Gulf powers, each sure it is indispensable to Washington, keep feeding rival militias until southern Yemen becomes another Libya on the world's busiest shipping lane."
     }
   },

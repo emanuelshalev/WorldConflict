@@ -39,13 +39,13 @@
       "primary": [
         {"kind": "NO_WAR_WITH", "targetId": "PAK", "label": "No full-scale war with Pakistan"},
         {"kind": "RELATION_MIN", "targetId": "USA", "min": 30, "label": "Washington sees it India's way (relations 30+)"},
-        {"kind": "SCORE_PAR", "min": 120, "label": "Leadership score of 120+: deterrence restored"}
+        {"kind": "SCORE_PAR", "min": 117, "label": "Leadership score of 117+: deterrence restored"}
       ],
       "bonus": [
         {"kind": "STAT_MIN", "stat": "approval", "min": 70, "label": "A nation rallied behind you (approval 70%+)"},
         {"kind": "STAT_MIN", "stat": "stability", "min": 70, "label": "Calm at home (stability 70%+)"}
       ],
-      "par": 108,
+      "par": 105,
       "debrief": "What really happened: after Pahalgam in April 2025, India struck what it called terrorist infrastructure on 7 May; four days of drone, missile and air-base strikes followed before a ceasefire on 10 May, with Washington and Gulf capitals working the phones. India then held the Indus Waters Treaty in abeyance and through 2026 moved to restrict the western rivers. What experts fear: that water turns a recurring terror-and-retaliation cycle into a permanent existential grievance, and that each round starts higher up the escalation ladder than the last, with less time for anyone to call a halt."
     },
     "PAK": {
@@ -54,13 +54,13 @@
       "primary": [
         {"kind": "NO_WAR_WITH", "targetId": "IND", "label": "No full-scale war with India"},
         {"kind": "RELATION_MIN", "targetId": "SAU", "min": 74, "label": "Riyadh stays in your corner (relations 74+)"},
-        {"kind": "SCORE_PAR", "min": 85, "label": "Leadership score of 85+: the state holds together"},
+        {"kind": "SCORE_PAR", "min": 82, "label": "Leadership score of 82+: the state holds together"},
         {"kind": "RELATION_MIN", "targetId": "USA", "min": 40, "label": "Washington leans your way (relations 40+)"}
       ],
       "bonus": [
         {"kind": "STAT_MIN", "stat": "stability", "min": 50, "label": "The state holds (stability 50%+)"}
       ],
-      "par": 100,
+      "par": 97,
       "debrief": "What really happened: in May 2025 Pakistan answered Operation Sindoor with its own drone, missile and air strikes, claimed Indian jets downed, and accepted a ceasefire after four days; Asim Munir emerged a Field Marshal and, by late 2025, constitutionally Chief of Defence Forces. In 2026 Pakistan was simultaneously fighting the Afghan Taliban and warning that any Indian diversion of the Indus would be an act of war. What experts fear: a state that leans on early nuclear signalling to offset conventional weakness, facing a neighbour that no longer believes the signal, over a river 240 million people depend on."
     }
   },
