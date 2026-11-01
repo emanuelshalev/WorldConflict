@@ -145,6 +145,11 @@ export interface ObjectiveCondition {
   kind: string;
   label: string;
   targetId?: string;
+  otherId?: string;
+  level?: 'NONE' | 'UNREST' | 'REBELLION' | 'GUERILLA';
+  stat?: 'approval' | 'stability' | 'legitimacy';
+  min?: number;
+  maxStatus?: 'LATENT' | 'DEVELOPING' | 'TESTED' | 'ARMED';
 }
 
 export interface Objective {

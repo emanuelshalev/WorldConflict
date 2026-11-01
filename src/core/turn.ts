@@ -385,8 +385,13 @@ export class TurnEngine {
         if (!target) return { ok: false, reason: "No target" };
         if (actor.atWarWith.includes(target.id))
           return { ok: false, reason: "At war — propose a ceasefire first" };
+        const relBefore = actor.relations[target.id] ?? 0;
         improveRelations(actor, target);
-        return { ok: true, reason: "" };
+        const relAfter = actor.relations[target.id] ?? 0;
+        return {
+          ok: true,
+          reason: `Relations ${Math.round(relBefore)} → ${Math.round(relAfter)} (drift and events still apply)`,
+        };
       }
       case "DIPLOMACY_DENOUNCE": {
         if (!target) return { ok: false, reason: "No target" };
