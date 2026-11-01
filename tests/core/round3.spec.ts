@@ -331,13 +331,14 @@ describe("Exploit guards (persona round 3)", () => {
 
   it("puts AI pact offers on the player's desk instead of signing them", () => {
     const w = loader.newGame({ scenarioId: "2026", playerCountryId: "BRA", seed: 1, mode: "TERM" });
-    const usa = get(w, "USA");
-    usa.relations.BRA = 80;
-    get(w, "BRA").relations.USA = 60;
+    const can = get(w, "CAN"); // not at war; clear its NATO pacts so it is under the 4-pact cap
+    can.alliances = [];
+    can.relations.BRA = 80;
+    get(w, "BRA").relations.CAN = 60;
     const next = engine.executeTurn(w, [], [
-      { countryId: "USA", actions: [{ type: "DIPLOMACY_PROPOSE_ALLIANCE", targetCountryId: "BRA" }], reasoning: "" },
+      { countryId: "CAN", actions: [{ type: "DIPLOMACY_PROPOSE_ALLIANCE", targetCountryId: "BRA" }], reasoning: "" },
     ]).newState;
-    expect(get(next, "BRA").alliances).not.toContain("USA");
+    expect(get(next, "BRA").alliances).not.toContain("CAN");
     expect(next.pendingDecisions.some((d) => d.templateId === "pact_offer")).toBe(true);
   });
 });

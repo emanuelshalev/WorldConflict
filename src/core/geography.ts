@@ -52,3 +52,22 @@ export function sharesLandBorder(a: string, b: string): boolean | undefined {
 export function isLandlocked(id: string): boolean {
   return LANDLOCKED.has(id);
 }
+
+/** Countries that actually get typhoons or hurricanes. */
+export const TYPHOON_COUNTRIES = new Set([
+  "CHN",
+  "TWN",
+  "JPN",
+  "KOR",
+  "PRK",
+  "PHL",
+  "VNM",
+  "IDN",
+  "IND",
+  "BGD",
+  "PAK",
+  "USA",
+  "MEX",
+  "CUB",
+  "AUS",
+]);

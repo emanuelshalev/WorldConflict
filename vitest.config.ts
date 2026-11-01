@@ -4,6 +4,8 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
+    // Several tests simulate 24-48 turns; give them room on a busy machine
+    testTimeout: 20_000,
     include: ['tests/**/*.spec.ts', 'tests/**/*.test.ts'],
     coverage: {
       provider: 'v8',

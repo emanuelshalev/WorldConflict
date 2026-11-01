@@ -13,7 +13,9 @@ interface RateLimitEntry {
 const rateLimitStore: Map<string, RateLimitEntry> = new Map();
 
 function getClientId(request: FastifyRequest): string {
-  const forwarded = request.headers["x-forwarded-for"];
+  // Only trust X-Forwarded-For behind a known proxy; otherwise anyone can spoof it
+  const forwarded =
+    process.env.TRUST_PROXY === "1" ? request.headers["x-forwarded-for"] : undefined;
   if (typeof forwarded === "string") {
     return forwarded.split(",")[0].trim();
   }

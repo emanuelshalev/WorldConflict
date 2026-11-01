@@ -258,7 +258,7 @@ export function EndScreen() {
           )}
           <div>
             <div className="display" style={{ fontSize: 12, color: 'var(--text-3)', letterSpacing: '0.16em' }}>
-              Your {Math.min(world.turn, world.maxTurns)} months · score {world.score?.total ?? '—'} · {report?.closeCalls ?? world.director?.closeCalls ?? 0} close calls · {report?.comebacks ?? 0} comebacks
+              Your {Math.min(world.turn, world.maxTurns)} months · score {world.score?.total ?? '—'} · {(() => { const n = report?.closeCalls ?? world.director?.closeCalls ?? 0; return `${n} close call${n === 1 ? '' : 's'}`; })()} · {(() => { const n = report?.comebacks ?? 0; return `${n} comeback${n === 1 ? '' : 's'}`; })()}
             </div>
             <div className="month-grid">{grid}</div>
           </div>

@@ -316,9 +316,8 @@ export function runGovernmentDynamics(world: WorldState, rng: SeededRandom): Gov
     const consolidated = isConsolidatedDemocracy(country);
     const crisis = country.legitimacy < 30 || country.stability < 22;
     // Rich, long-standing democracies don't do coups: institutions absorb even deep crises
-    const coupPossible = consolidated
-      ? country.stability < 8 && country.legitimacy < 15
-      : coupProne || country.stability < 15;
+    // Consolidated democracies remove leaders through institutions, never the army
+    const coupPossible = consolidated ? false : coupProne || country.stability < 15;
     // A democracy removes a failing leader through its institutions (impeachment,
     // no-confidence) — consolidated or not, as long as the army isn't the arbiter
     if (isPlayer && country.regimeType === "DEMOCRACY" && crisis && !coupPossible) {
@@ -369,6 +368,8 @@ export function runGovernmentDynamics(world: WorldState, rng: SeededRandom): Gov
       }
       // AI regimes: coups are real but rare events, not a monthly lottery
       if (!isPlayer) risk *= AI_UPHEAVAL;
+      // A junta that just seized power isn't overthrown the next season
+      if (!isPlayer && world.turn - country.leader.sinceTurn < 18) risk = 0;
       if (rng.next() < risk) {
         const change = executeCoup(world, country, rng, isPlayer);
         changes.push(change);
@@ -426,9 +427,33 @@ function collapseAdjusted(risk: number, country: CountryState, world: WorldState
  * limits): USA, France, Mexico, South Korea, Philippines, Brazil. The player is exempt:
  * in a Term, "your" election is your party's verdict.
  */
-const MAX_TERMS: Record<string, number> = { USA: 2, FRA: 2, BRA: 2, MEX: 1, KOR: 1, PHL: 1 };
+const MAX_TERMS: Record<string, number> = {
+  USA: 2,
+  FRA: 2,
+  BRA: 2,
+  MEX: 1,
+  KOR: 1,
+  PHL: 1,
+  TWN: 2,
+  IDN: 2,
+  ZAF: 2,
+  TUR: 2,
+  EGY: 2,
+  CUB: 2,
+};
 /** Leaders already at their limit when the 2026 scenario opens (Trump, Macron, Lula, Sheinbaum, Lee, Marcos). */
-const AT_LIMIT_IN_2026 = new Set(["USA", "FRA", "MEX", "KOR", "PHL", "BRA"]);
+const AT_LIMIT_IN_2026 = new Set([
+  "USA",
+  "FRA",
+  "MEX",
+  "KOR",
+  "PHL",
+  "BRA",
+  "ZAF", // Ramaphosa: second term since 2024
+  "TUR", // Erdoğan: constitutionally barred from another term
+  "EGY", // Sisi: final term ends 2030
+  "CUB", // Díaz-Canel: second term ends 2028
+]);
 
 function termLimited(world: WorldState, country: CountryState): boolean {
   const max = MAX_TERMS[country.id];

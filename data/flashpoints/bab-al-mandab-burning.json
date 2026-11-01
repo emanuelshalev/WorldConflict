@@ -94,7 +94,7 @@
         "headline": "Riyadh's airport still smoking as the Houthis promise more",
         "text": "Three weeks after a Houthi missile killed 13 at King Khalid International, investors are rescheduling the Future Investment Initiative and the Houthi spokesman promises 'a long list of targets'. The counteroffensive on the coast is moving, slowly.",
         "decision": {
-          "title": "Answering Riyadh airport",
+          "title": "After the Riyadh airport strike",
           "situation": "A massive air campaign on Sanaa satisfies the public's anger and will kill civilians and draw the old outrage. A back channel through Oman, where you already talk to the Houthis, could stop the missiles and looks weak. Inviting American and Israeli strikes outsources the war and ties the kingdom openly to Israel, a step the street is not ready for.",
           "affectedCountries": ["SAU", "YEM", "USA", "ISR", "IRN"],
           "urgency": "URGENT",
@@ -126,6 +126,7 @@
       },
       {
         "turn": 5,
+        "requiresWar": ["SAU", "YEM"],
         "templateId": "sa_ras_tanura",
         "headline": "Drone swarm hits Ras Tanura; a third of exports offline",
         "text": "Fifteen drones and two cruise missiles, launched, the Americans believe, from both Yemen and Iraq, have struck the Ras Tanura terminal. Oil exports are cut by a third for at least a month. The Houthis say the next target is the Red Sea pipeline terminal at Yanbu.",
@@ -144,6 +145,7 @@
       },
       {
         "turn": 7,
+        "requiresWar": ["SAU", "YEM"],
         "templateId": "sa_perim",
         "headline": "Commanders: Perim can be retaken, at a price",
         "text": "Intelligence suggests the Houthi garrison on Perim, the volcanic island in the strait whose capture was never independently confirmed, is a few hundred men with anti-ship missiles. An amphibious assault could retake it in days. Nobody has fought an opposed landing in the Red Sea in living memory.",
@@ -162,6 +164,7 @@
       },
       {
         "turn": 10,
+        "requiresWar": ["SAU", "YEM"],
         "templateId": "sa_salaries",
         "headline": "The Houthi price: Riyadh pays every public salary in Yemen",
         "text": "Through Muscat the Houthis have named their terms: a ceasefire, an end to cross-border strikes, and Saudi Arabia paying the salaries of every Yemeni civil servant, including in Sanaa, for two years. The government in Aden calls it a reward for terrorism.",
@@ -236,6 +239,7 @@
       },
       {
         "turn": 7,
+        "requiresWar": ["SAU", "YEM"],
         "templateId": "ye_tribes",
         "headline": "Tribal sheikhs in Marib and al-Bayda open talks with Riyadh",
         "text": "Saudi money is flowing to the tribes on your eastern flank, and several sheikhs who fought with you for a decade are now taking calls from Riyadh. Your security service has a list of names.",
@@ -254,6 +258,7 @@
       },
       {
         "turn": 10,
+        "requiresWar": ["SAU", "YEM"],
         "templateId": "ye_salaries_deal",
         "headline": "Muscat: Riyadh will talk salaries, if Perim is handed over",
         "text": "Omani mediators bring a Saudi counter-offer: public salaries paid for two years through UN-supervised accounts, in exchange for a ceasefire and the handover of Perim island to a neutral monitor. Your hardliners say the strait is worth more than any salary.",
@@ -292,6 +297,7 @@
       },
       {
         "turn": 3,
+        "requiresWar": ["SAU", "YEM"],
         "templateId": "ae_ships",
         "headline": "Houthi missile hits an Emirati-owned container ship",
         "text": "An anti-ship missile has struck a DP World-chartered vessel north of the strait, killing two crew. The Houthis call Emirati shipping a 'legitimate target' for your role in Yemen. Jebel Ali's Red Sea services have been suspended.",

@@ -359,6 +359,7 @@ export function Desk() {
   const effectiveTarget = target || selectedCountryId || '';
 
   const add = async (a: PendingAction) => {
+    if (a.type === 'NUCLEAR_STRIKE' && !window.confirm(`${a.label}?\n\nThis cannot be undone. Hundreds of thousands will die, the world will embargo you, and retaliation may end everything.`)) return;
     if (pcCost(a.type) > pcLeft) {
       useGameStore.getState().setError(`Not enough political capital for "${a.label}" (${pcCost(a.type)} needed)`);
       return;

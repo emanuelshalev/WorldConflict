@@ -124,7 +124,15 @@ describe("Modes & objectives", () => {
     const w = loader.newGame({ scenarioId: "2025", playerCountryId: "USA", seed: 4, mode: "TERM" });
     w.gameOver = { reason: "TERM_COMPLETED", description: "", turn: 47 };
     w.score.total = 150;
-    get(w, "USA").approval = 70;
+    // Third star: the statecraft goal (mend ties with a rival, or end an inherited war)
+    const goal = w.objective?.bonus.find((c) => c.kind === "RELATION_MIN" || c.kind === "WAR_ENDED");
+    expect(goal).toBeDefined();
+    expect(computeOutcome(w).stars).toBe(2);
+    if (goal?.kind === "RELATION_MIN" && goal.targetId) get(w, "USA").relations[goal.targetId] = 100;
+    if (goal?.kind === "WAR_ENDED") {
+      w.wars = [];
+      for (const c of w.countries) c.atWarWith = [];
+    }
     expect(computeOutcome(w).stars).toBe(3);
     w.gameOver = { reason: "LOST_ELECTION", description: "", turn: 47 };
     expect(computeOutcome(w)).toMatchObject({ victory: false, stars: 0 });

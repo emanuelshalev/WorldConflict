@@ -67,6 +67,19 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
     return base;
   }
 
+  if (
+    action.value !== undefined &&
+    (!Number.isFinite(action.value) || action.value < 0) &&
+    action.type !== "ECONOMY_ADJUST_MILITARY_BUDGET"
+  )
+    return blocked(base, "Invalid order value");
+  if (
+    action.type === "DIPLOMACY_IMPROVE_RELATIONS" &&
+    target &&
+    (actor.relations[target.id] ?? 0) >= 95
+  )
+    return blocked(base, "Relations are already as good as they get");
+
   const tname = target?.name ?? "";
   const effects = base.effects;
   const risks = base.risks;
@@ -440,7 +453,10 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
       const recent = world.director.propagandaTurns.filter((t) => world.turn - t < 6).length;
       const k = 0.6 ** recent;
       const note = recent > 0 ? `${Math.round(k * 100)}% effect: repetition dulls the message` : "";
-      const fmt = (v: number) => `+${Math.round(v * 10) / 10}`;
+      const fmt = (v: number) => {
+        const r = Math.round(v * 10) / 10;
+        return r >= 0 ? `+${r}` : `${r}`;
+      };
       const pressPenalty = recent >= 2 && actor.regimeType === "DEMOCRACY";
       effects.push(
         eff(
@@ -456,14 +472,25 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
     }
     case "DOMESTIC_REFORM": {
       base.summary = "Launch structural reforms: courts, markets, administration.";
-      const st = Math.round(6 * reformHeadroom(actor.stability) * 10) / 10;
-      const lg = Math.round(4 * reformHeadroom(actor.legitimacy) * 10) / 10;
+      const recentReforms =
+        world.mode === "FLASHPOINT"
+          ? 0
+          : (world.director.reformTurns ?? []).filter((t) => t < world.turn && world.turn - t < 6)
+              .length;
+      const rk = 0.8 ** recentReforms;
+      const st = Math.round(6 * reformHeadroom(actor.stability) * rk * 10) / 10;
+      const lg = Math.round(4 * reformHeadroom(actor.legitimacy) * rk * 10) / 10;
       const late = actor.stability > 55 || actor.legitimacy > 55;
       effects.push(
         eff(actor.name, "Stability", `+${st}`, late ? "Less when things are already good" : ""),
       );
       effects.push(eff(actor.name, "Legitimacy", `+${lg}`, ""));
-      effects.push(eff(actor.name, "Approval", "+2", ""));
+      effects.push(eff(actor.name, "Approval", "±0", "Reform wins no votes"));
+      effects.push(eff(actor.name, "Growth trend", "+0.15 pts", "Pays off slowly"));
+      if (recentReforms > 0)
+        risks.push(
+          `Reform fatigue: ${Math.round(rk * 100)}% effect after ${recentReforms} recent reform${recentReforms > 1 ? "s" : ""}.`,
+        );
       if (actor.personality.ideologicalRigidity > 70)
         risks.push("Hardline factions resist reform (-2 legitimacy).");
       break;

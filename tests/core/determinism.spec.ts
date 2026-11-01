@@ -22,7 +22,7 @@ describe("Determinism", () => {
     const a = simulate(12345, "USA", 24);
     const b = simulate(12345, "USA", 24);
     expect(JSON.stringify(a)).toBe(JSON.stringify(b));
-  });
+  }, 30_000);
 
   it("different seeds diverge", () => {
     const a = simulate(1, "USA", 12);

@@ -814,7 +814,7 @@ export async function executeTurn(): Promise<void> {
   store.setLoading(true);
   store.setError(null);
   try {
-    const response = await fetch(`${API_BASE}/turn`, {
+    const post = () => fetch(`${API_BASE}/turn`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -832,6 +832,14 @@ export async function executeTurn(): Promise<void> {
         ai: aiRequestBody(llmSettings),
       }),
     });
+    // Rate-limited: wait and retry quietly instead of failing
+    let response = await post();
+    for (let attempt = 0; attempt < 3 && response.status === 429; attempt++) {
+      await new Promise((r) => setTimeout(r, 900 * (attempt + 1)));
+      response = await post();
+    }
+    // This month is already being resolved (a double submit): never run it twice
+    if (response.status === 409) return;
     const data = await response.json();
     if (!data.success) throw new Error(data.error || 'Failed to execute turn');
 

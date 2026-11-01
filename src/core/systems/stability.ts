@@ -151,11 +151,11 @@ export function applyPropaganda(country: CountryState, effect = 1): void {
 /** Diminishing returns: the last points toward a perfect state are the hardest. */
 export const reformHeadroom = (v: number) => Math.min(1, Math.max(0.15, (100 - v) / 45));
 
-export function applyReform(country: CountryState): void {
+export function applyReform(country: CountryState, effect = 1): void {
   const headroom = reformHeadroom;
-  country.stability = clamp(country.stability + 6 * headroom(country.stability));
-  country.legitimacy = clamp(country.legitimacy + 4 * headroom(country.legitimacy));
-  country.approval = clamp(country.approval + 2);
+  country.stability = clamp(country.stability + 6 * headroom(country.stability) * effect);
+  country.legitimacy = clamp(country.legitimacy + 4 * headroom(country.legitimacy) * effect);
+  // Reform wins no votes: its payoff is stability now and growth later
   // Reform slightly aggravates hardline factions in rigid systems
   if (country.personality.ideologicalRigidity > 70) {
     country.legitimacy = clamp(country.legitimacy - 2);
