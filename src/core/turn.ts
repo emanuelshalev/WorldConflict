@@ -413,8 +413,24 @@ export class TurnEngine {
       }
       case "DIPLOMACY_DENOUNCE": {
         if (!target) return { ok: false, reason: "No target" };
-        denounce(world, actor, target);
-        return { ok: true, reason: "" };
+        const isPlayer = actor.id === world.playerCountryId;
+        const recent = isPlayer
+          ? world.director.denounceTurns.filter((t) => world.turn - t < 6).length
+          : 0;
+        const delta = denounce(world, actor, target, recent);
+        if (isPlayer) {
+          world.director.denounceTurns = [
+            ...world.director.denounceTurns.filter((t) => world.turn - t < 6),
+            world.turn,
+          ];
+        }
+        const mood =
+          delta > 0
+            ? `Approval +${delta}: the public enjoys strength`
+            : delta < 0
+              ? `Approval ${delta}: voters see grandstanding`
+              : "No effect on approval";
+        return { ok: true, reason: mood };
       }
       case "DIPLOMACY_PROPOSE_ALLIANCE": {
         if (!target) return { ok: false, reason: "No target" };

@@ -48,6 +48,8 @@ Diplomatic, domestic and covert orders cost **political capital**. You get about
 | Propose ceasefire | 1 | Sabotage / destabilize / arm rebels | 2 |
 | Declare war | 2 | Assassination / back a coup | 3 |
 
+Denouncing is free, but it only rallies voters against an adversary (a historical rival or a country you are at odds with), and less with each denunciation in a six-month window. Condemning a partner costs approval, and repeated grandstanding against bystanders starts to cost it too.
+
 ---
 
 ## 3. How you lose — and how you see it coming

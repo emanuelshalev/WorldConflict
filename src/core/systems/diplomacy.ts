@@ -20,7 +20,30 @@ export function improveRelations(actor: CountryState, target: CountryState): voi
   shiftRelation(target, actor.id, Math.ceil(gain * 0.7));
 }
 
-export function denounce(world: WorldState, actor: CountryState, target: CountryState): void {
+/**
+ * Approval effect of a denunciation. Tough words against an adversary rally the
+ * public, but the effect wears off with repetition; condemning a partner, or a
+ * country voters never think about, plays as grandstanding.
+ */
+export function denounceApprovalDelta(
+  actor: CountryState,
+  target: CountryState,
+  recentDenunciations = 0,
+): number {
+  const relation = getRelation(actor, target.id);
+  const adversary = relation <= -25 || (actor.history.historicalRivals ?? []).includes(target.id);
+  if (adversary) return Math.round(2 * 0.5 ** recentDenunciations * 10) / 10;
+  if (relation >= 25 || actor.alliances.includes(target.id)) return -2;
+  return recentDenunciations >= 2 ? -1 : 0;
+}
+
+export function denounce(
+  world: WorldState,
+  actor: CountryState,
+  target: CountryState,
+  recentDenunciations = 0,
+): number {
+  const approvalDelta = denounceApprovalDelta(actor, target, recentDenunciations);
   shiftRelation(actor, target.id, -12);
   shiftRelation(target, actor.id, -15);
   // Words are cheap: denunciations add a little tension, not a crisis
@@ -30,8 +53,8 @@ export function denounce(world: WorldState, actor: CountryState, target: Country
     const ally = world.countries.find((c) => c.id === allyId);
     if (ally) shiftRelation(ally, actor.id, -5);
   }
-  // Actor's public enjoys strength
-  actor.approval = Math.min(100, actor.approval + 2);
+  actor.approval = Math.max(0, Math.min(100, actor.approval + approvalDelta));
+  return approvalDelta;
 }
 
 export interface AllianceResult {

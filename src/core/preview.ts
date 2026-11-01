@@ -1,5 +1,10 @@
 import { actionCostM, actionCostPC } from "./costs.js";
-import { canDeclareWar, ceasefireChance, mediationChance } from "./systems/diplomacy.js";
+import {
+  canDeclareWar,
+  ceasefireChance,
+  denounceApprovalDelta,
+  mediationChance,
+} from "./systems/diplomacy.js";
 import { effectiveForce, monthlyDefenseBudgetM } from "./systems/military.js";
 import { isNuclearOperational } from "./systems/nuclear.js";
 import type { Action, WorldState } from "./types.js";
@@ -76,7 +81,22 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
       if (!target) return blocked(base, "Select a target country");
       base.summary = `Publicly condemn ${tname} before the world.`;
       effects.push(eff(tname, "Relations", "-12 to -15", "They will not forget this"));
-      effects.push(eff("Your public", "Approval", "+2", "Voters enjoy strength"));
+      const recent = (world.director.denounceTurns ?? []).filter((t) => world.turn - t < 6).length;
+      const mood = denounceApprovalDelta(actor, target, recent);
+      effects.push(
+        eff(
+          "Your public",
+          "Approval",
+          mood > 0 ? `+${mood}` : `${mood}`,
+          mood > 0
+            ? recent > 0
+              ? "Voters enjoy strength — less each time"
+              : "Voters enjoy strength"
+            : mood < 0
+              ? "Picking a fight with a partner looks like grandstanding"
+              : "Voters barely notice",
+        ),
+      );
       effects.push(eff("Global", "Tension", "+2", ""));
       for (const allyId of target.alliances) {
         const ally = world.countries.find((c) => c.id === allyId);

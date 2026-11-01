@@ -677,6 +677,7 @@ export const DirectorStateSchema = z.object({
   revoltWarnedTurn: z.number().nullable().default(null),
   coupShieldUntil: z.number().default(-1),
   propagandaTurns: z.array(z.number()).default([]), // turns the player used propaganda
+  denounceTurns: z.array(z.number()).default([]), // turns the player denounced someone
   lowPoint: z.number().default(100), // lowest min(approval, stability) seen — for comebacks
   rallies: z.number().default(0), // comebacks achieved
   closeCalls: z.number().default(0),
@@ -741,6 +742,7 @@ export const WorldStateSchema = z.object({
     revoltWarnedTurn: null,
     coupShieldUntil: -1,
     propagandaTurns: [],
+    denounceTurns: [],
     lowPoint: 100,
     rallies: 0,
     closeCalls: 0,
