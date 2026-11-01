@@ -22,6 +22,7 @@ export interface ActionPreview {
   effects: PreviewEffect[];
   risks: string[];
   blocked: string | null; // non-null = action invalid, with reason
+  missionWarning: string | null; // non-null = this order fails (or likely fails) the session objective
 }
 
 /**
@@ -48,6 +49,7 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
     effects: [],
     risks: [],
     blocked: null,
+    missionWarning: null,
   };
   if (!actor) {
     base.blocked = "Player country not found";
@@ -427,7 +429,114 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
       base.summary = "Unknown action";
   }
 
+  if (!base.blocked) base.missionWarning = missionWarning(world, action);
   return base;
+}
+
+/**
+ * Does this order break the mission? Checked against the session objective so
+ * the player is warned before a war or strike ends a flashpoint on the spot.
+ */
+export function missionWarning(world: WorldState, action: Action): string | null {
+  const objective = world.objective;
+  const me = world.countries.find((c) => c.id === world.playerCountryId);
+  if (!objective || !me) return null;
+  const targetId = action.targetCountryId;
+  const target = targetId ? world.countries.find((c) => c.id === targetId) : undefined;
+  const name = (id?: string) => world.countries.find((c) => c.id === id)?.name ?? id ?? "";
+  const conditions = [
+    ...objective.primary.map((c) => ({ c, bonus: false })),
+    ...objective.bonus.map((c) => ({ c, bonus: true })),
+  ];
+  const war = action.type === "DIPLOMACY_DECLARE_WAR";
+  const hostile = [
+    "DIPLOMACY_DECLARE_WAR",
+    "MILITARY_AIRSTRIKE",
+    "NUCLEAR_STRIKE",
+    "INTEL_COUP",
+    "INTEL_ASSASSINATE",
+  ].includes(action.type);
+  const found: Array<{ text: string; bonus: boolean; certain: boolean }> = [];
+
+  if (action.type === "NUCLEAR_STRIKE")
+    found.push({
+      text: "Nuclear use brings a global embargo and almost certainly ends your mission",
+      bonus: false,
+      certain: true,
+    });
+
+  for (const { c, bonus } of conditions) {
+    switch (c.kind) {
+      case "NO_WAR_WITH":
+        if (!c.targetId || me.atWarWith.includes(c.targetId)) break;
+        if (war && targetId === c.targetId)
+          found.push({
+            text: `War with ${name(c.targetId)} fails "${c.label}"`,
+            bonus,
+            certain: true,
+          });
+        else if (war && target?.alliances.includes(c.targetId))
+          found.push({
+            text: `${name(c.targetId)} is pledged to defend ${target.name}: this war can fail "${c.label}"`,
+            bonus,
+            certain: false,
+          });
+        else if (hostile && targetId === c.targetId)
+          found.push({
+            text: `${name(c.targetId)} may answer with war, failing "${c.label}"`,
+            bonus,
+            certain: false,
+          });
+        break;
+      case "WAR_ENDED":
+        if (war && (targetId === c.targetId || targetId === c.otherId))
+          found.push({
+            text: `Joining this war works against "${c.label}"`,
+            bonus,
+            certain: false,
+          });
+        break;
+      case "RELATION_MIN": {
+        if (targetId !== c.targetId) break;
+        const now = me.relations[c.targetId ?? ""] ?? 0;
+        const drop =
+          war || hostile
+            ? 40
+            : action.type === "DIPLOMACY_DENOUNCE"
+              ? 12
+              : action.type === "DIPLOMACY_BREAK_ALLIANCE"
+                ? 30
+                : 0;
+        if (drop > 0 && now - drop < (c.min ?? 0))
+          found.push({
+            text: `Relations with ${name(c.targetId)} would fall below ${c.min ?? 0}: "${c.label}"`,
+            bonus,
+            certain: war,
+          });
+        break;
+      }
+      case "NOT_COLLAPSED":
+        if (
+          targetId === c.targetId &&
+          (war || ["INTEL_DESTABILIZE", "INTEL_SUPPORT_REBELS", "INTEL_COUP"].includes(action.type))
+        )
+          found.push({
+            text: `Weakening ${name(c.targetId)} risks "${c.label}"`,
+            bonus,
+            certain: false,
+          });
+        break;
+    }
+  }
+  if (found.length === 0) return null;
+  found.sort((a, b) => Number(a.bonus) - Number(b.bonus) || Number(b.certain) - Number(a.certain));
+  const top = found[0];
+  const prefix = top.bonus
+    ? "Costs a bonus star"
+    : top.certain
+      ? "This ends your mission"
+      : "Mission at risk";
+  return `${prefix}: ${top.text}.`;
 }
 
 function eff(target: string, metric: string, delta: string, note: string): PreviewEffect {

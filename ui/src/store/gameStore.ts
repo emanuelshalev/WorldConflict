@@ -280,6 +280,7 @@ export interface ActionPreview {
   effects: PreviewEffect[];
   risks: string[];
   blocked: string | null;
+  missionWarning?: string | null;
 }
 
 export interface PendingAction {

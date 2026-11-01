@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { generateDeterministicIntents } from "../../src/agents/fallback.js";
 import { createDataLoader } from "../../src/core/data-loader.js";
+import { previewAction } from "../../src/core/preview.js";
 import { classifyLeadership } from "../../src/core/scoring.js";
 import { TurnEngine } from "../../src/core/turn.js";
 import type { WorldState } from "../../src/core/types.js";
@@ -105,5 +106,26 @@ describe("Player leader", () => {
     const real = loader.newGame({ scenarioId: "2026", playerCountryId: "UKR", seed: 3, mode: "TERM" });
     expect(get(real, "UKR").leader.name).toBe("Volodymyr Zelensky");
     expect(real.playerBackstory).toMatch(/^You are .*Volodymyr Zelensky of Ukraine/);
+  });
+});
+
+describe("Mission warnings in previews", () => {
+  it("warns that declaring war on a protected country ends the mission", () => {
+    const w = loader.newGame({
+      scenarioId: "2026",
+      playerCountryId: "RUS",
+      seed: 1,
+      mode: "FLASHPOINT",
+      flashpointId: "ceasefire-or-collapse",
+    });
+    const war = previewAction(w, { type: "DIPLOMACY_DECLARE_WAR", targetCountryId: "POL" });
+    expect(war.missionWarning).toMatch(/^This ends your mission/);
+    const court = previewAction(w, { type: "DIPLOMACY_IMPROVE_RELATIONS", targetCountryId: "POL" });
+    expect(court.missionWarning).toBeNull();
+  });
+
+  it("does not warn outside objectives", () => {
+    const w = loader.newGame({ scenarioId: "2026", playerCountryId: "DEU", seed: 1, mode: "LEGACY" });
+    expect(previewAction(w, { type: "DIPLOMACY_DENOUNCE", targetCountryId: "RUS" }).missionWarning).toBeNull();
   });
 });

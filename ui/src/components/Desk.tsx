@@ -321,6 +321,7 @@ export function Desk() {
       useGameStore.getState().setError(preview.blocked);
       return;
     }
+    if (preview?.missionWarning && !window.confirm(`${preview.missionWarning}\n\nGive the order "${a.label}" anyway?`)) return;
     addPendingAction({ ...a, preview: preview ?? undefined });
   };
 
@@ -406,7 +407,7 @@ export function Desk() {
             <div className="order-tray">
               {pendingActions.length === 0 && <span style={{ fontSize: 12, color: 'var(--text-3)' }}>No orders yet — pick a suggestion, or just execute the month.</span>}
               {pendingActions.map((a, i) => (
-                <span key={`${a.label}-${i}`} className={`order-pill ${a.preview && !a.preview.affordable ? 'blocked' : ''}`} title={a.preview?.summary}>
+                <span key={`${a.label}-${i}`} className={`order-pill ${a.preview && (!a.preview.affordable || a.preview.missionWarning) ? 'blocked' : ''}`} title={a.preview?.missionWarning ?? a.preview?.summary}>
                   {a.label}
                   {a.preview?.successChance != null && <span className="num" style={{ fontSize: 11, color: 'var(--text-2)' }}>{Math.round(a.preview.successChance <= 1 ? a.preview.successChance * 100 : a.preview.successChance)}%</span>}
                   <button onClick={() => removePendingAction(i)} aria-label="Remove order">

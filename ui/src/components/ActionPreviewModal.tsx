@@ -33,6 +33,11 @@ export function ActionPreviewModal() {
         {preview ? (
           <>
             <p style={{ color: '#aab', fontSize: 13, marginTop: 4 }}>{preview.summary}</p>
+            {preview.missionWarning && (
+              <div role="alert" style={{ background: '#3a1216', border: '1px solid #e5383b', borderRadius: 6, padding: 10, color: '#ffb3b5', fontSize: 13, fontWeight: 600, marginBottom: 8 }}>
+                ⚠ {preview.missionWarning}
+              </div>
+            )}
 
             {preview.blocked ? (
               <div style={{ background: '#2a1518', border: '1px solid #7a2a2a', borderRadius: 6, padding: 10, color: '#ff9090', fontSize: 13 }}>
