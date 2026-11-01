@@ -247,7 +247,9 @@ export class DataLoader {
 
   /** Start any session: a scenario in a mode, or an authored flashpoint. */
   newGame(options: NewGameOptions): WorldState {
-    const world = this.buildSession(options);
+    // Deep copy: a game must never share objects with the loader's cached profiles and
+    // scenarios, or one game's events would leak into the next (the harness reuses a loader)
+    const world = structuredClone(this.buildSession(options));
     // Cold open: the first crisis is on the desk the moment you take office
     const opening = runDirector(world, new SeededRandom(combineSeed(world.seed, 31337)));
     world.pendingDecisions = opening.decisions;
