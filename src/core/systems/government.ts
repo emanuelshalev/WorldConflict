@@ -1,3 +1,4 @@
+import { raiseCrisis } from "../crises.js";
 import type { SeededRandom } from "../seed.js";
 import type {
   CountryState,
@@ -236,6 +237,21 @@ export function runGovernmentDynamics(world: WorldState, rng: SeededRandom): Gov
       if (losingWar) risk += 0.04;
       if (country.insurgencyLevel === "REBELLION") risk += 0.012;
       if (country.insurgencyLevel === "GUERILLA") risk += 0.03;
+      if (isPlayer) {
+        // Telegraph before striking: the player first learns of the plot and
+        // gets a chance to act. Only then can the officers move.
+        const d = world.director;
+        const warned = d.coupWarnedTurn !== null && world.turn - d.coupWarnedTurn <= 8;
+        const canSee = world.difficulty !== "STRONGMAN" || country.intelLevel >= 50;
+        if (!warned && canSee) {
+          const warning = raiseCrisis(world, "coup_plot", rng);
+          if (warning) events.push(warning);
+          d.coupWarnedTurn = world.turn;
+          continue;
+        }
+        if (world.turn < d.coupShieldUntil) risk *= 0.25;
+        if (world.difficulty === "ANALYST") risk *= 0.6;
+      }
       if (rng.next() < risk) {
         const change = executeCoup(world, country, rng, isPlayer);
         changes.push(change);
@@ -249,7 +265,17 @@ export function runGovernmentDynamics(world: WorldState, rng: SeededRandom): Gov
       country.stability < 15 &&
       (country.insurgencyLevel === "REBELLION" || country.insurgencyLevel === "GUERILLA")
     ) {
-      if (rng.next() < 0.05) {
+      if (isPlayer) {
+        const d = world.director;
+        const warned = d.revoltWarnedTurn !== null && world.turn - d.revoltWarnedTurn <= 8;
+        if (!warned) {
+          const warning = raiseCrisis(world, "streets_boiling", rng);
+          if (warning) events.push(warning);
+          d.revoltWarnedTurn = world.turn;
+          continue;
+        }
+      }
+      if (rng.next() < (isPlayer && world.difficulty === "ANALYST" ? 0.03 : 0.05)) {
         const change = executeRevolution(world, country, rng, isPlayer);
         changes.push(change);
         events.push(governmentEvent(world, change, "GOVERNMENT"));
@@ -471,14 +497,15 @@ function governmentEvent(
   return {
     id: `evt_gov_${change.countryId}_${world.turn}_${change.kind}`,
     type,
-    title:
+    title: `${
       change.kind === "ELECTION"
-        ? `Power changes hands in ${change.countryId}`
+        ? "Power changes hands in"
         : change.kind === "COUP"
-          ? `Military coup in ${change.countryId}`
+          ? "Military coup in"
           : change.kind === "REVOLUTION"
-            ? `Revolution in ${change.countryId}`
-            : `Government change in ${change.countryId}`,
+            ? "Revolution in"
+            : "Government change in"
+    } ${world.countries.find((c) => c.id === change.countryId)?.name ?? change.countryId}`,
     description: change.description,
     affectedCountries: [change.countryId],
     turn: world.turn,

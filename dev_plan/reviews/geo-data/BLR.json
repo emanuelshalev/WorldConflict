@@ -1,0 +1,84 @@
+{
+  "id": "BLR",
+  "iso3": "BLR",
+  "name": "Belarus",
+  "population": 9100000,
+  "regimeType": "AUTOCRACY",
+  "politicalSystem": {
+    "type": "PERSONALIST_AUTOCRACY",
+    "powerCenters": ["EXECUTIVE", "SECURITY_SERVICES", "MILITARY"],
+    "electionCycleMonths": 60,
+    "nextElectionTurn": null,
+    "leaderTitle": "President"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1941, "event": "Nazi occupation kills a quarter of the population", "impact": "Great Patriotic War memory is the regime's founding myth and glue with Moscow" },
+      { "year": 1986, "event": "Chernobyl fallout contaminates a fifth of the country", "impact": "Deep distrust of distant authorities and lasting public-health trauma" },
+      { "year": 1994, "event": "Alexander Lukashenko elected president", "impact": "Began three decades of personalist rule preserving a Soviet-style state economy" },
+      { "year": 1999, "event": "Union State treaty with Russia", "impact": "Framework for economic and military integration that Moscow increasingly uses to absorb Minsk" },
+      { "year": 2020, "event": "Stolen election and mass protests crushed", "impact": "Regime survived only with Kremlin backing; Western sanctions and over 1,000 political prisoners followed" },
+      { "year": 2022, "event": "Territory used as launchpad for Russia's assault on Kyiv", "impact": "Belarus became a co-belligerent in Western eyes without committing its own troops" },
+      { "year": 2023, "event": "Russian tactical nuclear weapons deployed; Wagner briefly hosted", "impact": "Belarus turned into Russia's forward nuclear bastion facing Poland and the Baltics" },
+      { "year": 2025, "event": "Seventh term, Zapad-2025 exercise and US-brokered prisoner releases", "impact": "Lukashenko trades prisoners for US sanctions relief on Belavia and potash to gain room from Moscow" },
+      { "year": 2026, "event": "Oreshnik missiles on combat duty; 250 prisoners freed for US banking and potash relief", "impact": "Deeper nuclear dependency on Russia coexists with a cautious thaw with Washington while EU sanctions stay" }
+    ],
+    "historicalRivals": ["POL", "UKR"],
+    "historicalAllies": ["RUS", "CHN"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "DEFENSIVE",
+    "narrative": "A Soviet-style personal dictatorship that survives on Russian subsidies, repression and Lukashenko's knack for playing patrons against each other. It hosts Russian nuclear weapons yet keeps its own army out of Ukraine, and bargains prisoners for sanctions relief whenever Moscow's grip tightens."
+  },
+  "personality": {
+    "warPropensity": 25,
+    "allianceLoyalty": 70,
+    "diplomaticFlexibility": 45,
+    "riskTolerance": 30,
+    "expansionism": 10,
+    "isolationism": 45,
+    "ideologicalRigidity": 70,
+    "prestigeEmphasis": 45
+  },
+  "redLines": [
+    { "type": "IDEOLOGICAL", "description": "Western-backed color revolution or support for the exiled opposition", "severity": 10 },
+    { "type": "TERRITORIAL", "description": "NATO or Ukrainian military action on Belarusian soil", "severity": 9 },
+    { "type": "ECONOMIC", "targetCountryId": "RUS", "description": "Loss of Russian energy subsidies and market access that keep the economy afloat", "severity": 8 }
+  ],
+  "internalDivisions": [
+    { "kind": "IDEOLOGICAL", "name": "Suppressed democratic opposition from the 2020 uprising", "strength": 45, "tension": 55 },
+    { "kind": "IDEOLOGICAL", "name": "Nomenklatura succession uncertainty around an aging Lukashenko", "strength": 30, "tension": 40 },
+    { "kind": "ETHNIC", "name": "Belarusian national identity versus Russification", "strength": 35, "tension": 35 }
+  ],
+  "economy": {
+    "gdp": 80000000000,
+    "growthRate": 0.015,
+    "debtGdpRatio": 40,
+    "sectors": { "agriculture": 8, "industry": 33, "services": 59 },
+    "keyResources": ["potash", "timber", "peat", "refined_oil"],
+    "keyExports": ["potash_fertilizer", "refined_petroleum", "machinery", "dairy", "trucks"],
+    "developmentLevel": "EMERGING"
+  },
+  "military": {
+    "manpower": 48000,
+    "airpower": 200,
+    "doctrine": "DEFENSIVE",
+    "nuclearStatus": "NONE",
+    "warheads": 0,
+    "arms_suppliers": ["RUS"]
+  },
+  "militaryBudgetPct": 1.6,
+  "stability": 60,
+  "legitimacy": 35,
+  "intelLevel": 50,
+  "insurgencyLevel": "NONE",
+  "goals": [
+    { "id": "blr_g1", "type": "SECURITY", "priority": 95, "description": "Ensure regime survival against internal opposition and Western pressure" },
+    { "id": "blr_g2", "type": "SECURITY", "targetCountryId": "RUS", "priority": 80, "description": "Keep Russian protection and nuclear umbrella without full absorption into Russia" },
+    { "id": "blr_g3", "type": "ECONOMIC", "targetCountryId": "USA", "priority": 65, "description": "Trade political prisoners for lifting of US sanctions on potash, banks and aviation" },
+    { "id": "blr_g4", "type": "SECURITY", "targetCountryId": "UKR", "priority": 60, "description": "Avoid direct entry into the Ukraine war while hosting Russian forces" }
+  ],
+  "geo": {
+    "bounds": [23.2, 51.3, 32.8, 56.2],
+    "capital": { "name": "Minsk", "coordinates": [27.5615, 53.9045] }
+  }
+}

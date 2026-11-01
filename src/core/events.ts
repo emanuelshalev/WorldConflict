@@ -1,3 +1,4 @@
+import { areNeighbors } from "./crises.js";
 import type { SeededRandom } from "./seed.js";
 import { getRelation } from "./systems/diplomacy.js";
 import type { CountryState, GameEvent, PendingDecision, WorldState } from "./types.js";
@@ -33,8 +34,9 @@ function pickUnstable(ctx: EventContext, threshold: number): CountryState[] | nu
 function rivals(ctx: EventContext): [CountryState, CountryState] | null {
   const pairs: [CountryState, CountryState][] = [];
   for (const a of ctx.world.countries) {
-    if (a.collapsed) continue;
+    if (a.collapsed || a.id === ctx.world.playerCountryId) continue;
     for (const rid of a.history.historicalRivals ?? []) {
+      if (rid === ctx.world.playerCountryId) continue;
       const b = ctx.world.countries.find((c) => c.id === rid && !c.collapsed);
       if (b && getRelation(a, b.id) < -30 && !a.atWarWith.includes(b.id)) {
         pairs.push([a, b]);
@@ -42,11 +44,6 @@ function rivals(ctx: EventContext): [CountryState, CountryState] | null {
     }
   }
   if (pairs.length === 0) return null;
-  // The player's rivalries make for better drama: prefer them when available
-  const playerPairs = pairs.filter(
-    ([a, b]) => a.id === ctx.world.playerCountryId || b.id === ctx.world.playerCountryId,
-  );
-  if (playerPairs.length > 0 && ctx.rng.nextBool(0.65)) return ctx.rng.pick(playerPairs);
   return ctx.rng.pick(pairs);
 }
 
@@ -62,61 +59,21 @@ const TEMPLATES: EventTemplate[] = [
     build: (ctx, [a, b]) => {
       a.relations[b.id] = Math.max(-100, (a.relations[b.id] ?? 0) - 8);
       b.relations[a.id] = Math.max(-100, (b.relations[a.id] ?? 0) - 8);
-      ctx.world.globalTension = Math.min(100, ctx.world.globalTension + 4);
-      const isPlayerInvolved =
-        a.id === ctx.world.playerCountryId || b.id === ctx.world.playerCountryId;
-      const player = a.id === ctx.world.playerCountryId ? a : b;
-      const other = a.id === ctx.world.playerCountryId ? b : a;
-      const event: GameEvent = {
+      ctx.world.globalTension = Math.min(100, ctx.world.globalTension + 2);
+      const border = areNeighbors(a, b);
+      return {
         id: eid(ctx.world, "border"),
         type: "CRISIS",
-        title: `Border clash between ${a.name} and ${b.name}`,
-        description: `Patrols exchanged fire along the contested frontier between ${a.name} and ${b.name}. Casualties are reported on both sides; state media in both capitals are demanding retribution.`,
+        title: border
+          ? `Border clash between ${a.name} and ${b.name}`
+          : `${a.name} and ${b.name} in tense military encounter`,
+        description: border
+          ? `Patrols exchanged fire along the contested frontier between ${a.name} and ${b.name}. Casualties are reported on both sides; state media in both capitals are demanding retribution.`
+          : `Warships and aircraft from ${a.name} and ${b.name} came dangerously close in international waters. Both sides accuse the other of reckless provocation.`,
         affectedCountries: [a.id, b.id],
         turn: ctx.world.turn,
         severity: "MAJOR",
       };
-      if (isPlayerInvolved) {
-        event.decision = {
-          id: `dec_${event.id}`,
-          turn: ctx.world.turn,
-          title: `Border clash with ${other.name}`,
-          situation: `Your border units exchanged fire with ${other.name} forces. ${other.leader.title} ${other.leader.name} blames you publicly. Hardliners at home demand a response; your foreign ministry urges restraint.`,
-          affectedCountries: [player.id, other.id],
-          options: [
-            {
-              id: "deescalate",
-              label: "De-escalate quietly",
-              description:
-                "Open a back channel and pull patrols back. Avoids escalation but hardliners call it weakness.",
-              actions: [],
-              effects: { approval: -3, [`relations:${other.id}`]: 10 },
-              tensionDelta: -4,
-            },
-            {
-              id: "condemn",
-              label: "Condemn publicly",
-              description:
-                "Denounce the incident and demand an apology. Saves face, sustains the standoff.",
-              actions: [{ type: "DIPLOMACY_DENOUNCE", targetCountryId: other.id }],
-              effects: { approval: 2 },
-              tensionDelta: 2,
-            },
-            {
-              id: "mobilize",
-              label: "Mobilize border forces",
-              description: "Reinforce the frontier. Deterrence — or the first step toward war.",
-              actions: [
-                { type: "MILITARY_DEPLOY_BORDER", targetCountryId: other.id, value: 50000 },
-              ],
-              effects: { approval: 4, [`relations:${other.id}`]: -10 },
-              tensionDelta: 6,
-            },
-          ],
-          deadlineTurn: ctx.world.turn + 1,
-        };
-      }
-      return event;
     },
   },
 
@@ -159,16 +116,15 @@ const TEMPLATES: EventTemplate[] = [
     id: "corruption_scandal",
     baseChance: 0.06,
     trigger: (ctx) => {
-      const candidates = ctx.world.countries.filter((c) => !c.collapsed && c.legitimacy > 25);
+      const candidates = ctx.world.countries.filter(
+        (c) => !c.collapsed && c.legitimacy > 25 && c.id !== ctx.world.playerCountryId,
+      );
       if (candidates.length === 0) return null;
-      const player = candidates.find((c) => c.id === ctx.world.playerCountryId);
-      if (player && ctx.rng.nextBool(0.3)) return [player];
       return [ctx.rng.pick(candidates)];
     },
     build: (ctx, [country]) => {
       country.legitimacy = Math.max(0, country.legitimacy - 8);
       country.approval = Math.max(0, country.approval - 6);
-      const isPlayer = country.id === ctx.world.playerCountryId;
       const event: GameEvent = {
         id: eid(ctx.world, "scandal"),
         type: "STABILITY",
@@ -182,45 +138,6 @@ const TEMPLATES: EventTemplate[] = [
         turn: ctx.world.turn,
         severity: "NOTABLE",
       };
-      if (isPlayer) {
-        event.decision = {
-          id: `dec_${event.id}`,
-          turn: ctx.world.turn,
-          title: "Corruption scandal",
-          situation: `Documents leaked to the press implicate your inner circle in large-scale embezzlement. The story is everywhere. How do you respond?`,
-          affectedCountries: [country.id],
-          options: [
-            {
-              id: "purge",
-              label: "Purge the implicated officials",
-              description:
-                "Fire them publicly and order prosecutions. Restores some trust, makes powerful enemies.",
-              actions: [],
-              effects: { legitimacy: 6, stability: -3 },
-              tensionDelta: 0,
-            },
-            {
-              id: "deny",
-              label: "Deny everything",
-              description:
-                "Dismiss the documents as forgeries by foreign intelligence. Your base believes you; nobody else does.",
-              actions: [],
-              effects: { approval: -4, legitimacy: -4 },
-              tensionDelta: 0,
-            },
-            {
-              id: "reform",
-              label: "Launch anti-corruption campaign",
-              description:
-                "Turn the crisis into a mandate. Expensive and slow, but it could define your legacy.",
-              actions: [{ type: "DOMESTIC_REFORM" }],
-              effects: { approval: 3 },
-              tensionDelta: 0,
-            },
-          ],
-          deadlineTurn: ctx.world.turn + 1,
-        };
-      }
       return event;
     },
   },
@@ -469,22 +386,21 @@ export class EventEngine {
     const tensionMultiplier = 0.7 + (world.globalTension / 100) * 0.8;
     let crisisCount = 0;
 
-    // Don't repeat the same story arc back-to-back: 6-turn cooldown per template
-    const recentTitles = world.timeline
-      .filter((t) => world.turn - t.turn < 6)
-      .map((t) => t.description);
-
+    // Don't repeat the same story arc back-to-back: per-template cooldown,
+    // checked before building so a skipped event never mutates the world
     for (const template of TEMPLATES) {
-      if (crisisCount >= 2) break; // don't bury the player in crises
+      if (crisisCount >= 3) break; // a few world stories per month is plenty
+      const key = `world:${template.id}`;
+      const last = world.director.lastUsed[key];
+      if (last !== undefined && world.turn - last < 4) continue;
       if (rng.next() > template.baseChance * tensionMultiplier) continue;
       const affected = template.trigger({ world, rng });
       if (!affected) continue;
       const event = template.build({ world, rng }, affected);
       if (event) {
-        const isRepeat = recentTitles.some((t) => t === event.title);
-        if (isRepeat) continue;
         events.push(event);
-        if (event.decision) crisisCount += 1;
+        world.director.lastUsed[key] = world.turn;
+        if (event.severity === "MAJOR" || event.severity === "CRITICAL") crisisCount += 1;
       }
     }
 

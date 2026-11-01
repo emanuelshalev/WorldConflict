@@ -2,16 +2,21 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { z } from "zod";
 import { combineSeed, createSeed, SeededRandom } from "./seed.js";
-import { generatePlayerBackstory } from "./systems/government.js";
+import { generateLeaderName, generatePlayerBackstory } from "./systems/government.js";
 import { updateBeliefs } from "./systems/intelligence.js";
 import {
   type CountryProfile,
   CountryProfileSchema,
   type CountryState,
   CountryStateSchema,
+  type Difficulty,
+  type GameMode,
   type InsurgencyLevel,
   LeaderSchema,
+  MODE_TURNS,
   type NuclearStatus,
+  ObjectiveSchema,
+  PendingDecisionSchema,
   type RegimeType,
   TIER1_COUNTRIES,
   type WorldState,
@@ -82,6 +87,78 @@ export const ScenarioSchema = z.object({
 });
 export type ScenarioData = z.infer<typeof ScenarioSchema>;
 
+// ============================================================================
+// Flashpoints: short authored sessions on top of a base scenario
+// ============================================================================
+
+const ScriptedCrisisSchema = z.object({
+  turn: z.number(),
+  templateId: z.string(),
+  headline: z.string(),
+  text: z.string(),
+  decision: PendingDecisionSchema.omit({ id: true, turn: true, deadlineTurn: true }).extend({
+    templateId: z.string().optional(),
+  }),
+});
+
+export const FlashpointSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  tagline: z.string(),
+  hook: z.string(), // the real-world situation, with dates
+  sources: z.array(z.string()).default([]),
+  scenarioId: z.string(), // base world
+  date: z.string().optional(), // YYYY-MM start override
+  turns: z.number().default(12),
+  globalTension: z.number().optional(),
+  playable: z.array(
+    z.object({
+      countryId: z.string(),
+      role: z.string(),
+      difficulty: z.enum(["STEADY", "TOUGH", "BRUTAL"]).default("TOUGH"),
+    }),
+  ),
+  setup: z
+    .object({
+      wars: z
+        .array(z.object({ attackerId: z.string(), defenderId: z.string(), frontline: z.number() }))
+        .default([]),
+      relations: z.array(z.object({ a: z.string(), b: z.string(), value: z.number() })).default([]),
+      countries: z
+        .record(
+          z.string(),
+          z
+            .object({
+              stability: z.number(),
+              approval: z.number(),
+              legitimacy: z.number(),
+              mobilization: z.number(),
+              nuclearStatus: z.string(),
+              nuclearProgress: z.number(),
+              insurgencyLevel: z.string(),
+              growthRate: z.number(),
+            })
+            .partial(),
+        )
+        .default({}),
+    })
+    .default({ wars: [], relations: [], countries: {} }),
+  objectives: z.record(z.string(), ObjectiveSchema),
+  scripted: z.record(z.string(), z.array(ScriptedCrisisSchema)).default({}),
+  debrief: z.string().default(""),
+});
+export type FlashpointData = z.infer<typeof FlashpointSchema>;
+
+export interface NewGameOptions {
+  scenarioId: string;
+  playerCountryId: string;
+  seed: number;
+  leaderName?: string;
+  mode?: GameMode;
+  difficulty?: Difficulty;
+  flashpointId?: string;
+}
+
 export class DataLoader {
   private dataPath: string;
   private countriesCache = new Map<string, CountryProfile>();
@@ -121,6 +198,153 @@ export class DataLoader {
     return files.map((file) => this.loadScenario(file.replace(".json", "")));
   }
 
+  loadFlashpoint(id: string): FlashpointData {
+    const filePath = join(this.dataPath, "flashpoints", `${id}.json`);
+    return FlashpointSchema.parse(JSON.parse(readFileSync(filePath, "utf-8")));
+  }
+
+  loadAvailableFlashpoints(): FlashpointData[] {
+    const dir = join(this.dataPath, "flashpoints");
+    let files: string[] = [];
+    try {
+      files = readdirSync(dir).filter((f) => f.endsWith(".json"));
+    } catch {
+      return [];
+    }
+    return files.map((f) => this.loadFlashpoint(f.replace(".json", "")));
+  }
+
+  /** Start any session: a scenario in a mode, or an authored flashpoint. */
+  newGame(options: NewGameOptions): WorldState {
+    const { playerCountryId, seed, leaderName, difficulty = "STATESMAN" } = options;
+    if (options.flashpointId) {
+      const fp = this.loadFlashpoint(options.flashpointId);
+      if (!fp.playable.some((p) => p.countryId === playerCountryId)) {
+        throw new Error(`${playerCountryId} is not playable in ${fp.title}`);
+      }
+      const world = this.initializeWorldState(fp.scenarioId, playerCountryId, seed, leaderName);
+      this.applyFlashpoint(world, fp);
+      world.mode = "FLASHPOINT";
+      world.difficulty = difficulty;
+      return world;
+    }
+    const world = this.initializeWorldState(options.scenarioId, playerCountryId, seed, leaderName);
+    const mode = options.mode ?? "TERM";
+    world.mode = mode;
+    world.difficulty = difficulty;
+    world.maxTurns = MODE_TURNS[mode];
+    const player = world.countries.find((c) => c.id === playerCountryId);
+    if (player && mode === "TERM" && player.politicalSystem.electionCycleMonths > 0) {
+      // One electoral term: the election is the finale
+      player.politicalSystem.nextElectionTurn = world.maxTurns - 1;
+    }
+    if (player && mode !== "LEGACY") {
+      const electoral = player.politicalSystem.electionCycleMonths > 0;
+      world.objective = {
+        title: electoral ? "Win a second term" : "Survive the inner circle's review",
+        briefing: electoral
+          ? `Govern ${player.name} for four years and win re-election at the end.`
+          : `No ballot box can remove you — but the ${player.politicalSystem.type === "ONE_PARTY_STATE" ? "Party" : "inner circle"} reviews your record at the end of four years. Deliver order, legitimacy and results.`,
+        primary: electoral
+          ? []
+          : [
+              {
+                kind: "STAT_MIN",
+                stat: "legitimacy",
+                min: 40,
+                label: "Legitimacy of 40%+ at the review",
+              },
+              {
+                kind: "STAT_MIN",
+                stat: "stability",
+                min: 35,
+                label: "Stability of 35%+ at the review",
+              },
+              { kind: "SCORE_PAR", min: 105, label: "Leadership score of 105+ at the review" },
+            ],
+        bonus: [
+          { kind: "SCORE_PAR", min: 115, label: "Leadership score of 115+" },
+          { kind: "STAT_MIN", stat: "approval", min: 60, label: "Leave with 60%+ approval" },
+        ],
+        par: 115,
+        debrief: "",
+      };
+    }
+    return world;
+  }
+
+  private applyFlashpoint(world: WorldState, fp: FlashpointData): void {
+    world.flashpointId = fp.id;
+    world.maxTurns = fp.turns;
+    if (fp.date) world.date = fp.date;
+    if (fp.globalTension !== undefined) world.globalTension = fp.globalTension;
+    const byId = new Map(world.countries.map((c) => [c.id, c]));
+    for (const w of fp.setup.wars) {
+      const a = byId.get(w.attackerId);
+      const d = byId.get(w.defenderId);
+      if (!a || !d || a.atWarWith.includes(d.id)) continue;
+      a.atWarWith.push(d.id);
+      d.atWarWith.push(a.id);
+      a.relations[d.id] = -100;
+      d.relations[a.id] = -100;
+      world.wars.push({
+        id: `war_${a.id}_${d.id}_0`,
+        attackerId: a.id,
+        defenderId: d.id,
+        startTurn: 0,
+        frontline: w.frontline,
+        attackerCasualties: 0,
+        defenderCasualties: 0,
+        exhaustion: 0,
+      });
+    }
+    for (const r of fp.setup.relations) {
+      const a = byId.get(r.a);
+      const b = byId.get(r.b);
+      if (a) a.relations[r.b] = r.value;
+      if (b) b.relations[r.a] = r.value;
+    }
+    for (const [id, o] of Object.entries(fp.setup.countries)) {
+      const c = byId.get(id);
+      if (!c) continue;
+      if (o.stability !== undefined) c.stability = o.stability;
+      if (o.approval !== undefined) c.approval = o.approval;
+      if (o.legitimacy !== undefined) c.legitimacy = o.legitimacy;
+      if (o.mobilization !== undefined) c.mobilizationLevel = o.mobilization;
+      if (o.growthRate !== undefined) c.growthRate = o.growthRate;
+      if (o.insurgencyLevel) c.insurgencyLevel = o.insurgencyLevel as InsurgencyLevel;
+      if (o.nuclearStatus) c.nuclear.status = o.nuclearStatus as NuclearStatus;
+      if (o.nuclearProgress !== undefined) {
+        c.nuclear.progress = o.nuclearProgress;
+        c.nuclear.funded = c.nuclear.status === "DEVELOPING";
+      }
+    }
+    const player = byId.get(world.playerCountryId);
+    if (player && player.politicalSystem.nextElectionTurn !== null) {
+      // Short sessions are about the crisis, not the electoral calendar
+      player.politicalSystem.nextElectionTurn = Math.max(
+        player.politicalSystem.nextElectionTurn,
+        fp.turns + 1,
+      );
+    }
+    world.objective = fp.objectives[world.playerCountryId] ?? null;
+    if (world.objective && !world.objective.debrief) world.objective.debrief = fp.debrief;
+    world.director.scheduled = (fp.scripted[world.playerCountryId] ?? []).map((sc) => ({
+      templateId: sc.templateId,
+      turn: sc.turn,
+      headline: sc.headline,
+      text: sc.text,
+      decision: {
+        ...sc.decision,
+        id: `dec_${sc.templateId}`,
+        turn: sc.turn,
+        deadlineTurn: sc.turn + 1,
+        templateId: sc.decision.templateId ?? sc.templateId,
+      },
+    }));
+    updateBeliefs(world, new SeededRandom(combineSeed(world.seed, 4242)));
+  }
+
   createCountryState(
     profile: CountryProfile,
     scenario: ScenarioData,
@@ -143,7 +367,9 @@ export class DataLoader {
 
     const scenarioLeader = scenario.leaders[profile.id];
     const leader = {
-      name: isPlayer ? (playerLeaderName ?? "You") : (scenarioLeader?.name ?? "Unknown Leader"),
+      name: isPlayer
+        ? (playerLeaderName ?? generateLeaderName(profile.id, rng))
+        : (scenarioLeader?.name ?? generateLeaderName(profile.id, rng)),
       title: scenarioLeader?.title ?? override.leaderTitle ?? profile.politicalSystem.leaderTitle,
       style: scenarioLeader?.style ?? "PRAGMATIC",
       origin: scenarioLeader?.origin ?? "ELECTED",
@@ -226,6 +452,7 @@ export class DataLoader {
       redLines: structuredClone(profile.redLines),
       history: structuredClone(profile.history),
 
+      capital: profile.geo?.capital?.coordinates,
       collapsed: false,
       embargoedBy: [],
       underGlobalEmbargo: false,
@@ -255,6 +482,7 @@ export class DataLoader {
     const date = `${scenario.startYear}-${String(scenario.startMonth).padStart(2, "0")}`;
 
     const world: WorldState = WorldStateSchema.parse({
+      scenarioId,
       turn: 0,
       date,
       countries,

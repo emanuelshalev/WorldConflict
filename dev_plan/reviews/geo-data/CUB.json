@@ -1,0 +1,83 @@
+{
+  "id": "CUB",
+  "iso3": "CUB",
+  "name": "Cuba",
+  "population": 9700000,
+  "regimeType": "COMMUNIST",
+  "politicalSystem": {
+    "type": "ONE_PARTY_STATE",
+    "powerCenters": ["PARTY", "MILITARY", "SECURITY_SERVICES"],
+    "electionCycleMonths": 60,
+    "nextElectionTurn": null,
+    "leaderTitle": "First Secretary and President"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1959, "event": "Revolution brings Fidel Castro to power", "impact": "Founded a one-party socialist state defined by defiance of the United States" },
+      { "year": 1961, "event": "Bay of Pigs invasion defeated", "impact": "Victory over a CIA-backed landing became the regime's founding myth of resistance" },
+      { "year": 1962, "event": "Cuban Missile Crisis", "impact": "Soviet missiles brought the world to the nuclear brink; US pledged not to invade in exchange for withdrawal" },
+      { "year": 1991, "event": "Soviet collapse triggers the 'Special Period'", "impact": "Loss of subsidies shrank GDP by a third and taught survival through austerity and tourism" },
+      { "year": 2014, "event": "Obama-Castro diplomatic thaw", "impact": "Embassies reopened briefly before Trump's first term reversed most openings" },
+      { "year": 2021, "event": "11 July nationwide protests (11J)", "impact": "Largest protests since 1959 met with mass arrests; triggered record emigration of over a million people by 2024" },
+      { "year": 2024, "event": "Total grid collapses and island-wide blackouts", "impact": "Exposed the decay of power plants and dependence on Venezuelan oil" },
+      { "year": 2026, "event": "US oil blockade after Maduro's capture; repeated nationwide blackouts and first acknowledged talks with Washington", "impact": "Lost its Venezuelan oil lifeline; fuel ran out by May, hotels closed, US sanctioned Diaz-Canel personally and indicted Raul Castro" }
+    ],
+    "historicalRivals": ["USA"],
+    "historicalAllies": ["RUS", "VEN", "CHN", "MEX"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "DEFENSIVE",
+    "narrative": "An aging revolutionary state that has survived six decades of US hostility on ideology, security-service control and foreign patrons. With Venezuelan oil gone and the grid collapsing, it is negotiating for the first time from near-total weakness while trying not to surrender the system itself."
+  },
+  "personality": {
+    "warPropensity": 10,
+    "allianceLoyalty": 70,
+    "diplomaticFlexibility": 35,
+    "riskTolerance": 25,
+    "expansionism": 5,
+    "isolationism": 45,
+    "ideologicalRigidity": 85,
+    "prestigeEmphasis": 55
+  },
+  "redLines": [
+    { "type": "IDEOLOGICAL", "targetCountryId": "USA", "description": "US-imposed change of the constitution or of Communist Party rule", "severity": 10 },
+    { "type": "TERRITORIAL", "targetCountryId": "USA", "description": "US military intervention or naval quarantine enforced by force against Cuban territory", "severity": 10 },
+    { "type": "ECONOMIC", "description": "Complete severance of the remaining fuel supply from Russia or Mexico", "severity": 8 }
+  ],
+  "internalDivisions": [
+    { "kind": "IDEOLOGICAL", "name": "Popular anger over blackouts, hunger and emigration vs. the party-state", "strength": 65, "tension": 85 },
+    { "kind": "IDEOLOGICAL", "name": "Reformers seeking a market opening vs. orthodox Castro-era hardliners and GAESA military conglomerate", "strength": 35, "tension": 60 },
+    { "kind": "REGIONAL", "name": "Neglected eastern provinces vs. Havana", "strength": 30, "tension": 55 }
+  ],
+  "economy": {
+    "gdp": 40000000000,
+    "growthRate": -0.05,
+    "debtGdpRatio": 120,
+    "sectors": { "agriculture": 4, "industry": 22, "services": 74 },
+    "keyResources": ["nickel", "cobalt", "sugarcane", "tobacco"],
+    "keyExports": ["medical_services", "nickel", "tobacco_cigars", "sugar", "rum", "tourism"],
+    "developmentLevel": "DEVELOPING"
+  },
+  "military": {
+    "manpower": 49000,
+    "airpower": 60,
+    "doctrine": "GUERILLA",
+    "nuclearStatus": "NONE",
+    "warheads": 0,
+    "arms_suppliers": ["RUS"]
+  },
+  "militaryBudgetPct": 3.0,
+  "stability": 28,
+  "legitimacy": 30,
+  "intelLevel": 70,
+  "insurgencyLevel": "UNREST",
+  "goals": [
+    { "id": "cub_g1", "type": "SECURITY", "priority": 95, "description": "Preserve Communist Party rule through the energy and economic collapse" },
+    { "id": "cub_g2", "type": "ECONOMIC", "priority": 90, "description": "Secure fuel imports by breaking or negotiating around the US oil blockade" },
+    { "id": "cub_g3", "type": "ECONOMIC", "targetCountryId": "USA", "priority": 70, "description": "Obtain sanctions relief through limited economic opening without political concessions" },
+    { "id": "cub_g4", "type": "SECURITY", "targetCountryId": "RUS", "priority": 55, "description": "Keep Russian and Chinese backing as a counterweight to Washington" }
+  ],
+  "geo": {
+    "bounds": [-85.0, 19.8, -74.1, 23.3],
+    "capital": { "name": "Havana", "coordinates": [-82.3666, 23.1136] }
+  }
+}

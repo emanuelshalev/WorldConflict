@@ -202,6 +202,17 @@ export function resolveCovertOp(
   return { success, exposed, description, governmentChange };
 }
 
+const EXPOSED_DESCRIPTIONS: Record<string, string> = {
+  INTEL_GATHER: "an espionage ring",
+  INTEL_SABOTAGE: "a sabotage campaign against infrastructure",
+  INTEL_DESTABILIZE: "a destabilization campaign funding opposition groups",
+  INTEL_SUPPORT_REBELS: "arms shipments to rebel groups",
+  INTEL_MISINFORMATION: "a disinformation operation",
+  INTEL_PROPAGANDA: "a covert influence campaign",
+  INTEL_ASSASSINATE: "an assassination plot against the leadership",
+  INTEL_COUP: "a plot to overthrow the government",
+};
+
 export function covertEvent(
   world: WorldState,
   actor: CountryState,
@@ -212,7 +223,7 @@ export function covertEvent(
   // Only exposed ops or government changes make the news
   if (!outcome.exposed && !outcome.governmentChange) return null;
   const title = outcome.exposed
-    ? `${actor.name} covert operation EXPOSED in ${target.name}`
+    ? `${target.name} exposes ${actor.name} spy operation`
     : outcome.governmentChange
       ? outcome.governmentChange.kind === "ASSASSINATION"
         ? `Assassination in ${target.name}`
@@ -223,7 +234,7 @@ export function covertEvent(
     type: "COVERT",
     title,
     description: outcome.exposed
-      ? `${outcome.description} Evidence points to ${actor.name}; diplomatic fallout is severe.`
+      ? `${target.name}'s security services say they caught ${actor.name} running ${EXPOSED_DESCRIPTIONS[opType] ?? "a covert operation"} on their soil. ${actor.name} denies everything; ${target.name} vows retaliation.`
       : outcome.description,
     affectedCountries: [actor.id, target.id],
     turn: world.turn,

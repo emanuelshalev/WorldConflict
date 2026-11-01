@@ -1,0 +1,84 @@
+{
+  "id": "PHL",
+  "iso3": "PHL",
+  "name": "Philippines",
+  "population": 115000000,
+  "regimeType": "DEMOCRACY",
+  "politicalSystem": {
+    "type": "PRESIDENTIAL_DEMOCRACY",
+    "powerCenters": ["EXECUTIVE", "LEGISLATURE", "JUDICIARY", "MILITARY"],
+    "electionCycleMonths": 72,
+    "nextElectionTurn": null,
+    "leaderTitle": "President"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1946, "event": "Independence from the United States", "impact": "Born as a close US ally with American bases and a US-modeled presidential system" },
+      { "year": 1951, "event": "Mutual Defense Treaty with the United States", "impact": "The oldest US treaty alliance in Asia; its applicability to the South China Sea is now the core question" },
+      { "year": 1986, "event": "People Power revolution ousts Ferdinand Marcos Sr.", "impact": "Restored democracy but left dynastic politics and military factionalism intact" },
+      { "year": 1992, "event": "US forces leave Subic Bay and Clark", "impact": "The vacuum let China occupy Mischief Reef in 1995 and later seize Scarborough Shoal in 2012" },
+      { "year": 2016, "event": "Arbitral tribunal rules against China's South China Sea claims; Duterte launches drug war and tilts to Beijing", "impact": "Won the legal case but shelved it for six years of accommodation with China" },
+      { "year": 2023, "event": "Marcos Jr. expands EDCA US access to nine bases and confronts China at Second Thomas Shoal", "impact": "Reversed Duterte's pivot and made the Philippines the frontline of US Indo-Pacific posture" },
+      { "year": 2024, "event": "Chinese coast guard axe-and-blade assault on a resupply mission at Second Thomas Shoal; Reciprocal Access Agreement with Japan", "impact": "Closest brush yet with triggering the US treaty; deepened Japan-Philippines defense ties" },
+      { "year": 2025, "event": "Ex-president Rodrigo Duterte arrested and flown to the ICC; flood-control corruption scandal sparks mass protests", "impact": "Turned the Marcos-Duterte feud into open political war and dented public trust in government" },
+      { "year": 2026, "event": "House impeaches Vice President Sara Duterte; repeated Chinese water-cannon attacks near Scarborough Shoal", "impact": "Domestic polarization peaks ahead of 2028 while Manila leans harder on Washington and Tokyo" }
+    ],
+    "historicalRivals": ["CHN"],
+    "historicalAllies": ["USA", "JPN", "AUS"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "DEFENSIVE",
+    "narrative": "A sprawling archipelago democracy of powerful political dynasties, sitting on the first island chain between Taiwan and the South China Sea. Militarily weak but strategically priceless, it relies on 'transparency' campaigns, the US alliance, and a growing web of Japanese and Australian partnerships to resist Chinese gray-zone pressure."
+  },
+  "personality": {
+    "warPropensity": 15,
+    "allianceLoyalty": 75,
+    "diplomaticFlexibility": 55,
+    "riskTolerance": 40,
+    "expansionism": 5,
+    "isolationism": 20,
+    "ideologicalRigidity": 35,
+    "prestigeEmphasis": 50
+  },
+  "redLines": [
+    { "type": "TERRITORIAL", "targetCountryId": "CHN", "description": "Chinese seizure of Second Thomas Shoal, Thitu (Pag-asa), or reclamation and militarization of Scarborough Shoal", "severity": 9 },
+    { "type": "TERRITORIAL", "description": "Death of Filipino personnel in an armed attack on government vessels (would invoke the US Mutual Defense Treaty)", "severity": 9 },
+    { "type": "ALLIANCE", "targetCountryId": "USA", "description": "US failure to honor the Mutual Defense Treaty in the South China Sea", "severity": 8 }
+  ],
+  "internalDivisions": [
+    { "kind": "IDEOLOGICAL", "name": "Marcos-Duterte dynastic feud: VP impeachment, ICC case, and the 2028 succession", "strength": 60, "tension": 80 },
+    { "kind": "RELIGIOUS", "name": "Muslim Bangsamoro autonomy in Mindanao and residual jihadist cells", "strength": 10, "tension": 40 },
+    { "kind": "IDEOLOGICAL", "name": "Communist NPA insurgency remnants and anger over elite corruption", "strength": 15, "tension": 45 }
+  ],
+  "economy": {
+    "gdp": 500000000000,
+    "growthRate": 0.05,
+    "debtGdpRatio": 61,
+    "sectors": { "agriculture": 9, "industry": 28, "services": 63 },
+    "keyResources": ["nickel", "copper", "gold", "fisheries", "offshore_gas"],
+    "keyExports": ["electronics", "business_process_outsourcing", "nickel_ore", "coconut_oil", "remittances"],
+    "developmentLevel": "DEVELOPING"
+  },
+  "military": {
+    "manpower": 145000,
+    "airpower": 170,
+    "doctrine": "DEFENSIVE",
+    "nuclearStatus": "NONE",
+    "warheads": 0,
+    "arms_suppliers": ["USA", "PRIVATE"]
+  },
+  "militaryBudgetPct": 1.3,
+  "stability": 55,
+  "legitimacy": 55,
+  "intelLevel": 40,
+  "insurgencyLevel": "UNREST",
+  "goals": [
+    { "id": "phl_g1", "type": "TERRITORIAL", "targetCountryId": "CHN", "priority": 90, "description": "Hold Philippine-occupied features and assert EEZ rights under the 2016 arbitral award" },
+    { "id": "phl_g2", "type": "SECURITY", "targetCountryId": "USA", "priority": 85, "description": "Keep the US alliance credible and deepen defense pacts with Japan and Australia" },
+    { "id": "phl_g3", "type": "ECONOMIC", "priority": 70, "description": "Sustain growth, attract manufacturing, and secure offshore gas as Malampaya runs dry" },
+    { "id": "phl_g4", "type": "SECURITY", "priority": 60, "description": "Contain the Marcos-Duterte feud and keep the military out of politics" }
+  ],
+  "geo": {
+    "bounds": [116.9, 4.6, 126.6, 21.1],
+    "capital": { "name": "Manila", "coordinates": [120.9842, 14.5995] }
+  }
+}

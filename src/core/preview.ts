@@ -1,8 +1,7 @@
-import { COVERT_COSTS_M } from "./systems/covert.js";
+import { actionCostM, actionCostPC } from "./costs.js";
 import { canDeclareWar } from "./systems/diplomacy.js";
 import { effectiveForce, monthlyDefenseBudgetM } from "./systems/military.js";
 import { isNuclearOperational } from "./systems/nuclear.js";
-import { actionCostM } from "./turn.js";
 import type { Action, WorldState } from "./types.js";
 
 export interface PreviewEffect {
@@ -16,6 +15,8 @@ export interface ActionPreview {
   summary: string;
   costM: number;
   budgetM: number;
+  costPC: number; // political capital this order consumes
+  pcAvailable: number;
   affordable: boolean;
   successChance: number | null; // null = certain
   effects: PreviewEffect[];
@@ -33,13 +34,16 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
     ? world.countries.find((c) => c.id === action.targetCountryId)
     : undefined;
 
-  const costM = actionCostM(action);
+  const costM = actor ? actionCostM(action, actor) : 0;
   const budgetM = actor ? monthlyDefenseBudgetM(actor) : 0;
+  const costPC = actionCostPC(action);
   const base: ActionPreview = {
     summary: "",
     costM,
     budgetM: Math.round(budgetM),
-    affordable: costM <= budgetM,
+    costPC,
+    pcAvailable: world.politicalCapital,
+    affordable: costM <= budgetM && costPC <= world.politicalCapital,
     successChance: null,
     effects: [],
     risks: [],
@@ -59,7 +63,7 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
       if (!target) return blocked(base, "Select a target country");
       if (actor.atWarWith.includes(target.id))
         return blocked(base, "You are at war — propose a ceasefire instead");
-      base.summary = `Open trade talks, cultural exchange and quiet diplomacy with ${tname} ($${costM}M/month).`;
+      base.summary = `Open trade talks, cultural exchange and quiet diplomacy with ${tname}.`;
       effects.push(eff(tname, "Relations", "+5 to +7", "Diminishing returns at high friendship"));
       if ((actor.history.historicalRivals ?? []).includes(target.id)) {
         risks.push(`${tname} is a historical rival — progress will be slow and fragile.`);
@@ -250,7 +254,7 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
       if (status === "TESTED") return blocked(base, "Weaponization is already underway");
       base.summary =
         status === "NONE" || status === "LATENT"
-          ? `Begin a clandestine nuclear weapons program ($${costM}M/month).`
+          ? `Begin a clandestine nuclear weapons program ($${costM}M this month).`
           : status === "ARMED"
             ? "Expand the arsenal."
             : "Continue funding the nuclear program.";
@@ -367,7 +371,6 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
       risks.push(
         `Exposure risk: relations collapse${action.type === "INTEL_COUP" || action.type === "INTEL_ASSASSINATE" ? " worldwide — these operations outrage everyone" : ` with ${tname}`}.`,
       );
-      base.costM = COVERT_COSTS_M[action.type] ?? base.costM;
       break;
     }
     case "DOMESTIC_PROPAGANDA": {

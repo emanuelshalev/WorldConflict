@@ -1,14 +1,16 @@
-import { collectPendingDecisions, EventEngine } from "./events.js";
+import { actionCostM, actionCostPC, PC_CAP, politicalCapitalIncome } from "./costs.js";
+import { applyEffects, raiseCrisis, runDirector, scheduleFollowUp } from "./crises.js";
+import { EventEngine } from "./events.js";
 import { generateNewspaper } from "./newspaper.js";
+import { computeOutcome, earlyFailure } from "./objectives.js";
 import { updateScore } from "./scoring.js";
 import { combineSeed, SeededRandom } from "./seed.js";
-import { COVERT_COSTS_M, covertEvent, resolveCovertOp } from "./systems/covert.js";
+import { covertEvent, resolveCovertOp } from "./systems/covert.js";
 import {
   applyDiplomaticDrift,
   breakAlliance,
   canDeclareWar,
   denounce,
-  IMPROVE_RELATIONS_COST_M,
   improveRelations,
   proposeAlliance,
   proposeCeasefire,
@@ -30,7 +32,6 @@ import {
 } from "./systems/military.js";
 import {
   executeNuclearStrike,
-  NUCLEAR_RESEARCH_COST_M,
   progressNuclearPrograms,
   startNuclearProgram,
 } from "./systems/nuclear.js";
@@ -42,7 +43,7 @@ import type {
   GameEvent,
   GameOver,
   NewspaperEntry,
-  PendingDecision,
+  PlayerTurnReport,
   WorldState,
 } from "./types.js";
 
@@ -61,28 +62,7 @@ export interface TurnResult {
   gameOver: GameOver | null;
 }
 
-export function actionCostM(action: Action): number {
-  switch (action.type) {
-    case "DIPLOMACY_IMPROVE_RELATIONS":
-      return IMPROVE_RELATIONS_COST_M;
-    case "MILITARY_MOBILIZE":
-      return 200;
-    case "MILITARY_PROCURE":
-      return action.value ?? 500;
-    case "MILITARY_AIRSTRIKE":
-      return 150;
-    case "MILITARY_DEPLOY_BORDER":
-      return 100;
-    case "NUCLEAR_FUND_PROGRAM":
-      return NUCLEAR_RESEARCH_COST_M;
-    case "DOMESTIC_REFORM":
-      return 250;
-    case "DOMESTIC_PROPAGANDA":
-      return 75;
-    default:
-      return COVERT_COSTS_M[action.type] ?? 0;
-  }
-}
+export { actionCostM, actionCostPC } from "./costs.js";
 
 export class TurnEngine {
   private eventEngine = new EventEngine();
@@ -102,6 +82,25 @@ export class TurnEngine {
     const rejectedActions = new Map<string, { action: Action; reason: string }[]>();
     const resolvedActions = new Map<string, Action[]>();
     const events: GameEvent[] = [];
+    const playerBefore = world.countries.find((c) => c.id === world.playerCountryId);
+    const report: PlayerTurnReport = {
+      turn: world.turn,
+      orders: [],
+      decisions: [],
+      deltas: {},
+      causes: [],
+      moments: [],
+    };
+    const before = playerBefore
+      ? {
+          approval: playerBefore.approval,
+          stability: playerBefore.stability,
+          legitimacy: playerBefore.legitimacy,
+          gdp: playerBefore.gdp,
+          score: world.score.total,
+        }
+      : null;
+    this.report = report;
 
     // ------------------------------------------------------------------
     // Phase 0: resolve the player's pending crisis decisions
@@ -109,11 +108,12 @@ export class TurnEngine {
     const injectedActions: Action[] = this.resolveDecisions(world, decisionChoices);
 
     // ------------------------------------------------------------------
-    // Phase 1: world events (historical-pattern engine)
+    // Phase 1: world events + the player's crises (drama director)
     // ------------------------------------------------------------------
-    const newEvents = this.eventEngine.generateEvents(world, rng);
-    events.push(...newEvents);
-    world.pendingDecisions = collectPendingDecisions(newEvents);
+    events.push(...this.eventEngine.generateEvents(world, rng));
+    const directed = runDirector(world, rng);
+    events.push(...directed.events);
+    world.pendingDecisions = directed.decisions;
 
     // ------------------------------------------------------------------
     // Phase 2: intelligence picture updates (asymmetric information)
@@ -128,28 +128,68 @@ export class TurnEngine {
       ...aiIntents.filter((i) => i.countryId !== world.playerCountryId),
     ];
 
+    const playerState = world.countries.find((c) => c.id === world.playerCountryId);
+    let covertDamage = 0;
     for (const intent of allIntents) {
       const actor = world.countries.find((c) => c.id === intent.countryId);
       if (!actor || actor.collapsed) continue;
       const isPlayer = actor.id === world.playerCountryId;
       let budgetLeft = monthlyDefenseBudgetM(actor);
+      const injected = new Set(isPlayer ? injectedActions : []);
 
       for (const action of intent.actions) {
-        const cost = actionCostM(action);
-        if (isPlayer && cost > budgetLeft) {
-          push(rejectedActions, actor.id, {
-            action,
-            reason: `Insufficient budget ($${Math.round(budgetLeft)}M left, needs $${cost}M)`,
-          });
+        const cost = actionCostM(action, actor);
+        // Orders that come from crisis decisions were already paid for by the choice
+        const pc = isPlayer && !injected.has(action) ? actionCostPC(action) : 0;
+        if (isPlayer && !injected.has(action) && cost > budgetLeft) {
+          const reason = `Insufficient defense budget ($${Math.round(budgetLeft)}M left, needs $${cost}M)`;
+          push(rejectedActions, actor.id, { action, reason });
+          report.orders.push({ label: orderLabel(world, action), ok: false, detail: reason });
           continue;
         }
+        if (pc > world.politicalCapital) {
+          const reason = `Not enough political capital (${world.politicalCapital} left, needs ${pc})`;
+          push(rejectedActions, actor.id, { action, reason });
+          report.orders.push({ label: orderLabel(world, action), ok: false, detail: reason });
+          continue;
+        }
+        const hitsPlayer =
+          !isPlayer &&
+          action.targetCountryId === world.playerCountryId &&
+          action.type.startsWith("INTEL_");
+        const stabilityBefore = playerState?.stability ?? 0;
         const outcome = this.applyAction(world, actor, action, rng, events, governmentChanges);
+        if (hitsPlayer && playerState) {
+          covertDamage += Math.max(0, stabilityBefore - playerState.stability);
+        }
         if (outcome.ok) {
           budgetLeft -= cost;
+          if (isPlayer) world.politicalCapital -= pc;
           push2(resolvedActions, actor.id, action);
         } else {
           push(rejectedActions, actor.id, { action, reason: outcome.reason });
         }
+        if (isPlayer && !injected.has(action)) {
+          report.orders.push({
+            label: orderLabel(world, action),
+            ok: outcome.ok,
+            detail: outcome.ok ? outcome.reason || "Carried out" : outcome.reason,
+          });
+        }
+      }
+    }
+
+    // Hidden foreign meddling: cap the monthly damage and surface it
+    if (playerState && covertDamage > 0) {
+      const excess = Math.max(0, covertDamage - 8);
+      playerState.stability = clamp01(playerState.stability + excess);
+      report.causes.push(
+        `Foreign covert operations destabilized the country (stability −${Math.round(covertDamage - excess)})`,
+      );
+      const last = world.director.lastUsed.foreign_interference ?? -99;
+      if (world.turn - last >= 6 && world.pendingDecisions.length < 2) {
+        const warning = raiseCrisis(world, "foreign_interference", rng);
+        if (warning) events.push(warning);
       }
     }
 
@@ -181,10 +221,10 @@ export class TurnEngine {
     events.push(...updateDomestic(world, rng));
     applyDiplomaticDrift(world);
     // Tension naturally relaxes toward a baseline absent fresh provocations
-    const tensionFloor = Math.min(70, 30 + world.wars.length * 8);
+    const tensionFloor = Math.min(60, 25 + world.wars.length * 6);
     world.globalTension = Math.max(
       tensionFloor > world.globalTension ? world.globalTension : tensionFloor,
-      world.globalTension - Math.max(0, (world.globalTension - tensionFloor) * 0.12),
+      world.globalTension - Math.max(0, (world.globalTension - tensionFloor) * 0.2),
     );
     // Even an eventful month only moves the global mood so far — unless war or
     // nuclear use shocked the system
@@ -212,14 +252,26 @@ export class TurnEngine {
     // ------------------------------------------------------------------
     // Phase 9: newspaper
     // ------------------------------------------------------------------
+    const player = world.countries.find((c) => c.id === world.playerCountryId);
+    if (player && before) this.finishReport(world, player, before, events);
     const newspaper = generateNewspaper(world, events, warSummaries, governmentChanges, rng);
+    const lead = player ? playerHeadline(world, player, report) : null;
+    if (lead) newspaper.unshift(lead);
     world.newspaper = newspaper;
+    world.turnReport = report;
 
     // ------------------------------------------------------------------
     // Phase 10: game-over checks & advance clock
     // ------------------------------------------------------------------
     const gameOver = this.checkGameOver(world, governmentChanges);
     world.gameOver = gameOver;
+    if (gameOver) world.outcome = computeOutcome(world);
+    if (player) {
+      world.politicalCapital = Math.min(
+        PC_CAP,
+        world.politicalCapital + politicalCapitalIncome(world, player),
+      );
+    }
 
     world.turn += 1;
     world.date = advanceMonth(world.date);
@@ -237,6 +289,8 @@ export class TurnEngine {
   }
 
   // --------------------------------------------------------------------
+  private report: PlayerTurnReport | null = null;
+
   private resolveDecisions(world: WorldState, choices: DecisionChoice[]): Action[] {
     const injected: Action[] = [];
     const player = world.countries.find((c) => c.id === world.playerCountryId);
@@ -244,33 +298,27 @@ export class TurnEngine {
 
     for (const pending of [...world.pendingDecisions]) {
       let choice = choices.find((c) => c.decisionId === pending.id);
-      if (!choice && world.turn > pending.deadlineTurn) {
-        // Ignored crises resolve themselves — usually badly (first option)
-        choice = { decisionId: pending.id, optionId: pending.options[0]?.id ?? "" };
+      const byDefault = !choice;
+      if (!choice && world.turn > pending.deadlineTurn - 1) {
+        // Ignored crises resolve themselves — usually not in your favor
+        choice = {
+          decisionId: pending.id,
+          optionId: pending.defaultOptionId ?? pending.options[0]?.id ?? "",
+        };
       }
       if (!choice) continue;
       const option = pending.options.find((o) => o.id === choice?.optionId) ?? pending.options[0];
       if (!option) continue;
 
-      for (const [key, value] of Object.entries(option.effects)) {
-        if (key.startsWith("relations:")) {
-          const targetId = key.split(":")[1];
-          player.relations[targetId] = clampRel((player.relations[targetId] ?? 0) + value);
-          const target = world.countries.find((c) => c.id === targetId);
-          if (target)
-            target.relations[player.id] = clampRel((target.relations[player.id] ?? 0) + value);
-        } else if (key === "stability") {
-          player.stability = clamp01(player.stability + value);
-        } else if (key === "approval") {
-          player.approval = clamp01(player.approval + value);
-        } else if (key === "legitimacy") {
-          player.legitimacy = clamp01(player.legitimacy + value);
-        } else if (key === "gdp") {
-          player.gdp = Math.max(0, player.gdp * (1 + value / 100));
-        }
-      }
+      applyEffects(world, player, option.effects);
       world.globalTension = clamp01(world.globalTension + option.tensionDelta);
       injected.push(...option.actions);
+      if (option.followUp)
+        scheduleFollowUp(world, option.followUp.templateId, option.followUp.delay);
+      this.report?.decisions.push({
+        title: pending.title,
+        choice: byDefault ? `${option.label} (no decision taken)` : option.label,
+      });
       world.pendingDecisions = world.pendingDecisions.filter((d) => d.id !== pending.id);
     }
     return injected;
@@ -349,6 +397,15 @@ export class TurnEngine {
         const war = startWar(world, actor.id, target.id);
         if (!war) return { ok: false, reason: "Could not start war" };
         const joined = activateDefensivePacts(world, war, rng);
+        if (target.id === world.playerCountryId) {
+          // Rally 'round the flag: being attacked unites a nation, for a while
+          target.approval = clamp01(target.approval + 8);
+          target.legitimacy = clamp01(target.legitimacy + 4);
+          this.report?.causes.push(
+            `Rally 'round the flag after ${actor.name}'s attack (approval +8)`,
+          );
+          this.report?.moments.push("UNDER ATTACK");
+        }
         events.push({
           id: `evt_war_${actor.id}_${target.id}_${world.turn}`,
           type: "WAR",
@@ -496,8 +553,29 @@ export class TurnEngine {
         return { ok: true, reason: "" };
       }
       case "DOMESTIC_PROPAGANDA": {
-        applyPropaganda(actor);
-        return { ok: true, reason: "" };
+        if (actor.id !== world.playerCountryId) {
+          applyPropaganda(actor);
+          return { ok: true, reason: "" };
+        }
+        // Repetition dulls the message: each recent use cuts the effect by 40%
+        const recent = world.director.propagandaTurns.filter((t) => world.turn - t < 6).length;
+        const effect = 0.6 ** recent;
+        applyPropaganda(actor, effect);
+        world.director.propagandaTurns = [
+          ...world.director.propagandaTurns.filter((t) => world.turn - t < 6),
+          world.turn,
+        ];
+        if (recent >= 2 && actor.regimeType === "DEMOCRACY") {
+          actor.legitimacy = clamp01(actor.legitimacy - 2);
+          this.report?.causes.push("The press mocks your relentless spin (legitimacy −2)");
+        }
+        return {
+          ok: true,
+          reason:
+            recent === 0
+              ? "The nation rallies to your message"
+              : `Diminishing returns — the public has heard it before (${Math.round(effect * 100)}% effect)`,
+        };
       }
       case "DOMESTIC_REFORM": {
         applyReform(actor);
@@ -562,6 +640,71 @@ export class TurnEngine {
   }
 
   // --------------------------------------------------------------------
+  private finishReport(
+    world: WorldState,
+    player: CountryState,
+    before: { approval: number; stability: number; legitimacy: number; gdp: number; score: number },
+    events: GameEvent[],
+  ): void {
+    const report = this.report;
+    if (!report) return;
+    report.deltas = {
+      approval: { before: before.approval, after: player.approval },
+      stability: { before: before.stability, after: player.stability },
+      legitimacy: { before: before.legitimacy, after: player.legitimacy },
+      gdp: { before: before.gdp, after: player.gdp },
+      score: { before: before.score, after: world.score.total },
+    };
+    // World events that touched the player explain part of the movement
+    for (const e of events) {
+      if (
+        e.type !== "CRISIS" &&
+        (e.severity === "MAJOR" || e.severity === "CRITICAL") &&
+        e.affectedCountries.includes(player.id) &&
+        e.affectedCountries.length < world.countries.length
+      ) {
+        report.causes.push(e.title);
+      }
+    }
+    if (player.atWarWith.length > 0) report.causes.push("War weariness weighs on the public mood");
+    if (player.growthRate < 0) report.causes.push("A shrinking economy erodes approval");
+    else if (player.growthRate > 0.025) report.causes.push("Strong growth lifts the national mood");
+
+    // Near-loss and comeback beats
+    const d = world.director;
+    const low = Math.min(player.approval, player.stability, player.legitimacy);
+    d.lowPoint = Math.min(d.lowPoint, low);
+    const election = player.politicalSystem.nextElectionTurn;
+    const losingPolls =
+      election !== null &&
+      election - world.turn <= 6 &&
+      election >= world.turn &&
+      player.approval < 45;
+    const plotWarned = world.pendingDecisions.some((p) =>
+      ["coup_plot", "streets_boiling"].includes(p.templateId),
+    );
+    const danger = low < 28 || losingPolls || plotWarned;
+    if (danger && !d.inDanger) {
+      d.inDanger = true;
+      d.closeCalls += 1;
+      report.moments.push(losingPolls ? "TRAILING IN THE POLLS" : "CLOSE CALL");
+    } else if (d.inDanger && !danger && low > 42) {
+      d.inDanger = false;
+      d.rallies += 1;
+      report.moments.push("COMEBACK");
+    }
+    if (
+      player.alliances.length > 0 &&
+      !world.timeline.some((t) => t.description === "FIRST_PACT")
+    ) {
+      const newPact = events.some(
+        (e) => e.title.includes("sign military pact") && e.affectedCountries.includes(player.id),
+      );
+      if (newPact) report.moments.push("NEW ALLIANCE");
+    }
+  }
+
+  // --------------------------------------------------------------------
   private checkGameOver(world: WorldState, governmentChanges: GovernmentChange[]): GameOver | null {
     if (world.gameOver) return world.gameOver;
     const player = world.countries.find((c) => c.id === world.playerCountryId);
@@ -575,7 +718,7 @@ export class TurnEngine {
       return {
         reason: "NUCLEAR_HOLOCAUST",
         description:
-          "The missiles flew. Civilization as the twentieth century knew it has ended. There are no winners.",
+          "The missiles flew. Civilization as we knew it has ended. There are no winners.",
         turn: world.turn,
       };
     }
@@ -607,11 +750,38 @@ export class TurnEngine {
       };
     }
 
-    // Full term completed: 10 years
-    if (world.turn >= 120) {
+    // Objective irrecoverably failed (e.g. the rival tested a bomb)
+    const failed = earlyFailure(world);
+    if (failed) {
+      return {
+        reason: "OBJECTIVE_FAILED",
+        description: `Mission failed: ${failed.label}.`,
+        turn: world.turn,
+      };
+    }
+
+    // End of the session (turn counter advances after this check)
+    if (world.turn + 1 >= world.maxTurns) {
+      if (world.objective) {
+        const outcome = computeOutcome({ ...world, gameOver: null });
+        if (!outcome.victory) {
+          const missed = outcome.conditions.find((c) => !c.met && !c.bonus);
+          return {
+            reason: "OBJECTIVE_FAILED",
+            description: `Time is up. Objective not met: ${missed?.label ?? "mission objectives"}.`,
+            turn: world.turn,
+          };
+        }
+      }
+      const span =
+        world.mode === "FLASHPOINT"
+          ? "Through the crisis"
+          : world.mode === "TERM"
+            ? "After a full term"
+            : "After ten years";
       return {
         reason: "TERM_COMPLETED",
-        description: `After ten years at the helm of ${player.name}, your term has come to its end. History will now judge it.`,
+        description: `${span} at the helm of ${player.name}, you are still standing. History will now judge your record.`,
         turn: world.turn,
       };
     }
@@ -621,6 +791,72 @@ export class TurnEngine {
 }
 
 // --------------------------------------------------------------------
+const ORDER_VERBS: Partial<Record<Action["type"], string>> = {
+  DIPLOMACY_IMPROVE_RELATIONS: "Court",
+  DIPLOMACY_DENOUNCE: "Denounce",
+  DIPLOMACY_PROPOSE_ALLIANCE: "Offer pact to",
+  DIPLOMACY_BREAK_ALLIANCE: "Break pact with",
+  DIPLOMACY_DECLARE_WAR: "Declare war on",
+  DIPLOMACY_PROPOSE_CEASEFIRE: "Propose ceasefire to",
+  MILITARY_MOBILIZE: "Mobilize forces",
+  MILITARY_DEMOBILIZE: "Stand down forces",
+  MILITARY_PROCURE: "Buy weapons",
+  MILITARY_AIRSTRIKE: "Airstrike on",
+  MILITARY_DEPLOY_BORDER: "Mass troops facing",
+  MILITARY_WITHDRAW_BORDER: "Withdraw troops facing",
+  NUCLEAR_FUND_PROGRAM: "Fund nuclear program",
+  NUCLEAR_STRIKE: "NUCLEAR STRIKE on",
+  ECONOMY_ADJUST_MILITARY_BUDGET: "Set defense budget",
+  INTEL_GATHER: "Spy on",
+  INTEL_SABOTAGE: "Sabotage",
+  INTEL_DESTABILIZE: "Destabilize",
+  INTEL_SUPPORT_REBELS: "Arm rebels in",
+  INTEL_COUNTER_INTEL: "Hunt foreign spies",
+  INTEL_MISINFORMATION: "Feed disinformation to",
+  INTEL_PROPAGANDA: "Covert propaganda in",
+  INTEL_ASSASSINATE: "Assassinate leader of",
+  INTEL_COUP: "Back coup in",
+  DOMESTIC_PROPAGANDA: "National address",
+  DOMESTIC_REFORM: "Reform program",
+  DOMESTIC_POLICING: "Change policing",
+};
+
+export function orderLabel(world: WorldState, action: Action): string {
+  const verb = ORDER_VERBS[action.type] ?? action.type;
+  const target = action.targetCountryId
+    ? world.countries.find((c) => c.id === action.targetCountryId)?.name
+    : undefined;
+  if (action.type === "DOMESTIC_POLICING") {
+    return `${(action.params?.tactic as string) === "HARD" ? "Hard" : "Soft"} policing`;
+  }
+  return target ? `${verb} ${target}` : verb;
+}
+
+function playerHeadline(
+  world: WorldState,
+  player: CountryState,
+  report: PlayerTurnReport,
+): NewspaperEntry | null {
+  const who = `${player.leader.title} ${player.leader.name}`;
+  const decision = report.decisions[0];
+  const order = report.orders.find((o) => o.ok) ?? report.orders[0];
+  if (!decision && !order) return null;
+  const headline = decision
+    ? `${player.name.toUpperCase()}: ${who.toUpperCase()} CHOOSES TO "${decision.choice.toUpperCase()}"`
+    : `${player.name.toUpperCase()}: ${order.label.toUpperCase()}${order.ok ? "" : " — BLOCKED"}`;
+  const lines = [
+    ...report.decisions.map((d) => `On ${d.title.toLowerCase()}, ${who} chose: ${d.choice}.`),
+    ...report.orders.map((o) => `${o.label}: ${o.detail}.`),
+  ];
+  return {
+    headline,
+    description: lines.join(" "),
+    relatedCountries: [player.id],
+    turn: world.turn,
+    category: "DOMESTIC",
+  };
+}
+
 export function getPlayerView(world: WorldState) {
   return buildPlayerView(world);
 }

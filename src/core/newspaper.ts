@@ -90,8 +90,9 @@ export function generateNewspaper(
     });
   }
 
-  // Events become stories
+  // Events become stories (government changes already have their own entry)
   for (const event of events) {
+    if (event.id.startsWith("evt_gov_")) continue;
     entries.push({
       headline: event.title,
       description: event.description,

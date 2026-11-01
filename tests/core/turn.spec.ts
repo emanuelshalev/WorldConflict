@@ -56,18 +56,26 @@ describe("TurnEngine", () => {
     expect(rus.atWarWith.length).toBeGreaterThan(1);
   });
 
-  it("rejects player actions beyond the monthly defense budget", () => {
+  it("rejects player orders beyond political capital", () => {
     const world = freshWorld();
-    const usa = get(world, "USA");
-    usa.gdp = 1e9; // pauper superpower: monthly budget ≈ $2.9M
+    world.politicalCapital = 3;
     const result = engine.executeTurn(
       world,
-      [{ type: "DOMESTIC_REFORM" }], // costs $250M
+      [{ type: "DOMESTIC_REFORM" }, { type: "DOMESTIC_REFORM" }], // 2 PC each
       [],
     );
     const rejected = result.rejectedActions.get("USA") ?? [];
     expect(rejected.length).toBe(1);
-    expect(rejected[0].reason).toContain("budget");
+    expect(rejected[0].reason).toContain("political capital");
+    expect(result.newState.turnReport?.orders.map((o) => o.ok)).toEqual([true, false]);
+  });
+
+  it("rejects procurement beyond the monthly defense budget", () => {
+    const world = freshWorld();
+    get(world, "USA").gdp = 1e9; // pauper superpower: monthly budget ≈ $2.9M
+    const result = engine.executeTurn(world, [{ type: "MILITARY_PROCURE", value: 500 }], []);
+    const rejected = result.rejectedActions.get("USA") ?? [];
+    expect(rejected[0]?.reason).toContain("budget");
   });
 
   it("war resolution moves the frontline and inflicts casualties", () => {
@@ -90,30 +98,36 @@ describe("TurnEngine", () => {
   });
 
   it("enforces the two-strike rule on nuclear programs", () => {
-    let world = freshWorld("ISR");
-    const irn = get(world, "IRN");
-    irn.nuclear.status = "DEVELOPING";
-    irn.nuclear.progress = 60;
-    // Overwhelming Israeli airpower to guarantee strike success
-    const isr = get(world, "ISR");
-    isr.airpower = 100000;
-    irn.airpower = 0;
-    irn.intelLevel = 0;
-
+    // Strikes can fail (air defenses); find seeds where both succeed and check the rule.
     const strike: Action = {
       type: "MILITARY_AIRSTRIKE",
       targetCountryId: "IRN",
       params: { targetType: "NUCLEAR" },
     };
-    world = engine.executeTurn(world, [strike], []).newState;
-    const after1 = get(world, "IRN");
-    expect(after1.nuclear.consecutiveStrikesTaken).toBe(1);
-    expect(after1.nuclear.status).toBe("DEVELOPING");
-
-    world = engine.executeTurn(world, [strike], []).newState;
-    const after2 = get(world, "IRN");
-    expect(after2.nuclear.status).toBe("LATENT"); // crippled
-    expect(after2.nuclear.progress).toBe(0);
+    let checked = 0;
+    for (let seed = 1; seed <= 40 && checked < 3; seed++) {
+      let world = freshWorld("ISR", seed);
+      const irn = get(world, "IRN");
+      irn.nuclear.status = "DEVELOPING";
+      irn.nuclear.progress = 60;
+      get(world, "ISR").airpower = 100000;
+      irn.airpower = 0;
+      irn.intelLevel = 0;
+      world = engine.executeTurn(world, [strike], []).newState;
+      if (get(world, "IRN").nuclear.consecutiveStrikesTaken !== 1) continue;
+      expect(get(world, "IRN").nuclear.status).toBe("DEVELOPING");
+      world = engine.executeTurn(world, [strike], []).newState;
+      const after2 = get(world, "IRN");
+      if (after2.nuclear.status === "DEVELOPING") {
+        // second strike repelled: the streak resets
+        expect(after2.nuclear.consecutiveStrikesTaken).toBe(0);
+        continue;
+      }
+      expect(after2.nuclear.status).toBe("LATENT"); // crippled
+      expect(after2.nuclear.progress).toBe(0);
+      checked++;
+    }
+    expect(checked).toBeGreaterThan(0);
   });
 
   it("nuclear strike on a non-nuclear enemy triggers global embargo", () => {

@@ -37,7 +37,8 @@ describe("DataLoader", () => {
   it("the player's country gets a generated leader and backstory", () => {
     const world = loader.initializeWorldState("2025", "DEU", 99);
     const player = world.countries.find((c) => c.id === "DEU");
-    expect(player?.leader.name).toBe("You");
+    expect(player?.leader.name).not.toBe("You");
+    expect(player?.leader.name.length).toBeGreaterThan(3);
     expect(world.playerBackstory.length).toBeGreaterThan(50);
   });
 
