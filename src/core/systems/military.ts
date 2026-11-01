@@ -194,7 +194,7 @@ export function resolveWarMonth(
   attacker.gdp *= 1 - attackerMonthly * reach(attacker, defender);
   defender.gdp *= 1 - defenderMonthly * reach(defender, attacker);
 
-  // Exhaustion builds slowly — fastest in a stalemate that kills for nothing
+  // Exhaustion builds slowly: fastest in a stalemate that kills for nothing
   war.exhaustion = clamp(war.exhaustion + 1 + (Math.abs(delta) < 2 ? 1 : 0));
 
   // End conditions
@@ -309,12 +309,12 @@ export function executeAirstrike(
           defender.nuclear.funded = false;
           defender.nuclear.consecutiveStrikesTaken = 0;
           crippledNuclearProgram = true;
-          description = `Second consecutive strike on ${possessive(defender.name)} enrichment facilities — the nuclear program is CRIPPLED.`;
+          description = `Second consecutive strike on ${possessive(defender.name)} enrichment facilities, the nuclear program is CRIPPLED.`;
         } else {
           description = `${attacker.name} struck ${possessive(defender.name)} nuclear facilities, setting the program back. One more successful strike could cripple it.`;
         }
       } else if (defender.nuclear.status === "TESTED" || defender.nuclear.status === "ARMED") {
-        description = `${attacker.name} struck ${possessive(defender.name)} nuclear sites — but the arsenal is dispersed and hardened. No meaningful damage.`;
+        description = `${attacker.name} struck ${possessive(defender.name)} nuclear sites, but the arsenal is dispersed and hardened. No meaningful damage.`;
       } else {
         description = `${attacker.name} struck suspected nuclear sites in ${defender.name}, but found no active program.`;
       }

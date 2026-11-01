@@ -93,7 +93,7 @@ Only `playerCountryId` is required. Without `flashpointId`, `mode` + `scenarioId
   "totalUsage": { /* cumulative for this save */ },
   "statements": [{ "countryId": "RUS", "leader": "President Vladimir Putin", "text": "…" }],
   "llmCountries": ["RUS"],
-  "notice": null            // e.g. "LLM budget cap ($1.00) reached — algorithmic AI this turn"
+  "notice": null            // e.g. "LLM budget cap ($1.00) reached, algorithmic AI this turn"
 }
 ```
 

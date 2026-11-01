@@ -6,14 +6,14 @@
  *   npm run sim -- --flashpoint hormuz-convoy --countries USA --policy smart --verbose 1
  *
  * Player policies:
- *   none        — does nothing (crises fall to their default option)
- *   propaganda  — a national address every month (the old dominant strategy)
- *   smart       — a heuristic competent player: fixes weaknesses, courts rivals, picks good crisis options
- *   random      — random affordable orders and random crisis options
- *   greedy      — no orders, always the crisis option with the best-looking effects
- *   loop        — the "reform / address every month" loop playtesters found, best crisis options
- *   hawk        — mobilizes then attacks the main rival
- *   ai          — the player's country is driven by PersonalityAI
+ *   none: does nothing (crises fall to their default option)
+ *   propaganda: a national address every month (the old dominant strategy)
+ *   smart: a heuristic competent player: fixes weaknesses, courts rivals, picks good crisis options
+ *   random: random affordable orders and random crisis options
+ *   greedy: no orders, always the crisis option with the best-looking effects
+ *   loop: the "reform / address every month" loop playtesters found, best crisis options
+ *   hawk: mobilizes then attacks the main rival
+ *   ai: the player's country is driven by PersonalityAI
  */
 import { generateDeterministicIntents, PersonalityAI } from "../src/agents/fallback.js";
 import { actionCostPC } from "../src/core/costs.js";

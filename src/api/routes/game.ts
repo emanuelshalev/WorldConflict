@@ -54,7 +54,7 @@ const PreviewRequestSchema = z.object({
 /**
  * What the client may know. Foreign countries' hidden ground truth (true GDP,
  * stability, military, nuclear progress, their beliefs and personalities) is
- * replaced by the player's intelligence estimates — the fog of war must not be
+ * replaced by the player's intelligence estimates: the fog of war must not be
  * defeatable from devtools.
  */
 export function publicWorldState(world: WorldState): WorldState {
@@ -260,7 +260,7 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
           : `${body.mode.toLowerCase()} ${scenarioId}`;
         const name =
           saveName ??
-          `${worldState.countries.find((c) => c.id === playerCountryId)?.name ?? playerCountryId} — ${label}`;
+          `${worldState.countries.find((c) => c.id === playerCountryId)?.name ?? playerCountryId}, ${label}`;
         const saveId = await gameDb.saveGame(name, worldState, [], playerId, leaderName);
 
         return reply.send({ success: true, saveId, ...turnPayload(worldState) });

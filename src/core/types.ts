@@ -687,7 +687,7 @@ export const DirectorStateSchema = z.object({
   propagandaTurns: z.array(z.number()).default([]), // turns the player used propaganda
   denounceTurns: z.array(z.number()).default([]), // turns the player denounced someone
   reformTurns: z.array(z.number()).default([]), // turns the player launched a reform
-  lowPoint: z.number().default(100), // lowest min(approval, stability) seen — for comebacks
+  lowPoint: z.number().default(100), // lowest min(approval, stability) seen, for comebacks
   rallies: z.number().default(0), // comebacks achieved
   closeCalls: z.number().default(0),
   inDanger: z.boolean().default(false),

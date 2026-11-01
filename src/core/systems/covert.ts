@@ -147,7 +147,7 @@ export function resolveCovertOp(
       success = rng.next() < successChance(actor, target, 0.25);
       if (success) {
         governmentChange = replaceLeaderAfterAssassination(world, target, rng);
-        description = `${possessive(target.name)} leader is dead. No one has claimed responsibility — yet.`;
+        description = `${possessive(target.name)} leader is dead. No one has claimed responsibility, yet.`;
       } else {
         description = `The attempt on ${target.leader.title} ${target.leader.name} failed; ${target.leader.name} survived.`;
       }

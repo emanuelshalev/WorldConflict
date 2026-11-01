@@ -17,7 +17,7 @@
 //             og:image / twitter:image absolute for in-browser sharing; crawlers read the
 //             static tags, so also edit those in index.html (see the SITE_URL comment).
 // ---------------------------------------------------------------------------
-const SITE = { playUrl: null, dailyUrl: null, repoUrl: null, siteUrl: null };
+const SITE = { playUrl: null, dailyUrl: null, repoUrl: null, siteUrl: "https://emanuelshalev.github.io/WorldConflict/" };
 
 (() => {
   'use strict';

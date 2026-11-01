@@ -38,7 +38,7 @@ export interface ActionPreview {
 
 /**
  * Predict the consequences of an action before the player commits.
- * Pure read — never mutates the world.
+ * Pure read: never mutates the world.
  */
 export function previewAction(world: WorldState, action: Action): ActionPreview {
   const actor = world.countries.find((c) => c.id === world.playerCountryId);
@@ -88,11 +88,11 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
     case "DIPLOMACY_IMPROVE_RELATIONS": {
       if (!target) return blocked(base, "Select a target country");
       if (actor.atWarWith.includes(target.id))
-        return blocked(base, "You are at war — propose a ceasefire instead");
+        return blocked(base, "You are at war, propose a ceasefire instead");
       base.summary = `Open trade talks, cultural exchange and quiet diplomacy with ${tname}.`;
       effects.push(eff(tname, "Relations", "+5 to +7", "Diminishing returns at high friendship"));
       if ((actor.history.historicalRivals ?? []).includes(target.id)) {
-        risks.push(`${tname} is a historical rival — progress will be slow and fragile.`);
+        risks.push(`${tname} is a historical rival: progress will be slow and fragile.`);
       }
       break;
     }
@@ -111,7 +111,7 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
           mood > 0 ? `+${mood}` : `${mood}`,
           mood > 0
             ? recent > 0
-              ? "Voters enjoy strength — less each time"
+              ? "Voters enjoy strength, less each time"
               : "Voters enjoy strength"
             : mood < 0
               ? "Picking a fight with a partner looks like grandstanding"
@@ -174,7 +174,7 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
         .filter((c) => c && !c.collapsed);
       if (defenders.length > 0) {
         risks.push(
-          `${tname} has defense pacts with ${defenders.map((d) => d?.name).join(", ")} — expect them to join the war.`,
+          `${tname} has defense pacts with ${defenders.map((d) => d?.name).join(", ")}, expect them to join the war.`,
         );
       }
       if (check.nuclearStandoff) {
@@ -211,8 +211,7 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
         );
       } else {
         base.summary = `Seek an end to the war with ${tname} along current lines.`;
-        if (advantage > 55)
-          risks.push(`${tname} is winning — they have little reason to stop now.`);
+        if (advantage > 55) risks.push(`${tname} is winning: they have little reason to stop now.`);
       }
       break;
     }
@@ -221,7 +220,7 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
       const war = world.wars.find((w) => w.attackerId === target.id || w.defenderId === target.id);
       if (!war) return blocked(base, `${tname} is not at war`);
       if (war.attackerId === actor.id || war.defenderId === actor.id)
-        return blocked(base, "You are a party to this war — propose a ceasefire instead");
+        return blocked(base, "You are a party to this war, propose a ceasefire instead");
       const otherId = war.attackerId === target.id ? war.defenderId : war.attackerId;
       const other = world.countries.find((c) => c.id === otherId);
       if (!other) return blocked(base, "No counterpart");
@@ -254,7 +253,7 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
     case "MILITARY_PROCURE": {
       const spend = action.value ?? 500;
       base.summary = actor.underGlobalEmbargo
-        ? `Buy arms on the black market — embargo prices, no questions asked ($${spend}M).`
+        ? `Buy arms on the black market, embargo prices, no questions asked ($${spend}M).`
         : `Purchase equipment from your arms suppliers ($${spend}M).`;
       effects.push(
         eff(
@@ -292,13 +291,13 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
           );
         } else if (isNuclearOperational(target)) {
           risks.push(
-            `${possessive(tname)} arsenal is already operational — hardened sites cannot be destroyed conventionally.`,
+            `${possessive(tname)} arsenal is already operational: hardened sites cannot be destroyed conventionally.`,
           );
         } else {
           risks.push("Intelligence shows no active nuclear program to strike.");
         }
       }
-      risks.push(`${tname} may retaliate — militarily or through proxies.`);
+      risks.push(`${tname} may retaliate: militarily or through proxies.`);
       break;
     }
     case "MILITARY_DEPLOY_BORDER": {
@@ -370,9 +369,7 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
           eff(actor.name, "Economy", "growth drag", "High military burden crowds out investment"),
         );
       if (newPct > actor.militaryBudgetPercent + 1)
-        risks.push(
-          "Sharp increases read as war preparation — the budget is a hostility indicator.",
-        );
+        risks.push("Sharp increases read as war preparation: the budget is a hostility indicator.");
       break;
     }
     case "INTEL_COUNTER_INTEL": {
@@ -407,7 +404,7 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
         Math.max(0.05, Math.min(0.95, (baseChances[action.type] ?? 0.5) + edge / 200)) * 100,
       );
       const summaries: Record<string, string> = {
-        INTEL_GATHER: `Run an intelligence operation against ${tname} — sharpen our picture of their true capabilities.`,
+        INTEL_GATHER: `Run an intelligence operation against ${tname}, sharpen our picture of their true capabilities.`,
         INTEL_DESTABILIZE: `Fund opposition media, strikes and scandal in ${tname}.`,
         INTEL_SUPPORT_REBELS: `Arm and finance insurgents inside ${tname}.`,
         INTEL_SABOTAGE: `Sabotage ${possessive(tname)} infrastructure${target.nuclear.status === "DEVELOPING" ? " and nuclear facilities" : ""}.`,
@@ -443,7 +440,7 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
       if (action.type === "INTEL_SUPPORT_REBELS")
         effects.push(eff(tname, "Insurgency", "escalates one level", ""));
       risks.push(
-        `Exposure risk: relations collapse${action.type === "INTEL_COUP" || action.type === "INTEL_ASSASSINATE" ? " worldwide — these operations outrage everyone" : ` with ${tname}`}.`,
+        `Exposure risk: relations collapse${action.type === "INTEL_COUP" || action.type === "INTEL_ASSASSINATE" ? " worldwide, these operations outrage everyone" : ` with ${tname}`}.`,
       );
       break;
     }

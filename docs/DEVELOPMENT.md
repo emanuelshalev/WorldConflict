@@ -19,7 +19,7 @@ For contributors. Read **[ARCHITECTURE.md](ARCHITECTURE.md)** first.
 
 ```
 src/
-  core/            deterministic engine — no I/O, no LLMs, no Math.random()
+  core/            deterministic engine: no I/O, no LLMs, no Math.random()
     turn.ts          monthly pipeline
     crises.ts        drama director + player crisis templates
     events.ts        world events
@@ -60,7 +60,7 @@ npm run sim -- --mode TERM --scenario 2026 --countries USA,UKR --games 12 --poli
 
 1. **Determinism.** Same seed + same intents ⇒ same world (`tests/core/determinism.spec.ts`). Use `SeededRandom`; never `Math.random()` or wall-clock time in `src/core`.
 2. **LLMs propose, the engine decides.** Anything from an LLM is a `CountryIntent` that passes `parseDecision` validation; failures fall back to `PersonalityAI`.
-3. **Fog of war.** Never send foreign ground truth to the client — go through `publicWorldState()`.
+3. **Fog of war.** Never send foreign ground truth to the client, go through `publicWorldState()`.
 4. **Types are duplicated** between `src/core/types.ts` and `ui/src/store/gameStore.ts`. Change both.
 5. **Tension** must keep breathing: when adding a tension source, check `npm run sim` reports a median of 45–70 and ≤ 20% of months at 80+.
 

@@ -319,7 +319,7 @@ export function runGovernmentDynamics(world: WorldState, rng: SeededRandom): Gov
     // Consolidated democracies remove leaders through institutions, never the army
     const coupPossible = consolidated ? false : coupProne || country.stability < 15;
     // A democracy removes a failing leader through its institutions (impeachment,
-    // no-confidence) — consolidated or not, as long as the army isn't the arbiter
+    // no-confidence): consolidated or not, as long as the army isn't the arbiter
     if (isPlayer && country.regimeType === "DEMOCRACY" && crisis && !coupPossible) {
       const d = world.director;
       const warned = d.coupWarnedTurn !== null && world.turn - d.coupWarnedTurn <= 8;
@@ -728,7 +728,7 @@ export function installPuppetRegime(
     newLeader,
     description: isPlayer
       ? `A foreign-backed coup has toppled your government.`
-      : `Coup in ${country.name}: ${newLeader.name} seizes power — observers note the new government's striking alignment with foreign interests.`,
+      : `Coup in ${country.name}: ${newLeader.name} seizes power, observers note the new government's striking alignment with foreign interests.`,
     isPlayerDeposed: isPlayer,
   };
 }
@@ -764,12 +764,12 @@ function governmentEvent(
 export function generatePlayerBackstory(country: CountryState, rng: SeededRandom): string {
   const templates: Record<string, string[]> = {
     PRESIDENTIAL_DEMOCRACY: [
-      `After a snap election triggered by a corruption scandal that consumed your predecessor, your reformist coalition swept to power. The public expects change — and quickly.`,
+      `After a snap election triggered by a corruption scandal that consumed your predecessor, your reformist coalition swept to power. The public expects change, and quickly.`,
       `A razor-thin election victory after the sudden death of the incumbent has made you ${country.politicalSystem.leaderTitle} of ${country.name}. Half the country celebrates; the other half doubts your mandate.`,
     ],
     PARLIAMENTARY_DEMOCRACY: [
       `After a snap election triggered by a corruption scandal, your coalition formed a narrow majority. Your government survives at the pleasure of restless coalition partners.`,
-      `A vote of no confidence toppled the last government. As the compromise candidate acceptable to all factions, you now lead ${country.name} — for as long as the coalition holds.`,
+      `A vote of no confidence toppled the last government. As the compromise candidate acceptable to all factions, you now lead ${country.name}, for as long as the coalition holds.`,
     ],
     SEMI_PRESIDENTIAL: [
       `Riding a wave of public anger at the political establishment, you won the presidency of ${country.name} as an outsider. The old parties control parliament and want you to fail.`,
@@ -790,7 +790,7 @@ export function generatePlayerBackstory(country: CountryState, rng: SeededRandom
       `The Assembly of Experts has elevated you as the new guardian of the revolution after your predecessor's death. The clerical establishment and the security services each believe you owe them.`,
     ],
     PERSONALIST_AUTOCRACY: [
-      `Your predecessor was assassinated at a military parade. As the security chief who restored order in the chaotic hours that followed, you now hold supreme power — built on fear and obligation.`,
+      `Your predecessor was assassinated at a military parade. As the security chief who restored order in the chaotic hours that followed, you now hold supreme power, built on fear and obligation.`,
     ],
   };
   const pool = templates[country.politicalSystem.type] ?? templates.PRESIDENTIAL_DEMOCRACY;

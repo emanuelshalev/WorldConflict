@@ -130,7 +130,7 @@ export function EndGameReport() {
             {gameOver?.description ?? `The reign over ${endReport.country} has ended.`}
           </h2>
           <div style={{ marginTop: 8, fontSize: 13, color: '#aab' }}>
-            {endReport.leader ? `${endReport.leader.title} ${endReport.leader.name} — ` : ''}
+            {endReport.leader ? `${endReport.leader.title} ${endReport.leader.name}, ` : ''}
             {endReport.country} · {endReport.turnsServed} turns served · {endReport.finalDate}
           </div>
         </div>
@@ -177,7 +177,7 @@ export function EndGameReport() {
             }}
           >
             <div style={{ fontSize: 12, color: '#778', marginBottom: 10, letterSpacing: 1 }}>
-              FINAL SCORE — {Math.round(score.total)}
+              FINAL SCORE: {Math.round(score.total)}
             </div>
             <ScoreBar label="economic" value={score.economic} />
             <ScoreBar label="security" value={score.security} />

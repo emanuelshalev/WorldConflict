@@ -74,7 +74,7 @@
 - "The crisis writing is the best thing in the game: *Who rules in Tehran?* with the Assembly of Experts, and *The weapon in the tunnels* with the Isfahan stockpile."
 - "Who am I? The briefing says the Assembly elevated *me*, the mission says I 'speak for a Supreme Leader few have seen', the debrief names Mojtaba, the HUD says 'Hassan Ahmadi'."
 - "'A narrow electoral-college victory' in the Philippines? There is no electoral college."
-- "'REVOLUTION TOPPLES UNITED STATES GOVERNMENT — Trump has fled; Sarah Mitchell proclaims a new government.' I'm out."
+- "'REVOLUTION TOPPLES UNITED STATES GOVERNMENT: Trump has fled; Sarah Mitchell proclaims a new government.' I'm out."
 
 **Facts that felt off:**
 - **The player is never the real leader** (Mohamed Hassan for Sisi, Manuel Reyes for Marcos), and the generic backstory contradicts the brief, while AI leaders are real (Modi, Trump, Abiy).
@@ -166,7 +166,7 @@
 **P1**
 6. Cap reparations relative to the winner's GDP; block revolutions in consolidated democracies unless stability stays under 10 for months (`military.ts:217`, `government.ts`).
 7. Economy: explain score and GDP change ("Embargo −0.8%/mo"); fix peacetime decline, stat saturation and Iran's stability pinned at 0.
-8. Honest covert results ("✗ Assassination failed — Modi survived; India suspects you"); a successful one becomes a front-page Moment (`turn.ts`).
+8. Honest covert results ("✗ Assassination failed: Modi survived; India suspects you"); a successful one becomes a front-page Moment (`turn.ts`).
 9. Phone: condense pips, layout-aware tip, sticky chosen option and Execute; give the tension bar a width (`wc.css` `.stat`, `.tension`).
 10. Share card and text: score, key headline, date or daily number, URL; colour the strip by objective progress.
 11. Data checks: no naval incidents for landlocked states, refugees only from neighbours, Iran–Saudi around 0, no name mash-ups, fix "A Ethiopia" and "United States's".

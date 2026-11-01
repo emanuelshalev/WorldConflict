@@ -2,8 +2,8 @@ import { monthlyDefenseBudgetM } from "./systems/military.js";
 import type { Action, ActionType, CountryState, WorldState } from "./types.js";
 
 /**
- * Action economy. The player's orders cost Political Capital (PC) — the scarce
- * attention, favors and credibility a leader spends each month — while
+ * Action economy. The player's orders cost Political Capital (PC), the scarce
+ * attention, favors and credibility a leader spends each month, while
  * military hardware and nuclear work cost money as a share of the defense
  * budget. Percentages instead of flat dollars keep a 1960 Israel and a 2025
  * United States equally constrained (flat costs paralysed the former and

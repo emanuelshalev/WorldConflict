@@ -56,7 +56,7 @@ export interface StrategistResult {
   usage: UsageTotals;
   statements: LeaderStatement[];
   llmCountries: string[];
-  notice?: string; // e.g. "Budget cap reached — algorithmic AI this turn"
+  notice?: string; // e.g. "Budget cap reached, algorithmic AI this turn"
 }
 
 const HIGH_STAKES: Action["type"][] = [
@@ -140,7 +140,7 @@ export async function planTurn(
       usage: meter.turn,
       statements: [],
       llmCountries: [],
-      notice: `LLM budget cap ($${budget.toFixed(2)}) reached — algorithmic AI this turn`,
+      notice: `LLM budget cap ($${budget.toFixed(2)}) reached, algorithmic AI this turn`,
     };
   }
 
@@ -261,7 +261,7 @@ function buildMessages(
   const system = `You are ${country.leader.title} ${country.leader.name} of ${country.name} (${country.regimeType.toLowerCase()}, leadership style ${country.leader.style.toLowerCase()}). Decide your country's moves for this month in a geopolitical strategy game. Stay true to your nation's history and interests: ${country.history.narrative ?? ""}
 Personality (0-100): war propensity ${p.warPropensity}, risk tolerance ${p.riskTolerance}, diplomatic flexibility ${p.diplomaticFlexibility}, alliance loyalty ${p.allianceLoyalty}, expansionism ${p.expansionism}.
 Red lines: ${country.redLines.map((r) => r.description).join("; ") || "none"}.
-You only know what your intelligence services believe; act on that. Be decisive but plausible — real leaders rarely take reckless gambles.
+You only know what your intelligence services believe; act on that. Be decisive but plausible, real leaders rarely take reckless gambles.
 Reply with ONLY a JSON object: {"actions":[{"type":"ACTION_TYPE","targetCountryId":"ISO3","params":{}}],"statement":"one short public statement in your voice","reasoning":"one sentence"}. At most 3 actions; an empty list is allowed.`;
 
   const user = `Date ${world.date}. Global tension ${Math.round(world.globalTension)}/100.

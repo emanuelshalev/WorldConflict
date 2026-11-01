@@ -23,7 +23,7 @@ const LAYER_GUIDES: Record<string, { title: string; description: string; swatche
   },
   political: {
     title: 'Regimes layer',
-    description: 'Countries are colored by their system of government (colorblind-safe palette — no color means good or bad). Democracies face elections, autocracies fear coups, theocracies follow doctrine.',
+    description: 'Countries are colored by their system of government (colorblind-safe palette, no color means good or bad). Democracies face elections, autocracies fear coups, theocracies follow doctrine.',
     swatches: [
       { color: '#0072B2', label: 'Democracy' },
       { color: '#D55E00', label: 'Autocracy' },
@@ -35,7 +35,7 @@ const LAYER_GUIDES: Record<string, { title: string; description: string; swatche
   },
   military: {
     title: 'Military layer',
-    description: 'Brighter red = greater estimated military strength. These are your intelligence service\'s estimates of fighting power (manpower, airpower, readiness) — not exact figures.',
+    description: 'Brighter red = greater estimated military strength. These are your intelligence service\'s estimates of fighting power (manpower, airpower, readiness), not exact figures.',
     swatches: [
       { color: 'rgb(255,40,40)', label: 'Major military power' },
       { color: 'rgb(160,60,40)', label: 'Mid-tier force' },
@@ -53,7 +53,7 @@ const LAYER_GUIDES: Record<string, { title: string; description: string; swatche
   },
   stability: {
     title: 'Stability layer',
-    description: 'Green = solid government, red = on the brink. Unstable states are vulnerable to coups, revolutions and your covert operations — and unstable neighbors export chaos.',
+    description: 'Green = solid government, red = on the brink. Unstable states are vulnerable to coups, revolutions and your covert operations, and unstable neighbors export chaos.',
     swatches: [
       { color: 'hsl(110, 60%, 38%)', label: 'Very solid (80+)' },
       { color: 'hsl(60, 60%, 38%)', label: 'Moderate (~50)' },
@@ -73,12 +73,12 @@ const LAYER_GUIDES: Record<string, { title: string; description: string; swatche
   },
   nuclear: {
     title: 'Nuclear layer',
-    description: 'Nuclear weapons status as your analysts assess it. Programs can be hidden — a "None" may simply mean you haven\'t found it. Once a state TESTS, its program is invulnerable to conventional strikes.',
+    description: 'Nuclear weapons status as your analysts assess it. Programs can be hidden, a "None" may simply mean you haven\'t found it. Once a state TESTS, its program is invulnerable to conventional strikes.',
     swatches: [
-      { color: '#c92a2a', label: 'ARMED — deliverable arsenal' },
-      { color: '#e8590c', label: 'TESTED — demonstrated, weaponizing' },
-      { color: '#e6a23c', label: 'DEVELOPING — active program detected' },
-      { color: '#7a7a52', label: 'LATENT — could build quickly' },
+      { color: '#c92a2a', label: 'ARMED, deliverable arsenal' },
+      { color: '#e8590c', label: 'TESTED, demonstrated, weaponizing' },
+      { color: '#e6a23c', label: 'DEVELOPING, active program detected' },
+      { color: '#7a7a52', label: 'LATENT, could build quickly' },
       { color: '#3c4048', label: 'None detected' },
     ],
   },
@@ -122,12 +122,12 @@ export function MapGuide({ onClose }: { onClose: () => void }) {
       </div>
 
       <p style={{ fontSize: 12, color: '#99a', margin: '8px 0' }}>
-        This is the world <i>as your intelligence services see it</i> — not ground truth. Estimates shown as
+        This is the world <i>as your intelligence services see it</i>, not ground truth. Estimates shown as
         ranges are uncertain; the better your intel on a country, the closer they are to reality.
       </p>
 
       {/* Current layer colors */}
-      <div style={sectionTitle}>Colors — {guide.title}</div>
+      <div style={sectionTitle}>Colors: {guide.title}</div>
       <p style={{ fontSize: 12, color: '#aab', margin: '0 0 8px 0' }}>{guide.description}</p>
       {guide.swatches.map((s) => (
         <div key={s.label} style={row}>
@@ -136,7 +136,7 @@ export function MapGuide({ onClose }: { onClose: () => void }) {
         </div>
       ))}
       <div style={{ fontSize: 11, color: '#778', marginTop: 4 }}>
-        Switch layers with the buttons at the top right — this guide follows the active layer.
+        Switch layers with the buttons at the top right, this guide follows the active layer.
       </div>
 
       {/* Icons & markings */}
@@ -145,19 +145,19 @@ export function MapGuide({ onClose }: { onClose: () => void }) {
       <div style={row}><span style={{ width: 18, textAlign: 'center' }}>🔥</span> Serious insurgency (rebellion or guerilla war)</div>
       <div style={row}>
         <span style={{ width: 18, height: 3, background: '#ff3030', boxShadow: '0 0 5px #ff3030', flexShrink: 0 }} />
-        Pulsing red border — country at war
+        Pulsing red border: country at war
       </div>
       <div style={row}>
         <span style={{ width: 18, borderTop: '2px dashed #39c46a', flexShrink: 0 }} />
-        Green dashed line — military pact (of the selected country, or yours)
+        Green dashed line: military pact (of the selected country, or yours)
       </div>
       <div style={row}>
         <span style={{ width: 18, borderTop: '2px dashed #ff4040', flexShrink: 0 }} />
-        Red dashed line — active war between those countries
+        Red dashed line: active war between those countries
       </div>
       <div style={row}>
         <span style={{ width: 16, height: 16, borderRadius: 3, border: '2px solid #fff', flexShrink: 0 }} />
-        White border — currently selected country
+        White border: currently selected country
       </div>
       <div style={row}>
         <span style={{ width: 16, height: 16, borderRadius: 3, background: '#2a6dd9', flexShrink: 0 }} />
@@ -167,7 +167,7 @@ export function MapGuide({ onClose }: { onClose: () => void }) {
       {/* Interactions */}
       <div style={sectionTitle}>How to use the map</div>
       <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12, color: '#aab', lineHeight: 1.7 }}>
-        <li><b style={{ color: '#ccd' }}>Hover</b> a country for a quick intelligence snapshot — leader, relations, GDP and stability (as ranges when uncertain).</li>
+        <li><b style={{ color: '#ccd' }}>Hover</b> a country for a quick intelligence snapshot, leader, relations, GDP and stability (as ranges when uncertain).</li>
         <li><b style={{ color: '#ccd' }}>Click</b> a country to open its dossier: government, history, military estimates, and quick actions (diplomacy, intelligence operations, military moves). Click again to deselect.</li>
         <li><b style={{ color: '#ccd' }}>Targeting:</b> actions in the side panel that need a target use the currently selected country.</li>
         <li><b style={{ color: '#ccd' }}>Lines</b> show the selected country's pacts and wars; with nothing selected, they show yours.</li>
@@ -175,7 +175,7 @@ export function MapGuide({ onClose }: { onClose: () => void }) {
       </ul>
 
       <div style={{ fontSize: 11, color: '#667', marginTop: 12, borderTop: '1px solid #2a2e3a', paddingTop: 8 }}>
-        Tip: before an action is committed you will always see a consequence forecast — effects, costs,
+        Tip: before an action is committed you will always see a consequence forecast, effects, costs,
         success odds and risks. There is no undo in geopolitics.
       </div>
     </div>

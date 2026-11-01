@@ -49,7 +49,7 @@ export interface Arrow {
 
 /**
  * Turn exact option effects into qualitative arrows (▲▲, ▼). Players see the
- * direction and rough size of consequences — not the exact numbers, which
+ * direction and rough size of consequences, not the exact numbers, which
  * keeps decisions about judgment rather than arithmetic.
  */
 export function effectArrows(

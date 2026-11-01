@@ -6,7 +6,7 @@ import { useModalFocus } from '../lib/useModalFocus';
 const CABINET = [
   { id: 'FOREIGN_MINISTER', name: 'Foreign Minister', lens: 'Alliances, rivals, the art of the deal' },
   { id: 'DEFENSE_MINISTER', name: 'Defense Minister', lens: 'Force ratios, readiness, deterrence' },
-  { id: 'INTELLIGENCE_CHIEF', name: 'Intelligence Chief', lens: 'What we know — and how sure we are' },
+  { id: 'INTELLIGENCE_CHIEF', name: 'Intelligence Chief', lens: 'What we know, and how sure we are' },
   { id: 'FINANCE_MINISTER', name: 'Finance Minister', lens: 'The bill for every option' },
   { id: 'DOMESTIC_ADVISOR', name: 'Interior Minister', lens: 'The street, the press, the polls' },
   { id: 'CHIEF_OF_STAFF', name: 'Chief of Staff', lens: 'The big picture and your survival' },
@@ -56,7 +56,7 @@ function Cabinet() {
   return (
     <>
       <p style={{ color: 'var(--text-2)', fontSize: 13, marginTop: 0 }}>
-        Each minister sees the world through their department — and only through our intelligence. Ask them anything.
+        Each minister sees the world through their department, and only through our intelligence. Ask them anything.
         {provider === 'builtin' && ' (Connect an LLM in Settings for free-form conversation.)'}
       </p>
       {CABINET.map((a) => (
@@ -89,7 +89,7 @@ function WorldPanel() {
       <div className="section-label" style={{ marginTop: 0 }}>
         Wars ({world.wars.length})
       </div>
-      {world.wars.length === 0 && <p style={{ color: 'var(--text-3)' }}>The guns are silent — for now.</p>}
+      {world.wars.length === 0 && <p style={{ color: 'var(--text-3)' }}>The guns are silent, for now.</p>}
       {world.wars.map((w) => {
         const mine = w.attackerId === me.id || w.defenderId === me.id;
         const pct = w.frontline;
@@ -108,7 +108,7 @@ function WorldPanel() {
         );
       })}
       <div className="section-label">Your alliances</div>
-      <p style={{ fontSize: 14 }}>{me.alliances.length ? me.alliances.map((id) => `${flag(id)} ${countryName(id)}`).join(' · ') : 'None — you stand alone.'}</p>
+      <p style={{ fontSize: 14 }}>{me.alliances.length ? me.alliances.map((id) => `${flag(id)} ${countryName(id)}`).join(' · ') : 'None, you stand alone.'}</p>
       <div className="section-label">Closest friends</div>
       {friends.map((v) => (
         <Relation key={v.id} id={v.id} name={v.name} value={v.relationWithPlayer} level={v.diplomaticLevel} />

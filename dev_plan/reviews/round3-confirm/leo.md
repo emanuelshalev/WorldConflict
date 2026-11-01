@@ -30,7 +30,7 @@ No UI console errors (other than tiles), no 5xx from the UI, and every save load
 | **P1** | **Ending a big war wipes global tension.** Each ended war gives −8, and the war-count floor only limits decay, so it never lifts tension back up. | Venezuela Term (seed 901), declare war on the USA. When the 11-country war ends (month 6→7), tension drops 65 → **2/100** while Russia–Ukraine, Israel–Iran and Yemen–Saudi are still at war (floor should be 43). |
 | P2 | Malformed requests return **500** instead of 400. | `/turn` with `value:"abc"` or `null`, an unknown `type`, or `playerActions:"x"`; `/new-game` with `mode:"BOGUS"`. |
 | P2 | `MILITARY_DEPLOY_BORDER` value has no upper bound. | `value:1e12` puts 1,000,000,120,000 troops on Korea's border (manpower 1.28M). Sending `1.7e308` twice overflows to Infinity: the save is protected, but every later deploy to that target returns 500. |
-| P2 | Unknown country starts a ghost game. | `/new-game {"playerCountryId":"XXX"}` → 200. The save is listed as "XXX — flashpoint 2026"; it plays with no HUD and turns are accepted. |
+| P2 | Unknown country starts a ghost game. | `/new-game {"playerCountryId":"XXX"}` → 200. The save is listed as "XXX, flashpoint 2026"; it plays with no HUD and turns are accepted. |
 | P2 | Preview disagrees with the engine on negative values. | `/preview-action` procure `-5` → "$-5M", "Airpower +-1", affordable: true. Deploy `-5` → "Deploy -5 troops". |
 | P2 | Rate limit is 4/s, not the documented 1/s, and it trusts `X-Forwarded-For`. | Five concurrent turns with spoofed IPs: all succeed. |
 | P2 | Junk enum params are silently accepted. | Airstrike `targetType:"BOGUS"` → "Carried out". |

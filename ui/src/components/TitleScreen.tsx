@@ -55,7 +55,7 @@ const MODES: Array<{
     icon: <IconBuildingBank size={22} />,
     name: 'One Term',
     time: '~45–60 MIN · 48 MONTHS',
-    pitch: 'Govern any of 41 nations for four years. Survive scandals, shocks and rivals — then face the voters (or the Party).',
+    pitch: 'Govern any of 41 nations for four years. Survive scandals, shocks and rivals, then face the voters (or the Party).',
     meta: ['Autosaves', 'Election finale', 'Play in parts'],
   },
   {
@@ -192,7 +192,7 @@ export function TitleScreen() {
             <p>
               Wars in Europe and the Gulf, a blockade in the Caribbean, a new supreme leader in
               Tehran. Every country is run by an AI with its own history, red lines and
-              half-wrong intelligence. Step in — and see if you can do better.
+              half-wrong intelligence. Step in, and see if you can do better.
             </p>
           </div>
           <div className="poem">
@@ -320,7 +320,7 @@ export function TitleScreen() {
           <div className="summary">
             <b>
               {chosen ? `${flag(chosen.id)} ${chosen.name}` : 'Pick a nation'}
-              {usingFlashpoint && fp ? ` — ${fp.title}` : ''}
+              {usingFlashpoint && fp ? `, ${fp.title}` : ''}
             </b>
             <p>
               {objective

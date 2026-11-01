@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>World Conflict — Project Status</title>
+<title>World Conflict: Project Status</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
 <style>
@@ -86,7 +86,7 @@
 </head>
 <body>
 <header>
-  <h1>🌍 World Conflict — <span>Project Status</span></h1>
+  <h1>🌍 World Conflict: <span>Project Status</span></h1>
   <div class="sub">Engagement overhaul · branch <code style="background:rgba(255,255,255,.15);color:#fff">feat/engagement-overhaul</code> · autonomous development log for owner review</div>
   <div class="meta" id="meta"></div>
   <nav id="tabs">
@@ -109,7 +109,7 @@
   <h2>Pillars of the overhaul</h2>
   <div class="grid">
     <div class="card"><h4>⏱ Sessions that fit a life</h4>Player picks a mode up front with an honest time estimate: <b>Flashpoint</b> (short, goal-driven, clear win/lose), <b>Campaign</b> (a full term, autosaved across days). Tuned with the headless harness.</div>
-    <div class="card"><h4>🎢 Drama by design</h4>Crisis cadence, escalation curves, near-loss moments and comeback mechanics measured by <code>npm run sim</code> — not left to chance.</div>
+    <div class="card"><h4>🎢 Drama by design</h4>Crisis cadence, escalation curves, near-loss moments and comeback mechanics measured by <code>npm run sim</code>, not left to chance.</div>
     <div class="card"><h4>🌐 The real world, today</h4>Roster 25 → ~40 countries with current hotspots; a 2026 scenario with active wars; current leaders; flashpoints grounded in real events with "what really happened" debriefs.</div>
     <div class="card"><h4>🎨 Beautiful &amp; intuitive</h4>Keyless stylized map, situation-room visual identity, progressive onboarding, juicy feedback, shareable end card, mobile layout.</div>
     <div class="card"><h4>🤖 Three AI tiers</h4><b>Algorithmic</b> (free, offline) · <b>LLM for key decisions</b> · <b>Full LLM</b>. API key or local model; tokens &amp; estimated cost shown live.</div>
@@ -226,7 +226,7 @@ flowchart LR
       <tr><td><b>CountryProfile</b></td><td><code>src/core/types.ts</code></td><td>Static JSON in <code>data/countries/*.json</code></td></tr>
       <tr><td><b>Scenario</b></td><td><code>src/core/data-loader.ts</code></td><td>Era overrides: leaders, relations, alliances, wars</td></tr>
       <tr><td><b>PlayerView</b></td><td><code>systems/intelligence.ts</code></td><td>Belief-filtered world with uncertainty ranges</td></tr>
-      <tr><td><b>UI types</b></td><td><code>ui/src/store/gameStore.ts</code></td><td>⚠ duplicated from backend — must be kept in sync</td></tr>
+      <tr><td><b>UI types</b></td><td><code>ui/src/store/gameStore.ts</code></td><td>⚠ duplicated from backend: must be kept in sync</td></tr>
     </tbody>
   </table>
 </section>
@@ -261,7 +261,7 @@ flowchart LR
 <!-- ============================================================ DECISIONS -->
 <section class="tab" id="decisions">
   <h2>Decision points</h2>
-  <div class="callout info">Decisions taken along the way. <b>Owner</b> = you decided; <b>Agent</b> = taken autonomously and open for your review — comment on any you'd like changed.</div>
+  <div class="callout info">Decisions taken along the way. <b>Owner</b> = you decided; <b>Agent</b> = taken autonomously and open for your review, comment on any you'd like changed.</div>
   <div id="decisionlist"></div>
 </section>
 </main>
@@ -270,7 +270,7 @@ flowchart LR
 <script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
 <script>
 // =====================================================================
-// STATUS DATA — the only part that changes between updates
+// STATUS DATA: the only part that changes between updates
 // =====================================================================
 const STATUS = {
   updated: "2026-11-01",
@@ -313,7 +313,7 @@ const STATUS = {
   tasks: [
     { id: "B-1", t: "Baseline: install, test, build, lint inventory", d: "52/52 tests; build OK; pre-existing lint errors catalogued.", m: "M0", p: "P0", s: "done" },
     { id: "B-2", t: "Fix dev proxy (sign-up broken on main)", d: "Relative /api without a Vite proxy → JSON parse error at sign-up.", m: "M0", p: "P0", s: "done" },
-    { id: "B-3", t: "Headless playtest harness", d: "scripts/simulate.ts — v2 with policies none/propaganda/smart/random/hawk/ai and design-target metrics.", m: "M0", p: "P0", s: "done" },
+    { id: "B-3", t: "Headless playtest harness", d: "scripts/simulate.ts, v2 with policies none/propaganda/smart/random/hawk/ai and design-target metrics.", m: "M0", p: "P0", s: "done" },
     { id: "B-4", t: "Expert & persona reviews", d: "dev_plan/reviews/: game-design, ux-visual, geopolitics (+16 profiles), player-personas.", m: "M0", p: "P0", s: "done" },
     { id: "AI-1", t: "AI tiers backend", d: "Algorithmic / key decisions / full LLM; validated proposals; fallback; tests with a fake client.", m: "M4", p: "P0", s: "done" },
     { id: "AI-2", t: "Usage & cost meter", d: "Per-call tokens × price table; per-save totals; advisors metered; budget cap.", m: "M4", p: "P0", s: "done" },
@@ -375,9 +375,9 @@ const STATUS = {
     { id: "L-2", t: "Weekly turns for acute flashpoints", d: "Engine rates are monthly; needs rescaling.", m: "Later", p: "P2", s: "planned" },
   ],
   blockers: [
-    { id: "X-1", b: "System Node is v18 — Vite 7 and Prisma 7 need ≥ 20.19 (machine is ARM64).", r: "User-local Node 22 LTS (aarch64) under ~/.local/share/node; system Node untouched; SETUP.md documents the requirement.", s: "resolved" },
+    { id: "X-1", b: "System Node is v18, Vite 7 and Prisma 7 need ≥ 20.19 (machine is ARM64).", r: "User-local Node 22 LTS (aarch64) under ~/.local/share/node; system Node untouched; SETUP.md documents the requirement.", s: "resolved" },
     { id: "X-2", b: "Account registration fails in dev ('Unexpected end of JSON input').", r: "Last main commit made the API base relative without a dev proxy. Added a Vite proxy for /api.", s: "resolved" },
-    { id: "X-3", b: "CARTO basemap now requires an API key — watermarks over the whole map.", r: "No tile provider at all: Natural Earth polygons over a stylized ocean.", s: "resolved" },
+    { id: "X-3", b: "CARTO basemap now requires an API key, watermarks over the whole map.", r: "No tile provider at all: Natural Earth polygons over a stylized ocean.", s: "resolved" },
     { id: "X-4", b: "Research reports major post-cutoff events the agent cannot verify from training.", r: "Spot-checked the load-bearing claims with independent searches (Khamenei killed 28 Feb 2026 & Mojtaba succession; Maduro captured 3 Jan 2026 & Delcy Rodríguez acting; Burnham PM July 2026; Abu Dhabi talks). Uncertain items hedged in-game ('reportedly').", s: "resolved" },
     { id: "X-5", b: "AI rivals invisibly piled covert ops onto a weakened player (USA 'collapsed' from 42% stability in 3 months).", r: "Monthly cap on covert damage, surfaced in the turn report, plus a 'Foreign interference' crisis.", s: "resolved" },
   ],
@@ -399,11 +399,11 @@ const STATUS = {
     { id: "D-10", who: "Agent", title: "LLMs never mutate state", text: "LLM leaders return proposed intents, validated and resolved by the deterministic engine; failures fall back silently and are counted." },
     { id: "D-11", who: "Agent", title: "Guest play by default", text: "Accounts are optional (sync saves). Forced sign-up was the #1 first-minute churn point." },
     { id: "D-12", who: "Agent", title: "Balance targets relative to a perfect-information bot", text: "The harness 'smart' bot sees exact effects; players see arrows. Targets: smart 55–85%, passive ≤20%. Country difficulty differs on purpose (Steady / Tough / Brutal tags)." },
-    { id: "D-13", who: "Agent", title: "Autocracies face a visible end-of-term review", text: "Legitimacy ≥40, stability ≥35, score ≥100 — shown from turn 1 instead of a hidden roll." },
+    { id: "D-13", who: "Agent", title: "Autocracies face a visible end-of-term review", text: "Legitimacy ≥40, stability ≥35, score ≥100, shown from turn 1 instead of a hidden roll." },
     { id: "D-14", who: "Agent", title: "Monthly turns kept for flashpoints", text: "12 turns ≈ one year of crisis; weekly turns would require rescaling every rate. Logged as L-2." },
     { id: "D-15", who: "Agent", title: "Exact numbers hidden behind arrows on crisis cards", text: "Per the UX review: judgment, not arithmetic. Orders still show success odds from the preview engine." },
     { id: "D-16", who: "Agent", title: "Iran is 'Brutal' in a 2026 Term", text: "Under simultaneous US and Israeli war with a new supreme leader, even the smart bot rarely survives 48 months. Kept as a deliberate challenge; flashpoints offer shorter Iranian sessions." },
-    { id: "D-17", who: "Agent", title: "License left for you to choose", text: "The old README advertised MIT but no LICENSE file exists. I removed the claim rather than pick a license for you — please choose one." },
+    { id: "D-17", who: "Agent", title: "License left for you to choose", text: "The old README advertised MIT but no LICENSE file exists. I removed the claim rather than pick a license for you, please choose one." },
     { id: "D-18", who: "Agent", title: "Real, recent events framed as 'scenario premises' where uncertain", text: "Contested or unverifiable details (e.g. Perim capture, Mojtaba Khamenei's health) are worded 'reportedly' in-game; debriefs separate 'what happened' from 'what experts fear'." },
     { id: "D-24", who: "Agent", title: "Denunciations rally only against adversaries", text: "Approval +2 (halving with each repeat in 6 months) against a rival or a country at −25 or worse; −2 against a partner; 0 against bystanders. Denounce stays free in ◆." },
     { id: "D-25", who: "Agent", title: "Peace on the winner's terms", text: "At 65+ on its side of the front the winner may accept a ceasefire (+12% chance). The loser pays −6 approval/−5 legitimacy (a defeat costs −15/−20/−15 plus reparations); the winner gains +5/+3. This changes AI wars too, ending some sooner." },

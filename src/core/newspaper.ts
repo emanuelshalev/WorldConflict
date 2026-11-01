@@ -7,7 +7,7 @@ import type { GameEvent, NewspaperEntry, WorldState } from "./types.js";
 
 /**
  * Turns the month's happenings into front-page copy. The newspaper is the
- * player's primary window on the world — written with drama, names, and
+ * player's primary window on the world: written with drama, names, and
  * consequence, like the original game's News Phase.
  */
 
@@ -154,7 +154,7 @@ export function generateNewspaper(
         tension > 70
           ? "Foreign ministries from Washington to Beijing report crisis staffing. Markets twitch at every communiqué. Historians note that months like these often precede the storm."
           : tension > 40
-            ? "No new wars, no fallen governments — yet diplomats privately admit the great questions of our era remain unresolved."
+            ? "No new wars, no fallen governments, yet diplomats privately admit the great questions of our era remain unresolved."
             : "Trade flows, summits conclude amicably, and for one month at least, the world's leaders found more reasons to talk than to fight.",
       relatedCountries: [],
       turn,

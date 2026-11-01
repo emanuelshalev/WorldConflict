@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🌍 World Conflict — Game Design Specification
+# 🌍 World Conflict: Game Design Specification
 
 ### *The Complete Technical & Design Document*
 
@@ -38,7 +38,7 @@
 
 Each country operates from its own **imperfect worldview**, creating realistic miscalculations, escalations, and opportunities.
 
-> *Inspired by the 1990 classic "Conflict: Middle East Political Simulator" — we preserve its tongue-in-cheek realpolitik while expanding to global scope with modern AI-driven country behavior.*
+> *Inspired by the 1990 classic "Conflict: Middle East Political Simulator", we preserve its tongue-in-cheek realpolitik while expanding to global scope with modern AI-driven country behavior.*
 
 ---
 
@@ -47,9 +47,9 @@ Each country operates from its own **imperfect worldview**, creating realistic m
 | # | Pillar | Description |
 |---|--------|-------------|
 | 1 | **Global Agentic Simulation** | Every country runs as an autonomous agent with persistent goals, beliefs, historical patterns, and decision-making capacity that reflects its real-world national character |
-| 2 | **Asymmetric Information** | Nations see different versions of reality based on intelligence capabilities and biases — players only see what their country believes, not ground truth |
-| 3 | **Consequential Actions** | Every player decision has visible, cascading consequences shown BEFORE commitment — actions feel weighty and meaningful |
-| 4 | **Historical Plausibility** | Countries behave according to historical patterns, institutional constraints, and cultural traits — the simulation produces believable alternate histories |
+| 2 | **Asymmetric Information** | Nations see different versions of reality based on intelligence capabilities and biases, players only see what their country believes, not ground truth |
+| 3 | **Consequential Actions** | Every player decision has visible, cascading consequences shown BEFORE commitment, actions feel weighty and meaningful |
+| 4 | **Historical Plausibility** | Countries behave according to historical patterns, institutional constraints, and cultural traits, the simulation produces believable alternate histories |
 | 5 | **Fast Monthly Turns** | Complete turn resolution <200ms for MVP scale (25 countries) |
 | 6 | **Leadership Legacy** | Comprehensive end-of-term scoring and historical report generation |
 | 7 | **Scalable World Model** | Tiered country simulation (Tier 1 fully autonomous → Tier 3 abstracted) |
@@ -90,7 +90,7 @@ This sets the tone for the game's **tongue-in-cheek realpolitik** atmosphere.
 
 # 2. MVP Scope Definition
 
-## 2.1 Phase 1 — MVP Features ✅
+## 2.1 Phase 1: MVP Features ✅
 
 | Category | Features |
 |----------|----------|
@@ -202,7 +202,7 @@ Passive simulation via group behaviors and dynamic promotion
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### 📅 Annual Events (Every 12 Turns — July)
+### 📅 Annual Events (Every 12 Turns: July)
 
 | Event | Description |
 |-------|-------------|
@@ -213,8 +213,8 @@ Passive simulation via group behaviors and dynamic promotion
 
 ### 🎯 Key Design Principles
 
-- **Newspaper FIRST** (not last) — creates narrative continuity
-- **LINEAR progression** — no going back once advanced
+- **Newspaper FIRST** (not last): creates narrative continuity
+- **LINEAR progression**: no going back once advanced
 - **Consequences previewed** BEFORE confirmation
 - **Post-action feedback** shows what happened
 

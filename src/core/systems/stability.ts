@@ -39,7 +39,7 @@ export function updateDomestic(world: WorldState, rng: SeededRandom): GameEvent[
       if (division.tension > 60) delta -= 0.3;
     }
     // AI states fight for their survival: weak governments consolidate, crack down,
-    // call in favors — preventing every fragile state from spiraling to collapse.
+    // call in favors: preventing every fragile state from spiraling to collapse.
     // The player gets explicit crisis cards (coup plots, protests) instead.
     const isPlayer = country.id === world.playerCountryId;
     if (!isPlayer) {

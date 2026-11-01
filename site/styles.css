@@ -1,4 +1,4 @@
-/* World Conflict landing page — "Situation Room, after hours".
+/* World Conflict landing page: "Situation Room, after hours".
    Tokens mirror ui/src/styles/wc.css so the page and the game read as one product. */
 :root {
   --bg-0: #0b0f17;
@@ -153,7 +153,7 @@ p { margin: 0 0 1em; }
 .reveal.in { opacity: 1; transform: none; }
 
 /* =========================================================
-   HERO — newsroom wall
+   HERO: newsroom wall
    ========================================================= */
 .hero {
   position: relative; height: 100vh; height: 100svh; min-height: 560px; overflow: hidden;

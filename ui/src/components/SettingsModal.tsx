@@ -16,13 +16,13 @@ const TIERS: Array<{ id: AITier; name: string; blurb: string; callsPerTurn: numb
   {
     id: 'ALGORITHMIC',
     name: 'Algorithmic',
-    blurb: 'Every leader is driven by the built-in personality engine — history, red lines, beliefs. Free, offline, instant, reproducible.',
+    blurb: 'Every leader is driven by the built-in personality engine, history, red lines, beliefs. Free, offline, instant, reproducible.',
     callsPerTurn: 0,
   },
   {
     id: 'KEY_DECISIONS',
     name: 'LLM for key decisions',
-    blurb: 'The engine runs the world; an LLM takes over a leader only at high-stakes moments — war, nukes, coups, ceasefires — and for your advisors.',
+    blurb: 'The engine runs the world; an LLM takes over a leader only at high-stakes moments, war, nukes, coups, ceasefires, and for your advisors.',
     callsPerTurn: 1.2,
   },
   {
@@ -95,7 +95,7 @@ function Inner({ onClose }: { onClose: () => void }) {
     try {
       const res = await fetch(CHAT_TEST_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
       const data = await res.json();
-      setTestResult(data.success ? { ok: true, text: `Connected — ${data.model} says "${data.sample}"` } : { ok: false, text: data.error ?? 'Connection failed' });
+      setTestResult(data.success ? { ok: true, text: `Connected, ${data.model} says "${data.sample}"` } : { ok: false, text: data.error ?? 'Connection failed' });
     } catch (err) {
       setTestResult({ ok: false, text: err instanceof Error ? err.message : 'Connection failed' });
     } finally {
@@ -166,7 +166,7 @@ function Inner({ onClose }: { onClose: () => void }) {
               <h5>Cost, up front</h5>
               <p>
                 {price === null
-                  ? `Unknown price for "${model}" — usage will be shown in tokens.`
+                  ? `Unknown price for "${model}", usage will be shown in tokens.`
                   : price[0] === 0
                     ? 'Local model: $0. Speed depends on your hardware.'
                     : `${model}: ~$${(perCall ?? 0).toFixed(4)} per leader decision → about ${(estimate ?? 0) < 0.01 ? 'under a cent' : `$${(estimate ?? 0).toFixed(2)}`} for a ${turns}-month game at this tier (advisor chats extra).`}

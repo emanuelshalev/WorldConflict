@@ -300,7 +300,7 @@ export class DataLoader {
         title: electoral ? "Win the coming election" : "Survive the inner circle's review",
         briefing: electoral
           ? `Govern ${player.name} through four turbulent years, then face the voters. Lose them and you lose everything.`
-          : `No ballot box can remove you — but the ${player.politicalSystem.type === "ONE_PARTY_STATE" ? "Party" : "inner circle"} reviews your record at the end of four years. Deliver order, legitimacy and results.`,
+          : `No ballot box can remove you, but the ${player.politicalSystem.type === "ONE_PARTY_STATE" ? "Party" : "inner circle"} reviews your record at the end of four years. Deliver order, legitimacy and results.`,
         primary: electoral
           ? []
           : [
@@ -689,7 +689,7 @@ export class DataLoader {
           if (!a || !b) continue;
           if (!a.alliances.includes(b.id)) a.alliances.push(b.id);
           if (!b.alliances.includes(a.id)) b.alliances.push(a.id);
-          // Allies start warm — unless the scenario authored a cooler relationship
+          // Allies start warm: unless the scenario authored a cooler relationship
           // (e.g. US–Denmark over Greenland, Russia–China in 1960)
           if (
             scenario.initialRelations[a.id]?.[b.id] === undefined &&

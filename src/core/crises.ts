@@ -17,8 +17,8 @@ import type {
  * Each template is grounded in a recurring historical pattern and offers 2–3
  * options with readable trade-offs. Some options schedule a delayed follow-up
  * (a consequence that lands 1–4 months later), which is what makes choices
- * memorable. The director guarantees a cadence per mode — every Flashpoint
- * turn has a decision; Term/Legacy never go quiet for long — and avoids
+ * memorable. The director guarantees a cadence per mode, every Flashpoint
+ * turn has a decision; Term/Legacy never go quiet for long, and avoids
  * repeating the same story within six months.
  */
 
@@ -164,7 +164,7 @@ const TEMPLATES: CrisisTemplate[] = [
             opt(
               "reinforce",
               "Reinforce and shadow them",
-              "Surge forces to the area. Deterrence — or the first step toward war.",
+              "Surge forces to the area. Deterrence, or the first step toward war.",
               { approval: 4, mobilization: 10, [`relations:${r.id}`]: -12 },
               {
                 tensionDelta: 6,
@@ -205,7 +205,7 @@ const TEMPLATES: CrisisTemplate[] = [
             opt(
               "hold",
               "Hold the line",
-              "Stay put. Your resolve is noted — by your voters and their generals.",
+              "Stay put. Your resolve is noted, by your voters and their generals.",
               { approval: 3, stability: -2 },
               { tensionDelta: 4, backedBy: ["DEFENSE_MINISTER"] },
             ),
@@ -235,7 +235,7 @@ const TEMPLATES: CrisisTemplate[] = [
         situation: `Documents leaked to the press implicate your inner circle in large-scale embezzlement. ${
           ctx.player.regimeType === "DEMOCRACY"
             ? "The opposition demands resignations and the press smells blood."
-            : "The story is banned at home but circulating inside the elite — the dangerous audience."
+            : "The story is banned at home but circulating inside the elite, the dangerous audience."
         }`,
         affectedCountries: [ctx.player.id],
         options: [
@@ -287,7 +287,7 @@ const TEMPLATES: CrisisTemplate[] = [
             "Throw them to the wolves. It may be enough.",
             { approval: 2, legitimacy: -2, stability: -2 },
           ),
-          opt("apologize", "Televised apology", "Own it. Rare in politics — sometimes rewarded.", {
+          opt("apologize", "Televised apology", "Own it. Rare in politics, sometimes rewarded.", {
             approval: 5,
             legitimacy: -4,
           }),
@@ -365,7 +365,7 @@ const TEMPLATES: CrisisTemplate[] = [
           opt(
             "purge",
             "Purge the plotters",
-            "Arrest the ringleaders tonight. Fear works — for a while.",
+            "Arrest the ringleaders tonight. Fear works, for a while.",
             { stability: -4, legitimacy: 5, coupShield: 6, approval: -2 },
             { backedBy: ["INTELLIGENCE_CHIEF"] },
           ),
@@ -412,7 +412,7 @@ const TEMPLATES: CrisisTemplate[] = [
           opt(
             "crackdown",
             "Clear the squares",
-            "Order the security forces in. It ends tonight — one way or another.",
+            "Order the security forces in. It ends tonight, one way or another.",
             { stability: 8, approval: -10, legitimacy: -6, relationsAllies: -8, insurgency: -1 },
             {
               backedBy: ["INTELLIGENCE_CHIEF"],
@@ -475,14 +475,14 @@ const TEMPLATES: CrisisTemplate[] = [
         text: `${leaderOf(r)} gives you 30 days to meet a list of demands.`,
         decision: {
           title: `Ultimatum from ${r.name}`,
-          situation: `${leaderOf(r)} demands that you cut military cooperation with your allies and expel their advisors within 30 days — "or face the consequences." Their forces are at ${Math.round(r.mobilizationLevel)}% readiness.`,
+          situation: `${leaderOf(r)} demands that you cut military cooperation with your allies and expel their advisors within 30 days, "or face the consequences." Their forces are at ${Math.round(r.mobilizationLevel)}% readiness.`,
           affectedCountries: [ctx.player.id, r.id],
           urgency: "EXISTENTIAL",
           options: [
             opt(
               "reject",
               "Reject it publicly",
-              "Call their bluff. The nation rallies behind you — if it is a bluff.",
+              "Call their bluff. The nation rallies behind you, if it is a bluff.",
               { approval: 6, [`relations:${r.id}`]: -15, relationsAllies: 5 },
               {
                 tensionDelta: 8,
@@ -542,7 +542,7 @@ const TEMPLATES: CrisisTemplate[] = [
                 opt(
                   "summit",
                   "Request an emergency summit",
-                  "Fly to a neutral capital. Talk them down — at a price.",
+                  "Fly to a neutral capital. Talk them down, at a price.",
                   { [`relations:${r.id}`]: 15, approval: -3, pc: -2 },
                   { tensionDelta: -10, backedBy: ["FOREIGN_MINISTER"] },
                 ),
@@ -583,7 +583,7 @@ const TEMPLATES: CrisisTemplate[] = [
         text: `${leaderOf(ally)} asks you to honor your commitments.`,
         decision: {
           title: `${ally.name} asks for help`,
-          situation: `${leaderOf(ally)} calls you at 3 a.m.: ${possessive(ally.name)} defenses against ${enemy.name} are buckling. They want weapons now — and your army if it comes to that.`,
+          situation: `${leaderOf(ally)} calls you at 3 a.m.: ${possessive(ally.name)} defenses against ${enemy.name} are buckling. They want weapons now, and your army if it comes to that.`,
           affectedCountries: [ctx.player.id, ally.id, enemy.id],
           options: [
             opt(
@@ -637,14 +637,14 @@ const TEMPLATES: CrisisTemplate[] = [
         text: `Your services estimate ${possessive(r.name)} program at ~${progress}% (confidence ${Math.round(belief?.accuracy ?? 50)}%).`,
         decision: {
           title: `${r.name} nears the threshold`,
-          situation: `Your intelligence chief puts ${possessive(r.name)} weapons program at roughly ${progress}% — with ${Math.round(belief?.accuracy ?? 50)}% confidence. Once they test, no airstrike can undo it. Two successful strikes in a row would cripple it.`,
+          situation: `Your intelligence chief puts ${possessive(r.name)} weapons program at roughly ${progress}%, with ${Math.round(belief?.accuracy ?? 50)}% confidence. Once they test, no airstrike can undo it. Two successful strikes in a row would cripple it.`,
           affectedCountries: [ctx.player.id, r.id],
           urgency: "EXISTENTIAL",
           options: [
             opt(
               "strike",
               "Strike the facilities",
-              "Bomb the enrichment sites. Could set them back years — or start a war.",
+              "Bomb the enrichment sites. Could set them back years, or start a war.",
               { approval: 4 },
               {
                 actions: [
@@ -661,7 +661,7 @@ const TEMPLATES: CrisisTemplate[] = [
             opt(
               "sabotage",
               "Covert sabotage",
-              "Cyberweapons and 'accidents' at their facilities. Deniable — if it works.",
+              "Cyberweapons and 'accidents' at their facilities. Deniable, if it works.",
               { pc: -1 },
               {
                 actions: [{ type: "INTEL_SABOTAGE", targetCountryId: r.id }],
@@ -715,7 +715,7 @@ const TEMPLATES: CrisisTemplate[] = [
             opt(
               "deal",
               "Pay a third country to host them",
-              "Expensive and cynical. It works — for now.",
+              "Expensive and cynical. It works, for now.",
               { gdp: -0.3, approval: 1 },
               { backedBy: ["FINANCE_MINISTER"] },
             ),
@@ -809,7 +809,7 @@ const TEMPLATES: CrisisTemplate[] = [
             opt(
               "sanction",
               "Sanctions and silence",
-              "Refuse to bargain. Principled — and the hostages stay put.",
+              "Refuse to bargain. Principled, and the hostages stay put.",
               { approval: -4, [`relations:${t.id}`]: -15 },
               { tensionDelta: 2 },
             ),
@@ -842,7 +842,7 @@ const TEMPLATES: CrisisTemplate[] = [
     weight: () => 0,
     build: (ctx) => ({
       headline: "Hostages released after secret talks",
-      text: "Your negotiators bring the hostages home — at a price nobody will confirm.",
+      text: "Your negotiators bring the hostages home, at a price nobody will confirm.",
       effects: { approval: 6, gdp: -0.1 },
     }),
   },
@@ -865,7 +865,7 @@ const TEMPLATES: CrisisTemplate[] = [
         text: `A resolution targets ${t.name} over ${reason}.`,
         decision: {
           title: `Sanctions on ${t.name}`,
-          situation: `A resolution to sanction ${t.name} over ${reason} comes to a vote. Your vote could swing it — and ${leaderOf(t)} is watching.`,
+          situation: `A resolution to sanction ${t.name} over ${reason} comes to a vote. Your vote could swing it, and ${leaderOf(t)} is watching.`,
           affectedCountries: [ctx.player.id, t.id],
           options: [
             opt(
@@ -885,7 +885,7 @@ const TEMPLATES: CrisisTemplate[] = [
             opt(
               "no",
               "Vote against",
-              "Protect a partner — and your exports. Your allies take note.",
+              "Protect a partner, and your exports. Your allies take note.",
               { [`relations:${t.id}`]: 12, relationsAllies: -7, growth: 0.1 },
               {},
             ),
@@ -925,7 +925,7 @@ const TEMPLATES: CrisisTemplate[] = [
             opt(
               "security",
               "Emergency security powers",
-              "Sweeping arrests. The plotters are caught — and so are many innocents.",
+              "Sweeping arrests. The plotters are caught, and so are many innocents.",
               { stability: 6, approval: -3, legitimacy: -3, insurgency: -1 },
               { backedBy: ["INTELLIGENCE_CHIEF"] },
             ),
@@ -1012,7 +1012,7 @@ const TEMPLATES: CrisisTemplate[] = [
         text: `${leaderOf(p)} wants a mutual defence treaty.`,
         decision: {
           title: `${possessive(p.name)} pact offer`,
-          situation: `${leaderOf(p)} proposes a mutual defence treaty: an attack on one is an attack on both.${theirWars ? ` They are at war with ${theirWars} — sign, and their wars can become yours.` : " It would deter your rivals, and bind you to their quarrels."}`,
+          situation: `${leaderOf(p)} proposes a mutual defence treaty: an attack on one is an attack on both.${theirWars ? ` They are at war with ${theirWars}, sign, and their wars can become yours.` : " It would deter your rivals, and bind you to their quarrels."}`,
           affectedCountries: [ctx.player.id, p.id],
           options: [
             opt(
@@ -1099,7 +1099,7 @@ const TEMPLATES: CrisisTemplate[] = [
         text: "The fine print of the trade pact comes due.",
         decision: {
           title: "The fine print",
-          situation: `${p.name} now asks for "logistics access" at one of your ports — a naval base in all but name. Their rivals are furious you are even considering it.`,
+          situation: `${p.name} now asks for "logistics access" at one of your ports, a naval base in all but name. Their rivals are furious you are even considering it.`,
           affectedCountries: [ctx.player.id, p.id],
           options: [
             opt(
@@ -1137,7 +1137,7 @@ const TEMPLATES: CrisisTemplate[] = [
         text: "Millions are without power; hospitals run on generators.",
         decision: {
           title: "Grid down",
-          situation: `A cyberattack has blacked out a third of your power grid. Your agencies trace it — with moderate confidence — to units linked to ${r.name}.`,
+          situation: `A cyberattack has blacked out a third of your power grid. Your agencies trace it, with moderate confidence, to units linked to ${r.name}.`,
           affectedCountries: [ctx.player.id, r.id],
           options: [
             opt(
@@ -1299,7 +1299,7 @@ const TEMPLATES: CrisisTemplate[] = [
           opt(
             "open",
             "Keep the country open",
-            "Business as usual — and hope.",
+            "Business as usual, and hope.",
             { approval: 3, growth: 0.2, stability: -3 },
             {
               backedBy: ["FINANCE_MINISTER"],
@@ -1413,7 +1413,7 @@ const TEMPLATES: CrisisTemplate[] = [
             opt(
               "aid",
               "Accept foreign aid",
-              "Planes from your allies — and rivals — land with supplies.",
+              "Planes from your allies, and rivals, land with supplies.",
               { relationsAllies: 6, approval: 3, stability: 2 },
               { backedBy: ["FOREIGN_MINISTER"] },
             ),
@@ -1696,8 +1696,8 @@ export interface DirectorOutput {
 
 /**
  * Runs once per turn, after world events. Produces the player's crises for
- * this month: due follow-ups and scripted crises first, then — if the mode's
- * cadence demands drama — a weighted pick among eligible templates.
+ * this month: due follow-ups and scripted crises first, then, if the mode's
+ * cadence demands drama: a weighted pick among eligible templates.
  */
 export function runDirector(world: WorldState, rng: SeededRandom): DirectorOutput {
   const player = world.countries.find((c) => c.id === world.playerCountryId);

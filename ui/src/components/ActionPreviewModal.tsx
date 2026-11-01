@@ -83,7 +83,7 @@ export function ActionPreviewModal() {
                       <div key={i} className="preview-effect">
                         <span>
                           {e.target} · {e.metric}
-                          {e.note && <span className="muted"> — {e.note}</span>}
+                          {e.note && <span className="muted">: {e.note}</span>}
                         </span>
                         <b className={`num ${e.delta.startsWith('-') ? 'delta-down' : e.delta.startsWith('+') ? 'delta-up' : ''}`}>
                           {e.delta}

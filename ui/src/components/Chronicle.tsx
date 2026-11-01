@@ -129,7 +129,7 @@ export function Chronicle() {
                 ))}
                 {report.orders.map((o, i) => (
                   <li key={`${o.label}-${i}`} style={{ color: o.ok ? undefined : '#ff9a9b' }}>
-                    {o.ok ? '✓' : '✗'} {o.label} — {o.detail}
+                    {o.ok ? '✓' : '✗'} {o.label}, {o.detail}
                   </li>
                 ))}
                 {report.causes.slice(0, 5).map((c) => (
@@ -161,7 +161,7 @@ export function Chronicle() {
             <div className="story" key={s.countryId}>
               <span className="kicker">STATEMENT {flag(s.countryId)}</span>
               <h4>{s.leader}</h4>
-              <p>“{s.text}” — {countryName(s.countryId)}</p>
+              <p>“{s.text}”: {countryName(s.countryId)}</p>
             </div>
           ))}
         </div>

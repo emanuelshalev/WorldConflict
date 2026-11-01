@@ -177,11 +177,11 @@ export function EndScreen() {
   if (!open || !gameOver || !world || !me) return null;
 
   const stars = outcome?.stars ?? 0;
-  const grade = report?.assessment.grade ?? '—';
+  const grade = report?.assessment.grade ?? '-';
   const verdict = REASON_TEXT[gameOver.reason] ?? gameOver.reason;
   const title = world.objective?.title ?? (world.mode === 'TERM' ? 'One Term' : 'Legacy');
   const archetype = report?.assessment.classification ?? '';
-  const shareText = `WORLD CONFLICT${isDaily ? ` · Daily ${new Date().toISOString().slice(0, 10)}` : ''} — ${flag(me.id)} ${me.name}: ${title}\n${verdict} · ${'★'.repeat(stars)}${'☆'.repeat(3 - stars)} · grade ${grade} · score ${world.score?.total ?? 0}\nMonth ${Math.min(world.turn, world.maxTurns)}/${world.maxTurns}${storyHeadline(world.newspaper ?? [], me.name) ? ` · "${storyHeadline(world.newspaper ?? [], me.name)}"` : ''}\n${grid}\n${archetype}\nhttps://${publicSite()}`;
+  const shareText = `WORLD CONFLICT${isDaily ? ` · Daily ${new Date().toISOString().slice(0, 10)}` : ''}, ${flag(me.id)} ${me.name}: ${title}\n${verdict} · ${'★'.repeat(stars)}${'☆'.repeat(3 - stars)} · grade ${grade} · score ${world.score?.total ?? 0}\nMonth ${Math.min(world.turn, world.maxTurns)}/${world.maxTurns}${storyHeadline(world.newspaper ?? [], me.name) ? ` · "${storyHeadline(world.newspaper ?? [], me.name)}"` : ''}\n${grid}\n${archetype}\nhttps://${publicSite()}`;
 
   const share = async () => {
     try {
@@ -258,14 +258,14 @@ export function EndScreen() {
           )}
           <div>
             <div className="display" style={{ fontSize: 12, color: 'var(--text-3)', letterSpacing: '0.16em' }}>
-              Your {Math.min(world.turn, world.maxTurns)} months · score {world.score?.total ?? '—'} · {(() => { const n = report?.closeCalls ?? world.director?.closeCalls ?? 0; return `${n} close call${n === 1 ? '' : 's'}`; })()} · {(() => { const n = report?.comebacks ?? 0; return `${n} comeback${n === 1 ? '' : 's'}`; })()}
+              Your {Math.min(world.turn, world.maxTurns)} months · score {world.score?.total ?? '-'} · {(() => { const n = report?.closeCalls ?? world.director?.closeCalls ?? 0; return `${n} close call${n === 1 ? '' : 's'}`; })()} · {(() => { const n = report?.comebacks ?? 0; return `${n} comeback${n === 1 ? '' : 's'}`; })()}
             </div>
             <div className="month-grid">{grid}</div>
           </div>
           {streak && (
             <div className="list-item" style={{ borderColor: 'rgba(229,56,59,0.4)' }}>
               <h5>🔥 Daily streak: {streak.streak} day{streak.streak === 1 ? '' : 's'}</h5>
-              <p>Best streak {streak.best}. A new crisis drops tomorrow — same world for everyone.</p>
+              <p>Best streak {streak.best}. A new crisis drops tomorrow, same world for everyone.</p>
             </div>
           )}
           {world.objective?.debrief && <div className="debrief">{world.objective.debrief}</div>}

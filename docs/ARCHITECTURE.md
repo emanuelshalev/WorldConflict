@@ -79,7 +79,7 @@ flowchart TB
 | Systems | `src/core/systems/*` | military, diplomacy, covert, nuclear, economy, stability, intelligence, government |
 | Data loader | `src/core/data-loader.ts` | Scenarios, flashpoints, modes, cold-open crisis |
 | Preview | `src/core/preview.ts` | Predicts an order's effects/odds without mutating state |
-| Country AI | `src/agents/fallback.ts` | `PersonalityAI` — deterministic leaders |
+| Country AI | `src/agents/fallback.ts` | `PersonalityAI`: deterministic leaders |
 | AI tiers | `src/agents/strategist.ts` | Picks countries for LLM leadership, validates, falls back |
 | LLM | `src/agents/llmClient.ts`, `providers/anthropic.ts` | Provider clients |
 | Usage | `src/agents/usage.ts` | Price table, per-call metering, session totals |

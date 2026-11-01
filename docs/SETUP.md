@@ -12,7 +12,7 @@ Get World Conflict running locally in about two minutes.
 | npm | ≥ 10 | Ships with Node. |
 | Git | any | |
 
-> **Stuck on an old system Node?** Install a user-local Node without touching the system one, e.g. download the official tarball for your OS/CPU from nodejs.org into `~/.local/share/node` and put its `bin/` first on your `PATH` — or use `nvm`, `fnm` or `volta`.
+> **Stuck on an old system Node?** Install a user-local Node without touching the system one, e.g. download the official tarball for your OS/CPU from nodejs.org into `~/.local/share/node` and put its `bin/` first on your `PATH`, or use `nvm`, `fnm` or `volta`.
 
 ---
 
@@ -50,7 +50,7 @@ Run them separately if you prefer: `npm run dev:api` and `npm run dev:ui`.
 
 ## 4. Optional: LLM intelligence
 
-The game is **complete without any LLM** — every country is run by the built-in deterministic *PersonalityAI*.
+The game is **complete without any LLM**, every country is run by the built-in deterministic *PersonalityAI*.
 
 To let an LLM take over key decisions (or every major leader), open **⚙ Settings → World intelligence** in the game and choose:
 
@@ -78,7 +78,7 @@ For the advisor endpoint you can also configure keys on the server in `.env`:
 ANTHROPIC_API_KEY=
 OPENAI_API_KEY=
 GEMINI_API_KEY=
-LLM_PROVIDER=          # openai | ollama | mock — used only when the client sends no config
+LLM_PROVIDER=          # openai | ollama | mock, used only when the client sends no config
 PORT=8080
 CORS_ORIGINS=http://localhost:5173
 ```

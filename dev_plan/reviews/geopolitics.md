@@ -121,7 +121,7 @@ The leaders are almost all correct for **January 2025** but obsolete for any lat
 | RUS | `growthRate` | 0.012 → 0.009 | IMF Oct 2026, via Interfax (https://interfax.com/newsroom/top-stories/119514/) |
 | RUS | `militaryBudgetPct` | 5.9 → about 6.5 | Russian budget law 2025–26 [bk] |
 | DEU | `militaryBudgetPct` | 2.1 → 2.4 | Rising toward 3.5% by 2029: €108bn in 2026 [bk; fork research] |
-| DEU | `internalDivisions` | — | Add "AfD surge / East–West divide": strength 30, tension 70. The AfD won about 44% in Saxony-Anhalt on 2026-09-06 (https://www.osw.waw.pl/en/publikacje/analyses/2026-09-07/germany-afd-scores-landslide-victory-saxony-anhalt). |
+| DEU | `internalDivisions` | - | Add "AfD surge / East–West divide": strength 30, tension 70. The AfD won about 44% in Saxony-Anhalt on 2026-09-06 (https://www.osw.waw.pl/en/publikacje/analyses/2026-09-07/germany-afd-scores-landslide-victory-saxony-anhalt). |
 | FRA | `debtGdpRatio` | 111 → 116 | INSEE 2025 [bk] |
 | FRA | `keyEvents` | ends 2015 | Add the 2024 dissolution / hung parliament and the 2025 PM churn (Bayrou falls, Lecornu named 2025-09-09, resigns 10-06, reappointed 10-10) [bk] |
 | FRA | `historicalRivals` | [DEU, GBR, RUS] → [RUS] | anachronism |
@@ -129,7 +129,7 @@ The leaders are almost all correct for **January 2025** but obsolete for any lat
 | ITA | `keyEvents` | ends 2011 | Add Meloni's 2022 win and the lost justice referendum on 2026-03-23 (https://www.euronews.com/my-europe/2026/03/23/meloni-admits-defeat-as-italians-reject-judicial-reform-in-major-referendum) |
 | ITA | `militaryBudgetPct` | 1.5 → 2.0 | NATO 2025 estimates [bk] |
 | POL | `militaryBudgetPct` | 4.0 → 4.7 | NATO 2025 estimates [bk] |
-| POL | `keyEvents` | — | Add 2025 Nawrocki presidency (vetoes); 2025-09-09/10 Russian drone incursion and Article 4 (https://wtop.com/world/2025/09/nato-warns-russia-it-will-use-all-means-to-defend-against-airspace-breaches-after-estonia-incursions) |
+| POL | `keyEvents` | - | Add 2025 Nawrocki presidency (vetoes); 2025-09-09/10 Russian drone incursion and Article 4 (https://wtop.com/world/2025/09/nato-warns-russia-it-will-use-all-means-to-defend-against-airspace-breaches-after-estonia-incursions) |
 | POL | `historicalRivals` | [RUS, DEU] → [RUS, BLR] | |
 | CHN | `military.warheads` | 500 → 600 (620 in 2026) | SIPRI |
 | CHN | `sphereOfInfluence` | drop IDN | |
@@ -163,7 +163,7 @@ The leaders are almost all correct for **January 2025** but obsolete for any lat
 | NGA | `gdp`, `population` | 390B → about 285B (2025, after the 2025 rebasing; IMF projects 334B for 2026); population 223M → 230M | https://www.thisdaylive.com/2026/02/05/with-projected-gdp-of-334bn-in-2026-imf-tips-nigeria-as-africas-third-largest-economy-ahead-of-algeria/ |
 | NGA | `keyEvents` | ends 2020 | Add the 2023 subsidy removal and naira float; 2025-12-25 US strikes on ISIS in Sokoto, at Nigeria's request (https://www.timeslive.co.za/news/2025-12-26-us-says-it-struck-islamic-state-militants-in-northwest-nigeria/) |
 | ZAF | `gdp` | 380B → about 426B (2025) | IMF |
-| ZAF | `keyEvents` | — | Add 2025 rupture with the US: G20 boycott and exclusion from the 2026 G20 (https://iol.co.za/news/south-africa/2025-11-27-trumps-g20-exclusion-of-south-africa-implications-for-economic-relations/) |
+| ZAF | `keyEvents` | - | Add 2025 rupture with the US: G20 boycott and exclusion from the 2026 G20 (https://iol.co.za/news/south-africa/2025-11-27-trumps-g20-exclusion-of-south-africa-implications-for-economic-relations/) |
 | ZAF | `keyEvents[2]` | "1989 Voluntary dismantling" | Decided 1989, completed 1991, disclosed 1993. Reword. |
 
 ### A.4 `data/scenarios/1960.json` and `1990.json` (historical scenarios)
@@ -178,9 +178,9 @@ These are in good shape: leaders, nuclear stockpiles and GDP are within normal e
 | 1960.json | `leaders.FRA.origin` | APPOINTED | ELECTED | de Gaulle was elected President by the electoral college in 1958-12. He had been *appointed* PM in 1958-06. |
 | 1960.json | `leaders.SAU` | King Saud | OK | Effective power was shifting to Faisal |
 | 1990.json | `alliances` | no `["RUS","POL"]` | add (weak) or set relations to about 0 | The Warsaw Pact formally existed until 1991-07-01 |
-| 1990.json | `alliances` | — | consider `["IND","RUS"]` | 1971 Indo-Soviet treaty |
+| 1990.json | `alliances` | - | consider `["IND","RUS"]` | 1971 Indo-Soviet treaty |
 | 1990.json | `countryOverrides.IND` | TESTED, 0 warheads | fine; note covert weaponisation around 1988–90 (U) | |
-| 1990.json | missing hotspot | — | add IRQ | Iraq invades Kuwait 1990-08-02, the defining crisis of the year |
+| 1990.json | missing hotspot | - | add IRQ | Iraq invades Kuwait 1990-08-02, the defining crisis of the year |
 | All | ordering | MEX 1938 before 1929; CAN 1995 before 1994 | sort by year | cosmetic |
 
 ---
@@ -693,9 +693,9 @@ Values are symmetric unless they are shown as A→B / B→A.
 | ISR | ARMED | 90 | Undeclared |
 | PRK | ARMED | 50 (U: 50–60) | |
 | IRN | DEVELOPING | progress **55** (range 45–70, U) | More than 200 kg of 60% HEU believed intact at Isfahan, but enrichment halls damaged and no IAEA access. Set beliefs about Iran's progress to low accuracy for all countries. |
-| SAU | LATENT | — | Has said it would match an Iranian bomb; the Pakistan pact raises "extended deterrence" questions |
-| JPN, KOR, TWN, DEU | LATENT | — | South Korea's domestic nuclear debate is rising |
-| BLR | NONE (host) | — | Engine gap: hosted weapons |
+| SAU | LATENT | - | Has said it would match an Iranian bomb; the Pakistan pact raises "extended deterrence" questions |
+| JPN, KOR, TWN, DEU | LATENT | - | South Korea's domestic nuclear debate is rising |
+| BLR | NONE (host) | - | Engine gap: hosted weapons |
 
 ### E.6 Sanctions and embargoes
 
@@ -708,10 +708,10 @@ The scenario schema cannot currently express these (see G). Proposed values:
 | PRK | USA, GBR, FRA | true | UN sanctions |
 | BLR | GBR, FRA | false | US partly lifted in 2026-03 |
 | CUB | USA | false | Plus the secondary oil "blockade" |
-| VEN | — | false | Mostly eased by US licences; 12.5% US tariff |
+| VEN | - | false | Mostly eased by US licences; 12.5% US tariff |
 | AFG | USA | false | UN 1988 regime |
-| SYR | — | false | Caesar Act repealed 2026-01 |
-| SDN | — | false | EU gold ban; UK and US sanctions on commanders on both sides |
+| SYR | - | false | Caesar Act repealed 2026-01 |
+| SDN | - | false | EU gold ban; UK and US sanctions on commanders on both sides |
 | YEM | USA | false | US terrorist (FTO) designation of the Houthis |
 
 ### E.7 Key country overrides for existing countries (2026 start)

@@ -39,7 +39,7 @@ Evidence: `/tmp/claude-0/confirm/priya/` (screenshots, `<seat>.log`, `legacy-*.l
 | "Iran holds the initiative; pressure mounts on Israel to seek terms" | Inverts the real air balance | P2 |
 | Russia strikes Turkey; NATO is silent. Lebanon offers Saudi Arabia a pact | Implausible | P2 |
 | "Saudi Arabia citizens"; "ANSWER TO ANSWERING RIYADH AIRPORT"; the briefing repeats MBS's title; a "reassurance force after any ceasefire" while one holds; "caretaker" Netanyahu with elections in 2028/30 | Text sloppiness and contradictions | P2 |
-| Unverified (after my cutoff): PM Andy Burnham (from Jul 2026), Lula's 2026 win, the US–Iran and Israel–Iran wars in Nov 2026, Iraqi PM Ali al-Zaidi, a Duterte verdict | — | — |
+| Unverified (after my cutoff): PM Andy Burnham (from Jul 2026), Lula's 2026 win, the US–Iran and Israel–Iran wars in Nov 2026, Iraqi PM Ali al-Zaidi, a Duterte verdict | - | - |
 
 **Balance:** a naive policy (first option without "⚠ mission", plus the top two suggestions) got A ★★★ in all three seats, Brutal Ukraine included.
 

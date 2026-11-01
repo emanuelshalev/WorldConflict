@@ -13,7 +13,7 @@ Screenshots and logs: `/tmp/claude-0/round3/maya/`. Each crisis choice came from
 - On the phone, the chosen option now sticks above Execute (`daily/m01-before-exec.png`), and tip 1 talks about "the top" and "below it".
 
 ## Friction and confusion
-- **Title screen on phone.** A sticky "Saudi Arabia — Bab al-Mandab / Take office" panel covers about 45% of the screen and sits over the Daily box on first load (`00-title.png`, `00-title-scrolled.png`). The default seat is Saudi Arabia, not today's crisis.
+- **Title screen on phone.** A sticky "Saudi Arabia, Bab al-Mandab / Take office" panel covers about 45% of the screen and sits over the Daily box on first load (`00-title.png`, `00-title-scrolled.png`). The default seat is Saudi Arabia, not today's crisis.
 - **The briefing repeats itself.** The same paragraph appears twice: once in italics, then again in the mission box (`daily/m01-ov0.png`). It also never lists the mission conditions, which I only saw at the end.
 - **Option arrows don't flag the mission.** "Deniable strikes" shows UAE ▼▼ while the UAE is sitting on the mission's 40 minimum, and "Reinforce and shadow" pushes Ethiopia ▼▼ under a no-war mission (`daily/m03-picked.png`). Nothing warns me.
 - **The Chronicle doesn't tell me what hurt the mission.** UAE fell from 40 to 29 in month 1, and "Score 0.0" sat next to Approval +6.9 (`daily/m02-ov0.png`).

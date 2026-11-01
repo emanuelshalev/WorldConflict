@@ -306,7 +306,7 @@ export class TurnEngine {
       if (summary) {
         warSummaries.push(summary);
         if (summary.ended?.loserId) {
-          // Losing a war can topple a government — handled by dynamics below via crashed stats
+          // Losing a war can topple a government, handled by dynamics below via crashed stats
         }
       }
     }
@@ -332,7 +332,7 @@ export class TurnEngine {
         tensionFloor > world.globalTension ? world.globalTension : tensionFloor,
         world.globalTension - Math.max(0, (world.globalTension - tensionFloor) * 0.26),
       );
-    // Even an eventful month only moves the global mood so far — unless war or
+    // Even an eventful month only moves the global mood so far, unless war or
     // nuclear use shocked the system
     const hadShock = events.some(
       (e) => e.severity === "CRITICAL" && (e.type === "WAR" || e.type === "NUCLEAR"),
@@ -435,7 +435,7 @@ export class TurnEngine {
       let choice = choices.find((c) => c.decisionId === pending.id);
       const byDefault = !choice;
       if (!choice && world.turn > pending.deadlineTurn - 1) {
-        // Ignored crises resolve themselves — usually not in your favor
+        // Ignored crises resolve themselves: usually not in your favor
         choice = {
           decisionId: pending.id,
           optionId: pending.defaultOptionId ?? pending.options[0]?.id ?? "",
@@ -498,7 +498,7 @@ export class TurnEngine {
       case "DIPLOMACY_IMPROVE_RELATIONS": {
         if (!target) return { ok: false, reason: "No target" };
         if (actor.atWarWith.includes(target.id))
-          return { ok: false, reason: "At war — propose a ceasefire first" };
+          return { ok: false, reason: "At war, propose a ceasefire first" };
         if ((actor.relations[target.id] ?? 0) >= 95)
           return { ok: false, reason: "Relations are already as good as they get" };
         const relBefore = actor.relations[target.id] ?? 0;
@@ -600,7 +600,7 @@ export class TurnEngine {
                   .map((id) => world.countries.find((c) => c.id === id)?.name ?? id)
                   .join(", ")} declared war on ${actor.name}.`
               : ""
-          }${check.nuclearStandoff ? " Both belligerents possess nuclear weapons — the world stands at the brink." : ""}`,
+          }${check.nuclearStandoff ? " Both belligerents possess nuclear weapons, the world stands at the brink." : ""}`,
           affectedCountries: [actor.id, target.id, ...joined],
           turn: world.turn,
           severity: "CRITICAL",
@@ -615,7 +615,7 @@ export class TurnEngine {
             id: `evt_ceasefire_${actor.id}_${target.id}_${world.turn}`,
             type: "WAR",
             title: `Ceasefire between ${actor.name} and ${target.name}`,
-            description: `Following ${possessive(actor.name)} initiative, the guns have fallen silent. The peace is fragile — but it is peace.`,
+            description: `Following ${possessive(actor.name)} initiative, the guns have fallen silent. The peace is fragile, but it is peace.`,
             affectedCountries: [actor.id, target.id],
             turn: world.turn,
             severity: "MAJOR",
@@ -806,7 +806,7 @@ export class TurnEngine {
           reason:
             recent === 0
               ? "The nation rallies to your message"
-              : `Diminishing returns — the public has heard it before (${Math.round(effect * 100)}% effect)`,
+              : `Diminishing returns, the public has heard it before (${Math.round(effect * 100)}% effect)`,
         };
       }
       case "DOMESTIC_REFORM": {
@@ -1121,7 +1121,7 @@ function playerHeadline(
   if (!decision && !order) return null;
   const headline = decision
     ? `${possessive(player.leader.name.split(" ").length <= 3 ? player.leader.name : surname).toUpperCase()} ANSWER TO ${decision.title.replace(/["“”]/g, "").toUpperCase()}: ${decision.choice.replace(" (no decision taken)", "").toUpperCase()}`
-    : `${player.name.toUpperCase()}: ${order.label.toUpperCase()}${order.ok ? "" : " — BLOCKED"}`;
+    : `${player.name.toUpperCase()}: ${order.label.toUpperCase()}${order.ok ? "" : ", BLOCKED"}`;
   const lines = [
     ...report.decisions.map((d) => `Faced with “${d.title}”, ${who} decided: ${d.choice}.`),
     ...report.orders.map((o) => `${o.label}: ${o.detail}.`),

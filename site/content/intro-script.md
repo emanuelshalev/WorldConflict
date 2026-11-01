@@ -12,7 +12,7 @@
 | # | Time | Dur | On-screen text | Capture | Motion | Sound |
 |---|---|---|---|---|---|---|
 | 1 | 0:00 | 3.0 | *(none)* | Black, then a slow fade up on the dark tileless ocean of the map, borders only | Imperceptible drift east | Room tone; the pulse starts |
-| 2 | 0:03 | 3.0 | **You read the headlines.** | Same map, now dim | Text fades in, centred | — |
+| 2 | 0:03 | 3.0 | **You read the headlines.** | Same map, now dim | Text fades in, centred | - |
 | 3 | 0:06 | 3.5 | REAL · **7 MAY 2025 · KASHMIR** / India and Pakistan: four days of drone and missile strikes, then a ceasefire. | REAL card; pin on the Line of Control | Pin drops; the line types on | Teleprinter tick |
 | 4 | 0:09.5 | 3.0 | GAME · *Water War* | Crisis card "The river is the red line" (Pakistan, month 3) | Push in on the title, then the Tension ▲▲ arrows | UI click |
 | 5 | 0:12.5 | 3.5 | REAL · **26 OCT 2025 · EL FASHER** / After an 18-month siege, Sudan's army loses its last city in Darfur. | REAL card; pin on El Fasher | Hold still: no flourish on this one | Tick, softer |
@@ -35,7 +35,7 @@
 | 22 | 1:08.5 | 4.0 | *(none)* | End screen: grade letter and stars stamp in, the emoji strip fills, then the "What really happened" paragraph | Each element animates in | One stamp hit per star |
 | 23 | 1:12.5 | 4.5 | **WORLD CONFLICT** / The crises are real. The next move is yours. | Logo (favicon mark) over the dark map | Logo resolves; the tagline fades in | Pulse resolves to one chord |
 | 24 | 1:17 | 3.0 | **Take office.** / Flashpoint · Term · Legacy | CTA card; URL under it | Static | Tail |
-| 25 | 1:20 | 1.5 | *Fiction and political simulation. Real events up to Oct 2026; in-game events and dialogue are invented.* | Small text, bottom centre | Static | — |
+| 25 | 1:20 | 1.5 | *Fiction and political simulation. Real events up to Oct 2026; in-game events and dialogue are invented.* | Small text, bottom centre | Static | - |
 
 **Total:** 81.5 s. **Cuts for 60 s:** drop beats 5 and 6 (Sudan) and 13 and 14 (Scarborough), and shorten 21. Sudan is the one to drop first for social cuts, where auto-play silently strips context.
 

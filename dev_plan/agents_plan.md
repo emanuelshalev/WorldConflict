@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🤖 World Conflict — Agent Execution Plan
+# 🤖 World Conflict: Agent Execution Plan
 
 ### *Autonomous Development Guidelines*
 
@@ -236,7 +236,7 @@ tests/core/
 
 # 🔧 Tech Stack
 
-> **LOCKED — NO deviations**
+> **LOCKED: NO deviations**
 
 | Category | Technology |
 |----------|------------|
@@ -342,9 +342,9 @@ tests/core/
 
 | Priority | Description |
 |----------|-------------|
-| **P0** | Blocks MVP release — fix immediately |
-| **P1** | Annoying but playable — fix after P0 |
-| **P2** | Minor polish — post-MVP |
+| **P0** | Blocks MVP release: fix immediately |
+| **P1** | Annoying but playable: fix after P0 |
+| **P2** | Minor polish: post-MVP |
 
 ---
 

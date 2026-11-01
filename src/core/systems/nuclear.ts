@@ -139,7 +139,7 @@ export function executeNuclearStrike(
   }
 
   const description = holocaust
-    ? `${attacker.name} used nuclear weapons against ${target.name}. Retaliatory launches followed within hours. Mushroom clouds rise over both nations — the world tips into nuclear holocaust.`
+    ? `${attacker.name} used nuclear weapons against ${target.name}. Retaliatory launches followed within hours. Mushroom clouds rise over both nations, the world tips into nuclear holocaust.`
     : `${attacker.name} dropped a nuclear weapon on ${target.name}. Hundreds of thousands are dead. The world recoils in horror: a total arms embargo is imposed and ${attacker.name} becomes a pariah state.`;
 
   return { holocaust, retaliators, description };

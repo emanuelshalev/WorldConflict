@@ -57,7 +57,7 @@ export function effectiveGrowth(country: CountryState): number {
 
 /**
  * How the public reads the economy: +1 boom, -1 bust, 0 normal. Judged
- * against the country's own trend — a boom for Germany is normal for Taiwan.
+ * against the country's own trend: a boom for Germany is normal for Taiwan.
  */
 export function growthMood(country: CountryState): -1 | 0 | 1 {
   const expected = country.trendGrowth ?? country.economyProfile?.growthRate ?? 0.02;

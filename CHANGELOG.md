@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.0.0-rc.2 — 2026-11-01
+## 2.0.0-rc.2: 2026-11-01
 
 Fixes from the four-persona confirmation playtest of rc.1 (`dev_plan/reviews/round3-confirm/`).
 
@@ -19,7 +19,7 @@ Fixes from the four-persona confirmation playtest of rc.1 (`dev_plan/reviews/rou
   - Greedy no-orders play in Terms falls from about 75% to about 60% for Taiwan and Germany (27% pooled).
 
 
-## 2.0.0-rc.1 — 2026-11-01
+## 2.0.0-rc.1: 2026-11-01
 
 The engagement overhaul: World Conflict becomes a session-based game with clear goals, a living November 2026 world, and a simulation tuned by headless playtests and four rounds of persona and expert reviews.
 

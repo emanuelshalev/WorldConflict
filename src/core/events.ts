@@ -141,7 +141,7 @@ const TEMPLATES: EventTemplate[] = [
         description: `Leaked documents implicate senior officials around ${country.leader.title} ${country.leader.name} in a vast embezzlement scheme. ${
           country.regimeType === "DEMOCRACY"
             ? "Opposition parties demand resignations; the press smells blood."
-            : "The story is suppressed at home but circulates abroad — and inside the elite."
+            : "The story is suppressed at home but circulates abroad, and inside the elite."
         }`,
         affectedCountries: [country.id],
         turn: ctx.world.turn,
@@ -173,7 +173,7 @@ const TEMPLATES: EventTemplate[] = [
         id: eid(ctx.world, "disaster"),
         type: "RANDOM",
         title: `Disaster: ${kind} strikes ${country.name}`,
-        description: `${country.name} reels from ${kind}. Thousands are displaced and infrastructure is wrecked. International aid offers are being weighed — disasters have opened diplomatic doors before.`,
+        description: `${country.name} reels from ${kind}. Thousands are displaced and infrastructure is wrecked. International aid offers are being weighed, disasters have opened diplomatic doors before.`,
         affectedCountries: [country.id],
         turn: ctx.world.turn,
         severity: "NOTABLE",
@@ -224,7 +224,7 @@ const TEMPLATES: EventTemplate[] = [
         type: "COVERT",
         title: `Massive leak exposes ${possessive(country.name)} secrets`,
         description: hadSecret
-          ? `A defector from ${country.name} has handed journalists a trove of classified files — including evidence of a clandestine nuclear weapons program. Intelligence agencies worldwide are recalibrating.`
+          ? `A defector from ${country.name} has handed journalists a trove of classified files, including evidence of a clandestine nuclear weapons program. Intelligence agencies worldwide are recalibrating.`
           : `A whistleblower inside ${possessive(country.name)} government has published thousands of classified documents. The country's true economic and military position is now plain for all to see.`,
         affectedCountries: [country.id],
         turn: ctx.world.turn,
@@ -250,7 +250,7 @@ const TEMPLATES: EventTemplate[] = [
         id: eid(ctx.world, "terror"),
         type: "STABILITY",
         title: `Terror attack in ${country.name}`,
-        description: `A bombing in the heart of ${possessive(country.name)} capital has killed dozens. The insurgency claims responsibility. Public fury demands the government act — softly or savagely.`,
+        description: `A bombing in the heart of ${possessive(country.name)} capital has killed dozens. The insurgency claims responsibility. Public fury demands the government act, softly or savagely.`,
         affectedCountries: [country.id],
         turn: ctx.world.turn,
         severity: "MAJOR",
@@ -383,7 +383,7 @@ function julySummit(world: WorldState, _rng: SeededRandom): GameEvent | null {
     description:
       liftedEmbargoes.length > 0
         ? `World leaders gathered for the annual Global Summit. After heated debate, the arms embargo on ${liftedEmbargoes.join(", ")} was lifted. Communiqués preach restraint; corridors buzz with deal-making.`
-        : `World leaders gathered for the annual Global Summit. Much was said about peace and stability; tensions ease — at least on paper.`,
+        : `World leaders gathered for the annual Global Summit. Much was said about peace and stability; tensions ease, at least on paper.`,
     affectedCountries: world.countries.map((c) => c.id),
     turn: world.turn,
     severity: "NOTABLE",

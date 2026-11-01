@@ -1,4 +1,4 @@
-# Handoff — release candidate 2.0.0-rc.2
+# Handoff: release candidate 2.0.0-rc.2
 
 **Branch:** `ccr-fc426113-gp9q7q`, built on top of `feat/engagement-overhaul` (at `0ca6569`). Fast-forward or merge it into `feat/engagement-overhaul`, and from there into `main`, when you're happy with it. `CHANGELOG.md` summarises the release.
 
@@ -14,8 +14,8 @@ State as of 2026-11-01:
 | | USA | UKR | ISR | TWN | DEU | Pooled | Avg ★ | Target |
 |---|---|---|---|---|---|---|---|---|
 | Smart | 94% | 83% | 89% | 97% | 81% | **89%** | 2.35 | 70–95 |
-| Loop (reform/address) | 100% | 78% | 39% | 100% | 92% | 82% | 1.90 | — |
-| Greedy (no orders) | 8% | 0% | 6% | 61% | 58% | 27% | 0.35 | — |
+| Loop (reform/address) | 100% | 78% | 39% | 100% | 92% | 82% | 1.90 | - |
+| Greedy (no orders) | 8% | 0% | 6% | 61% | 58% | 27% | 0.35 | - |
 | Random | 0% | 0% | 0% | 36% | 42% | **16%** | | 15–45 |
 | None | 0% | 0% | 0% | 0% | 0% | **0%** | | ≤20 |
 

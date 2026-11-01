@@ -2,7 +2,7 @@
 
 > *"Lead your nation. Face the consequences."*
 
-You are the newly installed leader of one of **41 nations** in the world of **November 2026**. Every other government is an AI agent with its own history, red lines, leadership style — and an imperfect picture of you. Each turn is **one month**.
+You are the newly installed leader of one of **41 nations** in the world of **November 2026**. Every other government is an AI agent with its own history, red lines, leadership style, and an imperfect picture of you. Each turn is **one month**.
 
 ---
 
@@ -25,14 +25,14 @@ The **Daily Flashpoint** is the same crisis, nation and world for everyone that 
 ```
 ┌ HUD: leader · month 5/12 · approval · stability · legitimacy · economy · ◆◆◇ capital · tension · score ┐
 │                                                                                                        │
-│                       THE MAP — your intelligence picture, not the truth                               │
+│                       THE MAP: your intelligence picture, not the truth                               │
 │                                                                                                        │
 ├ YOUR DESK ─────────────────────────────────────────────────────────────────────────────────────────────┤
 │  CRISIS CARD (answer it)        │  ADVISORS SUGGEST (1-click orders)   │   [ EXECUTE MONTH ▸ ]          │
 └─────────────────────────────────┴──────────────────────────────────────┴────────────────────────────────┘
 ```
 
-1. **Answer the crisis.** Most months bring a crisis card with 2–3 options. Arrows show the **direction and rough size** of consequences (Approval ▲▲, Tension ▼…) — not exact numbers. Each option shows which minister backs it. Ignore a crisis and it resolves on its own, usually badly.
+1. **Answer the crisis.** Most months bring a crisis card with 2–3 options. Arrows show the **direction and rough size** of consequences (Approval ▲▲, Tension ▼…), not exact numbers. Each option shows which minister backs it. Ignore a crisis and it resolves on its own, usually badly.
 2. **Give orders.** Pick advisor suggestions, or open **All orders** (diplomacy, military, intelligence, domestic). Tap a country on the map to target it or to open its dossier.
 3. **Execute month.** The world moves. The **World Chronicle** leads with *your* decision, then shows what moved and why.
 
@@ -52,11 +52,11 @@ Denouncing is free, but it only rallies voters against an adversary (a historica
 
 ---
 
-## 3. How you lose — and how you see it coming
+## 3. How you lose, and how you see it coming
 
 | Threat | Warning sign |
 |---|---|
-| **Coup** | A *Coup plot uncovered* crisis. Purge, buy off or concede — before the officers move. |
+| **Coup** | A *Coup plot uncovered* crisis. Purge, buy off or concede, before the officers move. |
 | **Impeachment / no confidence** | In democracies where the army isn't a political player, there are no coups: an *Impeachment looms* / *A vote of no confidence* card appears instead when legitimacy or stability collapses. Below 10 legitimacy, nothing shields you, not even the promises you made to survive the last plot. |
 | **Revolution** | *The streets are boiling* crisis when stability is very low and an insurgency is active. Consolidated democracies only fall to revolution in an armed (guerrilla) uprising with legitimacy under 20. |
 | **Defence pacts** | Nobody signs you into a treaty: when a government wants a pact, it lands on your desk as a crisis card. Pacts are rare, never signed with a country at war, and nobody has a formal treaty with Taiwan. If you join an ally's war, you go home when their war ends. |
@@ -88,14 +88,14 @@ You play as the era's **real leader** by default (type a name on the title scree
 
 Economy: growth shocks (oil spikes, crises, financial panics) fade back toward each country's structural trend within about a year, and voters judge growth against what is normal for *their* country. The growth figure in the HUD is **real growth**: what actually happened to GDP, including war damage, crisis hits and reparations. A ground war on your own soil is ruinous; a distant air and naval campaign costs far less. Defence budgets rise when rivals mobilise, but only to about one and a half times their peacetime level without a war. Stability, legitimacy and approval are hard to keep at the very top and recover slowly from the very bottom.
 
-Four components, 0–50 each: **Economy**, **Security**, **Approval**, **Prestige** (total 0–200, start 100). They drift each month toward what your situation deserves, so sustained performance matters more than one good month. Your end screen shows a **grade**, **stars**, a leadership **archetype** read from what you actually did (*Warmonger*, *The Gambler*, *Shadow Operator*, *Iron Fist*, *Peacemaker*, *The Reformer*, *Master Diplomat*, *Steady Hand*…), a month-by-month emoji strip, and — for flashpoints — what really happened.
+Four components, 0–50 each: **Economy**, **Security**, **Approval**, **Prestige** (total 0–200, start 100). They drift each month toward what your situation deserves, so sustained performance matters more than one good month. Your end screen shows a **grade**, **stars**, a leadership **archetype** read from what you actually did (*Warmonger*, *The Gambler*, *Shadow Operator*, *Iron Fist*, *Peacemaker*, *The Reformer*, *Master Diplomat*, *Steady Hand*…), a month-by-month emoji strip, and, for flashpoints, what really happened.
 
 ---
 
 ## 6. Tips
 
 - **Read the arrows twice.** The option that helps approval today often costs you legitimacy or allies tomorrow.
-- **Don't spam national addresses.** Each repeat within six months works 40% less — and the press notices.
+- **Don't spam national addresses.** Each repeat within six months works 40% less, and the press notices.
 - **Popularity breeds trouble.** Very popular leaders attract scandals and hubris.
-- **Allies matter.** Defense pacts deter — and drag you into their wars.
+- **Allies matter.** Defense pacts deter, and drag you into their wars.
 - **Talk to your cabinet.** Each minister reasons from their department and from your intelligence, so they will disagree.

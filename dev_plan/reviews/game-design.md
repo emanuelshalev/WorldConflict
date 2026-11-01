@@ -1,4 +1,4 @@
-# World Conflict — Game Design Review
+# World Conflict: Game Design Review
 
 *Senior design review, branch `feat/engagement-overhaul`, Nov 2026. All numbers come from `scripts/simulate.ts` plus a throwaway extended harness: 12 seeds per cell, 120 turns, 2025 scenario unless noted. Policies: `none` = no actions; `passive` = propaganda every month; `smart` = reform/propaganda when low, improve worst relation, sue for peace; `random` = 2 random actions; `opportunist` = mobilize then attack the main rival.*
 

@@ -205,7 +205,7 @@ export function CountryDetailPanel() {
             <div style={{ marginTop: 4 }}>
               {view.history.keyEvents.map((e) => (
                 <div key={e.year + e.event} style={{ marginBottom: 5, fontSize: 11 }}>
-                  <b style={{ color: '#9ab' }}>{e.year}</b> — {e.event}
+                  <b style={{ color: '#9ab' }}>{e.year}</b>, {e.event}
                   <div style={{ color: '#788' }}>{e.impact}</div>
                 </div>
               ))}

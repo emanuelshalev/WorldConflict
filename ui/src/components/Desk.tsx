@@ -281,7 +281,7 @@ function useSuggestions(): Suggestion[] {
 
 const TIPS = [
   'Each month: answer the crisis {crisis}, add orders {orders} (◆ = political capital, refilled monthly), then Execute month.',
-  'Arrows show the direction and size of consequences — not exact numbers. Your advisors disagree on purpose.',
+  'Arrows show the direction and size of consequences, not exact numbers. Your advisors disagree on purpose.',
   'Tap any country for its dossier. The map is your intelligence picture: foreign numbers are estimates, and some are wrong.',
 ];
 
@@ -315,7 +315,7 @@ function CoachTip({ turn }: { turn: number }) {
       </span>
       <p style={{ flex: 1, margin: 0, color: 'var(--text-1)' }}>{layoutTip(TIPS[turn])}</p>
       <button className="wc-btn ghost" style={{ padding: '4px 8px', fontSize: 12 }} onClick={dismiss}>
-        Got it — no more tips
+        Got it: no more tips
       </button>
     </div>
   );
@@ -426,7 +426,7 @@ export function Desk() {
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 8, flexWrap: 'wrap' }}>
                   <span style={{ fontSize: 12, color: 'var(--text-3)' }}>Target</span>
                   <select className="leader-input" style={{ width: 220, padding: '6px 8px' }} value={effectiveTarget} onChange={(e) => setTarget(e.target.value)}>
-                    <option value="">— tap a country on the map —</option>
+                    <option value="">, tap a country on the map, </option>
                     {[...view].filter((v) => !v.isPlayer).sort((a, b) => a.name.localeCompare(b.name)).map((v) => (
                       <option key={v.id} value={v.id}>
                         {flag(v.id)} {v.name}
@@ -461,7 +461,7 @@ export function Desk() {
             )}
 
             <div className="order-tray">
-              {pendingActions.length === 0 && <span style={{ fontSize: 12, color: 'var(--text-3)' }}>No orders yet — pick a suggestion, or just execute the month.</span>}
+              {pendingActions.length === 0 && <span style={{ fontSize: 12, color: 'var(--text-3)' }}>No orders yet, pick a suggestion, or just execute the month.</span>}
               {pendingActions.map((a, i) => (
                 <span key={`${a.label}-${i}`} className={`order-pill ${a.preview && (!a.preview.affordable || a.preview.missionWarning) ? 'blocked' : ''}`} title={a.preview?.missionWarning ?? a.preview?.summary}>
                   {a.label}
@@ -485,7 +485,7 @@ export function Desk() {
             )}
             {unanswered.length > 0 && (
               <div className="hint" style={{ color: 'var(--accent)' }}>
-                <IconAlertTriangle size={13} style={{ verticalAlign: -2 }} /> {unanswered.length === 1 ? '1 crisis unanswered — it will resolve on its own' : `${unanswered.length} crises unanswered — they will resolve on their own`}
+                <IconAlertTriangle size={13} style={{ verticalAlign: -2 }} /> {unanswered.length === 1 ? '1 crisis unanswered, it will resolve on its own' : `${unanswered.length} crises unanswered, they will resolve on their own`}
               </div>
             )}
             {pcLeft < 0 && (

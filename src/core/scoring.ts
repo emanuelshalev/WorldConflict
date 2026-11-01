@@ -190,7 +190,7 @@ export function classifyLeadership(world: WorldState): LeadershipAssessment {
       "History will remember one decision above all others: the day you reached for the nuclear option.";
   } else if (r.wars >= 2 && score.security > 30) {
     classification = "Risk-Taking Expansionist";
-    justification = "You treated war as policy by other means — and largely got away with it.";
+    justification = "You treated war as policy by other means, and largely got away with it.";
   } else if (r.wars >= 2) {
     classification = "Reckless Adventurer";
     justification =
@@ -202,7 +202,7 @@ export function classifyLeadership(world: WorldState): LeadershipAssessment {
   } else if (r.wars === 1) {
     classification = "Warmonger";
     justification =
-      "You reached for the sword when other doors were still open — and the world noticed.";
+      "You reached for the sword when other doors were still open, and the world noticed.";
   } else if (r.gambles >= 2 || (r.gambles >= 1 && months <= 12)) {
     classification = "The Gambler";
     justification =
@@ -218,11 +218,11 @@ export function classifyLeadership(world: WorldState): LeadershipAssessment {
   } else if (r.peace >= 3) {
     classification = "Peacemaker";
     justification =
-      "You spent your capital stopping other people's wars — and the world is calmer for it.";
+      "You spent your capital stopping other people's wars, and the world is calmer for it.";
   } else if (r.courting >= Math.max(5, months / 3) && score.prestige > 28) {
     classification = "Master Diplomat";
     justification =
-      "You made your nation respected abroad — alliances, summits, and standing carried your legacy.";
+      "You made your nation respected abroad: alliances, summits, and standing carried your legacy.";
   } else if (score.economic > 35 && score.approval > 30) {
     classification = "Pragmatic Stabilizer";
     justification = "Steady economic stewardship and broad public support defined your tenure.";
@@ -236,7 +236,7 @@ export function classifyLeadership(world: WorldState): LeadershipAssessment {
   } else if (score.prestige > 35) {
     classification = "Master Diplomat";
     justification =
-      "You made your nation respected abroad — alliances, summits, and standing carried your legacy.";
+      "You made your nation respected abroad: alliances, summits, and standing carried your legacy.";
   } else if (score.approval < 15) {
     classification = "The Unloved";
     justification = "Whatever your achievements, your people never forgave you for the costs.";

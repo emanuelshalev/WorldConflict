@@ -10,7 +10,7 @@ This is your captain calling with an urgent warning We’re above the Gulf of Ar
 
 Mission Statement
 
-World Conflicts is a high-fidelity, agent-driven global remake of the 1990 classic Conflict: Middle East Political Simulator. We are synthesizing the original's "tongue-in-cheek realpolitik" into a worldwide simulation. The core experience is a strategic survival exercise where world leaders—both human and autonomous—navigate a landscape of power-hungry pragmatism, shifting alliances, and nuclear brinkmanship.
+World Conflicts is a high-fidelity, agent-driven global remake of the 1990 classic Conflict: Middle East Political Simulator. We are synthesizing the original's "tongue-in-cheek realpolitik" into a worldwide simulation. The core experience is a strategic survival exercise where world leaders (both human and autonomous) navigate a landscape of power-hungry pragmatism, shifting alliances, and nuclear brinkmanship.
 
 The Three Pillars
 

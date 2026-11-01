@@ -1,4 +1,4 @@
-# World Conflict — UX / Visual Redesign Review
+# World Conflict: UX / Visual Redesign Review
 
 *Reviewer stance: strategy + mobile game UX (Plague Inc., Civ VI/VII, Suzerain, Reigns, Frostpunk, Democracy 4, Polytopia). Branch `feat/engagement-overhaul`, build of 2026-11-01.*
 
@@ -87,7 +87,7 @@ Time to first meaningful decision today is about 75–90 s and needs 9+ clicks. 
 
 ---
 
-## 3. Visual direction — "Situation Room, after hours"
+## 3. Visual direction: "Situation Room, after hours"
 
 **Mood.** A dimmed war-room table at 3 a.m.: matte navy surfaces, a lit map, amber "classified" accents, teletype numerals. Wit lives in copy and stamps ("EYES ONLY", "DENIABLE"), not in clutter. References: Plague Inc.'s map clarity, Suzerain's dossier typography, Frostpunk's dread vignettes, Reigns' card brevity.
 
@@ -127,7 +127,7 @@ Use tabular numerals everywhere numbers animate.
 
 **Sound** (optional, off by default on mobile): teletype tick for headlines, low brass sting for war, Geiger crackle for nuclear progress, typewriter stamp on "Execute month", crowd murmur under the approval meter. Keep it to about 8 files of 30 KB or less each.
 
-**Map style — recommendation: no tile provider.**
+**Map style: recommendation: no tile provider.**
 - Use a MapLibre `background` layer in `--ocean`, plus **all** `world.geojson` polygons. Non-game countries get the `--land` fill. Add a 10° graticule generated in code and a 1 px coastline glow (`line-blur`).
 - Low intel confidence renders as a diagonal hatch (a `fill-pattern` drawn on a canvas at load). Asymmetric information becomes visible on the map itself.
 - The player's country gets a permanent amber inner stroke.
@@ -154,7 +154,7 @@ Use tabular numerals everywhere numbers animate.
 │ │ crisis/turn     ││ wars, deals     ││ score           │     │
 │ └─────────────────┘└─────────────────┘└─────────────────┘     │
 │  ERA:  ( 1960 Cold War ) ( 1990 Unipolar ) (•2025 Multipolar )│
-│  NATION:  [map strip — tap a country]  ▸ Israel               │
+│  NATION:  [map strip, tap a country]  ▸ Israel               │
 │     Difficulty ●●●○  "Coalition on a knife-edge"  Stability 65│
 │                         [ TAKE OFFICE ▸ ]                     │
 └───────────────────────────────────────────────────────────────┘
@@ -189,7 +189,7 @@ Use tabular numerals everywhere numbers animate.
 ### 4.3 Turn decision surface (one screen, not six phases)
 
 ```
-┌─ YOUR DESK — APRIL 2025 ───────────────────────────── 2/3 ─┐
+┌─ YOUR DESK: APRIL 2025 ───────────────────────────── 2/3 ─┐
 │ ADVISORS SUGGEST                                           │
 │ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐         │
 │ │🕵 Intel Chief │ │🌐 Foreign Min.│ │💰 Finance     │         │
@@ -220,7 +220,7 @@ Use tabular numerals everywhere numbers animate.
 │  ◀ STRIKE NOW          NEGOTIATE ▶             │
 │  🎖 Defence ✔          🌐 Foreign ✔             │
 │  Security ▲▲ Tension ▲▲▲   Approval ▲ Prestige ▼│
-│  [ Ask for more intel — costs 1 order slot ]   │
+│  [ Ask for more intel: costs 1 order slot ]   │
 │                          ⏱ resolves this month │
 └────────────────────────────────────────────────┘
 ```

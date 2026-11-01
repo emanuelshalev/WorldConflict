@@ -95,7 +95,7 @@ export function allianceOdds(
   if (relation < 60)
     return {
       chance: 0,
-      refusal: `${target.name} rebuffed the proposal — relations must reach PROFITABLE (60+) first (currently ${Math.round(relation)}).`,
+      refusal: `${target.name} rebuffed the proposal, relations must reach PROFITABLE (60+) first (currently ${Math.round(relation)}).`,
     };
   // Historical rivals are reluctant even at decent relations
   const isRival = (target.history.historicalRivals ?? []).includes(actor.id);
@@ -123,7 +123,7 @@ export function proposeAlliance(
   }
   return {
     accepted: false,
-    reason: `${target.name} declined — not yet convinced of the partnership's value.`,
+    reason: `${target.name} declined, not yet convinced of the partnership's value.`,
   };
 }
 
@@ -151,7 +151,7 @@ export function canDeclareWar(actor: CountryState, target: CountryState): WarDec
   }
   if (isNuclearStandoff(actor, target)) {
     return {
-      allowed: true, // allowed but suicidal — UI shows "ATTACK MEANS DISASTER"
+      allowed: true, // allowed but suicidal, UI shows "ATTACK MEANS DISASTER"
       nuclearStandoff: true,
       reason:
         "ATTACK MEANS DISASTER: both arsenals are operational. Any strike risks global nuclear holocaust.",
@@ -227,7 +227,7 @@ export function mediate(
     return {
       ok: false,
       ended: false,
-      reason: "You are a party to this war — propose a ceasefire instead",
+      reason: "You are a party to this war, propose a ceasefire instead",
     };
   }
   const otherId = war.attackerId === target.id ? war.defenderId : war.attackerId;
@@ -253,7 +253,7 @@ export function mediate(
     ok: true,
     ended: false,
     otherId,
-    reason: `Talks stalled — but both sides are wearier (exhaustion ${Math.round(war.exhaustion)})`,
+    reason: `Talks stalled, but both sides are wearier (exhaustion ${Math.round(war.exhaustion)})`,
   };
 }
 
