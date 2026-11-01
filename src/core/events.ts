@@ -1,6 +1,7 @@
 import { areNeighbors, encounterAtSea } from "./crises.js";
 import type { SeededRandom } from "./seed.js";
 import { getRelation } from "./systems/diplomacy.js";
+import { possessive } from "./text.js";
 import type { CountryState, GameEvent, PendingDecision, WorldState } from "./types.js";
 
 /**
@@ -184,7 +185,7 @@ const TEMPLATES: EventTemplate[] = [
         id: eid(ctx.world, "protest"),
         type: "STABILITY",
         title: `Mass protests sweep ${country.name}`,
-        description: `Hundreds of thousands fill the squares of ${country.name}, demanding change. Security forces hesitate. ${country.leader.title} ${country.leader.name}'s grip looks shakier by the day.`,
+        description: `Hundreds of thousands fill the squares of ${country.name}, demanding change. Security forces hesitate. ${country.leader.title} ${possessive(country.leader.name)} grip looks shakier by the day.`,
         affectedCountries: [country.id],
         turn: ctx.world.turn,
         severity: "MAJOR",
@@ -213,10 +214,10 @@ const TEMPLATES: EventTemplate[] = [
       return {
         id: eid(ctx.world, "leak"),
         type: "COVERT",
-        title: `Massive leak exposes ${country.name}'s secrets`,
+        title: `Massive leak exposes ${possessive(country.name)} secrets`,
         description: hadSecret
           ? `A defector from ${country.name} has handed journalists a trove of classified files — including evidence of a clandestine nuclear weapons program. Intelligence agencies worldwide are recalibrating.`
-          : `A whistleblower inside ${country.name}'s government has published thousands of classified documents. The country's true economic and military position is now plain for all to see.`,
+          : `A whistleblower inside ${possessive(country.name)} government has published thousands of classified documents. The country's true economic and military position is now plain for all to see.`,
         affectedCountries: [country.id],
         turn: ctx.world.turn,
         severity: "MAJOR",
@@ -241,7 +242,7 @@ const TEMPLATES: EventTemplate[] = [
         id: eid(ctx.world, "terror"),
         type: "STABILITY",
         title: `Terror attack in ${country.name}`,
-        description: `A bombing in the heart of ${country.name}'s capital has killed dozens. The insurgency claims responsibility. Public fury demands the government act — softly or savagely.`,
+        description: `A bombing in the heart of ${possessive(country.name)} capital has killed dozens. The insurgency claims responsibility. Public fury demands the government act — softly or savagely.`,
         affectedCountries: [country.id],
         turn: ctx.world.turn,
         severity: "MAJOR",
@@ -311,6 +312,8 @@ const TEMPLATES: EventTemplate[] = [
     trigger: (ctx) => {
       const provocateurs = ctx.world.countries.filter(
         (c) =>
+          // The player's own launches are the player's call, never a scripted event
+          c.id !== ctx.world.playerCountryId &&
           (c.nuclear.status === "ARMED" || c.nuclear.status === "TESTED") &&
           c.personality.isolationism > 60 &&
           c.personality.riskTolerance > 60,

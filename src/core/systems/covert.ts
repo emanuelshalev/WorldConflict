@@ -1,4 +1,5 @@
 import type { SeededRandom } from "../seed.js";
+import { possessive } from "../text.js";
 import type { CountryState, GameEvent, InsurgencyLevel, WorldState } from "../types.js";
 import type { GovernmentChange } from "./government.js";
 import { installPuppetRegime, replaceLeaderAfterAssassination } from "./government.js";
@@ -58,7 +59,7 @@ export function resolveCovertOp(
       if (success) {
         const belief = actor.beliefs[target.id];
         if (belief) belief.accuracy = Math.min(95, belief.accuracy + 25);
-        description = `Our agents penetrated ${target.name}'s institutions; intelligence picture sharpened.`;
+        description = `Our agents penetrated ${possessive(target.name)} institutions; intelligence picture sharpened.`;
       } else {
         description = `Intelligence operation in ${target.name} came up empty.`;
       }
@@ -115,7 +116,7 @@ export function resolveCovertOp(
           belief.accuracy = Math.max(5, belief.accuracy - 30);
         }
         target.approval = clamp(target.approval - 3);
-        description = `Disinformation flooded ${target.name}'s media; their picture of our capabilities is now badly distorted.`;
+        description = `Disinformation flooded ${possessive(target.name)} media; their picture of our capabilities is now badly distorted.`;
       } else {
         description = `Disinformation campaign against ${target.name} was debunked.`;
       }
@@ -126,7 +127,7 @@ export function resolveCovertOp(
       success = rng.next() < successChance(actor, target, 0.6);
       if (success) {
         target.legitimacy = clamp(target.legitimacy - 5);
-        description = `Propaganda broadcasts undermine faith in ${target.name}'s government.`;
+        description = `Propaganda broadcasts undermine faith in ${possessive(target.name)} government.`;
       } else {
         description = `Propaganda effort against ${target.name} gained no traction.`;
       }
@@ -139,14 +140,14 @@ export function resolveCovertOp(
         return {
           success: false,
           exposed: rng.next() < 0.4,
-          description: `${target.name}'s security cordon is impenetrable; the assassination plan was aborted.`,
+          description: `${possessive(target.name)} security cordon is impenetrable; the assassination plan was aborted.`,
           governmentChange: null,
         };
       }
       success = rng.next() < successChance(actor, target, 0.25);
       if (success) {
         governmentChange = replaceLeaderAfterAssassination(world, target, rng);
-        description = `${target.name}'s leader is dead. No one has claimed responsibility — yet.`;
+        description = `${possessive(target.name)} leader is dead. No one has claimed responsibility — yet.`;
       } else {
         description = `The attempt on ${target.leader.title} ${target.leader.name} failed; ${target.leader.name} survived.`;
       }
@@ -160,7 +161,7 @@ export function resolveCovertOp(
         return {
           success: false,
           exposed: rng.next() < 0.5,
-          description: `${target.name}'s government is too entrenched for a coup; our contacts refused to move.`,
+          description: `${possessive(target.name)} government is too entrenched for a coup; our contacts refused to move.`,
           governmentChange: null,
         };
       }
@@ -234,7 +235,7 @@ export function covertEvent(
     type: "COVERT",
     title,
     description: outcome.exposed
-      ? `${target.name}'s security services say they caught ${actor.name} running ${EXPOSED_DESCRIPTIONS[opType] ?? "a covert operation"} on their soil. ${actor.name} denies everything; ${target.name} vows retaliation.`
+      ? `${possessive(target.name)} security services say they caught ${actor.name} running ${EXPOSED_DESCRIPTIONS[opType] ?? "a covert operation"} on their soil. ${actor.name} denies everything; ${target.name} vows retaliation.`
       : outcome.description,
     affectedCountries: [actor.id, target.id],
     turn: world.turn,

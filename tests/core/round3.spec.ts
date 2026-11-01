@@ -1,13 +1,19 @@
 import { describe, expect, it } from "vitest";
 import { generateDeterministicIntents } from "../../src/agents/fallback.js";
-import { createDataLoader } from "../../src/core/data-loader.js";
+import { createDataLoader, monthsUntil } from "../../src/core/data-loader.js";
 import { previewAction } from "../../src/core/preview.js";
+import { SeededRandom } from "../../src/core/seed.js";
 import {
   ceasefireChance,
   denounceApprovalDelta,
+  proposeCeasefire,
   TERMS_COST,
+  TERMS_GAIN,
   targetAdvantage,
 } from "../../src/core/systems/diplomacy.js";
+import { generateLeaderName, runGovernmentDynamics } from "../../src/core/systems/government.js";
+import { applyBorderTensions } from "../../src/core/systems/military.js";
+import { possessive } from "../../src/core/text.js";
 import { TurnEngine } from "../../src/core/turn.js";
 import type { WorldState } from "../../src/core/types.js";
 
@@ -130,5 +136,102 @@ describe("Iran's recovery path", () => {
     // Countries without an explicit trend keep their override as the trend
     const deu = get(w, "DEU");
     expect(deu.trendGrowth).toBe(deu.growthRate);
+  });
+});
+
+describe("Text and data fixes", () => {
+  it("writes possessives that read naturally", () => {
+    expect(possessive("United States")).toBe("United States'");
+    expect(possessive("Iran")).toBe("Iran's");
+  });
+
+  it("never gives a successor the outgoing leader's surname", () => {
+    for (let seed = 1; seed < 60; seed++) {
+      const name = generateLeaderName("SDN", new SeededRandom(seed), "Abdel Fattah al-Burhan");
+      expect(name.split(" ")).not.toContain("al-Burhan");
+    }
+  });
+
+  it("dates the 2026 elections from the real calendar", () => {
+    const w = loader.newGame({ scenarioId: "2026", playerCountryId: "PAK", seed: 1, mode: "LEGACY" });
+    expect(get(w, "PAK").politicalSystem.nextElectionTurn).toBe(27); // February 2029
+    expect(get(w, "USA").politicalSystem.nextElectionTurn).toBe(24); // November 2028
+    expect(monthsUntil(2026, 11, "2026-06", 60)).toBe(55); // already held: next cycle
+  });
+
+  it("never scripts the player's own missile launches", () => {
+    let s = loader.newGame({ scenarioId: "2026", playerCountryId: "PRK", seed: 2, mode: "LEGACY" });
+    for (let t = 0; t < 24 && !s.gameOver; t++) {
+      s = engine.executeTurn(s, [], generateDeterministicIntents(s)).newState;
+      expect(s.timeline.some((e) => e.description.includes("North Korea fires missiles"))).toBe(false);
+    }
+  });
+});
+
+describe("World tension", () => {
+  it("does not let standing garrisons add more than 1.5 tension a month", () => {
+    const w = loader.newGame({ scenarioId: "2026", playerCountryId: "TWN", seed: 1, mode: "TERM" });
+    const standing = w.countries.reduce(
+      (n, c) => n + c.borderDeployments.filter((d) => !c.atWarWith.includes(d.targetCountryId)).length,
+      0,
+    );
+    expect(standing).toBeGreaterThan(10); // the old rule added 0.5 for each one
+    const before = w.globalTension;
+    applyBorderTensions(w);
+    expect(w.globalTension - before).toBeLessThanOrEqual(1.5);
+  });
+
+  it("keeps the 2026 world's tension out of the red most of the time", () => {
+    let s = loader.newGame({ scenarioId: "2026", playerCountryId: "USA", seed: 7, mode: "TERM" });
+    const months: number[] = [];
+    for (let t = 0; t < 24 && !s.gameOver; t++) {
+      s = engine.executeTurn(s, [], generateDeterministicIntents(s)).newState;
+      months.push(s.globalTension);
+    }
+    const hot = months.filter((t) => t >= 80).length / months.length;
+    expect(hot).toBeLessThanOrEqual(0.2);
+  });
+
+  it("gives the side that dictates a peace some credit at home", () => {
+    const w = loader.newGame({ scenarioId: "2026", playerCountryId: "IRN", seed: 1, mode: "TERM" });
+    const war = w.wars.find((x) => x.attackerId === "USA" && x.defenderId === "IRN");
+    if (!war) throw new Error("fixture");
+    war.frontline = 90; // the US has what it wanted
+    war.exhaustion = 100;
+    const iran = get(w, "IRN");
+    const usa = get(w, "USA");
+    const [ia, ua] = [iran.approval, usa.approval];
+    let accepted = false;
+    for (let seed = 1; seed < 40 && !accepted; seed++)
+      accepted = proposeCeasefire(w, iran, usa, new SeededRandom(seed));
+    expect(accepted).toBe(true);
+    expect(iran.approval).toBe(ia - TERMS_COST.approval);
+    expect(usa.approval).toBe(Math.min(100, ua + TERMS_GAIN.approval));
+  });
+});
+
+describe("Elections", () => {
+  it("makes a government that served a full term pay a 'time for a change' price", () => {
+    const fresh = loader.newGame({ scenarioId: "2026", playerCountryId: "DEU", seed: 5, mode: "TERM" });
+    const tired = structuredClone(fresh);
+    for (const w of [fresh, tired]) {
+      const deu = get(w, "DEU");
+      deu.approval = 49; // just over the line before fatigue
+      deu.growthRate = deu.trendGrowth ?? 0.01; // neutral economic mood
+      deu.atWarWith = [];
+      w.turn = 40;
+      deu.politicalSystem.nextElectionTurn = 40;
+    }
+    get(fresh, "DEU").leader.sinceTurn = 30;
+    get(tired, "DEU").leader.sinceTurn = 0;
+    let freshLosses = 0;
+    let tiredLosses = 0;
+    for (let seed = 0; seed < 40; seed++) {
+      const a = structuredClone(fresh);
+      const b = structuredClone(tired);
+      if (runGovernmentDynamics(a, new SeededRandom(seed)).changes.some((c) => c.kind === "ELECTION" && c.countryId === "DEU")) freshLosses++;
+      if (runGovernmentDynamics(b, new SeededRandom(seed)).changes.some((c) => c.kind === "ELECTION" && c.countryId === "DEU")) tiredLosses++;
+    }
+    expect(tiredLosses).toBeGreaterThan(freshLosses);
   });
 });

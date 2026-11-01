@@ -59,7 +59,7 @@ Denouncing is free, but it only rallies voters against an adversary (a historica
 | **Coup** | A *Coup plot uncovered* crisis. Purge, buy off or concede — before the officers move. |
 | **Impeachment / no confidence** | In consolidated democracies (USA, Germany, Japan…) there are no coups: an *Impeachment looms* / *A vote of no confidence* card appears instead when legitimacy or stability collapses. |
 | **Revolution** | *The streets are boiling* crisis when stability is very low and an insurgency is active. Consolidated democracies only fall to revolution in an armed (guerrilla) uprising with legitimacy under 20. |
-| **Election defeat** | The HUD counts down to the election; *Campaign endgame* card; the screen pulses red if you trail. |
+| **Election defeat** | The HUD counts down to the election; *Campaign endgame* card; the screen pulses red if you trail. Voters weigh approval first, then the economy and any war, and a government that has served three years or more pays a "time for a change" penalty. In the 2026 world, foreign elections fall on their real dates (US November 2028, Pakistan February 2029…). |
 | **Objective failure** | The mission chip shows each condition live (○ pending · ✓ met · ✗ failed). |
 | **Nuclear holocaust** | Using a nuclear weapon can trigger retaliation chains. Don't. |
 

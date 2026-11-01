@@ -1,5 +1,6 @@
 import { raiseCrisis } from "../crises.js";
 import type { SeededRandom } from "../seed.js";
+import { possessive } from "../text.js";
 import type {
   CountryState,
   GameEvent,
@@ -103,16 +104,16 @@ const NAME_POOLS: Record<string, { first: string[]; last: string[] }> = {
     last: ["Thompson", "Wilson", "Mitchell", "Sullivan", "Reid"],
   },
   PAK: {
-    first: ["Imran", "Benazir", "Asif", "Nawaz", "Shahid"],
-    last: ["Khan", "Bhutto", "Sharif", "Malik", "Qureshi"],
+    first: ["Tariq", "Ayesha", "Faisal", "Saima", "Usman"],
+    last: ["Chaudhry", "Rana", "Malik", "Abbasi", "Butt"],
   },
   NGA: {
     first: ["Chukwu", "Amina", "Olusegun", "Ngozi", "Ibrahim"],
     last: ["Okafor", "Abubakar", "Adeyemi", "Balogun", "Eze"],
   },
   ZAF: {
-    first: ["Thabo", "Nomvula", "Sipho", "Lindiwe", "Jacob"],
-    last: ["Mbeki", "Dlamini", "Nkosi", "Khumalo", "Zulu"],
+    first: ["Themba", "Nomvula", "Sipho", "Lindiwe", "Pieter"],
+    last: ["Mokoena", "Dlamini", "Nkosi", "Khumalo", "van Wyk"],
   },
   ITA: {
     first: ["Marco", "Giulia", "Alessandro", "Francesca", "Luca"],
@@ -175,20 +176,29 @@ const NAME_POOLS: Record<string, { first: string[]; last: string[] }> = {
     last: ["Díaz", "Fernández", "Cruz", "Morales", "Valdés"],
   },
   SDN: {
-    first: ["Abdel", "Amna", "Mohamed", "Hamdok", "Yasir"],
-    last: ["al-Burhan", "Dagalo", "Hamdok", "al-Atta", "Osman"],
+    first: ["Osman", "Amna", "Khalid", "Fatima", "Yasir"],
+    last: ["Idris", "Abdelrahman", "el-Nur", "Babiker", "Elamin"],
   },
   ETH: {
-    first: ["Abiy", "Sahle-Work", "Debretsion", "Lemma", "Birtukan"],
-    last: ["Ahmed", "Zewde", "Gebremichael", "Megersa", "Mideksa"],
+    first: ["Dawit", "Hiwot", "Tesfaye", "Meseret", "Yonas"],
+    last: ["Bekele", "Haile", "Tadesse", "Girma", "Alemu"],
   },
 };
 
 const STYLES: LeaderStyle[] = ["HAWKISH", "DOVISH", "PRAGMATIC", "REFORMIST", "HARDLINER"];
 
-export function generateLeaderName(countryId: string, rng: SeededRandom): string {
+/**
+ * A plausible new leader. Never reuses a word of `avoid` (the outgoing leader's
+ * name), so a coup general does not share the surname of the man he deposes.
+ */
+export function generateLeaderName(countryId: string, rng: SeededRandom, avoid = ""): string {
   const pool = NAME_POOLS[countryId] ?? { first: ["Alex"], last: ["Novak"] };
-  return `${rng.pick(pool.first)} ${rng.pick(pool.last)}`;
+  const taken = new Set(avoid.toLowerCase().split(/\s+/));
+  const free = (names: string[]) => {
+    const ok = names.filter((n) => !taken.has(n.toLowerCase()));
+    return ok.length ? ok : names;
+  };
+  return `${rng.pick(free(pool.first))} ${rng.pick(free(pool.last))}`;
 }
 
 export function pickSuccessorStyle(
@@ -280,7 +290,7 @@ export function runGovernmentDynamics(world: WorldState, rng: SeededRandom): Gov
           id: `evt_election_${country.id}_${world.turn}`,
           type: "GOVERNMENT",
           title: `${country.name}: ${country.leader.name} re-elected`,
-          description: `${country.leader.title} ${country.leader.name} secured another term in ${country.name}'s elections.`,
+          description: `${country.leader.title} ${country.leader.name} secured another term in ${possessive(country.name)} elections.`,
           affectedCountries: [country.id],
           turn: world.turn,
           severity: "NOTABLE",
@@ -389,6 +399,8 @@ export function runGovernmentDynamics(world: WorldState, rng: SeededRandom): Gov
   return { changes, events };
 }
 
+const INCUMBENCY_FATIGUE = 5;
+
 function holdElection(
   world: WorldState,
   country: CountryState,
@@ -408,6 +420,8 @@ function holdElection(
     );
     score += losing ? -15 : -5;
   }
+  // "Time for a change": a government that has served a full term pays for it
+  if (world.turn - country.leader.sinceTurn >= 36) score -= INCUMBENCY_FATIGUE;
   score += rng.nextFloat(-8, 8); // campaign dynamics
 
   if (score >= 45) return null; // incumbent survives
@@ -415,7 +429,7 @@ function holdElection(
   const oldLeader = { ...country.leader };
   const style = pickSuccessorStyle(country, "ELECTION", rng);
   const newLeader: Leader = {
-    name: isPlayer ? country.leader.name : generateLeaderName(country.id, rng),
+    name: isPlayer ? country.leader.name : generateLeaderName(country.id, rng, country.leader.name),
     title: country.politicalSystem.leaderTitle,
     style,
     origin: "ELECTED",
@@ -433,7 +447,7 @@ function holdElection(
     oldLeader,
     newLeader,
     description: isPlayer
-      ? `You were defeated at the polls. ${country.name}'s voters chose change.`
+      ? `You were defeated at the polls. ${possessive(country.name)} voters chose change.`
       : `${country.name} voted out ${oldLeader.title} ${oldLeader.name}; ${newLeader.name} takes office on a ${style.toLowerCase()} platform.`,
     isPlayerDeposed: isPlayer,
   };
@@ -451,7 +465,7 @@ function executeOuster(
     kind: "IMPEACHMENT",
     oldLeader,
     newLeader: {
-      name: generateLeaderName(country.id, rng),
+      name: generateLeaderName(country.id, rng, country.leader.name),
       title: country.leader.title,
       style: "PRAGMATIC",
       origin: "ELECTED",
@@ -472,7 +486,7 @@ function executeCoup(
 ): GovernmentChange {
   const oldLeader = { ...country.leader };
   const newLeader: Leader = {
-    name: generateLeaderName(country.id, rng),
+    name: generateLeaderName(country.id, rng, country.leader.name),
     title: "General",
     style: pickSuccessorStyle(country, "COUP", rng),
     origin: "COUP",
@@ -512,7 +526,7 @@ function executeRevolution(
   const oldLeader = { ...country.leader };
   const becomesDemocracy = country.regimeType !== "DEMOCRACY" && rng.nextBool(0.5);
   const newLeader: Leader = {
-    name: generateLeaderName(country.id, rng),
+    name: generateLeaderName(country.id, rng, country.leader.name),
     title: becomesDemocracy ? "President" : "Chairman of the Revolutionary Council",
     style: pickSuccessorStyle(country, "REVOLUTION", rng),
     origin: "REVOLUTION",
@@ -559,7 +573,7 @@ export function replaceLeaderAfterAssassination(
 ): GovernmentChange {
   const oldLeader = { ...country.leader };
   const newLeader: Leader = {
-    name: generateLeaderName(country.id, rng),
+    name: generateLeaderName(country.id, rng, country.leader.name),
     title: country.politicalSystem.leaderTitle,
     style: pickSuccessorStyle(country, "SUCCESSION", rng),
     origin: "SUCCESSION",
@@ -592,7 +606,7 @@ export function installPuppetRegime(
 ): GovernmentChange {
   const oldLeader = { ...country.leader };
   const newLeader: Leader = {
-    name: generateLeaderName(country.id, rng),
+    name: generateLeaderName(country.id, rng, country.leader.name),
     title: "President",
     style: "PRAGMATIC",
     origin: "COUP",

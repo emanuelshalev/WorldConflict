@@ -1,4 +1,5 @@
 import type { SeededRandom } from "../seed.js";
+import { possessive } from "../text.js";
 import type { ActiveWar, CountryState, WorldState } from "../types.js";
 
 export type AirstrikeTarget = "MILITARY" | "INDUSTRIAL" | "NUCLEAR";
@@ -261,7 +262,7 @@ export function executeAirstrike(
 
   if (!success) {
     if (targetType === "NUCLEAR") defender.nuclear.consecutiveStrikesTaken = 0;
-    description = `${attacker.name}'s airstrike against ${defender.name} was repelled by air defenses.`;
+    description = `${possessive(attacker.name)} airstrike against ${defender.name} was repelled by air defenses.`;
     return { success, description, crippledNuclearProgram };
   }
 
@@ -276,7 +277,7 @@ export function executeAirstrike(
     case "INDUSTRIAL": {
       defender.gdp *= 0.985;
       defender.stability = clamp(defender.stability - 4);
-      description = `${attacker.name} bombed ${defender.name}'s industrial heartland, crippling factories and power plants.`;
+      description = `${attacker.name} bombed ${possessive(defender.name)} industrial heartland, crippling factories and power plants.`;
       break;
     }
     case "NUCLEAR": {
@@ -289,12 +290,12 @@ export function executeAirstrike(
           defender.nuclear.funded = false;
           defender.nuclear.consecutiveStrikesTaken = 0;
           crippledNuclearProgram = true;
-          description = `Second consecutive strike on ${defender.name}'s enrichment facilities — the nuclear program is CRIPPLED.`;
+          description = `Second consecutive strike on ${possessive(defender.name)} enrichment facilities — the nuclear program is CRIPPLED.`;
         } else {
-          description = `${attacker.name} struck ${defender.name}'s nuclear facilities, setting the program back. One more successful strike could cripple it.`;
+          description = `${attacker.name} struck ${possessive(defender.name)} nuclear facilities, setting the program back. One more successful strike could cripple it.`;
         }
       } else if (defender.nuclear.status === "TESTED" || defender.nuclear.status === "ARMED") {
-        description = `${attacker.name} struck ${defender.name}'s nuclear sites — but the arsenal is dispersed and hardened. No meaningful damage.`;
+        description = `${attacker.name} struck ${possessive(defender.name)} nuclear sites — but the arsenal is dispersed and hardened. No meaningful damage.`;
       } else {
         description = `${attacker.name} struck suspected nuclear sites in ${defender.name}, but found no active program.`;
       }
@@ -318,12 +319,15 @@ export function withdrawFromBorder(country: CountryState, targetId: string): voi
 
 /** Border deployments continuously degrade relations (dynamic diplomacy from the original game). */
 export function applyBorderTensions(world: WorldState): void {
+  // Standing garrisons are the background of world politics, not fresh news: each
+  // adds a little to the global mood, and together they add at most 1.5 a month.
+  let standing = 0;
   for (const country of world.countries) {
     for (const dep of country.borderDeployments) {
       const target = world.countries.find((c) => c.id === dep.targetCountryId);
       if (!target || country.atWarWith.includes(target.id)) continue;
       target.relations[country.id] = Math.max(-100, (target.relations[country.id] ?? 0) - 3);
-      world.globalTension = clamp(world.globalTension + 0.5, 0, 100);
+      standing++;
       // Threatened countries arm in response (budget as hostility indicator)
       target.militaryBudgetPercent = Math.min(
         Math.max(20, target.militaryBudgetPercent),
@@ -331,6 +335,7 @@ export function applyBorderTensions(world: WorldState): void {
       );
     }
   }
+  world.globalTension = clamp(world.globalTension + Math.min(1.5, standing * 0.15), 0, 100);
 }
 
 function clamp(v: number, min = 0, max = 100): number {

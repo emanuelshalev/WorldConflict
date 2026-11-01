@@ -148,6 +148,8 @@ export function targetAdvantage(
 /** Suing for peace while clearly losing: the winner dictates terms. */
 export const TERMS_THRESHOLD = 65;
 export const TERMS_COST = { approval: 6, legitimacy: 5 };
+/** The side that dictated the peace gets credit at home, short of a victory's +12. */
+export const TERMS_GAIN = { approval: 5, legitimacy: 3 };
 
 export function ceasefireChance(
   war: { attackerId: string; frontline: number; exhaustion: number },
@@ -243,6 +245,8 @@ export function proposeCeasefire(
       // Accepting the winner's terms is humbling, but far cheaper than defeat
       actor.approval = Math.max(0, actor.approval - TERMS_COST.approval);
       actor.legitimacy = Math.max(0, actor.legitimacy - TERMS_COST.legitimacy);
+      target.approval = Math.min(100, target.approval + TERMS_GAIN.approval);
+      target.legitimacy = Math.min(100, target.legitimacy + TERMS_GAIN.legitimacy);
     }
     world.wars = world.wars.filter((w) => w.id !== war.id);
     actor.atWarWith = actor.atWarWith.filter((id) => id !== target.id);

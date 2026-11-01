@@ -1,5 +1,6 @@
 import { isLandlocked, sharesLandBorder } from "./geography.js";
 import type { SeededRandom } from "./seed.js";
+import { possessive } from "./text.js";
 import type {
   CountryState,
   DecisionOption,
@@ -132,10 +133,10 @@ const TEMPLATES: CrisisTemplate[] = [
       if (!r) return null;
       const border = areNeighbors(ctx.player, r);
       const what = border
-        ? `Your border units exchanged fire with ${r.name}'s forces`
+        ? `Your border units exchanged fire with ${possessive(r.name)} forces`
         : encounterAtSea(ctx.player, r)
-          ? `A ${r.name} warship and one of your patrol aircraft came within meters of collision in international waters`
-          : `A ${r.name} military drone was intercepted at the edge of your airspace, and your jets nearly fired`;
+          ? `A warship from ${r.name} and one of your patrol aircraft came within meters of collision in international waters`
+          : `A military drone from ${r.name} was intercepted at the edge of your airspace, and your jets nearly fired`;
       return {
         headline: border
           ? `Firefight on the ${ctx.player.name}–${r.name} frontier`
@@ -227,7 +228,7 @@ const TEMPLATES: CrisisTemplate[] = [
     id: "corruption_scandal",
     weight: (ctx) => (ctx.player.approval > 75 ? 4 : 1.2),
     build: (ctx) => ({
-      headline: `Scandal engulfs ${ctx.player.leader.name}'s inner circle`,
+      headline: `Scandal engulfs ${possessive(ctx.player.leader.name)} inner circle`,
       text: `Leaked documents implicate senior officials around you in a vast embezzlement scheme.`,
       decision: {
         title: "Corruption scandal",
@@ -271,7 +272,7 @@ const TEMPLATES: CrisisTemplate[] = [
     id: "scandal_second_leak",
     weight: () => 0,
     build: (ctx) => ({
-      headline: `Second leak contradicts ${ctx.player.leader.name}'s denials`,
+      headline: `Second leak contradicts ${possessive(ctx.player.leader.name)} denials`,
       text: `New documents show the 'forgery' was genuine.`,
       decision: {
         title: "The second leak",
@@ -312,7 +313,7 @@ const TEMPLATES: CrisisTemplate[] = [
       return {
         headline: presidential
           ? `Lawmakers draft articles of impeachment against ${ctx.player.leader.name}`
-          : `${ctx.player.leader.name}'s own backbenchers move against the government`,
+          : `${possessive(ctx.player.leader.name)} own backbenchers move against the government`,
         text: `With legitimacy at ${Math.round(ctx.player.legitimacy)}%, your opponents smell blood.`,
         decision: {
           title: presidential ? "Impeachment looms" : "A vote of no confidence",
@@ -393,7 +394,7 @@ const TEMPLATES: CrisisTemplate[] = [
     id: "streets_boiling",
     weight: (ctx) => (ctx.player.stability < 35 && ctx.player.insurgencyLevel !== "NONE" ? 3 : 0),
     build: (ctx) => ({
-      headline: `Hundreds of thousands march on ${ctx.player.name}'s capital`,
+      headline: `Hundreds of thousands march on ${possessive(ctx.player.name)} capital`,
       text: "The largest protests in a generation fill the streets.",
       decision: {
         title: "The streets are boiling",
@@ -518,7 +519,7 @@ const TEMPLATES: CrisisTemplate[] = [
       const bluff = ctx.rng.nextBool(0.6 - r.personality.warPropensity / 300);
       return bluff
         ? {
-            headline: `${r.name}'s deadline passes quietly`,
+            headline: `${possessive(r.name)} deadline passes quietly`,
             text: `${leaderOf(r)} blinked. Your refusal looks like statesmanship.`,
             effects: { approval: 6, legitimacy: 3 },
           }
@@ -588,7 +589,7 @@ const TEMPLATES: CrisisTemplate[] = [
         text: `${leaderOf(ally)} asks you to honor your commitments.`,
         decision: {
           title: `${ally.name} asks for help`,
-          situation: `${leaderOf(ally)} calls you at 3 a.m.: ${ally.name}'s defenses against ${enemy.name} are buckling. They want weapons now — and your army if it comes to that.`,
+          situation: `${leaderOf(ally)} calls you at 3 a.m.: ${possessive(ally.name)} defenses against ${enemy.name} are buckling. They want weapons now — and your army if it comes to that.`,
           affectedCountries: [ctx.player.id, ally.id, enemy.id],
           options: [
             opt(
@@ -633,10 +634,10 @@ const TEMPLATES: CrisisTemplate[] = [
       const progress = Math.round(belief?.nuclearProgress ?? r.nuclear.progress);
       return {
         headline: `Intelligence: ${r.name} weeks from the bomb`,
-        text: `Your services estimate ${r.name}'s program at ~${progress}% (confidence ${Math.round(belief?.accuracy ?? 50)}%).`,
+        text: `Your services estimate ${possessive(r.name)} program at ~${progress}% (confidence ${Math.round(belief?.accuracy ?? 50)}%).`,
         decision: {
           title: `${r.name} nears the threshold`,
-          situation: `Your intelligence chief puts ${r.name}'s weapons program at roughly ${progress}% — with ${Math.round(belief?.accuracy ?? 50)}% confidence. Once they test, no airstrike can undo it. Two successful strikes in a row would cripple it.`,
+          situation: `Your intelligence chief puts ${possessive(r.name)} weapons program at roughly ${progress}% — with ${Math.round(belief?.accuracy ?? 50)}% confidence. Once they test, no airstrike can undo it. Two successful strikes in a row would cripple it.`,
           affectedCountries: [ctx.player.id, r.id],
           urgency: "EXISTENTIAL",
           options: [
@@ -781,7 +782,7 @@ const TEMPLATES: CrisisTemplate[] = [
         text: `Militants hold 30 of your citizens.`,
         decision: {
           title: `Hostages in ${t.name}`,
-          situation: `Militants with ties to ${t.name}'s security services have seized 30 of your citizens, including diplomats. Their families are on every channel.`,
+          situation: `Militants with ties to ${possessive(t.name)} security services have seized 30 of your citizens, including diplomats. Their families are on every channel.`,
           affectedCountries: [ctx.player.id, t.id],
           options: [
             opt(
@@ -1000,7 +1001,7 @@ const TEMPLATES: CrisisTemplate[] = [
         headline: `${p.name} offers ${ctx.player.name} sweeping trade pact`,
         text: `${leaderOf(p)} dangles investment and market access.`,
         decision: {
-          title: `${p.name}'s offer`,
+          title: `${possessive(p.name)} offer`,
           situation: `${leaderOf(p)} offers a sweeping deal: ports, railways and market access worth billions. Your finance minister is thrilled. Your intelligence chief asks what the fine print says.`,
           affectedCountries: [ctx.player.id, p.id],
           options: [
@@ -1079,7 +1080,7 @@ const TEMPLATES: CrisisTemplate[] = [
       const r = worstRival(ctx, -40);
       if (!r) return null;
       return {
-        headline: `Cyberattack blacks out ${ctx.player.name}'s power grid`,
+        headline: `Cyberattack blacks out ${possessive(ctx.player.name)} power grid`,
         text: "Millions are without power; hospitals run on generators.",
         decision: {
           title: "Grid down",
@@ -1132,7 +1133,7 @@ const TEMPLATES: CrisisTemplate[] = [
       const names = suspects.map((c) => c.name).join(" and ") || "hostile services";
       const main = suspects[0];
       return {
-        headline: `${ctx.player.name}'s spy chiefs warn of foreign meddling`,
+        headline: `${possessive(ctx.player.name)} spy chiefs warn of foreign meddling`,
         text: `Intelligence links the wave of unrest to ${names}.`,
         decision: {
           title: "Foreign interference",
@@ -1185,7 +1186,7 @@ const TEMPLATES: CrisisTemplate[] = [
     id: "shock_market_crash",
     weight: () => 0,
     build: (ctx) => ({
-      headline: `BLACK MONDAY: ${ctx.player.name}'s markets in free fall`,
+      headline: `BLACK MONDAY: ${possessive(ctx.player.name)} markets in free fall`,
       text: "Stocks lose a fifth of their value in a day; two major banks halt withdrawals.",
       effects: { gdp: -1.5, growth: -0.8, approval: -7 },
       decision: {
@@ -1268,7 +1269,7 @@ const TEMPLATES: CrisisTemplate[] = [
     id: "shock_second_wave",
     weight: () => 0,
     build: (ctx) => ({
-      headline: `Second wave overwhelms ${ctx.player.name}'s hospitals`,
+      headline: `Second wave overwhelms ${possessive(ctx.player.name)} hospitals`,
       text: "Critics blame the decision to stay open.",
       effects: { stability: -6, approval: -8, growth: -0.4 },
     }),
@@ -1279,7 +1280,7 @@ const TEMPLATES: CrisisTemplate[] = [
     build: (ctx) => {
       const r = worstRival(ctx, -30);
       return {
-        headline: `Massacre in ${ctx.player.name}'s capital`,
+        headline: `Massacre in ${possessive(ctx.player.name)} capital`,
         text: "Coordinated attacks on a stadium and a metro station kill scores.",
         effects: { stability: -7, approval: -3 },
         decision: {
@@ -1386,7 +1387,7 @@ const TEMPLATES: CrisisTemplate[] = [
     },
     build: (ctx) => ({
       headline: `${ctx.player.name} heads to the polls`,
-      text: `Polls put ${ctx.player.leader.name}'s approval at ${Math.round(ctx.player.approval)}%.`,
+      text: `Polls put ${possessive(ctx.player.leader.name)} approval at ${Math.round(ctx.player.approval)}%.`,
       decision: {
         title: "Campaign endgame",
         situation: `The election is weeks away. Your approval is ${Math.round(ctx.player.approval)}%; you need roughly 45 to survive. Your strategists have three plays.`,

@@ -40,6 +40,8 @@ const CountryOverrideSchema = z
     // Structural growth the economy returns to once shocks fade (defaults to growthRate).
     // Set it when growthRate is a war or blockade shock, so drags aren't counted twice.
     trendGrowth: z.number(),
+    // Real date of the next national election ("YYYY-MM"); otherwise the clock is staggered
+    nextElection: z.string().regex(/^\d{4}-\d{2}$/),
     population: z.number(),
     manpower: z.number(),
     airpower: z.number(),
@@ -443,8 +445,17 @@ export class DataLoader {
     const isPlayer = profile.id === playerCountryId;
 
     // Election clock: stagger first elections deterministically
-    const nextElectionTurn =
+    const staggered =
       electionCycleMonths > 0 ? rng.nextInt(8, Math.max(9, electionCycleMonths)) : null;
+    const nextElectionTurn =
+      electionCycleMonths > 0 && override.nextElection
+        ? monthsUntil(
+            scenario.startYear,
+            scenario.startMonth,
+            override.nextElection,
+            electionCycleMonths,
+          )
+        : staggered;
 
     const scenarioLeader = scenario.leaders[profile.id];
     const leader = {
@@ -703,4 +714,17 @@ function realLeaderBackstory(player: CountryState): string {
         ? "The streets are restless and your security chiefs deliver grim briefings."
         : "Allies and rivals alike are watching what you do next.";
   return `You are ${player.leader.title} ${player.leader.name} of ${player.name}. The office, the record and the enemies are yours. ${context}`;
+}
+
+/** Turns from the scenario start to a "YYYY-MM" date, rolled forward a cycle if it has passed. */
+export function monthsUntil(
+  startYear: number,
+  startMonth: number,
+  date: string,
+  cycleMonths: number,
+): number {
+  const [y, m] = date.split("-").map(Number);
+  let months = (y - startYear) * 12 + (m - startMonth);
+  while (months < 1 && cycleMonths > 0) months += cycleMonths;
+  return Math.max(1, months);
 }

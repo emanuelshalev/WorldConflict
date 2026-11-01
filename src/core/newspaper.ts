@@ -1,6 +1,7 @@
 import type { SeededRandom } from "./seed.js";
 import type { GovernmentChange } from "./systems/government.js";
 import type { WarMonthSummary } from "./systems/military.js";
+import { possessive } from "./text.js";
 import type { GameEvent, NewspaperEntry, WorldState } from "./types.js";
 
 /**
@@ -82,7 +83,7 @@ export function generateNewspaper(
       description: `Fighting between ${attacker.name} and ${defender.name} claimed an estimated ${monthCasualties.toLocaleString()} casualties this month. ${
         stalemate
           ? "Military analysts see no end in sight."
-          : `${leader.name}'s forces hold the initiative; pressure mounts on ${leader.id === attacker.id ? defender.name : attacker.name} to seek terms.`
+          : `${possessive(leader.name)} forces hold the initiative; pressure mounts on ${leader.id === attacker.id ? defender.name : attacker.name} to seek terms.`
       }`,
       relatedCountries: [attacker.id, defender.id],
       turn,

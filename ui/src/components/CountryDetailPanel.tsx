@@ -107,7 +107,7 @@ export function CountryDetailPanel() {
       </h3>
       <div style={S.sub}>
         {view.leader.title} <b style={{ color: '#ccd' }}>{view.leader.name}</b> ·{' '}
-        {view.leader.style.toLowerCase()} · in power since turn {view.leader.sinceTurn}
+        {view.leader.style.toLowerCase()} · {view.leader.sinceTurn === 0 ? 'in power before your term' : `in power since month ${view.leader.sinceTurn}`}
       </div>
 
       {!view.isPlayer && (

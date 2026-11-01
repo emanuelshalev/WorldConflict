@@ -69,7 +69,7 @@
         {"kind": "NO_WAR_WITH", "targetId": "VEN", "label": "No war with Venezuela"},
         {"kind": "NO_WAR_WITH", "targetId": "CUB", "label": "No war with Cuba"},
         {"kind": "RELATION_MIN", "targetId": "VEN", "min": -10, "label": "Caracas still takes your calls (relations -10+)"},
-        {"kind": "STAT_MIN", "stat": "approval", "min": 60, "label": "Approval of 60%+: voters see a win, not a quagmire"},
+        {"kind": "STAT_MIN", "stat": "approval", "min": 55, "label": "Approval of 55%+: voters see a win, not a quagmire"},
         {"kind": "STAT_MIN", "stat": "stability", "min": 25, "label": "No unrest at home over the Caribbean (stability 25%+)"}
       ],
       "bonus": [

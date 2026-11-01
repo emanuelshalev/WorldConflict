@@ -1,4 +1,5 @@
 import type { SeededRandom } from "../seed.js";
+import { possessive } from "../text.js";
 import type { CountryState, GameEvent, WorldState } from "../types.js";
 import { deescalateInsurgency, escalateInsurgency } from "./covert.js";
 import { shiftRelation } from "./diplomacy.js";
@@ -109,7 +110,7 @@ export function updateDomestic(world: WorldState, rng: SeededRandom): GameEvent[
         id: `evt_unrest_${country.id}_${world.turn}`,
         type: "STABILITY",
         title: `Unrest spreads in ${country.name}`,
-        description: `Mass protests and strikes erupt across ${country.name} as faith in ${country.leader.title} ${country.leader.name}'s government collapses.`,
+        description: `Mass protests and strikes erupt across ${country.name} as faith in ${country.leader.title} ${possessive(country.leader.name)} government collapses.`,
         affectedCountries: [country.id],
         turn: world.turn,
         severity: "MAJOR",

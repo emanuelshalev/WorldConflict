@@ -37,6 +37,7 @@ import {
   startNuclearProgram,
 } from "./systems/nuclear.js";
 import { applyPropaganda, applyReform, updateDomestic } from "./systems/stability.js";
+import { possessive } from "./text.js";
 import type {
   Action,
   CountryIntent,
@@ -482,7 +483,7 @@ export class TurnEngine {
           target.approval = clamp01(target.approval + 8);
           target.legitimacy = clamp01(target.legitimacy + 4);
           this.report?.causes.push(
-            `Rally 'round the flag after ${actor.name}'s attack (approval +8)`,
+            `Rally 'round the flag after ${possessive(actor.name)} attack (approval +8)`,
           );
           this.report?.moments.push("UNDER ATTACK");
         }
@@ -511,7 +512,7 @@ export class TurnEngine {
             id: `evt_ceasefire_${actor.id}_${target.id}_${world.turn}`,
             type: "WAR",
             title: `Ceasefire between ${actor.name} and ${target.name}`,
-            description: `Following ${actor.name}'s initiative, the guns have fallen silent. The peace is fragile — but it is peace.`,
+            description: `Following ${possessive(actor.name)} initiative, the guns have fallen silent. The peace is fragile — but it is peace.`,
             affectedCountries: [actor.id, target.id],
             turn: world.turn,
             severity: "MAJOR",
@@ -576,7 +577,7 @@ export class TurnEngine {
           id: `evt_strike_${actor.id}_${target.id}_${world.turn}`,
           type: "WAR",
           title: outcome.crippledNuclearProgram
-            ? `${actor.name} CRIPPLES ${target.name}'s NUCLEAR PROGRAM`
+            ? `${actor.name} CRIPPLES ${possessive(target.name)} NUCLEAR PROGRAM`
             : `${actor.name} launches airstrikes on ${target.name}`,
           description: outcome.description,
           affectedCountries: [actor.id, target.id],

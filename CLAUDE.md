@@ -59,7 +59,7 @@ Static data is JSON in `data/`: 41 country profiles in `data/countries/` (valida
 
 - Wars use a single `frontline` (0–100, 50 = stalemate); ends at 85/15 or by exhaustion ceasefire.
 - Nuclear: two-strike rule (2 consecutive successful strikes cripple a DEVELOPING program; TESTED+ is invulnerable); nuclear use → global embargo, possible retaliation chain → `NUCLEAR_HOLOCAUST` game over.
-- Global tension has a per-turn rise cap (+8, +30 on war/nuclear shock), AI-generated tension counts half, and it decays 26%/turn toward a war-count floor (min(60, 25+6×wars)). Target: median 45–70, ≤20% of months ≥80 — verify with `npm run sim` when adding tension sources.
+- Global tension has a per-turn rise cap (+8, +30 on war/nuclear shock), AI-generated tension counts half, and it decays 26%/turn toward a war-count floor (min(60, 25+6×wars)). Standing border deployments add at most 1.5/month in total (they used to add 0.5 each and pinned flashpoints near 85). Target: median 45–70, ≤20% of months ≥80 — verify with `npm run sim` when adding tension sources.
 - Relations drift 2%/month toward a structural equilibrium (alliances, rivalries, regime affinity). Ceasefires depend on exhaustion and who is winning.
 - The player can be deposed (election loss, coup, revolution, assassination) but coups/revolutions are telegraphed first (`coup_plot` / `streets_boiling` crises). Sessions end at `world.maxTurns` (mode-dependent). Score is 4×50 components drifting 15%/month toward situation-derived targets.
 - Balance targets (harness): smart 55–85% wins, none ≤20%, random 15–45%.

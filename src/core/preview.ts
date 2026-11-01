@@ -10,6 +10,7 @@ import {
 } from "./systems/diplomacy.js";
 import { effectiveForce, monthlyDefenseBudgetM } from "./systems/military.js";
 import { isNuclearOperational } from "./systems/nuclear.js";
+import { possessive } from "./text.js";
 import type { Action, WorldState } from "./types.js";
 
 export interface PreviewEffect {
@@ -113,7 +114,7 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
       if (relation < 60) {
         return blocked(
           base,
-          `${tname}'s government would refuse outright — relations are ${Math.round(relation)}, must be 60+ (PROFITABLE).`,
+          `${possessive(tname)} government would refuse outright — relations are ${Math.round(relation)}, must be 60+ (PROFITABLE).`,
         );
       }
       const isRival = (target.history.historicalRivals ?? []).includes(actor.id);
@@ -125,7 +126,7 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
       effects.push(
         eff(tname, "Status", "→ MILITARY PACT", "An attack on one is an attack on both"),
       );
-      risks.push(`A pact obliges you to join ${tname}'s defensive wars.`);
+      risks.push(`A pact obliges you to join ${possessive(tname)} defensive wars.`);
       break;
     }
     case "DIPLOMACY_BREAK_ALLIANCE": {
@@ -190,7 +191,7 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
       base.successChance = Math.round(ceasefireChance(war, actor, target) * 100);
       effects.push(eff("Both nations", "War", "ends if accepted", "Mobilization winds down"));
       if (advantage >= TERMS_THRESHOLD) {
-        base.summary = `Sue for peace on ${tname}'s terms: they have what they wanted.`;
+        base.summary = `Sue for peace on ${possessive(tname)} terms: they have what they wanted.`;
         effects.push(
           eff("Your public", "Approval", `-${TERMS_COST.approval}`, "A humbling peace"),
           eff(
@@ -267,7 +268,7 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
       base.successChance = Math.round(
         Math.min(0.9, Math.max(0.25, 0.55 + (offensive - defensive) / 20000)) * 100,
       );
-      base.summary = `Precision airstrike on ${tname}'s ${targetType.toLowerCase()} targets.`;
+      base.summary = `Precision airstrike on ${possessive(tname)} ${targetType.toLowerCase()} targets.`;
       effects.push(eff(tname, "Relations", "-30", "An act of war in all but name"));
       effects.push(eff("Global", "Tension", "+8", ""));
       if (targetType === "NUCLEAR") {
@@ -283,7 +284,7 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
           );
         } else if (isNuclearOperational(target)) {
           risks.push(
-            `${tname}'s arsenal is already operational — hardened sites cannot be destroyed conventionally.`,
+            `${possessive(tname)} arsenal is already operational — hardened sites cannot be destroyed conventionally.`,
           );
         } else {
           risks.push("Intelligence shows no active nuclear program to strike.");
@@ -349,7 +350,7 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
         return a && isNuclearOperational(a);
       });
       if (armedAllies.length > 0)
-        risks.push(`☢ ${tname}'s nuclear-armed allies may retaliate on its behalf.`);
+        risks.push(`☢ ${possessive(tname)} nuclear-armed allies may retaliate on its behalf.`);
       risks.push("There may be no world left to rule.");
       break;
     }
@@ -401,9 +402,9 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
         INTEL_GATHER: `Run an intelligence operation against ${tname} — sharpen our picture of their true capabilities.`,
         INTEL_DESTABILIZE: `Fund opposition media, strikes and scandal in ${tname}.`,
         INTEL_SUPPORT_REBELS: `Arm and finance insurgents inside ${tname}.`,
-        INTEL_SABOTAGE: `Sabotage ${tname}'s infrastructure${target.nuclear.status === "DEVELOPING" ? " and nuclear facilities" : ""}.`,
-        INTEL_MISINFORMATION: `Feed ${tname}'s intelligence services a false picture of our capabilities.`,
-        INTEL_PROPAGANDA: `Broadcast propaganda to undermine faith in ${tname}'s government.`,
+        INTEL_SABOTAGE: `Sabotage ${possessive(tname)} infrastructure${target.nuclear.status === "DEVELOPING" ? " and nuclear facilities" : ""}.`,
+        INTEL_MISINFORMATION: `Feed ${possessive(tname)} intelligence services a false picture of our capabilities.`,
+        INTEL_PROPAGANDA: `Broadcast propaganda to undermine faith in ${possessive(tname)} government.`,
         INTEL_ASSASSINATE: `Eliminate ${target.leader.title} ${target.leader.name}.`,
         INTEL_COUP: `Back a coup faction to install a friendly government in ${tname}.`,
       };
@@ -413,7 +414,7 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
         if (!targetWeak)
           return blocked(
             base,
-            `${tname}'s leadership is too well protected (needs stability < 40 or active unrest).`,
+            `${possessive(tname)} leadership is too well protected (needs stability < 40 or active unrest).`,
           );
         effects.push(
           eff(tname, "Leadership", "eliminated if successful", "Successor may be worse"),
