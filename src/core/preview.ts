@@ -483,7 +483,17 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
       );
       effects.push(eff(actor.name, "Legitimacy", `+${lg}`, ""));
       effects.push(eff(actor.name, "Approval", "±0", "Reform wins no votes"));
-      effects.push(eff(actor.name, "Growth trend", "+0.15 pts", "Pays off slowly"));
+      const trendBase = actor.economyProfile?.growthRate ?? actor.trendGrowth ?? 0.02;
+      const headroom = Math.max(0, trendBase + 0.012 - (actor.trendGrowth ?? trendBase));
+      const lift = Math.min(headroom, 0.0015 * rk) * 100;
+      effects.push(
+        eff(
+          actor.name,
+          "Growth trend",
+          lift > 0.005 ? `+${Math.round(lift * 100) / 100} pts` : "at its ceiling",
+          lift > 0.005 ? "Pays off slowly" : "Reforms have done what they can for growth",
+        ),
+      );
       if (recentReforms > 0)
         risks.push(
           `Reform fatigue: ${Math.round(rk * 100)}% effect after ${recentReforms} recent reform${recentReforms > 1 ? "s" : ""}.`,

@@ -742,35 +742,70 @@ export function monthsUntil(
 }
 
 /**
- * A Term's statecraft bonus: end the war you inherited, or mend ties with your
- * worst-placed historical rival. Domestic management alone keeps you in office;
- * the third star needs foreign policy.
+ * A Term's statecraft bonus, designed to need active diplomacy and to be reachable:
+ * - at war: make peace and rebuild ties with the enemy (a war pins relations at -100,
+ *   so it takes a ceasefire and then courting; a war that ends by itself isn't enough);
+ * - otherwise: the most reachable real rival (relations -10 or worse, no troops massed
+ *   on that border), +30 by the end;
+ * - no real rival: a strategic partnership with a major power you are lukewarm with.
  */
 function foreignPolicyGoal(world: WorldState, player: CountryState): ObjectiveCondition {
-  const name = (id: string) => world.countries.find((c) => c.id === id)?.name ?? id;
+  const byId = (id: string) => world.countries.find((c) => c.id === id);
+  const name = (id: string) => byId(id)?.name ?? id;
+  const rel = (id: string) => Math.round(player.relations[id] ?? 0);
   const enemy = player.atWarWith[0];
-  if (enemy)
+  if (enemy) {
+    const min = Math.min(-20, rel(enemy) + 30);
     return {
-      kind: "WAR_ENDED",
-      targetId: player.id,
-      otherId: enemy,
-      label: `End the war with ${withArticle(name(enemy))}`,
+      kind: "RELATION_MIN",
+      targetId: enemy,
+      min,
+      label: `Make peace with ${withArticle(name(enemy))} and rebuild ties (relations ${rel(enemy)} → ${min}+ by the end)`,
     };
-  const rivals = (player.history.historicalRivals ?? []).filter((id) =>
-    world.countries.some((c) => c.id === id && !c.collapsed),
-  );
-  const pool = rivals.length
-    ? rivals
-    : world.countries.filter((c) => c.id !== player.id).map((c) => c.id);
-  const worst = [...pool].sort(
-    (a, b) => (player.relations[a] ?? 0) - (player.relations[b] ?? 0),
-  )[0];
-  const now = Math.round(player.relations[worst] ?? 0);
-  const min = Math.min(20, now + 30);
+  }
+  const massed = (id: string) =>
+    player.borderDeployments.some((d) => d.targetCountryId === id) ||
+    (byId(id)?.borderDeployments ?? []).some((d) => d.targetCountryId === player.id);
+  const rivals = (player.history.historicalRivals ?? []).filter((id) => {
+    const c = byId(id);
+    return c && !c.collapsed && rel(id) <= -10 && !massed(id);
+  });
+  if (rivals.length) {
+    const reachable = [...rivals].sort((a, b) => rel(b) - rel(a))[0];
+    const min = Math.min(20, rel(reachable) + 30);
+    return {
+      kind: "RELATION_MIN",
+      targetId: reachable,
+      min,
+      label: `Mend ties with ${withArticle(name(reachable))} (relations ${rel(reachable)} → ${min}+ by the end)`,
+    };
+  }
+  // Prefer natural partners (historical allies, then the sphere of influence), then major powers
+  const open = (id: string) => {
+    const c = byId(id);
+    return (
+      !!c && c.id !== player.id && !c.collapsed && !player.alliances.includes(id) && rel(id) < 60
+    );
+  };
+  const natural = [
+    ...(player.history.historicalAllies ?? []),
+    ...(player.history.sphereOfInfluence ?? []),
+  ].filter(open);
+  const powers = world.countries
+    .filter((c) => open(c.id))
+    .sort((a, b) => b.gdp - a.gdp)
+    .slice(0, 10)
+    .map((c) => c.id);
+  const pool = natural.length ? natural : powers;
+  const partnerId =
+    [...pool].sort((a, b) => Math.abs(rel(a) - 25) - Math.abs(rel(b) - 25))[0] ??
+    world.countries.find((c) => c.id !== player.id)?.id ??
+    player.id;
+  const partner = byId(partnerId) ?? player;
   return {
     kind: "RELATION_MIN",
-    targetId: worst,
-    min,
-    label: `Mend ties with ${withArticle(name(worst))} (relations ${now} → ${min}+)`,
+    targetId: partner.id,
+    min: 80,
+    label: `Build a strategic partnership with ${withArticle(name(partner.id))} (relations ${rel(partner.id)} → 80+ by the end)`,
   };
 }

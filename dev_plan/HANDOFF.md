@@ -31,7 +31,16 @@ State as of 2026-11-01:
 
 Every band is met.
 
-**Confirmation playtest (rc.1), recommend scores:** Maya 7, Priya 7, Leo 6, Dan 5. Dan's score was for rc.1. rc.2 answers his remaining points: the loop no longer earns ★★★ for free (the statecraft goal), reform is now an economic lever, courting at the maximum is refused, and pact offers are capped. A Dan-only re-check on rc.2 decides criterion 3.
+**Confirmation playtests, recommend scores:**
+- **rc.1:** Maya 7, Priya 7, Leo 6, Dan 5.
+- **rc.2 re-check:** Dan 6.
+
+Every persona is now at 6 or above (criterion 3). After Dan's rc.2 re-check, the statecraft goal was redesigned:
+- at war, make peace and rebuild ties (+30 by the end);
+- otherwise, the most *reachable* real rival;
+- with no real rival, a strategic partnership with a natural partner.
+
+So it is no longer trivial, free or impossible depending on the country. Term (24 games per seat, core five): smart 88% at 2.3★ average, the loop 83% at 1.9★, random 18%, none 0%.
 
 ## Release-candidate criteria
 

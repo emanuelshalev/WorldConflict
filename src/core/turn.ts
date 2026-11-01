@@ -1042,9 +1042,12 @@ export class TurnEngine {
           : world.mode === "TERM"
             ? "After a full term"
             : "After ten years";
+      const electoral = player.politicalSystem.electionCycleMonths > 0 && world.mode === "TERM";
       return {
         reason: "TERM_COMPLETED",
-        description: `${span} at the helm of ${withArticle(player.name)}, you are still standing. History will now judge your record.`,
+        description: electoral
+          ? `After a full term at the helm of ${withArticle(player.name)}, the voters gave you another. History will now judge your record.`
+          : `${span} at the helm of ${withArticle(player.name)}, you are still standing. History will now judge your record.`,
         turn: world.turn,
       };
     }
@@ -1119,6 +1122,10 @@ function playerHeadline(
   const decision = report.decisions[0];
   const order = report.orders.find((o) => o.ok) ?? report.orders[0];
   if (!decision && !order) return null;
+  // Routine orders (an address, a reform, a courtesy call) don't make the front page
+  const notable =
+    /^(Declare war|Airstrike|NUCLEAR|Back coup|Assassinate|Offer pact|Propose ceasefire|Mediate|Break pact|Arm rebels)/i;
+  if (!decision && !report.orders.some((o) => o.ok && notable.test(o.label))) return null;
   const headline = decision
     ? `${possessive(player.leader.name.split(" ").length <= 3 ? player.leader.name : surname).toUpperCase()} ANSWER TO ${decision.title.replace(/["“”]/g, "").toUpperCase()}: ${decision.choice.replace(" (no decision taken)", "").toUpperCase()}`
     : `${player.name.toUpperCase()}: ${order.label.toUpperCase()}${order.ok ? "" : ", BLOCKED"}`;
