@@ -1,0 +1,185 @@
+{
+  "_meta": {
+    "purpose": "The core storyline of the landing page and intro: real events, then how the game reflects them. The entries are in narrative order for a 60–90 s intro; the order is also chronological and builds to the game's start date (November 2026).",
+    "verification": "Each entry is grounded in the flashpoint's own data file (hook and debrief fields) and was cross-checked with a web search on 2026-11-01, unless verification says otherwise. The sources fields are for the owner's records; don't show outlet names on the page.",
+    "fiction": "inGameMoment describes scripted game content. Where a game scene is invented (for example a death or an attack), fictionNote says so, and the page must never present that scene as real.",
+    "quotes": "There are no quotes from real people. Don't add any.",
+    "ordering": "Leads with the biggest current stories (US–Iran war, Russia–Ukraine, Europe's cost-of-living unrest), then the other flashpoints, most recent first. Owner's direction."
+  },
+  "entries": [
+    {
+      "order": 1,
+      "date": "2026-02-28",
+      "realEvent": "US–Israeli strikes on Iran killed Supreme Leader Ali Khamenei, opening an undeclared war that later brought a US naval blockade of Iranian ports.",
+      "place": "Tehran, Iran",
+      "countries": [
+        "USA",
+        "ISR",
+        "IRN"
+      ],
+      "flashpointId": "hormuz-convoy",
+      "inGameMoment": "Week of the US midterms: 'Three days to the midterms: tanker ablaze off Fujairah' ('The midterm clock'). Later, satellites show trucks at the Isfahan tunnel portals ('Isfahan's tunnels'). Iran's side faces 'The weapon in the tunnels'. US mission: 'Open the strait' and Iran never tests a bomb.",
+      "gameVisual": "Nuclear map layer with Iran's estimate range visible, cutting to the crisis card 'Isfahan's tunnels'.",
+      "fictionNote": "The tanker strike and the Isfahan satellite images are scenario events.",
+      "verification": "Web-verified (Khamenei killed 28 Feb 2026, confirmed by Iranian state media). The blockade from 13 Apr comes from the game hook and was not separately searched.",
+      "sources": [
+        "https://en.wikipedia.org/wiki/2026_Iran_war",
+        "https://www.cfr.org/article/united-states-blockades-strait-of-hormuz-after-u-s-iran-talks"
+      ]
+    },
+    {
+      "order": 2,
+      "date": "2026-10-27",
+      "realEvent": "Nearly five years into Russia's full-scale invasion, the front barely moves: Russia gained little ground all year, Ukraine faces another blackout winter, and the only truce is a US-brokered local ceasefire around occupied Oleshky (from 27 October), while Moscow still demands all of Donetsk.",
+      "place": "Ukraine: the front line, Kherson region and Kyiv",
+      "countries": [
+        "UKR",
+        "RUS",
+        "USA"
+      ],
+      "flashpointId": "ceasefire-or-collapse",
+      "inGameMoment": "Month 1, 'The free economic zone': Washington floats a zone in Donetsk, and Kyiv chooses to accept in principle, demand a referendum, or reject it and strike. If the war is still on in month 11: 'The signing table'. Russia plays 'Victory on paper'; the US plays 'The dealmaker'.",
+      "gameVisual": "The desk with 'The free economic zone' (docs/images/desk.jpg composition), then Execute, then the Chronicle headline naming the choice. Close on the end-screen verdict and stars.",
+      "fictionNote": null,
+      "verification": "Web-verified (in effect from 27 Oct 2026; one report says it was due to run to 1 Nov). Note that the game hook says '27–29 Oct', so the dev may want to align it.",
+      "sources": [
+        "https://www.khaleejtimes.com/europe/russia-ukraine-hold-peace-talks-nov-2026-ceasefire-oleshky"
+      ]
+    },
+    {
+      "date": "2026-10-31",
+      "realEvent": "A cost-of-living revolt spreads across Europe: around 320,000 march in France (Interior Ministry count; organisers say nearly 500,000), unions call a general strike for 5 November, Italy holds a general strike and police clash with protesters in Hamburg and Zurich.",
+      "place": "France, Italy, Germany, Switzerland, Ireland",
+      "countries": [
+        "FRA",
+        "ITA",
+        "DEU",
+        "CHE",
+        "IRL"
+      ],
+      "flashpointId": null,
+      "mode": "TERM",
+      "inGameMoment": "One Term as France or Germany: the crisis card 'General strike paralyses France' lands on the desk. Meet their demands, break the strike, or ride it out, while approval and stability slide and the election clock runs.",
+      "gameVisual": "One Term (France): the 'General strike' crisis card with its Approval/Stability arrows, then the Stability map layer over Europe and the HUD approval ticking down; the Chronicle headline 'General strike paralyses France'.",
+      "sources": [
+        "https://en.wikipedia.org/wiki/2026_European_unrest",
+        "https://english.news.cn/europe/20261101/7d9934f3b1b6400ca4c0080ba7511603/c.html"
+      ],
+      "verification": "Crowd figures differ by source; the Interior Ministry figure is used.",
+      "order": 3
+    },
+    {
+      "order": 4,
+      "date": "2025-12-29",
+      "realEvent": "China's two-day 'Justice Mission-2025' exercise rehearsed sealing off Taiwan's main ports of Keelung and Kaohsiung, days after a record US arms package for Taipei.",
+      "place": "Taiwan Strait",
+      "countries": [
+        "CHN",
+        "TWN",
+        "USA"
+      ],
+      "flashpointId": "quarantine",
+      "inGameMoment": "December 2026: the China Coast Guard begins 'customs inspections' of Taiwan-bound shipping. Taiwan's mission is 'Eleven days of gas': never fire the first shot. In month 3, LNG reserves fall to eight days ('Keeping the lights on'); in month 9, warning shots cross a frigate's bow ('The first shot').",
+      "gameVisual": "Crisis card 'The first shot' with its three options; then the Military map layer showing the Strait.",
+      "fictionNote": "The quarantine, the Penghu boarding and the warning shots are scenario fiction.",
+      "verification": "Web-verified (29–30 Dec 2025, focused on Keelung and Kaohsiung). The '11 days of LNG' figure is reported in the game hook as 'reportedly' and was not independently verified.",
+      "sources": [
+        "https://focustaiwan.tw/politics/202512300008"
+      ]
+    },
+    {
+      "order": 5,
+      "date": "2026-01-03",
+      "realEvent": "A US military raid on Caracas captured Nicolás Maduro, who was flown to New York to face federal charges; Delcy Rodríguez was sworn in as acting president two days later.",
+      "place": "Caracas, Venezuela",
+      "countries": [
+        "USA",
+        "VEN",
+        "CUB"
+      ],
+      "flashpointId": "caracas-after-maduro",
+      "inGameMoment": "Ten months into the improvised transition. As Venezuela: 'Machado comes home' (arrest her, let her rally, or offer a ministry), then 'The election date' in month 11. As Cuba: 'Lights out'. As the US: 'Regime change, without the change'.",
+      "gameVisual": "World Chronicle front page after 'The election date' decision, so the headline names the player's choice.",
+      "fictionNote": null,
+      "verification": "Web-verified (raid on 3 Jan 2026; most sources date the oath to 5 Jan).",
+      "sources": [
+        "https://en.wikipedia.org/wiki/2026_in_Venezuela",
+        "https://www.pbs.org/newshour/world/who-is-delcy-rodriguez-venezuelas-interim-president-after-maduros-ouster"
+      ]
+    },
+    {
+      "order": 6,
+      "date": "2026-09-10",
+      "realEvent": "Houthi forces seized the Red Sea port of Mokha, about 80 km north of the Bab al-Mandab strait, according to Yemeni government and military sources.",
+      "place": "Mokha, Yemen",
+      "countries": [
+        "YEM",
+        "SAU",
+        "ARE"
+      ],
+      "flashpointId": "bab-al-mandab-burning",
+      "inGameMoment": "As Saudi Arabia: 'Answering Riyadh airport', then 'The island in the strait' (storm Perim, starve it, or neutralise it at the table) and finally 'Paying for peace'. As the Houthis: 'Holding Mokha'. As the UAE: 'Standoff on Socotra'.",
+      "gameVisual": "World drawer war list (Yemen–Saudi Arabia front line), then the crisis card 'The island in the strait'.",
+      "fictionNote": "Don't state as fact that Perim was taken: it was reported but not independently confirmed.",
+      "verification": "Web-verified (10 Sep 2026, multiple outlets; one government-side report disputed the capture). The Riyadh airport strike in the game hook (10 Oct) was not verified, so don't use it on a card.",
+      "sources": [
+        "https://euronews.com/2026/09/10/houthis-seize-red-sea-port-city-in-push-to-seize-bab-el-mandeb"
+      ]
+    },
+    {
+      "order": 7,
+      "date": "2026-07-23",
+      "realEvent": "China's coast guard turned water cannon on Philippine government vessels at Scarborough Shoal, and did so again the next day, according to Manila.",
+      "place": "Scarborough Shoal, South China Sea",
+      "countries": [
+        "CHN",
+        "PHL",
+        "USA"
+      ],
+      "flashpointId": "scarborough-line",
+      "inGameMoment": "Month 1, 'Death at Scarborough': the player chooses to invoke the 1951 treaty, file a second arbitration, or call Beijing quietly. Playing China: 'How fast to pour', with dredgers in the lagoon; by month 8, 'The runway'.",
+      "gameVisual": "Crisis card 'Death at Scarborough', with the US relations objective ticking in the mission chip ('The treaty means something').",
+      "fictionNote": "The sailor's death, the dredging and the runway are fiction. The page must say the real incidents stopped short of lethal force.",
+      "verification": "Web-verified (23 and 24 Jul 2026, Philippine Coast Guard account; China says it 'drove away' the vessels).",
+      "sources": [
+        "https://www.thejakartapost.com/world/2026/07/23/china-fires-water-cannon-on-philippine-ship-at-scarborough-shoal-manila-says"
+      ]
+    },
+    {
+      "order": 8,
+      "date": "2025-10-26",
+      "realEvent": "After an 18-month siege, the Rapid Support Forces took El Fasher, the Sudanese army's last stronghold in Darfur, amid widely reported atrocities against civilians.",
+      "place": "El Fasher, North Darfur, Sudan",
+      "countries": [
+        "SDN"
+      ],
+      "flashpointId": "fire-on-the-nile",
+      "inGameMoment": "Playing Sudan's army government from Port Sudan, with El Obeid besieged: the card 'The siege of El Obeid' (the last road is cut) offers a relief offensive, an ICRC civilian corridor, or arming militias. The mission is 'Hold the centre'. Cairo can play too ('Air cover for Burhan').",
+      "gameVisual": "Mission chip 'Hold the centre' beside the Stability map layer over Sudan, then the crisis card 'The siege of El Obeid'. Use no casualty figures and no imagery of people.",
+      "fictionNote": null,
+      "verification": "Web-verified (RSF capture on 26 Oct 2025; airport on 27 Oct). Keep the atrocity wording general, because casualty counts differ by source.",
+      "sources": [
+        "https://en.wikipedia.org/wiki/2026_in_Sudan",
+        "https://www.aljazeera.com/news/2026/7/6/el-obeid-under-siege-by-rsf-could-this-be-sudans-next-el-fasher"
+      ]
+    },
+    {
+      "order": 9,
+      "date": "2025-05-07",
+      "realEvent": "Two weeks after the Pahalgam attack, India struck targets in Pakistan; four days of drone, missile and air-base strikes between the two nuclear-armed neighbours ended in a ceasefire on 10 May.",
+      "place": "Kashmir and Punjab, India–Pakistan border",
+      "countries": [
+        "IND",
+        "PAK"
+      ],
+      "flashpointId": "water-war",
+      "inGameMoment": "November 2026, with the Indus Waters Treaty in abeyance. India's engineers are ready to hold back the Chenab ('Close the gates'); playing Pakistan, the river drops by a third at Marala and the card reads 'The river is the red line'. The mission is to restore deterrence (India) or to deter on two fronts (Pakistan), with no full-scale war.",
+      "gameVisual": "Desk crisis card 'The river is the red line' (Pakistan, month 3), zoomed on the title and the Tension ▲▲ arrows; the map is centred on the Indus basin.",
+      "fictionNote": "The scenario's opening attack on pilgrims near Jammu is fictional. Don't use it as a real-event card.",
+      "verification": "Widely reported in 2025 and matches the water-war debrief. Use the dates 22 Apr (Pahalgam), 7 May (strikes) and 10 May (ceasefire).",
+      "sources": [
+        "https://www.isas.nus.edu.sg/papers/the-indus-waters-treaty-india-pakistan-tensions-persist/"
+      ]
+    }
+  ]
+}
