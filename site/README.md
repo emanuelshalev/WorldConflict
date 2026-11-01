@@ -15,8 +15,16 @@ Opening `site/index.html` directly from disk also works. Browsers block `fetch()
 
 - **Parallels (intro wall + timeline):** `content/parallels.json` is the source of truth, in its `order`. The footage, short wall line and game caption for each entry are in the `MEDIA` table at the top of `main.js`, keyed by `flashpointId` (`europe-unrest` for the One Term France entry). After editing the JSON, refresh the `file://` fallback with `node site/tools/embed-parallels.mjs` (optional when served over HTTP).
 - **Page copy:** written straight into `index.html`, taken from `content/copy.md`.
-- **Play links:** every "Take office" button has the class `js-play` and points at the GitHub repo for now. Replace the `href`s with the hosted build URL when there is one (and `js-daily` with the Daily Flashpoint URL).
-- **OG image:** `assets/og-image.jpg` (1200×630). For correct previews on social sites, change the `og:image` and `twitter:image` URLs to absolute URLs once the domain is known.
+- **Launch config:** one object at the top of `main.js`:
+
+  ```js
+  const SITE = { playUrl: null, dailyUrl: null, repoUrl: null, siteUrl: null };
+  ```
+
+  While `playUrl` is `null`, every CTA reads **Coming soon** and **Watch the intro** is the active action. Set `playUrl` to the hosted game and the CTAs become **Take office ▸** links (plus "Try today's Daily Flashpoint", using `dailyUrl` or `playUrl`). Set `repoUrl` to show "Follow development" / "Source on GitHub".
+- **OG image:** `assets/og-image.jpg` (1200×630). Crawlers need an absolute URL: at deploy time edit the `og:image` and `twitter:image` tags in `index.html` (marked with a `SITE_URL` comment) to `https://USER.github.io/REPO/assets/og-image.jpg`, and set `SITE.siteUrl` to the same base.
+
+All asset paths are relative, so the page works under a GitHub Pages project path (`https://USER.github.io/REPO/`).
 
 ## Deploy
 

@@ -6,8 +6,42 @@
  * To add or swap a parallel, edit the JSON and add a MEDIA entry with the same key
  * (the entry's flashpointId, or "europe-unrest" style keys for entries without one).
  */
+// ---------------------------------------------------------------------------
+// SITE CONFIG: the only values to edit before/after launch.
+//  playUrl  - the hosted game. While null, every "Take office" CTA shows "Coming soon".
+//             Set it and the CTAs become "Take office ▸" links automatically.
+//  dailyUrl - optional Daily Flashpoint link (falls back to playUrl when playUrl is set).
+//  repoUrl  - optional "Follow development" / "Source on GitHub" link (hidden while null),
+//             e.g. 'https://github.com/emanuelshalev/WorldConflict'.
+//  siteUrl  - the deployed base URL, e.g. 'https://USER.github.io/REPO/'. Used to make the
+//             og:image / twitter:image absolute for in-browser sharing; crawlers read the
+//             static tags, so also edit those in index.html (see the SITE_URL comment).
+// ---------------------------------------------------------------------------
+const SITE = { playUrl: null, dailyUrl: null, repoUrl: null, siteUrl: null };
+
 (() => {
   'use strict';
+
+  // Apply SITE config to CTAs and meta tags.
+  (function applySiteConfig() {
+    if (SITE.playUrl) {
+      document.querySelectorAll('.js-play').forEach((el) => {
+        const a = document.createElement('a');
+        a.className = el.className.replace('btn-soon', 'btn-primary');
+        a.href = SITE.playUrl;
+        a.textContent = el.dataset.label || 'Take office';
+        el.replaceWith(a);
+      });
+      document.querySelectorAll('.js-watch').forEach((b) => b.classList.replace('btn-primary', 'btn-ghost'));
+    }
+    const daily = SITE.dailyUrl || SITE.playUrl;
+    document.querySelectorAll('.js-daily').forEach((a) => { if (daily) { a.href = daily; a.hidden = false; } });
+    document.querySelectorAll('.js-repo').forEach((a) => { if (SITE.repoUrl) { a.href = SITE.repoUrl; a.hidden = false; } });
+    if (SITE.siteUrl) {
+      const abs = new URL('assets/og-image.jpg', SITE.siteUrl).href;
+      document.querySelectorAll('meta[property="og:image"], meta[name="twitter:image"]').forEach((m) => m.setAttribute('content', abs));
+    }
+  })();
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const saveData = !!(navigator.connection && navigator.connection.saveData);
@@ -334,11 +368,14 @@
 
   document.getElementById('skipIntro').addEventListener('click', () => {
     endIntro();
-    document.querySelector('#heroCopy .btn-primary').focus({ preventScroll: true });
+    document.querySelector('#heroCopy .js-watch, #heroCopy .btn-primary').focus({ preventScroll: true });
   });
-  document.getElementById('replayIntro').addEventListener('click', () => { window.scrollTo({ top: 0 }); runIntro(); });
-  // Escape skips; so does the first Tab, so keyboard users never land on hidden controls.
-  window.addEventListener('keydown', (e) => { if ((e.key === 'Escape' || e.key === 'Tab') && !hero.classList.contains('ended')) endIntro(); });
+  document.querySelectorAll('.js-watch').forEach((b) => b.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    runIntro();
+    document.getElementById('skipIntro').focus({ preventScroll: true });
+  }));
+  window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !hero.classList.contains('ended')) endIntro(); });
 
   // Stop the intro (and its videos) once the hero leaves the screen.
   new IntersectionObserver(([en]) => {
@@ -590,7 +627,7 @@
     ENTRIES = (data.entries || []).slice().sort((a, b) => (a.order ?? 99) - (b.order ?? 99));
     buildTimeline(ENTRIES);
     buildWall(ENTRIES);
-    if (reduceMotion) { document.getElementById('replayIntro').hidden = true; endIntro(); } else runIntro();
+    if (reduceMotion) { document.querySelectorAll('.js-watch').forEach((b) => { b.hidden = true; }); endIntro(); } else runIntro();
     setupScrollFx();
   });
 })();

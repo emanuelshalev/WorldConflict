@@ -13,6 +13,8 @@
   <meta property="og:type" content="website" />
   <meta property="og:title" content="World Conflict: the crises are real. The next move is yours." />
   <meta property="og:description" content="A turn-based geopolitical strategy game set in November 2026. Eight real flashpoints, 41 nations, and nobody sees the whole truth." />
+  <!-- SITE_URL: social crawlers need ABSOLUTE image URLs. At deploy time replace "assets/og-image.jpg" in og:image and twitter:image
+       with e.g. https://USER.github.io/REPO/assets/og-image.jpg (and set SITE.siteUrl in main.js to the same base). -->
   <meta property="og:image" content="assets/og-image.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
@@ -43,7 +45,7 @@
       <a href="#realism">Realism</a>
       <a href="#gallery">Gallery</a>
     </nav>
-    <a class="btn btn-primary btn-sm js-play" href="https://github.com/emanuelshalev/WorldConflict">Take office</a>
+    <span class="btn btn-soon btn-sm js-play" data-label="Take office" aria-disabled="true">Coming soon</span>
   </header>
 
   <!-- ============ HERO: the newsroom wall ============ -->
@@ -62,10 +64,11 @@
       <h1 id="hero-title" class="glitch" data-text="The crises are real. The next move is yours.">The crises are real. The next move is yours.</h1>
       <p class="hero-sub">Lead one of 41 nations through the world as it stands today: Hormuz, the Taiwan Strait, the Red Sea, the Ukraine front. Every other government acts on its own history, red lines and half-wrong intelligence about you. Each month a crisis lands on your desk. You decide. Then the world answers.</p>
       <div class="cta-row">
-        <a class="btn btn-primary btn-lg js-play" href="https://github.com/emanuelshalev/WorldConflict">Take office&nbsp;▸</a>
-        <button class="btn btn-ghost btn-lg" id="replayIntro" type="button">↻ Replay the intro</button>
+        <span class="btn btn-soon btn-lg js-play" data-label="Take office ▸" aria-disabled="true">Coming soon</span>
+        <button class="btn btn-primary btn-lg js-watch" id="replayIntro" type="button">▶ Watch the intro</button>
+        <a class="btn btn-ghost btn-lg js-repo" href="#" hidden>Follow development</a>
       </div>
-      <p class="fine">No account. No API key. A Flashpoint takes 10–15 minutes.</p>
+      <p class="fine">In development. No account, no API key, and a Flashpoint takes 10–15 minutes.</p>
     </div>
 
     <div class="intro-controls">
@@ -244,10 +247,12 @@
         <h2 id="cta-title" class="glitch" data-text="The world is waiting.">The world is waiting.</h2>
         <p class="lede">Eight flashpoints. 41 nations. One month at a time.</p>
         <div class="cta-row center">
-          <a class="btn btn-primary btn-lg js-play" href="https://github.com/emanuelshalev/WorldConflict">Take office&nbsp;▸</a>
-          <a class="btn btn-ghost btn-lg js-daily" href="https://github.com/emanuelshalev/WorldConflict">Try today's Daily Flashpoint</a>
+          <span class="btn btn-soon btn-lg js-play" data-label="Take office ▸" aria-disabled="true">Coming soon</span>
+          <button class="btn btn-primary btn-lg js-watch" type="button">▶ Watch the intro</button>
+          <a class="btn btn-ghost btn-lg js-daily" href="#" hidden>Try today's Daily Flashpoint</a>
+          <a class="btn btn-ghost btn-lg js-repo" href="#" hidden>Follow development</a>
         </div>
-        <p class="fine">Free and open source. Runs offline with algorithmic leaders; bring your own LLM key if you want one.</p>
+        <p class="fine">In development. Runs offline with algorithmic leaders; bring your own LLM key if you want one.</p>
       </div>
     </section>
   </main>
@@ -259,7 +264,7 @@
         <p class="disclaimer">World Conflict is a work of fiction and a political simulation. It draws on public reporting up to October 2026 and portrays real public figures in an alternate history. Their in-game words and decisions are invented and imply no endorsement. It is not affiliated with any government, leader or news organisation.</p>
       </div>
       <div class="foot-links">
-        <a href="https://github.com/emanuelshalev/WorldConflict">Source on GitHub</a>
+        <a class="js-repo" href="#" hidden>Source on GitHub</a>
         <a href="CREDITS.md">Credits</a>
         <p class="fine">Locator maps made with Natural Earth. Borders shown are not an endorsement.</p>
       </div>
