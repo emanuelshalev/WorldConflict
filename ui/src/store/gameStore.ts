@@ -172,8 +172,8 @@ export interface ConditionStatus {
 
 export interface TurnReport {
   turn: number;
-  orders: Array<{ label: string; ok: boolean; detail: string }>;
-  decisions: Array<{ title: string; choice: string }>;
+  orders: Array<{ label: string; ok: boolean; detail: string; type?: string; target?: string }>;
+  decisions: Array<{ title: string; choice: string; templateId?: string }>;
   deltas: Record<string, { before: number; after: number }>;
   causes: string[];
   moments: string[];

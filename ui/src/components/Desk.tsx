@@ -13,6 +13,10 @@ import {
 } from '../store/gameStore';
 import { ADVISOR_NAMES, arrowText, effectArrows, flag } from '../lib/format';
 import { pcCost } from '../lib/actions';
+import { SceneFrame } from '../scenes/SceneFrame';
+import { sceneForAction, sceneForCrisis } from '../scenes/kinds';
+import { ActionIcon } from '../scenes/icons';
+import { actionFamily } from '../scenes/actionIcons';
 
 
 
@@ -69,16 +73,22 @@ function CrisisCard({ decision }: { decision: PendingDecision }) {
   const chosen = choices[decision.id];
   const objective = useGameStore((s) => s.worldState?.objective);
   const existential = decision.urgency === 'EXISTENTIAL';
+  const home = useGameStore((s) => s.worldState?.playerCountryId);
   return (
     <div className={`crisis ${existential ? 'existential' : ''}`}>
-      <div className="stamp">
-        {existential ? '⚠ EXISTENTIAL · EYES ONLY' : 'CRISIS · EYES ONLY'}{' '}
-        {decision.affectedCountries
+      <SceneFrame
+        kind={sceneForCrisis(decision.templateId, decision.title, decision.situation)}
+        home={home}
+        other={decision.affectedCountries.find((id) => id !== home)}
+        mood={existential || decision.urgency === 'URGENT' ? 'bad' : 'neutral'}
+        size="card"
+        kicker={`${existential ? 'Existential' : decision.urgency === 'URGENT' ? 'Urgent' : 'Crisis'} ${decision.affectedCountries
           .slice(0, 3)
           .map((id) => flag(id))
-          .join(' ')}
-      </div>
-      <h4>{decision.title}</h4>
+          .join(' ')}`}
+        headline={decision.title}
+      />
+      <h4 className="sr-only">{decision.title}</h4>
       <p className="situation">{decision.situation}</p>
       <div className="options">
         {decision.options.map((o) => (
@@ -333,6 +343,7 @@ export function Desk() {
   const isLoading = useGameStore((s) => s.isLoading);
   const gameOver = useGameStore((s) => s.gameOver);
   const suggestions = useSuggestions();
+  const home = world?.playerCountryId;
   // A fresh month ignores Execute briefly, so a double-click can't skip a month unseen
   const advancedAt = useRef(0);
   const turnNow = world?.turn ?? -1;
@@ -408,8 +419,11 @@ export function Desk() {
                 .filter((s) => !pendingActions.some((a) => a.type === s.action.type && a.targetCountryId === s.action.targetCountryId))
                 .slice(0, 3)
                 .map((s) => (
-                <button key={s.label} className="suggestion" onClick={() => add(s.action)} disabled={pcCost(s.action.type) > pcLeft}>
-                  <div className="who">{s.who}</div>
+                <button key={s.label} className={`suggestion fam-${actionFamily(s.action.type)}`} onClick={() => add(s.action)} disabled={pcCost(s.action.type) > pcLeft}>
+                  <SceneFrame kind={sceneForAction(s.action.type)} home={home} other={s.action.targetCountryId} size="thumb" />
+                  <div className="who">
+                    <ActionIcon type={s.action.type} size={14} /> {s.who}
+                  </div>
                   <b>
                     {s.label} <span className="num" style={{ color: 'var(--accent)', fontSize: 11 }}>{pcCost(s.action.type) ? `◆${pcCost(s.action.type)}` : 'free'}</span>
                   </b>
@@ -449,6 +463,7 @@ export function Desk() {
                             disabled={needs || pcCost(o.type) > pcLeft}
                             onClick={() => add({ type: o.type, label, targetCountryId: o.target ? effectiveTarget : undefined, params: o.params })}
                           >
+                            <ActionIcon type={o.type} size={15} />
                             {label}
                             <span className="num" style={{ fontSize: 10.5, color: 'var(--accent)' }}>{pcCost(o.type) ? `◆${pcCost(o.type)}` : ''}</span>
                           </button>
@@ -464,6 +479,7 @@ export function Desk() {
               {pendingActions.length === 0 && <span style={{ fontSize: 12, color: 'var(--text-3)' }}>No orders yet, pick a suggestion, or just execute the month.</span>}
               {pendingActions.map((a, i) => (
                 <span key={`${a.label}-${i}`} className={`order-pill ${a.preview && (!a.preview.affordable || a.preview.missionWarning) ? 'blocked' : ''}`} title={a.preview?.missionWarning ?? a.preview?.summary}>
+                  <ActionIcon type={a.type} size={14} />
                   {a.label}
                   {a.preview?.successChance != null && <span className="num" style={{ fontSize: 11, color: 'var(--text-2)' }}>{Math.round(a.preview.successChance <= 1 ? a.preview.successChance * 100 : a.preview.successChance)}%</span>}
                   <button onClick={() => removePendingAction(i)} aria-label="Remove order">

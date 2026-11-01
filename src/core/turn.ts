@@ -158,7 +158,7 @@ export class TurnEngine {
               : null;
           if (reason) {
             push(rejectedActions, actor.id, { action, reason });
-            report.orders.push({ label: orderLabel(world, action), ok: false, detail: reason });
+            report.orders.push({ ...orderTag(world, action), ok: false, detail: reason });
             continue;
           }
           ordered.add(key);
@@ -172,7 +172,7 @@ export class TurnEngine {
           push(rejectedActions, actor.id, { action, reason: "Invalid order value" });
           if (isPlayer)
             report.orders.push({
-              label: orderLabel(world, action),
+              ...orderTag(world, action),
               ok: false,
               detail: "Invalid order value",
             });
@@ -184,13 +184,13 @@ export class TurnEngine {
         if (isPlayer && !injected.has(action) && cost > budgetLeft) {
           const reason = `Insufficient defense budget ($${Math.round(budgetLeft)}M left, needs $${cost}M)`;
           push(rejectedActions, actor.id, { action, reason });
-          report.orders.push({ label: orderLabel(world, action), ok: false, detail: reason });
+          report.orders.push({ ...orderTag(world, action), ok: false, detail: reason });
           continue;
         }
         if (pc > world.politicalCapital) {
           const reason = `Not enough political capital (${world.politicalCapital} left, needs ${pc})`;
           push(rejectedActions, actor.id, { action, reason });
-          report.orders.push({ label: orderLabel(world, action), ok: false, detail: reason });
+          report.orders.push({ ...orderTag(world, action), ok: false, detail: reason });
           continue;
         }
         const hitsPlayer =
@@ -247,7 +247,7 @@ export class TurnEngine {
         if (isPlayer && !injected.has(action)) {
           const covert = outcome.covert;
           report.orders.push({
-            label: orderLabel(world, action),
+            ...orderTag(world, action),
             ok: covert ? covert.success : outcome.ok,
             detail: covert
               ? `${covert.success ? "Success" : "Failed"}: ${outcome.reason}`
@@ -453,6 +453,7 @@ export class TurnEngine {
       this.report?.decisions.push({
         title: pending.title,
         choice: byDefault ? `${option.label} (no decision taken)` : option.label,
+        templateId: pending.templateId,
       });
       world.pendingDecisions = world.pendingDecisions.filter((d) => d.id !== pending.id);
     }
@@ -1108,6 +1109,15 @@ export function orderLabel(world: WorldState, action: Action): string {
     return `${(action.params?.tactic as string) === "HARD" ? "Hard" : "Soft"} policing`;
   }
   return target ? `${verb} ${target}` : verb;
+}
+
+/** Label plus the action type and target, so the UI can stage the right scene. */
+function orderTag(world: WorldState, action: Action) {
+  return {
+    label: orderLabel(world, action),
+    type: action.type,
+    ...(action.targetCountryId ? { target: action.targetCountryId } : {}),
+  };
 }
 
 function playerHeadline(

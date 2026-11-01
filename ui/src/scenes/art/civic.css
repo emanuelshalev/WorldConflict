@@ -1,0 +1,119 @@
+/* Civic scenes: cabinet, tv_interview, press, address, exec_order, signing, summit.
+   Every class and keyframe is prefixed with its kind so groups never clash. */
+.art-cabinet [class],
+.art-tv_interview [class],
+.art-press [class],
+.art-address [class],
+.art-exec_order [class],
+.art-signing [class],
+.art-summit [class] {
+  transform-box: fill-box;
+}
+
+/* ---------- cabinet ---------- */
+.art-cabinet .cab-pulse { animation: cabinet-pulse 7s ease-in-out infinite; }
+.art-cabinet .cab-scan { animation: cabinet-scan 5s linear infinite; transform-origin: center; }
+.art-cabinet .cab-line { stroke-dasharray: 160; animation: cabinet-line 9s ease-out infinite; }
+.art-cabinet .cab-bob { animation: cabinet-bob 7s ease-in-out infinite; transform-origin: center bottom; }
+.art-cabinet .cab-flag { animation: cabinet-flag 6s ease-in-out infinite; transform-origin: left top; }
+.art-cabinet .cab-blip { animation: cabinet-blip 2.4s ease-in-out infinite; transform-origin: center; }
+@keyframes cabinet-pulse { 0%, 100% { opacity: 0.8; } 45% { opacity: 1; } 52% { opacity: 0.9; } }
+@keyframes cabinet-scan { from { transform: translateY(-30px); } to { transform: translateY(90px); } }
+@keyframes cabinet-line { 0% { stroke-dashoffset: 160; } 55%, 100% { stroke-dashoffset: 0; } }
+@keyframes cabinet-bob { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-1.2px) rotate(0.6deg); } }
+@keyframes cabinet-flag { 0%, 100% { transform: skewY(0deg) scaleX(1); } 50% { transform: skewY(2deg) scaleX(0.97); } }
+@keyframes cabinet-blip { 0%, 100% { opacity: 0.3; transform: scale(0.7); } 50% { opacity: 1; transform: scale(1.2); } }
+
+/* ---------- tv_interview ---------- */
+.art-tv_interview .tv-tally { animation: tv_interview-tally 1.6s steps(1) infinite; }
+.art-tv_interview .tv-globe { animation: tv_interview-globe 12s linear infinite; transform-origin: center; }
+.art-tv_interview .tv-sweep { animation: tv_interview-sweep 11s ease-in-out infinite; transform-origin: center top; }
+.art-tv_interview .tv-nod { animation: tv_interview-nod 5s ease-in-out infinite; transform-origin: center bottom; }
+.art-tv_interview .tv-twinkle { animation: tv_interview-twinkle 4s ease-in-out infinite; }
+.art-tv_interview .tv-crawl { animation: tv_interview-crawl 14s linear infinite; }
+@keyframes tv_interview-tally { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+@keyframes tv_interview-globe { 0% { transform: scaleX(1); } 25% { transform: scaleX(0.15); } 50% { transform: scaleX(-1); } 75% { transform: scaleX(-0.15); } 100% { transform: scaleX(1); } }
+@keyframes tv_interview-sweep { 0%, 100% { transform: rotate(-7deg); } 50% { transform: rotate(7deg); } }
+@keyframes tv_interview-nod { 0%, 100% { transform: rotate(0); } 40% { transform: rotate(2.5deg); } 60% { transform: rotate(-1deg); } }
+@keyframes tv_interview-twinkle { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+@keyframes tv_interview-crawl { from { transform: translateX(0); } to { transform: translateX(-260px); } }
+
+/* ---------- press ---------- */
+.art-press .press-flash { opacity: 0; animation: press-flash 3.7s ease-out infinite; transform-origin: center; }
+.art-press .press-hand { animation: press-hand 4.5s ease-in-out infinite; transform-origin: center bottom; }
+.art-press .press-flag { animation: press-flag 7s ease-in-out infinite; transform-origin: left top; }
+.art-press .press-sway { animation: press-sway 6s ease-in-out infinite; transform-origin: center bottom; }
+.art-press .press-beam { animation: press-beam 8s ease-in-out infinite; }
+@keyframes press-flash { 0%, 100% { opacity: 0; transform: scale(0.4); } 3% { opacity: 1; transform: scale(1.15); } 9% { opacity: 0; transform: scale(0.9); } }
+@keyframes press-hand { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-5px) rotate(4deg); } }
+@keyframes press-flag { 0%, 100% { transform: skewY(0) scaleX(1); } 50% { transform: skewY(1.6deg) scaleX(0.97); } }
+@keyframes press-sway { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(1.4deg); } 70% { transform: rotate(-1.2deg); } }
+@keyframes press-beam { 0%, 100% { opacity: 0.75; } 50% { opacity: 1; } }
+
+/* ---------- address ---------- */
+.art-address .addr-tally { animation: address-tally 2s steps(1) infinite; }
+.art-address .addr-glint { animation: address-glint 9s ease-in-out infinite; }
+.art-address .addr-flag { animation: address-flag 8s ease-in-out infinite; transform-origin: left top; }
+.art-address .addr-breathe { animation: address-breathe 6s ease-in-out infinite; transform-origin: center bottom; }
+.art-address .addr-scroll { animation: address-scroll 10s linear infinite; }
+.art-address .addr-city { animation: address-city 5s ease-in-out infinite; }
+@keyframes address-tally { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+@keyframes address-glint { 0%, 100% { transform: translateX(-30px); opacity: 0; } 40% { opacity: 0.9; } 60% { transform: translateX(40px); opacity: 0; } }
+@keyframes address-flag { 0%, 100% { transform: skewY(0) scaleX(1); } 50% { transform: skewY(1.5deg) scaleX(0.97); } }
+@keyframes address-breathe { 0%, 100% { transform: scaleY(1) rotate(0); } 50% { transform: scaleY(1.012) rotate(0.5deg); } }
+@keyframes address-scroll { from { transform: translateY(0); } to { transform: translateY(-24px); } }
+@keyframes address-city { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+/* ---------- exec_order ---------- */
+.art-exec_order .exec-pen { animation: exec_order-pen 3.2s ease-in-out infinite; }
+.art-exec_order .exec-sign { stroke-dasharray: 90; animation: exec_order-sign 6.4s ease-in-out infinite; }
+.art-exec_order .exec-flash { opacity: 0; animation: exec_order-flash 4.3s ease-out infinite; transform-origin: center; }
+.art-exec_order .exec-flag { animation: exec_order-flag 7s ease-in-out infinite; transform-origin: left top; }
+.art-exec_order .exec-bob { animation: exec_order-bob 6s ease-in-out infinite; transform-origin: center bottom; }
+@keyframes exec_order-pen {
+  0%, 100% { transform: translate(-22px, 0) rotate(0); }
+  20% { transform: translate(-12px, -3px) rotate(-3deg); }
+  40% { transform: translate(-4px, 2px) rotate(2deg); }
+  60% { transform: translate(6px, -2px) rotate(-2deg); }
+  80% { transform: translate(14px, 1px) rotate(1deg); }
+}
+@keyframes exec_order-sign { 0%, 8% { stroke-dashoffset: 90; } 50%, 85% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 90; } }
+@keyframes exec_order-flash { 0%, 100% { opacity: 0; transform: scale(0.4); } 3% { opacity: 1; transform: scale(1.1); } 10% { opacity: 0; } }
+@keyframes exec_order-flag { 0%, 100% { transform: skewY(0) scaleX(1); } 50% { transform: skewY(1.5deg) scaleX(0.97); } }
+@keyframes exec_order-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.2px) rotate(0.5deg); } }
+
+/* ---------- signing ---------- */
+.art-signing .sign-pen { animation: signing-pen 3s ease-in-out infinite; }
+.art-signing .sign-flash { opacity: 0; animation: signing-flash 3.9s ease-out infinite; transform-origin: center; }
+.art-signing .sign-flag { animation: signing-flag 7s ease-in-out infinite; transform-origin: left top; }
+.art-signing .sign-bob { animation: signing-bob 6s ease-in-out infinite; transform-origin: center bottom; }
+.art-signing .sign-glow { animation: signing-glow 8s ease-in-out infinite; }
+@keyframes signing-pen { 0%, 100% { transform: translate(-6px, 0) rotate(0); } 25% { transform: translate(-1px, -2px) rotate(-4deg); } 50% { transform: translate(4px, 1px) rotate(3deg); } 75% { transform: translate(8px, -1px) rotate(-2deg); } }
+@keyframes signing-flash { 0%, 100% { opacity: 0; transform: scale(0.4); } 3% { opacity: 1; transform: scale(1.15); } 9% { opacity: 0; } }
+@keyframes signing-flag { 0%, 100% { transform: skewY(0) scaleX(1); } 50% { transform: skewY(1.6deg) scaleX(0.97); } }
+@keyframes signing-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.2px) rotate(0.6deg); } }
+@keyframes signing-glow { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
+
+/* ---------- summit ---------- */
+.art-summit .summit-shake { animation: summit-shake 2.6s ease-in-out infinite; transform-origin: center; }
+.art-summit .summit-flash { opacity: 0; animation: summit-flash 3.3s ease-out infinite; transform-origin: center; }
+.art-summit .summit-flag { animation: summit-flag 6s ease-in-out infinite; transform-origin: left top; }
+.art-summit .summit-bob { animation: summit-bob 5s ease-in-out infinite; transform-origin: center bottom; }
+.art-summit .summit-glow { animation: summit-glow 9s ease-in-out infinite; }
+@keyframes summit-shake { 0%, 100% { transform: translateY(0); } 25% { transform: translateY(-3px); } 50% { transform: translateY(1.5px); } 75% { transform: translateY(-2px); } }
+@keyframes summit-flash { 0%, 100% { opacity: 0; transform: scale(0.4); } 3% { opacity: 1; transform: scale(1.15); } 9% { opacity: 0; } }
+@keyframes summit-flag { 0%, 100% { transform: skewY(0) scaleX(1); } 50% { transform: skewY(2deg) scaleX(0.96); } }
+@keyframes summit-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
+@keyframes summit-glow { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .art-cabinet *,
+  .art-tv_interview *,
+  .art-press *,
+  .art-address *,
+  .art-exec_order *,
+  .art-signing *,
+  .art-summit * {
+    animation: none !important;
+  }
+}

@@ -1,3 +1,4 @@
+import { TitleMontage } from '../scenes/TitleMontage';
 import { useEffect, useMemo, useState } from 'react';
 import {
   IconBolt,
@@ -156,7 +157,7 @@ export function TitleScreen() {
           <div className="brand">
             <img src="/favicon.svg" width={40} height={40} alt="" />
             <div>
-              <h1>WORLD CONFLICT</h1>
+              <h1>World Conflict</h1>
               <small>Situation room · November 2026</small>
             </div>
           </div>
@@ -195,15 +196,7 @@ export function TitleScreen() {
               half-wrong intelligence. Step in, and see if you can do better.
             </p>
           </div>
-          <div className="poem">
-            This is your captain calling with an urgent warning
-            <br />
-            We're above the Gulf of Arabia, altitude is falling
-            <br />
-            And I can't keep her up, there's no time for thinking
-            <br />
-            All hands on deck, this bird is sinking.
-          </div>
+          <TitleMontage />
         </div>
 
         {daily && (

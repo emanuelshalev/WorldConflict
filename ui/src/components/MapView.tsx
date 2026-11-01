@@ -7,6 +7,35 @@ import { CountryDetailPanel } from './CountryDetailPanel';
 import { MapGuide } from './MapGuide';
 
 // Capital/centroid anchors for labels, icons and relationship lines
+/** Lat/long grid every 20 degrees: the ops-display look under the land. */
+function graticule(): GeoJSON.FeatureCollection {
+  const features: GeoJSON.Feature[] = [];
+  for (let lng = -180; lng <= 180; lng += 20) {
+    const coords: [number, number][] = [];
+    for (let lat = -80; lat <= 80; lat += 5) coords.push([lng, lat]);
+    features.push({ type: 'Feature', geometry: { type: 'LineString', coordinates: coords }, properties: {} });
+  }
+  for (let lat = -60; lat <= 80; lat += 20) {
+    const coords: [number, number][] = [];
+    for (let lng = -180; lng <= 180; lng += 5) coords.push([lng, lat]);
+    features.push({ type: 'Feature', geometry: { type: 'LineString', coordinates: coords }, properties: {} });
+  }
+  return { type: 'FeatureCollection', features };
+}
+
+/** A bowed arc between two points (quadratic curve), for war vectors. */
+function arc(a: [number, number], b: [number, number], bow = 0.18): [number, number][] {
+  const [dx, dy] = [b[0] - a[0], b[1] - a[1]];
+  const c: [number, number] = [(a[0] + b[0]) / 2 - dy * bow, (a[1] + b[1]) / 2 + dx * bow];
+  const pts: [number, number][] = [];
+  for (let i = 0; i <= 24; i++) {
+    const t = i / 24;
+    const u = 1 - t;
+    pts.push([u * u * a[0] + 2 * u * t * c[0] + t * t * b[0], u * u * a[1] + 2 * u * t * c[1] + t * t * b[1]]);
+  }
+  return pts;
+}
+
 const COUNTRY_CENTERS: Record<string, [number, number]> = {
   USA: [-98.5, 39.8], CHN: [104.1, 35.8], RUS: [60.0, 58.0], DEU: [10.4, 51.1],
   IND: [78.9, 22.0], BRA: [-51.9, -10.0], CAN: [-106.3, 56.1], MEX: [-102.5, 23.6],
@@ -136,7 +165,7 @@ export function MapView() {
         version: 8,
         glyphs: 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf',
         sources: {},
-        layers: [{ id: 'ocean', type: 'background', paint: { 'background-color': '#0b1220' } }],
+        layers: [{ id: 'ocean', type: 'background', paint: { 'background-color': '#0a1322' } }],
       },
       center: [15, 25],
       zoom: 1.8,
@@ -158,6 +187,13 @@ export function MapView() {
       const geo = (await res.json()) as GeoJSON.FeatureCollection;
       geoRef.current = geo;
 
+      map.addSource('graticule', { type: 'geojson', data: graticule() });
+      map.addLayer({
+        id: 'graticule',
+        type: 'line',
+        source: 'graticule',
+        paint: { 'line-color': '#1d2c45', 'line-width': 0.6, 'line-opacity': 0.7 },
+      });
       // Every country on Earth as muted land; simulated countries are drawn on top
       map.addSource('land', { type: 'geojson', data: geo });
       map.addLayer({
@@ -185,6 +221,13 @@ export function MapView() {
           'fill-color': ['get', 'fill'],
           'fill-opacity': ['case', ['get', 'isPlayer'], 0.9, 0.72],
         },
+      });
+      map.addLayer({
+        id: 'player-glow',
+        type: 'line',
+        source: 'countries',
+        filter: ['get', 'isPlayer'],
+        paint: { 'line-color': '#F2A93B', 'line-width': 9, 'line-opacity': 0.35, 'line-blur': 7 },
       });
       map.addLayer({
         id: 'country-borders',
@@ -215,6 +258,34 @@ export function MapView() {
         source: 'countries',
         filter: ['get', 'enemy'],
         paint: { 'line-color': '#E5383B', 'line-width': 4, 'line-opacity': 0.5, 'line-blur': 3 },
+      });
+      map.addSource('war-arcs', { type: 'geojson', data: emptyFC() });
+      map.addLayer({
+        id: 'war-arcs-glow',
+        type: 'line',
+        source: 'war-arcs',
+        filter: ['==', ['geometry-type'], 'LineString'],
+        layout: { 'line-cap': 'round' },
+        paint: { 'line-color': '#ff3b3b', 'line-width': 6, 'line-opacity': 0.18, 'line-blur': 4 },
+      });
+      map.addLayer({
+        id: 'war-arcs',
+        type: 'line',
+        source: 'war-arcs',
+        filter: ['==', ['geometry-type'], 'LineString'],
+        paint: { 'line-color': '#ff5a4f', 'line-width': 1.8, 'line-dasharray': [0, 4, 3] },
+      });
+      map.addLayer({
+        id: 'war-fronts',
+        type: 'circle',
+        source: 'war-arcs',
+        filter: ['==', ['geometry-type'], 'Point'],
+        paint: {
+          'circle-radius': 6,
+          'circle-color': 'rgba(255,59,59,0.25)',
+          'circle-stroke-color': '#ff5a4f',
+          'circle-stroke-width': 1.5,
+        },
       });
       map.addLayer({
         id: 'relation-lines',
@@ -289,10 +360,26 @@ export function MapView() {
         popupRef.current?.remove();
       });
 
-      // War border pulse animation
+      // War border pulse, marching war arcs and breathing front markers
+      const dashes: number[][] = [
+        [0, 4, 3], [0.5, 4, 2.5], [1, 4, 2], [1.5, 4, 1.5], [2, 4, 1], [2.5, 4, 0.5],
+        [3, 4, 0], [0, 0.5, 3, 3.5], [0, 1, 3, 3], [0, 1.5, 3, 2.5], [0, 2, 3, 2], [0, 2.5, 3, 1.5], [0, 3, 3, 1], [0, 3.5, 3, 0.5],
+      ];
       let t = 0;
+      let step = -1;
       const animate = () => {
         t += 0.05;
+        const s = Math.floor(t * 3) % dashes.length;
+        if (s !== step && map.getLayer('war-arcs')) {
+          step = s;
+          map.setPaintProperty('war-arcs', 'line-dasharray', dashes[s]);
+        }
+        if (map.getLayer('war-fronts')) {
+          const k = (t * 0.6) % 1;
+          map.setPaintProperty('war-fronts', 'circle-radius', 5 + k * 14);
+          map.setPaintProperty('war-fronts', 'circle-stroke-opacity', 1 - k);
+          map.setPaintProperty('war-fronts', 'circle-opacity', 1 - k);
+        }
         if (map.getLayer('war-pulse')) {
           map.setPaintProperty('war-pulse', 'line-opacity', 0.25 + Math.abs(Math.sin(t)) * 0.45);
           map.setPaintProperty('war-pulse', 'line-width', 3 + Math.abs(Math.sin(t)) * 4);
@@ -378,6 +465,22 @@ export function MapView() {
         if (COUNTRY_CENTERS[enemyId]) lines.push(lineFeature(focusId, enemyId, '#ff4040', 2.4));
       }
     }
+    // Every war on the map as a marching arc, with a pulsing marker at the front
+    const arcs: GeoJSON.Feature[] = [];
+    for (const w of worldState.wars) {
+      const a = COUNTRY_CENTERS[w.attackerId];
+      const b = COUNTRY_CENTERS[w.defenderId];
+      if (!a || !b) continue;
+      const pts = arc(a, b);
+      arcs.push({ type: 'Feature', geometry: { type: 'LineString', coordinates: pts }, properties: {} });
+      // The front sits along the arc where the frontline stands (50 = halfway)
+      const front = pts[Math.round((Math.min(95, Math.max(5, w.frontline)) / 100) * (pts.length - 1))];
+      arcs.push({ type: 'Feature', geometry: { type: 'Point', coordinates: front }, properties: {} });
+    }
+    (map.getSource('war-arcs') as maplibregl.GeoJSONSource | undefined)?.setData({
+      type: 'FeatureCollection',
+      features: arcs,
+    });
     (map.getSource('lines') as maplibregl.GeoJSONSource | undefined)?.setData({
       type: 'FeatureCollection',
       features: lines,
@@ -417,6 +520,7 @@ export function MapView() {
   return (
     <div className="map-container" style={{ position: 'relative', flex: 1 }}>
       <div ref={mapContainer} style={{ position: 'absolute', inset: 0 }} />
+      <div className="map-sheen" aria-hidden />
 
       {/* Layer switcher */}
       <div

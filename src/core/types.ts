@@ -700,8 +700,20 @@ export const StatDeltaSchema = z.object({ before: z.number(), after: z.number() 
 
 export const PlayerTurnReportSchema = z.object({
   turn: z.number(),
-  orders: z.array(z.object({ label: z.string(), ok: z.boolean(), detail: z.string() })).default([]),
-  decisions: z.array(z.object({ title: z.string(), choice: z.string() })).default([]),
+  orders: z
+    .array(
+      z.object({
+        label: z.string(),
+        ok: z.boolean(),
+        detail: z.string(),
+        type: z.string().optional(), // action type, for the UI scene
+        target: z.string().optional(),
+      }),
+    )
+    .default([]),
+  decisions: z
+    .array(z.object({ title: z.string(), choice: z.string(), templateId: z.string().optional() }))
+    .default([]),
   deltas: z.record(z.string(), StatDeltaSchema).default({}),
   causes: z.array(z.string()).default([]), // plain-language explanations of what moved
   moments: z.array(z.string()).default([]), // milestone stamps: "RALLY", "CLOSE CALL", "FIRST ALLIANCE"…

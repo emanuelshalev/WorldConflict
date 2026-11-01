@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { countryName, useGameStore, usePlayerCountry } from '../store/gameStore';
 import { flag, money, monthLabel } from '../lib/format';
 import { useModalFocus } from '../lib/useModalFocus';
+import { OutcomeReel } from '../scenes/OutcomeReel';
+import { SceneFrame } from '../scenes/SceneFrame';
+import { sceneForNews } from '../scenes/kinds';
 
 const MOMENT_COLOR: Record<string, string> = {
   'CLOSE CALL': '#b3261e',
@@ -47,8 +50,13 @@ export function Chronicle() {
   const gameOver = useGameStore((s) => s.gameOver);
   const openModal = useGameStore((s) => s.openModal);
   const me = usePlayerCountry();
-  const ref = useModalFocus<HTMLDivElement>(!!(show && world && me));
+  const [reelTurn, setReelTurn] = useState(-1);
+  const report0 = world?.turnReport;
+  const reel = !!(show && world && me && report0 && reelTurn !== world.turn && (report0.orders.length > 0 || report0.decisions.length > 0));
+  const ref = useModalFocus<HTMLDivElement>(!!(show && world && me) && !reel);
   if (!show || !world || !me) return null;
+  if (reel && report0)
+    return <OutcomeReel report={report0} date={world.date} turn={world.turn} home={me.id} onDone={() => setReelTurn(world.turn)} />;
 
   const news = world.newspaper;
   const lead = news.find((n) => n.relatedCountries.includes(me.id)) ?? news[0];
@@ -85,6 +93,13 @@ export function Chronicle() {
 
         {lead && (
           <div className="lead">
+            <SceneFrame
+              kind={sceneForNews(lead.category, lead.headline)}
+              home={me.id}
+              other={lead.relatedCountries.find((id) => id !== me.id)}
+              mood={['WAR', 'NUCLEAR'].includes(lead.category) ? 'bad' : 'neutral'}
+              size="card"
+            />
             <div className="story">
               <span className="kicker">{lead.category}</span>
             </div>
@@ -150,6 +165,9 @@ export function Chronicle() {
         <div className="paper-cols">
           {rest.map((n, i) => (
             <div className="story" key={`${n.headline}-${i}`}>
+              {i < 3 && (
+                <SceneFrame kind={sceneForNews(n.category, n.headline)} home={n.relatedCountries[0]} other={n.relatedCountries[1]} size="thumb" />
+              )}
               <span className="kicker">
                 {n.category} {n.relatedCountries.slice(0, 2).map((id) => flag(id)).join(' ')}
               </span>

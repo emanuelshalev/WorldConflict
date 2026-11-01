@@ -1,3 +1,5 @@
+import { SceneFrame } from '../scenes/SceneFrame';
+import type { SceneKind } from '../scenes/kinds';
 import { useEffect, useMemo, useState } from 'react';
 import { IconCopy, IconDownload, IconRefresh, IconShare } from '@tabler/icons-react';
 import { fetchEndReport, recordDailyResult, startGame, useGameStore, usePlayerCountry } from '../store/gameStore';
@@ -65,13 +67,13 @@ function drawCard(opts: {
     g.fillRect(i * segW, 0, segW - (i < segs.length - 1 ? 4 : 0), 12);
   });
   g.fillStyle = '#a3aebf';
-  g.font = '600 26px "Barlow Condensed", sans-serif';
+  g.font = '600 26px "Geist", sans-serif';
   g.fillText(`WORLD CONFLICT${opts.daily ? ` · DAILY ${opts.daily}` : ''}`, 60, 70);
   g.fillStyle = opts.victory ? '#f2a93b' : '#ff8486';
-  g.font = '600 24px "IBM Plex Mono", monospace';
+  g.font = '600 24px "Geist Mono", monospace';
   g.fillText(`${opts.verdict} · ${opts.month}`, 60, 120);
   g.fillStyle = '#e8ecf2';
-  g.font = '700 64px "Barlow Condensed", sans-serif';
+  g.font = '700 64px "Geist", sans-serif';
   g.fillText(`${opts.flagEmoji} ${opts.country}`.toUpperCase(), 60, 195);
   g.font = '500 32px Inter, sans-serif';
   g.fillStyle = '#a3aebf';
@@ -96,25 +98,25 @@ function drawCard(opts: {
   g.lineWidth = 4;
   g.strokeRect(940, 70, 200, 200);
   g.fillStyle = '#f2a93b';
-  g.font = '700 130px "Barlow Condensed", sans-serif';
+  g.font = '700 130px "Geist", sans-serif';
   g.textAlign = 'center';
   g.fillText(opts.grade, 1040, 220);
   g.font = '44px sans-serif';
   g.fillText('★'.repeat(opts.stars) + '☆'.repeat(3 - opts.stars), 1040, 330);
   g.fillStyle = '#a3aebf';
-  g.font = '500 22px "IBM Plex Mono", monospace';
+  g.font = '500 22px "Geist Mono", monospace';
   g.fillText('SCORE', 1040, 390);
   g.fillStyle = '#e8ecf2';
-  g.font = '700 56px "IBM Plex Mono", monospace';
+  g.font = '700 56px "Geist Mono", monospace';
   g.fillText(String(opts.score), 1040, 450);
   g.textAlign = 'left';
   // Legends, so strangers can read the card
   g.fillStyle = '#8693a6';
-  g.font = '500 18px "IBM Plex Mono", monospace';
+  g.font = '500 18px "Geist Mono", monospace';
   g.fillText('Each square is a month: 🟩 steady  🟨 strained  🟥 on the edge  ⬛ fell', 60, 535);
   g.fillText('Top bar: one segment per objective (green met, red missed, gold bonus)', 60, 560);
   g.fillStyle = '#a3aebf';
-  g.font = '500 22px "IBM Plex Mono", monospace';
+  g.font = '500 22px "Geist Mono", monospace';
   g.fillText(`Can you do better? ${opts.site}`, 60, 600);
   return c.toDataURL('image/png');
 }
@@ -142,6 +144,19 @@ function publicSite(): string {
   const host = typeof window !== 'undefined' ? window.location.host : '';
   return host && !/localhost|127\.0\.0\.1/.test(host) ? host : 'worldconflict.game';
 }
+
+/** The closing shot: how this story ends on the evening news. */
+const END_SCENE: Record<string, SceneKind> = {
+  DEPOSED_COUP: 'war_room',
+  LOST_ELECTION: 'election',
+  ASSASSINATED: 'disaster',
+  IMPEACHED: 'parliament',
+  REVOLUTION: 'streets',
+  NUCLEAR_HOLOCAUST: 'nuclear',
+  COUNTRY_COLLAPSED: 'streets',
+  TERM_COMPLETED: 'election',
+  OBJECTIVE_FAILED: 'cabinet',
+};
 
 export function EndScreen() {
   const activeModal = useGameStore((s) => s.activeModal);
@@ -230,6 +245,14 @@ export function EndScreen() {
   return (
     <div ref={ref} className="overlay" role="dialog" aria-modal="true" aria-label="Result">
       <div className="end">
+        <SceneFrame
+          kind={END_SCENE[gameOver.reason] ?? (lost ? 'streets' : 'address')}
+          home={me.id}
+          mood={lost ? 'bad' : 'good'}
+          size="card"
+          live
+          verdict={lost ? 'failed' : 'success'}
+        />
         <div className="end-hero">
           <div style={{ flex: 1 }}>
             <div className="verdict" style={{ color: lost ? '#ff8486' : 'var(--accent)' }}>

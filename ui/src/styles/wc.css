@@ -28,11 +28,11 @@
   --tough: #f2a93b;
   --brutal: #e5383b;
 
-  --font-display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
-  --font-ui: 'Inter', system-ui, sans-serif;
-  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
-  --font-news: 'Playfair Display', Georgia, serif;
-  --font-serif: 'Source Serif 4', Georgia, serif;
+  --font-display: 'Geist', 'Inter', system-ui, sans-serif;
+  --font-ui: 'Geist', 'Inter', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+  --font-news: 'Instrument Serif', Georgia, serif;
+  --font-serif: 'Newsreader', Georgia, serif;
 
   --r-sm: 6px;
   --r-md: 10px;
@@ -123,8 +123,7 @@ button {
   padding: 14px 26px;
   font-size: 16px;
   font-family: var(--font-display);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: -0.015em;
 }
 .chip {
   display: inline-flex;
@@ -184,8 +183,8 @@ button {
 .brand h1 {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 30px;
-  letter-spacing: 0.18em;
+  font-size: 28px;
+  letter-spacing: -0.02em;
   font-weight: 700;
 }
 .brand small {
@@ -205,10 +204,10 @@ button {
 .hero h2 {
   font-family: var(--font-display);
   font-size: clamp(34px, 5vw, 60px);
-  line-height: 0.98;
-  margin: 0 0 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
+  line-height: 1;
+  margin: 0 0 16px;
+  font-weight: 700;
+  letter-spacing: -0.035em;
 }
 .hero h2 em {
   font-style: normal;
@@ -221,18 +220,14 @@ button {
   margin: 0;
   max-width: 560px;
 }
-.poem {
-  font-family: var(--font-serif);
-  font-style: italic;
-  color: var(--text-3);
-  font-size: 13px;
-  line-height: 1.6;
-  border-left: 2px solid var(--line-2);
-  padding-left: 14px;
+.title-montage { min-width: 0; }
+.title-montage .scene { width: 100%; }
+@media (max-width: 760px) {
+  .hero { grid-template-columns: 1fr; }
 }
 .section-label {
   font-family: var(--font-display);
-  letter-spacing: 0.22em;
+  letter-spacing: 0.1em;
   font-size: 13px;
   color: var(--text-3);
   text-transform: uppercase;
@@ -281,8 +276,7 @@ button {
   margin: 6px 0 6px;
   font-family: var(--font-display);
   font-size: 26px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  letter-spacing: -0.015em;
 }
 .mode-card p {
   color: var(--text-2);
@@ -349,8 +343,7 @@ button {
   margin: 6px 0 4px;
   font-family: var(--font-display);
   font-size: 20px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  letter-spacing: -0.015em;
 }
 .fp-card p {
   margin: 0;
@@ -418,8 +411,7 @@ button {
 .launch-bar .summary b {
   font-family: var(--font-display);
   font-size: 22px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  letter-spacing: -0.015em;
 }
 .launch-bar .summary p {
   margin: 2px 0 0;
@@ -493,9 +485,9 @@ button {
 }
 .hud-who b {
   font-family: var(--font-display);
-  font-size: 19px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  font-size: 18px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -695,10 +687,9 @@ button {
 .desk-head h3 {
   margin: 0;
   font-family: var(--font-display);
-  letter-spacing: 0.14em;
+  letter-spacing: -0.015em;
   font-size: 15px;
   color: var(--text-2);
-  text-transform: uppercase;
 }
 .desk-head h3 b {
   color: var(--text-1);
@@ -726,7 +717,7 @@ button {
 .crisis .stamp {
   font-family: var(--font-display);
   font-size: 11px;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.1em;
   color: var(--accent);
 }
 .crisis.existential .stamp {
@@ -736,8 +727,7 @@ button {
   margin: 2px 0 6px;
   font-family: var(--font-display);
   font-size: 22px;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
+  letter-spacing: -0.015em;
 }
 .crisis .situation {
   margin: 0 0 10px;
@@ -922,9 +912,8 @@ button {
 .drawer-head h3 {
   margin: 0;
   font-family: var(--font-display);
-  letter-spacing: 0.1em;
+  letter-spacing: -0.015em;
   font-size: 20px;
-  text-transform: uppercase;
 }
 .drawer-tabs {
   display: flex;
@@ -1088,7 +1077,7 @@ button {
 .your-month h4 {
   margin: 0 0 8px;
   font-family: var(--font-display);
-  letter-spacing: 0.16em;
+  letter-spacing: 0.1em;
   font-size: 14px;
   color: var(--accent);
 }
@@ -1229,8 +1218,7 @@ button {
 .stinger b {
   font-family: var(--font-display);
   font-size: clamp(24px, 4vw, 44px);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  letter-spacing: -0.015em;
 }
 @keyframes slam {
   from {
@@ -1270,12 +1258,11 @@ button {
 }
 .end-hero .verdict {
   font-family: var(--font-mono);
-  letter-spacing: 0.24em;
+  letter-spacing: 0.1em;
   font-size: 12px;
 }
 .end-hero h2 {
   font-family: var(--font-display);
-  text-transform: uppercase;
   font-size: clamp(28px, 4.4vw, 42px);
   line-height: 1;
   margin: 6px 0 8px;
@@ -1616,3 +1603,52 @@ button {
 .muted {
   color: var(--text-3);
 }
+
+/* =========================================================================
+   Scenes in the game surfaces (desk, suggestions, chronicle)
+   ========================================================================= */
+.sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.crisis > .scene {
+  margin: -12px -14px 10px;
+  border-radius: var(--r-md) var(--r-md) 0 0;
+  box-shadow: none;
+}
+.crisis > .scene .lower-third { padding: 0 14px 12px; }
+.crisis > .scene .lt-head { font-size: clamp(17px, 1.6vw, 21px); }
+.crisis { overflow: hidden; }
+.suggestion {
+  display: grid;
+  gap: 4px;
+  align-content: start;
+  border-style: solid;
+  padding: 6px 6px 9px;
+}
+.suggestion > .scene { aspect-ratio: 16 / 7; border-radius: 6px; box-shadow: none; }
+.suggestion .who { display: flex; align-items: center; gap: 5px; padding: 2px 4px 0; }
+.suggestion b,
+.suggestion .why { padding: 0 4px; }
+.suggestion.fam-mil:hover { border-color: #ff5a4f; }
+.suggestion.fam-diplo:hover { border-color: #4c8dff; }
+.suggestion.fam-intel:hover { border-color: #36c5f0; }
+.suggestion.fam-home:hover { border-color: #b48cff; }
+.order-pill svg { flex: none; }
+.lead > .scene { margin-bottom: 14px; border-radius: 4px; box-shadow: none; }
+.paper-cols .story > .scene { margin-bottom: 8px; border-radius: 3px; box-shadow: none; }
+.crisis > .scene { aspect-ratio: 3 / 1; max-height: 210px; width: calc(100% + 28px); }
+/* Ocean sheen: soft centre glow and edge vignette over the map */
+.map-sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(90% 70% at 55% 40%, rgba(60, 110, 200, 0.10), transparent 60%),
+    radial-gradient(140% 110% at 50% 50%, transparent 60%, rgba(2, 4, 10, 0.55) 100%);
+}
+.end > .scene { border-radius: var(--r-lg) var(--r-lg) 0 0; box-shadow: none; margin: 0 0 4px; }
