@@ -180,9 +180,8 @@
 .scene.v-partial { --verdict: #9aa7ff; }
 .scene-verdict {
   position: absolute;
-  top: 50%;
-  right: 6%;
-  translate: 0 -62%;
+  top: clamp(40px, 9cqw, 64px);
+  right: clamp(10px, 2cqw, 18px);
   display: grid;
   justify-items: center;
   gap: 6px;
@@ -201,7 +200,7 @@
   background: rgba(6, 8, 14, 0.72);
   border: 1px solid color-mix(in srgb, var(--verdict) 55%, transparent);
 }
-.verdict-glyph { width: clamp(44px, 8cqw, 96px); height: auto; overflow: visible; }
+.verdict-glyph { width: clamp(36px, 6.5cqw, 76px); height: auto; overflow: visible; }
 .vg-ring {
   fill: none;
   stroke: var(--verdict);

@@ -25,3 +25,6 @@ Every scene is one React component, `export default function X({ a, b, mood }: S
 - No external images, no fonts in the art (text in art only as simple shapes, or a few short words with `font-family: var(--font-display)`), no `Math.random()` (use fixed arrays or a tiny seeded loop), no new npm dependencies.
 - Keep each component under about 250 lines. TypeScript strict, React 19, ESLint must pass (`cd ui && npx eslint src/scenes`).
 - No em dash characters anywhere (code, comments, text). Use commas, colons or hyphens.
+
+## SVG ids
+Prefixing ids per kind is not enough: one kind can render several times on a page with different flag colours. Read the per-instance suffix with `const uid = useSceneUid()` (from `./uid`, provided by SceneFrame) or React `useId()`, and build every id and `url(#...)` from it.

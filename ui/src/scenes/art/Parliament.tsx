@@ -1,3 +1,4 @@
+import { useSceneUid } from './uid';
 import type { SceneArtProps } from './types';
 import './public.css';
 
@@ -63,6 +64,7 @@ const TALLY = {
 };
 
 export default function Parliament({ a, mood }: SceneArtProps) {
+  const uid = useSceneUid();
   const acc = strong(a);
   const t = TALLY[mood];
   const total = t.yes + t.no;
@@ -71,40 +73,40 @@ export default function Parliament({ a, mood }: SceneArtProps) {
   return (
     <svg viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice" className="art art-parliament" aria-hidden>
       <defs>
-        <linearGradient id="parl-wall" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={`parl-wall-${uid}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#2b1a10" />
           <stop offset="0.55" stopColor="#3a2416" />
           <stop offset="1" stopColor="#140c08" />
         </linearGradient>
-        <radialGradient id="parl-key" cx="0.5" cy="0.28" r="0.6">
+        <radialGradient id={`parl-key-${uid}`} cx="0.5" cy="0.28" r="0.6">
           <stop offset="0" stopColor={glow} stopOpacity="0.55" />
           <stop offset="0.5" stopColor={glow} stopOpacity="0.12" />
           <stop offset="1" stopColor={glow} stopOpacity="0" />
         </radialGradient>
-        <linearGradient id="parl-shaft" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={`parl-shaft-${uid}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#ffe2b0" stopOpacity="0.32" />
           <stop offset="1" stopColor="#ffe2b0" stopOpacity="0" />
         </linearGradient>
-        <linearGradient id="parl-sil" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={`parl-sil-${uid}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#2a2220" />
           <stop offset="1" stopColor="#0d0a09" />
         </linearGradient>
-        <linearGradient id="parl-bench" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={`parl-bench-${uid}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#7a4a28" />
           <stop offset="1" stopColor="#3a2112" />
         </linearGradient>
-        <linearGradient id="parl-leather" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={`parl-leather-${uid}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#5d1f1c" />
           <stop offset="1" stopColor="#2a0d0c" />
         </linearGradient>
-        <linearGradient id="parl-screen" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={`parl-screen-${uid}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#0f1724" />
           <stop offset="1" stopColor="#070b12" />
         </linearGradient>
       </defs>
 
       {/* Back wall: wood panelling, gallery balconies */}
-      <rect width="640" height="360" fill="url(#parl-wall)" />
+      <rect width="640" height="360" fill={`url(#parl-wall-${uid})`} />
       {Array.from({ length: 17 }, (_, i) => (
         <g key={i}>
           <rect x={i * 40 + 4} y="30" width="32" height="150" rx="2" fill="#4a2e1b" opacity="0.45" />
@@ -121,9 +123,9 @@ export default function Parliament({ a, mood }: SceneArtProps) {
         </g>
       ))}
 
-      <rect width="640" height="360" fill="url(#parl-key)" />
+      <rect width="640" height="360" fill={`url(#parl-key-${uid})`} />
       {[150, 250, 390, 490].map((x, i) => (
-        <polygon key={x} className="parl-shaft" points={`${x},0 ${x + 26},0 ${x + 70 - i * 30},260 ${x - 10 - i * 30},260`} fill="url(#parl-shaft)" style={{ animationDelay: `${i * 1.7}s` }} />
+        <polygon key={x} className="parl-shaft" points={`${x},0 ${x + 26},0 ${x + 70 - i * 30},260 ${x - 10 - i * 30},260`} fill={`url(#parl-shaft-${uid})`} style={{ animationDelay: `${i * 1.7}s` }} />
       ))}
 
       {/* Flag banners */}
@@ -132,7 +134,7 @@ export default function Parliament({ a, mood }: SceneArtProps) {
           <rect x={x} y="52" width="28" height="30" fill={a[0]} />
           <rect x={x} y="82" width="28" height="30" fill={a[1]} />
           <rect x={x} y="112" width="28" height="30" fill={a[2]} />
-          <rect x={x} y="52" width="28" height="90" fill="url(#parl-sil)" opacity="0.28" />
+          <rect x={x} y="52" width="28" height="90" fill={`url(#parl-sil-${uid})`} opacity="0.28" />
           <rect x={x + 20} y="52" width="8" height="90" fill="#000" opacity="0.18" />
           <path d={`M${x} 142 l14 9 l14 -9`} fill={a[2]} />
           <rect x={x - 3} y="49" width="34" height="4" rx="2" fill="#d7a75f" />
@@ -142,7 +144,7 @@ export default function Parliament({ a, mood }: SceneArtProps) {
       {/* Electronic vote board */}
       <g>
         <rect x="203" y="47" width="234" height="92" rx="6" fill="#0a0705" />
-        <rect x="207" y="51" width="226" height="84" rx="4" fill="url(#parl-screen)" stroke="#c8975c" strokeOpacity="0.5" />
+        <rect x="207" y="51" width="226" height="84" rx="4" fill={`url(#parl-screen-${uid})`} stroke="#c8975c" strokeOpacity="0.5" />
         <rect x="207" y="51" width="226" height="4" fill={acc} opacity="0.9" />
         <text x="320" y="67" textAnchor="middle" className="parl-label" fontSize="9" fill="#9fb0c8" letterSpacing="3">
           DIVISION
@@ -164,20 +166,20 @@ export default function Parliament({ a, mood }: SceneArtProps) {
       </g>
 
       {/* Speaker's dais */}
-      <path d="M292 194 V156 q28 -15 56 0 V194 Z" fill="url(#parl-leather)" />
+      <path d="M292 194 V156 q28 -15 56 0 V194 Z" fill={`url(#parl-leather-${uid})`} />
       <path d="M292 156 q28 -15 56 0" fill="none" stroke="#d7a75f" strokeWidth="2" opacity="0.7" />
-      <circle cx="320" cy="166" r="7.5" fill="url(#parl-sil)" />
+      <circle cx="320" cy="166" r="7.5" fill={`url(#parl-sil-${uid})`} />
       <path d="M320 159 a7.5 7.5 0 0 1 6 3" fill="none" stroke={glow} strokeOpacity="0.6" />
-      <path d="M306 190 v-11 q14 -9 28 0 v11 Z" fill="url(#parl-sil)" />
-      <path d="M244 180 H396 L406 212 H234 Z" fill="url(#parl-bench)" />
+      <path d="M306 190 v-11 q14 -9 28 0 v11 Z" fill={`url(#parl-sil-${uid})`} />
+      <path d="M244 180 H396 L406 212 H234 Z" fill={`url(#parl-bench-${uid})`} />
       <rect x="244" y="178" width="152" height="4" fill="#e1b277" opacity="0.6" />
       <circle cx="320" cy="196" r="10" fill="#1d120a" stroke="#d7a75f" strokeWidth="1.5" />
       <circle cx="320" cy="196" r="6" fill={acc} />
       <path d="M252 212 H388 L396 226 H244 Z" fill="#2c190d" />
       {[290, 350].map((x) => (
         <g key={x}>
-          <circle cx={x} cy="204" r="4.5" fill="url(#parl-sil)" />
-          <rect x={x - 6.5} y="208" width="13" height="9" rx="4" fill="url(#parl-sil)" />
+          <circle cx={x} cy="204" r="4.5" fill={`url(#parl-sil-${uid})`} />
+          <rect x={x - 6.5} y="208" width="13" height="9" rx="4" fill={`url(#parl-sil-${uid})`} />
         </g>
       ))}
       <rect x="226" y="225" width="188" height="3" fill="#000" opacity="0.4" />
@@ -193,8 +195,8 @@ export default function Parliament({ a, mood }: SceneArtProps) {
               <g key={i}>
                 <circle className="parl-vote" cx={CX + (m.x - CX) * ((row.rx - 10 - r * 2) / row.rx)} cy={m.y - 6 * m.s} r={1.3 * m.s} fill={yes ? '#3cff96' : '#ff5a4a'} style={{ animationDelay: `${m.d}s` }} />
                 <g className={i % 5 === 2 ? 'parl-bob' : undefined} style={{ animationDelay: `${m.d}s` }}>
-                  <rect x={m.x - 8 * m.s} y={m.y - 2 * m.s} width={16 * m.s} height={14 * m.s} rx={6 * m.s} fill="url(#parl-sil)" />
-                  <circle cx={m.x} cy={m.y - 7 * m.s} r={4.6 * m.s} fill="url(#parl-sil)" />
+                  <rect x={m.x - 8 * m.s} y={m.y - 2 * m.s} width={16 * m.s} height={14 * m.s} rx={6 * m.s} fill={`url(#parl-sil-${uid})`} />
+                  <circle cx={m.x} cy={m.y - 7 * m.s} r={4.6 * m.s} fill={`url(#parl-sil-${uid})`} />
                   <path d={`M${m.x - 3.6 * m.s} ${m.y - 10 * m.s} a${4.6 * m.s} ${4.6 * m.s} 0 0 1 ${7 * m.s} 0`} fill="none" stroke={glow} strokeOpacity="0.55" strokeWidth={0.9 * m.s} />
                 </g>
               </g>
@@ -202,10 +204,10 @@ export default function Parliament({ a, mood }: SceneArtProps) {
           })}
           {r === 1 && (
             <g>
-              <rect x="139" y="196" width="24" height="44" rx="9" fill="url(#parl-sil)" />
+              <rect x="139" y="196" width="24" height="44" rx="9" fill={`url(#parl-sil-${uid})`} />
               <path d="M145 197 l6 12 l6 -12 Z" fill="#e6dfd4" opacity="0.85" />
               <path d="M150 200 h2 l1 9 l-2 3 l-2 -3 Z" fill={acc} />
-              <circle cx="151" cy="188" r="7.5" fill="url(#parl-sil)" />
+              <circle cx="151" cy="188" r="7.5" fill={`url(#parl-sil-${uid})`} />
               <path d="M146 183 a7.5 7.5 0 0 1 11 0" fill="none" stroke={glow} strokeOpacity="0.8" strokeWidth="1.4" />
               <path d="M162 198 l9 4" stroke={glow} strokeOpacity="0.5" strokeWidth="1.2" />
               <g className="parl-arm">
@@ -214,7 +216,7 @@ export default function Parliament({ a, mood }: SceneArtProps) {
               </g>
             </g>
           )}
-          <path d={arc(row.rx, row.ry, 8 * (0.78 + r * 0.24))} fill="none" stroke="url(#parl-bench)" strokeWidth={row.w + 4} />
+          <path d={arc(row.rx, row.ry, 8 * (0.78 + r * 0.24))} fill="none" stroke={`url(#parl-bench-${uid})`} strokeWidth={row.w + 4} />
           <path d={arc(row.rx, row.ry, 8 * (0.78 + r * 0.24) - (row.w + 4) / 2)} fill="none" stroke="#e0a868" strokeOpacity="0.35" strokeWidth="1" />
         </g>
       ))}

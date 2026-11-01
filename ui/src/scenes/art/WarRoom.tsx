@@ -1,11 +1,13 @@
+import { useSceneUid } from './uid';
 import type { SceneArtProps } from './types';
 import './security.css';
 
 /** Seated or standing silhouette, uplit from the table (head gradient bright at the bottom). */
-function Figure({ x, y, s = 1, uniform = false }: { x: number; y: number; s?: number; uniform?: boolean }) {
+function Figure({ x, y, s = 1, uniform = false, k }: { x: number; y: number; s?: number; uniform?: boolean; k: string }) {
+  const uid = useSceneUid();
   return (
     <g transform={`translate(${x} ${y}) scale(${s})`}>
-      <path d="M-24 44 C-24 10 -17 2 0 2 C17 2 24 10 24 44 Z" fill="url(#wr-suit)" />
+      <path d="M-24 44 C-24 10 -17 2 0 2 C17 2 24 10 24 44 Z" fill={`url(#wr-suit-${uid})`} />
       {uniform ? (
         <>
           <rect x="-21" y="7" width="9" height="3" rx="1" fill="#c9a24a" opacity="0.7" />
@@ -15,9 +17,10 @@ function Figure({ x, y, s = 1, uniform = false }: { x: number; y: number; s?: nu
         <path d="M-6 2 L0 16 L6 2 Z" fill="#cfd9e6" opacity="0.55" />
       )}
       <rect x="-5" y="-4" width="10" height="8" fill="#0a1220" />
-      <circle cx="0" cy="-12" r="10" fill="url(#wr-head)" />
-      <path d="M-9.6 -15 C-9 -23 9 -23 9.6 -15 C5 -18 -5 -18 -9.6 -15 Z" fill="#04070c" />
-      <path d="M16 6 C22 11 24 24 24 44" fill="none" stroke="url(#wr-rim)" strokeWidth="1.6" />
+      <circle cx="0" cy="-12" r="10" fill={`url(#wr-head-${uid})`} />
+      <path d="M-7 -5.5 C-3 -2.5 3 -2.5 7 -5.5" fill="none" stroke={k} strokeOpacity="0.55" strokeWidth="1.4" />
+      <path d="M6 -19 C10 -16 11 -11 9.5 -7" fill="none" stroke={k} strokeOpacity="0.7" strokeWidth="1.2" />
+      <path d="M16 6 C22 11 24 24 24 44" fill="none" stroke={`url(#wr-rim-${uid})`} strokeWidth="1.6" />
     </g>
   );
 }
@@ -27,6 +30,7 @@ const MARKERS: Array<[number, number, number]> = [
 ];
 
 export default function WarRoom({ a, mood }: SceneArtProps) {
+  const uid = useSceneUid();
   const bad = mood === 'bad';
   const good = mood === 'good';
   const key = bad ? '#ff5a4f' : good ? '#ffd27a' : '#6fd6ff';
@@ -34,50 +38,49 @@ export default function WarRoom({ a, mood }: SceneArtProps) {
   return (
     <svg viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice" className="art art-war_room" aria-hidden>
       <defs>
-        <linearGradient id="wr-wall" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={`wr-wall-${uid}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#0a1322" />
           <stop offset="0.6" stopColor="#0b1828" />
           <stop offset="1" stopColor="#04070d" />
         </linearGradient>
-        <linearGradient id="wr-map" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={`wr-map-${uid}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#082a44" />
           <stop offset="1" stopColor="#04121f" />
         </linearGradient>
-        <radialGradient id="wr-spill" cx="0.5" cy="0.35" r="0.6">
+        <radialGradient id={`wr-spill-${uid}`} cx="0.5" cy="0.35" r="0.6">
           <stop offset="0" stopColor={key} stopOpacity="0.32" />
           <stop offset="1" stopColor={key} stopOpacity="0" />
         </radialGradient>
-        <linearGradient id="wr-table" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={`wr-table-${uid}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#1d5878" />
           <stop offset="0.5" stopColor="#0c2a40" />
           <stop offset="1" stopColor="#050b14" />
         </linearGradient>
-        <linearGradient id="wr-suit" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={`wr-suit-${uid}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#1a2638" />
           <stop offset="1" stopColor="#070b13" />
         </linearGradient>
-        <linearGradient id="wr-head" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={`wr-head-${uid}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#0a111c" />
-          <stop offset="0.65" stopColor="#152333" />
-          <stop offset="1" stopColor={key} stopOpacity="0.5" />
+          <stop offset="1" stopColor="#1a2a3c" />
         </linearGradient>
-        <linearGradient id="wr-rim" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={`wr-rim-${uid}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor={key} stopOpacity="0.9" />
           <stop offset="1" stopColor={key} stopOpacity="0" />
         </linearGradient>
-        <radialGradient id="wr-alert" cx="0.5" cy="0" r="0.9">
+        <radialGradient id={`wr-alert-${uid}`} cx="0.5" cy="0" r="0.9">
           <stop offset="0" stopColor="#ff2a1f" stopOpacity="0.55" />
           <stop offset="1" stopColor="#ff2a1f" stopOpacity="0" />
         </radialGradient>
-        <filter id="wr-blur" x="-20%" y="-20%" width="140%" height="140%">
+        <filter id={`wr-blur-${uid}`} x="-20%" y="-20%" width="140%" height="140%">
           <feGaussianBlur stdDeviation="2.4" />
         </filter>
-        <clipPath id="wr-mapclip">
+        <clipPath id={`wr-mapclip-${uid}`}>
           <rect x="132" y="44" width="376" height="156" rx="3" />
         </clipPath>
       </defs>
 
-      <rect width="640" height="360" fill="url(#wr-wall)" />
+      <rect width="640" height="360" fill={`url(#wr-wall-${uid})`} />
       {/* ceiling light strips in perspective */}
       <g stroke={key} strokeOpacity="0.22" strokeWidth="2">
         <path d="M0 18 L640 18" />
@@ -91,10 +94,10 @@ export default function WarRoom({ a, mood }: SceneArtProps) {
       </g>
 
       {/* giant wall map */}
-      <rect x="126" y="38" width="388" height="168" rx="6" fill={key} opacity="0.35" filter="url(#wr-blur)" />
+      <rect x="126" y="38" width="388" height="168" rx="6" fill={key} opacity="0.35" filter={`url(#wr-blur-${uid})`} />
       <rect x="126" y="38" width="388" height="168" rx="5" fill="#02060c" />
-      <rect x="132" y="44" width="376" height="156" rx="3" fill="url(#wr-map)" />
-      <g clipPath="url(#wr-mapclip)">
+      <rect x="132" y="44" width="376" height="156" rx="3" fill={`url(#wr-map-${uid})`} />
+      <g clipPath={`url(#wr-mapclip-${uid})`}>
         <g stroke="#2a6f99" strokeOpacity="0.35" strokeWidth="0.6">
           {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => (
             <path key={`v${i}`} d={`M${150 + i * 32} 44 V200`} />
@@ -119,7 +122,7 @@ export default function WarRoom({ a, mood }: SceneArtProps) {
         </g>
         <path d="M296 72 C312 96 300 120 330 138 C352 152 344 170 360 182 L400 182 C384 150 380 120 362 96 C350 80 330 66 296 72 Z" fill={front} opacity="0.1" />
         {/* contested zone and glowing front */}
-        <path d="M296 72 C312 96 300 120 330 138 C352 152 344 170 360 182" fill="none" stroke={front} strokeWidth="7" opacity="0.45" filter="url(#wr-blur)" />
+        <path d="M296 72 C312 96 300 120 330 138 C352 152 344 170 360 182" fill="none" stroke={front} strokeWidth="7" opacity="0.45" filter={`url(#wr-blur-${uid})`} />
         <path className="wr-front" d="M296 72 C312 96 300 120 330 138 C352 152 344 170 360 182" fill="none" stroke={front} strokeWidth="2.2" strokeDasharray="7 4" />
         <path d="M262 108 l22 -4 m-6 -5 l6 5 l-6 5" fill="none" stroke={key} strokeWidth="2" strokeLinecap="round" />
         <path d="M380 126 l-22 -2 m6 -5 l-6 5 l6 5" fill="none" stroke="#ff6b5a" strokeWidth="2" strokeLinecap="round" />
@@ -130,11 +133,11 @@ export default function WarRoom({ a, mood }: SceneArtProps) {
           </g>
         ))}
         <rect className="wr-scan" x="132" y="44" width="40" height="156" fill={key} opacity="0.08" />
-        <rect x="132" y="44" width="376" height="156" fill="url(#wr-spill)" opacity="0.5" />
+        <rect x="132" y="44" width="376" height="156" fill={`url(#wr-spill-${uid})`} opacity="0.5" />
       </g>
       <rect x="132" y="44" width="376" height="156" rx="3" fill="none" stroke={key} strokeOpacity="0.4" />
       {/* wall glow onto room */}
-      <ellipse cx="320" cy="130" rx="300" ry="130" fill="url(#wr-spill)" />
+      <ellipse cx="320" cy="130" rx="300" ry="130" fill={`url(#wr-spill-${uid})`} />
 
       {/* side screens: radar left, status bars right */}
       <g className="wr-flicker">
@@ -163,14 +166,14 @@ export default function WarRoom({ a, mood }: SceneArtProps) {
       </g>
 
       {/* the leader, standing at the head of the table against the map */}
-      <ellipse cx="320" cy="184" rx="40" ry="30" fill={key} opacity="0.18" filter="url(#wr-blur)" />
-      <Figure x={320} y={194} s={1.22} />
+      <ellipse cx="320" cy="184" rx="40" ry="30" fill={key} opacity="0.18" filter={`url(#wr-blur-${uid})`} />
+      <Figure x={320} y={194} s={1.22} k={key} />
       {/* officers on the far side */}
-      <Figure x={244} y={214} s={0.86} uniform />
-      <Figure x={396} y={214} s={0.86} uniform />
+      <Figure x={244} y={214} s={0.86} uniform k={key} />
+      <Figure x={396} y={214} s={0.86} uniform k={key} />
 
       {/* table lit from within */}
-      <path d="M206 236 L434 236 L566 300 L74 300 Z" fill="url(#wr-table)" />
+      <path d="M206 236 L434 236 L566 300 L74 300 Z" fill={`url(#wr-table-${uid})`} />
       <path d="M206 236 L434 236 L566 300 L74 300 Z" fill="none" stroke={key} strokeOpacity="0.55" strokeWidth="1.4" />
       <g stroke={key} strokeOpacity="0.25" strokeWidth="0.7" fill="none">
         <path d="M250 246 L390 246 M232 258 L408 258 M196 276 L444 276" />
@@ -182,7 +185,7 @@ export default function WarRoom({ a, mood }: SceneArtProps) {
       </g>
       <path d="M306 248 C312 256 308 262 318 270" fill="none" stroke={front} strokeWidth="1.6" />
       <circle className="wr-ping" cx="340" cy="258" r="6" fill="none" stroke={front} strokeWidth="1" />
-      <ellipse className="wr-tableglow" cx="320" cy="262" rx="170" ry="26" fill={key} opacity="0.16" filter="url(#wr-blur)" />
+      <ellipse className="wr-tableglow" cx="320" cy="262" rx="170" ry="26" fill={key} opacity="0.16" filter={`url(#wr-blur-${uid})`} />
       <rect x="74" y="300" width="492" height="8" fill="#03070c" />
       {/* desk flag */}
       <g transform="translate(206 214)">
@@ -195,15 +198,15 @@ export default function WarRoom({ a, mood }: SceneArtProps) {
       </g>
 
       {/* side officers seated along the table edges */}
-      <Figure x={170} y={248} s={1.05} uniform />
-      <Figure x={470} y={248} s={1.05} />
+      <Figure x={170} y={248} s={1.05} uniform k={key} />
+      <Figure x={470} y={248} s={1.05} k={key} />
       {/* foreground, out of focus framing figures */}
-      <g opacity="0.95" filter="url(#wr-blur)">
-        <Figure x={44} y={210} s={2.1} />
-        <Figure x={600} y={214} s={2.0} uniform />
+      <g opacity="0.95" filter={`url(#wr-blur-${uid})`}>
+        <Figure x={44} y={210} s={2.1} k={key} />
+        <Figure x={600} y={214} s={2.0} uniform k={key} />
       </g>
 
-      {bad && <rect className="wr-alert" width="640" height="360" fill="url(#wr-alert)" />}
+      {bad && <rect className="wr-alert" width="640" height="360" fill={`url(#wr-alert-${uid})`} />}
       {bad && <circle className="wr-beacon" cx="320" cy="14" r="6" fill="#ff3b30" />}
     </svg>
   );

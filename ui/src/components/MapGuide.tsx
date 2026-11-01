@@ -101,7 +101,7 @@ export function MapGuide({ onClose }: { onClose: () => void }) {
     <div
       style={{
         position: 'absolute',
-        top: 56,
+        top: 'calc(var(--under-top, 0px) + 56px)',
         right: 12,
         width: 340,
         maxHeight: 'calc(100% - 80px)',

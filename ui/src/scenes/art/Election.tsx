@@ -1,3 +1,4 @@
+import { useSceneUid } from './uid';
 import type { SceneArtProps } from './types';
 import './public.css';
 
@@ -48,6 +49,7 @@ const CONFETTI = (() => {
 })();
 
 export default function Election({ a, mood }: SceneArtProps) {
+  const uid = useSceneUid();
   const party = strong(a);
   const [pr, pg, pb] = rgb(party);
   const reddish = pr > pb + 40 && pr > pg;
@@ -62,35 +64,35 @@ export default function Election({ a, mood }: SceneArtProps) {
   return (
     <svg viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice" className="art art-election" aria-hidden>
       <defs>
-        <linearGradient id="elec-bg" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={`elec-bg-${uid}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#120f2a" />
           <stop offset="0.6" stopColor="#0d0c22" />
           <stop offset="1" stopColor="#05050d" />
         </linearGradient>
-        <radialGradient id="elec-key" cx="0.5" cy="0.35" r="0.55">
+        <radialGradient id={`elec-key-${uid}`} cx="0.5" cy="0.35" r="0.55">
           <stop offset="0" stopColor={key} stopOpacity="0.3" />
           <stop offset="1" stopColor={key} stopOpacity="0" />
         </radialGradient>
-        <linearGradient id="elec-screen" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={`elec-screen-${uid}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#141a3a" />
           <stop offset="1" stopColor="#090c1e" />
         </linearGradient>
-        <linearGradient id="elec-glass" x1="0" y1="0" x2="1" y2="0">
+        <linearGradient id={`elec-glass-${uid}`} x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stopColor="#c8d6ff" stopOpacity="0.28" />
           <stop offset="0.5" stopColor="#c8d6ff" stopOpacity="0.08" />
           <stop offset="1" stopColor="#c8d6ff" stopOpacity="0.2" />
         </linearGradient>
-        <linearGradient id="elec-sil" x1="0" y1="0" x2="1" y2="0">
+        <linearGradient id={`elec-sil-${uid}`} x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stopColor="#0b0b18" />
           <stop offset="1" stopColor="#1f1f38" />
         </linearGradient>
-        <radialGradient id="elec-stage" cx="0.5" cy="0.5" r="0.5">
+        <radialGradient id={`elec-stage-${uid}`} cx="0.5" cy="0.5" r="0.5">
           <stop offset="0" stopColor={party} stopOpacity="0.35" />
           <stop offset="1" stopColor={party} stopOpacity="0" />
         </radialGradient>
       </defs>
 
-      <rect width="640" height="360" fill="url(#elec-bg)" />
+      <rect width="640" height="360" fill={`url(#elec-bg-${uid})`} />
       {/* Video wall tiles */}
       {Array.from({ length: 48 }, (_, i) => {
         const cx = i % 12;
@@ -99,20 +101,20 @@ export default function Election({ a, mood }: SceneArtProps) {
           <rect key={i} className="elec-tile" x={8 + cx * 53} y={18 + cy * 56} width="49" height="52" rx="2" fill={i % 7 === 3 ? party : '#262b5e'} opacity={i % 7 === 3 ? 0.1 : 0.16} style={{ animationDelay: `${(i * 0.37) % 6}s` }} />
         );
       })}
-      <rect width="640" height="360" fill="url(#elec-key)" />
+      <rect width="640" height="360" fill={`url(#elec-key-${uid})`} />
       {[110, 530].map((x, i) => (
         <polygon key={x} className="elec-beam" points={`${x - 6},0 ${x + 6},0 ${x + 90 - i * 180},300 ${x - 40 - i * 100},300`} fill={key} opacity="0.07" style={{ animationDelay: `${i * 2}s` }} />
       ))}
 
       {/* Stage floor */}
       <rect y="236" width="640" height="124" fill="#07071a" />
-      <ellipse cx="320" cy="262" rx="250" ry="34" fill="url(#elec-stage)" />
+      <ellipse cx="320" cy="262" rx="250" ry="34" fill={`url(#elec-stage-${uid})`} />
       <ellipse cx="320" cy="262" rx="200" ry="26" fill="none" stroke={party} strokeOpacity="0.5" />
       <ellipse className="elec-ring" cx="320" cy="262" rx="140" ry="18" fill="none" stroke={party} strokeOpacity="0.8" strokeWidth="1.5" />
 
       {/* Seat chart screen */}
       <rect x="168" y="44" width="304" height="176" rx="8" fill="#04050d" />
-      <rect x="174" y="50" width="292" height="164" rx="5" fill="url(#elec-screen)" />
+      <rect x="174" y="50" width="292" height="164" rx="5" fill={`url(#elec-screen-${uid})`} />
       <rect x="174" y="50" width="292" height="18" rx="3" fill="#000" opacity="0.35" />
       <circle className="elec-live" cx="186" cy="59" r="3" fill="#ff3b3b" />
       <text x="194" y="62.5" fontSize="9" className="elec-label" fill="#d6dcff" letterSpacing="2">PROJECTION</text>
@@ -144,7 +146,7 @@ export default function Election({ a, mood }: SceneArtProps) {
           <rect x="108" y="179" width="12" height="2" fill="#bbb" />
         </g>
         <path d="M58 206 L174 206 L168 286 L64 286 Z" fill="#9fb4ff" opacity="0.12" />
-        <path d="M58 206 L174 206 L168 286 L64 286 Z" fill="url(#elec-glass)" stroke="#d8e2ff" strokeOpacity="0.45" />
+        <path d="M58 206 L174 206 L168 286 L64 286 Z" fill={`url(#elec-glass-${uid})`} stroke="#d8e2ff" strokeOpacity="0.45" />
         {[0, 1, 2, 3, 4].map((i) => (
           <rect key={i} x={74 + i * 17} y={256 + (i % 2) * 6} width="20" height="26" rx="1" fill="#efeadf" opacity="0.6" transform={`rotate(${i * 13 - 25} ${84 + i * 17} 269)`} />
         ))}
@@ -158,11 +160,11 @@ export default function Election({ a, mood }: SceneArtProps) {
 
       {/* Analyst at the touch wall */}
       <g>
-        <path d="M498 300 V214 q0 -22 22 -24 h8 q22 2 22 24 V300 Z" fill="url(#elec-sil)" />
+        <path d="M498 300 V214 q0 -22 22 -24 h8 q22 2 22 24 V300 Z" fill={`url(#elec-sil-${uid})`} />
         <path d="M520 190 l4 14 l4 -14 Z" fill="#e8e8f2" opacity="0.8" />
         <path d="M549 212 q2 -20 -21 -22" fill="none" stroke={key} strokeOpacity="0.6" strokeWidth="1.5" />
         <rect x="519" y="178" width="10" height="13" rx="3" fill="#161628" />
-        <ellipse cx="524" cy="166" rx="11" ry="13" fill="url(#elec-sil)" />
+        <ellipse cx="524" cy="166" rx="11" ry="13" fill={`url(#elec-sil-${uid})`} />
         <path d="M513 165 q0 -17 12 -17 q12 0 11 13 q-5 -7 -12 -7 q-7 1 -11 11 Z" fill="#07070f" />
         <g className="elec-arm">
           <path d="M504 206 L478 186 L462 176" fill="none" stroke="#141426" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" />

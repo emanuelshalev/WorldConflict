@@ -6,7 +6,7 @@ export const FLAG_COLORS: Record<string, [string, string, string]> = {
   BLR: ['#c8313e', '#4aa657', '#ffffff'],
   BRA: ['#009c3b', '#ffdf00', '#002776'],
   CAN: ['#d80621', '#ffffff', '#d80621'],
-  CHN: ['#de2910', '#ffde00', '#de2910'],
+  CHN: ['#de2910', '#de2910', '#ffde00'],
   CUB: ['#002a8f', '#ffffff', '#cf142b'],
   DEU: ['#000000', '#dd0000', '#ffce00'],
   DNK: ['#c8102e', '#ffffff', '#c8102e'],

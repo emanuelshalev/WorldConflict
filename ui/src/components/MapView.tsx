@@ -165,7 +165,18 @@ export function MapView() {
         version: 8,
         glyphs: 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf',
         sources: {},
-        layers: [{ id: 'ocean', type: 'background', paint: { 'background-color': '#0a1322' } }],
+        layers: [{ id: 'ocean', type: 'background', paint: { 'background-color': '#0b1a30' } }],
+        // A real globe with an atmosphere halo, flattening to Mercator as you zoom in
+        projection: { type: 'globe' },
+        sky: {
+          'sky-color': '#0b1a30',
+          'horizon-color': '#2a5aa8',
+          'fog-color': '#0b1a30',
+          'sky-horizon-blend': 0.6,
+          'horizon-fog-blend': 0.7,
+          'fog-ground-blend': 0.9,
+          'atmosphere-blend': ['interpolate', ['linear'], ['zoom'], 0, 1, 4, 0.6, 7, 0],
+        },
       },
       center: [15, 25],
       zoom: 1.8,
@@ -181,6 +192,9 @@ export function MapView() {
     // Bottom-left: the mission chip owns the top-left corner
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-left');
     mapRef.current = map;
+    // The canvas extends under the glass HUD and desk (see .map-stage in wc.css): keep the
+    // camera centred on the visible part
+    map.setPadding({ top: 64, bottom: Math.round(window.innerHeight * 0.6), left: 0, right: 0 });
 
     map.on('load', async () => {
       const res = await fetch('/world.geojson');
@@ -287,6 +301,32 @@ export function MapView() {
           'circle-stroke-width': 1.5,
         },
       });
+      map.addSource('events', { type: 'geojson', data: emptyFC() });
+      for (const n of [0, 1]) {
+        map.addLayer({
+          id: `event-ripple-${n}`,
+          type: 'circle',
+          source: 'events',
+          paint: {
+            'circle-radius': 8,
+            'circle-color': 'rgba(0,0,0,0)',
+            'circle-stroke-color': ['get', 'color'],
+            'circle-stroke-width': 2,
+            'circle-pitch-alignment': 'map',
+          },
+        });
+      }
+      map.addLayer({
+        id: 'event-dots',
+        type: 'circle',
+        source: 'events',
+        paint: {
+          'circle-radius': 4,
+          'circle-color': ['get', 'color'],
+          'circle-stroke-color': '#0b0f17',
+          'circle-stroke-width': 1.5,
+        },
+      });
       map.addLayer({
         id: 'relation-lines',
         type: 'line',
@@ -373,6 +413,13 @@ export function MapView() {
         if (s !== step && map.getLayer('war-arcs')) {
           step = s;
           map.setPaintProperty('war-arcs', 'line-dasharray', dashes[s]);
+        }
+        for (const n of [0, 1]) {
+          const id = `event-ripple-${n}`;
+          if (!map.getLayer(id)) continue;
+          const k = (t * 0.35 + n * 0.5) % 1;
+          map.setPaintProperty(id, 'circle-radius', 4 + k * 26);
+          map.setPaintProperty(id, 'circle-stroke-opacity', (1 - k) * 0.9);
         }
         if (map.getLayer('war-fronts')) {
           const k = (t * 0.6) % 1;
@@ -477,6 +524,28 @@ export function MapView() {
       const front = pts[Math.round((Math.min(95, Math.max(5, w.frontline)) / 100) * (pts.length - 1))];
       arcs.push({ type: 'Feature', geometry: { type: 'Point', coordinates: front }, properties: {} });
     }
+    // This month's news as rippling beacons where it happened
+    const CAT_COLOR: Record<string, string> = {
+      WAR: '#ff5a4f', NUCLEAR: '#f5d547', COVERT: '#36c5f0', DIPLOMACY: '#4c8dff',
+      ECONOMY: '#19c37d', GOVERNMENT: '#b48cff', DOMESTIC: '#ff9f43', WORLD: '#e8ecf2',
+    };
+    const seen = new Set<string>();
+    const beacons: GeoJSON.Feature[] = [];
+    for (const n of worldState.newspaper.filter((x) => x.turn === worldState.turn)) {
+      const id = n.relatedCountries[0];
+      const c = id && COUNTRY_CENTERS[id];
+      if (!c || seen.has(id)) continue;
+      seen.add(id);
+      beacons.push({
+        type: 'Feature',
+        geometry: { type: 'Point', coordinates: c },
+        properties: { color: CAT_COLOR[n.category] ?? '#e8ecf2' },
+      });
+    }
+    (map.getSource('events') as maplibregl.GeoJSONSource | undefined)?.setData({
+      type: 'FeatureCollection',
+      features: beacons,
+    });
     (map.getSource('war-arcs') as maplibregl.GeoJSONSource | undefined)?.setData({
       type: 'FeatureCollection',
       features: arcs,
@@ -527,7 +596,7 @@ export function MapView() {
         className="layer-bar"
         style={{
           position: 'absolute',
-          top: 12,
+          top: 'calc(var(--under-top, 0px) + 12px)',
           right: 12,
           display: 'flex',
           gap: 4,

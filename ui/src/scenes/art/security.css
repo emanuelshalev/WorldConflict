@@ -117,6 +117,93 @@
   to { transform: translateY(360px); }
 }
 
+/* ---------- nuclear ---------- */
+.art-nuclear .nu-led { animation: nuclear-led 3s steps(1) infinite; }
+@keyframes nuclear-led { 50% { opacity: 0.35; } }
+.art-nuclear .nu-trefoil { animation: nuclear-glow 6s ease-in-out infinite; }
+@keyframes nuclear-glow { 50% { opacity: 0.8; } }
+.art-nuclear .nu-sweep { animation: nuclear-sweep 4s linear infinite; transform-box: view-box; transform-origin: 0 0; }
+@keyframes nuclear-sweep {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.art-nuclear .nu-alarm { animation: nuclear-alarm 4s ease-in-out infinite; }
+@keyframes nuclear-alarm {
+  0%, 50%, 100% { opacity: 0.04; }
+  25%, 75% { opacity: 0.2; }
+}
+.art-nuclear .nu-klaxon { animation: nuclear-alarm-dot 2s steps(1) infinite; }
+@keyframes nuclear-alarm-dot { 50% { opacity: 0.3; } }
+
+/* ---------- covert ---------- */
+.art-covert .cv-pan { animation: covert-pan 14s ease-in-out infinite; }
+@keyframes covert-pan {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-14px, 6px); }
+}
+.art-covert .cv-reticle { animation: covert-lock 5s ease-in-out infinite; }
+@keyframes covert-lock {
+  0% { transform: scale(1.5); opacity: 0.2; }
+  20%, 80% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.85; }
+}
+.art-covert .cv-arc { stroke-dasharray: 3 3; animation: covert-arc 4s linear infinite; }
+@keyframes covert-arc { to { stroke-dashoffset: -36; } }
+.art-covert .cv-blip { animation: covert-blip 2.5s ease-in-out infinite; }
+@keyframes covert-blip { 50% { transform: scale(1.6); opacity: 0.4; } }
+.art-covert .cv-rec { animation: covert-rec 1.6s steps(1) infinite; }
+@keyframes covert-rec { 50% { opacity: 0; } }
+.art-covert .cv-cursor { animation: covert-cursor 6s steps(5) infinite; transform-box: view-box; }
+@keyframes covert-cursor { to { transform: translateY(50px); } }
+.art-covert .cv-wave { stroke-dasharray: 400; animation: covert-wave 5s linear infinite; }
+@keyframes covert-wave {
+  from { stroke-dashoffset: 400; }
+  to { stroke-dashoffset: 0; }
+}
+.art-covert .cv-flick { animation: covert-flick 7s steps(1) infinite; }
+@keyframes covert-flick {
+  0%, 100% { opacity: 1; }
+  33% { opacity: 0.7; }
+  34% { opacity: 1; }
+  80% { opacity: 0.85; }
+}
+.art-covert .cv-alert { animation: covert-alert 4s ease-in-out infinite; }
+@keyframes covert-alert { 50% { opacity: 0.22; } }
+
+/* ---------- disaster ---------- */
+.art-disaster .ds-strobeR { animation: disaster-strobe 1.2s steps(1) infinite; }
+.art-disaster .ds-strobeB { animation: disaster-strobe 1.2s steps(1) infinite; animation-delay: -0.6s; }
+@keyframes disaster-strobe {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.15; }
+}
+.art-disaster .ds-beam { animation: disaster-beam 10s ease-in-out infinite; transform-box: view-box; transform-origin: 0 0; }
+@keyframes disaster-beam {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-9deg); }
+}
+.art-disaster .ds-rotor { animation: disaster-rotor 0.3s linear infinite; }
+@keyframes disaster-rotor { 50% { transform: scaleX(0.35); } }
+.art-disaster .ds-nav { animation: disaster-strobe 1.6s steps(1) infinite; }
+.art-disaster .ds-boat { animation: disaster-bob 5s ease-in-out infinite; }
+@keyframes disaster-bob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(2px) rotate(-1.2deg); }
+}
+.art-disaster .ds-ripple { animation: disaster-ripple 4s ease-in-out infinite; }
+@keyframes disaster-ripple { 50% { transform: translateX(8px); opacity: 0.4; } }
+.art-disaster .ds-rain { animation: disaster-rain 0.7s linear infinite; transform-box: view-box; transform-origin: 0 0; }
+@keyframes disaster-rain {
+  from { transform: translate(0, 0); }
+  to { transform: translate(0, 48px); }
+}
+.art-disaster .ds-smoke { animation: disaster-smoke 12s ease-in-out infinite; }
+@keyframes disaster-smoke { 50% { transform: translate(-16px, -8px) scale(1.15); opacity: 0.5; } }
+.art-disaster .ds-cloud { animation: disaster-cloud 14s ease-in-out infinite; }
+@keyframes disaster-cloud { 50% { transform: translateX(20px); } }
+.art-disaster .ds-alert { animation: disaster-alert 4s ease-in-out infinite; }
+@keyframes disaster-alert { 50% { opacity: 0.18; } }
+
 @media (prefers-reduced-motion: reduce) {
   .art-war_room *, .art-deployment *, .art-airstrike *, .art-nuclear *, .art-covert *, .art-disaster * {
     animation: none !important;

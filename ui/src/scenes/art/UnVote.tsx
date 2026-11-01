@@ -1,3 +1,4 @@
+import { useSceneUid } from './uid';
 import type { SceneArtProps } from './types';
 import './public.css';
 
@@ -30,6 +31,7 @@ function arc(rx: number, ry: number, dy: number): string {
 const LEAVES = Array.from({ length: 7 }, (_, i) => i);
 
 export default function UnVote({ a, mood }: SceneArtProps) {
+  const uid = useSceneUid();
   const yesCut = mood === 'good' ? 7 : mood === 'bad' ? 2 : 4.5;
   const vote = (i: number) => {
     const v = (i * 7) % 9;
@@ -60,63 +62,69 @@ export default function UnVote({ a, mood }: SceneArtProps) {
   return (
     <svg viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice" className="art art-un_vote" aria-hidden>
       <defs>
-        <linearGradient id="unv-wall" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={`unv-wall-${uid}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#0b3438" />
           <stop offset="0.6" stopColor="#0f4146" />
           <stop offset="1" stopColor="#061a1d" />
         </linearGradient>
-        <radialGradient id="unv-gold" cx="0.5" cy="0.4" r="0.6">
+        <radialGradient id={`unv-gold-${uid}`} cx="0.5" cy="0.4" r="0.6">
           <stop offset="0" stopColor="#ffd77a" />
           <stop offset="0.55" stopColor="#c8932f" />
           <stop offset="1" stopColor="#6e4a14" />
         </radialGradient>
-        <radialGradient id="unv-key" cx="0.5" cy="0.25" r="0.6">
+        <radialGradient id={`unv-key-${uid}`} cx="0.5" cy="0.25" r="0.6">
           <stop offset="0" stopColor={key} stopOpacity="0.35" />
           <stop offset="1" stopColor={key} stopOpacity="0" />
         </radialGradient>
-        <linearGradient id="unv-desk" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={`unv-desk-${uid}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#3f6f69" />
           <stop offset="1" stopColor="#173430" />
         </linearGradient>
-        <linearGradient id="unv-sil" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={`unv-sil-${uid}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#1d2b30" />
           <stop offset="1" stopColor="#081114" />
         </linearGradient>
-        <linearGradient id="unv-shaft" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={`unv-shaft-${uid}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor={key} stopOpacity="0.28" />
           <stop offset="1" stopColor={key} stopOpacity="0" />
         </linearGradient>
       </defs>
 
-      <rect width="640" height="360" fill="url(#unv-wall)" />
+      <rect width="640" height="360" fill={`url(#unv-wall-${uid})`} />
       {Array.from({ length: 22 }, (_, i) => (
         <rect key={i} x={i * 30} y="0" width="3" height="230" fill="#5fb7b0" opacity={i % 2 ? 0.06 : 0.12} />
       ))}
-      <rect width="640" height="360" fill="url(#unv-key)" />
+      <rect width="640" height="360" fill={`url(#unv-key-${uid})`} />
 
       {/* Gold emblem wall */}
-      <path d="M214 30 H426 L410 206 H230 Z" fill="url(#unv-gold)" />
+      <path d="M214 30 H426 L410 206 H230 Z" fill={`url(#unv-gold-${uid})`} />
       <path d="M214 30 H426 L410 206 H230 Z" fill="#000" opacity="0.18" />
       {Array.from({ length: 9 }, (_, i) => (
         <rect key={i} x={226 + i * 22} y="30" width="1.5" height="176" fill="#fff3c4" opacity="0.18" />
       ))}
       <g transform="translate(320 92)">
         <circle r="44" fill="#fff4cf" opacity="0.18" className="unv-halo" />
-        <circle r="27" fill="#f9e7b0" />
+        <circle r="26" fill="#f9e7b0" />
         <g fill="none" stroke="#9b6d1f" strokeWidth="1.4">
-          <circle r="27" />
-          <circle r="18" />
-          <circle r="9" />
-          <path d="M-27 0 H27 M0 -27 V27 M-19 -19 L19 19 M19 -19 L-19 19" />
+          <circle r="26" />
+          <ellipse rx="9" ry="26" />
+          <ellipse rx="18.5" ry="26" />
+          <path d="M0 -26 V26 M-26 0 H26 M-22.5 -13 H22.5 M-22.5 13 H22.5" />
         </g>
+        <path d="M-12 -8 q6 -6 12 -2 q4 4 -2 8 q-6 2 -10 -6 Z M4 6 q8 -2 10 4 q-2 6 -8 6 q-4 -4 -2 -10 Z" fill="#c99a3e" opacity="0.7" />
         {[-1, 1].map((side) => (
           <g key={side} transform={`scale(${side} 1)`}>
-            <path d="M-32 22 Q-44 0 -32 -26" fill="none" stroke="#9b6d1f" strokeWidth="1.6" />
+            <path d="M-30 26 Q-46 0 -32 -30" fill="none" stroke="#9b6d1f" strokeWidth="1.6" />
             {LEAVES.map((i) => {
-              const t = -0.9 + i * 0.3;
-              const lx = -34 - Math.cos(t) * 6;
-              const ly = Math.sin(t) * 26;
-              return <ellipse key={i} cx={lx - 3} cy={ly} rx="6" ry="2.6" fill="#f9e7b0" stroke="#9b6d1f" strokeWidth="0.8" transform={`rotate(${-50 + i * 18} ${lx - 3} ${ly})`} />;
+              const t = -1.05 + i * 0.34;
+              const lx = -38 + (1 - Math.cos(t)) * 6;
+              const ly = Math.sin(t) * 28;
+              return (
+                <g key={i} transform={`translate(${lx} ${ly}) rotate(${(t * 180) / Math.PI - 90})`}>
+                  <path d="M0 0 q-7 -3 -11 2 q6 3 11 -2 Z" fill="#f9e7b0" stroke="#9b6d1f" strokeWidth="0.7" />
+                  <path d="M0 0 q7 -3 11 2 q-6 3 -11 -2 Z" fill="#efd590" stroke="#9b6d1f" strokeWidth="0.7" />
+                </g>
+              );
             })}
           </g>
         ))}
@@ -124,26 +132,26 @@ export default function UnVote({ a, mood }: SceneArtProps) {
 
       {/* Light shafts from the dome */}
       {[180, 300, 420].map((x, i) => (
-        <polygon key={x} className="unv-shaft" points={`${x},0 ${x + 40},0 ${x + 70 - i * 30},250 ${x - 30 - i * 30},250`} fill="url(#unv-shaft)" style={{ animationDelay: `${i * 2.2}s` }} />
+        <polygon key={x} className="unv-shaft" points={`${x},0 ${x + 40},0 ${x + 70 - i * 30},250 ${x - 30 - i * 30},250`} fill={`url(#unv-shaft-${uid})`} style={{ animationDelay: `${i * 2.2}s` }} />
       ))}
 
       {board(34, 0)}
       {board(474, 9)}
 
       {/* Rostrum: presiding desk and speaker */}
-      <rect x="238" y="150" width="164" height="22" fill="url(#unv-desk)" />
+      <rect x="238" y="150" width="164" height="22" fill={`url(#unv-desk-${uid})`} />
       <rect x="238" y="148" width="164" height="3" fill="#e0c27a" opacity="0.8" />
       {[290, 320, 350].map((x) => (
         <g key={x}>
-          <circle cx={x} cy="136" r="6" fill="url(#unv-sil)" />
-          <rect x={x - 8} y="141" width="16" height="10" rx="4" fill="url(#unv-sil)" />
+          <circle cx={x} cy="136" r="6" fill={`url(#unv-sil-${uid})`} />
+          <rect x={x - 8} y="141" width="16" height="10" rx="4" fill={`url(#unv-sil-${uid})`} />
         </g>
       ))}
       <path d="M220 172 H420 L432 214 H208 Z" fill="#12312e" />
       <rect x="220" y="171" width="200" height="2" fill="#e0c27a" opacity="0.6" />
-      <circle cx="320" cy="180" r="8" fill="url(#unv-sil)" />
-      <path d="M305 205 v-12 q15 -10 30 0 v12 Z" fill="url(#unv-sil)" />
-      <path d="M302 196 H338 L334 216 H306 Z" fill="url(#unv-desk)" />
+      <circle cx="320" cy="180" r="8" fill={`url(#unv-sil-${uid})`} />
+      <path d="M305 205 v-12 q15 -10 30 0 v12 Z" fill={`url(#unv-sil-${uid})`} />
+      <path d="M302 196 H338 L334 216 H306 Z" fill={`url(#unv-desk-${uid})`} />
       <rect x="302" y="195" width="36" height="2" fill="#e0c27a" />
       <circle cx="320" cy="206" r="4" fill="#f2d48a" />
 
@@ -157,17 +165,17 @@ export default function UnVote({ a, mood }: SceneArtProps) {
               <g key={i}>
                 {raised && (
                   <g className="unv-hand" style={{ animationDelay: `${(i * 0.43 + r) % 3}s` }}>
-                    <path d={`M${d.x + 6 * s} ${d.y - 6 * s} L${d.x + 9 * s} ${d.y - 26 * s}`} stroke="#13211f" strokeWidth={4 * s} strokeLinecap="round" />
-                    <circle cx={d.x + 9 * s} cy={d.y - 28 * s} r={2.4 * s} fill="#2c3e3b" />
+                    <path d={`M${d.x + 6 * s} ${d.y - 6 * s} L${d.x + 9 * s} ${d.y - 26 * s}`} stroke="#16262a" strokeWidth={4.6 * s} strokeLinecap="round" />
+                    <circle cx={d.x + 9 * s} cy={d.y - 28 * s} r={2.5 * s} fill="#6f8580" />
                   </g>
                 )}
-                <rect x={d.x - 8 * s} y={d.y - 6 * s} width={16 * s} height={16 * s} rx={6 * s} fill="url(#unv-sil)" />
-                <circle cx={d.x} cy={d.y - 11 * s} r={4.8 * s} fill="url(#unv-sil)" />
+                <rect x={d.x - 8 * s} y={d.y - 6 * s} width={16 * s} height={16 * s} rx={6 * s} fill={`url(#unv-sil-${uid})`} />
+                <circle cx={d.x} cy={d.y - 11 * s} r={4.8 * s} fill={`url(#unv-sil-${uid})`} />
                 <path d={`M${d.x - 3.5 * s} ${d.y - 14 * s} a${4.8 * s} ${4.8 * s} 0 0 1 ${7 * s} 0`} fill="none" stroke={key} strokeOpacity="0.6" strokeWidth={0.9 * s} />
               </g>
             );
           })}
-          <path d={arc(row.rx, row.ry, 9 * row.s)} fill="none" stroke="url(#unv-desk)" strokeWidth={9 * row.s} />
+          <path d={arc(row.rx, row.ry, 9 * row.s)} fill="none" stroke={`url(#unv-desk-${uid})`} strokeWidth={9 * row.s} />
           <path d={arc(row.rx, row.ry, 9 * row.s - 4.5 * row.s)} fill="none" stroke="#9fd8cc" strokeOpacity="0.35" strokeWidth="1" />
           {row.seats.map((d, i) => (
             <rect key={i} x={d.x - 5 * row.s} y={d.y + 5 * row.s} width={10 * row.s} height={4 * row.s} fill={i % 4 === 1 ? a[0] : '#f1efe6'} opacity="0.75" />

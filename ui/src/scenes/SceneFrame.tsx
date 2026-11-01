@@ -1,4 +1,5 @@
-import type { ReactNode } from 'react';
+import { useId, type ReactNode } from 'react';
+import { SceneUid } from './art/uid';
 import { SCENE_META, type SceneKind } from './kinds';
 import { SCENE_ART } from './art';
 import type { Mood } from './art/types';
@@ -69,6 +70,7 @@ export function SceneFrame({
   children,
 }: Props) {
   const Art = SCENE_ART[kind];
+  const uid = useId().replace(/[^a-zA-Z0-9]/g, '');
   const meta = SCENE_META[kind];
   return (
     <figure
@@ -76,7 +78,9 @@ export function SceneFrame({
       data-kind={kind}
     >
       <div className="scene-art">
-        <Art a={flagColors(home)} b={flagColors(other)} mood={mood} />
+        <SceneUid.Provider value={uid}>
+          <Art a={flagColors(home)} b={flagColors(other)} mood={mood} />
+        </SceneUid.Provider>
       </div>
       <div className="scene-grade" aria-hidden />
       {size !== 'thumb' && (

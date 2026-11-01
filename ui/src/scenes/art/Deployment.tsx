@@ -1,3 +1,4 @@
+import { useSceneUid } from './uid';
 import type { SceneArtProps } from './types';
 import './security.css';
 
@@ -11,18 +12,19 @@ const at = (x: number) => {
 };
 
 function Tank({ flag }: { flag?: [string, string, string] }) {
+  const uid = useSceneUid();
   return (
     <g>
-      <path d="M-104 -24 L-90 -46 L92 -46 L104 -24 Z" fill="url(#dp-hull)" />
-      <path d="M-90 -46 L92 -46" stroke="url(#dp-rim)" strokeWidth="2.2" />
+      <path d="M-104 -24 L-90 -46 L92 -46 L104 -24 Z" fill={`url(#dp-hull-${uid})`} />
+      <path d="M-90 -46 L92 -46" stroke={`url(#dp-rim-${uid})`} strokeWidth="2.2" />
       <rect x="-98" y="-27" width="196" height="27" rx="13" fill="#15110d" />
       {[-72, -48, -24, 0, 24, 48, 72].map((wx) => (
         <circle key={wx} cx={wx} cy="-13" r="8.5" fill="#2a231b" stroke="#0c0a08" strokeWidth="2" />
       ))}
-      <path d="M-100 -30 L98 -30 L94 -16 L-96 -16 Z" fill="url(#dp-hull)" />
+      <path d="M-100 -30 L98 -30 L94 -16 L-96 -16 Z" fill={`url(#dp-hull-${uid})`} />
       <path d="M-100 -30 L98 -30" stroke="#0e0b08" strokeWidth="1.5" />
-      <path d="M-52 -46 L-40 -68 L34 -68 L50 -46 Z" fill="url(#dp-hull)" />
-      <path d="M-40 -68 L34 -68" stroke="url(#dp-rim)" strokeWidth="2" />
+      <path d="M-52 -46 L-40 -68 L34 -68 L50 -46 Z" fill={`url(#dp-hull-${uid})`} />
+      <path d="M-40 -68 L34 -68" stroke={`url(#dp-rim-${uid})`} strokeWidth="2" />
       <rect x="-158" y="-61" width="120" height="5.5" rx="2" fill="#1d1812" />
       <rect x="-166" y="-63" width="14" height="9" rx="2" fill="#1d1812" />
       <rect x="10" y="-76" width="18" height="8" rx="3" fill="#1d1812" />
@@ -41,12 +43,13 @@ function Tank({ flag }: { flag?: [string, string, string] }) {
 }
 
 function Truck() {
+  const uid = useSceneUid();
   return (
     <g>
-      <rect x="-90" y="-62" width="44" height="40" rx="5" fill="url(#dp-hull)" />
+      <rect x="-90" y="-62" width="44" height="40" rx="5" fill={`url(#dp-hull-${uid})`} />
       <rect x="-84" y="-56" width="20" height="14" rx="2" fill="#f2b56b" opacity="0.35" />
-      <path d="M-42 -74 C-42 -82 92 -82 92 -74 L92 -22 L-42 -22 Z" fill="url(#dp-hull)" />
-      <path d="M-42 -78 C0 -84 60 -84 92 -78" stroke="url(#dp-rim)" strokeWidth="2.2" fill="none" />
+      <path d="M-42 -74 C-42 -82 92 -82 92 -74 L92 -22 L-42 -22 Z" fill={`url(#dp-hull-${uid})`} />
+      <path d="M-42 -78 C0 -84 60 -84 92 -78" stroke={`url(#dp-rim-${uid})`} strokeWidth="2.2" fill="none" />
       <rect x="-92" y="-24" width="186" height="8" fill="#15110d" />
       {[-70, -10, 20, 70].map((wx) => (
         <circle key={wx} cx={wx} cy="-10" r="11" fill="#15110d" stroke="#2a231b" strokeWidth="3" />
@@ -65,6 +68,7 @@ const DUST: Array<[number, number, number, number]> = [
 ];
 
 export default function Deployment({ a, mood }: SceneArtProps) {
+  const uid = useSceneUid();
   const bad = mood === 'bad';
   const good = mood === 'good';
   const glow = bad ? '#ff6a3d' : good ? '#ffd27a' : '#ffb466';
@@ -73,45 +77,45 @@ export default function Deployment({ a, mood }: SceneArtProps) {
   return (
     <svg viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice" className="art art-deployment" aria-hidden>
       <defs>
-        <linearGradient id="dp-sky" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={`dp-sky-${uid}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor={high} />
           <stop offset="0.5" stopColor={bad ? '#7a2f2c' : '#6b4766'} />
           <stop offset="0.82" stopColor={bad ? '#d0552e' : '#e48b56'} />
           <stop offset="1" stopColor={glow} />
         </linearGradient>
-        <radialGradient id="dp-sun" gradientUnits="userSpaceOnUse" cx={VX} cy={VY} r="300">
+        <radialGradient id={`dp-sun-${uid}`} gradientUnits="userSpaceOnUse" cx={VX} cy={VY} r="300">
           <stop offset="0" stopColor="#fff2cc" stopOpacity="0.95" />
           <stop offset="0.12" stopColor={glow} stopOpacity="0.7" />
           <stop offset="1" stopColor={glow} stopOpacity="0" />
         </radialGradient>
-        <linearGradient id="dp-ground" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={`dp-ground-${uid}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor={bad ? '#7a3a26' : '#9a6440'} />
           <stop offset="0.3" stopColor="#5a3826" />
           <stop offset="1" stopColor="#140d0a" />
         </linearGradient>
-        <linearGradient id="dp-road" x1="1" y1="0" x2="0" y2="0">
+        <linearGradient id={`dp-road-${uid}`} x1="1" y1="0" x2="0" y2="0">
           <stop offset="0" stopColor="#8a6a58" />
           <stop offset="0.35" stopColor="#3a2e2a" />
           <stop offset="1" stopColor="#141010" />
         </linearGradient>
-        <linearGradient id="dp-hull" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={`dp-hull-${uid}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#4a4030" />
           <stop offset="1" stopColor="#1f1a13" />
         </linearGradient>
-        <linearGradient id="dp-rim" x1="0" y1="0" x2="1" y2="0">
+        <linearGradient id={`dp-rim-${uid}`} x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stopColor={glow} stopOpacity="0.2" />
           <stop offset="1" stopColor="#ffe2b0" stopOpacity="0.95" />
         </linearGradient>
-        <filter id="dp-soft" x="-50%" y="-50%" width="200%" height="200%">
+        <filter id={`dp-soft-${uid}`} x="-50%" y="-50%" width="200%" height="200%">
           <feGaussianBlur stdDeviation="8" />
         </filter>
-        <filter id="dp-haze" x="-20%" y="-20%" width="140%" height="140%">
+        <filter id={`dp-haze-${uid}`} x="-20%" y="-20%" width="140%" height="140%">
           <feGaussianBlur stdDeviation="1.4" />
         </filter>
       </defs>
 
-      <rect width="640" height="360" fill="url(#dp-sky)" />
-      <rect width="640" height="360" fill="url(#dp-sun)" />
+      <rect width="640" height="360" fill={`url(#dp-sky-${uid})`} />
+      <rect width="640" height="360" fill={`url(#dp-sun-${uid})`} />
       <circle cx={VX} cy={VY - 4} r="13" fill="#fff4d6" opacity="0.9" />
       {/* thin dawn clouds */}
       <g fill={glow} opacity="0.35">
@@ -120,18 +124,18 @@ export default function Deployment({ a, mood }: SceneArtProps) {
         <ellipse cx="300" cy="134" rx="90" ry="2" />
       </g>
       {bad && (
-        <g className="dp-smoke" fill="#2a1414" opacity="0.6" filter="url(#dp-soft)">
+        <g className="dp-smoke" fill="#2a1414" opacity="0.6" filter={`url(#dp-soft-${uid})`}>
           <ellipse cx="560" cy="130" rx="22" ry="44" />
           <ellipse cx="590" cy="96" rx="34" ry="34" />
         </g>
       )}
       {/* distant mesas */}
       <path d="M0 160 L40 150 L70 152 L84 140 L130 140 L142 154 L220 156 L250 146 L300 148 L320 160 L380 162 L420 154 L520 156 L548 142 L600 142 L612 156 L640 158 L640 172 L0 172 Z" fill={bad ? '#5a2a30' : '#5b4566'} opacity="0.85" />
-      <path d="M0 166 L640 166 L640 174 L0 174 Z" fill={glow} opacity="0.25" filter="url(#dp-haze)" />
+      <path d="M0 166 L640 166 L640 174 L0 174 Z" fill={glow} opacity="0.25" filter={`url(#dp-haze-${uid})`} />
 
       {/* ground and highway */}
-      <rect x="0" y={VY} width="640" height={360 - VY} fill="url(#dp-ground)" />
-      <path d={`M${VX} ${VY} L0 222 L0 360 L60 360 Z`} fill="url(#dp-road)" />
+      <rect x="0" y={VY} width="640" height={360 - VY} fill={`url(#dp-ground-${uid})`} />
+      <path d={`M${VX} ${VY} L0 222 L0 360 L60 360 Z`} fill={`url(#dp-road-${uid})`} />
       <path d={`M${VX} ${VY} L0 222 M${VX} ${VY} L60 360`} stroke="#d8b48a" strokeOpacity="0.45" strokeWidth="1.2" />
       <path className="dp-lane" d={`M${VX} ${VY} L0 276`} stroke="#f2d7a8" strokeOpacity="0.6" strokeWidth="2" strokeDasharray="14 12" />
       {/* scrub and rocks on the plain, long shadows toward camera */}
@@ -145,9 +149,9 @@ export default function Deployment({ a, mood }: SceneArtProps) {
           </g>
         ))}
       </g>
-      <path d={`M${lead.s * -100 + 196} ${lead.y + 10} L${lead.s * 100 + 196} ${lead.y - 22} L${lead.s * 60 + 150} ${lead.y + 40} L${lead.s * -110 + 150} ${lead.y + 48} Z`} fill="#0c0806" opacity="0.5" filter="url(#dp-haze)" />
+      <path d={`M${lead.s * -100 + 196} ${lead.y + 10} L${lead.s * 100 + 196} ${lead.y - 22} L${lead.s * 60 + 150} ${lead.y + 40} L${lead.s * -110 + 150} ${lead.y + 48} Z`} fill="#0c0806" opacity="0.5" filter={`url(#dp-haze-${uid})`} />
       {/* dust kicked up behind the column */}
-      <g className="dp-dust" filter="url(#dp-soft)">
+      <g className="dp-dust" filter={`url(#dp-soft-${uid})`}>
         {DUST.map(([x, y, rx, ry], i) => (
           <ellipse key={i} cx={x} cy={y} rx={rx} ry={ry} fill={glow} opacity={0.32} />
         ))}
@@ -157,12 +161,12 @@ export default function Deployment({ a, mood }: SceneArtProps) {
       {COLUMN.map(({ x, kind }) => {
         const { y, s } = at(x);
         return (
-          <g key={x} transform={`translate(${x} ${y}) skewY(-8.8) scale(${s})`} filter={s < 0.3 ? 'url(#dp-haze)' : undefined}>
+          <g key={x} transform={`translate(${x} ${y}) skewY(-8.8) scale(${s})`} filter={s < 0.3 ? `url(#dp-haze-${uid})` : undefined}>
             {kind === 'tank' ? <Tank /> : <Truck />}
           </g>
         );
       })}
-      <g className="dp-dust2" filter="url(#dp-soft)">
+      <g className="dp-dust2" filter={`url(#dp-soft-${uid})`}>
         <ellipse cx="320" cy="200" rx="64" ry="18" fill={glow} opacity="0.4" />
         <ellipse cx="370" cy="190" rx="40" ry="11" fill="#e6b88a" opacity="0.35" />
       </g>
