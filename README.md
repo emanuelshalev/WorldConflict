@@ -14,9 +14,6 @@
 ![Countries](https://img.shields.io/badge/countries-41-f2a93b)
 ![LLM](https://img.shields.io/badge/LLM-optional-4fb3d9)
 
-*"This is your captain calling with an urgent warning, *
-*we're above the Gulf of Arabia, altitude is falling."*
-
 <img src="docs/images/desk.jpg" alt="The desk: a crisis card, advisor suggestions and the world map" width="900" />
 
 </div>
