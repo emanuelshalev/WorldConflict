@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { countryNames, fetchPreview, useGameStore, useViewCountry } from '../store/gameStore';
 import type { UncertainRange } from '../store/gameStore';
+import { actionLabel, pcCost } from '../lib/actions';
 
 function fmtMoney(n: number): string {
   if (n >= 1e12) return `$${(n / 1e12).toFixed(1)}T`;
@@ -68,6 +69,20 @@ const LEVEL_COLORS: Record<string, string> = {
   LAMENTABLE: '#fc9272',
   WAR: '#ff4040',
 };
+
+// Same names as the desk's "All orders" list (ui/src/lib/actions.ts)
+type DossierOrder = { type: string; icon: string; label?: string; params?: Record<string, unknown>; danger?: boolean };
+const DOSSIER_ORDERS: DossierOrder[] = [
+  { type: 'DIPLOMACY_IMPROVE_RELATIONS', icon: '🤝' },
+  { type: 'DIPLOMACY_DENOUNCE', icon: '📢' },
+  { type: 'DIPLOMACY_PROPOSE_ALLIANCE', icon: '🛡' },
+  { type: 'INTEL_GATHER', icon: '🕵' },
+  { type: 'INTEL_DESTABILIZE', icon: '💣' },
+  { type: 'MILITARY_DEPLOY_BORDER', icon: '🪖', danger: true },
+  { type: 'MILITARY_AIRSTRIKE', icon: '✈️', label: 'Strike military targets in', params: { targetType: 'MILITARY' }, danger: true },
+  { type: 'DIPLOMACY_DECLARE_WAR', icon: '⚔️', danger: true },
+];
+const DOSSIER_ORDERS_AT_WAR: DossierOrder[] = [{ type: 'DIPLOMACY_PROPOSE_CEASEFIRE', icon: '🕊' }];
 
 export function CountryDetailPanel() {
   const selectedCountryId = useGameStore((s) => s.selectedCountryId);
@@ -200,44 +215,22 @@ export function CountryDetailPanel() {
       {!view.isPlayer && !gameOver && (
         <div style={S.section}>
           <div style={S.sectionTitle}>Actions</div>
-          {!view.atWarWith.includes(useGameStore.getState().worldState?.playerCountryId ?? '') ? (
-            <>
-              <button style={S.actionBtn} onClick={() => queueAction('DIPLOMACY_IMPROVE_RELATIONS', `Court ${view.name}`)}>
-                🤝 Court them <span style={{ color: '#F2A93B' }}>◆1</span>
-              </button>
-              <button style={S.actionBtn} onClick={() => queueAction('DIPLOMACY_DENOUNCE', `Denounce ${view.name}`)}>
-                📢 Denounce publicly
-              </button>
-              <button style={S.actionBtn} onClick={() => queueAction('DIPLOMACY_PROPOSE_ALLIANCE', `Propose alliance to ${view.name}`)}>
-                🛡 Propose military pact
-              </button>
-              <button style={S.actionBtn} onClick={() => queueAction('INTEL_GATHER', `Gather intelligence on ${view.name}`)}>
-                🕵 Gather intelligence
-              </button>
-              <button style={S.actionBtn} onClick={() => queueAction('INTEL_DESTABILIZE', `Destabilize ${view.name}`)}>
-                💣 Destabilize covertly
-              </button>
-              <button style={S.actionBtn} onClick={() => queueAction('MILITARY_DEPLOY_BORDER', `Deploy troops to ${view.name} border`)}>
-                🪖 Deploy troops to border
-              </button>
+          {(!view.atWarWith.includes(useGameStore.getState().worldState?.playerCountryId ?? '')
+            ? DOSSIER_ORDERS
+            : DOSSIER_ORDERS_AT_WAR
+          ).map((o) => {
+            const label = o.label ? `${o.label} ${view.name}` : actionLabel(o.type, view.name);
+            const pc = pcCost(o.type);
+            return (
               <button
-                style={{ ...S.actionBtn, borderColor: '#7a2a2a', color: '#ff9090' }}
-                onClick={() => queueAction('MILITARY_AIRSTRIKE', `Airstrike ${view.name}`, { targetType: 'MILITARY' })}
+                key={label}
+                style={o.danger ? { ...S.actionBtn, borderColor: '#7a2a2a', color: '#ff9090' } : S.actionBtn}
+                onClick={() => queueAction(o.type, label, o.params)}
               >
-                ✈️ Launch airstrike…
+                {o.icon} {label} <span style={{ color: '#F2A93B' }}>{pc ? `◆${pc}` : 'free'}</span>
               </button>
-              <button
-                style={{ ...S.actionBtn, borderColor: '#7a2a2a', color: '#ff6060' }}
-                onClick={() => queueAction('DIPLOMACY_DECLARE_WAR', `Declare war on ${view.name}`)}
-              >
-                ⚔️ Declare war
-              </button>
-            </>
-          ) : (
-            <button style={S.actionBtn} onClick={() => queueAction('DIPLOMACY_PROPOSE_CEASEFIRE', `Propose ceasefire to ${view.name}`)}>
-              🕊 Propose ceasefire
-            </button>
-          )}
+            );
+          })}
         </div>
       )}
     </div>

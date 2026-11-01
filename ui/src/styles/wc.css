@@ -14,7 +14,7 @@
   --line-2: #3a4759;
   --text-1: #e8ecf2;
   --text-2: #a3aebf;
-  --text-3: #6f7b8d;
+  --text-3: #8693a6; /* 4.5:1+ on surfaces for small labels (WCAG AA) */
   --accent: #f2a93b;
   --accent-ink: #1b1204;
   --intel: #4fb3d9;
@@ -154,7 +154,7 @@ button {
   color: var(--good);
 }
 .delta-down {
-  color: var(--bad);
+  color: #ff6b6e; /* text-safe red: --bad fails AA at small sizes */
 }
 
 /* ---------- Title screen ---------- */
@@ -1355,6 +1355,30 @@ button {
 }
 
 /* ---------- Responsive ---------- */
+/* Laptop / tablet: keep the leader readable and switch to short stat labels */
+@media (max-width: 1200px) {
+  .hud-who {
+    min-width: 180px;
+    flex: 0 1 auto;
+  }
+  .hud-stats {
+    gap: 12px;
+  }
+  .hud-stats .lbl-long {
+    display: none;
+  }
+  .hud-stats .stat .lbl-short {
+    display: inline;
+  }
+  .stat {
+    min-width: 0;
+  }
+}
+@media (max-width: 600px) {
+  .hud-stats .stat .val small {
+    display: none; /* growth % and deltas would collide in a 52px column */
+  }
+}
 @media (max-width: 900px) {
   .game {
     grid-template-rows: auto minmax(34vh, 1fr) auto;
@@ -1492,4 +1516,82 @@ button {
   .vignette {
     opacity: 0.7;
   }
+}
+
+/* ---------- Action preview ---------- */
+.preview-card {
+  max-width: 460px;
+  width: calc(100vw - 32px);
+  background: var(--surface-1);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 20px;
+  color: var(--text-1);
+}
+.preview-card h3 {
+  margin: 0 0 4px;
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+  font-size: 20px;
+}
+.preview-summary {
+  color: var(--text-2);
+  font-size: 13px;
+  margin: 4px 0 8px;
+}
+.preview-costs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 10px 0;
+  font-size: 13px;
+  color: var(--text-2);
+}
+.preview-costs b {
+  color: var(--text-1);
+}
+.preview-label {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: 4px;
+}
+.preview-effect {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--line);
+}
+.preview-effects {
+  margin-bottom: 10px;
+}
+.preview-box {
+  border-radius: var(--r-sm);
+  padding: 10px;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+.preview-box.war {
+  background: rgba(229, 56, 59, 0.12);
+  border: 1px solid rgba(229, 56, 59, 0.5);
+  color: #ffb3b5;
+  font-weight: 600;
+}
+.preview-box.warn {
+  background: rgba(242, 169, 59, 0.08);
+  border: 1px solid rgba(242, 169, 59, 0.4);
+  color: #f4c77d;
+  font-size: 12px;
+}
+.preview-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+  justify-content: flex-end;
+}
+.muted {
+  color: var(--text-3);
 }

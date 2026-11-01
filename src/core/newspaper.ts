@@ -44,7 +44,13 @@ export function generateNewspaper(
             ? `REVOLUTION TOPPLES ${(country?.name ?? change.countryId).toUpperCase()} GOVERNMENT`
             : change.kind === "ASSASSINATION"
               ? `LEADER OF ${(country?.name ?? change.countryId).toUpperCase()} ASSASSINATED`
-              : `${(country?.name ?? change.countryId).toUpperCase()} VOTES FOR CHANGE`,
+              : change.kind === "IMPEACHMENT"
+                ? country?.politicalSystem.type === "PRESIDENTIAL_DEMOCRACY"
+                  ? `${change.oldLeader.name.toUpperCase()} IMPEACHED AND REMOVED`
+                  : `${(country?.name ?? change.countryId).toUpperCase()} GOVERNMENT FALLS IN NO-CONFIDENCE VOTE`
+                : change.isPlayerDeposed
+                  ? `VOTERS OUST ${change.oldLeader.name.toUpperCase()}`
+                  : `${(country?.name ?? change.countryId).toUpperCase()} VOTES FOR CHANGE`,
       description: change.description,
       relatedCountries: [change.countryId],
       turn,

@@ -341,6 +341,8 @@ export const ActiveWarSchema = z.object({
   attackerCasualties: z.number().default(0),
   defenderCasualties: z.number().default(0),
   exhaustion: z.number().min(0).max(100).default(0), // pressure toward ceasefire
+  // Joined to help this country (pact or appeal): the war ends when that country's own war does
+  alliedWith: z.string().optional(),
 });
 export type ActiveWar = z.infer<typeof ActiveWarSchema>;
 
@@ -486,6 +488,7 @@ export const CountryStateSchema = z.object({
   gdp: z.number().min(0),
   growthRate: z.number(),
   trendGrowth: z.number().optional(), // structural growth that shocks decay back toward
+  realGrowth: z.number().optional(), // last month's effective annual growth after war/instability/embargo drags
   debtGdpRatio: z.number().min(0),
   militaryBudgetPercent: z.number().min(0).max(40), // wartime states exceed 20% (Ukraine ~26–30%)
   baseMilitaryBudget: z.number().optional(), // peacetime share at the start: threats raise spending relative to it

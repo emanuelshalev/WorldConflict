@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { IconAlertTriangle, IconChevronDown, IconChevronUp, IconSend, IconX } from '@tabler/icons-react';
 import {
   type PendingAction,
@@ -10,32 +10,9 @@ import {
   usePlayerCountry,
 } from '../store/gameStore';
 import { ADVISOR_NAMES, arrowText, effectArrows, flag } from '../lib/format';
+import { pcCost } from '../lib/actions';
 
-// Mirrors src/core/costs.ts (PC per order)
-const PC: Record<string, number> = {
-  DIPLOMACY_IMPROVE_RELATIONS: 1,
-  DIPLOMACY_PROPOSE_ALLIANCE: 2,
-  DIPLOMACY_BREAK_ALLIANCE: 1,
-  DIPLOMACY_DECLARE_WAR: 2,
-  DIPLOMACY_PROPOSE_CEASEFIRE: 1,
-  DIPLOMACY_MEDIATE: 2,
-  MILITARY_MOBILIZE: 1,
-  MILITARY_AIRSTRIKE: 1,
-  NUCLEAR_FUND_PROGRAM: 1,
-  ECONOMY_ADJUST_MILITARY_BUDGET: 1,
-  INTEL_GATHER: 1,
-  INTEL_COUNTER_INTEL: 1,
-  INTEL_PROPAGANDA: 1,
-  INTEL_SABOTAGE: 2,
-  INTEL_DESTABILIZE: 2,
-  INTEL_SUPPORT_REBELS: 2,
-  INTEL_MISINFORMATION: 2,
-  INTEL_ASSASSINATE: 3,
-  INTEL_COUP: 3,
-  DOMESTIC_PROPAGANDA: 1,
-  DOMESTIC_REFORM: 2,
-};
-const pcCost = (type: string) => PC[type] ?? 0;
+
 
 interface OrderDef {
   type: string;
@@ -49,11 +26,11 @@ const CATALOG: Record<string, OrderDef[]> = {
   Diplomacy: [
     { type: 'DIPLOMACY_IMPROVE_RELATIONS', label: 'Court', target: true },
     { type: 'DIPLOMACY_DENOUNCE', label: 'Denounce', target: true },
-    { type: 'DIPLOMACY_PROPOSE_ALLIANCE', label: 'Offer defense pact', target: true },
-    { type: 'DIPLOMACY_PROPOSE_CEASEFIRE', label: 'Propose ceasefire', target: true },
+    { type: 'DIPLOMACY_PROPOSE_ALLIANCE', label: 'Offer defense pact to', target: true },
+    { type: 'DIPLOMACY_PROPOSE_CEASEFIRE', label: 'Propose ceasefire to', target: true },
     { type: 'DIPLOMACY_MEDIATE', label: 'Mediate peace for', target: true },
-    { type: 'DIPLOMACY_BREAK_ALLIANCE', label: 'Break pact', target: true, danger: true },
-    { type: 'DIPLOMACY_DECLARE_WAR', label: 'Declare war', target: true, danger: true },
+    { type: 'DIPLOMACY_BREAK_ALLIANCE', label: 'Break pact with', target: true, danger: true },
+    { type: 'DIPLOMACY_DECLARE_WAR', label: 'Declare war on', target: true, danger: true },
   ],
   Military: [
     { type: 'MILITARY_MOBILIZE', label: 'Mobilize forces' },
@@ -61,8 +38,8 @@ const CATALOG: Record<string, OrderDef[]> = {
     { type: 'MILITARY_PROCURE', label: 'Buy weapons' },
     { type: 'MILITARY_DEPLOY_BORDER', label: 'Mass troops facing', target: true, danger: true },
     { type: 'MILITARY_WITHDRAW_BORDER', label: 'Withdraw troops facing', target: true },
-    { type: 'MILITARY_AIRSTRIKE', label: 'Strike military targets', target: true, danger: true, params: { targetType: 'MILITARY' } },
-    { type: 'MILITARY_AIRSTRIKE', label: 'Strike nuclear sites', target: true, danger: true, params: { targetType: 'NUCLEAR' } },
+    { type: 'MILITARY_AIRSTRIKE', label: 'Strike military targets in', target: true, danger: true, params: { targetType: 'MILITARY' } },
+    { type: 'MILITARY_AIRSTRIKE', label: 'Strike nuclear sites in', target: true, danger: true, params: { targetType: 'NUCLEAR' } },
     { type: 'NUCLEAR_FUND_PROGRAM', label: 'Fund nuclear program', danger: true },
     { type: 'NUCLEAR_STRIKE', label: '☢ Nuclear strike', target: true, danger: true },
   ],
@@ -88,6 +65,7 @@ function CrisisCard({ decision }: { decision: PendingDecision }) {
   const choices = useGameStore((s) => s.decisionChoices);
   const choose = useGameStore((s) => s.chooseDecision);
   const chosen = choices[decision.id];
+  const objective = useGameStore((s) => s.worldState?.objective);
   const existential = decision.urgency === 'EXISTENTIAL';
   return (
     <div className={`crisis ${existential ? 'existential' : ''}`}>
@@ -108,10 +86,15 @@ function CrisisCard({ decision }: { decision: PendingDecision }) {
             onClick={() => choose(decision.id, o.id)}
           >
             <b>{o.label}</b>
+            {missionRisk(o, objective) && (
+              <span className="chip" style={{ color: 'var(--war)', borderColor: 'rgba(229,56,59,0.5)', marginLeft: 6 }} title={missionRisk(o, objective) ?? ''}>
+                ⚠ mission
+              </span>
+            )}
             <div className="desc">{o.description}</div>
             <div className="arrows">
-              {effectArrows(o, countryName).map((a) => (
-                <span key={a.label} className={a.good ? 'delta-up' : 'delta-down'}>
+              {effectArrows(o, countryName).map((a, i) => (
+                <span key={`${a.label}-${i}`} className={a.good ? 'delta-up' : 'delta-down'}>
                   {arrowText(a)}
                 </span>
               ))}
@@ -135,6 +118,23 @@ interface Suggestion {
 
 // Our relation with each country by month, so advisors notice when courting isn't working.
 const relationMemory = new Map<number, Record<string, number>>();
+
+/** Why an option endangers the mission (relations, stats or a war the mission forbids), or null. */
+function missionRisk(o: DecisionOption, objective: Objective | null | undefined): string | null {
+  if (!objective) return null;
+  for (const c of [...objective.primary, ...objective.bonus]) {
+    if (c.kind === 'RELATION_MIN' && c.targetId && (o.effects[`relations:${c.targetId}`] ?? 0) < 0)
+      return `Hurts a mission goal: ${c.label}`;
+    if (c.kind === 'STAT_MIN' && c.stat && (o.effects[c.stat] ?? 0) < 0) return `Hurts a mission goal: ${c.label}`;
+    if (
+      c.kind === 'NO_WAR_WITH' &&
+      o.actions.some((a) => a.type === 'DIPLOMACY_DECLARE_WAR' && a.targetCountryId === c.targetId)
+    )
+      return `Breaks the mission: ${c.label}`;
+  }
+  if (o.actions.some((a) => a.type === 'DIPLOMACY_DECLARE_WAR')) return 'Takes you to war';
+  return null;
+}
 
 const STAT_NAMES: Record<string, string> = { approval: 'Approval', stability: 'Stability', legitimacy: 'Legitimacy' };
 const INSURGENCY_ORDER = ['NONE', 'UNREST', 'REBELLION', 'GUERILLA'];
@@ -192,7 +192,7 @@ function useSuggestions(): Suggestion[] {
         }
       } else if (c.kind === 'WAR_ENDED' && c.targetId) {
         const at = c.targetId;
-        if (world.wars.some((w) => [w.attackerId, w.defenderId].includes(at)) && !me.atWarWith.includes(at))
+        if (at !== me.id && world.wars.some((w) => [w.attackerId, w.defenderId].includes(at)) && !me.atWarWith.includes(at))
           out.push({ p: 92 + boost, who: 'Foreign Minister', label: `Mediate peace for ${countryName(at)}`, why: 'Mission: this war must end. Every round of talks wears both sides down.', action: { type: 'DIPLOMACY_MEDIATE', label: `Mediate peace for ${countryName(at)}`, targetCountryId: at } });
       } else if (c.kind === 'NO_WAR_WITH' && c.targetId && !me.atWarWith.includes(c.targetId)) {
         const now = rel(c.targetId);
@@ -220,7 +220,7 @@ function useSuggestions(): Suggestion[] {
             out.push({ p, who: 'Chief of Staff', label: 'National address', why: `Mission: leadership score ${gap}. Approval is its weakest part.`, action: address });
           else if (weakest === 'prestige') {
             const partner = [...others]
-              .filter((v) => !me.atWarWith.includes(v.id) && rel(v.id) > -30 && rel(v.id) < 70 && !courtStalled(v.id))
+              .filter((v) => !me.atWarWith.includes(v.id) && !(me.history?.historicalRivals ?? []).includes(v.id) && rel(v.id) > -30 && rel(v.id) < 70 && !courtStalled(v.id))
               .sort((a, b) => b.relationWithPlayer - a.relationWithPlayer)[0];
             if (partner) out.push(court(partner.id, p, `Mission: leadership score ${gap}. World standing is its weakest part.`));
           } else
@@ -331,6 +331,16 @@ export function Desk() {
   const isLoading = useGameStore((s) => s.isLoading);
   const gameOver = useGameStore((s) => s.gameOver);
   const suggestions = useSuggestions();
+  // A fresh month ignores Execute briefly, so a double-click can't skip a month unseen
+  const advancedAt = useRef(0);
+  const turnNow = world?.turn ?? -1;
+  useEffect(() => {
+    advancedAt.current = Date.now();
+  }, [turnNow]);
+  const execute = () => {
+    if (Date.now() - advancedAt.current < 900) return;
+    executeTurn();
+  };
   const [showAll, setShowAll] = useState(false);
   const [target, setTarget] = useState<string>('');
   const [collapsed, setCollapsed] = useState(false);
@@ -364,7 +374,7 @@ export function Desk() {
     <section className="desk">
       <div className="desk-head">
         <h3>
-          Your desk · <b>{pendingDecisions.length > 0 ? `${pendingDecisions.length} crisis${pendingDecisions.length > 1 ? 'es' : ''}` : 'quiet month'}</b>
+          Your desk · <b>{pendingDecisions.length > 0 ? `${pendingDecisions.length} ${pendingDecisions.length > 1 ? 'crises' : 'crisis'}` : 'quiet month'}</b>
         </h3>
         <button className="wc-btn ghost" onClick={() => setCollapsed((c) => !c)} title={collapsed ? 'Expand' : 'Collapse'}>
           {collapsed ? <IconChevronUp size={16} /> : <IconChevronDown size={16} />}
@@ -472,7 +482,7 @@ export function Desk() {
             )}
             {unanswered.length > 0 && (
               <div className="hint" style={{ color: 'var(--accent)' }}>
-                <IconAlertTriangle size={13} style={{ verticalAlign: -2 }} /> {unanswered.length} crisis unanswered — it will resolve on its own
+                <IconAlertTriangle size={13} style={{ verticalAlign: -2 }} /> {unanswered.length === 1 ? '1 crisis unanswered — it will resolve on its own' : `${unanswered.length} crises unanswered — they will resolve on their own`}
               </div>
             )}
             {pcLeft < 0 && (
@@ -480,7 +490,7 @@ export function Desk() {
                 <IconAlertTriangle size={13} style={{ verticalAlign: -2 }} /> Orders exceed political capital by {-pcLeft}: remove one or the last will be refused
               </div>
             )}
-            <button className="wc-btn primary big" disabled={isLoading} onClick={() => executeTurn()}>
+            <button className="wc-btn primary big" disabled={isLoading} onClick={execute}>
               <IconSend size={18} /> {isLoading ? 'Resolving…' : 'Execute month'}
             </button>
             <div className="hint">

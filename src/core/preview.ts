@@ -10,6 +10,7 @@ import {
 } from "./systems/diplomacy.js";
 import { effectiveForce, monthlyDefenseBudgetM } from "./systems/military.js";
 import { isNuclearOperational } from "./systems/nuclear.js";
+import { reformHeadroom } from "./systems/stability.js";
 import { possessive } from "./text.js";
 import type { Action, WorldState } from "./types.js";
 
@@ -443,14 +444,34 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
     }
     case "DOMESTIC_PROPAGANDA": {
       base.summary = "Saturate the airwaves with the government's achievements.";
-      effects.push(eff(actor.name, "Legitimacy", "+5", ""));
-      effects.push(eff(actor.name, "Approval", "+4", ""));
+      // Same rule as the engine: each address in the last 6 months cuts the effect by 40%
+      const recent = world.director.propagandaTurns.filter((t) => world.turn - t < 6).length;
+      const k = 0.6 ** recent;
+      const note = recent > 0 ? `${Math.round(k * 100)}% effect: repetition dulls the message` : "";
+      const fmt = (v: number) => `+${Math.round(v * 10) / 10}`;
+      const pressPenalty = recent >= 2 && actor.regimeType === "DEMOCRACY";
+      effects.push(
+        eff(
+          actor.name,
+          "Legitimacy",
+          pressPenalty ? fmt(5 * k - 2) : fmt(5 * k),
+          pressPenalty ? "The press mocks the spin (−2)" : note,
+        ),
+      );
+      effects.push(eff(actor.name, "Approval", fmt(4 * k), note));
+      effects.push(eff(actor.name, "Stability", fmt(2 * k), ""));
       break;
     }
     case "DOMESTIC_REFORM": {
       base.summary = "Launch structural reforms: courts, markets, administration.";
-      effects.push(eff(actor.name, "Stability", "+6", ""));
-      effects.push(eff(actor.name, "Legitimacy", "+4", ""));
+      const st = Math.round(6 * reformHeadroom(actor.stability) * 10) / 10;
+      const lg = Math.round(4 * reformHeadroom(actor.legitimacy) * 10) / 10;
+      const late = actor.stability > 55 || actor.legitimacy > 55;
+      effects.push(
+        eff(actor.name, "Stability", `+${st}`, late ? "Less when things are already good" : ""),
+      );
+      effects.push(eff(actor.name, "Legitimacy", `+${lg}`, ""));
+      effects.push(eff(actor.name, "Approval", "+2", ""));
       if (actor.personality.ideologicalRigidity > 70)
         risks.push("Hardline factions resist reform (-2 legitimacy).");
       break;

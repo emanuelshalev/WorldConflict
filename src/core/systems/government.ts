@@ -319,8 +319,9 @@ export function runGovernmentDynamics(world: WorldState, rng: SeededRandom): Gov
     const coupPossible = consolidated
       ? country.stability < 8 && country.legitimacy < 15
       : coupProne || country.stability < 15;
-    // A consolidated democracy removes a failing leader through its institutions
-    if (isPlayer && consolidated && crisis && !coupPossible) {
+    // A democracy removes a failing leader through its institutions (impeachment,
+    // no-confidence) — consolidated or not, as long as the army isn't the arbiter
+    if (isPlayer && country.regimeType === "DEMOCRACY" && crisis && !coupPossible) {
       const d = world.director;
       const warned = d.coupWarnedTurn !== null && world.turn - d.coupWarnedTurn <= 8;
       if (!warned) {
@@ -332,8 +333,7 @@ export function runGovernmentDynamics(world: WorldState, rng: SeededRandom): Gov
       let risk =
         (30 - Math.min(30, country.legitimacy)) * 0.0022 +
         (25 - Math.min(25, country.stability)) * 0.0022;
-      if (world.turn < d.coupShieldUntil) risk *= 0.25;
-      if (world.difficulty === "ANALYST") risk *= 0.6;
+      risk = collapseAdjusted(risk, country, world);
       if (rng.next() < risk) {
         const change = executeOuster(world, country, rng);
         changes.push(change);
@@ -365,8 +365,7 @@ export function runGovernmentDynamics(world: WorldState, rng: SeededRandom): Gov
           d.coupWarnedTurn = world.turn;
           continue;
         }
-        if (world.turn < d.coupShieldUntil) risk *= 0.25;
-        if (world.difficulty === "ANALYST") risk *= 0.6;
+        risk = collapseAdjusted(risk, country, world);
       }
       if (rng.next() < risk) {
         const change = executeCoup(world, country, rng, isPlayer);
@@ -405,7 +404,19 @@ export function runGovernmentDynamics(world: WorldState, rng: SeededRandom): Gov
   return { changes, events };
 }
 
-const INCUMBENCY_FATIGUE = 5;
+/**
+ * Player removal risk after shields and difficulty. Below 10 legitimacy nothing
+ * shields a leader nobody believes in any more, and the danger grows.
+ */
+function collapseAdjusted(risk: number, country: CountryState, world: WorldState): number {
+  let r = risk;
+  if (country.legitimacy < 10) r *= 1.6;
+  else if (world.turn < world.director.coupShieldUntil) r *= 0.25;
+  if (world.difficulty === "ANALYST") r *= 0.6;
+  return r;
+}
+
+const INCUMBENCY_FATIGUE = 7;
 
 function holdElection(
   world: WorldState,

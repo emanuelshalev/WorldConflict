@@ -42,8 +42,12 @@ export function denounce(
   actor: CountryState,
   target: CountryState,
   recentDenunciations = 0,
+  maxApproval = Number.POSITIVE_INFINITY,
 ): number {
-  const approvalDelta = denounceApprovalDelta(actor, target, recentDenunciations);
+  const approvalDelta = Math.min(
+    maxApproval,
+    denounceApprovalDelta(actor, target, recentDenunciations),
+  );
   shiftRelation(actor, target.id, -12);
   shiftRelation(target, actor.id, -15);
   // Words are cheap: denunciations add a little tension, not a crisis

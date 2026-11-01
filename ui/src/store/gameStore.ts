@@ -44,6 +44,7 @@ export interface CountryFull {
   iso3: string;
   gdp: number;
   growthRate: number;
+  realGrowth?: number; // actual annualised GDP change (what the HUD shows)
   trendGrowth?: number;
   debtGdpRatio: number;
   militaryBudgetPercent: number;

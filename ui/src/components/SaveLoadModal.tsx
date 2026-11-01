@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { IconDeviceFloppy, IconHome, IconTrash, IconX } from '@tabler/icons-react';
 import { fetchSaves, loadGame, useGameStore } from '../store/gameStore';
 import { flag } from '../lib/format';
+import { useModalFocus } from '../lib/useModalFocus';
 
 const API_BASE = (import.meta.env.VITE_API_BASE ?? '/api').replace(/\/$/, '');
 
@@ -95,9 +96,10 @@ function SavesList({ onClose }: { onClose: () => void }) {
 export function SaveLoadModal() {
   const activeModal = useGameStore((s) => s.activeModal);
   const closeModal = useGameStore((s) => s.closeModal);
+  const ref = useModalFocus<HTMLDivElement>(activeModal === 'saveLoad');
   if (activeModal !== 'saveLoad') return null;
   return (
-    <div className="overlay" onClick={closeModal} style={{ zIndex: 110 }}>
+    <div ref={ref} className="overlay" onClick={closeModal} style={{ zIndex: 110 }} role="dialog" aria-modal="true" aria-label="Saved games">
       <SavesList onClose={closeModal} />
     </div>
   );

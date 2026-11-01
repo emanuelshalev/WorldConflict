@@ -221,7 +221,8 @@ body {
 }
 
 /* MapLibre Popup Styling */
-.maplibregl-popup-content {
+/* Scoped so maplibre-gl.css (loaded later) cannot turn it white */
+.map-stage .maplibregl-popup .maplibregl-popup-content {
   background: #141b27;
   color: #e8ecf2;
   border: 1px solid #2a3546;
@@ -2049,4 +2050,10 @@ body {
 
 .end-turn-btn .btn-arrow {
   font-size: 18px;
+}
+
+.map-stage .maplibregl-popup-anchor-top .maplibregl-popup-tip,
+.map-stage .maplibregl-popup-anchor-bottom .maplibregl-popup-tip {
+  border-top-color: #141b27;
+  border-bottom-color: #141b27;
 }

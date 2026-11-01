@@ -99,8 +99,8 @@ export function Hud() {
           <StatLabel label="Economy" short="GDP" />
           <div className="val">
             {money(me.gdp)}
-            <small className={me.growthRate >= 0 ? 'delta-up' : 'delta-down'}>
-              {(me.growthRate * 100).toFixed(1)}%
+            <small className={(me.realGrowth ?? me.growthRate) >= 0 ? 'delta-up' : 'delta-down'} title="Real growth, annualised: what actually happened to GDP">
+              {((me.realGrowth ?? me.growthRate) * 100).toFixed(1)}%
             </small>
           </div>
         </div>

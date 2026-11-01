@@ -8,6 +8,7 @@ import {
   llmRequestBody,
   useGameStore,
 } from '../store/gameStore';
+import { useModalFocus } from '../lib/useModalFocus';
 
 const CHAT_TEST_URL = `${(import.meta.env.VITE_API_BASE ?? '/api').replace(/\/$/, '')}/chat/test`;
 
@@ -213,9 +214,10 @@ function Inner({ onClose }: { onClose: () => void }) {
 export function SettingsModal() {
   const activeModal = useGameStore((s) => s.activeModal);
   const closeModal = useGameStore((s) => s.closeModal);
+  const ref = useModalFocus<HTMLDivElement>(activeModal === 'settings');
   if (activeModal !== 'settings') return null;
   return (
-    <div className="overlay" onClick={closeModal} style={{ zIndex: 110 }}>
+    <div ref={ref} className="overlay" onClick={closeModal} style={{ zIndex: 110 }} role="dialog" aria-modal="true" aria-label="Settings">
       <Inner onClose={closeModal} />
     </div>
   );

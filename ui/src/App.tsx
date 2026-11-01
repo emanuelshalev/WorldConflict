@@ -1,6 +1,6 @@
 import './App.css'
 import './styles/wc.css'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { IconX } from '@tabler/icons-react'
 import { MapView } from './components/MapView'
 import { SaveLoadModal } from './components/SaveLoadModal'
@@ -80,7 +80,31 @@ function Toast() {
   )
 }
 
+/** Escape closes the topmost layer: modal, then Chronicle, then drawer, then dossier. */
+function useEscapeToClose() {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      const s = useGameStore.getState()
+      if (s.showLogin) useGameStore.setState({ showLogin: false })
+      else if (s.activeModal && s.activeModal !== 'endGame') s.closeModal()
+      else if (s.showChronicle) {
+        s.setShowChronicle(false)
+        if (s.gameOver) s.openModal('endGame')
+      }
+      else if (s.drawer) s.setDrawer(null)
+      else if (s.showBackstory) s.dismissBackstory()
+      else if (s.selectedCountryId) s.selectCountry(null)
+      else return
+      e.preventDefault()
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [])
+}
+
 function App() {
+  useEscapeToClose()
   const screen = useGameStore((s) => s.screen)
   const showLogin = useGameStore((s) => s.showLogin)
   const isLoading = useGameStore((s) => s.isLoading)

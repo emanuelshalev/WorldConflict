@@ -268,7 +268,8 @@ describe("Release-candidate fixes", () => {
       generateDeterministicIntents(w),
     ).newState;
     const details = (next.turnReport?.orders ?? []).filter((o) => o.label.startsWith("Denounce")).map((o) => o.detail);
-    expect(details).toEqual(["Approval +2: the public enjoys strength", "Approval +2: the public enjoys strength"]);
+    // Only the first denunciation of the month moves voters
+    expect(details).toEqual(["Approval +2: the public enjoys strength", "No effect on approval"]);
     expect(next.director.denounceTurns).toEqual([w.turn]);
   });
 
@@ -298,5 +299,45 @@ describe("Release-candidate fixes", () => {
       if (s.eventQueue.some((e) => e.title.startsWith("OIL SHOCK")) || s.newspaper.some((n) => n.headline.includes("OIL SHOCK"))) shocks++;
     }
     expect(shocks).toBeLessThanOrEqual(3); // the old rule fired 5 times on this seed
+  });
+});
+
+describe("Exploit guards (persona round 3)", () => {
+  it("rejects a duplicate order and caps orders per month", () => {
+    const w = loader.newGame({ scenarioId: "2026", playerCountryId: "IRN", seed: 1, mode: "TERM" });
+    w.politicalCapital = 99;
+    const spam = Array.from({ length: 20 }, () => ({ type: "DIPLOMACY_DENOUNCE" as const, targetCountryId: "USA" }));
+    const next = engine.executeTurn(w, spam, generateDeterministicIntents(w)).newState;
+    const orders = next.turnReport?.orders ?? [];
+    expect(orders.filter((o) => o.ok)).toHaveLength(1);
+    expect(orders.filter((o) => o.detail === "Already ordered this month")).toHaveLength(19);
+    expect(get(next, "IRN").approval - get(w, "IRN").approval).toBeLessThan(10);
+
+    const many = ["USA", "ISR", "SAU", "ARE", "GBR", "FRA", "DEU", "JPN"].map((id) => ({
+      type: "DIPLOMACY_DENOUNCE" as const,
+      targetCountryId: id,
+    }));
+    const capped = engine.executeTurn(w, many, generateDeterministicIntents(w)).newState;
+    expect((capped.turnReport?.orders ?? []).filter((o) => o.detail.startsWith("At most"))).toHaveLength(2);
+  });
+
+  it("rejects a negative or absurd weapons purchase instead of minting GDP", () => {
+    const w = loader.newGame({ scenarioId: "2026", playerCountryId: "PRK", seed: 1, mode: "LEGACY" });
+    const gdp = get(w, "PRK").gdp;
+    const next = engine.executeTurn(w, [{ type: "MILITARY_PROCURE", value: -500000 }], []).newState;
+    expect(get(next, "PRK").gdp).toBeLessThan(gdp * 1.1);
+    expect(get(next, "PRK").airpower).toBeGreaterThanOrEqual(0);
+  });
+
+  it("puts AI pact offers on the player's desk instead of signing them", () => {
+    const w = loader.newGame({ scenarioId: "2026", playerCountryId: "BRA", seed: 1, mode: "TERM" });
+    const usa = get(w, "USA");
+    usa.relations.BRA = 80;
+    get(w, "BRA").relations.USA = 60;
+    const next = engine.executeTurn(w, [], [
+      { countryId: "USA", actions: [{ type: "DIPLOMACY_PROPOSE_ALLIANCE", targetCountryId: "BRA" }], reasoning: "" },
+    ]).newState;
+    expect(get(next, "BRA").alliances).not.toContain("USA");
+    expect(next.pendingDecisions.some((d) => d.templateId === "pact_offer")).toBe(true);
   });
 });

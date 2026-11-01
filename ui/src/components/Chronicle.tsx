@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { countryName, useGameStore, usePlayerCountry } from '../store/gameStore';
 import { flag, money, monthLabel } from '../lib/format';
+import { useModalFocus } from '../lib/useModalFocus';
 
 const MOMENT_COLOR: Record<string, string> = {
   'CLOSE CALL': '#b3261e',
@@ -46,6 +47,7 @@ export function Chronicle() {
   const gameOver = useGameStore((s) => s.gameOver);
   const openModal = useGameStore((s) => s.openModal);
   const me = usePlayerCountry();
+  const ref = useModalFocus<HTMLDivElement>(!!(show && world && me));
   if (!show || !world || !me) return null;
 
   const news = world.newspaper;
@@ -66,7 +68,7 @@ export function Chronicle() {
   };
 
   return (
-    <div className="overlay" onClick={close}>
+    <div ref={ref} className="overlay" onClick={close} role="dialog" aria-modal="true" aria-label="Monthly report">
       <article className="paper" onClick={(e) => e.stopPropagation()}>
         <div className="masthead">
           <h2>The World Chronicle</h2>

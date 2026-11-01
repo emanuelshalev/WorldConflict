@@ -31,7 +31,8 @@ export class GameDatabase {
     const saveGame = await prisma.saveGame.create({
       data: {
         name,
-        worldState: JSON.stringify(worldState),
+        // Never persist a state that could not be loaded again
+        worldState: JSON.stringify(WorldStateSchema.parse(worldState)),
         playerCountry: worldState.playerCountryId,
         playerId: playerId ?? null,
         leaderName: leaderName ?? null,
@@ -92,7 +93,8 @@ export class GameDatabase {
     await prisma.saveGame.update({
       where: { id: saveId },
       data: {
-        worldState: JSON.stringify(worldState),
+        // Never persist a state that could not be loaded again
+        worldState: JSON.stringify(WorldStateSchema.parse(worldState)),
         turn: worldState.turn,
         ...(llmUsage ? { llmUsage: JSON.stringify(llmUsage) } : {}),
       },

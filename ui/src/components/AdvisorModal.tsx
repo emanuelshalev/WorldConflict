@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { llmRequestBody, useGameStore } from '../store/gameStore'
 import type { CountryFull, War, WorldState } from '../store/gameStore';
 import { answerQuestion } from '../utils/advisorBrain';
+import { useModalFocus } from '../lib/useModalFocus';
 
 const ADVISOR_API_URL = `${(import.meta.env.VITE_API_BASE ?? '/api').replace(/\/$/, '')}/chat/advisor`;
 
@@ -402,6 +403,7 @@ export function AdvisorModal() {
     }
   };
 
+  const ref = useModalFocus<HTMLDivElement>(activeModal === 'advisor');
   if (activeModal !== 'advisor') return null;
 
   const handleSelectAdvisor = (advisorId: string) => {
@@ -469,7 +471,7 @@ export function AdvisorModal() {
   const selectedAdvisor = ADVISORS.find((a) => a.id === activeAdvisorRole);
 
   return (
-    <div className="modal-overlay" onClick={closeModal}>
+    <div ref={ref} className="modal-overlay" onClick={closeModal} role="dialog" aria-modal="true" aria-label="Advisor">
       <div className="modal modal-large" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>Advisors</h2>

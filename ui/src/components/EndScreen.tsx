@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { IconCopy, IconDownload, IconRefresh, IconShare } from '@tabler/icons-react';
 import { fetchEndReport, recordDailyResult, startGame, useGameStore, usePlayerCountry } from '../store/gameStore';
 import { flag } from '../lib/format';
+import { useModalFocus } from '../lib/useModalFocus';
 
 const REASON_TEXT: Record<string, string> = {
   TERM_COMPLETED: 'MISSION COMPLETE',
@@ -44,6 +45,7 @@ function drawCard(opts: {
   daily: string | null;
   conditions: Array<{ met: boolean; bonus: boolean }>;
   site: string;
+  leader: string;
 }): string {
   const c = document.createElement('canvas');
   c.width = 1200;
@@ -73,7 +75,7 @@ function drawCard(opts: {
   g.fillText(`${opts.flagEmoji} ${opts.country}`.toUpperCase(), 60, 195);
   g.font = '500 32px Inter, sans-serif';
   g.fillStyle = '#a3aebf';
-  g.fillText(opts.title, 60, 245);
+  g.fillText(opts.leader ? `${opts.title} · ${opts.leader}` : opts.title, 60, 245);
   g.fillText(opts.archetype, 60, 290);
   if (opts.headline) {
     g.font = 'italic 500 26px Georgia, serif';
@@ -106,9 +108,14 @@ function drawCard(opts: {
   g.font = '700 56px "IBM Plex Mono", monospace';
   g.fillText(String(opts.score), 1040, 450);
   g.textAlign = 'left';
-  g.fillStyle = '#6f7b8d';
+  // Legends, so strangers can read the card
+  g.fillStyle = '#8693a6';
+  g.font = '500 18px "IBM Plex Mono", monospace';
+  g.fillText('Each square is a month: 🟩 steady  🟨 strained  🟥 on the edge  ⬛ fell', 60, 535);
+  g.fillText('Top bar: one segment per objective (green met, red missed, gold bonus)', 60, 560);
+  g.fillStyle = '#a3aebf';
   g.font = '500 22px "IBM Plex Mono", monospace';
-  g.fillText(`Can you do better? Lead your nation at ${opts.site}`, 60, 590);
+  g.fillText(`Can you do better? ${opts.site}`, 60, 600);
   return c.toDataURL('image/png');
 }
 
@@ -118,6 +125,22 @@ function fit(g: CanvasRenderingContext2D, text: string, width: number): string {
   let t = text;
   while (t.length > 4 && g.measureText(`${t}…`).width > width) t = t.slice(0, -1);
   return `${t}…`;
+}
+
+/** The story of the session in one line: the latest world headline that isn't the player's own order. */
+function storyHeadline(news: Array<{ headline: string }>, playerName: string): string {
+  const pick =
+    news.find((n) => !/'S ANSWER TO|’S ANSWER TO/i.test(n.headline) && !n.headline.toUpperCase().startsWith(playerName.toUpperCase())) ??
+    news[0];
+  return (pick?.headline ?? '').replace(/["“”]/g, '');
+}
+
+/** Public URL for share text and card: configurable, never "localhost". */
+function publicSite(): string {
+  const env = (import.meta.env.VITE_PUBLIC_URL as string | undefined)?.replace(/^https?:\/\//, '');
+  if (env) return env;
+  const host = typeof window !== 'undefined' ? window.location.host : '';
+  return host && !/localhost|127\.0\.0\.1/.test(host) ? host : 'worldconflict.game';
 }
 
 export function EndScreen() {
@@ -147,9 +170,10 @@ export function EndScreen() {
   const outcome = world?.outcome ?? report?.outcome ?? null;
   const lost = !outcome?.victory;
   const grid = useMemo(
-    () => monthGrid(report?.scoreHistory ?? world?.scoreHistory ?? [], lost),
+    () => monthGrid((report?.scoreHistory ?? world?.scoreHistory ?? []).slice(0, world?.maxTurns ?? 999), lost),
     [report, world, lost],
   );
+  const ref = useModalFocus<HTMLDivElement>(!!(open && gameOver && world && me));
   if (!open || !gameOver || !world || !me) return null;
 
   const stars = outcome?.stars ?? 0;
@@ -157,7 +181,7 @@ export function EndScreen() {
   const verdict = REASON_TEXT[gameOver.reason] ?? gameOver.reason;
   const title = world.objective?.title ?? (world.mode === 'TERM' ? 'One Term' : 'Legacy');
   const archetype = report?.assessment.classification ?? '';
-  const shareText = `WORLD CONFLICT${isDaily ? ` · Daily ${new Date().toISOString().slice(0, 10)}` : ''} — ${flag(me.id)} ${me.name}: ${title}\n${verdict} · ${'★'.repeat(stars)}${'☆'.repeat(3 - stars)} · grade ${grade} · score ${world.score?.total ?? 0}\nMonth ${Math.min(world.turn, world.maxTurns)}/${world.maxTurns}${world.newspaper?.[0]?.headline ? ` · "${world.newspaper[0].headline}"` : ''}\n${grid}\n${archetype}${typeof window !== 'undefined' ? `\n${window.location.origin}` : ''}`;
+  const shareText = `WORLD CONFLICT${isDaily ? ` · Daily ${new Date().toISOString().slice(0, 10)}` : ''} — ${flag(me.id)} ${me.name}: ${title}\n${verdict} · ${'★'.repeat(stars)}${'☆'.repeat(3 - stars)} · grade ${grade} · score ${world.score?.total ?? 0}\nMonth ${Math.min(world.turn, world.maxTurns)}/${world.maxTurns}${storyHeadline(world.newspaper ?? [], me.name) ? ` · "${storyHeadline(world.newspaper ?? [], me.name)}"` : ''}\n${grid}\n${archetype}\nhttps://${publicSite()}`;
 
   const share = async () => {
     try {
@@ -183,10 +207,11 @@ export function EndScreen() {
       victory: !lost,
       score: world.score?.total ?? 0,
       month: `MONTH ${Math.min(world.turn, world.maxTurns)}/${world.maxTurns}`,
-      headline: world.newspaper?.[0]?.headline ?? '',
+      headline: storyHeadline(world.newspaper ?? [], me.name),
+      leader: me.leader?.name ?? '',
       daily: isDaily ? new Date().toISOString().slice(0, 10) : null,
       conditions: outcome?.conditions ?? [],
-      site: window.location.host || 'worldconflict.game',
+      site: publicSite(),
     });
     const a = document.createElement('a');
     a.href = url;
@@ -203,7 +228,7 @@ export function EndScreen() {
     });
 
   return (
-    <div className="overlay">
+    <div ref={ref} className="overlay" role="dialog" aria-modal="true" aria-label="Result">
       <div className="end">
         <div className="end-hero">
           <div style={{ flex: 1 }}>

@@ -1,6 +1,7 @@
 import { IconBook2, IconNews, IconUsers, IconWorld, IconX } from '@tabler/icons-react';
 import { countryName, useGameStore, usePlayerCountry } from '../store/gameStore';
 import { flag, monthLabel } from '../lib/format';
+import { useModalFocus } from '../lib/useModalFocus';
 
 const CABINET = [
   { id: 'FOREIGN_MINISTER', name: 'Foreign Minister', lens: 'Alliances, rivals, the art of the deal' },
@@ -14,6 +15,7 @@ const CABINET = [
 export function Drawers() {
   const drawer = useGameStore((s) => s.drawer);
   const setDrawer = useGameStore((s) => s.setDrawer);
+  const ref = useModalFocus<HTMLElement>(!!drawer);
   if (!drawer) return null;
   const tabs = [
     { id: 'cabinet', label: 'Cabinet', icon: <IconUsers size={15} /> },
@@ -24,7 +26,7 @@ export function Drawers() {
   return (
     <>
       <div className="drawer-backdrop" onClick={() => setDrawer(null)} />
-      <aside className="drawer" role="dialog">
+      <aside ref={ref} className="drawer" role="dialog" aria-modal="true" aria-label="Side panel">
         <div className="drawer-head">
           <h3>{tabs.find((t) => t.id === drawer)?.label}</h3>
           <button className="icon-btn" onClick={() => setDrawer(null)} aria-label="Close">

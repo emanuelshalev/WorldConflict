@@ -1,20 +1,26 @@
+import { pcCost } from '../lib/actions';
+import { useModalFocus } from '../lib/useModalFocus';
 import { useGameStore } from '../store/gameStore';
 import './ActionPreviewModal.css';
 
 /**
  * Shows the predicted consequences of the most recently queued action,
  * straight from the simulation's preview engine. The player confirms with
- * full knowledge of effects, costs, success odds and risks.
+ * full knowledge of effects, costs, success odds and risks. Dismissing it
+ * (backdrop, Escape) keeps the order queued; only "Cancel order" removes it.
  */
 export function ActionPreviewModal() {
   const { activeModal, pendingActions, closeModal, removePendingAction } = useGameStore();
+  const open = activeModal === 'actionPreview';
+  const ref = useModalFocus<HTMLDivElement>(open);
 
-  if (activeModal !== 'actionPreview') return null;
+  if (!open) return null;
 
   const index = pendingActions.length - 1;
   const currentAction = pendingActions[index];
   if (!currentAction) return null;
   const preview = currentAction.preview;
+  const pc = pcCost(currentAction.type);
 
   const handleConfirm = () => closeModal();
   const handleCancel = () => {
@@ -23,37 +29,47 @@ export function ActionPreviewModal() {
   };
 
   return (
-    <div className="modal-overlay" onClick={handleCancel}>
+    <div className="modal-overlay" onClick={preview?.blocked ? handleCancel : handleConfirm}>
       <div
-        className="modal-content"
-        style={{ maxWidth: 460, background: '#12151d', border: '1px solid #2a2e3a', borderRadius: 10, padding: 20, color: '#ddd' }}
+        ref={ref}
+        className="modal-content preview-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="preview-title"
+        tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
       >
-        <h3 style={{ margin: '0 0 4px 0', color: '#fff' }}>{currentAction.label}</h3>
+        <h3 id="preview-title">{currentAction.label}</h3>
         {preview ? (
           <>
-            <p style={{ color: '#aab', fontSize: 13, marginTop: 4 }}>{preview.summary}</p>
+            <p className="preview-summary">{preview.summary}</p>
             {preview.missionWarning && (
-              <div role="alert" style={{ background: '#3a1216', border: '1px solid #e5383b', borderRadius: 6, padding: 10, color: '#ffb3b5', fontSize: 13, fontWeight: 600, marginBottom: 8 }}>
+              <div role="alert" className="preview-box war">
                 ⚠ {preview.missionWarning}
               </div>
             )}
 
             {preview.blocked ? (
-              <div style={{ background: '#2a1518', border: '1px solid #7a2a2a', borderRadius: 6, padding: 10, color: '#ff9090', fontSize: 13 }}>
-                ⛔ {preview.blocked}
-              </div>
+              <div className="preview-box war">⛔ {preview.blocked}</div>
             ) : (
               <>
-                <div style={{ display: 'flex', gap: 16, margin: '10px 0', fontSize: 13 }}>
+                <div className="preview-costs">
                   <span>
-                    💵 Cost: <b style={{ color: preview.affordable ? '#9c9' : '#ff6060' }}>${preview.costM}M</b>
-                    <span style={{ color: '#667' }}> / ${preview.budgetM}M budget</span>
+                    Capital <b className="num">{pc > 0 ? `◆${pc}` : 'free'}</b>
                   </span>
+                  {preview.costM > 0 && (
+                    <span>
+                      Budget{' '}
+                      <b className={`num ${preview.affordable ? '' : 'delta-down'}`}>${preview.costM}M</b>
+                      <span className="muted"> of ${preview.budgetM}M</span>
+                    </span>
+                  )}
                   {preview.successChance !== null && (
                     <span>
-                      🎯 Success:{' '}
-                      <b style={{ color: preview.successChance > 60 ? '#9c9' : preview.successChance > 35 ? '#e6a23c' : '#ff6060' }}>
+                      Success{' '}
+                      <b
+                        className={`num ${preview.successChance > 60 ? 'delta-up' : preview.successChance > 35 ? '' : 'delta-down'}`}
+                      >
                         {preview.successChance}%
                       </b>
                     </span>
@@ -61,17 +77,15 @@ export function ActionPreviewModal() {
                 </div>
 
                 {preview.effects.length > 0 && (
-                  <div style={{ marginBottom: 10 }}>
-                    <div style={{ fontSize: 10, letterSpacing: 1, textTransform: 'uppercase', color: '#778', marginBottom: 4 }}>
-                      Predicted effects
-                    </div>
+                  <div className="preview-effects">
+                    <div className="preview-label">Predicted effects</div>
                     {preview.effects.map((e, i) => (
-                      <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '3px 0', borderBottom: '1px solid #1c2029' }}>
+                      <div key={i} className="preview-effect">
                         <span>
                           {e.target} · {e.metric}
-                          {e.note && <span style={{ color: '#667', fontSize: 11 }}> — {e.note}</span>}
+                          {e.note && <span className="muted"> — {e.note}</span>}
                         </span>
-                        <b style={{ color: e.delta.startsWith('-') ? '#ff8080' : e.delta.startsWith('+') ? '#8c8' : '#dda' }}>
+                        <b className={`num ${e.delta.startsWith('-') ? 'delta-down' : e.delta.startsWith('+') ? 'delta-up' : ''}`}>
                           {e.delta}
                         </b>
                       </div>
@@ -80,11 +94,9 @@ export function ActionPreviewModal() {
                 )}
 
                 {preview.risks.length > 0 && (
-                  <div style={{ background: '#1f1a12', border: '1px solid #6a5424', borderRadius: 6, padding: 10, fontSize: 12 }}>
+                  <div className="preview-box warn">
                     {preview.risks.map((r, i) => (
-                      <div key={i} style={{ color: '#e8c06a', marginBottom: 3 }}>
-                        ⚠ {r}
-                      </div>
+                      <div key={i}>⚠ {r}</div>
                     ))}
                   </div>
                 )}
@@ -92,31 +104,23 @@ export function ActionPreviewModal() {
             )}
           </>
         ) : (
-          <p style={{ color: '#888' }}>No forecast available for this action.</p>
+          <p className="muted">No forecast available for this order.</p>
         )}
 
-        <div style={{ display: 'flex', gap: 8, marginTop: 16, justifyContent: 'flex-end' }}>
-          <button
-            onClick={handleCancel}
-            style={{ background: '#1a1e28', border: '1px solid #2a2e3a', color: '#ccc', borderRadius: 6, padding: '8px 16px', cursor: 'pointer' }}
-          >
-            Cancel action
-          </button>
-          {!preview?.blocked && (
-            <button
-              onClick={handleConfirm}
-              style={{ background: '#2a6dd9', border: 'none', color: '#fff', borderRadius: 6, padding: '8px 16px', cursor: 'pointer', fontWeight: 600 }}
-            >
-              Queue action
-            </button>
-          )}
-          {preview?.blocked && (
-            <button
-              onClick={handleCancel}
-              style={{ background: '#7a2a2a', border: 'none', color: '#fff', borderRadius: 6, padding: '8px 16px', cursor: 'pointer' }}
-            >
+        <div className="preview-actions">
+          {preview?.blocked ? (
+            <button className="wc-btn primary" onClick={handleCancel}>
               Understood
             </button>
+          ) : (
+            <>
+              <button className="wc-btn ghost" onClick={handleCancel}>
+                Cancel order
+              </button>
+              <button className="wc-btn primary" onClick={handleConfirm}>
+                Keep order
+              </button>
+            </>
           )}
         </div>
       </div>

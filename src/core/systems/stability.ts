@@ -148,9 +148,11 @@ export function applyPropaganda(country: CountryState, effect = 1): void {
   country.stability = clamp(country.stability + 2 * effect);
 }
 
+/** Diminishing returns: the last points toward a perfect state are the hardest. */
+export const reformHeadroom = (v: number) => Math.min(1, Math.max(0.15, (100 - v) / 45));
+
 export function applyReform(country: CountryState): void {
-  // Diminishing returns: the last points toward a perfect state are the hardest
-  const headroom = (v: number) => Math.min(1, Math.max(0.15, (100 - v) / 45));
+  const headroom = reformHeadroom;
   country.stability = clamp(country.stability + 6 * headroom(country.stability));
   country.legitimacy = clamp(country.legitimacy + 4 * headroom(country.legitimacy));
   country.approval = clamp(country.approval + 2);

@@ -89,3 +89,19 @@ export function arrowText(a: Arrow): string {
   const glyph = a.dir === 'up' ? '▲' : '▼';
   return `${a.label} ${glyph.repeat(a.strength)}`;
 }
+
+// Mirrors src/core/text.ts withArticle
+const TAKES_THE = new Set([
+  'United States',
+  'United Kingdom',
+  'Philippines',
+  'Netherlands',
+  'United Arab Emirates',
+  'Czech Republic',
+  'Central African Republic',
+  'Democratic Republic of the Congo',
+  'Gambia',
+  'Bahamas',
+]);
+/** "the Philippines", "the United States", but "Iran". */
+export const withArticle = (name: string) => (TAKES_THE.has(name) ? `the ${name}` : name);

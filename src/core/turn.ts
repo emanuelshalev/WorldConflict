@@ -25,6 +25,7 @@ import {
   activateDefensivePacts,
   applyBorderTensions,
   deployToBorder,
+  endWar,
   executeAirstrike,
   monthlyDefenseBudgetM,
   resolveWarMonth,
@@ -78,6 +79,7 @@ export class TurnEngine {
     const turnSeed = combineSeed(currentState.seed, currentState.turn);
     const rng = new SeededRandom(turnSeed);
     const world = structuredClone(currentState);
+    const gdpAtStart = new Map(world.countries.map((c) => [c.id, c.gdp]));
     const tensionBefore = world.globalTension;
 
     const governmentChanges: GovernmentChange[] = [];
@@ -141,8 +143,27 @@ export class TurnEngine {
       const isPlayer = actor.id === world.playerCountryId;
       let budgetLeft = monthlyDefenseBudgetM(actor);
       const injected = new Set(isPlayer ? injectedActions : []);
+      const ordered = new Set<string>();
+      let orderCount = 0;
 
       for (const action of intent.actions) {
+        // One of each order per target per month, and at most MAX_ORDERS orders: the desk is
+        // a month of a leader's attention, not a macro to spam
+        if (isPlayer && !injected.has(action)) {
+          const key = `${action.type}:${action.targetCountryId ?? ""}:${JSON.stringify(action.params ?? {})}`;
+          const reason = ordered.has(key)
+            ? "Already ordered this month"
+            : orderCount >= MAX_ORDERS
+              ? `At most ${MAX_ORDERS} orders a month`
+              : null;
+          if (reason) {
+            push(rejectedActions, actor.id, { action, reason });
+            report.orders.push({ label: orderLabel(world, action), ok: false, detail: reason });
+            continue;
+          }
+          ordered.add(key);
+          orderCount++;
+        }
         const cost = actionCostM(action, actor);
         // Orders that come from crisis decisions were already paid for by the choice
         const pc = isPlayer && !injected.has(action) ? actionCostPC(action) : 0;
@@ -256,6 +277,16 @@ export class TurnEngine {
     // Phase 4: war resolution
     // ------------------------------------------------------------------
     const warSummaries: WarMonthSummary[] = [];
+    // Co-belligerents go home when the war they joined is over
+    for (const war of [...world.wars]) {
+      if (!war.alliedWith) continue;
+      const helper = [war.attackerId, war.defenderId].find((id) => id !== war.alliedWith);
+      const enemy = helper === war.attackerId ? war.defenderId : war.attackerId;
+      const principal = world.countries.find((c) => c.id === war.alliedWith);
+      if (principal && !principal.collapsed && principal.atWarWith.includes(enemy)) continue;
+      const ended = endWar(world, war, null, null, rng);
+      warSummaries.push({ war, delta: 0, attackerCasualties: 0, defenderCasualties: 0, ended });
+    }
     for (const war of [...world.wars]) {
       const summary = resolveWarMonth(world, war, rng);
       if (summary) {
@@ -305,6 +336,16 @@ export class TurnEngine {
     events.push(...govResult.events);
 
     // ------------------------------------------------------------------
+    // What actually happened to each economy this month (growth, war damage, crisis
+    // hits, reparations), annualised and smoothed: the HUD, voters and the score all
+    // read this, so the growth they show matches the GDP they see.
+    for (const c of world.countries) {
+      const before = gdpAtStart.get(c.id) ?? c.gdp;
+      if (before <= 0) continue;
+      const annual = Math.max(-0.6, Math.min(0.3, (c.gdp / before) ** 12 - 1));
+      c.realGrowth = c.realGrowth === undefined ? annual : c.realGrowth * 0.6 + annual * 0.4;
+    }
+
     // Phase 8: scoring & timeline
     // ------------------------------------------------------------------
     updateScore(world);
@@ -318,7 +359,19 @@ export class TurnEngine {
     const newspaper = generateNewspaper(world, events, warSummaries, governmentChanges, rng);
     const lead = player ? playerHeadline(world, player, report) : null;
     if (lead) newspaper.unshift(lead);
-    world.newspaper = newspaper;
+    // The player's own catastrophes and gambles own the front page
+    if (player) {
+      const mine = (n: NewspaperEntry) =>
+        n.relatedCountries.includes(player.id) &&
+        (n.category === "GOVERNMENT" ||
+          n.category === "NUCLEAR" ||
+          n.headline.startsWith(`WAR: ${player.name} attacks`) ||
+          (n.headline.startsWith(`WAR: `) && n.headline.endsWith(` attacks ${player.name}`)));
+      const dramatic = newspaper.filter((n) => n !== lead && mine(n));
+      if (dramatic.length > 0)
+        world.newspaper = [...dramatic, ...newspaper.filter((n) => !dramatic.includes(n))];
+      else world.newspaper = newspaper;
+    } else world.newspaper = newspaper;
     world.turnReport = report;
 
     // ------------------------------------------------------------------
@@ -439,7 +492,11 @@ export class TurnEngine {
         const recent = isPlayer
           ? world.director.denounceTurns.filter((t) => t < world.turn && world.turn - t < 6).length
           : 0;
-        const delta = denounce(world, actor, target, recent);
+        // Only the first denunciation each month moves voters; more is just noise
+        const already = isPlayer && world.director.denounceTurns.includes(world.turn);
+        const delta = already
+          ? denounce(world, actor, target, recent, 0)
+          : denounce(world, actor, target, recent);
         if (isPlayer) {
           // One entry per month: two denunciations this month count as one repeat next month
           world.director.denounceTurns = [
@@ -457,6 +514,15 @@ export class TurnEngine {
       }
       case "DIPLOMACY_PROPOSE_ALLIANCE": {
         if (!target) return { ok: false, reason: "No target" };
+        // Nobody signs the player into a pact: the offer lands on the desk as a crisis card
+        if (target.id === world.playerCountryId && actor.id !== world.playerCountryId) {
+          const lastOffer = world.director.lastUsed.pact_offer ?? -99;
+          if ((target.relations[actor.id] ?? 0) >= 40 && world.turn - lastOffer >= 6) {
+            const offer = raiseCrisis(world, "pact_offer", rng);
+            if (offer) events.push(offer);
+          }
+          return { ok: false, reason: "Offer sent to the player's desk" };
+        }
         const result = proposeAlliance(actor, target, rng);
         if (result.accepted) {
           events.push({
@@ -483,6 +549,8 @@ export class TurnEngine {
         if (!check.allowed) return { ok: false, reason: check.reason };
         const war = startWar(world, actor.id, target.id);
         if (!war) return { ok: false, reason: "Could not start war" };
+        if (typeof action.params?.alliedWith === "string")
+          war.alliedWith = action.params.alliedWith;
         const joined = activateDefensivePacts(world, war, rng);
         if (target.id === world.playerCountryId) {
           // Rally 'round the flag: being attacked unites a nation, for a while
@@ -565,6 +633,9 @@ export class TurnEngine {
         return { ok: true, reason: "" };
       }
       case "MILITARY_PROCURE": {
+        const spend = action.value ?? 500;
+        if (!Number.isFinite(spend) || spend <= 0 || spend > 50_000)
+          return { ok: false, reason: "Invalid purchase amount" };
         if (actor.underGlobalEmbargo) {
           // Private dealers gouge embargoed states
           actor.gdp -= (action.value ?? 500) * 2e6;
@@ -793,8 +864,10 @@ export class TurnEngine {
       }
     }
     if (player.atWarWith.length > 0) report.causes.push("War weariness weighs on the public mood");
-    if (player.growthRate < 0) report.causes.push("A shrinking economy erodes approval");
-    else if (player.growthRate > 0.025) report.causes.push("Strong growth lifts the national mood");
+    if ((player.realGrowth ?? player.growthRate) < 0)
+      report.causes.push("A shrinking economy erodes approval");
+    else if ((player.realGrowth ?? player.growthRate) > 0.025)
+      report.causes.push("Strong growth lifts the national mood");
 
     // Near-loss and comeback beats
     const d = world.director;
@@ -841,6 +914,13 @@ export class TurnEngine {
       t.description.includes("GLOBAL NUCLEAR HOLOCAUST"),
     );
     if (holocaustEvent) {
+      // No leadership score survives the end of the world
+      const s = world.score;
+      s.economic = Math.min(s.economic, 2);
+      s.security = 0;
+      s.approval = Math.min(s.approval, 2);
+      s.prestige = 0;
+      s.total = Math.round(s.economic + s.security + s.approval + s.prestige);
       return {
         reason: "NUCLEAR_HOLOCAUST",
         description:
@@ -917,6 +997,9 @@ export class TurnEngine {
 }
 
 // --------------------------------------------------------------------
+/** Player orders per month (crisis-injected orders don't count). */
+const MAX_ORDERS = 6;
+
 /** A spy hunt protects the player for this many months… */
 const COUNTER_INTEL_MONTHS = 3;
 /** …and foils this share of the foreign operations aimed at them meanwhile. */
@@ -970,12 +1053,14 @@ function playerHeadline(
   report: PlayerTurnReport,
 ): NewspaperEntry | null {
   const who = `${player.leader.title} ${player.leader.name}`;
-  const surname = player.leader.name.split(" ").at(-1) ?? player.leader.name;
+  // "Marcos Jr." -> "Marcos", not "Jr."
+  const parts = player.leader.name.split(" ").filter((p) => !/^(jr\.?|sr\.?|ii|iii|iv)$/i.test(p));
+  const surname = parts.at(-1) ?? player.leader.name;
   const decision = report.decisions[0];
   const order = report.orders.find((o) => o.ok) ?? report.orders[0];
   if (!decision && !order) return null;
   const headline = decision
-    ? `${surname.toUpperCase()}'S ANSWER TO "${decision.title.toUpperCase()}": ${decision.choice.replace(" (no decision taken)", "").toUpperCase()}`
+    ? `${possessive(surname).toUpperCase()} ANSWER TO ${decision.title.replace(/["“”]/g, "").toUpperCase()}: ${decision.choice.replace(" (no decision taken)", "").toUpperCase()}`
     : `${player.name.toUpperCase()}: ${order.label.toUpperCase()}${order.ok ? "" : " — BLOCKED"}`;
   const lines = [
     ...report.decisions.map((d) => `Faced with “${d.title}”, ${who} decided: ${d.choice}.`),

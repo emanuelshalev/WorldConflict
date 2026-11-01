@@ -1,3 +1,4 @@
+import { effectiveGrowth } from "./systems/economy.js";
 import type { CountryState, Score, WorldState } from "./types.js";
 
 /**
@@ -8,7 +9,14 @@ import type { CountryState, Score, WorldState } from "./types.js";
 
 function targetEconomic(player: CountryState): number {
   let target = 20;
-  target += player.growthRate * 450; // +3% growth → +13.5 (shocks fade back to trend)
+  // Real growth (after war, instability and embargo drags) against the country's own trend:
+  // matching your structural trend is par, beating it scores
+  const trend = player.trendGrowth ?? player.economyProfile?.growthRate ?? 0.02;
+  const real = player.realGrowth ?? effectiveGrowth(player);
+  target +=
+    6 +
+    Math.max(-0.06, Math.min(0.06, real - trend)) * 300 +
+    Math.min(0.04, Math.max(0, trend)) * 150;
   target -= Math.max(0, (player.debtGdpRatio - 100) / 10);
   if (player.underGlobalEmbargo) target -= 10;
   return clamp50(target);

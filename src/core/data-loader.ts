@@ -5,6 +5,7 @@ import { runDirector } from "./crises.js";
 import { combineSeed, createSeed, SeededRandom } from "./seed.js";
 import { generateLeaderName, generatePlayerBackstory } from "./systems/government.js";
 import { updateBeliefs } from "./systems/intelligence.js";
+import { withArticle } from "./text.js";
 import {
   type CountryProfile,
   CountryProfileSchema,
@@ -407,7 +408,7 @@ export class DataLoader {
     // The flashpoint's own brief is the backstory: a generic rise-to-power story would contradict it
     if (player) {
       const role = fp.playable.find((p) => p.countryId === player.id)?.role;
-      const who = `You are ${player.leader.title} ${player.leader.name} of ${player.name}.`;
+      const who = `You are ${player.leader.title} ${player.leader.name} of ${withArticle(player.name)}.`;
       world.playerBackstory = [who, world.objective?.briefing ?? role ?? fp.hook]
         .filter(Boolean)
         .join(" ");
@@ -717,7 +718,7 @@ function realLeaderBackstory(player: CountryState): string {
       : player.stability < 45
         ? "The streets are restless and your security chiefs deliver grim briefings."
         : "Allies and rivals alike are watching what you do next.";
-  return `You are ${player.leader.title} ${player.leader.name} of ${player.name}. The office, the record and the enemies are yours. ${context}`;
+  return `You are ${player.leader.title} ${player.leader.name} of ${withArticle(player.name)}. The office, the record and the enemies are yours. ${context}`;
 }
 
 /** Turns from the scenario start to a "YYYY-MM" date, rolled forward a cycle if it has passed. */

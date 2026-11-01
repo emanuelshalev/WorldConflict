@@ -1,3 +1,4 @@
+import { sharesLandBorder } from "../geography.js";
 import type { SeededRandom } from "../seed.js";
 import { possessive } from "../text.js";
 import type { ActiveWar, CountryState, WorldState } from "../types.js";
@@ -115,7 +116,8 @@ export function activateDefensivePacts(
     if (allyId === war.attackerId) continue;
     const loyaltyRoll = rng.next() * 100;
     if (loyaltyRoll < ally.personality.allianceLoyalty) {
-      startWar(world, allyId, war.attackerId);
+      const joinedWar = startWar(world, allyId, war.attackerId);
+      if (joinedWar) joinedWar.alliedWith = war.defenderId;
       joined.push(allyId);
     } else {
       // Refused the call: alliance strained
@@ -172,9 +174,20 @@ export function resolveWarMonth(
   attacker.approval = clamp(attacker.approval - (attackerLosing ? 2 : 0.5));
   defender.approval = clamp(defender.approval + (defenderLosing ? -2 : 1)); // rally round the flag while holding
 
-  // Economic damage proportional to how badly the war is going
-  attacker.gdp *= attackerLosing ? 0.985 : 0.993;
-  defender.gdp *= defenderLosing ? 0.975 : 0.988; // war fought on defender's soil
+  // Economic damage: heaviest where the fighting is. A ground war on your own soil
+  // (Ukraine 2022: about -29% in a year) is far worse than fighting abroad, and a
+  // distant air/naval campaign barely dents a large attacker's economy.
+  const groundWar = sharesLandBorder(attacker.id, defender.id) !== false;
+  const defenderMonthly = groundWar
+    ? defenderLosing
+      ? 0.022
+      : 0.01
+    : defenderLosing
+      ? 0.008
+      : 0.004;
+  const attackerMonthly = attackerLosing ? 0.006 : 0.002;
+  attacker.gdp *= 1 - attackerMonthly;
+  defender.gdp *= 1 - defenderMonthly;
 
   // Exhaustion builds slowly — fastest in a stalemate that kills for nothing
   war.exhaustion = clamp(war.exhaustion + 1 + (Math.abs(delta) < 2 ? 1 : 0));

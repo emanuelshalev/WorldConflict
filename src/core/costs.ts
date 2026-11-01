@@ -58,12 +58,14 @@ export function actionCostM(action: Action, actor?: CountryState): number {
   return Math.round(share * monthlyDefenseBudgetM(actor));
 }
 
-/** Political Capital earned this month. */
-export function politicalCapitalIncome(world: WorldState, player: CountryState): number {
-  let pc = 2;
+/**
+ * Political Capital earned this month: 2 (3 in a Flashpoint, +1 on Story).
+ * Popularity no longer pays out: a +1 above 70% approval made "address + reform
+ * every month" self-funding. Trouble costs nothing either, so a leader in a
+ * crisis can still act instead of spiralling.
+ */
+export function politicalCapitalIncome(world: WorldState, _player: CountryState): number {
+  let pc = world.mode === "FLASHPOINT" ? 3 : 2;
   if (world.difficulty === "ANALYST") pc += 1;
-  if (player.approval > 70) pc += 1;
-  if (player.approval < 35) pc -= 1;
-  if (player.legitimacy < 30) pc -= 1;
-  return Math.max(1, pc);
+  return pc;
 }

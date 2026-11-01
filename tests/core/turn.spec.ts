@@ -61,7 +61,7 @@ describe("TurnEngine", () => {
     world.politicalCapital = 3;
     const result = engine.executeTurn(
       world,
-      [{ type: "DOMESTIC_REFORM" }, { type: "DOMESTIC_REFORM" }], // 2 PC each
+      [{ type: "DOMESTIC_REFORM" }, { type: "INTEL_DESTABILIZE", targetCountryId: "CHN" }], // 2 PC each
       [],
     );
     const rejected = result.rejectedActions.get("USA") ?? [];

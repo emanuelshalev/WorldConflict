@@ -572,18 +572,12 @@ const TEMPLATES: CrisisTemplate[] = [
   // --- An ally asks for help (Article 5, Lend-Lease, 2022) ---
   {
     id: "ally_plea",
-    weight: (ctx) =>
-      ctx.player.alliances.some((id) => (find(ctx.world, id)?.atWarWith.length ?? 0) > 0) &&
-      ctx.player.atWarWith.length === 0
-        ? 4
-        : 0,
+    // Only when the ally is genuinely losing: "buckling" must match the front line
+    weight: (ctx) => (losingAlly(ctx) && ctx.player.atWarWith.length === 0 ? 4 : 0),
     build: (ctx) => {
-      const ally = ctx.player.alliances
-        .map((id) => find(ctx.world, id))
-        .find((c) => alive(c) && c.atWarWith.length > 0);
-      if (!ally) return null;
-      const enemy = find(ctx.world, ally.atWarWith[0]);
-      if (!enemy) return null;
+      const found = losingAlly(ctx);
+      if (!found) return null;
+      const { ally, enemy } = found;
       return {
         headline: `${ally.name} appeals to ${ctx.player.name} for help against ${enemy.name}`,
         text: `${leaderOf(ally)} asks you to honor your commitments.`,
@@ -605,7 +599,13 @@ const TEMPLATES: CrisisTemplate[] = [
               "Honor the pact in full. Your soldiers will die in their war.",
               { [`relations:${ally.id}`]: 25, approval: -2 },
               {
-                actions: [{ type: "DIPLOMACY_DECLARE_WAR", targetCountryId: enemy.id }],
+                actions: [
+                  {
+                    type: "DIPLOMACY_DECLARE_WAR",
+                    targetCountryId: enemy.id,
+                    params: { alliedWith: ally.id },
+                  },
+                ],
                 tensionDelta: 12,
               },
             ),
@@ -988,6 +988,53 @@ const TEMPLATES: CrisisTemplate[] = [
         defaultOptionId: "break",
       },
     }),
+  },
+
+  // --- A defence pact offered to the player (never signed without consent) ---
+  {
+    id: "pact_offer",
+    weight: () => 0, // raised by the engine when an AI government proposes a pact
+    build: (ctx) => {
+      const p = pactSuitor(ctx);
+      if (!p) return null;
+      const theirWars = p.atWarWith
+        .map((id) => find(ctx.world, id)?.name)
+        .filter(Boolean)
+        .join(" and ");
+      return {
+        headline: `${p.name} proposes a defence pact with ${ctx.player.name}`,
+        text: `${leaderOf(p)} wants a mutual defence treaty.`,
+        decision: {
+          title: `${possessive(p.name)} pact offer`,
+          situation: `${leaderOf(p)} proposes a mutual defence treaty: an attack on one is an attack on both.${theirWars ? ` They are at war with ${theirWars} — sign, and their wars can become yours.` : " It would deter your rivals, and bind you to their quarrels."}`,
+          affectedCountries: [ctx.player.id, p.id],
+          options: [
+            opt(
+              "sign",
+              "Sign the treaty",
+              "Deterrence and a friend in a crisis. Their enemies become yours.",
+              { [`pact:${p.id}`]: 1, [`relations:${p.id}`]: 10, legitimacy: 1 },
+              { tensionDelta: 2, backedBy: ["DEFENSE_MINISTER"] },
+            ),
+            opt(
+              "talks",
+              "Keep talking",
+              "Warm words, no signature. They will ask again.",
+              { [`relations:${p.id}`]: 2 },
+              { backedBy: ["FOREIGN_MINISTER"] },
+            ),
+            opt(
+              "decline",
+              "Decline",
+              "Keep your hands free. They will be disappointed.",
+              { [`relations:${p.id}`]: -8 },
+              { backedBy: ["FINANCE_MINISTER"] },
+            ),
+          ],
+          defaultOptionId: "talks",
+        },
+      };
+    },
   },
 
   // --- Trade deal with strings (Belt & Road, arms-for-oil) ---
@@ -1469,6 +1516,36 @@ function sanctionsTarget(ctx: Ctx): CountryState | undefined {
   );
 }
 
+/** An ally of the player that is losing a war (front line under 45 on its side), and its enemy. */
+function losingAlly(ctx: Ctx): { ally: CountryState; enemy: CountryState } | undefined {
+  for (const id of ctx.player.alliances) {
+    const ally = find(ctx.world, id);
+    if (!ally || !alive(ally)) continue;
+    for (const w of ctx.world.wars) {
+      if (w.attackerId !== ally.id && w.defenderId !== ally.id) continue;
+      const own = w.attackerId === ally.id ? w.frontline : 100 - w.frontline;
+      const enemy = find(ctx.world, w.attackerId === ally.id ? w.defenderId : w.attackerId);
+      if (own < 45 && enemy && alive(enemy)) return { ally, enemy };
+    }
+  }
+  return undefined;
+}
+
+/** The country most eager for a defence pact with the player (it likes us, we don't hate it). */
+function pactSuitor(ctx: Ctx): CountryState | undefined {
+  return ctx.world.countries
+    .filter(
+      (c) =>
+        alive(c) &&
+        c.id !== ctx.player.id &&
+        !ctx.player.alliances.includes(c.id) &&
+        !ctx.player.atWarWith.includes(c.id) &&
+        (c.relations[ctx.player.id] ?? 0) >= 60 &&
+        (ctx.player.relations[c.id] ?? 0) >= 40,
+    )
+    .sort((a, b) => (b.relations[ctx.player.id] ?? 0) - (a.relations[ctx.player.id] ?? 0))[0];
+}
+
 function tradePartner(ctx: Ctx, any = false): CountryState | undefined {
   return ctx.world.countries
     .filter(
@@ -1557,7 +1634,13 @@ export function applyEffects(
     else if (key === "mobilization")
       player.mobilizationLevel = clamp(player.mobilizationLevel + value);
     else if (key === "intel") player.counterIntelLevel = clamp(player.counterIntelLevel + value);
-    else if (key === "pc") world.politicalCapital = Math.max(0, world.politicalCapital + value);
+    else if (key.startsWith("pact:")) {
+      const other = world.countries.find((c) => c.id === key.split(":")[1]);
+      if (other && value > 0 && !player.alliances.includes(other.id)) {
+        player.alliances.push(other.id);
+        other.alliances.push(player.id);
+      }
+    } else if (key === "pc") world.politicalCapital = Math.max(0, world.politicalCapital + value);
     else if (key === "coupShield")
       world.director.coupShieldUntil = Math.max(world.director.coupShieldUntil, world.turn + value);
     else if (key === "insurgency") {
