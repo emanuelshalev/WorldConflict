@@ -20,13 +20,13 @@ function Range({ r, fmt }: { r: UncertainRange; fmt: (n: number) => string }) {
 const S = {
   panel: {
     position: 'absolute' as const,
-    top: 12,
-    left: 52,
-    width: 330,
-    maxHeight: 'calc(100% - 24px)',
+    top: 64,
+    right: 12,
+    width: 'min(340px, calc(100vw - 24px))',
+    maxHeight: 'calc(100% - 100px)',
     overflowY: 'auto' as const,
-    background: 'rgba(13,15,20,0.94)',
-    border: '1px solid #2a2e3a',
+    background: 'rgba(20,27,39,0.96)',
+    border: '1px solid #2a3546',
     borderRadius: 10,
     padding: 14,
     color: '#ddd',
@@ -202,8 +202,8 @@ export function CountryDetailPanel() {
           <div style={S.sectionTitle}>Actions</div>
           {!view.atWarWith.includes(useGameStore.getState().worldState?.playerCountryId ?? '') ? (
             <>
-              <button style={S.actionBtn} onClick={() => queueAction('DIPLOMACY_IMPROVE_RELATIONS', `Improve relations with ${view.name}`)}>
-                🤝 Improve relations <span style={{ color: '#667' }}>($100M/mo)</span>
+              <button style={S.actionBtn} onClick={() => queueAction('DIPLOMACY_IMPROVE_RELATIONS', `Court ${view.name}`)}>
+                🤝 Court them <span style={{ color: '#F2A93B' }}>◆1</span>
               </button>
               <button style={S.actionBtn} onClick={() => queueAction('DIPLOMACY_DENOUNCE', `Denounce ${view.name}`)}>
                 📢 Denounce publicly

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { IconCopy, IconDownload, IconRefresh, IconShare } from '@tabler/icons-react';
-import { fetchEndReport, startGame, useGameStore, usePlayerCountry } from '../store/gameStore';
+import { fetchEndReport, recordDailyResult, startGame, useGameStore, usePlayerCountry } from '../store/gameStore';
 import { flag } from '../lib/format';
 
 const REASON_TEXT: Record<string, string> = {
@@ -95,10 +95,19 @@ export function EndScreen() {
   const showChronicle = useGameStore((s) => s.showChronicle);
   const me = usePlayerCountry();
   const [copied, setCopied] = useState(false);
+  const isDaily = useGameStore((s) => s.isDaily);
+  const [streak, setStreak] = useState<{ streak: number; best: number } | null>(null);
 
   useEffect(() => {
     if (gameOver && !report) fetchEndReport();
   }, [gameOver, report]);
+
+  const outcomeStars = world?.outcome?.stars ?? 0;
+  useEffect(() => {
+    if (!gameOver || !isDaily) return;
+    const result = recordDailyResult(new Date().toISOString().slice(0, 10), outcomeStars);
+    queueMicrotask(() => setStreak(result));
+  }, [gameOver, isDaily, outcomeStars]);
 
   const open = activeModal === 'endGame' || (!!gameOver && !showChronicle && activeModal === null);
   const outcome = world?.outcome ?? report?.outcome ?? null;
@@ -114,7 +123,7 @@ export function EndScreen() {
   const verdict = REASON_TEXT[gameOver.reason] ?? gameOver.reason;
   const title = world.objective?.title ?? (world.mode === 'TERM' ? 'One Term' : 'Legacy');
   const archetype = report?.assessment.classification ?? '';
-  const shareText = `WORLD CONFLICT — ${flag(me.id)} ${me.name}: ${title}\n${verdict} · ${'★'.repeat(stars)}${'☆'.repeat(3 - stars)} · grade ${grade}\n${grid}\n${archetype}`;
+  const shareText = `WORLD CONFLICT${isDaily ? ` · Daily ${new Date().toISOString().slice(0, 10)}` : ''} — ${flag(me.id)} ${me.name}: ${title}\n${verdict} · ${'★'.repeat(stars)}${'☆'.repeat(3 - stars)} · grade ${grade}\n${grid}\n${archetype}`;
 
   const share = async () => {
     try {
@@ -178,6 +187,12 @@ export function EndScreen() {
             </div>
             <div className="month-grid">{grid}</div>
           </div>
+          {streak && (
+            <div className="list-item" style={{ borderColor: 'rgba(229,56,59,0.4)' }}>
+              <h5>🔥 Daily streak: {streak.streak} day{streak.streak === 1 ? '' : 's'}</h5>
+              <p>Best streak {streak.best}. A new crisis drops tomorrow — same world for everyone.</p>
+            </div>
+          )}
           {world.objective?.debrief && <div className="debrief">{world.objective.debrief}</div>}
           <div className="end-actions">
             <button className="wc-btn primary" onClick={share}>

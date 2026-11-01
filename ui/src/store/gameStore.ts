@@ -334,6 +334,7 @@ export interface GameState {
   showChronicle: boolean;
   setShowChronicle: (show: boolean) => void;
   showLogin: boolean;
+  isDaily: boolean;
   drawer: 'cabinet' | 'world' | 'chronicle' | 'objective' | null;
   setDrawer: (drawer: GameState['drawer']) => void;
   isLoading: boolean;
@@ -509,6 +510,29 @@ function rememberSave(saveId: string | null): void {
   }
 }
 
+/** Record a finished daily challenge; returns the current streak in days. */
+export function recordDailyResult(date: string, stars: number): { streak: number; best: number } {
+  try {
+    const raw = JSON.parse(localStorage.getItem('worldconflict.daily') ?? '{}') as {
+      last?: string;
+      streak?: number;
+      best?: number;
+      results?: Record<string, number>;
+    };
+    const results = { ...(raw.results ?? {}), [date]: Math.max(stars, raw.results?.[date] ?? 0) };
+    let streak = raw.streak ?? 0;
+    if (raw.last !== date) {
+      const yesterday = new Date(Date.parse(`${date}T00:00:00Z`) - 86400000).toISOString().slice(0, 10);
+      streak = raw.last === yesterday ? streak + 1 : 1;
+    }
+    const best = Math.max(raw.best ?? 0, streak);
+    localStorage.setItem('worldconflict.daily', JSON.stringify({ last: date, streak, best, results }));
+    return { streak, best };
+  } catch {
+    return { streak: 1, best: 1 };
+  }
+}
+
 /** Saves belong to the signed-in account, or to this browser's guest id. */
 export function ownerId(): string {
   const { player, guestId } = useGameStore.getState();
@@ -538,6 +562,7 @@ export const useGameStore = create<GameState>((set) => ({
   showChronicle: false,
   setShowChronicle: (show) => set({ showChronicle: show }),
   showLogin: false,
+  isDaily: false,
   drawer: null,
   setDrawer: (drawer) => set({ drawer }),
   isLoading: false,
@@ -742,6 +767,7 @@ export async function startGame(req: NewGameRequest): Promise<boolean> {
       showBackstory: true,
       endReport: null,
       lastEvents: [],
+      isDaily: !!req.daily,
     });
     return true;
   } catch (error) {

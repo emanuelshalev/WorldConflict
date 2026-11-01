@@ -169,6 +169,42 @@ function useSuggestions(): Suggestion[] {
   }, [world, view, me]);
 }
 
+const TIPS = [
+  'Each month: answer the crisis on the left, add orders on the right (◆ = political capital, refilled monthly), then Execute month.',
+  'Arrows show the direction and size of consequences — not exact numbers. Your advisors disagree on purpose.',
+  'Tap any country for its dossier. The map is your intelligence picture: foreign numbers are estimates, and some are wrong.',
+];
+
+function CoachTip({ turn }: { turn: number }) {
+  const [hidden, setHidden] = useState(() => {
+    try {
+      return localStorage.getItem('worldconflict.tips') === 'done';
+    } catch {
+      return false;
+    }
+  });
+  if (hidden || turn >= TIPS.length) return null;
+  const dismiss = () => {
+    try {
+      localStorage.setItem('worldconflict.tips', 'done');
+    } catch {
+      /* storage unavailable */
+    }
+    setHidden(true);
+  };
+  return (
+    <div className="list-item" style={{ display: 'flex', gap: 10, alignItems: 'center', borderColor: 'rgba(79,179,217,0.4)', marginBottom: 10 }}>
+      <span className="chip" style={{ color: 'var(--intel)', borderColor: 'rgba(79,179,217,0.4)' }}>
+        TIP {turn + 1}/3
+      </span>
+      <p style={{ flex: 1, margin: 0, color: 'var(--text-1)' }}>{TIPS[turn]}</p>
+      <button className="wc-btn ghost" style={{ padding: '4px 8px', fontSize: 12 }} onClick={dismiss}>
+        Got it — no more tips
+      </button>
+    </div>
+  );
+}
+
 export function Desk() {
   const world = useGameStore((s) => s.worldState);
   const pendingDecisions = useGameStore((s) => s.pendingDecisions);
@@ -213,6 +249,7 @@ export function Desk() {
           {collapsed ? <IconChevronUp size={16} /> : <IconChevronDown size={16} />}
         </button>
       </div>
+      {!collapsed && <CoachTip turn={world.turn} />}
       {!collapsed && (
         <div className="desk-row">
           {pendingDecisions.length > 0 && (
