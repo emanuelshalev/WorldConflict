@@ -8,9 +8,12 @@
   <meta name="theme-color" content="#0b0f17" />
   <meta name="color-scheme" content="dark" />
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="canonical" href="https://emanuelshalev.github.io/WorldConflict/" />
 
   <!-- Open Graph / Twitter -->
   <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://emanuelshalev.github.io/WorldConflict/" />
+  <meta property="og:site_name" content="World Conflict" />
   <meta property="og:title" content="World Conflict: the crises are real. The next move is yours." />
   <meta property="og:description" content="A turn-based geopolitical strategy game set in November 2026. Eight real flashpoints, 41 nations, and nobody sees the whole truth." />
   <!-- SITE_URL: social crawlers need ABSOLUTE image URLs. At deploy time replace "assets/og-image.jpg" in og:image and twitter:image
@@ -18,20 +21,36 @@
   <meta property="og:image" content="https://emanuelshalev.github.io/WorldConflict/assets/og-image.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="World Conflict game screen: a crisis card on a world map." />
+  <meta property="og:image:alt" content="World Conflict game screen: the crisis card The First Shot, with three options, over a map of East Asia." />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="World Conflict: November 2026, on your desk" />
   <meta name="twitter:description" content="Hormuz. Taiwan. The Red Sea. Ukraine. Real flashpoints, one month at a time. A Flashpoint takes 10–15 minutes." />
   <meta name="twitter:image" content="https://emanuelshalev.github.io/WorldConflict/assets/og-image.jpg" />
-  <meta name="twitter:image:alt" content="World Conflict game screen: a crisis card on a world map." />
+  <meta name="twitter:image:alt" content="World Conflict game screen: the crisis card The First Shot, with three options, over a map of East Asia." />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" />
   <link rel="stylesheet" href="styles.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "VideoGame",
+    "name": "World Conflict",
+    "url": "https://emanuelshalev.github.io/WorldConflict/",
+    "image": "https://emanuelshalev.github.io/WorldConflict/assets/og-image.jpg",
+    "description": "A turn-based geopolitical strategy game set in November 2026. Lead one of 41 nations through eight real flashpoints; every other government acts on its own history and half-wrong intelligence about you.",
+    "genre": ["Strategy", "Simulation", "Turn-based strategy"],
+    "gamePlatform": "Web browser",
+    "playMode": "SinglePlayer",
+    "applicationCategory": "Game",
+    "inLanguage": "en"
+  }
+  </script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
+  <button class="btn btn-ghost btn-sm skip-intro" id="skipIntro" type="button" aria-label="Skip intro">Skip intro ⏭</button>
 
   <header class="site-head" id="top">
     <a class="brand" href="#top" aria-label="World Conflict, back to top">
@@ -39,82 +58,60 @@
       <span>World&nbsp;Conflict</span>
     </a>
     <nav aria-label="Sections">
-      <a href="#parallels">It really happened</a>
       <a href="#month">How it plays</a>
+      <a href="#parallels">It really happened</a>
       <a href="#modes">Modes</a>
       <a href="#realism">Realism</a>
       <a href="#gallery">Gallery</a>
     </nav>
-    <span class="btn btn-soon btn-sm js-play" data-label="Take office" aria-disabled="true">Coming soon</span>
+    <div class="head-actions">
+      <span class="status js-status"><i aria-hidden="true"></i>In development</span>
+      <a class="btn btn-primary btn-sm js-join" href="#signup-hero" hidden>Get early access</a>
+      <a class="btn btn-primary btn-sm js-play-link" href="#" hidden>Take office ▸</a>
+    </div>
   </header>
 
   <!-- ============ HERO: the newsroom wall ============ -->
   <section class="hero" id="hero" aria-labelledby="hero-title">
     <div class="wall-viewport" aria-hidden="true">
       <div class="wall" id="wall"><!-- tiles are built by main.js from content/parallels.json --></div>
-      <div class="wall-scan"></div>
     </div>
-
-    <div class="cam-label" id="camLabel" aria-hidden="true">
-      <span class="cam-kind"></span><span class="cam-text"></span>
+    <p class="cold-open" id="coldOpen" aria-hidden="true">You read the headlines.</p>
+    <div class="slate" id="slate" aria-hidden="true">
+      <span class="slate-real"><b>Real</b> <span class="slate-date"></span></span>
+      <span class="slate-arrow">→</span>
+      <span class="slate-game"><b>In game</b> <span class="slate-gdate"></span></span>
+      <span class="slate-place"></span>
     </div>
 
     <div class="hero-copy" id="heroCopy">
       <p class="eyebrow">A geopolitical strategy game · November 2026</p>
       <h1 id="hero-title" class="glitch" data-text="The crises are real. The next move is yours.">The crises are real. The next move is yours.</h1>
-      <p class="hero-sub">Lead one of 41 nations through the world as it stands today: Hormuz, the Taiwan Strait, the Red Sea, the Ukraine front. Every other government acts on its own history, red lines and half-wrong intelligence about you. Each month a crisis lands on your desk. You decide. Then the world answers.</p>
+      <p class="hero-sub">Lead one of 41 nations through the real crises of November 2026. Every rival is an AI with its own agenda and half-wrong intelligence about you, and a Flashpoint takes 15 minutes.</p>
       <div class="cta-row">
-        <span class="btn btn-soon btn-lg js-play" data-label="Take office ▸" aria-disabled="true">Coming soon</span>
-        <button class="btn btn-primary btn-lg js-watch" id="replayIntro" type="button">▶ Watch the intro</button>
+        <form class="signup js-signup" id="signup-hero" method="post" hidden>
+          <label class="sr-only" for="email-hero">Email address</label>
+          <input id="email-hero" type="email" name="email" required autocomplete="email" placeholder="you@example.com" />
+          <button class="btn btn-primary" type="submit">Get early access</button>
+        </form>
+        <a class="btn btn-primary btn-lg js-play-link" href="#" hidden>Take office ▸</a>
+        <p class="status status-lg js-status"><i aria-hidden="true"></i>In development. Playable release coming soon.</p>
+        <button class="btn btn-ghost btn-lg js-watch" type="button">▶ Watch the intro (20s)</button>
         <a class="btn btn-ghost btn-lg js-repo" href="#" hidden>Follow development</a>
       </div>
-      <p class="fine">In development. No account, no API key, and a Flashpoint takes 10–15 minutes.</p>
+      <p class="fine js-signup-note" hidden>One email when the first Flashpoint is playable. No spam, unsubscribe anytime.</p>
+      <p class="disclaimer-top">Real events up to October 2026. Everything after is fiction: in-game words and decisions of real leaders are invented.</p>
     </div>
 
-    <div class="intro-controls">
-      <button class="btn btn-ghost btn-sm" id="skipIntro" type="button">Skip intro ⏭</button>
+    <div class="stepper" id="stepper" hidden>
+      <button class="btn btn-ghost btn-sm" type="button" data-step="-1" aria-label="Previous parallel">◀</button>
+      <span class="stepper-label" aria-live="polite"></span>
+      <button class="btn btn-ghost btn-sm" type="button" data-step="1" aria-label="Next parallel">▶</button>
     </div>
-    <a class="scroll-cue" href="#hook" aria-label="Scroll to the story"><span></span></a>
+    <a class="scroll-cue" href="#month" aria-label="Scroll to how a month plays"><span></span></a>
   </section>
 
   <main id="main">
-    <!-- ============ HOOK ============ -->
-    <section class="section hook" id="hook" aria-labelledby="hook-title">
-      <div class="container hook-grid">
-        <div class="reveal">
-          <p class="kicker">Situation room · after hours</p>
-          <h2 id="hook-title" class="teletype">The world of November 2026. Your desk.</h2>
-          <p class="lede">A Supreme Leader killed in an air strike. A dictator in a New York courtroom. A local ceasefire in occupied Ukraine. Coast guards with water cannon at a reef 220&nbsp;km from Manila. You read these headlines last year. Now you have to answer them.</p>
-          <p>World Conflict is a turn-based simulation where every country is an agent with its own leader, interests and memory. One turn is one month. There are no dead turns and no clean options. You get consequences, and most of them arrive late, in public.</p>
-          <ul class="stat-row" aria-label="Key facts">
-            <li><b class="num" data-count="41">41</b><span>nations</span></li>
-            <li><b class="num" data-count="8">8</b><span>real flashpoints</span></li>
-            <li><b class="num" data-count="30">30+</b><span>crisis cards</span></li>
-            <li><b class="num">2◆</b><span>a month to spend</span></li>
-          </ul>
-        </div>
-        <figure class="device reveal parallax" data-speed="0.06">
-          <div class="device-bar"><i></i><i></i><i></i><span>Nov 2026 · month 1/12</span></div>
-          <img src="assets/img/desk.jpg" srcset="assets/img/desk-800.jpg 800w, assets/img/desk.jpg 1600w" sizes="(min-width: 960px) 52vw, 100vw" width="1600" height="900" loading="lazy" decoding="async" alt="Game screen: a crisis card with three options and advisor suggestions below a world map with war lines." />
-          <figcaption>Your desk: one crisis card, your ministers' advice, and 2◆ to spend.</figcaption>
-        </figure>
-      </div>
-    </section>
-
-    <!-- ============ PARALLELS ============ -->
-    <section class="section parallels" id="parallels" aria-labelledby="par-title">
-      <div class="container narrow reveal">
-        <p class="kicker">Real events · alternate history</p>
-        <h2 id="par-title" class="teletype">It really happened. Then you took office.</h2>
-        <p class="lede">Every flashpoint opens on events that really happened. Where it goes from there is an alternate history, and you write it.</p>
-      </div>
-      <div class="container timeline" id="timeline">
-        <div class="rail" aria-hidden="true"><div class="rail-fill" id="railFill"></div></div>
-        <ol class="pairs" id="pairs"><!-- built by main.js --></ol>
-      </div>
-      <p class="container narrow footnote">Dates and facts come from public reporting. Opening scenes inside the game, such as a sailor's death at Scarborough or an attack near Jammu, are fiction written to start the scenario, and the game labels them as such. The real incidents at Scarborough stopped short of lethal force. After every Flashpoint, a debrief tells you what really happened.</p>
-    </section>
-
     <!-- ============ HOW A MONTH PLAYS ============ -->
     <section class="section month" id="month" aria-labelledby="month-title">
       <div class="container narrow reveal">
@@ -162,6 +159,45 @@
           </div>
         </article>
       </div>
+    </section>
+
+    <!-- ============ HOOK ============ -->
+    <section class="section hook" id="hook" aria-labelledby="hook-title">
+      <div class="container hook-grid">
+        <div class="reveal">
+          <p class="kicker">Situation room · after hours</p>
+          <h2 id="hook-title" class="teletype">The world of November 2026. Your desk.</h2>
+          <p class="lede">A Supreme Leader killed in an air strike. A deposed president facing charges in New York. A local ceasefire in occupied Ukraine. Coast guards with water cannon at a reef 220&nbsp;km from Manila. You read these headlines this year. Now you have to answer them.</p>
+          <p>World Conflict is a turn-based simulation where every country is an agent with its own leader, interests and memory. One turn is one month. There are no dead turns and no clean options. You get consequences, and most of them arrive late, in public.</p>
+          <ul class="stat-row" aria-label="Key facts">
+            <li><b class="num" data-count="41">41</b><span>nations</span></li>
+            <li><b class="num" data-count="8">8</b><span>real flashpoints</span></li>
+            <li><b class="num" data-count="30">30+</b><span>crisis cards</span></li>
+            <li><b class="num">2◆</b><span>a month to spend</span></li>
+          </ul>
+        </div>
+        <figure class="device reveal parallax" data-speed="0.06">
+          <div class="device-bar"><i></i><i></i><i></i><span>Nov 2026 · month 1/12</span></div>
+          <img src="assets/img/desk.jpg" srcset="assets/img/desk-800.jpg 800w, assets/img/desk.jpg 1600w" sizes="(min-width: 960px) 52vw, 100vw" width="1600" height="900" loading="lazy" decoding="async" alt="Game screen: a crisis card with three options and advisor suggestions below a world map with war lines." />
+          <figcaption>Your desk: one crisis card, your ministers' advice, and 2◆ to spend.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============ PARALLELS ============ -->
+    <section class="section parallels" id="parallels" aria-labelledby="par-title">
+      <div class="container narrow reveal">
+        <p class="kicker">Real events · alternate history</p>
+        <h2 id="par-title" class="teletype">It really happened. Then you took office.</h2>
+        <p class="lede">Every flashpoint opens on events that really happened. Where it goes from there is an alternate history, and you write it.</p>
+      </div>
+      <div class="container timeline" id="timeline">
+        <div class="rail" aria-hidden="true"><div class="rail-fill" id="railFill"></div></div>
+        <ol class="pairs" id="pairs"><!-- built by main.js --></ol>
+        <ol class="pairs pairs-more" id="pairsMore" hidden></ol>
+      </div>
+      <div class="container narrow more-row"><button class="btn btn-ghost" id="morePairs" type="button" aria-expanded="false" aria-controls="pairsMore">See all parallels</button></div>
+      <p class="container narrow footnote">Dates and facts come from public reporting. Opening scenes inside the game, such as a sailor's death at Scarborough or an attack near Jammu, are fiction written to start the scenario, and the game labels them as such. The real incidents at Scarborough stopped short of lethal force. After every Flashpoint, a debrief tells you what really happened. Real events up to October 2026; everything after is fiction.</p>
     </section>
 
     <!-- ============ MODES ============ -->
@@ -213,6 +249,7 @@
           <li class="reveal"><h3>Fog of war, for everyone.</h3><p>Foreign GDP, stability, military strength and nuclear progress are estimates with confidence ranges. Your rivals see you the same way. Spy to sharpen the picture. Miscalculation is part of the design.</p></li>
           <li class="reveal"><h3>Danger is telegraphed.</h3><p>Before a coup there is a plot. Before a revolution the streets boil. Impeachments and no-confidence votes arrive as crisis cards before they strike. When you fall, you will have seen it coming.</p></li>
           <li class="reveal"><h3>Plausible, not prophetic.</h3><p>Every government acts on its history, its interests and its red lines. What happens next is an alternate history you could believe, not a prediction.</p></li>
+          <li class="reveal"><h3>Hard options, real costs.</h3><p>Covert action, assassination and nuclear weapons exist in the game because they exist in the world. They are expensive, rarely work, and the world remembers: a nuclear strike brings a global embargo and can end the session for everyone.</p></li>
           <li class="reveal"><h3>AI you control.</h3><p>The built-in algorithmic leaders are free, run offline and are reproducible. You can also let an LLM (Claude, OpenAI, Gemini or a local model) take over key decisions, with the cost shown up front and a spending cap you set.</p></li>
         </ul>
       </div>
@@ -247,12 +284,19 @@
         <h2 id="cta-title" class="glitch" data-text="The world is waiting.">The world is waiting.</h2>
         <p class="lede">Eight flashpoints. 41 nations. One month at a time.</p>
         <div class="cta-row center">
-          <span class="btn btn-soon btn-lg js-play" data-label="Take office ▸" aria-disabled="true">Coming soon</span>
-          <button class="btn btn-primary btn-lg js-watch" type="button">▶ Watch the intro</button>
+          <form class="signup js-signup" id="signup-final" method="post" hidden>
+            <label class="sr-only" for="email-final">Email address</label>
+            <input id="email-final" type="email" name="email" required autocomplete="email" placeholder="you@example.com" />
+            <button class="btn btn-primary" type="submit">Get early access</button>
+          </form>
+          <a class="btn btn-primary btn-lg js-play-link" href="#" hidden>Take office ▸</a>
           <a class="btn btn-ghost btn-lg js-daily" href="#" hidden>Try today's Daily Flashpoint</a>
+          <p class="status status-lg js-status"><i aria-hidden="true"></i>In development. Playable release coming soon.</p>
+          <button class="btn btn-ghost btn-lg js-watch" type="button">▶ Watch the intro (20s)</button>
           <a class="btn btn-ghost btn-lg js-repo" href="#" hidden>Follow development</a>
         </div>
-        <p class="fine">In development. Runs offline with algorithmic leaders; bring your own LLM key if you want one.</p>
+        <p class="fine js-signup-note" hidden>One email when the first Flashpoint is playable. No spam, unsubscribe anytime.</p>
+        <p class="fine">Runs offline with algorithmic leaders; bring your own LLM key if you want one.</p>
       </div>
     </section>
   </main>
@@ -265,15 +309,18 @@
       </div>
       <div class="foot-links">
         <a class="js-repo" href="#" hidden>Source on GitHub</a>
+        <a href="press.html">Press kit</a>
         <a href="CREDITS.md">Credits</a>
-        <p class="fine">Locator maps made with Natural Earth. Borders shown are not an endorsement.</p>
+        <p class="fine">Map borders follow Natural Earth and imply no position on disputed territory, including Kashmir, Taiwan and Crimea. Contains depictions of war, coups and political violence.</p>
       </div>
     </div>
   </footer>
 
   <dialog class="lightbox" id="lightbox" aria-label="Image viewer">
     <form method="dialog"><button class="lb-close" aria-label="Close">✕</button></form>
+    <button class="lb-nav lb-prev" type="button" aria-label="Previous image">‹</button>
     <img alt="" />
+    <button class="lb-nav lb-next" type="button" aria-label="Next image">›</button>
     <p class="lb-cap"></p>
   </dialog>
 

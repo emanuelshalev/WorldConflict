@@ -18,11 +18,15 @@ Opening `site/index.html` directly from disk also works. Browsers block `fetch()
 - **Launch config:** one object at the top of `main.js`:
 
   ```js
-  const SITE = { playUrl: null, dailyUrl: null, repoUrl: null, siteUrl: null };
+  const SITE = { playUrl: null, dailyUrl: null, signupUrl: null, signupType: 'form', signupField: 'email',
+                 repoUrl: null, siteUrl: 'https://emanuelshalev.github.io/WorldConflict/', pressEmail: null };
   ```
 
-  While `playUrl` is `null`, every CTA reads **Coming soon** and **Watch the intro** is the active action. Set `playUrl` to the hosted game and the CTAs become **Take office ▸** links (plus "Try today's Daily Flashpoint", using `dailyUrl` or `playUrl`). Set `repoUrl` to show "Follow development" / "Source on GitHub".
-- **OG image:** `assets/og-image.jpg` (1200×630). Crawlers need an absolute URL: at deploy time edit the `og:image` and `twitter:image` tags in `index.html` (marked with a `SITE_URL` comment) to `https://USER.github.io/REPO/assets/og-image.jpg`, and set `SITE.siteUrl` to the same base.
+  - `signupUrl` + `signupType: 'form'`: shows the "Get early access" email form (hero and closing CTA) and posts to that URL (Buttondown, Formspree, Tally...). Use `signupField` if the provider wants another field name. `signupType: 'link'` turns the form into a button that opens the URL.
+  - While `signupUrl` and `playUrl` are null, the CTA area shows an "In development" status line and "Watch the intro (20s)".
+  - `playUrl` adds "Take office ▸" links (and the Daily Flashpoint link, from `dailyUrl` or `playUrl`); `repoUrl` shows "Follow development"; `pressEmail` fills the contact line on `press.html`.
+- **Absolute URLs:** canonical, `og:url`, `og:image`, `twitter:image` and the JSON-LD in `index.html` (marked with a `SITE_URL` comment), plus `robots.txt` and `sitemap.xml`, point at `https://emanuelshalev.github.io/WorldConflict/`. Change them together if the site moves.
+- **Press kit:** `press.html` (pitch, boilerplate, facts, screenshots, logo, contact).
 
 All asset paths are relative, so the page works under a GitHub Pages project path (`https://USER.github.io/REPO/`).
 
