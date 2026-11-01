@@ -1,11 +1,38 @@
-# Handoff — engagement overhaul, round 3
+# Handoff — release candidate 2.0.0-rc.1
 
-**Branch:** `ccr-fc426113-gp9q7q`, built on top of `feat/engagement-overhaul` (at `0ca6569`). Fast-forward or merge it into `feat/engagement-overhaul` when you're happy with it.
+**Branch:** `ccr-fc426113-gp9q7q`, built on top of `feat/engagement-overhaul` (at `0ca6569`). Fast-forward or merge it into `feat/engagement-overhaul`, and from there into `main`, when you're happy with it. `CHANGELOG.md` summarises the release.
 
-State as of 2026-11-01: every round-2 P0, P1 and P2 handoff item is done.
-- **Checks:** 103/103 tests. Backend lint and UI lint have no errors (the backend still has its 8 old Biome warnings). `npm run build` passes.
-- **Where things are:** plan, tasks, blockers and decisions are in `dev_plan/project_status.html`. Reviews are in `dev_plan/reviews/`.
-- **Tests:** this round's tests are in `tests/core/round3.spec.ts`; round 2's are in `tests/core/handoff.spec.ts`.
+State as of 2026-11-01:
+- **Checks:** all tests pass (`tests/core/rc.spec.ts`, `round3.spec.ts`, `handoff.spec.ts` and the originals, including determinism). Backend and UI lint have no errors (the backend has 8 old Biome warnings). `npm run build` passes.
+- **Reviews:** round 3 (four personas plus a UX expert plus two code reviews) is in `dev_plan/reviews/round3/`. `README.md` there maps every finding to its fix.
+- **Status page:** `dev_plan/project_status.html` (tasks, timeline, decisions).
+
+## Measured balance (release build)
+
+**Term**, 36 games per seat:
+
+| | USA | UKR | ISR | TWN | DEU | Pooled | Target |
+|---|---|---|---|---|---|---|---|
+| Smart | 100% | 83% | 94% | 97% | 94% | **94%** | 70–95 |
+| Random | 3% | 0% | 0% | 39% | 42% | **17%** | 15–45 |
+| None | 0% | 0% | 0% | 0% | 0% | **0%** | ≤20 |
+
+- Tension: median 44–55, with 0% of months at 80+.
+- Iran (exempt, labelled Brutal): smart 3%.
+
+**Flashpoints**, all 22 seats, 12 games each:
+- Smart: 75–100%, 96% pooled.
+- None: 0–8%, 0% pooled.
+- Random: 0–50%, 13% pooled.
+- Tension: medians 54–73, with at most 19% of months at 80+.
+
+**Against the criteria:** Term meets every band. Flashpoints are fractionally outside two of them: smart is 96% pooled (target ≤95) and random 13% pooled (target ≥15). No seat is below 65%.
+
+**Known balance issue, "greedy" play.** A harness policy that gives no orders and always takes the best-looking crisis option wins:
+- 75% of Terms as Taiwan or Germany (8% or less elsewhere);
+- 50% of flashpoints pooled.
+
+In flashpoints the monthly card is meant to be the core decision. In calm democracies' Terms it means orders matter too little. Fixing it needs a pass over crisis-option payouts. A blunt approval drift was tried and reverted, because it hurt smart play more than greedy play.
 
 ## Release-candidate criteria
 
@@ -34,50 +61,24 @@ A build is a release candidate when all of these hold:
 | 11 | **Persona round 3 fixes.** Advisors now back primary *score* goals by fixing the weakest component; a suggestion leaves the desk once its order is queued; a pact war joined through a crisis answer earns "Loyal Ally", not "Warmonger". | `Desk.tsx`, `turn.ts` (record key `DIPLOMACY_DECLARE_WAR:ally`), `scoring.ts` |
 | 12 | **Data tuning:** the Caracas US approval goal goes from 60 to 55, because 60 sat at the median of final approval. | `data/flashpoints/caracas-after-maduro.json` |
 
-## Measured balance
+## Done in the release-candidate loop
 
-**Term**, 36 games per seat (USA, UKR, ISR, TWN, DEU):
-
-| | Smart | Random | Target |
-|---|---|---|---|
-| Pooled | 95% | 15% | smart 70–95, random 15–45 |
-| Taiwan | 100% | 31% (was 100%) | |
-| Germany | 83% | 31% (was 75%) | |
-
-- No orders: 0% on every seat.
-- Iran (12–36 games): smart 17–33%, none and random 0%. It was 0% for every policy. Iran stays the hardest seat on purpose (decision D-29).
-- Tension: median 46–58, with 0% of months at 80+.
-
-**Flashpoints**, all 22 seats, 12 games each:
-
-| | Win rate | Tension median | Months at 80+ |
-|---|---|---|---|
-| Smart | 75–100% on 21 seats; one at 58% (see below) | 56–71 | 0–18% (was up to 80%) |
-| No orders | 0–17% (pooled 1%) | | |
-| Random | 0–50% (pooled 13%) | 61–73 | |
-
-- The two US seats at Caracas and Quarantine are noisy at 12 games; over 36 games both win 69%.
-- Flashpoint tension medians were 72–85 before this round.
-
-**Persona round 3 (focused):**
-- **Maya** (phone, Quarantine as Taiwan, following advisors): 3 of 3 runs won after the fixes (2 of 3 before).
-- **Leo** (warning flow): coups and revolutions are telegraphed 86–100% of the time.
-- **Dan** (long game): see P1 #1 and #2 below.
+- **Economy and capital:** flat 2◆ capital (3 in Flashpoints), threat-capped defence budgets, oil shocks only from new wars, real growth everywhere it is shown or scored, and war damage by geography and economic reach.
+- **Round-3 personas and UX:** every P0 and P1 fixed; see `dev_plan/reviews/round3/README.md`.
+- **Flashpoint score targets recalibrated:** −3 across the board, because the economic score now counts real damage. China in Quarantine was kept at 120 so passive play doesn't win. Approval goals were set to 80 for the UAE in Bab al-Mandab and 66 for the US in Quarantine.
 
 ## Next work, in order
 
-### P0
-1. **A full four-persona UI playtest** on this build. Round 3 drove only Maya through the UI; Leo and Dan were checked through the harness, and Priya wasn't run.
-
 ### P1
-1. **Political capital isn't a constraint.** A light-touch player sits at the 6◆ cap in 47 of 48 months (Dan's complaint in both rounds). Options: a lower base income, costlier reform, or decay of banked capital. Retune with the harness afterwards; every policy will shift.
-2. **Long-game GDP drifts down.** In peaceful Terms with default crisis answers, GDP falls 2% for Germany and 6% for Pakistan over 48 months, even though monthly growth reads positive. Check the instability and military-budget drags in `effectiveGrowth` against each country's trend.
-3. **US approval goals are on a knife edge.** In Caracas and Quarantine, smart play wins 69% over 36 games, and final US approval clusters around the goal. Consider retuning, or give the US player an approval lever tied to the mission.
+1. **Crisis-option payouts and "greedy" play** (see above). Make orders matter in calm democracies' Terms, for example with options whose upside requires a follow-up order, or approval rewards tied to policy, not to cards.
+2. **Iran Term** stays near-unwinnable (3%) since collapse shields fail below 10 legitimacy. Either accept it as a challenge seat or give the regime a path back (concessions to the street, a negotiated embargo relief).
 
 ### P2
-1. A nuclear escalation path that chaos players can use without an existing war (Leo's review).
-2. Minor items from the review: Escape doesn't close Settings; a duplicate-key warning in the ticker; a map glyph 404 for the emoji range; the phone tip box is cramped beside its dismiss button; Pakistan and Turkey are labelled AUTOCRACY yet hold elections (a "hybrid regime" label would read better).
-3. The advisors' prestige suggestion can pick an odd partner (Taiwan courting North Korea at −29). Restrict it to countries that aren't historical rivals.
+1. The defence-budget order barely matters (Dan). Courting at extreme lows barely moves relations, and prestige decays steadily.
+2. Tab order: add a skip link, and an Enter shortcut for Execute.
+3. Small number mismatches (save list "month 0" vs HUD "month 1").
+4. Odd coup-card arrows; a refugee card with Israelis fleeing to Egypt; Russia striking Turkey's young programme provokes no reaction.
+5. A nuclear escalation path for chaos players without an existing war.
 
 ## How to verify
 ```bash

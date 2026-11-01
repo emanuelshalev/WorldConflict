@@ -62,6 +62,11 @@ Static data is JSON in `data/`: 41 country profiles in `data/countries/` (valida
 - Global tension has a per-turn rise cap (+8, +30 on war/nuclear shock), AI-generated tension counts half, and it decays 26%/turn toward a war-count floor (min(60, 25+6×wars)). Standing border deployments add at most 1.5/month in total (they used to add 0.5 each and pinned flashpoints near 85). Target: median 45–70, ≤20% of months ≥80 — verify with `npm run sim` when adding tension sources.
 - Relations drift 2%/month toward a structural equilibrium (alliances, rivalries, regime affinity). Ceasefires depend on exhaustion and who is winning.
 - The player can be deposed (election loss, coup, revolution, assassination) but coups/revolutions are telegraphed first (`coup_plot` / `streets_boiling` crises). Sessions end at `world.maxTurns` (mode-dependent). Score is 4×50 components drifting 15%/month toward situation-derived targets.
+- Political capital is flat: 2◆/month (3 in FLASHPOINT, +1 on ANALYST), cap 6, no popularity bonus. The player gets at most 6 orders a month (`MAX_ORDERS` in `turn.ts`), one per type+target; only the first denunciation each month moves approval. Crisis-injected actions bypass these limits.
+- `CountryState.realGrowth` is the smoothed, annualised *actual* GDP change (computed in `turn.ts` after phase 6). The HUD, the economic score and peacetime voter mood read it; don't show `growthRate` to players.
+- AI defence pacts: rare, never with a belligerent, max 4, none with TWN. AI proposals to the player become a `pact_offer` crisis. Wars joined to help someone carry `alliedWith` and end with the principal's war.
+- Scripted flashpoint crises can declare `requiresWar: [a, b]` and are skipped once that war is over.
+- Generated prose uses `possessive()` / `withArticle()` from `src/core/text.ts` (the UI has a copy of `withArticle` in `ui/src/lib/format.ts`). The order vocabulary and ◆ costs live in `ui/src/lib/actions.ts`.
 - Balance targets (harness): smart 55–85% wins, none ≤20%, random 15–45%.
 
 ## Conventions
