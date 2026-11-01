@@ -35,7 +35,7 @@
       "briefing": "You are the President of the Philippines. A Filipino sailor is dead after a ramming at Scarborough, Chinese dredgers have arrived, and half your political class is busy with the Duterte impeachment. Get Washington to stand behind the treaty, keep Tokyo and Canberra close, and do not let the shoal become either a war or an island.",
       "primary": [
         {"kind": "NO_WAR_WITH", "targetId": "CHN", "label": "No shooting war with China"},
-        {"kind": "RELATION_MIN", "targetId": "USA", "min": 80, "label": "The treaty means something (US relations 80+)"},
+        {"kind": "RELATION_MIN", "targetId": "USA", "min": 78, "label": "The treaty means something (US relations 78+)"},
         {"kind": "SCORE_PAR", "min": 100, "label": "Leadership score of 100+: the republic holds"}
       ],
       "bonus": [

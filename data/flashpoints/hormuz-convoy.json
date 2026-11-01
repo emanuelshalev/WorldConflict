@@ -21,7 +21,10 @@
     {"countryId": "ARE", "role": "Hedge between Washington and Tehran while Iranian drones fly over your ports.", "difficulty": "STEADY"}
   ],
   "setup": {
-    "wars": [],
+    "wars": [
+      {"attackerId": "USA", "defenderId": "IRN", "frontline": 58, "exhaustion": 72},
+      {"attackerId": "ISR", "defenderId": "IRN", "frontline": 52, "exhaustion": 70}
+    ],
     "relations": [
       {"a": "USA", "b": "ARE", "value": 75},
       {"a": "IRN", "b": "ARE", "value": -70},
@@ -29,7 +32,7 @@
       {"a": "ARE", "b": "CHN", "value": 50}
     ],
     "countries": {
-      "IRN": {"stability": 62, "legitimacy": 42, "approval": 32, "mobilization": 65, "growthRate": -0.03, "insurgencyLevel": "UNREST", "nuclearStatus": "DEVELOPING", "nuclearProgress": 55},
+      "IRN": {"stability": 75, "legitimacy": 50, "approval": 32, "mobilization": 65, "growthRate": 0.005, "insurgencyLevel": "UNREST", "nuclearStatus": "DEVELOPING", "nuclearProgress": 55},
       "USA": {"approval": 44, "stability": 56},
       "ARE": {"stability": 78, "approval": 70}
     }
@@ -39,15 +42,15 @@
       "title": "Open the strait",
       "briefing": "You are the President, it is the week of the midterms, and tankers are burning off Fujairah. End the shooting war with Iran on terms you can sell, keep Tehran from ever testing a bomb, and keep American voters on side. Nobody will thank you for a ground war.",
       "primary": [
-        {"kind": "WAR_RESULT", "targetId": "IRN", "min": 60, "label": "The war ends, or the strait is clearly yours (front 60+)"},
-        {"kind": "NO_NUCLEAR", "targetId": "IRN", "maxStatus": "DEVELOPING", "label": "Iran never tests a bomb"},
-        {"kind": "STAT_MIN", "stat": "approval", "min": 58, "label": "Approval of 58%+ after the midterms"},
-        {"kind": "RELATION_MIN", "targetId": "ARE", "min": 82, "label": "The Gulf still trusts you (UAE relations 82+)"},
-        {"kind": "SCORE_PAR", "min": 105, "label": "Leadership score of 105+"}
+        {"kind": "WAR_ENDED", "targetId": "USA", "otherId": "IRN", "label": "The shooting stops: no US–Iran war at the end (Hormuz reopens)"},
+        {"kind": "NO_NUCLEAR", "targetId": "IRN", "label": "Iran never tests a bomb"},
+        {"kind": "STAT_MIN", "stat": "approval", "min": 56, "label": "Approval of 56%+ after the midterms"},
+        {"kind": "RELATION_MIN", "targetId": "ARE", "min": 66, "label": "The Gulf still trusts you (UAE relations 66+)"},
+        {"kind": "RELATION_MIN", "targetId": "ISR", "min": 61, "label": "Israel stays on side (relations 61+)"}
       ],
       "bonus": [
-        {"kind": "SCORE_PAR", "min": 116, "label": "Leadership score of 116+: gas prices and credibility both restored"},
-        {"kind": "STAT_MIN", "stat": "stability", "min": 60, "label": "A calm home front (stability 60%+)"}
+        {"kind": "SCORE_PAR", "min": 114, "label": "Leadership score of 114+"},
+        {"kind": "STAT_MIN", "stat": "stability", "min": 60, "label": "Stability of 60%+"}
       ],
       "par": 110,
       "debrief": "What really happened: the 2026 Iran war killed a Supreme Leader but did not topple the regime. Hormuz was closed and reopened several times, a two-week ceasefire and the Islamabad framework both collapsed, and by November the conflict had settled into blockade versus harassment, at a cost of about $47bn and 23 American dead. What experts fear: a surviving hardline regime sitting on 200-plus kilograms of 60% uranium with every incentive for a crash bomb programme, or a Gulf energy shock that tips a 3%-growth world into recession."
@@ -57,12 +60,12 @@
       "briefing": "You speak for a Supreme Leader few have seen since March, reportedly wounded, and for a state under blockade and bombardment. Survive: get the blockade lifted, keep the security forces loyal and the streets quiet, and do not let the uranium become the excuse for a final strike. A test would make you a nuclear power and a pariah in the same afternoon.",
       "primary": [
         {"kind": "WAR_RESULT", "targetId": "USA", "min": 38, "label": "Outlast the Americans (a ceasefire, or the front no worse than 38)"},
-        {"kind": "STAT_MIN", "stat": "legitimacy", "min": 30, "label": "The system still commands obedience (legitimacy 30%+)"},
-        {"kind": "SCORE_PAR", "min": 66, "label": "Leadership score of 66+: a state, not a ruin"}
+        {"kind": "STAT_MIN", "stat": "legitimacy", "min": 25, "label": "The system still commands obedience (legitimacy 25%+)"},
+        {"kind": "SCORE_PAR", "min": 60, "label": "Leadership score of 60+: a state, not a ruin"}
       ],
       "bonus": [
-        {"kind": "RELATION_MIN", "targetId": "CHN", "min": 55, "label": "Beijing keeps buying (China relations 55+)"},
-        {"kind": "STAT_MIN", "stat": "stability", "min": 35, "label": "No second winter of protests (stability 35%+)"}
+        {"kind": "INSURGENCY_MAX", "level": "UNREST", "label": "The streets stay quiet (no rebellion)"},
+        {"kind": "RELATION_MIN", "targetId": "CHN", "min": 55, "label": "Beijing's lifeline secured (China relations 55+)"}
       ],
       "par": 100,
       "debrief": "What really happened: the Islamic Republic absorbed the killing of Ali Khamenei, named his son Mojtaba Supreme Leader within ten days, crushed the January protests and kept firing at shipping under a US blockade; the new leader's health and grip on power remained the subject of rumour. What experts fear: a regime that concludes only a bomb guarantees survival, with a stockpile inspectors cannot see, or a sudden collapse that leaves that stockpile in nobody's hands."
@@ -226,9 +229,9 @@
           "urgency": "EXISTENTIAL",
           "defaultOptionId": "silence",
           "options": [
-            {"id": "council", "label": "Hand power to a Guards council", "description": "The generals run the war and the streets. The clerics run the sermons.", "effects": {"stability": -3, "legitimacy": -12, "coupShield": 4, "mobilization": 6, "approval": -4}, "tensionDelta": 3, "backedBy": ["DEFENSE_MINISTER", "INTELLIGENCE_CHIEF"]},
-            {"id": "experts", "label": "Let the Assembly deliberate", "description": "Clerical process in public. Legitimate, slow, and an open invitation to factions.", "effects": {"legitimacy": 5, "stability": -12, "approval": -3}, "tensionDelta": 0, "followUp": {"templateId": "coup_plot", "delay": 2}, "backedBy": ["DOMESTIC_ADVISOR"]},
-            {"id": "silence", "label": "Say nothing", "description": "Release another video. Hope the rumours tire before the people do.", "effects": {"legitimacy": -10, "stability": -10, "approval": -6}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]}
+            {"id": "council", "label": "Hand power to a Guards council", "description": "The generals run the war and the streets. The clerics run the sermons.", "effects": {"stability": -3, "legitimacy": -9, "coupShield": 4, "mobilization": 6, "approval": -4}, "tensionDelta": 3, "backedBy": ["DEFENSE_MINISTER", "INTELLIGENCE_CHIEF"]},
+            {"id": "experts", "label": "Let the Assembly deliberate", "description": "Clerical process in public. Legitimate, slow, and an open invitation to factions.", "effects": {"legitimacy": 5, "stability": -8, "approval": -3}, "tensionDelta": 0, "followUp": {"templateId": "coup_plot", "delay": 2}, "backedBy": ["DOMESTIC_ADVISOR"]},
+            {"id": "silence", "label": "Say nothing", "description": "Release another video. Hope the rumours tire before the people do.", "effects": {"legitimacy": -8, "stability": -8, "approval": -6}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]}
           ]
         }
       },

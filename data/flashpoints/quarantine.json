@@ -40,7 +40,7 @@
       "briefing": "You are Taiwan's president, three days after a bruising local election, and the China Coast Guard has started 'inspecting' every ship bound for your ports. Keep energy flowing and the economy breathing, keep Washington and Tokyo in your corner, and never give Beijing the first shot it is waiting for. The legislature is not on your side.",
       "primary": [
         {"kind": "NO_WAR_WITH", "targetId": "CHN", "label": "Never fire the first shot: no war with China"},
-        {"kind": "RELATION_MIN", "targetId": "USA", "min": 65, "label": "Washington firmly in your corner (relations 65+)"},
+        {"kind": "RELATION_MIN", "targetId": "USA", "min": 56, "label": "Washington firmly in your corner (relations 56+)"},
         {"kind": "SCORE_PAR", "min": 92, "label": "Leadership score of 92+: the island still works"}
       ],
       "bonus": [
@@ -57,7 +57,7 @@
         {"kind": "NO_WAR_WITH", "targetId": "USA", "label": "No war with the United States"},
         {"kind": "NO_WAR_WITH", "targetId": "TWN", "label": "No shooting war across the Strait"},
         {"kind": "RELATION_MIN", "targetId": "USA", "min": -88, "label": "Washington still talking, not decoupling (relations -88+)"},
-        {"kind": "SCORE_PAR", "min": 112, "label": "Leadership score of 112+: the Party sees a win"}
+        {"kind": "SCORE_PAR", "min": 120, "label": "Leadership score of 120+: the Party sees a win"}
       ],
       "bonus": [
         {"kind": "STAT_MIN", "stat": "stability", "min": 88, "label": "Iron discipline at home (stability 88%+)"},
@@ -71,8 +71,9 @@
       "briefing": "You are the President. Beijing's coast guard is boarding Taiwan-bound tankers, Tokyo wants to know if you mean it, and you already have a navy busy blockading Iran. Get shipping moving again without a shooting war with China, without abandoning Taipei, and without the voters noticing what it cost.",
       "primary": [
         {"kind": "NO_WAR_WITH", "targetId": "CHN", "label": "No US war with China"},
-        {"kind": "RELATION_MIN", "targetId": "TWN", "min": 62, "label": "Taipei still trusts you (relations 62+)"},
-        {"kind": "STAT_MIN", "stat": "approval", "min": 65, "label": "Approval of 65%+: the public backs your handling"}
+        {"kind": "WAR_ENDED", "targetId": "CHN", "otherId": "TWN", "label": "No shooting war across the Strait at the end"},
+        {"kind": "RELATION_MIN", "targetId": "TWN", "min": 50, "label": "Taipei still trusts you (relations 50+)"},
+        {"kind": "STAT_MIN", "stat": "approval", "min": 70, "label": "Approval of 70%+: the public backs your handling"}
       ],
       "bonus": [
         {"kind": "RELATION_MIN", "targetId": "JPN", "min": 75, "label": "Alliance with Japan rock-solid (relations 75+)"},
@@ -150,9 +151,9 @@
           "urgency": "EXISTENTIAL",
           "defaultOptionId": "drop",
           "options": [
-            {"id": "force", "label": "Force it through", "description": "Emergency decree and a referendum call. Money now, a constitutional fight for years.", "effects": {"stability": -10, "legitimacy": -6, "relations:USA": 10, "approval": -2}, "tensionDelta": 3, "backedBy": ["DEFENSE_MINISTER"]},
-            {"id": "half", "label": "Settle for half", "description": "A deal with the opposition. Calm in Taipei, frowns in Washington.", "effects": {"approval": -8, "stability": -4, "relations:USA": -4}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]},
-            {"id": "drop", "label": "Let it die", "description": "No crisis at home. A big one in every allied capital.", "effects": {"relations:USA": -12, "approval": -10, "stability": -3}, "tensionDelta": 0, "backedBy": ["DOMESTIC_ADVISOR"]}
+            {"id": "force", "label": "Force it through", "description": "Emergency decree and a referendum call. Money now, a constitutional fight for years.", "effects": {"stability": -10, "legitimacy": -6, "relations:USA": 10, "approval": -10}, "tensionDelta": 3, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "half", "label": "Settle for half", "description": "A deal with the opposition. Calm in Taipei, frowns in Washington.", "effects": {"approval": -12, "stability": -4, "relations:USA": -4}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "drop", "label": "Let it die", "description": "No crisis at home. A big one in every allied capital.", "effects": {"relations:USA": -12, "approval": -14, "stability": -3}, "tensionDelta": 0, "backedBy": ["DOMESTIC_ADVISOR"]}
           ]
         }
       },

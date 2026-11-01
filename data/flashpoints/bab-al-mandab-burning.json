@@ -19,7 +19,9 @@
     {"countryId": "ARE", "role": "Keep your southern ports and friends without fighting your Saudi ally, or the Houthis.", "difficulty": "STEADY"}
   ],
   "setup": {
-    "wars": [],
+    "wars": [
+      {"attackerId": "YEM", "defenderId": "SAU", "frontline": 58, "exhaustion": 68}
+    ],
     "relations": [
       {"a": "SAU", "b": "ARE", "value": 10},
       {"a": "SAU", "b": "EGY", "value": 60},
@@ -29,7 +31,7 @@
     ],
     "countries": {
       "SAU": {"stability": 62, "approval": 64, "mobilization": 50},
-      "YEM": {"stability": 46, "legitimacy": 42, "approval": 40, "mobilization": 70, "insurgencyLevel": "REBELLION"},
+      "YEM": {"stability": 55, "legitimacy": 42, "approval": 40, "mobilization": 70, "insurgencyLevel": "REBELLION"},
       "ARE": {"stability": 80, "approval": 72},
       "EGY": {"stability": 45}
     }
@@ -41,11 +43,12 @@
       "primary": [
         {"kind": "WAR_RESULT", "targetId": "YEM", "min": 58, "label": "The Houthis pushed off the coast (front 58+ your way, or a ceasefire)"},
         {"kind": "NO_WAR_WITH", "targetId": "ARE", "label": "No open war with the Emirates"},
-        {"kind": "SCORE_PAR", "min": 119, "label": "Leadership score of 119+: Vision 2030 survives the war"}
+        {"kind": "STAT_MIN", "stat": "stability", "min": 78, "label": "The kingdom holds its nerve (stability 78%+)"},
+        {"kind": "SCORE_PAR", "min": 117, "label": "Leadership score of 117+: Vision 2030 survives the war"}
       ],
       "bonus": [
-        {"kind": "RELATION_MIN", "targetId": "USA", "min": 70, "label": "Washington at your side (US relations 70+)"},
-        {"kind": "STAT_MIN", "stat": "approval", "min": 75, "label": "The kingdom rallies (approval 75%+)"}
+        {"kind": "WAR_ENDED", "targetId": "YEM", "otherId": "SAU", "label": "A signed settlement: the Houthi war is over"},
+        {"kind": "RELATION_MIN", "targetId": "USA", "min": 70, "label": "Washington firmly behind you (US relations 70+)"}
       ],
       "par": 120,
       "debrief": "What really happened: the Iran war turned the Houthis from a shipping nuisance into a force contesting the strait itself; by October 2026 they held Mokha, reportedly Perim, and could hit Riyadh, while the Saudi-backed counteroffensive ground forward slowly. What experts fear: a permanent closure of Bab al-Mandab that, together with Hormuz, cuts both of the Gulf's sea exits, and a Saudi–Emirati rift that hands the south of Yemen to whoever has the most guns."
@@ -54,10 +57,10 @@
       "title": "Masters of the strait",
       "briefing": "You speak for Abdul-Malik al-Houthi's movement in Sanaa, which has outlasted a decade of Saudi bombing and now stands at the mouth of the Red Sea. Hold your gains or trade them for what you have always wanted: salaries paid by Riyadh and recognition as the power in Yemen. Your Iranian patron is bleeding and your people are hungry; the clock is not on your side.",
       "primary": [
-        {"kind": "WAR_RESULT", "targetId": "SAU", "min": 40, "label": "Hold the coast (front 40+ your way, or a settlement)"},
+        {"kind": "WAR_RESULT", "targetId": "SAU", "min": 22, "label": "Sanaa and Hodeidah never fall (front no worse than 22, or a settlement)"},
         {"kind": "STAT_MIN", "stat": "legitimacy", "min": 30, "label": "Sanaa still obeys (legitimacy 30%+)"},
-        {"kind": "SCORE_PAR", "min": 66, "label": "Leadership score of 66+: a state, not a ruin"},
-        {"kind": "RELATION_MIN", "targetId": "IRN", "min": 84, "label": "The Axis keeps faith with you (Iran relations 84+)"}
+        {"kind": "RELATION_MIN", "targetId": "IRN", "min": 70, "label": "The Axis keeps faith with you (Iran relations 70+)"},
+        {"kind": "SCORE_PAR", "min": 62, "label": "Leadership score of 62+: a state, not a ruin"}
       ],
       "bonus": [
         {"kind": "SCORE_PAR", "min": 86, "label": "Leadership score of 86+"},
@@ -72,8 +75,8 @@
       "primary": [
         {"kind": "NO_WAR_WITH", "targetId": "SAU", "label": "No open war with Saudi Arabia"},
         {"kind": "NO_WAR_WITH", "targetId": "YEM", "label": "No open war with the Houthis"},
-        {"kind": "RELATION_MIN", "targetId": "SAU", "min": 9, "label": "Riyadh still calls you an ally (Saudi relations 9+)"},
-        {"kind": "SCORE_PAR", "min": 115, "label": "Leadership score of 115+: business as usual"}
+        {"kind": "RELATION_MIN", "targetId": "SAU", "min": 15, "label": "Riyadh still calls you an ally (Saudi relations 15+)"},
+        {"kind": "SCORE_PAR", "min": 119, "label": "Leadership score of 119+: business as usual"}
       ],
       "bonus": [
         {"kind": "RELATION_MIN", "targetId": "USA", "min": 90, "label": "Washington's indispensable partner (US relations 90+)"},

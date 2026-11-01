@@ -36,9 +36,9 @@
       "title": "Survive the protectorate",
       "briefing": "You are the acting president of a state whose leader was seized by American commandos, governing with his ministers and Washington's permission. Keep the generals from moving, keep the sanctions relief flowing and give Venezuela something that looks like a future. You do not need to win an election, only to survive the promise of one.",
       "primary": [
-        {"kind": "RELATION_MIN", "targetId": "USA", "min": 25, "label": "Sanctions relief holds (US relations 25+)"},
+        {"kind": "RELATION_MIN", "targetId": "USA", "min": 15, "label": "Sanctions relief holds (US relations 15+)"},
         {"kind": "STAT_MIN", "stat": "legitimacy", "min": 35, "label": "A transition people believe in (legitimacy 35%+)"},
-        {"kind": "SCORE_PAR", "min": 101, "label": "Leadership score of 101+"}
+        {"kind": "SCORE_PAR", "min": 99, "label": "Leadership score of 99+"}
       ],
       "bonus": [
         {"kind": "STAT_MIN", "stat": "legitimacy", "min": 50, "label": "Ready to win a real vote (legitimacy 50%+)"},
@@ -69,7 +69,8 @@
         {"kind": "NO_WAR_WITH", "targetId": "VEN", "label": "No war with Venezuela"},
         {"kind": "NO_WAR_WITH", "targetId": "CUB", "label": "No war with Cuba"},
         {"kind": "RELATION_MIN", "targetId": "VEN", "min": -10, "label": "Caracas still takes your calls (relations -10+)"},
-        {"kind": "STAT_MIN", "stat": "approval", "min": 72, "label": "Approval of 72%+: voters see a win, not a quagmire"}
+        {"kind": "STAT_MIN", "stat": "approval", "min": 72, "label": "Approval of 72%+: voters see a win, not a quagmire"},
+        {"kind": "STAT_MIN", "stat": "stability", "min": 30, "label": "No unrest at home over the Caribbean (stability 30%+)"}
       ],
       "bonus": [
         {"kind": "RELATION_MIN", "targetId": "MEX", "min": 50, "label": "Mexico still on side (relations 50+)"},

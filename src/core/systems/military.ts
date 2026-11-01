@@ -73,8 +73,14 @@ export function startWar(
   attacker.mobilizationLevel = Math.max(attacker.mobilizationLevel, 60);
   defender.mobilizationLevel = Math.max(defender.mobilizationLevel, 50);
   // War footing: budgets surge (hostility indicator)
-  attacker.militaryBudgetPercent = Math.min(20, attacker.militaryBudgetPercent * 1.5);
-  defender.militaryBudgetPercent = Math.min(20, defender.militaryBudgetPercent * 1.4);
+  attacker.militaryBudgetPercent = Math.max(
+    attacker.militaryBudgetPercent,
+    Math.min(40, attacker.militaryBudgetPercent * 1.5),
+  );
+  defender.militaryBudgetPercent = Math.max(
+    defender.militaryBudgetPercent,
+    Math.min(40, defender.militaryBudgetPercent * 1.4),
+  );
 
   const war: ActiveWar = {
     id: `war_${attackerId}_${defenderId}_${world.turn}`,
@@ -318,7 +324,10 @@ export function applyBorderTensions(world: WorldState): void {
       target.relations[country.id] = Math.max(-100, (target.relations[country.id] ?? 0) - 3);
       world.globalTension = clamp(world.globalTension + 0.5, 0, 100);
       // Threatened countries arm in response (budget as hostility indicator)
-      target.militaryBudgetPercent = Math.min(20, target.militaryBudgetPercent + 0.1);
+      target.militaryBudgetPercent = Math.min(
+        Math.max(20, target.militaryBudgetPercent),
+        target.militaryBudgetPercent + 0.1,
+      );
     }
   }
 }

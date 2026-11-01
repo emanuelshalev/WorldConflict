@@ -20,7 +20,9 @@
     {"countryId": "USA", "role": "Broker the deal of the century without owning the war, or the peace.", "difficulty": "STEADY"}
   ],
   "setup": {
-    "wars": [],
+    "wars": [
+      {"attackerId": "RUS", "defenderId": "UKR", "frontline": 55, "exhaustion": 58}
+    ],
     "relations": [
       {"a": "USA", "b": "UKR", "value": 45},
       {"a": "USA", "b": "RUS", "value": -40},
@@ -38,8 +40,8 @@
       "briefing": "You are Ukraine's president under martial law, with half your power grid gone and the Americans pushing a map across the table. Keep the front from breaking, keep the country standing through the winter and keep Washington in the room. A ceasefire counts only if Ukraine is still on its feet when the ink dries.",
       "primary": [
         {"kind": "WAR_RESULT", "targetId": "RUS", "min": 42, "label": "Hold the front: Russia never past 58 (or a ceasefire)"},
-        {"kind": "RELATION_MIN", "targetId": "USA", "min": 24, "label": "Keep Washington engaged (relations 24+)"},
-        {"kind": "RELATION_MIN", "targetId": "GBR", "min": 98, "label": "Coalition of the willing locked in (UK relations 98+)"},
+        {"kind": "RELATION_MIN", "targetId": "USA", "min": 33, "label": "Keep Washington engaged (relations 33+)"},
+        {"kind": "RELATION_MIN", "targetId": "GBR", "min": 93, "label": "Coalition of the willing locked in (UK relations 93+)"},
         {"kind": "SCORE_PAR", "min": 85, "label": "Leadership score of 85+: a country still standing"}
       ],
       "bonus": [
@@ -69,11 +71,12 @@
       "briefing": "You are the President of the United States, two days before the midterms, with a peace plan in your pocket and a war with Iran on the side. Get Moscow and Kyiv to stop shooting on terms both can live with, without American troops on the ground and without wrecking the alliance. Voters are watching the price of gas, not the map.",
       "primary": [
         {"kind": "NO_WAR_WITH", "targetId": "RUS", "label": "No US war with Russia"},
-        {"kind": "RELATION_MIN", "targetId": "UKR", "min": 55, "label": "Kyiv still trusts you (relations 55+)"},
-        {"kind": "STAT_MIN", "stat": "approval", "min": 63, "label": "Approval of 63%+: the voters credit you with peace"}
+        {"kind": "WAR_ENDED", "targetId": "RUS", "otherId": "UKR", "label": "The guns fall silent: no Russia–Ukraine war at the end"},
+        {"kind": "RELATION_MIN", "targetId": "UKR", "min": 40, "label": "Kyiv still trusts you (relations 40+)"},
+        {"kind": "STAT_MIN", "stat": "approval", "min": 75, "label": "Approval of 75%+: the voters credit you with peace"}
       ],
       "bonus": [
-        {"kind": "RELATION_MIN", "targetId": "DEU", "min": 70, "label": "Europe on board (Germany relations 70+)"},
+        {"kind": "RELATION_MIN", "targetId": "DEU", "min": 60, "label": "Europe on board (Germany relations 60+)"},
         {"kind": "SCORE_PAR", "min": 115, "label": "Leadership score of 115+"}
       ],
       "par": 108,
@@ -130,9 +133,9 @@
           "urgency": "EXISTENTIAL",
           "defaultOptionId": "withdraw",
           "options": [
-            {"id": "draft23", "label": "Lower the draft age to 23", "description": "Fresh brigades by spring. Parents will not forgive it, and neither will the opinion polls.", "effects": {"mobilization": 14, "approval": -12, "stability": -6, "legitimacy": -3}, "tensionDelta": 2, "actions": [{"type": "MILITARY_MOBILIZE"}], "backedBy": ["DEFENSE_MINISTER", "CHIEF_OF_STAFF"]},
-            {"id": "withdraw", "label": "Fall back to the next line", "description": "Trade villages for lives. The front shortens; Russian television gets its victory montage.", "effects": {"stability": -7, "approval": -6, "mobilization": -5}, "tensionDelta": 0, "backedBy": ["DOMESTIC_ADVISOR"]},
-            {"id": "trainers", "label": "Invite coalition trainers in", "description": "British and French crews on Ukrainian soil: a tripwire and a lifeline. Moscow calls it NATO entering the war.", "effects": {"relations:GBR": 6, "relations:FRA": 6, "stability": -4, "relations:RUS": -10, "relations:USA": -4}, "tensionDelta": 8, "backedBy": ["FOREIGN_MINISTER"]}
+            {"id": "draft23", "label": "Lower the draft age to 23", "description": "Fresh brigades by spring. Parents will not forgive it, and neither will the opinion polls.", "effects": {"mobilization": 14, "approval": -12, "stability": -6, "legitimacy": -3}, "tensionDelta": 2, "actions": [{"type": "MILITARY_MOBILIZE"}], "backedBy": ["DEFENSE_MINISTER", "CHIEF_OF_STAFF"], "followUp": {"templateId": "streets_boiling", "delay": 1}},
+            {"id": "withdraw", "label": "Fall back to the next line", "description": "Trade villages for lives. The front shortens; Russian television gets its victory montage, and some of your own generals start talking about who really runs the war.", "effects": {"stability": -7, "approval": -6, "mobilization": -5}, "tensionDelta": 0, "backedBy": ["DOMESTIC_ADVISOR"], "followUp": {"templateId": "coup_plot", "delay": 1}},
+            {"id": "trainers", "label": "Invite coalition trainers in", "description": "British and French crews on Ukrainian soil: a tripwire and a lifeline. Moscow calls it NATO entering the war.", "effects": {"relations:GBR": 6, "relations:FRA": 6, "stability": -8, "relations:RUS": -10, "relations:USA": -4, "approval": -4}, "tensionDelta": 8, "backedBy": ["FOREIGN_MINISTER"]}
           ]
         }
       },
@@ -205,7 +208,7 @@
           "defaultOptionId": "print",
           "options": [
             {"id": "tax", "label": "Raise VAT and corporate tax", "description": "Responsible and unpopular. The budget balances on paper; the provinces notice.", "effects": {"approval": -7, "gdp": -0.6, "stability": 2}, "tensionDelta": 0, "backedBy": ["FINANCE_MINISTER"]},
-            {"id": "cut", "label": "Cut the recruitment bonuses", "description": "Fewer volunteers, fewer funerals in Buryatia. The general staff will be on the phone tonight.", "effects": {"mobilization": -10, "growth": 0.4, "approval": 2, "coupShield": -2}, "tensionDelta": -2, "backedBy": ["DOMESTIC_ADVISOR"]},
+            {"id": "cut", "label": "Cut the recruitment bonuses", "description": "Fewer volunteers, fewer funerals in Buryatia. The general staff will be on the phone tonight, and not only to complain.", "effects": {"mobilization": -10, "growth": 0.4, "approval": 2, "coupShield": -2}, "tensionDelta": -2, "backedBy": ["DOMESTIC_ADVISOR"], "followUp": {"templateId": "coup_plot", "delay": 2}},
             {"id": "print", "label": "Print and pretend", "description": "Monetise the deficit. Inflation will tax the pensioners for you, until it doesn't.", "effects": {"growth": -0.8, "stability": -4, "approval": 1}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]}
           ]
         }

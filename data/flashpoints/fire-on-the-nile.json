@@ -243,9 +243,10 @@
       "title": "Hold the centre",
       "briefing": "You command what remains of the Sudanese state from Port Sudan, with El Obeid under siege, famine spreading and a rival government in Nyala asking the world for recognition. Keep the army standing, keep your patrons in Cairo engaged and keep the country from splitting in two. There are no clean options; there are only fewer dead.",
       "primary": [
-        {"kind": "STAT_MIN", "stat": "stability", "min": 12, "label": "The state still functions (stability 12%+)"},
-        {"kind": "RELATION_MIN", "targetId": "EGY", "min": 42, "label": "Cairo still in your corner (relations 42+)"},
-        {"kind": "SCORE_PAR", "min": 66, "label": "Leadership score of 66+"}
+        {"kind": "INSURGENCY_MAX", "level": "REBELLION", "label": "Contain the RSF: insurgency pushed back to rebellion or less (El Obeid holds)"},
+        {"kind": "RELATION_MIN", "targetId": "EGY", "min": 37, "label": "Cairo still in your corner (relations 37+)"},
+        {"kind": "STAT_MIN", "stat": "approval", "min": 50, "label": "Sudanese still back the army (approval 50%+)"},
+        {"kind": "SCORE_PAR", "min": 66, "label": "Leadership score of 66+: a state that still feeds and governs"}
       ],
       "bonus": [
         {"kind": "STAT_MIN", "stat": "legitimacy", "min": 35, "label": "A government Sudanese can recognise (legitimacy 35%+)"},
@@ -260,12 +261,13 @@
       "primary": [
         {"kind": "NO_WAR_WITH", "targetId": "ETH", "label": "No war with Ethiopia"},
         {"kind": "NOT_COLLAPSED", "targetId": "SDN", "label": "Sudan's state survives"},
-        {"kind": "RELATION_MIN", "targetId": "SDN", "min": 67, "label": "Khartoum's army leans on you (relations 67+)"},
-        {"kind": "STAT_MIN", "stat": "approval", "min": 45, "label": "Bread on the table (approval 45%+)"}
+        {"kind": "RELATION_MIN", "targetId": "SDN", "min": 40, "label": "Khartoum's army leans on you (relations 40+)"},
+        {"kind": "STAT_MIN", "stat": "approval", "min": 45, "label": "Bread on the table (approval 45%+)"},
+        {"kind": "SCORE_PAR", "min": 109, "label": "Leadership score of 109+"}
       ],
       "bonus": [
         {"kind": "RELATION_MIN", "targetId": "ARE", "min": 40, "label": "The Gulf still lending (UAE relations 40+)"},
-        {"kind": "SCORE_PAR", "min": 108, "label": "Leadership score of 108+"}
+        {"kind": "RELATION_MIN", "targetId": "SDN", "min": 60, "label": "Cairo is Port Sudan's first call (relations 60+)"}
       ],
       "par": 105,
       "debrief": "What really happened: Egypt backed Sudan's army as its natural ally against an RSF tied to the UAE, Cairo's biggest investor, while Suez revenue collapsed under the Red Sea crisis and Ethiopia inaugurated the GERD in September 2025, hardening a dispute Cairo calls existential. What experts fear: that Sudan's partition, the GERD and Ethiopia's push for the Red Sea merge into one regional war, with Egypt's economy too weak to fight it and too exposed to stay out."

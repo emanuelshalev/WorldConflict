@@ -115,8 +115,8 @@
           "defaultOptionId": "hold",
           "options": [
             {"id": "package", "label": "Broaden the strike package", "description": "Take down their air defences. Escalation dominance, and the next rung is the one everyone fears.", "effects": {"approval": 6, "stability": -6, "relations:PAK": -12, "relations:USA": -8, "gdp": -0.5}, "tensionDelta": 14, "actions": [{"type": "MILITARY_AIRSTRIKE", "targetCountryId": "PAK", "params": {"targetType": "MILITARY"}}], "backedBy": ["DEFENSE_MINISTER"]},
-            {"id": "hold", "label": "Absorb it and hold", "description": "No reply, no talks. Nobody escalates, and nobody at home understands why.", "effects": {"approval": -9, "stability": -5, "legitimacy": -4}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]},
-            {"id": "hotline", "label": "DGMO hotline to Rawalpindi", "description": "Soldier to soldier, before the politicians misread each other. Calm returns; the anchors call it a climbdown.", "effects": {"approval": -6, "stability": 4, "relations:PAK": 6, "relations:USA": 6}, "tensionDelta": -8, "backedBy": ["FOREIGN_MINISTER", "INTELLIGENCE_CHIEF"]}
+            {"id": "hold", "label": "Absorb it and hold", "description": "No reply, no talks. Nobody escalates, and nobody at home understands why. Expect the nationalist street to call it surrender.", "effects": {"approval": -9, "stability": -5, "legitimacy": -4}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"], "followUp": {"templateId": "streets_boiling", "delay": 1}},
+            {"id": "hotline", "label": "DGMO hotline to Rawalpindi", "description": "Soldier to soldier, before the politicians misread each other. Calm returns; the anchors call it a climbdown. Expect the nationalist street to call it surrender.", "effects": {"approval": -6, "stability": 4, "relations:PAK": 6, "relations:USA": 6}, "tensionDelta": -8, "backedBy": ["FOREIGN_MINISTER", "INTELLIGENCE_CHIEF"], "followUp": {"templateId": "streets_boiling", "delay": 1}}
           ]
         }
       },
@@ -208,7 +208,7 @@
           "options": [
             {"id": "signal", "label": "Signal nuclear readiness", "description": "A National Command Authority statement and a missile test. India may pause; everyone else recoils.", "effects": {"approval": 5, "relations:USA": -10, "relations:SAU": -6, "relations:CHN": -4, "stability": -3}, "tensionDelta": 18, "backedBy": ["CHIEF_OF_STAFF"]},
             {"id": "east", "label": "Shift divisions east", "description": "Face India with everything. The western border is left to the Frontier Corps and luck.", "effects": {"mobilization": 8, "stability": -8, "insurgency": 1, "approval": -3}, "tensionDelta": 4, "backedBy": ["DEFENSE_MINISTER"]},
-            {"id": "kabul", "label": "Truce with Kabul via Doha", "description": "Buy quiet in the west through Qatar and Turkey. Strategically sound, publicly humiliating.", "effects": {"approval": -9, "relations:AFG": 12, "relations:USA": 3, "legitimacy": -3}, "tensionDelta": -4, "actions": [{"type": "DIPLOMACY_PROPOSE_CEASEFIRE", "targetCountryId": "AFG"}], "backedBy": ["FOREIGN_MINISTER", "INTELLIGENCE_CHIEF"]}
+            {"id": "kabul", "label": "Truce with Kabul via Doha", "description": "Buy quiet in the west through Qatar and Turkey. Strategically sound, publicly humiliating. Some corps commanders will not forgive a deal with the Taliban struck over their heads.", "effects": {"approval": -9, "relations:AFG": 12, "relations:USA": 3, "legitimacy": -3}, "tensionDelta": -4, "actions": [{"type": "DIPLOMACY_PROPOSE_CEASEFIRE", "targetCountryId": "AFG"}], "backedBy": ["FOREIGN_MINISTER", "INTELLIGENCE_CHIEF"], "followUp": {"templateId": "coup_plot", "delay": 1}}
           ]
         }
       },

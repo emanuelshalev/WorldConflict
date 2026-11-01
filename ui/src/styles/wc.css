@@ -1408,6 +1408,10 @@ button {
   .stat .val {
     font-size: 14px;
   }
+  .stat label {
+    font-size: 9px;
+    letter-spacing: 0.06em;
+  }
   .tension {
     width: 80px;
   }

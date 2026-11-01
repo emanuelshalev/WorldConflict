@@ -168,7 +168,7 @@ function Inner({ onClose }: { onClose: () => void }) {
                   ? `Unknown price for "${model}" — usage will be shown in tokens.`
                   : price[0] === 0
                     ? 'Local model: $0. Speed depends on your hardware.'
-                    : `${model}: ~$${(perCall ?? 0).toFixed(4)} per leader decision → about $${(estimate ?? 0).toFixed(2)} for a ${turns}-month game at this tier (advisor chats extra).`}
+                    : `${model}: ~$${(perCall ?? 0).toFixed(4)} per leader decision → about ${(estimate ?? 0) < 0.01 ? 'under a cent' : `$${(estimate ?? 0).toFixed(2)}`} for a ${turns}-month game at this tier (advisor chats extra).`}
               </p>
               <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 8 }}>
                 <span style={{ fontSize: 12.5, color: 'var(--text-2)' }}>Stop using the LLM after</span>
