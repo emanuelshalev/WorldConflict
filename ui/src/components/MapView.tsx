@@ -119,21 +119,12 @@ export function MapView() {
 
     const map = new maplibregl.Map({
       container: mapContainer.current,
+      // Keyless style: stylized ocean + Natural Earth land polygons (no tile provider)
       style: {
         version: 8,
         glyphs: 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf',
-        sources: {
-          carto: {
-            type: 'raster',
-            tiles: [
-              'https://a.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png',
-              'https://b.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png',
-            ],
-            tileSize: 256,
-            attribution: '© OpenStreetMap contributors © CARTO',
-          },
-        },
-        layers: [{ id: 'base', type: 'raster', source: 'carto' }],
+        sources: {},
+        layers: [{ id: 'ocean', type: 'background', paint: { 'background-color': '#0b1220' } }],
       },
       center: [15, 25],
       zoom: 1.8,
@@ -142,7 +133,10 @@ export function MapView() {
       attributionControl: false,
     });
     // Credits as a discreet watermark, bottom left
-    map.addControl(new maplibregl.AttributionControl({ compact: false }), 'bottom-left');
+    map.addControl(
+      new maplibregl.AttributionControl({ compact: false, customAttribution: 'Natural Earth' }),
+      'bottom-left',
+    );
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-left');
     mapRef.current = map;
 
@@ -150,6 +144,21 @@ export function MapView() {
       const res = await fetch('/world.geojson');
       const geo = (await res.json()) as GeoJSON.FeatureCollection;
       geoRef.current = geo;
+
+      // Every country on Earth as muted land; simulated countries are drawn on top
+      map.addSource('land', { type: 'geojson', data: geo });
+      map.addLayer({
+        id: 'land-fill',
+        type: 'fill',
+        source: 'land',
+        paint: { 'fill-color': '#1a2233' },
+      });
+      map.addLayer({
+        id: 'land-borders',
+        type: 'line',
+        source: 'land',
+        paint: { 'line-color': '#2a3448', 'line-width': 0.5 },
+      });
 
       map.addSource('countries', { type: 'geojson', data: emptyFC() });
       map.addSource('lines', { type: 'geojson', data: emptyFC() });

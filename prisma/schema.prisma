@@ -23,6 +23,7 @@ model SaveGame {
   playerCountry String
   playerId    String?  // owning player account
   leaderName  String?  // how the player is addressed in this game
+  llmUsage    String?  // JSON UsageTotals: cumulative LLM tokens/cost for this save
   seed        Int
   turn        Int
   createdAt   DateTime @default(now())

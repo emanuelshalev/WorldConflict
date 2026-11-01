@@ -1,6 +1,7 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
-import { generateDeterministicIntents } from "../../agents/fallback.js";
+import { AIConfigSchema, planTurn } from "../../agents/strategist.js";
+import { addUsage } from "../../agents/usage.js";
 import { createDataLoader } from "../../core/data-loader.js";
 import { previewAction } from "../../core/preview.js";
 import { classifyLeadership } from "../../core/scoring.js";
@@ -23,6 +24,7 @@ const TurnRequestSchema = z.object({
   saveId: z.string(),
   playerActions: z.array(ActionSchema),
   decisions: z.array(z.object({ decisionId: z.string(), optionId: z.string() })).default([]),
+  ai: AIConfigSchema.optional(),
 });
 
 const PreviewRequestSchema = z.object({
@@ -101,14 +103,14 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
     ) => {
       try {
         const body = TurnRequestSchema.parse(request.body);
-        const { saveId, playerActions, decisions } = body;
+        const { saveId, playerActions, decisions, ai } = body;
 
         const saveData = await gameDb.loadGame(saveId);
         if (!saveData) {
           return reply.status(404).send({ success: false, error: "Save game not found" });
         }
 
-        const { worldState } = saveData;
+        const { worldState, llmUsage } = saveData;
         if (worldState.gameOver) {
           return reply.status(400).send({
             success: false,
@@ -117,10 +119,13 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
         }
 
         const engine = new TurnEngine();
-        const aiIntents = generateDeterministicIntents(worldState);
+        // AI intents come from the chosen tier; the engine stays deterministic given intents
+        const plan = await planTurn(worldState, ai, { sessionSpentUsd: llmUsage.costUsd ?? 0 });
+        const aiIntents = plan.intents;
         const result = engine.executeTurn(worldState, playerActions, aiIntents, decisions);
+        const totalUsage = addUsage(llmUsage, plan.usage);
 
-        await gameDb.updateSave(saveId, result.newState);
+        await gameDb.updateSave(saveId, result.newState, totalUsage);
         await gameDb.addTurnLog(saveId, {
           number: result.newState.turn,
           date: result.newState.date,
@@ -139,6 +144,14 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
           governmentChanges: result.governmentChanges,
           resolvedActions: Object.fromEntries(result.resolvedActions),
           rejectedActions: Object.fromEntries(result.rejectedActions),
+          ai: {
+            tier: ai?.tier ?? "ALGORITHMIC",
+            turnUsage: plan.usage,
+            totalUsage,
+            statements: plan.statements,
+            llmCountries: plan.llmCountries,
+            notice: plan.notice,
+          },
         });
       } catch (error) {
         fastify.log.error(error);
@@ -240,18 +253,22 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
   // ------------------------------------------------------------------
   fastify.get(
     "/saves",
-    async (request: FastifyRequest<{ Querystring: { playerId?: string } }>, reply: FastifyReply) => {
-    try {
-      const saves = await gameDb.listSaves(request.query.playerId);
-      return reply.send({ success: true, saves });
-    } catch (error) {
-      fastify.log.error(error);
-      return reply.status(500).send({
-        success: false,
-        error: error instanceof Error ? error.message : "Failed to list saves",
-      });
-    }
-  });
+    async (
+      request: FastifyRequest<{ Querystring: { playerId?: string } }>,
+      reply: FastifyReply,
+    ) => {
+      try {
+        const saves = await gameDb.listSaves(request.query.playerId);
+        return reply.send({ success: true, saves });
+      } catch (error) {
+        fastify.log.error(error);
+        return reply.status(500).send({
+          success: false,
+          error: error instanceof Error ? error.message : "Failed to list saves",
+        });
+      }
+    },
+  );
 
   // ------------------------------------------------------------------
   fastify.delete(

@@ -51,7 +51,7 @@ server.get("/api/llm/status", async (_request, _reply) => {
   });
 
   if (geminiKey && geminiKey.startsWith("AIza")) {
-    providers.push({ provider: "gemini", available: true, model: "gemini-1.5-flash" });
+    providers.push({ provider: "gemini", available: true, model: "gemini-2.5-flash" });
   }
   if (openaiKey && openaiKey.startsWith("sk-")) {
     providers.push({ provider: "openai", available: true, model: "gpt-4o-mini" });

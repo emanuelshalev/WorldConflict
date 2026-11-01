@@ -297,7 +297,7 @@ export const DEFAULT_LLM_SETTINGS: LLMSettings = {
 
 export const LLM_MODEL_DEFAULTS: Record<string, string> = {
   openai: 'gpt-4o-mini',
-  gemini: 'gemini-1.5-flash',
+  gemini: 'gemini-2.5-flash',
   ollama: 'llama3.2',
 };
 
