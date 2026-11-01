@@ -307,7 +307,13 @@ export function Desk() {
   const [collapsed, setCollapsed] = useState(false);
   if (!world || gameOver) return null;
 
-  const pcLeft = world.politicalCapital - pendingActions.reduce((s, a) => s + pcCost(a.type), 0);
+  // Crisis answers resolve before orders, and their capital cost (or gain) comes first.
+  // An unanswered crisis falls to its default option, so count that one.
+  const crisisPc = pendingDecisions.reduce((sum, d) => {
+    const option = d.options.find((o) => o.id === (decisionChoices[d.id] ?? d.defaultOptionId ?? d.options[0]?.id));
+    return sum + (option?.effects.pc ?? 0);
+  }, 0);
+  const pcLeft = Math.max(0, world.politicalCapital + crisisPc) - pendingActions.reduce((s, a) => s + pcCost(a.type), 0);
   const unanswered = pendingDecisions.filter((d) => !decisionChoices[d.id]);
   const effectiveTarget = target || selectedCountryId || '';
 
@@ -348,7 +354,12 @@ export function Desk() {
 
           <div className="orders">
             <div className="display" style={{ fontSize: 12, color: 'var(--text-3)', letterSpacing: '0.16em' }}>
-              Advisors suggest · political capital left <span className="num" style={{ color: 'var(--accent)' }}>{pcLeft}</span>
+              Advisors suggest · political capital left <span className="num" style={{ color: pcLeft < 0 ? 'var(--war)' : 'var(--accent)' }}>{pcLeft}</span>
+              {crisisPc !== 0 && (
+                <span style={{ marginLeft: 6, letterSpacing: 0, textTransform: 'none' }}>
+                  (crisis answer {crisisPc > 0 ? '+' : '−'}{Math.abs(crisisPc)})
+                </span>
+              )}
             </div>
             <div className="suggestions">
               {suggestions.map((s) => (
@@ -422,6 +433,11 @@ export function Desk() {
             {unanswered.length > 0 && (
               <div className="hint" style={{ color: 'var(--accent)' }}>
                 <IconAlertTriangle size={13} style={{ verticalAlign: -2 }} /> {unanswered.length} crisis unanswered — it will resolve on its own
+              </div>
+            )}
+            {pcLeft < 0 && (
+              <div className="hint" style={{ color: 'var(--war)' }}>
+                <IconAlertTriangle size={13} style={{ verticalAlign: -2 }} /> Orders exceed political capital by {-pcLeft}: remove one or the last will be refused
               </div>
             )}
             <button className="wc-btn primary big" disabled={isLoading} onClick={() => executeTurn()}>
