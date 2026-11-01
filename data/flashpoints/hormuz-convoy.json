@@ -74,14 +74,14 @@
       "title": "The hedger's victory",
       "briefing": "You run the Gulf's most ambitious small state: Jebel Ali, Fujairah, an air force that reportedly struck Iran earlier in the war, and ties to Israel that Tehran has noticed. Keep your ports open and your skyline intact, stay Washington's indispensable partner, and leave the door to Tehran ajar for the day after. Above all, do not become the battlefield.",
       "primary": [
-        {"kind": "NO_WAR_WITH", "targetId": "IRN", "label": "Never at open war with Iran"},
-        {"kind": "RELATION_MIN", "targetId": "IRN", "min": -82, "label": "A door left open in Tehran (Iran relations -82+)"},
+        {"kind": "WAR_ENDED", "targetId": "IRN", "otherId": "ARE", "label": "No open war with Iran at the end"},
+        {"kind": "RELATION_MIN", "targetId": "IRN", "min": -90, "label": "A door left open in Tehran (Iran relations -90+)"},
         {"kind": "RELATION_MIN", "targetId": "USA", "min": 60, "label": "Still Washington's partner (US relations 60+)"},
-        {"kind": "SCORE_PAR", "min": 115, "label": "Leadership score of 115+: business as usual"}
+        {"kind": "SCORE_PAR", "min": 122, "label": "Leadership score of 122+: business as usual"},
+        {"kind": "STAT_MIN", "stat": "approval", "min": 85, "label": "Confidence at home (approval 85%+)"}
       ],
       "bonus": [
-        {"kind": "RELATION_MIN", "targetId": "IRN", "min": -40, "label": "A real channel to Tehran (Iran relations -40+)"},
-        {"kind": "STAT_MIN", "stat": "approval", "min": 80, "label": "Confidence at home (approval 80%+)"}
+        {"kind": "RELATION_MIN", "targetId": "IRN", "min": -40, "label": "A real channel to Tehran (Iran relations -40+)"}
       ],
       "par": 112,
       "debrief": "What really happened: the UAE was reportedly among the Gulf states that struck Iran or its proxies during the 2026 war, while deepening its ties with Israel and absorbing missile and drone attacks on its own soil. What experts fear: that the Gulf's model of glittering neutrality cannot survive a long war at its doorstep: one successful strike on a desalination plant or a port, and the hedge becomes a front line."

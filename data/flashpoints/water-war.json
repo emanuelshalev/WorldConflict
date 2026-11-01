@@ -53,11 +53,11 @@
       "briefing": "You are Pakistan's government, which in practice means you share the room with the Field Marshal. India is blaming you for Jammu, its engineers are throttling the Chenab, and the Taliban are shooting at your western border posts. Deter Indian escalation, get the water talks back on some track, and do not let the country fall apart while you do it.",
       "primary": [
         {"kind": "NO_WAR_WITH", "targetId": "IND", "label": "No full-scale war with India"},
-        {"kind": "RELATION_MIN", "targetId": "SAU", "min": 70, "label": "Riyadh stays in your corner (relations 70+)"},
-        {"kind": "SCORE_PAR", "min": 93, "label": "Leadership score of 93+: the state holds together"}
+        {"kind": "RELATION_MIN", "targetId": "SAU", "min": 74, "label": "Riyadh stays in your corner (relations 74+)"},
+        {"kind": "SCORE_PAR", "min": 85, "label": "Leadership score of 85+: the state holds together"},
+        {"kind": "RELATION_MIN", "targetId": "USA", "min": 40, "label": "Washington leans your way (relations 40+)"}
       ],
       "bonus": [
-        {"kind": "RELATION_MIN", "targetId": "USA", "min": 50, "label": "Washington leans your way (relations 50+)"},
         {"kind": "STAT_MIN", "stat": "stability", "min": 50, "label": "The state holds (stability 50%+)"}
       ],
       "par": 100,

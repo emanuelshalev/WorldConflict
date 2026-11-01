@@ -76,7 +76,7 @@
         {"kind": "NO_WAR_WITH", "targetId": "SAU", "label": "No open war with Saudi Arabia"},
         {"kind": "NO_WAR_WITH", "targetId": "YEM", "label": "No open war with the Houthis"},
         {"kind": "RELATION_MIN", "targetId": "SAU", "min": 15, "label": "Riyadh still calls you an ally (Saudi relations 15+)"},
-        {"kind": "SCORE_PAR", "min": 119, "label": "Leadership score of 119+: business as usual"}
+        {"kind": "SCORE_PAR", "min": 116, "label": "Leadership score of 116+: business as usual"}
       ],
       "bonus": [
         {"kind": "RELATION_MIN", "targetId": "USA", "min": 90, "label": "Washington's indispensable partner (US relations 90+)"},
