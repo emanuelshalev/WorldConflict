@@ -19,7 +19,9 @@
       { "year": 1982, "event": "Falklands War", "impact": "Demonstrated will and expeditionary ability to defend overseas territories" },
       { "year": 2003, "event": "Iraq War alongside the US", "impact": "Public scarred by intelligence failures; parliamentary skepticism of foreign interventions" },
       { "year": 2016, "event": "Brexit referendum", "impact": "Departure from the EU; 'Global Britain' rebrand and tilt to the Indo-Pacific (AUKUS)" },
-      { "year": 2022, "event": "Leading European support for Ukraine", "impact": "Reasserted role as Europe's most forward-leaning power against Russian aggression" }
+      { "year": 2022, "event": "Leading European support for Ukraine", "impact": "Reasserted role as Europe's most forward-leaning power against Russian aggression" },
+      { "year": 2024, "event": "Labour landslide under Keir Starmer", "impact": "A huge majority built on shallow support and a fragmented right" },
+      { "year": 2026, "event": "Starmer resigns after a local-election rout; Andy Burnham becomes PM (July)", "impact": "A new leader inherits weak growth, Reform UK's surge and a stalled EU reset" }
     ],
     "historicalRivals": ["RUS"],
     "historicalAllies": ["USA", "FRA", "CAN", "AUS", "POL", "JPN", "DEU"],
@@ -49,7 +51,7 @@
     { "kind": "IDEOLOGICAL", "name": "Leave-Remain cultural divide", "strength": 60, "tension": 40 }
   ],
   "economy": {
-    "gdp": 3340000000000,
+    "gdp": 3850000000000,
     "growthRate": 0.012,
     "debtGdpRatio": 100,
     "sectors": { "agriculture": 1, "industry": 18, "services": 81 },

@@ -19,7 +19,9 @@
       { "year": 1991, "event": "Asset bubble collapse and Lost Decades", "impact": "Prolonged stagnation, deflation, and demographic decline constrain ambition" },
       { "year": 2011, "event": "Fukushima triple disaster", "impact": "Energy insecurity deepened; reliance on imported fuel and sea lanes underscored" },
       { "year": 2015, "event": "Reinterpretation allowing collective self-defense", "impact": "Gradual normalization of the military role within the US alliance" },
-      { "year": 2022, "event": "New National Security Strategy doubles defense spending", "impact": "Counterstrike capability and 2% GDP defense budget in response to China and North Korea" }
+      { "year": 2022, "event": "New National Security Strategy doubles defense spending", "impact": "Counterstrike capability and 2% GDP defense budget in response to China and North Korea" },
+      { "year": 2025, "event": "PM Takaichi calls a Taiwan contingency a possible 'survival-threatening situation'", "impact": "China retaliated with seafood bans, travel advisories and, in January 2026, a dual-use export ban" },
+      { "year": 2026, "event": "LDP wins a two-thirds supermajority (8 February)", "impact": "A mandate for faster rearmament and a firmer line on China" }
     ],
     "historicalRivals": ["CHN", "RUS", "PRK"],
     "historicalAllies": ["USA", "AUS", "GBR", "IND", "KOR"],
@@ -48,7 +50,7 @@
     { "kind": "REGIONAL", "name": "Okinawan opposition to US base burden", "strength": 15, "tension": 45 }
   ],
   "economy": {
-    "gdp": 4230000000000,
+    "gdp": 4200000000000,
     "growthRate": 0.018,
     "debtGdpRatio": 255,
     "sectors": { "agriculture": 1, "industry": 29, "services": 70 },

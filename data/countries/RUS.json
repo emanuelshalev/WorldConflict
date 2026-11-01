@@ -19,11 +19,15 @@
       { "year": 1998, "event": "Financial default and ruble collapse", "impact": "Deep distrust of Western economic prescriptions; preference for state-controlled strategic sectors" },
       { "year": 1999, "event": "NATO intervention in Kosovo and eastward expansion", "impact": "Conviction that NATO enlargement is an existential encirclement threat" },
       { "year": 2014, "event": "Annexation of Crimea", "impact": "Demonstrated willingness to redraw borders by force and absorb sanctions for territorial gains" },
-      { "year": 2022, "event": "Full-scale invasion of Ukraine", "impact": "Open confrontation with the West; war economy, isolation from Europe, and pivot to China" }
+      { "year": 2022, "event": "Full-scale invasion of Ukraine", "impact": "Open confrontation with the West; war economy, isolation from Europe, and pivot to China" },
+      { "year": 2024, "event": "Ukraine's Kursk incursion; North Korean troops deployed to repel it", "impact": "First foreign occupation of Russian soil since 1941, reversed with the help of a new treaty ally" },
+      { "year": 2024, "event": "Comprehensive strategic partnership treaty with North Korea (June)", "impact": "A mutual-defense pact that trades Pyongyang's shells and soldiers for Russian technology" },
+      { "year": 2026, "event": "New START expires with no successor (5 February)", "impact": "For the first time since 1972 no treaty caps US and Russian strategic forces" },
+      { "year": 2026, "event": "Duma election gives United Russia 349 of 450 seats (September)", "impact": "A constitutional majority for a war economy growing under 1% a year" }
     ],
-    "historicalRivals": ["USA", "GBR", "DEU", "POL", "TUR", "JPN"],
-    "historicalAllies": ["CHN", "IRN", "PRK"],
-    "sphereOfInfluence": ["IRN", "PRK"],
+    "historicalRivals": ["USA", "GBR", "DEU", "POL", "UKR", "TUR", "JPN"],
+    "historicalAllies": ["CHN", "BLR", "PRK", "IRN"],
+    "sphereOfInfluence": ["BLR", "UKR"],
     "foreignPolicyOrientation": "EXPANSIONIST",
     "narrative": "A wounded great power that equates security with buffer zones and respect with fear. Highly risk-acceptant, skilled at hybrid warfare and intelligence operations, and willing to endure isolation and economic pain to reverse the post-Cold War settlement."
   },
@@ -49,8 +53,8 @@
     { "kind": "REGIONAL", "name": "Moscow/St. Petersburg vs impoverished regions", "strength": 45, "tension": 30 }
   ],
   "economy": {
-    "gdp": 2240000000000,
-    "growthRate": 0.012,
+    "gdp": 2540000000000,
+    "growthRate": 0.009,
     "debtGdpRatio": 20,
     "sectors": { "agriculture": 4, "industry": 33, "services": 63 },
     "keyResources": ["oil", "natural_gas", "metals", "grain", "uranium"],
@@ -62,10 +66,10 @@
     "airpower": 4173,
     "doctrine": "OFFENSIVE",
     "nuclearStatus": "ARMED",
-    "warheads": 5580,
+    "warheads": 5459,
     "arms_suppliers": ["RUS"]
   },
-  "militaryBudgetPct": 5.9,
+  "militaryBudgetPct": 6.5,
   "stability": 65,
   "legitimacy": 68,
   "intelLevel": 88,

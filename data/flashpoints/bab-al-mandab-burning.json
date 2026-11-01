@@ -1,0 +1,365 @@
+{
+  "id": "bab-al-mandab-burning",
+  "title": "Bab al-Mandab Burning",
+  "tagline": "Two chokepoints, one war, and the Gulf's last sea exit in Houthi rifle range.",
+  "hook": "In September 2026 the Houthis broke out of their Red Sea enclave and took the port of Mokha (10 Sep), with reports, not independently confirmed, that they also seized Perim island and Dhubab at the mouth of the strait. A Saudi-backed counteroffensive by the recognised government began on 4 October; on 10 October a Houthi strike on Riyadh's airport killed 13. The southern separatist STC 'dissolved' itself in January after its leader fled to Abu Dhabi, a move few believe, and the Saudi–Emirati rift over Yemen and Sudan has never been wider. Egypt watches its Suez revenue vanish.",
+  "sources": [
+    "https://euronews.com/2026/09/10/houthis-seize-red-sea-port-city-in-push-to-seize-bab-el-mandeb",
+    "https://wtop.com/world/2026/01/yemens-southern-transitional-council-to-dismantle-a-day-after-its-leader-fled-to-the-uae/",
+    "https://en.wikipedia.org/wiki/2026_Iran_war",
+    "https://www.energyconnects.com/news/gas-lng/2026/may/uae-is-said-to-have-hit-iran-earlier-in-war-as-israel-ties-grow/"
+  ],
+  "scenarioId": "2026",
+  "date": "2026-11",
+  "turns": 12,
+  "globalTension": 76,
+  "playable": [
+    {"countryId": "SAU", "role": "Win back the strait, or buy a peace, without letting the war eat Vision 2030.", "difficulty": "TOUGH"},
+    {"countryId": "YEM", "role": "Turn a battlefield gamble at the mouth of the Red Sea into recognition and salaries.", "difficulty": "BRUTAL"},
+    {"countryId": "ARE", "role": "Keep your southern ports and friends without fighting your Saudi ally, or the Houthis.", "difficulty": "STEADY"}
+  ],
+  "setup": {
+    "wars": [],
+    "relations": [
+      {"a": "SAU", "b": "ARE", "value": 10},
+      {"a": "SAU", "b": "EGY", "value": 60},
+      {"a": "YEM", "b": "IRN", "value": 80},
+      {"a": "ARE", "b": "YEM", "value": -70},
+      {"a": "SAU", "b": "USA", "value": 60}
+    ],
+    "countries": {
+      "SAU": {"stability": 62, "approval": 64, "mobilization": 50},
+      "YEM": {"stability": 46, "legitimacy": 42, "approval": 40, "mobilization": 70, "insurgencyLevel": "REBELLION"},
+      "ARE": {"stability": 80, "approval": 72},
+      "EGY": {"stability": 45}
+    }
+  },
+  "objectives": {
+    "SAU": {
+      "title": "Close the gate",
+      "briefing": "You are the Crown Prince and Prime Minister. The Houthis are on the strait, their missiles have reached your capital's airport, and the investors behind Vision 2030 are reading the war news. Push them back from the coast or extract a settlement that stops the strikes, and keep the kingdom calm and the economy growing while you do it.",
+      "primary": [
+        {"kind": "WAR_RESULT", "targetId": "YEM", "min": 58, "label": "The Houthis pushed off the coast (front 58+ your way, or a ceasefire)"},
+        {"kind": "NO_WAR_WITH", "targetId": "ARE", "label": "No open war with the Emirates"},
+        {"kind": "SCORE_PAR", "min": 119, "label": "Leadership score of 119+: Vision 2030 survives the war"}
+      ],
+      "bonus": [
+        {"kind": "RELATION_MIN", "targetId": "USA", "min": 70, "label": "Washington at your side (US relations 70+)"},
+        {"kind": "STAT_MIN", "stat": "approval", "min": 75, "label": "The kingdom rallies (approval 75%+)"}
+      ],
+      "par": 120,
+      "debrief": "What really happened: the Iran war turned the Houthis from a shipping nuisance into a force contesting the strait itself; by October 2026 they held Mokha, reportedly Perim, and could hit Riyadh, while the Saudi-backed counteroffensive ground forward slowly. What experts fear: a permanent closure of Bab al-Mandab that, together with Hormuz, cuts both of the Gulf's sea exits, and a Saudi–Emirati rift that hands the south of Yemen to whoever has the most guns."
+    },
+    "YEM": {
+      "title": "Masters of the strait",
+      "briefing": "You speak for Abdul-Malik al-Houthi's movement in Sanaa, which has outlasted a decade of Saudi bombing and now stands at the mouth of the Red Sea. Hold your gains or trade them for what you have always wanted: salaries paid by Riyadh and recognition as the power in Yemen. Your Iranian patron is bleeding and your people are hungry; the clock is not on your side.",
+      "primary": [
+        {"kind": "WAR_RESULT", "targetId": "SAU", "min": 40, "label": "Hold the coast (front 40+ your way, or a settlement)"},
+        {"kind": "STAT_MIN", "stat": "legitimacy", "min": 30, "label": "Sanaa still obeys (legitimacy 30%+)"},
+        {"kind": "SCORE_PAR", "min": 66, "label": "Leadership score of 66+: a state, not a ruin"},
+        {"kind": "RELATION_MIN", "targetId": "IRN", "min": 84, "label": "The Axis keeps faith with you (Iran relations 84+)"}
+      ],
+      "bonus": [
+        {"kind": "SCORE_PAR", "min": 86, "label": "Leadership score of 86+"},
+        {"kind": "STAT_MIN", "stat": "stability", "min": 35, "label": "No bread riots in Sanaa (stability 35%+)"}
+      ],
+      "par": 100,
+      "debrief": "What really happened: after the 2022 truce the Houthis built a missile and drone arsenal, used the Gaza war and then the 2026 Iran war to attack shipping and Israel, and in September 2026 seized Mokha in a push on Bab al-Mandab. A Saudi-backed counteroffensive followed in October. What experts fear: a movement that controls the strait and the hunger of millions, which can hold world trade hostage for salaries and recognition, and finds that it works."
+    },
+    "ARE": {
+      "title": "The southern game",
+      "briefing": "You are the President in Abu Dhabi. Your proxies in southern Yemen were humiliated in January, your ally in Riyadh suspects you of everything, and the Houthis have put a price on your ships. Protect your ports and your influence in Aden and Socotra, keep the Saudis close enough not to fight, and come out of this war with more friends than you went in with.",
+      "primary": [
+        {"kind": "NO_WAR_WITH", "targetId": "SAU", "label": "No open war with Saudi Arabia"},
+        {"kind": "NO_WAR_WITH", "targetId": "YEM", "label": "No open war with the Houthis"},
+        {"kind": "RELATION_MIN", "targetId": "SAU", "min": 9, "label": "Riyadh still calls you an ally (Saudi relations 9+)"},
+        {"kind": "SCORE_PAR", "min": 115, "label": "Leadership score of 115+: business as usual"}
+      ],
+      "bonus": [
+        {"kind": "RELATION_MIN", "targetId": "USA", "min": 90, "label": "Washington's indispensable partner (US relations 90+)"},
+        {"kind": "STAT_MIN", "stat": "approval", "min": 85, "label": "Confidence at home (approval 85%+)"}
+      ],
+      "par": 115,
+      "debrief": "What really happened: the UAE built a southern Yemeni network around the STC and island bases, then watched it fracture in January 2026 when the STC leader fled to Abu Dhabi and the council announced its own dissolution. The Saudi–Emirati partnership that launched the 2015 intervention is now a rivalry fought through proxies from Aden to Khartoum. What experts fear: that the two Gulf powers, each sure it is indispensable to Washington, keep feeding rival militias until southern Yemen becomes another Libya on the world's busiest shipping lane."
+    }
+  },
+  "scripted": {
+    "SAU": [
+      {
+        "turn": 0,
+        "templateId": "sa_riyadh_airport",
+        "headline": "Riyadh's airport still smoking as the Houthis promise more",
+        "text": "Three weeks after a Houthi missile killed 13 at King Khalid International, investors are rescheduling the Future Investment Initiative and the Houthi spokesman promises 'a long list of targets'. The counteroffensive on the coast is moving, slowly.",
+        "decision": {
+          "title": "Answering Riyadh airport",
+          "situation": "A massive air campaign on Sanaa satisfies the public's anger and will kill civilians and draw the old outrage. A back channel through Oman, where you already talk to the Houthis, could stop the missiles and looks weak. Inviting American and Israeli strikes outsources the war and ties the kingdom openly to Israel, a step the street is not ready for.",
+          "affectedCountries": ["SAU", "YEM", "USA", "ISR", "IRN"],
+          "urgency": "URGENT",
+          "defaultOptionId": "sanaa",
+          "options": [
+            {"id": "sanaa", "label": "Bomb Sanaa", "description": "The full air force. Revenge, ruins, and familiar headlines from 2015.", "effects": {"approval": 5, "legitimacy": -4, "relations:USA": -6, "stability": -3}, "tensionDelta": 6, "actions": [{"type": "MILITARY_AIRSTRIKE", "targetCountryId": "YEM", "params": {"targetType": "MILITARY"}}], "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "oman", "label": "Back channel via Muscat", "description": "Talk to the men who just bombed your airport. Quietly, and hope it stays quiet.", "effects": {"approval": -6, "relations:YEM": 10, "relations:IRN": 4, "stability": 2}, "tensionDelta": -5, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "invite", "label": "Invite American and Israeli strikes", "description": "Let the superpowers hit the launchers. Effective, and a political earthquake at home.", "effects": {"relations:USA": 8, "relations:ISR": 8, "relations:IRN": -12, "approval": -5, "legitimacy": -3}, "tensionDelta": 4, "backedBy": ["INTELLIGENCE_CHIEF"]}
+          ]
+        }
+      },
+      {
+        "turn": 3,
+        "templateId": "sa_southern_question",
+        "headline": "STC fighters in Aden ask Abu Dhabi for help, again",
+        "text": "The southern separatists who 'dissolved' in January are very much armed. Their commanders in Aden want Emirati money and drones to fight the Houthis on their own terms, under their own flag. Your government allies in the Presidential Leadership Council want them disarmed.",
+        "decision": {
+          "title": "The southern question",
+          "situation": "Absorbing the southern forces into your chain of command makes the counteroffensive coherent and makes Abu Dhabi an adversary. Sharing the south with the UAE keeps the coalition together and the Presidential Council weak. Ignoring it lets the southerners and the PLC fight each other while the Houthis watch.",
+          "affectedCountries": ["SAU", "ARE", "YEM"],
+          "urgency": "URGENT",
+          "defaultOptionId": "ignore",
+          "options": [
+            {"id": "absorb", "label": "Absorb the southern units", "description": "One army under Saudi command. Abu Dhabi will not forget.", "effects": {"relations:ARE": -12, "mobilization": 8, "approval": 3}, "tensionDelta": 3, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "share", "label": "Share the south with Abu Dhabi", "description": "Spheres of influence in Aden. The coalition survives; the Yemeni state does not get stronger.", "effects": {"relations:ARE": 14, "legitimacy": -4, "approval": -3}, "tensionDelta": -2, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "ignore", "label": "Let them sort it out", "description": "Aden's factions fight each other. The Houthis take notes.", "effects": {"stability": -5, "relations:ARE": -4, "approval": -3}, "tensionDelta": 2, "backedBy": ["CHIEF_OF_STAFF"]}
+          ]
+        }
+      },
+      {
+        "turn": 5,
+        "templateId": "sa_ras_tanura",
+        "headline": "Drone swarm hits Ras Tanura; a third of exports offline",
+        "text": "Fifteen drones and two cruise missiles, launched, the Americans believe, from both Yemen and Iraq, have struck the Ras Tanura terminal. Oil exports are cut by a third for at least a month. The Houthis say the next target is the Red Sea pipeline terminal at Yanbu.",
+        "decision": {
+          "title": "Ras Tanura",
+          "situation": "Pouring money into air defence and emergency repairs saves the exports and stalls the giga-projects. Escalating with strikes on Iraqi militia bases risks a second front. Accepting Iran's offer to rein in the Houthis in exchange for Saudi neutrality might end the strikes, and Washington will regard it as defection.",
+          "affectedCountries": ["SAU", "YEM", "IRN", "IRQ", "USA"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "absorb",
+          "options": [
+            {"id": "defend", "label": "Air defence at any price", "description": "Patriots, lasers, interceptors, repair crews. NEOM can wait.", "effects": {"gdp": -1.2, "growth": -0.5, "stability": -4, "approval": -3, "relations:USA": 5}, "tensionDelta": 0, "backedBy": ["FINANCE_MINISTER", "DEFENSE_MINISTER"]},
+            {"id": "iran_deal", "label": "Take Tehran's offer", "description": "Neutrality in the Iran war for a leash on the Houthis. Quiet skies; a furious Washington.", "effects": {"relations:IRN": 14, "relations:USA": -14, "relations:ISR": -8, "stability": -2, "approval": -2}, "tensionDelta": -8, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "absorb", "label": "Absorb the blow", "description": "Repair what you can, say little. The markets will price in the next swarm.", "effects": {"stability": -8, "approval": -7, "growth": -0.6}, "tensionDelta": 2, "backedBy": ["CHIEF_OF_STAFF"]}
+          ]
+        }
+      },
+      {
+        "turn": 7,
+        "templateId": "sa_perim",
+        "headline": "Commanders: Perim can be retaken, at a price",
+        "text": "Intelligence suggests the Houthi garrison on Perim, the volcanic island in the strait whose capture was never independently confirmed, is a few hundred men with anti-ship missiles. An amphibious assault could retake it in days. Nobody has fought an opposed landing in the Red Sea in living memory.",
+        "decision": {
+          "title": "The island in the strait",
+          "situation": "An assault is the decisive stroke that ends the Houthi grip on the strait, or a bloody failure televised from the beach. Blockading the island starves it slowly and keeps the strait half-closed for months. Offering the island's neutralisation in talks swaps a military prize for a diplomatic one, if the Houthis bite.",
+          "affectedCountries": ["SAU", "YEM", "ARE", "EGY"],
+          "urgency": "URGENT",
+          "defaultOptionId": "blockade",
+          "options": [
+            {"id": "assault", "label": "Storm Perim", "description": "Marines on the island. Glory or Gallipoli.", "effects": {"approval": 7, "mobilization": 10, "stability": -4, "relations:EGY": 5}, "tensionDelta": 6, "actions": [{"type": "MILITARY_MOBILIZE"}], "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "blockade", "label": "Starve the garrison", "description": "Ships and drones around the island. Slow, cheap, and the strait stays dangerous.", "effects": {"growth": -0.4, "approval": -3, "relations:EGY": -4}, "tensionDelta": 2, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "neutral", "label": "Neutralise it at the table", "description": "Demilitarise Perim under a UN monitor. A deal the Houthis might take, and the hawks will hate.", "effects": {"relations:YEM": 8, "relations:USA": 4, "approval": -5}, "tensionDelta": -6, "backedBy": ["FOREIGN_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 10,
+        "templateId": "sa_salaries",
+        "headline": "The Houthi price: Riyadh pays every public salary in Yemen",
+        "text": "Through Muscat the Houthis have named their terms: a ceasefire, an end to cross-border strikes, and Saudi Arabia paying the salaries of every Yemeni civil servant, including in Sanaa, for two years. The government in Aden calls it a reward for terrorism.",
+        "decision": {
+          "title": "Paying for peace",
+          "situation": "Paying ends the strikes and funds the movement you went to war to stop. Refusing means another year of war and missiles on your cities. Offering salaries only through UN-supervised accounts, with Perim handed over, is the sound compromise and may be refused.",
+          "affectedCountries": ["SAU", "YEM", "USA"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "refuse",
+          "options": [
+            {"id": "pay", "label": "Pay the salaries", "description": "Buy the peace outright. Expensive, effective, and galling.", "effects": {"gdp": -0.8, "stability": 6, "approval": -4, "relations:YEM": 12}, "tensionDelta": -10, "actions": [{"type": "DIPLOMACY_PROPOSE_CEASEFIRE", "targetCountryId": "YEM"}], "backedBy": ["FINANCE_MINISTER", "FOREIGN_MINISTER"]},
+            {"id": "un", "label": "Through UN accounts, for Perim", "description": "Salaries under supervision in exchange for the island. Principled, and possibly too clever.", "effects": {"relations:YEM": 5, "relations:USA": 5, "approval": 2, "gdp": -0.4}, "tensionDelta": -4, "backedBy": ["DOMESTIC_ADVISOR"]},
+            {"id": "refuse", "label": "No tribute", "description": "Fight on. The airport will be hit again; you will be seen not to have paid.", "effects": {"approval": 3, "stability": -6, "growth": -0.4}, "tensionDelta": 4, "backedBy": ["DEFENSE_MINISTER"]}
+          ]
+        }
+      }
+    ],
+    "YEM": [
+      {
+        "turn": 0,
+        "templateId": "ye_counteroffensive",
+        "headline": "Saudi-backed brigades push north from Khokha toward Mokha",
+        "text": "The government's counteroffensive, with Saudi air cover, has pushed to within artillery range of Mokha. Your fighters hold the port and, if the movement's own media are to be believed, Perim island. Ammunition from Iran arrives slowly now; the blockade has seen to that.",
+        "decision": {
+          "title": "Holding Mokha",
+          "situation": "Throwing reserves into Mokha holds the prize and burns men you cannot replace. Striking Saudi cities again punishes Riyadh and invites its full air force onto Sanaa. Falling back to the mountains preserves the army and gives up the coast you bled for.",
+          "affectedCountries": ["YEM", "SAU"],
+          "urgency": "URGENT",
+          "defaultOptionId": "fallback",
+          "options": [
+            {"id": "reserves", "label": "Every man to Mokha", "description": "Hold the port at any cost. The cost will be high.", "effects": {"mobilization": 10, "approval": -4, "stability": -3, "legitimacy": 3}, "tensionDelta": 3, "actions": [{"type": "MILITARY_MOBILIZE"}], "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "strike", "label": "Hit their cities", "description": "Missiles on Jizan and Riyadh. Fear across the border, bombs on Sanaa in return.", "effects": {"legitimacy": 5, "relations:SAU": -10, "relations:USA": -6, "stability": -4}, "tensionDelta": 7, "actions": [{"type": "INTEL_SABOTAGE", "targetCountryId": "SAU"}], "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "fallback", "label": "Back to the mountains", "description": "Save the army, lose the port. The strait slips from your hands.", "effects": {"legitimacy": -7, "approval": -4, "mobilization": -6}, "tensionDelta": -2, "backedBy": ["DOMESTIC_ADVISOR"]}
+          ]
+        }
+      },
+      {
+        "turn": 2,
+        "templateId": "ye_hunger",
+        "headline": "UN: famine conditions in Hodeidah as the port stays shut",
+        "text": "With shipping fled and the port of Hodeidah under threat, wheat prices in Sanaa have tripled. The World Food Programme says it can resume deliveries if your forces guarantee convoys and stop seizing aid. Your own commanders have been selling some of it.",
+        "decision": {
+          "title": "Bread or bullets",
+          "situation": "Guaranteeing aid convoys feeds people and lets international monitors into your territory. Taking a cut of aid for the war effort keeps the front supplied and the UN furious. Blaming the Saudi blockade and doing nothing is the old script, and hunger does not read scripts.",
+          "affectedCountries": ["YEM", "SAU", "USA"],
+          "urgency": "URGENT",
+          "defaultOptionId": "blame",
+          "options": [
+            {"id": "convoys", "label": "Guarantee the convoys", "description": "Monitors in, food in. Commanders lose a revenue stream; children eat.", "effects": {"stability": 6, "approval": 6, "relations:USA": 4, "mobilization": -4, "pc": -1}, "tensionDelta": -2, "backedBy": ["DOMESTIC_ADVISOR"]},
+            {"id": "skim", "label": "Tax the aid", "description": "A share of every convoy for the front. Efficient, and documented by the UN within weeks.", "effects": {"mobilization": 6, "approval": -5, "legitimacy": -3, "relations:USA": -6}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "blame", "label": "Blame the siege", "description": "Speeches about aggression. The bakeries stay empty.", "effects": {"stability": -7, "approval": -6, "legitimacy": 2}, "tensionDelta": 0, "backedBy": ["INTELLIGENCE_CHIEF"]}
+          ]
+        }
+      },
+      {
+        "turn": 5,
+        "templateId": "ye_tehran_leash",
+        "headline": "Tehran's envoy: 'Hold your fire on the Saudis, for now'",
+        "text": "Iran, desperate to keep Riyadh neutral in its own war, is asking you to stop striking Saudi territory. Its envoy hints that the next shipments of missile parts depend on it. Your commanders say the strikes are the only reason Riyadh is talking at all.",
+        "decision": {
+          "title": "The leash",
+          "situation": "Obeying keeps the patron's supply line open and throws away your sharpest weapon. Defying Tehran proves the movement is nobody's proxy and may leave you without spare parts. A middle path, ships but not cities, satisfies no one completely and keeps the strait hot.",
+          "affectedCountries": ["YEM", "IRN", "SAU"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "middle",
+          "options": [
+            {"id": "obey", "label": "Hold fire on Saudi cities", "description": "Please Tehran, pause the missiles. Riyadh relaxes; so does its negotiating urgency.", "effects": {"relations:IRN": 8, "relations:SAU": 6, "legitimacy": -6, "approval": -5, "stability": -4}, "tensionDelta": -6, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "defy", "label": "Nobody's proxy", "description": "Keep hitting Saudi Arabia. Pride intact, supply line in doubt.", "effects": {"relations:IRN": -10, "legitimacy": 4, "relations:SAU": -8, "mobilization": -6, "stability": -6}, "tensionDelta": 6, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "middle", "label": "Ships, not cities", "description": "Spare Saudi soil, keep attacking shipping. The world's insurers notice; so does Washington.", "effects": {"relations:USA": -8, "relations:EGY": -8, "stability": -8, "approval": -5}, "tensionDelta": 4, "backedBy": ["CHIEF_OF_STAFF"]}
+          ]
+        }
+      },
+      {
+        "turn": 7,
+        "templateId": "ye_tribes",
+        "headline": "Tribal sheikhs in Marib and al-Bayda open talks with Riyadh",
+        "text": "Saudi money is flowing to the tribes on your eastern flank, and several sheikhs who fought with you for a decade are now taking calls from Riyadh. Your security service has a list of names.",
+        "decision": {
+          "title": "Loyalty for sale",
+          "situation": "Outbidding the Saudis with money you do not have keeps the tribes and empties the treasury. Arresting the sheikhs sends a message and risks a tribal uprising behind your lines. Offering them seats in your government shares power, which the movement has never done willingly.",
+          "affectedCountries": ["YEM", "SAU"],
+          "urgency": "URGENT",
+          "defaultOptionId": "arrest",
+          "options": [
+            {"id": "outbid", "label": "Outbid Riyadh", "description": "Cash and qat for loyalty. The army goes unpaid another month.", "effects": {"gdp": -2, "stability": 4, "mobilization": -5}, "tensionDelta": 0, "backedBy": ["FINANCE_MINISTER"]},
+            {"id": "arrest", "label": "Arrest the traitors", "description": "Night raids on the sheikhs. Fear works, until the tribes rise.", "effects": {"stability": -8, "legitimacy": -4, "coupShield": 2}, "tensionDelta": 0, "followUp": {"templateId": "streets_boiling", "delay": 2}, "backedBy": ["INTELLIGENCE_CHIEF"]},
+            {"id": "seats", "label": "Seats at the table", "description": "Ministries for the sheikhs. Broader support, diluted control.", "effects": {"legitimacy": 6, "stability": 3, "approval": 2, "coupShield": -2}, "tensionDelta": 0, "backedBy": ["DOMESTIC_ADVISOR"]}
+          ]
+        }
+      },
+      {
+        "turn": 10,
+        "templateId": "ye_salaries_deal",
+        "headline": "Muscat: Riyadh will talk salaries, if Perim is handed over",
+        "text": "Omani mediators bring a Saudi counter-offer: public salaries paid for two years through UN-supervised accounts, in exchange for a ceasefire and the handover of Perim island to a neutral monitor. Your hardliners say the strait is worth more than any salary.",
+        "decision": {
+          "title": "The strait for salaries",
+          "situation": "Accepting delivers the movement's oldest demand and gives up the card that brought Riyadh to the table. Holding out for recognition as Yemen's government could get everything, or nothing. Rejecting it to keep the strait keeps you feared and your people hungry.",
+          "affectedCountries": ["YEM", "SAU", "IRN"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "reject",
+          "options": [
+            {"id": "accept", "label": "Take the salaries", "description": "Paid civil servants, a quiet strait, and a movement that has to govern in peacetime.", "effects": {"approval": 8, "stability": 6, "relations:SAU": 12, "legitimacy": -3, "relations:IRN": -4}, "tensionDelta": -10, "actions": [{"type": "DIPLOMACY_PROPOSE_CEASEFIRE", "targetCountryId": "SAU"}], "backedBy": ["FOREIGN_MINISTER", "DOMESTIC_ADVISOR"]},
+            {"id": "recognition", "label": "Demand recognition", "description": "Salaries and the seat at the UN. Bold, and Riyadh may walk.", "effects": {"legitimacy": 6, "relations:SAU": -4, "approval": -2}, "tensionDelta": 2, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "reject", "label": "Keep the strait", "description": "The gate to the Red Sea is not for sale. Neither, it turns out, is bread.", "effects": {"legitimacy": 3, "approval": -7, "stability": -6}, "tensionDelta": 5, "backedBy": ["DEFENSE_MINISTER"]}
+          ]
+        }
+      }
+    ],
+    "ARE": [
+      {
+        "turn": 0,
+        "templateId": "ae_stc_plea",
+        "headline": "From his Abu Dhabi villa, the STC leader asks for one more chance",
+        "text": "The southern separatist leader who fled to the UAE in January says his fighters can take the coast back from the Houthis if Abu Dhabi rearms them. Riyadh has made clear it wants the southern forces under the Presidential Council, not under you.",
+        "decision": {
+          "title": "The southern card",
+          "situation": "Rearming the southerners puts your proxies back in the game and the Saudis on notice. Handing them to the Saudi-led command keeps the alliance and abandons the men who held Aden for you. Quietly funding them through third parties keeps options open and will be found out.",
+          "affectedCountries": ["ARE", "SAU", "YEM"],
+          "urgency": "URGENT",
+          "defaultOptionId": "fund",
+          "options": [
+            {"id": "rearm", "label": "Rearm the southerners", "description": "Drones and armour back to Aden. Influence restored; Riyadh furious.", "effects": {"relations:SAU": -12, "relations:YEM": -8, "approval": 3, "legitimacy": 2}, "tensionDelta": 4, "actions": [{"type": "INTEL_SUPPORT_REBELS", "targetCountryId": "YEM"}], "backedBy": ["INTELLIGENCE_CHIEF"]},
+            {"id": "handover", "label": "Hand them to the Saudis", "description": "Unity of command. Your network in the south dissolves, for real this time.", "effects": {"relations:SAU": 12, "approval": -4, "legitimacy": -3}, "tensionDelta": -3, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "fund", "label": "Fund them through cut-outs", "description": "Deniable money via Somaliland and Socotra. Deniable until the first invoice leaks.", "effects": {"relations:SAU": -8, "stability": -3, "approval": -2}, "tensionDelta": 2, "backedBy": ["CHIEF_OF_STAFF"]}
+          ]
+        }
+      },
+      {
+        "turn": 3,
+        "templateId": "ae_ships",
+        "headline": "Houthi missile hits an Emirati-owned container ship",
+        "text": "An anti-ship missile has struck a DP World-chartered vessel north of the strait, killing two crew. The Houthis call Emirati shipping a 'legitimate target' for your role in Yemen. Jebel Ali's Red Sea services have been suspended.",
+        "decision": {
+          "title": "Ships under fire",
+          "situation": "Joining the American naval task force protects your ships and makes you an open belligerent. Paying Houthi intermediaries for safe passage is cheap, effective and, if discovered, scandalous. Rerouting everything around Africa costs time and money and nothing else.",
+          "affectedCountries": ["ARE", "YEM", "USA"],
+          "urgency": "URGENT",
+          "defaultOptionId": "reroute",
+          "options": [
+            {"id": "taskforce", "label": "Join the US task force", "description": "Emirati frigates alongside the Americans. Protection, and a bigger target.", "effects": {"relations:USA": 8, "relations:YEM": -12, "stability": -3, "mobilization": 5}, "tensionDelta": 4, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "pay", "label": "Pay for passage", "description": "A discreet fee through tribal intermediaries. Ships sail; Washington must not find out.", "effects": {"relations:YEM": 8, "relations:USA": -8, "growth": 0.3, "legitimacy": -3}, "tensionDelta": -2, "backedBy": ["FINANCE_MINISTER"]},
+            {"id": "reroute", "label": "Around the Cape", "description": "Two extra weeks per voyage. Safe, slow, and the bill lands on the economy.", "effects": {"growth": -0.6, "approval": -4}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]}
+          ]
+        }
+      },
+      {
+        "turn": 6,
+        "templateId": "ae_socotra",
+        "headline": "Saudi troops land on Socotra; the Emirati garrison is told to leave",
+        "text": "Saudi forces have arrived on Socotra, the island where the UAE built an airstrip and a quiet presence over a decade, with a Presidential Council order for your personnel to withdraw. Your officers on the island ask whether to comply. Both sides have armed men on the runway.",
+        "decision": {
+          "title": "Standoff on Socotra",
+          "situation": "Refusing to withdraw defends your investment and risks the first Saudi–Emirati firefight in history. Withdrawing with dignity keeps the alliance and hands Riyadh the island. Calling Washington to mediate is sensible and tells the world the Gulf's two closest allies cannot manage each other.",
+          "affectedCountries": ["ARE", "SAU", "USA"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "refuse",
+          "options": [
+            {"id": "refuse", "label": "Stay put", "description": "Our airstrip, our men. One nervous soldier from disaster.", "effects": {"approval": 4, "relations:SAU": -15, "stability": -6, "mobilization": 6}, "tensionDelta": 6, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "withdraw", "label": "Withdraw with honour", "description": "Hand over the island, keep the alliance. A setback written into every think-tank report.", "effects": {"relations:SAU": 8, "approval": -8, "legitimacy": -5, "stability": -3}, "tensionDelta": -4, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "mediate", "label": "Ask Washington to mediate", "description": "Let the Americans split the difference. Face saved, prestige dented.", "effects": {"relations:USA": 5, "relations:SAU": 2, "approval": -5, "stability": -4}, "tensionDelta": -2, "backedBy": ["CHIEF_OF_STAFF"]}
+          ]
+        }
+      },
+      {
+        "turn": 8,
+        "templateId": "ae_sudan_link",
+        "headline": "Riyadh's price for peace in Yemen: stop arming the RSF in Sudan",
+        "text": "Saudi negotiators have tied the Yemen file to Sudan, where your support for the RSF is an open secret the UAE denies. Cairo and Riyadh back the Sudanese army. A deal on Yemen's south is on the table if the flights to Darfur stop.",
+        "decision": {
+          "title": "Yemen for Sudan",
+          "situation": "Cutting the RSF loose buys a Yemen settlement and abandons an investment in gold and influence. Denying everything keeps both files alive and Riyadh hostile. Offering to join the Quad's humanitarian truce in Sudan is a partial gesture that may satisfy no one.",
+          "affectedCountries": ["ARE", "SAU", "SDN", "EGY"],
+          "urgency": "URGENT",
+          "defaultOptionId": "deny",
+          "options": [
+            {"id": "cut", "label": "Stop the flights", "description": "Abandon the RSF quietly. Riyadh and Cairo are pleased; the gold stops flowing.", "effects": {"relations:SAU": 12, "relations:EGY": 8, "relations:SDN": 10, "gdp": -0.5, "approval": -2}, "tensionDelta": -4, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "deny", "label": "Deny everything", "description": "What flights? Both files stay frozen, and so does Riyadh.", "effects": {"relations:SAU": -8, "relations:EGY": -6, "legitimacy": -3}, "tensionDelta": 2, "backedBy": ["INTELLIGENCE_CHIEF"]},
+            {"id": "truce", "label": "Back the Quad truce", "description": "A humanitarian gesture with no admission. Half a step, half the credit.", "effects": {"relations:SAU": 4, "relations:USA": 4, "approval": 2}, "tensionDelta": -2, "backedBy": ["DOMESTIC_ADVISOR"]}
+          ]
+        }
+      },
+      {
+        "turn": 10,
+        "templateId": "ae_ports_deal",
+        "headline": "Peace talks: who runs Aden's port after the war?",
+        "text": "With a Saudi–Houthi deal in sight, the question of the south returns: who runs Aden, Mukalla and the island airstrips. Riyadh proposes a Saudi-led reconstruction authority; the Americans want the UAE involved; Beijing has offered to build a container terminal.",
+        "decision": {
+          "title": "The ports of the south",
+          "situation": "A joint Saudi–Emirati authority shares the spoils and the headaches. Bringing in Chinese money gets the port built fast and alarms Washington. Walking away from the south entirely ends a decade of losses and ambitions in one stroke.",
+          "affectedCountries": ["ARE", "SAU", "CHN", "USA"],
+          "urgency": "ROUTINE",
+          "defaultOptionId": "walk",
+          "options": [
+            {"id": "joint", "label": "A joint authority", "description": "Partners again, at least on paper.", "effects": {"relations:SAU": 8, "growth": 0.3, "approval": 2}, "tensionDelta": -2, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "china", "label": "Bring in Beijing", "description": "Chinese cranes in Aden. Fast money, nervous Americans.", "effects": {"relations:CHN": 10, "relations:USA": -10, "growth": 0.5, "gdp": 0.4}, "tensionDelta": 2, "backedBy": ["FINANCE_MINISTER"]},
+            {"id": "walk", "label": "Leave the south to Riyadh", "description": "Cut the losses. A decade's investment written off.", "effects": {"approval": -5, "legitimacy": -3, "relations:SAU": 4}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]}
+          ]
+        }
+      }
+    ]
+  },
+  "debrief": ""
+}

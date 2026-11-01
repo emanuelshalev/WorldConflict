@@ -1,0 +1,361 @@
+{
+  "id": "caracas-after-maduro",
+  "title": "Caracas After Maduro",
+  "tagline": "The dictator is in a New York courtroom. His regime is still in Miraflores.",
+  "hook": "On 3 January 2026 a US raid captured Nicolás Maduro, who is now on trial in New York; his vice-president Delcy Rodríguez was sworn in as acting president two days later. Since then Caracas has opened its oil fields to foreign firms, reopened the US embassy (14 March) and won sanctions relief, while promising elections with no date. Next door, a US oil blockade since January has left Cuba with a collapsing grid and recurring nationwide blackouts. This session starts in November 2026, ten months into the improvised transition.",
+  "sources": [
+    "https://en.wikipedia.org/wiki/2026_in_Venezuela",
+    "https://en.wikipedia.org/wiki/2026_in_Cuba",
+    "https://www.pbs.org/newshour/world/who-is-delcy-rodriguez-venezuelas-interim-president-after-maduros-ouster"
+  ],
+  "scenarioId": "2026",
+  "date": "2026-11",
+  "turns": 12,
+  "globalTension": 70,
+  "playable": [
+    {"countryId": "VEN", "role": "Keep the chavista state alive by making it indispensable to the country that kidnapped its leader.", "difficulty": "TOUGH"},
+    {"countryId": "CUB", "role": "Keep the lights, and the Party, on with no oil and no patron.", "difficulty": "BRUTAL"},
+    {"countryId": "USA", "role": "Turn a decapitation raid into a democratic transition without sending in the Marines.", "difficulty": "STEADY"}
+  ],
+  "setup": {
+    "wars": [],
+    "relations": [
+      {"a": "USA", "b": "VEN", "value": 20},
+      {"a": "USA", "b": "CUB", "value": -75},
+      {"a": "VEN", "b": "CUB", "value": 30},
+      {"a": "VEN", "b": "CHN", "value": 20},
+      {"a": "CUB", "b": "MEX", "value": 35}
+    ],
+    "countries": {
+      "VEN": {"stability": 42, "approval": 38, "legitimacy": 30},
+      "CUB": {"stability": 36, "approval": 30, "legitimacy": 34}
+    }
+  },
+  "objectives": {
+    "VEN": {
+      "title": "Survive the protectorate",
+      "briefing": "You are the acting president of a state whose leader was seized by American commandos, governing with his ministers and Washington's permission. Keep the generals from moving, keep the sanctions relief flowing and give Venezuela something that looks like a future. You do not need to win an election, only to survive the promise of one.",
+      "primary": [
+        {"kind": "RELATION_MIN", "targetId": "USA", "min": 25, "label": "Sanctions relief holds (US relations 25+)"},
+        {"kind": "STAT_MIN", "stat": "legitimacy", "min": 35, "label": "A transition people believe in (legitimacy 35%+)"},
+        {"kind": "SCORE_PAR", "min": 101, "label": "Leadership score of 101+"}
+      ],
+      "bonus": [
+        {"kind": "STAT_MIN", "stat": "legitimacy", "min": 50, "label": "Ready to win a real vote (legitimacy 50%+)"},
+        {"kind": "STAT_MIN", "stat": "approval", "min": 50, "label": "Approval of 50%+"}
+      ],
+      "par": 105,
+      "debrief": "What really happened: Maduro's capture in January 2026 decapitated the regime without dismantling it. Delcy Rodríguez kept the chavista state together by becoming useful to Washington: a new hydrocarbons law, deportation flights, an embassy reopened and US sanctions on her lifted in April, with elections promised but undated and the opposition sidelined. What experts fear: an 'authoritarian transition without democracy', in which oil deals buy a protectorate's permanence and Venezuelans' votes are postponed indefinitely."
+    },
+    "CUB": {
+      "title": "Keep the lights and the Party on",
+      "briefing": "You lead a one-party state with no oil, a collapsing grid and the United States enforcing a blockade on anyone who sells you fuel. Keep the Party in power and the streets calm long enough for reform or a new patron to arrive. Every concession that saves the economy costs you a piece of the revolution.",
+      "primary": [
+        {"kind": "STAT_MIN", "stat": "legitimacy", "min": 22, "label": "The Party still rules (legitimacy 22%+)"},
+        {"kind": "STAT_MIN", "stat": "approval", "min": 35, "label": "No second July 2021 (approval 35%+)"},
+        {"kind": "RELATION_MIN", "targetId": "VEN", "min": 40, "label": "Caracas still a friend (relations 40+)"}
+      ],
+      "bonus": [
+        {"kind": "RELATION_MIN", "targetId": "USA", "min": -50, "label": "A thaw with Washington (relations -50+)"},
+        {"kind": "STAT_MIN", "stat": "stability", "min": 40, "label": "Streets calm (stability 40%+)"}
+      ],
+      "par": 100,
+      "debrief": "What really happened: after Maduro's fall cut Cuba's last oil lifeline, the US blockade from January 2026 and Mexico's halt to shipments brought total grid collapse in March, protests and a burned Party office in Morón. Havana answered with talks, a pardon of 2,010 prisoners and a private-enterprise package, while Washington indicted Raúl Castro and sanctioned Díaz-Canel. What experts fear: a humanitarian collapse and a new mass exodus across the Florida Straits, or a hard-line crackdown that ends any chance of a managed transition."
+    },
+    "USA": {
+      "title": "Regime change, without the change",
+      "briefing": "You captured a dictator; now you own what comes after. Get Caracas to a credible election and Havana to real reform without another raid, a migrant crisis or the oil deal falling apart. The hemisphere is watching how the Monroe Doctrine looks in 2026.",
+      "primary": [
+        {"kind": "NO_WAR_WITH", "targetId": "VEN", "label": "No war with Venezuela"},
+        {"kind": "NO_WAR_WITH", "targetId": "CUB", "label": "No war with Cuba"},
+        {"kind": "RELATION_MIN", "targetId": "VEN", "min": -10, "label": "Caracas still takes your calls (relations -10+)"},
+        {"kind": "STAT_MIN", "stat": "approval", "min": 72, "label": "Approval of 72%+: voters see a win, not a quagmire"}
+      ],
+      "bonus": [
+        {"kind": "RELATION_MIN", "targetId": "MEX", "min": 50, "label": "Mexico still on side (relations 50+)"},
+        {"kind": "SCORE_PAR", "min": 112, "label": "Leadership score of 112+"}
+      ],
+      "par": 110,
+      "debrief": "What really happened: the January 2026 raid removed Maduro but Washington chose oil and order over a democratic handover, lifting sanctions on Rodríguez and sidelining Machado, while an oil blockade pushed Cuba into blackouts and talks. What experts fear: that 'decapitation without regime change' becomes the template, leaving a dependent autocracy in Caracas, a humanitarian collapse in Havana and a hemisphere newly convinced that sovereignty is negotiable."
+    }
+  },
+  "scripted": {
+    "VEN": [
+      {
+        "turn": 0,
+        "templateId": "ve_machado",
+        "headline": "María Corina Machado announces she is flying home",
+        "text": "The Nobel laureate who won the opposition primary, and by most independent counts the 2024 election, says she will land at Maiquetía on Sunday. Washington, which has spent the year doing business with you instead, has gone conspicuously quiet.",
+        "decision": {
+          "title": "Machado comes home",
+          "situation": "Arresting her pleases the colectivos and the generals, and hands Washington a reason to remember who it is dealing with. Letting her rally is the price of looking like a transition. Offering her a ministry is the boldest move: legitimacy for you, a knife at your throat for the hardliners who still run the barracks.",
+          "affectedCountries": ["VEN", "USA"],
+          "urgency": "URGENT",
+          "defaultOptionId": "arrest",
+          "options": [
+            {"id": "arrest", "label": "Arrest her at the airport", "description": "The old playbook. The barracks relax; the State Department does not.", "effects": {"relations:USA": -12, "legitimacy": -7, "stability": 3}, "tensionDelta": 2, "backedBy": ["INTELLIGENCE_CHIEF"]},
+            {"id": "rally", "label": "Let her rally", "description": "A million people in Avenida Bolívar. Legitimacy for the process, nerves for the regime.", "effects": {"stability": -7, "legitimacy": 7, "relations:USA": 5, "approval": 2}, "tensionDelta": 0, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "ministry", "label": "Offer her a ministry", "description": "A unity cabinet. Washington applauds; somewhere a general starts counting tanks.", "effects": {"legitimacy": 10, "relations:USA": 8, "stability": -5}, "tensionDelta": 0, "backedBy": ["DOMESTIC_ADVISOR"], "followUp": {"templateId": "coup_plot", "delay": 3}}
+          ]
+        }
+      },
+      {
+        "turn": 3,
+        "templateId": "ve_barrels",
+        "headline": "Washington wants thirty-year rights to the Orinoco belt",
+        "text": "The new hydrocarbons law ended PDVSA's monopoly; now the Americans want the prize: long-term rights over the world's largest proven reserves, roughly 300 billion barrels, with US firms as operators. The Chinese ambassador has asked for a meeting the same afternoon.",
+        "decision": {
+          "title": "The barrels",
+          "situation": "Signing brings dollars, investment and Washington's protection, and makes you the president who sold the oil Chávez nationalised. Haggling buys dignity and time you may not have. Courting Beijing is leverage, and an insult the White House will take personally.",
+          "affectedCountries": ["VEN", "USA", "CHN"],
+          "urgency": "URGENT",
+          "defaultOptionId": "haggle",
+          "options": [
+            {"id": "sign", "label": "Sign the concessions", "description": "Dollars now, sovereignty later. The oil flows; the chavista base fumes.", "effects": {"growth": 1, "relations:USA": 12, "approval": -8, "legitimacy": -3}, "tensionDelta": 0, "backedBy": ["FINANCE_MINISTER"]},
+            {"id": "haggle", "label": "Haggle over royalties", "description": "Better terms, maybe. Washington is not known for patience.", "effects": {"relations:USA": -6, "approval": 3}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "china", "label": "Invite a Chinese counter-offer", "description": "Play the superpowers off each other. Bold, and very risky this close to Miami.", "effects": {"relations:CHN": 12, "relations:USA": -14, "growth": 0.3, "approval": 4}, "tensionDelta": 3, "backedBy": ["FOREIGN_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 5,
+        "templateId": "ve_havana_sos",
+        "headline": "Havana begs for oil as Cuba goes dark",
+        "text": "Cuba's grid has failed again and Havana's envoy is in your office with a list: two tankers a month, on credit, like old times. The US oil blockade makes anyone who sells to Cuba a target for tariffs. Half your cabinet owes its career to Cuban security advisers.",
+        "decision": {
+          "title": "Havana's SOS",
+          "situation": "Sending oil secretly honours an old alliance and the men in your own security services who still answer to Havana; if Washington finds out, the sanctions relief ends. Refusing is safe and makes enemies inside your own state. Selling at market price through a Mexican intermediary is clever, and only half-deniable.",
+          "affectedCountries": ["VEN", "CUB", "USA", "MEX"],
+          "urgency": "URGENT",
+          "defaultOptionId": "secret",
+          "options": [
+            {"id": "secret", "label": "Send it secretly", "description": "Two tankers with their transponders off. Loyalty, until a satellite photo turns up.", "effects": {"relations:CUB": 12, "relations:USA": -12, "coupShield": 2}, "tensionDelta": 0, "backedBy": ["INTELLIGENCE_CHIEF"]},
+            {"id": "refuse", "label": "Refuse", "description": "Tell Havana the revolution has a new landlord. The Cuban-trained officers notice.", "effects": {"relations:CUB": -14, "relations:USA": 6, "stability": -4}, "tensionDelta": 0, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "mexico", "label": "Sell through Mexico", "description": "Market price, Mexican paperwork. Everyone is a little unhappy, which is diplomacy.", "effects": {"relations:CUB": 5, "relations:MEX": 6, "relations:USA": -4, "gdp": 0.2}, "tensionDelta": 0, "backedBy": ["FINANCE_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 7,
+        "templateId": "ve_amnesty",
+        "headline": "Security chiefs demand guarantees against extradition",
+        "text": "The defence and interior ministers, both under sealed US indictments, have asked for a written guarantee that nobody in uniform will be handed to New York the way Maduro was. They did not phrase it as a request. Units around Fuerte Tiuna have cancelled leave.",
+        "decision": {
+          "title": "Generals' amnesty",
+          "situation": "Granting the amnesty buys the barracks' loyalty and tells Washington you are protecting narco-generals. Refusing it is what a democrat would do, and Maduro's fate shows what happens to presidents the army stops protecting. Purging them first is the regime's oldest move: fast, ugly and final, if it works.",
+          "affectedCountries": ["VEN", "USA"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "refuse",
+          "options": [
+            {"id": "grant", "label": "Grant the amnesty", "description": "Paper guarantees for the generals. The coup risk falls; so does your standing in Washington.", "effects": {"coupShield": 5, "relations:USA": -10, "legitimacy": -6}, "tensionDelta": 0, "backedBy": ["DEFENSE_MINISTER", "CHIEF_OF_STAFF"]},
+            {"id": "refuse", "label": "Refuse", "description": "No impunity. Brave, principled, and the tanks are already fuelled.", "effects": {"stability": -9, "relations:USA": 6, "legitimacy": 4}, "tensionDelta": 2, "backedBy": ["DOMESTIC_ADVISOR"], "followUp": {"templateId": "coup_plot", "delay": 1}},
+            {"id": "purge", "label": "Purge them first", "description": "Arrest the ministers before they move. Order through fear, for a while.", "effects": {"stability": -4, "approval": -5, "coupShield": 3, "legitimacy": -3}, "tensionDelta": 0, "backedBy": ["INTELLIGENCE_CHIEF"]}
+          ]
+        }
+      },
+      {
+        "turn": 10,
+        "templateId": "ve_election",
+        "headline": "Washington wants an election date, in writing",
+        "text": "Rodríguez promised elections in September with 'no date set'. Washington now wants one before Christmas, the opposition wants it in six months, and the Party wants it never. The sanctions waiver comes up for renewal next month.",
+        "decision": {
+          "title": "The election date",
+          "situation": "Announcing a credible date wins legitimacy and American goodwill, and starts the countdown to losing power. Postponing with a promise keeps you in Miraflores and makes you Maduro with better manners. A snap vote next month catches the opposition unprepared and every observer suspicious.",
+          "affectedCountries": ["VEN", "USA"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "postpone",
+          "options": [
+            {"id": "announce", "label": "Announce a date in 2027", "description": "A real election, real observers. Legitimacy now; uncertainty later.", "effects": {"legitimacy": 10, "relations:USA": 10, "stability": -5, "approval": 3}, "tensionDelta": -3, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "postpone", "label": "Postpone 'until conditions allow'", "description": "The classic. The waiver may not survive it.", "effects": {"relations:USA": -10, "legitimacy": -7, "stability": 3}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "snap", "label": "Call a snap election", "description": "Vote in thirty days, before the opposition can organise. Nobody will call it free.", "effects": {"legitimacy": 4, "approval": 5, "stability": -8, "relations:USA": -4}, "tensionDelta": 0, "backedBy": ["DOMESTIC_ADVISOR"]}
+          ]
+        }
+      }
+    ],
+    "CUB": [
+      {
+        "turn": 0,
+        "templateId": "cu_blackout",
+        "headline": "The Guiteras plant trips: Cuba goes dark, again",
+        "text": "The Antonio Guiteras thermal plant, the backbone of a grid starved of fuel since the US oil blockade began in January, has failed for the fourth time this year. Eleven million people are without power. In Morón, where a Party office was burned in March, people are banging pots.",
+        "decision": {
+          "title": "Lights out",
+          "situation": "Begging Moscow for a tanker buys a few weeks of light and a fresh row with Washington. Opening the economy to private business and remittances brings dollars in and lets ideology out. Riding it out is what the Party knows how to do; the question is whether the Cubans still do.",
+          "affectedCountries": ["CUB", "RUS", "USA"],
+          "urgency": "URGENT",
+          "defaultOptionId": "ride",
+          "options": [
+            {"id": "tanker", "label": "Beg Moscow for a tanker", "description": "A Russian tanker running the blockade. Light for a month; a target on its hull.", "effects": {"relations:RUS": 8, "relations:USA": -8, "stability": 5, "gdp": -0.3}, "tensionDelta": 2, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "reform", "label": "Open the economy", "description": "Private firms, remittances, dollar prices. The hardliners call it Gorbachev with palm trees.", "effects": {"growth": 0.6, "legitimacy": -5, "approval": 4, "relations:USA": 4}, "tensionDelta": 0, "backedBy": ["FINANCE_MINISTER"]},
+            {"id": "ride", "label": "Ride it out", "description": "Patience, sacrifice, and rationing. The slogans hold up better than the grid.", "effects": {"stability": -8, "approval": -6}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]}
+          ]
+        }
+      },
+      {
+        "turn": 3,
+        "templateId": "cu_talks",
+        "headline": "Washington offers oil for prisoners",
+        "text": "Talks confirmed in March have produced a US offer: a licensed fuel shipment for every 500 political prisoners released and a timetable for multi-party local elections. The Party's old guard says the revolution did not survive sixty years of embargo to sell itself by the barrel.",
+        "decision": {
+          "title": "Oil for prisoners",
+          "situation": "Releasing prisoners wins fuel and a sliver of goodwill, and tells every Cuban that pressure works. Demanding the embargo be lifted first is the traditional answer and will be treated as a no. Asking Mexico to mediate buys time and a friendly broker.",
+          "affectedCountries": ["CUB", "USA", "MEX"],
+          "urgency": "URGENT",
+          "defaultOptionId": "demand",
+          "options": [
+            {"id": "release", "label": "Release 500 prisoners", "description": "Fuel for freedom. The hardliners will remember who signed the list.", "effects": {"relations:USA": 10, "legitimacy": -4, "approval": 4, "stability": 2}, "tensionDelta": -2, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "demand", "label": "Embargo first", "description": "Sixty years of principle. And sixty years of blackouts.", "effects": {"relations:USA": -6, "legitimacy": 3, "stability": -3}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "mexico", "label": "Ask Sheinbaum to mediate", "description": "A friendly broker in Mexico City. Slow, but nobody loses face yet.", "effects": {"relations:MEX": 8, "relations:USA": 3, "pc": -1}, "tensionDelta": 0, "backedBy": ["FOREIGN_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 5,
+        "templateId": "cu_moron",
+        "headline": "Protests spread from Morón to Santiago",
+        "text": "After three weeks of blackouts, protests have spread to a dozen towns. Crowds are chanting for 'food and light' and, in Santiago, for 'libertad'. The Interior Ministry wants authorisation to use the Black Berets. Your security chief reminds you that July 2021 ended with 700 prisoners and no change.",
+        "decision": {
+          "title": "Streets of the revolution",
+          "situation": "A crackdown restores order and every human-rights report you have spent five years arguing with. Concessions, dollar shops and free farm markets, take the heat out and the ideology with it. Opening the coast, as in Mariel 1980, exports the problem to Florida and makes Washington's crisis yours.",
+          "affectedCountries": ["CUB", "USA"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "crackdown",
+          "options": [
+            {"id": "crackdown", "label": "Send in the Black Berets", "description": "Order by baton. The streets go quiet; the cameras do not.", "effects": {"stability": 4, "approval": -10, "legitimacy": -6, "relations:USA": -8}, "tensionDelta": 2, "backedBy": ["INTELLIGENCE_CHIEF"], "followUp": {"templateId": "crackdown_aftermath", "delay": 2}},
+            {"id": "concede", "label": "Dollar shops and free markets", "description": "Bread before ideology. The Party swallows hard.", "effects": {"approval": 6, "legitimacy": -5, "stability": -2, "growth": 0.4}, "tensionDelta": 0, "backedBy": ["DOMESTIC_ADVISOR", "FINANCE_MINISTER"]},
+            {"id": "mariel", "label": "Open the coast", "description": "Let the angry ones leave. Florida's problem now, and Washington's fury.", "effects": {"stability": 6, "relations:USA": -12, "approval": -3}, "tensionDelta": 4, "backedBy": ["CHIEF_OF_STAFF"]}
+          ]
+        }
+      },
+      {
+        "turn": 7,
+        "templateId": "cu_raul",
+        "headline": "US indictment of Raúl Castro: the old guard circles the wagons",
+        "text": "Washington's indictment of the 95-year-old Raúl Castro has frozen the talks. The historic generals want him protected with every honour; the reformers in the Council of Ministers quietly suggest that a peaceful retirement, abroad, would unlock the fuel.",
+        "decision": {
+          "title": "The patriarch",
+          "situation": "Protecting Raúl keeps the army's old guard loyal and the talks dead. Easing him into a quiet retirement abroad is a gift to Washington and a betrayal the historic generation will never forgive. Taking it to the UN General Assembly wins applause and costs nothing except time.",
+          "affectedCountries": ["CUB", "USA"],
+          "urgency": "URGENT",
+          "defaultOptionId": "protect",
+          "options": [
+            {"id": "protect", "label": "Protect him with full honours", "description": "The revolution looks after its own. The talks are over for now.", "effects": {"coupShield": 3, "legitimacy": 3, "relations:USA": -10}, "tensionDelta": 0, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "retire", "label": "A quiet retirement abroad", "description": "A comfortable exile, and the fuel licences. The old guard sharpens its knives.", "effects": {"relations:USA": 9, "legitimacy": -6, "stability": -3}, "tensionDelta": 0, "backedBy": ["FOREIGN_MINISTER"], "followUp": {"templateId": "coup_plot", "delay": 2}},
+            {"id": "unga", "label": "Take it to the UN", "description": "Another lopsided General Assembly vote. Applause, and no fuel.", "effects": {"approval": 3, "relations:USA": -5, "relationsAllies": 4}, "tensionDelta": 0, "backedBy": ["FOREIGN_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 10,
+        "templateId": "cu_beijing",
+        "headline": "Beijing offers solar parks, at a price",
+        "text": "China offers 1,000 megawatts of solar parks and a credit line, enough to end the worst blackouts within a year. The price, according to your own intelligence officers, is expanded access for the signals station at Bejucal. Washington has already asked whether the rumours are true.",
+        "decision": {
+          "title": "The Chinese offer",
+          "situation": "Accepting ends the blackouts and turns Cuba into a front line in someone else's cold war. A Vatican-brokered reform package with Washington, elections in the municipalities and fuel in return, saves the economy and starts dismantling the Party. Refusing both keeps Cuba exactly where it is.",
+          "affectedCountries": ["CUB", "CHN", "USA"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "refuse",
+          "options": [
+            {"id": "china", "label": "Take Beijing's deal", "description": "Sunlight and surveillance. The island lights up; Washington sees red.", "effects": {"relations:CHN": 12, "relations:USA": -14, "growth": 0.6, "stability": 4}, "tensionDelta": 5, "backedBy": ["FINANCE_MINISTER"]},
+            {"id": "vatican", "label": "A Vatican-brokered opening", "description": "Reform for fuel, blessed by Rome. The Party survives, but smaller.", "effects": {"relations:USA": 10, "legitimacy": -6, "approval": 6, "stability": 2}, "tensionDelta": -4, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "refuse", "label": "Refuse both", "description": "Sovereignty in the dark. The candles are imported too.", "effects": {"stability": -6, "approval": -4}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]}
+          ]
+        }
+      }
+    ],
+    "USA": [
+      {
+        "turn": 0,
+        "templateId": "us_machado",
+        "headline": "Machado flies home; Caracas threatens to arrest her",
+        "text": "María Corina Machado, the Nobel laureate your administration has kept at arm's length, is flying back to Venezuela. Acting President Rodríguez, your partner on oil and deportation flights, says she will be arrested on arrival. Florida's congressional delegation is on the phone.",
+        "decision": {
+          "title": "The Nobel problem",
+          "situation": "Backing Machado loudly is popular at home and may blow up the oil deal. Backing Rodríguez's 'process' keeps the barrels flowing and makes you the patron of a chavista government. Setting a hard deadline, elections within a year or sanctions snap back, is principled leverage, if you mean it.",
+          "affectedCountries": ["USA", "VEN"],
+          "urgency": "URGENT",
+          "defaultOptionId": "process",
+          "options": [
+            {"id": "machado", "label": "Back Machado publicly", "description": "Freedom's champion. The oil men are horrified.", "effects": {"relations:VEN": -10, "approval": 4, "relationsAllies": 2}, "tensionDelta": 0, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "process", "label": "Back Rodríguez's 'process'", "description": "Stability first. Miami's exile community notices.", "effects": {"relations:VEN": 10, "approval": -5}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "deadline", "label": "Elections in a year, or snapback", "description": "Conditional support. Credible, until you are asked to enforce it.", "effects": {"relations:VEN": -4, "approval": 2, "legitimacy": 2}, "tensionDelta": 0, "backedBy": ["FOREIGN_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 3,
+        "templateId": "us_barrels",
+        "headline": "Oil majors want thirty-year rights in the Orinoco",
+        "text": "The new hydrocarbons law has opened Venezuela; now Chevron and Exxon want long-term concessions over the Orinoco belt, with US backing. Caracas will sign if you stop talking about elections. Gasoline is still expensive.",
+        "decision": {
+          "title": "Barrels or ballots",
+          "situation": "Pushing the deal lowers oil prices and makes your Venezuela policy look like a business plan. Tying it to an election date is principled and slower. Leaving it to the companies keeps your hands clean and your leverage idle.",
+          "affectedCountries": ["USA", "VEN"],
+          "urgency": "URGENT",
+          "defaultOptionId": "companies",
+          "options": [
+            {"id": "push", "label": "Push the concessions", "description": "Cheap oil, grateful donors, a regime with a new sponsor.", "effects": {"gdp": 0.2, "relations:VEN": 8, "legitimacy": -3, "approval": 2}, "tensionDelta": 0, "backedBy": ["FINANCE_MINISTER"]},
+            {"id": "tie", "label": "No deal without a date", "description": "Ballots before barrels. Caracas stalls; Exxon complains.", "effects": {"relations:VEN": -6, "approval": 3, "legitimacy": 2}, "tensionDelta": 0, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "companies", "label": "Leave it to the companies", "description": "Not our business, literally. Nobody is impressed.", "effects": {"approval": -4, "relations:VEN": 2}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]}
+          ]
+        }
+      },
+      {
+        "turn": 5,
+        "templateId": "us_rafts",
+        "headline": "Cuba's grid collapses; rafts head for Florida",
+        "text": "An island-wide blackout has entered its second week. The Coast Guard has intercepted 2,000 Cubans in five days, and Havana is hinting it will stop stopping them. Mexico wants to send fuel on humanitarian grounds; your blockade order says that earns a tariff.",
+        "decision": {
+          "title": "Rafts in the Straits",
+          "situation": "Tightening the blockade may finally break the regime, or produce a mass exodus and a humanitarian disaster with your name on it. A humanitarian fuel corridor through Mexico eases the crisis and throws the regime a lifeline. A Coast Guard surge treats the symptoms and nothing else.",
+          "affectedCountries": ["USA", "CUB", "MEX"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "surge",
+          "options": [
+            {"id": "tighten", "label": "Tighten the blockade", "description": "Maximum pressure. The regime totters; so do the rafts.", "effects": {"relations:CUB": -10, "relations:MEX": -8, "approval": 3, "relationsAllies": -3}, "tensionDelta": 4, "backedBy": ["CHIEF_OF_STAFF"], "followUp": {"templateId": "refugee_wave", "delay": 2}},
+            {"id": "corridor", "label": "Humanitarian fuel via Mexico", "description": "Light for hospitals, oxygen for the Party. Hawks call it appeasement.", "effects": {"relations:CUB": 8, "relations:MEX": 8, "approval": -4}, "tensionDelta": -3, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "surge", "label": "Coast Guard surge", "description": "Cutters in the Straits, and no policy. The images are terrible.", "effects": {"approval": -5, "stability": -3, "mobilization": 4}, "tensionDelta": 0, "backedBy": ["DEFENSE_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 7,
+        "templateId": "us_generals",
+        "headline": "Venezuela's generals want immunity from US courts",
+        "text": "Caracas's defence and interior ministers, both under sealed US indictments, want written guarantees they will not follow Maduro to New York. Without them, your embassy warns, they may move against Rodríguez, and nobody knows who comes next.",
+        "decision": {
+          "title": "Immunity for the generals",
+          "situation": "Granting immunity stabilises Caracas and outrages the prosecutors who built the cases. Refusing upholds the law and risks a coup by men who know Washington's methods. Using the sealed indictments as quiet leverage might get you both, or neither.",
+          "affectedCountries": ["USA", "VEN"],
+          "urgency": "URGENT",
+          "defaultOptionId": "refuse",
+          "options": [
+            {"id": "grant", "label": "Grant immunity", "description": "Stability, bought with impunity. The Justice Department fumes.", "effects": {"relations:VEN": 10, "approval": -6, "legitimacy": -3}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "refuse", "label": "Refuse", "description": "The law is the law. Somebody in Fuerte Tiuna starts making calls.", "effects": {"relations:VEN": -8, "approval": 2}, "tensionDelta": 2, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "leverage", "label": "Hold the indictments over them", "description": "Behave, and they stay sealed. Effective, deniable and slightly sinister.", "effects": {"relations:VEN": -3, "intel": 5, "approval": 1}, "tensionDelta": 0, "backedBy": ["INTELLIGENCE_CHIEF"]}
+          ]
+        }
+      },
+      {
+        "turn": 10,
+        "templateId": "us_date",
+        "headline": "Caracas offers an election date: 2028",
+        "text": "Rodríguez has finally named a date: late 2028, 'once institutions are rebuilt'. The opposition calls it Maduro's calendar. Brazil and Colombia want you to accept it. Some of your advisers want to remind Caracas how January went.",
+        "decision": {
+          "title": "The election date",
+          "situation": "Accepting 2028 locks in stability and a chavista government for two more years. Demanding a 2027 vote risks the oil and the partnership. Threatening another raid is the language Caracas understands, and the language that frightens the whole hemisphere.",
+          "affectedCountries": ["USA", "VEN", "BRA", "MEX"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "accept",
+          "options": [
+            {"id": "accept", "label": "Accept 2028", "description": "A date is a date. The transition becomes a tenancy.", "effects": {"relations:VEN": 8, "approval": -5, "legitimacy": -2}, "tensionDelta": -2, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "demand", "label": "Insist on 2027", "description": "Sooner, observed, or sanctions return. Caracas blinks or bolts.", "effects": {"relations:VEN": -8, "approval": 4, "legitimacy": 3}, "tensionDelta": 0, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "raid", "label": "Hint at another raid", "description": "Gunboat diplomacy, 2026 edition. The hemisphere recoils.", "effects": {"relations:VEN": -14, "approval": 5, "relations:MEX": -8, "relations:BRA": -8}, "tensionDelta": 6, "backedBy": ["DEFENSE_MINISTER"]}
+          ]
+        }
+      }
+    ]
+  },
+  "debrief": ""
+}

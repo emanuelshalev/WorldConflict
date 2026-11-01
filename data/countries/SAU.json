@@ -19,9 +19,12 @@
       { "year": 1979, "event": "Grand Mosque seizure in Mecca", "impact": "Shocked the monarchy into empowering conservative clergy and exporting Wahhabism abroad" },
       { "year": 1991, "event": "Gulf War basing of US troops", "impact": "Deepened reliance on American protection but fueled jihadist backlash against the dynasty" },
       { "year": 2015, "event": "Intervention in Yemen against the Houthis", "impact": "Costly proxy quagmire with Iran; exposed limits of Saudi military power and oil infrastructure to attack" },
-      { "year": 2017, "event": "Rise of Crown Prince Mohammed bin Salman and Vision 2030", "impact": "Centralized power, curbed clergy, and launched sweeping economic diversification away from oil" }
+      { "year": 2017, "event": "Rise of Crown Prince Mohammed bin Salman and Vision 2030", "impact": "Centralized power, curbed clergy, and launched sweeping economic diversification away from oil" },
+      { "year": 2023, "event": "Beijing-brokered détente with Iran", "impact": "A bet on de-escalation to protect Vision 2030" },
+      { "year": 2025, "event": "Strategic Mutual Defense Agreement with Pakistan (17 September)", "impact": "A nuclear-armed partner as insurance against Iran and US unreliability" },
+      { "year": 2026, "event": "Drawn into the Iran war; Houthi strike on Riyadh airport kills 13 (October)", "impact": "The détente is over; a Red Sea counteroffensive began in October" }
     ],
-    "historicalRivals": ["IRN"],
+    "historicalRivals": ["IRN", "YEM"],
     "historicalAllies": ["USA", "EGY", "PAK", "GBR"],
     "sphereOfInfluence": ["EGY", "PAK"],
     "foreignPolicyOrientation": "BALANCING",
@@ -48,7 +51,7 @@
     { "kind": "IDEOLOGICAL", "name": "Royal family factions sidelined by MBS power consolidation", "strength": 30, "tension": 35 }
   ],
   "economy": {
-    "gdp": 1110000000000,
+    "gdp": 1240000000000,
     "growthRate": 0.038,
     "debtGdpRatio": 26,
     "sectors": { "agriculture": 2, "industry": 45, "services": 53 },

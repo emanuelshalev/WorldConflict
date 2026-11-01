@@ -20,9 +20,11 @@
       { "year": 1989, "event": "Round Table talks end communist rule", "impact": "Rapid democratic and market transition; model post-communist success story" },
       { "year": 1999, "event": "NATO accession", "impact": "Long-sought security anchor; Article 5 becomes the cornerstone of national survival strategy" },
       { "year": 2004, "event": "European Union accession", "impact": "Economic convergence with the West; EU funds power two decades of growth" },
-      { "year": 2022, "event": "Russian full-scale invasion of Ukraine", "impact": "Frontline logistics hub for Ukraine; crash rearmament to build NATO's largest European land army" }
+      { "year": 2022, "event": "Russian full-scale invasion of Ukraine", "impact": "Frontline logistics hub for Ukraine; crash rearmament to build NATO's largest European land army" },
+      { "year": 2025, "event": "Nationalist Karol Nawrocki elected president", "impact": "A veto war with Tusk's government stalls reforms" },
+      { "year": 2025, "event": "Russian drones enter Polish airspace; Poland invokes NATO Article 4 (September)", "impact": "NATO launched Eastern Sentry; the eastern flank became a live front line" }
     ],
-    "historicalRivals": ["RUS", "DEU"],
+    "historicalRivals": ["RUS", "BLR"],
     "historicalAllies": ["USA", "GBR", "FRA"],
     "sphereOfInfluence": [],
     "foreignPolicyOrientation": "DEFENSIVE",
@@ -47,7 +49,7 @@
     { "kind": "IDEOLOGICAL", "name": "National-conservative vs liberal pro-EU divide", "strength": 80, "tension": 60 }
   ],
   "economy": {
-    "gdp": 845000000000,
+    "gdp": 980000000000,
     "growthRate": 0.029,
     "debtGdpRatio": 50,
     "sectors": { "agriculture": 2, "industry": 30, "services": 68 },
@@ -63,7 +65,7 @@
     "warheads": 0,
     "arms_suppliers": ["USA"]
   },
-  "militaryBudgetPct": 4.0,
+  "militaryBudgetPct": 4.7,
   "stability": 75,
   "legitimacy": 73,
   "intelLevel": 65,

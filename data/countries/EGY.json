@@ -19,9 +19,11 @@
       { "year": 1973, "event": "October War crossing of the Suez Canal", "impact": "Restored military honor and created the leverage for negotiated return of Sinai" },
       { "year": 1979, "event": "Camp David peace treaty with Israel", "impact": "Traded the Arab leadership mantle for Sinai and massive US military aid; cold peace ever since" },
       { "year": 2011, "event": "Arab Spring uprising ousts Mubarak", "impact": "Mass revolt showed the street could topple a pharaoh; brief Muslim Brotherhood rule followed" },
-      { "year": 2013, "event": "Sisi-led takeover removes President Morsi", "impact": "Military reasserted control, crushed the Brotherhood, and rebuilt a harder security state" }
+      { "year": 2013, "event": "Sisi-led takeover removes President Morsi", "impact": "Military reasserted control, crushed the Brotherhood, and rebuilt a harder security state" },
+      { "year": 2024, "event": "Ras El-Hekma deal with the UAE and an expanded IMF program", "impact": "Gulf cash averted a currency collapse as Suez revenue crashed with Red Sea attacks" },
+      { "year": 2025, "event": "Ethiopia inaugurates the Grand Ethiopian Renaissance Dam (September)", "impact": "Cairo's Nile red line was crossed; the water dispute hardened" }
     ],
-    "historicalRivals": ["ISR", "TUR"],
+    "historicalRivals": ["ISR", "ETH"],
     "historicalAllies": ["USA", "SAU", "RUS"],
     "sphereOfInfluence": [],
     "foreignPolicyOrientation": "DEFENSIVE",
@@ -48,7 +50,7 @@
     { "kind": "REGIONAL", "name": "Sinai insurgency and neglected periphery", "strength": 15, "tension": 50 }
   ],
   "economy": {
-    "gdp": 390000000000,
+    "gdp": 350000000000,
     "growthRate": 0.038,
     "debtGdpRatio": 92,
     "sectors": { "agriculture": 11, "industry": 34, "services": 55 },

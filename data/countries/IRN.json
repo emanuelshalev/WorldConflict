@@ -19,13 +19,19 @@
       { "year": 2006, "event": "UN sanctions over the nuclear program", "impact": "Decades of escalating sanctions hardened a resistance economy and siege mentality" },
       { "year": 2015, "event": "JCPOA nuclear agreement", "impact": "Brief sanctions relief in exchange for enrichment limits; showed diplomacy could pay" },
       { "year": 2018, "event": "US withdrawal from the JCPOA and maximum pressure", "impact": "Vindicated hardliners, crashed the economy, and pushed enrichment toward weapons-grade" },
-      { "year": 2020, "event": "US assassination of IRGC commander Qasem Soleimani", "impact": "Demonstrated vulnerability of the proxy architecture and deepened confrontation with Washington" }
+      { "year": 2020, "event": "US assassination of IRGC commander Qasem Soleimani", "impact": "Demonstrated vulnerability of the proxy architecture and deepened confrontation with Washington" },
+      { "year": 2022, "event": "Mahsa Amini protests", "impact": "A women-led uprising crushed by force; the social contract never recovered" },
+      { "year": 2024, "event": "First direct missile exchanges with Israel; Assad falls (December)", "impact": "Iran's deterrence was tested in the open and its Syrian land bridge was lost" },
+      { "year": 2025, "event": "Twelve-Day War: Israeli strikes and US bombing of Fordow, Natanz and Isfahan", "impact": "Enrichment halls damaged, but much of the highly enriched uranium was reportedly unaccounted for" },
+      { "year": 2025, "event": "UN 'snapback' sanctions restored (September)", "impact": "Pre-2015 UN sanctions returned; the economy slid deeper into crisis" },
+      { "year": 2026, "event": "Mass protests crushed (January)", "impact": "The deadliest crackdown in the Islamic Republic's history deepened the legitimacy crisis" },
+      { "year": 2026, "event": "US-Israeli strikes kill Supreme Leader Ali Khamenei (28 February)", "impact": "Mojtaba Khamenei succeeded him; Hormuz closures and a US blockade followed" }
     ],
     "historicalRivals": ["ISR", "SAU", "USA"],
     "historicalAllies": ["RUS", "CHN"],
     "sphereOfInfluence": [],
     "foreignPolicyOrientation": "EXPANSIONIST",
-    "narrative": "A revolutionary theocracy that compensates for conventional weakness with ballistic missiles, nuclear hedging, and an axis of armed proxies stretching from Lebanon to Yemen. Sanctions and isolation have bred a resilient siege economy and a leadership convinced that only deterrence and forward defense keep the regime alive."
+    "narrative": "A revolutionary theocracy that compensates for conventional weakness with ballistic missiles, nuclear hedging, and an axis of armed proxies that lost its Syrian land bridge in 2024 and now leans on Iraqi militias and the Houthis while Hezbollah rebuilds from heavy losses. Sanctions and isolation have bred a resilient siege economy and a leadership convinced that only deterrence and forward defense keep the regime alive."
   },
   "personality": {
     "warPropensity": 55,
@@ -48,7 +54,7 @@
     { "kind": "IDEOLOGICAL", "name": "Secular youth alienation from clerical rule", "strength": 50, "tension": 65 }
   ],
   "economy": {
-    "gdp": 400000000000,
+    "gdp": 370000000000,
     "growthRate": 0.02,
     "debtGdpRatio": 34,
     "sectors": { "agriculture": 12, "industry": 38, "services": 50 },

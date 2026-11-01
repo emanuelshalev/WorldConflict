@@ -19,7 +19,9 @@
       { "year": 1957, "event": "Treaty of Rome founds the EEC", "impact": "European integration becomes the anchor of Italian foreign policy and economic strategy" },
       { "year": 1978, "event": "Years of Lead and the Moro assassination", "impact": "Domestic terrorism trauma; aversion to political extremism and instability" },
       { "year": 1992, "event": "Tangentopoli corruption scandals", "impact": "Collapse of the postwar party system; chronic distrust of the political class" },
-      { "year": 2011, "event": "Sovereign debt crisis", "impact": "Near-default; public debt constrains every strategic ambition since" }
+      { "year": 2011, "event": "Sovereign debt crisis", "impact": "Near-default; public debt constrains every strategic ambition since" },
+      { "year": 2022, "event": "Giorgia Meloni wins and forms a right-wing coalition", "impact": "Italy's most stable government in years; Atlanticist abroad, nationalist at home" },
+      { "year": 2026, "event": "Voters reject Meloni's justice reform in a referendum (23 March)", "impact": "First major defeat for the government, though Meloni stays in office" }
     ],
     "historicalRivals": ["RUS", "TUR"],
     "historicalAllies": ["USA", "FRA", "DEU", "GBR", "POL"],
@@ -47,7 +49,7 @@
     { "kind": "IDEOLOGICAL", "name": "Populist-establishment polarization", "strength": 55, "tension": 45 }
   ],
   "economy": {
-    "gdp": 2250000000000,
+    "gdp": 2450000000000,
     "growthRate": 0.007,
     "debtGdpRatio": 137,
     "sectors": { "agriculture": 2, "industry": 24, "services": 74 },
@@ -63,7 +65,7 @@
     "warheads": 0,
     "arms_suppliers": ["USA"]
   },
-  "militaryBudgetPct": 1.5,
+  "militaryBudgetPct": 2,
   "stability": 70,
   "legitimacy": 65,
   "intelLevel": 70,

@@ -19,7 +19,9 @@
       { "year": 1974, "event": "First nuclear test (Smiling Buddha)", "impact": "Pursuit of strategic autonomy outside the non-proliferation order" },
       { "year": 1991, "event": "Economic liberalization", "impact": "Shift from socialist autarky to rapid market-driven growth and global integration" },
       { "year": 1998, "event": "Pokhran-II tests and overt nuclearization", "impact": "Open nuclear deterrent against both Pakistan and China" },
-      { "year": 2020, "event": "Galwan Valley clash with China", "impact": "Hardened anti-China posture; deepened Quad cooperation with US, Japan, Australia" }
+      { "year": 2020, "event": "Galwan Valley clash with China", "impact": "Hardened anti-China posture; deepened Quad cooperation with US, Japan, Australia" },
+      { "year": 2024, "event": "Modi re-elected at the head of a coalition", "impact": "The BJP lost its own majority and now governs through allies" },
+      { "year": 2025, "event": "Pahalgam massacre, Operation Sindoor and the Indus Waters Treaty 'in abeyance'", "impact": "The first drone-and-missile war between nuclear powers ended in a ceasefire; water became a weapon" }
     ],
     "historicalRivals": ["PAK", "CHN"],
     "historicalAllies": ["RUS", "USA", "FRA", "JPN", "AUS"],
@@ -49,7 +51,7 @@
     { "kind": "IDEOLOGICAL", "name": "Hindu nationalism vs secular constitutionalism", "strength": 60, "tension": 50 }
   ],
   "economy": {
-    "gdp": 3940000000000,
+    "gdp": 4000000000000,
     "growthRate": 0.065,
     "debtGdpRatio": 83,
     "sectors": { "agriculture": 16, "industry": 25, "services": 59 },
@@ -62,7 +64,7 @@
     "airpower": 2182,
     "doctrine": "DEFENSIVE",
     "nuclearStatus": "ARMED",
-    "warheads": 172,
+    "warheads": 180,
     "arms_suppliers": ["RUS", "FRA", "USA"]
   },
   "militaryBudgetPct": 2.4,

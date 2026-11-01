@@ -1,152 +1,125 @@
 <div align="center">
 
-# 🌍 World Conflict
+<img src="ui/public/favicon.svg" width="88" alt="World Conflict" />
 
-### *Lead Your Nation. Shape History. Face the Consequences.*
+# WORLD CONFLICT
 
-**A geopolitical simulation where every decision echoes through history**
+### Lead your nation through the crises of 2026. Survive the coup plots, the ultimatums — and the bomb.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
-[![React](https://img.shields.io/badge/React-18-61dafb)](https://react.dev/)
+**A geopolitical strategy game where every country thinks for itself — and nobody, including you, sees the whole truth.**
 
----
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6?logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/React-19-61dafb?logo=react&logoColor=black)
+![Fastify](https://img.shields.io/badge/Fastify-5-000?logo=fastify)
+![Countries](https://img.shields.io/badge/countries-41-f2a93b)
+![LLM](https://img.shields.io/badge/LLM-optional-4fb3d9)
 
-*"This is your captain calling with an urgent warning*  
-*We're above the Gulf of Arabia, altitude is falling*  
-*And I can't keep her up, there's no time for thinking*  
-*All hands on deck, this bird is sinking."*
+*"This is your captain calling with an urgent warning —*
+*we're above the Gulf of Arabia, altitude is falling."*
 
-</div>
-
----
-
-## 🎮 What is World Conflict?
-
-**World Conflict** is a turn-based global political-military simulation inspired by the 1990 classic *"Conflict: Middle East Political Simulator"*. Step into the shoes of a world leader and navigate the treacherous waters of international diplomacy, military strategy, economic management, and intelligence operations.
-
-Every nation in the game operates as an **autonomous AI agent** with its own goals, beliefs, and decision-making patterns based on real historical behavior. Your choices create ripples across the globe, leading to **plausible alternate histories** that feel authentic and consequential.
-
-### 🎯 Core Experience
-
-- **Lead Any Nation** — From superpowers like the USA, China, and Russia to regional powers and emerging nations
-- **Face Real Consequences** — Every action has visible, cascading effects shown *before* you commit
-- **Engage with AI Advisors** — Consult your cabinet through natural conversation, each with their own departmental bias
-- **Experience Asymmetric Information** — You only see what your intelligence services believe, not ground truth
-- **Create Alternate History** — Watch as your decisions reshape global politics in believable ways
-
----
-
-## 📸 Screenshots
-
-<div align="center">
-
-### Choose Your Destiny
-<img src="docs/images/game_start.jpg" alt="Game Start" width="800"/>
-
-*Step into history as the leader of your chosen nation. Select from major world powers or regional players across different historical periods. Your leadership journey begins here.*
-
----
-
-### Your Cabinet Awaits
-<img src="docs/images/advisors.jpg" alt="Advisors" width="800"/>
-
-*Receive intelligence briefings from your advisors and engage them in real conversation. Each minister brings their own expertise, biases, and perspective on the challenges facing your nation.*
-
----
-
-### The World is Watching
-<img src="docs/images/news.jpg" alt="News Coverage" width="800"/>
-
-*Monitor global media coverage and research how events are being reported. Information is power — but remember, not everything you read is the full truth.*
-
----
-
-### Shape the Future
-<img src="docs/images/actions.jpg" alt="Actions" width="800"/>
-
-*Take decisive action across diplomacy, military operations, domestic policy, and more. Choose from suggested options or give custom directions using natural language. Every choice matters.*
-
----
-
-### Bring Your Own AI
-<img src="docs/images/byo_LLM.jpg" alt="LLM Integration" width="800"/>
-
-*Power the simulation with your preferred AI service — OpenAI, local models via Ollama, or fall back to sophisticated algorithmic behavior. Your game, your choice.*
+<img src="docs/images/desk.jpg" alt="The desk: a crisis card, advisor suggestions and the world map" width="900" />
 
 </div>
 
 ---
 
-## ✨ Key Features
+## 🎮 What is it?
 
-### 🌐 Living World Simulation
-Every country operates as an autonomous agent with persistent goals, historical patterns, and realistic decision-making. Nations form alliances, declare wars, and respond to crises based on their real-world national character.
+**World Conflict** is a turn-based political–military simulation inspired by the 1990 classic *Conflict: Middle East Political Simulator* — rebuilt for the world of **November 2026**: war in Ukraine, a US–Israeli war with a new supreme leader in Tehran, a Caribbean blockade after Maduro's capture, the Houthis contesting Bab al-Mandab, a Taiwan Strait on edge.
 
-### 🎭 Asymmetric Intelligence
-Your view of the world is filtered through your intelligence services. What you believe may not match reality — and your enemies are operating under their own misconceptions. This creates realistic miscalculations, escalations, and opportunities.
+Pick a nation. Every other government is an agent with its own history, red lines, leadership style and **half-wrong intelligence** about you. Each month a crisis lands on your desk, your ministers disagree, and you decide. Then the world answers.
 
-### 💬 Conversational Advisors
-Your cabinet ministers aren't just stat screens — they're characters you can talk to. Ask your Defense Minister about military readiness, debate strategy with your Foreign Minister, or press your Intelligence Chief for covert options.
-
-### ⚖️ Consequential Decisions
-Before committing to any action, see exactly what effects it will have. Understand the risks, weigh the trade-offs, and own your choices. There's no "undo" in geopolitics.
-
-### 📰 Dynamic News System
-Experience your reign through the lens of global media. Monthly newspaper summaries capture the drama of international events, helping you understand how the world perceives your leadership.
-
-### 🏆 Leadership Legacy
-At the end of your term, receive a comprehensive historical assessment. How will history remember your leadership? Did you bring peace or chaos? Prosperity or ruin?
+| | |
+|---|---|
+| ⏱ **Sessions that fit your day** | A 10–15 minute **Flashpoint** with one clear goal, a 45-minute **Term** that ends at the ballot box, or a multi-day **Legacy**. |
+| 🎢 **Drama by design** | 30+ crisis cards grounded in real historical patterns, delayed consequences, shocks that test comfortable leaders, coup plots you can *see coming*. |
+| 🌍 **The real world, today** | 41 nations with current leaders, active wars and fresh history up to Oct 2026 — plus a debrief of what really happened. |
+| 🕵️ **Asymmetric information** | You see your spies' estimates, not the truth. So does everyone else. Miscalculation is a feature. |
+| 🤖 **AI you control — and pay for knowingly** | Free algorithmic leaders, or let an LLM (Claude, OpenAI, Gemini, or a local model) take over key decisions. Cost shown up front and live. |
 
 ---
 
-## 🚀 Getting Started
+## 📸 A tour
 
-Ready to lead? See the **[Setup Guide](docs/SETUP.md)** for installation instructions.
+<table>
+<tr>
+<td width="50%"><img src="docs/images/title.jpg" alt="Title screen" /><br/><b>Choose how long you have.</b> Flashpoint, Term or Legacy — with honest time labels, a daily challenge and difficulty per nation.</td>
+<td width="50%"><img src="docs/images/briefing.jpg" alt="Briefing" /><br/><b>Take office.</b> How you came to power, and the one thing you must achieve.</td>
+</tr>
+<tr>
+<td><img src="docs/images/chronicle.jpg" alt="The World Chronicle" /><br/><b>Read the consequences.</b> The World Chronicle leads with <i>your</i> decision, then shows what moved and why.</td>
+<td><img src="docs/images/world.jpg" alt="World drawer" /><br/><b>Watch the fronts.</b> Wars, alliances, friends and enemies — as your intelligence services see them.</td>
+</tr>
+<tr>
+<td><img src="docs/images/end.jpg" alt="End screen" /><br/><b>Get your verdict.</b> Grade, stars, a month-by-month emoji strip to share — and what really happened.</td>
+<td><img src="docs/images/settings.jpg" alt="AI settings" /><br/><b>Decide who runs the world.</b> Algorithmic, LLM for key decisions, or full LLM — with a spending cap.</td>
+</tr>
+</table>
 
-**Quick Start:**
+<p align="center"><img src="docs/images/mobile.jpg" width="260" alt="Mobile" /><br/><i>Plays on a phone, too.</i></p>
+
+---
+
+## 🕹 Three ways to play
+
+| Mode | Length | Goal | Best for |
+|---|---|---|---|
+| ⚡ **Flashpoint** | ~10–15 min · 12 months | A crisis-specific objective (hold the front, stop the bomb, keep the strait open) — 1 to 3 stars | A coffee break, the **daily challenge**, current-events what-ifs |
+| 🗳 **One Term** | ~45–60 min · 48 months | Win the election at the end — or survive the inner circle's review in an autocracy | An evening; play in parts (autosave) |
+| 👑 **Legacy** | multi-day · 120 months | Survive a decade; history grades your record | Grand-strategy players |
+
+**Flashpoints (Nov 2026):** Ukraine's winter ceasefire · Hormuz convoy · Taiwan quarantine · Caracas after Maduro · Bab al-Mandab · Scarborough Shoal · India–Pakistan water war · Sudan's El Obeid.
+
+---
+
+## 🤖 AI tiers
+
+| Tier | Who decides for the world's leaders | Cost |
+|---|---|---|
+| **Algorithmic** (default) | The built-in *PersonalityAI*: personality, history, red lines, regime constraints, beliefs | Free · offline · reproducible |
+| **LLM for key decisions** | The engine runs the world; an LLM takes over a leader at high-stakes moments (war, nukes, coups, ceasefires) and voices your advisors | ~1 LLM call / month — fractions of a cent per game on small models |
+| **Full LLM** | The most relevant leaders think with an LLM every month and issue public statements | ~6 calls / month |
+
+Providers: **Claude** (Haiku 5.5 default), **OpenAI**, **Gemini**, **Ollama** or any **OpenAI-compatible local server** (LM Studio, vLLM). LLM output is only ever a *proposal*: the deterministic engine validates and resolves it, and falls back to the algorithmic AI on errors, timeouts or when your budget cap is reached.
+
+---
+
+## 🚀 Quick start
+
 ```bash
-npm install && cd ui && npm install && cd ..
-npx prisma db push
-npm run dev
+# Node.js ≥ 20.19 (22 LTS recommended)
+npm install && (cd ui && npm install)
+npx prisma db push          # creates the local SQLite save database
+npm run dev                 # API on :8080, game on http://localhost:5173
 ```
 
-Then open `http://localhost:5173` in your browser.
+No API key needed. To use an LLM, open **⚙ Settings** in the game, or see the **[Setup guide](docs/SETUP.md)**.
 
 ---
 
-## 🛠️ For Developers
+## 📚 Documentation
 
-Interested in contributing or understanding the technical architecture?
-
-- **[Setup Guide](docs/SETUP.md)** — Installation and running the project
-- **[API Documentation](docs/API.md)** — REST API reference
-- **[Development Guide](docs/DEVELOPMENT.md)** — Architecture, tech stack, and contribution guidelines
-
----
-
-## 🎲 Design Philosophy
-
-World Conflict is built on these core principles:
-
-1. **Historical Plausibility** — Countries behave according to real patterns, creating believable alternate histories
-2. **Information Asymmetry** — Imperfect information creates realistic fog of war
-3. **Meaningful Choices** — Every decision has weight and consequence
-4. **Accessible Depth** — Easy to start, deep to master
-5. **AI-Enhanced, Not AI-Dependent** — Works great with LLMs, still fun without them
+| | |
+|---|---|
+| **[Setup guide](docs/SETUP.md)** | Install, run, configure LLMs, troubleshoot |
+| **[Game guide](docs/GAMEPLAY.md)** | Modes, the desk, crises, political capital, scoring, tips |
+| **[Architecture](docs/ARCHITECTURE.md)** | Engine, turn pipeline, AI tiers, data model — with diagrams |
+| **[API reference](docs/API.md)** | REST endpoints |
+| **[Development guide](docs/DEVELOPMENT.md)** | Code layout, testing, the playtest harness, contributing |
+| **[Project status](dev_plan/project_status.html)** | Live development plan, tasks, decisions |
 
 ---
 
-## 📜 License
+## 🎲 Design principles
 
-MIT License — See [LICENSE](LICENSE) for details.
-
----
+1. **Plausible, not prophetic.** Countries act on their real history and interests; outcomes are alternate histories you could believe.
+2. **Nobody sees everything.** Intelligence is imperfect — for you and for every AI.
+3. **Every month asks something of you.** No dead turns; consequences arrive late and in public.
+4. **Almost lost, then won.** Telegraphed threats, comebacks and shocks are tuned with a headless playtest harness.
+5. **AI-enhanced, never AI-dependent.** The game is complete and free without any LLM.
 
 <div align="center">
 
-**Ready to make history?**
-
-*The world is waiting for your leadership.*
+**The world is waiting. Take office.**
 
 </div>

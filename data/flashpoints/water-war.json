@@ -1,0 +1,254 @@
+{
+  "id": "water-war",
+  "title": "Water War",
+  "tagline": "Two nuclear powers, one river system, and a fuse that gets shorter every time.",
+  "hook": "India has held the Indus Waters Treaty 'in abeyance' since the Pahalgam massacre of 22 April 2025, and in May 2025 Operation Sindoor became the first drone-and-missile war between nuclear-armed states, halted after four days by a ceasefire. Through 2026 New Delhi moved to restrict the western rivers, Islamabad declared that diversion would be an act of war, and Field Marshal Asim Munir became Pakistan's Chief of Defence Forces under the 27th Amendment, with a Saudi defence pact at his back and a live border war with the Taliban on his western flank. In this scenario, set in November 2026 as the winter wheat crop needs its water, gunmen kill 30 pilgrims near Jammu and India blames a Pakistan-based group.",
+  "sources": [
+    "https://www.isas.nus.edu.sg/papers/the-indus-waters-treaty-india-pakistan-tensions-persist/",
+    "https://tribune.com.pk/story/2612412/",
+    "https://www.arabnews.pk/node/2622517",
+    "https://365.military.com/feature/2026/02/27/pakistan-declares-open-war-afghan-taliban-airstrikes-hammer-kabul-and-kandahar.html",
+    "https://www.theweek.in/news/defence/2026/06/09/india-expands-nuclear-arsenal-to-190-warheads-deploys-some-for-first-time-sipri.html"
+  ],
+  "scenarioId": "2026",
+  "date": "2026-11",
+  "turns": 10,
+  "globalTension": 76,
+  "playable": [
+    {"countryId": "IND", "role": "Restore deterrence after a massacre without crossing a line nobody can uncross.", "difficulty": "TOUGH"},
+    {"countryId": "PAK", "role": "Deter India, keep the rivers flowing and avoid a war on two fronts.", "difficulty": "BRUTAL"}
+  ],
+  "setup": {
+    "wars": [],
+    "relations": [
+      {"a": "IND", "b": "PAK", "value": -88},
+      {"a": "USA", "b": "IND", "value": 30},
+      {"a": "USA", "b": "PAK", "value": 40},
+      {"a": "SAU", "b": "PAK", "value": 80},
+      {"a": "CHN", "b": "PAK", "value": 78}
+    ],
+    "countries": {
+      "IND": {"stability": 66, "approval": 62, "mobilization": 35},
+      "PAK": {"stability": 42, "approval": 40, "mobilization": 45, "insurgencyLevel": "REBELLION"}
+    }
+  },
+  "objectives": {
+    "IND": {
+      "title": "Restore deterrence",
+      "briefing": "You are India's prime minister, thirty pilgrims are dead near Jammu and the country wants an answer by the weekend. Impose a visible cost on Pakistan, keep the crisis below full-scale war and the nuclear threshold, and end it with Washington and the Gulf treating the ceasefire as yours. Remember that the last round ended after four days, and that nobody is sure the next one will.",
+      "primary": [
+        {"kind": "NO_WAR_WITH", "targetId": "PAK", "label": "No full-scale war with Pakistan"},
+        {"kind": "RELATION_MIN", "targetId": "USA", "min": 30, "label": "Washington sees it India's way (relations 30+)"},
+        {"kind": "SCORE_PAR", "min": 120, "label": "Leadership score of 120+: deterrence restored"}
+      ],
+      "bonus": [
+        {"kind": "STAT_MIN", "stat": "approval", "min": 70, "label": "A nation rallied behind you (approval 70%+)"},
+        {"kind": "STAT_MIN", "stat": "stability", "min": 70, "label": "Calm at home (stability 70%+)"}
+      ],
+      "par": 108,
+      "debrief": "What really happened: after Pahalgam in April 2025, India struck what it called terrorist infrastructure on 7 May; four days of drone, missile and air-base strikes followed before a ceasefire on 10 May, with Washington and Gulf capitals working the phones. India then held the Indus Waters Treaty in abeyance and through 2026 moved to restrict the western rivers. What experts fear: that water turns a recurring terror-and-retaliation cycle into a permanent existential grievance, and that each round starts higher up the escalation ladder than the last, with less time for anyone to call a halt."
+    },
+    "PAK": {
+      "title": "Deterrence on two fronts",
+      "briefing": "You are Pakistan's government, which in practice means you share the room with the Field Marshal. India is blaming you for Jammu, its engineers are throttling the Chenab, and the Taliban are shooting at your western border posts. Deter Indian escalation, get the water talks back on some track, and do not let the country fall apart while you do it.",
+      "primary": [
+        {"kind": "NO_WAR_WITH", "targetId": "IND", "label": "No full-scale war with India"},
+        {"kind": "RELATION_MIN", "targetId": "SAU", "min": 70, "label": "Riyadh stays in your corner (relations 70+)"},
+        {"kind": "SCORE_PAR", "min": 93, "label": "Leadership score of 93+: the state holds together"}
+      ],
+      "bonus": [
+        {"kind": "RELATION_MIN", "targetId": "USA", "min": 50, "label": "Washington leans your way (relations 50+)"},
+        {"kind": "STAT_MIN", "stat": "stability", "min": 50, "label": "The state holds (stability 50%+)"}
+      ],
+      "par": 100,
+      "debrief": "What really happened: in May 2025 Pakistan answered Operation Sindoor with its own drone, missile and air strikes, claimed Indian jets downed, and accepted a ceasefire after four days; Asim Munir emerged a Field Marshal and, by late 2025, constitutionally Chief of Defence Forces. In 2026 Pakistan was simultaneously fighting the Afghan Taliban and warning that any Indian diversion of the Indus would be an act of war. What experts fear: a state that leans on early nuclear signalling to offset conventional weakness, facing a neighbour that no longer believes the signal, over a river 240 million people depend on."
+    }
+  },
+  "scripted": {
+    "IND": [
+      {
+        "turn": 0,
+        "templateId": "in_jammu",
+        "headline": "Massacre near Jammu: 30 pilgrims killed; India blames Pakistan-based group",
+        "text": "Gunmen opened fire on a bus of pilgrims near Jammu, killing thirty. A previously unknown front has claimed the attack; Indian intelligence says it is a cover name for a Pakistan-based group. Television anchors are already naming targets.",
+        "decision": {
+          "title": "The answer to Jammu",
+          "situation": "After Pahalgam, India struck within two weeks and the public expects the same or more. Limited standoff strikes on camps are the established playbook. Hitting Pakistani air bases goes one rung higher and invites a reply in kind. Covert action and diplomacy look like weakness on prime time, and keep the crisis in your hands.",
+          "affectedCountries": ["IND", "PAK", "USA"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "covert",
+          "options": [
+            {"id": "camps", "label": "Strike the camps", "description": "Standoff missiles on militant infrastructure. The Sindoor playbook: visible, limited, and Pakistan will answer.", "effects": {"approval": 8, "relations:PAK": -8, "relations:USA": -3}, "tensionDelta": 10, "actions": [{"type": "MILITARY_AIRSTRIKE", "targetCountryId": "PAK", "params": {"targetType": "MILITARY"}}], "backedBy": ["DEFENSE_MINISTER", "CHIEF_OF_STAFF"]},
+            {"id": "airbases", "label": "Hit their air bases", "description": "Go a rung higher than last time. Deterrence by surprise, or the start of something nobody planned.", "effects": {"approval": 11, "stability": -3, "relations:PAK": -14, "relations:USA": -8, "relations:CHN": -6}, "tensionDelta": 16, "actions": [{"type": "MILITARY_AIRSTRIKE", "targetCountryId": "PAK", "params": {"targetType": "MILITARY"}}, {"type": "MILITARY_MOBILIZE"}], "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "covert", "label": "Covert action and a dossier", "description": "Quiet operations against the network and evidence to every capital. Prime time calls it a whimper.", "effects": {"approval": -8, "legitimacy": -3, "relations:USA": 5}, "tensionDelta": 2, "actions": [{"type": "INTEL_SABOTAGE", "targetCountryId": "PAK"}], "backedBy": ["INTELLIGENCE_CHIEF", "FOREIGN_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 2,
+        "templateId": "in_gates",
+        "headline": "Engineers ready to hold back the Chenab at Baglihar and Salal",
+        "text": "With the treaty in abeyance, the water ministry can flush and refill the Chenab reservoirs on India's schedule, not Pakistan's, just as Punjab's wheat needs irrigation. Islamabad has said, more than once, that diversion is an act of war.",
+        "decision": {
+          "title": "Close the gates",
+          "situation": "Holding the water back is leverage no missile can match, and it hits farmers, not generals. It also crosses a red line Pakistan has drawn in public, and China, upstream of India on the Brahmaputra, is watching how upstream states behave. Leaving the flows alone keeps the moral high ground and disappoints everyone who cheered the strikes.",
+          "affectedCountries": ["IND", "PAK", "CHN"],
+          "urgency": "URGENT",
+          "defaultOptionId": "flush",
+          "options": [
+            {"id": "close", "label": "Hold back the water", "description": "A sowing-season squeeze. Pakistan's red line, China's precedent, India's leverage.", "effects": {"approval": 6, "relations:PAK": -12, "relations:CHN": -8, "relations:USA": -4}, "tensionDelta": 12, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "flush", "label": "A 'maintenance' flush", "description": "Release and refill on a technicality. Deniable, muddy, and nobody believes it is maintenance.", "effects": {"approval": 2, "relations:PAK": -6, "legitimacy": -3}, "tensionDelta": 6, "backedBy": ["DOMESTIC_ADVISOR"]},
+            {"id": "flows", "label": "Leave the flows alone", "description": "Water is not a weapon, says the foreign ministry. The hawks say it is the only one that works.", "effects": {"approval": -5, "relations:USA": 6, "relations:CHN": 3}, "tensionDelta": -4, "backedBy": ["FOREIGN_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 4,
+        "templateId": "in_drones",
+        "headline": "Drone swarm hits Pathankot and Amritsar; Pakistan signals 'full spectrum' readiness",
+        "text": "Overnight, waves of drones struck an Indian air base and a railway yard in Punjab. Hours later Pakistan's National Command Authority was reported to have met. Markets in Mumbai fell 6% by lunch.",
+        "decision": {
+          "title": "Escalation dominance",
+          "situation": "The generals want to show that India controls the ladder: a broader strike package against radar and air-defence sites. The finance ministry wants the crisis over before the rupee and foreign investors run. The National Security Adviser suggests a hotline call to Rawalpindi, now, before anyone misreads the nuclear signalling.",
+          "affectedCountries": ["IND", "PAK", "USA"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "hold",
+          "options": [
+            {"id": "package", "label": "Broaden the strike package", "description": "Take down their air defences. Escalation dominance, and the next rung is the one everyone fears.", "effects": {"approval": 6, "stability": -6, "relations:PAK": -12, "relations:USA": -8, "gdp": -0.5}, "tensionDelta": 14, "actions": [{"type": "MILITARY_AIRSTRIKE", "targetCountryId": "PAK", "params": {"targetType": "MILITARY"}}], "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "hold", "label": "Absorb it and hold", "description": "No reply, no talks. Nobody escalates, and nobody at home understands why.", "effects": {"approval": -9, "stability": -5, "legitimacy": -4}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "hotline", "label": "DGMO hotline to Rawalpindi", "description": "Soldier to soldier, before the politicians misread each other. Calm returns; the anchors call it a climbdown.", "effects": {"approval": -6, "stability": 4, "relations:PAK": 6, "relations:USA": 6}, "tensionDelta": -8, "backedBy": ["FOREIGN_MINISTER", "INTELLIGENCE_CHIEF"]}
+          ]
+        }
+      },
+      {
+        "turn": 6,
+        "templateId": "in_china",
+        "headline": "PLA patrols surge in Ladakh as Beijing warns against 'water hegemony'",
+        "text": "Chinese patrols have pushed into two friction points along the Line of Actual Control, and Beijing's foreign ministry has said that upstream states 'must not weaponise rivers'. It is not clear whether the Chinese are helping Pakistan or simply enjoying themselves.",
+        "decision": {
+          "title": "The second front",
+          "situation": "Moving divisions north reassures Ladakh and thins the western front. Asking Washington for intelligence and a public statement brings the Americans into a crisis you wanted to own. Quietly restoring some river flows takes the wind out of Beijing's argument, and out of your own leverage.",
+          "affectedCountries": ["IND", "CHN", "PAK", "USA"],
+          "urgency": "URGENT",
+          "defaultOptionId": "north",
+          "options": [
+            {"id": "north", "label": "Shift divisions north", "description": "Hold both fronts at once. Expensive, exhausting, and the army is already stretched.", "effects": {"mobilization": 8, "stability": -5, "gdp": -0.4, "relations:CHN": -6}, "tensionDelta": 5, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "quad", "label": "Call Washington", "description": "Satellite imagery and a statement from the Quad. Help arrives with a price in autonomy.", "effects": {"relations:USA": 10, "relations:CHN": -8, "approval": -2}, "tensionDelta": 3, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "release", "label": "Quietly restore some flows", "description": "Undercut Beijing's narrative by letting the Chenab run. Nationalists will notice within a week.", "effects": {"approval": -6, "relations:CHN": 6, "relations:PAK": 5, "relations:USA": 4}, "tensionDelta": -6, "backedBy": ["INTELLIGENCE_CHIEF"]}
+          ]
+        }
+      },
+      {
+        "turn": 8,
+        "templateId": "in_riyadh",
+        "headline": "Riyadh and Washington offer a ceasefire text",
+        "text": "Saudi and American envoys, working the phones as they did in May 2025, have produced a one-page text: both sides stop strikes, India resumes 'consultations' on the western rivers, Pakistan acts against the named group. Islamabad says yes in principle. The cameras are on you.",
+        "decision": {
+          "title": "Riyadh calls",
+          "situation": "Accepting ends the crisis on a text that mentions water talks, which your government swore were dead. Holding out for Pakistani arrests first keeps the deterrence narrative intact and the crisis open. Declaring victory unilaterally and simply stopping avoids any text at all, and leaves the treaty question exactly where it was.",
+          "affectedCountries": ["IND", "PAK", "SAU", "USA"],
+          "urgency": "URGENT",
+          "defaultOptionId": "holdout",
+          "options": [
+            {"id": "accept", "label": "Accept the text", "description": "A brokered ceasefire with water consultations. Peace, and an opposition that calls it a sell-out.", "effects": {"relations:USA": 8, "relations:SAU": 6, "approval": -5, "stability": 6}, "tensionDelta": -10, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "holdout", "label": "Arrests first", "description": "No signature until Pakistan hands over names. Strong, and the Americans lose patience.", "effects": {"relations:USA": -8, "approval": 4, "stability": -4}, "tensionDelta": 4, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "unilateral", "label": "Declare victory and stop", "description": "Announce the mission accomplished on your own terms. No text, no water talks, no one to thank.", "effects": {"approval": 6, "relations:USA": -3, "legitimacy": 2}, "tensionDelta": -5, "backedBy": ["DOMESTIC_ADVISOR", "DEFENSE_MINISTER"]}
+          ]
+        }
+      }
+    ],
+    "PAK": [
+      {
+        "turn": 0,
+        "templateId": "pk_jammu",
+        "headline": "India blames Pakistan for Jammu massacre; strikes expected within days",
+        "text": "Thirty pilgrims are dead near Jammu and New Delhi is naming a group your intelligence services know well. Indian television is counting down. The Field Marshal wants the response options on the table tonight.",
+        "decision": {
+          "title": "Before the strike",
+          "situation": "Offering a joint investigation and arresting a few known figures may take the edge off India's response and costs you with the religious right. Disperse the air force, put the army on alert and promise an answer 'at a time of our choosing' to deter first. Or take it to the UN and the Gulf and let others restrain India, which works only if they want to.",
+          "affectedCountries": ["PAK", "IND", "SAU", "CHN"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "alert",
+          "options": [
+            {"id": "arrests", "label": "Offer an inquiry and arrests", "description": "Round up the usual suspects, publicly. It may blunt India's strike, and the street will call it surrender.", "effects": {"approval": -7, "legitimacy": -3, "relations:USA": 8, "relations:IND": 5, "insurgency": 1}, "tensionDelta": -6, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "alert", "label": "Disperse and deter", "description": "Planes in the air, army on alert, a stern ISPR statement. Classic deterrence, with no diplomatic cover.", "effects": {"approval": 4, "mobilization": 10, "relations:IND": -6, "gdp": -0.4}, "tensionDelta": 6, "actions": [{"type": "MILITARY_MOBILIZE"}], "backedBy": ["DEFENSE_MINISTER", "CHIEF_OF_STAFF"]},
+            {"id": "gulf", "label": "Call Riyadh and Beijing", "description": "Invoke the defence pact's spirit and China's friendship. Allies will talk; whether they will act is another matter.", "effects": {"relations:SAU": 6, "relations:CHN": 6, "approval": -3, "stability": -3, "relations:USA": -3}, "tensionDelta": 0, "backedBy": ["FOREIGN_MINISTER", "INTELLIGENCE_CHIEF"]}
+          ]
+        }
+      },
+      {
+        "turn": 2,
+        "templateId": "pk_chenab",
+        "headline": "The Chenab drops by a third at Marala headworks",
+        "text": "Flows at Marala are a third below normal for the season, and Punjab's farmers are watching the canals. India calls it reservoir maintenance. Your own ministers called diversion an act of war, on the record.",
+        "decision": {
+          "title": "The river is the red line",
+          "situation": "If you meant what you said, something must happen. A calibrated military reply makes the red line real and hands India its excuse. Taking it to the World Bank and the Court of Arbitration is the treaty route, slow and legal. Pumping groundwater and rationing canal water spares the army and punishes Punjab.",
+          "affectedCountries": ["PAK", "IND", "CHN", "USA"],
+          "urgency": "URGENT",
+          "defaultOptionId": "ration",
+          "options": [
+            {"id": "strike", "label": "Make the red line real", "description": "Artillery and drones on Indian posts along the Line of Control. Deterrence restored, or a war begun.", "effects": {"approval": 8, "stability": -4, "relations:IND": -12, "relations:USA": -8}, "tensionDelta": 12, "actions": [{"type": "MILITARY_AIRSTRIKE", "targetCountryId": "IND", "params": {"targetType": "MILITARY"}}], "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "law", "label": "Go to the World Bank and The Hague", "description": "Treaty arbitration and a global media campaign. Law on your side, water still missing.", "effects": {"legitimacy": 3, "relations:USA": 5, "relations:CHN": 4, "approval": -7, "stability": -3}, "tensionDelta": -3, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "ration", "label": "Ration and pump", "description": "Canal rotations and tube wells. No escalation; Punjab's farmers pay for it.", "effects": {"stability": -7, "approval": -5, "growth": -0.4}, "tensionDelta": 0, "backedBy": ["FINANCE_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 4,
+        "templateId": "pk_two_fronts",
+        "headline": "Taliban fighters storm border posts as Indian jets probe Punjab",
+        "text": "In the same night the TTP and Afghan Taliban fighters overran two posts in Kurram, and Indian aircraft tested air defences near Lahore. Corps commanders are asking which front gets the reserves. Nobody wants to be asked which front gets the nuclear signal.",
+        "decision": {
+          "title": "Full spectrum",
+          "situation": "Signalling tactical nuclear readiness is the doctrine's answer to conventional weakness: it may freeze India and will horrify Washington, Riyadh and Beijing alike. Shifting divisions east exposes the west to the Taliban. Seeking an immediate truce with Kabul through Qatar and Turkey frees the army and looks, at home, like begging.",
+          "affectedCountries": ["PAK", "IND", "AFG", "USA"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "east",
+          "options": [
+            {"id": "signal", "label": "Signal nuclear readiness", "description": "A National Command Authority statement and a missile test. India may pause; everyone else recoils.", "effects": {"approval": 5, "relations:USA": -10, "relations:SAU": -6, "relations:CHN": -4, "stability": -3}, "tensionDelta": 18, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "east", "label": "Shift divisions east", "description": "Face India with everything. The western border is left to the Frontier Corps and luck.", "effects": {"mobilization": 8, "stability": -8, "insurgency": 1, "approval": -3}, "tensionDelta": 4, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "kabul", "label": "Truce with Kabul via Doha", "description": "Buy quiet in the west through Qatar and Turkey. Strategically sound, publicly humiliating.", "effects": {"approval": -9, "relations:AFG": 12, "relations:USA": 3, "legitimacy": -3}, "tensionDelta": -4, "actions": [{"type": "DIPLOMACY_PROPOSE_CEASEFIRE", "targetCountryId": "AFG"}], "backedBy": ["FOREIGN_MINISTER", "INTELLIGENCE_CHIEF"]}
+          ]
+        }
+      },
+      {
+        "turn": 6,
+        "templateId": "pk_imf",
+        "headline": "IMF pauses tranche as reserves fall below six weeks of imports",
+        "text": "War costs, an oil shock and capital flight have pushed reserves to the floor. The IMF wants a tax measure and a fuel-price rise before it disburses. Riyadh has offered a deposit, with expectations attached. So has Beijing.",
+        "decision": {
+          "title": "Who pays for the crisis",
+          "situation": "The IMF's medicine works and costs you the street. A Saudi deposit is quick and puts you deeper inside Riyadh's agenda in Yemen and Iran. Chinese money keeps CPEC alive and makes Washington more sceptical of every word you say about India.",
+          "affectedCountries": ["PAK", "SAU", "CHN", "USA"],
+          "urgency": "URGENT",
+          "defaultOptionId": "imf",
+          "options": [
+            {"id": "imf", "label": "Swallow the IMF terms", "description": "Fuel up, taxes up, tranche released. Responsible, and the protests start on Friday.", "effects": {"approval": -8, "stability": -4, "gdp": 0.6, "relations:USA": 5}, "tensionDelta": 0, "followUp": {"templateId": "general_strike", "delay": 1}, "backedBy": ["FINANCE_MINISTER"]},
+            {"id": "riyadh", "label": "Take the Saudi deposit", "description": "Fast money from a treaty ally. The bill comes later, in Yemen.", "effects": {"gdp": 0.4, "relations:SAU": 8, "relations:IRN": -6, "approval": -2, "stability": -3}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "beijing", "label": "Take the Chinese loan", "description": "CPEC money and a friend in the Security Council. Washington takes note.", "effects": {"gdp": 0.5, "relations:CHN": 8, "relations:USA": -8, "relations:SAU": -3}, "tensionDelta": 0, "backedBy": ["FOREIGN_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 8,
+        "templateId": "pk_riyadh",
+        "headline": "Riyadh and Washington offer a ceasefire text",
+        "text": "Saudi and American envoys have a one-page text: both sides stop strikes, India resumes 'consultations' on the western rivers, Pakistan acts against the group India named. New Delhi has not answered. The Field Marshal wants to know whether 'acts against' means arrests he will have to make.",
+        "decision": {
+          "title": "Riyadh calls",
+          "situation": "Accepting now pockets the water consultations and makes India the side saying no; it also commits you to arrests the militant networks will resent. Holding out for treaty reinstatement plays to the street and leaves the Saudis embarrassed. A third option is to accept and quietly let the arrests slide, which works until someone checks.",
+          "affectedCountries": ["PAK", "IND", "SAU", "USA"],
+          "urgency": "URGENT",
+          "defaultOptionId": "holdout",
+          "options": [
+            {"id": "accept", "label": "Accept and make the arrests", "description": "Ceasefire plus water talks. The Gulf and Washington are pleased; the militants are not.", "effects": {"relations:SAU": 8, "relations:USA": 8, "approval": -7, "insurgency": 1}, "tensionDelta": -10, "actions": [{"type": "DIPLOMACY_IMPROVE_RELATIONS", "targetCountryId": "IND"}], "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "holdout", "label": "Treaty or nothing", "description": "Demand the Indus Waters Treaty be reinstated first. Applause at home, frost in Riyadh.", "effects": {"approval": 5, "relations:SAU": -10, "relations:USA": -6}, "tensionDelta": 4, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "slide", "label": "Sign, and forget the arrests", "description": "Take the text and slow-walk the commitments. Elegant, until the next attack.", "effects": {"relations:SAU": 4, "relations:USA": -4, "approval": 2, "legitimacy": -3}, "tensionDelta": -4, "followUp": {"templateId": "scandal_second_leak", "delay": 1}, "backedBy": ["INTELLIGENCE_CHIEF"]}
+          ]
+        }
+      }
+    ]
+  },
+  "debrief": ""
+}

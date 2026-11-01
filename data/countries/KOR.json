@@ -19,7 +19,10 @@
       { "year": 1987, "event": "June Democratic Uprising", "impact": "Mass protests ended military rule; direct presidential elections and a vibrant, contentious democracy" },
       { "year": 1997, "event": "Asian financial crisis and IMF bailout", "impact": "National humiliation followed by reform; lasting sensitivity about economic sovereignty and chaebol power" },
       { "year": 2010, "event": "Cheonan sinking and Yeonpyeong shelling", "impact": "North Korean provocations killed dozens; hardened deterrence posture and conventional retaliation doctrine" },
-      { "year": 2017, "event": "Impeachment of President Park Geun-hye", "impact": "Candlelight protests demonstrated democratic resilience but deepened partisan polarization" }
+      { "year": 2017, "event": "Impeachment of President Park Geun-hye", "impact": "Candlelight protests demonstrated democratic resilience but deepened partisan polarization" },
+      { "year": 2024, "event": "President Yoon declares martial law (3 December)", "impact": "Parliament overturned it within hours; Yoon was impeached and suspended" },
+      { "year": 2025, "event": "Lee Jae-myung elected president after Yoon's removal", "impact": "A pragmatic turn toward dialogue with the North and balance with China" },
+      { "year": 2026, "event": "Yoon Suk-yeol sentenced to life for insurrection (19 February)", "impact": "Democracy held, but the right-left divide hardened" }
     ],
     "historicalRivals": ["PRK"],
     "historicalAllies": ["USA"],
@@ -49,7 +52,7 @@
     { "kind": "IDEOLOGICAL", "name": "Generational and gender divides over economy and conscription", "strength": 50, "tension": 40 }
   ],
   "economy": {
-    "gdp": 1710000000000,
+    "gdp": 1850000000000,
     "growthRate": 0.022,
     "debtGdpRatio": 55,
     "sectors": { "agriculture": 2, "industry": 33, "services": 65 },

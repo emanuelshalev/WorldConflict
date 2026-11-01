@@ -1,0 +1,252 @@
+{
+  "id": "scarborough-line",
+  "title": "Scarborough Line",
+  "tagline": "A shoal, a treaty, and a dredger that will not go away.",
+  "hook": "On 20 June 2026 Chinese and Philippine warships faced off at Scarborough Shoal, and on 23–24 July 2026 the China Coast Guard turned water cannon on Philippine vessels there again. Washington has reaffirmed that the 1951 Mutual Defense Treaty covers Philippine forces in the South China Sea. At home, Vice President Sara Duterte's Senate impeachment trial began on 6 July 2026, while her father awaits trial at the ICC in The Hague.",
+  "sources": [
+    "https://www.thejakartapost.com/world/2026/07/23/china-fires-water-cannon-on-philippine-ship-at-scarborough-shoal-manila-says",
+    "https://www.arabnews.com/node/2649796/world",
+    "https://en.wikipedia.org/wiki/Scarborough_Shoal"
+  ],
+  "scenarioId": "2026",
+  "date": "2026-11",
+  "turns": 12,
+  "globalTension": 74,
+  "playable": [
+    {"countryId": "PHL", "role": "Make the treaty mean something before the dredgers finish, while your own vice president is on trial.", "difficulty": "TOUGH"},
+    {"countryId": "CHN", "role": "Pour concrete on Scarborough without pulling the Americans in, and let Manila split itself.", "difficulty": "TOUGH"}
+  ],
+  "setup": {
+    "wars": [],
+    "relations": [
+      {"a": "CHN", "b": "PHL", "value": -65},
+      {"a": "USA", "b": "PHL", "value": 75},
+      {"a": "JPN", "b": "PHL", "value": 70},
+      {"a": "AUS", "b": "PHL", "value": 60}
+    ],
+    "countries": {
+      "PHL": {"stability": 52, "approval": 50, "mobilization": 25},
+      "CHN": {"stability": 74, "approval": 64}
+    }
+  },
+  "objectives": {
+    "PHL": {
+      "title": "Hold the shoal, hold the republic",
+      "briefing": "You are the President of the Philippines. A Filipino sailor is dead after a ramming at Scarborough, Chinese dredgers have arrived, and half your political class is busy with the Duterte impeachment. Get Washington to stand behind the treaty, keep Tokyo and Canberra close, and do not let the shoal become either a war or an island.",
+      "primary": [
+        {"kind": "NO_WAR_WITH", "targetId": "CHN", "label": "No shooting war with China"},
+        {"kind": "RELATION_MIN", "targetId": "USA", "min": 80, "label": "The treaty means something (US relations 80+)"},
+        {"kind": "SCORE_PAR", "min": 100, "label": "Leadership score of 100+: the republic holds"}
+      ],
+      "bonus": [
+        {"kind": "RELATION_MIN", "targetId": "JPN", "min": 85, "label": "A Tokyo–Manila axis (Japan relations 85+)"},
+        {"kind": "STAT_MIN", "stat": "stability", "min": 55, "label": "Stability of 55%+ through the Duterte trial"}
+      ],
+      "par": 106,
+      "debrief": "What really happened: since 2012, when China took control of Scarborough Shoal after a standoff, Manila has faced a decade of gray-zone pressure, water cannon, lasers, rammings and blockades of resupply runs, that stopped just short of lethal force; 2026 brought a warship standoff in June and water-cannon attacks in July. What experts fear: the first death at sea that forces Washington to say, in public and under pressure, whether the Mutual Defense Treaty applies, and turns a reef into the trigger for a US–China clash outside Taiwan."
+    },
+    "CHN": {
+      "title": "Concrete facts",
+      "briefing": "You are the General Secretary. The dredgers are at Scarborough Shoal and Manila is shouting for its American friends. Consolidate the reclamation, keep the US treaty dormant, and let the Philippines' own feuds do the rest, all without firing a shot that matters.",
+      "primary": [
+        {"kind": "NO_WAR_WITH", "targetId": "PHL", "label": "No shooting war with the Philippines"},
+        {"kind": "NO_WAR_WITH", "targetId": "USA", "label": "No war with the United States"},
+        {"kind": "RELATION_MIN", "targetId": "PHL", "min": -62, "label": "Manila bruised but still talking (relations -62+)"},
+        {"kind": "SCORE_PAR", "min": 118, "label": "Leadership score of 118+"}
+      ],
+      "bonus": [
+        {"kind": "RELATION_MIN", "targetId": "USA", "min": -80, "label": "Washington stays out (relations -80+)"},
+        {"kind": "SCORE_PAR", "min": 125, "label": "Leadership score of 125+"}
+      ],
+      "par": 118,
+      "debrief": "What really happened: China has controlled access to Scarborough Shoal since 2012, ignored the 2016 arbitral ruling against its claims, and steadily raised the pressure on Philippine vessels with coast guard and maritime militia ships rather than its navy. What experts fear: that reclamation turns the shoal into a militarised island 220 km from Manila, that a coast guard captain's ramming goes one step too far, and that a dispute managed in the gray zone for a decade suddenly involves the US Seventh Fleet."
+    }
+  },
+  "scripted": {
+    "PHL": [
+      {
+        "turn": 0,
+        "templateId": "ph_sailor_killed",
+        "headline": "Filipino sailor killed as Chinese cutter rams supply boat at Scarborough",
+        "text": "A China Coast Guard cutter rammed a Philippine Coast Guard vessel at Scarborough Shoal, killing a 24-year-old seaman from Zambales. Hours later satellite imagery showed Chinese dredgers anchoring inside the lagoon. Beijing says the Philippine boat 'deliberately collided'.",
+        "decision": {
+          "title": "Death at Scarborough",
+          "situation": "Invoking the Mutual Defense Treaty forces Washington to answer the question it has dodged for decades, and risks an answer you will not like. Filing a second arbitration case wins the law and moves at the speed of the law. A back channel to Beijing could get the dredgers paused, and hands the Duterte camp its favourite story.",
+          "affectedCountries": ["PHL", "CHN", "USA"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "backchannel",
+          "options": [
+            {"id": "treaty", "label": "Invoke the treaty", "description": "Request formal consultations under Article IV. Washington must now say it.", "effects": {"relations:USA": 6, "relations:CHN": -12, "approval": 6, "stability": -2}, "tensionDelta": 8, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "arbitration", "label": "File a second arbitration", "description": "Back to The Hague under the Law of the Sea convention. Righteous, slow, and ignored by Beijing.", "effects": {"legitimacy": 5, "relations:CHN": -8, "approval": 2, "relationsAllies": 2}, "tensionDelta": 2, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "backchannel", "label": "Call Beijing quietly", "description": "A discreet envoy. The dredgers may pause; the Dutertes will say they told you so.", "effects": {"relations:CHN": 10, "relations:USA": -6, "approval": -8, "legitimacy": -3}, "tensionDelta": -6, "backedBy": ["CHIEF_OF_STAFF"]}
+          ]
+        }
+      },
+      {
+        "turn": 3,
+        "templateId": "ph_joint_patrol",
+        "headline": "Tokyo and Canberra offer a joint patrol near the shoal",
+        "text": "Japan and Australia have offered to send ships on a 'maritime cooperative activity' with your navy within sight of Scarborough. Beijing warns of 'consequences for outside forces'. Your navy has two serviceable frigates.",
+        "decision": {
+          "title": "Joint patrol",
+          "situation": "Accepting shows the shoal is everyone's problem and gives Beijing three flags to shout at. Running a solo resupply mission to the fishermen at the shoal is braver and lonelier. Declining keeps the temperature down and the dredgers working.",
+          "affectedCountries": ["PHL", "JPN", "AUS", "CHN"],
+          "urgency": "URGENT",
+          "defaultOptionId": "decline",
+          "options": [
+            {"id": "patrol", "label": "Sail with Japan and Australia", "description": "Three navies at the shoal. Deterrence by company.", "effects": {"relations:JPN": 8, "relations:AUS": 6, "relations:CHN": -8, "approval": 3}, "tensionDelta": 5, "backedBy": ["FOREIGN_MINISTER", "DEFENSE_MINISTER"]},
+            {"id": "solo", "label": "Solo resupply run", "description": "Food and fuel for the fishermen, escorted by your own coast guard. Brave, and alone.", "effects": {"approval": 6, "mobilization": 5, "stability": -3, "relations:CHN": -6}, "tensionDelta": 4, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "decline", "label": "Decline politely", "description": "Thank them and stay home. No incidents, no deterrence.", "effects": {"approval": -6, "relations:JPN": -4, "relations:USA": -3}, "tensionDelta": -2, "backedBy": ["DOMESTIC_ADVISOR"]}
+          ]
+        }
+      },
+      {
+        "turn": 5,
+        "templateId": "ph_duterte_trial",
+        "headline": "Senate verdict looms in Sara Duterte trial; Davao rallies swell",
+        "text": "The Senate is days from voting on the impeachment of the Vice President. Hundreds of thousands rally in Davao and Manila for her, some carrying Chinese-made 'peace' banners. Your allies in the Senate are counting votes and asking what you want.",
+        "decision": {
+          "title": "The verdict",
+          "situation": "Pushing for conviction removes your most dangerous rival and risks Mindanao in the streets. Brokering an acquittal in exchange for a truce buys calm and tells everyone the law is negotiable. Letting it drag on keeps everyone angry indefinitely.",
+          "affectedCountries": ["PHL", "CHN"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "delay",
+          "options": [
+            {"id": "convict", "label": "Whip the votes to convict", "description": "End the Duterte threat for good. Mindanao may not accept it quietly.", "effects": {"stability": -12, "legitimacy": 4, "approval": -7, "insurgency": 1}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "deal", "label": "Broker an acquittal", "description": "A truce with the Dutertes. Calm streets, a cheapened Senate, a rival intact.", "effects": {"stability": -6, "legitimacy": -10, "approval": -9, "relations:CHN": 4}, "tensionDelta": 0, "backedBy": ["DOMESTIC_ADVISOR"]},
+            {"id": "delay", "label": "Let it drag on", "description": "Procedural motions until everyone is exhausted. Mostly you.", "effects": {"stability": -9, "approval": -9, "legitimacy": -5}, "tensionDelta": 0, "backedBy": ["FOREIGN_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 7,
+        "templateId": "ph_edca",
+        "headline": "Washington asks for two more EDCA sites facing the shoal",
+        "text": "The Pentagon wants access to two more bases on Luzon's west coast under the Enhanced Defense Cooperation Agreement, within missile range of Scarborough. Beijing says it would make the Philippines 'a frontline of someone else's war'. Local governors are split.",
+        "decision": {
+          "title": "More American bases",
+          "situation": "Saying yes binds Washington to the shoal and makes Luzon a target. Offering one site, temporary, pleases nobody fully. Saying no keeps your options open and confirms Beijing's view that pressure works.",
+          "affectedCountries": ["PHL", "USA", "CHN"],
+          "urgency": "URGENT",
+          "defaultOptionId": "refuse",
+          "options": [
+            {"id": "yes", "label": "Grant both sites", "description": "The Americans dig in on Luzon. So do the Chinese missile planners.", "effects": {"relations:USA": 10, "relations:CHN": -12, "approval": -3, "stability": -2}, "tensionDelta": 6, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "one", "label": "One site, rotational", "description": "Half a yes. Washington grumbles, Beijing grumbles less.", "effects": {"relations:USA": 3, "relations:CHN": -4, "approval": 1}, "tensionDelta": 2, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "refuse", "label": "Not now", "description": "Keep the Americans at arm's length. Beijing notes that pressure works.", "effects": {"relations:USA": -10, "relations:CHN": 6, "approval": -4}, "tensionDelta": -2, "backedBy": ["DOMESTIC_ADVISOR"]}
+          ]
+        }
+      },
+      {
+        "turn": 10,
+        "templateId": "ph_joint_development",
+        "headline": "Beijing offers joint development of Reed Bank gas, 'if Scarborough is set aside'",
+        "text": "China proposes a joint gas development deal at Reed Bank, which Manila badly needs as the Malampaya field runs dry, if the Philippines drops its arbitration case and stops patrols at Scarborough. The Duterte camp calls it common sense. The US embassy calls it a trap.",
+        "decision": {
+          "title": "Gas for the shoal",
+          "situation": "Taking the deal secures energy and concedes the shoal in all but name. Demanding the reclamation stop first, with US backing, keeps the principle and the standoff. Taking it to ASEAN buys time and blurs responsibility, which is what ASEAN is for.",
+          "affectedCountries": ["PHL", "CHN", "USA"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "asean",
+          "options": [
+            {"id": "deal", "label": "Sign the gas deal", "description": "Energy for decades, Scarborough for good. Washington will remember.", "effects": {"growth": 0.6, "relations:CHN": 12, "relations:USA": -10, "approval": -6, "legitimacy": -4}, "tensionDelta": -8, "backedBy": ["FINANCE_MINISTER"]},
+            {"id": "demand", "label": "Reclamation stops first", "description": "No deal while dredgers work. Washington applauds; nothing moves.", "effects": {"relations:USA": 6, "relations:CHN": -10, "approval": 3, "stability": -3}, "tensionDelta": 6, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "asean", "label": "Refer it to ASEAN", "description": "Ten capitals, one consensus rule, infinite delay.", "effects": {"approval": -5, "relations:USA": -3, "stability": -2}, "tensionDelta": -2, "backedBy": ["FOREIGN_MINISTER"]}
+          ]
+        }
+      }
+    ],
+    "CHN": [
+      {
+        "turn": 0,
+        "templateId": "cn_scarborough_dredgers",
+        "headline": "Dredgers enter Scarborough lagoon after deadly collision",
+        "text": "A Philippine seaman died when one of your coast guard cutters rammed his boat. Within hours the dredgers your planners had waiting in Hainan were inside the lagoon. Manila is calling Washington. The question is how fast to pour.",
+        "decision": {
+          "title": "How fast to pour",
+          "situation": "Full-speed reclamation presents everyone with a fait accompli before Washington decides anything. A slow, deniable 'environmental survey' buys time and lets the anger fade. Pausing and expressing regret for the death might split Manila from Washington, and looks like a retreat.",
+          "affectedCountries": ["CHN", "PHL", "USA"],
+          "urgency": "URGENT",
+          "defaultOptionId": "pause",
+          "options": [
+            {"id": "pour", "label": "Full-speed reclamation", "description": "Sand, concrete and an airstrip by summer. A fact before a debate.", "effects": {"approval": 6, "relations:PHL": -12, "relations:USA": -10, "relations:JPN": -5}, "tensionDelta": 8, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "survey", "label": "An 'environmental survey'", "description": "Dredge slowly, call it science. Everyone knows; nobody can prove it.", "effects": {"approval": 2, "relations:PHL": -5, "relations:USA": -3}, "tensionDelta": 3, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "pause", "label": "Pause and express regret", "description": "A rare softness. Manila is confused; the nationalists are furious.", "effects": {"approval": -6, "legitimacy": -3, "relations:PHL": 8}, "tensionDelta": -5, "backedBy": ["FINANCE_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 3,
+        "templateId": "cn_treaty_consult",
+        "headline": "Washington says the Mutual Defense Treaty 'extends to the South China Sea'",
+        "text": "After Manila requested consultations, the US Secretary of State repeated that an armed attack on Philippine public vessels anywhere in the South China Sea would trigger the treaty. A US destroyer has been sighted heading north from Subic.",
+        "decision": {
+          "title": "Testing the treaty",
+          "situation": "Sending maritime militia boats to swarm the shoal tests the treaty below the 'armed attack' threshold. Inviting Washington to talks on 'maritime rules' splits the issue from Manila. Ordering warships to shadow the destroyer is the show of strength the PLA Navy wants and the escalation nobody needs.",
+          "affectedCountries": ["CHN", "USA", "PHL"],
+          "urgency": "URGENT",
+          "defaultOptionId": "shadow",
+          "options": [
+            {"id": "militia", "label": "Swarm with maritime militia", "description": "Two hundred 'fishing boats'. Not an armed attack, by definition.", "effects": {"approval": 4, "relations:PHL": -8, "relations:USA": -4}, "tensionDelta": 4, "backedBy": ["INTELLIGENCE_CHIEF"]},
+            {"id": "talks", "label": "Offer Washington rules talks", "description": "Great powers talking over Manila's head. The Americans may bite.", "effects": {"relations:USA": 10, "relations:PHL": -4, "approval": -3}, "tensionDelta": -5, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "shadow", "label": "Shadow the destroyer", "description": "PLA Navy ships within a few hundred metres. Excellent footage, terrible odds.", "effects": {"approval": 5, "relations:USA": -12, "stability": -4, "mobilization": 6}, "tensionDelta": 9, "backedBy": ["DEFENSE_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 5,
+        "templateId": "cn_duterte_card",
+        "headline": "Duterte rallies demand 'peace with China' as Senate verdict nears",
+        "text": "Supporters of the impeached Vice President are filling stadiums, and her allies are calling for talks with Beijing. Your United Front cadres report that money and messaging could help. Your ambassador warns that if it is traced, it will unite Manila against you.",
+        "decision": {
+          "title": "Playing the Duterte card",
+          "situation": "Funding the friendly camp quietly may tip Philippine politics your way, or explode as an interference scandal. A public offer of 'friendship' to whoever wants peace is cheaper and less effective. Staying out of it is the safe choice your hawks will not thank you for.",
+          "affectedCountries": ["CHN", "PHL"],
+          "urgency": "URGENT",
+          "defaultOptionId": "stay_out",
+          "options": [
+            {"id": "fund", "label": "Fund the friendly camp", "description": "Money, influencers, and plausible deniability, for now.", "effects": {"relations:PHL": -6, "relations:USA": -6, "approval": 3}, "tensionDelta": 3, "actions": [{"type": "INTEL_DESTABILIZE", "targetCountryId": "PHL"}], "backedBy": ["INTELLIGENCE_CHIEF"]},
+            {"id": "offer", "label": "Public offer of friendship", "description": "Fruit imports, loans and a warm statement. Seduction in daylight.", "effects": {"relations:PHL": 6, "gdp": -0.1, "approval": -2}, "tensionDelta": -2, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "stay_out", "label": "Stay out of it", "description": "Let Manila's feud run itself. The hawks call it a wasted opportunity.", "effects": {"approval": -5, "legitimacy": -2}, "tensionDelta": 0, "backedBy": ["FINANCE_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 7,
+        "templateId": "cn_runway",
+        "headline": "Satellite photos show a 3,000-metre runway taking shape at Scarborough",
+        "text": "Commercial imagery published in Washington shows a runway on the new island. Manila calls it an act of aggression; Tokyo and Canberra summon your ambassadors; the US Congress debates sanctions on your dredging companies. The PLA wants hangars next.",
+        "decision": {
+          "title": "The runway",
+          "situation": "Completing the airbase makes Scarborough a fortress overlooking Manila, and makes the treaty debate in Washington very short. Halting at a 'civilian' facility, a weather station and a fishing harbour, keeps most of the gain. Offering a moratorium in exchange for no new US bases trades concrete for American restraint, if they bite.",
+          "affectedCountries": ["CHN", "PHL", "USA", "JPN"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "complete",
+          "options": [
+            {"id": "complete", "label": "Finish the airbase", "description": "Hangars, radars, fighters. A fortress, and a casus belli for someone.", "effects": {"approval": 6, "relations:USA": -12, "relations:PHL": -12, "relations:JPN": -8, "stability": -4}, "tensionDelta": 10, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "civilian", "label": "Call it civilian", "description": "A weather station with a very long runway. Fools no one, provokes less.", "effects": {"approval": -3, "relations:USA": -3, "relations:PHL": -4}, "tensionDelta": 2, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "moratorium", "label": "Trade a moratorium", "description": "Stop building if the Americans stop basing. Statesmanship, or surrender, depending on the channel.", "effects": {"approval": -7, "legitimacy": -4, "relations:USA": 8, "relations:PHL": 6}, "tensionDelta": -8, "backedBy": ["CHIEF_OF_STAFF"]}
+          ]
+        }
+      },
+      {
+        "turn": 10,
+        "templateId": "cn_reed_bank",
+        "headline": "Politburo debates a 'Reed Bank for Scarborough' offer to Manila",
+        "text": "The Foreign Ministry proposes offering Manila joint gas development at Reed Bank if it drops its arbitration case and stops patrols at Scarborough. The Navy says giving anything away invites more demands. The Philippine energy crunch makes this the moment, if there is one.",
+        "decision": {
+          "title": "Gas for silence",
+          "situation": "Making the offer could lock in the shoal by treaty and split Manila from Washington. Demanding Manila accept the island first is maximalism with a short shelf life. Doing nothing keeps the island and the standoff indefinitely.",
+          "affectedCountries": ["CHN", "PHL", "USA"],
+          "urgency": "URGENT",
+          "defaultOptionId": "nothing",
+          "options": [
+            {"id": "offer", "label": "Make the offer", "description": "Gas for a quiet shoal. A deal, if Manila's politics allow it.", "effects": {"relations:PHL": 10, "relations:USA": 4, "approval": -3, "growth": 0.2}, "tensionDelta": -8, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "maximal", "label": "Recognition first", "description": "Accept the island, then we talk. Nobody in Manila can.", "effects": {"approval": 4, "relations:PHL": -8, "relations:USA": -5}, "tensionDelta": 4, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "nothing", "label": "Leave it as it is", "description": "The concrete speaks for itself. So do the sanctions bills in Congress.", "effects": {"approval": -2, "growth": -0.2, "relations:USA": -4}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]}
+          ]
+        }
+      }
+    ]
+  },
+  "debrief": ""
+}
