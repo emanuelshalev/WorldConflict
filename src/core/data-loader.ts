@@ -37,6 +37,9 @@ const CountryOverrideSchema = z
     electionCycleMonths: z.number(),
     gdp: z.number(),
     growthRate: z.number(),
+    // Structural growth the economy returns to once shocks fade (defaults to growthRate).
+    // Set it when growthRate is a war or blockade shock, so drags aren't counted twice.
+    trendGrowth: z.number(),
     population: z.number(),
     manpower: z.number(),
     airpower: z.number(),
@@ -159,6 +162,7 @@ export const FlashpointSchema = z.object({
               nuclearProgress: z.number(),
               insurgencyLevel: z.string(),
               growthRate: z.number(),
+              trendGrowth: z.number(),
             })
             .partial(),
         )
@@ -379,8 +383,8 @@ export class DataLoader {
       if (o.mobilization !== undefined) c.mobilizationLevel = o.mobilization;
       if (o.growthRate !== undefined) {
         c.growthRate = o.growthRate;
-        c.trendGrowth = o.growthRate;
-      }
+        c.trendGrowth = o.trendGrowth ?? o.growthRate;
+      } else if (o.trendGrowth !== undefined) c.trendGrowth = o.trendGrowth;
       if (o.insurgencyLevel) c.insurgencyLevel = o.insurgencyLevel as InsurgencyLevel;
       if (o.nuclearStatus) c.nuclear.status = o.nuclearStatus as NuclearStatus;
       if (o.nuclearProgress !== undefined) {
@@ -483,7 +487,9 @@ export class DataLoader {
 
       gdp: override.gdp ?? profile.economy.gdp,
       growthRate: (override.growthRate ?? profile.economy.growthRate) * multipliers.gdpGrowth,
-      trendGrowth: (override.growthRate ?? profile.economy.growthRate) * multipliers.gdpGrowth,
+      trendGrowth:
+        (override.trendGrowth ?? override.growthRate ?? profile.economy.growthRate) *
+        multipliers.gdpGrowth,
       debtGdpRatio: override.debtGdpRatio ?? profile.economy.debtGdpRatio,
       militaryBudgetPercent: Math.min(
         40,

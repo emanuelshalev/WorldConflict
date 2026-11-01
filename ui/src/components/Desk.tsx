@@ -219,7 +219,7 @@ function useSuggestions(): Suggestion[] {
       const mine = war ? (war.attackerId === me.id ? war.frontline : 100 - war.frontline) : 50;
       out.push(
         mine < 50
-          ? { p: 95, who: 'Foreign Minister', label: `Propose ceasefire to ${countryName(enemy)}`, why: 'The front is going badly. Stop the bleeding.', action: { type: 'DIPLOMACY_PROPOSE_CEASEFIRE', label: `Propose ceasefire to ${countryName(enemy)}`, targetCountryId: enemy } }
+          ? { p: 95, who: 'Foreign Minister', label: `Propose ceasefire to ${countryName(enemy)}`, why: mine <= 35 ? 'They have what they wanted. Their terms will sting, but far less than a defeat.' : 'The front is going badly. Stop the bleeding.', action: { type: 'DIPLOMACY_PROPOSE_CEASEFIRE', label: `Propose ceasefire to ${countryName(enemy)}`, targetCountryId: enemy } }
           : { p: 70, who: 'Defense Minister', label: 'Mobilize forces', why: 'We hold the initiative. Press it.', action: { type: 'MILITARY_MOBILIZE', label: 'Mobilize forces' } },
       );
     }
@@ -243,7 +243,11 @@ function useSuggestions(): Suggestion[] {
       out.push({ p: 80, who: 'Intelligence Chief', label: `Spy on ${nuke.name}`, why: `Their program may be ~${Math.round(nuke.nuclearProgress?.estimate ?? 0)}% along. We need certainty.`, action: { type: 'INTEL_GATHER', label: `Spy on ${nuke.name}`, targetCountryId: nuke.id } });
     if (me.insurgencyLevel === 'REBELLION' || me.insurgencyLevel === 'GUERILLA')
       out.push({ p: 78, who: 'Interior Minister', label: 'Soft policing', why: 'Win hearts, not just streets. Slow but no backlash.', action: { type: 'DOMESTIC_POLICING', label: 'Soft policing', params: { tactic: 'SOFT' } } });
-    if (out.length < 3)
+    const meddled = (world.turnReport?.causes ?? []).some((c) => c.startsWith('Foreign covert'));
+    const shielded = world.turn <= (world.director.counterIntelUntil ?? -1);
+    if (meddled && !shielded)
+      out.push({ p: 92, who: 'Intelligence Chief', label: 'Hunt foreign spies', why: 'Foreign services are working on our streets. A spy hunt foils most of their operations for three months.', action: { type: 'INTEL_COUNTER_INTEL', label: 'Hunt foreign spies' } });
+    if (out.length < 3 && !shielded)
       out.push({ p: 10, who: 'Intelligence Chief', label: 'Hunt foreign spies', why: 'Rivals are always probing. Harden our services.', action: { type: 'INTEL_COUNTER_INTEL', label: 'Hunt foreign spies' } });
     // One suggestion per order: keep the highest-priority reason
     const seen = new Set<string>();

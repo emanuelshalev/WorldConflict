@@ -134,19 +134,38 @@ export function canDeclareWar(actor: CountryState, target: CountryState): WarDec
  * Wars rarely end on the first offer: exhaustion, flexibility and who holds
  * the initiative decide. A side that is winning seldom stops.
  */
+/**
+ * How far the target is ahead, from its own side of the frontline (50 = stalemate).
+ * At 65+ its war aims are largely met: it will stop if the loser accepts its terms.
+ */
+export function targetAdvantage(
+  war: { attackerId: string; frontline: number },
+  actor: CountryState,
+): number {
+  return war.attackerId === actor.id ? 100 - war.frontline : war.frontline;
+}
+
+/** Suing for peace while clearly losing: the winner dictates terms. */
+export const TERMS_THRESHOLD = 65;
+export const TERMS_COST = { approval: 6, legitimacy: 5 };
+
 export function ceasefireChance(
   war: { attackerId: string; frontline: number; exhaustion: number },
   actor: CountryState,
   target: CountryState,
 ): number {
-  const actorIsAttacker = war.attackerId === actor.id;
-  const targetWinning = actorIsAttacker ? war.frontline < 45 : war.frontline > 55;
+  const advantage = targetAdvantage(war, actor);
   let chance =
     0.05 +
     Math.max(0, war.exhaustion - 40) / 200 +
     target.personality.diplomaticFlexibility / 600 -
     target.personality.warPropensity / 700;
-  if (targetWinning) chance *= 0.3;
+  if (advantage >= TERMS_THRESHOLD) {
+    // Winning, with its aims mostly achieved: a favourable peace beats grinding on
+    chance += 0.12;
+  } else if (advantage > 55) {
+    chance *= 0.3; // ahead, but not yet enough to dictate terms
+  }
   return Math.max(0.02, Math.min(0.9, chance));
 }
 
@@ -220,6 +239,11 @@ export function proposeCeasefire(
   if (!war) return false;
   const chance = ceasefireChance(war, actor, target);
   if (rng.next() < chance) {
+    if (targetAdvantage(war, actor) >= TERMS_THRESHOLD) {
+      // Accepting the winner's terms is humbling, but far cheaper than defeat
+      actor.approval = Math.max(0, actor.approval - TERMS_COST.approval);
+      actor.legitimacy = Math.max(0, actor.legitimacy - TERMS_COST.legitimacy);
+    }
     world.wars = world.wars.filter((w) => w.id !== war.id);
     actor.atWarWith = actor.atWarWith.filter((id) => id !== target.id);
     target.atWarWith = target.atWarWith.filter((id) => id !== actor.id);

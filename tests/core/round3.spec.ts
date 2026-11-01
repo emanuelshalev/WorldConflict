@@ -2,7 +2,12 @@ import { describe, expect, it } from "vitest";
 import { generateDeterministicIntents } from "../../src/agents/fallback.js";
 import { createDataLoader } from "../../src/core/data-loader.js";
 import { previewAction } from "../../src/core/preview.js";
-import { denounceApprovalDelta } from "../../src/core/systems/diplomacy.js";
+import {
+  ceasefireChance,
+  denounceApprovalDelta,
+  TERMS_COST,
+  targetAdvantage,
+} from "../../src/core/systems/diplomacy.js";
 import { TurnEngine } from "../../src/core/turn.js";
 import type { WorldState } from "../../src/core/types.js";
 
@@ -68,5 +73,62 @@ describe("Denunciations", () => {
     const p = previewAction(w, { type: "DIPLOMACY_DENOUNCE", targetCountryId: "CHN" });
     const mood = p.effects.find((e) => e.metric === "Approval");
     expect(mood?.delta).toBe("+2");
+  });
+});
+
+describe("Iran's recovery path", () => {
+  it("lets a spy hunt foil most foreign operations for three months", () => {
+    let foiled = 0;
+    let attempts = 0;
+    for (const seed of [1, 2, 3, 4, 5, 6]) {
+      let s = loader.newGame({ scenarioId: "2026", playerCountryId: "IRN", seed, mode: "TERM" });
+      s = engine.executeTurn(s, [{ type: "INTEL_COUNTER_INTEL" }], generateDeterministicIntents(s)).newState;
+      expect(s.director.counterIntelUntil).toBe(s.turn + 1);
+      for (let t = 0; t < 2 && !s.gameOver; t++) {
+        const intents = generateDeterministicIntents(s);
+        attempts += intents
+          .flatMap((i) => i.actions)
+          .filter((a) => a.targetCountryId === "IRN" && a.type.startsWith("INTEL_")).length;
+        s = engine.executeTurn(s, [], intents).newState;
+        const cause = s.turnReport?.causes.find((c) => c.startsWith("Counter-intelligence rolled up"));
+        const m = cause?.match(/up (an operation|(\d+) operations)/);
+        if (m) foiled += m[2] ? Number(m[2]) : 1;
+      }
+    }
+    expect(attempts).toBeGreaterThan(0);
+    expect(foiled / attempts).toBeGreaterThan(0.35);
+  });
+
+  it("previews the shield", () => {
+    const w = loader.newGame({ scenarioId: "2026", playerCountryId: "IRN", seed: 1, mode: "TERM" });
+    const p = previewAction(w, { type: "INTEL_COUNTER_INTEL" });
+    expect(p.effects.some((e) => e.metric === "Foreign operations")).toBe(true);
+  });
+
+  it("lets a clearly losing side sue for peace on the winner's terms", () => {
+    const w = loader.newGame({ scenarioId: "2026", playerCountryId: "IRN", seed: 1, mode: "TERM" });
+    const iran = get(w, "IRN");
+    const usa = get(w, "USA");
+    const war = { attackerId: "USA", frontline: 70, exhaustion: 45 };
+    const onTerms = ceasefireChance(war, iran, usa);
+    const ahead = ceasefireChance({ ...war, frontline: 60 }, iran, usa);
+    expect(onTerms).toBeGreaterThan(ahead * 2);
+    expect(targetAdvantage(war, iran)).toBe(70);
+    const p = previewAction(
+      { ...w, wars: w.wars.map((x) => (x.attackerId === "USA" && x.defenderId === "IRN" ? { ...x, frontline: 70 } : x)) },
+      { type: "DIPLOMACY_PROPOSE_CEASEFIRE", targetCountryId: "USA" },
+    );
+    expect(p.summary).toMatch(/terms/);
+    expect(p.effects.find((e) => e.metric === "Legitimacy")?.delta).toBe(`-${TERMS_COST.legitimacy}`);
+  });
+
+  it("treats Iran's wartime contraction as a shock, not its structural trend", () => {
+    const w = loader.newGame({ scenarioId: "2026", playerCountryId: "IRN", seed: 1, mode: "TERM" });
+    const iran = get(w, "IRN");
+    expect(iran.growthRate).toBeLessThan(0);
+    expect(iran.trendGrowth).toBeGreaterThan(0);
+    // Countries without an explicit trend keep their override as the trend
+    const deu = get(w, "DEU");
+    expect(deu.trendGrowth).toBe(deu.growthRate);
   });
 });

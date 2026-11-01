@@ -65,7 +65,7 @@
     "RUS": {"growthRate": 0.009, "militaryBudgetPct": 6.5, "stability": 60, "warheads": 5459, "mobilization": 70, "embargoedBy": ["USA", "GBR", "FRA"]},
     "CHN": {"gdp": 21500000000000, "growthRate": 0.045, "warheads": 620},
     "IND": {"gdp": 4060000000000, "warheads": 190},
-    "IRN": {"stability": 50, "legitimacy": 35, "approval": 28, "insurgencyLevel": "UNREST", "gdp": 330000000000, "growthRate": -0.05, "nuclearProgress": 55, "mobilization": 60, "underGlobalEmbargo": true, "embargoedBy": ["USA", "GBR", "FRA"]},
+    "IRN": {"stability": 50, "legitimacy": 35, "approval": 28, "insurgencyLevel": "UNREST", "gdp": 330000000000, "growthRate": -0.05, "trendGrowth": 0.01, "nuclearProgress": 55, "mobilization": 60, "underGlobalEmbargo": true, "embargoedBy": ["USA", "GBR", "FRA"]},
     "ISR": {"stability": 50, "gdp": 610000000000, "population": 10100000, "militaryBudgetPct": 7, "mobilization": 40, "approval": 40},
     "GBR": {"stability": 60, "gdp": 4000000000000},
     "FRA": {"stability": 55, "gdp": 3400000000000},

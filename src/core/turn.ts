@@ -133,6 +133,7 @@ export class TurnEngine {
     let covertDamage = 0;
     let tensionAfterPlayer = world.globalTension;
     const covertHits = new Map<string, number>(); // stability lost to covert ops, per target
+    const foiled: string[] = []; // foreign services caught by the player's spy hunt
     for (const intent of allIntents) {
       const actor = world.countries.find((c) => c.id === intent.countryId);
       if (!actor || actor.collapsed) continue;
@@ -164,6 +165,15 @@ export class TurnEngine {
           !isPlayer && !hitsPlayer && action.type.startsWith("INTEL_") && action.targetCountryId
             ? world.countries.find((c) => c.id === action.targetCountryId)
             : undefined;
+        if (
+          hitsPlayer &&
+          world.turn <= world.director.counterIntelUntil &&
+          rng.next() < COUNTER_INTEL_FOIL
+        ) {
+          foiled.push(actor.name);
+          push(rejectedActions, actor.id, { action, reason: "Foiled by counter-intelligence" });
+          continue;
+        }
         const stabilityBefore = playerState?.stability ?? 0;
         const targetStabilityBefore = covertTarget?.stability ?? 0;
         const outcome = this.applyAction(world, actor, action, rng, events, governmentChanges);
@@ -216,6 +226,12 @@ export class TurnEngine {
       world.globalTension = tensionAfterPlayer + (world.globalTension - tensionAfterPlayer) * 0.5;
     }
 
+    if (foiled.length > 0) {
+      const who = [...new Set(foiled)];
+      report.causes.push(
+        `Counter-intelligence rolled up ${foiled.length === 1 ? "an operation" : `${foiled.length} operations`} run by ${who.join(", ")}`,
+      );
+    }
     // Hidden foreign meddling: cap the monthly damage and surface it
     if (playerState && covertDamage > 0) {
       const excess = Math.max(0, covertDamage - 8);
@@ -620,6 +636,14 @@ export class TurnEngine {
       }
       case "INTEL_COUNTER_INTEL": {
         actor.counterIntelLevel = clamp01(actor.counterIntelLevel + 10);
+        if (actor.id === world.playerCountryId) {
+          // This month and the next two
+          world.director.counterIntelUntil = world.turn + COUNTER_INTEL_MONTHS - 1;
+          return {
+            ok: true,
+            reason: `Spy hunt under way: most foreign operations against us fail for ${COUNTER_INTEL_MONTHS} months`,
+          };
+        }
         return { ok: true, reason: "" };
       }
       case "INTEL_GATHER":
@@ -886,6 +910,11 @@ export class TurnEngine {
 }
 
 // --------------------------------------------------------------------
+/** A spy hunt protects the player for this many months… */
+const COUNTER_INTEL_MONTHS = 3;
+/** …and foils this share of the foreign operations aimed at them meanwhile. */
+const COUNTER_INTEL_FOIL = 0.6;
+
 const ORDER_VERBS: Partial<Record<Action["type"], string>> = {
   DIPLOMACY_IMPROVE_RELATIONS: "Court",
   DIPLOMACY_DENOUNCE: "Denounce",

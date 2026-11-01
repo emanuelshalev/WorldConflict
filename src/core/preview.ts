@@ -4,6 +4,9 @@ import {
   ceasefireChance,
   denounceApprovalDelta,
   mediationChance,
+  TERMS_COST,
+  TERMS_THRESHOLD,
+  targetAdvantage,
 } from "./systems/diplomacy.js";
 import { effectiveForce, monthlyDefenseBudgetM } from "./systems/military.js";
 import { isNuclearOperational } from "./systems/nuclear.js";
@@ -183,12 +186,25 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
           (w.attackerId === target.id && w.defenderId === actor.id),
       );
       if (!war) return blocked(base, `You are not at war with ${tname}`);
-      const actorIsAttacker = war.attackerId === actor.id;
-      const targetWinning = actorIsAttacker ? war.frontline < 45 : war.frontline > 55;
+      const advantage = targetAdvantage(war, actor);
       base.successChance = Math.round(ceasefireChance(war, actor, target) * 100);
-      base.summary = `Seek an end to the war with ${tname} along current lines.`;
       effects.push(eff("Both nations", "War", "ends if accepted", "Mobilization winds down"));
-      if (targetWinning) risks.push(`${tname} is winning — they have little reason to stop now.`);
+      if (advantage >= TERMS_THRESHOLD) {
+        base.summary = `Sue for peace on ${tname}'s terms: they have what they wanted.`;
+        effects.push(
+          eff("Your public", "Approval", `-${TERMS_COST.approval}`, "A humbling peace"),
+          eff(
+            actor.name,
+            "Legitimacy",
+            `-${TERMS_COST.legitimacy}`,
+            "Far less than a defeat costs",
+          ),
+        );
+      } else {
+        base.summary = `Seek an end to the war with ${tname} along current lines.`;
+        if (advantage > 55)
+          risks.push(`${tname} is winning — they have little reason to stop now.`);
+      }
       break;
     }
     case "DIPLOMACY_MEDIATE": {
@@ -348,6 +364,14 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
         risks.push(
           "Sharp increases read as war preparation — the budget is a hostility indicator.",
         );
+      break;
+    }
+    case "INTEL_COUNTER_INTEL": {
+      base.summary = "Hunt foreign agents at home: arrests, sweeps and turned assets.";
+      effects.push(
+        eff(actor.name, "Foreign operations", "60% foiled", "For the next 3 months"),
+        eff(actor.name, "Counter-intelligence", "+10", "Rivals' spying gets harder"),
+      );
       break;
     }
     case "INTEL_GATHER":

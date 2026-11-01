@@ -73,7 +73,8 @@ A red heartbeat around the screen means you are in danger: approval, stability o
 - **Shocks.** Comfortable leaders get tested: market crashes, pandemics, terror attacks, disasters.
 - **Hidden hands.** Rivals run covert operations against you. If your intelligence detects them, you'll get a *Foreign interference* card.
 - **Fog of war.** Foreign GDP, stability, military strength and nuclear progress are **estimates** with confidence ranges. Spy to sharpen them.
-- **Wars** have a single front line (0–100). They end in victory, exhaustion, or a ceasefire the other side must accept — and winners rarely stop.
+- **Wars** have a single front line (0–100). They end in victory, exhaustion, or a ceasefire the other side must accept. A side that is ahead rarely stops, but once it is clearly winning (65+ on its side of the front) it will often take a peace **on its terms**: you lose 6 approval and 5 legitimacy, far less than a defeat (−15 stability, −20 legitimacy, −15 approval, reparations).
+- **Foreign meddling.** Rival services destabilize you and arm your rebels; the monthly report says when. *Hunt foreign spies* (1 ◆) foils about 60% of the operations aimed at you for three months.
 - **Two-strike rule.** A nuclear program still *developing* is crippled by two consecutive successful strikes. Once *tested*, it is beyond reach.
 
 ---

@@ -85,6 +85,10 @@ function smartOrders(world: WorldState, me: CountryState): Action[] {
   const lastAddress = world.director.propagandaTurns.at(-1) ?? -99;
   if ((me.approval < 50 && recentPropaganda === 0) || (campaigning && world.turn - lastAddress >= 2))
     orders.push({ type: "DOMESTIC_PROPAGANDA" });
+  // Foreign services working on us: hunt them before they topple us
+  const meddled = (world.turnReport?.causes ?? []).some((c) => c.startsWith("Foreign covert"));
+  if (meddled && world.turn >= world.director.counterIntelUntil)
+    orders.unshift({ type: "INTEL_COUNTER_INTEL" });
   if (me.insurgencyLevel === "REBELLION" || me.insurgencyLevel === "GUERILLA") {
     orders.push({ type: "DOMESTIC_POLICING", params: { tactic: "SOFT" } });
   }
