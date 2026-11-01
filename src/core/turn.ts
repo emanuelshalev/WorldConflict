@@ -838,14 +838,15 @@ function playerHeadline(
   report: PlayerTurnReport,
 ): NewspaperEntry | null {
   const who = `${player.leader.title} ${player.leader.name}`;
+  const surname = player.leader.name.split(" ").at(-1) ?? player.leader.name;
   const decision = report.decisions[0];
   const order = report.orders.find((o) => o.ok) ?? report.orders[0];
   if (!decision && !order) return null;
   const headline = decision
-    ? `${player.name.toUpperCase()}: ${who.toUpperCase()} CHOOSES TO "${decision.choice.toUpperCase()}"`
+    ? `${surname.toUpperCase()}'S ANSWER TO "${decision.title.toUpperCase()}": ${decision.choice.replace(" (no decision taken)", "").toUpperCase()}`
     : `${player.name.toUpperCase()}: ${order.label.toUpperCase()}${order.ok ? "" : " — BLOCKED"}`;
   const lines = [
-    ...report.decisions.map((d) => `On ${d.title.toLowerCase()}, ${who} chose: ${d.choice}.`),
+    ...report.decisions.map((d) => `Faced with “${d.title}”, ${who} decided: ${d.choice}.`),
     ...report.orders.map((o) => `${o.label}: ${o.detail}.`),
   ];
   return {

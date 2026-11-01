@@ -11,16 +11,26 @@ interface Swatch {
 }
 
 const LAYER_GUIDES: Record<string, { title: string; description: string; swatches: Swatch[]; gradient?: boolean }> = {
-  political: {
-    title: 'Political layer',
-    description: 'Countries are colored by their system of government. Regimes behave differently: democracies face elections, autocracies fear coups, theocracies follow doctrine.',
+  relations: {
+    title: 'Relations layer',
+    description: 'How every government feels about you. Blue = friendly, orange = hostile. Your own country is outlined in amber; countries you are fighting have a pulsing red border.',
     swatches: [
-      { color: '#3a7d44', label: 'Democracy' },
-      { color: '#a63a3a', label: 'Autocracy' },
-      { color: '#b5482e', label: 'Communist state' },
-      { color: '#7d5ba6', label: 'Monarchy' },
-      { color: '#b07d2b', label: 'Theocracy' },
-      { color: '#6e5849', label: 'Military junta' },
+      { color: '#F2A93B', label: 'You' },
+      { color: 'rgb(40,140,253)', label: 'Ally / warm' },
+      { color: 'rgb(60,95,140)', label: 'Neutral' },
+      { color: 'rgb(242,107,58)', label: 'Hostile' },
+    ],
+  },
+  political: {
+    title: 'Regimes layer',
+    description: 'Countries are colored by their system of government (colorblind-safe palette — no color means good or bad). Democracies face elections, autocracies fear coups, theocracies follow doctrine.',
+    swatches: [
+      { color: '#0072B2', label: 'Democracy' },
+      { color: '#D55E00', label: 'Autocracy' },
+      { color: '#CC79A7', label: 'Communist state' },
+      { color: '#009E73', label: 'Monarchy' },
+      { color: '#E69F00', label: 'Theocracy' },
+      { color: '#7f6a55', label: 'Military junta' },
     ],
   },
   military: {
@@ -85,7 +95,7 @@ const sectionTitle = {
 
 export function MapGuide({ onClose }: { onClose: () => void }) {
   const mapLayer = useGameStore((s) => s.mapLayer);
-  const guide = LAYER_GUIDES[mapLayer] ?? LAYER_GUIDES.political;
+  const guide = LAYER_GUIDES[mapLayer] ?? LAYER_GUIDES.relations;
 
   return (
     <div

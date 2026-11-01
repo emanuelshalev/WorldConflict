@@ -17,17 +17,27 @@ export const COUNTRY_CENTERS: Record<string, [number, number]> = {
   ITA: [12.5, 42.8],
 };
 
+// Okabe-Ito categorical palette: colorblind-safe and value-neutral
 const REGIME_COLORS: Record<string, string> = {
-  DEMOCRACY: '#3a7d44',
-  AUTOCRACY: '#a63a3a',
-  COMMUNIST: '#b5482e',
-  MONARCHY: '#7d5ba6',
-  THEOCRACY: '#b07d2b',
-  MILITARY_JUNTA: '#6e5849',
+  DEMOCRACY: '#0072B2',
+  AUTOCRACY: '#D55E00',
+  COMMUNIST: '#CC79A7',
+  MONARCHY: '#009E73',
+  THEOCRACY: '#E69F00',
+  MILITARY_JUNTA: '#7f6a55',
 };
 
+// Blue (friendly) ↔ orange (hostile) diverging scale, never red/green
+function relationColor(rel: number): string {
+  const t = Math.max(-1, Math.min(1, rel / 80));
+  if (t >= 0) return `rgb(${Math.round(60 - t * 20)}, ${Math.round(95 + t * 45)}, ${Math.round(140 + t * 113)})`;
+  const u = -t;
+  return `rgb(${Math.round(70 + u * 172)}, ${Math.round(85 + u * 22)}, ${Math.round(110 - u * 52)})`;
+}
+
 const LAYERS = [
-  { id: 'political', label: 'Political', icon: '🏛' },
+  { id: 'relations', label: 'Relations', icon: '🤝' },
+  { id: 'political', label: 'Regimes', icon: '🏛' },
   { id: 'military', label: 'Military', icon: '🛡' },
   { id: 'economic', label: 'Economic', icon: '💰' },
   { id: 'stability', label: 'Stability', icon: '⚖' },
@@ -37,6 +47,8 @@ const LAYERS = [
 
 function countryColor(view: PlayerViewCountry, layer: string, maxStrength: number): string {
   switch (layer) {
+    case 'relations':
+      return view.isPlayer ? '#F2A93B' : relationColor(view.relationWithPlayer);
     case 'political':
       return REGIME_COLORS[view.regimeType] ?? '#555';
     case 'military': {
@@ -170,7 +182,7 @@ export function MapView() {
         source: 'countries',
         paint: {
           'fill-color': ['get', 'fill'],
-          'fill-opacity': ['case', ['get', 'isPlayer'], 0.85, 0.62],
+          'fill-opacity': ['case', ['get', 'isPlayer'], 0.9, 0.72],
         },
       });
       map.addLayer({
@@ -180,19 +192,28 @@ export function MapView() {
         paint: {
           'line-color': [
             'case',
-            ['get', 'atWar'], '#ff4040',
             ['get', 'selected'], '#ffffff',
-            '#0d0f14',
+            ['get', 'isPlayer'], '#F2A93B',
+            ['get', 'enemy'], '#E5383B',
+            ['get', 'atWar'], 'rgba(229,56,59,0.75)',
+            '#0b0f17',
           ],
-          'line-width': ['case', ['get', 'atWar'], 2.5, ['get', 'selected'], 2.5, 0.8],
+          'line-width': [
+            'case',
+            ['get', 'selected'], 2.5,
+            ['get', 'isPlayer'], 2.2,
+            ['get', 'enemy'], 2.5,
+            ['get', 'atWar'], 1.4,
+            0.7,
+          ],
         },
       });
       map.addLayer({
         id: 'war-pulse',
         type: 'line',
         source: 'countries',
-        filter: ['get', 'atWar'],
-        paint: { 'line-color': '#ff3030', 'line-width': 4, 'line-opacity': 0.5, 'line-blur': 3 },
+        filter: ['get', 'enemy'],
+        paint: { 'line-color': '#E5383B', 'line-width': 4, 'line-opacity': 0.5, 'line-blur': 3 },
       });
       map.addLayer({
         id: 'relation-lines',
@@ -231,7 +252,7 @@ export function MapView() {
           'text-size': 11,
           'text-allow-overlap': false,
         },
-        paint: { 'text-color': '#e8e8e8', 'text-halo-color': '#000', 'text-halo-width': 1.2 },
+        paint: { 'text-color': '#e8ecf2', 'text-halo-color': '#0b0f17', 'text-halo-width': 1.4 },
       });
 
       // Interactions
@@ -289,6 +310,19 @@ export function MapView() {
     };
   }, [selectCountry]);
 
+  // Open on the player's own country
+  const playerCountryId = worldState?.playerCountryId;
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapReady || !playerCountryId) return;
+    const capital =
+      useGameStore.getState().worldState?.countries.find((c) => c.id === playerCountryId)?.capital ??
+      COUNTRY_CENTERS[playerCountryId];
+    if (capital) {
+      map.flyTo({ center: capital, zoom: window.innerWidth < 700 ? 1.9 : 2.4, speed: 0.8 });
+    }
+  }, [playerCountryId, mapReady]);
+
   // ------------------------------------------------------------------
   // Data → map sync
   // ------------------------------------------------------------------
@@ -298,6 +332,12 @@ export function MapView() {
     if (!map || !geo || !mapReady || !worldState || playerView.length === 0) return;
 
     const byId = new Map(playerView.map((v) => [v.id, v]));
+    const playerAtWarWith =
+      worldState.countries.find((c) => c.id === worldState.playerCountryId)?.atWarWith ?? [];
+    // Anchors: scenario capitals (covers every simulated country), falling back to the table
+    for (const c of worldState.countries) {
+      if (c.capital && !COUNTRY_CENTERS[c.id]) COUNTRY_CENTERS[c.id] = c.capital;
+    }
     const maxStrength = Math.max(...playerView.map((v) => v.militaryStrength.estimate), 1);
 
     // Country polygons joined with game state
@@ -307,6 +347,7 @@ export function MapView() {
         const id = (f.properties as Record<string, unknown>).ADM0_A3 as string;
         const view = byId.get(id) as PlayerViewCountry;
         const atWar = worldState.wars.some((w) => w.attackerId === id || w.defenderId === id);
+        const enemy = playerAtWarWith.includes(id);
         return {
           ...f,
           properties: {
@@ -314,6 +355,7 @@ export function MapView() {
             fill: countryColor(view, mapLayer, maxStrength),
             isPlayer: view.isPlayer,
             atWar,
+            enemy,
             selected: id === selectedCountryId,
           },
         };
@@ -377,6 +419,7 @@ export function MapView() {
 
       {/* Layer switcher */}
       <div
+        className="layer-bar"
         style={{
           position: 'absolute',
           top: 12,
@@ -396,7 +439,8 @@ export function MapView() {
             onClick={() => setMapLayer(l.id as 'political')}
             title={l.label}
             style={{
-              background: mapLayer === l.id ? '#2a6dd9' : 'transparent',
+              background: mapLayer === l.id ? 'rgba(242,169,59,0.18)' : 'transparent',
+              outline: mapLayer === l.id ? '1px solid #F2A93B' : 'none',
               color: '#eee',
               border: 'none',
               borderRadius: 6,
@@ -405,14 +449,14 @@ export function MapView() {
               fontSize: 12,
             }}
           >
-            {l.icon} {l.label}
+            {l.icon} <span className="lbl">{l.label}</span>
           </button>
         ))}
         <button
           onClick={() => setShowGuide((v) => !v)}
           title="Map guide: what the colors, icons and lines mean"
           style={{
-            background: showGuide ? '#2a6dd9' : 'transparent',
+            background: showGuide ? 'rgba(242,169,59,0.18)' : 'transparent',
             color: '#eee',
             border: '1px solid #3a3e4a',
             borderRadius: 6,

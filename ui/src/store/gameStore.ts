@@ -67,6 +67,8 @@ export interface CountryFull {
   leader: Leader;
   politicalSystem: PoliticalSystem;
   history: HistoryProfile;
+  capital?: [number, number];
+  collapsed?: boolean;
 }
 
 export interface PlayerViewCountry {
@@ -116,6 +118,11 @@ export interface DecisionOption {
   id: string;
   label: string;
   description: string;
+  effects: Record<string, number>;
+  tensionDelta: number;
+  actions: Array<{ type: string; targetCountryId?: string }>;
+  backedBy: string[];
+  followUp?: { templateId: string; delay: number };
 }
 
 export interface PendingDecision {
@@ -126,6 +133,89 @@ export interface PendingDecision {
   affectedCountries: string[];
   options: DecisionOption[];
   deadlineTurn: number;
+  templateId: string;
+  urgency: 'ROUTINE' | 'URGENT' | 'EXISTENTIAL';
+  defaultOptionId?: string;
+}
+
+export type GameMode = 'FLASHPOINT' | 'TERM' | 'LEGACY';
+export type Difficulty = 'ANALYST' | 'STATESMAN' | 'STRONGMAN';
+
+export interface ObjectiveCondition {
+  kind: string;
+  label: string;
+  targetId?: string;
+}
+
+export interface Objective {
+  title: string;
+  briefing: string;
+  primary: ObjectiveCondition[];
+  bonus: ObjectiveCondition[];
+  par: number;
+  debrief: string;
+}
+
+export interface ConditionStatus {
+  label: string;
+  met: boolean;
+  failed: boolean;
+  bonus: boolean;
+}
+
+export interface TurnReport {
+  turn: number;
+  orders: Array<{ label: string; ok: boolean; detail: string }>;
+  decisions: Array<{ title: string; choice: string }>;
+  deltas: Record<string, { before: number; after: number }>;
+  causes: string[];
+  moments: string[];
+}
+
+export interface Outcome {
+  victory: boolean;
+  stars: number;
+  conditions: Array<{ label: string; met: boolean; bonus: boolean }>;
+}
+
+export interface UsageTotals {
+  calls: number;
+  promptTokens: number;
+  completionTokens: number;
+  costUsd: number | null;
+  fallbacks: number;
+}
+
+export interface LeaderStatement {
+  countryId: string;
+  leader: string;
+  text: string;
+}
+
+export interface FlashpointInfo {
+  id: string;
+  title: string;
+  tagline: string;
+  hook: string;
+  date?: string;
+  turns: number;
+  playable: Array<{ countryId: string; role: string; difficulty: 'STEADY' | 'TOUGH' | 'BRUTAL' }>;
+  objectives: Record<string, { title: string; briefing: string }>;
+}
+
+export interface ScenarioInfo {
+  id: string;
+  name: string;
+  description: string;
+  startYear: number;
+  globalTension: number;
+}
+
+export interface DailyInfo {
+  date: string;
+  flashpointId: string;
+  countryId: string;
+  title: string;
 }
 
 export interface Score {
@@ -145,6 +235,19 @@ export interface GameOver {
 export interface WorldState {
   turn: number;
   date: string;
+  scenarioId: string;
+  mode: GameMode;
+  difficulty: Difficulty;
+  maxTurns: number;
+  flashpointId: string | null;
+  objective: Objective | null;
+  politicalCapital: number;
+  director: { closeCalls: number; rallies: number; inDanger: boolean; lowPoint: number };
+  turnReport: TurnReport | null;
+  outcome: Outcome | null;
+  pendingDecisions: PendingDecision[];
+  gameOver: GameOver | null;
+  score: Score;
   countries: CountryFull[];
   wars: War[];
   globalTension: number;
@@ -165,6 +268,8 @@ export interface ActionPreview {
   summary: string;
   costM: number;
   budgetM: number;
+  costPC: number;
+  pcAvailable: number;
   affordable: boolean;
   successChance: number | null;
   effects: PreviewEffect[];
@@ -192,6 +297,11 @@ export interface EndReport {
   timeline: Array<{ turn: number; date: string; category: string; description: string }>;
   scoreHistory: WorldState['scoreHistory'];
   backstory: string;
+  mode: GameMode;
+  outcome: Outcome | null;
+  objective: Objective | null;
+  closeCalls: number;
+  comebacks: number;
 }
 
 export interface TurnFeedback {
@@ -209,7 +319,23 @@ export interface PlayerAccount {
   name: string;
 }
 
+export type Screen = 'title' | 'game';
+
 export interface GameState {
+  screen: Screen;
+  setScreen: (screen: Screen) => void;
+  guestId: string;
+  objectiveStatus: ConditionStatus[];
+  aiTotalUsage: UsageTotals | null;
+  aiTurnUsage: UsageTotals | null;
+  aiNotice: string | null;
+  leaderStatements: LeaderStatement[];
+  lastEvents: Array<{ id: string; title: string; description: string; severity: string; type: string; affectedCountries: string[] }>;
+  showChronicle: boolean;
+  setShowChronicle: (show: boolean) => void;
+  showLogin: boolean;
+  drawer: 'cabinet' | 'world' | 'chronicle' | 'objective' | null;
+  setDrawer: (drawer: GameState['drawer']) => void;
   isLoading: boolean;
   error: string | null;
   player: PlayerAccount | null;
@@ -237,7 +363,7 @@ export interface GameState {
     | 'settings'
     | null;
   activeAdvisorRole: string | null;
-  mapLayer: 'political' | 'military' | 'economic' | 'stability' | 'intelligence' | 'nuclear';
+  mapLayer: 'relations' | 'political' | 'military' | 'economic' | 'stability' | 'intelligence' | 'nuclear';
   debugMode: boolean;
 
   showSplash: boolean;
@@ -281,11 +407,15 @@ const API_BASE = (import.meta.env.VITE_API_BASE ?? '/api').replace(/\/$/, '');
 // LLM settings (BYO model): persisted in localStorage
 // ============================================================================
 
+export type AITier = 'ALGORITHMIC' | 'KEY_DECISIONS' | 'FULL_LLM';
+
 export interface LLMSettings {
-  provider: 'builtin' | 'openai' | 'gemini' | 'ollama';
+  provider: 'builtin' | 'openai' | 'gemini' | 'anthropic' | 'ollama' | 'local';
   apiKey: string;
   model: string;
   baseUrl: string;
+  tier: AITier; // who drives the world's other leaders
+  budgetUsd: number; // per-game spending cap (0 = none)
 }
 
 export const DEFAULT_LLM_SETTINGS: LLMSettings = {
@@ -293,13 +423,30 @@ export const DEFAULT_LLM_SETTINGS: LLMSettings = {
   apiKey: '',
   model: '',
   baseUrl: '',
+  tier: 'ALGORITHMIC',
+  budgetUsd: 1,
 };
 
 export const LLM_MODEL_DEFAULTS: Record<string, string> = {
+  anthropic: 'claude-haiku-5-5',
   openai: 'gpt-4o-mini',
   gemini: 'gemini-2.5-flash',
   ollama: 'llama3.2',
+  local: 'local-model',
 };
+
+/** The ai block for /turn: only when an LLM is configured and the tier uses one. */
+export function aiRequestBody(settings: LLMSettings) {
+  if (settings.provider === 'builtin' || settings.tier === 'ALGORITHMIC') return undefined;
+  return {
+    tier: settings.tier,
+    provider: settings.provider,
+    apiKey: settings.apiKey || undefined,
+    model: settings.model || LLM_MODEL_DEFAULTS[settings.provider],
+    baseUrl: settings.baseUrl || undefined,
+    budgetUsd: settings.budgetUsd > 0 ? settings.budgetUsd : undefined,
+  };
+}
 
 function loadLLMSettings(): LLMSettings {
   try {
@@ -332,6 +479,41 @@ export const PHASE_LABELS: Record<TurnPhase, string> = {
   confirm: 'Confirm',
 };
 
+function loadGuestId(): string {
+  try {
+    const existing = localStorage.getItem('worldconflict.guest');
+    if (existing) return existing;
+    const id = `guest-${crypto.randomUUID?.() ?? Math.random().toString(36).slice(2)}`;
+    localStorage.setItem('worldconflict.guest', id);
+    return id;
+  } catch {
+    return `guest-${Math.random().toString(36).slice(2)}`;
+  }
+}
+
+export function lastSaveId(): string | null {
+  try {
+    return localStorage.getItem('worldconflict.lastSave');
+  } catch {
+    return null;
+  }
+}
+
+function rememberSave(saveId: string | null): void {
+  try {
+    if (saveId) localStorage.setItem('worldconflict.lastSave', saveId);
+    else localStorage.removeItem('worldconflict.lastSave');
+  } catch {
+    /* storage unavailable */
+  }
+}
+
+/** Saves belong to the signed-in account, or to this browser's guest id. */
+export function ownerId(): string {
+  const { player, guestId } = useGameStore.getState();
+  return player?.id ?? guestId;
+}
+
 function loadPlayer(): PlayerAccount | null {
   try {
     const raw = localStorage.getItem('worldconflict.player');
@@ -343,6 +525,20 @@ function loadPlayer(): PlayerAccount | null {
 }
 
 export const useGameStore = create<GameState>((set) => ({
+  screen: 'title',
+  setScreen: (screen) => set({ screen }),
+  guestId: loadGuestId(),
+  objectiveStatus: [],
+  aiTotalUsage: null,
+  aiTurnUsage: null,
+  aiNotice: null,
+  leaderStatements: [],
+  lastEvents: [],
+  showChronicle: false,
+  setShowChronicle: (show) => set({ showChronicle: show }),
+  showLogin: false,
+  drawer: null,
+  setDrawer: (drawer) => set({ drawer }),
   isLoading: false,
   error: null,
   player: loadPlayer(),
@@ -369,7 +565,7 @@ export const useGameStore = create<GameState>((set) => ({
   selectedCountryId: null,
   activeModal: null,
   activeAdvisorRole: null,
-  mapLayer: 'political',
+  mapLayer: 'relations',
   debugMode: new URLSearchParams(window.location.search).get('debug') === '1',
 
   showSplash: true,
@@ -394,6 +590,7 @@ export const useGameStore = create<GameState>((set) => ({
   setError: (error) => set({ error }),
   applyServerPayload: (data, saveId) =>
     set({
+      objectiveStatus: (data.objectiveStatus as ConditionStatus[]) ?? [],
       worldState: data.worldState as WorldState,
       playerView: (data.playerView as PlayerViewCountry[]) ?? [],
       pendingDecisions: (data.pendingDecisions as PendingDecision[]) ?? [],
@@ -428,6 +625,14 @@ export const useGameStore = create<GameState>((set) => ({
       pendingActions: [],
       lastTurnFeedback: null,
       advisorChatHistory: {},
+      screen: 'title',
+      showChronicle: false,
+      objectiveStatus: [],
+      aiTotalUsage: null,
+      aiTurnUsage: null,
+      aiNotice: null,
+      leaderStatements: [],
+      lastEvents: [],
     }),
 
   completeSplash: () => set({ showSplash: false }),
@@ -464,12 +669,19 @@ export const useGameStore = create<GameState>((set) => ({
 // API calls
 // ============================================================================
 
-export async function fetchScenarios(): Promise<
-  Array<{ id: string; name: string; description: string; startYear: number }>
-> {
+export async function fetchCatalog(): Promise<{
+  scenarios: ScenarioInfo[];
+  flashpoints: FlashpointInfo[];
+  daily: DailyInfo | null;
+}> {
   const response = await fetch(`${API_BASE}/scenarios`);
   const data = await response.json();
-  return data.success ? data.scenarios : [];
+  if (!data.success) return { scenarios: [], flashpoints: [], daily: null };
+  return { scenarios: data.scenarios, flashpoints: data.flashpoints ?? [], daily: data.daily ?? null };
+}
+
+export async function fetchScenarios(): Promise<ScenarioInfo[]> {
+  return (await fetchCatalog()).scenarios;
 }
 
 export async function loginOrRegister(
@@ -496,14 +708,20 @@ export function logout(): void {
   const store = useGameStore.getState();
   store.setPlayer(null);
   store.reset();
+  rememberSave(null);
 }
 
-export async function createNewGame(
-  scenarioId: string,
-  playerCountryId: string,
-  saveName?: string,
-  leaderName?: string,
-): Promise<void> {
+export interface NewGameRequest {
+  playerCountryId: string;
+  mode: GameMode;
+  scenarioId?: string;
+  flashpointId?: string;
+  difficulty?: Difficulty;
+  leaderName?: string;
+  daily?: boolean;
+}
+
+export async function startGame(req: NewGameRequest): Promise<boolean> {
   const store = useGameStore.getState();
   store.setLoading(true);
   store.setError(null);
@@ -511,29 +729,41 @@ export async function createNewGame(
     const response = await fetch(`${API_BASE}/new-game`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        scenarioId,
-        playerCountryId,
-        saveName,
-        playerId: store.player?.id,
-        leaderName: leaderName || store.player?.name,
-      }),
+      body: JSON.stringify({ ...req, playerId: ownerId() }),
     });
     const data = await response.json();
     if (!data.success) throw new Error(data.error || 'Failed to create game');
+    store.reset();
     store.applyServerPayload(data, data.saveId);
-    useGameStore.setState({ showBackstory: true, currentPhase: 'briefing', endReport: null });
-    store.closeModal();
+    rememberSave(data.saveId);
+    useGameStore.setState({
+      screen: 'game',
+      showBackstory: true,
+      endReport: null,
+      lastEvents: [],
+    });
+    return true;
   } catch (error) {
     store.setError(error instanceof Error ? error.message : 'Failed to create game');
+    return false;
   } finally {
     store.setLoading(false);
   }
 }
 
+/** Legacy entry point kept for older components. */
+export async function createNewGame(
+  scenarioId: string,
+  playerCountryId: string,
+  _saveName?: string,
+  leaderName?: string,
+): Promise<void> {
+  await startGame({ scenarioId, playerCountryId, leaderName, mode: 'TERM' });
+}
+
 export async function executeTurn(): Promise<void> {
   const store = useGameStore.getState();
-  const { saveId, pendingActions, decisionChoices } = store;
+  const { saveId, pendingActions, decisionChoices, llmSettings } = store;
   if (!saveId) {
     store.setError('No active game');
     return;
@@ -556,6 +786,7 @@ export async function executeTurn(): Promise<void> {
           decisionId,
           optionId,
         })),
+        ai: aiRequestBody(llmSettings),
       }),
     });
     const data = await response.json();
@@ -571,7 +802,13 @@ export async function executeTurn(): Promise<void> {
       },
       pendingActions: [],
       currentPhase: 'news',
-      activeModal: 'newspaper',
+      showChronicle: true,
+      selectedCountryId: null,
+      lastEvents: data.events ?? [],
+      aiTurnUsage: data.ai?.turnUsage ?? null,
+      aiTotalUsage: data.ai?.totalUsage ?? store.aiTotalUsage,
+      aiNotice: data.ai?.notice ?? null,
+      leaderStatements: data.ai?.statements ?? [],
     });
 
     if (data.gameOver) {
@@ -628,8 +865,10 @@ export async function loadGame(saveId: string): Promise<void> {
     const data = await response.json();
     if (!data.success) throw new Error(data.error || 'Failed to load game');
     store.applyServerPayload(data, data.saveId);
-    useGameStore.setState({ currentPhase: 'briefing', endReport: null });
+    rememberSave(data.saveId);
+    useGameStore.setState({ currentPhase: 'briefing', endReport: null, screen: 'game' });
     store.closeModal();
+    if (data.gameOver) await fetchEndReport();
   } catch (error) {
     store.setError(error instanceof Error ? error.message : 'Failed to load game');
   } finally {
@@ -640,8 +879,7 @@ export async function loadGame(saveId: string): Promise<void> {
 export async function fetchSaves(): Promise<
   Array<{ id: string; name: string; turn: number; playerCountry: string; leaderName?: string }>
 > {
-  const { player } = useGameStore.getState();
-  const query = player ? `?playerId=${encodeURIComponent(player.id)}` : '';
+  const query = `?playerId=${encodeURIComponent(ownerId())}`;
   const response = await fetch(`${API_BASE}/saves${query}`);
   const data = await response.json();
   if (!data.success) throw new Error(data.error || 'Failed to fetch saves');

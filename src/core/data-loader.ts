@@ -262,10 +262,24 @@ export class DataLoader {
     }
     if (player && mode !== "LEGACY") {
       const electoral = player.politicalSystem.electionCycleMonths > 0;
+      if (mode === "FLASHPOINT") {
+        world.objective = {
+          title: "Weather the storm",
+          briefing: `A year of crises lies ahead for ${player.name}. Stay in power and leave the country stronger than you found it.`,
+          primary: [],
+          bonus: [
+            { kind: "SCORE_PAR", min: 110, label: "Leadership score of 110+" },
+            { kind: "STAT_MIN", stat: "stability", min: 55, label: "Stability of 55%+ at the end" },
+          ],
+          par: 110,
+          debrief: "",
+        };
+        return world;
+      }
       world.objective = {
-        title: electoral ? "Win a second term" : "Survive the inner circle's review",
+        title: electoral ? "Win the coming election" : "Survive the inner circle's review",
         briefing: electoral
-          ? `Govern ${player.name} for four years and win re-election at the end.`
+          ? `Govern ${player.name} through four turbulent years, then face the voters. Lose them and you lose everything.`
           : `No ballot box can remove you — but the ${player.politicalSystem.type === "ONE_PARTY_STATE" ? "Party" : "inner circle"} reviews your record at the end of four years. Deliver order, legitimacy and results.`,
         primary: electoral
           ? []

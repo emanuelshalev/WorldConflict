@@ -106,6 +106,51 @@ function turnPayload(worldState: WorldState) {
   };
 }
 
+/** How hard each nation is to lead (shown on the picker; tuned with scripts/simulate.ts). */
+const COUNTRY_DIFFICULTY: Record<string, "STEADY" | "TOUGH" | "BRUTAL"> = {
+  USA: "STEADY",
+  CHN: "STEADY",
+  IND: "STEADY",
+  SAU: "STEADY",
+  JPN: "STEADY",
+  AUS: "STEADY",
+  CAN: "STEADY",
+  ARE: "STEADY",
+  DEU: "TOUGH",
+  FRA: "TOUGH",
+  GBR: "TOUGH",
+  ITA: "TOUGH",
+  BRA: "TOUGH",
+  MEX: "TOUGH",
+  POL: "TOUGH",
+  TUR: "TOUGH",
+  EGY: "TOUGH",
+  IDN: "TOUGH",
+  KOR: "TOUGH",
+  ZAF: "TOUGH",
+  NGA: "TOUGH",
+  RUS: "TOUGH",
+  DNK: "TOUGH",
+  PHL: "TOUGH",
+  ISR: "BRUTAL",
+  IRN: "BRUTAL",
+  PRK: "BRUTAL",
+  PAK: "BRUTAL",
+  UKR: "BRUTAL",
+  TWN: "BRUTAL",
+  BLR: "TOUGH",
+  SYR: "BRUTAL",
+  IRQ: "BRUTAL",
+  PSX: "BRUTAL",
+  LBN: "BRUTAL",
+  YEM: "BRUTAL",
+  AFG: "BRUTAL",
+  VEN: "BRUTAL",
+  CUB: "BRUTAL",
+  SDN: "BRUTAL",
+  ETH: "BRUTAL",
+};
+
 /** The daily flashpoint: same scenario and country for everyone on a given date. */
 function dailyChallenge(
   flashpoints: { id: string; title: string; playable: { countryId: string }[] }[],
@@ -150,6 +195,22 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
       flashpoints,
       daily: dailyChallenge(flashpoints),
     });
+  });
+
+  // ------------------------------------------------------------------
+  fastify.get("/countries", async (_request, reply: FastifyReply) => {
+    const loader = createDataLoader();
+    const countries = loader.loadAllCountries().map((c) => ({
+      id: c.id,
+      name: c.name,
+      regimeType: c.regimeType,
+      leaderTitle: c.politicalSystem.leaderTitle,
+      difficulty: COUNTRY_DIFFICULTY[c.id] ?? "TOUGH",
+      narrative: c.history.narrative ?? "",
+      capital: c.geo?.capital,
+      nuclear: c.military.nuclearStatus,
+    }));
+    return reply.send({ success: true, countries });
   });
 
   // ------------------------------------------------------------------

@@ -13,7 +13,7 @@ const field = {
   boxSizing: 'border-box' as const,
 };
 
-export function LoginScreen() {
+export function LoginScreen({ onClose }: { onClose?: () => void } = {}) {
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -30,7 +30,7 @@ export function LoginScreen() {
     const result = await loginOrRegister(mode, name.trim(), password);
     setBusy(false);
     if (!result.ok) setError(result.error ?? 'Failed');
-    // On success the store's `player` updates and App switches screens
+    else onClose?.();
   };
 
   return (
@@ -38,7 +38,8 @@ export function LoginScreen() {
       style={{
         position: 'fixed',
         inset: 0,
-        background: 'radial-gradient(ellipse at center, #141823 0%, #0a0c10 75%)',
+        background: 'rgba(5, 8, 13, 0.9)',
+        zIndex: 120,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -48,8 +49,8 @@ export function LoginScreen() {
       <div style={{ width: 380, maxWidth: '92vw' }}>
         <div style={{ textAlign: 'center', marginBottom: 26 }}>
           <h1 style={{ color: '#fff', letterSpacing: 4, fontSize: 28, margin: 0 }}>WORLD CONFLICT</h1>
-          <div style={{ color: '#667', fontSize: 12, marginTop: 6 }}>
-            Lead your nation. Shape history. Face the consequences.
+          <div style={{ color: '#8a96a8', fontSize: 13, marginTop: 6 }}>
+            Optional: an account keeps your saves across devices. You can always play as a guest.
           </div>
         </div>
 
@@ -111,9 +112,17 @@ export function LoginScreen() {
           </button>
 
           <div style={{ fontSize: 11, color: '#667', marginTop: 12, textAlign: 'center' }}>
-            Your games are saved under your player name on this machine.
+            Your games are saved under your player name.
             {mode === 'register' && ' You can rule under a different leader name in each game.'}
           </div>
+          {onClose && (
+            <button
+              onClick={onClose}
+              style={{ marginTop: 14, width: '100%', background: 'transparent', border: '1px solid #2a2e3a', color: '#aab', borderRadius: 6, padding: '9px 12px', cursor: 'pointer' }}
+            >
+              Continue as guest
+            </button>
+          )}
         </div>
       </div>
     </div>
