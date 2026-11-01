@@ -207,6 +207,25 @@ function useSuggestions(): Suggestion[] {
               ? { p: 89 + boost, who: 'Intelligence Chief', label: `Sabotage ${v.name}`, why: `Mission: ${v.name} must not test. Their program may be ~${Math.round(est)}% along.`, action: { type: 'INTEL_SABOTAGE', label: `Sabotage ${v.name}`, targetCountryId: v.id } }
               : { p: 74 + boost, who: 'Intelligence Chief', label: `Spy on ${v.name}`, why: `Mission: watch ${v.name}'s program (~${Math.round(est)}% by our estimate).`, action: { type: 'INTEL_GATHER', label: `Spy on ${v.name}`, targetCountryId: v.id } },
           );
+      } else if (c.kind === 'SCORE_PAR' && !bonus && world.score) {
+        // The score drifts toward what the situation deserves: lift its weakest part, early
+        const need = c.min ?? world.objective?.par ?? 100;
+        const now = world.score.total;
+        if (now < need + 6) {
+          const gap = now < need ? `needs ${need}+, now ${now}` : `needs ${need}+, now ${now}: keep the margin`;
+          const parts = (['approval', 'prestige', 'security', 'economic'] as const).map((k) => ({ k, v: world.score[k] }));
+          const weakest = parts.sort((a, b) => a.v - b.v)[0].k;
+          const p = now < need ? 91 : 84;
+          if (weakest === 'approval' && !lastAddress)
+            out.push({ p, who: 'Chief of Staff', label: 'National address', why: `Mission: leadership score ${gap}. Approval is its weakest part.`, action: address });
+          else if (weakest === 'prestige') {
+            const partner = [...others]
+              .filter((v) => !me.atWarWith.includes(v.id) && rel(v.id) > -30 && rel(v.id) < 70 && !courtStalled(v.id))
+              .sort((a, b) => b.relationWithPlayer - a.relationWithPlayer)[0];
+            if (partner) out.push(court(partner.id, p, `Mission: leadership score ${gap}. World standing is its weakest part.`));
+          } else
+            out.push({ p, who: 'Interior Minister', label: 'Reform program', why: `Mission: leadership score ${gap}. A stronger, steadier country lifts it.`, action: reform });
+        }
       } else if (c.kind === 'INSURGENCY_MAX') {
         if (INSURGENCY_ORDER.indexOf(me.insurgencyLevel) >= INSURGENCY_ORDER.indexOf(c.level ?? 'UNREST'))
           out.push({ p: 90 + boost, who: 'Interior Minister', label: 'Soft policing', why: `Mission: insurgency must stay at ${(c.level ?? 'UNREST').toLowerCase()} or below.`, action: { type: 'DOMESTIC_POLICING', label: 'Soft policing', params: { tactic: 'SOFT' } } });
@@ -254,7 +273,7 @@ function useSuggestions(): Suggestion[] {
     return out
       .sort((a, b) => b.p - a.p)
       .filter((s) => (seen.has(s.label) ? false : (seen.add(s.label), true)))
-      .slice(0, 3);
+      .slice(0, 5); // the desk shows the top three not already queued
   }, [world, view, me]);
 }
 
@@ -372,7 +391,10 @@ export function Desk() {
               )}
             </div>
             <div className="suggestions">
-              {suggestions.map((s) => (
+              {suggestions
+                .filter((s) => !pendingActions.some((a) => a.type === s.action.type && a.targetCountryId === s.action.targetCountryId))
+                .slice(0, 3)
+                .map((s) => (
                 <button key={s.label} className="suggestion" onClick={() => add(s.action)} disabled={pcCost(s.action.type) > pcLeft}>
                   <div className="who">{s.who}</div>
                   <b>

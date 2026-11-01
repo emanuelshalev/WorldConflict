@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { generateDeterministicIntents } from "../../src/agents/fallback.js";
 import { createDataLoader, monthsUntil } from "../../src/core/data-loader.js";
 import { previewAction } from "../../src/core/preview.js";
+import { classifyLeadership } from "../../src/core/scoring.js";
 import { SeededRandom } from "../../src/core/seed.js";
 import {
   ceasefireChance,
@@ -233,5 +234,16 @@ describe("Elections", () => {
       if (runGovernmentDynamics(b, new SeededRandom(seed)).changes.some((c) => c.kind === "ELECTION" && c.countryId === "DEU")) tiredLosses++;
     }
     expect(tiredLosses).toBeGreaterThan(freshLosses);
+  });
+});
+
+describe("Verdicts", () => {
+  it("calls a player who honored a pact a loyal ally, not a warmonger", () => {
+    const w = loader.newGame({ scenarioId: "2026", playerCountryId: "TWN", seed: 1, mode: "TERM" });
+    w.director.record = { "DIPLOMACY_DECLARE_WAR:ally": 1, DOMESTIC_REFORM: 3 };
+    w.timeline.push({ turn: 3, date: w.date, category: "WAR", description: "WAR: Taiwan attacks North Korea" });
+    expect(classifyLeadership(w).classification).toBe("Loyal Ally");
+    w.director.record.DIPLOMACY_DECLARE_WAR = 1;
+    expect(classifyLeadership(w).classification).toBe("Warmonger");
   });
 });

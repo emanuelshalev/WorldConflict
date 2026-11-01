@@ -105,8 +105,11 @@ function playerRecord(world: WorldState, player: CountryState) {
       (t.description.startsWith(`WAR: ${player.name} attacks`) ||
         t.description.includes(`${player.name} declared war`)),
   ).length;
+  // The record is authoritative; the timeline is only a fallback for saves made before it existed
+  const recorded = Object.keys(rec).length > 0;
   return {
-    wars: Math.max(n("DIPLOMACY_DECLARE_WAR"), timelineWars),
+    wars: recorded ? n("DIPLOMACY_DECLARE_WAR") : timelineWars,
+    allyWars: n("DIPLOMACY_DECLARE_WAR:ally"),
     nukes: n("NUCLEAR_STRIKE"),
     strikes: n("MILITARY_AIRSTRIKE"),
     gambles: COVERT_HARD.reduce((s, t) => s + tried(t), 0),
@@ -183,6 +186,10 @@ export function classifyLeadership(world: WorldState): LeadershipAssessment {
     classification = "Reckless Adventurer";
     justification =
       "Repeated military gambles drained the nation's blood and treasure for little gain.";
+  } else if (r.wars === 0 && r.allyWars > 0) {
+    classification = "Loyal Ally";
+    justification =
+      "When a friend called for help, you went to war beside them. Whether that was wisdom or entanglement, history will argue.";
   } else if (r.wars === 1) {
     classification = "Warmonger";
     justification =

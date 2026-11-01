@@ -191,8 +191,13 @@ export class TurnEngine {
         }
         if (isPlayer) {
           const rec = world.director.record;
-          rec[`${action.type}:tried`] = (rec[`${action.type}:tried`] ?? 0) + 1;
-          if (outcome.ok) rec[action.type] = (rec[action.type] ?? 0) + 1;
+          // A war entered through a crisis answer (honoring a pact) is not a war of choice
+          const key =
+            injected.has(action) && action.type === "DIPLOMACY_DECLARE_WAR"
+              ? "DIPLOMACY_DECLARE_WAR:ally"
+              : action.type;
+          rec[`${key}:tried`] = (rec[`${key}:tried`] ?? 0) + 1;
+          if (outcome.ok) rec[key] = (rec[key] ?? 0) + 1;
           if (outcome.ok && action.type === "DOMESTIC_POLICING" && action.params?.tactic === "HARD")
             rec["DOMESTIC_POLICING:hard"] = (rec["DOMESTIC_POLICING:hard"] ?? 0) + 1;
         }
