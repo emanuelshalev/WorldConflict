@@ -4,33 +4,29 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>World Conflict: Geopolitical Strategy Game, November 2026</title>
-  <meta name="description" content="Lead one of 41 nations through the real crises of November 2026, from Hormuz to Taiwan. A turn-based strategy game of fog of war, coups and hard choices." />
-  <meta name="theme-color" content="#0b0f17" />
+  <meta name="description" content="Lead one of 41 nations through the real crises of November 2026, from Hormuz to Taiwan. A turn-based strategy game where every decision plays out on the evening news." />
+  <meta name="theme-color" content="#05070d" />
   <meta name="color-scheme" content="dark" />
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
   <link rel="canonical" href="https://emanuelshalev.github.io/WorldConflict/" />
 
-  <!-- Open Graph / Twitter -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://emanuelshalev.github.io/WorldConflict/" />
   <meta property="og:site_name" content="World Conflict" />
-  <meta property="og:title" content="World Conflict: the crises are real. The next move is yours." />
-  <meta property="og:description" content="A turn-based geopolitical strategy game set in November 2026. Eight real flashpoints, 41 nations, and nobody sees the whole truth." />
-  <!-- SITE_URL: social crawlers need ABSOLUTE image URLs. At deploy time replace "assets/og-image.jpg" in og:image and twitter:image
-       with e.g. https://USER.github.io/REPO/assets/og-image.jpg (and set SITE.siteUrl in main.js to the same base). -->
+  <meta property="og:title" content="World Conflict: the news is real. The next move is yours." />
+  <meta property="og:description" content="A turn-based geopolitical strategy game set in November 2026. Real flashpoints, 41 nations, and every decision plays out on the evening news." />
   <meta property="og:image" content="https://emanuelshalev.github.io/WorldConflict/assets/og-image.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="World Conflict game screen: the crisis card The First Shot, with three options, over a map of East Asia." />
+  <meta property="og:image:alt" content="World Conflict: an airstrike scene from the game with the caption Strikes on Iran." />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="World Conflict: November 2026, on your desk" />
-  <meta name="twitter:description" content="Hormuz. Taiwan. The Red Sea. Ukraine. Real flashpoints, one month at a time. A Flashpoint takes 10–15 minutes." />
+  <meta name="twitter:description" content="Hormuz. Taiwan. The Red Sea. Ukraine. Real flashpoints, one month at a time." />
   <meta name="twitter:image" content="https://emanuelshalev.github.io/WorldConflict/assets/og-image.jpg" />
-  <meta name="twitter:image:alt" content="World Conflict game screen: the crisis card The First Shot, with three options, over a map of East Asia." />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400..800&family=Geist+Mono:wght@400..700&family=Instrument+Serif:ital@0;1&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400&display=swap" />
   <link rel="stylesheet" href="styles.css" />
   <script type="application/ld+json">
   {
@@ -39,264 +35,189 @@
     "name": "World Conflict",
     "url": "https://emanuelshalev.github.io/WorldConflict/",
     "image": "https://emanuelshalev.github.io/WorldConflict/assets/og-image.jpg",
-    "description": "A turn-based geopolitical strategy game set in November 2026. Lead one of 41 nations through eight real flashpoints; every other government acts on its own history and half-wrong intelligence about you.",
+    "description": "A turn-based geopolitical strategy game set in November 2026. Lead one of 41 nations through eight real flashpoints.",
     "genre": ["Strategy", "Simulation", "Turn-based strategy"],
     "gamePlatform": "Web browser",
     "playMode": "SinglePlayer",
-    "applicationCategory": "Game",
     "inLanguage": "en"
   }
   </script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
-  <button class="btn btn-ghost btn-sm skip-intro" id="skipIntro" type="button" aria-label="Skip intro">Skip intro ⏭</button>
 
   <header class="site-head" id="top">
     <a class="brand" href="#top" aria-label="World Conflict, back to top">
-      <img src="assets/favicon.svg" alt="" width="28" height="28" />
-      <span>World&nbsp;Conflict</span>
+      <img src="assets/favicon.svg" alt="" width="26" height="26" />
+      <span>World Conflict</span>
     </a>
     <nav aria-label="Sections">
-      <a href="#month">How it plays</a>
-      <a href="#parallels">It really happened</a>
+      <a href="#parallels">Reality vs game</a>
+      <a href="#scenes">Every decision</a>
+      <a href="#month">A month in office</a>
       <a href="#modes">Modes</a>
-      <a href="#realism">Realism</a>
-      <a href="#gallery">Gallery</a>
     </nav>
     <div class="head-actions">
       <span class="status js-status"><i aria-hidden="true"></i>In development</span>
-      <a class="btn btn-primary btn-sm js-join" href="#signup-hero" hidden>Get early access</a>
-      <a class="btn btn-primary btn-sm js-play-link" href="#" hidden>Take office ▸</a>
+      <a class="btn btn-primary btn-sm js-play-link" href="#" hidden>Take office</a>
     </div>
   </header>
 
-  <!-- ============ HERO: the newsroom wall ============ -->
-  <section class="hero" id="hero" aria-labelledby="hero-title">
-    <div class="wall-viewport" aria-hidden="true">
-      <div class="wall" id="wall"><!-- tiles are built by main.js from content/parallels.json --></div>
-    </div>
-    <p class="cold-open" id="coldOpen" aria-hidden="true">You read the headlines.</p>
-    <div class="slate" id="slate" aria-hidden="true">
-      <span class="slate-real"><b>Real</b> <span class="slate-date"></span></span>
-      <span class="slate-arrow">→</span>
-      <span class="slate-game"><b>In game</b> <span class="slate-gdate"></span></span>
-      <span class="slate-place"></span>
-    </div>
-
-    <div class="hero-copy" id="heroCopy">
-      <p class="eyebrow">A geopolitical strategy game · November 2026</p>
-      <h1 id="hero-title" class="glitch" data-text="The crises are real. The next move is yours.">The crises are real. The next move is yours.</h1>
-      <p class="hero-sub">Lead one of 41 nations through the real crises of November 2026. Every rival is an AI with its own agenda and half-wrong intelligence about you, and a Flashpoint takes 15 minutes.</p>
-      <div class="cta-row">
-        <form class="signup js-signup" id="signup-hero" method="post" hidden>
-          <label class="sr-only" for="email-hero">Email address</label>
-          <input id="email-hero" type="email" name="email" required autocomplete="email" placeholder="you@example.com" />
-          <button class="btn btn-primary" type="submit">Get early access</button>
-        </form>
-        <a class="btn btn-primary btn-lg js-play-link" href="#" hidden>Take office ▸</a>
-        <p class="status status-lg js-status"><i aria-hidden="true"></i>In development. Playable release coming soon.</p>
-        <button class="btn btn-ghost btn-lg js-watch" type="button">▶ Watch the intro (20s)</button>
-        <a class="btn btn-ghost btn-lg js-repo" href="#" hidden>Follow development</a>
-      </div>
-      <p class="fine js-signup-note" hidden>One email when the first Flashpoint is playable. No spam, unsubscribe anytime.</p>
-      <p class="disclaimer-top">Real events up to October 2026. Everything after is fiction: in-game words and decisions of real leaders are invented.</p>
-    </div>
-
-    <div class="stepper" id="stepper" hidden>
-      <button class="btn btn-ghost btn-sm" type="button" data-step="-1" aria-label="Previous parallel">◀</button>
-      <span class="stepper-label" aria-live="polite"></span>
-      <button class="btn btn-ghost btn-sm" type="button" data-step="1" aria-label="Next parallel">▶</button>
-    </div>
-    <a class="scroll-cue" href="#month" aria-label="Scroll to how a month plays"><span></span></a>
-  </section>
-
   <main id="main">
-    <!-- ============ HOW A MONTH PLAYS ============ -->
-    <section class="section month" id="month" aria-labelledby="month-title">
-      <div class="container narrow reveal">
-        <p class="kicker">One turn = one month</p>
-        <h2 id="month-title" class="teletype">One month. One crisis. Every choice costs something.</h2>
+    <!-- ============ HERO ============ -->
+    <section class="hero" aria-labelledby="hero-title">
+      <video class="hero-video" autoplay muted loop playsinline poster="assets/clips/globe.jpg" aria-hidden="true">
+        <source src="assets/clips/globe.mp4" type="video/mp4" />
+      </video>
+      <div class="hero-shade" aria-hidden="true"></div>
+      <div class="hero-inner">
+        <p class="eyebrow"><span class="live-dot" aria-hidden="true"></span>November 2026 · 41 nations · 8 live flashpoints</p>
+        <h1 id="hero-title">The news is real.<br /><em>The next move is yours.</em></h1>
+        <p class="hero-sub">Step into the office of a president, prime minister or supreme leader in the world as it stands today. Answer the crisis, give your orders, then watch the month play out on the evening news.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary btn-lg js-play-link" href="#" hidden>Take office</a>
+          <a class="btn btn-primary btn-lg" href="#parallels">See reality vs the game</a>
+          <a class="btn btn-ghost btn-lg" href="#scenes">Watch the scenes</a>
+        </div>
+        <p class="status status-lg js-status"><i aria-hidden="true"></i>In development. Playable release coming soon.</p>
       </div>
-      <div class="container steps">
-        <article class="step reveal">
-          <div class="step-media">
-            <video class="lazy-video" muted loop playsinline preload="none" poster="assets/img/step-crisis.jpg" aria-label="Clip: a crisis card on the desk; the player picks an option and its effect arrows light up.">
-              <source data-src="assets/video/step-crisis.webm" type="video/webm" />
-              <source data-src="assets/video/step-crisis.mp4" type="video/mp4" />
-            </video>
-          </div>
-          <div class="step-text">
-            <span class="step-n">01</span>
-            <h3>The crisis</h3>
-            <p>A card lands on your desk with two or three options. Each one shows the direction of its consequences (Approval ▲▲, Tension ▼) but never the exact numbers. Each option is backed by a minister, and your ministers disagree. If you ignore the card, it resolves on its own, usually badly.</p>
-          </div>
-        </article>
-        <article class="step reveal">
-          <div class="step-media">
-            <video class="lazy-video" muted loop playsinline preload="none" poster="assets/img/step-orders.jpg" aria-label="Clip: cycling the map's data layers: relations, regimes, military, economy, stability, intelligence and nuclear.">
-              <source data-src="assets/video/step-orders.webm" type="video/webm" />
-              <source data-src="assets/video/step-orders.mp4" type="video/mp4" />
-            </video>
-          </div>
-          <div class="step-text">
-            <span class="step-n">02</span>
-            <h3>Your orders</h3>
-            <p>Court an ally, denounce a rival, hunt foreign spies, propose a ceasefire. Read the map through seven intelligence layers first. Diplomatic, domestic and covert orders cost political capital, and you get 2◆ a month. A reform takes all of it, so every month means choosing what to leave undone.</p>
-          </div>
-        </article>
-        <article class="step reveal">
-          <div class="step-media">
-            <video class="lazy-video" muted loop playsinline preload="none" poster="assets/img/step-chronicle.jpg" aria-label="Clip: the player presses Execute month and the World Chronicle front page appears with the month's headlines.">
-              <source data-src="assets/video/step-chronicle.webm" type="video/webm" />
-              <source data-src="assets/video/step-chronicle.mp4" type="video/mp4" />
-            </video>
-          </div>
-          <div class="step-text">
-            <span class="step-n">03</span>
-            <h3>The consequences</h3>
-            <p>Press Execute. The World Chronicle leads with your decision, then shows what moved and why. Some choices come back months later: a denied scandal leaks again, or a rejected ultimatum turns out not to have been a bluff.</p>
-          </div>
-        </article>
+      <div class="hero-wire" aria-label="Real headlines the game starts from">
+        <span class="wire-tag">Real wire</span>
+        <div class="wire-track"><div class="wire-run" id="wireRun"></div></div>
       </div>
     </section>
 
-    <!-- ============ HOOK ============ -->
-    <section class="section hook" id="hook" aria-labelledby="hook-title">
-      <div class="container hook-grid">
-        <div class="reveal">
-          <p class="kicker">Situation room · after hours</p>
-          <h2 id="hook-title" class="teletype">The world of November 2026. Your desk.</h2>
-          <p class="lede">A Supreme Leader killed in an air strike. A deposed president facing charges in New York. A local ceasefire in occupied Ukraine. Coast guards with water cannon at a reef 220&nbsp;km from Manila. You read these headlines this year. Now you have to answer them.</p>
-          <p>World Conflict is a turn-based simulation where every country is an agent with its own leader, interests and memory. One turn is one month. There are no dead turns and no clean options. You get consequences, and most of them arrive late, in public.</p>
-          <ul class="stat-row" aria-label="Key facts">
-            <li><b class="num" data-count="41">41</b><span>nations</span></li>
-            <li><b class="num" data-count="8">8</b><span>real flashpoints</span></li>
-            <li><b class="num" data-count="30">30+</b><span>crisis cards</span></li>
-            <li><b class="num">2◆</b><span>a month to spend</span></li>
-          </ul>
+    <!-- ============ REALITY VS GAME ============ -->
+    <section class="section parallels" id="parallels" aria-labelledby="par-title">
+      <div class="container">
+        <p class="kicker">Reality, then the game</p>
+        <h2 id="par-title">It happened. <em>Then you took office.</em></h2>
+        <p class="lede">Every scenario starts from something that really happened. On the left, the event as it was reported. On the right, the moment it lands on your desk in the game.</p>
+      </div>
+      <div class="container">
+        <div class="par-tabs" role="tablist" aria-label="Real events" id="parTabs"></div>
+        <div class="par-stage" id="parStage" aria-live="polite">
+          <article class="reality" id="parReal">
+            <header class="paper-head">
+              <span class="paper-label">Reality</span>
+              <span class="paper-date" id="parDate"></span>
+            </header>
+            <figure class="paper-map"><img id="parMap" alt="" width="640" height="400" /></figure>
+            <p class="paper-place" id="parPlace"></p>
+            <p class="paper-text" id="parText"></p>
+            <p class="paper-foot">As reported at the time. No game footage on this side.</p>
+          </article>
+          <div class="par-arrow" aria-hidden="true"><span>In the game</span></div>
+          <article class="game" id="parGame">
+            <header class="game-head">
+              <span class="game-label">The game</span>
+              <span class="game-mode" id="parMode"></span>
+            </header>
+            <div class="game-clip">
+              <video id="parVideo" muted loop playsinline preload="metadata"></video>
+            </div>
+            <p class="game-text" id="parGameText"></p>
+            <p class="game-fiction" id="parFiction" hidden></p>
+          </article>
         </div>
-        <figure class="device reveal parallax" data-speed="0.06">
-          <div class="device-bar"><i></i><i></i><i></i><span>Nov 2026 · month 1/12</span></div>
-          <img src="assets/img/desk.jpg" srcset="assets/img/desk-800.jpg 800w, assets/img/desk.jpg 1600w" sizes="(min-width: 960px) 52vw, 100vw" width="1600" height="900" loading="lazy" decoding="async" alt="Game screen: a crisis card with three options and advisor suggestions below a world map with war lines." />
-          <figcaption>Your desk: one crisis card, your ministers' advice, and 2◆ to spend.</figcaption>
+        <div class="par-progress" aria-hidden="true"><span id="parBar"></span></div>
+      </div>
+    </section>
+
+    <!-- ============ SCENES ============ -->
+    <section class="section scenes" id="scenes" aria-labelledby="scenes-title">
+      <div class="container">
+        <p class="kicker">Every decision has a scene</p>
+        <h2 id="scenes-title">Cabinet rooms, TV studios, <em>the Situation Room.</em></h2>
+        <p class="lede">Address the nation, sign the order, face the cameras. Each order and each crisis plays out as its own animated broadcast scene, dressed in the flags of the countries involved and lit by how it went.</p>
+      </div>
+      <div class="container wide">
+        <div class="scene-grid" id="sceneGrid"></div>
+      </div>
+    </section>
+
+    <!-- ============ A MONTH ============ -->
+    <section class="section month" id="month" aria-labelledby="month-title">
+      <div class="container">
+        <p class="kicker">One month in office</p>
+        <h2 id="month-title">Decide. <em>Watch it happen.</em> Read the papers.</h2>
+      </div>
+      <div class="container month-grid">
+        <figure class="step">
+          <div class="step-media"><img src="assets/img/desk.jpg" alt="The game desk: a crisis card with an animated scene over a 3D globe, with advisor suggestions beside it." loading="lazy" /></div>
+          <figcaption><b>1 · The desk</b> A crisis lands with three hard options and their costs. Your advisors suggest orders; you have political capital for a few.</figcaption>
+        </figure>
+        <figure class="step">
+          <div class="step-media"><video class="lazy-video" muted loop playsinline preload="none" poster="assets/img/board.jpg" aria-label="Clip: the outcome reel plays each order as a news shot with a success or failure stamp, ending on the month's numbers."><source data-src="assets/clips/reel.mp4" type="video/mp4" /></video></div>
+          <figcaption><b>2 · The reel</b> Press Execute and every order plays as a news shot, stamped success, failure or backfire, ending on your numbers.</figcaption>
+        </figure>
+        <figure class="step">
+          <div class="step-media"><img src="assets/img/chronicle.jpg" alt="The World Chronicle: the month's front page leads with the player's own decision." loading="lazy" /></div>
+          <figcaption><b>3 · The paper</b> The World Chronicle leads with what you did, and with what everyone else did while you were busy.</figcaption>
         </figure>
       </div>
     </section>
 
-    <!-- ============ PARALLELS ============ -->
-    <section class="section parallels" id="parallels" aria-labelledby="par-title">
-      <div class="container narrow reveal">
-        <p class="kicker">Real events · alternate history</p>
-        <h2 id="par-title" class="teletype">It really happened. Then you took office.</h2>
-        <p class="lede">Every flashpoint opens on events that really happened. Where it goes from there is an alternate history, and you write it.</p>
+    <!-- ============ WORLD ============ -->
+    <section class="section world" aria-labelledby="world-title">
+      <div class="container world-grid">
+        <div>
+          <p class="kicker">A living world</p>
+          <h2 id="world-title">40 other governments. <em>None of them waits for you.</em></h2>
+          <ul class="facts">
+            <li><b>Rivals with their own agenda.</b> Every country is run by an AI with its history, red lines and leader's temperament.</li>
+            <li><b>Half-wrong intelligence.</b> You see estimates, not truth. So do they, about you.</li>
+            <li><b>Wars with a front line.</b> Arcs on the globe show who is fighting and where the front stands.</li>
+            <li><b>Coups you can see coming.</b> Plots and street anger are telegraphed before they topple you.</li>
+          </ul>
+        </div>
+        <figure class="world-media">
+          <video class="lazy-video" muted loop playsinline preload="none" poster="assets/clips/globe.jpg" aria-label="Clip: the game's 3D globe turning from Europe to Asia, with red arcs marking active wars."><source data-src="assets/clips/globe.mp4" type="video/mp4" /></video>
+        </figure>
       </div>
-      <div class="container timeline" id="timeline">
-        <div class="rail" aria-hidden="true"><div class="rail-fill" id="railFill"></div></div>
-        <ol class="pairs" id="pairs"><!-- built by main.js --></ol>
-        <ol class="pairs pairs-more" id="pairsMore" hidden></ol>
-      </div>
-      <div class="container narrow more-row"><button class="btn btn-ghost" id="morePairs" type="button" aria-expanded="false" aria-controls="pairsMore">See all parallels</button></div>
-      <p class="container narrow footnote">Dates and facts come from public reporting. Opening scenes inside the game, such as a sailor's death at Scarborough or an attack near Jammu, are fiction written to start the scenario, and the game labels them as such. The real incidents at Scarborough stopped short of lethal force. After every Flashpoint, a debrief tells you what really happened. Real events up to October 2026; everything after is fiction.</p>
     </section>
 
     <!-- ============ MODES ============ -->
     <section class="section modes" id="modes" aria-labelledby="modes-title">
-      <div class="container narrow reveal">
-        <p class="kicker">Sessions that fit your day</p>
-        <h2 id="modes-title" class="teletype">How long do you have?</h2>
+      <div class="container">
+        <p class="kicker">How long do you have?</p>
+        <h2 id="modes-title">Fifteen minutes, <em>or a whole term.</em></h2>
       </div>
       <div class="container mode-grid">
-        <article class="mode reveal">
-          <div class="mode-icon" aria-hidden="true">⚡</div>
-          <p class="mode-time num">10–15 min · 12 months</p>
+        <article class="mode">
+          <span class="mode-meta">10 to 15 min · 12 months</span>
           <h3>Flashpoint</h3>
-          <p>One crisis and one mission: keep the strait open, hold the front, stop the bomb without a war. You finish with a grade, one to three stars, and a debrief of what really happened. A new Daily Flashpoint arrives every day, the same for every player.</p>
+          <p>Drop into one of eight real crises with a clear mission and a verdict at the end. A new Daily Flashpoint every day, the same for everyone.</p>
         </article>
-        <article class="mode featured reveal">
-          <div class="mode-icon" aria-hidden="true">🗳</div>
-          <p class="mode-time num">~45 min · 48 months</p>
+        <article class="mode">
+          <span class="mode-meta">45 to 60 min · 48 months</span>
           <h3>One Term</h3>
-          <p>Govern until the people judge you. In a democracy you face the election. In an autocracy you face the inner circle's review, which is less forgiving.</p>
+          <p>Govern any of 41 nations for four years. Survive the scandals, shocks and rivals, then face the voters, or the Party.</p>
         </article>
-        <article class="mode reveal">
-          <div class="mode-icon" aria-hidden="true">👑</div>
-          <p class="mode-time num">Multi-day · 120 months</p>
+        <article class="mode">
+          <span class="mode-meta">Multi-day · 120 months</span>
           <h3>Legacy</h3>
-          <p>Survive a decade. History grades your record.</p>
+          <p>A decade in power. Wars, coups, nuclear brinkmanship and the long judgement of history.</p>
         </article>
       </div>
     </section>
 
-    <!-- ============ REALISM ============ -->
-    <section class="section realism" id="realism" aria-labelledby="real-title">
-      <div class="container narrow reveal">
-        <p class="kicker">Built on the real world</p>
-        <h2 id="real-title" class="teletype">Real leaders. Imperfect intelligence. Coups you can see coming.</h2>
-      </div>
-      <div class="container realism-grid">
-        <div class="layer-viewer reveal" id="layerViewer">
-          <div class="layer-tabs" role="tablist" aria-label="Map layers">
-            <!-- built by main.js -->
-          </div>
-          <div class="layer-stage">
-            <!-- built by main.js -->
-          </div>
-          <p class="layer-caption" id="layerCaption" aria-live="polite"></p>
-        </div>
-        <ul class="features">
-          <li class="reveal"><h3>Real leaders, real calendars.</h3><p>You play the leader actually in office, or type your own name. Foreign elections fall on their real dates, and term limits apply.</p></li>
-          <li class="reveal"><h3>Fog of war, for everyone.</h3><p>Foreign GDP, stability, military strength and nuclear progress are estimates with confidence ranges. Your rivals see you the same way. Spy to sharpen the picture. Miscalculation is part of the design.</p></li>
-          <li class="reveal"><h3>Danger is telegraphed.</h3><p>Before a coup there is a plot. Before a revolution the streets boil. Impeachments and no-confidence votes arrive as crisis cards before they strike. When you fall, you will have seen it coming.</p></li>
-          <li class="reveal"><h3>Plausible, not prophetic.</h3><p>Every government acts on its history, its interests and its red lines. What happens next is an alternate history you could believe, not a prediction.</p></li>
-          <li class="reveal"><h3>Hard options, real costs.</h3><p>Covert action, assassination and nuclear weapons exist in the game because they exist in the world. They are expensive, rarely work, and the world remembers: a nuclear strike brings a global embargo and can end the session for everyone.</p></li>
-          <li class="reveal"><h3>AI you control.</h3><p>The built-in algorithmic leaders are free, run offline and are reproducible. You can also let an LLM (Claude, OpenAI, Gemini or a local model) take over key decisions, with the cost shown up front and a spending cap you set.</p></li>
-        </ul>
-      </div>
-      <div class="container danger reveal">
-        <figure class="danger-media">
-          <video class="lazy-video" muted loop playsinline preload="none" poster="assets/img/danger.jpg" aria-label="Clip: an existential warning card on the desk, outlined in red, with three ways to respond.">
-            <source data-src="assets/video/danger.webm" type="video/webm" />
-            <source data-src="assets/video/danger.mp4" type="video/mp4" />
-          </video>
-        </figure>
-        <div class="danger-text">
-          <p class="stamp">⚠ Existential · eyes only</p>
-          <h3>You will see it coming.</h3>
-          <p>A red heartbeat around the screen means you are in danger: approval, stability or legitimacy near collapse, or a plot in motion. Purge, buy off or concede, before the officers move.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============ GALLERY ============ -->
-    <section class="section gallery" id="gallery" aria-labelledby="gal-title">
-      <div class="container narrow reveal">
-        <p class="kicker">Real screens, no mock-ups</p>
-        <h2 id="gal-title" class="teletype">From the briefing to the verdict.</h2>
-      </div>
-      <div class="container gal-grid" id="galGrid"><!-- built by main.js --></div>
-    </section>
-
-    <!-- ============ CTA ============ -->
+    <!-- ============ FINAL ============ -->
     <section class="section final" id="play" aria-labelledby="cta-title">
-      <div class="final-bg parallax" data-speed="-0.08" aria-hidden="true"></div>
-      <div class="container narrow final-inner reveal">
-        <h2 id="cta-title" class="glitch" data-text="The world is waiting.">The world is waiting.</h2>
-        <p class="lede">Eight flashpoints. 41 nations. One month at a time.</p>
+      <video class="final-video lazy-video" muted loop playsinline preload="none" poster="assets/clips/s-address.jpg" aria-hidden="true"><source data-src="assets/clips/s-address.mp4" type="video/mp4" /></video>
+      <div class="final-inner container narrow">
+        <h2 id="cta-title">The world is waiting <em>for your answer.</em></h2>
         <div class="cta-row center">
-          <form class="signup js-signup" id="signup-final" method="post" hidden>
+          <form class="signup js-signup" method="post" hidden>
             <label class="sr-only" for="email-final">Email address</label>
             <input id="email-final" type="email" name="email" required autocomplete="email" placeholder="you@example.com" />
             <button class="btn btn-primary" type="submit">Get early access</button>
           </form>
-          <a class="btn btn-primary btn-lg js-play-link" href="#" hidden>Take office ▸</a>
-          <a class="btn btn-ghost btn-lg js-daily" href="#" hidden>Try today's Daily Flashpoint</a>
+          <a class="btn btn-primary btn-lg js-play-link" href="#" hidden>Take office</a>
           <p class="status status-lg js-status"><i aria-hidden="true"></i>In development. Playable release coming soon.</p>
-          <button class="btn btn-ghost btn-lg js-watch" type="button">▶ Watch the intro (20s)</button>
           <a class="btn btn-ghost btn-lg js-repo" href="#" hidden>Follow development</a>
         </div>
-        <p class="fine js-signup-note" hidden>One email when the first Flashpoint is playable. No spam, unsubscribe anytime.</p>
-        <p class="fine">Runs offline with algorithmic leaders; bring your own LLM key if you want one.</p>
+        <p class="fine">Runs in the browser with algorithmic leaders; bring your own AI key if you want them to talk back.</p>
       </div>
     </section>
   </main>
@@ -304,8 +225,8 @@
   <footer class="site-foot">
     <div class="container foot-grid">
       <div>
-        <a class="brand" href="#top"><img src="assets/favicon.svg" alt="" width="24" height="24" /><span>World&nbsp;Conflict</span></a>
-        <p class="disclaimer">World Conflict is a work of fiction and a political simulation. It draws on public reporting up to October 2026 and portrays real public figures in an alternate history. Their in-game words and decisions are invented and imply no endorsement. It is not affiliated with any government, leader or news organisation.</p>
+        <a class="brand" href="#top"><img src="assets/favicon.svg" alt="" width="22" height="22" /><span>World Conflict</span></a>
+        <p class="disclaimer">World Conflict is a work of fiction and a political simulation. It draws on public reporting up to October 2026 and portrays real public figures in an alternate history; their in-game words and decisions are invented and imply no endorsement. Game scenes are illustrations, not footage. Not affiliated with any government, leader or news organisation.</p>
       </div>
       <div class="foot-links">
         <a class="js-repo" href="#" hidden>Source on GitHub</a>
@@ -316,17 +237,6 @@
     </div>
   </footer>
 
-  <dialog class="lightbox" id="lightbox" aria-label="Image viewer">
-    <form method="dialog"><button class="lb-close" aria-label="Close">✕</button></form>
-    <button class="lb-nav lb-prev" type="button" aria-label="Previous image">‹</button>
-    <img alt="" />
-    <button class="lb-nav lb-next" type="button" aria-label="Next image">›</button>
-    <p class="lb-cap"></p>
-  </dialog>
-
-  <!-- Fallback copy of content/parallels.json, used only when the page is opened from file:// (fetch is blocked there).
-       Served over http, main.js always reads content/parallels.json. -->
-  <script type="application/json" id="parallels-fallback">{"_meta":{"purpose":"The core storyline of the landing page and intro: real events, then how the game reflects them. The entries are in narrative order for a 60–90 s intro; the order is also chronological and builds to the game's start date (November 2026).","verification":"Each entry is grounded in the flashpoint's own data file (hook and debrief fields) and was cross-checked with a web search on 2026-11-01, unless verification says otherwise. The sources fields are for the owner's records; don't show outlet names on the page.","fiction":"inGameMoment describes scripted game content. Where a game scene is invented (for example a death or an attack), fictionNote says so, and the page must never present that scene as real.","quotes":"There are no quotes from real people. Don't add any.","ordering":"Leads with the biggest current stories (US–Iran war, Russia–Ukraine, Europe's cost-of-living unrest), then the other flashpoints, most recent first. Owner's direction."},"entries":[{"order":1,"date":"2026-02-28","realEvent":"US–Israeli strikes on Iran killed Supreme Leader Ali Khamenei, opening an undeclared war that later brought a US naval blockade of Iranian ports.","place":"Tehran, Iran","countries":["USA","ISR","IRN"],"flashpointId":"hormuz-convoy","inGameMoment":"Week of the US midterms: 'Three days to the midterms: tanker ablaze off Fujairah' ('The midterm clock'). Later, satellites show trucks at the Isfahan tunnel portals ('Isfahan's tunnels'). Iran's side faces 'The weapon in the tunnels'. US mission: 'Open the strait' and Iran never tests a bomb.","gameVisual":"Nuclear map layer with Iran's estimate range visible, cutting to the crisis card 'Isfahan's tunnels'.","fictionNote":"The tanker strike and the Isfahan satellite images are scenario events.","verification":"Web-verified (Khamenei killed 28 Feb 2026, confirmed by Iranian state media). The blockade from 13 Apr comes from the game hook and was not separately searched.","sources":["https://en.wikipedia.org/wiki/2026_Iran_war","https://www.cfr.org/article/united-states-blockades-strait-of-hormuz-after-u-s-iran-talks"]},{"order":2,"date":"2026-10-27","realEvent":"Nearly five years into Russia's full-scale invasion, the front barely moves: Russia gained little ground all year, Ukraine faces another blackout winter, and the only truce is a US-brokered local ceasefire around occupied Oleshky (from 27 October), while Moscow still demands all of Donetsk.","place":"Ukraine: the front line, Kherson region and Kyiv","countries":["UKR","RUS","USA"],"flashpointId":"ceasefire-or-collapse","inGameMoment":"Month 1, 'The free economic zone': Washington floats a zone in Donetsk, and Kyiv chooses to accept in principle, demand a referendum, or reject it and strike. If the war is still on in month 11: 'The signing table'. Russia plays 'Victory on paper'; the US plays 'The dealmaker'.","gameVisual":"The desk with 'The free economic zone' (docs/images/desk.jpg composition), then Execute, then the Chronicle headline naming the choice. Close on the end-screen verdict and stars.","fictionNote":null,"verification":"Web-verified (in effect from 27 Oct 2026; one report says it was due to run to 1 Nov). Note that the game hook says '27–29 Oct', so the dev may want to align it.","sources":["https://www.khaleejtimes.com/europe/russia-ukraine-hold-peace-talks-nov-2026-ceasefire-oleshky"]},{"date":"2026-10-31","realEvent":"A cost-of-living revolt spreads across Europe: around 320,000 march in France (Interior Ministry count; organisers say nearly 500,000), unions call a general strike for 5 November, Italy holds a general strike and police clash with protesters in Hamburg and Zurich.","place":"France, Italy, Germany, Switzerland, Ireland","countries":["FRA","ITA","DEU","CHE","IRL"],"flashpointId":null,"mode":"TERM","inGameMoment":"One Term as France or Germany: the crisis card 'General strike paralyses France' lands on the desk. Meet their demands, break the strike, or ride it out, while approval and stability slide and the election clock runs.","gameVisual":"One Term (France): the 'General strike' crisis card with its Approval/Stability arrows, then the Stability map layer over Europe and the HUD approval ticking down; the Chronicle headline 'General strike paralyses France'.","sources":["https://en.wikipedia.org/wiki/2026_European_unrest","https://english.news.cn/europe/20261101/7d9934f3b1b6400ca4c0080ba7511603/c.html"],"verification":"Crowd figures differ by source; the Interior Ministry figure is used.","order":3},{"order":4,"date":"2025-12-29","realEvent":"China's two-day 'Justice Mission-2025' exercise rehearsed sealing off Taiwan's main ports of Keelung and Kaohsiung, days after a record US arms package for Taipei.","place":"Taiwan Strait","countries":["CHN","TWN","USA"],"flashpointId":"quarantine","inGameMoment":"December 2026: the China Coast Guard begins 'customs inspections' of Taiwan-bound shipping. Taiwan's mission is 'Eleven days of gas': never fire the first shot. In month 3, LNG reserves fall to eight days ('Keeping the lights on'); in month 9, warning shots cross a frigate's bow ('The first shot').","gameVisual":"Crisis card 'The first shot' with its three options; then the Military map layer showing the Strait.","fictionNote":"The quarantine, the Penghu boarding and the warning shots are scenario fiction.","verification":"Web-verified (29–30 Dec 2025, focused on Keelung and Kaohsiung). The '11 days of LNG' figure is reported in the game hook as 'reportedly' and was not independently verified.","sources":["https://focustaiwan.tw/politics/202512300008"]},{"order":5,"date":"2026-01-03","realEvent":"A US military raid on Caracas captured Nicolás Maduro, who was flown to New York to face federal charges; Delcy Rodríguez was sworn in as acting president two days later.","place":"Caracas, Venezuela","countries":["USA","VEN","CUB"],"flashpointId":"caracas-after-maduro","inGameMoment":"Ten months into the improvised transition. As Venezuela: 'Machado comes home' (arrest her, let her rally, or offer a ministry), then 'The election date' in month 11. As Cuba: 'Lights out'. As the US: 'Regime change, without the change'.","gameVisual":"World Chronicle front page after 'The election date' decision, so the headline names the player's choice.","fictionNote":null,"verification":"Web-verified (raid on 3 Jan 2026; most sources date the oath to 5 Jan).","sources":["https://en.wikipedia.org/wiki/2026_in_Venezuela","https://www.pbs.org/newshour/world/who-is-delcy-rodriguez-venezuelas-interim-president-after-maduros-ouster"]},{"order":6,"date":"2026-09-10","realEvent":"Houthi forces seized the Red Sea port of Mokha, about 80 km north of the Bab al-Mandab strait, according to Yemeni government and military sources.","place":"Mokha, Yemen","countries":["YEM","SAU","ARE"],"flashpointId":"bab-al-mandab-burning","inGameMoment":"As Saudi Arabia: 'Answering Riyadh airport', then 'The island in the strait' (storm Perim, starve it, or neutralise it at the table) and finally 'Paying for peace'. As the Houthis: 'Holding Mokha'. As the UAE: 'Standoff on Socotra'.","gameVisual":"World drawer war list (Yemen–Saudi Arabia front line), then the crisis card 'The island in the strait'.","fictionNote":"Don't state as fact that Perim was taken: it was reported but not independently confirmed.","verification":"Web-verified (10 Sep 2026, multiple outlets; one government-side report disputed the capture). The Riyadh airport strike in the game hook (10 Oct) was not verified, so don't use it on a card.","sources":["https://euronews.com/2026/09/10/houthis-seize-red-sea-port-city-in-push-to-seize-bab-el-mandeb"]},{"order":7,"date":"2026-07-23","realEvent":"China's coast guard turned water cannon on Philippine government vessels at Scarborough Shoal, and did so again the next day, according to Manila.","place":"Scarborough Shoal, South China Sea","countries":["CHN","PHL","USA"],"flashpointId":"scarborough-line","inGameMoment":"Month 1, 'Death at Scarborough': the player chooses to invoke the 1951 treaty, file a second arbitration, or call Beijing quietly. Playing China: 'How fast to pour', with dredgers in the lagoon; by month 8, 'The runway'.","gameVisual":"Crisis card 'Death at Scarborough', with the US relations objective ticking in the mission chip ('The treaty means something').","fictionNote":"The sailor's death, the dredging and the runway are fiction. The page must say the real incidents stopped short of lethal force.","verification":"Web-verified (23 and 24 Jul 2026, Philippine Coast Guard account; China says it 'drove away' the vessels).","sources":["https://www.thejakartapost.com/world/2026/07/23/china-fires-water-cannon-on-philippine-ship-at-scarborough-shoal-manila-says"]},{"order":8,"date":"2025-10-26","realEvent":"After an 18-month siege, the Rapid Support Forces took El Fasher, the Sudanese army's last stronghold in Darfur, amid widely reported atrocities against civilians.","place":"El Fasher, North Darfur, Sudan","countries":["SDN"],"flashpointId":"fire-on-the-nile","inGameMoment":"Playing Sudan's army government from Port Sudan, with El Obeid besieged: the card 'The siege of El Obeid' (the last road is cut) offers a relief offensive, an ICRC civilian corridor, or arming militias. The mission is 'Hold the centre'. Cairo can play too ('Air cover for Burhan').","gameVisual":"Mission chip 'Hold the centre' beside the Stability map layer over Sudan, then the crisis card 'The siege of El Obeid'. Use no casualty figures and no imagery of people.","fictionNote":null,"verification":"Web-verified (RSF capture on 26 Oct 2025; airport on 27 Oct). Keep the atrocity wording general, because casualty counts differ by source.","sources":["https://en.wikipedia.org/wiki/2026_in_Sudan","https://www.aljazeera.com/news/2026/7/6/el-obeid-under-siege-by-rsf-could-this-be-sudans-next-el-fasher"]},{"order":9,"date":"2025-05-07","realEvent":"Two weeks after the Pahalgam attack, India struck targets in Pakistan; four days of drone, missile and air-base strikes between the two nuclear-armed neighbours ended in a ceasefire on 10 May.","place":"Kashmir and Punjab, India–Pakistan border","countries":["IND","PAK"],"flashpointId":"water-war","inGameMoment":"November 2026, with the Indus Waters Treaty in abeyance. India's engineers are ready to hold back the Chenab ('Close the gates'); playing Pakistan, the river drops by a third at Marala and the card reads 'The river is the red line'. The mission is to restore deterrence (India) or to deter on two fronts (Pakistan), with no full-scale war.","gameVisual":"Desk crisis card 'The river is the red line' (Pakistan, month 3), zoomed on the title and the Tension ▲▲ arrows; the map is centred on the Indus basin.","fictionNote":"The scenario's opening attack on pilgrims near Jammu is fictional. Don't use it as a real-event card.","verification":"Widely reported in 2025 and matches the water-war debrief. Use the dates 22 Apr (Pahalgam), 7 May (strikes) and 10 May (ceasefire).","sources":["https://www.isas.nus.edu.sg/papers/the-indus-waters-treaty-india-pakistan-tensions-persist/"]}]}</script>
   <script src="main.js" defer></script>
 </body>
 </html>

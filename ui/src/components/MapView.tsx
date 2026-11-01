@@ -192,6 +192,8 @@ export function MapView() {
     // Bottom-left: the mission chip owns the top-left corner
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-left');
     mapRef.current = map;
+    // Dev only: lets the landing-page recorder drive the camera
+    if (import.meta.env.DEV) (window as unknown as { __wcMap?: maplibregl.Map }).__wcMap = map;
     // The canvas extends under the glass HUD and desk (see .map-stage in wc.css): keep the
     // camera centred on the visible part
     map.setPadding({ top: 64, bottom: Math.round(window.innerHeight * 0.6), left: 0, right: 0 });

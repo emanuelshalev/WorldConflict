@@ -1,9 +1,34 @@
 import { SCENE_KINDS, type SceneKind } from './kinds';
 import '../styles/wc.css';
-import { SceneFrame } from './SceneFrame';
+import { SceneFrame, type Verdict } from './SceneFrame';
 
 /** Dev gallery: open the UI at /#scenes (all) or /#scenes/<kind> (one, every variant). */
+/** Recording mode: /#clip?kind=..&home=..&other=..&mood=..&kicker=..&headline=..&sub=..&verdict=..&bare=1 */
+function Clip() {
+  const q = new URLSearchParams(window.location.hash.split('?')[1] ?? '');
+  const kind = (q.get('kind') ?? 'press') as SceneKind;
+  return (
+    <div style={{ position: 'fixed', inset: 0, background: '#000', display: 'grid', placeItems: 'center' }}>
+      <div style={{ width: '100vw' }} className={q.get('bare') ? 'clip-bare' : ''}>
+        <SceneFrame
+          kind={kind}
+          home={q.get('home') ?? undefined}
+          other={q.get('other') ?? undefined}
+          mood={(q.get('mood') as 'good' | 'bad' | 'neutral') ?? 'neutral'}
+          size="full"
+          live
+          kicker={q.get('kicker') ?? undefined}
+          headline={q.get('headline') ?? undefined}
+          sub={q.get('sub') ?? undefined}
+          verdict={(q.get('verdict') as Verdict) || undefined}
+        />
+      </div>
+    </div>
+  );
+}
+
 export default function Gallery() {
+  if (window.location.hash.startsWith('#clip')) return <Clip />;
   const only = window.location.hash.split('/')[1] as SceneKind | undefined;
   const kinds = only && SCENE_KINDS.includes(only) ? [only] : SCENE_KINDS;
   return (

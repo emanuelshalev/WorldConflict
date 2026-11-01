@@ -231,3 +231,5 @@
 .scene-thumb .scene-verdict span { display: none; }
 .scene-card .verdict-glyph { width: 56px; }
 .scene-card .scene-verdict { font-size: 11px; }
+.clip-bare .scene { border-radius: 0; box-shadow: none; }
+.clip-bare .scene-bug, .clip-bare .scene-mark { display: none; }

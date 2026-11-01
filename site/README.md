@@ -9,22 +9,22 @@ npx serve site          # then open the printed URL (http://localhost:3000)
 # or: python3 -m http.server -d site 8000
 ```
 
-Opening `site/index.html` directly from disk also works. Browsers block `fetch()` on `file://`, so the page then falls back to the copy of `content/parallels.json` embedded at the bottom of `index.html`.
+Opening `site/index.html` directly from disk also works; the page has no `fetch()` calls.
 
 ## Editing content
 
-- **Parallels (intro wall + timeline):** `content/parallels.json` is the source of truth, in its `order`. The footage, short wall line and game caption for each entry are in the `MEDIA` table at the top of `main.js`, keyed by `flashpointId` (`europe-unrest` for the One Term France entry). After editing the JSON, refresh the `file://` fallback with `node site/tools/embed-parallels.mjs` (optional when served over HTTP).
+- **Reality vs game:** the `PARALLELS` table at the top of `main.js` (real event, date, place, game moment, fiction note). `content/parallels.json` keeps the sources and verification notes for each real event; keep both in step. Locator maps come from `node site/tools/locator-maps.mjs` (Natural Earth borders, newsprint style).
+- **Scene and game footage:** recorded from the running game. Start the dev servers (`npm run dev`), then `node site/tools/record-clips.cjs` (the 9 parallel clips and 20 scene tiles, from the UI's `#clip` route) and `node site/tools/record-game.cjs` (the globe and the outcome reel, plus the desk, scoreboard and Chronicle stills). Needs ffmpeg. Output: `assets/clips/` and `assets/img/`.
 - **Page copy:** written straight into `index.html`, taken from `content/copy.md`.
 - **Launch config:** one object at the top of `main.js`:
 
   ```js
-  const SITE = { playUrl: null, dailyUrl: null, signupUrl: null, signupType: 'form', signupField: 'email',
-                 repoUrl: null, siteUrl: 'https://emanuelshalev.github.io/WorldConflict/', pressEmail: null };
+  const SITE = { playUrl: null, signupUrl: null, signupField: 'email', repoUrl: null,
+                 siteUrl: 'https://emanuelshalev.github.io/WorldConflict/' };
   ```
 
-  - `signupUrl` + `signupType: 'form'`: shows the "Get early access" email form (hero and closing CTA) and posts to that URL (Buttondown, Formspree, Tally...). Use `signupField` if the provider wants another field name. `signupType: 'link'` turns the form into a button that opens the URL.
-  - While `signupUrl` and `playUrl` are null, the CTA area shows an "In development" status line and "Watch the intro (20s)".
-  - `playUrl` adds "Take office ▸" links (and the Daily Flashpoint link, from `dailyUrl` or `playUrl`); `repoUrl` shows "Follow development"; `pressEmail` fills the contact line on `press.html`.
+  - `signupUrl`: shows the "Get early access" email form and posts to that URL (Buttondown, Formspree, Tally...); `signupField` is the field name the provider expects.
+  - While `playUrl` is null, the CTAs show an "In development" status line. Setting it adds "Take office" links; `repoUrl` shows "Follow development".
 - **Absolute URLs:** canonical, `og:url`, `og:image`, `twitter:image` and the JSON-LD in `index.html` (marked with a `SITE_URL` comment), plus `robots.txt` and `sitemap.xml`, point at `https://emanuelshalev.github.io/WorldConflict/`. Change them together if the site moves.
 - **Press kit:** `press.html` (pitch, boilerplate, facts, screenshots, logo, contact).
 

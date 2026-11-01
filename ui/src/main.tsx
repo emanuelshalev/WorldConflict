@@ -4,7 +4,7 @@ import './index.css'
 import App from './App.tsx'
 
 const Gallery = lazy(() => import('./scenes/Gallery'))
-const gallery = window.location.hash.startsWith('#scenes')
+const gallery = /^#(scenes|clip)/.test(window.location.hash)
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
