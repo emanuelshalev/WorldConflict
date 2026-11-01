@@ -554,8 +554,18 @@ button {
 }
 .tension {
   width: 120px;
+  align-items: stretch;
+}
+.stat .pc-num,
+.stat .tension-num,
+.stat .lbl-short {
+  display: none;
+}
+.pc-num {
+  white-space: nowrap;
 }
 .tension .bar {
+  width: 100%;
   height: 6px;
   background: var(--surface-3);
   border-radius: 999px;
@@ -1365,8 +1375,44 @@ button {
     justify-content: flex-start !important;
     gap: 14px !important;
   }
-  .hud-stats .tension {
+  /* Phone: numbers instead of pips and bars, so six stats fit one row */
+  .hud-stats .pc-pips,
+  .hud-stats .tension .bar {
     display: none;
+  }
+  .hud-stats .stat .pc-num,
+  .hud-stats .stat .tension-num,
+  .hud-stats .stat .lbl-short {
+    display: flex;
+  }
+  .hud-stats .lbl-long {
+    display: none;
+  }
+  .hud-stats {
+    display: grid !important;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    overflow: hidden !important;
+  }
+  .hud-stats .stat .val {
+    font-size: 13px;
+    gap: 2px;
+    white-space: nowrap;
+  }
+  .hud-stats .stat .val small {
+    font-size: 9px;
+  }
+  .hud-stats .tension {
+    width: auto;
+  }
+  /* Keep the decision and Execute in view while the desk scrolls */
+  .desk .execute {
+    position: sticky;
+    bottom: -14px;
+    margin: 0 -16px -14px;
+    padding: 10px 16px 12px;
+    background: linear-gradient(0deg, rgba(11, 15, 23, 1) 70%, rgba(11, 15, 23, 0.85));
+    border-top: 1px solid var(--line);
+    z-index: 2;
   }
   .hud-menu {
     gap: 2px;

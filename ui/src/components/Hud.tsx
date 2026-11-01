@@ -2,14 +2,26 @@ import { IconBook2, IconMenu2, IconNews, IconSettings, IconUsers, IconWorld } fr
 import { useGameStore, usePlayerCountry } from '../store/gameStore';
 import { flag, money, monthLabel } from '../lib/format';
 
+/** Full label on desktop, a short one on phones. */
+function StatLabel({ label, short }: { label: string; short?: string }) {
+  return (
+    <label>
+      <span className="lbl-long">{label}</span>
+      <span className="lbl-short">{short ?? label}</span>
+    </label>
+  );
+}
+
 function Stat({
   label,
   value,
   delta,
   danger,
   suffix = '',
+  short,
 }: {
   label: string;
+  short?: string;
   value: number;
   delta?: number;
   danger?: boolean;
@@ -17,7 +29,7 @@ function Stat({
 }) {
   return (
     <div className={`stat ${danger ? 'danger' : ''}`}>
-      <label>{label}</label>
+      <StatLabel label={label} short={short} />
       <div className="val">
         {Math.round(value)}
         {suffix}
@@ -73,17 +85,18 @@ export function Hud() {
       </div>
 
       <div className="hud-stats">
-        <Stat label="Approval" value={me.approval} delta={delta('approval')} danger={me.approval < 30} suffix="%" />
-        <Stat label="Stability" value={me.stability} delta={delta('stability')} danger={me.stability < 30} suffix="%" />
+        <Stat label="Approval" short="Appr" value={me.approval} delta={delta('approval')} danger={me.approval < 30} suffix="%" />
+        <Stat label="Stability" short="Stab" value={me.stability} delta={delta('stability')} danger={me.stability < 30} suffix="%" />
         <Stat
           label="Legitimacy"
+          short="Legit"
           value={me.legitimacy}
           delta={delta('legitimacy')}
           danger={me.legitimacy < 30}
           suffix="%"
         />
         <div className="stat" title="GDP">
-          <label>Economy</label>
+          <StatLabel label="Economy" short="GDP" />
           <div className="val">
             {money(me.gdp)}
             <small className={me.growthRate >= 0 ? 'delta-up' : 'delta-down'}>
@@ -92,17 +105,21 @@ export function Hud() {
           </div>
         </div>
         <div className="stat" title="Political capital: spent on orders, refilled monthly">
-          <label>Capital</label>
+          <StatLabel label="Capital" short="Cap" />
           <div className="pc-pips">
             {Array.from({ length: Math.max(pc, 3) }).map((_, i) => (
               <i key={i} className={i < pc ? 'full' : ''} />
             ))}
           </div>
+          <div className="val pc-num">◆ {pc}/6</div>
         </div>
         <div className="stat tension" title="Global tension">
-          <label>World tension</label>
+          <StatLabel label="World tension" short="Tens" />
           <div className="bar">
             <div style={{ width: `${world.globalTension}%` }} />
+          </div>
+          <div className="val tension-num" style={{ color: world.globalTension >= 80 ? 'var(--war)' : undefined }}>
+            {Math.round(world.globalTension)}
           </div>
         </div>
         <Stat label="Score" value={world.score?.total ?? 100} delta={delta('score')} />

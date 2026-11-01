@@ -259,10 +259,16 @@ function useSuggestions(): Suggestion[] {
 }
 
 const TIPS = [
-  'Each month: answer the crisis on the left, add orders on the right (◆ = political capital, refilled monthly), then Execute month.',
+  'Each month: answer the crisis {crisis}, add orders {orders} (◆ = political capital, refilled monthly), then Execute month.',
   'Arrows show the direction and size of consequences — not exact numbers. Your advisors disagree on purpose.',
   'Tap any country for its dossier. The map is your intelligence picture: foreign numbers are estimates, and some are wrong.',
 ];
+
+/** The desk stacks on narrow screens: say "above/below" there, "left/right" on desktop. */
+function layoutTip(tip: string): string {
+  const stacked = typeof window !== 'undefined' && window.matchMedia?.('(max-width: 900px)').matches;
+  return tip.replace('{crisis}', stacked ? 'at the top' : 'on the left').replace('{orders}', stacked ? 'below it' : 'on the right');
+}
 
 function CoachTip({ turn }: { turn: number }) {
   const [hidden, setHidden] = useState(() => {
@@ -286,7 +292,7 @@ function CoachTip({ turn }: { turn: number }) {
       <span className="chip" style={{ color: 'var(--intel)', borderColor: 'rgba(79,179,217,0.4)' }}>
         TIP {turn + 1}/3
       </span>
-      <p style={{ flex: 1, margin: 0, color: 'var(--text-1)' }}>{TIPS[turn]}</p>
+      <p style={{ flex: 1, margin: 0, color: 'var(--text-1)' }}>{layoutTip(TIPS[turn])}</p>
       <button className="wc-btn ghost" style={{ padding: '4px 8px', fontSize: 12 }} onClick={dismiss}>
         Got it — no more tips
       </button>
@@ -434,6 +440,14 @@ export function Desk() {
           </div>
 
           <div className="execute">
+            {pendingDecisions.length > unanswered.length && (
+              <div className="hint chosen-summary">
+                {pendingDecisions
+                  .filter((d) => decisionChoices[d.id])
+                  .map((d) => `${d.title}: ${d.options.find((o) => o.id === decisionChoices[d.id])?.label ?? ''}`)
+                  .join(' · ')}
+              </div>
+            )}
             {unanswered.length > 0 && (
               <div className="hint" style={{ color: 'var(--accent)' }}>
                 <IconAlertTriangle size={13} style={{ verticalAlign: -2 }} /> {unanswered.length} crisis unanswered — it will resolve on its own

@@ -38,6 +38,12 @@ function drawCard(opts: {
   archetype: string;
   grid: string;
   victory: boolean;
+  score: number;
+  month: string;
+  headline: string;
+  daily: string | null;
+  conditions: Array<{ met: boolean; bonus: boolean }>;
+  site: string;
 }): string {
   const c = document.createElement('canvas');
   c.width = 1200;
@@ -49,14 +55,19 @@ function drawCard(opts: {
   bg.addColorStop(1, '#1c2533');
   g.fillStyle = bg;
   g.fillRect(0, 0, 1200, 630);
-  g.fillStyle = opts.victory ? '#f2a93b' : '#e5383b';
-  g.fillRect(0, 0, 1200, 10);
+  // The strip is the mission: one segment per objective, green met, red missed (bonus: gold / grey)
+  const segs = opts.conditions.length ? opts.conditions : [{ met: opts.victory, bonus: false }];
+  const segW = 1200 / segs.length;
+  segs.forEach((cond, i) => {
+    g.fillStyle = cond.bonus ? (cond.met ? '#f2a93b' : '#3a4558') : cond.met ? '#3fb68b' : '#e5383b';
+    g.fillRect(i * segW, 0, segW - (i < segs.length - 1 ? 4 : 0), 12);
+  });
   g.fillStyle = '#a3aebf';
   g.font = '600 26px "Barlow Condensed", sans-serif';
-  g.fillText('WORLD CONFLICT', 60, 70);
+  g.fillText(`WORLD CONFLICT${opts.daily ? ` · DAILY ${opts.daily}` : ''}`, 60, 70);
   g.fillStyle = opts.victory ? '#f2a93b' : '#ff8486';
   g.font = '600 24px "IBM Plex Mono", monospace';
-  g.fillText(opts.verdict, 60, 120);
+  g.fillText(`${opts.verdict} · ${opts.month}`, 60, 120);
   g.fillStyle = '#e8ecf2';
   g.font = '700 64px "Barlow Condensed", sans-serif';
   g.fillText(`${opts.flagEmoji} ${opts.country}`.toUpperCase(), 60, 195);
@@ -64,11 +75,18 @@ function drawCard(opts: {
   g.fillStyle = '#a3aebf';
   g.fillText(opts.title, 60, 245);
   g.fillText(opts.archetype, 60, 290);
-  g.font = '40px sans-serif';
+  if (opts.headline) {
+    g.font = 'italic 500 26px Georgia, serif';
+    g.fillStyle = '#e8ecf2';
+    g.fillText(fit(g, `“${opts.headline}”`, 840), 60, 340);
+  }
+  g.font = '34px sans-serif';
   const perLine = 24;
   const cells = [...opts.grid];
-  for (let i = 0; i < cells.length; i += perLine) {
-    g.fillText(cells.slice(i, i + perLine).join(''), 60, 370 + (i / perLine) * 52);
+  const rows = Math.ceil(cells.length / perLine);
+  const rowH = rows > 3 ? 38 : 46;
+  for (let i = 0; i < cells.length && i / perLine < 4; i += perLine) {
+    g.fillText(cells.slice(i, i + perLine).join(''), 60, 400 + (i / perLine) * rowH);
   }
   g.strokeStyle = '#f2a93b';
   g.lineWidth = 4;
@@ -79,11 +97,25 @@ function drawCard(opts: {
   g.fillText(opts.grade, 1040, 220);
   g.font = '44px sans-serif';
   g.fillText('★'.repeat(opts.stars) + '☆'.repeat(3 - opts.stars), 1040, 330);
+  g.fillStyle = '#a3aebf';
+  g.font = '500 22px "IBM Plex Mono", monospace';
+  g.fillText('SCORE', 1040, 390);
+  g.fillStyle = '#e8ecf2';
+  g.font = '700 56px "IBM Plex Mono", monospace';
+  g.fillText(String(opts.score), 1040, 450);
   g.textAlign = 'left';
   g.fillStyle = '#6f7b8d';
   g.font = '500 22px "IBM Plex Mono", monospace';
-  g.fillText('Can you do better? Lead your nation at worldconflict.game', 60, 590);
+  g.fillText(`Can you do better? Lead your nation at ${opts.site}`, 60, 590);
   return c.toDataURL('image/png');
+}
+
+/** Truncate text with an ellipsis to fit a canvas width. */
+function fit(g: CanvasRenderingContext2D, text: string, width: number): string {
+  if (g.measureText(text).width <= width) return text;
+  let t = text;
+  while (t.length > 4 && g.measureText(`${t}…`).width > width) t = t.slice(0, -1);
+  return `${t}…`;
 }
 
 export function EndScreen() {
@@ -137,7 +169,23 @@ export function EndScreen() {
     }
   };
   const download = () => {
-    const url = drawCard({ title, country: me.name, flagEmoji: flag(me.id), verdict, grade, stars, archetype, grid, victory: !lost });
+    const url = drawCard({
+      title,
+      country: me.name,
+      flagEmoji: flag(me.id),
+      verdict,
+      grade,
+      stars,
+      archetype,
+      grid,
+      victory: !lost,
+      score: world.score?.total ?? 0,
+      month: `MONTH ${Math.min(world.turn, world.maxTurns)}/${world.maxTurns}`,
+      headline: world.newspaper?.[0]?.headline ?? '',
+      daily: isDaily ? new Date().toISOString().slice(0, 10) : null,
+      conditions: outcome?.conditions ?? [],
+      site: window.location.host || 'worldconflict.game',
+    });
     const a = document.createElement('a');
     a.href = url;
     a.download = `world-conflict-${me.id.toLowerCase()}.png`;

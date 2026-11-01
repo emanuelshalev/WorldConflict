@@ -149,7 +149,8 @@ export function MapView() {
       new maplibregl.AttributionControl({ compact: false, customAttribution: 'Natural Earth' }),
       'bottom-left',
     );
-    map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-left');
+    // Bottom-left: the mission chip owns the top-left corner
+    map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-left');
     mapRef.current = map;
 
     map.on('load', async () => {
