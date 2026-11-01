@@ -1,4 +1,4 @@
-# Handoff — release candidate 2.0.0-rc.1
+# Handoff — release candidate 2.0.0-rc.2
 
 **Branch:** `ccr-fc426113-gp9q7q`, built on top of `feat/engagement-overhaul` (at `0ca6569`). Fast-forward or merge it into `feat/engagement-overhaul`, and from there into `main`, when you're happy with it. `CHANGELOG.md` summarises the release.
 
@@ -7,32 +7,31 @@ State as of 2026-11-01:
 - **Reviews:** round 3 (four personas plus a UX expert plus two code reviews) is in `dev_plan/reviews/round3/`. `README.md` there maps every finding to its fix.
 - **Status page:** `dev_plan/project_status.html` (tasks, timeline, decisions).
 
-## Measured balance (release build)
+## Measured balance (rc.2)
 
 **Term**, 36 games per seat:
 
-| | USA | UKR | ISR | TWN | DEU | Pooled | Target |
-|---|---|---|---|---|---|---|---|
-| Smart | 92% | 83% | 94% | 97% | 94% | **92%** | 70–95 |
-| Random | 0% | 0% | 0% | 39% | 42% | **16%** | 15–45 |
-| None | 0% | 0% | 0% | 0% | 0% | **0%** | ≤20 |
+| | USA | UKR | ISR | TWN | DEU | Pooled | Avg ★ | Target |
+|---|---|---|---|---|---|---|---|---|
+| Smart | 94% | 83% | 89% | 97% | 81% | **89%** | 2.35 | 70–95 |
+| Loop (reform/address) | 100% | 78% | 39% | 100% | 92% | 82% | 1.90 | — |
+| Greedy (no orders) | 8% | 0% | 6% | 61% | 58% | 27% | 0.35 | — |
+| Random | 0% | 0% | 0% | 36% | 42% | **16%** | | 15–45 |
+| None | 0% | 0% | 0% | 0% | 0% | **0%** | | ≤20 |
 
-- Tension: median 44–55, with 0% of months at 80+.
-- Iran (exempt, labelled Brutal): smart 3%.
+- Iran (exempt, labelled Brutal) is 0–3%.
+- Tension: median 45–57, with no months at 80+.
 
-**Flashpoints**, all 22 seats, 12 games each:
-- Smart: 58–100%, 94% pooled. The two low 12-game rows, re-run at 36 games, are Caracas USA 69% and Hormuz UAE 81%.
-- None: 0–8%, 0% pooled.
-- Random: 0–50%, 12% pooled.
-- Tension: medians 54–73, with at most 21% of months at 80+.
+**Flashpoints**, all 22 seats, 24 games each:
+- Smart: 67–100%, **92%** pooled.
+- None: **0%**.
+- Random: **15%**.
+- Loop: 71%.
+- Tension: medians 55–72, with at most 21% of months at 80+.
 
-**Against the criteria:** Term meets every band. Flashpoints meet them except random play, which is 12% pooled against a floor of 15% (random orders are punished hard in a 12-month crisis). No seat is below 65% at 36 games.
+Every band is met.
 
-**Known balance issue, "greedy" play.** A harness policy that gives no orders and always takes the best-looking crisis option wins:
-- 75% of Terms as Taiwan or Germany (8% or less elsewhere);
-- 50% of flashpoints pooled.
-
-In flashpoints the monthly card is meant to be the core decision. In calm democracies' Terms it means orders matter too little. Fixing it needs a pass over crisis-option payouts. A blunt approval drift was tried and reverted, because it hurt smart play more than greedy play.
+**Confirmation playtest (rc.1), recommend scores:** Maya 7, Priya 7, Leo 6, Dan 5. Dan's score was for rc.1. rc.2 answers his remaining points: the loop no longer earns ★★★ for free (the statecraft goal), reform is now an economic lever, courting at the maximum is refused, and pact offers are capped. A Dan-only re-check on rc.2 decides criterion 3.
 
 ## Release-candidate criteria
 

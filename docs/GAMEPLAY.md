@@ -42,7 +42,7 @@ Diplomatic, domestic and covert orders cost **political capital**. You get 2 ◆
 
 | Order | ◆ | Order | ◆ |
 |---|---|---|---|
-| Court a country | 1 | Reform program | 2 |
+| Court a country | 1 | Reform program | 2 (diminishing returns if repeated within 6 months; raises long-run growth) |
 | Denounce | 0 | National address | 1 (less effective if repeated) |
 | Offer defense pact | 2 | Spy on / hunt spies | 1 |
 | Propose ceasefire | 1 | Sabotage / destabilize / arm rebels | 2 |

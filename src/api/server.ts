@@ -31,7 +31,7 @@ server.get("/health", async (_request, _reply) => {
   return {
     status: "ok",
     timestamp: new Date().toISOString(),
-    version: "2.0.0-rc.1",
+    version: "2.0.0-rc.2",
   };
 });
 

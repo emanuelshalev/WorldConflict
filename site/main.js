@@ -25,7 +25,7 @@
       fiction: 'The tanker strike and the Isfahan satellite images are scenario events.',
     },
     'ceasefire-or-collapse': {
-      short: 'The front barely moves. A local ceasefire around occupied Oleshky; no peace.',
+      short: 'The front barely moves. A local ceasefire around Oleshky, but no peace.',
       placeShort: 'Kherson front',
       game: 'Ceasefire or Collapse', mode: 'Flashpoint', month: 'Month 1 · Nov 2026',
       video: 'assets/video/wall-ukraine', poster: 'assets/img/wall-ukraine.jpg',
@@ -171,7 +171,7 @@
     const cols = vw >= 900 ? 4 : 2;
     const gap = 10;
     const tw = Math.round((vw * 1.12) / cols);
-    const th = Math.round((tw * 9) / 16);
+    const th = Math.round(tw * (cols === 2 ? 0.72 : 9 / 16));
     const rows = Math.max(3, Math.ceil((vh * 1.1) / (th + gap)));
     const slots = cols * rows;
     const usable = entries.filter((e) => MEDIA[keyOf(e)]);
@@ -337,7 +337,8 @@
     document.querySelector('#heroCopy .btn-primary').focus({ preventScroll: true });
   });
   document.getElementById('replayIntro').addEventListener('click', () => { window.scrollTo({ top: 0 }); runIntro(); });
-  window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !hero.classList.contains('ended')) endIntro(); });
+  // Escape skips; so does the first Tab, so keyboard users never land on hidden controls.
+  window.addEventListener('keydown', (e) => { if ((e.key === 'Escape' || e.key === 'Tab') && !hero.classList.contains('ended')) endIntro(); });
 
   // Stop the intro (and its videos) once the hero leaves the screen.
   new IntersectionObserver(([en]) => {
@@ -383,7 +384,7 @@
           <p class="pc-date"><time datetime="${e.date}">${fmtDate(e.date)}</time></p>
           <p class="pc-place">${esc(e.place)}</p>
           <p class="pc-fact">${esc(e.realEvent)}</p>
-          ${locatorHTML(key)}
+          <div class="rc-wrap">${locatorHTML(key)}</div>
         </article>
         <article class="p-game game-card" aria-label="In the game: ${esc(m.game)}">
           <div class="gc-media">
@@ -464,6 +465,16 @@
       ticking = false;
       const vh = window.innerHeight;
       head.classList.toggle('scrolled', window.scrollY > 40);
+      // Catch anything a fast scroll or an anchor jump skipped past.
+      document.querySelectorAll('.reveal:not(.in), .pair:not(.in)').forEach((el) => {
+        if (el.getBoundingClientRect().top < vh * 0.9) {
+          el.classList.add('in');
+          el.querySelectorAll('.teletype').forEach((t) => t.classList.add('typed'));
+          el.querySelectorAll('.glitch').forEach((g) => g.classList.add('glitching'));
+          const map = el.querySelector('.rc-map');
+          if (map && el.classList.contains('pair')) map.classList.add('drop');
+        }
+      });
       const r = timeline.getBoundingClientRect();
       const p = Math.min(1, Math.max(0, (vh * 0.6 - r.top) / r.height));
       rail.style.height = `${(p * 100).toFixed(2)}%`;
@@ -499,7 +510,7 @@
     tabs.innerHTML = LAYERS.map((l, i) => `<button role="tab" id="tab-${l.id}" aria-controls="layer-stage" aria-selected="${i === 0}" tabindex="${i === 0 ? 0 : -1}">${l.label}</button>`).join('');
     stage.id = 'layer-stage';
     stage.setAttribute('role', 'tabpanel');
-    stage.innerHTML = LAYERS.map((l, i) => `<img src="assets/img/layer-${l.id}.jpg" alt="World map, ${l.id} layer: ${esc(l.cap)}" loading="lazy" decoding="async" class="${i === 0 ? 'on' : ''}" />`).join('');
+    stage.innerHTML = LAYERS.map((l, i) => `<img src="assets/img/layer-${l.id}.jpg" srcset="assets/img/layer-${l.id}-800.jpg 800w, assets/img/layer-${l.id}.jpg 1600w" sizes="(min-width: 1000px) 58vw, 100vw" alt="World map, ${l.id} layer: ${esc(l.cap)}" loading="lazy" decoding="async" class="${i === 0 ? 'on' : ''}" />`).join('');
     const btns = [...tabs.children];
     const imgs = [...stage.children];
     let cur = 0;
@@ -579,8 +590,7 @@
     ENTRIES = (data.entries || []).slice().sort((a, b) => (a.order ?? 99) - (b.order ?? 99));
     buildTimeline(ENTRIES);
     buildWall(ENTRIES);
-    if (reduceMotion) endIntro();
-    else runIntro();
+    if (reduceMotion) { document.getElementById('replayIntro').hidden = true; endIntro(); } else runIntro();
     setupScrollFx();
   });
 })();

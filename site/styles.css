@@ -115,15 +115,14 @@ p { margin: 0 0 1em; }
 
 /* Teletype headline: characters are wrapped by JS and typed on reveal */
 .teletype .ch { opacity: 0; }
-.teletype.typed .ch { animation: type-in 0.01s steps(1) forwards; animation-delay: calc(var(--i) * 18ms); }
+.teletype.typed .ch { opacity: 1; transition: opacity 0s linear calc(var(--i) * 18ms); }
 .teletype.typed::after { content: '▌'; color: var(--accent); animation: caret 0.9s steps(1) infinite; margin-left: 4px; font-weight: 400; }
-@keyframes type-in { to { opacity: 1; } }
 @keyframes caret { 50% { opacity: 0; } }
 
 /* Glitch headline (one burst on reveal, then idle with a rare flicker) */
 .glitch { position: relative; }
 .glitch::before, .glitch::after {
-  content: attr(data-text); position: absolute; inset: 0; pointer-events: none; opacity: 0;
+  content: attr(data-text); content: attr(data-text) / ''; position: absolute; inset: 0; pointer-events: none; opacity: 0;
 }
 .glitch::before { color: var(--intel); transform: translate(-2px, 0); clip-path: inset(0 0 55% 0); }
 .glitch::after { color: var(--war); transform: translate(2px, 0); clip-path: inset(55% 0 0 0); }
@@ -247,10 +246,12 @@ p { margin: 0 0 1em; }
 .hero-copy {
   position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column; justify-content: center;
   padding: calc(var(--head-h) + 20px) var(--gutter) 90px; max-width: 1100px; margin: 0 auto;
-  opacity: 0; visibility: hidden; transform: translateY(16px);
-  transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out), visibility 0s 0.9s;
+  opacity: 0; pointer-events: none; transform: translateY(16px);
+  transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out);
 }
-.hero.ended .hero-copy { opacity: 1; visibility: visible; transform: none; transition-delay: 0.25s, 0.25s, 0s; }
+.hero-copy .cta-row { visibility: hidden; transition: visibility 0s 0.9s; }
+.hero.ended .hero-copy { opacity: 1; pointer-events: auto; transform: none; transition-delay: 0.25s; }
+.hero.ended .hero-copy .cta-row { visibility: visible; transition-delay: 0s; }
 .hero .eyebrow { font: 500 13px/1.4 var(--font-mono); letter-spacing: 0.24em; text-transform: uppercase; color: var(--accent); margin-bottom: 18px; }
 .hero h1 { font: 700 clamp(44px, 9vw, 112px)/0.95 var(--font-display); text-transform: uppercase; letter-spacing: 0.005em; max-width: 13ch; text-shadow: 0 4px 40px rgba(0, 0, 0, 0.6); }
 .hero-sub { margin: 24px 0 30px; max-width: 60ch; color: var(--text-1); font-size: clamp(16px, 1.7vw, 19px); text-shadow: 0 2px 20px rgba(0, 0, 0, 0.8); }
@@ -317,9 +318,9 @@ p { margin: 0 0 1em; }
 .paper-card .pc-date { margin: 16px 0 6px; font: 500 14px/1.2 var(--font-mono); letter-spacing: 0.06em; color: var(--pin); text-transform: uppercase; }
 .paper-card .pc-place { font: italic 700 18px/1.25 var(--font-news); color: var(--paper-mute); margin-bottom: 12px; }
 .paper-card .pc-fact { font: 400 16px/1.55 var(--font-ui); color: var(--paper-ink); margin-bottom: 18px; }
-.paper-card .rc-map { position: relative; margin: 0 -22px; aspect-ratio: var(--r, 1.2); max-height: 220px; width: calc(100% + 44px); border-top: 1px solid #d3cbb8; overflow: hidden; }
-.paper-card .rc-map img { width: 100%; height: 100%; object-fit: cover; }
-.paper-card .rc-map.fit img { object-fit: fill; }
+.paper-card .rc-wrap { margin: 0 -22px; background: #e9e4d6; border-top: 1px solid #d3cbb8; }
+.paper-card .rc-map { position: relative; aspect-ratio: var(--r, 1.2); width: min(100%, calc(250px * var(--r, 1.2))); margin: 0 auto; }
+.paper-card .rc-map img { width: 100%; height: 100%; object-fit: fill; }
 
 .game-card { border-radius: var(--r-md); overflow: hidden; background: var(--surface-1); box-shadow: var(--shadow), 0 0 0 1px var(--line); }
 .game-card .gc-media { position: relative; aspect-ratio: 16 / 9; background: #0a0e15; overflow: hidden; }
@@ -435,4 +436,15 @@ p { margin: 0 0 1em; }
   .teletype .ch { opacity: 1; }
   .teletype.typed::after { display: none; }
   .ticker span { padding-left: 0; }
+}
+
+/* Guard against horizontal overflow (grid min-content, reveal offsets) */
+.realism-grid > *, .hook-grid > *, .pair > *, .step > *, .danger > * { min-width: 0; }
+main { overflow-x: clip; }
+
+@media (max-width: 560px) {
+  .cam-label { border-radius: 12px; align-items: flex-start; flex-direction: column; gap: 6px; bottom: 18px; }
+  .cam-text { white-space: normal; }
+  .real-card .rc-head { font-size: 5.6cqw; -webkit-line-clamp: 5; }
+  .real-card .rc-body { grid-template-columns: 1fr 30cqw; }
 }

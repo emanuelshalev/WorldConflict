@@ -66,6 +66,8 @@ Static data is JSON in `data/`: 41 country profiles in `data/countries/` (valida
 - `CountryState.realGrowth` is the smoothed, annualised *actual* GDP change (computed in `turn.ts` after phase 6). The HUD, the economic score and peacetime voter mood read it; don't show `growthRate` to players.
 - AI defence pacts: rare, never with a belligerent, max 4, none with TWN. AI proposals to the player become a `pact_offer` crisis. Wars joined to help someone carry `alliedWith` and end with the principal's war.
 - Scripted flashpoint crises can declare `requiresWar: [a, b]` and are skipped once that war is over.
+- `DataLoader.newGame()` returns a deep copy: never let game state share objects with the loader's cached profiles/scenarios (it leaked between games in one process).
+- Term objectives: survival is the win; bonuses are score 115+ and a statecraft goal (end the inherited war / mend ties with the worst rival). Reform has 6-month diminishing returns outside Flashpoints and lifts `trendGrowth`.
 - Generated prose uses `possessive()` / `withArticle()` from `src/core/text.ts` (the UI has a copy of `withArticle` in `ui/src/lib/format.ts`). The order vocabulary and ◆ costs live in `ui/src/lib/actions.ts`.
 - Balance targets (harness): smart 70–95% wins pooled (no seat below 65%), none ≤20%, random 15–45%; Iran's Term is exempt. Use `--games 36` near a band edge.
 

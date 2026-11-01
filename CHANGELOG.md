@@ -1,5 +1,24 @@
 # Changelog
 
+## 2.0.0-rc.2 — 2026-11-01
+
+Fixes from the four-persona confirmation playtest of rc.1 (`dev_plan/reviews/round3-confirm/`).
+
+- **Statecraft goal:** a Term's third star now needs foreign policy: end the war you inherited, or mend ties with your worst-placed rival. Good domestic management still keeps you in office.
+- **Reform:** wins no votes, gives diminishing returns when repeated within six months (Term and Legacy), and lifts the economy's long-run growth trend, so the economic score has a real lever.
+- **Realism:** pact offers follow the same rules as AI pacts (none while at war, at most 4). Term limits cover 12 countries. There are no general strikes where strikes are banned, typhoons happen only where they really do, juntas aren't toppled within 18 months, and consolidated democracies never have coups. Bab al-Mandab's war crises are skipped after a ceasefire.
+- **Robustness:**
+  - A ceasefire can't crash global tension.
+  - The server refuses a duplicate turn (409), and the UI retries rate-limited turns.
+  - Malformed requests get a 400 instead of a 500, and unknown countries are refused.
+  - Deployments are bounded by manpower, and nuclear strikes ask for confirmation.
+- **Isolation fix:** new games no longer share objects with the data loader's cache, which had let one game's events leak into the next within a process.
+- **Balance:**
+  - Term: smart 89% pooled, random 16%, none 0%.
+  - Flashpoints: smart 92% pooled (every seat at 65% or more over 24 games), random 15%, none 0%.
+  - Greedy no-orders play in Terms falls from about 75% to about 60% for Taiwan and Germany (27% pooled).
+
+
 ## 2.0.0-rc.1 — 2026-11-01
 
 The engagement overhaul: World Conflict becomes a session-based game with clear goals, a living November 2026 world, and a simulation tuned by headless playtests and four rounds of persona and expert reviews.
