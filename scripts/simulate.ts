@@ -11,6 +11,7 @@
  *   smart       — a heuristic competent player: fixes weaknesses, courts rivals, picks good crisis options
  *   random      — random affordable orders and random crisis options
  *   greedy      — no orders, always the crisis option with the best-looking effects
+ *   loop        — the "reform / address every month" loop playtesters found, best crisis options
  *   hawk        — mobilizes then attacks the main rival
  *   ai          — the player's country is driven by PersonalityAI
  */
@@ -171,6 +172,10 @@ function playerOrders(policy: string, world: WorldState, rng: SeededRandom): Act
     case "none":
     case "greedy":
       return [];
+    case "loop":
+      return affordable(world, [
+        world.turn % 2 === 0 ? { type: "DOMESTIC_REFORM" } : { type: "DOMESTIC_PROPAGANDA" },
+      ]);
     case "propaganda":
       return [{ type: "DOMESTIC_PROPAGANDA" }];
     case "smart":

@@ -38,7 +38,7 @@ import {
   startNuclearProgram,
 } from "./systems/nuclear.js";
 import { applyPropaganda, applyReform, updateDomestic } from "./systems/stability.js";
-import { possessive } from "./text.js";
+import { possessive, withArticle } from "./text.js";
 import type {
   Action,
   CountryIntent,
@@ -341,6 +341,12 @@ export class TurnEngine {
       world.globalTension,
       Math.min(100, tensionBefore + (hadShock ? 30 : 8)),
     );
+    // ...and calms only so fast: one ceasefire must not wipe out a world still at war
+    world.globalTension = Math.max(
+      world.globalTension,
+      tensionBefore - 12,
+      Math.min(tensionFloor, tensionBefore) * 0.85,
+    );
 
     // ------------------------------------------------------------------
     // Phase 7: government dynamics (elections, coups, revolutions)
@@ -493,6 +499,8 @@ export class TurnEngine {
         if (!target) return { ok: false, reason: "No target" };
         if (actor.atWarWith.includes(target.id))
           return { ok: false, reason: "At war — propose a ceasefire first" };
+        if ((actor.relations[target.id] ?? 0) >= 95)
+          return { ok: false, reason: "Relations are already as good as they get" };
         const relBefore = actor.relations[target.id] ?? 0;
         improveRelations(actor, target);
         const relAfter = actor.relations[target.id] ?? 0;
@@ -686,7 +694,13 @@ export class TurnEngine {
       }
       case "MILITARY_DEPLOY_BORDER": {
         if (!target) return { ok: false, reason: "No target" };
-        deployToBorder(actor, target.id, action.value ?? 50000);
+        const troops = Math.round(action.value ?? 50000);
+        if (troops <= 0 || troops > actor.manpower)
+          return {
+            ok: false,
+            reason: `You can deploy at most ${actor.manpower.toLocaleString()} troops`,
+          };
+        deployToBorder(actor, target.id, troops);
         target.relations[actor.id] = clampRel((target.relations[actor.id] ?? 0) - 8);
         return { ok: true, reason: "" };
       }
@@ -796,8 +810,30 @@ export class TurnEngine {
         };
       }
       case "DOMESTIC_REFORM": {
-        applyReform(actor);
-        return { ok: true, reason: "" };
+        const isPlayer = actor.id === world.playerCountryId;
+        // Reform fatigue is a long-game effect: a 12-month crisis is when you push reform hardest
+        const recent =
+          isPlayer && world.mode !== "FLASHPOINT"
+            ? world.director.reformTurns.filter((t) => t < world.turn && world.turn - t < 6).length
+            : 0;
+        const k = REFORM_DECAY ** recent;
+        applyReform(actor, k);
+        if (isPlayer) {
+          world.director.reformTurns = [
+            ...world.director.reformTurns.filter((t) => world.turn - t < 6 && t !== world.turn),
+            world.turn,
+          ];
+          // Reforms pay off slowly: each one lifts the economy's long-run trend a little
+          const base = actor.economyProfile?.growthRate ?? actor.trendGrowth ?? 0.02;
+          actor.trendGrowth = Math.min(base + 0.012, (actor.trendGrowth ?? base) + 0.0015 * k);
+        }
+        return {
+          ok: true,
+          reason:
+            recent > 0
+              ? `Reform fatigue: ${Math.round(k * 100)}% effect; the long-run growth trend edges up`
+              : "Stability now, growth later: the long-run trend edges up",
+        };
       }
       case "DOMESTIC_POLICING": {
         const tactic = (action.params?.tactic as string) === "HARD" ? "HARD" : "SOFT";
@@ -1008,7 +1044,7 @@ export class TurnEngine {
             : "After ten years";
       return {
         reason: "TERM_COMPLETED",
-        description: `${span} at the helm of ${player.name}, you are still standing. History will now judge your record.`,
+        description: `${span} at the helm of ${withArticle(player.name)}, you are still standing. History will now judge your record.`,
         turn: world.turn,
       };
     }
@@ -1018,6 +1054,9 @@ export class TurnEngine {
 }
 
 // --------------------------------------------------------------------
+/** Each reform in the last 6 months cuts the next one's effect to this share. */
+const REFORM_DECAY = 0.8;
+
 /** Player orders per month (crisis-injected orders don't count). */
 const MAX_ORDERS = 6;
 

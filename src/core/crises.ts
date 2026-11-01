@@ -1,6 +1,6 @@
-import { isLandlocked, sharesLandBorder } from "./geography.js";
+import { isLandlocked, sharesLandBorder, TYPHOON_COUNTRIES } from "./geography.js";
 import type { SeededRandom } from "./seed.js";
-import { possessive } from "./text.js";
+import { possessive, withArticle } from "./text.js";
 import type {
   CountryState,
   DecisionOption,
@@ -778,7 +778,7 @@ const TEMPLATES: CrisisTemplate[] = [
       const t = hostageTaker(ctx);
       if (!t) return null;
       return {
-        headline: `${ctx.player.name} citizens taken hostage in ${t.name}`,
+        headline: `Citizens of ${withArticle(ctx.player.name)} taken hostage in ${t.name}`,
         text: `Militants hold 30 of your citizens.`,
         decision: {
           title: `Hostages in ${t.name}`,
@@ -950,7 +950,13 @@ const TEMPLATES: CrisisTemplate[] = [
   // --- General strike / cost-of-living revolt ---
   {
     id: "general_strike",
-    weight: (ctx) => (ctx.player.growthRate < 0.012 || ctx.player.approval < 45 ? 2 : 0.4),
+    // Strikes are banned in absolute monarchies and one-party states
+    weight: (ctx) =>
+      ["ABSOLUTE_MONARCHY", "ONE_PARTY_STATE"].includes(ctx.player.politicalSystem.type)
+        ? 0
+        : (ctx.player.realGrowth ?? ctx.player.growthRate) < 0.012 || ctx.player.approval < 45
+          ? 2
+          : 0.4,
     build: (ctx) => ({
       headline: `General strike paralyses ${ctx.player.name}`,
       text: "Unions shut down ports, rail and power plants.",
@@ -1384,7 +1390,7 @@ const TEMPLATES: CrisisTemplate[] = [
       const kind = ctx.rng.pick([
         "A magnitude 7.8 earthquake",
         "Catastrophic floods",
-        "A super-typhoon",
+        TYPHOON_COUNTRIES.has(ctx.player.id) ? "A super-typhoon" : "A brutal heatwave",
         "Record wildfires",
       ]);
       return {
@@ -1533,9 +1539,19 @@ function losingAlly(ctx: Ctx): { ally: CountryState; enemy: CountryState } | und
 
 /** The country most eager for a defence pact with the player (it likes us, we don't hate it). */
 function pactSuitor(ctx: Ctx): CountryState | undefined {
+  // Same rules as AI pacts: nobody signs with a belligerent, and four treaties is the limit
+  if (ctx.player.atWarWith.length > 0 || ctx.player.alliances.length >= 4) return undefined;
+  const eligible = (c: CountryState) =>
+    alive(c) &&
+    c.atWarWith.length === 0 &&
+    c.alliances.length < 4 &&
+    c.id !== "TWN" &&
+    ctx.player.id !== "TWN";
   const proposer = find(ctx.world, ctx.world.director.pactSuitor ?? "");
-  if (proposer && alive(proposer) && !ctx.player.alliances.includes(proposer.id)) return proposer;
+  if (proposer && eligible(proposer) && !ctx.player.alliances.includes(proposer.id))
+    return proposer;
   return ctx.world.countries
+    .filter(eligible)
     .filter(
       (c) =>
         alive(c) &&

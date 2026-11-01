@@ -1,4 +1,5 @@
 import { areNeighbors, encounterAtSea } from "./crises.js";
+import { TYPHOON_COUNTRIES } from "./geography.js";
 import type { SeededRandom } from "./seed.js";
 import { getRelation } from "./systems/diplomacy.js";
 import { possessive } from "./text.js";
@@ -163,7 +164,9 @@ const TEMPLATES: EventTemplate[] = [
         "wildfires",
         "a deadly drought",
       ];
-      const kind = ctx.rng.pick(kinds);
+      const kind = ctx.rng.pick(
+        TYPHOON_COUNTRIES.has(country.id) ? kinds : kinds.filter((k) => !k.includes("typhoon")),
+      );
       country.stability = Math.max(0, country.stability - 4);
       country.gdp *= 0.997;
       return {

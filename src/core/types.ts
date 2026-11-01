@@ -686,6 +686,7 @@ export const DirectorStateSchema = z.object({
   pactSuitor: z.string().optional(), // the government whose pact offer is on the desk // spy-hunt shield: foreign ops on the player often foiled
   propagandaTurns: z.array(z.number()).default([]), // turns the player used propaganda
   denounceTurns: z.array(z.number()).default([]), // turns the player denounced someone
+  reformTurns: z.array(z.number()).default([]), // turns the player launched a reform
   lowPoint: z.number().default(100), // lowest min(approval, stability) seen — for comebacks
   rallies: z.number().default(0), // comebacks achieved
   closeCalls: z.number().default(0),
@@ -752,6 +753,7 @@ export const WorldStateSchema = z.object({
     counterIntelUntil: -1,
     propagandaTurns: [],
     denounceTurns: [],
+    reformTurns: [],
     lowPoint: 100,
     rallies: 0,
     closeCalls: 0,

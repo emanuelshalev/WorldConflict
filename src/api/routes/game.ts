@@ -1,5 +1,14 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
+
+/** Saves with a turn in flight: a second /turn for the same save is refused, not run twice. */
+const turnsInFlight = new Set<string>();
+
+/** Malformed requests are the client's fault (400), not the server's (500). */
+function errorStatus(error: unknown): number {
+  return error instanceof z.ZodError ? 400 : 500;
+}
+
 import { AIConfigSchema, planTurn } from "../../agents/strategist.js";
 import { addUsage } from "../../agents/usage.js";
 import { createDataLoader } from "../../core/data-loader.js";
@@ -224,6 +233,11 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
         const body = NewGameSchema.parse(request.body);
         const { scenarioId, playerCountryId, saveName, playerId, leaderName } = body;
         const dataLoader = createDataLoader();
+        if (!dataLoader.loadAllCountries().some((c) => c.id === playerCountryId)) {
+          return reply
+            .status(400)
+            .send({ success: false, error: `Unknown country ${playerCountryId}` });
+        }
         // Every game is different unless a seed is given; the daily challenge
         // is the same world for everyone that day.
         const today = new Date().toISOString().slice(0, 10);
@@ -252,7 +266,7 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
         return reply.send({ success: true, saveId, ...turnPayload(worldState) });
       } catch (error) {
         fastify.log.error(error);
-        return reply.status(500).send({
+        return reply.status(errorStatus(error)).send({
           success: false,
           error: error instanceof Error ? error.message : "Failed to create new game",
         });
@@ -270,59 +284,68 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
       try {
         const body = TurnRequestSchema.parse(request.body);
         const { saveId, playerActions, decisions, ai } = body;
-
-        const saveData = await gameDb.loadGame(saveId);
-        if (!saveData) {
-          return reply.status(404).send({ success: false, error: "Save game not found" });
+        if (turnsInFlight.has(saveId)) {
+          return reply
+            .status(409)
+            .send({ success: false, error: "This month is already being resolved" });
         }
+        turnsInFlight.add(saveId);
+        try {
+          const saveData = await gameDb.loadGame(saveId);
+          if (!saveData) {
+            return reply.status(404).send({ success: false, error: "Save game not found" });
+          }
 
-        const { worldState, llmUsage } = saveData;
-        if (worldState.gameOver) {
-          return reply.status(400).send({
-            success: false,
-            error: "The game is over. Start a new game or load an earlier save.",
+          const { worldState, llmUsage } = saveData;
+          if (worldState.gameOver) {
+            return reply.status(400).send({
+              success: false,
+              error: "The game is over. Start a new game or load an earlier save.",
+            });
+          }
+
+          const engine = new TurnEngine();
+          // AI intents come from the chosen tier; the engine stays deterministic given intents
+          const plan = await planTurn(worldState, ai, { sessionSpentUsd: llmUsage.costUsd ?? 0 });
+          const aiIntents = plan.intents;
+          const result = engine.executeTurn(worldState, playerActions, aiIntents, decisions);
+          const totalUsage = addUsage(llmUsage, plan.usage);
+
+          await gameDb.updateSave(saveId, result.newState, totalUsage);
+          await gameDb.addTurnLog(saveId, {
+            number: result.newState.turn,
+            date: result.newState.date,
+            events: result.events,
+            intents: aiIntents,
+            playerActions,
+            newspaper: result.newspaper,
           });
+
+          return reply.send({
+            success: true,
+            saveId,
+            ...turnPayload(result.newState),
+            events: result.events,
+            newspaper: result.newspaper,
+            governmentChanges: result.governmentChanges,
+            // Fog of war: only the player's own orders come back, never the AI's plans
+            resolvedActions: ownActions(result.resolvedActions, result.newState.playerCountryId),
+            rejectedActions: ownActions(result.rejectedActions, result.newState.playerCountryId),
+            ai: {
+              tier: ai?.tier ?? "ALGORITHMIC",
+              turnUsage: plan.usage,
+              totalUsage,
+              statements: plan.statements,
+              llmCountries: plan.llmCountries,
+              notice: plan.notice,
+            },
+          });
+        } finally {
+          turnsInFlight.delete(saveId);
         }
-
-        const engine = new TurnEngine();
-        // AI intents come from the chosen tier; the engine stays deterministic given intents
-        const plan = await planTurn(worldState, ai, { sessionSpentUsd: llmUsage.costUsd ?? 0 });
-        const aiIntents = plan.intents;
-        const result = engine.executeTurn(worldState, playerActions, aiIntents, decisions);
-        const totalUsage = addUsage(llmUsage, plan.usage);
-
-        await gameDb.updateSave(saveId, result.newState, totalUsage);
-        await gameDb.addTurnLog(saveId, {
-          number: result.newState.turn,
-          date: result.newState.date,
-          events: result.events,
-          intents: aiIntents,
-          playerActions,
-          newspaper: result.newspaper,
-        });
-
-        return reply.send({
-          success: true,
-          saveId,
-          ...turnPayload(result.newState),
-          events: result.events,
-          newspaper: result.newspaper,
-          governmentChanges: result.governmentChanges,
-          // Fog of war: only the player's own orders come back, never the AI's plans
-          resolvedActions: ownActions(result.resolvedActions, result.newState.playerCountryId),
-          rejectedActions: ownActions(result.rejectedActions, result.newState.playerCountryId),
-          ai: {
-            tier: ai?.tier ?? "ALGORITHMIC",
-            turnUsage: plan.usage,
-            totalUsage,
-            statements: plan.statements,
-            llmCountries: plan.llmCountries,
-            notice: plan.notice,
-          },
-        });
       } catch (error) {
         fastify.log.error(error);
-        return reply.status(500).send({
+        return reply.status(errorStatus(error)).send({
           success: false,
           error: error instanceof Error ? error.message : "Failed to process turn",
         });
@@ -347,7 +370,7 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
         return reply.send({ success: true, preview });
       } catch (error) {
         fastify.log.error(error);
-        return reply.status(500).send({
+        return reply.status(errorStatus(error)).send({
           success: false,
           error: error instanceof Error ? error.message : "Failed to preview action",
         });

@@ -17,6 +17,7 @@ import {
   LeaderSchema,
   MODE_TURNS,
   type NuclearStatus,
+  type ObjectiveCondition,
   ObjectiveSchema,
   PendingDecisionSchema,
   type RegimeType,
@@ -246,7 +247,9 @@ export class DataLoader {
 
   /** Start any session: a scenario in a mode, or an authored flashpoint. */
   newGame(options: NewGameOptions): WorldState {
-    const world = this.buildSession(options);
+    // Deep copy: a game must never share objects with the loader's cached profiles and
+    // scenarios, or one game's events would leak into the next (the harness reuses a loader)
+    const world = structuredClone(this.buildSession(options));
     // Cold open: the first crisis is on the desk the moment you take office
     const opening = runDirector(world, new SeededRandom(combineSeed(world.seed, 31337)));
     world.pendingDecisions = opening.decisions;
@@ -317,7 +320,7 @@ export class DataLoader {
             ],
         bonus: [
           { kind: "SCORE_PAR", min: 115, label: "Leadership score of 115+" },
-          { kind: "STAT_MIN", stat: "approval", min: 60, label: "Leave with 60%+ approval" },
+          foreignPolicyGoal(world, player),
         ],
         par: 115,
         debrief: "",
@@ -736,4 +739,38 @@ export function monthsUntil(
   let months = (y - startYear) * 12 + (m - startMonth);
   while (months < 1 && cycleMonths > 0) months += cycleMonths;
   return Math.max(1, months);
+}
+
+/**
+ * A Term's statecraft bonus: end the war you inherited, or mend ties with your
+ * worst-placed historical rival. Domestic management alone keeps you in office;
+ * the third star needs foreign policy.
+ */
+function foreignPolicyGoal(world: WorldState, player: CountryState): ObjectiveCondition {
+  const name = (id: string) => world.countries.find((c) => c.id === id)?.name ?? id;
+  const enemy = player.atWarWith[0];
+  if (enemy)
+    return {
+      kind: "WAR_ENDED",
+      targetId: player.id,
+      otherId: enemy,
+      label: `End the war with ${withArticle(name(enemy))}`,
+    };
+  const rivals = (player.history.historicalRivals ?? []).filter((id) =>
+    world.countries.some((c) => c.id === id && !c.collapsed),
+  );
+  const pool = rivals.length
+    ? rivals
+    : world.countries.filter((c) => c.id !== player.id).map((c) => c.id);
+  const worst = [...pool].sort(
+    (a, b) => (player.relations[a] ?? 0) - (player.relations[b] ?? 0),
+  )[0];
+  const now = Math.round(player.relations[worst] ?? 0);
+  const min = Math.min(20, now + 30);
+  return {
+    kind: "RELATION_MIN",
+    targetId: worst,
+    min,
+    label: `Mend ties with ${withArticle(name(worst))} (relations ${now} → ${min}+)`,
+  };
 }

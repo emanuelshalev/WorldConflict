@@ -183,3 +183,19 @@ describe("Release review fixes", () => {
     for (const d of get(next, "USA").borderDeployments) expect(d.troops).toBeGreaterThanOrEqual(0);
   });
 });
+
+describe("Game isolation", () => {
+  it("never lets one game's events leak into the next new game", () => {
+    const fresh = () => loader.newGame({ scenarioId: "2026", playerCountryId: "TUR", seed: 5, mode: "TERM" });
+    const before = JSON.stringify(fresh());
+    const played = fresh();
+    for (const c of played.countries) {
+      if (c.economyProfile) c.economyProfile.growthRate = 9;
+      c.personality.warPropensity = 100;
+      c.history.historicalRivals.push("XXX");
+      c.leader.name = "Mutated";
+    }
+    run(played, 6);
+    expect(JSON.stringify(fresh())).toBe(before);
+  });
+});
