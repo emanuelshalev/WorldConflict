@@ -5,6 +5,7 @@
  * Pure and deterministic: a dedicated seeded stream, so the calendar never perturbs the rest
  * of the simulation's randomness.
  */
+import { sharesLandBorder } from "./geography.js";
 import { combineSeed, SeededRandom } from "./seed.js";
 import type { CountryState, DecisionOption, Meeting, WorldState } from "./types.js";
 
@@ -512,9 +513,17 @@ export function generateAgenda(world: WorldState): Meeting[] {
  */
 function emergencyMeetings(world: WorldState, player: CountryState): Meeting[] {
   const out: Meeting[] = [];
-  const recent = world.director.shocks.filter(
-    (s) => world.turn - s.turn <= 1 && world.turn - s.turn >= 0,
-  );
+  // Gravest first: a nuclear strike, a new war, a lost ally, a collapsed state, a regime change
+  const GRAVITY: Record<string, number> = {
+    NUCLEAR_STRIKE: 5,
+    WAR_START: 4,
+    ALLY_LOST: 3,
+    COLLAPSE: 2,
+    REGIME_CHANGE: 1,
+  };
+  const recent = world.director.shocks
+    .filter((s) => world.turn - s.turn <= 1 && world.turn - s.turn >= 0)
+    .sort((a, b) => (GRAVITY[b.kind] ?? 0) - (GRAVITY[a.kind] ?? 0));
   const base = (n: number, kind: Meeting["kind"], templateId: string) => ({
     id: `mtg_${world.turn}_e${n}`,
     turn: world.turn,
@@ -614,6 +623,158 @@ function emergencyMeetings(world: WorldState, player: CountryState): Meeting[] {
               ],
         });
       }
+      continue;
+    }
+    const other = world.countries.find((c) => c.id === s.target);
+    if (s.kind === "ALLY_LOST" && other) {
+      const r = `relations:${other.id}`;
+      const why = other.collapsed
+        ? `${other.name} has collapsed, and our pact went down with its government`
+        : player.atWarWith.includes(other.id)
+          ? `we are now at war with ${other.name}, our own ally`
+          : `${other.name} has walked away from our defence pact`;
+      const partner = world.countries
+        .filter(
+          (c) =>
+            c.id !== player.id &&
+            c.id !== other.id &&
+            !player.alliances.includes(c.id) &&
+            !player.atWarWith.includes(c.id) &&
+            !c.collapsed,
+        )
+        .sort((a, b) => (player.relations[b.id] ?? 0) - (player.relations[a.id] ?? 0))[0];
+      out.push({
+        ...base(out.length, "STAFF", "meeting_staff"),
+        affectedCountries: [other.id],
+        speaker: "Foreign Minister",
+        title: `Emergency cabinet: we have lost ${other.name}`,
+        situation: `"${why.charAt(0).toUpperCase()}${why.slice(1)}. Every partner we have left is asking whether they are next."`,
+        options: [
+          opt(
+            "reassure",
+            "Reassure the remaining allies",
+            "Calls to every capital: our word still holds.",
+            { relationsAllies: 4, pc: -1 },
+          ),
+          ...(partner
+            ? [
+                opt(
+                  "partner",
+                  `Court ${partner.name} as a new partner`,
+                  "Fill the gap before a rival does.",
+                  { [`relations:${partner.id}`]: 6 },
+                ),
+              ]
+            : []),
+          opt("alone", "We stand on our own", "Rearm and rely on no one.", {
+            mobilization: 6,
+            approval: 1,
+            relationsAllies: -2,
+          }),
+          opt("deputy", "Let the ministry draft a statement", "Partners notice the silence.", {
+            relationsAllies: -1,
+          }),
+        ],
+      });
+      if (!other.collapsed && !player.atWarWith.includes(other.id) && out.length < 2)
+        out.push({
+          ...base(out.length, "CALL", "meeting_call"),
+          affectedCountries: [other.id],
+          withCountry: other.id,
+          speaker: leaderOf(other),
+          title: `Phone call: ${leaderOf(other)}`,
+          situation: `"The pact is over, but our countries do not have to be enemies. I wanted you to hear that from me."`,
+          options: [
+            opt("open", "Keep the door open", "Former allies, future partners.", { [r]: 5 }),
+            opt(
+              "blame",
+              "Tell them they will regret it",
+              "Satisfying, and remembered.",
+              { [r]: -6, approval: 1 },
+              1,
+            ),
+            opt("deputy", "Do not take the call", "A cold shoulder.", { [r]: -3 }),
+          ],
+        });
+      continue;
+    }
+    if (s.kind === "COLLAPSE" && other) {
+      const neighbour = sharesLandBorder(other.id, player.id) === true;
+      out.push({
+        ...base(out.length, "STAFF", "meeting_staff"),
+        affectedCountries: [other.id],
+        speaker: neighbour ? "Interior Minister" : "Defence Minister",
+        title: `Emergency cabinet: ${other.name} has collapsed`,
+        situation: neighbour
+          ? `"There is no government left in ${other.name}. Armed factions, unguarded weapons depots, and a column of refugees already at our border."`
+          : `"${other.name} has no functioning government. Militias are carving it up and its arsenal is up for grabs."`,
+        options: [
+          opt(
+            "border",
+            neighbour ? "Seal the border" : "Raise readiness",
+            "Security first. The images will be hard to watch.",
+            { mobilization: 8, stability: 2, legitimacy: -1 },
+          ),
+          opt(
+            "corridor",
+            "Open a humanitarian corridor",
+            "Costs capital and stability, earns the world's respect.",
+            { pc: -1, legitimacy: 2, stability: neighbour ? -2 : 0, relationsAllies: 2 },
+          ),
+          opt(
+            "secure",
+            "Send a team to secure the weapons",
+            "Risky, quiet, and vital if it works.",
+            { intel: 6, pc: -1 },
+            1,
+          ),
+          opt("deputy", "Monitor the situation", "Let others move first."),
+        ],
+      });
+      continue;
+    }
+    if (s.kind === "REGIME_CHANGE" && other) {
+      const r = `relations:${other.id}`;
+      const how =
+        s.by === "COUP"
+          ? "a military coup"
+          : s.by === "REVOLUTION"
+            ? "a revolution"
+            : s.by === "ASSASSINATION"
+              ? "an assassination"
+              : "a foreign-backed takeover";
+      const wasAlly = player.alliances.includes(other.id);
+      out.push({
+        ...base(out.length, "STAFF", "meeting_staff"),
+        affectedCountries: [other.id],
+        speaker: "Intelligence Chief",
+        title: `Emergency cabinet: power changes hands in ${other.name}`,
+        situation: `"${leaderOf(other)} has taken power in ${other.name} after ${how}. ${wasAlly ? "Our pact with them is suddenly in question." : "Everyone is waiting to see whether we recognise them."}"`,
+        options: [
+          opt(
+            "recognise",
+            `Recognise ${other.leader.name}`,
+            "Pragmatic. Democrats at home will object.",
+            { [r]: 8, legitimacy: -1 },
+          ),
+          opt("condemn", "Condemn and suspend aid", "Principled, and it closes a door.", {
+            [r]: -8,
+            approval: 1,
+            legitimacy: 1,
+          }),
+          opt(
+            "channel",
+            "Open a quiet channel, say nothing in public",
+            "Keep options on both sides.",
+            { [r]: 3, intel: 3 },
+          ),
+          opt(
+            "deputy",
+            "Wait for the dust to settle",
+            "Someone else will shape the new regime first.",
+          ),
+        ],
+      });
       continue;
     }
     if (s.kind !== "NUCLEAR_STRIKE") continue;

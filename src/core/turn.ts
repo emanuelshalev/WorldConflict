@@ -1,6 +1,7 @@
 import { actionCostM, actionCostPC, PC_CAP, politicalCapitalIncome } from "./costs.js";
 import { applyEffects, raiseCrisis, runDirector, scheduleFollowUp } from "./crises.js";
 import { EventEngine } from "./events.js";
+import { sharesLandBorder } from "./geography.js";
 import { generateAgenda, MEETING_SLOTS } from "./meetings.js";
 import { generateNewspaper } from "./newspaper.js";
 import { computeOutcome, earlyFailure } from "./objectives.js";
@@ -90,6 +91,9 @@ export class TurnEngine {
     const resolvedActions = new Map<string, Action[]>();
     const events: GameEvent[] = [];
     const playerBefore = world.countries.find((c) => c.id === world.playerCountryId);
+    // For the story: who was our ally and which states stood, before this month
+    const alliesBefore = [...(playerBefore?.alliances ?? [])];
+    const collapsedBefore = new Set(world.countries.filter((c) => c.collapsed).map((c) => c.id));
     const report: PlayerTurnReport = {
       turn: world.turn,
       orders: [],
@@ -445,6 +449,16 @@ export class TurnEngine {
       );
     }
 
+    if (player)
+      this.recordShocks(
+        world,
+        player,
+        alliesBefore,
+        collapsedBefore,
+        governmentChanges,
+        playerActions,
+      );
+
     world.turn += 1;
     world.date = advanceMonth(world.date);
     world.eventQueue = events;
@@ -519,6 +533,49 @@ export class TurnEngine {
     }
     world.agenda = [];
     return injected;
+  }
+
+  /**
+   * Turning points the player must answer next month (emergency meetings, meetings.ts):
+   * a coup or revolution in a country that matters to us, a state that collapsed, an ally lost.
+   */
+  private recordShocks(
+    world: WorldState,
+    player: CountryState,
+    alliesBefore: string[],
+    collapsedBefore: Set<string>,
+    changes: GovernmentChange[],
+    playerActions: Action[],
+  ): void {
+    const shocks = world.director.shocks;
+    const matters = (id: string) =>
+      alliesBefore.includes(id) ||
+      player.alliances.includes(id) ||
+      player.atWarWith.includes(id) ||
+      sharesLandBorder(id, player.id) === true ||
+      (player.history.historicalRivals ?? []).includes(id) ||
+      Math.abs(player.relations[id] ?? 0) >= 40 ||
+      ["USA", "CHN", "RUS"].includes(id);
+    for (const g of changes) {
+      if (g.isPlayerDeposed || g.countryId === player.id) continue;
+      if (!["COUP", "REVOLUTION", "ASSASSINATION", "FOREIGN_IMPOSED"].includes(g.kind)) continue;
+      if (matters(g.countryId))
+        shocks.push({ kind: "REGIME_CHANGE", by: g.kind, target: g.countryId, turn: world.turn });
+    }
+    for (const c of world.countries) {
+      if (c.collapsed && !collapsedBefore.has(c.id) && c.id !== player.id && matters(c.id))
+        shocks.push({ kind: "COLLAPSE", target: c.id, turn: world.turn });
+    }
+    for (const id of alliesBefore) {
+      if (player.alliances.includes(id)) continue;
+      // Breaking the pact ourselves is a choice, not a shock
+      if (
+        playerActions.some((a) => a.type === "DIPLOMACY_BREAK_ALLIANCE" && a.targetCountryId === id)
+      )
+        continue;
+      shocks.push({ kind: "ALLY_LOST", target: id, turn: world.turn });
+    }
+    if (shocks.length > 40) shocks.splice(0, shocks.length - 40);
   }
 
   // --------------------------------------------------------------------
