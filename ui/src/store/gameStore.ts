@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { pcCost } from '../lib/actions';
 
 export type TurnPhase = 'news' | 'briefing' | 'diplomacy' | 'military' | 'domestic' | 'confirm';
 
@@ -172,7 +173,15 @@ export interface ConditionStatus {
 
 export interface TurnReport {
   turn: number;
-  orders: Array<{ label: string; ok: boolean; detail: string; type?: string; target?: string }>;
+  orders: Array<{
+    label: string;
+    ok: boolean;
+    detail: string;
+    type?: string;
+    target?: string;
+    story?: string;
+    facts?: Array<{ label: string; before: number; after: number; unit?: string; good?: boolean }>;
+  }>;
   decisions: Array<{ title: string; choice: string; templateId?: string }>;
   deltas: Record<string, { before: number; after: number }>;
   causes: string[];
@@ -249,7 +258,7 @@ export interface WorldState {
   flashpointId: string | null;
   objective: Objective | null;
   politicalCapital: number;
-  director: { closeCalls: number; rallies: number; inDanger: boolean; lowPoint: number; record?: Record<string, number>; counterIntelUntil?: number; denounceTurns?: number[] };
+  director: { closeCalls: number; rallies: number; inDanger: boolean; lowPoint: number; record?: Record<string, number>; counterIntelUntil?: number; denounceTurns?: number[]; ledger?: Record<string, Array<{ turn: number; value: number; target?: string }>> };
   turnReport: TurnReport | null;
   outcome: Outcome | null;
   pendingDecisions: PendingDecision[];
@@ -682,9 +691,7 @@ export const useGameStore = create<GameState>((set) => ({
   // Same rules as the engine (turn.ts): one of each order per target, at most 6 a month
   addPendingAction: (action) =>
     set((state) => {
-      const key = (a: PendingAction) =>
-        `${a.type}:${a.targetCountryId ?? ''}:${String(a.params?.targetType ?? a.params?.tactic ?? '')}`;
-      if (state.pendingActions.some((a) => key(a) === key(action)))
+      if (state.pendingActions.some((a) => orderKey(a) === orderKey(action)))
         return { error: `"${action.label}" is already on your desk this month` };
       if (state.pendingActions.length >= 6) return { error: 'At most 6 orders a month' };
       return { pendingActions: [...state.pendingActions, action] };
@@ -891,6 +898,55 @@ export async function fetchPreview(action: {
   } catch {
     return null;
   }
+}
+
+/**
+ * Political capital left this month: the bank, plus or minus the crisis answers (an unanswered
+ * crisis falls to its default option, so it counts), minus the orders already queued.
+ */
+export function capitalLeft(state: GameState = useGameStore.getState()): number {
+  const world = state.worldState;
+  if (!world) return 0;
+  const crisisPc = state.pendingDecisions.reduce((sum, d) => {
+    const option = d.options.find((o) => o.id === (state.decisionChoices[d.id] ?? d.defaultOptionId ?? d.options[0]?.id));
+    return sum + (option?.effects.pc ?? 0);
+  }, 0);
+  return Math.max(0, world.politicalCapital + crisisPc) - state.pendingActions.reduce((s, a) => s + pcCost(a.type), 0);
+}
+
+/** The key the engine uses for "one of each order per target" (turn.ts). */
+export function orderKey(a: Pick<PendingAction, 'type' | 'targetCountryId' | 'params'>): string {
+  return `${a.type}:${a.targetCountryId ?? ''}:${String(a.params?.targetType ?? a.params?.tactic ?? '')}`;
+}
+
+/**
+ * Queue an order exactly as the desk does: confirm a nuclear strike, check political capital,
+ * fetch the server preview, refuse a blocked order, confirm a mission warning, then add it
+ * (the store still refuses duplicates and a 7th order). Resolves true when the order was queued.
+ * Used by the desk and by the map's action menu so both paths behave identically.
+ */
+export async function queueOrder(a: PendingAction): Promise<boolean> {
+  const store = useGameStore.getState();
+  if (
+    a.type === 'NUCLEAR_STRIKE' &&
+    !window.confirm(
+      `${a.label}?\n\nThis cannot be undone. Hundreds of thousands will die, the world will embargo you, and retaliation may end everything.`,
+    )
+  )
+    return false;
+  if (pcCost(a.type) > capitalLeft(store)) {
+    store.setError(`Not enough political capital for "${a.label}" (${pcCost(a.type)} needed)`);
+    return false;
+  }
+  const preview = await fetchPreview({ type: a.type, targetCountryId: a.targetCountryId, value: a.value, params: a.params });
+  if (preview?.blocked) {
+    useGameStore.getState().setError(preview.blocked);
+    return false;
+  }
+  if (preview?.missionWarning && !window.confirm(`${preview.missionWarning}\n\nGive the order "${a.label}" anyway?`)) return false;
+  const before = useGameStore.getState().pendingActions.length;
+  useGameStore.getState().addPendingAction({ ...a, preview: preview ?? undefined });
+  return useGameStore.getState().pendingActions.length > before;
 }
 
 export async function fetchEndReport(): Promise<void> {

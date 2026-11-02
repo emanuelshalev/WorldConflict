@@ -56,7 +56,7 @@ export function Chronicle() {
   const ref = useModalFocus<HTMLDivElement>(!!(show && world && me) && !reel);
   if (!show || !world || !me) return null;
   if (reel && report0)
-    return <OutcomeReel report={report0} date={world.date} turn={world.turn} home={me.id} onDone={() => setReelTurn(world.turn)} />;
+    return <OutcomeReel ledger={world.director.ledger} report={report0} date={world.date} turn={world.turn} home={me.id} onDone={() => setReelTurn(world.turn)} />;
 
   const news = world.newspaper;
   const lead = news.find((n) => n.relatedCountries.includes(me.id)) ?? news[0];

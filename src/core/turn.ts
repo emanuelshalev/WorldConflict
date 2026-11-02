@@ -3,6 +3,7 @@ import { applyEffects, raiseCrisis, runDirector, scheduleFollowUp } from "./cris
 import { EventEngine } from "./events.js";
 import { generateNewspaper } from "./newspaper.js";
 import { computeOutcome, earlyFailure } from "./objectives.js";
+import { failStory, ledgerEntry, orderFacts, orderStory, snapshot } from "./outcomes.js";
 import { updateScore } from "./scoring.js";
 import { combineSeed, SeededRandom } from "./seed.js";
 import { covertEvent, resolveCovertOp } from "./systems/covert.js";
@@ -212,6 +213,11 @@ export class TurnEngine {
         }
         const stabilityBefore = playerState?.stability ?? 0;
         const targetStabilityBefore = covertTarget?.stability ?? 0;
+        const reported = isPlayer && !injected.has(action);
+        const orderTarget = action.targetCountryId
+          ? world.countries.find((c) => c.id === action.targetCountryId)
+          : undefined;
+        const snapBefore = reported ? snapshot(world, actor, orderTarget) : null;
         const outcome = this.applyAction(world, actor, action, rng, events, governmentChanges);
         if (hitsPlayer && playerState) {
           covertDamage += Math.max(0, stabilityBefore - playerState.stability);
@@ -246,14 +252,42 @@ export class TurnEngine {
         if (isPlayer) tensionAfterPlayer = world.globalTension;
         if (isPlayer && !injected.has(action)) {
           const covert = outcome.covert;
+          const snapAfter = snapshot(world, actor, orderTarget);
+          const facts = snapBefore
+            ? orderFacts(action.type, orderTarget?.name ?? "", snapBefore, snapAfter)
+            : [];
+          const done = covert ? covert.success : outcome.ok;
+          const count = world.director.record[action.type] ?? 0;
+          const story = !snapBefore
+            ? ""
+            : done && !covert
+              ? orderStory(action, actor, orderTarget, snapBefore, snapAfter, count, world.turn)
+              : !done
+                ? failStory(action, orderTarget, outcome.reason, snapAfter, world.turn)
+                : "";
+          if (done) {
+            const value = ledgerEntry(action.type, snapAfter);
+            if (value !== null) {
+              world.director.ledger[action.type] ??= [];
+              const line = world.director.ledger[action.type];
+              line.push({
+                turn: world.turn,
+                value,
+                ...(orderTarget ? { target: orderTarget.id } : {}),
+              });
+              if (line.length > 24) line.splice(0, line.length - 24);
+            }
+          }
           report.orders.push({
             ...orderTag(world, action),
-            ok: covert ? covert.success : outcome.ok,
+            ok: done,
             detail: covert
               ? `${covert.success ? "Success" : "Failed"}: ${outcome.reason}`
               : outcome.ok
                 ? outcome.reason || "Carried out"
                 : outcome.reason,
+            ...(story ? { story } : {}),
+            ...(facts.length ? { facts } : {}),
           });
           if (covert?.toppled)
             report.moments.push(action.type === "INTEL_COUP" ? "REGIME CHANGE" : "ASSASSINATION");

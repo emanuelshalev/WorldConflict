@@ -18,7 +18,7 @@ const FLASHES: Array<[number, number, number, number]> = [
 function Leader({ f, x, flip, rim, tie }: { f: (n: string) => string; x: number; flip: boolean; rim: string; tie: string }) {
   return (
     <g transform={`translate(${x} 178) scale(${flip ? -1.2 : 1.2} 1.05)`}>
-      <g className="summit-bob" style={{ animationDelay: flip ? '-2.5s' : '0s' }}>
+      <g>
         <path d="M-20 -80 Q-30 -40 -24 -4" stroke="#121722" strokeWidth="11" fill="none" strokeLinecap="round" />
         <path d="M-18 2 L-3 2 L-6 84 L-18 84 Z" fill="#141924" />
         <path d="M2 2 L18 2 L16 84 L4 84 Z" fill="#1b2130" />
@@ -28,10 +28,13 @@ function Leader({ f, x, flip, rim, tie }: { f: (n: string) => string; x: number;
         <path d="M2 -90 L9 -68 L15 -89 Z" fill="#e1e5eb" />
         <path d="M6.5 -87 L10.5 -87 L11.5 -74 L8.8 -68 L6.2 -74 Z" fill={tie} />
         <path d="M24 -74 L26 6" stroke={rim} strokeWidth="1.6" opacity="0.8" />
-        <rect x="-1" y="-99" width="10" height="10" fill="#241b19" />
-        <ellipse cx="4" cy="-107" rx="10.5" ry="12.5" fill={f('head')} />
-        <path d="M-6.8 -108 Q-7 -121 4 -121 Q15 -121 14.8 -110 Q9 -114 3 -113 Q-1 -110 -6.8 -108Z" fill="#0d0c0f" />
-        <path d="M13.5 -114 Q15.5 -106 12 -98" stroke={rim} strokeWidth="1.6" fill="none" opacity="0.9" strokeLinecap="round" />
+        {/* Only the head nods (pivot at the neck), so the handshake arms stay on the shoulders */}
+        <g className="summit-bob" style={{ animationDelay: flip ? '-2.5s' : '0s' }}>
+          <rect x="-1" y="-99" width="10" height="10" fill="#241b19" />
+          <ellipse cx="4" cy="-107" rx="10.5" ry="12.5" fill={f('head')} />
+          <path d="M-6.8 -108 Q-7 -121 4 -121 Q15 -121 14.8 -110 Q9 -114 3 -113 Q-1 -110 -6.8 -108Z" fill="#0d0c0f" />
+          <path d="M13.5 -114 Q15.5 -106 12 -98" stroke={rim} strokeWidth="1.6" fill="none" opacity="0.9" strokeLinecap="round" />
+        </g>
       </g>
     </g>
   );
@@ -130,10 +133,22 @@ export default function Summit({ a, b, mood }: SceneArtProps) {
       <Leader f={f} x={372} flip rim={key} tie={tieB} />
 
       {/* The handshake */}
+      {/* Jointed arms: shoulder and elbow pivots, so the clasped hands pump without detaching */}
+      <g className="summit-armL">
+        <path d="M289 95 Q294 120 298 132" stroke="#232b3c" strokeWidth="11" fill="none" strokeLinecap="round" />
+        <g className="summit-foreL">
+          <path d="M298 132 L316 128" stroke="#232b3c" strokeWidth="11" fill="none" strokeLinecap="round" />
+          <path d="M309 129 L314 125" stroke="#e6e9ee" strokeWidth="6" strokeLinecap="round" />
+        </g>
+      </g>
+      <g className="summit-armR">
+        <path d="M351 95 Q346 120 342 132" stroke="#1b2130" strokeWidth="11" fill="none" strokeLinecap="round" />
+        <g className="summit-foreR">
+          <path d="M342 132 L324 128" stroke="#1b2130" strokeWidth="11" fill="none" strokeLinecap="round" />
+          <path d="M331 129 L326 125" stroke="#e6e9ee" strokeWidth="6" strokeLinecap="round" />
+        </g>
+      </g>
       <g className="summit-shake">
-        <path d="M289 95 Q294 120 298 132 L316 128" stroke="#232b3c" strokeWidth="11" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M351 95 Q346 120 342 132 L324 128" stroke="#1b2130" strokeWidth="11" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M309 129 L314 125 M331 129 L326 125" stroke="#e6e9ee" strokeWidth="6" strokeLinecap="round" />
         <ellipse cx="320" cy="128" rx="9" ry="6.5" fill="#4a3428" />
         <path d="M313 124 Q320 120 327 124" stroke={key} strokeWidth="1.4" fill="none" opacity="0.9" />
       </g>

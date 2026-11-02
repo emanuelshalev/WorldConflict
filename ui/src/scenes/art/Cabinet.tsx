@@ -1,5 +1,6 @@
 import { useId } from 'react';
 import type { SceneArtProps } from './types';
+import NationFlag from './Flag';
 import './civic.css';
 
 const KEY = { good: '#ffc66e', bad: '#ff7a52', neutral: '#ffd9a1' };
@@ -90,12 +91,6 @@ export default function Cabinet({ a, mood }: SceneArtProps) {
           <stop offset="0.35" stopColor={key} stopOpacity="0.7" />
           <stop offset="1" stopColor={key} stopOpacity="0" />
         </radialGradient>
-        <linearGradient id={u('fa')} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0.333" stopColor={a[0]} />
-          <stop offset="0.333" stopColor={a[1]} />
-          <stop offset="0.666" stopColor={a[1]} />
-          <stop offset="0.666" stopColor={a[2]} />
-        </linearGradient>
         <linearGradient id={u('fold')} x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stopColor="#000" stopOpacity="0.55" />
           <stop offset="0.25" stopColor="#fff" stopOpacity="0.12" />
@@ -133,7 +128,7 @@ export default function Cabinet({ a, mood }: SceneArtProps) {
       <rect x="110" y="62" width="3" height="150" fill="#8a6b3a" />
       <circle cx="111.5" cy="60" r="4" fill="#d8b46a" />
       <g className="cab-flag">
-        <path d="M113 66 Q132 70 152 66 L148 150 Q130 158 113 150 Z" fill={f('fa')} />
+        <NationFlag colors={a} x={113} y={64} w={39} h={92} d="M113 66 Q132 70 152 66 L148 150 Q130 158 113 150 Z" />
         <path d="M113 66 Q132 70 152 66 L148 150 Q130 158 113 150 Z" fill={f('fold')} />
       </g>
 

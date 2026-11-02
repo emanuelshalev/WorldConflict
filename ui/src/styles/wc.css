@@ -1696,3 +1696,120 @@ button {
 }
 .desk .option { background: rgba(255, 255, 255, 0.03); }
 .desk .option:hover { background: rgba(255, 255, 255, 0.06); }
+
+/* =========================================================================
+   Map actions & outcome map (MapActionMenu.tsx, OutcomeMap.tsx)
+   ========================================================================= */
+.map-action-menu {
+  position: absolute;
+  z-index: 8;
+  width: 252px;
+  max-width: calc(100vw - 24px);
+  background: rgba(12, 17, 27, 0.94);
+  backdrop-filter: blur(14px) saturate(1.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow);
+  padding: 8px;
+  color: var(--text-1);
+  font-size: 12.5px;
+  animation: mam-in 160ms var(--ease-out);
+  transform-origin: top left;
+}
+@keyframes mam-in {
+  from { opacity: 0; transform: scale(0.94) translateY(-4px); }
+  to { opacity: 1; transform: none; }
+}
+.mam-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 2px 8px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 6px;
+}
+.mam-flag { font-size: 20px; line-height: 1; }
+.mam-title { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.mam-title b { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mam-rel { font-size: 11px; color: var(--text-3); text-transform: capitalize; }
+.mam-rel.warm { color: var(--ally); }
+.mam-rel.cold { color: var(--rival); }
+.mam-rel.war { color: var(--war); text-transform: none; font-weight: 600; }
+.mam-pc { color: var(--accent); font-size: 12px; }
+.mam-close {
+  background: none;
+  border: none;
+  color: var(--text-3);
+  cursor: pointer;
+  padding: 2px;
+  display: inline-flex;
+  border-radius: 4px;
+}
+.mam-close:hover { color: var(--text-1); background: rgba(255, 255, 255, 0.06); }
+.mam-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+.mam-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 6px 7px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--r-sm);
+  color: var(--text-1);
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 120ms, border-color 120ms;
+}
+.mam-item:hover:not(:disabled),
+.mam-item:focus-visible { background: rgba(255, 255, 255, 0.08); }
+.mam-item.fam-diplo:hover:not(:disabled) { border-color: #4c8dff; }
+.mam-item.fam-mil:hover:not(:disabled) { border-color: #ff5a4f; }
+.mam-item.fam-intel:hover:not(:disabled) { border-color: #36c5f0; }
+.mam-item.fam-nuke:hover:not(:disabled) { border-color: #f5d547; }
+.mam-item.danger .mam-label { color: #ffb4a8; }
+.mam-item:disabled { opacity: 0.4; cursor: not-allowed; }
+.mam-label { flex: 1; min-width: 0; line-height: 1.15; }
+.mam-cost { font-size: 10.5px; color: var(--accent); }
+.mam-dossier {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 6px;
+  padding: 7px 8px;
+  background: transparent;
+  border: 1px dashed var(--line-2);
+  border-radius: var(--r-sm);
+  color: var(--text-1);
+  font-size: 12.5px;
+  cursor: pointer;
+}
+.mam-dossier:hover { background: rgba(255, 255, 255, 0.05); }
+.mam-hint { margin-left: auto; font-size: 10.5px; color: var(--text-3); }
+@media (max-width: 520px) {
+  .map-action-menu { width: 236px; padding: 6px; }
+  .mam-item { min-height: 36px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .map-action-menu { animation: none; }
+}
+.map-action-menu.sheet {
+  position: fixed;
+  left: 8px;
+  right: 8px;
+  bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  top: auto;
+  width: auto;
+  max-width: 480px;
+  margin: 0 auto;
+  z-index: 45;
+  padding: 10px;
+  transform-origin: bottom center;
+  animation-name: mam-sheet-in;
+}
+@keyframes mam-sheet-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}

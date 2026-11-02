@@ -1,5 +1,6 @@
 import { useId } from 'react';
 import type { SceneArtProps } from './types';
+import NationFlag from './Flag';
 import './civic.css';
 
 const KEY = { good: '#ffd38a', bad: '#ff8a6a', neutral: '#fff0d6' };
@@ -22,14 +23,16 @@ const FLASHES: Array<[number, number, number, number]> = [
   [104, 244, 0, 3.7], [233, 251, -1.4, 4.3], [425, 247, -2.6, 3.1], [556, 240, -0.7, 5.2], [30, 270, -3.3, 4.9], [612, 276, -2.1, 3.9],
 ];
 
-function Flag({ f, x, flip }: { f: (n: string) => string; x: number; flip: boolean }) {
+function Flag({ f, x, flip, colors }: { f: (n: string) => string; x: number; flip: boolean; colors: readonly string[] }) {
   const d = flip ? 'M0 0 Q-22 4 -44 0 L-40 104 Q-20 112 0 104 Z' : 'M0 0 Q22 4 44 0 L40 104 Q20 112 0 104 Z';
   return (
     <g transform={`translate(${x} 46)`}>
       <rect x="-1.5" y="-6" width="3" height="214" fill="#b89558" />
       <circle cy="-8" r="4.5" fill="#e6c27a" />
       <g className="press-flag" style={{ animationDelay: flip ? '-3s' : '0s' }}>
-        <path d={d} fill={f('fa')} />
+        <g transform={flip ? 'scale(-1 1)' : undefined}>
+          <NationFlag colors={colors} x={0} y={0} w={44} h={112} d="M0 0 Q22 4 44 0 L40 104 Q20 112 0 104 Z" />
+        </g>
         <path d={d} fill={f('fold')} />
       </g>
     </g>
@@ -80,12 +83,6 @@ export default function Press({ a, mood }: SceneArtProps) {
           <stop offset="0" stopColor="#6e5040" />
           <stop offset="1" stopColor="#231a17" />
         </radialGradient>
-        <linearGradient id={u('fa')} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0.333" stopColor={a[0]} />
-          <stop offset="0.333" stopColor={a[1]} />
-          <stop offset="0.666" stopColor={a[1]} />
-          <stop offset="0.666" stopColor={a[2]} />
-        </linearGradient>
         <linearGradient id={u('fold')} x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stopColor="#000" stopOpacity="0.5" />
           <stop offset="0.3" stopColor="#fff" stopOpacity="0.14" />
@@ -112,8 +109,8 @@ export default function Press({ a, mood }: SceneArtProps) {
       <ellipse className="press-beam" cx="320" cy="120" rx="190" ry="140" fill={f('spot')} />
       <path className="press-beam" d="M270 -10 L370 -10 L470 260 L170 260 Z" fill={f('beam')} />
 
-      <Flag f={f} x={196} flip={false} />
-      <Flag f={f} x={444} flip />
+      <Flag f={f} x={196} flip={false} colors={a} />
+      <Flag f={f} x={444} flip colors={a} />
 
       {/* Stage */}
       <rect y="252" width="640" height="108" fill="#0b0d14" />

@@ -1,5 +1,6 @@
 import { useId } from 'react';
 import type { SceneArtProps } from './types';
+import NationFlag from './Flag';
 import './civic.css';
 
 const KEY = { good: '#ffcc78', bad: '#ff8a66', neutral: '#ffe0b0' };
@@ -17,14 +18,14 @@ const FLASHES: Array<[number, number, number, number]> = [
   [150, 290, 0, 3.9], [494, 288, -1.7, 4.6], [262, 296, -2.9, 3.3], [604, 282, -0.9, 5.1], [40, 284, -3.6, 4.2],
 ];
 
-function Flag({ f, x, id, delay }: { f: (n: string) => string; x: number; id: string; delay: number }) {
+function Flag({ f, x, colors, delay }: { f: (n: string) => string; x: number; colors: readonly string[]; delay: number }) {
   const d = 'M0 0 Q18 4 36 0 L32 92 Q16 100 0 92 Z';
   return (
     <g transform={`translate(${x} 44)`}>
       <rect x="-1.5" y="-6" width="3" height="160" fill="#b28f55" />
       <circle cy="-8" r="4" fill="#e3bf77" />
       <g className="sign-flag" style={{ animationDelay: `${delay}s` }}>
-        <path d={d} fill={f(id)} />
+        <NationFlag colors={colors} x={0} y={0} w={36} h={98} d={d} />
         <path d={d} fill={f('fold')} />
       </g>
     </g>
@@ -48,11 +49,15 @@ function Signer({ f, x, rim, tie, delay, arms }: { f: (n: string) => string; x: 
     <g>
       <path d={`M${x - 34} 170 Q${x - 50} 200 ${x - 30} 222`} stroke="#1a2030" strokeWidth="16" fill="none" strokeLinecap="round" />
       <ellipse cx={x - 24} cy="224" rx="8" ry="5.5" fill="#4a3428" />
-      <g className="sign-pen" style={{ animationDelay: `${delay}s` }}>
-        <path d={`M${x + 34} 170 Q${x + 48} 200 ${x + 20} 222`} stroke="#232b3c" strokeWidth="16" fill="none" strokeLinecap="round" />
-        <ellipse cx={x + 16} cy="224" rx="8" ry="5.5" fill="#4a3428" />
-        <path d={`M${x + 12} 228 L${x + 30} 206`} stroke="#0e0e12" strokeWidth="3" strokeLinecap="round" />
-        <path d={`M${x + 27} 210 L${x + 30} 206`} stroke="#d8b46a" strokeWidth="3" strokeLinecap="round" />
+      {/* Jointed arm: shoulder and elbow pivots, the pen tip traces the signature */}
+      <g className="sign-arm" style={{ animationDelay: `${delay}s`, transformOrigin: `${x + 30}px 160px` }}>
+        <path d={`M${x + 30} 160 L${x + 42} 196`} stroke="#232b3c" strokeWidth="16" fill="none" strokeLinecap="round" />
+        <g className="sign-fore" style={{ animationDelay: `${delay}s`, transformOrigin: `${x + 42}px 196px` }}>
+          <path d={`M${x + 42} 196 L${x + 20} 220`} stroke="#232b3c" strokeWidth="16" fill="none" strokeLinecap="round" />
+          <ellipse cx={x + 16} cy="224" rx="8" ry="5.5" fill="#4a3428" />
+          <path d={`M${x + 12} 228 L${x + 30} 206`} stroke="#0e0e12" strokeWidth="3" strokeLinecap="round" />
+          <path d={`M${x + 27} 210 L${x + 30} 206`} stroke="#d8b46a" strokeWidth="3" strokeLinecap="round" />
+        </g>
       </g>
     </g>
   );
@@ -66,14 +71,6 @@ export default function Signing({ a, b, mood }: SceneArtProps) {
   const win = WIN[mood];
   const tieA = a[2] === '#ffffff' ? a[0] : a[2];
   const tieB = b[2] === '#ffffff' ? b[0] : b[2];
-  const stripes = (id: string, c: [string, string, string]) => (
-    <linearGradient id={u(id)} x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0.333" stopColor={c[0]} />
-      <stop offset="0.333" stopColor={c[1]} />
-      <stop offset="0.666" stopColor={c[1]} />
-      <stop offset="0.666" stopColor={c[2]} />
-    </linearGradient>
-  );
   return (
     <svg viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice" className="art art-signing" aria-hidden>
       <defs>
@@ -111,8 +108,6 @@ export default function Signing({ a, b, mood }: SceneArtProps) {
           <stop offset="0" stopColor="#6e4f3e" />
           <stop offset="1" stopColor="#231a17" />
         </radialGradient>
-        {stripes('fa', a)}
-        {stripes('fb', b)}
         <linearGradient id={u('fold')} x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stopColor="#000" stopOpacity="0.5" />
           <stop offset="0.3" stopColor="#fff" stopOpacity="0.14" />
@@ -143,10 +138,10 @@ export default function Signing({ a, b, mood }: SceneArtProps) {
       <ellipse className="sign-glow" cx="320" cy="40" rx="220" ry="90" fill={f('glow')} />
       <rect y="196" width="640" height="164" fill="#0d0f14" />
 
-      <Flag f={f} x={186} id="fa" delay={0} />
-      <Flag f={f} x={236} id="fa" delay={-2} />
-      <Flag f={f} x={404} id="fb" delay={-3.5} />
-      <Flag f={f} x={454} id="fb" delay={-1} />
+      <Flag f={f} x={186} colors={a} delay={0} />
+      <Flag f={f} x={236} colors={a} delay={-2} />
+      <Flag f={f} x={404} colors={b} delay={-3.5} />
+      <Flag f={f} x={454} colors={b} delay={-1} />
 
       {STAFF.map(([x, s, d]) => (
         <g key={x} transform={`translate(${x} 214) scale(${s})`} opacity="0.85">
@@ -177,16 +172,16 @@ export default function Signing({ a, b, mood }: SceneArtProps) {
           {[211, 216, 221].map((y) => (
             <path key={y} d={`M${x - 26} ${y} H${x - 6}`} stroke="#8a8478" strokeWidth="1.4" />
           ))}
-          <path d={`M${x + 4} 222 Q${x + 9} 214 ${x + 13} 222 T${x + 24} 220`} stroke="#13204a" strokeWidth="1.4" fill="none" />
+          <path className="sign-ink" style={{ animationDelay: `${x < 320 ? 0 : -3}s` }} pathLength={30} d={`M${x + 4} 222 Q${x + 9} 214 ${x + 13} 222 T${x + 24} 220`} stroke="#13204a" strokeWidth="1.4" fill="none" strokeLinecap="round" />
         </g>
       ))}
       <Signer f={f} x={222} rim={key} tie={tieA} delay={0} arms />
-      <Signer f={f} x={418} rim={key} tie={tieB} delay={-1.4} arms />
+      <Signer f={f} x={418} rim={key} tie={tieB} delay={-3} arms />
       <rect x="304" y="198" width="32" height="8" rx="2" fill="#2a1a10" />
       <rect x="309" y="164" width="1.5" height="34" fill="#c9a35e" />
       <rect x="329" y="164" width="1.5" height="34" fill="#c9a35e" />
-      <rect x="296" y="165" width="13" height="10" fill={f('fa')} />
-      <rect x="331" y="165" width="13" height="10" fill={f('fb')} />
+      <NationFlag colors={a} x={296} y={165} w={13} h={10} />
+      <NationFlag colors={b} x={331} y={165} w={13} h={10} />
 
       {/* Photographers */}
       {SNAPS.map(([x, y, t]) => (

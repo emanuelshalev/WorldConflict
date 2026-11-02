@@ -6,8 +6,9 @@ import {
   type Objective,
   type PendingDecision,
   countryName,
+  capitalLeft,
   executeTurn,
-  fetchPreview,
+  queueOrder,
   useGameStore,
   usePlayerCountry,
 } from '../store/gameStore';
@@ -336,7 +337,6 @@ export function Desk() {
   const pendingDecisions = useGameStore((s) => s.pendingDecisions);
   const decisionChoices = useGameStore((s) => s.decisionChoices);
   const pendingActions = useGameStore((s) => s.pendingActions);
-  const addPendingAction = useGameStore((s) => s.addPendingAction);
   const removePendingAction = useGameStore((s) => s.removePendingAction);
   const selectedCountryId = useGameStore((s) => s.selectedCountryId);
   const view = useGameStore((s) => s.playerView);
@@ -365,24 +365,12 @@ export function Desk() {
     const option = d.options.find((o) => o.id === (decisionChoices[d.id] ?? d.defaultOptionId ?? d.options[0]?.id));
     return sum + (option?.effects.pc ?? 0);
   }, 0);
-  const pcLeft = Math.max(0, world.politicalCapital + crisisPc) - pendingActions.reduce((s, a) => s + pcCost(a.type), 0);
+  const pcLeft = capitalLeft(); // same rule the map menu and queueOrder use
   const unanswered = pendingDecisions.filter((d) => !decisionChoices[d.id]);
   const effectiveTarget = target || selectedCountryId || '';
 
-  const add = async (a: PendingAction) => {
-    if (a.type === 'NUCLEAR_STRIKE' && !window.confirm(`${a.label}?\n\nThis cannot be undone. Hundreds of thousands will die, the world will embargo you, and retaliation may end everything.`)) return;
-    if (pcCost(a.type) > pcLeft) {
-      useGameStore.getState().setError(`Not enough political capital for "${a.label}" (${pcCost(a.type)} needed)`);
-      return;
-    }
-    const preview = await fetchPreview({ type: a.type, targetCountryId: a.targetCountryId, value: a.value, params: a.params });
-    if (preview?.blocked) {
-      useGameStore.getState().setError(preview.blocked);
-      return;
-    }
-    if (preview?.missionWarning && !window.confirm(`${preview.missionWarning}\n\nGive the order "${a.label}" anyway?`)) return;
-    addPendingAction({ ...a, preview: preview ?? undefined });
-  };
+  // The map's action menu queues through the same helper
+  const add = (a: PendingAction) => void queueOrder(a);
 
   return (
     <section className="desk">

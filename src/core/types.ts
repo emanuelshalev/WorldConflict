@@ -693,6 +693,13 @@ export const DirectorStateSchema = z.object({
   inDanger: z.boolean().default(false),
   // What the player actually did: action type → times carried out ("TYPE:tried" counts attempts)
   record: z.record(z.string(), z.number()).default({}),
+  // Headline number of each order type after each use: the evolution of a line of policy
+  ledger: z
+    .record(
+      z.string(),
+      z.array(z.object({ turn: z.number(), value: z.number(), target: z.string().optional() })),
+    )
+    .default({}),
 });
 export type DirectorState = z.infer<typeof DirectorStateSchema>;
 
@@ -708,6 +715,18 @@ export const PlayerTurnReportSchema = z.object({
         detail: z.string(),
         type: z.string().optional(), // action type, for the UI scene
         target: z.string().optional(),
+        story: z.string().optional(), // a short dispatch of what the order did
+        facts: z
+          .array(
+            z.object({
+              label: z.string(),
+              before: z.number(),
+              after: z.number(),
+              unit: z.string().optional(),
+              good: z.boolean().optional(),
+            }),
+          )
+          .optional(),
       }),
     )
     .default([]),
@@ -771,6 +790,7 @@ export const WorldStateSchema = z.object({
     closeCalls: 0,
     inDanger: false,
     record: {},
+    ledger: {},
   }),
   turnReport: PlayerTurnReportSchema.nullable().default(null),
   outcome: z

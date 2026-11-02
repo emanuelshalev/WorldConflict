@@ -1,4 +1,9 @@
 /* Security and crisis scene art: war_room, deployment, airstrike, nuclear, covert, disaster */
+
+/* Staggered loops use positive animation-delay: hold the first keyframe during the delay instead of
+   showing the un-animated pose and popping into the loop when it starts. */
+svg.art [class] { animation-fill-mode: backwards; }
+
 .art-war_room [class^='wr-'], .art-deployment [class^='dp-'], .art-airstrike [class^='as-'],
 .art-nuclear [class^='nu-'], .art-covert [class^='cv-'], .art-disaster [class^='ds-'] {
   transform-box: fill-box;
@@ -87,7 +92,8 @@
   0% { transform: scale(0.2); opacity: 0; }
   6% { transform: scale(1.1); opacity: 1; }
   40% { transform: scale(1); opacity: 0.75; }
-  100% { transform: scale(0.85); opacity: 0.45; }
+  75% { transform: scale(0.9); opacity: 0.45; }
+  100% { transform: scale(0.85); opacity: 0; }
 }
 .art-airstrike .as-ring { animation: airstrike-ring 5s ease-out infinite; }
 @keyframes airstrike-ring {
@@ -143,9 +149,9 @@
 }
 .art-covert .cv-reticle { animation: covert-lock 5s ease-in-out infinite; }
 @keyframes covert-lock {
-  0% { transform: scale(1.5); opacity: 0.2; }
+  0% { transform: scale(1.5); opacity: 0; }
   20%, 80% { transform: scale(1); opacity: 1; }
-  100% { transform: scale(1); opacity: 0.85; }
+  100% { transform: scale(1.5); opacity: 0; }
 }
 .art-covert .cv-arc { stroke-dasharray: 3 3; animation: covert-arc 4s linear infinite; }
 @keyframes covert-arc { to { stroke-dashoffset: -36; } }

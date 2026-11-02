@@ -33,7 +33,7 @@ async function startGame(page) {
   const browser = await chromium.launch();
 
   // 1) Globe: chrome hidden, slow spin across the hot zones
-  if (process.argv[2] !== 'reel') {
+  if (!process.argv[2] || process.argv[2] === 'globe') {
     const ctx = await browser.newContext({ viewport: { width: 1600, height: 900 }, recordVideo: { dir: TMP, size: { width: 1600, height: 900 } } });
     const page = await ctx.newPage();
     await startGame(page);
@@ -57,7 +57,7 @@ async function startGame(page) {
   }
 
   // 2) Desk still, then the outcome reel and the paper
-  if (process.argv[2] !== 'globe') {
+  if (!process.argv[2] || process.argv[2] === 'reel') {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, recordVideo: { dir: TMP, size: { width: 1440, height: 900 } } });
     const page = await ctx.newPage();
     await startGame(page);
@@ -82,6 +82,58 @@ async function startGame(page) {
     enc(raw, path.join(OUT, 'clips', 'reel.mp4'), -17.5, 15, 1280, 28);
     fs.unlinkSync(raw);
     console.log('reel done');
+  }
+  // 3) Timeline footage: inspect the world, the briefing card, advisors, execute
+  if (process.argv[2] === 'flow' || !process.argv[2]) {
+    const still = (name) => path.join(OUT, 'img', name);
+    {
+      const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, recordVideo: { dir: TMP, size: { width: 1440, height: 900 } } });
+      const page = await ctx.newPage();
+      await startGame(page);
+      await page.waitForTimeout(1200);
+      await page.locator('.desk .crisis').first().screenshot({ path: still('briefing.jpg'), quality: 85, type: 'jpeg' });
+      // Collapse the desk, then walk the map layers and open a dossier
+      await page.locator('.desk-head button').first().click();
+      await page.waitForTimeout(1200);
+      for (const name of [/Military/, /Economic/, /Stability/, /Nuclear/, /Relations/]) {
+        await page.locator('.layer-bar button', { hasText: name }).first().click().catch(() => {});
+        await page.waitForTimeout(1700);
+      }
+      await page.mouse.click(820, 330);
+      await page.waitForTimeout(3000);
+      const v = page.video();
+      await ctx.close();
+      const raw = await v.path();
+      enc(raw, path.join(OUT, 'clips', 'inspect.mp4'), -12.5, 12, 1280, 28);
+      execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-ss', '3', '-i', path.join(OUT, 'clips', 'inspect.mp4'), '-frames:v', '1', '-q:v', '4', path.join(OUT, 'clips', 'inspect.jpg')]);
+      fs.unlinkSync(raw);
+      console.log('inspect done');
+    }
+    {
+      const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, recordVideo: { dir: TMP, size: { width: 1440, height: 900 } } });
+      const page = await ctx.newPage();
+      await startGame(page);
+      await page.waitForTimeout(1500);
+      await page.locator('.desk .option').first().click();
+      await page.waitForTimeout(900);
+      const sugg = page.locator('.desk .suggestion:not([disabled])');
+      for (let k = 0; k < 2 && (await sugg.count()); k++) {
+        await sugg.first().click();
+        await page.waitForTimeout(1400);
+      }
+      await page.locator('.desk .orders').first().screenshot({ path: still('advisors.jpg'), quality: 85, type: 'jpeg' });
+      await page.waitForTimeout(600);
+      await page.getByRole('button', { name: /execute month/i }).click();
+      await page.waitForSelector('.reel');
+      await page.waitForTimeout(4500);
+      const v = page.video();
+      await ctx.close();
+      const raw = await v.path();
+      enc(raw, path.join(OUT, 'clips', 'execute.mp4'), -11, 10.5, 1280, 28);
+      execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-ss', '1', '-i', path.join(OUT, 'clips', 'execute.mp4'), '-frames:v', '1', '-q:v', '4', path.join(OUT, 'clips', 'execute.jpg')]);
+      fs.unlinkSync(raw);
+      console.log('execute done');
+    }
   }
   await browser.close();
   fs.rmSync(TMP, { recursive: true, force: true });

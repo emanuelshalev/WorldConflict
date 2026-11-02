@@ -13,8 +13,8 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://emanuelshalev.github.io/WorldConflict/" />
   <meta property="og:site_name" content="World Conflict" />
-  <meta property="og:title" content="World Conflict: the news is real. The next move is yours." />
-  <meta property="og:description" content="A turn-based geopolitical strategy game set in November 2026. Real flashpoints, 41 nations, and every decision plays out on the evening news." />
+  <meta property="og:title" content="World Conflict: a realistic geopolitical simulation game" />
+  <meta property="og:description" content="Choose one of 41 countries, become its leader and play out the real crises of November 2026. Every decision plays out on the evening news." />
   <meta property="og:image" content="https://emanuelshalev.github.io/WorldConflict/assets/og-image.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
@@ -52,47 +52,130 @@
       <span>World Conflict</span>
     </a>
     <nav aria-label="Sections">
-      <a href="#parallels">Reality vs game</a>
-      <a href="#scenes">Every decision</a>
-      <a href="#month">A month in office</a>
-      <a href="#modes">Modes</a>
+      <a href="#how">How it plays</a>
+      <a href="#parallels">Real events</a>
+      <a href="#modes">Game modes</a>
     </nav>
     <div class="head-actions">
       <span class="status js-status"><i aria-hidden="true"></i>In development</span>
-      <a class="btn btn-primary btn-sm js-play-link" href="#" hidden>Take office</a>
+      <a class="btn btn-primary btn-sm js-play-link" href="#" hidden>Play now</a>
     </div>
   </header>
 
   <main id="main">
     <!-- ============ HERO ============ -->
     <section class="hero" aria-labelledby="hero-title">
-      <video class="hero-video" autoplay muted loop playsinline poster="assets/clips/globe.jpg" aria-hidden="true">
-        <source src="assets/clips/globe.mp4" type="video/mp4" />
+      <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="assets/clips/hero.jpg" aria-hidden="true">
+        <source src="assets/clips/hero.mp4" type="video/mp4" />
       </video>
       <div class="hero-shade" aria-hidden="true"></div>
       <div class="hero-inner">
-        <p class="eyebrow"><span class="live-dot" aria-hidden="true"></span>November 2026 · 41 nations · 8 live flashpoints</p>
-        <h1 id="hero-title">The news is real.<br /><em>The next move is yours.</em></h1>
-        <p class="hero-sub">Step into the office of a president, prime minister or supreme leader in the world as it stands today. Answer the crisis, give your orders, then watch the month play out on the evening news.</p>
+        <h1 id="hero-title">World Conflict</h1>
+        <p class="hero-what">A realistic geopolitical simulation game. Choose a country, become its leader, and play out today's crises your way.</p>
+        <p class="hero-sub">Step into the office of a president, prime minister or supreme leader in the world as it stands in November 2026. Answer the crisis, give your orders, then watch the month play out on the evening news.</p>
+        <p class="slogan">The news is real. <em>The next move is yours.</em></p>
         <div class="cta-row">
-          <a class="btn btn-primary btn-lg js-play-link" href="#" hidden>Take office</a>
-          <a class="btn btn-primary btn-lg" href="#parallels">See reality vs the game</a>
-          <a class="btn btn-ghost btn-lg" href="#scenes">Watch the scenes</a>
+          <a class="btn btn-primary btn-lg js-play-link" href="#" hidden>Play now</a>
+          <a class="btn btn-primary btn-lg" href="#how">How it plays</a>
+          <a class="btn btn-ghost btn-lg" href="#parallels">Real events in the game</a>
         </div>
-        <p class="status status-lg js-status"><i aria-hidden="true"></i>In development. Playable release coming soon.</p>
+        <ul class="hero-facts" aria-label="Key facts">
+          <li><b>41</b> playable countries</li>
+          <li><b>8</b> real crises to start from</li>
+          <li><b>3</b> game modes, 15 minutes to 10 years</li>
+          <li><b>40</b> AI governments acting on their own</li>
+        </ul>
+        <p class="status js-status"><i aria-hidden="true"></i>In development. Playable release coming soon.</p>
       </div>
-      <div class="hero-wire" aria-label="Real headlines the game starts from">
-        <span class="wire-tag">Real wire</span>
-        <div class="wire-track"><div class="wire-run" id="wireRun"></div></div>
+    </section>
+
+    <!-- ============ HOW IT PLAYS: vertical timeline ============ -->
+    <section class="section how" id="how" aria-labelledby="how-title">
+      <div class="container">
+        <p class="kicker">How it plays</p>
+        <h2 id="how-title">Every month in office has five steps.</h2>
+        <p class="lede">One turn is one month. You read the situation, get briefed on the crisis, plan with your advisors, give your orders, and then see what they did to the world.</p>
       </div>
+      <ol class="container timeline" id="timeline">
+        <li class="tl-step">
+          <div class="tl-marker"><span>1</span></div>
+          <div class="tl-copy">
+            <p class="tl-tag">Inspect the world</p>
+            <h3>Read the map before you act.</h3>
+            <p>The globe shows all 41 countries as they stand today: who is at war and where the front line is, who is allied with whom, who is close to collapse, and who is building a bomb.</p>
+            <ul>
+              <li>Switch layers: relations, regimes, military, economy, stability, intelligence and nuclear.</li>
+              <li>Open any country for its leader, its army, its economy and its view of you.</li>
+              <li>Foreign numbers are intelligence estimates with error bars. Spy to sharpen them.</li>
+            </ul>
+          </div>
+          <figure class="tl-media"><video class="tl-video" muted loop playsinline preload="none" poster="assets/clips/inspect.jpg" aria-label="Clip: switching the map's data layers on the 3D globe and opening a country's dossier."><source data-src="assets/clips/inspect.mp4" type="video/mp4" /></video></figure>
+        </li>
+        <li class="tl-step">
+          <div class="tl-marker"><span>2</span></div>
+          <div class="tl-copy">
+            <p class="tl-tag">Get briefed</p>
+            <h3>A crisis lands on your desk.</h3>
+            <p>Each month brings a decision only you can make: an ultimatum, a strike, a coup plot, a tanker on fire. You get the situation, three options, and what each one will cost.</p>
+            <ul>
+              <li>Every option shows its effects up front: approval, stability, relations, tension.</li>
+              <li>Options that put your mission at risk are flagged.</li>
+              <li>Ignore it, and it resolves on its own, usually badly.</li>
+            </ul>
+          </div>
+          <figure class="tl-media"><img src="assets/img/briefing.jpg" alt="A crisis card on the desk with its scene, the situation and three options with their effects." loading="lazy" /></figure>
+        </li>
+        <li class="tl-step">
+          <div class="tl-marker"><span>3</span></div>
+          <div class="tl-copy">
+            <p class="tl-tag">Consult your advisors</p>
+            <h3>Plan with your cabinet.</h3>
+            <p>Your foreign minister, defence minister, intelligence chief and chief of staff each suggest an order and say why. You have political capital for a few orders a month, so choose.</p>
+            <ul>
+              <li>About 30 orders: court or denounce a country, offer a defence pact, mass troops on a border, strike, spy, sabotage, back a coup, address the nation, reform.</li>
+              <li>Before you commit, each order shows its odds, its cost and its risks.</li>
+            </ul>
+          </div>
+          <figure class="tl-media"><img src="assets/img/advisors.jpg" alt="Advisor suggestions with scene thumbnails, and the orders queued for the month." loading="lazy" /></figure>
+        </li>
+        <li class="tl-step">
+          <div class="tl-marker"><span>4</span></div>
+          <div class="tl-copy">
+            <p class="tl-tag">Execute</p>
+            <h3>Give the orders.</h3>
+            <p>Press Execute. Your orders go out, and at the same moment 40 other governments make their own moves, each driven by its history, its red lines and what it believes about you.</p>
+            <ul>
+              <li>Wars move, economies grow or shrink, elections and coups happen.</li>
+              <li>Same choices with the same seed give the same world: no dice rolls behind your back.</li>
+            </ul>
+          </div>
+          <figure class="tl-media"><video class="tl-video" muted loop playsinline preload="none" poster="assets/clips/execute.jpg" aria-label="Clip: queuing advisor orders and pressing Execute month."><source data-src="assets/clips/execute.mp4" type="video/mp4" /></video></figure>
+        </li>
+        <li class="tl-step">
+          <div class="tl-marker"><span>5</span></div>
+          <div class="tl-copy">
+            <p class="tl-tag">See it play out</p>
+            <h3>Watch your month on the news.</h3>
+            <p>Every order plays as its own broadcast scene: a press briefing, a treaty signing, troops on the move, an airstrike. Each one is stamped success, failure or backfire, with the numbers it moved and how that line of policy has evolved over your term.</p>
+            <ul>
+              <li>20 kinds of scenes, dressed in the flags of the countries involved.</li>
+              <li>Then the World Chronicle: the month's front page leads with what you did.</li>
+            </ul>
+            <div class="filmstrip" aria-label="Some of the scenes">
+              <div class="film-run" id="filmRun"></div>
+            </div>
+          </div>
+          <figure class="tl-media"><video class="tl-video" muted loop playsinline preload="none" poster="assets/img/board.jpg" aria-label="Clip: the outcome reel plays each order as a news scene with a dispatch and its numbers, then the month's scoreboard."><source data-src="assets/clips/reel.mp4" type="video/mp4" /></video></figure>
+        </li>
+      </ol>
     </section>
 
     <!-- ============ REALITY VS GAME ============ -->
     <section class="section parallels" id="parallels" aria-labelledby="par-title">
       <div class="container">
-        <p class="kicker">Reality, then the game</p>
-        <h2 id="par-title">It happened. <em>Then you took office.</em></h2>
-        <p class="lede">Every scenario starts from something that really happened. On the left, the event as it was reported. On the right, the moment it lands on your desk in the game.</p>
+        <p class="kicker">Built on real events</p>
+        <h2 id="par-title">Every scenario starts from something that really happened.</h2>
+        <p class="lede">Left: the event as it was reported. Right: how it reaches your desk in the game.</p>
       </div>
       <div class="container">
         <div class="par-tabs" role="tablist" aria-label="Real events" id="parTabs"></div>
@@ -105,16 +188,16 @@
             <figure class="paper-map"><img id="parMap" alt="" width="640" height="400" /></figure>
             <p class="paper-place" id="parPlace"></p>
             <p class="paper-text" id="parText"></p>
-            <p class="paper-foot">As reported at the time. No game footage on this side.</p>
+            <p class="paper-foot">As reported at the time.</p>
           </article>
           <div class="par-arrow" aria-hidden="true"><span>In the game</span></div>
           <article class="game" id="parGame">
             <header class="game-head">
-              <span class="game-label">The game</span>
+              <span class="game-label">In the game</span>
               <span class="game-mode" id="parMode"></span>
             </header>
             <div class="game-clip">
-              <video id="parVideo" muted loop playsinline preload="metadata"></video>
+              <video id="parVideo" muted loop playsinline preload="none"></video>
             </div>
             <p class="game-text" id="parGameText"></p>
             <p class="game-fiction" id="parFiction" hidden></p>
@@ -124,100 +207,51 @@
       </div>
     </section>
 
-    <!-- ============ SCENES ============ -->
-    <section class="section scenes" id="scenes" aria-labelledby="scenes-title">
-      <div class="container">
-        <p class="kicker">Every decision has a scene</p>
-        <h2 id="scenes-title">Cabinet rooms, TV studios, <em>the Situation Room.</em></h2>
-        <p class="lede">Address the nation, sign the order, face the cameras. Each order and each crisis plays out as its own animated broadcast scene, dressed in the flags of the countries involved and lit by how it went.</p>
-      </div>
-      <div class="container wide">
-        <div class="scene-grid" id="sceneGrid"></div>
-      </div>
-    </section>
-
-    <!-- ============ A MONTH ============ -->
-    <section class="section month" id="month" aria-labelledby="month-title">
-      <div class="container">
-        <p class="kicker">One month in office</p>
-        <h2 id="month-title">Decide. <em>Watch it happen.</em> Read the papers.</h2>
-      </div>
-      <div class="container month-grid">
-        <figure class="step">
-          <div class="step-media"><img src="assets/img/desk.jpg" alt="The game desk: a crisis card with an animated scene over a 3D globe, with advisor suggestions beside it." loading="lazy" /></div>
-          <figcaption><b>1 · The desk</b> A crisis lands with three hard options and their costs. Your advisors suggest orders; you have political capital for a few.</figcaption>
-        </figure>
-        <figure class="step">
-          <div class="step-media"><video class="lazy-video" muted loop playsinline preload="none" poster="assets/img/board.jpg" aria-label="Clip: the outcome reel plays each order as a news shot with a success or failure stamp, ending on the month's numbers."><source data-src="assets/clips/reel.mp4" type="video/mp4" /></video></div>
-          <figcaption><b>2 · The reel</b> Press Execute and every order plays as a news shot, stamped success, failure or backfire, ending on your numbers.</figcaption>
-        </figure>
-        <figure class="step">
-          <div class="step-media"><img src="assets/img/chronicle.jpg" alt="The World Chronicle: the month's front page leads with the player's own decision." loading="lazy" /></div>
-          <figcaption><b>3 · The paper</b> The World Chronicle leads with what you did, and with what everyone else did while you were busy.</figcaption>
-        </figure>
-      </div>
-    </section>
-
-    <!-- ============ WORLD ============ -->
-    <section class="section world" aria-labelledby="world-title">
-      <div class="container world-grid">
-        <div>
-          <p class="kicker">A living world</p>
-          <h2 id="world-title">40 other governments. <em>None of them waits for you.</em></h2>
-          <ul class="facts">
-            <li><b>Rivals with their own agenda.</b> Every country is run by an AI with its history, red lines and leader's temperament.</li>
-            <li><b>Half-wrong intelligence.</b> You see estimates, not truth. So do they, about you.</li>
-            <li><b>Wars with a front line.</b> Arcs on the globe show who is fighting and where the front stands.</li>
-            <li><b>Coups you can see coming.</b> Plots and street anger are telegraphed before they topple you.</li>
-          </ul>
-        </div>
-        <figure class="world-media">
-          <video class="lazy-video" muted loop playsinline preload="none" poster="assets/clips/globe.jpg" aria-label="Clip: the game's 3D globe turning from Europe to Asia, with red arcs marking active wars."><source data-src="assets/clips/globe.mp4" type="video/mp4" /></video>
-        </figure>
-      </div>
-    </section>
-
-    <!-- ============ MODES ============ -->
+    <!-- ============ GAME MODES ============ -->
     <section class="section modes" id="modes" aria-labelledby="modes-title">
       <div class="container">
-        <p class="kicker">How long do you have?</p>
-        <h2 id="modes-title">Fifteen minutes, <em>or a whole term.</em></h2>
+        <p class="kicker">Game modes</p>
+        <h2 id="modes-title">Three ways to play.</h2>
+        <p class="lede">Fifteen minutes, or a whole term.</p>
       </div>
       <div class="container mode-grid">
         <article class="mode">
-          <span class="mode-meta">10 to 15 min · 12 months</span>
+          <span class="mode-meta">10 to 15 minutes · 12 turns</span>
           <h3>Flashpoint</h3>
-          <p>Drop into one of eight real crises with a clear mission and a verdict at the end. A new Daily Flashpoint every day, the same for everyone.</p>
+          <p>One real crisis, one side, one mission. Pick a seat in one of eight flashpoints (the Strait of Hormuz, Ukraine, Taiwan, the Red Sea, Caracas, Scarborough Shoal, Sudan, Kashmir) and meet your objective within a year.</p>
+          <ul><li>A verdict and up to three stars at the end</li><li>A debrief of what really happened</li><li>A new Daily Flashpoint every day, the same for everyone</li></ul>
         </article>
         <article class="mode">
-          <span class="mode-meta">45 to 60 min · 48 months</span>
+          <span class="mode-meta">45 to 60 minutes · 48 turns</span>
           <h3>One Term</h3>
-          <p>Govern any of 41 nations for four years. Survive the scandals, shocks and rivals, then face the voters, or the Party.</p>
+          <p>Govern any of 41 countries for four years. Survive scandals, shocks, rivals and your own cabinet, then face the voters, or the Party.</p>
+          <ul><li>Win by finishing your term</li><li>Bonus stars for a strong record and a statecraft goal</li><li>Saves automatically: play in parts</li></ul>
         </article>
         <article class="mode">
-          <span class="mode-meta">Multi-day · 120 months</span>
+          <span class="mode-meta">Several sessions · 120 turns</span>
           <h3>Legacy</h3>
-          <p>A decade in power. Wars, coups, nuclear brinkmanship and the long judgement of history.</p>
+          <p>Ten years in power with the full sandbox: wars, coups, nuclear brinkmanship, elections, and the long judgement of history.</p>
+          <ul><li>Every system switched on</li><li>A history-book report at the end</li><li>Built for long campaigns</li></ul>
         </article>
       </div>
     </section>
 
     <!-- ============ FINAL ============ -->
     <section class="section final" id="play" aria-labelledby="cta-title">
-      <video class="final-video lazy-video" muted loop playsinline preload="none" poster="assets/clips/s-address.jpg" aria-hidden="true"><source data-src="assets/clips/s-address.mp4" type="video/mp4" /></video>
       <div class="final-inner container narrow">
-        <h2 id="cta-title">The world is waiting <em>for your answer.</em></h2>
+        <h2 id="cta-title">World Conflict</h2>
+        <p class="lede center">A realistic geopolitical simulation. Pick a country and lead it through the crises of November 2026.</p>
         <div class="cta-row center">
           <form class="signup js-signup" method="post" hidden>
             <label class="sr-only" for="email-final">Email address</label>
             <input id="email-final" type="email" name="email" required autocomplete="email" placeholder="you@example.com" />
             <button class="btn btn-primary" type="submit">Get early access</button>
           </form>
-          <a class="btn btn-primary btn-lg js-play-link" href="#" hidden>Take office</a>
+          <a class="btn btn-primary btn-lg js-play-link" href="#" hidden>Play now</a>
           <p class="status status-lg js-status"><i aria-hidden="true"></i>In development. Playable release coming soon.</p>
           <a class="btn btn-ghost btn-lg js-repo" href="#" hidden>Follow development</a>
         </div>
-        <p class="fine">Runs in the browser with algorithmic leaders; bring your own AI key if you want them to talk back.</p>
+        <p class="fine">Runs in the browser. Every country is played by a built-in AI; add your own AI key if you want leaders that talk back.</p>
       </div>
     </section>
   </main>

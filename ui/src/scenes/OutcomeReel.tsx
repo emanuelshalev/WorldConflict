@@ -8,7 +8,12 @@ import type { Mood } from './art/types';
 import { ActionIcon } from './icons';
 import './reel.css';
 
+type Fact = NonNullable<TurnReport['orders'][number]['facts']>[number];
+type Ledger = Record<string, Array<{ turn: number; value: number; target?: string }>>;
+
 interface Shot {
+  facts?: Fact[];
+  story?: string;
   kind: SceneKind;
   kicker: string;
   headline: string;
@@ -20,6 +25,7 @@ interface Shot {
 }
 
 const SHOT_MS = 3600;
+const ORDER_MS = 5600; // orders carry a dispatch and numbers to read
 
 function verdictFor(o: TurnReport['orders'][number]): Verdict {
   if (o.ok) return 'success';
@@ -41,7 +47,9 @@ function shotsFor(report: TurnReport): Shot[] {
       kind: sceneForAction(o.type),
       kicker: 'Your order',
       headline: o.label,
-      sub: o.detail,
+      sub: o.story ? undefined : o.detail,
+      story: o.story || o.detail,
+      facts: o.facts,
       verdict: v,
       mood: v === 'success' ? 'good' : 'bad',
       other: o.target,
@@ -84,7 +92,59 @@ function Stat({ label, delta, i }: { label: string; delta: number; i: number }) 
   );
 }
 
+const fmtNum = (v: number, unit?: string) => {
+  if (unit === 'troops' || Math.abs(v) >= 1000) return Math.round(v).toLocaleString('en-US');
+  return (Math.round(v * 10) / 10).toString();
+};
+
+/** One number the order moved: label, animated before to after, and a coloured delta. */
+function FactRow({ f, i }: { f: Fact; i: number }) {
+  const delta = f.after - f.before;
+  const v = useCountUp(delta, 1000, 700 + i * 220);
+  const good = delta === 0 ? null : (delta > 0) === (f.good ?? true);
+  const unit = f.unit && f.unit !== 'troops' ? f.unit : '';
+  const scale = Math.max(Math.abs(f.before), Math.abs(f.after), 1);
+  return (
+    <li className={`fact ${good === null ? 'flat' : good ? 'good' : 'bad'}`} style={{ animationDelay: `${0.5 + i * 0.2}s` }}>
+      <span className="fact-label">{f.label}</span>
+      <span className="fact-nums num">
+        {fmtNum(f.before, f.unit)}
+        <i aria-hidden> → </i>
+        <b>{fmtNum(f.before + v, f.unit)}</b>
+        {unit && <small>{unit}</small>}
+      </span>
+      <span className="fact-bar" aria-hidden>
+        <span className="fb-before" style={{ width: `${(Math.abs(f.before) / scale) * 100}%` }} />
+        <span className="fb-after" style={{ width: `${(Math.abs(f.before + v) / scale) * 100}%` }} />
+      </span>
+    </li>
+  );
+}
+
+/** The evolution of this line of policy: headline number after each use this game. */
+function Trend({ points }: { points: Array<{ turn: number; value: number }> }) {
+  if (points.length < 2) return null;
+  const pts = points.slice(-10);
+  const vals = pts.map((p) => p.value);
+  const lo = Math.min(...vals);
+  const hi = Math.max(...vals);
+  const span = hi - lo || 1;
+  const xy = pts.map((p, n) => [(n / (pts.length - 1)) * 200, 46 - ((p.value - lo) / span) * 40] as const);
+  return (
+    <div className="trend">
+      <span className="trend-label">This order over your term · {pts.length} uses</span>
+      <svg viewBox="-4 0 208 52" preserveAspectRatio="none" aria-hidden>
+        <polyline points={xy.map((p) => p.join(',')).join(' ')} />
+        {xy.map(([x, y], n) => (
+          <circle key={n} cx={x} cy={y} r={n === xy.length - 1 ? 3.5 : 2} />
+        ))}
+      </svg>
+    </div>
+  );
+}
+
 interface Props {
+  ledger?: Ledger;
   report: TurnReport;
   date: string;
   turn: number;
@@ -92,7 +152,7 @@ interface Props {
   onDone: () => void;
 }
 
-export function OutcomeReel({ report, date, turn, home, onDone }: Props) {
+export function OutcomeReel({ report, date, turn, home, onDone, ledger }: Props) {
   const shots = shotsFor(report);
   const total = shots.length + 1; // + scoreboard
   const [i, setI] = useState(0);
@@ -105,9 +165,9 @@ export function OutcomeReel({ report, date, turn, home, onDone }: Props) {
   }, []);
   useEffect(() => {
     if (paused || i >= total - 1) return;
-    const t = setTimeout(next, SHOT_MS);
+    const t = setTimeout(next, shots[i]?.facts?.length || shots[i]?.story ? ORDER_MS : SHOT_MS);
     return () => clearTimeout(t);
-  }, [i, paused, next, total]);
+  }, [i, paused, next, total, shots]);
 
   const onKey = (e: React.KeyboardEvent) => {
     if (e.key === 'Escape') {
@@ -147,8 +207,8 @@ export function OutcomeReel({ report, date, turn, home, onDone }: Props) {
 
       <div className="reel-stage" onClick={next}>
         {shot ? (
+          <div className={`reel-shot${shot.story || shot.facts?.length ? ' with-panel' : ''}`} key={i}>
           <SceneFrame
-            key={i}
             kind={shot.kind}
             home={home}
             other={shot.other}
@@ -166,6 +226,23 @@ export function OutcomeReel({ report, date, turn, home, onDone }: Props) {
               </span>
             )}
           </SceneFrame>
+          {(shot.story || shot.facts?.length) && (
+            <aside className={`dispatch v-${shot.verdict}`}>
+              <span className="dispatch-kicker">
+                {shot.type && <ActionIcon type={shot.type} size={15} />} Dispatch
+              </span>
+              {shot.story && <p className="dispatch-story">{shot.story}</p>}
+              {shot.facts && shot.facts.length > 0 && (
+                <ul className="facts">
+                  {shot.facts.map((f, n) => (
+                    <FactRow key={f.label} f={f} i={n} />
+                  ))}
+                </ul>
+              )}
+              {shot.type && shot.verdict === 'success' && <Trend points={ledger?.[shot.type] ?? []} />}
+            </aside>
+          )}
+          </div>
         ) : (
           <SceneFrame
             key="board"
@@ -204,7 +281,7 @@ export function OutcomeReel({ report, date, turn, home, onDone }: Props) {
       <footer className="reel-foot">
         <div className="reel-dots" aria-hidden>
           {Array.from({ length: total }, (_, n) => (
-            <span key={n} className={n < i ? 'done' : n === i ? `on${paused ? ' paused' : ''}` : ''} style={{ ['--ms' as string]: `${SHOT_MS}ms` }} />
+            <span key={n} className={n < i ? 'done' : n === i ? `on${paused ? ' paused' : ''}` : ''} style={{ ['--ms' as string]: `${shots[n]?.facts?.length || shots[n]?.story ? ORDER_MS : SHOT_MS}ms` }} />
           ))}
         </div>
         <button className="wc-btn primary" onClick={next}>

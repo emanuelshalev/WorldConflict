@@ -1,5 +1,10 @@
 /* Public-life scenes: parliament, econ_tv, election, un_vote, field_visit, streets, ceasefire */
 
+/* Staggered loops use positive animation-delay: hold the first keyframe during the delay instead of
+   showing the un-animated pose and popping into the loop when it starts. */
+svg.art [class] { animation-fill-mode: backwards; }
+
+
 .art-parliament .parl-label,
 .art-econ_tv .econ-label,
 .art-election .elec-label,
@@ -172,7 +177,13 @@
   8%, 90% { opacity: 1; transform: scale(1); }
   100% { opacity: 0.22; transform: scale(0.6); }
 }
-.art-election .elec-ballot { animation: elec-ballot 4.5s cubic-bezier(0.5, 0, 0.8, 0.6) infinite; }
+/* fill-box: the ballot tilts around its own centre (the SVG default origin is the canvas corner,
+   which made it slide sideways off the slot while falling). */
+.art-election .elec-ballot {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: elec-ballot 4.5s cubic-bezier(0.5, 0, 0.8, 0.6) infinite;
+}
 @keyframes elec-ballot {
   0% { transform: translateY(-50px) rotate(-6deg); opacity: 0; }
   15% { opacity: 1; }
@@ -285,14 +296,15 @@
   from { transform: skewY(-4deg) scaleX(1); }
   to { transform: skewY(4deg) scaleX(0.92); }
 }
+/* The mic arm pivots at the reporter's shoulder (absolute SVG units) so it never slides off the body. */
 .art-field_visit .fv-mic {
-  transform-box: fill-box;
-  transform-origin: right center;
+  transform-box: view-box;
+  transform-origin: 394px 178px;
   animation: fv-mic 4s ease-in-out infinite;
 }
 @keyframes fv-mic {
-  0%, 100% { transform: rotate(0deg) translateX(0); }
-  50% { transform: rotate(-2deg) translateX(-3px); }
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-2.5deg); }
 }
 .art-field_visit .fv-leader {
   transform-box: fill-box;
@@ -399,18 +411,33 @@
 }
 
 /* Ceasefire talks */
-.art-ceasefire .cf-handL,
-.art-ceasefire .cf-handR {
-  animation: cf-reach 5s ease-in-out infinite;
+/* Jointed reach: pivots in absolute SVG units (shoulder, then elbow), so the arms stay attached. */
+.art-ceasefire .cf-armL,
+.art-ceasefire .cf-foreL,
+.art-ceasefire .cf-armR,
+.art-ceasefire .cf-foreR {
+  transform-box: view-box;
+  animation: cf-armL 5s ease-in-out infinite;
 }
-.art-ceasefire .cf-handR { animation-name: cf-reachR; }
-@keyframes cf-reach {
-  0%, 100% { transform: translateX(-6px); }
-  55%, 75% { transform: translateX(0); }
+.art-ceasefire .cf-armL { transform-origin: 226px 180px; }
+.art-ceasefire .cf-foreL { transform-origin: 270px 196px; animation-name: cf-foreL; }
+.art-ceasefire .cf-armR { transform-origin: 414px 180px; animation-name: cf-armR; }
+.art-ceasefire .cf-foreR { transform-origin: 370px 196px; animation-name: cf-foreR; }
+@keyframes cf-armL {
+  0%, 100% { transform: rotate(17.3deg); }
+  55%, 75% { transform: rotate(0deg); }
 }
-@keyframes cf-reachR {
-  0%, 100% { transform: translateX(6px); }
-  55%, 75% { transform: translateX(0); }
+@keyframes cf-foreL {
+  0%, 100% { transform: rotate(-32.9deg); }
+  55%, 75% { transform: rotate(0deg); }
+}
+@keyframes cf-armR {
+  0%, 100% { transform: rotate(-17.3deg); }
+  55%, 75% { transform: rotate(0deg); }
+}
+@keyframes cf-foreR {
+  0%, 100% { transform: rotate(32.9deg); }
+  55%, 75% { transform: rotate(0deg); }
 }
 .art-ceasefire .cf-spark {
   transform-box: fill-box;

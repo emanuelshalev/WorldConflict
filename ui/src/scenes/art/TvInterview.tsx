@@ -52,6 +52,9 @@ export default function TvInterview({ a, mood }: SceneArtProps) {
   return (
     <svg viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice" className="art art-tv_interview" aria-hidden>
       <defs>
+        <clipPath id={u('crawl')}>
+          <rect x="40" y="200" width="560" height="16" />
+        </clipPath>
         <linearGradient id={u('led')} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#04060c" />
           <stop offset="0.55" stopColor={deep} />
@@ -118,10 +121,12 @@ export default function TvInterview({ a, mood }: SceneArtProps) {
       </g>
       <circle cx="320" cy="112" r="58" fill={glow} opacity="0.07" />
       <rect x="40" y="200" width="560" height="16" fill="#02040a" opacity="0.7" />
-      <g className="tv-crawl">
-        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].map((i) => (
-          <rect key={i} x={48 + i * 65} y="205" width={i % 3 === 0 ? 20 : 44} height="5" rx="1" fill={i % 3 === 0 ? a[0] === '#ffffff' ? a[1] : a[0] : glow} opacity="0.75" />
-        ))}
+      <g clipPath={f('crawl')}>
+        <g className="tv-crawl">
+          {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].map((i) => (
+            <rect key={i} x={48 + i * 65} y="205" width={i % 3 === 0 ? 20 : 44} height="5" rx="1" fill={i % 3 === 0 ? a[0] === '#ffffff' ? a[1] : a[0] : glow} opacity="0.75" />
+          ))}
+        </g>
       </g>
       <rect x="40" y="32" width="560" height="184" fill={f('px')} />
 

@@ -1,19 +1,20 @@
 import { useId } from 'react';
 import type { SceneArtProps } from './types';
+import NationFlag from './Flag';
 import './civic.css';
 
 const KEY = { good: '#ffc56a', bad: '#ff8660', neutral: '#ffd9a6' };
 const SKY = { good: ['#2a1f3e', '#a0563a'], bad: ['#0a0710', '#5a1418'], neutral: ['#060b1c', '#1d3766'] };
 const BOOKS = ['#5a2a24', '#28374f', '#6b5531', '#1f3b33', '#4b2236', '#7a6a4a', '#2f2a44', '#5d3b22'];
 
-function Flag({ f, x, id, delay }: { f: (n: string) => string; x: number; id: string; delay: string }) {
+function Flag({ f, x, id, delay, colors }: { f: (n: string) => string; x: number; id: string; delay: string; colors?: readonly string[] }) {
   const d = 'M0 0 Q20 4 40 0 L36 100 Q18 108 0 100 Z';
   return (
     <g transform={`translate(${x} 40)`}>
       <rect x="-1.5" y="-6" width="3" height="170" fill="#b28f55" />
       <circle cy="-8" r="4.5" fill="#e3bf77" />
       <g className="addr-flag" style={{ animationDelay: delay }}>
-        <path d={d} fill={f(id)} />
+        {colors ? <NationFlag colors={colors} x={0} y={0} w={40} h={108} d={d} /> : <path d={d} fill={f(id)} />}
         <path d={d} fill={f('fold')} />
       </g>
     </g>
@@ -30,6 +31,9 @@ export default function Address({ a, mood }: SceneArtProps) {
   return (
     <svg viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice" className="art art-address" aria-hidden>
       <defs>
+        <clipPath id={u('prompt')}>
+          <path d="M519 203 L582 195 L592 289 L530 296 Z" />
+        </clipPath>
         <linearGradient id={u('wall')} x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stopColor="#140e0b" />
           <stop offset="0.6" stopColor="#3a2a1d" />
@@ -67,12 +71,6 @@ export default function Address({ a, mood }: SceneArtProps) {
           <stop offset="0" stopColor="#ffe9b8" stopOpacity="0.8" />
           <stop offset="1" stopColor="#ffb85a" stopOpacity="0" />
         </radialGradient>
-        <linearGradient id={u('fa')} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0.333" stopColor={a[0]} />
-          <stop offset="0.333" stopColor={a[1]} />
-          <stop offset="0.666" stopColor={a[1]} />
-          <stop offset="0.666" stopColor={a[2]} />
-        </linearGradient>
         <linearGradient id={u('fs')} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor={accent} />
           <stop offset="1" stopColor={accent} />
@@ -122,7 +120,7 @@ export default function Address({ a, mood }: SceneArtProps) {
       ))}
 
       {/* Flags behind the desk */}
-      <Flag f={f} x={186} id="fa" delay="0s" />
+      <Flag f={f} x={186} id="fa" delay="0s" colors={a} />
       <Flag f={f} x={452} id="fs" delay="-4s" />
 
       {/* Warm key light */}
@@ -160,7 +158,7 @@ export default function Address({ a, mood }: SceneArtProps) {
       <ellipse cx="180" cy="160" rx="38" ry="24" fill={f('lamp')} />
       <ellipse cx="180" cy="193" rx="14" ry="3" fill="#c9a35e" />
       <rect x="440" y="164" width="2" height="30" fill="#c9a35e" />
-      <rect x="442" y="165" width="18" height="12" fill={f('fa')} />
+      <NationFlag colors={a} x={442} y={165} w={18} h={12} />
       <rect x="402" y="174" width="22" height="20" rx="1" fill="#c9a35e" />
       <rect x="405" y="177" width="16" height="14" fill={s1} />
 
@@ -177,9 +175,9 @@ export default function Address({ a, mood }: SceneArtProps) {
       <rect x="590" y="324" width="16" height="50" fill="#05060a" />
       <path d="M512 196 L588 186 L600 296 L524 304 Z" fill="#05070b" />
       <path d="M519 203 L582 195 L592 289 L530 296 Z" fill="#9fc4ff" opacity="0.07" />
-      <g opacity="0.22">
+      <g opacity="0.22" clipPath={f('prompt')}>
         <g className="addr-scroll">
-          {[0, 1, 2, 3, 4, 5, 6].map((i) => (
+          {Array.from({ length: 14 }, (_, i) => (
             <rect key={i} x={534 + (i % 2) * 5} y={214 + i * 11} width={40 - (i % 3) * 8} height="2.5" rx="1.2" fill="#e8f0ff" />
           ))}
         </g>

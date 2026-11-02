@@ -129,11 +129,15 @@ export default function Ceasefire({ a, b, mood }: SceneArtProps) {
         <ellipse cx="190" cy="128" rx="18" ry="21" fill="#0b0c10" />
         <ellipse cx="204" cy="134" rx="5.5" ry="11" fill="#1f222a" />
         <path d="M206 116 q6 10 3 26 q-2 6 -6 9" fill="none" stroke={L.glass} strokeWidth="2" strokeOpacity="0.85" strokeLinecap="round" />
-        <g className="cf-handL">
-          <path d="M226 180 L270 196 L308 204" fill="none" stroke="#1d2129" strokeWidth="15" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M300 202 L306 203" stroke="#f0eee8" strokeWidth="14" strokeLinecap="round" />
-          <ellipse cx="315" cy="205" rx="9" ry="6.5" fill="#2a2a30" />
-          <path d="M312 200 q6 -2 10 2" fill="none" stroke={L.glass} strokeWidth="1.4" strokeOpacity="0.8" />
+        {/* Jointed arm: upper arm pivots at the shoulder, forearm at the elbow */}
+        <g className="cf-armL">
+          <path d="M226 180 L270 196" fill="none" stroke="#1d2129" strokeWidth="15" strokeLinecap="round" />
+          <g className="cf-foreL">
+            <path d="M270 196 L308 204" fill="none" stroke="#1d2129" strokeWidth="15" strokeLinecap="round" />
+            <path d="M300 202 L306 203" stroke="#f0eee8" strokeWidth="14" strokeLinecap="round" />
+            <ellipse cx="315" cy="205" rx="9" ry="6.5" fill="#2a2a30" />
+            <path d="M312 200 q6 -2 10 2" fill="none" stroke={L.glass} strokeWidth="1.4" strokeOpacity="0.8" />
+          </g>
         </g>
       </g>
       <g>
@@ -143,11 +147,14 @@ export default function Ceasefire({ a, b, mood }: SceneArtProps) {
         <ellipse cx="450" cy="128" rx="18" ry="21" fill="#0b0c10" />
         <ellipse cx="436" cy="134" rx="5.5" ry="11" fill="#1f222a" />
         <path d="M434 116 q-6 10 -3 26 q2 6 6 9" fill="none" stroke={L.glass} strokeWidth="2" strokeOpacity="0.85" strokeLinecap="round" />
-        <g className="cf-handR">
-          <path d="M414 180 L370 196 L332 204" fill="none" stroke="#1d2129" strokeWidth="15" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M340 202 L334 203" stroke="#f0eee8" strokeWidth="14" strokeLinecap="round" />
-          <ellipse cx="325" cy="205" rx="9" ry="6.5" fill="#2a2a30" />
-          <path d="M328 200 q-6 -2 -10 2" fill="none" stroke={L.glass} strokeWidth="1.4" strokeOpacity="0.8" />
+        <g className="cf-armR">
+          <path d="M414 180 L370 196" fill="none" stroke="#1d2129" strokeWidth="15" strokeLinecap="round" />
+          <g className="cf-foreR">
+            <path d="M370 196 L332 204" fill="none" stroke="#1d2129" strokeWidth="15" strokeLinecap="round" />
+            <path d="M340 202 L334 203" stroke="#f0eee8" strokeWidth="14" strokeLinecap="round" />
+            <ellipse cx="325" cy="205" rx="9" ry="6.5" fill="#2a2a30" />
+            <path d="M328 200 q-6 -2 -10 2" fill="none" stroke={L.glass} strokeWidth="1.4" strokeOpacity="0.8" />
+          </g>
         </g>
       </g>
       <circle className="cf-spark" cx="320" cy="204" r="14" fill={L.glass} opacity="0.25" />

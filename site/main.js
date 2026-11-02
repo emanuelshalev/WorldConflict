@@ -105,7 +105,6 @@ const SCENES = [
   ['un_vote', 'The vote in New York', 'Sanctions'],
   ['disaster', 'Disaster', 'Storms, attacks, pandemics'],
 ];
-const TONE = { war_room: '#ff4d4f', deployment: '#ff4d4f', airstrike: '#ff4d4f', nuclear: '#f5d547', covert: '#36c5f0', econ_tv: '#19c37d' };
 
 (() => {
   'use strict';
@@ -135,11 +134,6 @@ const TONE = { war_room: '#ff4d4f', deployment: '#ff4d4f', airstrike: '#ff4d4f',
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
-  // ---------- Real wire ticker ----------
-  const wire = $('#wireRun');
-  const items = PARALLELS.map((p) => `<span><b>${p.date.toUpperCase()}</b>${p.place}: ${p.real.split('. ')[0].replace(/\.$/, '')}.</span>`).join('');
-  wire.innerHTML = items + items;
-
   // ---------- Reality vs game ----------
   const tabs = $('#parTabs');
   const stage = $('#parStage');
@@ -150,6 +144,7 @@ const TONE = { war_room: '#ff4d4f', deployment: '#ff4d4f', airstrike: '#ff4d4f',
   let timer = 0;
   let started = 0;
   let paused = false;
+  let parVisible = false;
 
   tabs.innerHTML = PARALLELS.map(
     (p, i) => `<button class="par-tab" role="tab" id="tab-${p.id}" aria-selected="false" data-i="${i}"><small>${p.date}</small>${p.tab}</button>`,
@@ -170,9 +165,12 @@ const TONE = { war_room: '#ff4d4f', deployment: '#ff4d4f', airstrike: '#ff4d4f',
     fic.hidden = !p.fiction;
     fic.textContent = p.fiction || '';
     video.poster = `assets/clips/${p.id}.jpg`;
-    video.src = `assets/clips/${p.id}.mp4`;
+    video.dataset.src = `assets/clips/${p.id}.mp4`;
     video.setAttribute('aria-label', `Game clip: ${p.mode}`);
-    if (!reduceMotion) video.play().catch(() => {});
+    if (parVisible) {
+      video.src = video.dataset.src;
+      if (!reduceMotion) video.play().catch(() => {});
+    } else video.removeAttribute('src');
     stage.classList.remove('swap');
     void stage.offsetWidth;
     stage.classList.add('swap');
@@ -191,7 +189,7 @@ const TONE = { war_room: '#ff4d4f', deployment: '#ff4d4f', airstrike: '#ff4d4f',
     started = performance.now();
   });
   const tick = (t) => {
-    if (!paused && !reduceMotion && current >= 0) {
+    if (!paused && !reduceMotion && current >= 0 && parVisible) {
       const k = Math.min(1, (t - started) / SLIDE_MS);
       bar.style.width = `${k * 100}%`;
       if (k >= 1) show(current + 1);
@@ -201,43 +199,64 @@ const TONE = { war_room: '#ff4d4f', deployment: '#ff4d4f', airstrike: '#ff4d4f',
   show(0);
   timer = requestAnimationFrame(tick);
 
-  // ---------- Scene grid ----------
-  $('#sceneGrid').innerHTML = SCENES.map(
-    ([k, title, uses]) => `<figure class="tile reveal">
-      <video class="lazy-video" muted loop playsinline preload="none" poster="assets/clips/s-${k}.jpg" aria-label="Scene: ${title}"><source data-src="assets/clips/s-${k}.mp4" type="video/mp4" /></video>
-      <span class="tag"><i style="background:${TONE[k] || '#4c8dff'}"></i>Scene</span>
-      <figcaption>${title}<small>${uses}</small></figcaption>
-    </figure>`,
-  ).join('');
+  // ---------- Filmstrip of scenes (still images: cheap) ----------
+  const film = SCENES.map(([k, title]) => `<figure><img src="assets/clips/s-${k}.jpg" alt="" loading="lazy" width="132" height="74" /><figcaption>${title}</figcaption></figure>`).join('');
+  $('#filmRun').innerHTML = film + film;
 
-  // ---------- Lazy videos: load and play in view, pause out of view ----------
-  const vio = new IntersectionObserver(
-    (entries) => {
-      for (const e of entries) {
-        const v = e.target;
-        if (e.isIntersecting) {
-          const s = v.querySelector('source[data-src]');
-          if (s) {
-            s.src = s.dataset.src;
-            s.removeAttribute('data-src');
-            v.load();
-          }
-          if (!reduceMotion) v.play().catch(() => {});
-        } else v.pause();
-      }
-    },
-    { rootMargin: '200px 0px' },
-  );
-  document.querySelectorAll('video.lazy-video').forEach((v) => vio.observe(v));
-  // The parallels clip pauses off screen too
-  new IntersectionObserver(([e]) => (e.isIntersecting && !reduceMotion ? video.play().catch(() => {}) : video.pause())).observe(video);
+  // ---------- Timeline: the step in the middle of the screen is active; only its clip plays ----------
+  const steps = [...document.querySelectorAll('.tl-step')];
+  const timeline = $('#timeline');
+  const loadVideo = (v) => {
+    const src = v.querySelector('source[data-src]');
+    if (src) {
+      src.src = src.dataset.src;
+      src.removeAttribute('data-src');
+      v.load();
+    }
+  };
+  let activeStep = null;
+  const setActive = (step) => {
+    if (step === activeStep) return;
+    activeStep = step;
+    for (const st of steps) {
+      const on = st === step;
+      st.classList.toggle('active', on);
+      const v = st.querySelector('video');
+      if (!v) continue;
+      if (on) {
+        loadVideo(v);
+        if (!reduceMotion) v.play().catch(() => {});
+      } else v.pause();
+    }
+  };
+  const onTimeline = () => {
+    const mid = window.innerHeight * 0.55;
+    let best = null;
+    let bestD = Infinity;
+    for (const st of steps) {
+      const r = st.getBoundingClientRect();
+      const d = Math.abs(r.top + r.height / 2 - mid);
+      if (d < bestD) { bestD = d; best = st; }
+    }
+    const tr = timeline.getBoundingClientRect();
+    const inView = tr.top < window.innerHeight && tr.bottom > 0;
+    setActive(inView ? best : null);
+    timeline.style.setProperty('--progress', `${Math.max(0, Math.min(tr.height - 20, mid - tr.top))}px`);
+  };
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => { onTimeline(); ticking = false; });
+  }, { passive: true });
+  onTimeline();
 
   // ---------- Reveal on scroll ----------
   const rio = new IntersectionObserver(
     (entries) => entries.forEach((e) => e.isIntersecting && (e.target.classList.add('in'), rio.unobserve(e.target))),
     { rootMargin: '0px 0px -10% 0px' },
   );
-  document.querySelectorAll('.section .container > *, .reveal').forEach((el) => {
+  document.querySelectorAll('.section > .container > :not(.tl-step), .reveal').forEach((el) => {
     el.classList.add('reveal');
     rio.observe(el);
   });

@@ -1,5 +1,6 @@
 import { useId } from 'react';
 import type { SceneArtProps } from './types';
+import NationFlag from './Flag';
 import './civic.css';
 
 const KEY = { good: '#ffc76e', bad: '#ff8a62', neutral: '#ffdcaa' };
@@ -58,12 +59,6 @@ export default function ExecOrder({ a, mood }: SceneArtProps) {
           <stop offset="0" stopColor="#d9d2c2" />
           <stop offset="1" stopColor="#f6f1e6" />
         </linearGradient>
-        <linearGradient id={u('fa')} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0.333" stopColor={a[0]} />
-          <stop offset="0.333" stopColor={a[1]} />
-          <stop offset="0.666" stopColor={a[1]} />
-          <stop offset="0.666" stopColor={a[2]} />
-        </linearGradient>
         <linearGradient id={u('fold')} x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stopColor="#000" stopOpacity="0.5" />
           <stop offset="0.3" stopColor="#fff" stopOpacity="0.14" />
@@ -90,7 +85,7 @@ export default function ExecOrder({ a, mood }: SceneArtProps) {
         <rect x="-1.5" y="-6" width="3" height="150" fill="#b28f55" />
         <circle cy="-8" r="4.5" fill="#e3bf77" />
         <g className="exec-flag">
-          <path d="M0 0 Q20 4 40 0 L36 96 Q18 104 0 96 Z" fill={f('fa')} />
+          <NationFlag colors={a} x={0} y={0} w={40} h={102} d="M0 0 Q20 4 40 0 L36 96 Q18 104 0 96 Z" />
           <path d="M0 0 Q20 4 40 0 L36 96 Q18 104 0 96 Z" fill={f('fold')} />
         </g>
       </g>
@@ -146,14 +141,19 @@ export default function ExecOrder({ a, mood }: SceneArtProps) {
       <path d="M278 150 Q258 190 272 220 L284 236" stroke="#1a2030" strokeWidth="22" fill="none" strokeLinecap="round" />
       <path d="M278 228 L290 240" stroke="#e6e9ee" strokeWidth="9" strokeLinecap="round" />
       <ellipse cx="294" cy="246" rx="11" ry="8" fill="#4a3428" />
-      <g className="exec-pen">
-        <path d="M362 150 Q392 186 386 214 L374 234" stroke="#232b3c" strokeWidth="22" fill="none" strokeLinecap="round" />
-        <path d="M384 220 Q394 212 398 200" stroke={key} strokeOpacity="0.45" strokeWidth="1.5" fill="none" />
-        <path d="M378 226 L370 240" stroke="#e6e9ee" strokeWidth="9" strokeLinecap="round" />
-        <ellipse cx="366" cy="246" rx="10" ry="8" fill="#4a3428" />
-        <path d="M362 252 L388 214" stroke="#0e0e12" strokeWidth="4" strokeLinecap="round" />
-        <path d="M384 220 L388 214" stroke="#d8b46a" strokeWidth="4" strokeLinecap="round" />
-        <circle cx="361" cy="253" r="1.5" fill="#d8b46a" />
+      {/* Signing arm: upper arm swings from the shoulder, forearm and pen from the elbow */}
+      <g className="exec-arm">
+        <path d="M356 132 L390 192" stroke="#232b3c" strokeWidth="22" fill="none" strokeLinecap="round" />
+        <path d="M374 140 Q392 166 400 186" stroke={key} strokeOpacity="0.45" strokeWidth="1.5" fill="none" />
+        <g className="exec-fore">
+          <path d="M390 192 L376 232" stroke="#232b3c" strokeWidth="22" fill="none" strokeLinecap="round" />
+          <path d="M400 196 Q396 210 390 222" stroke={key} strokeOpacity="0.45" strokeWidth="1.5" fill="none" />
+          <path d="M378 226 L370 240" stroke="#e6e9ee" strokeWidth="9" strokeLinecap="round" />
+          <ellipse cx="366" cy="246" rx="10" ry="8" fill="#4a3428" />
+          <path d="M362 252 L388 214" stroke="#0e0e12" strokeWidth="4" strokeLinecap="round" />
+          <path d="M384 220 L388 214" stroke="#d8b46a" strokeWidth="4" strokeLinecap="round" />
+          <circle cx="361" cy="253" r="1.5" fill="#d8b46a" />
+        </g>
       </g>
 
       {/* Pens laid out and a pen tray */}
