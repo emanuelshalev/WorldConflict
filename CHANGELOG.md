@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased: visual overhaul (2026-11-02)
+
+- **Broadcast scenes:** every order, crisis and news story is staged as one of 20 animated SVG scenes (cabinet, TV interview, press room, parliament, markets TV, field visit, summit, treaty signing, executive order, address, war room, convoy, airstrike, nuclear, covert ops, protest, election night, disaster, ceasefire talks, UN vote), dressed in the real flags of the countries involved and lit by the outcome.
+- **Outcome reel:** after Execute, each order and crisis answer plays as a news shot with an animated verdict stamp and a dispatch panel: a varied story, the numbers it moved (before and after), an outcome map on real borders, and a trend line of that order type across the term (`src/core/outcomes.ts`, `director.ledger`). Failed orders get their own story.
+- **Map:** a 3D globe under a glass HUD and desk; a click menu to give orders straight from a country; troop markers on borders; arrows for queued orders; alliance links; animated war arcs with the front marked; pulses on countries whose relations with you moved.
+- **Look:** Geist, Geist Mono and Instrument Serif replace the old fonts; sentence-case headings; scene headers on crisis cards, advisor suggestions, the Chronicle and the end screen.
+- **Landing page:** unchanged on purpose (the dark version stays live). Footage tools record frame by frame on a virtual clock (`site/tools/framecap.cjs`), and the scenes export as standalone SVGs.
+
 ## 2.0.0-rc.2: 2026-11-01
 
 Fixes from the four-persona confirmation playtest of rc.1 (`dev_plan/reviews/round3-confirm/`).
