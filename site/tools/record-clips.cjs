@@ -4,10 +4,10 @@ const { chromium } = require('playwright');
 const { execFileSync } = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
-const { installClock, captureClip } = require('./framecap.cjs');
 
 const OUT = path.join(__dirname, '..', 'assets', 'clips');
-fs.mkdirSync(OUT, { recursive: true });
+const TMP = path.join(OUT, '.raw');
+fs.mkdirSync(TMP, { recursive: true });
 
 // Parallels: the game side of each real event (key = parallel id used by main.js)
 const PARALLELS = [
@@ -33,35 +33,32 @@ const only = process.argv[2];
   const browser = await chromium.launch();
   for (const [name, params] of [...PARALLELS, ...TILES, ...HERO]) {
     if (only && !name.startsWith(only)) continue;
-    const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
-    await installClock(page);
+    const ctx = await browser.newContext({ viewport: { width: 1280, height: 720 }, recordVideo: { dir: TMP, size: { width: 1280, height: 720 } } });
+    const page = await ctx.newPage();
     await page.goto(`http://127.0.0.1:5173/#clip?${new URLSearchParams(params)}`);
-    await page.waitForTimeout(1500);
+    await page.waitForTimeout(8200);
+    const video = page.video();
+    await ctx.close();
+    const raw = await video.path();
     const mp4 = path.join(OUT, `${name}.mp4`);
-    let size = 0;
-    if (name.startsWith('s-')) {
-      // Scene tiles ship as stills only: step the clock to a lively moment and screenshot
-      await page.evaluate(() => window.__clockFreeze());
-      await page.evaluate(() => window.__clockAdvance(4000));
-      const big = path.join(OUT, `${name}.big.jpg`);
-      await page.screenshot({ path: big, type: 'jpeg', quality: 90 });
-      execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', big, '-vf', 'scale=400:-2', '-q:v', '4', path.join(OUT, `${name}.jpg`)]);
-      fs.unlinkSync(big);
-    } else {
-      await captureClip(page, { seconds: 6.5, out: mp4, width: 1280, crf: 27 });
-      size = fs.statSync(mp4).size;
-      if (!name.startsWith('h-')) execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-ss', '4', '-i', mp4, '-frames:v', '1', '-q:v', '4', path.join(OUT, `${name}.jpg`)]);
-    }
-    await page.close();
+    const w = name.startsWith('s-') ? 640 : 1280;
+    // Skip the first 1.2 s (page load), keep 6.5 s
+    execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-ss', '1.2', '-i', raw, '-t', '6.5', '-vf', `scale=${w}:-2,fps=30`, '-c:v', 'libx264', '-preset', 'slow', '-crf', name.startsWith('s-') ? '30' : '27', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', '-an', mp4]);
+    if (!name.startsWith('h-')) execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-ss', '5.5', '-i', mp4, '-frames:v', '1', '-q:v', '4', path.join(OUT, `${name}.jpg`)]);
+    fs.unlinkSync(raw);
+    // Scene tiles only ship as stills (the page's filmstrip); keep the clip size printed
+    const size = fs.statSync(mp4).size;
+    if (name.startsWith('s-')) fs.unlinkSync(mp4);
     console.log(name, Math.round(size / 1024) + 'KB');
   }
   await browser.close();
+  fs.rmSync(TMP, { recursive: true, force: true });
   // Stitch the hero montage: 2.6 s of each, cross-faded, then drop the parts
   const parts = HERO.map(([n]) => path.join(OUT, `${n}.mp4`)).filter((f) => fs.existsSync(f));
   if (parts.length === HERO.length) {
     const seg = 2.6;
     const fade = 0.5;
-    const inputs = parts.flatMap((f) => ['-ss', '0.5', '-t', String(seg), '-i', f]);
+    const inputs = parts.flatMap((f) => ['-ss', '1.5', '-t', String(seg), '-i', f]);
     let chain = '';
     let last = '[0:v]';
     for (let i = 1; i < parts.length; i++) {
