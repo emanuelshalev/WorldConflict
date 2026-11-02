@@ -40,6 +40,8 @@ export interface HistoryProfile {
 }
 
 export interface CountryFull {
+  fallout?: number; // radiation severity 0-100 after a nuclear strike
+  nukedTurn?: number;
   id: string;
   name: string;
   iso3: string;
@@ -95,6 +97,9 @@ export interface PlayerViewCountry {
   nuclearStatus: string;
   nuclearProgress: UncertainRange | null;
   intelConfidence: number;
+  growth?: number; // smoothed annual real growth (public statistics)
+  underEmbargo?: boolean;
+  fallout?: number; // radiation severity 0-100 after a nuclear strike
   full?: CountryFull;
 }
 
@@ -267,7 +272,7 @@ export interface WorldState {
   flashpointId: string | null;
   objective: Objective | null;
   politicalCapital: number;
-  director: { closeCalls: number; rallies: number; inDanger: boolean; lowPoint: number; record?: Record<string, number>; counterIntelUntil?: number; denounceTurns?: number[]; ledger?: Record<string, Array<{ turn: number; value: number; target?: string }>> };
+  director: { closeCalls: number; rallies: number; inDanger: boolean; lowPoint: number; record?: Record<string, number>; counterIntelUntil?: number; denounceTurns?: number[]; ledger?: Record<string, Array<{ turn: number; value: number; target?: string }>>; shocks?: Array<{ kind: string; by?: string; target?: string; turn: number }> };
   turnReport: TurnReport | null;
   outcome: Outcome | null;
   pendingDecisions: PendingDecision[];

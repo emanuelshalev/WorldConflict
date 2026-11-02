@@ -191,6 +191,18 @@ function useSuggestions(): Suggestion[] {
     const reform: Suggestion['action'] = { type: 'DOMESTIC_REFORM', label: 'Reform program' };
     const address: Suggestion['action'] = { type: 'DOMESTIC_PROPAGANDA', label: 'National address' };
 
+    // 0. After our own nuclear strike, everyone at the table says the same thing: end it
+    const nukeShock = [...(world.director.shocks ?? [])].reverse().find((x) => x.kind === 'NUCLEAR_STRIKE' && x.by === me.id && world.turn - x.turn <= 6);
+    if (nukeShock?.target && me.atWarWith.includes(nukeShock.target)) {
+      out.push({
+        p: 1000,
+        who: 'Foreign Minister',
+        label: `Propose ceasefire to ${countryName(nukeShock.target)}`,
+        why: `After the strike, ${countryName(nukeShock.target)} cannot hold out and the world is watching. End it now, on our terms.`,
+        action: { type: 'DIPLOMACY_PROPOSE_CEASEFIRE', label: `Propose ceasefire to ${countryName(nukeShock.target)}`, targetCountryId: nukeShock.target },
+      });
+    }
+
     // 1. The mission comes first: protect every objective condition that is unmet or slipping
     const goals = [
       ...(world.objective?.primary ?? []).map((c) => ({ c, bonus: false })),

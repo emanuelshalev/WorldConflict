@@ -1,5 +1,6 @@
 import { isLandlocked, sharesLandBorder, TYPHOON_COUNTRIES } from "./geography.js";
 import type { SeededRandom } from "./seed.js";
+import { endWar } from "./systems/military.js";
 import { possessive, withArticle } from "./text.js";
 import type {
   CountryState,
@@ -1652,7 +1653,16 @@ export function applyEffects(
     else if (key === "mobilization")
       player.mobilizationLevel = clamp(player.mobilizationLevel + value);
     else if (key === "intel") player.counterIntelLevel = clamp(player.counterIntelLevel + value);
-    else if (key.startsWith("pact:")) {
+    else if (key.startsWith("ceasefire:") && value > 0) {
+      // An agreed ceasefire (e.g. under the world's pressure after a nuclear strike)
+      const other = key.split(":")[1];
+      const war = world.wars.find(
+        (w) =>
+          (w.attackerId === player.id && w.defenderId === other) ||
+          (w.attackerId === other && w.defenderId === player.id),
+      );
+      if (war) endWar(world, war, null, null);
+    } else if (key.startsWith("pact:")) {
       const other = world.countries.find((c) => c.id === key.split(":")[1]);
       if (other && value > 0 && !player.alliances.includes(other.id)) {
         player.alliances.push(other.id);

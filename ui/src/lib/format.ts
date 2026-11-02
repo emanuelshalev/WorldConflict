@@ -74,6 +74,12 @@ export function effectArrows(
   for (const [k, v] of Object.entries(e)) {
     if (k.startsWith('relations:')) push(names(k.split(':')[1]), v, 1.4);
   }
+  for (const k of Object.keys(e)) {
+    if (k.startsWith('ceasefire:')) out.push({ label: `Ceasefire with ${names(k.split(':')[1])}`, dir: 'up', strength: 3, good: true });
+  }
+  if (e.relationsRivals) push('Rivals', e.relationsRivals, 0.7);
+  if (e.mobilization) push('Mobilization', e.mobilization, 3);
+  if (e.intel) push('Counter-intel', e.intel, 3);
   if (e.pc) push('Pol. capital', e.pc, 0.4);
   if (e.coupShield) out.push({ label: 'Coup-proofed', dir: 'up', strength: 2, good: true });
   if (option.tensionDelta) push('Tension', option.tensionDelta, 0.8, false);

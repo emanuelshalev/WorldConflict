@@ -35,6 +35,7 @@ import {
   withdrawFromBorder,
 } from "./systems/military.js";
 import {
+  applyFallout,
   executeNuclearStrike,
   progressNuclearPrograms,
   startNuclearProgram,
@@ -356,6 +357,7 @@ export class TurnEngine {
     // Phase 6: economy, domestic stability, diplomacy drift
     // ------------------------------------------------------------------
     updateEconomies(world);
+    events.push(...applyFallout(world));
     autoBudgetResponse(world);
     events.push(...updateDomestic(world, rng));
     applyDiplomaticDrift(world);

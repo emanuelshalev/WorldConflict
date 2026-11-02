@@ -115,6 +115,9 @@ export function buildPlayerView(world: WorldState): PlayerViewCountry[] {
         nuclearStatus: country.nuclear.status,
         nuclearProgress: exactRange(country.nuclear.progress),
         intelConfidence: 100,
+        growth: country.realGrowth ?? country.growthRate,
+        underEmbargo: country.underGlobalEmbargo || country.embargoedBy.length > 0,
+        fallout: country.fallout ?? 0,
         full: country,
       };
     }
@@ -149,6 +152,10 @@ export function buildPlayerView(world: WorldState): PlayerViewCountry[] {
         confidence,
       ),
       stability: range(belief?.stability ?? 50, confidence, 100),
+      growth: country.realGrowth ?? country.growthRate,
+      underEmbargo: country.underGlobalEmbargo || country.embargoedBy.length > 0,
+      fallout: country.fallout ?? 0,
+
       nuclearStatus: publicNuclear
         ? country.nuclear.status
         : (belief?.nuclearProgress ?? 0) > 10

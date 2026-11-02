@@ -1,3 +1,4 @@
+import { sharesLandBorder } from "../geography.js";
 import type { SeededRandom } from "../seed.js";
 import type { CountryState, GameEvent, WorldState } from "../types.js";
 
@@ -129,6 +130,36 @@ export function executeNuclearStrike(
     }
   }
 
+  // The aftermath starts now: radiation over the target and its neighbours, a shock to every
+  // market, and a war the target can no longer fight (see applyFallout for the months after)
+  target.fallout = 100;
+  target.nukedTurn = world.turn;
+  for (const n of world.countries) {
+    if (n.id !== target.id && n.id !== attacker.id && sharesLandBorder(n.id, target.id))
+      n.fallout = Math.max(n.fallout ?? 0, 25);
+  }
+  for (const c of world.countries) {
+    if (c.id === target.id) continue;
+    c.gdp *= 0.985; // markets crash, oil spikes, insurers flee the region
+    c.growthRate -= 0.01;
+  }
+  const war = world.wars.find(
+    (w) =>
+      (w.attackerId === attacker.id && w.defenderId === target.id) ||
+      (w.attackerId === target.id && w.defenderId === attacker.id),
+  );
+  if (war) {
+    war.exhaustion = Math.min(100, war.exhaustion + 40);
+    const towardAttacker = war.attackerId === attacker.id ? 22 : -22;
+    war.frontline = Math.max(0, Math.min(100, war.frontline + towardAttacker));
+  }
+  world.director.shocks.push({
+    kind: "NUCLEAR_STRIKE",
+    by: attacker.id,
+    target: target.id,
+    turn: world.turn,
+  });
+
   const holocaust = retaliators.length > 0;
   if (holocaust) {
     // Mutual destruction spiral
@@ -155,3 +186,82 @@ export function shouldSeekNuclearWeapons(world: WorldState, country: CountryStat
   const threatened = country.atWarWith.length > 0 || rivalArmed;
   return threatened && country.personality.riskTolerance > 55 && country.gdp > 2e11;
 }
+
+/**
+ * The months after a nuclear strike: radiation sickness, a broken health system and a
+ * shrinking economy in the struck country; refugees and contamination across its borders.
+ * Severity decays about 7% a month (most of it gone within three years). Returns the news.
+ */
+export function applyFallout(world: WorldState): GameEvent[] {
+  const events: GameEvent[] = [];
+  for (const c of world.countries) {
+    const f = c.fallout ?? 0;
+    if (f <= 0) continue;
+    c.gdp *= 1 - f * 0.0004; // -4% a month at full severity, on top of the strike itself
+    c.growthRate = Math.min(c.growthRate, -f * 0.0006);
+    c.stability = Math.max(0, c.stability - f * 0.04);
+    c.approval = Math.max(0, c.approval - f * 0.02);
+    c.legitimacy = Math.max(0, c.legitimacy - f * 0.015);
+    c.manpower = Math.floor(c.manpower * (1 - f * 0.0004));
+    if (f >= 40) {
+      // Refugees and contaminated water across every land border
+      for (const n of world.countries) {
+        if (n.id === c.id || !sharesLandBorder(n.id, c.id)) continue;
+        n.stability = Math.max(0, n.stability - 1);
+        n.gdp *= 0.999;
+      }
+    }
+    const months = c.nukedTurn !== undefined ? world.turn - c.nukedTurn : -1;
+    const neighbours = world.countries
+      .filter((n) => n.id !== c.id && sharesLandBorder(n.id, c.id))
+      .map((n) => n.name);
+    const story = AFTERMATH[months];
+    if (story)
+      events.push({
+        id: `evt_fallout_${c.id}_${world.turn}`,
+        type: "NUCLEAR",
+        title: story.title(c.name, neighbours),
+        description: story.text(c.name, neighbours, f),
+        affectedCountries: [c.id],
+        turn: world.turn,
+        severity: "MAJOR",
+      });
+    c.fallout = f * 0.93 < 3 ? 0 : f * 0.93;
+  }
+  return events;
+}
+
+const list = (xs: string[]) =>
+  xs.length > 1
+    ? `${xs.slice(0, -1).join(", ")} and ${xs[xs.length - 1]}`
+    : (xs[0] ?? "its neighbours");
+const AFTERMATH: Record<
+  number,
+  { title: (t: string, n: string[]) => string; text: (t: string, n: string[], f: number) => string }
+> = {
+  1: {
+    title: (t) => `Radiation sickness overwhelms ${t}'s hospitals`,
+    text: (t) =>
+      `Burn wards are full and doctors are rationing iodine. The World Health Organization calls the situation in ${t} "beyond any national capacity".`,
+  },
+  2: {
+    title: (_t, n) => `Refugees mass at the borders of ${list(n)}`,
+    text: (t, n) =>
+      `Hundreds of thousands are fleeing ${t}. ${list(n)} ${n.length > 1 ? "close" : "closes"} crossings and appeal for international help.`,
+  },
+  3: {
+    title: (t) => `Crops and water banned across the ${t} region`,
+    text: (t) =>
+      `Contamination maps show a plume reaching far beyond ${t}'s borders. Food prices jump across the region.`,
+  },
+  5: {
+    title: (t) => `${t}'s economy is in free fall`,
+    text: (t, _n, f) =>
+      `Factories stand empty and insurers will not cover shipping. Radiation levels are still ${f > 60 ? "lethal" : "dangerous"} in the worst-hit zones.`,
+  },
+  9: {
+    title: (t) => `A generation scarred: ${t} counts the cost`,
+    text: (t) =>
+      `Cancer screening queues stretch for blocks. Reconstruction in ${t} has barely begun.`,
+  },
+};

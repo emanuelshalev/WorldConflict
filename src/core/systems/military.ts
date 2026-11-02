@@ -68,6 +68,14 @@ export function startWar(
 
   attacker.atWarWith.push(defenderId);
   defender.atWarWith.push(attackerId);
+  // A new war during play (not the scenario's starting wars) is a shock the story answers
+  if (world.turn > 0 && world.director?.shocks)
+    world.director.shocks.push({
+      kind: "WAR_START",
+      by: attackerId,
+      target: defenderId,
+      turn: world.turn,
+    });
   attacker.relations[defenderId] = -100;
   defender.relations[attackerId] = -100;
   // Alliances with the enemy dissolve
@@ -215,7 +223,7 @@ export function endWar(
   war: ActiveWar,
   winnerId: string | null,
   loserId: string | null,
-  _rng: SeededRandom,
+  _rng?: SeededRandom,
 ): WarEndResult {
   const attacker = world.countries.find((c) => c.id === war.attackerId);
   const defender = world.countries.find((c) => c.id === war.defenderId);

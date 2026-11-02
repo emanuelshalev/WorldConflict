@@ -552,6 +552,11 @@ export const CountryStateSchema = z.object({
   // Geography: capital [lon, lat] (neighbor checks, refugee flows, map anchors)
   capital: z.tuple([z.number(), z.number()]).optional(),
 
+  // Aftermath of a nuclear strike: radiation severity 0-100, decaying month by month; it
+  // drags the economy, health and stability of the country and spills over to neighbours
+  fallout: z.number().min(0).max(100).default(0),
+  nukedTurn: z.number().optional(),
+
   // Bookkeeping
   collapsed: z.boolean().default(false),
 });
@@ -701,6 +706,17 @@ export const DirectorStateSchema = z.object({
   inDanger: z.boolean().default(false),
   // What the player actually did: action type → times carried out ("TYPE:tried" counts attempts)
   record: z.record(z.string(), z.number()).default({}),
+  // World-changing events the story must answer: emergency meetings, follow-ups (meetings.ts)
+  shocks: z
+    .array(
+      z.object({
+        kind: z.string(),
+        by: z.string().optional(),
+        target: z.string().optional(),
+        turn: z.number(),
+      }),
+    )
+    .default([]),
   // Headline number of each order type after each use: the evolution of a line of policy
   ledger: z
     .record(
@@ -799,6 +815,7 @@ export const WorldStateSchema = z.object({
     closeCalls: 0,
     inDanger: false,
     record: {},
+    shocks: [],
     ledger: {},
   }),
   turnReport: PlayerTurnReportSchema.nullable().default(null),
@@ -861,6 +878,10 @@ export interface PlayerViewCountry {
   nuclearStatus: NuclearStatus; // TESTED/ARMED is public; DEVELOPING may be hidden
   nuclearProgress: UncertainRange | null; // null = no intel on program
   intelConfidence: number; // 0-100 overall
+  // Public indicators (published statistics, press): health of the economy and its scars
+  growth: number; // smoothed annual real growth, e.g. -0.04
+  underEmbargo: boolean;
+  fallout: number; // radiation severity 0-100 after a nuclear strike
   // Player-only full detail
   full?: CountryState;
 }

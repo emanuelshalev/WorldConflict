@@ -31,6 +31,10 @@ const opt = (
 ): DecisionOption => ({ id, label, description, effects, tensionDelta, actions: [], backedBy: [] });
 
 const pct = (v: number) => `${Math.round(v)}%`;
+const strongest = (world: WorldState, exclude: string[]) =>
+  world.countries
+    .filter((c) => GREAT_POWERS.has(c.id) && !exclude.includes(c.id) && !c.collapsed)
+    .sort((a, b) => b.gdp - a.gdp)[0];
 const leaderOf = (c: CountryState) => `${c.leader.title} ${c.leader.name}`;
 
 /** Who calls this month: the most salient governments for the player, varied by the stream. */
@@ -479,8 +483,9 @@ export function generateAgenda(world: WorldState): Meeting[] {
   const player = world.countries.find((c) => c.id === world.playerCountryId);
   if (!player) return [];
   const rng = new SeededRandom(combineSeed(world.seed, 900_001 + world.turn));
-  const out: Meeting[] = [];
-  const who = callers(world, player, rng);
+  // A world-changing event last month comes first: the emergency meetings it demands
+  const out: Meeting[] = emergencyMeetings(world, player);
+  const who = callers(world, player, rng).slice(0, out.length ? 1 : 2);
   for (const [i, c] of who.entries()) out.push(callMeeting(world, player, c, i, rng));
   out.push(staffMeeting(world, player, out.length));
   if (world.turn % 2 === 0) {
@@ -497,5 +502,257 @@ export function generateAgenda(world: WorldState): Meeting[] {
     ];
     if (guest) out.push(visitMeeting(world, player, guest, out.length));
   } else out.push(pressMeeting(world, player, out.length));
+  return out;
+}
+
+/**
+ * Shocks from last month (director.shocks) that the player must answer in person: the cabinet
+ * convenes and the world's capitals call. Built from what actually happened, so the story
+ * follows the player's actions.
+ */
+function emergencyMeetings(world: WorldState, player: CountryState): Meeting[] {
+  const out: Meeting[] = [];
+  const recent = world.director.shocks.filter(
+    (s) => world.turn - s.turn <= 1 && world.turn - s.turn >= 0,
+  );
+  const base = (n: number, kind: Meeting["kind"], templateId: string) => ({
+    id: `mtg_${world.turn}_e${n}`,
+    turn: world.turn,
+    deadlineTurn: world.turn + 1,
+    templateId,
+    urgency: "URGENT" as const,
+    defaultOptionId: "deputy",
+    kind,
+  });
+  const name = (id?: string) => world.countries.find((c) => c.id === id)?.name ?? "the target";
+  for (const s of recent) {
+    if (out.length >= 2) break;
+    if (s.kind === "WAR_START" && (s.by === player.id || s.target === player.id)) {
+      const enemyId = s.by === player.id ? s.target : s.by;
+      const enemy = world.countries.find((c) => c.id === enemyId);
+      if (!enemy) continue;
+      const attacking = s.by === player.id;
+      out.push({
+        ...base(out.length, "STAFF", "meeting_staff"),
+        affectedCountries: [enemy.id],
+        speaker: "Defence Minister",
+        title: "War cabinet: day one",
+        situation: attacking
+          ? `"Our forces are across the line into ${enemy.name}. The first hours went to plan. Now you decide how far this goes."`
+          : `"${enemy.name} has attacked us. Our forward units are holding, barely. The country wants to hear from you and the generals want orders."`,
+        options: [
+          opt(
+            "total",
+            "Full mobilization",
+            "Every reservist, every factory. Total war footing.",
+            { mobilization: 20, approval: 2, growth: -0.3 },
+            3,
+          ),
+          opt(
+            "limited",
+            "Limited aims, keep the door to talks open",
+            "A war you can end.",
+            { [`relations:${enemy.id}`]: 4, approval: -1 },
+            -3,
+          ),
+          opt("allies", "Call in the allies", "Capital spent on the phone; friends answer.", {
+            relationsAllies: 4,
+            pc: -1,
+          }),
+          opt("deputy", "Let the general staff run it", "The war runs without a political line."),
+        ],
+      });
+      const power = strongest(world, [player.id, enemy.id]);
+      if (power && out.length < 2) {
+        const r = `relations:${power.id}`;
+        out.push({
+          ...base(out.length, "CALL", "meeting_call"),
+          affectedCountries: [power.id, enemy.id],
+          withCountry: power.id,
+          speaker: leaderOf(power),
+          title: `Phone call: ${leaderOf(power)}`,
+          situation: attacking
+            ? `"You started this. End it before it spreads, or do not expect us to stand aside."`
+            : `"We saw what ${enemy.name} did. Tell us what you need, and what you will not do."`,
+          options: attacking
+            ? [
+                opt(
+                  "assure",
+                  "Assure them the war has limited aims",
+                  "Buys patience, not approval.",
+                  { [r]: 5 },
+                  -2,
+                ),
+                opt(
+                  "brush",
+                  "Tell them it is none of their business",
+                  "They may make it their business.",
+                  { [r]: -6, approval: 1 },
+                  2,
+                ),
+                opt("deputy", "Let the foreign minister call back", "Noted, and not forgotten.", {
+                  [r]: -2,
+                }),
+              ]
+            : [
+                opt(
+                  "ask",
+                  "Ask for weapons and sanctions on the aggressor",
+                  "Help comes with expectations.",
+                  { [r]: 4, [`relations:${enemy.id}`]: -3 },
+                ),
+                opt(
+                  "restraint",
+                  "Promise restraint in return for diplomatic support",
+                  "The world remembers who was attacked.",
+                  { [r]: 7, legitimacy: 2 },
+                  -2,
+                ),
+                opt("deputy", "Let the foreign minister call back", "Help may come slower.", {
+                  [r]: -1,
+                }),
+              ],
+        });
+      }
+      continue;
+    }
+    if (s.kind !== "NUCLEAR_STRIKE") continue;
+    const target = world.countries.find((c) => c.id === s.target);
+    if (s.by === player.id && target) {
+      const t = `relations:${target.id}`;
+      out.push({
+        ...base(out.length, "STAFF", "meeting_staff"),
+        affectedCountries: [target.id],
+        speaker: "Chief of Staff",
+        title: "Emergency cabinet: the day after",
+        situation: `"The images from ${target.name} are on every screen in the world. Our allies are asking whether you will do it again. We need a line, today."`,
+        options: [
+          opt(
+            "pledge",
+            "Pledge no further use",
+            "Allies breathe again. Hardliners call it weakness.",
+            { relationsAllies: 6, approval: -2 },
+            -12,
+          ),
+          opt(
+            "aid",
+            `Send humanitarian aid to ${target.name}`,
+            "Field hospitals and iodine. It will not undo it, but it is noticed.",
+            { [t]: 10, legitimacy: 2, pc: -1 },
+            -6,
+          ),
+          opt(
+            "open",
+            "Keep every option open",
+            "Deterrence through fear. The world believes you.",
+            { relationsAllies: -5, approval: 1 },
+            6,
+          ),
+          opt(
+            "deputy",
+            "Let the spokesperson handle it",
+            "Silence, read as defiance.",
+            { relationsAllies: -2 },
+            2,
+          ),
+        ],
+      });
+      const power = strongest(world, [player.id, target.id]);
+      if (power) {
+        const r = `relations:${power.id}`;
+        out.push({
+          ...base(out.length, "CALL", "meeting_call"),
+          affectedCountries: [power.id, target.id],
+          withCountry: power.id,
+          speaker: leaderOf(power),
+          title: `Secure line: ${leaderOf(power)}`,
+          situation: `"You have crossed a line no one has crossed in eighty years. The Security Council meets tonight. Agree to a ceasefire and inspectors, or face the consequences."`,
+          options: [
+            opt(
+              "ceasefire",
+              "Agree to a ceasefire and inspectors",
+              "The war stops. So does your freedom of action.",
+              { [r]: 10, [t]: 8, approval: -2, [`ceasefire:${target.id}`]: 1 },
+              -10,
+            ),
+            opt("talks", "Offer talks, no inspectors", "Half a step back.", { [r]: 3 }, -3),
+            opt(
+              "defy",
+              "Refuse: this is our war",
+              "The pariah's path.",
+              { [r]: -12, approval: 1 },
+              8,
+            ),
+            opt("deputy", "Do not take the call", "Read as contempt.", { [r]: -6 }, 4),
+          ],
+        });
+      }
+    } else if (s.target === player.id) {
+      const by = world.countries.find((c) => c.id === s.by);
+      out.push({
+        ...base(out.length, "STAFF", "meeting_staff"),
+        affectedCountries: by ? [by.id] : [],
+        speaker: "Interior Minister",
+        title: "Emergency cabinet: we have been hit",
+        situation: `"Casualty figures are still climbing. The hospitals in the blast zone are gone. The country is looking to you."`,
+        options: [
+          opt(
+            "evacuate",
+            "Evacuate and appeal for international aid",
+            "Allies send planes. The nation sees you lead.",
+            { relationsAllies: 6, stability: 4, pc: -1 },
+          ),
+          opt(
+            "rally",
+            "Address the nation: we will endure",
+            "Grief turns into resolve.",
+            { approval: 5, stability: 2 },
+            3,
+          ),
+          opt(
+            "peace",
+            `Sue for peace with ${name(s.by)}`,
+            "Stop the next one. Some will call it surrender.",
+            {
+              approval: -4,
+              ...(by ? { [`relations:${by.id}`]: 6, [`ceasefire:${by.id}`]: 1 } : {}),
+            },
+            -8,
+          ),
+          opt("deputy", "Let the ministries cope", "The country notices who is missing.", {
+            stability: -3,
+          }),
+        ],
+      });
+    } else {
+      out.push({
+        ...base(out.length, "STAFF", "meeting_staff"),
+        affectedCountries: [s.by ?? "", s.target ?? ""].filter(Boolean),
+        speaker: "Defence Minister",
+        title: "Emergency cabinet: a nuclear weapon has been used",
+        situation: `"${name(s.by)} has struck ${name(s.target)}. Fallout is drifting, markets are in free fall, and everyone is asking where we stand."`,
+        options: [
+          opt(
+            "alert",
+            "Raise the alert level",
+            "Readiness reassures the public and alarms the neighbours.",
+            { mobilization: 10, approval: 1 },
+            2,
+          ),
+          opt(
+            "sanctions",
+            `Lead the call for sanctions on ${name(s.by)}`,
+            "The moral high ground, and an enemy.",
+            { ...(s.by ? { [`relations:${s.by}`]: -10 } : {}), approval: 2, legitimacy: 1 },
+          ),
+          opt("aid", `Send aid to ${name(s.target)}`, "Costs capital, earns gratitude.", {
+            ...(s.target ? { [`relations:${s.target}`]: 8 } : {}),
+            pc: -1,
+          }),
+          opt("deputy", "Wait and watch", "Others will decide the response."),
+        ],
+      });
+    }
+  }
   return out;
 }

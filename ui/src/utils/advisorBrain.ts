@@ -488,7 +488,40 @@ function generalRelationsAnswer(ctx: BrainContext): string {
   return `The map in one sentence: our closest relationships are ${friends.join(', ')}; our worst are ${enemies.join(', ')}. Ask me about any specific country and I will explain exactly why the relationship is where it is and what could move it.`;
 }
 
+/** A nuclear strike in the last few months dominates every briefing. */
+function shockRead(ctx: BrainContext, advisorId: string): string | null {
+  const w = ctx.worldState;
+  const s = [...(w.director.shocks ?? [])].reverse().find((x) => x.kind === 'NUCLEAR_STRIKE' && w.turn - x.turn <= 6);
+  if (!s) return null;
+  const by = countryName(ctx, s.by ?? '');
+  const target = countryName(ctx, s.target ?? '');
+  const fallout = Math.round(w.countries.find((c) => c.id === s.target)?.fallout ?? 0);
+  const ours = s.by === ctx.player.id;
+  const hit = s.target === ctx.player.id;
+  const lens: Record<string, string> = {
+    FOREIGN_MINISTER: ours
+      ? `Nothing else matters until we answer for the strike on ${target}. Every capital is waiting to see if we do it again. A pledge of no further use and aid to ${target} would stop the bleeding; defiance makes us a pariah for a generation.`
+      : `The strike on ${target} has rewritten every alliance. Pick a side carefully: condemn ${by} and we gain friends, stay silent and we look complicit.`,
+    DEFENSE_MINISTER: ours
+      ? `Militarily, ${target} is broken: their front is collapsing and they cannot sustain the war. A second strike would buy nothing we have not already won, and would bring the whole world against us.`
+      : hit
+        ? `We have been hit. Civil defence first, then decide whether this war is worth another strike.`
+        : `Raise readiness. Fallout is drifting and every nuclear power is on alert.`,
+    FINANCE_MINISTER: `Markets fell the day of the strike and have not recovered. ${target} is in free fall (radiation ${fallout}/100), shipping insurance in the region has vanished, and ${ours ? 'the global embargo is strangling us' : 'we are paying for it too'}.`,
+    INTELLIGENCE_CHIEF: `Our read on the aftermath in ${target}: radiation still at ${fallout}/100, hospitals overwhelmed, refugees moving across every border. Watch for regime collapse there.`,
+    DOMESTIC_ADVISOR: ours
+      ? `The country is in shock. There are vigils outside every embassy and protests at home. Approval will not recover on its own.`
+      : `People are frightened: iodine is sold out and the queues are long. A calm address would help.`,
+    CHIEF_OF_STAFF: ours
+      ? `This is the defining decision of your term. Answer the world now: the emergency meetings on your calendar are the place to do it.`
+      : `The strike on ${target} by ${by} is the story of the year. Your calendar has the emergency meetings; take them.`,
+  };
+  return lens[advisorId] ?? lens.CHIEF_OF_STAFF;
+}
+
 function priorityRead(ctx: BrainContext, advisorId: string): string {
+  const shock = shockRead(ctx, advisorId);
+  if (shock) return shock;
   const p = ctx.player;
   switch (advisorId) {
     case 'FOREIGN_MINISTER':
