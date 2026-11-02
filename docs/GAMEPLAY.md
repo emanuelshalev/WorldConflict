@@ -41,11 +41,11 @@ The game has two modes, switched in the HUD or with **M**:
 Your staff fill the desk in before you arrive, so you only change what you disagree with:
 
 1. **Crises** start on the **staff pick** (the option most ministers back that does not endanger your mission). Pick another option, or approve the pick. Arrows show the **direction and rough size** of consequences (Approval ▲▲, Tension ▼...), not exact numbers.
-2. **Orders**: the staff queue up to three safe orders within your political capital (turn this off in Settings). Remove any with its x, add others from **Staff suggestions** or **All orders** (search with **/**, e.g. "spy iran"). Clicking a country on the big map makes it the order target.
-3. **Meetings** show a suggested answer but wait for you: approve it, pick another, or send a deputy. **Approve all** (Shift+A) confirms the crisis picks and attends the three best meetings.
+2. **Orders**: the staff queue up to two safe orders, never a long shot or a repeat of last month, and always leave you at least 1 ◆ (turn this off in Settings). Remove any with its x, add others from **Staff suggestions** or **All orders** (search with **/**, e.g. "spy iran"). Clicking a country on the big map makes it the order target.
+3. **Meetings** show a suggested answer but wait for you: approve it, pick another, or send a deputy. **Approve all** (Shift+A) confirms the crisis picks, attends the three best meetings and sends deputies to the rest.
 4. **Execute month** (Ctrl+Enter). The right column always shows what you are proceeding with, what each budget has left, and what still needs you. Going over a budget disables Execute and says why. The world then moves: each order and answer plays as a news scene with what it changed, and the **World Chronicle** leads with *your* decision.
 
-Your picks are saved as you go, so a reload brings back the same desk. Keys: M (Map/Desk), J/K (next/previous item), 1-3 (choose an option), / (search orders), Shift+A (approve all), N (news ticker), Ctrl+Enter (execute).
+Your picks are saved as you go, so a reload brings back the same desk. Keys: M (Map/Desk), J/K (next/previous item), 1-3 (choose an option), Enter (approve the staff pick or suggestion in focus), Delete (remove the order in focus), / (search orders, Up/Down and Enter), Shift+A (approve all), G (map legend), N (news ticker), Ctrl+Enter (execute).
 
 ### Your calendar
 

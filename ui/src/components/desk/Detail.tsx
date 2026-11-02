@@ -221,7 +221,7 @@ function SuggestionsDetail() {
   return (
     <article>
       <h3 className="detail-title">Your staff suggest</h3>
-      <p className="hint">The staff queue up to three of these at the start of each month, within your political capital. Remove what you do not want; add the others here.</p>
+      <p className="hint">The staff queue up to two of these at the start of each month, never one with poor odds or a repeat of last month, and always leave you at least 1 ◆. Remove what you do not want; add the others here.</p>
       <div className="sugg-list">
         {suggestions.map((s) => {
           const i = actions.findIndex((a) => orderKey(a) === orderKey(s.action));
@@ -257,6 +257,7 @@ function SuggestionsDetail() {
 function CatalogDetail({ target, setTarget }: { target: string; setTarget: (id: string) => void }) {
   const view = useGameStore((s) => s.playerView);
   const [q, setQ] = useState('');
+  const [sel, setSel] = useState(0);
   const others = useMemo(() => [...view].filter((v) => !v.isPlayer).sort((a, b) => a.name.localeCompare(b.name)), [view]);
   const query = q.trim().toLowerCase();
   // "spy ir" finds Spy on Iran: every word must start a word of the order or the country
@@ -273,7 +274,21 @@ function CatalogDetail({ target, setTarget }: { target: string; setTarget: (id: 
     <article>
       <h3 className="detail-title">All orders</h3>
       <div className="catalog-top">
-        <input id="catalog-search" className="leader-input" placeholder="Search: spy iran, court china, reform" value={q} onChange={(e) => setQ(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && hits[0] && add(hits[0].o, hits[0].t)} aria-label="Search orders" />
+        <input id="catalog-search" className="leader-input" placeholder="Search: spy iran, court china, reform" value={q} onChange={(e) => {
+            setQ(e.target.value);
+            setSel(0);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+              e.preventDefault();
+              setSel((v) => Math.max(0, Math.min(hits.length - 1, v + (e.key === 'ArrowDown' ? 1 : -1))));
+            } else if (e.key === 'Enter' && hits[Math.min(sel, hits.length - 1)]) {
+              const h = hits[Math.min(sel, hits.length - 1)];
+              add(h.o, h.t);
+            } else if (e.key === 'Escape') (e.target as HTMLInputElement).blur();
+          }}
+          aria-label="Search orders (Up/Down to choose, Enter to add)"
+        />
         <select className="leader-input" value={target} onChange={(e) => setTarget(e.target.value)} aria-label="Target country">
           <option value="">Target: pick a country</option>
           {others.map((v) => (
@@ -287,9 +302,9 @@ function CatalogDetail({ target, setTarget }: { target: string; setTarget: (id: 
         <div className="catalog-hits">
           {hits.length === 0 && <p className="hint">No order matches.</p>}
           {hits.map((h, i) => (
-            <button key={`${h.label}-${i}`} className={`wc-btn ${h.o.danger ? 'danger' : ''}`} onClick={() => add(h.o, h.t)}>
+            <button key={`${h.label}-${i}`} className={`wc-btn ${h.o.danger ? 'danger' : ''} ${i === Math.min(sel, hits.length - 1) ? 'hit-on' : ''}`} onClick={() => add(h.o, h.t)}>
               <ActionIcon type={h.o.type} size={15} /> {h.label} <Cost type={h.o.type} />
-              {i === 0 && <kbd>Enter</kbd>}
+              {i === Math.min(sel, hits.length - 1) && <kbd>Enter</kbd>}
             </button>
           ))}
         </div>

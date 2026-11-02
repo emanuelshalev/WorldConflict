@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { flushSync } from 'react-dom';
+import { crisisStaffPick, meetingSuggestion } from '../lib/staff';
 import { useGameStore } from '../store/gameStore';
 import { approveAll, setupMonth } from '../lib/month';
 import { Navigator } from './desk/Navigator';
@@ -22,6 +24,7 @@ function CoachTip() {
     }
   });
   if (hidden) return null;
+  const stacked = window.matchMedia?.('(max-width: 1099px)').matches ?? false;
   const dismiss = () => {
     try {
       localStorage.setItem('worldconflict.deskTip', 'done');
@@ -33,7 +36,16 @@ function CoachTip() {
   return (
     <div className="desk-tip" role="note">
       <span>
-        <b>Left:</b> what needs you. <b>Middle:</b> the item you are on. <b>Right:</b> what you will do this month. Your staff have pre-filled everything: change what you do not like, approve the rest, then Execute.
+        {stacked ? (
+          <>
+            <b>Top:</b> what needs you. <b>Below:</b> the item you are on. <b>Bottom sheet:</b> what you will do this month.
+          </>
+        ) : (
+          <>
+            <b>Left:</b> what needs you. <b>Middle:</b> the item you are on. <b>Right:</b> what you will do this month.
+          </>
+        )}{' '}
+        Your staff have pre-filled everything: change what you do not like, approve the rest, then Execute.
       </span>
       <button className="wc-btn ghost small" onClick={dismiss}>
         Got it
@@ -66,8 +78,20 @@ function useDeskKeys(enabled: boolean) {
       } else if (e.key === 'A' && e.shiftKey) approveAll();
       else if (e.key === '/') {
         e.preventDefault();
-        s.setFocus({ kind: 'catalog' });
-        setTimeout(() => document.getElementById('catalog-search')?.focus(), 30);
+        flushSync(() => s.setFocus({ kind: 'catalog' }));
+        document.getElementById('catalog-search')?.focus();
+      } else if ((e.key === 'Delete' || e.key === 'Backspace') && s.focus.kind === 'order') {
+        s.removePendingAction(Number(s.focus.id));
+        s.setFocus({ kind: 'suggestions' });
+      } else if (e.key === 'Enter' && s.focus.kind === 'crisis') {
+        const d = s.pendingDecisions.find((x) => x.id === s.focus.id);
+        if (!d) return;
+        s.chooseDecision(d.id, s.decisionChoices[d.id] ?? crisisStaffPick(d, s.worldState?.objective).id);
+      } else if (e.key === 'Enter' && s.focus.kind === 'meeting') {
+        const m = s.worldState?.agenda?.find((x) => x.id === s.focus.id);
+        const o = m && meetingSuggestion(m);
+        if (!m || !o) return;
+        s.chooseDecision(m.id, o.id);
       } else if (/^[1-3]$/.test(e.key) && (s.focus.kind === 'crisis' || s.focus.kind === 'meeting')) {
         const item = s.focus.kind === 'crisis' ? s.pendingDecisions.find((d) => d.id === s.focus.id) : s.worldState?.agenda?.find((m) => m.id === s.focus.id);
         const opts = item?.options.filter((o) => s.focus.kind === 'crisis' || o.id !== item.defaultOptionId) ?? [];

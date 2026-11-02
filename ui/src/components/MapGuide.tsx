@@ -67,12 +67,14 @@ export function MapGuide({ onClose }: { onClose: () => void }) {
 
   return (
     <div
+      className="map-guide"
       style={{
         position: 'absolute',
         top: 'calc(var(--under-top, 0px) + 56px)',
         right: 12,
-        width: 340,
-        maxHeight: 'calc(100% - 80px)',
+        width: 'min(340px, calc(100% - 24px))',
+        // Ends above the bottom of the map stage (the command strip and ticker sit below it)
+        maxHeight: 'calc(100% - var(--under-top, 0px) - 68px)',
         overflowY: 'auto',
         background: 'rgba(13,15,20,0.96)',
         border: '1px solid #2a2e3a',

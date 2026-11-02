@@ -61,8 +61,10 @@ function Ticker() {
   const me = usePlayerCountry()
   const [reduced] = useState(() => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false)
   const [at, setAt] = useState(0)
-  if (!world || world.newspaper.length === 0 || !show) return null
-  const news = world.newspaper
+  if (!world || !show) return null
+  const news = world.newspaper.length
+    ? world.newspaper
+    : [{ headline: 'No news yet: the first headlines arrive after your first month', relatedCountries: [] as string[] }]
   const mine = (n: (typeof news)[number]) => (me && n.relatedCountries.includes(me.id) ? 'mine' : '')
   const one = news[at % news.length]
   return (

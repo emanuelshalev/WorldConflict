@@ -1,4 +1,5 @@
 import { IconBook2, IconBroadcast, IconBroadcastOff, IconLayoutDashboard, IconMap2, IconMenu2, IconNews, IconSettings, IconUsers, IconWorld } from '@tabler/icons-react';
+import { budgetStatus } from '../lib/budget';
 import { useGameStore, usePlayerCountry } from '../store/gameStore';
 import { flag, money, monthLabel } from '../lib/format';
 
@@ -58,11 +59,17 @@ export function Hud() {
   const showTicker = useGameStore((s) => s.showTicker);
   const setShowTicker = useGameStore((s) => s.setShowTicker);
   const gameOver = useGameStore((s) => s.gameOver);
+  // Re-render when the month's selection changes (the capital figure follows it)
+  useGameStore((s) => s.pendingActions);
+  useGameStore((s) => s.decisionChoices);
   if (!world || !me) return null;
 
   const d = world.turnReport?.deltas ?? {};
   const delta = (k: string) => (d[k] ? d[k].after - d[k].before : undefined);
-  const pc = world.politicalCapital;
+  // Same figure as the desk's budget: what is left this month after answers and queued orders
+  const budget = budgetStatus();
+  const pcTotal = budget ? Math.max(0, budget.pc.bank + budget.pc.crisis + budget.pc.meetings) : world.politicalCapital;
+  const pc = budget ? budget.pc.left : world.politicalCapital;
   const llmOn = provider !== 'builtin' && tier !== 'ALGORITHMIC';
   const election = me.politicalSystem.nextElectionTurn;
   const monthsToElection =
@@ -109,14 +116,14 @@ export function Hud() {
             </small>
           </div>
         </div>
-        <div className="stat" title="Political capital: spent on orders, refilled monthly">
+        <div className="stat" title={`Political capital left this month: ${pc} of ${pcTotal} (bank ${world.politicalCapital}). Refilled monthly, up to 6.`}>
           <StatLabel label="Capital" short="Cap" />
           <div className="pc-pips">
-            {Array.from({ length: Math.max(pc, 3) }).map((_, i) => (
+            {Array.from({ length: Math.max(pcTotal, 3) }).map((_, i) => (
               <i key={i} className={i < pc ? 'full' : ''} />
             ))}
           </div>
-          <div className="val pc-num">◆ {pc}/6</div>
+          <div className="val pc-num" style={{ color: pc < 0 ? 'var(--war)' : undefined }}>◆ {pc}<span className="pc-word"> left</span></div>
         </div>
         <div className="stat tension" title="Global tension">
           <StatLabel label="World tension" short="Tens" />
@@ -141,7 +148,7 @@ export function Hud() {
         </div>
       )}
       <div className="hud-menu">
-        <button className="icon-btn" aria-pressed={showTicker} title={showTicker ? 'Hide the news ticker (N)' : 'Show the news ticker (N)'} onClick={() => setShowTicker(!showTicker)}>
+        <button className="icon-btn hide-phone" aria-pressed={showTicker} title={showTicker ? 'Hide the news ticker (N)' : 'Show the news ticker (N)'} onClick={() => setShowTicker(!showTicker)}>
           {showTicker ? <IconBroadcast size={18} /> : <IconBroadcastOff size={18} />}
         </button>
         {llmOn && (
@@ -159,7 +166,7 @@ export function Hud() {
         <button className="icon-btn" title="Chronicle: news and history" onClick={() => setDrawer('chronicle')}>
           <IconNews size={18} />
         </button>
-        <button className="icon-btn" title="Mission & record" onClick={() => setDrawer('objective')}>
+        <button className="icon-btn hide-phone" title="Mission & record" onClick={() => setDrawer('objective')}>
           <IconBook2 size={18} />
           {pendingDecisions.length > 0 && <span className="badge">{pendingDecisions.length}</span>}
         </button>

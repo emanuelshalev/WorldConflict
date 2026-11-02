@@ -78,7 +78,9 @@ export function Tray() {
         return (
           <button key={d.id} className="tray-row crisis" onClick={() => setFocus({ kind: 'crisis', id: d.id })}>
             <span className="tray-label">
-              {d.title}: <b>{o?.label ?? 'no answer'}</b>
+              {d.title}
+              {/[?!:.]$/.test(d.title) ? ' ' : ': '}
+              <b>{o?.label ?? 'no answer'}</b>
             </span>
             {!reviewed[d.id] && <span className="nav-tag staff">Staff</span>}
             {(o?.effects.pc ?? 0) !== 0 && <span className="num tray-pc">{(o?.effects.pc ?? 0) > 0 ? '+' : '−'}◆{Math.abs(o?.effects.pc ?? 0)}</span>}
@@ -175,8 +177,8 @@ export function Readiness() {
 export function ApproveButton({ compact = false }: { compact?: boolean }) {
   useGameStore((s) => s.decisionChoices);
   useGameStore((s) => s.reviewed);
-  const { crises, meetings } = pendingApprovals();
-  const n = crises.length + meetings.length;
+  const { crises, meetings, deputies } = pendingApprovals();
+  const n = crises.length + meetings.length + (deputies.length && !meetings.length && !crises.length ? deputies.length : 0);
   if (n === 0) return null;
   return (
     <button className="wc-btn approve" onClick={approveAll} title="Confirm the staff's crisis picks and attend the suggested meetings (Shift+A)">
@@ -262,6 +264,11 @@ export function CommandStrip() {
         <IconLayoutDashboard size={16} /> Desk
       </button>
       <ApproveButton compact />
+      {ex.reason && (
+        <span className="strip-over">
+          <IconAlertTriangle size={13} /> {ex.reason}
+        </span>
+      )}
       <button className="wc-btn primary" disabled={ex.disabled} onClick={ex.run} title={ex.reason ?? 'Execute month (Ctrl+Enter)'}>
         <IconSend size={16} /> {ex.loading ? 'Resolving…' : 'Execute'}
       </button>

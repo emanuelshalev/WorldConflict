@@ -25,7 +25,11 @@ interface Stored {
 }
 
 const storeKey = (key: string) => `worldconflict.pending.${key}`;
-const STAFF_ORDERS = 3;
+const STAFF_ORDERS = 2;
+/** The staff always leave this much political capital for the player's own orders. */
+const RESERVE_PC = 1;
+/** Orders with worse odds than this are left for the player to decide. */
+const MIN_ODDS = 0.35;
 
 function readStored(key: string): Stored | null {
   try {
@@ -86,6 +90,8 @@ export async function setupMonth(): Promise<void> {
     if (!useGameStore.getState().staffOrders) return;
     const me = world.countries.find((c) => c.id === world.playerCountryId);
     const suggestions = computeSuggestions(world, s.playerView, me);
+    // Last month's orders: the staff do not repeat one on their own
+    const lastMonth = new Set((world.turnReport?.orders ?? []).map((o) => o.label));
     let queued = 0;
     for (const sug of suggestions) {
       if (queued >= STAFF_ORDERS) break;
@@ -93,9 +99,12 @@ export async function setupMonth(): Promise<void> {
       if (now.monthKey !== key) return; // the month moved on while we waited for a preview
       if (DANGEROUS.has(sug.action.type)) continue;
       if (now.pendingActions.some((a) => orderKey(a) === orderKey(sug.action))) continue;
-      if (pcCost(sug.action.type) > capitalLeft(now)) continue;
+      if (lastMonth.has(sug.action.label)) continue;
+      if (pcCost(sug.action.type) > capitalLeft(now) - RESERVE_PC) continue;
       const preview = await fetchPreview(sug.action);
       if (!preview || preview.blocked || preview.missionWarning) continue;
+      const odds = preview.successChance == null ? 1 : preview.successChance > 1 ? preview.successChance / 100 : preview.successChance;
+      if (odds < MIN_ODDS) continue;
       if (useGameStore.getState().monthKey !== key) return;
       useGameStore.getState().addPendingAction({ ...sug.action, preview, origin: 'staff', why: `${sug.who}: ${sug.why}` });
       queued++;
@@ -106,15 +115,15 @@ export async function setupMonth(): Promise<void> {
 }
 
 /** Every staff suggestion not yet approved: crisis picks to confirm and meetings to attend. */
-export function pendingApprovals(): { crises: string[]; meetings: Array<{ id: string; optionId: string }> } {
+export function pendingApprovals(): { crises: string[]; meetings: Array<{ id: string; optionId: string }>; deputies: string[] } {
   const s = useGameStore.getState();
   const world = s.worldState;
-  if (!world) return { crises: [], meetings: [] };
+  if (!world) return { crises: [], meetings: [], deputies: [] };
   const crises = s.pendingDecisions.filter((d) => !s.reviewed[d.id]).map((d) => d.id);
   const agenda = world.agenda ?? [];
   const attending = agenda.filter((m) => s.decisionChoices[m.id] && s.decisionChoices[m.id] !== m.defaultOptionId).length;
   let free = MEETING_SLOTS - attending;
-  let pc = capitalLeft(s);
+  let pc = Math.max(0, capitalLeft(s));
   const meetings: Array<{ id: string; optionId: string }> = [];
   for (const m of meetingPriority(agenda, world.objective)) {
     if (free <= 0) break;
@@ -122,17 +131,20 @@ export function pendingApprovals(): { crises: string[]; meetings: Array<{ id: st
     const o = meetingSuggestion(m);
     if (!o) continue;
     const cost = -(o.effects.pc ?? 0);
-    if (cost > pc) continue;
-    pc -= cost;
+    if (cost > 0 && cost > pc) continue;
+    pc -= Math.max(0, cost);
     meetings.push({ id: m.id, optionId: o.id });
     free--;
   }
-  return { crises, meetings };
+  // Every other open meeting goes to a deputy, so the calendar is settled
+  const taken = new Set(meetings.map((m) => m.id));
+  const deputies = agenda.filter((m) => !s.decisionChoices[m.id] && !taken.has(m.id) && m.defaultOptionId).map((m) => m.id);
+  return { crises, meetings, deputies };
 }
 
 /** Approve all: confirm the crisis picks and attend the suggested meetings (the rest go to deputies). */
 export function approveAll(): void {
-  const { crises, meetings } = pendingApprovals();
+  const { crises, meetings, deputies } = pendingApprovals();
   const s = useGameStore.getState();
   const reviewed = { ...s.reviewed };
   const choices = { ...s.decisionChoices };
@@ -140,6 +152,11 @@ export function approveAll(): void {
   for (const m of meetings) {
     choices[m.id] = m.optionId;
     reviewed[m.id] = true;
+  }
+  const agenda = s.worldState?.agenda ?? [];
+  for (const id of deputies) {
+    const m = agenda.find((x) => x.id === id);
+    if (m?.defaultOptionId) choices[id] = m.defaultOptionId;
   }
   useGameStore.setState({ reviewed, decisionChoices: choices });
 }

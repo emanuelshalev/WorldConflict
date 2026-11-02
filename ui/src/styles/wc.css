@@ -2273,3 +2273,25 @@ kbd { font-family: var(--font-mono); font-size: 10px; padding: 1px 5px; border: 
   .rail-foot .execute-btn { font-size: 15px; }
 }
 .rail-foot .approve { gap: 6px; } .approve-long { margin-left: -6px; }
+@media (max-width: 1099px) { .map-guide { max-height: 52% !important; top: auto !important; bottom: 10px; } }
+/* The desk covers the globe: stop painting it and its CSS markers underneath */
+.mode-desk .game-body > .map-stage { visibility: hidden; }
+/* Map/Desk labels stay visible down to 1200px wide */
+@media (max-width: 1439px) and (min-width: 1200px) { .mode-seg span { display: inline; } .mode-seg button { padding: 6px 10px; } }
+/* Phone HUD: two rows (who + menu, then the stats) instead of three */
+@media (max-width: 600px) {
+  .hud { gap: 6px 8px; padding: 6px 10px; min-height: 0; }
+  .hud > div:first-child { display: none; } /* the big flag: the name line says who you are */
+  .hud-who { flex: 1 1 0; min-width: 0; }
+  .hud-who > * { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hud-who b { font-size: 14.5px; }
+  .hud-menu { flex-wrap: nowrap; }
+  .hud-menu .icon-btn { width: 30px; height: 30px; }
+  .hud-menu .hide-phone { display: none; }
+}
+/* Playtest polish */
+.detail .option .opt-pc { position: static; float: right; margin: 1px 0 0 8px; }
+.catalog-hits .wc-btn.hit-on { border-color: var(--accent); }
+.cmd-strip .strip-over { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--war); }
+@media (max-width: 1099px) { .rail, .rail.sheet-open { background: #0a0e18; } }
+@media (max-width: 900px) { .hud .pc-word { display: none; } }

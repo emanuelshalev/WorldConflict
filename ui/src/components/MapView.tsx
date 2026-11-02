@@ -163,6 +163,20 @@ export function MapView() {
   const mapRef = useRef<maplibregl.Map | null>(null);
   const [mapReady, setMapReady] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
+  // G toggles the legend in Map mode
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement | null;
+      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable)) return;
+      if (e.ctrlKey || e.metaKey || e.altKey || (e.key !== 'g' && e.key !== 'G')) return;
+      const s = useGameStore.getState();
+      if (s.deskMode !== 'map' || s.activeModal || s.showChronicle) return;
+      setShowGuide((v) => !v);
+      e.preventDefault();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, []);
   const [menu, setMenu] = useState<MenuState | null>(null);
   const [zone, setZone] = useState<string | null>(null);
   const geoRef = useRef<GeoJSON.FeatureCollection | null>(null);
@@ -688,6 +702,9 @@ export function MapView() {
       };
       const frame = (now: number) => {
         raf = requestAnimationFrame(frame);
+        // The desk covers the globe: no animation work (and no GL repaints) behind it
+        const st = useGameStore.getState();
+        if (st.deskMode === 'desk' && !st.gameOver) return;
         if (now - last < 50) return;
         last = now;
         const t = now / 1000;

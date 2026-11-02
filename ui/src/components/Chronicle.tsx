@@ -147,8 +147,8 @@ export function Chronicle() {
                     {o.ok ? '✓' : '✗'} {o.label}, {o.detail}
                   </li>
                 ))}
-                {report.causes.slice(0, 5).map((c) => (
-                  <li key={c} style={{ color: '#b9b2a2' }}>
+                {report.causes.slice(0, 5).map((c, i) => (
+                  <li key={`${i}-${c}`} style={{ color: '#b9b2a2' }}>
                     {c}
                   </li>
                 ))}

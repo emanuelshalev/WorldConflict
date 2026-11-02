@@ -1062,6 +1062,10 @@ export async function queueOrder(a: PendingAction): Promise<boolean> {
     )
   )
     return false;
+  if (store.pendingActions.some((x) => orderKey(x) === orderKey(a))) {
+    store.setError(`"${a.label}" is already on your desk this month`);
+    return false;
+  }
   if (pcCost(a.type) > capitalLeft(store)) {
     store.setError(`Not enough political capital for "${a.label}" (${pcCost(a.type)} needed)`);
     return false;
