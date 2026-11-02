@@ -382,7 +382,7 @@ export function MapView() {
         paint: {
           'line-color': '#7fb2ff',
           'line-width': ['case', ['get', 'mine'], 1.4, 0.9],
-          'line-opacity': ['case', ['get', 'mine'], 0.45, 0.2],
+          'line-opacity': ['case', ['get', 'mine'], 0.45, 0.12],
         },
       });
       map.addLayer({
@@ -493,9 +493,10 @@ export function MapView() {
         layout: {
           'icon-image': ['get', 'img'],
           'icon-allow-overlap': true,
+          'icon-offset': ['get', 'offset'],
           'text-field': ['get', 'label'],
           'text-size': 10,
-          'text-offset': [0, 1.35],
+          'text-offset': ['get', 'textOffset'],
           'text-allow-overlap': true,
         },
         paint: { 'text-color': ['get', 'color'], 'text-halo-color': '#05080f', 'text-halo-width': 1.4 },
@@ -866,13 +867,30 @@ export function MapView() {
     for (const c of worldState.countries) {
       for (const d of c.borderDeployments ?? []) {
         if (c.id !== me && d.targetCountryId !== me) continue;
-        const at = frontPoint(geo, c.id, d.targetCountryId);
+        const front = frontPoint(geo, c.id, d.targetCountryId);
         const from = capitalOf(c.id);
-        if (!at) continue;
+        if (!front) continue;
+        // Step back onto the deployer's side so opposing forces on one border don't overlap
+        const gap = from ? Math.hypot(from[0] - front[0], from[1] - front[1]) : 0;
+        const k = gap > 0 ? Math.min(0.35, 1.3 / gap) : 0;
+        const at: [number, number] = from ? [front[0] + (from[0] - front[0]) * k, front[1] + (from[1] - front[1]) * k] : front;
         const mine = c.id === me;
         const color = mine ? '#f2a93b' : '#ff5a4f';
         if (from) deploy.push({ type: 'Feature', geometry: { type: 'LineString', coordinates: [from, at] }, properties: { color } });
-        deploy.push(point(at, { img: mine ? UNIT_MINE : UNIT_FOE, label: fmtTroops(d.troops), color }));
+        // Forces facing each other on one border sit side by side, yours on the left
+        const facing = worldState.countries
+          .find((x) => x.id === d.targetCountryId)
+          ?.borderDeployments?.some((r) => r.targetCountryId === c.id);
+        const dx = facing ? (mine ? -17 : 17) : 0;
+        deploy.push(
+          point(at, {
+            img: mine ? UNIT_MINE : UNIT_FOE,
+            label: fmtTroops(d.troops),
+            color,
+            offset: [dx, 0],
+            textOffset: [dx / 10, 1.35],
+          }),
+        );
       }
     }
     // Capitals as small dots; labels, nuclear and insurgency badges at the anchors

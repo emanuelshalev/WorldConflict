@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { countryNames, fetchPreview, useGameStore, useViewCountry } from '../store/gameStore';
+import { countryNames, queueOrder, useGameStore, useViewCountry } from '../store/gameStore';
 import type { UncertainRange } from '../store/gameStore';
 import { actionLabel, pcCost } from '../lib/actions';
 
@@ -87,7 +87,6 @@ const DOSSIER_ORDERS_AT_WAR: DossierOrder[] = [{ type: 'DIPLOMACY_PROPOSE_CEASEF
 export function CountryDetailPanel() {
   const selectedCountryId = useGameStore((s) => s.selectedCountryId);
   const selectCountry = useGameStore((s) => s.selectCountry);
-  const addPendingAction = useGameStore((s) => s.addPendingAction);
   const openModal = useGameStore((s) => s.openModal);
   const gameOver = useGameStore((s) => s.gameOver);
   const view = useViewCountry(selectedCountryId);
@@ -96,12 +95,9 @@ export function CountryDetailPanel() {
   if (!view) return null;
 
   const queueAction = async (type: string, label: string, params?: Record<string, unknown>) => {
-    const action = { type, targetCountryId: view.isPlayer ? undefined : view.id, params };
-    const preview = await fetchPreview(action);
-    const before = useGameStore.getState().pendingActions.length;
-    addPendingAction({ ...action, label, preview: preview ?? undefined });
-    // Duplicates and a 7th order are refused by the store: only preview what was queued
-    if (useGameStore.getState().pendingActions.length > before) openModal('actionPreview');
+    // Same checks as the desk and the map menu; only preview what was actually queued
+    const ok = await queueOrder({ type, label, targetCountryId: view.isPlayer ? undefined : view.id, params });
+    if (ok) openModal('actionPreview');
   };
 
   const sys = view.politicalSystem;

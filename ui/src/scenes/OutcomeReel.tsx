@@ -6,6 +6,7 @@ import { SceneFrame, type Verdict } from './SceneFrame';
 import { sceneForAction, sceneForCrisis, type SceneKind } from './kinds';
 import type { Mood } from './art/types';
 import { ActionIcon } from './icons';
+import { OutcomeMap, type MapEffect } from './OutcomeMap';
 import './reel.css';
 
 type Fact = NonNullable<TurnReport['orders'][number]['facts']>[number];
@@ -25,6 +26,25 @@ interface Shot {
 }
 
 const SHOT_MS = 3600;
+
+/** Which geographic animation an order gets in the dispatch panel. */
+function mapEffect(type?: string): MapEffect | null {
+  switch (type) {
+    case 'MILITARY_DEPLOY_BORDER': return 'deploy';
+    case 'MILITARY_WITHDRAW_BORDER': return 'withdraw';
+    case 'MILITARY_AIRSTRIKE':
+    case 'INTEL_SABOTAGE': return type === 'INTEL_SABOTAGE' ? 'covert' : 'strike';
+    case 'NUCLEAR_STRIKE': return 'nuke';
+    case 'DIPLOMACY_PROPOSE_ALLIANCE': return 'alliance';
+    case 'DIPLOMACY_IMPROVE_RELATIONS': return 'court';
+    case 'DIPLOMACY_DENOUNCE':
+    case 'DIPLOMACY_BREAK_ALLIANCE': return 'denounce';
+    case 'DIPLOMACY_PROPOSE_CEASEFIRE':
+    case 'DIPLOMACY_MEDIATE': return 'ceasefire';
+    case 'DIPLOMACY_DECLARE_WAR': return 'war';
+    default: return type?.startsWith('INTEL_') ? 'covert' : null;
+  }
+}
 const ORDER_MS = 5600; // orders carry a dispatch and numbers to read
 
 function verdictFor(o: TurnReport['orders'][number]): Verdict {
@@ -144,6 +164,8 @@ function Trend({ points }: { points: Array<{ turn: number; value: number }> }) {
 }
 
 interface Props {
+  /** Player's real annualised growth, shown on the markets set. */
+  growth?: number;
   ledger?: Ledger;
   report: TurnReport;
   date: string;
@@ -152,7 +174,7 @@ interface Props {
   onDone: () => void;
 }
 
-export function OutcomeReel({ report, date, turn, home, onDone, ledger }: Props) {
+export function OutcomeReel({ report, date, turn, home, onDone, ledger, growth }: Props) {
   const shots = shotsFor(report);
   const total = shots.length + 1; // + scoreboard
   const [i, setI] = useState(0);
@@ -231,6 +253,11 @@ export function OutcomeReel({ report, date, turn, home, onDone, ledger }: Props)
               <span className="dispatch-kicker">
                 {shot.type && <ActionIcon type={shot.type} size={15} />} Dispatch
               </span>
+              {shot.other && mapEffect(shot.type) && (
+                <div className="dispatch-map">
+                  <OutcomeMap home={home} target={shot.other} effect={mapEffect(shot.type) as MapEffect} ok={shot.verdict === 'success'} />
+                </div>
+              )}
               {shot.story && <p className="dispatch-story">{shot.story}</p>}
               {shot.facts && shot.facts.length > 0 && (
                 <ul className="facts">
@@ -247,6 +274,7 @@ export function OutcomeReel({ report, date, turn, home, onDone, ledger }: Props)
           <SceneFrame
             key="board"
             kind="econ_tv"
+            figure={growth === undefined ? undefined : `${growth >= 0 ? '+' : ''}${(growth * 100).toFixed(1)}%`}
             home={home}
             mood={scoreDelta > 0.4 ? 'good' : scoreDelta < -0.4 ? 'bad' : 'neutral'}
             size="full"

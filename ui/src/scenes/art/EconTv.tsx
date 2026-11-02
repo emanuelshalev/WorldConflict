@@ -29,7 +29,7 @@ const TICKS = [
   ['FREIGHT', '+0.4'],
 ];
 
-export default function EconTv({ a, mood }: SceneArtProps) {
+export default function EconTv({ a, mood, figure }: SceneArtProps) {
   const uid = useSceneUid();
   const ys = series(mood);
   const step = (X1 - X0) / (N - 1);
@@ -37,7 +37,7 @@ export default function EconTv({ a, mood }: SceneArtProps) {
   const line = `M${pts.join(' L')}`;
   const area = `${line} L${X1},204 L${X0},204 Z`;
   const tone = mood === 'bad' ? '#ff4b4b' : mood === 'good' ? '#2fe39a' : '#f3c24c';
-  const big = mood === 'bad' ? '-2.4%' : mood === 'good' ? '+1.8%' : '+0.3%';
+  const big = figure ?? (mood === 'bad' ? '-2.4%' : mood === 'good' ? '+1.8%' : '+0.3%');
   const arrow = mood === 'bad' ? 'M0 0 l7 10 l7 -10 Z' : 'M0 10 l7 -10 l7 10 Z';
   const lastY = ys[N - 1];
   const acc = a[0] === '#ffffff' ? a[1] : a[0];

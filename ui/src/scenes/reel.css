@@ -48,7 +48,7 @@
   width: min(1180px, 100%, calc((100vh - 170px) * 16 / 9));
   animation: reel-cut 0.45s var(--ease-out) both;
 }
-@keyframes reel-cut { from { opacity: 0; transform: scale(0.97); filter: blur(6px); } }
+@keyframes reel-cut { from { opacity: 0; transform: scale(0.98); } }
 .reel-type {
   position: absolute;
   top: 10px;
@@ -199,3 +199,4 @@
   .dispatch-story { font-size: 15px; }
   .reel-stage { overflow-y: auto; place-items: start center; }
 }
+.dispatch-map { margin: -6px -6px 0; border-radius: 10px; overflow: hidden; }

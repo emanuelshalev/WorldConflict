@@ -1,3 +1,4 @@
+import { IconFlame, IconRadioactive } from '@tabler/icons-react';
 import { useGameStore } from '../store/gameStore';
 
 /**
@@ -84,6 +85,28 @@ const LAYER_GUIDES: Record<string, { title: string; description: string; swatche
   },
 };
 
+const badge = (color: string) =>
+  ({
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    border: `1.5px solid ${color}`,
+    background: '#080c14',
+    display: 'inline-grid',
+    placeItems: 'center',
+    flexShrink: 0,
+    margin: '0 1px',
+  }) as const;
+const unit = (color: string) =>
+  ({
+    width: 16,
+    height: 11,
+    flexShrink: 0,
+    margin: '0 1px',
+    border: `1.5px solid ${color}`,
+    background: `linear-gradient(to top right, transparent 45%, ${color} 47%, ${color} 53%, transparent 55%), linear-gradient(to bottom right, transparent 45%, ${color} 47%, ${color} 53%, transparent 55%)`,
+  }) as const;
+
 const row = { display: 'flex', alignItems: 'center', gap: 8, marginBottom: 5, fontSize: 12 } as const;
 const sectionTitle = {
   fontSize: 10,
@@ -141,8 +164,30 @@ export function MapGuide({ onClose }: { onClose: () => void }) {
 
       {/* Icons & markings */}
       <div style={sectionTitle}>Icons & markings</div>
-      <div style={row}><span style={{ width: 18, textAlign: 'center' }}>☢</span> Nuclear-armed or tested state</div>
-      <div style={row}><span style={{ width: 18, textAlign: 'center' }}>🔥</span> Serious insurgency (rebellion or guerilla war)</div>
+      <div style={row}><span style={badge('#f5d547')}><IconRadioactive size={11} color="#f5d547" /></span> Nuclear-armed or tested state</div>
+      <div style={row}><span style={badge('#ff9f43')}><IconFlame size={11} color="#ff9f43" /></span> Serious insurgency (rebellion or guerilla war)</div>
+      <div style={row}>
+        <span style={unit('#f2a93b')} /> Your troops massed on a border (with their number)
+      </div>
+      <div style={row}>
+        <span style={unit('#ff5a4f')} /> Foreign troops massed against you (other countries' deployments are not visible)
+      </div>
+      <div style={row}>
+        <span style={{ width: 18, borderTop: '2px dashed #4c8dff', flexShrink: 0 }} />
+        Dashed arrow with an icon: an order you queued this month (orders at home sit above your country)
+      </div>
+      <div style={row}>
+        <span style={{ width: 18, height: 3, background: '#7fb2ff', opacity: 0.5, flexShrink: 0 }} />
+        Faint blue link: a defense pact (yours brighter)
+      </div>
+      <div style={row}>
+        <span style={{ width: 18, textAlign: 'center', color: '#8cc4ff', fontWeight: 700, fontSize: 11 }}>+6</span>
+        Pulsing outline and number: how relations with you moved last month (blue up, orange down)
+      </div>
+      <div style={row}>
+        <span style={{ width: 7, height: 7, borderRadius: 4, background: '#dfe6f0', margin: '0 5px', flexShrink: 0 }} />
+        Capital city (yours in amber)
+      </div>
       <div style={row}>
         <span style={{ width: 18, height: 3, background: '#ff3030', boxShadow: '0 0 5px #ff3030', flexShrink: 0 }} />
         Pulsing red border: country at war
@@ -168,8 +213,8 @@ export function MapGuide({ onClose }: { onClose: () => void }) {
       <div style={sectionTitle}>How to use the map</div>
       <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12, color: '#aab', lineHeight: 1.7 }}>
         <li><b style={{ color: '#ccd' }}>Hover</b> a country for a quick intelligence snapshot, leader, relations, GDP and stability (as ranges when uncertain).</li>
-        <li><b style={{ color: '#ccd' }}>Click</b> a country to open its dossier: government, history, military estimates, and quick actions (diplomacy, intelligence operations, military moves). Click again to deselect.</li>
-        <li><b style={{ color: '#ccd' }}>Targeting:</b> actions in the side panel that need a target use the currently selected country.</li>
+        <li><b style={{ color: '#ccd' }}>Click</b> a foreign country for an order menu: the most relevant orders with their ◆ cost (greyed out when you can't afford them or already gave them), plus <i>Dossier</i> for government, history and military estimates. Click your own country for your dossier.</li>
+        <li><b style={{ color: '#ccd' }}>Orders from the map</b> go on your desk exactly like orders given there, with the same forecast and warnings.</li>
         <li><b style={{ color: '#ccd' }}>Lines</b> show the selected country's pacts and wars; with nothing selected, they show yours.</li>
         <li><b style={{ color: '#ccd' }}>Zoom/pan</b> with the mouse or the +/− controls at the top left.</li>
       </ul>

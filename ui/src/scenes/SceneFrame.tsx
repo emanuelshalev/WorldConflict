@@ -15,6 +15,8 @@ interface Props {
   /** Counterpart country id. */
   other?: string;
   mood?: Mood;
+  /** Headline figure passed to data scenes (markets TV). */
+  figure?: string;
   /** Lower-third headline; omit for a clean frame (thumbnails). */
   headline?: string;
   kicker?: string;
@@ -60,6 +62,7 @@ export function SceneFrame({
   home,
   other,
   mood = 'neutral',
+  figure,
   headline,
   kicker,
   sub,
@@ -79,7 +82,7 @@ export function SceneFrame({
     >
       <div className="scene-art">
         <SceneUid.Provider value={uid}>
-          <Art a={flagColors(home)} b={flagColors(other)} mood={mood} />
+          <Art a={flagColors(home)} b={flagColors(other)} mood={mood} figure={figure} />
         </SceneUid.Provider>
       </div>
       <div className="scene-grade" aria-hidden />
