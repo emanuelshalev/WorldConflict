@@ -22,19 +22,30 @@ The **Daily Flashpoint** is the same crisis, nation and world for everyone that 
 
 ## 2. Your month, on one screen
 
+The game has two modes, switched in the HUD or with **M**:
+
+- **Desk** (where every month starts): you decide.
+- **Map**: the full globe with its layers, dossiers and legend, to investigate the world. A strip along the bottom keeps your budgets, what is still waiting and **Execute** in view, so you can finish a month from here too.
+
 ```
-┌ HUD: leader · month 5/12 · approval · stability · legitimacy · economy · ◆◆◇ capital · tension · score ┐
-│                                                                                                        │
-│                       THE MAP: your intelligence picture, not the truth                               │
-│                                                                                                        │
-├ YOUR DESK ─────────────────────────────────────────────────────────────────────────────────────────────┤
-│  CRISIS CARD (answer it)        │  ADVISORS SUGGEST (1-click orders)   │   [ EXECUTE MONTH ▸ ]          │
-└─────────────────────────────────┴──────────────────────────────────────┴────────────────────────────────┘
++ HUD: leader | approval | stability | legitimacy | economy | capital | tension | score | [Map|Desk] +
+| NAVIGATOR             | THE ITEM IN FOCUS                     | 2D MAP OF THE SUBJECT       |
+|  Mission              |  a crisis, a meeting, the staff's      | BUDGETS (capital, defense,  |
+|  Crises               |  suggested orders, or all orders       |   orders 0-6, in person 0-3)|
+|  Meetings             |  (previous / next: K / J)              | THIS MONTH YOU WILL ...     |
+|  Staff orders         |                                        | BEFORE YOU EXECUTE          |
+|  All orders           |                                        | [Approve all] [Execute]     |
++ NEWS TICKER (hide with N) ---------------------------------------------------------------------+
 ```
 
-1. **Answer the crisis.** Most months bring a crisis card with 2–3 options. Arrows show the **direction and rough size** of consequences (Approval ▲▲, Tension ▼…), not exact numbers. Each option shows which minister backs it. Ignore a crisis and it resolves on its own, usually badly.
-2. **Give orders.** Pick advisor suggestions, or open **All orders** (diplomacy, military, intelligence, domestic). Tap a country on the map to target it or to open its dossier.
-3. **Execute month.** The world moves: each order and answer plays as a news scene with what it changed, then the **World Chronicle** leads with *your* decision.
+Your staff fill the desk in before you arrive, so you only change what you disagree with:
+
+1. **Crises** start on the **staff pick** (the option most ministers back that does not endanger your mission). Pick another option, or approve the pick. Arrows show the **direction and rough size** of consequences (Approval ▲▲, Tension ▼...), not exact numbers.
+2. **Orders**: the staff queue up to three safe orders within your political capital (turn this off in Settings). Remove any with its x, add others from **Staff suggestions** or **All orders** (search with **/**, e.g. "spy iran"). Clicking a country on the big map makes it the order target.
+3. **Meetings** show a suggested answer but wait for you: approve it, pick another, or send a deputy. **Approve all** (Shift+A) confirms the crisis picks and attends the three best meetings.
+4. **Execute month** (Ctrl+Enter). The right column always shows what you are proceeding with, what each budget has left, and what still needs you. Going over a budget disables Execute and says why. The world then moves: each order and answer plays as a news scene with what it changed, and the **World Chronicle** leads with *your* decision.
+
+Your picks are saved as you go, so a reload brings back the same desk. Keys: M (Map/Desk), J/K (next/previous item), 1-3 (choose an option), / (search orders), Shift+A (approve all), N (news ticker), Ctrl+Enter (execute).
 
 ### Your calendar
 
