@@ -2011,6 +2011,31 @@ button {
 @keyframes wcm-burst { 0% { transform: scale(0) rotate(0); opacity: 0; } 15% { transform: scale(1.3) rotate(20deg); opacity: 1; } 45% { transform: scale(.9) rotate(35deg); opacity: 0; } 100% { opacity: 0; } }
 @keyframes wcm-walk { from { transform: translate(-1.5px, 0) rotate(-4deg); } to { transform: translate(1.5px, -1px) rotate(4deg); } }
 
+/* Hot zones (Gaza, the West Bank): a beacon that burns while the zone is violent */
+.wcm-hot-core { position: relative; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: rgba(46, 14, 6, .92); border: 1.5px solid var(--hot, #ffc48a); box-shadow: 0 0 8px color-mix(in srgb, var(--hot, #ffc48a) 60%, transparent); cursor: pointer; }
+.wcm-hot-core svg { position: relative; z-index: 1; }
+.wcm-hot-ring { position: absolute; inset: -7px; border-radius: 50%; border: 2px solid var(--hot, #ffc48a); opacity: 0; pointer-events: none; }
+.wcm-hot-burn .wcm-hot-ring { animation: wcm-ring 2.4s ease-out infinite; }
+.wcm-hot-burn .wcm-hot-ring.r2 { animation-delay: 1.2s; }
+.wcm-hot-burn .wcm-hot-core svg { animation: wcm-flicker 1.6s ease-in-out infinite; }
+.wcm-live .wcm-hot.wcm-fresh .wcm-hot-core { animation: wcm-bounce-in .8s cubic-bezier(.2, 1.6, .4, 1) both; }
+[data-wcm-zoom='far'] .wcm-hot-core { transform: scale(.8); }
+@keyframes wcm-flicker { 0%, 100% { transform: scale(1) translateY(0); } 30% { transform: scale(1.12) translateY(-1px); } 60% { transform: scale(.94) translateY(.5px); } }
+
+/* Hot zone card (click Gaza or a zone beacon) */
+.zone-card { position: absolute; right: 12px; top: calc(var(--under-top, 0px) + 60px); width: min(340px, calc(100% - 24px)); z-index: 6; background: var(--surface-1); color: var(--text-1); border: 1px solid var(--line-2); border-radius: 12px; box-shadow: 0 14px 40px rgba(0, 0, 0, .45); padding: 14px 16px 12px; font-size: 13px; }
+.zone-card h3 { margin: 0; font-size: 16px; }
+.zone-card .zone-phase { display: inline-block; margin-top: 4px; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: .02em; color: #1b0d05; background: var(--hot, #ffc48a); }
+.zone-card .zone-close { position: absolute; top: 8px; right: 8px; background: none; border: 0; color: inherit; opacity: .7; cursor: pointer; padding: 4px; }
+.zone-card .zone-meters { display: grid; gap: 6px; margin: 12px 0 10px; }
+.zone-card .zone-meter { display: grid; grid-template-columns: 1fr 34px; gap: 2px 8px; align-items: center; font-size: 12px; }
+.zone-card .zone-meter .bar { grid-column: 1 / -1; height: 5px; border-radius: 3px; background: rgba(255, 255, 255, .1); overflow: hidden; }
+.zone-card .zone-meter .bar i { display: block; height: 100%; border-radius: 3px; transition: width .6s ease; }
+.zone-card .zone-meter b { text-align: right; font-variant-numeric: tabular-nums; }
+.zone-card .zone-news { list-style: none; margin: 0 0 10px; padding: 0; display: grid; gap: 4px; font-size: 12px; opacity: .92; }
+.zone-card .zone-news span { opacity: .6; margin-right: 6px; font-variant-numeric: tabular-nums; }
+.zone-card .zone-foot { font-size: 11.5px; opacity: .75; margin: 0 0 8px; }
+
 @media (prefers-reduced-motion: reduce) {
   .wcm *, .wcm *::before, .wcm *::after { animation: none !important; transition: none !important; }
   .wcm-flash, .wcm-mushroom, .wcm-puff, .wcm-burst { display: none; }

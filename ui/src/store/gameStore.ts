@@ -262,6 +262,24 @@ export interface GameOver {
   turn: number;
 }
 
+/** A hot zone that is not a state: Gaza, the West Bank (src/core/systems/hotspots.ts). */
+export interface Hotspot {
+  id: string;
+  name: string;
+  mapId: string;
+  center: [number, number];
+  occupier: string;
+  people: string;
+  phase: 'CALM' | 'TENSE' | 'CEASEFIRE' | 'WAR' | 'UPRISING';
+  phaseSince: number;
+  violence: number;
+  humanitarian: number;
+  aid: number;
+  control: number;
+  governance: number;
+  incidents: { turn: number; kind: string; title: string }[];
+}
+
 export interface WorldState {
   turn: number;
   date: string;
@@ -277,6 +295,7 @@ export interface WorldState {
   outcome: Outcome | null;
   pendingDecisions: PendingDecision[];
   agenda?: Meeting[];
+  hotspots?: Hotspot[];
   gameOver: GameOver | null;
   score: Score;
   countries: CountryFull[];

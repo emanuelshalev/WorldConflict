@@ -1,3 +1,4 @@
+import { hotspotLine } from '../lib/hotspots';
 import type { CountryFull, PlayerViewCountry, WorldState } from '../store/gameStore';
 
 /**
@@ -372,6 +373,10 @@ export function answerQuestion(
   const deskItem = findDeskItem(ctx, question);
   if (deskItem) return opener + adviseOnItem(ctx, deskItem, voice.lens);
 
+  // --- Gaza and the West Bank: hot zones, not states ---
+  const zone = findZone(ctx, q);
+  if (zone) return opener + zoneAnswer(ctx, zone, voice.lens);
+
   // --- Country-specific questions ---
   if (target) {
     if (asksWhy && (asksRelations || asksWar || /them|they/.test(q) || true)) {
@@ -549,6 +554,60 @@ function priorityRead(ctx: BrainContext, advisorId: string): string {
 }
 
 // ---------------------------------------------------------------------------
+// Hot zones: Gaza and the West Bank
+// ---------------------------------------------------------------------------
+type Zone = NonNullable<WorldState['hotspots']>[number];
+
+function findZone(ctx: BrainContext, q: string): Zone | undefined {
+  const zones = ctx.worldState.hotspots ?? [];
+  if (/gaza|hamas|rafah|yellow line|stabili[sz]ation force|kerem shalom/.test(q)) return zones.find((z) => z.id === 'GAZA');
+  if (/west bank|settler|settlement|annex|jenin|area c/.test(q)) return zones.find((z) => z.id === 'WEST_BANK');
+  return undefined;
+}
+
+function zoneAnswer(ctx: BrainContext, h: Zone, lens: string): string {
+  const me = ctx.player.id;
+  const gaza = h.id === 'GAZA';
+  const latest = h.incidents[0] ? ` The latest: ${h.incidents[0].title.charAt(0).toLowerCase()}${h.incidents[0].title.slice(1)}.` : '';
+  const read = `${hotspotLine(h)}${latest}`;
+  let line: string;
+  if (me === h.occupier) {
+    line = gaza
+      ? h.phase === 'WAR'
+        ? 'Every month of this war costs us friends we will need later. A truce on our terms beats a victory nobody recognises.'
+        : h.violence >= 55
+          ? 'The ceasefire is close to breaking. Strike back when we must, but let the mediators carry the complaints; resuming the war is a decision, not a reflex.'
+          : 'The ceasefire is holding badly but holding. Disarmament first, yes, but every concession on the crossings buys us patience in Washington and Cairo.'
+      : h.control >= 70
+        ? 'The settlement map is now a diplomatic problem. Annexation would cost us the Gulf; reining in the outposts costs us coalition seats. Choose which you can afford.'
+        : 'Settler violence is the story abroad. A few arrests now are cheaper than a sanctions debate in Europe later.';
+  } else if (me === h.people) {
+    line = gaza
+      ? 'Gaza is where our legitimacy is decided. Accept the reform conditions and we get a foot in the door; refuse and others govern it for us.'
+      : 'Security coordination is our leash and our lifeline. Suspend it and the street cheers for a month, then the salaries stop.';
+  } else if (me === 'EGY' || me === 'USA') {
+    line = gaza
+      ? 'We carry this file whether we like it or not. Aid through the crossings and a working stabilization force are what keep the ceasefire alive.'
+      : 'The West Bank is the quiet half of this problem until it is not. Annexation would blow up everything we built in the region.';
+  } else {
+    line = gaza
+      ? 'We are not a party, but every UN vote and every pledge is noticed in Jerusalem, Washington and the Arab capitals. Vote with care; pledge if we want a voice.'
+      : 'Our position on the settlements is noted in the Gulf and in Washington. There is little to gain here and much to lose.';
+  }
+  const tail =
+    lens === 'military'
+      ? ` Militarily: violence ${Math.round(h.violence)}/100${gaza ? `, the Israeli army holds about ${Math.round(h.control)}% of the strip` : ''}.`
+      : lens === 'economy'
+        ? ` On money: aid is at ${Math.round(h.aid)}/100 and rebuilding will cost tens of billions.`
+        : lens === 'intel'
+          ? gaza
+            ? ' Our read: Hamas is rearming in the tunnels it still has, and the clans are filling every gap the committee leaves.'
+            : ' Our read: the armed groups in the northern camps are small; the settlers are the wild card.'
+          : '';
+  return `${read} ${line}${tail}`;
+}
+
+// ---------------------------------------------------------------------------
 // Desk items: advise on a crisis or a meeting, the calendar and the biggest risk
 // ---------------------------------------------------------------------------
 type DeskItem = WorldState['pendingDecisions'][number];
@@ -583,6 +642,21 @@ function describeEffects(ctx: BrainContext, o: DeskItem['options'][number]): { g
   const good: string[] = [];
   const bad: string[] = [];
   for (const [k, v] of Object.entries(o.effects)) {
+    if (k.startsWith('hot:')) {
+      const [, id, what] = k.split(':');
+      const zone = id === 'GAZA' ? 'Gaza' : 'the West Bank';
+      const label: Record<string, [string, boolean]> = {
+        war: [v > 0 ? 'a return to war in Gaza' : 'a truce in Gaza', v < 0],
+        violence: [v > 0 ? `more violence in ${zone}` : `calm in ${zone}`, v < 0],
+        humanitarian: [v > 0 ? `hunger in ${zone}` : `relief for ${zone}`, v < 0],
+        aid: [v > 0 ? `aid into ${zone}` : `less aid into ${zone}`, v > 0],
+        governance: [v > 0 ? `order in ${zone}` : `chaos in ${zone}`, v > 0],
+        control: [v > 0 ? `ground held in ${zone}` : `handing over ground in ${zone}`, v > 0],
+      };
+      const [text, isGood] = label[what] ?? [k, v > 0];
+      (isGood ? good : bad).push(text);
+      continue;
+    }
     const name = k.startsWith('relations:') ? `ties with ${countryName(ctx, k.split(':')[1])}` : k === 'pc' ? 'political capital' : k === 'relationsRivals' ? 'ties with our rivals' : k === 'relationsAllies' ? 'ties with our allies' : k;
     (v > 0 ? good : bad).push(name);
   }

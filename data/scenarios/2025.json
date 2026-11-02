@@ -69,5 +69,9 @@
   ],
   "startingWars": [
     { "attackerId": "RUS", "defenderId": "UKR", "frontline": 58, "exhaustion": 25, "note": "Russia advancing slowly in Donetsk after the failed 2024 Kursk gambit" }
+  ],
+  "hotspots": [
+    {"id": "GAZA", "name": "Gaza Strip", "mapId": "GAZ", "center": [34.39, 31.42], "occupier": "ISR", "people": "PSX", "phase": "WAR", "violence": 82, "humanitarian": 86, "aid": 22, "control": 48, "governance": 5},
+    {"id": "WEST_BANK", "name": "West Bank", "mapId": "PSX", "center": [35.25, 31.95], "occupier": "ISR", "people": "PSX", "phase": "TENSE", "violence": 58, "humanitarian": 38, "aid": 50, "control": 58, "governance": 32}
   ]
 }

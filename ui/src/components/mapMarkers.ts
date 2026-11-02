@@ -17,6 +17,7 @@ import {
 } from '@tabler/icons-react';
 import type { NewspaperEntry, PlayerViewCountry, WorldState } from '../store/gameStore';
 import { createElement } from 'react';
+import { heat, hotspotLine, zoneIcon } from '../lib/hotspots';
 import { renderToStaticMarkup } from 'react-dom/server';
 
 /**
@@ -128,6 +129,8 @@ export interface MarkerSpec {
   anchor?: maplibregl.PositionAnchor;
   /** Country id to open on click (badges only). */
   countryId?: string;
+  /** Hot zone to open on click (Gaza, the West Bank). */
+  hotspotId?: string;
   /** CSS custom properties (e.g. a fallout halo's size in degrees). */
   style?: Record<string, string>;
   /** Decluttering: markers with a priority hide lower-priority ones that overlap on screen. */
@@ -379,6 +382,28 @@ export function buildMarkers(input: MarkerInput): MarkerSpec[] {
     });
   }
 
+  // Hot zones (Gaza, the West Bank): a burning or calm beacon with the newest incident's icon,
+  // which bounces in the month it happened
+  for (const h of world.hotspots ?? []) {
+    const fresh = isFresh(world, h.incidents[0]?.turn);
+    const { line } = heat(h);
+    const label = `${hotspotLine(h)}${fresh ? ` Latest: ${h.incidents[0].title}.` : ''}`;
+    const burning = h.phase === 'WAR' || h.violence >= 50;
+    specs.push({
+      key: `hot:${h.id}`,
+      at: h.id === 'WEST_BANK' ? [h.center[0] + 0.15, h.center[1] + 0.35] : h.center,
+      hotspotId: h.id,
+      className: `wcm-hot${burning ? ' wcm-hot-burn' : ''}${fresh ? ' wcm-fresh' : ''}`,
+      priority: 90,
+      label,
+      style: { '--hot': line },
+      html:
+        `<span class="wcm-hot-core" role="img" aria-label="${esc(label)}" title="${esc(label)}">` +
+        '<i class="wcm-hot-ring"></i><i class="wcm-hot-ring r2"></i>' +
+        `${svg(zoneIcon(h), '#fff4e8', 12)}</span>`,
+    });
+  }
+
   // One badge row per country, above its name
   const rows: MarkerSpec[] = [];
   for (const v of view) {
@@ -424,13 +449,15 @@ export class StateMarkers {
   private live = new Map<string, Live>();
   private map: maplibregl.Map;
   private onPick: (id: string) => void;
+  private onZone: (id: string) => void;
 
   private raf = 0;
   private readonly onMoveEnd = () => this.declutter();
 
-  constructor(map: maplibregl.Map, onPick: (id: string) => void) {
+  constructor(map: maplibregl.Map, onPick: (id: string) => void, onZone: (id: string) => void = () => {}) {
     this.map = map;
     this.onPick = onPick;
+    this.onZone = onZone;
     map.on('moveend', this.onMoveEnd);
   }
 
@@ -482,6 +509,13 @@ export class StateMarkers {
           el.addEventListener('click', (e) => {
             e.stopPropagation();
             this.onPick(id);
+          });
+        } else if (s.hotspotId) {
+          const id = s.hotspotId;
+          el.style.cursor = 'pointer';
+          el.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.onZone(id);
           });
         }
         const marker = new maplibregl.Marker({

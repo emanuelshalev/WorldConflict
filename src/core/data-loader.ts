@@ -14,6 +14,7 @@ import {
   CountryStateSchema,
   type Difficulty,
   type GameMode,
+  HotspotSchema,
   type InsurgencyLevel,
   LeaderSchema,
   MODE_TURNS,
@@ -105,6 +106,8 @@ export const ScenarioSchema = z.object({
     .default([]),
   // Short "state of the world" briefing shown when the scenario starts
   briefing: z.array(z.string()).default([]),
+  // Hot zones that are not states (Gaza, the West Bank): see systems/hotspots.ts
+  hotspots: z.array(HotspotSchema).default([]),
 });
 export type ScenarioData = z.infer<typeof ScenarioSchema>;
 
@@ -598,6 +601,7 @@ export class DataLoader {
       countries,
       wars: [],
       globalTension: scenario.globalTension,
+      hotspots: scenario.hotspots,
       eventQueue: [],
       seed,
       playerCountryId,

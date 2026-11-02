@@ -89,5 +89,9 @@
     ["CHN", "PRK"],
     ["RUS", "PRK"]
   ],
-  "startingWars": []
+  "startingWars": [],
+  "hotspots": [
+    {"id": "GAZA", "name": "Gaza Strip", "mapId": "GAZ", "center": [34.39, 31.42], "occupier": "ISR", "people": "PSX", "phase": "UPRISING", "violence": 60, "humanitarian": 45, "aid": 55, "control": 100, "governance": 20},
+    {"id": "WEST_BANK", "name": "West Bank", "mapId": "PSX", "center": [35.25, 31.95], "occupier": "ISR", "people": "PSX", "phase": "UPRISING", "violence": 60, "humanitarian": 30, "aid": 60, "control": 35, "governance": 25}
+  ]
 }

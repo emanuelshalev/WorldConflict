@@ -764,6 +764,37 @@ export const PlayerTurnReportSchema = z.object({
 export type PlayerTurnReport = z.infer<typeof PlayerTurnReportSchema>;
 
 // ============================================================================
+// Hot zones: places that are not states but make the news every month
+// (Gaza, the West Bank). See systems/hotspots.ts.
+// ============================================================================
+
+export const HotspotPhaseSchema = z.enum(["CALM", "TENSE", "CEASEFIRE", "WAR", "UPRISING"]);
+export type HotspotPhase = z.infer<typeof HotspotPhaseSchema>;
+
+export const HotspotSchema = z.object({
+  id: z.string(), // GAZA, WEST_BANK
+  name: z.string(),
+  // Map outline: its own polygon (GAZ) or the country polygon it covers (PSX)
+  mapId: z.string(),
+  center: z.tuple([z.number(), z.number()]),
+  occupier: z.string(), // the army on the ground (ISR)
+  people: z.string(), // whose population lives there (PSX)
+  phase: HotspotPhaseSchema,
+  phaseSince: z.number().default(0),
+  violence: z.number().min(0).max(100), // strikes, raids, rockets, settler attacks
+  humanitarian: z.number().min(0).max(100), // need: 100 = famine
+  aid: z.number().min(0).max(100), // what gets through the crossings
+  // Gaza: share of the strip held by the occupier's army; West Bank: settlement and annexation
+  control: z.number().min(0).max(100),
+  // Civil order: police, administration, reconstruction, stabilization force
+  governance: z.number().min(0).max(100),
+  incidents: z
+    .array(z.object({ turn: z.number(), kind: z.string(), title: z.string() }))
+    .default([]),
+});
+export type Hotspot = z.infer<typeof HotspotSchema>;
+
+// ============================================================================
 // WorldState Schema
 // ============================================================================
 
@@ -779,6 +810,7 @@ export const WorldStateSchema = z.object({
   newspaper: z.array(NewspaperEntrySchema).default([]),
   pendingDecisions: z.array(PendingDecisionSchema).default([]),
   agenda: z.array(MeetingSchema).default([]), // this month's calendar (see meetings.ts)
+  hotspots: z.array(HotspotSchema).default([]), // Gaza, the West Bank (see hotspots.ts)
   timeline: z.array(TimelineEntrySchema).default([]),
   score: ScoreSchema.default({
     economic: 25,
@@ -956,7 +988,7 @@ export const TIER1_COUNTRIES = [
   "NGA",
   "ZAF",
   "ITA",
-  // 2026 hotspots (Natural Earth ADM0_A3 codes: Palestine is PSX)
+  // 2026 hotspots (Natural Earth ADM0_A3 codes: the West Bank is PSX)
   "UKR",
   "TWN",
   "BLR",

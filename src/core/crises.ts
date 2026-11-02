@@ -1,5 +1,6 @@
 import { isLandlocked, sharesLandBorder, TYPHOON_COUNTRIES } from "./geography.js";
 import type { SeededRandom } from "./seed.js";
+import { applyHotspotEffect } from "./systems/hotspots.js";
 import { endWar } from "./systems/military.js";
 import { possessive, withArticle } from "./text.js";
 import type {
@@ -116,6 +117,901 @@ export function encounterAtSea(a: CountryState, b: CountryState): boolean {
 }
 
 const leaderOf = (c: CountryState) => `${c.leader.title} ${c.leader.name}`;
+
+// ----------------------------------------------------------------------------
+// Hot zones: Gaza and the West Bank (systems/hotspots.ts holds their state)
+// ----------------------------------------------------------------------------
+
+const hot = (ctx: Ctx, id: string) => ctx.world.hotspots.find((h) => h.id === id);
+const GAZA_CONTRIBUTORS = ["IDN", "PAK", "EGY", "ITA", "AZE", "MAR", "BGD"];
+
+const HOTSPOT_TEMPLATES: CrisisTemplate[] = [
+  // --- A ceasefire breach (Gaza after October 2025: the yellow line) ---
+  {
+    id: "gaza_flare",
+    weight: (ctx) => {
+      const g = hot(ctx, "GAZA");
+      return g && ctx.player.id === g.occupier && g.phase === "CEASEFIRE" && g.violence >= 28
+        ? 1.5 + g.violence / 40
+        : 0;
+    },
+    build: (ctx) => {
+      const g = hot(ctx, "GAZA");
+      if (!g || g.phase !== "CEASEFIRE") return null;
+      const place = ctx.rng.pick(["Rafah", "Khan Younis", "Beit Hanoun", "Shujaiya"]);
+      const what = `Gunmen came out of a tunnel near ${place}, behind the yellow line, and killed two reservists`;
+      return {
+        headline: `Soldiers killed in Gaza as the ceasefire frays`,
+        text: `${what}. Hamas denies ordering the attack.`,
+        decision: {
+          title: "Gaza: the ceasefire is breached",
+          situation: `${what}. Hamas denies ordering it. Your generals want to hit back hard; Washington and Cairo want the ceasefire to hold.`,
+          affectedCountries: [ctx.player.id, g.people, "EGY", "USA"],
+          options: [
+            opt(
+              "targeted",
+              "Targeted strikes",
+              "Hit the cell and its commanders. The ceasefire bends; it may not break.",
+              { approval: 2, "hot:GAZA:violence": 10, "relations:EGY": -3 },
+              { tensionDelta: 2, backedBy: ["DEFENSE_MINISTER"] },
+            ),
+            opt(
+              "offensive",
+              "Resume the offensive",
+              "Go back in until Hamas is gone. Popular at home for now; the world will not stand by.",
+              {
+                approval: 4,
+                mobilization: 10,
+                "hot:GAZA:war": 1,
+                "relations:USA": -6,
+                "relations:EGY": -8,
+                "relations:SAU": -6,
+              },
+              { tensionDelta: 6, followUp: { templateId: "gaza_world_reacts", delay: 2 } },
+            ),
+            opt(
+              "mediators",
+              "Complain to the mediators",
+              "Hold fire and send the evidence to Cairo and Washington. Your coalition calls it weakness.",
+              { approval: -3, "hot:GAZA:violence": -6, "relations:USA": 4, "relations:EGY": 5 },
+              { tensionDelta: -2, backedBy: ["FOREIGN_MINISTER"] },
+            ),
+          ],
+          defaultOptionId: "targeted",
+        },
+      };
+    },
+  },
+
+  // follow-up: the offensive you resumed
+  {
+    id: "gaza_world_reacts",
+    weight: () => 0,
+    build: (ctx) => {
+      const g = hot(ctx, "GAZA");
+      if (!g || g.phase !== "WAR") return null;
+      return {
+        headline: "The world turns on the Gaza offensive",
+        text: "Images from the strip fill every screen. Allies suspend arms licences.",
+        decision: {
+          title: "Gaza: the world reacts",
+          situation:
+            "Images from the strip fill every screen. European governments suspend arms licences, the Security Council meets in emergency session, and Washington asks how long this will take.",
+          affectedCountries: [ctx.player.id, g.people, "USA", "EGY"],
+          urgency: "URGENT",
+          options: [
+            opt(
+              "truce",
+              "Agree to a new truce",
+              "Take the mediators' deal. The hostages of politics are your coalition partners.",
+              { approval: -4, "hot:GAZA:war": -1, "relations:USA": 6, relationsAllies: 2 },
+              { tensionDelta: -4, backedBy: ["FOREIGN_MINISTER"] },
+            ),
+            opt(
+              "finish",
+              "Finish the job",
+              "Push on and take more ground. The cost in friends and money keeps rising.",
+              {
+                approval: 2,
+                gdp: -0.5,
+                "hot:GAZA:control": 8,
+                "relations:USA": -5,
+                "relations:GBR": -5,
+                "relations:FRA": -5,
+                "relations:DEU": -4,
+              },
+              { tensionDelta: 3, backedBy: ["DEFENSE_MINISTER"] },
+            ),
+            opt(
+              "pauses",
+              "Humanitarian pauses",
+              "Keep fighting but let the convoys through each day. Satisfies no one completely.",
+              { approval: -1, "hot:GAZA:aid": 15, "hot:GAZA:humanitarian": -6, "relations:USA": 3 },
+            ),
+          ],
+          defaultOptionId: "pauses",
+        },
+      };
+    },
+  },
+
+  // --- The crossings: who decides what gets into Gaza ---
+  {
+    id: "gaza_crossings",
+    weight: (ctx) => {
+      const g = hot(ctx, "GAZA");
+      if (!g || g.humanitarian < 55) return 0;
+      return [g.occupier, "EGY", "USA"].includes(ctx.player.id) ? 2 : 0;
+    },
+    build: (ctx) => {
+      const g = hot(ctx, "GAZA");
+      if (!g) return null;
+      const me = ctx.player.id;
+      if (me === g.occupier) {
+        return {
+          headline: "UN warns Gaza is sliding back toward famine",
+          text: "Aid agencies blame inspections at the crossings.",
+          decision: {
+            title: "Gaza: the crossings",
+            situation:
+              "UN agencies say Gaza is sliding back toward famine and blame your inspections at Kerem Shalom. Your security cabinet says loosening the checks lets Hamas rearm.",
+            affectedCountries: [me, g.people, "EGY", "USA"],
+            options: [
+              opt(
+                "open",
+                "Open the crossings",
+                "Let the trucks roll. Friends abroad exhale; ministers at home accuse you of feeding Hamas.",
+                {
+                  approval: -2,
+                  "hot:GAZA:aid": 25,
+                  "hot:GAZA:humanitarian": -8,
+                  "relations:USA": 4,
+                  "relations:EGY": 4,
+                },
+                { backedBy: ["FOREIGN_MINISTER"] },
+              ),
+              opt(
+                "conditional",
+                "Tie aid to disarmament",
+                "A little more in, the rest when Hamas hands over weapons.",
+                { approval: 1, "hot:GAZA:aid": 6, "relations:USA": -1 },
+                { backedBy: ["CHIEF_OF_STAFF"] },
+              ),
+              opt(
+                "restrict",
+                "Keep the restrictions",
+                "Security first. Expect condemnation from every capital that matters.",
+                {
+                  approval: 2,
+                  "hot:GAZA:aid": -10,
+                  "hot:GAZA:humanitarian": 4,
+                  "relations:EGY": -4,
+                  "relations:USA": -3,
+                  "relations:FRA": -3,
+                  "relations:GBR": -3,
+                },
+                { backedBy: ["DEFENSE_MINISTER"] },
+              ),
+            ],
+            defaultOptionId: "conditional",
+          },
+        };
+      }
+      if (me === "EGY") {
+        return {
+          headline: "Crowds of the wounded wait at Rafah",
+          text: "Aid trucks and the injured queue at the only crossing Israel does not control.",
+          decision: {
+            title: "Rafah: who gets through",
+            situation:
+              "Thousands of the wounded and hundreds of aid trucks wait at Rafah. Opening wide risks a flood of refugees into Sinai; keeping it shut shames you across the Arab world.",
+            affectedCountries: [me, g.people, g.occupier],
+            options: [
+              opt(
+                "open",
+                "Open Rafah wide",
+                "Trucks and the wounded through. Israel objects, Sinai worries.",
+                {
+                  approval: 3,
+                  stability: -1,
+                  "hot:GAZA:aid": 15,
+                  "hot:GAZA:humanitarian": -5,
+                  [`relations:${g.occupier}`]: -3,
+                  "relations:SAU": 2,
+                },
+              ),
+              opt(
+                "controlled",
+                "A controlled flow",
+                "Aid and medical cases only, checked by your officers and European monitors.",
+                { approval: 1, "hot:GAZA:aid": 6 },
+                { backedBy: ["INTELLIGENCE_CHIEF"] },
+              ),
+              opt(
+                "press",
+                "Press Washington to lean on Israel",
+                "Make it someone else's decision. Slow, but safe.",
+                { "relations:USA": 2, "hot:GAZA:aid": 4, [`relations:${g.occupier}`]: -2 },
+                { backedBy: ["FOREIGN_MINISTER"] },
+              ),
+            ],
+            defaultOptionId: "controlled",
+          },
+        };
+      }
+      return {
+        headline: "Aid agencies say the Gaza plan is failing at the crossings",
+        text: "European and Gulf allies ask Washington to act.",
+        decision: {
+          title: "Gaza: famine warnings",
+          situation:
+            "Aid agencies say the plan you brokered is failing at the crossings. Allies in Europe and the Gulf ask you to lean on Israel; Israel asks you to stand with it.",
+          affectedCountries: [me, g.occupier, g.people, "EGY"],
+          options: [
+            opt(
+              "lean",
+              "Lean on Israel",
+              "A blunt phone call and a public deadline. It works, and it costs you in Jerusalem.",
+              {
+                approval: -1,
+                "hot:GAZA:aid": 20,
+                "hot:GAZA:humanitarian": -6,
+                [`relations:${g.occupier}`]: -6,
+                "relations:SAU": 4,
+                "relations:EGY": 4,
+              },
+              { backedBy: ["FOREIGN_MINISTER"] },
+            ),
+            opt(
+              "airlift",
+              "Fund an airlift and a sea corridor",
+              "Go around the crossings. Expensive and partial, but nobody is offended.",
+              { approval: 1, gdp: -0.1, "hot:GAZA:aid": 10, "hot:GAZA:humanitarian": -4 },
+            ),
+            opt(
+              "leave",
+              "Leave it to Israel",
+              "Their war, their crossings. Arab partners notice.",
+              {
+                "hot:GAZA:aid": -4,
+                [`relations:${g.occupier}`]: 3,
+                "relations:SAU": -3,
+                "relations:EGY": -3,
+              },
+            ),
+          ],
+          defaultOptionId: "airlift",
+        },
+      };
+    },
+  },
+
+  // --- The International Stabilization Force (UN Resolution 2803) ---
+  {
+    id: "gaza_isf",
+    weight: (ctx) => {
+      const g = hot(ctx, "GAZA");
+      if (!g || g.phase !== "CEASEFIRE" || g.governance >= 60 || ctx.world.date < "2025-11")
+        return 0;
+      const me = ctx.player.id;
+      return me === g.occupier || me === "USA" ? 1.5 : GAZA_CONTRIBUTORS.includes(me) ? 2 : 0;
+    },
+    build: (ctx) => {
+      const g = hot(ctx, "GAZA");
+      if (!g) return null;
+      const me = ctx.player.id;
+      if (me === g.occupier) {
+        return {
+          headline: "Stabilization force asks Israel to pull back in Rafah",
+          text: "The international force is ready to deploy if the army withdraws from the yellow line there.",
+          decision: {
+            title: "Gaza: the stabilization force wants Rafah",
+            situation:
+              "The international stabilization force is ready to take over Rafah, but only if your troops pull back from the yellow line there. Hamas has not disarmed.",
+            affectedCountries: [me, g.people, "USA", "EGY"],
+            options: [
+              opt(
+                "pullback",
+                "Pull back and let them in",
+                "Hand ground to foreign troops. Washington is delighted; your right flank is not.",
+                {
+                  approval: -3,
+                  "hot:GAZA:control": -10,
+                  "hot:GAZA:governance": 12,
+                  "hot:GAZA:violence": -4,
+                  "relations:USA": 6,
+                },
+                { backedBy: ["FOREIGN_MINISTER"] },
+              ),
+              opt(
+                "disarm_first",
+                "Disarmament first",
+                "No withdrawal until Hamas hands over its weapons. The plan stalls politely.",
+                { approval: 1, "hot:GAZA:violence": 2, "relations:USA": -1 },
+                { backedBy: ["CHIEF_OF_STAFF"] },
+              ),
+              opt(
+                "hold",
+                "Hold the line",
+                "Your army stays where it is. The force stays in Egypt.",
+                { approval: 2, "hot:GAZA:governance": -4, "relations:USA": -3 },
+                { backedBy: ["DEFENSE_MINISTER"] },
+              ),
+            ],
+            defaultOptionId: "disarm_first",
+          },
+        };
+      }
+      if (me === "USA") {
+        return {
+          headline: "Gaza stabilization force short of troops",
+          text: "Contributors wait for an American commitment.",
+          decision: {
+            title: "Who will police Gaza?",
+            situation:
+              "The stabilization force you championed at the UN is short of troops. Contributors want American logistics and money before they send soldiers.",
+            affectedCountries: [me, g.occupier, g.people, "EGY", "IDN"],
+            options: [
+              opt(
+                "commit",
+                "Commit logistics and money",
+                "Pay for it and run it from a base in Israel, with no American boots in Gaza.",
+                {
+                  gdp: -0.1,
+                  approval: -1,
+                  "hot:GAZA:governance": 12,
+                  "hot:GAZA:violence": -4,
+                  "relations:EGY": 4,
+                  "relations:IDN": 3,
+                  [`relations:${g.occupier}`]: 2,
+                },
+                { backedBy: ["FOREIGN_MINISTER"] },
+              ),
+              opt(
+                "pressure",
+                "Lean on the contributors",
+                "Phone calls to Jakarta and Islamabad. Cheap, slow.",
+                { "hot:GAZA:governance": 5, "relations:IDN": -2, "relations:PAK": -2 },
+              ),
+              opt(
+                "hands_off",
+                "Let the region sort it out",
+                "Not America's job. The plan loses its engine.",
+                { approval: 1, "hot:GAZA:governance": -6, "relations:EGY": -3 },
+              ),
+            ],
+            defaultOptionId: "pressure",
+          },
+        };
+      }
+      return {
+        headline: "Washington asks for troops for Gaza",
+        text: "The stabilization force needs battalions.",
+        decision: {
+          title: "Soldiers for Gaza?",
+          situation:
+            "The United States asks you to send a battalion to Gaza's stabilization force. Your soldiers would stand between Hamas and the Israeli army, with a UN mandate and no guarantee either side wants them.",
+          affectedCountries: [me, "USA", g.people, g.occupier],
+          options: [
+            opt(
+              "send",
+              "Send a battalion",
+              "Prestige and American gratitude. Casualties are possible.",
+              {
+                approval: -2,
+                "hot:GAZA:governance": 10,
+                "hot:GAZA:violence": -3,
+                "relations:USA": 6,
+                [`relations:${g.people}`]: 3,
+              },
+              {
+                backedBy: ["FOREIGN_MINISTER"],
+                followUp: { templateId: "gaza_isf_casualties", delay: 3 },
+              },
+            ),
+            opt(
+              "money",
+              "Send police trainers and money",
+              "Help without the risk.",
+              { gdp: -0.1, "hot:GAZA:governance": 4, "relations:USA": 3 },
+              { backedBy: ["FINANCE_MINISTER"] },
+            ),
+            opt(
+              "decline",
+              "Decline",
+              "Not our war. Washington remembers.",
+              { approval: 1, "relations:USA": -3 },
+              { backedBy: ["DEFENSE_MINISTER"] },
+            ),
+          ],
+          defaultOptionId: "money",
+        },
+      };
+    },
+  },
+
+  // follow-up: the battalion you sent
+  {
+    id: "gaza_isf_casualties",
+    weight: () => 0,
+    build: (ctx) => {
+      const g = hot(ctx, "GAZA");
+      if (!g) return null;
+      return {
+        headline: `Peacekeepers from ${ctx.player.name} come under fire in Gaza`,
+        text: "Three soldiers were wounded when their patrol was ambushed near Khan Younis.",
+        decision: {
+          title: "Gaza: your peacekeepers are hit",
+          situation:
+            "Three of your soldiers were wounded when their patrol was ambushed near Khan Younis. Nobody claims the attack. Parliament wants them home; Washington begs you to stay.",
+          affectedCountries: [ctx.player.id, "USA", g.people],
+          options: [
+            opt(
+              "stay",
+              "Stay the course",
+              "Reinforce the patrols and keep the mission going.",
+              { approval: -3, "hot:GAZA:governance": 4, "relations:USA": 3 },
+              { backedBy: ["FOREIGN_MINISTER"] },
+            ),
+            opt(
+              "withdraw",
+              "Bring them home",
+              "Popular, and the force loses a battalion.",
+              { approval: 2, "hot:GAZA:governance": -8, "relations:USA": -5 },
+              { backedBy: ["CHIEF_OF_STAFF"] },
+            ),
+          ],
+          defaultOptionId: "stay",
+        },
+      };
+    },
+  },
+
+  // --- Hamas will not disarm (phase two of the plan) ---
+  {
+    id: "gaza_disarm",
+    weight: (ctx) => {
+      const g = hot(ctx, "GAZA");
+      if (!g || g.phase !== "CEASEFIRE" || g.governance >= 50 || ctx.world.turn < 3) return 0;
+      return ctx.player.id === g.occupier || ctx.player.id === "USA" ? 1.5 : 0;
+    },
+    build: (ctx) => {
+      const g = hot(ctx, "GAZA");
+      if (!g) return null;
+      if (ctx.player.id === g.occupier) {
+        return {
+          headline: "Hamas rejects disarmament",
+          text: "The group says it will give up its weapons only to a Palestinian state.",
+          decision: {
+            title: "Gaza: Hamas will not disarm",
+            situation:
+              "Months into the ceasefire Hamas still has its rifles and its rockets. The plan says disarm; Hamas says only to a Palestinian state. Your coalition partners threaten to bring down the government.",
+            affectedCountries: [ctx.player.id, g.people, "USA"],
+            options: [
+              opt(
+                "deadline",
+                "Set a deadline",
+                "Disarm within weeks or the army goes back in. Your coalition is satisfied; the ceasefire is on a timer.",
+                { approval: 3, "hot:GAZA:violence": 8, "relations:USA": -2 },
+                {
+                  tensionDelta: 2,
+                  backedBy: ["DEFENSE_MINISTER"],
+                  followUp: { templateId: "gaza_flare", delay: 2 },
+                },
+              ),
+              opt(
+                "buyback",
+                "Back the amnesty and buy-back",
+                "Pay for weapons and offer fighters safe passage. Washington's idea; your ministers hate it.",
+                { approval: -3, "hot:GAZA:governance": 6, "relations:USA": 4 },
+                { backedBy: ["FOREIGN_MINISTER"] },
+              ),
+              opt("wait", "Let the stabilization force do it", "Time and foreign troops. Slow.", {
+                approval: -1,
+                "hot:GAZA:governance": 3,
+              }),
+            ],
+            defaultOptionId: "wait",
+          },
+        };
+      }
+      return {
+        headline: "Israel threatens to resume the Gaza war over disarmament",
+        text: "Hamas refuses to hand over its weapons.",
+        decision: {
+          title: "Gaza: Hamas will not disarm",
+          situation: `Hamas refuses to hand over its weapons. ${leaderOf(find(ctx.world, g.occupier) ?? ctx.player)} asks for your green light to resume the war; Egypt and Qatar ask for more time.`,
+          affectedCountries: [ctx.player.id, g.occupier, g.people, "EGY"],
+          options: [
+            opt(
+              "green",
+              "Give the green light",
+              "Stand with your ally. The ceasefire you brokered ends.",
+              {
+                approval: 1,
+                "hot:GAZA:war": 1,
+                [`relations:${g.occupier}`]: 6,
+                "relations:SAU": -6,
+                "relations:EGY": -6,
+                "relations:ARE": -4,
+              },
+              { tensionDelta: 5, backedBy: ["DEFENSE_MINISTER"] },
+            ),
+            opt(
+              "deal",
+              "Push a phased deal",
+              "Weapons stored under Egyptian watch, step by step. Slow, and it keeps the truce.",
+              {
+                "hot:GAZA:governance": 6,
+                "hot:GAZA:violence": -4,
+                [`relations:${g.occupier}`]: -1,
+                "relations:EGY": 3,
+              },
+              { backedBy: ["FOREIGN_MINISTER"] },
+            ),
+            opt("restrain", "Restrain Israel", "No new war. Jerusalem is furious.", {
+              [`relations:${g.occupier}`]: -4,
+              "relations:EGY": 3,
+              "hot:GAZA:governance": 4,
+            }),
+          ],
+          defaultOptionId: "deal",
+        },
+      };
+    },
+  },
+
+  // --- Rebuilding Gaza: money buys influence ---
+  {
+    id: "gaza_reconstruction",
+    weight: (ctx) => {
+      const g = hot(ctx, "GAZA");
+      const me = ctx.player;
+      if (!g || g.phase !== "CEASEFIRE" || g.violence >= 55) return 0;
+      if ([g.occupier, g.people, "USA"].includes(me.id)) return 0;
+      return me.gdp > 8e11 || ["SAU", "ARE", "EGY", "TUR"].includes(me.id) ? 1 : 0;
+    },
+    build: (ctx) => {
+      const g = hot(ctx, "GAZA");
+      if (!g) return null;
+      return {
+        headline: "Donors meet in Cairo to rebuild Gaza",
+        text: "The bill is put at more than 50 billion dollars.",
+        decision: {
+          title: "Gaza: the reconstruction conference",
+          situation:
+            "Cairo hosts the donors' conference for Gaza. The bill is put at more than 50 billion dollars. Pledges buy a voice in who governs the strip, and nobody knows whether the ceasefire will last.",
+          affectedCountries: [ctx.player.id, g.people, "EGY"],
+          options: [
+            opt(
+              "pledge",
+              "A large pledge",
+              "Billions, and a seat at the table.",
+              {
+                approval: 1,
+                gdp: -0.3,
+                "hot:GAZA:governance": 10,
+                "hot:GAZA:humanitarian": -6,
+                "relations:EGY": 5,
+                [`relations:${g.people}`]: 6,
+                "relations:USA": 3,
+              },
+              { backedBy: ["FOREIGN_MINISTER"] },
+            ),
+            opt(
+              "token",
+              "A token pledge",
+              "Show up, sign, move on.",
+              { gdp: -0.05, "hot:GAZA:governance": 3, [`relations:${g.people}`]: 2 },
+              { backedBy: ["FINANCE_MINISTER"] },
+            ),
+            opt(
+              "conditions",
+              "Only if Hamas disarms",
+              "Money on conditions nobody expects to be met soon.",
+              { [`relations:${g.occupier}`]: 3, [`relations:${g.people}`]: -2 },
+            ),
+          ],
+          defaultOptionId: "token",
+        },
+      };
+    },
+  },
+
+  // --- West Bank: settler violence ---
+  {
+    id: "westbank_settlers",
+    weight: (ctx) => {
+      const w = hot(ctx, "WEST_BANK");
+      return w && ctx.player.id === w.occupier && w.violence >= 40 ? 2 : 0;
+    },
+    build: (ctx) => {
+      const w = hot(ctx, "WEST_BANK");
+      if (!w) return null;
+      const place = ctx.rng.pick(["Nablus", "Ramallah", "Hebron", "the Jordan Valley"]);
+      return {
+        headline: `Settlers torch a village near ${place}`,
+        text: "A Palestinian man was killed. Allies demand arrests.",
+        decision: {
+          title: "West Bank: a settler rampage",
+          situation: `Dozens of masked settlers burned homes and cars in a Palestinian village near ${place} overnight, and a man was killed. Settler ministers in your coalition call it self-defence. Washington and Europe want arrests.`,
+          affectedCountries: [ctx.player.id, w.people, "USA"],
+          options: [
+            opt(
+              "arrest",
+              "Arrest the ringleaders",
+              "Send the police and the security service after them. Your coalition revolts.",
+              {
+                approval: -3,
+                "hot:WEST_BANK:violence": -10,
+                "relations:USA": 4,
+                "relations:FRA": 3,
+                "relations:GBR": 3,
+                "relations:ARE": 3,
+              },
+              { backedBy: ["INTELLIGENCE_CHIEF"] },
+            ),
+            opt(
+              "condemn",
+              "Condemn and move on",
+              "A statement, an investigation, no arrests.",
+              { "hot:WEST_BANK:violence": 2, "relations:USA": -1 },
+              { backedBy: ["CHIEF_OF_STAFF"] },
+            ),
+            opt(
+              "legalise",
+              "Legalise the outposts",
+              "Give the settlers what they want. Allies and the Gulf react badly.",
+              {
+                approval: 2,
+                "hot:WEST_BANK:control": 8,
+                "hot:WEST_BANK:violence": 6,
+                "relations:USA": -4,
+                "relations:ARE": -6,
+                "relations:SAU": -5,
+              },
+              { tensionDelta: 2, followUp: { templateId: "westbank_annexation", delay: 3 } },
+            ),
+          ],
+          defaultOptionId: "condemn",
+        },
+      };
+    },
+  },
+
+  // --- West Bank: the sovereignty (annexation) bill ---
+  {
+    id: "westbank_annexation",
+    weight: (ctx) => {
+      const w = hot(ctx, "WEST_BANK");
+      return w && ctx.player.id === w.occupier && w.control >= 70 ? 1 : 0;
+    },
+    build: (ctx) => {
+      const w = hot(ctx, "WEST_BANK");
+      if (!w) return null;
+      return {
+        headline: "Sovereignty bill tabled for the West Bank",
+        text: "The Emirates warn it would end the Abraham Accords.",
+        decision: {
+          title: "West Bank: the sovereignty bill",
+          situation:
+            "Your coalition has tabled a bill applying Israeli law to the settlements and the Jordan Valley. The Emirates warn it would end the Abraham Accords; Washington says annexation is not happening.",
+          affectedCountries: [ctx.player.id, w.people, "ARE", "SAU", "USA"],
+          urgency: "URGENT",
+          options: [
+            opt(
+              "pass",
+              "Pass it",
+              "History, say your partners. A diplomatic earthquake, say your diplomats.",
+              {
+                approval: 3,
+                "hot:WEST_BANK:control": 20,
+                "hot:WEST_BANK:violence": 12,
+                "relations:ARE": -20,
+                "relations:SAU": -15,
+                "relations:EGY": -10,
+                "relations:USA": -8,
+              },
+              { tensionDelta: 4 },
+            ),
+            opt(
+              "valley",
+              "Only the Jordan Valley",
+              "A smaller bite that still makes headlines.",
+              {
+                approval: 1,
+                "hot:WEST_BANK:control": 8,
+                "hot:WEST_BANK:violence": 5,
+                "relations:ARE": -8,
+                "relations:USA": -3,
+              },
+              { tensionDelta: 2 },
+            ),
+            opt(
+              "shelve",
+              "Shelve it",
+              "Keep the Gulf and Washington. Your coalition wobbles.",
+              { approval: -3, stability: -1, "relations:ARE": 4, "relations:USA": 4 },
+              { backedBy: ["FOREIGN_MINISTER"] },
+            ),
+          ],
+          defaultOptionId: "shelve",
+        },
+      };
+    },
+  },
+
+  // --- For the Palestinian Authority: raids in the northern camps ---
+  {
+    id: "westbank_raid",
+    weight: (ctx) => {
+      const w = hot(ctx, "WEST_BANK");
+      return w && ctx.player.id === w.people && w.violence >= 35 ? 3 : 0;
+    },
+    build: (ctx) => {
+      const w = hot(ctx, "WEST_BANK");
+      if (!w) return null;
+      const place = ctx.rng.pick(["Jenin", "Tulkarm", "Nur Shams", "Balata"]);
+      return {
+        headline: `Third night of Israeli raids in ${place}`,
+        text: "Thousands flee the camp. Your police stay in their barracks.",
+        decision: {
+          title: `West Bank: raids in ${place}`,
+          situation: `Israeli troops and drones hit the ${place} camp for the third night and thousands have fled. Your police were told to stay in their barracks. On the street they call your Authority a subcontractor of the occupation.`,
+          affectedCountries: [ctx.player.id, w.occupier],
+          options: [
+            opt(
+              "suspend",
+              "Suspend security coordination",
+              "The street cheers. Israel and Washington punish you.",
+              {
+                approval: 6,
+                "hot:WEST_BANK:violence": 8,
+                [`relations:${w.occupier}`]: -10,
+                "relations:USA": -3,
+              },
+            ),
+            opt(
+              "keep",
+              "Keep coordinating quietly",
+              "The donors stay. Your legitimacy erodes.",
+              {
+                approval: -4,
+                legitimacy: -2,
+                "hot:WEST_BANK:violence": -3,
+                [`relations:${w.occupier}`]: 3,
+                "relations:USA": 3,
+              },
+              { backedBy: ["INTELLIGENCE_CHIEF"] },
+            ),
+            opt(
+              "un",
+              "Take it to the UN",
+              "A resolution, a speech, a vote. Little changes on the ground.",
+              { approval: 2, [`relations:${w.occupier}`]: -3, "relations:FRA": 2 },
+              { backedBy: ["FOREIGN_MINISTER"] },
+            ),
+          ],
+          defaultOptionId: "keep",
+        },
+      };
+    },
+  },
+
+  // --- For the Palestinian Authority: a role in Gaza ---
+  {
+    id: "pa_gaza_role",
+    weight: (ctx) => {
+      const g = hot(ctx, "GAZA");
+      return g && ctx.player.id === g.people && g.phase === "CEASEFIRE" ? 1.5 : 0;
+    },
+    build: (ctx) => {
+      const g = hot(ctx, "GAZA");
+      if (!g) return null;
+      return {
+        headline: "Palestinian Authority offered a role in Gaza, on conditions",
+        text: "Reforms first, says the Board of Peace.",
+        decision: {
+          title: "Gaza: a role for your Authority",
+          situation:
+            "The international board overseeing Gaza offers your Authority a role in governing the strip, but only after reforms: new leadership, an end to prisoner payments, elections. Hamas calls it a trap; Israel says no PA at all.",
+          affectedCountries: [ctx.player.id, g.occupier, "USA", "EGY"],
+          options: [
+            opt(
+              "reform",
+              "Accept the reforms",
+              "Painful at home, and the door to Gaza opens a crack.",
+              {
+                approval: -3,
+                legitimacy: 3,
+                "hot:GAZA:governance": 8,
+                "relations:USA": 6,
+                "relations:SAU": 4,
+                [`relations:${g.occupier}`]: 2,
+              },
+              { backedBy: ["FOREIGN_MINISTER"] },
+            ),
+            opt(
+              "unity",
+              "A unity deal with Hamas first",
+              "National unity before foreign conditions. Washington and Israel balk.",
+              {
+                approval: 3,
+                "relations:EGY": 3,
+                "relations:USA": -4,
+                [`relations:${g.occupier}`]: -6,
+              },
+            ),
+            opt(
+              "refuse",
+              "Refuse the conditions",
+              "Sovereignty is not negotiable. The offer lapses.",
+              { approval: 2, "relations:USA": -3, "hot:GAZA:governance": -3 },
+            ),
+          ],
+          defaultOptionId: "reform",
+        },
+      };
+    },
+  },
+
+  // --- Everyone else: the UN vote ---
+  {
+    id: "gaza_un_vote",
+    weight: (ctx) => {
+      const g = hot(ctx, "GAZA");
+      if (!g || [g.occupier, g.people, "USA"].includes(ctx.player.id)) return 0;
+      return g.phase === "WAR" || g.humanitarian >= 65 ? 0.8 : 0;
+    },
+    build: (ctx) => {
+      const g = hot(ctx, "GAZA");
+      if (!g) return null;
+      return {
+        headline: "General Assembly votes on Gaza",
+        text: "A resolution demands unhindered aid and an end to the fighting.",
+        decision: {
+          title: "Gaza: the UN vote",
+          situation:
+            "The General Assembly votes on a resolution demanding unhindered aid into Gaza and an end to the fighting. Israel and the United States lobby you to vote no or abstain; Arab capitals are counting.",
+          affectedCountries: [ctx.player.id, g.occupier, "USA"],
+          options: [
+            opt(
+              "yes",
+              "Vote yes",
+              "With most of the world.",
+              {
+                [`relations:${g.occupier}`]: -4,
+                "relations:USA": -2,
+                "relations:EGY": 3,
+                "relations:SAU": 3,
+              },
+              { backedBy: ["FOREIGN_MINISTER"] },
+            ),
+            opt("abstain", "Abstain", "Offend no one, impress no one."),
+            opt("no", "Vote no", "Stand with Israel and Washington.", {
+              [`relations:${g.occupier}`]: 5,
+              "relations:USA": 3,
+              "relations:EGY": -4,
+              "relations:SAU": -4,
+              "relations:TUR": -4,
+            }),
+          ],
+          defaultOptionId: "abstain",
+        },
+      };
+    },
+  },
+];
+
+// A card never asks the player to improve relations with themselves (Egypt voting at the UN)
+for (const t of HOTSPOT_TEMPLATES) {
+  const build = t.build;
+  t.build = (ctx, scheduled) => {
+    const draft = build(ctx, scheduled);
+    for (const o of draft?.decision?.options ?? []) delete o.effects[`relations:${ctx.player.id}`];
+    return draft;
+  };
+}
 
 // ----------------------------------------------------------------------------
 // Templates
@@ -1474,6 +2370,7 @@ const TEMPLATES: CrisisTemplate[] = [
       },
     }),
   },
+  ...HOTSPOT_TEMPLATES,
 ];
 
 // ----------------------------------------------------------------------------
@@ -1653,6 +2550,7 @@ export function applyEffects(
     else if (key === "mobilization")
       player.mobilizationLevel = clamp(player.mobilizationLevel + value);
     else if (key === "intel") player.counterIntelLevel = clamp(player.counterIntelLevel + value);
+    else if (key.startsWith("hot:")) applyHotspotEffect(world, key, value);
     else if (key.startsWith("ceasefire:") && value > 0) {
       // An agreed ceasefire (e.g. under the world's pressure after a nuclear strike)
       const other = key.split(":")[1];

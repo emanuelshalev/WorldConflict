@@ -1,3 +1,4 @@
+import { hotspotSummary } from "../../core/systems/hotspots.js";
 import type { CountryState, WorldState } from "../../core/types.js";
 import type { AdvisorRole } from "../schemas.js";
 
@@ -86,6 +87,12 @@ export function generateAdvisorUserPrompt(context: AdvisorPromptContext): string
   const { role, playerCountry, world, userQuestion, conversationHistory } = context;
 
   let prompt = `Turn ${world.turn} - ${world.date}\nGlobal Tension: ${world.globalTension}/100\n\n`;
+  // Hot zones that are not states (Gaza, the West Bank), with their latest incident
+  const zones = (world.hotspots ?? []).map(
+    (h) =>
+      `- ${hotspotSummary(h)} Violence ${Math.round(h.violence)}/100, humanitarian need ${Math.round(h.humanitarian)}/100.${h.incidents[0] ? ` Latest: ${h.incidents[0].title}.` : ""}`,
+  );
+  if (zones.length > 0) prompt += `Hot zones:\n${zones.join("\n")}\n\n`;
 
   if (role === "FOREIGN_MINISTER" || role === "CHIEF_OF_STAFF") {
     const keyRelations = Object.entries(playerCountry.relations)

@@ -170,5 +170,9 @@
     {"from": "POL", "to": "BLR", "troops": 30000},
     {"from": "KOR", "to": "PRK", "troops": 50000},
     {"from": "PRK", "to": "KOR", "troops": 120000}
+  ],
+  "hotspots": [
+    {"id": "GAZA", "name": "Gaza Strip", "mapId": "GAZ", "center": [34.39, 31.42], "occupier": "ISR", "people": "PSX", "phase": "CEASEFIRE", "violence": 38, "humanitarian": 72, "aid": 38, "control": 55, "governance": 15},
+    {"id": "WEST_BANK", "name": "West Bank", "mapId": "PSX", "center": [35.25, 31.95], "occupier": "ISR", "people": "PSX", "phase": "TENSE", "violence": 55, "humanitarian": 40, "aid": 50, "control": 62, "governance": 30}
   ]
 }

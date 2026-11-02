@@ -5,8 +5,10 @@
  * Pure and deterministic: a dedicated seeded stream, so the calendar never perturbs the rest
  * of the simulation's randomness.
  */
+
 import { sharesLandBorder } from "./geography.js";
 import { combineSeed, SeededRandom } from "./seed.js";
+import { hotspotSummary } from "./systems/hotspots.js";
 import type { CountryState, DecisionOption, Meeting, WorldState } from "./types.js";
 
 export const MEETING_SLOTS = 3;
@@ -382,6 +384,115 @@ function staffTopics(world: WorldState, player: CountryState): StaffTopic[] {
       ],
     },
   });
+  // Gaza and the West Bank: a standing item for the governments that carry them
+  const gaza = world.hotspots.find((h) => h.id === "GAZA");
+  const bank = world.hotspots.find((h) => h.id === "WEST_BANK");
+  const zone = gaza ?? bank;
+  if (zone && [zone.occupier, zone.people, "EGY", "USA"].includes(player.id)) {
+    const hot = Math.max(gaza?.violence ?? 0, bank?.violence ?? 0, (gaza?.humanitarian ?? 0) - 10);
+    const where = gaza && bank ? "Gaza and the West Bank" : zone.name;
+    const read = [gaza, bank]
+      .filter((h) => !!h)
+      .map((h) => hotspotSummary(h))
+      .join(" ");
+    const options =
+      player.id === zone.occupier
+        ? [
+            opt(
+              "tighten",
+              "Tighten the lines",
+              "More raids and a firmer yellow line. The right applauds.",
+              {
+                approval: 1,
+                ...(gaza ? { "hot:GAZA:violence": 4 } : {}),
+                ...(bank ? { "hot:WEST_BANK:violence": 3 } : {}),
+              },
+            ),
+            ...(gaza
+              ? [
+                  opt(
+                    "crossings",
+                    "Ease the crossings",
+                    "More trucks in. Washington and Cairo notice.",
+                    {
+                      approval: -1,
+                      "hot:GAZA:aid": 8,
+                      "hot:GAZA:humanitarian": -3,
+                      "relations:USA": 1,
+                    },
+                  ),
+                ]
+              : []),
+            ...(bank
+              ? [
+                  opt(
+                    "settlers",
+                    "Rein in the settlers",
+                    "Orders to the army and the police. Your coalition grumbles.",
+                    {
+                      approval: -1,
+                      "hot:WEST_BANK:violence": -5,
+                    },
+                  ),
+                ]
+              : []),
+            deputy,
+          ]
+        : player.id === zone.people
+          ? [
+              opt(
+                "police",
+                "Pay the police first",
+                "Order on the streets before salaries elsewhere.",
+                {
+                  approval: -1,
+                  ...(bank ? { "hot:WEST_BANK:governance": 4 } : {}),
+                },
+              ),
+              opt(
+                "strike",
+                "Call a general strike",
+                "Show the occupation the street. Popular, and costly.",
+                {
+                  approval: 2,
+                  gdp: -0.2,
+                  ...(bank ? { "hot:WEST_BANK:violence": 3 } : {}),
+                },
+              ),
+              opt(
+                "donors",
+                "Appeal to the donors",
+                "Calls to Riyadh, Brussels and Tokyo for money and aid.",
+                {
+                  ...(gaza ? { "hot:GAZA:aid": 5 } : {}),
+                  "relations:SAU": 1,
+                },
+              ),
+              deputy,
+            ]
+          : [
+              opt("aid", "Push more aid through", "Diplomatic capital spent on trucks.", {
+                ...(gaza ? { "hot:GAZA:aid": 8, "hot:GAZA:humanitarian": -3 } : {}),
+                pc: -1,
+              }),
+              opt("force", "Back the stabilization force", "Money, trainers and logistics.", {
+                ...(gaza ? { "hot:GAZA:governance": 4 } : {}),
+                gdp: -0.05,
+              }),
+              opt("hold", "Keep the current line", "No new commitments.", {}),
+              deputy,
+            ];
+    topics.push({
+      key: "hotzone",
+      urgency: hot - 5,
+      meeting: {
+        speaker: player.id === zone.people ? "Prime Minister" : "National Security Adviser",
+        title: `Staff meeting: ${where}`,
+        situation: `"${read} I need a line from you for the month."`,
+        options,
+      },
+    });
+  }
   return topics;
 }
 

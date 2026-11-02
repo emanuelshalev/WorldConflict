@@ -22,6 +22,7 @@ import {
 import { autoBudgetResponse, updateEconomies } from "./systems/economy.js";
 import type { GovernmentChange } from "./systems/government.js";
 import { runGovernmentDynamics } from "./systems/government.js";
+import { updateHotspots } from "./systems/hotspots.js";
 import { buildPlayerView, updateBeliefs } from "./systems/intelligence.js";
 import type { AirstrikeTarget, WarMonthSummary } from "./systems/military.js";
 import {
@@ -362,6 +363,7 @@ export class TurnEngine {
     // ------------------------------------------------------------------
     updateEconomies(world);
     events.push(...applyFallout(world));
+    events.push(...updateHotspots(world));
     autoBudgetResponse(world);
     events.push(...updateDomestic(world, rng));
     applyDiplomaticDrift(world);

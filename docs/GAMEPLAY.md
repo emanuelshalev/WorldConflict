@@ -48,6 +48,17 @@ Each meeting is a short scene with a statement and 2 or 3 answers with their eff
 
 **Consult your staff** from any crisis card or meeting: the right minister opens with your question already asked. With an AI key in Settings, it is a free-form chat; without one, tap a suggested question (the crisis, your biggest risk, who to meet, the economy, stability, allies) and the minister answers from the game state.
 
+### Hot zones: Gaza and the West Bank
+
+Some places make the news every month without being states. **Gaza** has its own outline on the map and the **West Bank** (the `PSX` state, governed in part by the Palestinian Authority) carries a zone on top of its country. Each zone tracks violence, humanitarian need, aid getting in, civil order and how much ground the Israeli army holds (in the West Bank: settlement and annexation), plus a phase: fragile ceasefire, war, uprising, tense or calm.
+
+- Every month a zone drifts with the situation and usually has one incident in the paper: strikes near the yellow line, aid held at Kerem Shalom, Rafah reopening, clan fighting, the stabilization force arriving, settler attacks, raids in the northern camps, unpaid PA salaries. A Gaza ceasefire can collapse when violence runs high, and mediators can restore one after a war.
+- The zones weigh on the countries involved: Israel's stability when violence is high, the West Bank's stability and economy, Egypt during a Gaza war, and opinion against Israel in Europe, the Gulf and beyond when people go hungry.
+- **Decisions:** Israel faces ceasefire breaches (targeted strikes, resume the offensive, or the mediators), the crossings, the stabilization force asking for Rafah, Hamas refusing to disarm, settler violence and a sovereignty bill. Egypt decides on Rafah; the United States on famine warnings, the force and the green light for a new war. The West Bank answers raids and an offer to govern Gaza on conditions. Contributors are asked for troops; rich states pledge at the reconstruction conference; everyone else votes at the UN.
+- Israel, the West Bank, Egypt and the United States get a standing **Gaza and the West Bank** staff meeting. Click Gaza or a zone's beacon for its card, and ask your Foreign Minister for a line.
+
+Era by era: the 2026 world opens on the fragile October 2025 ceasefire, 2025 opens on the war, 1990 on the first intifada, and 1960 has no zones.
+
 ### Political capital ◆
 
 Diplomatic, domestic and covert orders cost **political capital**. You get 2 ◆ a month (3 in a Flashpoint, +1 on Story difficulty) and can bank up to 6. It's meant to be scarce: a reform (2 ◆) is a month's budget, so every month is a choice. Popularity doesn't pay extra capital, and trouble doesn't take it away. You can give at most 6 orders a month, and each order only once per target. Military hardware and nuclear work cost money as a share of your defense budget instead.

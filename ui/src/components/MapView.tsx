@@ -13,13 +13,15 @@ import {
   type Icon,
 } from '@tabler/icons-react';
 import { useGameStore } from '../store/gameStore';
-import type { PlayerViewCountry, War, WorldState } from '../store/gameStore';
+import type { Hotspot, PlayerViewCountry, War, WorldState } from '../store/gameStore';
 import { CountryDetailPanel } from './CountryDetailPanel';
 import { MapGuide } from './MapGuide';
 import { MapActionMenu } from './MapActionMenu';
 import { REFUGEE_ARROW, UNIT_FOE, UNIT_MINE, addMapImages, orderImage } from './mapIcons';
 import { countryPaint } from './mapColors';
 import { StateMarkers, buildMarkers, deriveSignals, latestNews, refugeeFlows } from './mapMarkers';
+import { HotspotCard } from './HotspotCard';
+import { heat, hotspotLine } from '../lib/hotspots';
 import { FAMILY_COLOR, actionFamily } from '../scenes/actionIcons';
 import { frontPoint, loadWorld } from '../scenes/worldGeo';
 
@@ -73,7 +75,7 @@ const LAYERS: ReadonlyArray<{ id: string; label: string; icon: Icon }> = [
   { id: 'nuclear', label: 'Nuclear', icon: IconRadioactive },
 ];
 
-function buildTooltip(view: PlayerViewCountry, wars: War[]): string {
+function buildTooltip(view: PlayerViewCountry, wars: War[], zones: Hotspot[] = []): string {
   const fmt = (n: number) =>
     n >= 1e12 ? `$${(n / 1e12).toFixed(1)}T` : n >= 1e9 ? `$${(n / 1e9).toFixed(0)}B` : `$${(n / 1e6).toFixed(0)}M`;
   const range = (r: { low: number; high: number; confidence: number }, f: (x: number) => string) =>
@@ -97,6 +99,10 @@ function buildTooltip(view: PlayerViewCountry, wars: War[]): string {
       ${growth !== undefined ? `<div style="font-size:12px">Growth: <b style="color:${growth < -0.02 ? '#ff7b6b' : growth > 0.025 ? '#5fd3a8' : '#dfe3ea'}">${growth >= 0 ? '+' : ''}${(growth * 100).toFixed(1)}%/yr</b></div>` : ''}
       ${view.underEmbargo ? '<div style="font-size:12px;color:#c9d2e0">Under embargo</div>' : ''}
       ${fallout > 0 ? `<div style="font-size:12px;color:#d4f03c">Radioactive fallout: ${Math.round(fallout)}/100</div>` : ''}
+      ${zones
+        .filter((z) => z.mapId === view.id)
+        .map((z) => `<div style="font-size:12px;color:#ffc48a">${hotspotLine(z)}</div>`)
+        .join('')}
       ${view.insurgencyLevel !== 'NONE' ? `<div style="font-size:12px;color:#e8a13c">Insurgency: ${view.insurgencyLevel}</div>` : ''}
       ${view.isPlayer ? '' : `<div style="font-size:11px;color:#888;margin-top:4px">Intel confidence: ${Math.round(view.intelConfidence)}%</div>`}
       <div style="font-size:10px;color:#666;margin-top:4px">${view.isPlayer ? 'Click for your dossier' : 'Click for orders & dossier'}</div>
@@ -158,6 +164,7 @@ export function MapView() {
   const [mapReady, setMapReady] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
   const [menu, setMenu] = useState<MenuState | null>(null);
+  const [zone, setZone] = useState<string | null>(null);
   const geoRef = useRef<GeoJSON.FeatureCollection | null>(null);
   const popupRef = useRef<maplibregl.Popup | null>(null);
   // What the animation loop needs to animate (skips layers with nothing on them)
@@ -255,6 +262,7 @@ export function MapView() {
       // Simulated countries: feature ids are game ids, so hover/selection use feature-state
       // and never re-upload the polygons
       map.addSource('countries', { type: 'geojson', data: emptyFC(), promoteId: 'gameId' });
+      map.addSource('hotzones', { type: 'geojson', data: emptyFC() });
       for (const id of ['alliances', 'lines', 'icons', 'war-arcs', 'events', 'orders', 'deploy', 'capitals', 'pulse-labels', 'refugees'])
         map.addSource(id, { type: 'geojson', data: emptyFC() });
 
@@ -318,6 +326,20 @@ export function MapView() {
           'line-opacity': ['case', hovered, 0.85, 0],
           'line-opacity-transition': { duration: 150 },
         },
+      });
+      // Hot zones that are not states: Gaza filled by heat, the West Bank outlined over its country
+      map.addLayer({
+        id: 'hotzone-fill',
+        type: 'fill',
+        source: 'hotzones',
+        filter: ['get', 'own'],
+        paint: { 'fill-color': ['get', 'fill'], 'fill-opacity': 0.9 },
+      });
+      map.addLayer({
+        id: 'hotzone-line',
+        type: 'line',
+        source: 'hotzones',
+        paint: { 'line-color': ['get', 'line'], 'line-width': ['interpolate', ['linear'], ['zoom'], 2, 1, 6, 2.2], 'line-dasharray': [2, 1.2] },
       });
       map.addLayer({
         id: 'war-pulse',
@@ -570,7 +592,7 @@ export function MapView() {
           const s = useGameStore.getState();
           const view = s.playerView.find((c) => c.id === id);
           if (!view) return;
-          popupRef.current.setHTML(buildTooltip(view, s.worldState?.wars ?? []));
+          popupRef.current.setHTML(buildTooltip(view, s.worldState?.wars ?? [], s.worldState?.hotspots ?? []));
           if (!popupRef.current.isOpen()) popupRef.current.addTo(map);
         }
         popupRef.current.setLngLat(e.lngLat);
@@ -580,8 +602,34 @@ export function MapView() {
         setHover(null);
         popupRef.current?.remove();
       });
+      map.on('mousemove', 'hotzone-fill', (e) => {
+        map.getCanvas().style.cursor = 'pointer';
+        const id = e.features?.[0]?.properties?.id as string | undefined;
+        const h = useGameStore.getState().worldState?.hotspots?.find((x) => x.id === id);
+        if (!h || !canHover) return;
+        if (!popupRef.current) {
+          popupRef.current = new maplibregl.Popup({ closeButton: false, closeOnClick: false, maxWidth: '300px', className: 'map-tooltip', offset: 14 });
+        }
+        popupRef.current
+          .setHTML(`<div style="min-width:200px"><div style="font-weight:700;font-size:14px">${h.name}</div><div style="font-size:12px">${hotspotLine(h).replace(`${h.name}: `, '')}</div>${h.incidents[0] ? `<div style="font-size:11px;color:#aaa;margin-top:4px">${h.incidents[0].title}</div>` : ''}<div style="font-size:10px;color:#666;margin-top:4px">Click for the situation</div></div>`)
+          .setLngLat(e.lngLat);
+        if (!popupRef.current.isOpen()) popupRef.current.addTo(map);
+      });
+      map.on('mouseleave', 'hotzone-fill', () => {
+        map.getCanvas().style.cursor = '';
+        popupRef.current?.remove();
+      });
       // A foreign country opens the order menu at the click; your own opens your dossier
       map.on('click', (e) => {
+        const zoneId = map.queryRenderedFeatures(e.point, { layers: ['hotzone-fill'] })[0]?.properties?.id as
+          | string
+          | undefined;
+        if (zoneId) {
+          popupRef.current?.remove();
+          setMenu(null);
+          setZone((z) => (z === zoneId ? null : zoneId));
+          return;
+        }
         const id = map.queryRenderedFeatures(e.point, { layers: ['country-fills'] })[0]?.properties?.gameId as
           | string
           | undefined;
@@ -682,10 +730,17 @@ export function MapView() {
       if (!reduced) raf = requestAnimationFrame(frame);
 
       // Animated state markers (HTML + CSS keyframes); they scale with the zoom through CSS vars
-      markersRef.current = new StateMarkers(map, (id) => {
-        const st = useGameStore.getState();
-        st.selectCountry(st.selectedCountryId === id ? null : id);
-      });
+      markersRef.current = new StateMarkers(
+        map,
+        (id) => {
+          const st = useGameStore.getState();
+          st.selectCountry(st.selectedCountryId === id ? null : id);
+        },
+        (id) => {
+          setMenu(null);
+          setZone((z) => (z === id ? null : id));
+        },
+      );
       const host = map.getContainer();
       const onZoom = () => {
         const z = map.getZoom();
@@ -765,6 +820,13 @@ export function MapView() {
       type: 'FeatureCollection',
       features: features as GeoJSON.Feature[],
     });
+    const zones: GeoJSON.Feature[] = [];
+    for (const h of worldState.hotspots ?? []) {
+      const shape = geo.features.find((f) => (f.properties as Record<string, unknown>)?.ADM0_A3 === h.mapId);
+      if (!shape) continue;
+      zones.push({ ...shape, properties: { id: h.id, own: !byId.has(h.mapId), ...heat(h) } });
+    }
+    (map.getSource('hotzones') as maplibregl.GeoJSONSource | undefined)?.setData(fc(zones));
     const labels: GeoJSON.Feature[] = [];
     for (const [id, c] of changes) {
       const at = COUNTRY_CENTERS[id];
@@ -927,6 +989,10 @@ export function MapView() {
       if (!center) continue;
       icons.push(point(center, { kind: 'label', name: view.name }));
     }
+    // Hot zones with an outline of their own (Gaza) get a name on the map too
+    for (const h of worldState.hotspots ?? []) {
+      if (!playerView.some((v) => v.id === h.mapId)) icons.push(point([h.center[0] - 0.35, h.center[1] - 0.1], { kind: 'label', name: h.name.replace(' Strip', '') }));
+    }
     // Status badges, strike sites, war fronts and refugees as animated HTML markers
     const sig = deriveSignals(worldState, playerView);
     markersRef.current?.sync(
@@ -990,6 +1056,7 @@ export function MapView() {
     <div className="map-container" style={{ position: 'relative', flex: 1 }}>
       <div ref={mapContainer} style={{ position: 'absolute', inset: 0 }} />
       <div className="map-sheen" aria-hidden />
+      {zone && <HotspotCard id={zone} onClose={() => setZone(null)} />}
 
       {/* Layer switcher */}
       <div

@@ -77,6 +77,17 @@ export function effectArrows(
   for (const k of Object.keys(e)) {
     if (k.startsWith('ceasefire:')) out.push({ label: `Ceasefire with ${names(k.split(':')[1])}`, dir: 'up', strength: 3, good: true });
   }
+  for (const [k, v] of Object.entries(e)) {
+    if (!k.startsWith('hot:') || !v) continue;
+    const [, id, what] = k.split(':');
+    const zone = id === 'GAZA' ? 'Gaza' : 'West Bank';
+    if (what === 'war') out.push({ label: v > 0 ? 'Gaza war resumes' : 'Gaza truce', dir: v > 0 ? 'up' : 'down', strength: 3, good: v < 0 });
+    else if (what === 'violence') push(`${zone} violence`, v, 1.5, false);
+    else if (what === 'humanitarian') push(`${zone} hunger`, v, 1.5, false);
+    else if (what === 'aid') push(`${zone} aid`, v, 2.5);
+    else if (what === 'governance') push(`${zone} order`, v, 1.5);
+    else if (what === 'control') push(id === 'GAZA' ? 'Ground held in Gaza' : 'Settlement', v, 1.5);
+  }
   if (e.relationsRivals) push('Rivals', e.relationsRivals, 0.7);
   if (e.mobilization) push('Mobilization', e.mobilization, 3);
   if (e.intel) push('Counter-intel', e.intel, 3);

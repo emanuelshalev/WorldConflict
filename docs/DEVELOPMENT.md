@@ -94,7 +94,7 @@ Add an entry to `TEMPLATES`: `weight(ctx)` (0 = ineligible) and `build(ctx)` ret
 Follow `FlashpointSchema` in `src/core/data-loader.ts`: base `scenarioId`, `playable` sides with roles and difficulty, `setup` (wars with exhaustion, `endWars`, relations, country tweaks), per-side `objectives` (primary + bonus conditions, par, debrief) and `scripted` crises (turn 0 = cold open). Balance with `npm run sim -- --flashpoint <id> --scenario 2026 --countries A,B --policy smart,none,random`.
 
 ### A country (`data/countries/<ISO3>.json`)
-Use the Natural Earth `ADM0_A3` code (Palestine is `PSX`), validate against `CountryProfileSchema`, add it to `TIER1_COUNTRIES`, give it a leader in each scenario and a name pool in `systems/government.ts`.
+Use the Natural Earth `ADM0_A3` code (the West Bank is `PSX`), validate against `CountryProfileSchema`, add it to `TIER1_COUNTRIES`, give it a leader in each scenario and a name pool in `systems/government.ts`.
 
 ---
 

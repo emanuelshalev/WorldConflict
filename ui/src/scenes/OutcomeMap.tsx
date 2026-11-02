@@ -68,7 +68,7 @@ const C = {
 const HOSTILE = new Set<MapEffect>(['strike', 'nuke', 'denounce', 'covert', 'war', 'deploy']);
 const FRIENDLY = new Set<MapEffect>(['alliance', 'court', 'ceasefire', 'withdraw']);
 
-const NAME_FIX: Record<string, string> = { USA: 'United States', PSX: 'Palestine', COD: 'DR Congo', CAF: 'C. African Rep.' };
+const NAME_FIX: Record<string, string> = { USA: 'United States', PSX: 'West Bank', COD: 'DR Congo', CAF: 'C. African Rep.' };
 
 function displayName(geo: WorldGeo, id: string): string {
   const fromGame = countryName(id);
