@@ -1,0 +1,879 @@
+<svg viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice" class="art art-parliament" xmlns="http://www.w3.org/2000/svg" role="img"><style>:root{--font-display:'Geist',system-ui,sans-serif;--font-mono:'Geist Mono',monospace}
+.article-category { display: inline-block; background: rgb(26, 26, 26); color: rgb(248, 244, 232); padding: 4px 12px; font-size: 11px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 15px; }
+.article-byline { display: flex; gap: 20px; font-size: 12px; color: rgb(102, 102, 102); margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
+.article-content { column-count: 2; column-gap: 25px; column-rule: 1px solid rgb(221, 221, 221); }
+@media (max-width: 768px) {
+  .newspaper-body { grid-template-columns: 1fr; }
+  .newspaper-main { border-right-width: medium; border-right-style: none; border-right-color: currentcolor; border-bottom: 1px solid rgb(221, 221, 221); }
+  .article-content { column-count: 1; }
+  .newspaper-title { font-size: 1.8rem; }
+  .main-headline { font-size: 1.5rem; }
+}
+svg.art [class] { animation-fill-mode: backwards; }
+.art-cabinet [class], .art-tv_interview [class], .art-press [class], .art-address [class], .art-exec_order [class], .art-signing [class], .art-summit [class] { transform-box: fill-box; }
+.art-cabinet .cab-pulse { animation: 7s ease-in-out 0s infinite normal none running cabinet-pulse; }
+.art-cabinet .cab-scan { animation: 5s linear 0s infinite normal none running cabinet-scan; transform-origin: center center; }
+.art-cabinet .cab-line { stroke-dasharray: 160; animation: 9s ease-out 0s infinite normal none running cabinet-line; }
+.art-cabinet .cab-bob { animation: 7s ease-in-out 0s infinite normal none running cabinet-bob; transform-origin: center bottom; }
+.art-cabinet .cab-flag { animation: 6s ease-in-out 0s infinite normal none running cabinet-flag; transform-origin: left top; }
+.art-cabinet .cab-blip { animation: 2.4s ease-in-out 0s infinite normal none running cabinet-blip; transform-origin: center center; }
+.art-tv_interview .tv-tally { animation: 1.6s steps(1) 0s infinite normal none running tv_interview-tally; }
+.art-tv_interview .tv-globe { animation: 12s linear 0s infinite normal none running tv_interview-globe; transform-origin: center center; }
+.art-tv_interview .tv-sweep { animation: 11s ease-in-out 0s infinite normal none running tv_interview-sweep; transform-origin: center top; }
+.art-tv_interview .tv-nod { animation: 5s ease-in-out 0s infinite normal none running tv_interview-nod; transform-origin: center bottom; }
+.art-tv_interview .tv-twinkle { animation: 4s ease-in-out 0s infinite normal none running tv_interview-twinkle; }
+.art-tv_interview .tv-crawl { animation: 14s linear 0s infinite normal none running tv_interview-crawl; }
+.art-press .press-flash { opacity: 0; animation: 3.7s ease-out 0s infinite normal none running press-flash; transform-origin: center center; }
+.art-press .press-hand { animation: 4.5s ease-in-out 0s infinite normal none running press-hand; transform-origin: center bottom; }
+.art-press .press-flag { animation: 7s ease-in-out 0s infinite normal none running press-flag; transform-origin: left top; }
+.art-press .press-sway { animation: 6s ease-in-out 0s infinite normal none running press-sway; transform-origin: center bottom; }
+.art-press .press-beam { animation: 8s ease-in-out 0s infinite normal none running press-beam; }
+.art-address .addr-tally { animation: 2s steps(1) 0s infinite normal none running address-tally; }
+.art-address .addr-glint { animation: 9s ease-in-out 0s infinite normal none running address-glint; }
+.art-address .addr-flag { animation: 8s ease-in-out 0s infinite normal none running address-flag; transform-origin: left top; }
+.art-address .addr-breathe { animation: 6s ease-in-out 0s infinite normal none running address-breathe; transform-origin: center bottom; }
+.art-address .addr-scroll { animation: 27s linear 0s infinite normal none running address-scroll; }
+.art-address .addr-city { animation: 5s ease-in-out 0s infinite normal none running address-city; }
+.art-exec_order .exec-arm { transform-box: view-box; transform-origin: 356px 132px; animation: 6.4s linear 0s infinite normal none running exec_order-arm; }
+.art-exec_order .exec-fore { transform-box: view-box; transform-origin: 390px 192px; animation: 6.4s linear 0s infinite normal none running exec_order-fore; }
+.art-exec_order .exec-sign { stroke-dasharray: 90, 120; animation: 6.4s linear 0s infinite normal none running exec_order-sign; }
+.art-exec_order .exec-flash { opacity: 0; animation: 4.3s ease-out 0s infinite normal none running exec_order-flash; transform-origin: center center; }
+.art-exec_order .exec-flag { animation: 7s ease-in-out 0s infinite normal none running exec_order-flag; transform-origin: left top; }
+.art-exec_order .exec-bob { animation: 6s ease-in-out 0s infinite normal none running exec_order-bob; transform-origin: center bottom; }
+.art-signing .sign-arm { transform-box: view-box; animation: 6s linear 0s infinite normal none running signing-arm; }
+.art-signing .sign-fore { transform-box: view-box; animation: 6s linear 0s infinite normal none running signing-fore; }
+.art-signing .sign-ink { stroke-dasharray: 30, 40; animation: 6s linear 0s infinite normal none running signing-ink; }
+.art-signing .sign-flash { opacity: 0; animation: 3.9s ease-out 0s infinite normal none running signing-flash; transform-origin: center center; }
+.art-signing .sign-flag { animation: 7s ease-in-out 0s infinite normal none running signing-flag; transform-origin: left top; }
+.art-signing .sign-bob { animation: 6s ease-in-out 0s infinite normal none running signing-bob; transform-origin: center bottom; }
+.art-signing .sign-glow { animation: 8s ease-in-out 0s infinite normal none running signing-glow; }
+.art-summit .summit-shake { animation: 2.6s ease-in-out 0s infinite normal none running summit-shake; transform-origin: center center; }
+.art-summit .summit-armL, .art-summit .summit-foreL, .art-summit .summit-armR, .art-summit .summit-foreR { transform-box: view-box; animation: 2.6s ease-in-out 0s infinite normal none running summit-armL; }
+.art-summit .summit-armL { transform-origin: 289px 95px; }
+.art-summit .summit-foreL { transform-origin: 298px 132px; animation-name: summit-foreL; }
+.art-summit .summit-armR { transform-origin: 351px 95px; animation-name: summit-armR; }
+.art-summit .summit-foreR { transform-origin: 342px 132px; animation-name: summit-foreR; }
+.art-summit .summit-flash { opacity: 0; animation: 3.3s ease-out 0s infinite normal none running summit-flash; transform-origin: center center; }
+.art-summit .summit-flag { animation: 6s ease-in-out 0s infinite normal none running summit-flag; transform-origin: left top; }
+.art-summit .summit-bob { animation: 5s ease-in-out 0s infinite normal none running summit-bob; transform-origin: center bottom; }
+.art-summit .summit-glow { animation: 9s ease-in-out 0s infinite normal none running summit-glow; }
+@media (prefers-reduced-motion: reduce) {
+  .art-cabinet *, .art-tv_interview *, .art-press *, .art-address *, .art-exec_order *, .art-signing *, .art-summit * { animation: auto ease 0s 1 normal none running none !important; }
+}
+svg.art [class] { animation-fill-mode: backwards; }
+.art-parliament .parl-label, .art-econ_tv .econ-label, .art-election .elec-label, .art-un_vote .unv-label { font-family: var(--font-display); font-weight: 800; }
+.art-parliament .parl-bar { transform-box: fill-box; transform-origin: left center; animation: 9s cubic-bezier(0.3, 0.7, 0.2, 1) 0s infinite normal none running parl-fill; }
+.art-parliament .parl-bar2 { animation-delay: 0.4s; }
+.art-parliament .parl-pip, .art-parliament .parl-vote { animation: 9s steps(1) 0s infinite normal none running parl-blink; }
+.art-parliament .parl-flash { opacity: 0; animation: 7s ease 0s infinite normal none running parl-flash; }
+.art-parliament .parl-shaft { mix-blend-mode: screen; animation: 11s ease-in-out 0s infinite alternate none running parl-shaft; }
+.art-parliament .parl-banner { transform-box: fill-box; transform-origin: center top; animation: 6s ease-in-out 0s infinite alternate none running parl-ripple; }
+.art-parliament .parl-bob { transform-box: fill-box; transform-origin: center bottom; animation: 5s ease-in-out 0s infinite normal none running parl-bob; }
+.art-parliament .parl-scan { animation: 4s steps(2) 0s infinite normal none running parl-scan; }
+@media (prefers-reduced-motion: reduce) {
+  .art-parliament *, .art-econ_tv *, .art-election *, .art-un_vote *, .art-field_visit *, .art-streets *, .art-ceasefire * { animation: auto ease 0s 1 normal none running none !important; }
+}
+.art-parliament .parl-arm { transform-box: fill-box; transform-origin: left bottom; animation: 4s ease-in-out 0s infinite normal none running parl-arm; }
+.art-econ_tv .econ-line { stroke-dasharray: 1; animation: 8s cubic-bezier(0.45, 0.05, 0.3, 1) 0s infinite normal none running econ-draw; filter: drop-shadow(currentcolor 0px 0px 4px); }
+.art-econ_tv .econ-area { animation: 8s ease-in-out 0s infinite normal none running econ-area; }
+.art-econ_tv .econ-dot { animation: 8s steps(1) 0s infinite normal none running econ-dot; }
+.art-econ_tv .econ-ping { transform-box: fill-box; transform-origin: center center; animation: 1.6s ease-out 0s infinite normal none running econ-ping; }
+.art-econ_tv .econ-tick { animation: 14s linear 0s infinite normal none running econ-tick; }
+.art-econ_tv .econ-sweep { animation: 7s ease-in-out 0s infinite normal none running econ-sweep; }
+.art-econ_tv .econ-flicker, .art-econ_tv .econ-rig { animation: 5s steps(3) 0s infinite normal none running econ-flicker; }
+.art-econ_tv .econ-rig { animation-name: econ-rig; }
+.art-econ_tv .econ-head { transform-box: fill-box; transform-origin: center bottom; animation: 6s ease-in-out 0s infinite normal none running econ-head; }
+.art-econ_tv .econ-edge { animation: 4s ease-in-out 0s infinite alternate none running econ-edge; }
+.art-election .elec-seat { transform-box: fill-box; transform-origin: center center; animation: 11s ease-out 0s infinite normal both running elec-seat; }
+.art-election .elec-ballot { transform-box: fill-box; transform-origin: center center; animation: 4.5s cubic-bezier(0.5, 0, 0.8, 0.6) 0s infinite normal none running elec-ballot; }
+.art-election .elec-tile { animation: 6s ease-in-out 0s infinite normal none running elec-tile; }
+.art-election .elec-beam { animation: 9s ease-in-out 0s infinite alternate none running elec-beam; }
+.art-election .elec-ring { transform-box: fill-box; transform-origin: center center; animation: 4s ease-out 0s infinite normal none running elec-ring; }
+.art-election .elec-live { animation: 1.4s steps(2) 0s infinite normal none running elec-live; }
+.art-election .elec-sweep { animation: 6s ease-in-out 0s infinite normal none running elec-sweep; }
+.art-election .elec-arm { transform-box: fill-box; transform-origin: right bottom; animation: 5s ease-in-out 0s infinite normal none running elec-arm; }
+.art-election .elec-confetti { transform-box: fill-box; transform-origin: center center; animation: 7s linear 0s infinite normal none running elec-confetti; }
+.art-un_vote .unv-light { animation: 10s steps(1) 0s infinite normal none running unv-light; }
+.art-un_vote .unv-hand { transform-box: fill-box; transform-origin: left bottom; animation: 7s ease-in-out 0s infinite normal none running unv-hand; }
+.art-un_vote .unv-shaft { mix-blend-mode: screen; animation: 10s ease-in-out 0s infinite alternate none running unv-shaft; }
+.art-un_vote .unv-halo { transform-box: fill-box; transform-origin: center center; animation: 6s ease-in-out 0s infinite alternate none running unv-halo; }
+.art-field_visit .fv-bob { animation: 3.6s ease-in-out 0s infinite normal none running fv-bob; }
+.art-field_visit .fv-phone { opacity: 0.55; animation: 5s ease 0s infinite normal none running fv-phone; }
+.art-field_visit .fv-flag, .art-field_visit .fv-bunt { transform-box: fill-box; transform-origin: left center; animation: 2.8s ease-in-out 0s infinite alternate none running fv-flag; }
+.art-field_visit .fv-bunt { transform-origin: center top; }
+.art-field_visit .fv-mic { transform-box: view-box; transform-origin: 394px 178px; animation: 4s ease-in-out 0s infinite normal none running fv-mic; }
+.art-field_visit .fv-leader { transform-box: fill-box; transform-origin: center bottom; animation: 7s ease-in-out 0s infinite normal none running fv-lean; }
+.art-field_visit .fv-tally { animation: 1.2s steps(2) 0s infinite normal none running fv-tally; }
+.art-field_visit .fv-sun { transform-box: fill-box; transform-origin: center center; animation: 8s ease-in-out 0s infinite alternate none running fv-sun; }
+.art-field_visit .fv-cloud { animation: 14s ease-in-out 0s infinite alternate none running fv-cloud; }
+.art-field_visit .fv-wave { transform-box: fill-box; transform-origin: right bottom; animation: 2.4s ease-in-out 0s infinite normal none running fv-wave; }
+.art-streets .str-bob { animation: 1.8s ease-in-out 0s infinite normal none running str-bob; }
+.art-streets .str-sign { transform-box: fill-box; transform-origin: center bottom; animation: 2.6s ease-in-out 0s infinite normal none running str-sign; }
+.art-streets .str-flare { transform-box: fill-box; transform-origin: center center; mix-blend-mode: screen; animation: 0.9s steps(3) 0s infinite normal none running str-flare; }
+.art-streets .str-candle { transform-box: fill-box; transform-origin: center center; mix-blend-mode: screen; animation: 2.2s ease-in-out 0s infinite alternate none running str-candle; }
+.art-streets .str-smoke { transform-box: fill-box; transform-origin: center center; animation: 13s ease-in-out 0s infinite normal none running str-smoke; }
+.art-streets .str-red { animation: 0.8s steps(1) 0s infinite normal none running str-red; }
+.art-streets .str-blue { animation: 0.8s steps(1) -0.4s infinite normal none running str-red; }
+.art-streets .str-flag { transform-box: fill-box; transform-origin: left center; animation: 2.4s ease-in-out 0s infinite alternate none running str-flag; }
+.art-streets .str-win { animation: 9s steps(1) 0s infinite normal none running str-win; }
+.art-ceasefire .cf-armL, .art-ceasefire .cf-foreL, .art-ceasefire .cf-armR, .art-ceasefire .cf-foreR { transform-box: view-box; animation: 5s ease-in-out 0s infinite normal none running cf-armL; }
+.art-ceasefire .cf-armL { transform-origin: 226px 180px; }
+.art-ceasefire .cf-foreL { transform-origin: 270px 196px; animation-name: cf-foreL; }
+.art-ceasefire .cf-armR { transform-origin: 414px 180px; animation-name: cf-armR; }
+.art-ceasefire .cf-foreR { transform-origin: 370px 196px; animation-name: cf-foreR; }
+.art-ceasefire .cf-spark { transform-box: fill-box; transform-origin: center center; animation: 5s ease-in-out 0s infinite normal none running cf-spark; }
+.art-ceasefire .cf-shaft { mix-blend-mode: screen; animation: 12s ease-in-out 0s infinite alternate none running cf-shaft; }
+.art-ceasefire .cf-bloom { animation: 9s ease-in-out 0s infinite alternate none running cf-bloom; }
+.art-ceasefire .cf-flag { transform-box: fill-box; transform-origin: left center; animation: 3s ease-in-out 0s infinite alternate none running cf-flag; }
+.art-ceasefire .cf-nod { transform-box: fill-box; transform-origin: center bottom; animation: 6s ease-in-out 0s infinite normal none running cf-nod; }
+svg.art [class] { animation-fill-mode: backwards; }
+.art-war_room [class^="wr-"], .art-deployment [class^="dp-"], .art-airstrike [class^="as-"], .art-nuclear [class^="nu-"], .art-covert [class^="cv-"], .art-disaster [class^="ds-"] { transform-box: fill-box; transform-origin: center center; }
+.art-war_room .wr-front { animation: 6s linear 0s infinite normal none running war_room-dash; }
+.art-war_room .wr-ping { animation: 3s ease-out 0s infinite normal none running war_room-ping; }
+.art-war_room .wr-scan { animation: 8s linear 0s infinite normal none running war_room-scan; transform-box: view-box; }
+.art-war_room .wr-sweep { animation: 4s linear 0s infinite normal none running war_room-sweep; transform-origin: 67px 91px; transform-box: view-box; }
+.art-war_room .wr-flicker { animation: 7s steps(1) 0s infinite normal none running war_room-flicker; }
+.art-war_room .wr-bar { animation: 5s ease-in-out 0s infinite normal none running war_room-bar; transform-origin: left center; }
+.art-war_room .wr-trace { stroke-dasharray: 120; animation: 6s ease-in-out 0s infinite normal none running war_room-trace; }
+.art-war_room .wr-tableglow { animation: 6s ease-in-out 0s infinite normal none running war_room-breathe; }
+.art-war_room .wr-flag { animation: 4s ease-in-out 0s infinite normal none running war_room-flag; transform-origin: left center; }
+.art-war_room .wr-alert { animation: 4s ease-in-out 0s infinite normal none running war_room-alert; }
+.art-war_room .wr-beacon { animation: 4s ease-in-out 0s infinite normal none running war_room-alert; }
+.art-deployment .dp-flag { animation: 3s ease-in-out 0s infinite normal none running deployment-flag; transform-origin: left center; }
+.art-deployment .dp-dust { animation: 12s ease-in-out 0s infinite normal none running deployment-dust; }
+.art-deployment .dp-dust2 { animation: 8s ease-in-out 0s infinite reverse none running deployment-dust; }
+.art-deployment .dp-lane { animation: 2.6s linear 0s infinite normal none running deployment-lane; }
+.art-deployment .dp-heli { animation: 6s ease-in-out 0s infinite normal none running deployment-heli; }
+.art-deployment .dp-rotor { animation: 0.25s linear 0s infinite normal none running deployment-rotor; }
+.art-deployment .dp-smoke { animation: 10s ease-in-out 0s infinite normal none running deployment-smoke; }
+.art-airstrike .as-jet1 { animation: 7s ease-in-out 0s infinite normal none running airstrike-fly; }
+.art-airstrike .as-jet2 { animation: 8s ease-in-out 0s infinite normal none running airstrike-fly; }
+.art-airstrike .as-jet3 { animation: 9s ease-in-out 0s infinite normal none running airstrike-fly; }
+.art-airstrike .as-burner { animation: 0.6s ease-in-out 0s infinite alternate none running airstrike-burn; transform-origin: right center; }
+.art-airstrike .as-nav { animation: 1.4s steps(1) 0s infinite normal none running airstrike-blink; }
+.art-airstrike .as-blast { animation: 5s ease-out 0s infinite normal none running airstrike-blast; }
+.art-airstrike .as-ring { animation: 5s ease-out 0s infinite normal none running airstrike-ring; }
+.art-airstrike .as-plume { animation: 12s ease-in-out 0s infinite normal none running airstrike-plume; transform-origin: center bottom; }
+.art-airstrike .as-plume2 { animation-duration: 9s; }
+.art-airstrike .as-tracer { animation: 1.2s linear 0s infinite normal none running airstrike-tracer; }
+.art-airstrike .as-shimmer { animation: 4s ease-in-out 0s infinite normal none running airstrike-shimmer; }
+.art-airstrike .as-twinkle { animation: 5s ease-in-out 0s infinite normal none running airstrike-blink; }
+.art-airstrike .as-reticle { animation: 10s linear 0s infinite normal none running airstrike-reticle; }
+.art-airstrike .as-hud { animation: 6s steps(1) 0s infinite normal none running airstrike-hud; }
+.art-airstrike .as-scan { animation: 6s linear 0s infinite normal none running airstrike-scan; transform-box: view-box; }
+.art-nuclear .nu-led { animation: 3s steps(1) 0s infinite normal none running nuclear-led; }
+.art-nuclear .nu-trefoil { animation: 6s ease-in-out 0s infinite normal none running nuclear-glow; }
+.art-nuclear .nu-sweep { animation: 4s linear 0s infinite normal none running nuclear-sweep; transform-box: view-box; transform-origin: 0px 0px; }
+.art-nuclear .nu-alarm { animation: 4s ease-in-out 0s infinite normal none running nuclear-alarm; }
+.art-nuclear .nu-klaxon { animation: 2s steps(1) 0s infinite normal none running nuclear-alarm-dot; }
+.art-covert .cv-pan { animation: 14s ease-in-out 0s infinite normal none running covert-pan; }
+.art-covert .cv-reticle { animation: 5s ease-in-out 0s infinite normal none running covert-lock; }
+.art-covert .cv-arc { stroke-dasharray: 3, 3; animation: 4s linear 0s infinite normal none running covert-arc; }
+.art-covert .cv-blip { animation: 2.5s ease-in-out 0s infinite normal none running covert-blip; }
+.art-covert .cv-rec { animation: 1.6s steps(1) 0s infinite normal none running covert-rec; }
+.art-covert .cv-cursor { animation: 6s steps(5) 0s infinite normal none running covert-cursor; transform-box: view-box; }
+.art-covert .cv-wave { stroke-dasharray: 400; animation: 5s linear 0s infinite normal none running covert-wave; }
+.art-covert .cv-flick { animation: 7s steps(1) 0s infinite normal none running covert-flick; }
+.art-covert .cv-alert { animation: 4s ease-in-out 0s infinite normal none running covert-alert; }
+.art-disaster .ds-strobeR { animation: 1.2s steps(1) 0s infinite normal none running disaster-strobe; }
+.art-disaster .ds-strobeB { animation: 1.2s steps(1) -0.6s infinite normal none running disaster-strobe; }
+.art-disaster .ds-beam { animation: 10s ease-in-out 0s infinite normal none running disaster-beam; transform-box: view-box; transform-origin: 0px 0px; }
+.art-disaster .ds-rotor { animation: 0.3s linear 0s infinite normal none running disaster-rotor; }
+.art-disaster .ds-nav { animation: 1.6s steps(1) 0s infinite normal none running disaster-strobe; }
+.art-disaster .ds-boat { animation: 5s ease-in-out 0s infinite normal none running disaster-bob; }
+.art-disaster .ds-ripple { animation: 4s ease-in-out 0s infinite normal none running disaster-ripple; }
+.art-disaster .ds-rain { animation: 0.7s linear 0s infinite normal none running disaster-rain; transform-box: view-box; transform-origin: 0px 0px; }
+.art-disaster .ds-smoke { animation: 12s ease-in-out 0s infinite normal none running disaster-smoke; }
+.art-disaster .ds-cloud { animation: 14s ease-in-out 0s infinite normal none running disaster-cloud; }
+.art-disaster .ds-alert { animation: 4s ease-in-out 0s infinite normal none running disaster-alert; }
+@media (prefers-reduced-motion: reduce) {
+  .art-war_room *, .art-deployment *, .art-airstrike *, .art-nuclear *, .art-covert *, .art-disaster * { animation: auto ease 0s 1 normal none running none !important; }
+}
+@keyframes cabinet-pulse { 
+  0%, 100% { opacity: 0.8; }
+  45% { opacity: 1; }
+  52% { opacity: 0.9; }
+}
+@keyframes cabinet-scan { 
+  0% { transform: translateY(-30px); }
+  100% { transform: translateY(90px); }
+}
+@keyframes cabinet-line { 
+  0% { stroke-dashoffset: 160; }
+  55%, 100% { stroke-dashoffset: 0; }
+}
+@keyframes cabinet-bob { 
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-1.2px) rotate(0.6deg); }
+}
+@keyframes cabinet-flag { 
+  0%, 100% { transform: skewY(0deg) scaleX(1); }
+  50% { transform: skewY(2deg) scaleX(0.97); }
+}
+@keyframes cabinet-blip { 
+  0%, 100% { opacity: 0.3; transform: scale(0.7); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+@keyframes tv_interview-tally { 
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+@keyframes tv_interview-globe { 
+  0% { transform: scaleX(1); }
+  25% { transform: scaleX(0.15); }
+  50% { transform: scaleX(-1); }
+  75% { transform: scaleX(-0.15); }
+  100% { transform: scaleX(1); }
+}
+@keyframes tv_interview-sweep { 
+  0%, 100% { transform: rotate(-7deg); }
+  50% { transform: rotate(7deg); }
+}
+@keyframes tv_interview-nod { 
+  0%, 100% { transform: rotate(0deg); }
+  40% { transform: rotate(2.5deg); }
+  60% { transform: rotate(-1deg); }
+}
+@keyframes tv_interview-twinkle { 
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+@keyframes tv_interview-crawl { 
+  0% { transform: translateX(0px); }
+  100% { transform: translateX(-195px); }
+}
+@keyframes press-flash { 
+  0%, 100% { opacity: 0; transform: scale(0.4); }
+  3% { opacity: 1; transform: scale(1.15); }
+  9% { opacity: 0; transform: scale(0.9); }
+}
+@keyframes press-hand { 
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-5px) rotate(4deg); }
+}
+@keyframes press-flag { 
+  0%, 100% { transform: skewY(0deg) scaleX(1); }
+  50% { transform: skewY(1.6deg) scaleX(0.97); }
+}
+@keyframes press-sway { 
+  0%, 100% { transform: rotate(0deg); }
+  30% { transform: rotate(1.4deg); }
+  70% { transform: rotate(-1.2deg); }
+}
+@keyframes press-beam { 
+  0%, 100% { opacity: 0.75; }
+  50% { opacity: 1; }
+}
+@keyframes address-tally { 
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+@keyframes address-glint { 
+  0%, 100% { transform: translateX(-30px); opacity: 0; }
+  40% { opacity: 0.9; }
+  60% { transform: translateX(40px); opacity: 0; }
+}
+@keyframes address-flag { 
+  0%, 100% { transform: skewY(0deg) scaleX(1); }
+  50% { transform: skewY(1.5deg) scaleX(0.97); }
+}
+@keyframes address-breathe { 
+  0%, 100% { transform: scaleY(1) rotate(0deg); }
+  50% { transform: scaleY(1.012) rotate(0.5deg); }
+}
+@keyframes address-scroll { 
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-66px); }
+}
+@keyframes address-city { 
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+@keyframes exec_order-arm { 
+  0% { transform: rotate(2.74deg); }
+  8% { transform: rotate(2.74deg); }
+  11% { transform: rotate(-3.32deg); }
+  14% { transform: rotate(-6.69deg); }
+  17% { transform: rotate(-4.06deg); }
+  20% { transform: rotate(-2.08deg); }
+  23% { transform: rotate(-7.59deg); }
+  26% { transform: rotate(-13.7deg); }
+  29% { transform: rotate(-16.64deg); }
+  32% { transform: rotate(-12.98deg); }
+  35% { transform: rotate(-7.52deg); }
+  38% { transform: rotate(-7.39deg); }
+  41% { transform: rotate(-14.12deg); }
+  44% { transform: rotate(-20.35deg); }
+  47% { transform: rotate(-20.82deg); }
+  50% { transform: rotate(-15.35deg); }
+  85% { transform: rotate(-15.35deg); }
+  90% { transform: rotate(-25.39deg); }
+  95% { transform: rotate(-15.95deg); }
+  100% { transform: rotate(2.74deg); }
+}
+@keyframes exec_order-fore { 
+  0% { transform: rotate(5.15deg); }
+  8% { transform: rotate(5.15deg); }
+  11% { transform: rotate(14.33deg); }
+  14% { transform: rotate(15.24deg); }
+  17% { transform: rotate(6.47deg); }
+  20% { transform: rotate(-1.76deg); }
+  23% { transform: rotate(4.25deg); }
+  26% { transform: rotate(12.49deg); }
+  29% { transform: rotate(12.44deg); }
+  32% { transform: rotate(2.55deg); }
+  35% { transform: rotate(-9.94deg); }
+  38% { transform: rotate(-15.04deg); }
+  41% { transform: rotate(-6.26deg); }
+  44% { transform: rotate(1.66deg); }
+  47% { transform: rotate(-2.97deg); }
+  50% { transform: rotate(-16.3deg); }
+  85% { transform: rotate(-16.3deg); }
+  90% { transform: rotate(17.58deg); }
+  95% { transform: rotate(21.92deg); }
+  100% { transform: rotate(5.15deg); }
+}
+@keyframes exec_order-sign { 
+  0%, 8% { stroke-dashoffset: 92; opacity: 1; }
+  50%, 85% { stroke-dashoffset: 0; opacity: 1; }
+  93% { stroke-dashoffset: 0; opacity: 0; }
+  94%, 100% { stroke-dashoffset: 92; opacity: 0; }
+}
+@keyframes exec_order-flash { 
+  0%, 100% { opacity: 0; transform: scale(0.4); }
+  3% { opacity: 1; transform: scale(1.1); }
+  10% { opacity: 0; }
+}
+@keyframes exec_order-flag { 
+  0%, 100% { transform: skewY(0deg) scaleX(1); }
+  50% { transform: skewY(1.5deg) scaleX(0.97); }
+}
+@keyframes exec_order-bob { 
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-1.2px) rotate(0.5deg); }
+}
+@keyframes signing-arm { 
+  0% { transform: rotate(1.21deg); }
+  10% { transform: rotate(1.21deg); }
+  15% { transform: rotate(-3.83deg); }
+  20% { transform: rotate(-8.8deg); }
+  25% { transform: rotate(-10.44deg); }
+  30% { transform: rotate(-9.67deg); }
+  35% { transform: rotate(-10deg); }
+  40% { transform: rotate(-14.05deg); }
+  45% { transform: rotate(-19.29deg); }
+  50% { transform: rotate(-24.46deg); }
+  85% { transform: rotate(-24.46deg); }
+  92% { transform: rotate(-19.97deg); }
+  100% { transform: rotate(1.21deg); }
+}
+@keyframes signing-fore { 
+  0% { transform: rotate(10.91deg); }
+  10% { transform: rotate(10.91deg); }
+  15% { transform: rotate(18.34deg); }
+  20% { transform: rotate(23.14deg); }
+  25% { transform: rotate(20.92deg); }
+  30% { transform: rotate(15.75deg); }
+  35% { transform: rotate(11.88deg); }
+  40% { transform: rotate(14.24deg); }
+  45% { transform: rotate(19.88deg); }
+  50% { transform: rotate(25.92deg); }
+  85% { transform: rotate(25.92deg); }
+  92% { transform: rotate(32.84deg); }
+  100% { transform: rotate(10.91deg); }
+}
+@keyframes signing-ink { 
+  0%, 10% { stroke-dashoffset: 31; opacity: 1; }
+  50%, 85% { stroke-dashoffset: 0; opacity: 1; }
+  92% { stroke-dashoffset: 0; opacity: 0; }
+  93%, 100% { stroke-dashoffset: 31; opacity: 0; }
+}
+@keyframes signing-flash { 
+  0%, 100% { opacity: 0; transform: scale(0.4); }
+  3% { opacity: 1; transform: scale(1.15); }
+  9% { opacity: 0; }
+}
+@keyframes signing-flag { 
+  0%, 100% { transform: skewY(0deg) scaleX(1); }
+  50% { transform: skewY(1.6deg) scaleX(0.97); }
+}
+@keyframes signing-bob { 
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-1.2px) rotate(0.6deg); }
+}
+@keyframes signing-glow { 
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+@keyframes summit-shake { 
+  0%, 100% { transform: translateY(0px); }
+  25% { transform: translateY(-3px); }
+  50% { transform: translateY(1.5px); }
+  75% { transform: translateY(-2px); }
+}
+@keyframes summit-flash { 
+  0%, 100% { opacity: 0; transform: scale(0.4); }
+  3% { opacity: 1; transform: scale(1.15); }
+  9% { opacity: 0; }
+}
+@keyframes summit-flag { 
+  0%, 100% { transform: skewY(0deg) scaleX(1); }
+  50% { transform: skewY(2deg) scaleX(0.96); }
+}
+@keyframes summit-bob { 
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(2deg); }
+}
+@keyframes summit-armL { 
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-1.33deg); }
+  50% { transform: rotate(0.4deg); }
+  75% { transform: rotate(-0.81deg); }
+}
+@keyframes summit-foreL { 
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-7.73deg); }
+  50% { transform: rotate(4.14deg); }
+  75% { transform: rotate(-5.23deg); }
+}
+@keyframes summit-armR { 
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(1.33deg); }
+  50% { transform: rotate(-0.4deg); }
+  75% { transform: rotate(0.81deg); }
+}
+@keyframes summit-foreR { 
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(7.73deg); }
+  50% { transform: rotate(-4.14deg); }
+  75% { transform: rotate(5.23deg); }
+}
+@keyframes summit-glow { 
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+@keyframes parl-fill { 
+  0% { transform: scaleX(0.02); }
+  45%, 92% { transform: scaleX(1); }
+  100% { transform: scaleX(0.02); }
+}
+@keyframes parl-blink { 
+  0% { opacity: 0.15; }
+  12%, 94% { opacity: 1; }
+}
+@keyframes parl-flash { 
+  0%, 90%, 100% { opacity: 0; }
+  92% { opacity: 1; }
+  95% { opacity: 0.2; }
+}
+@keyframes parl-shaft { 
+  0% { opacity: 0.55; }
+  100% { opacity: 1; }
+}
+@keyframes parl-ripple { 
+  0% { transform: skewY(0deg) scaleX(1); }
+  100% { transform: skewY(1.5deg) scaleX(0.96); }
+}
+@keyframes parl-bob { 
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-1.5px) rotate(2deg); }
+}
+@keyframes parl-scan { 
+  0%, 100% { opacity: 0.03; }
+  50% { opacity: 0.08; }
+}
+@keyframes parl-arm { 
+  0%, 100% { transform: rotate(0deg); }
+  40% { transform: rotate(-14deg); }
+  60% { transform: rotate(6deg); }
+}
+@keyframes econ-draw { 
+  0% { stroke-dashoffset: 1; }
+  60%, 94% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 1; }
+}
+@keyframes econ-area { 
+  0%, 20% { opacity: 0; }
+  62%, 92% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes econ-dot { 
+  0% { opacity: 0; }
+  60%, 94% { opacity: 1; }
+}
+@keyframes econ-ping { 
+  0% { transform: scale(0.6); opacity: 0.5; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+@keyframes econ-tick { 
+  0% { transform: translateX(0px); }
+  100% { transform: translateX(-560px); }
+}
+@keyframes econ-sweep { 
+  0% { transform: translateX(-100px); }
+  60%, 100% { transform: translateX(560px); }
+}
+@keyframes econ-flicker { 
+  0%, 100% { opacity: 0.05; }
+  33% { opacity: 0.12; }
+  66% { opacity: 0.02; }
+}
+@keyframes econ-rig { 
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+@keyframes econ-head { 
+  0%, 100% { transform: rotate(0deg); }
+  30% { transform: rotate(4deg); }
+  70% { transform: rotate(-2deg); }
+}
+@keyframes econ-edge { 
+  0% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+@keyframes elec-seat { 
+  0% { opacity: 0.22; transform: scale(0.6); }
+  4% { opacity: 1; transform: scale(1.35); }
+  8%, 90% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0.22; transform: scale(0.6); }
+}
+@keyframes elec-ballot { 
+  0% { transform: translateY(-50px) rotate(-6deg); opacity: 0; }
+  15% { opacity: 1; }
+  70% { transform: translateY(32px) rotate(0deg); opacity: 1; }
+  78%, 100% { transform: translateY(46px); opacity: 0; }
+}
+@keyframes elec-tile { 
+  0%, 100% { opacity: 0.09; }
+  50% { opacity: 0.2; }
+}
+@keyframes elec-beam { 
+  0% { opacity: 0.03; }
+  100% { opacity: 0.1; }
+}
+@keyframes elec-ring { 
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+@keyframes elec-live { 
+  50% { opacity: 0.2; }
+}
+@keyframes elec-sweep { 
+  0% { transform: translateX(-70px); }
+  60%, 100% { transform: translateX(300px); }
+}
+@keyframes elec-arm { 
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(7deg); }
+}
+@keyframes elec-confetti { 
+  0% { transform: translateY(0px) rotate(0deg); }
+  100% { transform: translateY(380px) rotate(540deg); }
+}
+@keyframes unv-light { 
+  0% { opacity: 0.1; }
+  6%, 94% { opacity: 1; }
+}
+@keyframes unv-hand { 
+  0%, 8% { transform: rotate(70deg); opacity: 0; }
+  18%, 86% { transform: rotate(0deg); opacity: 1; }
+  92%, 100% { transform: rotate(70deg); opacity: 0; }
+}
+@keyframes unv-shaft { 
+  0% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+@keyframes unv-halo { 
+  0% { transform: scale(0.94); opacity: 0.12; }
+  100% { transform: scale(1.06); opacity: 0.26; }
+}
+@keyframes fv-bob { 
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-2px); }
+}
+@keyframes fv-phone { 
+  0%, 86%, 100% { opacity: 0.55; fill: rgb(207, 230, 255); }
+  88% { opacity: 1; fill: rgb(255, 255, 255); }
+  90% { opacity: 0.7; }
+}
+@keyframes fv-flag { 
+  0% { transform: skewY(-4deg) scaleX(1); }
+  100% { transform: skewY(4deg) scaleX(0.92); }
+}
+@keyframes fv-mic { 
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-2.5deg); }
+}
+@keyframes fv-lean { 
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(0.8deg); }
+}
+@keyframes fv-tally { 
+  50% { opacity: 0.25; }
+}
+@keyframes fv-sun { 
+  0% { transform: scale(0.96); opacity: 0.85; }
+  100% { transform: scale(1.05); opacity: 1; }
+}
+@keyframes fv-cloud { 
+  0% { transform: translateX(-20px); }
+  100% { transform: translateX(20px); }
+}
+@keyframes fv-wave { 
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-9deg); }
+}
+@keyframes str-bob { 
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-2.5px); }
+}
+@keyframes str-sign { 
+  0%, 100% { transform: rotate(-3deg) translateY(0px); }
+  50% { transform: rotate(3deg) translateY(-3px); }
+}
+@keyframes str-flare { 
+  0%, 100% { opacity: 1; transform: scale(1); }
+  33% { opacity: 0.75; transform: scale(0.88); }
+  66% { opacity: 0.92; transform: scale(1.06); }
+}
+@keyframes str-candle { 
+  0% { opacity: 0.75; transform: scale(0.92); }
+  100% { opacity: 1; transform: scale(1.08); }
+}
+@keyframes str-smoke { 
+  0% { transform: translate(-30px, 10px) scale(0.85); opacity: 0.4; }
+  50% { transform: translate(10px, -14px) scale(1.12); opacity: 0.9; }
+  100% { transform: translate(-30px, 10px) scale(0.85); opacity: 0.4; }
+}
+@keyframes str-red { 
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+}
+@keyframes str-flag { 
+  0% { transform: skewY(-5deg) scaleX(1); }
+  100% { transform: skewY(4deg) scaleX(0.9); }
+}
+@keyframes str-win { 
+  0%, 70% { opacity: 0.8; }
+  71%, 100% { opacity: 0.3; }
+}
+@keyframes cf-armL { 
+  0%, 100% { transform: rotate(17.3deg); }
+  55%, 75% { transform: rotate(0deg); }
+}
+@keyframes cf-foreL { 
+  0%, 100% { transform: rotate(-32.9deg); }
+  55%, 75% { transform: rotate(0deg); }
+}
+@keyframes cf-armR { 
+  0%, 100% { transform: rotate(-17.3deg); }
+  55%, 75% { transform: rotate(0deg); }
+}
+@keyframes cf-foreR { 
+  0%, 100% { transform: rotate(32.9deg); }
+  55%, 75% { transform: rotate(0deg); }
+}
+@keyframes cf-spark { 
+  0%, 45%, 100% { transform: scale(0.4); opacity: 0; }
+  62% { transform: scale(1.4); opacity: 0.35; }
+}
+@keyframes cf-shaft { 
+  0% { opacity: 0.6; }
+  100% { opacity: 1; }
+}
+@keyframes cf-bloom { 
+  0% { opacity: 0.8; }
+  100% { opacity: 1; }
+}
+@keyframes cf-flag { 
+  0% { transform: skewY(-3deg); }
+  100% { transform: skewY(3deg) scaleX(0.92); }
+}
+@keyframes cf-nod { 
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(3deg); }
+}
+@keyframes war_room-dash { 
+  100% { stroke-dashoffset: -66; }
+}
+@keyframes war_room-ping { 
+  0% { transform: scale(0.3); opacity: 1; }
+  80%, 100% { transform: scale(1.8); opacity: 0; }
+}
+@keyframes war_room-scan { 
+  0% { transform: translateX(-40px); }
+  100% { transform: translateX(380px); }
+}
+@keyframes war_room-sweep { 
+  100% { transform: rotate(360deg); }
+}
+@keyframes war_room-flicker { 
+  0%, 100% { opacity: 1; }
+  46% { opacity: 0.7; }
+  48% { opacity: 1; }
+  71% { opacity: 0.85; }
+  72% { opacity: 1; }
+}
+@keyframes war_room-bar { 
+  50% { transform: scaleX(0.6); }
+}
+@keyframes war_room-trace { 
+  0% { stroke-dashoffset: 120; }
+  60%, 100% { stroke-dashoffset: 0; }
+}
+@keyframes war_room-breathe { 
+  50% { opacity: 0.08; }
+}
+@keyframes war_room-flag { 
+  50% { transform: skewY(6deg) scaleX(0.94); }
+}
+@keyframes war_room-alert { 
+  0%, 50%, 100% { opacity: 0.3; }
+  25%, 75% { opacity: 1; }
+}
+@keyframes deployment-flag { 
+  0%, 100% { transform: skewY(0deg) scaleX(1); }
+  50% { transform: skewY(-7deg) scaleX(0.92); }
+}
+@keyframes deployment-dust { 
+  0%, 100% { transform: translateX(0px) scale(1); opacity: 0.9; }
+  50% { transform: translateX(26px) scale(1.12); opacity: 0.65; }
+}
+@keyframes deployment-lane { 
+  100% { stroke-dashoffset: 52; }
+}
+@keyframes deployment-heli { 
+  0%, 100% { transform: translate(0px, 0px) rotate(-3deg); }
+  50% { transform: translate(14px, -5px) rotate(-6deg); }
+}
+@keyframes deployment-rotor { 
+  50% { transform: scaleX(0.35); }
+}
+@keyframes deployment-smoke { 
+  50% { transform: translate(-12px, -10px) scale(1.15); }
+}
+@keyframes airstrike-fly { 
+  0%, 100% { transform: translate(0px, 0px); }
+  50% { transform: translate(18px, -4px); }
+}
+@keyframes airstrike-burn { 
+  100% { transform: scaleX(1.35); opacity: 0.8; }
+}
+@keyframes airstrike-blink { 
+  50% { opacity: 0.1; }
+}
+@keyframes airstrike-blast { 
+  0% { transform: scale(0.2); opacity: 0; }
+  6% { transform: scale(1.1); opacity: 1; }
+  40% { transform: scale(1); opacity: 0.75; }
+  75% { transform: scale(0.9); opacity: 0.45; }
+  100% { transform: scale(0.85); opacity: 0; }
+}
+@keyframes airstrike-ring { 
+  0% { transform: scale(0.3); opacity: 0; }
+  6% { opacity: 0.9; }
+  30%, 100% { transform: scale(3); opacity: 0; }
+}
+@keyframes airstrike-plume { 
+  50% { transform: translateX(-8px) scaleY(1.08) skewX(-4deg); }
+}
+@keyframes airstrike-tracer { 
+  100% { stroke-dashoffset: -24; }
+}
+@keyframes airstrike-shimmer { 
+  50% { opacity: 0.55; transform: scaleX(1.06); }
+}
+@keyframes airstrike-reticle { 
+  100% { transform: rotate(360deg); }
+}
+@keyframes airstrike-hud { 
+  0%, 100% { opacity: 0.75; }
+  62% { opacity: 0.5; }
+  63% { opacity: 0.75; }
+}
+@keyframes airstrike-scan { 
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(360px); }
+}
+@keyframes nuclear-led { 
+  50% { opacity: 0.35; }
+}
+@keyframes nuclear-glow { 
+  50% { opacity: 0.8; }
+}
+@keyframes nuclear-sweep { 
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+@keyframes nuclear-alarm { 
+  0%, 50%, 100% { opacity: 0.04; }
+  25%, 75% { opacity: 0.2; }
+}
+@keyframes nuclear-alarm-dot { 
+  50% { opacity: 0.3; }
+}
+@keyframes covert-pan { 
+  0%, 100% { transform: translate(0px, 0px); }
+  50% { transform: translate(-14px, 6px); }
+}
+@keyframes covert-lock { 
+  0% { transform: scale(1.5); opacity: 0; }
+  20%, 80% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+@keyframes covert-arc { 
+  100% { stroke-dashoffset: -36; }
+}
+@keyframes covert-blip { 
+  50% { transform: scale(1.6); opacity: 0.4; }
+}
+@keyframes covert-rec { 
+  50% { opacity: 0; }
+}
+@keyframes covert-cursor { 
+  100% { transform: translateY(50px); }
+}
+@keyframes covert-wave { 
+  0% { stroke-dashoffset: 400; }
+  100% { stroke-dashoffset: 0; }
+}
+@keyframes covert-flick { 
+  0%, 100% { opacity: 1; }
+  33% { opacity: 0.7; }
+  34% { opacity: 1; }
+  80% { opacity: 0.85; }
+}
+@keyframes covert-alert { 
+  50% { opacity: 0.22; }
+}
+@keyframes disaster-strobe { 
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.15; }
+}
+@keyframes disaster-beam { 
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-9deg); }
+}
+@keyframes disaster-rotor { 
+  50% { transform: scaleX(0.35); }
+}
+@keyframes disaster-bob { 
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(2px) rotate(-1.2deg); }
+}
+@keyframes disaster-ripple { 
+  50% { transform: translateX(8px); opacity: 0.4; }
+}
+@keyframes disaster-rain { 
+  0% { transform: translate(0px, 0px); }
+  100% { transform: translate(0px, 48px); }
+}
+@keyframes disaster-smoke { 
+  50% { transform: translate(-16px, -8px) scale(1.15); opacity: 0.5; }
+}
+@keyframes disaster-cloud { 
+  50% { transform: translateX(20px); }
+}
+@keyframes disaster-alert { 
+  50% { opacity: 0.18; }
+}</style><defs><linearGradient id="parl-wall-r0" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b1a10"></stop><stop offset="0.55" stop-color="#3a2416"></stop><stop offset="1" stop-color="#140c08"></stop></linearGradient><radialGradient id="parl-key-r0" cx="0.5" cy="0.28" r="0.6"><stop offset="0" stop-color="#f2c28a" stop-opacity="0.55"></stop><stop offset="0.5" stop-color="#f2c28a" stop-opacity="0.12"></stop><stop offset="1" stop-color="#f2c28a" stop-opacity="0"></stop></radialGradient><linearGradient id="parl-shaft-r0" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe2b0" stop-opacity="0.32"></stop><stop offset="1" stop-color="#ffe2b0" stop-opacity="0"></stop></linearGradient><linearGradient id="parl-sil-r0" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2220"></stop><stop offset="1" stop-color="#0d0a09"></stop></linearGradient><linearGradient id="parl-bench-r0" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7a4a28"></stop><stop offset="1" stop-color="#3a2112"></stop></linearGradient><linearGradient id="parl-leather-r0" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5d1f1c"></stop><stop offset="1" stop-color="#2a0d0c"></stop></linearGradient><linearGradient id="parl-screen-r0" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0f1724"></stop><stop offset="1" stop-color="#070b12"></stop></linearGradient></defs><rect width="640" height="360" fill="url(#parl-wall-r0)"></rect><g><rect x="4" y="30" width="32" height="150" rx="2" fill="#4a2e1b" opacity="0.45"></rect><rect x="4" y="30" width="2" height="150" fill="#c58a52" opacity="0.18"></rect></g><g><rect x="44" y="30" width="32" height="150" rx="2" fill="#4a2e1b" opacity="0.45"></rect><rect x="44" y="30" width="2" height="150" fill="#c58a52" opacity="0.18"></rect></g><g><rect x="84" y="30" width="32" height="150" rx="2" fill="#4a2e1b" opacity="0.45"></rect><rect x="84" y="30" width="2" height="150" fill="#c58a52" opacity="0.18"></rect></g><g><rect x="124" y="30" width="32" height="150" rx="2" fill="#4a2e1b" opacity="0.45"></rect><rect x="124" y="30" width="2" height="150" fill="#c58a52" opacity="0.18"></rect></g><g><rect x="164" y="30" width="32" height="150" rx="2" fill="#4a2e1b" opacity="0.45"></rect><rect x="164" y="30" width="2" height="150" fill="#c58a52" opacity="0.18"></rect></g><g><rect x="204" y="30" width="32" height="150" rx="2" fill="#4a2e1b" opacity="0.45"></rect><rect x="204" y="30" width="2" height="150" fill="#c58a52" opacity="0.18"></rect></g><g><rect x="244" y="30" width="32" height="150" rx="2" fill="#4a2e1b" opacity="0.45"></rect><rect x="244" y="30" width="2" height="150" fill="#c58a52" opacity="0.18"></rect></g><g><rect x="284" y="30" width="32" height="150" rx="2" fill="#4a2e1b" opacity="0.45"></rect><rect x="284" y="30" width="2" height="150" fill="#c58a52" opacity="0.18"></rect></g><g><rect x="324" y="30" width="32" height="150" rx="2" fill="#4a2e1b" opacity="0.45"></rect><rect x="324" y="30" width="2" height="150" fill="#c58a52" opacity="0.18"></rect></g><g><rect x="364" y="30" width="32" height="150" rx="2" fill="#4a2e1b" opacity="0.45"></rect><rect x="364" y="30" width="2" height="150" fill="#c58a52" opacity="0.18"></rect></g><g><rect x="404" y="30" width="32" height="150" rx="2" fill="#4a2e1b" opacity="0.45"></rect><rect x="404" y="30" width="2" height="150" fill="#c58a52" opacity="0.18"></rect></g><g><rect x="444" y="30" width="32" height="150" rx="2" fill="#4a2e1b" opacity="0.45"></rect><rect x="444" y="30" width="2" height="150" fill="#c58a52" opacity="0.18"></rect></g><g><rect x="484" y="30" width="32" height="150" rx="2" fill="#4a2e1b" opacity="0.45"></rect><rect x="484" y="30" width="2" height="150" fill="#c58a52" opacity="0.18"></rect></g><g><rect x="524" y="30" width="32" height="150" rx="2" fill="#4a2e1b" opacity="0.45"></rect><rect x="524" y="30" width="2" height="150" fill="#c58a52" opacity="0.18"></rect></g><g><rect x="564" y="30" width="32" height="150" rx="2" fill="#4a2e1b" opacity="0.45"></rect><rect x="564" y="30" width="2" height="150" fill="#c58a52" opacity="0.18"></rect></g><g><rect x="604" y="30" width="32" height="150" rx="2" fill="#4a2e1b" opacity="0.45"></rect><rect x="604" y="30" width="2" height="150" fill="#c58a52" opacity="0.18"></rect></g><g><rect x="644" y="30" width="32" height="150" rx="2" fill="#4a2e1b" opacity="0.45"></rect><rect x="644" y="30" width="2" height="150" fill="#c58a52" opacity="0.18"></rect></g><rect x="0" y="22" width="640" height="10" fill="#1a100a"></rect><rect x="0" y="31" width="640" height="2" fill="#c8975c" opacity="0.35"></rect><rect x="0" y="0" width="640" height="22" fill="#120a06"></rect><g><circle cx="30" cy="14" r="5" fill="#0b0705"></circle><circle class="parl-flash" cx="34" cy="10" r="3" fill="#fff" style="animation-delay: 0s;"></circle></g><g><circle cx="70" cy="14" r="5" fill="#0b0705"></circle><circle class="parl-flash" cx="74" cy="10" r="3" fill="#fff" style="animation-delay: 1.3s;"></circle></g><g><circle cx="110" cy="14" r="5" fill="#0b0705"></circle><circle class="parl-flash" cx="114" cy="10" r="3" fill="#fff" style="animation-delay: 2.6s;"></circle></g><g><circle cx="530" cy="14" r="5" fill="#0b0705"></circle><circle class="parl-flash" cx="534" cy="10" r="3" fill="#fff" style="animation-delay: 3.9s;"></circle></g><g><circle cx="570" cy="14" r="5" fill="#0b0705"></circle><circle class="parl-flash" cx="574" cy="10" r="3" fill="#fff" style="animation-delay: 5.2s;"></circle></g><g><circle cx="610" cy="14" r="5" fill="#0b0705"></circle><circle class="parl-flash" cx="614" cy="10" r="3" fill="#fff" style="animation-delay: 6.5s;"></circle></g><rect width="640" height="360" fill="url(#parl-key-r0)"></rect><polygon class="parl-shaft" points="150,0 176,0 220,260 140,260" fill="url(#parl-shaft-r0)" style="animation-delay: 0s;"></polygon><polygon class="parl-shaft" points="250,0 276,0 290,260 210,260" fill="url(#parl-shaft-r0)" style="animation-delay: 1.7s;"></polygon><polygon class="parl-shaft" points="390,0 416,0 400,260 320,260" fill="url(#parl-shaft-r0)" style="animation-delay: 3.4s;"></polygon><polygon class="parl-shaft" points="490,0 516,0 470,260 390,260" fill="url(#parl-shaft-r0)" style="animation-delay: 5.1s;"></polygon><g class="parl-banner" style="animation-delay: 0s;"><g clip-path="url(#flag-r1)"><clipPath id="flag-r1"><path d="M160 52 h28 v90 l-14 9 l-14 -9 Z"></path></clipPath><g transform="translate(160 52)"><rect y="0" width="28" height="33.3" fill="#000000"></rect><rect y="33" width="28" height="33.3" fill="#dd0000"></rect><rect y="66" width="28" height="33.3" fill="#ffce00"></rect></g></g><rect x="160" y="52" width="28" height="90" fill="url(#parl-sil-r0)" opacity="0.28"></rect><rect x="180" y="52" width="8" height="90" fill="#000" opacity="0.18"></rect><rect x="157" y="49" width="34" height="4" rx="2" fill="#d7a75f"></rect></g><g class="parl-banner" style="animation-delay: 0.9s;"><g clip-path="url(#flag-r2)"><clipPath id="flag-r2"><path d="M452 52 h28 v90 l-14 9 l-14 -9 Z"></path></clipPath><g transform="translate(452 52)"><rect y="0" width="28" height="33.3" fill="#000000"></rect><rect y="33" width="28" height="33.3" fill="#dd0000"></rect><rect y="66" width="28" height="33.3" fill="#ffce00"></rect></g></g><rect x="452" y="52" width="28" height="90" fill="url(#parl-sil-r0)" opacity="0.28"></rect><rect x="472" y="52" width="8" height="90" fill="#000" opacity="0.18"></rect><rect x="449" y="49" width="34" height="4" rx="2" fill="#d7a75f"></rect></g><g><rect x="203" y="47" width="234" height="92" rx="6" fill="#0a0705"></rect><rect x="207" y="51" width="226" height="84" rx="4" fill="url(#parl-screen-r0)" stroke="#c8975c" stroke-opacity="0.5"></rect><rect x="207" y="51" width="226" height="4" fill="#ffce00" opacity="0.9"></rect><text x="320" y="67" text-anchor="middle" class="parl-label" font-size="9" fill="#9fb0c8" letter-spacing="3">DIVISION</text><text x="219" y="90" class="parl-label" font-size="14" fill="#46e08a">YES</text><rect x="258" y="80" width="130" height="12" rx="2" fill="#13261c"></rect><rect class="parl-bar" x="258" y="80" width="92.4314606741573" height="12" rx="2" fill="#2fd27a"></rect><text x="422" y="90" text-anchor="end" class="parl-label" font-size="14" fill="#e8fff1">226</text><text x="219" y="112" class="parl-label" font-size="14" fill="#ff6a5c">NO</text><rect x="258" y="102" width="130" height="12" rx="2" fill="#2a1414"></rect><rect class="parl-bar parl-bar2" x="258" y="102" width="89.56853932584269" height="12" rx="2" fill="#ef4a3c"></rect><text x="422" y="112" text-anchor="end" class="parl-label" font-size="14" fill="#ffe9e6">219</text><rect x="207" y="120" width="226" height="15" fill="#000" opacity="0.25"></rect><rect class="parl-pip" x="214" y="124" width="5" height="6" rx="1" fill="#2fd27a" style="animation-delay: 0s;"></rect><rect class="parl-pip" x="222" y="124" width="5" height="6" rx="1" fill="#2fd27a" style="animation-delay: 0.08s;"></rect><rect class="parl-pip" x="230" y="124" width="5" height="6" rx="1" fill="#2fd27a" style="animation-delay: 0.16s;"></rect><rect class="parl-pip" x="238" y="124" width="5" height="6" rx="1" fill="#2fd27a" style="animation-delay: 0.24s;"></rect><rect class="parl-pip" x="246" y="124" width="5" height="6" rx="1" fill="#2fd27a" style="animation-delay: 0.32s;"></rect><rect class="parl-pip" x="254" y="124" width="5" height="6" rx="1" fill="#2fd27a" style="animation-delay: 0.4s;"></rect><rect class="parl-pip" x="262" y="124" width="5" height="6" rx="1" fill="#2fd27a" style="animation-delay: 0.48s;"></rect><rect class="parl-pip" x="270" y="124" width="5" height="6" rx="1" fill="#2fd27a" style="animation-delay: 0.56s;"></rect><rect class="parl-pip" x="278" y="124" width="5" height="6" rx="1" fill="#2fd27a" style="animation-delay: 0.64s;"></rect><rect class="parl-pip" x="286" y="124" width="5" height="6" rx="1" fill="#2fd27a" style="animation-delay: 0.72s;"></rect><rect class="parl-pip" x="294" y="124" width="5" height="6" rx="1" fill="#2fd27a" style="animation-delay: 0.8s;"></rect><rect class="parl-pip" x="302" y="124" width="5" height="6" rx="1" fill="#2fd27a" style="animation-delay: 0.88s;"></rect><rect class="parl-pip" x="310" y="124" width="5" height="6" rx="1" fill="#2fd27a" style="animation-delay: 0.96s;"></rect><rect class="parl-pip" x="318" y="124" width="5" height="6" rx="1" fill="#2fd27a" style="animation-delay: 1.04s;"></rect><rect class="parl-pip" x="326" y="124" width="5" height="6" rx="1" fill="#ef4a3c" style="animation-delay: 1.12s;"></rect><rect class="parl-pip" x="334" y="124" width="5" height="6" rx="1" fill="#ef4a3c" style="animation-delay: 1.2s;"></rect><rect class="parl-pip" x="342" y="124" width="5" height="6" rx="1" fill="#ef4a3c" style="animation-delay: 1.28s;"></rect><rect class="parl-pip" x="350" y="124" width="5" height="6" rx="1" fill="#ef4a3c" style="animation-delay: 1.36s;"></rect><rect class="parl-pip" x="358" y="124" width="5" height="6" rx="1" fill="#ef4a3c" style="animation-delay: 1.44s;"></rect><rect class="parl-pip" x="366" y="124" width="5" height="6" rx="1" fill="#ef4a3c" style="animation-delay: 1.52s;"></rect><rect class="parl-pip" x="374" y="124" width="5" height="6" rx="1" fill="#ef4a3c" style="animation-delay: 1.6s;"></rect><rect class="parl-pip" x="382" y="124" width="5" height="6" rx="1" fill="#ef4a3c" style="animation-delay: 1.68s;"></rect><rect class="parl-pip" x="390" y="124" width="5" height="6" rx="1" fill="#ef4a3c" style="animation-delay: 1.76s;"></rect><rect class="parl-pip" x="398" y="124" width="5" height="6" rx="1" fill="#ef4a3c" style="animation-delay: 1.84s;"></rect><rect class="parl-pip" x="406" y="124" width="5" height="6" rx="1" fill="#ef4a3c" style="animation-delay: 1.92s;"></rect><rect class="parl-pip" x="414" y="124" width="5" height="6" rx="1" fill="#ef4a3c" style="animation-delay: 2s;"></rect><rect class="parl-pip" x="422" y="124" width="5" height="6" rx="1" fill="#ef4a3c" style="animation-delay: 2.08s;"></rect><rect class="parl-scan" x="207" y="51" width="226" height="84" fill="#9cc7ff" opacity="0.05"></rect><ellipse cx="320" cy="150" rx="120" ry="10" fill="#7fd8ff" opacity="0.08"></ellipse></g><path d="M292 194 V156 q28 -15 56 0 V194 Z" fill="url(#parl-leather-r0)"></path><path d="M292 156 q28 -15 56 0" fill="none" stroke="#d7a75f" stroke-width="2" opacity="0.7"></path><circle cx="320" cy="166" r="7.5" fill="url(#parl-sil-r0)"></circle><path d="M320 159 a7.5 7.5 0 0 1 6 3" fill="none" stroke="#f2c28a" stroke-opacity="0.6"></path><path d="M306 190 v-11 q14 -9 28 0 v11 Z" fill="url(#parl-sil-r0)"></path><path d="M244 180 H396 L406 212 H234 Z" fill="url(#parl-bench-r0)"></path><rect x="244" y="178" width="152" height="4" fill="#e1b277" opacity="0.6"></rect><circle cx="320" cy="196" r="10" fill="#1d120a" stroke="#d7a75f" stroke-width="1.5"></circle><circle cx="320" cy="196" r="6" fill="#ffce00"></circle><path d="M252 212 H388 L396 226 H244 Z" fill="#2c190d"></path><g><circle cx="290" cy="204" r="4.5" fill="url(#parl-sil-r0)"></circle><rect x="283.5" y="208" width="13" height="9" rx="4" fill="url(#parl-sil-r0)"></rect></g><g><circle cx="350" cy="204" r="4.5" fill="url(#parl-sil-r0)"></circle><rect x="343.5" y="208" width="13" height="9" rx="4" fill="url(#parl-sil-r0)"></rect></g><rect x="226" y="225" width="188" height="3" fill="#000" opacity="0.4"></rect><g><path d="M460 182 A140 32 0 0 1 180 182" fill="none" stroke="#2a170c" stroke-width="7"></path><path d="M460 179.5 A140 32 0 0 1 180 179.5" fill="none" stroke="#b47a46" stroke-opacity="0.45" stroke-width="1"></path><g><circle class="parl-vote" cx="456.56408411970426" cy="185.00746866989206" r="1.014" fill="#3cff96" style="animation-delay: 0s;"></circle><g style="animation-delay: 0s;"><rect x="460.078661556826" y="188.12746866989207" width="12.48" height="10.92" rx="4.68" fill="url(#parl-sil-r0)"></rect><circle cx="466.318661556826" cy="184.22746866989206" r="3.5879999999999996" fill="url(#parl-sil-r0)"></circle><path d="M463.510661556826 181.88746866989206 a3.5879999999999996 3.5879999999999996 0 0 1 5.46 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.7020000000000001"></path></g></g><g><circle class="parl-vote" cx="448.1337641669285" cy="192.3162574285465" r="1.014" fill="#ff5a4a" style="animation-delay: 1.11s;"></circle><g style="animation-delay: 1.11s;"><rect x="451.0461758931376" y="195.4362574285465" width="12.48" height="10.92" rx="4.68" fill="url(#parl-sil-r0)"></rect><circle cx="457.2861758931376" cy="191.5362574285465" r="3.5879999999999996" fill="url(#parl-sil-r0)"></circle><path d="M454.47817589313763 189.1962574285465 a3.5879999999999996 3.5879999999999996 0 0 1 5.46 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.7020000000000001"></path></g></g><g><circle class="parl-vote" cx="434.9608892787186" cy="199.02854270737726" r="1.014" fill="#3cff96" style="animation-delay: 2.22s;"></circle><g class="parl-bob" style="animation-delay: 2.22s;"><rect x="436.9323813700556" y="202.14854270737726" width="12.48" height="10.92" rx="4.68" fill="url(#parl-sil-r0)"></rect><circle cx="443.17238137005563" cy="198.24854270737725" r="3.5879999999999996" fill="url(#parl-sil-r0)"></circle><path d="M440.36438137005564 195.90854270737725 a3.5879999999999996 3.5879999999999996 0 0 1 5.46 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.7020000000000001"></path></g></g><g><circle class="parl-vote" cx="417.5330208969873" cy="204.89588583852714" r="1.014" fill="#ff5a4a" style="animation-delay: 3.33s;"></circle><g style="animation-delay: 3.33s;"><rect x="418.2596652467721" y="208.01588583852714" width="12.48" height="10.92" rx="4.68" fill="url(#parl-sil-r0)"></rect><circle cx="424.4996652467721" cy="204.11588583852713" r="3.5879999999999996" fill="url(#parl-sil-r0)"></circle><path d="M421.6916652467721 201.77588583852713 a3.5879999999999996 3.5879999999999996 0 0 1 5.46 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.7020000000000001"></path></g></g><g><circle class="parl-vote" cx="396.4952085427977" cy="209.70112160168566" r="1.014" fill="#ff5a4a" style="animation-delay: 4.44s;"></circle><g style="animation-delay: 4.44s;"><rect x="395.71915201014036" y="212.82112160168566" width="12.48" height="10.92" rx="4.68" fill="url(#parl-sil-r0)"></rect><circle cx="401.9591520101404" cy="208.92112160168566" r="3.5879999999999996" fill="url(#parl-sil-r0)"></circle><path d="M399.1511520101404 206.58112160168565 a3.5879999999999996 3.5879999999999996 0 0 1 5.46 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.7020000000000001"></path></g></g><g><circle class="parl-vote" cx="372.62611490088216" cy="213.26639605856687" r="1.014" fill="#3cff96" style="animation-delay: 5.55s;"></circle><g style="animation-delay: 5.55s;"><rect x="370.145123108088" y="216.38639605856687" width="12.48" height="10.92" rx="4.68" fill="url(#parl-sil-r0)"></rect><circle cx="376.385123108088" cy="212.48639605856687" r="3.5879999999999996" fill="url(#parl-sil-r0)"></circle><path d="M373.577123108088 210.14639605856686 a3.5879999999999996 3.5879999999999996 0 0 1 5.46 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.7020000000000001"></path></g></g><g><circle class="parl-vote" cx="346.8091955427818" cy="215.4597493773373" r="1.014" fill="#ff5a4a" style="animation-delay: 0.37s;"></circle><g style="animation-delay: 0.37s;"><rect x="342.4841380815519" y="218.5797493773373" width="12.48" height="10.92" rx="4.68" fill="url(#parl-sil-r0)"></rect><circle cx="348.7241380815519" cy="214.6797493773373" r="3.5879999999999996" fill="url(#parl-sil-r0)"></circle><path d="M345.91613808155194 212.33974937733728 a3.5879999999999996 3.5879999999999996 0 0 1 5.46 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.7020000000000001"></path></g></g><g><circle class="parl-vote" cx="293.1908044572182" cy="215.4597493773373" r="1.014" fill="#3cff96" style="animation-delay: 2.59s;"></circle><g class="parl-bob" style="animation-delay: 2.59s;"><rect x="285.03586191844806" y="218.5797493773373" width="12.48" height="10.92" rx="4.68" fill="url(#parl-sil-r0)"></rect><circle cx="291.2758619184481" cy="214.6797493773373" r="3.5879999999999996" fill="url(#parl-sil-r0)"></circle><path d="M288.4678619184481 212.33974937733728 a3.5879999999999996 3.5879999999999996 0 0 1 5.46 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.7020000000000001"></path></g></g><g><circle class="parl-vote" cx="267.37388509911784" cy="213.26639605856687" r="1.014" fill="#ff5a4a" style="animation-delay: 3.7s;"></circle><g style="animation-delay: 3.7s;"><rect x="257.374876891912" y="216.38639605856687" width="12.48" height="10.92" rx="4.68" fill="url(#parl-sil-r0)"></rect><circle cx="263.614876891912" cy="212.48639605856687" r="3.5879999999999996" fill="url(#parl-sil-r0)"></circle><path d="M260.806876891912 210.14639605856686 a3.5879999999999996 3.5879999999999996 0 0 1 5.46 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.7020000000000001"></path></g></g><g><circle class="parl-vote" cx="243.50479145720232" cy="209.70112160168566" r="1.014" fill="#3cff96" style="animation-delay: 4.81s;"></circle><g style="animation-delay: 4.81s;"><rect x="231.80084798985962" y="212.82112160168566" width="12.48" height="10.92" rx="4.68" fill="url(#parl-sil-r0)"></rect><circle cx="238.04084798985963" cy="208.92112160168566" r="3.5879999999999996" fill="url(#parl-sil-r0)"></circle><path d="M235.23284798985964 206.58112160168565 a3.5879999999999996 3.5879999999999996 0 0 1 5.46 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.7020000000000001"></path></g></g><g><circle class="parl-vote" cx="222.4669791030127" cy="204.89588583852714" r="1.014" fill="#3cff96" style="animation-delay: 5.92s;"></circle><g style="animation-delay: 5.92s;"><rect x="209.26033475322788" y="208.01588583852714" width="12.48" height="10.92" rx="4.68" fill="url(#parl-sil-r0)"></rect><circle cx="215.5003347532279" cy="204.11588583852713" r="3.5879999999999996" fill="url(#parl-sil-r0)"></circle><path d="M212.6923347532279 201.77588583852713 a3.5879999999999996 3.5879999999999996 0 0 1 5.46 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.7020000000000001"></path></g></g><g><circle class="parl-vote" cx="205.03911072128142" cy="199.02854270737726" r="1.014" fill="#ff5a4a" style="animation-delay: 0.74s;"></circle><g style="animation-delay: 0.74s;"><rect x="190.58761862994436" y="202.14854270737726" width="12.48" height="10.92" rx="4.68" fill="url(#parl-sil-r0)"></rect><circle cx="196.82761862994437" cy="198.24854270737725" r="3.5879999999999996" fill="url(#parl-sil-r0)"></circle><path d="M194.01961862994438 195.90854270737725 a3.5879999999999996 3.5879999999999996 0 0 1 5.46 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.7020000000000001"></path></g></g><g><circle class="parl-vote" cx="191.86623583307156" cy="192.3162574285465" r="1.014" fill="#3cff96" style="animation-delay: 1.85s;"></circle><g class="parl-bob" style="animation-delay: 1.85s;"><rect x="176.47382410686237" y="195.4362574285465" width="12.48" height="10.92" rx="4.68" fill="url(#parl-sil-r0)"></rect><circle cx="182.71382410686238" cy="191.5362574285465" r="3.5879999999999996" fill="url(#parl-sil-r0)"></circle><path d="M179.90582410686238 189.1962574285465 a3.5879999999999996 3.5879999999999996 0 0 1 5.46 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.7020000000000001"></path></g></g><g><circle class="parl-vote" cx="183.43591588029577" cy="185.00746866989206" r="1.014" fill="#ff5a4a" style="animation-delay: 2.96s;"></circle><g style="animation-delay: 2.96s;"><rect x="167.44133844317403" y="188.12746866989207" width="12.48" height="10.92" rx="4.68" fill="url(#parl-sil-r0)"></rect><circle cx="173.68133844317404" cy="184.22746866989206" r="3.5879999999999996" fill="url(#parl-sil-r0)"></circle><path d="M170.87333844317405 181.88746866989206 a3.5879999999999996 3.5879999999999996 0 0 1 5.46 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.7020000000000001"></path></g></g><path d="M470 190.24 A150 40 0 0 1 170 190.24" fill="none" stroke="url(#parl-bench-r0)" stroke-width="9"></path><path d="M470 185.74 A150 40 0 0 1 170 185.74" fill="none" stroke="#e0a868" stroke-opacity="0.35" stroke-width="1"></path></g><g><path d="M522 182 A202 54 0 0 1 118 182" fill="none" stroke="#2a170c" stroke-width="9.2"></path><path d="M522 178.4 A202 54 0 0 1 118 178.4" fill="none" stroke="#b47a46" stroke-opacity="0.45" stroke-width="1"></path><g><circle class="parl-vote" cx="517.9039959672066" cy="186.42255406861463" r="1.326" fill="#3cff96" style="animation-delay: 1.85s;"></circle><g style="animation-delay: 1.85s;"><rect x="521.5006689949615" y="190.50255406861464" width="16.32" height="14.280000000000001" rx="6.12" fill="url(#parl-sil-r0)"></rect><circle cx="529.6606689949615" cy="185.40255406861462" r="4.691999999999999" fill="url(#parl-sil-r0)"></circle><path d="M525.9886689949615 182.34255406861465 a4.691999999999999 4.691999999999999 0 0 1 7.140000000000001 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.918"></path></g></g><g><circle class="parl-vote" cx="509.4857328133129" cy="195.62980525136535" r="1.326" fill="#ff5a4a" style="animation-delay: 2.96s;"></circle><g style="animation-delay: 2.96s;"><rect x="512.5823110002424" y="199.70980525136537" width="16.32" height="14.280000000000001" rx="6.12" fill="url(#parl-sil-r0)"></rect><circle cx="520.7423110002424" cy="194.60980525136534" r="4.691999999999999" fill="url(#parl-sil-r0)"></circle><path d="M517.0703110002423 191.54980525136537 a4.691999999999999 4.691999999999999 0 0 1 7.140000000000001 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.918"></path></g></g><g><circle class="parl-vote" cx="496.69116973280165" cy="204.33288245910896" r="1.326" fill="#3cff96" style="animation-delay: 4.07s;"></circle><g class="parl-bob" style="animation-delay: 4.07s;"><rect x="499.0276748654433" y="208.41288245910897" width="16.32" height="14.280000000000001" rx="6.12" fill="url(#parl-sil-r0)"></rect><circle cx="507.18767486544334" cy="203.31288245910895" r="4.691999999999999" fill="url(#parl-sil-r0)"></circle><path d="M503.5156748654433 200.25288245910897 a4.691999999999999 4.691999999999999 0 0 1 7.140000000000001 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.918"></path></g></g><g><circle class="parl-vote" cx="479.81580573047376" cy="212.33078229396367" r="1.326" fill="#3cff96" style="animation-delay: 5.18s;"></circle><g style="animation-delay: 5.18s;"><rect x="481.14981399169" y="216.41078229396368" width="16.32" height="14.280000000000001" rx="6.12" fill="url(#parl-sil-r0)"></rect><circle cx="489.30981399169" cy="211.31078229396365" r="4.691999999999999" fill="url(#parl-sil-r0)"></circle><path d="M485.63781399169 208.25078229396368 a4.691999999999999 4.691999999999999 0 0 1 7.140000000000001 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.918"></path></g></g><g><circle class="parl-vote" cx="459.2493886419503" cy="219.4387879018386" r="1.326" fill="#ff5a4a" style="animation-delay: 0s;"></circle><g style="animation-delay: 0s;"><rect x="459.361629551373" y="223.5187879018386" width="16.32" height="14.280000000000001" rx="6.12" fill="url(#parl-sil-r0)"></rect><circle cx="467.52162955137305" cy="218.41878790183858" r="4.691999999999999" fill="url(#parl-sil-r0)"></circle><path d="M463.849629551373 215.3587879018386 a4.691999999999999 4.691999999999999 0 0 1 7.140000000000001 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.918"></path></g></g><g><circle class="parl-vote" cx="435.4669136463351" cy="225.49273513191199" r="1.326" fill="#3cff96" style="animation-delay: 1.11s;"></circle><g style="animation-delay: 1.11s;"><rect x="434.1663342589887" y="229.572735131912" width="16.32" height="14.280000000000001" rx="6.12" fill="url(#parl-sil-r0)"></rect><circle cx="442.3263342589887" cy="224.47273513191197" r="4.691999999999999" fill="url(#parl-sil-r0)"></circle><path d="M438.6543342589887 221.412735131912 a4.691999999999999 4.691999999999999 0 0 1 7.140000000000001 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.918"></path></g></g><g><circle class="parl-vote" cx="409.0176529343775" cy="230.35280401765993" r="1.326" fill="#3cff96" style="animation-delay: 2.22s;"></circle><g style="animation-delay: 2.22s;"><rect x="406.1458303364197" y="234.43280401765995" width="16.32" height="14.280000000000001" rx="6.12" fill="url(#parl-sil-r0)"></rect><circle cx="414.3058303364197" cy="229.33280401765995" r="4.691999999999999" fill="url(#parl-sil-r0)"></circle><path d="M410.6338303364197 226.27280401765995 a4.691999999999999 4.691999999999999 0 0 1 7.140000000000001 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.918"></path></g></g><g><circle class="parl-vote" cx="380.5124698992959" cy="233.90674801264186" r="1.326" fill="#ff5a4a" style="animation-delay: 3.33s;"></circle><g class="parl-bob" style="animation-delay: 3.33s;"><rect x="375.9472700913333" y="237.98674801264187" width="16.32" height="14.280000000000001" rx="6.12" fill="url(#parl-sil-r0)"></rect><circle cx="384.1072700913333" cy="232.88674801264187" r="4.691999999999999" fill="url(#parl-sil-r0)"></circle><path d="M380.4352700913333 229.82674801264187 a4.691999999999999 4.691999999999999 0 0 1 7.140000000000001 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.918"></path></g></g><g><circle class="parl-vote" cx="350.60971083752395" cy="236.0724863996791" r="1.326" fill="#3cff96" style="animation-delay: 4.44s;"></circle><g style="animation-delay: 4.44s;"><rect x="344.26810950113924" y="240.1524863996791" width="16.32" height="14.280000000000001" rx="6.12" fill="url(#parl-sil-r0)"></rect><circle cx="352.42810950113926" cy="235.05248639967908" r="4.691999999999999" fill="url(#parl-sil-r0)"></circle><path d="M348.75610950113924 231.9924863996791 a4.691999999999999 4.691999999999999 0 0 1 7.140000000000001 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.918"></path></g></g><g><circle class="parl-vote" cx="289.390289162476" cy="236.0724863996791" r="1.326" fill="#ff5a4a" style="animation-delay: 0.37s;"></circle><g style="animation-delay: 0.37s;"><rect x="279.41189049886066" y="240.1524863996791" width="16.32" height="14.280000000000001" rx="6.12" fill="url(#parl-sil-r0)"></rect><circle cx="287.5718904988607" cy="235.05248639967908" r="4.691999999999999" fill="url(#parl-sil-r0)"></circle><path d="M283.89989049886066 231.9924863996791 a4.691999999999999 4.691999999999999 0 0 1 7.140000000000001 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.918"></path></g></g><g><circle class="parl-vote" cx="259.4875301007041" cy="233.90674801264186" r="1.326" fill="#3cff96" style="animation-delay: 1.48s;"></circle><g style="animation-delay: 1.48s;"><rect x="247.7327299086667" y="237.98674801264187" width="16.32" height="14.280000000000001" rx="6.12" fill="url(#parl-sil-r0)"></rect><circle cx="255.8927299086667" cy="232.88674801264187" r="4.691999999999999" fill="url(#parl-sil-r0)"></circle><path d="M252.2207299086667 229.82674801264187 a4.691999999999999 4.691999999999999 0 0 1 7.140000000000001 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.918"></path></g></g><g><circle class="parl-vote" cx="230.98234706562246" cy="230.35280401765993" r="1.326" fill="#ff5a4a" style="animation-delay: 2.59s;"></circle><g style="animation-delay: 2.59s;"><rect x="217.53416966358023" y="234.43280401765995" width="16.32" height="14.280000000000001" rx="6.12" fill="url(#parl-sil-r0)"></rect><circle cx="225.69416966358023" cy="229.33280401765995" r="4.691999999999999" fill="url(#parl-sil-r0)"></circle><path d="M222.02216966358023 226.27280401765995 a4.691999999999999 4.691999999999999 0 0 1 7.140000000000001 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.918"></path></g></g><g><circle class="parl-vote" cx="204.53308635366488" cy="225.49273513191199" r="1.326" fill="#3cff96" style="animation-delay: 3.7s;"></circle><g class="parl-bob" style="animation-delay: 3.7s;"><rect x="189.51366574101132" y="229.572735131912" width="16.32" height="14.280000000000001" rx="6.12" fill="url(#parl-sil-r0)"></rect><circle cx="197.67366574101132" cy="224.47273513191197" r="4.691999999999999" fill="url(#parl-sil-r0)"></circle><path d="M194.00166574101132 221.412735131912 a4.691999999999999 4.691999999999999 0 0 1 7.140000000000001 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.918"></path></g></g><g><circle class="parl-vote" cx="180.7506113580497" cy="219.4387879018386" r="1.326" fill="#3cff96" style="animation-delay: 4.81s;"></circle><g style="animation-delay: 4.81s;"><rect x="164.31837044862692" y="223.5187879018386" width="16.32" height="14.280000000000001" rx="6.12" fill="url(#parl-sil-r0)"></rect><circle cx="172.47837044862692" cy="218.41878790183858" r="4.691999999999999" fill="url(#parl-sil-r0)"></circle><path d="M168.80637044862692 215.3587879018386 a4.691999999999999 4.691999999999999 0 0 1 7.140000000000001 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.918"></path></g></g><g><circle class="parl-vote" cx="160.18419426952624" cy="212.33078229396367" r="1.326" fill="#ff5a4a" style="animation-delay: 5.92s;"></circle><g style="animation-delay: 5.92s;"><rect x="142.53018600830998" y="216.41078229396368" width="16.32" height="14.280000000000001" rx="6.12" fill="url(#parl-sil-r0)"></rect><circle cx="150.69018600830998" cy="211.31078229396365" r="4.691999999999999" fill="url(#parl-sil-r0)"></circle><path d="M147.01818600830998 208.25078229396368 a4.691999999999999 4.691999999999999 0 0 1 7.140000000000001 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.918"></path></g></g><g><circle class="parl-vote" cx="143.30883026719835" cy="204.33288245910896" r="1.326" fill="#3cff96" style="animation-delay: 0.74s;"></circle><g style="animation-delay: 0.74s;"><rect x="124.65232513455666" y="208.41288245910897" width="16.32" height="14.280000000000001" rx="6.12" fill="url(#parl-sil-r0)"></rect><circle cx="132.81232513455666" cy="203.31288245910895" r="4.691999999999999" fill="url(#parl-sil-r0)"></circle><path d="M129.14032513455666 200.25288245910897 a4.691999999999999 4.691999999999999 0 0 1 7.140000000000001 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.918"></path></g></g><g><circle class="parl-vote" cx="130.51426718668708" cy="195.62980525136535" r="1.326" fill="#3cff96" style="animation-delay: 1.85s;"></circle><g style="animation-delay: 1.85s;"><rect x="111.0976889997576" y="199.70980525136537" width="16.32" height="14.280000000000001" rx="6.12" fill="url(#parl-sil-r0)"></rect><circle cx="119.25768899975759" cy="194.60980525136534" r="4.691999999999999" fill="url(#parl-sil-r0)"></circle><path d="M115.5856889997576 191.54980525136537 a4.691999999999999 4.691999999999999 0 0 1 7.140000000000001 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.918"></path></g></g><g><circle class="parl-vote" cx="122.09600403279345" cy="186.42255406861463" r="1.326" fill="#ff5a4a" style="animation-delay: 2.96s;"></circle><g class="parl-bob" style="animation-delay: 2.96s;"><rect x="102.17933100503859" y="190.50255406861464" width="16.32" height="14.280000000000001" rx="6.12" fill="url(#parl-sil-r0)"></rect><circle cx="110.33933100503859" cy="185.40255406861462" r="4.691999999999999" fill="url(#parl-sil-r0)"></circle><path d="M106.66733100503859 182.34255406861465 a4.691999999999999 4.691999999999999 0 0 1 7.140000000000001 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="0.918"></path></g></g><g><rect x="139" y="196" width="24" height="44" rx="9" fill="url(#parl-sil-r0)"></rect><path d="M145 197 l6 12 l6 -12 Z" fill="#e6dfd4" opacity="0.85"></path><path d="M150 200 h2 l1 9 l-2 3 l-2 -3 Z" fill="#ffce00"></path><circle cx="151" cy="188" r="7.5" fill="url(#parl-sil-r0)"></circle><path d="M146 183 a7.5 7.5 0 0 1 11 0" fill="none" stroke="#f2c28a" stroke-opacity="0.8" stroke-width="1.4"></path><path d="M162 198 l9 4" stroke="#f2c28a" stroke-opacity="0.5" stroke-width="1.2"></path><g class="parl-arm"><path d="M160 202 L175 190 L179 177" fill="none" stroke="#1d1715" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="179.5" cy="174" r="3.4" fill="#2a2220"></circle></g></g><path d="M534 192.16 A214 63 0 0 1 106 192.16" fill="none" stroke="url(#parl-bench-r0)" stroke-width="11.2"></path><path d="M534 186.56 A214 63 0 0 1 106 186.56" fill="none" stroke="#e0a868" stroke-opacity="0.35" stroke-width="1"></path></g><g><path d="M584 182 A264 76 0 0 1 56 182" fill="none" stroke="#2a170c" stroke-width="11.4"></path><path d="M584 177.3 A264 76 0 0 1 56 177.3" fill="none" stroke="#b47a46" stroke-opacity="0.45" stroke-width="1"></path><g><circle class="parl-vote" cx="579.3238341923737" cy="187.51479305437232" r="1.6380000000000001" fill="#3cff96" style="animation-delay: 3.7s;"></circle><g style="animation-delay: 3.7s;"><rect x="582.9958557025753" y="192.5547930543723" width="20.16" height="17.64" rx="7.5600000000000005" fill="url(#parl-sil-r0)"></rect><circle cx="593.0758557025754" cy="186.25479305437233" r="5.795999999999999" fill="url(#parl-sil-r0)"></circle><path d="M588.5398557025754 182.47479305437233 a5.795999999999999 5.795999999999999 0 0 1 8.82 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.1340000000000001"></path></g></g><g><circle class="parl-vote" cx="571.0789203019206" cy="197.97546151624547" r="1.6380000000000001" fill="#3cff96" style="animation-delay: 4.81s;"></circle><g style="animation-delay: 4.81s;"><rect x="574.3137115300526" y="203.01546151624547" width="20.16" height="17.64" rx="7.5600000000000005" fill="url(#parl-sil-r0)"></rect><circle cx="584.3937115300527" cy="196.71546151624548" r="5.795999999999999" fill="url(#parl-sil-r0)"></circle><path d="M579.8577115300527 192.93546151624548 a5.795999999999999 5.795999999999999 0 0 1 8.82 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.1340000000000001"></path></g></g><g><circle class="parl-vote" cx="558.8743418510292" cy="208.01701907459625" r="1.6380000000000001" fill="#ff5a4a" style="animation-delay: 5.92s;"></circle><g class="parl-bob" style="animation-delay: 5.92s;"><rect x="561.4619205855533" y="213.05701907459624" width="20.16" height="17.64" rx="7.5600000000000005" fill="url(#parl-sil-r0)"></rect><circle cx="571.5419205855534" cy="206.75701907459626" r="5.795999999999999" fill="url(#parl-sil-r0)"></circle><path d="M567.0059205855534 202.97701907459626 a5.795999999999999 5.795999999999999 0 0 1 8.82 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.1340000000000001"></path></g></g><g><circle class="parl-vote" cx="542.902572332532" cy="217.4811043681937" r="1.6380000000000001" fill="#3cff96" style="animation-delay: 0.74s;"></circle><g style="animation-delay: 0.74s;"><rect x="544.6431632895602" y="222.5211043681937" width="20.16" height="17.64" rx="7.5600000000000005" fill="url(#parl-sil-r0)"></rect><circle cx="554.7231632895603" cy="216.22110436819372" r="5.795999999999999" fill="url(#parl-sil-r0)"></circle><path d="M550.1871632895603 212.44110436819372 a5.795999999999999 5.795999999999999 0 0 1 8.82 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.1340000000000001"></path></g></g><g><circle class="parl-vote" cx="523.4154960928083" cy="226.21846311838732" r="1.6380000000000001" fill="#ff5a4a" style="animation-delay: 1.85s;"></circle><g style="animation-delay: 1.85s;"><rect x="524.1226814916694" y="231.2584631183873" width="20.16" height="17.64" rx="7.5600000000000005" fill="url(#parl-sil-r0)"></rect><circle cx="534.2026814916694" cy="224.95846311838733" r="5.795999999999999" fill="url(#parl-sil-r0)"></circle><path d="M529.6666814916695 221.17846311838733 a5.795999999999999 5.795999999999999 0 0 1 8.82 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.1340000000000001"></path></g></g><g><circle class="parl-vote" cx="500.7204359651738" cy="234.09130195824142" r="1.6380000000000001" fill="#ff5a4a" style="animation-delay: 2.96s;"></circle><g style="animation-delay: 2.96s;"><rect x="500.22409544817543" y="239.1313019582414" width="20.16" height="17.64" rx="7.5600000000000005" fill="url(#parl-sil-r0)"></rect><circle cx="510.3040954481754" cy="232.83130195824143" r="5.795999999999999" fill="url(#parl-sil-r0)"></circle><path d="M505.7680954481754 229.05130195824142 a5.795999999999999 5.795999999999999 0 0 1 8.82 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.1340000000000001"></path></g></g><g><circle class="parl-vote" cx="475.1753066052129" cy="240.97546151624547" r="1.6380000000000001" fill="#3cff96" style="animation-delay: 4.07s;"></circle><g style="animation-delay: 4.07s;"><rect x="473.32430013730755" y="246.01546151624547" width="20.16" height="17.64" rx="7.5600000000000005" fill="url(#parl-sil-r0)"></rect><circle cx="483.40430013730753" cy="239.71546151624548" r="5.795999999999999" fill="url(#parl-sil-r0)"></circle><path d="M478.86830013730753 235.93546151624548 a5.795999999999999 5.795999999999999 0 0 1 8.82 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.1340000000000001"></path></g></g><g><circle class="parl-vote" cx="447.18296996285284" cy="246.76237448377228" r="1.6380000000000001" fill="#ff5a4a" style="animation-delay: 5.18s;"></circle><g class="parl-bob" style="animation-delay: 5.18s;"><rect x="443.8475214002769" y="251.80237448377227" width="20.16" height="17.64" rx="7.5600000000000005" fill="url(#parl-sil-r0)"></rect><circle cx="453.9275214002769" cy="245.5023744837723" r="5.795999999999999" fill="url(#parl-sil-r0)"></circle><path d="M449.3915214002769 241.72237448377228 a5.795999999999999 5.795999999999999 0 0 1 8.82 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.1340000000000001"></path></g></g><g><circle class="parl-vote" cx="417.184881908755" cy="251.36077778638958" r="1.6380000000000001" fill="#3cff96" style="animation-delay: 0s;"></circle><g style="animation-delay: 0s;"><rect x="412.25862564634053" y="256.4007777863896" width="20.16" height="17.64" rx="7.5600000000000005" fill="url(#parl-sil-r0)"></rect><circle cx="422.3386256463405" cy="250.10077778638959" r="5.795999999999999" fill="url(#parl-sil-r0)"></circle><path d="M417.8026256463405 246.32077778638958 a5.795999999999999 5.795999999999999 0 0 1 8.82 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.1340000000000001"></path></g></g><g><circle class="parl-vote" cx="385.6541302115217" cy="254.69815185706227" r="1.6380000000000001" fill="#3cff96" style="animation-delay: 1.11s;"></circle><g style="animation-delay: 1.11s;"><rect x="379.05578863182967" y="259.7381518570623" width="20.16" height="17.64" rx="7.5600000000000005" fill="url(#parl-sil-r0)"></rect><circle cx="389.13578863182966" cy="253.43815185706228" r="5.795999999999999" fill="url(#parl-sil-r0)"></circle><path d="M384.59978863182965 249.65815185706228 a5.795999999999999 5.795999999999999 0 0 1 8.82 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.1340000000000001"></path></g></g><g><circle class="parl-vote" cx="353.0879736609764" cy="256.72186431304505" r="1.6380000000000001" fill="#ff5a4a" style="animation-delay: 2.22s;"></circle><g style="animation-delay: 2.22s;"><rect x="344.7626389308767" y="261.76186431304507" width="20.16" height="17.64" rx="7.5600000000000005" fill="url(#parl-sil-r0)"></rect><circle cx="354.84263893087666" cy="255.46186431304506" r="5.795999999999999" fill="url(#parl-sil-r0)"></circle><path d="M350.30663893087666 251.68186431304505 a5.795999999999999 5.795999999999999 0 0 1 8.82 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.1340000000000001"></path></g></g><g><circle class="parl-vote" cx="286.91202633902367" cy="256.72186431304505" r="1.6380000000000001" fill="#3cff96" style="animation-delay: 4.44s;"></circle><g style="animation-delay: 4.44s;"><rect x="275.0773610691234" y="261.76186431304507" width="20.16" height="17.64" rx="7.5600000000000005" fill="url(#parl-sil-r0)"></rect><circle cx="285.1573610691234" cy="255.46186431304506" r="5.795999999999999" fill="url(#parl-sil-r0)"></circle><path d="M280.6213610691234 251.68186431304505 a5.795999999999999 5.795999999999999 0 0 1 8.82 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.1340000000000001"></path></g></g><g><circle class="parl-vote" cx="254.3458697884783" cy="254.69815185706227" r="1.6380000000000001" fill="#ff5a4a" style="animation-delay: 5.55s;"></circle><g class="parl-bob" style="animation-delay: 5.55s;"><rect x="240.78421136817033" y="259.7381518570623" width="20.16" height="17.64" rx="7.5600000000000005" fill="url(#parl-sil-r0)"></rect><circle cx="250.86421136817034" cy="253.43815185706228" r="5.795999999999999" fill="url(#parl-sil-r0)"></circle><path d="M246.32821136817034 249.65815185706228 a5.795999999999999 5.795999999999999 0 0 1 8.82 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.1340000000000001"></path></g></g><g><circle class="parl-vote" cx="222.81511809124504" cy="251.36077778638958" r="1.6380000000000001" fill="#3cff96" style="animation-delay: 0.37s;"></circle><g style="animation-delay: 0.37s;"><rect x="207.58137435365953" y="256.4007777863896" width="20.16" height="17.64" rx="7.5600000000000005" fill="url(#parl-sil-r0)"></rect><circle cx="217.66137435365954" cy="250.10077778638959" r="5.795999999999999" fill="url(#parl-sil-r0)"></circle><path d="M213.12537435365954 246.32077778638958 a5.795999999999999 5.795999999999999 0 0 1 8.82 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.1340000000000001"></path></g></g><g><circle class="parl-vote" cx="192.8170300371471" cy="246.76237448377228" r="1.6380000000000001" fill="#ff5a4a" style="animation-delay: 1.48s;"></circle><g style="animation-delay: 1.48s;"><rect x="175.99247859972309" y="251.80237448377227" width="20.16" height="17.64" rx="7.5600000000000005" fill="url(#parl-sil-r0)"></rect><circle cx="186.0724785997231" cy="245.5023744837723" r="5.795999999999999" fill="url(#parl-sil-r0)"></circle><path d="M181.5364785997231 241.72237448377228 a5.795999999999999 5.795999999999999 0 0 1 8.82 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.1340000000000001"></path></g></g><g><circle class="parl-vote" cx="164.82469339478712" cy="240.97546151624547" r="1.6380000000000001" fill="#ff5a4a" style="animation-delay: 2.59s;"></circle><g style="animation-delay: 2.59s;"><rect x="146.5156998626925" y="246.01546151624547" width="20.16" height="17.64" rx="7.5600000000000005" fill="url(#parl-sil-r0)"></rect><circle cx="156.5956998626925" cy="239.71546151624548" r="5.795999999999999" fill="url(#parl-sil-r0)"></circle><path d="M152.0596998626925 235.93546151624548 a5.795999999999999 5.795999999999999 0 0 1 8.82 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.1340000000000001"></path></g></g><g><circle class="parl-vote" cx="139.27956403482617" cy="234.0913019582414" r="1.6380000000000001" fill="#3cff96" style="animation-delay: 3.7s;"></circle><g style="animation-delay: 3.7s;"><rect x="119.61590455182453" y="239.13130195824138" width="20.16" height="17.64" rx="7.5600000000000005" fill="url(#parl-sil-r0)"></rect><circle cx="129.69590455182453" cy="232.8313019582414" r="5.795999999999999" fill="url(#parl-sil-r0)"></circle><path d="M125.15990455182452 229.0513019582414 a5.795999999999999 5.795999999999999 0 0 1 8.82 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.1340000000000001"></path></g></g><g><circle class="parl-vote" cx="116.58450390719167" cy="226.21846311838735" r="1.6380000000000001" fill="#ff5a4a" style="animation-delay: 4.81s;"></circle><g class="parl-bob" style="animation-delay: 4.81s;"><rect x="95.71731850833062" y="231.25846311838734" width="20.16" height="17.64" rx="7.5600000000000005" fill="url(#parl-sil-r0)"></rect><circle cx="105.79731850833062" cy="224.95846311838736" r="5.795999999999999" fill="url(#parl-sil-r0)"></circle><path d="M101.26131850833062 221.17846311838736 a5.795999999999999 5.795999999999999 0 0 1 8.82 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.1340000000000001"></path></g></g><g><circle class="parl-vote" cx="97.09742766746803" cy="217.4811043681937" r="1.6380000000000001" fill="#3cff96" style="animation-delay: 5.92s;"></circle><g style="animation-delay: 5.92s;"><rect x="75.1968367104398" y="222.5211043681937" width="20.16" height="17.64" rx="7.5600000000000005" fill="url(#parl-sil-r0)"></rect><circle cx="85.2768367104398" cy="216.22110436819372" r="5.795999999999999" fill="url(#parl-sil-r0)"></circle><path d="M80.7408367104398 212.44110436819372 a5.795999999999999 5.795999999999999 0 0 1 8.82 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.1340000000000001"></path></g></g><g><circle class="parl-vote" cx="81.1256581489709" cy="208.01701907459628" r="1.6380000000000001" fill="#3cff96" style="animation-delay: 0.74s;"></circle><g style="animation-delay: 0.74s;"><rect x="58.37807941444662" y="213.05701907459627" width="20.16" height="17.64" rx="7.5600000000000005" fill="url(#parl-sil-r0)"></rect><circle cx="68.45807941444662" cy="206.7570190745963" r="5.795999999999999" fill="url(#parl-sil-r0)"></circle><path d="M63.922079414446614 202.97701907459629 a5.795999999999999 5.795999999999999 0 0 1 8.82 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.1340000000000001"></path></g></g><g><circle class="parl-vote" cx="68.92107969807944" cy="197.97546151624545" r="1.6380000000000001" fill="#ff5a4a" style="animation-delay: 1.85s;"></circle><g style="animation-delay: 1.85s;"><rect x="45.52628846994729" y="203.01546151624544" width="20.16" height="17.64" rx="7.5600000000000005" fill="url(#parl-sil-r0)"></rect><circle cx="55.60628846994729" cy="196.71546151624545" r="5.795999999999999" fill="url(#parl-sil-r0)"></circle><path d="M51.070288469947286 192.93546151624545 a5.795999999999999 5.795999999999999 0 0 1 8.82 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.1340000000000001"></path></g></g><g><circle class="parl-vote" cx="60.676165807626205" cy="187.51479305437232" r="1.6380000000000001" fill="#3cff96" style="animation-delay: 2.96s;"></circle><g style="animation-delay: 2.96s;"><rect x="36.84414429742456" y="192.5547930543723" width="20.16" height="17.64" rx="7.5600000000000005" fill="url(#parl-sil-r0)"></rect><circle cx="46.92414429742456" cy="186.25479305437233" r="5.795999999999999" fill="url(#parl-sil-r0)"></circle><path d="M42.38814429742456 182.47479305437233 a5.795999999999999 5.795999999999999 0 0 1 8.82 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.1340000000000001"></path></g></g><path d="M598 194.08 A278 86 0 0 1 42 194.08" fill="none" stroke="url(#parl-bench-r0)" stroke-width="13.4"></path><path d="M598 187.38 A278 86 0 0 1 42 187.38" fill="none" stroke="#e0a868" stroke-opacity="0.35" stroke-width="1"></path></g><g><path d="M646 182 A326 98 0 0 1 -6 182" fill="none" stroke="#2a170c" stroke-width="13.600000000000001"></path><path d="M646 176.2 A326 98 0 0 1 -6 176.2" fill="none" stroke="#b47a46" stroke-opacity="0.45" stroke-width="1"></path><g><circle class="parl-vote" cx="640.7803795532313" cy="188.42704643171115" r="1.9500000000000002" fill="#ff5a4a" style="animation-delay: 5.55s;"></circle><g style="animation-delay: 5.55s;"><rect x="644.5242018625923" y="194.42704643171115" width="24" height="21" rx="9" fill="url(#parl-sil-r0)"></rect><circle cx="656.5242018625923" cy="186.92704643171115" r="6.8999999999999995" fill="url(#parl-sil-r0)"></circle><path d="M651.1242018625924 182.42704643171115 a6.8999999999999995 6.8999999999999995 0 0 1 10.5 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.35"></path></g></g><g><circle class="parl-vote" cx="632.7363557000588" cy="199.77521879587354" r="1.9500000000000002" fill="#3cff96" style="animation-delay: 0.37s;"></circle><g style="animation-delay: 0.37s;"><rect x="636.0853792926996" y="205.77521879587354" width="24" height="21" rx="9" fill="url(#parl-sil-r0)"></rect><circle cx="648.0853792926996" cy="198.27521879587354" r="6.8999999999999995" fill="url(#parl-sil-r0)"></circle><path d="M642.6853792926996 193.77521879587354 a6.8999999999999995 6.8999999999999995 0 0 1 10.5 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.35"></path></g></g><g><circle class="parl-vote" cx="621.1120972327328" cy="210.77107361977272" r="1.9500000000000002" fill="#ff5a4a" style="animation-delay: 1.48s;"></circle><g class="parl-bob" style="animation-delay: 1.48s;"><rect x="623.8906050723762" y="216.77107361977272" width="24" height="21" rx="9" fill="url(#parl-sil-r0)"></rect><circle cx="635.8906050723762" cy="209.27107361977272" r="6.8999999999999995" fill="url(#parl-sil-r0)"></circle><path d="M630.4906050723762 204.77107361977272 a6.8999999999999995 6.8999999999999995 0 0 1 10.5 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.35"></path></g></g><g><circle class="parl-vote" cx="606.0406797331937" cy="221.28872934427685" r="1.9500000000000002" fill="#3cff96" style="animation-delay: 2.59s;"></circle><g style="animation-delay: 2.59s;"><rect x="608.079486100467" y="227.28872934427685" width="24" height="21" rx="9" fill="url(#parl-sil-r0)"></rect><circle cx="620.079486100467" cy="219.78872934427685" r="6.8999999999999995" fill="url(#parl-sil-r0)"></circle><path d="M614.679486100467 215.28872934427685 a6.8999999999999995 6.8999999999999995 0 0 1 10.5 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.35"></path></g></g><g><circle class="parl-vote" cx="587.6946421775874" cy="231.20777887760306" r="1.9500000000000002" fill="#3cff96" style="animation-delay: 3.7s;"></circle><g style="animation-delay: 3.7s;"><rect x="588.8330295237267" y="237.20777887760306" width="24" height="21" rx="9" fill="url(#parl-sil-r0)"></rect><circle cx="600.8330295237267" cy="229.70777887760306" r="6.8999999999999995" fill="url(#parl-sil-r0)"></circle><path d="M595.4330295237268 225.20777887760306 a6.8999999999999995 6.8999999999999995 0 0 1 10.5 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.35"></path></g></g><g><circle class="parl-vote" cx="566.284011694171" cy="240.41466802679793" r="1.9500000000000002" fill="#ff5a4a" style="animation-delay: 4.81s;"></circle><g style="animation-delay: 4.81s;"><rect x="566.3715705503266" y="246.41466802679793" width="24" height="21" rx="9" fill="url(#parl-sil-r0)"></rect><circle cx="578.3715705503266" cy="238.91466802679793" r="6.8999999999999995" fill="url(#parl-sil-r0)"></circle><path d="M572.9715705503266 234.41466802679793 a6.8999999999999995 6.8999999999999995 0 0 1 10.5 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.35"></path></g></g><g><circle class="parl-vote" cx="542.053899153396" cy="248.8039954766008" r="1.9500000000000002" fill="#3cff96" style="animation-delay: 5.92s;"></circle><g style="animation-delay: 5.92s;"><rect x="540.9522500320902" y="254.8039954766008" width="24" height="21" rx="9" fill="url(#parl-sil-r0)"></rect><circle cx="552.9522500320902" cy="247.3039954766008" r="6.8999999999999995" fill="url(#parl-sil-r0)"></circle><path d="M547.5522500320902 242.8039954766008 a6.8999999999999995 6.8999999999999995 0 0 1 10.5 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.35"></path></g></g><g><circle class="parl-vote" cx="515.281693116081" cy="256.27971943341197" r="1.9500000000000002" fill="#3cff96" style="animation-delay: 0.74s;"></circle><g class="parl-bob" style="animation-delay: 0.74s;"><rect x="512.8660706923304" y="262.27971943341197" width="24" height="21" rx="9" fill="url(#parl-sil-r0)"></rect><circle cx="524.8660706923304" cy="254.77971943341197" r="6.8999999999999995" fill="url(#parl-sil-r0)"></circle><path d="M519.4660706923304 250.27971943341197 a6.8999999999999995 6.8999999999999995 0 0 1 10.5 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.35"></path></g></g><g><circle class="parl-vote" cx="486.27388426361017" cy="262.7562571205948" r="1.9500000000000002" fill="#ff5a4a" style="animation-delay: 1.85s;"></circle><g style="animation-delay: 1.85s;"><rect x="482.43456569986097" y="268.7562571205948" width="24" height="21" rx="9" fill="url(#parl-sil-r0)"></rect><circle cx="494.43456569986097" cy="261.2562571205948" r="6.8999999999999995" fill="url(#parl-sil-r0)"></circle><path d="M489.034565699861 256.7562571205948 a6.8999999999999995 6.8999999999999995 0 0 1 10.5 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.35"></path></g></g><g><circle class="parl-vote" cx="455.3625566643734" cy="268.1594645379879" r="1.9500000000000002" fill="#3cff96" style="animation-delay: 2.96s;"></circle><g style="animation-delay: 2.96s;"><rect x="450.0061177276556" y="274.1594645379879" width="24" height="21" rx="9" fill="url(#parl-sil-r0)"></rect><circle cx="462.0061177276556" cy="266.6594645379879" r="6.8999999999999995" fill="url(#parl-sil-r0)"></circle><path d="M456.6061177276556 262.1594645379879 a6.8999999999999995 6.8999999999999995 0 0 1 10.5 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.35"></path></g></g><g><circle class="parl-vote" cx="422.9015860447554" cy="272.42748526925016" r="1.9500000000000002" fill="#ff5a4a" style="animation-delay: 4.07s;"></circle><g style="animation-delay: 4.07s;"><rect x="415.95197063590905" y="278.42748526925016" width="24" height="21" rx="9" fill="url(#parl-sil-r0)"></rect><circle cx="427.95197063590905" cy="270.92748526925016" r="6.8999999999999995" fill="url(#parl-sil-r0)"></circle><path d="M422.5519706359091 266.42748526925016 a6.8999999999999995 6.8999999999999995 0 0 1 10.5 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.35"></path></g></g><g><circle class="parl-vote" cx="389.2625885872151" cy="275.511458619814" r="1.9500000000000002" fill="#ff5a4a" style="animation-delay: 5.18s;"></circle><g style="animation-delay: 5.18s;"><rect x="380.66197943812136" y="281.511458619814" width="24" height="21" rx="9" fill="url(#parl-sil-r0)"></rect><circle cx="392.66197943812136" cy="274.011458619814" r="6.8999999999999995" fill="url(#parl-sil-r0)"></circle><path d="M387.2619794381214 269.511458619814 a6.8999999999999995 6.8999999999999995 0 0 1 10.5 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.35"></path></g></g><g><circle class="parl-vote" cx="354.8306666339897" cy="277.376078978619" r="1.9500000000000002" fill="#3cff96" style="animation-delay: 0s;"></circle><g class="parl-bob" style="animation-delay: 0s;"><rect x="344.5401472049831" y="283.376078978619" width="24" height="21" rx="9" fill="url(#parl-sil-r0)"></rect><circle cx="356.5401472049831" cy="275.876078978619" r="6.8999999999999995" fill="url(#parl-sil-r0)"></circle><path d="M351.1401472049831 271.376078978619 a6.8999999999999995 6.8999999999999995 0 0 1 10.5 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.35"></path></g></g><g><circle class="parl-vote" cx="285.1693333660104" cy="277.376078978619" r="1.9500000000000002" fill="#3cff96" style="animation-delay: 2.22s;"></circle><g style="animation-delay: 2.22s;"><rect x="271.459852795017" y="283.376078978619" width="24" height="21" rx="9" fill="url(#parl-sil-r0)"></rect><circle cx="283.459852795017" cy="275.876078978619" r="6.8999999999999995" fill="url(#parl-sil-r0)"></circle><path d="M278.05985279501704 271.376078978619 a6.8999999999999995 6.8999999999999995 0 0 1 10.5 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.35"></path></g></g><g><circle class="parl-vote" cx="250.73741141278495" cy="275.511458619814" r="1.9500000000000002" fill="#3cff96" style="animation-delay: 3.33s;"></circle><g style="animation-delay: 3.33s;"><rect x="235.3380205618787" y="281.511458619814" width="24" height="21" rx="9" fill="url(#parl-sil-r0)"></rect><circle cx="247.3380205618787" cy="274.011458619814" r="6.8999999999999995" fill="url(#parl-sil-r0)"></circle><path d="M241.9380205618787 269.511458619814 a6.8999999999999995 6.8999999999999995 0 0 1 10.5 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.35"></path></g></g><g><circle class="parl-vote" cx="217.09841395524455" cy="272.42748526925016" r="1.9500000000000002" fill="#ff5a4a" style="animation-delay: 4.44s;"></circle><g style="animation-delay: 4.44s;"><rect x="200.0480293640909" y="278.42748526925016" width="24" height="21" rx="9" fill="url(#parl-sil-r0)"></rect><circle cx="212.0480293640909" cy="270.92748526925016" r="6.8999999999999995" fill="url(#parl-sil-r0)"></circle><path d="M206.6480293640909 266.42748526925016 a6.8999999999999995 6.8999999999999995 0 0 1 10.5 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.35"></path></g></g><g><circle class="parl-vote" cx="184.63744333562653" cy="268.1594645379879" r="1.9500000000000002" fill="#3cff96" style="animation-delay: 5.55s;"></circle><g style="animation-delay: 5.55s;"><rect x="165.9938822723444" y="274.1594645379879" width="24" height="21" rx="9" fill="url(#parl-sil-r0)"></rect><circle cx="177.9938822723444" cy="266.6594645379879" r="6.8999999999999995" fill="url(#parl-sil-r0)"></circle><path d="M172.5938822723444 262.1594645379879 a6.8999999999999995 6.8999999999999995 0 0 1 10.5 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.35"></path></g></g><g><circle class="parl-vote" cx="153.72611573638986" cy="262.7562571205948" r="1.9500000000000002" fill="#3cff96" style="animation-delay: 0.37s;"></circle><g class="parl-bob" style="animation-delay: 0.37s;"><rect x="133.56543430013906" y="268.7562571205948" width="24" height="21" rx="9" fill="url(#parl-sil-r0)"></rect><circle cx="145.56543430013906" cy="261.2562571205948" r="6.8999999999999995" fill="url(#parl-sil-r0)"></circle><path d="M140.16543430013905 256.7562571205948 a6.8999999999999995 6.8999999999999995 0 0 1 10.5 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.35"></path></g></g><g><circle class="parl-vote" cx="124.7183068839189" cy="256.2797194334119" r="1.9500000000000002" fill="#ff5a4a" style="animation-delay: 1.48s;"></circle><g style="animation-delay: 1.48s;"><rect x="103.13392930766952" y="262.2797194334119" width="24" height="21" rx="9" fill="url(#parl-sil-r0)"></rect><circle cx="115.13392930766952" cy="254.7797194334119" r="6.8999999999999995" fill="url(#parl-sil-r0)"></circle><path d="M109.73392930766951 250.2797194334119 a6.8999999999999995 6.8999999999999995 0 0 1 10.5 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.35"></path></g></g><g><circle class="parl-vote" cx="97.94610084660403" cy="248.8039954766008" r="1.9500000000000002" fill="#3cff96" style="animation-delay: 2.59s;"></circle><g style="animation-delay: 2.59s;"><rect x="75.04774996790974" y="254.8039954766008" width="24" height="21" rx="9" fill="url(#parl-sil-r0)"></rect><circle cx="87.04774996790974" cy="247.3039954766008" r="6.8999999999999995" fill="url(#parl-sil-r0)"></circle><path d="M81.64774996790973 242.8039954766008 a6.8999999999999995 6.8999999999999995 0 0 1 10.5 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.35"></path></g></g><g><circle class="parl-vote" cx="73.71598830582889" cy="240.41466802679787" r="1.9500000000000002" fill="#ff5a4a" style="animation-delay: 3.7s;"></circle><g style="animation-delay: 3.7s;"><rect x="49.62842944967326" y="246.41466802679787" width="24" height="21" rx="9" fill="url(#parl-sil-r0)"></rect><circle cx="61.62842944967326" cy="238.91466802679787" r="6.8999999999999995" fill="url(#parl-sil-r0)"></circle><path d="M56.228429449673264 234.41466802679787 a6.8999999999999995 6.8999999999999995 0 0 1 10.5 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.35"></path></g></g><g><circle class="parl-vote" cx="52.305357822412475" cy="231.20777887760306" r="1.9500000000000002" fill="#ff5a4a" style="animation-delay: 4.81s;"></circle><g style="animation-delay: 4.81s;"><rect x="27.166970476273207" y="237.20777887760306" width="24" height="21" rx="9" fill="url(#parl-sil-r0)"></rect><circle cx="39.16697047627321" cy="229.70777887760306" r="6.8999999999999995" fill="url(#parl-sil-r0)"></circle><path d="M33.76697047627321 225.20777887760306 a6.8999999999999995 6.8999999999999995 0 0 1 10.5 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.35"></path></g></g><g><circle class="parl-vote" cx="33.95932026680623" cy="221.28872934427682" r="1.9500000000000002" fill="#3cff96" style="animation-delay: 5.92s;"></circle><g class="parl-bob" style="animation-delay: 5.92s;"><rect x="7.920513899532921" y="227.28872934427682" width="24" height="21" rx="9" fill="url(#parl-sil-r0)"></rect><circle cx="19.92051389953292" cy="219.78872934427682" r="6.8999999999999995" fill="url(#parl-sil-r0)"></circle><path d="M14.52051389953292 215.28872934427682 a6.8999999999999995 6.8999999999999995 0 0 1 10.5 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.35"></path></g></g><g><circle class="parl-vote" cx="18.88790276726712" cy="210.7710736197727" r="1.9500000000000002" fill="#ff5a4a" style="animation-delay: 0.74s;"></circle><g style="animation-delay: 0.74s;"><rect x="-7.890605072376218" y="216.7710736197727" width="24" height="21" rx="9" fill="url(#parl-sil-r0)"></rect><circle cx="4.109394927623782" cy="209.2710736197727" r="6.8999999999999995" fill="url(#parl-sil-r0)"></circle><path d="M-1.2906050723762181 204.7710736197727 a6.8999999999999995 6.8999999999999995 0 0 1 10.5 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.35"></path></g></g><g><circle class="parl-vote" cx="7.263644299941291" cy="199.77521879587354" r="1.9500000000000002" fill="#3cff96" style="animation-delay: 1.85s;"></circle><g style="animation-delay: 1.85s;"><rect x="-20.085379292699656" y="205.77521879587354" width="24" height="21" rx="9" fill="url(#parl-sil-r0)"></rect><circle cx="-8.085379292699656" cy="198.27521879587354" r="6.8999999999999995" fill="url(#parl-sil-r0)"></circle><path d="M-13.485379292699657 193.77521879587354 a6.8999999999999995 6.8999999999999995 0 0 1 10.5 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.35"></path></g></g><g><circle class="parl-vote" cx="-0.7803795532312847" cy="188.42704643171112" r="1.9500000000000002" fill="#3cff96" style="animation-delay: 2.96s;"></circle><g style="animation-delay: 2.96s;"><rect x="-28.52420186259235" y="194.42704643171112" width="24" height="21" rx="9" fill="url(#parl-sil-r0)"></rect><circle cx="-16.52420186259235" cy="186.92704643171112" r="6.8999999999999995" fill="url(#parl-sil-r0)"></circle><path d="M-21.924201862592348 182.42704643171112 a6.8999999999999995 6.8999999999999995 0 0 1 10.5 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.35"></path></g></g><path d="M662 196 A342 109 0 0 1 -22 196" fill="none" stroke="url(#parl-bench-r0)" stroke-width="15.600000000000001"></path><path d="M662 188.2 A342 109 0 0 1 -22 188.2" fill="none" stroke="#e0a868" stroke-opacity="0.35" stroke-width="1"></path></g><g><path d="M708 182 A388 120 0 0 1 -68 182" fill="none" stroke="#2a170c" stroke-width="15.8"></path><path d="M708 175.1 A388 120 0 0 1 -68 175.1" fill="none" stroke="#b47a46" stroke-opacity="0.45" stroke-width="1"></path><g><circle class="parl-vote" cx="702.2561712370018" cy="189.22874877570388" r="2.262" fill="#ff5a4a" style="animation-delay: 1.11s;"></circle><g style="animation-delay: 1.11s;"><rect x="706.0697049541824" y="196.18874877570389" width="27.84" height="24.36" rx="10.44" fill="url(#parl-sil-r0)"></rect><circle cx="719.9897049541823" cy="187.48874877570387" r="8.004" fill="url(#parl-sil-r0)"></circle><path d="M713.7257049541823 182.26874877570387 a8.004 8.004 0 0 1 12.18 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.566"></path></g></g><g><circle class="parl-vote" cx="694.4034805154591" cy="201.2376576498436" r="2.262" fill="#3cff96" style="animation-delay: 2.22s;"></circle><g style="animation-delay: 2.22s;"><rect x="697.8527141476196" y="208.19765764984362" width="27.84" height="24.36" rx="10.44" fill="url(#parl-sil-r0)"></rect><circle cx="711.7727141476196" cy="199.4976576498436" r="8.004" fill="url(#parl-sil-r0)"></circle><path d="M705.5087141476196 194.2776576498436 a8.004 8.004 0 0 1 12.18 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.566"></path></g></g><g><circle class="parl-vote" cx="683.2985896131885" cy="212.94569165948226" r="2.262" fill="#3cff96" style="animation-delay: 3.33s;"></circle><g class="parl-bob" style="animation-delay: 3.33s;"><rect x="686.2326478942127" y="219.90569165948227" width="27.84" height="24.36" rx="10.44" fill="url(#parl-sil-r0)"></rect><circle cx="700.1526478942127" cy="211.20569165948226" r="8.004" fill="url(#parl-sil-r0)"></circle><path d="M693.8886478942127 205.98569165948226 a8.004 8.004 0 0 1 12.18 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.566"></path></g></g><g><circle class="parl-vote" cx="669.0379595143389" cy="224.25115070752224" r="2.262" fill="#ff5a4a" style="animation-delay: 4.44s;"></circle><g style="animation-delay: 4.44s;"><rect x="671.3104421722206" y="231.21115070752225" width="27.84" height="24.36" rx="10.44" fill="url(#parl-sil-r0)"></rect><circle cx="685.2304421722206" cy="222.51115070752223" r="8.004" fill="url(#parl-sil-r0)"></circle><path d="M678.9664421722206 217.29115070752223 a8.004 8.004 0 0 1 12.18 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.566"></path></g></g><g><circle class="parl-vote" cx="651.7454630625092" cy="235.0558316044295" r="2.262" fill="#3cff96" style="animation-delay: 5.55s;"></circle><g style="animation-delay: 5.55s;"><rect x="653.2157165035535" y="242.0158316044295" width="27.84" height="24.36" rx="10.44" fill="url(#parl-sil-r0)"></rect><circle cx="667.1357165035535" cy="233.3158316044295" r="8.004" fill="url(#parl-sil-r0)"></circle><path d="M660.8717165035534 228.0958316044295 a8.004 8.004 0 0 1 12.18 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.566"></path></g></g><g><circle class="parl-vote" cx="631.5713089577055" cy="245.2658810956423" r="2.262" fill="#ff5a4a" style="animation-delay: 0.37s;"></circle><g style="animation-delay: 0.37s;"><rect x="632.105648033063" y="252.2258810956423" width="27.84" height="24.36" rx="10.44" fill="url(#parl-sil-r0)"></rect><circle cx="646.0256480330629" cy="243.5258810956423" r="8.004" fill="url(#parl-sil-r0)"></circle><path d="M639.7616480330629 238.3058810956423 a8.004 8.004 0 0 1 12.18 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.566"></path></g></g><g><circle class="parl-vote" cx="608.6907369907949" cy="254.79261110391622" r="2.262" fill="#ff5a4a" style="animation-delay: 1.48s;"></circle><g style="animation-delay: 1.48s;"><rect x="608.163606232636" y="261.7526111039162" width="27.84" height="24.36" rx="10.44" fill="url(#parl-sil-r0)"></rect><circle cx="622.0836062326359" cy="253.0526111039162" r="8.004" fill="url(#parl-sil-r0)"></circle><path d="M615.8196062326359 247.8326111039162 a8.004 8.004 0 0 1 12.18 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.566"></path></g></g><g><circle class="parl-vote" cx="583.3024958491127" cy="263.5532691051239" r="2.262" fill="#3cff96" style="animation-delay: 2.59s;"></circle><g class="parl-bob" style="animation-delay: 2.59s;"><rect x="581.5975600895355" y="270.51326910512387" width="27.84" height="24.36" rx="10.44" fill="url(#parl-sil-r0)"></rect><circle cx="595.5175600895354" cy="261.8132691051239" r="8.004" fill="url(#parl-sil-r0)"></circle><path d="M589.2535600895354 256.5932691051239 a8.004 8.004 0 0 1 12.18 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.566"></path></g></g><g><circle class="parl-vote" cx="555.6271167155301" cy="271.4717569457558" r="2.262" fill="#ff5a4a" style="animation-delay: 3.7s;"></circle><g style="animation-delay: 3.7s;"><rect x="552.6382716147042" y="278.4317569457558" width="27.84" height="24.36" rx="10.44" fill="url(#parl-sil-r0)"></rect><circle cx="566.5582716147042" cy="269.7317569457558" r="8.004" fill="url(#parl-sil-r0)"></circle><path d="M560.2942716147041 264.51175694575585 a8.004 8.004 0 0 1 12.18 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.566"></path></g></g><g><circle class="parl-vote" cx="525.9049976571166" cy="278.47929185821863" r="2.262" fill="#3cff96" style="animation-delay: 4.81s;"></circle><g style="animation-delay: 4.81s;"><rect x="521.5372913628592" y="285.4392918582186" width="27.84" height="24.36" rx="10.44" fill="url(#parl-sil-r0)"></rect><circle cx="535.4572913628591" cy="276.7392918582186" r="8.004" fill="url(#parl-sil-r0)"></circle><path d="M529.1932913628591 271.51929185821865 a8.004 8.004 0 0 1 12.18 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.566"></path></g></g><g><circle class="parl-vote" cx="494.3943154430632" cy="284.5150039321222" r="2.262" fill="#3cff96" style="animation-delay: 5.92s;"></circle><g style="animation-delay: 5.92s;"><rect x="488.5647733759888" y="291.4750039321222" width="27.84" height="24.36" rx="10.44" fill="url(#parl-sil-r0)"></rect><circle cx="502.4847733759888" cy="282.7750039321222" r="8.004" fill="url(#parl-sil-r0)"></circle><path d="M496.2207733759888 277.55500393212225 a8.004 8.004 0 0 1 12.18 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.566"></path></g></g><g><circle class="parl-vote" cx="461.3687829305537" cy="289.52646485170794" r="2.262" fill="#ff5a4a" style="animation-delay: 0.74s;"></circle><g style="animation-delay: 0.74s;"><rect x="454.0071285304248" y="296.4864648517079" width="27.84" height="24.36" rx="10.44" fill="url(#parl-sil-r0)"></rect><circle cx="467.9271285304248" cy="287.78646485170793" r="8.004" fill="url(#parl-sil-r0)"></circle><path d="M461.6631285304248 282.56646485170796 a8.004 8.004 0 0 1 12.18 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.566"></path></g></g><g><circle class="parl-vote" cx="427.11527149871625" cy="293.47014330662057" r="2.262" fill="#3cff96" style="animation-delay: 1.85s;"></circle><g class="parl-bob" style="animation-delay: 1.85s;"><rect x="418.1645366713371" y="300.43014330662055" width="27.84" height="24.36" rx="10.44" fill="url(#parl-sil-r0)"></rect><circle cx="432.0845366713371" cy="291.73014330662056" r="8.004" fill="url(#parl-sil-r0)"></circle><path d="M425.8205366713371 286.5101433066206 a8.004 8.004 0 0 1 12.18 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.566"></path></g></g><g><circle class="parl-vote" cx="391.93131918303" cy="296.31178312016505" r="2.262" fill="#3cff96" style="animation-delay: 2.96s;"></circle><g style="animation-delay: 2.96s;"><rect x="381.3483391451293" y="303.271783120165" width="27.84" height="24.36" rx="10.44" fill="url(#parl-sil-r0)"></rect><circle cx="395.2683391451293" cy="294.57178312016504" r="8.004" fill="url(#parl-sil-r0)"></circle><path d="M389.0043391451293 289.35178312016507 a8.004 8.004 0 0 1 12.18 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.566"></path></g></g><g><circle class="parl-vote" cx="356.12254615540763" cy="298.0267008104932" r="2.262" fill="#ff5a4a" style="animation-delay: 4.07s;"></circle><g style="animation-delay: 4.07s;"><rect x="343.8783343791121" y="304.9867008104932" width="27.84" height="24.36" rx="10.44" fill="url(#parl-sil-r0)"></rect><circle cx="357.79833437911213" cy="296.2867008104932" r="8.004" fill="url(#parl-sil-r0)"></circle><path d="M351.5343343791121 291.0667008104932 a8.004 8.004 0 0 1 12.18 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.566"></path></g></g><g><circle class="parl-vote" cx="283.8774538445924" cy="298.0267008104932" r="2.262" fill="#ff5a4a" style="animation-delay: 0s;"></circle><g style="animation-delay: 0s;"><rect x="268.2816656208879" y="304.9867008104932" width="27.84" height="24.36" rx="10.44" fill="url(#parl-sil-r0)"></rect><circle cx="282.2016656208879" cy="296.2867008104932" r="8.004" fill="url(#parl-sil-r0)"></circle><path d="M275.9376656208879 291.0667008104932 a8.004 8.004 0 0 1 12.18 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.566"></path></g></g><g><circle class="parl-vote" cx="248.06868081697" cy="296.31178312016505" r="2.262" fill="#ff5a4a" style="animation-delay: 1.11s;"></circle><g style="animation-delay: 1.11s;"><rect x="230.81166085487067" y="303.271783120165" width="27.84" height="24.36" rx="10.44" fill="url(#parl-sil-r0)"></rect><circle cx="244.73166085487065" cy="294.57178312016504" r="8.004" fill="url(#parl-sil-r0)"></circle><path d="M238.46766085487064 289.35178312016507 a8.004 8.004 0 0 1 12.18 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.566"></path></g></g><g><circle class="parl-vote" cx="212.88472850128375" cy="293.47014330662057" r="2.262" fill="#3cff96" style="animation-delay: 2.22s;"></circle><g class="parl-bob" style="animation-delay: 2.22s;"><rect x="193.9954633286629" y="300.43014330662055" width="27.84" height="24.36" rx="10.44" fill="url(#parl-sil-r0)"></rect><circle cx="207.9154633286629" cy="291.73014330662056" r="8.004" fill="url(#parl-sil-r0)"></circle><path d="M201.65146332866289 286.5101433066206 a8.004 8.004 0 0 1 12.18 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.566"></path></g></g><g><circle class="parl-vote" cx="178.63121706944622" cy="289.52646485170794" r="2.262" fill="#ff5a4a" style="animation-delay: 3.33s;"></circle><g style="animation-delay: 3.33s;"><rect x="158.1528714695752" y="296.4864648517079" width="27.84" height="24.36" rx="10.44" fill="url(#parl-sil-r0)"></rect><circle cx="172.07287146957518" cy="287.78646485170793" r="8.004" fill="url(#parl-sil-r0)"></circle><path d="M165.80887146957517 282.56646485170796 a8.004 8.004 0 0 1 12.18 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.566"></path></g></g><g><circle class="parl-vote" cx="145.60568455693675" cy="284.5150039321222" r="2.262" fill="#3cff96" style="animation-delay: 4.44s;"></circle><g style="animation-delay: 4.44s;"><rect x="123.59522662401115" y="291.4750039321222" width="27.84" height="24.36" rx="10.44" fill="url(#parl-sil-r0)"></rect><circle cx="137.51522662401115" cy="282.7750039321222" r="8.004" fill="url(#parl-sil-r0)"></circle><path d="M131.25122662401114 277.55500393212225 a8.004 8.004 0 0 1 12.18 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.566"></path></g></g><g><circle class="parl-vote" cx="114.09500234288348" cy="278.4792918582187" r="2.262" fill="#3cff96" style="animation-delay: 5.55s;"></circle><g style="animation-delay: 5.55s;"><rect x="90.62270863714097" y="285.43929185821867" width="27.84" height="24.36" rx="10.44" fill="url(#parl-sil-r0)"></rect><circle cx="104.54270863714098" cy="276.7392918582187" r="8.004" fill="url(#parl-sil-r0)"></circle><path d="M98.27870863714098 271.5192918582187 a8.004 8.004 0 0 1 12.18 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.566"></path></g></g><g><circle class="parl-vote" cx="84.3728832844699" cy="271.4717569457558" r="2.262" fill="#ff5a4a" style="animation-delay: 0.37s;"></circle><g style="animation-delay: 0.37s;"><rect x="59.521728385295845" y="278.4317569457558" width="27.84" height="24.36" rx="10.44" fill="url(#parl-sil-r0)"></rect><circle cx="73.44172838529585" cy="269.7317569457558" r="8.004" fill="url(#parl-sil-r0)"></circle><path d="M67.17772838529585 264.51175694575585 a8.004 8.004 0 0 1 12.18 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.566"></path></g></g><g><circle class="parl-vote" cx="56.697504150887255" cy="263.5532691051239" r="2.262" fill="#3cff96" style="animation-delay: 1.48s;"></circle><g class="parl-bob" style="animation-delay: 1.48s;"><rect x="30.562439910464505" y="270.51326910512387" width="27.84" height="24.36" rx="10.44" fill="url(#parl-sil-r0)"></rect><circle cx="44.48243991046451" cy="261.8132691051239" r="8.004" fill="url(#parl-sil-r0)"></circle><path d="M38.218439910464504 256.5932691051239 a8.004 8.004 0 0 1 12.18 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.566"></path></g></g><g><circle class="parl-vote" cx="31.309263009204926" cy="254.79261110391622" r="2.262" fill="#3cff96" style="animation-delay: 2.59s;"></circle><g style="animation-delay: 2.59s;"><rect x="3.9963937673639567" y="261.7526111039162" width="27.84" height="24.36" rx="10.44" fill="url(#parl-sil-r0)"></rect><circle cx="17.916393767363957" cy="253.0526111039162" r="8.004" fill="url(#parl-sil-r0)"></circle><path d="M11.652393767363957 247.8326111039162 a8.004 8.004 0 0 1 12.18 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.566"></path></g></g><g><circle class="parl-vote" cx="8.428691042294474" cy="245.2658810956423" r="2.262" fill="#ff5a4a" style="animation-delay: 3.7s;"></circle><g style="animation-delay: 3.7s;"><rect x="-19.945648033062966" y="252.2258810956423" width="27.84" height="24.36" rx="10.44" fill="url(#parl-sil-r0)"></rect><circle cx="-6.025648033062964" cy="243.5258810956423" r="8.004" fill="url(#parl-sil-r0)"></circle><path d="M-12.289648033062964 238.3058810956423 a8.004 8.004 0 0 1 12.18 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.566"></path></g></g><g><circle class="parl-vote" cx="-11.745463062509259" cy="235.05583160442947" r="2.262" fill="#3cff96" style="animation-delay: 4.81s;"></circle><g style="animation-delay: 4.81s;"><rect x="-41.05571650355351" y="242.01583160442948" width="27.84" height="24.36" rx="10.44" fill="url(#parl-sil-r0)"></rect><circle cx="-27.13571650355351" cy="233.31583160442946" r="8.004" fill="url(#parl-sil-r0)"></circle><path d="M-33.39971650355351 228.09583160442946 a8.004 8.004 0 0 1 12.18 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.566"></path></g></g><g><circle class="parl-vote" cx="-29.03795951433898" cy="224.25115070752219" r="2.262" fill="#ff5a4a" style="animation-delay: 5.92s;"></circle><g style="animation-delay: 5.92s;"><rect x="-59.15044217222065" y="231.2111507075222" width="27.84" height="24.36" rx="10.44" fill="url(#parl-sil-r0)"></rect><circle cx="-45.23044217222065" cy="222.51115070752218" r="8.004" fill="url(#parl-sil-r0)"></circle><path d="M-51.49444217222065 217.29115070752218 a8.004 8.004 0 0 1 12.18 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.566"></path></g></g><g><circle class="parl-vote" cx="-43.29858961318854" cy="212.9456916594822" r="2.262" fill="#ff5a4a" style="animation-delay: 0.74s;"></circle><g class="parl-bob" style="animation-delay: 0.74s;"><rect x="-74.07264789421275" y="219.90569165948222" width="27.84" height="24.36" rx="10.44" fill="url(#parl-sil-r0)"></rect><circle cx="-60.15264789421275" cy="211.2056916594822" r="8.004" fill="url(#parl-sil-r0)"></circle><path d="M-66.41664789421274 205.9856916594822 a8.004 8.004 0 0 1 12.18 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.566"></path></g></g><g><circle class="parl-vote" cx="-54.40348051545914" cy="201.2376576498436" r="2.262" fill="#3cff96" style="animation-delay: 1.85s;"></circle><g style="animation-delay: 1.85s;"><rect x="-85.69271414761958" y="208.19765764984362" width="27.84" height="24.36" rx="10.44" fill="url(#parl-sil-r0)"></rect><circle cx="-71.77271414761958" cy="199.4976576498436" r="8.004" fill="url(#parl-sil-r0)"></circle><path d="M-78.03671414761958 194.2776576498436 a8.004 8.004 0 0 1 12.18 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.566"></path></g></g><g><circle class="parl-vote" cx="-62.256171237001865" cy="189.22874877570382" r="2.262" fill="#ff5a4a" style="animation-delay: 2.96s;"></circle><g style="animation-delay: 2.96s;"><rect x="-93.90970495418235" y="196.18874877570383" width="27.84" height="24.36" rx="10.44" fill="url(#parl-sil-r0)"></rect><circle cx="-79.98970495418234" cy="187.4887487757038" r="8.004" fill="url(#parl-sil-r0)"></circle><path d="M-86.25370495418234 182.2687487757038 a8.004 8.004 0 0 1 12.18 0" fill="none" stroke="#f2c28a" stroke-opacity="0.55" stroke-width="1.566"></path></g></g><path d="M726 197.92 A406 132 0 0 1 -86 197.92" fill="none" stroke="url(#parl-bench-r0)" stroke-width="17.8"></path><path d="M726 189.02 A406 132 0 0 1 -86 189.02" fill="none" stroke="#e0a868" stroke-opacity="0.35" stroke-width="1"></path></g><rect y="300" width="640" height="60" fill="#0c0705" opacity="0.5"></rect></svg>
