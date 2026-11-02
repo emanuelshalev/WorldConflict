@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 import { IconFileText, IconX } from '@tabler/icons-react';
 import {
   type CountryFull,
@@ -110,7 +110,6 @@ export function MapActionMenu({ countryId, x, y, bounds, onClose }: Props) {
   useGameStore((s) => s.decisionChoices);
   const selectCountry = useGameStore((s) => s.selectCountry);
   const ref = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState<{ left: number; top: number; sheet?: boolean } | null>(null);
 
   // Place beside the click, flipped and clamped to stay inside the visible map
   useLayoutEffect(() => {
@@ -121,7 +120,10 @@ export function MapActionMenu({ countryId, x, y, bounds, onClose }: Props) {
     const pad = 8;
     // Too little map showing (phones): dock as a sheet at the bottom of the screen instead
     if (h > bounds.bottom - bounds.top - pad * 2 || w > bounds.right - bounds.left - pad * 2) {
-      setPos({ left: 0, top: 0, sheet: true });
+      el.classList.add('sheet');
+      el.style.left = '';
+      el.style.top = '';
+      el.style.visibility = '';
       return;
     }
     let left = x + 14;
@@ -130,7 +132,11 @@ export function MapActionMenu({ countryId, x, y, bounds, onClose }: Props) {
     let top = y - 28;
     if (top + h > bounds.bottom - pad) top = bounds.bottom - pad - h;
     top = Math.max(bounds.top + pad, top);
-    setPos({ left, top });
+    // Measured placement is applied straight to the element (no second render)
+    el.classList.remove('sheet');
+    el.style.left = `${left}px`;
+    el.style.top = `${top}px`;
+    el.style.visibility = '';
   }, [x, y, bounds.top, bounds.bottom, bounds.left, bounds.right, countryId]);
 
   // Escape closes the menu first (before the dossier or a drawer)
@@ -164,10 +170,10 @@ export function MapActionMenu({ countryId, x, y, bounds, onClose }: Props) {
   return (
     <div
       ref={ref}
-      className={`map-action-menu ${pos?.sheet ? 'sheet' : ''}`}
+      className="map-action-menu"
       role="menu"
       aria-label={`Orders for ${view.name}`}
-      style={pos?.sheet ? undefined : pos ? { left: pos.left, top: pos.top } : { left: x, top: y, visibility: 'hidden' }}
+      style={{ left: x, top: y, visibility: 'hidden' }}
       onPointerDown={(e) => e.stopPropagation()}
     >
       <div className="mam-head">

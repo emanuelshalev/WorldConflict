@@ -1813,3 +1813,63 @@ button {
   from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: none; }
 }
+
+/* Outcome map (scenes/OutcomeMap.tsx): 16:9 animated locator for the outcome reel */
+.outcome-map {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--r-md);
+  background: #060a12;
+  container-type: inline-size;
+  font-family: var(--font-ui);
+  isolation: isolate;
+}
+.outcome-map > svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.outcome-map .om-loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--text-3);
+  font-size: 12px;
+  background: radial-gradient(ellipse at 50% 45%, var(--ocean), #060a12);
+}
+.outcome-map .om-name {
+  position: absolute;
+  font-size: clamp(9px, 1.7cqw, 15px);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  color: var(--text-1);
+  text-shadow: 0 0 4px #000, 0 1px 2px #000, 0 0 10px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+}
+.outcome-map .om-name.home { color: #ffe2b0; }
+.outcome-map .om-label {
+  position: absolute;
+  left: 3%;
+  bottom: 5%;
+  max-width: 80%;
+  padding: 0.35em 0.7em;
+  font-size: clamp(10px, 1.9cqw, 16px);
+  font-weight: 600;
+  color: var(--text-1);
+  background: rgba(8, 12, 20, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--r-sm);
+  backdrop-filter: blur(6px);
+}
+.outcome-map .om-label.failed {
+  color: var(--text-2);
+  border-left-color: #6b7686;
+}
+.outcome-map.failed > svg { filter: saturate(0.75); }
