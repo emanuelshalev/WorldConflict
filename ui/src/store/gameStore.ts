@@ -383,6 +383,9 @@ export interface GameState {
   leaderStatements: LeaderStatement[];
   lastEvents: Array<{ id: string; title: string; description: string; severity: string; type: string; affectedCountries: string[] }>;
   showChronicle: boolean;
+  /** The news ticker along the bottom (remembered per browser). */
+  showTicker: boolean;
+  setShowTicker: (show: boolean) => void;
   setShowChronicle: (show: boolean) => void;
   showLogin: boolean;
   isDaily: boolean;
@@ -647,6 +650,21 @@ export const useGameStore = create<GameState>((set) => ({
   activeModal: null,
   activeAdvisorRole: null,
   mapLayer: 'relations',
+  showTicker: (() => {
+    try {
+      return localStorage.getItem('worldconflict.ticker') !== 'off';
+    } catch {
+      return true;
+    }
+  })(),
+  setShowTicker: (show) => {
+    try {
+      localStorage.setItem('worldconflict.ticker', show ? 'on' : 'off');
+    } catch {
+      /* storage unavailable */
+    }
+    set({ showTicker: show });
+  },
   debugMode: new URLSearchParams(window.location.search).get('debug') === '1',
 
   showSplash: true,
