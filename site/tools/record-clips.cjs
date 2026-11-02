@@ -24,10 +24,14 @@ const PARALLELS = [
 const KINDS = ['cabinet', 'tv_interview', 'press', 'parliament', 'econ_tv', 'field_visit', 'summit', 'signing', 'exec_order', 'address', 'war_room', 'deployment', 'airstrike', 'nuclear', 'covert', 'streets', 'election', 'disaster', 'ceasefire', 'un_vote'];
 const TILES = KINDS.map((k, i) => [`s-${k}`, { kind: k, home: ['USA', 'FRA', 'DEU', 'JPN', 'BRA', 'IND', 'GBR', 'UKR', 'ISR', 'TUR'][i % 10], other: ['CHN', 'RUS', 'IRN', 'PRK', 'VEN'][i % 5], mood: i % 3 === 0 ? 'good' : i % 3 === 1 ? 'bad' : 'neutral', bare: '1' }]);
 
+// Hero montage sources: bare, full width, no captions
+const HERO = [['address', 'USA', 'CHN'], ['war_room', 'TWN', 'CHN'], ['parliament', 'DEU', 'RUS'], ['airstrike', 'ISR', 'IRN'], ['summit', 'FRA', 'IND'], ['streets', 'FRA', 'DEU']].map(
+  ([k, home, other], i) => [`h-${i}`, { kind: k, home, other, mood: i % 2 ? 'bad' : 'neutral', bare: '1' }],
+);
 const only = process.argv[2];
 (async () => {
   const browser = await chromium.launch();
-  for (const [name, params] of [...PARALLELS, ...TILES]) {
+  for (const [name, params] of [...PARALLELS, ...TILES, ...HERO]) {
     if (only && !name.startsWith(only)) continue;
     const ctx = await browser.newContext({ viewport: { width: 1280, height: 720 }, recordVideo: { dir: TMP, size: { width: 1280, height: 720 } } });
     const page = await ctx.newPage();
@@ -40,10 +44,31 @@ const only = process.argv[2];
     const w = name.startsWith('s-') ? 640 : 1280;
     // Skip the first 1.2 s (page load), keep 6.5 s
     execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-ss', '1.2', '-i', raw, '-t', '6.5', '-vf', `scale=${w}:-2,fps=30`, '-c:v', 'libx264', '-preset', 'slow', '-crf', name.startsWith('s-') ? '30' : '27', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', '-an', mp4]);
-    execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-ss', '5.5', '-i', mp4, '-frames:v', '1', '-q:v', '4', path.join(OUT, `${name}.jpg`)]);
+    if (!name.startsWith('h-')) execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-ss', '5.5', '-i', mp4, '-frames:v', '1', '-q:v', '4', path.join(OUT, `${name}.jpg`)]);
     fs.unlinkSync(raw);
-    console.log(name, Math.round(fs.statSync(mp4).size / 1024) + 'KB');
+    // Scene tiles only ship as stills (the page's filmstrip); keep the clip size printed
+    const size = fs.statSync(mp4).size;
+    if (name.startsWith('s-')) fs.unlinkSync(mp4);
+    console.log(name, Math.round(size / 1024) + 'KB');
   }
   await browser.close();
   fs.rmSync(TMP, { recursive: true, force: true });
+  // Stitch the hero montage: 2.6 s of each, cross-faded, then drop the parts
+  const parts = HERO.map(([n]) => path.join(OUT, `${n}.mp4`)).filter((f) => fs.existsSync(f));
+  if (parts.length === HERO.length) {
+    const seg = 2.6;
+    const fade = 0.5;
+    const inputs = parts.flatMap((f) => ['-ss', '1.5', '-t', String(seg), '-i', f]);
+    let chain = '';
+    let last = '[0:v]';
+    for (let i = 1; i < parts.length; i++) {
+      const out = i === parts.length - 1 ? '[v]' : `[x${i}]`;
+      chain += `${last}[${i}:v]xfade=transition=fade:duration=${fade}:offset=${(i * (seg - fade)).toFixed(2)}${out};`;
+      last = out;
+    }
+    execFileSync('ffmpeg', ['-y', '-loglevel', 'error', ...inputs, '-filter_complex', chain.replace(/;$/, ''), '-map', '[v]', '-c:v', 'libx264', '-preset', 'slow', '-crf', '30', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', '-an', path.join(OUT, 'hero.mp4')]);
+    execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-ss', '0.5', '-i', path.join(OUT, 'hero.mp4'), '-frames:v', '1', '-q:v', '4', path.join(OUT, 'hero.jpg')]);
+    for (const f of parts) fs.unlinkSync(f);
+    console.log('hero', Math.round(fs.statSync(path.join(OUT, 'hero.mp4')).size / 1024) + 'KB');
+  }
 })();

@@ -14,7 +14,7 @@ Opening `site/index.html` directly from disk also works; the page has no `fetch(
 ## Editing content
 
 - **Reality vs game:** the `PARALLELS` table at the top of `main.js` (real event, date, place, game moment, fiction note). `content/parallels.json` keeps the sources and verification notes for each real event; keep both in step. Locator maps come from `node site/tools/locator-maps.mjs` (Natural Earth borders, newsprint style).
-- **Scene and game footage:** recorded from the running game. Start the dev servers (`npm run dev`), then `node site/tools/record-clips.cjs` (the 9 parallel clips and 20 scene tiles, from the UI's `#clip` route) and `node site/tools/record-game.cjs` (the globe and the outcome reel, plus the desk, scoreboard and Chronicle stills). Needs ffmpeg. Output: `assets/clips/` and `assets/img/`.
+- **Scene and game footage:** recorded from the running game. Start the dev servers (`npm run dev`), then `node site/tools/record-clips.cjs` (the 9 parallel clips and 20 scene tiles, from the UI's `#clip` route) and `node site/tools/record-game.cjs` (the globe and the outcome reel, plus the desk, scoreboard and Chronicle stills). Needs ffmpeg. Output: `assets/clips/` and `assets/img/`. `record-clips.cjs` also stitches the hero montage (`hero.mp4`) from six bare scenes; `record-game.cjs flow` records the timeline footage (`inspect.mp4`, `execute.mp4`, `briefing.jpg`, `advisors.jpg`). Scene tiles ship as stills only.
 - **Page copy:** written straight into `index.html`, taken from `content/copy.md`.
 - **Launch config:** one object at the top of `main.js`:
 
