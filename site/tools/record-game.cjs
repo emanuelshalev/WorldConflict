@@ -39,6 +39,44 @@ const only = process.argv[2];
 (async () => {
   const browser = await chromium.launch();
 
+  // Hero: the globe on the page's light background, one seamless full turn
+  if (only === 'globe') {
+    const page = await newGame(browser);
+    await page.setViewportSize({ width: 960, height: 960 });
+    await page.addStyleTag({
+      content: `.hud,.desk,.objective-chip,.mission-chip,.ticker,.maplibregl-control-container,.map-container > div:not(:first-child),.map-action-menu,.reel,.overlay{display:none!important}
+        .game{--under-top:0px;--under-bottom:0px;background:#f7f4ee!important} .game .map-stage{grid-row:1/-1}
+        .map-container{background:#f7f4ee!important} .map-container::before{display:none!important}`,
+    });
+    await page.evaluate(() => {
+      const m = window.__wcMap;
+      m.resize();
+      m.setPadding({ top: 0, bottom: 0, left: 0, right: 0 });
+      // Light, colourful globe: pale ocean, warm land, soft atmosphere matching the page
+      m.setPaintProperty('ocean', 'background-color', '#cfe2f7');
+      m.setSky({ 'sky-color': '#f7f4ee', 'horizon-color': '#ffffff', 'fog-color': '#f7f4ee', 'sky-horizon-blend': 0.5, 'horizon-fog-blend': 0.6, 'fog-ground-blend': 0.9, 'atmosphere-blend': 0.85 });
+      if (m.getLayer('land-fill')) m.setPaintProperty('land-fill', 'fill-color', '#e7dfcf');
+      if (m.getLayer('land-borders')) m.setPaintProperty('land-borders', 'line-color', '#ffffff');
+      if (m.getLayer('graticule')) m.setPaintProperty('graticule', 'line-color', '#b7cde8');
+      if (m.getLayer('country-fills')) m.setPaintProperty('country-fills', 'fill-opacity', 0.92);
+      if (m.getLayer('country-borders')) m.setPaintProperty('country-borders', 'line-color', ['case', ['get', 'isPlayer'], '#d9480f', '#ffffff']);
+      for (const id of ['country-labels', 'capitals', 'capital-dots']) if (m.getLayer(id)) m.setLayoutProperty(id, 'visibility', 'none');
+      m.jumpTo({ center: [20, 24], zoom: 1.55, bearing: 0, pitch: 0 });
+    });
+    await page.waitForTimeout(2500);
+    await captureClip(page, {
+      seconds: 30,
+      fps: 24,
+      out: clipPath('globe.mp4'),
+      width: 900,
+      crf: 28,
+      onFrame: (f, _t, total) => page.evaluate((lng) => window.__wcMap.jumpTo({ center: [lng, 22 + 6 * Math.sin((lng - 20) * Math.PI / 180)] }), 20 + (360 * f) / total),
+    });
+    poster(clipPath('globe.mp4'), clipPath('globe.jpg'), 2);
+    await page.close();
+    console.log('globe done');
+  }
+
   // Step 1: inspect the world. Walk the map layers, then open a country's order menu.
   if (!only || only === 'inspect') {
     const page = await newGame(browser);

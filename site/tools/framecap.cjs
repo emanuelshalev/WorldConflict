@@ -102,7 +102,7 @@ async function installClock(page) {
  * Capture `seconds` of footage at `fps` into `out` (mp4). `script` is an optional list of
  * [atSecond, async () => {...}] steps run between frames (clicks, camera moves).
  */
-async function captureClip(page, { seconds, fps = 30, out, width, crf = 26, script = [], clip }) {
+async function captureClip(page, { seconds, fps = 30, out, width, crf = 26, script = [], clip, onFrame }) {
   const dir = fs.mkdtempSync(path.join(path.dirname(out), '.frames-'));
   const steps = [...script].sort((a, b) => a[0] - b[0]);
   const total = Math.round(seconds * fps);
@@ -110,6 +110,7 @@ async function captureClip(page, { seconds, fps = 30, out, width, crf = 26, scri
   for (let f = 0; f < total; f++) {
     const t = f / fps;
     while (steps.length && steps[0][0] <= t) await steps.shift()[1]();
+    if (onFrame) await onFrame(f, t, total);
     await page.evaluate((ms) => window.__clockAdvance(ms), 1000 / fps);
     await page.screenshot({ path: path.join(dir, `f${String(f).padStart(5, '0')}.jpg`), type: 'jpeg', quality: 90, ...(clip ? { clip } : {}) });
   }

@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>World Conflict: Geopolitical Strategy Game, November 2026</title>
   <meta name="description" content="Lead one of 41 nations through the real crises of November 2026, from Hormuz to Taiwan. A turn-based strategy game where every decision plays out on the evening news." />
-  <meta name="theme-color" content="#05070d" />
-  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#f7f4ee" />
+  <meta name="color-scheme" content="light" />
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
   <link rel="canonical" href="https://emanuelshalev.github.io/WorldConflict/" />
 
@@ -65,28 +65,39 @@
   <main id="main">
     <!-- ============ HERO ============ -->
     <section class="hero" aria-labelledby="hero-title">
-      <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="assets/clips/hero.jpg" aria-hidden="true">
-        <source src="assets/clips/hero.mp4" type="video/mp4" />
-      </video>
-      <div class="hero-shade" aria-hidden="true"></div>
-      <div class="hero-inner">
-        <h1 id="hero-title">World Conflict</h1>
-        <p class="hero-what">A realistic geopolitical simulation game. Choose a country, become its leader, and play out today's crises your way.</p>
-        <p class="hero-sub">Step into the office of a president, prime minister or supreme leader in the world as it stands in November 2026. Answer the crisis, give your orders, then watch the month play out on the evening news.</p>
-        <p class="slogan">The news is real. <em>The next move is yours.</em></p>
-        <div class="cta-row">
-          <a class="btn btn-primary btn-lg js-play-link" href="#" hidden>Play now</a>
-          <a class="btn btn-primary btn-lg" href="#how">How it plays</a>
-          <a class="btn btn-ghost btn-lg" href="#parallels">Real events in the game</a>
+      <div class="hero-glow" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <div class="hero-grid">
+        <div class="hero-inner">
+          <p class="eyebrow"><span class="live-dot" aria-hidden="true"></span>November 2026 · the world as it stands today</p>
+          <h1 id="hero-title">World Conflict</h1>
+          <p class="hero-what">A realistic geopolitical simulation game. Choose a country, become its leader, and play out today's crises your way.</p>
+          <p class="hero-sub">Step into the office of a president, prime minister or supreme leader in the world as it stands in November 2026. Answer the crisis, give your orders, then watch the month play out on the evening news.</p>
+          <p class="slogan">The news is real. <em>The next move is yours.</em></p>
+          <div class="cta-row">
+            <a class="btn btn-primary btn-lg js-play-link" href="#" hidden>Play now</a>
+            <a class="btn btn-primary btn-lg" href="#how">How it plays</a>
+            <a class="btn btn-ghost btn-lg" href="#parallels">Real events in the game</a>
+          </div>
+          <p class="status js-status"><i aria-hidden="true"></i>In development. Playable release coming soon.</p>
         </div>
-        <ul class="hero-facts" aria-label="Key facts">
-          <li><b>41</b> playable countries</li>
-          <li><b>8</b> real crises to start from</li>
-          <li><b>3</b> game modes, 15 minutes to 10 years</li>
-          <li><b>40</b> AI governments acting on their own</li>
-        </ul>
-        <p class="status js-status"><i aria-hidden="true"></i>In development. Playable release coming soon.</p>
+        <figure class="hero-globe">
+          <video autoplay muted loop playsinline preload="auto" poster="assets/clips/globe.jpg" aria-label="The game's globe turning: countries coloured by their relations, with active wars drawn as arcs.">
+            <source src="assets/clips/globe.mp4" type="video/mp4" />
+          </video>
+          <figcaption class="globe-legend" aria-hidden="true">
+            <span><i style="background:#f2a93b"></i>You</span>
+            <span><i style="background:#3d8bfd"></i>Friendly</span>
+            <span><i style="background:#f26b3a"></i>Hostile</span>
+            <span><i class="arc"></i>Active war</span>
+          </figcaption>
+        </figure>
       </div>
+      <ul class="hero-facts container" aria-label="Key facts">
+        <li><b>41</b><span>playable countries</span></li>
+        <li><b>8</b><span>real crises to start from</span></li>
+        <li><b>3</b><span>game modes, 15 minutes to 10 years</span></li>
+        <li><b>40</b><span>AI governments acting on their own</span></li>
+      </ul>
     </section>
 
     <!-- ============ HOW IT PLAYS: vertical timeline ============ -->
