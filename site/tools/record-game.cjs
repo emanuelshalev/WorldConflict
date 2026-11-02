@@ -60,12 +60,12 @@ const only = process.argv[2];
       if (m.getLayer('graticule')) m.setPaintProperty('graticule', 'line-color', '#b7cde8');
       if (m.getLayer('country-fills')) m.setPaintProperty('country-fills', 'fill-opacity', 0.92);
       if (m.getLayer('country-borders')) m.setPaintProperty('country-borders', 'line-color', ['case', ['get', 'isPlayer'], '#d9480f', '#ffffff']);
-      for (const id of ['country-labels', 'capitals', 'capital-dots']) if (m.getLayer(id)) m.setLayoutProperty(id, 'visibility', 'none');
-      m.jumpTo({ center: [20, 24], zoom: 1.55, bearing: 0, pitch: 0 });
+      for (const id of ['country-labels', 'capitals', 'capital-dots', 'country-icons', 'pulse-labels', 'order-heads', 'deploy-units']) if (m.getLayer(id)) m.setLayoutProperty(id, 'visibility', 'none');
+      m.jumpTo({ center: [20, 24], zoom: 2.15, bearing: 0, pitch: 0 });
     });
     await page.waitForTimeout(2500);
     await captureClip(page, {
-      seconds: 30,
+      seconds: Number(process.env.GLOBE_SECONDS ?? 30),
       fps: 24,
       out: clipPath('globe.mp4'),
       width: 900,
