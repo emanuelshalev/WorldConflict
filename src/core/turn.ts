@@ -1,6 +1,7 @@
 import { actionCostM, actionCostPC, PC_CAP, politicalCapitalIncome } from "./costs.js";
 import { applyEffects, raiseCrisis, runDirector, scheduleFollowUp } from "./crises.js";
 import { EventEngine } from "./events.js";
+import { generateAgenda, MEETING_SLOTS } from "./meetings.js";
 import { generateNewspaper } from "./newspaper.js";
 import { computeOutcome, earlyFailure } from "./objectives.js";
 import { failStory, ledgerEntry, orderFacts, orderStory, snapshot } from "./outcomes.js";
@@ -445,6 +446,8 @@ export class TurnEngine {
     world.turn += 1;
     world.date = advanceMonth(world.date);
     world.eventQueue = events;
+    // Next month's calendar, built from the world as it now stands
+    world.agenda = world.gameOver ? [] : generateAgenda(world);
 
     return {
       newState: world,
@@ -491,6 +494,28 @@ export class TurnEngine {
       });
       world.pendingDecisions = world.pendingDecisions.filter((d) => d.id !== pending.id);
     }
+
+    // The calendar: the player attends at most MEETING_SLOTS meetings; the rest go to a deputy
+    let attended = 0;
+    for (const meeting of world.agenda) {
+      const picked = choices.find((c) => c.decisionId === meeting.id);
+      const deputy = meeting.options.find((o) => o.id === meeting.defaultOptionId);
+      let option = picked ? meeting.options.find((o) => o.id === picked.optionId) : undefined;
+      if (option && option !== deputy) {
+        if (attended >= MEETING_SLOTS) option = undefined;
+        else attended++;
+      }
+      option ??= deputy;
+      if (!option) continue;
+      applyEffects(world, player, option.effects);
+      world.globalTension = clamp01(world.globalTension + option.tensionDelta);
+      this.report?.decisions.push({
+        title: meeting.title,
+        choice: option === deputy ? `${option.label} (you did not attend)` : option.label,
+        templateId: meeting.templateId,
+      });
+    }
+    world.agenda = [];
     return injected;
   }
 
@@ -575,7 +600,7 @@ export class TurnEngine {
         // Nobody signs the player into a pact: the offer lands on the desk as a crisis card
         if (target.id === world.playerCountryId && actor.id !== world.playerCountryId) {
           const lastOffer = world.director.lastUsed.pact_offer ?? -99;
-          if ((target.relations[actor.id] ?? 0) >= 40 && world.turn - lastOffer >= 6) {
+          if ((target.relations[actor.id] ?? 0) >= 40 && world.turn - lastOffer >= 9) {
             world.director.pactSuitor = actor.id;
             const offer = raiseCrisis(world, "pact_offer", rng);
             if (offer) events.push(offer);

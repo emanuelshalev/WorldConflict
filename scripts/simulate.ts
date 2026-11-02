@@ -148,7 +148,10 @@ function optionValue(o: DecisionOption, keyRelations: Set<string> = new Set()): 
 function objectiveRelations(world: WorldState): Set<string> {
   const ids = new Set<string>();
   for (const c of [...(world.objective?.primary ?? []), ...(world.objective?.bonus ?? [])]) {
-    if (c.kind === "RELATION_MIN" && c.targetId) ids.add(c.targetId);
+    if (c.kind !== "RELATION_MIN" || !c.targetId) continue;
+    // A relationship the mission names only matters while it is near its threshold
+    const me = world.countries.find((x) => x.id === world.playerCountryId);
+    if ((me?.relations[c.targetId] ?? 0) < (c.min ?? 0) + 25) ids.add(c.targetId);
   }
   return ids;
 }
@@ -156,12 +159,17 @@ function objectiveRelations(world: WorldState): Set<string> {
 function decide(policy: string, decisions: PendingDecision[], rng: SeededRandom, world: WorldState) {
   if (policy === "none" || policy === "propaganda") return []; // crises resolve by default
   const key = objectiveRelations(world);
+  // Meetings: capital spent on a call is capital not spent on orders, so weigh it harder
+  // (Flashpoints run on 3 a month), and send a deputy when no answer is worth the time
+  const pcWeight = world.mode === "FLASHPOINT" ? 6 : 3;
+  const value = (d: PendingDecision, o: DecisionOption) =>
+    optionValue(o, key) + ("kind" in d ? (o.effects.pc ?? 0) * pcWeight : 0);
   return decisions.map((d) => ({
     decisionId: d.id,
     optionId:
       policy === "random"
         ? rng.pick(d.options).id
-        : [...d.options].sort((a, b) => optionValue(b, key) - optionValue(a, key))[0].id,
+        : [...d.options].sort((a, b) => value(d, b) - value(d, a))[0].id,
   }));
 }
 
@@ -272,7 +280,9 @@ for (const policy of policies) {
       };
       let lastWarning = -99;
       for (let t = 0; t < 130 && !world.gameOver; t++) {
-        const decisions = decide(policy, world.pendingDecisions, rng, world);
+        // Players who answer crises also take their meetings (the engine caps them at MEETING_SLOTS)
+        const decisions = decide(policy, [...world.pendingDecisions, ...(process.env.NO_MEET ? [] : world.agenda.filter((m) => !process.env.MEET_KIND || m.kind === process.env.MEET_KIND).slice(0, 3))], rng, world);
+        if (process.env.MEET_LOG) for (const d of decisions) { const m = world.agenda.find((x) => x.id === d.decisionId); if (m) console.error(`T${world.turn} ${m.title} -> ${m.options.find((o) => o.id === d.optionId)?.label} ${JSON.stringify(m.options.find((o) => o.id === d.optionId)?.effects)}`); }
         const result = engine.executeTurn(
           world,
           playerOrders(policy, world, rng),

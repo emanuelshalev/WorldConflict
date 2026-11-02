@@ -2,6 +2,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { z } from "zod";
 import { runDirector } from "./crises.js";
+import { generateAgenda } from "./meetings.js";
 import { combineSeed, createSeed, SeededRandom } from "./seed.js";
 import { generateLeaderName, generatePlayerBackstory } from "./systems/government.js";
 import { updateBeliefs } from "./systems/intelligence.js";
@@ -254,6 +255,7 @@ export class DataLoader {
     const opening = runDirector(world, new SeededRandom(combineSeed(world.seed, 31337)));
     world.pendingDecisions = opening.decisions;
     world.eventQueue = opening.events;
+    world.agenda = generateAgenda(world);
     return world;
   }
 

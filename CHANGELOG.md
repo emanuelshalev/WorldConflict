@@ -2,6 +2,9 @@
 
 ## Unreleased: visual overhaul (2026-11-02)
 
+- **The leader's calendar:** every month brings calls from other leaders, a staff meeting, and a state visit or an interview (`src/core/meetings.ts`). You attend three in person; deputies take the rest, and skipped callers remember. Answers are quick choices with visible effects. Balance re-checked: Term smart 94% pooled, random 18%, none 0%.
+- **Consult your staff:** a Consult button on every crisis and meeting opens the right minister with the question asked. Full chat with an AI key; without one, tap-to-ask questions answered from the game state. Fixed: "Can you?" no longer reads as Canada.
+- **Fixed:** AI pact offers to the player now respect the same 9-month cooldown as other crises.
 - **Broadcast scenes:** every order, crisis and news story is staged as one of 20 animated SVG scenes (cabinet, TV interview, press room, parliament, markets TV, field visit, summit, treaty signing, executive order, address, war room, convoy, airstrike, nuclear, covert ops, protest, election night, disaster, ceasefire talks, UN vote), dressed in the real flags of the countries involved and lit by the outcome.
 - **Outcome reel:** after Execute, each order and crisis answer plays as a news shot with an animated verdict stamp and a dispatch panel: a varied story, the numbers it moved (before and after), an outcome map on real borders, and a trend line of that order type across the term (`src/core/outcomes.ts`, `director.ledger`). Failed orders get their own story.
 - **Map:** a 3D globe under a glass HUD and desk; a click menu to give orders straight from a country; troop markers on borders; arrows for queued orders; alliance links; animated war arcs with the front marked; pulses on countries whose relations with you moved.

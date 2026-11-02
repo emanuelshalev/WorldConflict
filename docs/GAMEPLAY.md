@@ -34,7 +34,19 @@ The **Daily Flashpoint** is the same crisis, nation and world for everyone that 
 
 1. **Answer the crisis.** Most months bring a crisis card with 2–3 options. Arrows show the **direction and rough size** of consequences (Approval ▲▲, Tension ▼…), not exact numbers. Each option shows which minister backs it. Ignore a crisis and it resolves on its own, usually badly.
 2. **Give orders.** Pick advisor suggestions, or open **All orders** (diplomacy, military, intelligence, domestic). Tap a country on the map to target it or to open its dossier.
-3. **Execute month.** The world moves. The **World Chronicle** leads with *your* decision, then shows what moved and why.
+3. **Execute month.** The world moves: each order and answer plays as a news scene with what it changed, then the **World Chronicle** leads with *your* decision.
+
+### Your calendar
+
+Every month also brings 3 to 5 meetings on the desk's calendar:
+
+- **Calls** from other leaders, chosen from who matters to you right now: an enemy on a secure line, a rival with a warning, an ally asking for support, a partner offering a deal. Nobody calls two months running.
+- **A staff meeting:** the most pressing problem your ministers can see (the front, the polls, the economy, unrest, a spy, a back channel, a leak).
+- **A state visit** or **a prime-time interview**, alternating.
+
+Each meeting is a short scene with a statement and 2 or 3 answers with their effects shown. You can attend **3 in person**; the rest go to a deputy. That is free, but a leader whose call you skipped notices. Some answers cost political capital (a state visit, a hotline).
+
+**Consult your staff** from any crisis card or meeting: the right minister opens with your question already asked. With an AI key in Settings, it is a free-form chat; without one, tap a suggested question (the crisis, your biggest risk, who to meet, the economy, stability, allies) and the minister answers from the game state.
 
 ### Political capital ◆
 

@@ -15,6 +15,7 @@ import {
 import { ADVISOR_NAMES, arrowText, effectArrows, flag } from '../lib/format';
 import { pcCost } from '../lib/actions';
 import { SceneFrame } from '../scenes/SceneFrame';
+import { Calendar } from './Calendar';
 import { sceneForAction, sceneForCrisis } from '../scenes/kinds';
 import { ActionIcon } from '../scenes/icons';
 import { actionFamily } from '../scenes/actionIcons';
@@ -90,6 +91,17 @@ function CrisisCard({ decision }: { decision: PendingDecision }) {
         headline={decision.title}
       />
       <h4 className="sr-only">{decision.title}</h4>
+      <button
+        className="wc-btn ghost consult-btn"
+        onClick={() =>
+          useGameStore.getState().consult(
+            decision.options.find((o) => o.backedBy.length)?.backedBy[0] ?? 'CHIEF_OF_STAFF',
+            `${decision.title}: what do you advise, and what are the risks of each option?`,
+          )
+        }
+      >
+        Consult your staff
+      </button>
       <p className="situation">{decision.situation}</p>
       <div className="options">
         {decision.options.map((o) => (
@@ -383,6 +395,7 @@ export function Desk() {
         </button>
       </div>
       {!collapsed && <CoachTip turn={world.turn} />}
+      {!collapsed && <Calendar />}
       {!collapsed && (
         <div className="desk-row">
           {pendingDecisions.length > 0 && (

@@ -34,7 +34,8 @@ function findMentionedCountry(ctx: BrainContext, question: string): CountryFull 
       (c) => c.id !== ctx.player.id && q.includes(c.name.toLowerCase()),
     ) ??
     ctx.worldState.countries.find(
-      (c) => c.id !== ctx.player.id && new RegExp(`\\b${c.id.toLowerCase()}\\b`).test(q),
+      // Codes only in capitals: "Can you?" is not Canada, "we are" is not the UAE
+      (c) => c.id !== ctx.player.id && new RegExp(`\\b${c.id}\\b`).test(question),
     )
   );
 }
@@ -367,6 +368,10 @@ export function answerQuestion(
   const asksNuclear = /nuclear|nuke|warhead|bomb|atomic|proliferat/.test(q);
   const asksAbout = /who is|who leads|tell me about|what about|describe|history of|leader of/.test(q);
 
+  // --- A crisis or meeting named in the question comes first ---
+  const deskItem = findDeskItem(ctx, question);
+  if (deskItem) return opener + adviseOnItem(ctx, deskItem, voice.lens);
+
   // --- Country-specific questions ---
   if (target) {
     if (asksWhy && (asksRelations || asksWar || /them|they/.test(q) || true)) {
@@ -396,6 +401,16 @@ export function answerQuestion(
     if (voice.lens === 'military') return opener + militaryAssessment(ctx, target);
     if (voice.lens === 'intel') return opener + intelAnswer(ctx, target);
     return opener + aboutCountry(ctx, target);
+  }
+
+  // --- The desk: a crisis or meeting by name, the calendar, the biggest risk ---
+  const item = findDeskItem(ctx, question);
+  if (item) return opener + adviseOnItem(ctx, item, voice.lens);
+  if (/who should i (call|meet|see)|calendar|schedule|which meetings|who to meet/.test(q)) return opener + calendarAnswer(ctx);
+  if (/biggest risk|main risk|danger|worr|threat to us|weakest/.test(q)) return opener + riskAnswer(ctx);
+  if (/this month'?s crisis|the crisis|handle the crisis/.test(q)) {
+    const first = ctx.worldState.pendingDecisions[0];
+    if (first) return opener + adviseOnItem(ctx, first, voice.lens);
   }
 
   // --- General questions ---
@@ -498,4 +513,90 @@ function priorityRead(ctx: BrainContext, advisorId: string): string {
       return `If you are asking where to focus, my answer is ${worst}. Ask any of the ministers for depth on their domain, or name a country and I will coordinate a full assessment.`;
     }
   }
+}
+
+// ---------------------------------------------------------------------------
+// Desk items: advise on a crisis or a meeting, the calendar and the biggest risk
+// ---------------------------------------------------------------------------
+type DeskItem = WorldState['pendingDecisions'][number];
+
+function findDeskItem(ctx: BrainContext, question: string): DeskItem | undefined {
+  const q = question.toLowerCase();
+  const items: DeskItem[] = [...ctx.worldState.pendingDecisions, ...(ctx.worldState.agenda ?? [])];
+  return items.find((d) => q.includes(d.title.toLowerCase()));
+}
+
+const LENS_WEIGHTS: Record<string, Record<string, number>> = {
+  diplomacy: { relations: 1, tension: -0.6, approval: 0.3 },
+  military: { mobilization: 0.6, tension: -0.2, stability: 0.4, relations: 0.3 },
+  economy: { growth: 12, gdp: 2, approval: 0.3, stability: 0.3 },
+  domestic: { approval: 1, stability: 1, legitimacy: 0.8 },
+  intel: { intel: 0.5, relations: 0.3, stability: 0.4 },
+  strategy: { approval: 0.8, stability: 0.8, legitimacy: 0.6, relations: 0.5, growth: 8, tension: -0.4 },
+};
+
+function scoreOption(o: DeskItem['options'][number], lens: string): number {
+  const w = LENS_WEIGHTS[lens] ?? LENS_WEIGHTS.strategy;
+  let s = (o.tensionDelta ?? 0) * (w.tension ?? -0.3);
+  for (const [k, v] of Object.entries(o.effects)) {
+    if (k.startsWith('relations')) s += v * (w.relations ?? 0.3);
+    else if (k === 'pc') s += v * 2.5;
+    else s += v * (w[k] ?? 0.2);
+  }
+  return s;
+}
+
+function describeEffects(ctx: BrainContext, o: DeskItem['options'][number]): { good: string[]; bad: string[] } {
+  const good: string[] = [];
+  const bad: string[] = [];
+  for (const [k, v] of Object.entries(o.effects)) {
+    const name = k.startsWith('relations:') ? `ties with ${countryName(ctx, k.split(':')[1])}` : k === 'pc' ? 'political capital' : k === 'relationsRivals' ? 'ties with our rivals' : k === 'relationsAllies' ? 'ties with our allies' : k;
+    (v > 0 ? good : bad).push(name);
+  }
+  if ((o.tensionDelta ?? 0) > 0) bad.push('global tension');
+  if ((o.tensionDelta ?? 0) < 0) good.push('lower tension');
+  return { good, bad };
+}
+
+function adviseOnItem(ctx: BrainContext, item: DeskItem, lens: string): string {
+  const ranked = [...item.options].sort((a, b) => scoreOption(b, lens) - scoreOption(a, lens));
+  const best = ranked[0];
+  const worst = ranked[ranked.length - 1];
+  if (!best) return 'I have nothing useful on that one yet.';
+  const e = describeEffects(ctx, best);
+  const w = describeEffects(ctx, worst);
+  const name = item.title.replace(/^(Phone call|Secure line|State visit|Staff meeting|Interview): /, '');
+  return `On "${name}", my recommendation is: ${best.label}. ${best.description} It helps ${e.good.join(', ') || 'little directly'}${e.bad.length ? `, at the cost of ${e.bad.join(', ')}` : ''}. ${worst !== best ? `I would avoid "${worst.label}": ${w.bad.length ? `it hurts ${w.bad.join(', ')}` : 'it wastes the moment'}.` : ''} Your call, of course.`;
+}
+
+function calendarAnswer(ctx: BrainContext): string {
+  const agenda = ctx.worldState.agenda ?? [];
+  if (!agenda.length) return 'The calendar is clear this month.';
+  const p = ctx.player;
+  const weight = (m: (typeof agenda)[number]) =>
+    (m.withCountry && p.atWarWith.includes(m.withCountry) ? 5 : 0) +
+    (m.withCountry && p.alliances.includes(m.withCountry) ? 3 : 0) +
+    (m.withCountry ? Math.abs(p.relations[m.withCountry] ?? 0) / 20 : 0) +
+    (m.kind === 'STAFF' ? 2.5 : 0) +
+    (m.kind === 'PRESS' && p.approval < 45 ? 2 : 0);
+  const pick = [...agenda].sort((a, b) => weight(b) - weight(a)).slice(0, 3);
+  const skip = agenda.filter((m) => !pick.includes(m));
+  return `You have time for three. Take ${pick.map((m) => m.speaker).join(', ')}.${skip.length ? ` Send a deputy to ${skip.map((m) => m.speaker).join(' and ')}: a small snub, but survivable.` : ''}`;
+}
+
+function riskAnswer(ctx: BrainContext): string {
+  const p = ctx.player;
+  const growth = ((p.realGrowth ?? p.growthRate) * 100);
+  const risks: Array<[number, string]> = [
+    [60 - p.approval, `approval at ${Math.round(p.approval)}%: the voters, or the party, could turn on you`],
+    [60 - p.stability, `stability at ${Math.round(p.stability)}%: the streets are restless`],
+    [55 - p.legitimacy, `legitimacy at ${Math.round(p.legitimacy)}%: the elites are doubting you`],
+    [(1.5 - growth) * 8, `growth at ${growth.toFixed(1)}%: an economy this weak eats every other number`],
+  ];
+  for (const w of ctx.worldState.wars.filter((x) => x.attackerId === p.id || x.defenderId === p.id)) {
+    const mine = w.attackerId === p.id ? w.frontline : 100 - w.frontline;
+    risks.push([(55 - mine) * 1.5 + 10, `the war with ${countryName(ctx, w.attackerId === p.id ? w.defenderId : w.attackerId)}: the front stands at ${Math.round(mine)}%`]);
+  }
+  risks.sort((a, b) => b[0] - a[0]);
+  return `The biggest risk is ${risks[0][1]}. After that, ${risks[1][1]}. Fix the first before it fixes us.`;
 }

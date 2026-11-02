@@ -55,7 +55,7 @@ function verdictFor(o: TurnReport['orders'][number]): Verdict {
 function shotsFor(report: TurnReport): Shot[] {
   const shots: Shot[] = report.decisions.map((d) => ({
     kind: sceneForCrisis(d.templateId, d.title),
-    kicker: 'Crisis decision',
+    kicker: d.templateId?.startsWith('meeting_') ? 'Meeting' : 'Crisis decision',
     headline: d.title,
     sub: d.choice,
     verdict: 'decided',

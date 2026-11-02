@@ -302,6 +302,14 @@ export const PendingDecisionSchema = z.object({
 });
 export type PendingDecision = z.infer<typeof PendingDecisionSchema>;
 
+/** A meeting on the leader's calendar: a call, a staff meeting, a state visit or an interview. */
+export const MeetingSchema = PendingDecisionSchema.extend({
+  kind: z.enum(["CALL", "STAFF", "VISIT", "PRESS"]),
+  withCountry: z.string().optional(),
+  speaker: z.string(),
+});
+export type Meeting = z.infer<typeof MeetingSchema>;
+
 export const EventSchema = z.object({
   id: z.string(),
   type: z.enum([
@@ -754,6 +762,7 @@ export const WorldStateSchema = z.object({
   playerCountryId: z.string(),
   newspaper: z.array(NewspaperEntrySchema).default([]),
   pendingDecisions: z.array(PendingDecisionSchema).default([]),
+  agenda: z.array(MeetingSchema).default([]), // this month's calendar (see meetings.ts)
   timeline: z.array(TimelineEntrySchema).default([]),
   score: ScoreSchema.default({
     economic: 25,

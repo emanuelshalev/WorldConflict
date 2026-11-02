@@ -403,6 +403,15 @@ export function AdvisorModal() {
     }
   };
 
+  // A question handed over from a crisis card or a meeting: ask it straight away
+  const advisorDraft = useGameStore((s) => s.advisorDraft);
+  useEffect(() => {
+    if (activeModal !== 'advisor' || !advisorDraft || !activeAdvisorRole) return;
+    useGameStore.setState({ advisorDraft: null });
+    void handleSendMessage(advisorDraft);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeModal, advisorDraft, activeAdvisorRole]);
+
   const ref = useModalFocus<HTMLDivElement>(activeModal === 'advisor');
   if (activeModal !== 'advisor') return null;
 
@@ -418,10 +427,11 @@ export function AdvisorModal() {
     fetchAdvisorBriefing(advisorId);
   };
 
-  const handleSendMessage = async () => {
-    if (!message.trim() || !activeAdvisorRole) return;
+  async function handleSendMessage(preset?: string) {
+    const text = (preset ?? message).trim();
+    if (!text || !activeAdvisorRole) return;
 
-    const userMessage = message.trim();
+    const userMessage = text;
     
     // Add user message to chat history in store
     addAdvisorMessage(activeAdvisorRole, { role: 'user', content: userMessage });
@@ -466,7 +476,7 @@ export function AdvisorModal() {
       addAdvisorMessage(activeAdvisorRole, { role: 'advisor', content: "I'm unable to assess the situation - no game state available." });
       setLoading(false);
     }
-  };
+  }
 
   const selectedAdvisor = ADVISORS.find((a) => a.id === activeAdvisorRole);
 
@@ -601,17 +611,33 @@ export function AdvisorModal() {
                 )}
               </div>
 
+              {/* Tap-to-ask: works without an AI model; with one, type anything below */}
+              <div className="advisor-questions" aria-label="Suggested questions">
+                {[
+                  ...(worldState?.pendingDecisions ?? []).slice(0, 1).map((d) => `${d.title}: what do you advise?`),
+                  "What's our biggest risk right now?",
+                  'Who should I meet this month?',
+                  'How is the economy?',
+                  'How stable are we at home?',
+                  'Who are our real allies?',
+                  ...(worldState?.agenda ?? []).slice(0, 2).map((m) => `${m.title}: how should I respond?`),
+                ].map((q) => (
+                  <button key={q} type="button" disabled={loading} onClick={() => handleSendMessage(q)}>
+                    {q}
+                  </button>
+                ))}
+              </div>
               <div className="chat-input">
                 <input
                   type="text"
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Ask a question..."
+                  placeholder={llmRequestBody(useGameStore.getState().llmSettings) ? "Ask anything..." : "Ask a question, or tap one above..."}
                   onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                 />
                 <button
                   className="btn btn-primary"
-                  onClick={handleSendMessage}
+                  onClick={() => handleSendMessage()}
                   disabled={loading || !message.trim()}
                 >
                   Send

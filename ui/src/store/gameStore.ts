@@ -141,6 +141,15 @@ export interface PendingDecision {
   defaultOptionId?: string;
 }
 
+/** A meeting on the leader's calendar (src/core/meetings.ts). */
+export interface Meeting extends PendingDecision {
+  kind: 'CALL' | 'STAFF' | 'VISIT' | 'PRESS';
+  withCountry?: string;
+  speaker: string;
+}
+/** Meetings the player can attend in person each month (MEETING_SLOTS in meetings.ts). */
+export const MEETING_SLOTS = 3;
+
 export type GameMode = 'FLASHPOINT' | 'TERM' | 'LEGACY';
 export type Difficulty = 'ANALYST' | 'STATESMAN' | 'STRONGMAN';
 
@@ -262,6 +271,7 @@ export interface WorldState {
   turnReport: TurnReport | null;
   outcome: Outcome | null;
   pendingDecisions: PendingDecision[];
+  agenda?: Meeting[];
   gameOver: GameOver | null;
   score: Score;
   countries: CountryFull[];
@@ -362,7 +372,9 @@ export interface GameState {
   worldState: WorldState | null;
   playerView: PlayerViewCountry[];
   pendingDecisions: PendingDecision[];
-  decisionChoices: Record<string, string>; // decisionId → optionId
+  decisionChoices: Record<string, string>; // decisionId (or meeting id) → optionId
+  advisorDraft: string | null; // a question pre-filled when you consult from a crisis or meeting
+  consult: (role: string, question: string) => void;
   score: Score | null;
   gameOver: GameOver | null;
   playerBackstory: string;
@@ -599,6 +611,8 @@ export const useGameStore = create<GameState>((set) => ({
   playerView: [],
   pendingDecisions: [],
   decisionChoices: {},
+  advisorDraft: null,
+  consult: (role, question) => set({ activeAdvisorRole: role, advisorDraft: question, activeModal: 'advisor', drawer: null }),
   score: null,
   gameOver: null,
   playerBackstory: '',
@@ -911,7 +925,12 @@ export function capitalLeft(state: GameState = useGameStore.getState()): number 
     const option = d.options.find((o) => o.id === (state.decisionChoices[d.id] ?? d.defaultOptionId ?? d.options[0]?.id));
     return sum + (option?.effects.pc ?? 0);
   }, 0);
-  return Math.max(0, world.politicalCapital + crisisPc) - state.pendingActions.reduce((s, a) => s + pcCost(a.type), 0);
+  // Meetings you attend can cost capital too (a state visit, a hotline); deputies cost nothing
+  const meetingPc = (world.agenda ?? []).reduce((sum, m) => {
+    const option = m.options.find((o) => o.id === state.decisionChoices[m.id]);
+    return sum + (option?.effects.pc ?? 0);
+  }, 0);
+  return Math.max(0, world.politicalCapital + crisisPc + meetingPc) - state.pendingActions.reduce((s, a) => s + pcCost(a.type), 0);
 }
 
 /** The key the engine uses for "one of each order per target" (turn.ts). */
