@@ -1,5 +1,6 @@
 import { useId } from 'react';
 import type { SceneArtProps } from './types';
+import NationFlag from './Flag';
 import './civic.css';
 
 const KEY = { good: '#ffcd7a', bad: '#ff8a66', neutral: '#ffe4ba' };
@@ -48,14 +49,6 @@ export default function Summit({ a, b, mood }: SceneArtProps) {
   const [w0, w1] = WALL[mood];
   const tieA = a[2] === '#ffffff' ? a[0] : a[2];
   const tieB = b[2] === '#ffffff' ? b[0] : b[2];
-  const stripes = (id: string, c: [string, string, string]) => (
-    <linearGradient id={u(id)} x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0.333" stopColor={c[0]} />
-      <stop offset="0.333" stopColor={c[1]} />
-      <stop offset="0.666" stopColor={c[1]} />
-      <stop offset="0.666" stopColor={c[2]} />
-    </linearGradient>
-  );
   return (
     <svg viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice" className="art art-summit" aria-hidden>
       <defs>
@@ -85,8 +78,6 @@ export default function Summit({ a, b, mood }: SceneArtProps) {
           <stop offset="0" stopColor="#6e4f3e" />
           <stop offset="1" stopColor="#231a17" />
         </radialGradient>
-        {stripes('fa', a)}
-        {stripes('fb', b)}
         <linearGradient id={u('fold')} x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stopColor="#000" stopOpacity="0.5" />
           <stop offset="0.3" stopColor="#fff" stopOpacity="0.14" />
@@ -113,7 +104,7 @@ export default function Summit({ a, b, mood }: SceneArtProps) {
             <rect x="-1.5" y="-6" width="3" height="182" fill="#b28f55" />
             <circle cy="-8" r="4" fill="#e3bf77" />
             <g className="summit-flag" style={{ animationDelay: `${-i * 0.7}s` }}>
-              <path d={d} fill={f(i % 2 ? 'fb' : 'fa')} />
+              <NationFlag colors={i % 2 ? b : a} x={0} y={0} w={32} h={112} d={d} />
               <path d={d} fill={f('fold')} />
             </g>
           </g>

@@ -1,5 +1,6 @@
 import { useSceneUid } from './uid';
 import type { SceneArtProps } from './types';
+import NationFlag from './Flag';
 import './security.css';
 
 // Vanishing point of the highway; vehicles sit on the centre line, scaled by depth.
@@ -32,9 +33,7 @@ function Tank({ flag }: { flag?: [string, string, string] }) {
         <g>
           <path d="M26 -76 L28 -122" stroke="#3a3128" strokeWidth="1.6" />
           <g className="dp-flag">
-            <rect x="28" y="-122" width="32" height="7" fill={flag[0]} />
-            <rect x="28" y="-115" width="32" height="7" fill={flag[1]} />
-            <rect x="28" y="-108" width="32" height="7" fill={flag[2]} />
+            <NationFlag colors={flag} x={28} y={-122} w={32} h={21} />
           </g>
         </g>
       )}

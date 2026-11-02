@@ -1,5 +1,6 @@
 import { useSceneUid } from './uid';
 import type { SceneArtProps } from './types';
+import NationFlag from './Flag';
 import './public.css';
 
 /** Background crowd behind the rope line: fixed layout, a few holding phones or flags. */
@@ -99,9 +100,7 @@ export default function FieldVisit({ a, mood }: SceneArtProps) {
           {c.prop === 'flag' && (
             <g className="fv-flag">
               <line x1={c.x + 7} x2={c.x + 7} y1={c.y - 6} y2={c.y - 44} stroke="#3a2e2a" strokeWidth="1.2" />
-              <rect x={c.x + 7} y={c.y - 44} width="9" height="5" fill={a[0]} />
-              <rect x={c.x + 7} y={c.y - 39} width="9" height="5" fill={a[1]} />
-              <rect x={c.x + 7} y={c.y - 34} width="9" height="5" fill={a[2]} />
+              <NationFlag colors={a} x={c.x + 7} y={c.y - 44} w={15} h={10} />
             </g>
           )}
           <rect x={c.x - 9 * c.s} y={c.y} width={18 * c.s} height={40} rx={7 * c.s} fill={i % 3 ? '#3b2f30' : '#46393a'} opacity="0.92" />

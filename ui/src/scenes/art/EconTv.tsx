@@ -1,5 +1,6 @@
 import { useSceneUid } from './uid';
 import type { SceneArtProps } from './types';
+import NationFlag from './Flag';
 import './public.css';
 
 const N = 21;
@@ -96,9 +97,7 @@ export default function EconTv({ a, mood }: SceneArtProps) {
       <g>
         <rect x="18" y="58" width="128" height="78" rx="4" fill="#05080e" />
         <rect x="22" y="62" width="120" height="70" rx="2" fill={`url(#econ-screen-${uid})`} />
-        <rect x="22" y="62" width="40" height="70" fill={a[0]} opacity="0.85" />
-        <rect x="62" y="62" width="40" height="70" fill={a[1]} opacity="0.85" />
-        <rect x="102" y="62" width="40" height="70" fill={a[2]} opacity="0.85" />
+        <NationFlag colors={a} x={22} y={62} w={120} h={70} opacity={0.85} />
         <rect x="22" y="62" width="120" height="70" fill="#000" opacity="0.35" />
         <rect className="econ-flicker" x="22" y="62" width="120" height="70" fill="#bfe0ff" opacity="0.05" />
         {[0, 1, 2, 3, 4, 5].map((i) => (

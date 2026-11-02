@@ -1,5 +1,6 @@
 import { useSceneUid } from './uid';
 import type { SceneArtProps } from './types';
+import NationFlag from './Flag';
 import './security.css';
 
 /** Seated or standing silhouette, uplit from the table (head gradient bright at the bottom). */
@@ -157,9 +158,7 @@ export default function WarRoom({ a, mood }: SceneArtProps) {
         <rect x="24" y="136" width="86" height="56" rx="3" fill="#06192a" stroke={key} strokeOpacity="0.25" />
         <path className="wr-trace" d="M30 176 L44 168 L54 172 L66 154 L78 162 L90 150 L104 156" fill="none" stroke={key} strokeWidth="1.5" />
         <rect x="530" y="136" width="86" height="56" rx="3" fill="#06192a" stroke={key} strokeOpacity="0.25" />
-        <rect x="540" y="146" width="30" height="20" fill={a[0]} />
-        <rect x="540" y="152" width="30" height="7" fill={a[1]} opacity="0.9" />
-        <rect x="540" y="159" width="30" height="7" fill={a[2]} />
+        <NationFlag colors={a} x={540} y={146} w={30} h={20} />
         <rect x="576" y="148" width="32" height="3" fill={key} opacity="0.5" />
         <rect x="576" y="156" width="24" height="3" fill={key} opacity="0.35" />
         <rect x="576" y="164" width="28" height="3" fill={key} opacity="0.35" />
@@ -191,9 +190,7 @@ export default function WarRoom({ a, mood }: SceneArtProps) {
       <g transform="translate(206 214)">
         <rect x="0" y="0" width="1.4" height="24" fill="#9aa7b8" />
         <g className="wr-flag">
-          <rect x="1.4" y="0" width="16" height="4" fill={a[0]} />
-          <rect x="1.4" y="4" width="16" height="4" fill={a[1]} />
-          <rect x="1.4" y="8" width="16" height="4" fill={a[2]} />
+          <NationFlag colors={a} x={1.4} y={0} w={16} h={11} />
         </g>
       </g>
 

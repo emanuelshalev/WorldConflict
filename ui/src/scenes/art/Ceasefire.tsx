@@ -1,5 +1,6 @@
 import { useSceneUid } from './uid';
 import type { SceneArtProps } from './types';
+import NationFlag from './Flag';
 import './public.css';
 
 const LIGHT = {
@@ -19,9 +20,7 @@ export default function Ceasefire({ a, b, mood }: SceneArtProps) {
     <g key={key}>
       <line x1={x} x2={x} y1="202" y2="170" stroke="#c9ccd2" strokeWidth="1.2" />
       <g className="cf-flag">
-        <rect x={x} y="170" width="20" height="4.5" fill={c[0]} />
-        <rect x={x} y="174.5" width="20" height="4.5" fill={c[1]} />
-        <rect x={x} y="179" width="20" height="4.5" fill={c[2]} />
+        <NationFlag colors={c} x={x} y={170} w={20} h={13.5} />
       </g>
       <ellipse cx={x} cy="202" rx="4" ry="1.4" fill="#c9ccd2" />
     </g>

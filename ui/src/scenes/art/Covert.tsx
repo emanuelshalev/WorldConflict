@@ -1,5 +1,6 @@
 import { useSceneUid } from './uid';
 import type { SceneArtProps } from './types';
+import NationFlag from './Flag';
 import './security.css';
 
 /** Analyst seen from behind: chair back, shoulders, head with headset, rim lit by screens. */
@@ -138,9 +139,7 @@ export default function Covert({ b, mood }: SceneArtProps) {
         <path d="M330 87 h8 M330 87 v8 M378 87 h-8 M378 87 v8 M330 135 h8 M330 135 v-8 M378 135 h-8 M378 135 v-8" />
       </g>
       <rect x="222" y="48" width="196" height="122" fill="none" stroke={glow} strokeOpacity="0.5" />
-      <rect x="226" y="52" width="10" height="7" fill={b[0]} />
-      <rect x="236" y="52" width="10" height="7" fill={b[1]} />
-      <rect x="246" y="52" width="10" height="7" fill={b[2]} />
+      <NationFlag colors={b} x={226} y={50} w={22} h={14} />
       <rect x="226" y="156" width="54" height="8" fill="#000" opacity="0.5" />
       <circle className="cv-rec" cx="231" cy="160" r="2.2" fill="#ff3b30" />
 

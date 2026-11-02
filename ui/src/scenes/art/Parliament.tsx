@@ -1,5 +1,6 @@
 import { useSceneUid } from './uid';
 import type { SceneArtProps } from './types';
+import NationFlag from './Flag';
 import './public.css';
 
 /** Pick the most saturated flag colour so white/black stripes never become the accent. */
@@ -131,12 +132,9 @@ export default function Parliament({ a, mood }: SceneArtProps) {
       {/* Flag banners */}
       {[160, 452].map((x, k) => (
         <g key={x} className="parl-banner" style={{ animationDelay: `${k * 0.9}s` }}>
-          <rect x={x} y="52" width="28" height="30" fill={a[0]} />
-          <rect x={x} y="82" width="28" height="30" fill={a[1]} />
-          <rect x={x} y="112" width="28" height="30" fill={a[2]} />
+          <NationFlag colors={a} x={x} y={52} w={28} h={99} d={`M${x} 52 h28 v90 l-14 9 l-14 -9 Z`} />
           <rect x={x} y="52" width="28" height="90" fill={`url(#parl-sil-${uid})`} opacity="0.28" />
           <rect x={x + 20} y="52" width="8" height="90" fill="#000" opacity="0.18" />
-          <path d={`M${x} 142 l14 9 l14 -9`} fill={a[2]} />
           <rect x={x - 3} y="49" width="34" height="4" rx="2" fill="#d7a75f" />
         </g>
       ))}

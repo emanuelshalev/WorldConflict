@@ -1,5 +1,6 @@
 import { useSceneUid } from './uid';
 import type { SceneArtProps } from './types';
+import NationFlag from './Flag';
 import './public.css';
 
 /** Protesters in three depth rows: fixed pseudo-random layout from a tiny LCG. */
@@ -154,9 +155,7 @@ export default function Streets({ a, mood }: SceneArtProps) {
       <g>
         <line x1="150" y1="250" x2="158" y2="96" stroke="#2a1e18" strokeWidth="2.5" />
         <g className="str-flag">
-          <rect x="158" y="96" width="60" height="13" fill={a[0]} />
-          <rect x="158" y="109" width="60" height="13" fill={a[1]} />
-          <rect x="158" y="122" width="60" height="13" fill={a[2]} />
+          <NationFlag colors={a} x={158} y={96} w={60} h={39} />
           <rect x="158" y="96" width="60" height="39" fill="#000" opacity="0.18" />
         </g>
       </g>
