@@ -2,6 +2,8 @@
 
 ## Unreleased: visual overhaul (2026-11-02)
 
+- **The world answers big events:** a nuclear strike leaves fallout that keeps damaging the target's economy, health and stability for months, spills refugees and contamination into its neighbours, shocks every market and breaks the target's war effort; aftermath news runs for months. Shocks put emergency meetings on the calendar (the cabinet the day after, a great power on the line demanding a ceasefire that really ends the war, a war cabinet on day one). Advisors lead with the strike; the desk suggests a ceasefire.
+- **Map fidelity:** every layer colours the current state with colour-blind-safe scales that match the legend: the Economic layer shows health (real growth, embargo, fallout), not size; struck countries and nuclear users get their own treatment. Animated markers come from the state: strike sites with fallout halos and plumes, war fronts, refugees, coups and elections, airstrikes, unrest, collapsing economies, embargoes.
 - **The leader's calendar:** every month brings calls from other leaders, a staff meeting, and a state visit or an interview (`src/core/meetings.ts`). You attend three in person; deputies take the rest, and skipped callers remember. Answers are quick choices with visible effects. Balance re-checked: Term smart 94% pooled, random 18%, none 0%.
 - **Consult your staff:** a Consult button on every crisis and meeting opens the right minister with the question asked. Full chat with an AI key; without one, tap-to-ask questions answered from the game state. Fixed: "Can you?" no longer reads as Canada.
 - **Fixed:** AI pact offers to the player now respect the same 9-month cooldown as other crises.

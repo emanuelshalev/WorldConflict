@@ -16,7 +16,8 @@ import {
   type Icon,
 } from '@tabler/icons-react';
 import type { NewspaperEntry, PlayerViewCountry, WorldState } from '../store/gameStore';
-import { iconSvg } from './mapIcons';
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 
 /**
  * Animated map markers derived from the game state: HTML maplibregl.Markers animated with CSS
@@ -31,10 +32,13 @@ import { iconSvg } from './mapIcons';
 export type GovKind = 'coup' | 'revolution' | 'assassination' | 'election' | 'leader';
 
 export interface MapSignals {
-  /** Countries that used a nuclear weapon (under the global embargo, or seen doing it). */
+  /** Countries that used a nuclear weapon (from the timeline and this month's news). */
   nukeUsers: Set<string>;
-  /** id -> fallout severity, and whether the strike landed in the month just played. */
-  struck: Map<string, { fallout: number; fresh: boolean }>;
+  /**
+   * id -> fallout severity; `direct` for the country the weapon hit (vs radiation drifting into
+   * a neighbour), `fresh` when the strike landed in the month just played.
+   */
+  struck: Map<string, { fallout: number; fresh: boolean; direct: boolean }>;
   /** Countries hit by airstrikes in the month just played (id -> who struck). */
   airstruck: Map<string, string>;
   /** Government changes in the month just played. */
@@ -56,18 +60,26 @@ const isFresh = (world: WorldState, turn: number | undefined) =>
 
 export function deriveSignals(world: WorldState, view: PlayerViewCountry[]): MapSignals {
   const news = latestNews(world);
+  // Nuclear use is not a standing flag (the global embargo also covers sanctioned states), so
+  // read it from the record: "☢ <Country> USES NUCLEAR WEAPON" in the timeline and the news
   const nukeUsers = new Set<string>();
-  for (const c of world.countries) if (c.underGlobalEmbargo) nukeUsers.add(c.id);
+  const byName = new Map(world.countries.map((c) => [c.name.toUpperCase(), c.id]));
+  for (const t of world.timeline ?? []) {
+    const m = t.category === 'NUCLEAR' ? /^\W*(.+?) USES NUCLEAR WEAPON/i.exec(t.description) : null;
+    const id = m && byName.get(m[1].trim().toUpperCase());
+    if (id) nukeUsers.add(id);
+  }
   for (const n of news) {
     if (n.category === 'NUCLEAR' && /USES NUCLEAR/i.test(n.headline) && n.relatedCountries[0])
       nukeUsers.add(n.relatedCountries[0]);
   }
   const byId = new Map(world.countries.map((c) => [c.id, c]));
-  const struck = new Map<string, { fallout: number; fresh: boolean }>();
+  const struck = new Map<string, { fallout: number; fresh: boolean; direct: boolean }>();
   for (const v of view) {
     const fallout = v.fallout ?? v.full?.fallout ?? byId.get(v.id)?.fallout ?? 0;
     const nukedTurn = byId.get(v.id)?.nukedTurn;
-    if (fallout > 0) struck.set(v.id, { fallout, fresh: isFresh(world, nukedTurn) });
+    if (fallout > 0)
+      struck.set(v.id, { fallout, fresh: isFresh(world, nukedTurn), direct: nukedTurn !== undefined });
   }
   const airstruck = new Map<string, string>();
   for (const n of news) {
@@ -116,8 +128,10 @@ export interface MarkerSpec {
   anchor?: maplibregl.PositionAnchor;
   /** Country id to open on click (badges only). */
   countryId?: string;
-  /** Pixel size hints, in degrees, for markers that scale with the map (e.g. fallout halos). */
+  /** CSS custom properties (e.g. a fallout halo's size in degrees). */
   style?: Record<string, string>;
+  /** Decluttering: markers with a priority hide lower-priority ones that overlap on screen. */
+  priority?: number;
 }
 
 const svgCache = new Map<string, string>();
@@ -125,7 +139,8 @@ function svg(I: Icon, color: string, size: number): string {
   const k = `${I.displayName ?? I.name}:${color}:${size}`;
   let s = svgCache.get(k);
   if (!s) {
-    s = iconSvg(I, color, size);
+    // Static markup: safe to call from effects (no nested React root)
+    s = renderToStaticMarkup(createElement(I, { size, stroke: 2, color, 'aria-hidden': true }));
     svgCache.set(k, s);
   }
   return s;
@@ -133,6 +148,10 @@ function svg(I: Icon, color: string, size: number): string {
 
 const esc = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+const WEIGHT: Record<string, number> = {
+  gov: 6, rad: 6, pariah: 5, smoke: 4, flame: 3, crash: 3, protest: 2, lock: 2, mob: 2, nuke: 1,
+};
 
 interface Badge {
   kind: string; // css modifier: wcm-b-<kind>
@@ -173,7 +192,9 @@ function countryBadges(
       kind: 'rad',
       icon: IconRadioactive,
       color: '#d4f03c',
-      label: `${v.name}: struck by a nuclear weapon, fallout ${Math.round(s.fallout)}/100`,
+      label: s.direct
+        ? `${v.name}: struck by a nuclear weapon, fallout ${Math.round(s.fallout)}/100`
+        : `${v.name}: radioactive fallout drifting in from a strike nearby (${Math.round(s.fallout)}/100)`,
       fresh: s.fresh,
     });
   }
@@ -271,7 +292,7 @@ export function refugeeFlows(input: Pick<MarkerInput, 'world' | 'sig' | 'centers
   const { world, sig, centers } = input;
   const ids = world.countries.map((c) => c.id);
   const sources = new Map<string, string>();
-  for (const [id, s] of sig.struck) if (s.fallout >= 10) sources.set(id, 'nuclear fallout');
+  for (const [id, s] of sig.struck) if (s.direct && s.fallout >= 10) sources.set(id, 'nuclear fallout');
   for (const w of world.wars) {
     if (w.frontline > 60 && !sources.has(w.defenderId)) sources.set(w.defenderId, 'a losing war');
     if (w.frontline < 40 && !sources.has(w.attackerId)) sources.set(w.attackerId, 'a losing war');
@@ -293,9 +314,10 @@ export function buildMarkers(input: MarkerInput): MarkerSpec[] {
 
   // Nuclear strike sites: a contamination halo sized by fallout, a plume drifting toward the
   // nearest neighbour, and a flash with a mushroom cloud the month it happens
+  const flashes: MarkerSpec[] = [];
   for (const [id, s] of sig.struck) {
     const at = centers[id];
-    if (!at) continue;
+    if (!at || !s.direct) continue;
     const near = neighbours(id, centers, ids)[0];
     const angle = near ? bearing(at, centers[near]) : -30;
     const deg = 2.5 + (s.fallout / 100) * 9;
@@ -307,11 +329,18 @@ export function buildMarkers(input: MarkerInput): MarkerSpec[] {
       style: { '--deg': String(deg), '--plume': `${angle}deg`, '--sev': String(Math.max(0.25, s.fallout / 100)) },
       html:
         '<i class="wcm-halo-core"></i><i class="wcm-halo-ring"></i><i class="wcm-halo-ring r2"></i>' +
-        '<i class="wcm-plume"></i>' +
-        (s.fresh
-          ? '<i class="wcm-flash"></i><svg class="wcm-mushroom" viewBox="0 0 40 48" aria-hidden="true"><ellipse cx="20" cy="12" rx="15" ry="9" fill="#f6e7b0"/><ellipse cx="20" cy="13" rx="10" ry="5" fill="#ffb347" opacity=".8"/><path d="M16 19 Q18 32 14 44 L26 44 Q22 32 24 19 Z" fill="#e9d8a6"/><ellipse cx="20" cy="45" rx="14" ry="3" fill="#f6e7b0" opacity=".8"/></svg>'
-          : ''),
+        '<i class="wcm-plume"></i>',
     });
+    if (s.fresh) {
+      flashes.push({
+        key: `flash:${id}`,
+        at,
+        className: 'wcm-blast wcm-fresh',
+        label: `${names.get(id) ?? id}: nuclear detonation this month`,
+        html:
+          '<i class="wcm-flash"></i><svg class="wcm-mushroom" viewBox="0 0 40 48" aria-hidden="true"><ellipse cx="20" cy="12" rx="15" ry="9" fill="#f6e7b0"/><ellipse cx="20" cy="13" rx="10" ry="5" fill="#ffb347" opacity=".8"/><path d="M16 19 Q18 32 14 44 L26 44 Q22 32 24 19 Z" fill="#e9d8a6"/><ellipse cx="20" cy="45" rx="14" ry="3" fill="#f6e7b0" opacity=".8"/></svg>',
+      });
+    }
   }
 
   // Wars: crossed swords and blast bursts where the front stands
@@ -326,6 +355,7 @@ export function buildMarkers(input: MarkerInput): MarkerSpec[] {
       key: `war:${w.id}`,
       at,
       className: `wcm-war${fresh ? ' wcm-fresh' : ''}`,
+      priority: 100,
       label: `War: ${a} vs ${d}, front ${Math.round(w.frontline)} (${lead})`,
       html:
         `<span class="wcm-war-core" role="img" aria-label="${esc(`War front: ${a} vs ${d}, ${lead}`)}" title="${esc(`War front: ${a} vs ${d}, ${lead}`)}">` +
@@ -365,6 +395,7 @@ export function buildMarkers(input: MarkerInput): MarkerSpec[] {
       offset: [0, -3],
       countryId: v.id,
       className: `wcm-row${shown.some((b) => b.fresh) ? ' wcm-fresh' : ''}`,
+      priority: (v.isPlayer ? 50 : 0) + badges.reduce((n, b) => n + (WEIGHT[b.kind] ?? 1) + (b.fresh ? 4 : 0), 0),
       label: badges.map((b) => b.label).join('; '),
       html:
         shown.map(badgeHtml).join('') +
@@ -372,8 +403,8 @@ export function buildMarkers(input: MarkerInput): MarkerSpec[] {
     });
   }
   // Fresh and dramatic rows first when capping
-  rows.sort((x, y) => Number(y.className.includes('fresh')) - Number(x.className.includes('fresh')));
-  return [...specs, ...rows].slice(0, MAX_MARKERS);
+  rows.sort((x, y) => (y.priority ?? 0) - (x.priority ?? 0));
+  return [...specs, ...rows].slice(0, MAX_MARKERS - flashes.length).concat(flashes);
 }
 
 // --------------------------------------------------------------------------
@@ -382,9 +413,11 @@ export function buildMarkers(input: MarkerInput): MarkerSpec[] {
 
 interface Live {
   marker: maplibregl.Marker;
+  el: HTMLElement;
   inner: HTMLElement;
   html: string;
   className: string;
+  priority?: number;
 }
 
 export class StateMarkers {
@@ -392,9 +425,44 @@ export class StateMarkers {
   private map: maplibregl.Map;
   private onPick: (id: string) => void;
 
+  private raf = 0;
+  private readonly onMoveEnd = () => this.declutter();
+
   constructor(map: maplibregl.Map, onPick: (id: string) => void) {
     this.map = map;
     this.onPick = onPick;
+    map.on('moveend', this.onMoveEnd);
+  }
+
+  /** Hide markers that overlap a higher-priority one on screen (re-run when the camera stops). */
+  declutter() {
+    cancelAnimationFrame(this.raf);
+    this.raf = requestAnimationFrame(() => {
+      const placed: Array<[number, number, number, number]> = [];
+      const ranked = [...this.live.values()].filter((l) => l.priority !== undefined);
+      ranked.sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0));
+      const c = this.map.getCenter();
+      const rad = Math.PI / 180;
+      for (const l of ranked) {
+        // Far side of the globe: MapLibre fades it out, so it must not hide visible markers
+        const ll = l.marker.getLngLat();
+        const cosD =
+          Math.sin(c.lat * rad) * Math.sin(ll.lat * rad) +
+          Math.cos(c.lat * rad) * Math.cos(ll.lat * rad) * Math.cos((ll.lng - c.lng) * rad);
+        if (this.map.getZoom() < 4 && cosD < 0.1) continue;
+        const p = this.map.project(ll);
+        const off = l.marker.getOffset();
+        const w = l.inner.offsetWidth || 24;
+        const h = l.inner.offsetHeight || 24;
+        const bottomAnchored = l.className.startsWith('wcm-row');
+        const x0 = p.x + off.x - w / 2;
+        const y0 = p.y + off.y - (bottomAnchored ? h : h / 2);
+        const box: [number, number, number, number] = [x0 - 1, y0 - 1, x0 + w + 1, y0 + h + 1];
+        const hit = placed.some((b) => box[0] < b[2] && box[2] > b[0] && box[1] < b[3] && box[3] > b[1]);
+        l.el.style.visibility = hit ? 'hidden' : '';
+        if (!hit) placed.push(box);
+      }
+    });
   }
 
   sync(specs: MarkerSpec[]) {
@@ -405,7 +473,8 @@ export class StateMarkers {
       if (!l) {
         const el = document.createElement('div');
         el.className = 'wcm';
-        if (s.className.startsWith('wcm-halo')) el.style.pointerEvents = 'none';
+        if (s.className.startsWith('wcm-halo') || s.className.startsWith('wcm-blast')) el.style.pointerEvents = 'none';
+        if (s.className.startsWith('wcm-blast')) el.style.zIndex = '3';
         const inner = document.createElement('div');
         el.appendChild(inner);
         if (s.countryId) {
@@ -415,10 +484,15 @@ export class StateMarkers {
             this.onPick(id);
           });
         }
-        const marker = new maplibregl.Marker({ element: el, anchor: s.anchor ?? 'center', offset: s.offset ?? [0, 0] })
+        const marker = new maplibregl.Marker({
+          element: el,
+          anchor: s.anchor ?? 'center',
+          offset: s.offset ?? [0, 0],
+          opacityWhenCovered: '0',
+        })
           .setLngLat(s.at)
           .addTo(this.map);
-        l = { marker, inner, html: '', className: '' };
+        l = { marker, el, inner, html: '', className: '' };
         this.live.set(s.key, l);
       } else {
         l.marker.setLngLat(s.at);
@@ -432,6 +506,7 @@ export class StateMarkers {
         l.className = s.className;
       }
       l.inner.setAttribute('aria-label', s.label);
+      l.priority = s.priority;
       for (const [k, v] of Object.entries(s.style ?? {})) l.inner.style.setProperty(k, v);
     }
     for (const [k, l] of this.live) {
@@ -440,9 +515,12 @@ export class StateMarkers {
         this.live.delete(k);
       }
     }
+    this.declutter();
   }
 
   clear() {
+    cancelAnimationFrame(this.raf);
+    this.map.off('moveend', this.onMoveEnd);
     for (const l of this.live.values()) l.marker.remove();
     this.live.clear();
   }

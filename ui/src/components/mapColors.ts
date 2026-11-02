@@ -92,7 +92,13 @@ export const NUCLEAR_COLORS: Record<string, string> = {
   LATENT: '#6f6d4f',
   NONE: '#3c4048',
 };
-export const NUKED = '#c4dc3a'; // struck by a nuclear weapon: toxic yellow-green under hazard stripes
+/** Radioactive fallout 0..100: dim olive (faint, decaying) to toxic yellow-green, under hazard stripes. */
+export const FALLOUT_STOPS: readonly Stop[] = [
+  [0, '#59662a'],
+  [50, '#9fbb32'],
+  [100, '#d6f03c'],
+];
+export const NUKED = ramp(FALLOUT_STOPS, 100);
 export const NUKE_USER = '#a3176f'; // used a nuclear weapon: pariah magenta
 
 // Okabe-Ito categorical palette: colorblind-safe and value-neutral
@@ -170,7 +176,7 @@ export function countryPaint(view: PlayerViewCountry, layer: string, ctx: ColorC
       return { fill: `hsl(210, ${Math.round(c * 0.5)}%, ${18 + (c / 100) * 30}%)`, pattern: none };
     }
     case 'nuclear': {
-      if (fallout(view) > 0) return { fill: NUKED, pattern: PATTERN.fallout };
+      if (fallout(view) > 0) return { fill: ramp(FALLOUT_STOPS, fallout(view)), pattern: PATTERN.fallout };
       if (ctx.nukeUsers.has(view.id)) return { fill: NUKE_USER, pattern: PATTERN.pariah };
       return { fill: NUCLEAR_COLORS[view.nuclearStatus] ?? NUCLEAR_COLORS.NONE, pattern: none };
     }
@@ -275,9 +281,11 @@ export const LAYER_LEGENDS: Record<MapLayer, LayerLegend> = {
   nuclear: {
     title: 'Nuclear layer',
     description:
-      'Nuclear status as your analysts assess it (programs can be hidden). A country hit by a nuclear weapon turns toxic yellow under hazard stripes while fallout lasts; a country that used one is marked as a pariah.',
+      'Nuclear status as your analysts assess it (programs can be hidden). Radioactive fallout (the country hit, and neighbours it drifts into) turns a country toxic yellow under hazard stripes, fading as the radiation decays; a country that used a nuclear weapon is marked as a pariah.',
+    gradient: { css: rampCss(FALLOUT_STOPS), left: 'Faint fallout', right: 'Fresh strike (100)' },
     swatches: [
-      { color: NUKED, label: 'Struck: radioactive fallout', pattern: PATTERN.fallout },
+      { color: NUKED, label: 'Struck: severe radioactive fallout', pattern: PATTERN.fallout },
+      { color: ramp(FALLOUT_STOPS, 25), label: 'Fallout drifting in / decaying', pattern: PATTERN.fallout },
       { color: NUKE_USER, label: 'Used a nuclear weapon', pattern: PATTERN.pariah },
       { color: NUCLEAR_COLORS.ARMED, label: 'ARMED, deliverable arsenal' },
       { color: NUCLEAR_COLORS.TESTED, label: 'TESTED, weaponizing' },

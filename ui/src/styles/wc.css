@@ -1963,15 +1963,18 @@ button {
 /* Nuclear strike site */
 .wcm-halo { position: relative; width: clamp(30px, calc(var(--wcm-ppd, 4px) * var(--deg, 4)), 300px); aspect-ratio: 1; pointer-events: none; }
 .wcm-halo > * { position: absolute; pointer-events: none; }
-.wcm-halo-core { inset: 0; border-radius: 50%; background: radial-gradient(circle, rgba(212, 240, 60, calc(.5 * var(--sev, .6))) 0%, rgba(160, 200, 40, calc(.22 * var(--sev, .6))) 45%, transparent 70%); animation: wcm-breathe 3.2s ease-in-out infinite; }
-.wcm-halo-ring { inset: 0; border-radius: 50%; border: 1.5px solid rgba(212, 240, 60, .7); opacity: 0; animation: wcm-ring 3.2s ease-out infinite; }
+.wcm-halo::after { content: ''; position: absolute; inset: 0; border-radius: 50%; border: 1.5px dashed rgba(236, 255, 120, .75); box-shadow: 0 0 0 1px rgba(10, 12, 4, .55), inset 0 0 0 1px rgba(10, 12, 4, .55); animation: wcm-spin 40s linear infinite; }
+.wcm-halo-core { inset: 8%; border-radius: 50%; background: radial-gradient(circle, rgba(255, 255, 190, calc(.9 * var(--sev, .6))) 0%, rgba(220, 245, 70, calc(.55 * var(--sev, .6))) 30%, rgba(150, 190, 30, calc(.3 * var(--sev, .6))) 60%, transparent 72%); mix-blend-mode: screen; animation: wcm-breathe 3.2s ease-in-out infinite; }
+.wcm-halo-ring { inset: 0; border-radius: 50%; border: 2.5px solid rgba(240, 255, 110, .95); box-shadow: 0 0 8px rgba(220, 255, 80, .6); opacity: 0; animation: wcm-ring 3.2s ease-out infinite; }
 .wcm-halo-ring.r2 { animation-delay: 1.6s; }
 .wcm-plume { left: 50%; top: 50%; width: 110%; height: 34%; transform-origin: 0 50%; transform: translateY(-50%) rotate(var(--plume, -30deg)); overflow: hidden; border-radius: 50%; }
-.wcm-plume::before { content: ''; position: absolute; inset: 0; border-radius: 50%; background: linear-gradient(to right, rgba(190, 220, 60, calc(.38 * var(--sev, .6))), transparent 80%); animation: wcm-drift 6s ease-in-out infinite; }
+.wcm-plume::before { content: ''; position: absolute; inset: 0; border-radius: 50%; background: linear-gradient(to right, rgba(225, 250, 90, calc(.6 * var(--sev, .6))), transparent 85%); animation: wcm-drift 6s ease-in-out infinite; }
+.wcm-blast { position: relative; width: 1px; height: 1px; pointer-events: none; }
+.wcm-blast > * { position: absolute; pointer-events: none; }
 .wcm-flash { left: 50%; top: 50%; width: 30px; height: 30px; margin: -15px 0 0 -15px; border-radius: 50%; background: radial-gradient(circle, #fff 0%, #fff6c8 35%, rgba(255, 190, 80, .6) 60%, transparent 72%); opacity: 0; }
-.wcm-mushroom { left: 50%; top: 50%; width: 34px; height: 41px; margin: -41px 0 0 -17px; opacity: 0; transform-origin: 50% 100%; }
-.wcm-live .wcm-halo.wcm-fresh .wcm-flash { animation: wcm-flash 1.6s ease-out .2s 2 both; }
-.wcm-live .wcm-halo.wcm-fresh .wcm-mushroom { animation: wcm-mushroom 3.6s ease-out .5s 2 both; }
+.wcm-mushroom { left: 50%; top: 50%; width: 44px; height: 53px; margin: -60px 0 0 -22px; opacity: 0; transform-origin: 50% 100%; filter: drop-shadow(0 0 6px rgba(255, 190, 90, .8)); }
+.wcm-live .wcm-blast .wcm-flash { animation: wcm-flash 1.6s ease-out .2s 2 both; }
+.wcm-live .wcm-blast .wcm-mushroom { animation: wcm-mushroom 3.6s ease-out .5s 2 both; }
 
 /* War fronts */
 .wcm-war-core { position: relative; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: rgba(40, 6, 8, .9); border: 1.5px solid #ff5a4f; box-shadow: 0 0 10px rgba(255, 70, 60, .55); }
