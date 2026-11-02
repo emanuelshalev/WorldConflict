@@ -335,6 +335,16 @@ export interface PendingAction {
   value?: number;
   params?: Record<string, unknown>;
   preview?: ActionPreview;
+  /** Queued by the staff as this month's default (the player can remove it). */
+  origin?: 'staff' | 'player';
+  /** The advisor's one-line reason, for staff orders. */
+  why?: string;
+}
+
+/** What the desk's detail pane shows. */
+export interface DeskFocus {
+  kind: 'mission' | 'crisis' | 'meeting' | 'suggestions' | 'catalog' | 'order';
+  id?: string;
 }
 
 export interface EndReport {
@@ -372,6 +382,22 @@ export interface PlayerAccount {
 
 export type Screen = 'title' | 'game';
 
+function readFlag(key: string, fallback: boolean): boolean {
+  try {
+    const v = localStorage.getItem(key);
+    return v === null ? fallback : v === 'on';
+  } catch {
+    return fallback;
+  }
+}
+function writeFlag(key: string, on: boolean): void {
+  try {
+    localStorage.setItem(key, on ? 'on' : 'off');
+  } catch {
+    /* storage unavailable */
+  }
+}
+
 export interface GameState {
   screen: Screen;
   setScreen: (screen: Screen) => void;
@@ -400,6 +426,19 @@ export interface GameState {
   playerView: PlayerViewCountry[];
   pendingDecisions: PendingDecision[];
   decisionChoices: Record<string, string>; // decisionId (or meeting id) → optionId
+  /** Crises and meetings the player answered themselves (the rest are staff picks or pending). */
+  reviewed: Record<string, true>;
+  /** Staff orders the player removed this month (order keys): never re-added. */
+  dismissedStaff: string[];
+  /** `${saveId}:${turn}` once this month's defaults are applied. */
+  monthKey: string | null;
+  deskMode: 'map' | 'desk';
+  setDeskMode: (mode: 'map' | 'desk') => void;
+  focus: DeskFocus;
+  setFocus: (focus: DeskFocus) => void;
+  /** Settings: the staff pre-queue up to 3 orders each month. */
+  staffOrders: boolean;
+  setStaffOrders: (on: boolean) => void;
   advisorDraft: string | null; // a question pre-filled when you consult from a crisis or meeting
   consult: (role: string, question: string) => void;
   score: Score | null;
@@ -638,6 +677,18 @@ export const useGameStore = create<GameState>((set) => ({
   playerView: [],
   pendingDecisions: [],
   decisionChoices: {},
+  reviewed: {},
+  dismissedStaff: [],
+  monthKey: null,
+  deskMode: 'desk',
+  setDeskMode: (mode) => set({ deskMode: mode }),
+  focus: { kind: 'mission' },
+  setFocus: (focus) => set({ focus, deskMode: 'desk' }),
+  staffOrders: readFlag('worldconflict.staffOrders', true),
+  setStaffOrders: (on) => {
+    writeFlag('worldconflict.staffOrders', on);
+    set({ staffOrders: on });
+  },
   advisorDraft: null,
   consult: (role, question) => set({ activeAdvisorRole: role, advisorDraft: question, activeModal: 'advisor', drawer: null }),
   score: null,
@@ -652,7 +703,8 @@ export const useGameStore = create<GameState>((set) => ({
   mapLayer: 'relations',
   showTicker: (() => {
     try {
-      return localStorage.getItem('worldconflict.ticker') !== 'off';
+      const v = localStorage.getItem('worldconflict.ticker');
+      return v === null ? window.innerWidth > 900 : v !== 'off';
     } catch {
       return true;
     }
@@ -698,6 +750,9 @@ export const useGameStore = create<GameState>((set) => ({
       playerBackstory: (data.playerBackstory as string) ?? '',
       saveId,
       decisionChoices: {},
+      reviewed: {},
+      dismissedStaff: [],
+      monthKey: null,
       error: null,
     }),
   selectCountry: (countryId) => set({ selectedCountryId: countryId }),
@@ -722,6 +777,9 @@ export const useGameStore = create<GameState>((set) => ({
       activeAdvisorRole: null,
       currentPhase: 'news',
       pendingActions: [],
+      reviewed: {},
+      dismissedStaff: [],
+      monthKey: null,
       lastTurnFeedback: null,
       advisorChatHistory: {},
       screen: 'title',
@@ -743,7 +801,10 @@ export const useGameStore = create<GameState>((set) => ({
       return i < PHASE_ORDER.length - 1 ? { currentPhase: PHASE_ORDER[i + 1] } : state;
     }),
   chooseDecision: (decisionId, optionId) =>
-    set((state) => ({ decisionChoices: { ...state.decisionChoices, [decisionId]: optionId } })),
+    set((state) => ({
+      decisionChoices: { ...state.decisionChoices, [decisionId]: optionId },
+      reviewed: { ...state.reviewed, [decisionId]: true },
+    })),
   // Same rules as the engine (turn.ts): one of each order per target, at most 6 a month
   addPendingAction: (action) =>
     set((state) => {
@@ -753,7 +814,13 @@ export const useGameStore = create<GameState>((set) => ({
       return { pendingActions: [...state.pendingActions, action] };
     }),
   removePendingAction: (index) =>
-    set((state) => ({ pendingActions: state.pendingActions.filter((_, i) => i !== index) })),
+    set((state) => {
+      const gone = state.pendingActions[index];
+      return {
+        pendingActions: state.pendingActions.filter((_, i) => i !== index),
+        dismissedStaff: gone?.origin === 'staff' ? [...state.dismissedStaff, orderKey(gone)] : state.dismissedStaff,
+      };
+    }),
   clearPendingActions: () => set({ pendingActions: [] }),
 
   setLLMPermission: (granted) => set({ llmPermissionGranted: granted }),

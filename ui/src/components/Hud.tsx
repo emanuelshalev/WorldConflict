@@ -1,4 +1,4 @@
-import { IconBook2, IconMenu2, IconNews, IconSettings, IconUsers, IconWorld } from '@tabler/icons-react';
+import { IconBook2, IconBroadcast, IconBroadcastOff, IconLayoutDashboard, IconMap2, IconMenu2, IconNews, IconSettings, IconUsers, IconWorld } from '@tabler/icons-react';
 import { useGameStore, usePlayerCountry } from '../store/gameStore';
 import { flag, money, monthLabel } from '../lib/format';
 
@@ -53,6 +53,11 @@ export function Hud() {
   const provider = useGameStore((s) => s.llmSettings.provider);
   const pendingDecisions = useGameStore((s) => s.pendingDecisions);
   const me = usePlayerCountry();
+  const deskMode = useGameStore((s) => s.deskMode);
+  const setDeskMode = useGameStore((s) => s.setDeskMode);
+  const showTicker = useGameStore((s) => s.showTicker);
+  const setShowTicker = useGameStore((s) => s.setShowTicker);
+  const gameOver = useGameStore((s) => s.gameOver);
   if (!world || !me) return null;
 
   const d = world.turnReport?.deltas ?? {};
@@ -125,7 +130,20 @@ export function Hud() {
         <Stat label="Score" value={world.score?.total ?? 100} delta={delta('score')} />
       </div>
 
+      {!gameOver && (
+        <div className="seg mode-seg" role="tablist" aria-label="Map or desk (M)">
+          <button role="tab" aria-selected={deskMode === 'map'} className={deskMode === 'map' ? 'on' : ''} onClick={() => setDeskMode('map')} title="Investigate the world (M)">
+            <IconMap2 size={15} /> <span>Map</span>
+          </button>
+          <button role="tab" aria-selected={deskMode === 'desk'} className={deskMode === 'desk' ? 'on' : ''} onClick={() => setDeskMode('desk')} title="Decide this month (M)">
+            <IconLayoutDashboard size={15} /> <span>Desk</span>
+          </button>
+        </div>
+      )}
       <div className="hud-menu">
+        <button className="icon-btn" aria-pressed={showTicker} title={showTicker ? 'Hide the news ticker (N)' : 'Show the news ticker (N)'} onClick={() => setShowTicker(!showTicker)}>
+          {showTicker ? <IconBroadcast size={18} /> : <IconBroadcastOff size={18} />}
+        </button>
         {llmOn && (
           <button className="cost-chip" onClick={() => openModal('settings')} title="LLM usage this game">
             AI {usage ? `${(usage.promptTokens + usage.completionTokens).toLocaleString()} tok` : 'on'}

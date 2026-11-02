@@ -231,9 +231,9 @@ export function MapView() {
       // Dev only: lets visual checks inject a world state (e.g. after a nuclear strike)
       w.__wcStore = useGameStore;
     }
-    // The canvas extends under the glass HUD and desk (see .map-stage in wc.css): keep the
+    // The canvas extends under the glass HUD (see .map-stage in wc.css): keep the
     // camera centred on the visible part
-    map.setPadding({ top: 64, bottom: Math.round(window.innerHeight * 0.6), left: 0, right: 0 });
+    map.setPadding({ top: 64, bottom: 0, left: 0, right: 0 });
 
     let raf = 0;
     let disposed = false;

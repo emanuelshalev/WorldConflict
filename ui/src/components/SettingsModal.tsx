@@ -68,6 +68,10 @@ function Inner({ onClose }: { onClose: () => void }) {
   const llmSettings = useGameStore((s) => s.llmSettings);
   const setLLMSettings = useGameStore((s) => s.setLLMSettings);
   const usage = useGameStore((s) => s.aiTotalUsage);
+  const staffOrders = useGameStore((s) => s.staffOrders);
+  const setStaffOrders = useGameStore((s) => s.setStaffOrders);
+  const showTicker = useGameStore((s) => s.showTicker);
+  const setShowTicker = useGameStore((s) => s.setShowTicker);
   const world = useGameStore((s) => s.worldState);
   const [draft, setDraft] = useState<LLMSettings>({ ...DEFAULT_LLM_SETTINGS, ...llmSettings });
   const [testing, setTesting] = useState(false);
@@ -121,7 +125,22 @@ function Inner({ onClose }: { onClose: () => void }) {
       </div>
       <div className="end-body">
         <div>
-          <div className="section-label" style={{ marginTop: 0 }}>Who runs the world?</div>
+          <div className="section-label" style={{ marginTop: 0 }}>Your desk</div>
+          <label className="setting-row">
+            <input type="checkbox" checked={staffOrders} onChange={(e) => setStaffOrders(e.target.checked)} />
+            <span>
+              <b>Staff pre-select orders</b> Each month your staff queue up to three safe orders within your political capital. You can remove any of them.
+            </span>
+          </label>
+          <label className="setting-row">
+            <input type="checkbox" checked={showTicker} onChange={(e) => setShowTicker(e.target.checked)} />
+            <span>
+              <b>News ticker</b> The scrolling headlines along the bottom (key N).
+            </span>
+          </label>
+        </div>
+        <div>
+          <div className="section-label">Who runs the world?</div>
           <div className="mode-grid">
             {TIERS.map((t) => (
               <button key={t.id} className={`mode-card ${draft.tier === t.id ? 'active' : ''}`} onClick={() => set({ tier: t.id })}>

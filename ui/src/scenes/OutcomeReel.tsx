@@ -7,6 +7,7 @@ import { sceneForAction, sceneForCrisis, type SceneKind } from './kinds';
 import type { Mood } from './art/types';
 import { ActionIcon } from './icons';
 import { OutcomeMap, type MapEffect } from './OutcomeMap';
+import { mapEffect } from '../lib/mapEffect';
 import './reel.css';
 
 type Fact = NonNullable<TurnReport['orders'][number]['facts']>[number];
@@ -27,24 +28,6 @@ interface Shot {
 
 const SHOT_MS = 3600;
 
-/** Which geographic animation an order gets in the dispatch panel. */
-function mapEffect(type?: string): MapEffect | null {
-  switch (type) {
-    case 'MILITARY_DEPLOY_BORDER': return 'deploy';
-    case 'MILITARY_WITHDRAW_BORDER': return 'withdraw';
-    case 'MILITARY_AIRSTRIKE':
-    case 'INTEL_SABOTAGE': return type === 'INTEL_SABOTAGE' ? 'covert' : 'strike';
-    case 'NUCLEAR_STRIKE': return 'nuke';
-    case 'DIPLOMACY_PROPOSE_ALLIANCE': return 'alliance';
-    case 'DIPLOMACY_IMPROVE_RELATIONS': return 'court';
-    case 'DIPLOMACY_DENOUNCE':
-    case 'DIPLOMACY_BREAK_ALLIANCE': return 'denounce';
-    case 'DIPLOMACY_PROPOSE_CEASEFIRE':
-    case 'DIPLOMACY_MEDIATE': return 'ceasefire';
-    case 'DIPLOMACY_DECLARE_WAR': return 'war';
-    default: return type?.startsWith('INTEL_') ? 'covert' : null;
-  }
-}
 const ORDER_MS = 5600; // orders carry a dispatch and numbers to read
 
 function verdictFor(o: TurnReport['orders'][number]): Verdict {
