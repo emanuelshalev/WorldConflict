@@ -1,89 +1,26 @@
-import { IconFlame, IconRadioactive } from '@tabler/icons-react';
+import {
+  IconBomb,
+  IconCheckbox,
+  IconCrown,
+  IconCrownOff,
+  IconFlame,
+  IconLock,
+  IconRadioactive,
+  IconRocket,
+  IconSpeakerphone,
+  IconSwords,
+  IconTank,
+  IconTrendingDown,
+  IconWalk,
+  type Icon,
+} from '@tabler/icons-react';
 import { useGameStore } from '../store/gameStore';
+import { LAYER_LEGENDS, PATTERN_CSS } from './mapColors';
 
 /**
  * The map rubric: explains what the current layer's colors mean, every icon
  * and line on the map, and how to interact with it.
  */
-
-interface Swatch {
-  color: string;
-  label: string;
-}
-
-const LAYER_GUIDES: Record<string, { title: string; description: string; swatches: Swatch[]; gradient?: boolean }> = {
-  relations: {
-    title: 'Relations layer',
-    description: 'How every government feels about you. Blue = friendly, orange = hostile. Your own country is outlined in amber; countries you are fighting have a pulsing red border.',
-    swatches: [
-      { color: '#F2A93B', label: 'You' },
-      { color: 'rgb(40,140,253)', label: 'Ally / warm' },
-      { color: 'rgb(60,95,140)', label: 'Neutral' },
-      { color: 'rgb(242,107,58)', label: 'Hostile' },
-    ],
-  },
-  political: {
-    title: 'Regimes layer',
-    description: 'Countries are colored by their system of government (colorblind-safe palette, no color means good or bad). Democracies face elections, autocracies fear coups, theocracies follow doctrine.',
-    swatches: [
-      { color: '#0072B2', label: 'Democracy' },
-      { color: '#D55E00', label: 'Autocracy' },
-      { color: '#CC79A7', label: 'Communist state' },
-      { color: '#009E73', label: 'Monarchy' },
-      { color: '#E69F00', label: 'Theocracy' },
-      { color: '#7f6a55', label: 'Military junta' },
-    ],
-  },
-  military: {
-    title: 'Military layer',
-    description: 'Brighter red = greater estimated military strength. These are your intelligence service\'s estimates of fighting power (manpower, airpower, readiness), not exact figures.',
-    swatches: [
-      { color: 'rgb(255,40,40)', label: 'Major military power' },
-      { color: 'rgb(160,60,40)', label: 'Mid-tier force' },
-      { color: 'rgb(60,80,40)', label: 'Minor force' },
-    ],
-  },
-  economic: {
-    title: 'Economic layer',
-    description: 'Brighter green = larger estimated GDP. Economic weight funds armies, buys influence, and absorbs shocks.',
-    swatches: [
-      { color: 'rgb(30,230,100)', label: 'Economic giant' },
-      { color: 'rgb(30,150,70)', label: 'Mid-sized economy' },
-      { color: 'rgb(30,70,45)', label: 'Small economy' },
-    ],
-  },
-  stability: {
-    title: 'Stability layer',
-    description: 'Green = solid government, red = on the brink. Unstable states are vulnerable to coups, revolutions and your covert operations, and unstable neighbors export chaos.',
-    swatches: [
-      { color: 'hsl(110, 60%, 38%)', label: 'Very solid (80+)' },
-      { color: 'hsl(60, 60%, 38%)', label: 'Moderate (~50)' },
-      { color: 'hsl(20, 60%, 38%)', label: 'Unstable (~25)' },
-      { color: 'hsl(0, 60%, 38%)', label: 'Collapsing (<15)' },
-    ],
-  },
-  intelligence: {
-    title: 'Intelligence layer',
-    description: 'How well you can see each country. Your nation is blue. Others: brighter = higher intelligence confidence; near-black = you are effectively blind there, and the numbers you see for them may be badly wrong. Improve coverage with Intel Operations or by sharing intel with allies.',
-    swatches: [
-      { color: '#2a6dd9', label: 'Your nation (full knowledge)' },
-      { color: 'hsl(210, 45%, 45%)', label: 'Good coverage (high confidence)' },
-      { color: 'hsl(210, 25%, 30%)', label: 'Partial coverage' },
-      { color: 'hsl(210, 10%, 20%)', label: 'Nearly blind' },
-    ],
-  },
-  nuclear: {
-    title: 'Nuclear layer',
-    description: 'Nuclear weapons status as your analysts assess it. Programs can be hidden, a "None" may simply mean you haven\'t found it. Once a state TESTS, its program is invulnerable to conventional strikes.',
-    swatches: [
-      { color: '#c92a2a', label: 'ARMED, deliverable arsenal' },
-      { color: '#e8590c', label: 'TESTED, demonstrated, weaponizing' },
-      { color: '#e6a23c', label: 'DEVELOPING, active program detected' },
-      { color: '#7a7a52', label: 'LATENT, could build quickly' },
-      { color: '#3c4048', label: 'None detected' },
-    ],
-  },
-};
 
 const badge = (color: string) =>
   ({
@@ -118,7 +55,15 @@ const sectionTitle = {
 
 export function MapGuide({ onClose }: { onClose: () => void }) {
   const mapLayer = useGameStore((s) => s.mapLayer);
-  const guide = LAYER_GUIDES[mapLayer] ?? LAYER_GUIDES.relations;
+  const guide = LAYER_LEGENDS[mapLayer] ?? LAYER_LEGENDS.relations;
+  const marker = (I: Icon, color: string, text: string, cls = '') => (
+    <div style={row}>
+      <span className={`wcm-guide ${cls}`} style={badge(color)}>
+        <I size={11} color={color} aria-hidden />
+      </span>{' '}
+      {text}
+    </div>
+  );
 
   return (
     <div
@@ -152,9 +97,28 @@ export function MapGuide({ onClose }: { onClose: () => void }) {
       {/* Current layer colors */}
       <div style={sectionTitle}>Colors: {guide.title}</div>
       <p style={{ fontSize: 12, color: '#aab', margin: '0 0 8px 0' }}>{guide.description}</p>
+      {guide.gradient && (
+        <div style={{ margin: '0 0 10px 0' }}>
+          <div style={{ height: 10, borderRadius: 3, background: guide.gradient.css, border: '1px solid #0009' }} />
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10.5, color: '#99a', marginTop: 3 }}>
+            <span>{guide.gradient.left}</span>
+            {guide.gradient.mid && <span>{guide.gradient.mid}</span>}
+            <span>{guide.gradient.right}</span>
+          </div>
+        </div>
+      )}
       {guide.swatches.map((s) => (
         <div key={s.label} style={row}>
-          <span style={{ width: 16, height: 16, borderRadius: 3, background: s.color, border: '1px solid #0009', flexShrink: 0 }} />
+          <span
+            style={{
+              width: 16,
+              height: 16,
+              borderRadius: 3,
+              background: s.pattern ? `${PATTERN_CSS[s.pattern]}, ${s.color}` : s.color,
+              border: '1px solid #0009',
+              flexShrink: 0,
+            }}
+          />
           {s.label}
         </div>
       ))}
@@ -164,8 +128,24 @@ export function MapGuide({ onClose }: { onClose: () => void }) {
 
       {/* Icons & markings */}
       <div style={sectionTitle}>Icons & markings</div>
-      <div style={row}><span style={badge('#f5d547')}><IconRadioactive size={11} color="#f5d547" /></span> Nuclear-armed or tested state</div>
-      <div style={row}><span style={badge('#ff9f43')}><IconFlame size={11} color="#ff9f43" /></span> Serious insurgency (rebellion or guerilla war)</div>
+      <div style={{ fontSize: 11, color: '#778', margin: '0 0 6px 0' }}>
+        Badges sit above a country's name (hover one for details, click it for the dossier). Animated
+        ones are live: they come and go with the situation.
+      </div>
+      {marker(IconRadioactive, '#d4f03c', 'Nuclear strike site: pulsing trefoil, a contamination halo sized by the fallout and a plume drifting downwind', 'rad')}
+      {marker(IconRocket, '#ff4fb3', 'Used a nuclear weapon: pariah under a global embargo')}
+      {marker(IconSwords, '#ff5a4f', 'War front: blasts where the front line stands (closer to the losing side)')}
+      {marker(IconBomb, '#ff8a5c', 'Smoke: hit by airstrikes this month')}
+      {marker(IconFlame, '#ff9f43', 'Flames: open rebellion or guerilla war')}
+      {marker(IconSpeakerphone, '#ffb347', 'Protest: unrest in the streets, or a government on the brink')}
+      {marker(IconTrendingDown, '#ff6b5a', 'Economy shrinking faster than 2% a year')}
+      {marker(IconLock, '#c9d2e0', 'Under embargo')}
+      {marker(IconCrownOff, '#ff7a59', 'Coup, revolution or assassination this month')}
+      {marker(IconCheckbox, '#b48cff', 'Election or confidence vote this month')}
+      {marker(IconCrown, '#b48cff', 'New leader this month')}
+      {marker(IconWalk, '#e4d9ff', 'Refugees: lilac chevrons flowing out of a struck or losing country')}
+      {marker(IconTank, '#f2a93b', 'Your forces are mobilised (50%+)')}
+      {marker(IconRadioactive, '#f5d547', 'Nuclear-armed or tested state (always on the Nuclear layer)')}
       <div style={row}>
         <span style={unit('#f2a93b')} /> Your troops massed on a border (with their number)
       </div>

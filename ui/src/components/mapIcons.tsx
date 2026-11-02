@@ -13,7 +13,7 @@ import { ACTION_ICON, FAMILY_COLOR, actionFamily } from '../scenes/actionIcons';
 const PR = 2; // pixel ratio of the sprites
 
 /** Render a Tabler icon to SVG markup (synchronously, outside React's tree). */
-function iconSvg(I: Icon, color: string, size: number): string {
+export function iconSvg(I: Icon, color: string, size: number): string {
   const host = document.createElement('div');
   const root = createRoot(host);
   flushSync(() => root.render(<I size={size} stroke={2} color={color} />));
@@ -100,10 +100,65 @@ export const ICON_NUKE = 'status-nuke';
 export const ICON_FIRE = 'status-fire';
 export const orderImage = (type: string) => (ACTION_ICON[type] ? `order-${type}` : 'order-DOMESTIC_PROPAGANDA');
 
+/**
+ * Seamless fill patterns drawn over a country's colour for special states (embargo, war,
+ * revolt, fallout, nuclear pariah). Names match PATTERN in mapColors.ts.
+ */
+function stripes(
+  map: maplibregl.Map,
+  name: string,
+  color: string,
+  width: number,
+  size: number,
+  dirs: Array<1 | -1>,
+) {
+  const [c, ctx] = canvas(size, size);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = width;
+  ctx.lineCap = 'square';
+  for (const d of dirs) {
+    for (const k of [-size, 0, size]) {
+      ctx.beginPath();
+      if (d === 1) {
+        ctx.moveTo(k, size);
+        ctx.lineTo(k + size, 0);
+      } else {
+        ctx.moveTo(k, 0);
+        ctx.lineTo(k + size, size);
+      }
+      ctx.stroke();
+    }
+  }
+  register(map, name, c);
+}
+
+/** Refugee flow chevron, drawn along the flow lines. */
+function chevron(map: maplibregl.Map, name: string, color: string) {
+  const [c, ctx] = canvas(12, 12);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.beginPath();
+  ctx.moveTo(3.5, 2.5);
+  ctx.lineTo(8.5, 6);
+  ctx.lineTo(3.5, 9.5);
+  ctx.stroke();
+  register(map, name, c);
+}
+
+export const REFUGEE_ARROW = 'refugee-chevron';
+
 /** Register every sprite the map uses; resolves when all are ready. */
 export async function addMapImages(map: maplibregl.Map): Promise<void> {
   unitBox(map, UNIT_MINE, '#f2a93b');
   unitBox(map, UNIT_FOE, '#ff5a4f');
+  stripes(map, 'pat-embargo', 'rgba(5,8,14,0.85)', 2, 8, [1]);
+  stripes(map, 'pat-war', 'rgba(255,70,60,0.9)', 1.8, 10, [-1]);
+  stripes(map, 'pat-unrest', 'rgba(255,159,67,0.85)', 1.4, 8, [1, -1]);
+  stripes(map, 'pat-fallout', 'rgba(10,10,6,0.9)', 3, 10, [1]);
+  stripes(map, 'pat-pariah', 'rgba(255,210,235,0.6)', 1, 7, [1, -1]);
+  chevron(map, REFUGEE_ARROW, '#d7c6ff');
   await Promise.all([
     badge(map, ICON_NUKE, IconRadioactive, '#f5d547', 24),
     badge(map, ICON_FIRE, IconFlame, '#ff9f43', 22),

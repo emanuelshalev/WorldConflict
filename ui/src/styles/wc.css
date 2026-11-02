@@ -1929,3 +1929,88 @@ button {
 .meeting > .scene { aspect-ratio: 3 / 1; }
 .advisor-questions { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; padding: 0 12px 4px; margin: 6px 0; scrollbar-width: thin; }
 .advisor-questions button { flex: none; white-space: nowrap; }
+
+/* ==========================================================================
+   Map state markers (MapView + mapMarkers.ts): animated HTML markers driven by
+   the game state. Inner elements animate; the outer .wcm is positioned by MapLibre.
+   ========================================================================== */
+.wcm { pointer-events: auto; cursor: pointer; }
+.wcm-row { display: flex; gap: 3px; align-items: center; transform-origin: 50% 100%; transition: transform .25s, opacity .25s; }
+.wcm-badge { position: relative; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: rgba(8, 12, 20, .92); border: 1.5px solid var(--c); box-shadow: 0 0 6px color-mix(in srgb, var(--c) 45%, transparent), 0 1px 3px rgba(0, 0, 0, .6); }
+.wcm-badge svg { display: block; }
+.wcm-more { font: 700 10px/1 var(--font-mono, monospace); color: #dfe6f0; background: rgba(8, 12, 20, .85); border-radius: 8px; padding: 3px 4px; }
+
+/* Per-kind motion */
+.wcm-b-rad { animation: wcm-glow 1.6s ease-in-out infinite; }
+.wcm-b-rad svg { animation: wcm-spin 7s linear infinite; }
+.wcm-b-pariah { animation: wcm-glow 2.4s ease-in-out infinite; }
+.wcm-b-flame svg { transform-origin: 50% 90%; animation: wcm-flicker .9s steps(6, end) infinite; }
+.wcm-b-flame { animation: wcm-glow .9s ease-in-out infinite alternate; }
+.wcm-b-protest svg { animation: wcm-shake 2.2s ease-in-out infinite; }
+.wcm-b-crash svg { animation: wcm-fall 1.8s ease-in infinite; }
+.wcm-b-lock svg { transform-origin: 50% 20%; animation: wcm-swing 3s ease-in-out infinite; }
+.wcm-b-mob svg { animation: wcm-nudge 2.6s ease-in-out infinite; }
+.wcm-b-gov { animation: wcm-glow 2s ease-in-out infinite; }
+.wcm-live .wcm-b-gov.wcm-fresh { animation: wcm-bounce-in .9s cubic-bezier(.2, 1.6, .4, 1) both, wcm-glow 2s ease-in-out 1s infinite; }
+.wcm-live .wcm-b-smoke.wcm-fresh { animation: wcm-bounce-in .7s cubic-bezier(.2, 1.6, .4, 1) both; }
+.wcm-live .wcm-b-rad.wcm-fresh { animation: wcm-bounce-in .9s cubic-bezier(.2, 1.6, .4, 1) 1.2s both, wcm-glow 1.6s ease-in-out 2.1s infinite; }
+
+/* Airstrike smoke: puffs rising off the badge */
+.wcm-puff { position: absolute; left: 50%; bottom: 60%; width: 9px; height: 9px; margin-left: -4.5px; border-radius: 50%; background: rgba(150, 150, 160, .75); filter: blur(.6px); opacity: 0; animation: wcm-puff 2.4s ease-out infinite; pointer-events: none; }
+.wcm-puff:nth-child(2) { animation-delay: .8s; margin-left: -1px; }
+.wcm-puff:nth-child(3) { animation-delay: 1.6s; margin-left: -8px; }
+
+/* Nuclear strike site */
+.wcm-halo { position: relative; width: clamp(30px, calc(var(--wcm-ppd, 4px) * var(--deg, 4)), 300px); aspect-ratio: 1; pointer-events: none; }
+.wcm-halo > * { position: absolute; pointer-events: none; }
+.wcm-halo-core { inset: 0; border-radius: 50%; background: radial-gradient(circle, rgba(212, 240, 60, calc(.5 * var(--sev, .6))) 0%, rgba(160, 200, 40, calc(.22 * var(--sev, .6))) 45%, transparent 70%); animation: wcm-breathe 3.2s ease-in-out infinite; }
+.wcm-halo-ring { inset: 0; border-radius: 50%; border: 1.5px solid rgba(212, 240, 60, .7); opacity: 0; animation: wcm-ring 3.2s ease-out infinite; }
+.wcm-halo-ring.r2 { animation-delay: 1.6s; }
+.wcm-plume { left: 50%; top: 50%; width: 110%; height: 34%; transform-origin: 0 50%; transform: translateY(-50%) rotate(var(--plume, -30deg)); overflow: hidden; border-radius: 50%; }
+.wcm-plume::before { content: ''; position: absolute; inset: 0; border-radius: 50%; background: linear-gradient(to right, rgba(190, 220, 60, calc(.38 * var(--sev, .6))), transparent 80%); animation: wcm-drift 6s ease-in-out infinite; }
+.wcm-flash { left: 50%; top: 50%; width: 30px; height: 30px; margin: -15px 0 0 -15px; border-radius: 50%; background: radial-gradient(circle, #fff 0%, #fff6c8 35%, rgba(255, 190, 80, .6) 60%, transparent 72%); opacity: 0; }
+.wcm-mushroom { left: 50%; top: 50%; width: 34px; height: 41px; margin: -41px 0 0 -17px; opacity: 0; transform-origin: 50% 100%; }
+.wcm-live .wcm-halo.wcm-fresh .wcm-flash { animation: wcm-flash 1.6s ease-out .2s 2 both; }
+.wcm-live .wcm-halo.wcm-fresh .wcm-mushroom { animation: wcm-mushroom 3.6s ease-out .5s 2 both; }
+
+/* War fronts */
+.wcm-war-core { position: relative; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: rgba(40, 6, 8, .9); border: 1.5px solid #ff5a4f; box-shadow: 0 0 10px rgba(255, 70, 60, .55); }
+.wcm-war-core svg { animation: wcm-clash 1.4s ease-in-out infinite; }
+.wcm-burst { position: absolute; width: 11px; height: 11px; background: #ffcf5a; clip-path: polygon(50% 0, 62% 35%, 100% 50%, 62% 65%, 50% 100%, 38% 65%, 0 50%, 38% 35%); opacity: 0; pointer-events: none; top: -6px; left: -6px; animation: wcm-burst 2.1s ease-out infinite; }
+.wcm-burst.b2 { top: auto; left: auto; bottom: -5px; right: -7px; background: #ff8a3d; animation-delay: .7s; }
+.wcm-burst.b3 { top: -8px; left: auto; right: -4px; width: 8px; height: 8px; animation-delay: 1.4s; }
+.wcm-live .wcm-war.wcm-fresh .wcm-war-core { animation: wcm-bounce-in .8s cubic-bezier(.2, 1.6, .4, 1) both; }
+
+/* Refugees */
+.wcm-ref-core { width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; background: rgba(20, 14, 36, .85); border: 1px solid rgba(201, 182, 255, .7); }
+.wcm-ref-core svg { animation: wcm-walk .8s ease-in-out infinite alternate; }
+
+/* Small globe: shrink badges, hide the least important markers */
+[data-wcm-zoom='far'] .wcm-row { transform: scale(.8); opacity: .85; }
+[data-wcm-zoom='far'] .wcm-refugee { display: none; }
+[data-wcm-zoom='far'] .wcm-war-core { transform: scale(.85); }
+
+@keyframes wcm-spin { to { transform: rotate(360deg); } }
+@keyframes wcm-glow { 0%, 100% { box-shadow: 0 0 4px color-mix(in srgb, var(--c) 35%, transparent), 0 1px 3px rgba(0, 0, 0, .6); } 50% { box-shadow: 0 0 12px color-mix(in srgb, var(--c) 85%, transparent), 0 1px 3px rgba(0, 0, 0, .6); } }
+@keyframes wcm-flicker { 0% { transform: scale(1, 1); opacity: 1; } 20% { transform: scale(.92, 1.12); opacity: .85; } 40% { transform: scale(1.06, .94); opacity: 1; } 60% { transform: scale(.95, 1.08); opacity: .9; } 80% { transform: scale(1.04, .97); opacity: 1; } 100% { transform: scale(1, 1.05); opacity: .92; } }
+@keyframes wcm-shake { 0%, 60%, 100% { transform: rotate(0); } 65% { transform: rotate(-14deg); } 72% { transform: rotate(12deg); } 79% { transform: rotate(-10deg); } 86% { transform: rotate(8deg); } }
+@keyframes wcm-fall { 0% { transform: translate(-2px, -3px); opacity: 0; } 25% { opacity: 1; } 80% { transform: translate(2px, 3px); opacity: 1; } 100% { transform: translate(3px, 4px); opacity: 0; } }
+@keyframes wcm-swing { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(9deg); } 75% { transform: rotate(-9deg); } }
+@keyframes wcm-nudge { 0%, 100% { transform: translateX(-1.5px); } 50% { transform: translateX(1.5px); } }
+@keyframes wcm-bounce-in { 0% { transform: translateY(-18px) scale(.3); opacity: 0; } 60% { transform: translateY(2px) scale(1.15); opacity: 1; } 100% { transform: translateY(0) scale(1); opacity: 1; } }
+@keyframes wcm-puff { 0% { transform: translateY(0) scale(.5); opacity: 0; } 20% { opacity: .85; } 100% { transform: translateY(-18px) scale(1.7); opacity: 0; } }
+@keyframes wcm-breathe { 0%, 100% { transform: scale(.92); opacity: .85; } 50% { transform: scale(1.04); opacity: 1; } }
+@keyframes wcm-ring { 0% { transform: scale(.25); opacity: .9; } 100% { transform: scale(1); opacity: 0; } }
+@keyframes wcm-drift { 0% { transform: translateX(-30%); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateX(25%); opacity: 0; } }
+@keyframes wcm-flash { 0% { transform: scale(.2); opacity: 0; } 12% { transform: scale(1.4); opacity: 1; } 100% { transform: scale(4.5); opacity: 0; } }
+@keyframes wcm-mushroom { 0% { transform: translateY(14px) scale(.25); opacity: 0; } 18% { opacity: 1; } 70% { transform: translateY(-6px) scale(1.15); opacity: .95; } 100% { transform: translateY(-14px) scale(1.3); opacity: 0; } }
+@keyframes wcm-clash { 0%, 100% { transform: scale(1) rotate(0); } 45% { transform: scale(1.18) rotate(-8deg); } 55% { transform: scale(1.1) rotate(6deg); } }
+@keyframes wcm-burst { 0% { transform: scale(0) rotate(0); opacity: 0; } 15% { transform: scale(1.3) rotate(20deg); opacity: 1; } 45% { transform: scale(.9) rotate(35deg); opacity: 0; } 100% { opacity: 0; } }
+@keyframes wcm-walk { from { transform: translate(-1.5px, 0) rotate(-4deg); } to { transform: translate(1.5px, -1px) rotate(4deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .wcm *, .wcm *::before, .wcm *::after { animation: none !important; transition: none !important; }
+  .wcm-flash, .wcm-mushroom, .wcm-puff, .wcm-burst { display: none; }
+  .wcm-halo-ring { opacity: .5; transform: scale(.8); }
+}
+/* ==== end Map state markers ==== */

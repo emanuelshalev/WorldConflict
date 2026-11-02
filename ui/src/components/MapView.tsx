@@ -17,7 +17,9 @@ import type { PlayerViewCountry, War, WorldState } from '../store/gameStore';
 import { CountryDetailPanel } from './CountryDetailPanel';
 import { MapGuide } from './MapGuide';
 import { MapActionMenu } from './MapActionMenu';
-import { ICON_FIRE, ICON_NUKE, UNIT_FOE, UNIT_MINE, addMapImages, orderImage } from './mapIcons';
+import { REFUGEE_ARROW, UNIT_FOE, UNIT_MINE, addMapImages, orderImage } from './mapIcons';
+import { countryPaint } from './mapColors';
+import { StateMarkers, buildMarkers, deriveSignals, latestNews, refugeeFlows } from './mapMarkers';
 import { FAMILY_COLOR, actionFamily } from '../scenes/actionIcons';
 import { frontPoint, loadWorld } from '../scenes/worldGeo';
 
@@ -61,24 +63,6 @@ const COUNTRY_CENTERS: Record<string, [number, number]> = {
   ITA: [12.5, 42.8],
 };
 
-// Okabe-Ito categorical palette: colorblind-safe and value-neutral
-const REGIME_COLORS: Record<string, string> = {
-  DEMOCRACY: '#0072B2',
-  AUTOCRACY: '#D55E00',
-  COMMUNIST: '#CC79A7',
-  MONARCHY: '#009E73',
-  THEOCRACY: '#E69F00',
-  MILITARY_JUNTA: '#7f6a55',
-};
-
-// Blue (friendly) to orange (hostile) diverging scale, never red/green
-function relationColor(rel: number): string {
-  const t = Math.max(-1, Math.min(1, rel / 80));
-  if (t >= 0) return `rgb(${Math.round(60 - t * 20)}, ${Math.round(95 + t * 45)}, ${Math.round(140 + t * 113)})`;
-  const u = -t;
-  return `rgb(${Math.round(70 + u * 172)}, ${Math.round(85 + u * 22)}, ${Math.round(110 - u * 52)})`;
-}
-
 const LAYERS: ReadonlyArray<{ id: string; label: string; icon: Icon }> = [
   { id: 'relations', label: 'Relations', icon: IconHeartHandshake },
   { id: 'political', label: 'Regimes', icon: IconBuildingBank },
@@ -89,49 +73,14 @@ const LAYERS: ReadonlyArray<{ id: string; label: string; icon: Icon }> = [
   { id: 'nuclear', label: 'Nuclear', icon: IconRadioactive },
 ];
 
-function countryColor(view: PlayerViewCountry, layer: string, maxStrength: number): string {
-  switch (layer) {
-    case 'relations':
-      return view.isPlayer ? '#F2A93B' : relationColor(view.relationWithPlayer);
-    case 'political':
-      return REGIME_COLORS[view.regimeType] ?? '#555';
-    case 'military': {
-      const t = Math.min(1, view.militaryStrength.estimate / Math.max(1, maxStrength));
-      return `rgb(${Math.round(60 + t * 195)}, ${Math.round(40 + (1 - t) * 40)}, 40)`;
-    }
-    case 'economic': {
-      const t = Math.min(1, Math.log10(Math.max(1e9, view.gdp.estimate)) / 13.6);
-      return `rgb(30, ${Math.round(60 + t * 170)}, ${Math.round(40 + t * 60)})`;
-    }
-    case 'stability': {
-      const hue = (view.stability.estimate / 100) * 120; // red to green
-      return `hsl(${hue}, 60%, 38%)`;
-    }
-    case 'intelligence': {
-      if (view.isPlayer) return '#2a6dd9';
-      const c = view.intelConfidence;
-      return `hsl(210, ${Math.round(c * 0.5)}%, ${18 + (c / 100) * 30}%)`;
-    }
-    case 'nuclear': {
-      switch (view.nuclearStatus) {
-        case 'ARMED': return '#c92a2a';
-        case 'TESTED': return '#e8590c';
-        case 'DEVELOPING': return '#e6a23c';
-        case 'LATENT': return '#7a7a52';
-        default: return '#3c4048';
-      }
-    }
-    default:
-      return '#555';
-  }
-}
-
 function buildTooltip(view: PlayerViewCountry, wars: War[]): string {
   const fmt = (n: number) =>
     n >= 1e12 ? `$${(n / 1e12).toFixed(1)}T` : n >= 1e9 ? `$${(n / 1e9).toFixed(0)}B` : `$${(n / 1e6).toFixed(0)}M`;
   const range = (r: { low: number; high: number; confidence: number }, f: (x: number) => string) =>
     r.confidence > 85 ? f((r.low + r.high) / 2) : `${f(r.low)} - ${f(r.high)}`;
   const atWar = wars.some((w) => w.attackerId === view.id || w.defenderId === view.id);
+  const growth = view.growth ?? view.full?.realGrowth;
+  const fallout = view.fallout ?? view.full?.fallout ?? 0;
   const nuclearBadge =
     view.nuclearStatus === 'ARMED' || view.nuclearStatus === 'TESTED'
       ? ' ☢'
@@ -145,6 +94,9 @@ function buildTooltip(view: PlayerViewCountry, wars: War[]): string {
       ${view.isPlayer ? '' : `<div style="font-size:12px">Relations: <b>${view.diplomaticLevel.replace('_', ' ')}</b> (${Math.round(view.relationWithPlayer)})</div>`}
       <div style="font-size:12px">GDP: ${range(view.gdp, fmt)}</div>
       <div style="font-size:12px">Stability: ${range(view.stability, (x) => `${Math.round(x)}%`)}</div>
+      ${growth !== undefined ? `<div style="font-size:12px">Growth: <b style="color:${growth < -0.02 ? '#ff7b6b' : growth > 0.025 ? '#5fd3a8' : '#dfe3ea'}">${growth >= 0 ? '+' : ''}${(growth * 100).toFixed(1)}%/yr</b></div>` : ''}
+      ${view.underEmbargo ? '<div style="font-size:12px;color:#c9d2e0">Under embargo</div>' : ''}
+      ${fallout > 0 ? `<div style="font-size:12px;color:#d4f03c">Radioactive fallout: ${Math.round(fallout)}/100</div>` : ''}
       ${view.insurgencyLevel !== 'NONE' ? `<div style="font-size:12px;color:#e8a13c">Insurgency: ${view.insurgencyLevel}</div>` : ''}
       ${view.isPlayer ? '' : `<div style="font-size:11px;color:#888;margin-top:4px">Intel confidence: ${Math.round(view.intelConfidence)}%</div>`}
       <div style="font-size:10px;color:#666;margin-top:4px">${view.isPlayer ? 'Click for your dossier' : 'Click for orders & dossier'}</div>
@@ -209,7 +161,8 @@ export function MapView() {
   const geoRef = useRef<GeoJSON.FeatureCollection | null>(null);
   const popupRef = useRef<maplibregl.Popup | null>(null);
   // What the animation loop needs to animate (skips layers with nothing on them)
-  const animRef = useRef({ wars: false, events: false, orders: false, enemy: false, pulse: false, pulseUntil: 0, pulsePending: false });
+  const animRef = useRef({ wars: false, events: false, orders: false, enemy: false, refugees: false, pulse: false, pulseUntil: 0, pulsePending: false });
+  const markersRef = useRef<StateMarkers | null>(null);
 
   const worldState = useGameStore((s) => s.worldState);
   const playerView = useGameStore((s) => s.playerView);
@@ -265,7 +218,12 @@ export function MapView() {
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-left');
     mapRef.current = map;
     // Dev only: lets the landing-page recorder drive the camera
-    if (import.meta.env.DEV) (window as unknown as { __wcMap?: maplibregl.Map }).__wcMap = map;
+    if (import.meta.env.DEV) {
+      const w = window as unknown as { __wcMap?: maplibregl.Map; __wcStore?: typeof useGameStore };
+      w.__wcMap = map;
+      // Dev only: lets visual checks inject a world state (e.g. after a nuclear strike)
+      w.__wcStore = useGameStore;
+    }
     // The canvas extends under the glass HUD and desk (see .map-stage in wc.css): keep the
     // camera centred on the visible part
     map.setPadding({ top: 64, bottom: Math.round(window.innerHeight * 0.6), left: 0, right: 0 });
@@ -297,7 +255,7 @@ export function MapView() {
       // Simulated countries: feature ids are game ids, so hover/selection use feature-state
       // and never re-upload the polygons
       map.addSource('countries', { type: 'geojson', data: emptyFC(), promoteId: 'gameId' });
-      for (const id of ['alliances', 'lines', 'icons', 'war-arcs', 'events', 'orders', 'deploy', 'capitals', 'pulse-labels'])
+      for (const id of ['alliances', 'lines', 'icons', 'war-arcs', 'events', 'orders', 'deploy', 'capitals', 'pulse-labels', 'refugees'])
         map.addSource(id, { type: 'geojson', data: emptyFC() });
 
       const hovered: maplibregl.ExpressionSpecification = ['boolean', ['feature-state', 'hover'], false];
@@ -311,6 +269,14 @@ export function MapView() {
           'fill-opacity': ['case', hovered, 0.95, ['get', 'isPlayer'], 0.9, 0.72],
           'fill-opacity-transition': { duration: 150 },
         },
+      });
+      // Special states drawn over the colour: embargo, war, revolt, fallout, nuclear pariah
+      map.addLayer({
+        id: 'country-hatch',
+        type: 'fill',
+        source: 'countries',
+        filter: ['!=', ['get', 'pattern'], ''],
+        paint: { 'fill-pattern': ['get', 'pattern'], 'fill-opacity': 0.85 },
       });
       map.addLayer({
         id: 'player-glow',
@@ -437,6 +403,28 @@ export function MapView() {
           'circle-stroke-color': '#0b0f17',
           'circle-stroke-width': 1.5,
         },
+      });
+      // Refugee flows: marching chevrons from a struck or losing country into its neighbours
+      map.addLayer({
+        id: 'refugee-lines',
+        type: 'line',
+        source: 'refugees',
+        layout: { 'line-cap': 'round' },
+        paint: { 'line-color': '#c9b6ff', 'line-width': 1.4, 'line-opacity': 0.55, 'line-dasharray': [0, 4, 3] },
+      });
+      map.addLayer({
+        id: 'refugee-arrows',
+        type: 'symbol',
+        source: 'refugees',
+        layout: {
+          'symbol-placement': 'line',
+          'symbol-spacing': 38,
+          'icon-image': REFUGEE_ARROW,
+          'icon-allow-overlap': true,
+          'icon-ignore-placement': true,
+          'icon-size': 0.9,
+        },
+        paint: { 'icon-opacity': 0.8 },
       });
       map.addLayer({
         id: 'relation-lines',
@@ -660,6 +648,7 @@ export function MapView() {
           step = s;
           if (a.wars) map.setPaintProperty('war-arcs', 'line-dasharray', dashes[s]);
           if (a.orders) map.setPaintProperty('order-arrows', 'line-dasharray', dashes[s]);
+          if (a.refugees) map.setPaintProperty('refugee-lines', 'line-dasharray', dashes[s]);
         }
         if (a.events) {
           for (const n of [0, 1]) {
@@ -692,12 +681,28 @@ export function MapView() {
       };
       if (!reduced) raf = requestAnimationFrame(frame);
 
+      // Animated state markers (HTML + CSS keyframes); they scale with the zoom through CSS vars
+      markersRef.current = new StateMarkers(map, (id) => {
+        const st = useGameStore.getState();
+        st.selectCountry(st.selectedCountryId === id ? null : id);
+      });
+      const host = map.getContainer();
+      const onZoom = () => {
+        const z = map.getZoom();
+        host.style.setProperty('--wcm-ppd', `${((512 * 2 ** z) / 360).toFixed(2)}px`);
+        host.dataset.wcmZoom = z < 1.7 ? 'far' : z < 3 ? 'mid' : 'near';
+      };
+      onZoom();
+      map.on('zoom', onZoom);
+
       setMapReady(true);
     });
 
     return () => {
       disposed = true;
       cancelAnimationFrame(raf);
+      markersRef.current?.clear();
+      markersRef.current = null;
       popupRef.current?.remove();
       popupRef.current = null;
       map.remove();
@@ -734,17 +739,21 @@ export function MapView() {
       if (c.capital && !COUNTRY_CENTERS[c.id]) COUNTRY_CENTERS[c.id] = c.capital;
     }
     const maxStrength = Math.max(...playerView.map((v) => v.militaryStrength.estimate), 1);
+    const { nukeUsers } = deriveSignals(worldState, playerView);
+    const ctx = { maxStrength, nukeUsers };
     const changes = relationChanges(worldState, saveId);
     const features = geo.features
       .filter((f) => byId.has((f.properties as Record<string, unknown>)?.ADM0_A3 as string))
       .map((f) => {
         const id = (f.properties as Record<string, unknown>).ADM0_A3 as string;
         const view = byId.get(id) as PlayerViewCountry;
+        const paint = countryPaint(view, mapLayer, ctx);
         return {
           ...f,
           properties: {
             gameId: id,
-            fill: countryColor(view, mapLayer, maxStrength),
+            fill: paint.fill,
+            pattern: paint.pattern,
             isPlayer: view.isPlayer,
             atWar: worldState.wars.some((w) => w.attackerId === id || w.defenderId === id),
             enemy: playerAtWarWith.includes(id),
@@ -775,6 +784,16 @@ export function MapView() {
     if (!mapReady || showChronicle || activeModal || !a.pulsePending) return;
     a.pulsePending = false;
     a.pulseUntil = performance.now() + 5200;
+  }, [turn, mapReady, showChronicle, activeModal]);
+
+  // Markers that happened this month (strike flash, new war, coup badge) animate once the map
+  // is in view: restart their CSS animations by re-adding the class on the map container
+  useEffect(() => {
+    const host = mapRef.current?.getContainer();
+    if (!host || !mapReady || showChronicle || activeModal) return;
+    host.classList.remove('wcm-live');
+    void host.offsetWidth;
+    host.classList.add('wcm-live');
   }, [turn, mapReady, showChronicle, activeModal]);
 
   // 3. Selection: feature-state outline, the selected country's pacts and wars, fly to it
@@ -821,13 +840,18 @@ export function MapView() {
 
     // Every war as a marching arc, with a pulsing marker where the front stands
     const arcs: GeoJSON.Feature[] = [];
+    const fronts: Array<[number, number] | null> = [];
     for (const w of worldState.wars) {
       const a = COUNTRY_CENTERS[w.attackerId];
       const b = COUNTRY_CENTERS[w.defenderId];
-      if (!a || !b) continue;
+      if (!a || !b) {
+        fronts.push(null);
+        continue;
+      }
       const pts = arc(a, b);
       arcs.push({ type: 'Feature', geometry: { type: 'LineString', coordinates: pts }, properties: {} });
       const front = pts[Math.round((Math.min(95, Math.max(5, w.frontline)) / 100) * (pts.length - 1))];
+      fronts.push(front);
       arcs.push(point(front, {}));
     }
     // This month's news as rippling beacons where it happened
@@ -837,7 +861,7 @@ export function MapView() {
     };
     const seen = new Set<string>();
     const beacons: GeoJSON.Feature[] = [];
-    for (const n of worldState.newspaper.filter((x) => x.turn === worldState.turn)) {
+    for (const n of latestNews(worldState)) {
       const id = n.relatedCountries[0];
       const c = id && COUNTRY_CENTERS[id];
       if (!c || seen.has(id)) continue;
@@ -902,10 +926,17 @@ export function MapView() {
       const center = COUNTRY_CENTERS[view.id];
       if (!center) continue;
       icons.push(point(center, { kind: 'label', name: view.name }));
-      if (view.nuclearStatus === 'ARMED' || view.nuclearStatus === 'TESTED')
-        icons.push(point([center[0] + 2.2, center[1] + 2.2], { kind: 'icon', img: ICON_NUKE }));
-      if (view.insurgencyLevel === 'REBELLION' || view.insurgencyLevel === 'GUERILLA')
-        icons.push(point([center[0] - 2.2, center[1] + 2], { kind: 'icon', img: ICON_FIRE }));
+    }
+    // Status badges, strike sites, war fronts and refugees as animated HTML markers
+    const sig = deriveSignals(worldState, playerView);
+    markersRef.current?.sync(
+      buildMarkers({ world: worldState, view: playerView, sig, layer: mapLayer, centers: COUNTRY_CENTERS, frontOf: (i) => fronts[i] ?? null }),
+    );
+    const flows: GeoJSON.Feature[] = [];
+    for (const f of refugeeFlows({ world: worldState, sig, centers: COUNTRY_CENTERS })) {
+      const a = COUNTRY_CENTERS[f.from];
+      const b = COUNTRY_CENTERS[f.to];
+      if (a && b) flows.push({ type: 'Feature', geometry: { type: 'LineString', coordinates: arc(a, b, 0.12, 16) }, properties: {} });
     }
     const set = (id: string, features: GeoJSON.Feature[]) =>
       (map.getSource(id) as maplibregl.GeoJSONSource | undefined)?.setData(fc(features));
@@ -915,9 +946,11 @@ export function MapView() {
     set('deploy', deploy);
     set('capitals', capitals);
     set('icons', icons);
+    set('refugees', flows);
     animRef.current.wars = worldState.wars.length > 0;
     animRef.current.events = beacons.length > 0;
-  }, [worldState, playerView, mapReady]);
+    animRef.current.refugees = flows.length > 0;
+  }, [worldState, playerView, mapReady, mapLayer]);
 
   // 5. Orders queued this month: dashed arrows from you to each target, the order's icon at the head
   useEffect(() => {
