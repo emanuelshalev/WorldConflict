@@ -2,7 +2,7 @@
   "id": "NGA",
   "iso3": "NGA",
   "name": "Nigeria",
-  "population": 223000000,
+  "population": 230000000,
   "regimeType": "DEMOCRACY",
   "politicalSystem": {
     "type": "PRESIDENTIAL_DEMOCRACY",
@@ -19,7 +19,9 @@
       { "year": 1983, "event": "Military coup ends Second Republic", "impact": "Cycles of military rule normalized the army's political role and weakened civilian institutions" },
       { "year": 1999, "event": "Return to democracy under the Fourth Republic", "impact": "Civilian rule restored with an informal north-south power rotation to manage regional rivalry" },
       { "year": 2009, "event": "Boko Haram insurgency erupts", "impact": "Jihadist violence devastated the northeast; banditry and separatism spread insecurity nationwide" },
-      { "year": 2020, "event": "EndSARS protests", "impact": "Youth-led uprising against police brutality exposed a deep generational legitimacy gap" }
+      { "year": 2020, "event": "EndSARS protests", "impact": "Youth-led uprising against police brutality exposed a deep generational legitimacy gap" },
+      { "year": 2023, "event": "Fuel subsidy removal and naira float under Tinubu", "impact": "Painful reforms doubled inflation; the 2025 GDP rebasing showed a smaller dollar economy" },
+      { "year": 2025, "event": "US strikes on Islamic State militants in Sokoto at Nigeria's request (25 December)", "impact": "Followed US pressure over religious violence; security cooperation and sovereignty concerns rose together" }
     ],
     "historicalRivals": [],
     "historicalAllies": ["GBR", "USA", "ZAF"],
@@ -48,7 +50,7 @@
     { "kind": "REGIONAL", "name": "Northeast insurgency, northwest banditry, and Delta militancy", "strength": 60, "tension": 70 }
   ],
   "economy": {
-    "gdp": 390000000000,
+    "gdp": 285000000000,
     "growthRate": 0.029,
     "debtGdpRatio": 50,
     "sectors": { "agriculture": 24, "industry": 31, "services": 45 },

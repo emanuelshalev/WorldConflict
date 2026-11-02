@@ -221,16 +221,20 @@ body {
 }
 
 /* MapLibre Popup Styling */
-.maplibregl-popup-content {
-  background: white;
+/* Scoped so maplibre-gl.css (loaded later) cannot turn it white */
+.map-stage .maplibregl-popup .maplibregl-popup-content {
+  background: #141b27;
+  color: #e8ecf2;
+  border: 1px solid #2a3546;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-  padding: 0;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  padding: 10px 12px;
   min-width: 150px;
 }
 
 .maplibregl-popup-tip {
-  border-top-color: white;
+  border-top-color: #141b27 !important;
+  border-bottom-color: #141b27 !important;
 }
 
 .debug-overlay {
@@ -2046,4 +2050,10 @@ body {
 
 .end-turn-btn .btn-arrow {
   font-size: 18px;
+}
+
+.map-stage .maplibregl-popup-anchor-top .maplibregl-popup-tip,
+.map-stage .maplibregl-popup-anchor-bottom .maplibregl-popup-tip {
+  border-top-color: #141b27;
+  border-bottom-color: #141b27;
 }

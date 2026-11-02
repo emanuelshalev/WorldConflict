@@ -108,6 +108,10 @@ export function executeNuclearStrike(
     other.relations[attacker.id] = Math.max(-100, (other.relations[attacker.id] ?? 0) - 60);
   }
   world.globalTension = 100;
+  // Horror at home too: no public rallies round a mushroom cloud
+  const democracy = attacker.regimeType === "DEMOCRACY";
+  attacker.approval = Math.max(0, attacker.approval - (democracy ? 25 : 15));
+  attacker.legitimacy = Math.max(0, attacker.legitimacy - (democracy ? 20 : 10));
 
   // Retaliation chain: target itself, or its nuclear-armed allies
   const retaliators: string[] = [];
@@ -135,7 +139,7 @@ export function executeNuclearStrike(
   }
 
   const description = holocaust
-    ? `${attacker.name} used nuclear weapons against ${target.name}. Retaliatory launches followed within hours. Mushroom clouds rise over both nations — the world tips into nuclear holocaust.`
+    ? `${attacker.name} used nuclear weapons against ${target.name}. Retaliatory launches followed within hours. Mushroom clouds rise over both nations, the world tips into nuclear holocaust.`
     : `${attacker.name} dropped a nuclear weapon on ${target.name}. Hundreds of thousands are dead. The world recoils in horror: a total arms embargo is imposed and ${attacker.name} becomes a pariah state.`;
 
   return { holocaust, retaliators, description };

@@ -14,12 +14,15 @@
   "history": {
     "keyEvents": [
       { "year": 1910, "event": "Mexican Revolution", "impact": "Decade of upheaval forged revolutionary nationalism and the principle of non-intervention" },
-      { "year": 1938, "event": "Oil expropriation under Cárdenas", "impact": "Nationalized petroleum became a sacred symbol of economic sovereignty" },
       { "year": 1929, "event": "PRI hegemony established", "impact": "Seven decades of one-party rule created a strong presidency and corporatist state machinery" },
+      { "year": 1938, "event": "Oil expropriation under Cárdenas", "impact": "Nationalized petroleum became a sacred symbol of economic sovereignty" },
       { "year": 1994, "event": "NAFTA enters into force", "impact": "Economy bound irrevocably to the United States; manufacturing export boom and deep interdependence" },
       { "year": 2000, "event": "PRI loses presidency to Vicente Fox", "impact": "Peaceful democratic alternation ended one-party rule after 71 years" },
       { "year": 2006, "event": "Calderón launches the drug war", "impact": "Military deployment against cartels unleashed enduring violence claiming hundreds of thousands of lives" },
-      { "year": 2018, "event": "AMLO landslide and Morena dominance", "impact": "Left-populist realignment, expanded military role in civilian tasks, and friction with judicial institutions" }
+      { "year": 2018, "event": "AMLO landslide and Morena dominance", "impact": "Left-populist realignment, expanded military role in civilian tasks, and friction with judicial institutions" },
+      { "year": 2024, "event": "Claudia Sheinbaum elected; judicial reform passed", "impact": "Morena dominance extended to the courts, which critics say weakens checks and balances" },
+      { "year": 2025, "event": "US designates cartels as terrorist organizations and imposes tariffs", "impact": "The threat of unilateral US strikes on Mexican soil became Mexico's top foreign-policy problem" },
+      { "year": 2026, "event": "USMCA review breaks down as Washington refuses to extend it as is (July)", "impact": "Trade uncertainty pushed growth below 1%" }
     ],
     "historicalRivals": [],
     "historicalAllies": ["USA", "BRA"],
@@ -48,9 +51,9 @@
     { "kind": "REGIONAL", "name": "Industrialized north versus impoverished south", "strength": 50, "tension": 30 }
   ],
   "economy": {
-    "gdp": 1800000000000,
-    "growthRate": 0.02,
-    "debtGdpRatio": 50,
+    "gdp": 1850000000000,
+    "growthRate": 0.008,
+    "debtGdpRatio": 58,
     "sectors": { "agriculture": 4, "industry": 31, "services": 65 },
     "keyResources": ["oil", "silver", "agriculture", "manufacturing_base"],
     "keyExports": ["automobiles", "electronics", "machinery", "crude_oil", "agricultural_products"],

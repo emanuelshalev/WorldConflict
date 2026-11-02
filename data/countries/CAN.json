@@ -18,8 +18,10 @@
       { "year": 1949, "event": "Founding member of NATO", "impact": "Security permanently tied to collective defense alongside the US and Europe" },
       { "year": 1956, "event": "Pearson invents UN peacekeeping during Suez", "impact": "Middle-power identity; multilateralism and honest-broker diplomacy as national brand" },
       { "year": 1982, "event": "Patriation of the Constitution and Charter of Rights", "impact": "Full sovereignty from Britain; rights-based liberal political culture" },
+      { "year": 1994, "event": "NAFTA enters into force", "impact": "Economy irrevocably integrated with the United States; trade dependence shapes all foreign policy" },
       { "year": 1995, "event": "Quebec independence referendum fails by one percent", "impact": "Near-breakup of the country; permanent sensitivity to Quebec's status" },
-      { "year": 1994, "event": "NAFTA enters into force", "impact": "Economy irrevocably integrated with the United States; trade dependence shapes all foreign policy" }
+      { "year": 2025, "event": "US tariffs and '51st state' pressure; Carney wins the April election", "impact": "Sovereignty became the ballot question; Ottawa began diversifying trade and defense ties away from Washington" },
+      { "year": 2026, "event": "Carney secures a majority through by-elections (13 April)", "impact": "A stable mandate to rearm, renegotiate with the US and court Europe and Asia" }
     ],
     "historicalRivals": ["RUS"],
     "historicalAllies": ["USA", "GBR", "FRA", "AUS"],
@@ -47,7 +49,7 @@
     { "kind": "REGIONAL", "name": "Western alienation over energy and federal policy", "strength": 30, "tension": 40 }
   ],
   "economy": {
-    "gdp": 2140000000000,
+    "gdp": 2250000000000,
     "growthRate": 0.015,
     "debtGdpRatio": 107,
     "sectors": { "agriculture": 2, "industry": 26, "services": 72 },
@@ -63,7 +65,7 @@
     "warheads": 0,
     "arms_suppliers": ["USA"]
   },
-  "militaryBudgetPct": 1.4,
+  "militaryBudgetPct": 2,
   "stability": 85,
   "legitimacy": 82,
   "intelLevel": 72,

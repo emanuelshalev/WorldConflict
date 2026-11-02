@@ -6,7 +6,7 @@ import type { Action, CountryIntent, CountryState, WorldState } from "../core/ty
  * Deterministic personality-driven country AI.
  *
  * Every decision flows from the country's personality traits, historical
- * relationships, regime constraints, leader style and — critically — its
+ * relationships, regime constraints, leader style and, critically, its
  * BELIEFS about other countries rather than ground truth. Two countries with
  * different intelligence pictures of the same rival will act differently.
  */
@@ -34,7 +34,7 @@ export class PersonalityAI {
       country.politicalSystem.nextElectionTurn - world.turn < 10;
 
     // ------------------------------------------------------------------
-    // 1. Domestic crisis management comes first — every regime fears its people
+    // 1. Domestic crisis management comes first, every regime fears its people
     // ------------------------------------------------------------------
     if (country.stability < 40 || country.legitimacy < 40) {
       const prefersForce =
@@ -100,7 +100,7 @@ export class PersonalityAI {
         if (enemy && !isNuclearOperational(enemy)) {
           candidates.push({
             action: { type: "NUCLEAR_STRIKE", targetCountryId: enemyId },
-            weight: 25, // still usually outweighed — but the risk is real
+            weight: 25, // still usually outweighed, but the risk is real
           });
           reasoning.push("cornered nuclear hardliner");
         }
@@ -170,7 +170,7 @@ export class PersonalityAI {
     }
 
     // ------------------------------------------------------------------
-    // 4. Opportunistic aggression — filtered through institutions and beliefs
+    // 4. Opportunistic aggression, filtered through institutions and beliefs
     // ------------------------------------------------------------------
     if (
       country.atWarWith.length === 0 &&

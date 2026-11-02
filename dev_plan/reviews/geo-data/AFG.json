@@ -1,0 +1,83 @@
+{
+  "id": "AFG",
+  "iso3": "AFG",
+  "name": "Afghanistan",
+  "population": 43000000,
+  "regimeType": "THEOCRACY",
+  "politicalSystem": {
+    "type": "THEOCRACY",
+    "powerCenters": ["RELIGIOUS", "MILITARY", "SECURITY_SERVICES"],
+    "electionCycleMonths": 0,
+    "nextElectionTurn": null,
+    "leaderTitle": "Supreme Leader"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1979, "event": "Soviet invasion", "impact": "A decade of jihad, millions of refugees, and the birth of a transnational militant ecosystem" },
+      { "year": 1996, "event": "Taliban capture Kabul and declare the Islamic Emirate", "impact": "Established harsh clerical rule recognized only by Pakistan, Saudi Arabia, and the UAE" },
+      { "year": 2001, "event": "US-led invasion after 9/11 topples the Taliban", "impact": "Twenty years of foreign occupation and insurgency forged the movement's legitimacy narrative" },
+      { "year": 2021, "event": "Fall of Kabul and US withdrawal", "impact": "Taliban return to power inheriting billions in US equipment but an aid-dependent, sanctioned economy" },
+      { "year": 2022, "event": "Bans on girls' secondary and university education", "impact": "Locked in international isolation and exposed the supremacy of Kandahar hardliners over Kabul pragmatists" },
+      { "year": 2023, "event": "Pakistan begins mass deportation of Afghans as TTP attacks surge", "impact": "Turned the Taliban's old patron into its main adversary" },
+      { "year": 2025, "event": "Russia becomes the first state to formally recognize the Islamic Emirate; deadly October border war with Pakistan", "impact": "Broke diplomatic isolation while the Durand Line became an active front" },
+      { "year": 2026, "event": "Pakistan declares 'open war' and bombs Kabul and Kandahar before a March ceasefire", "impact": "Clashes continue sporadically; the regime rallies nationalist support but faces economic strangulation at the border" }
+    ],
+    "historicalRivals": ["PAK", "USA"],
+    "historicalAllies": ["RUS", "CHN"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "ISOLATIONIST",
+    "narrative": "An insurgent movement turned government, ruling by decree from Kandahar under an unelected emir. Battle-hardened and ideologically rigid but impoverished and mostly unrecognized, it trades on regional fears of terrorism to win pragmatic engagement from Russia, China, and Central Asia while sheltering the Pakistani Taliban that now drives a border war with Islamabad."
+  },
+  "personality": {
+    "warPropensity": 50,
+    "allianceLoyalty": 40,
+    "diplomaticFlexibility": 25,
+    "riskTolerance": 60,
+    "expansionism": 20,
+    "isolationism": 70,
+    "ideologicalRigidity": 95,
+    "prestigeEmphasis": 45
+  },
+  "redLines": [
+    { "type": "TERRITORIAL", "targetCountryId": "USA", "description": "Return of foreign troops, including any US attempt to retake Bagram air base", "severity": 10 },
+    { "type": "TERRITORIAL", "targetCountryId": "PAK", "description": "Pakistani airstrikes on Afghan cities or forced acceptance of the Durand Line as an international border", "severity": 8 },
+    { "type": "IDEOLOGICAL", "description": "Foreign conditionality on women's rights or attempts to impose an inclusive government", "severity": 7 }
+  ],
+  "internalDivisions": [
+    { "kind": "ETHNIC", "name": "Pashtun-dominated regime versus excluded Tajik, Hazara, and Uzbek communities", "strength": 55, "tension": 60 },
+    { "kind": "IDEOLOGICAL", "name": "Kandahar hardliners around the emir versus Haqqani and Kabul pragmatists", "strength": 40, "tension": 55 },
+    { "kind": "RELIGIOUS", "name": "ISIS-Khorasan insurgency and sectarian attacks on Shia Hazaras", "strength": 10, "tension": 60 }
+  ],
+  "economy": {
+    "gdp": 17000000000,
+    "growthRate": 0.02,
+    "debtGdpRatio": 7,
+    "sectors": { "agriculture": 33, "industry": 20, "services": 47 },
+    "keyResources": ["lithium", "copper", "coal", "rare_earths", "natural_gas"],
+    "keyExports": ["coal", "dried_fruits", "medicinal_plants", "textiles", "carpets"],
+    "developmentLevel": "DEVELOPING"
+  },
+  "military": {
+    "manpower": 170000,
+    "airpower": 40,
+    "doctrine": "GUERILLA",
+    "nuclearStatus": "NONE",
+    "warheads": 0,
+    "arms_suppliers": ["PRIVATE"]
+  },
+  "militaryBudgetPct": 5.0,
+  "stability": 40,
+  "legitimacy": 35,
+  "intelLevel": 35,
+  "insurgencyLevel": "UNREST",
+  "goals": [
+    { "id": "afg_g1", "type": "SECURITY", "targetCountryId": "PAK", "priority": 85, "description": "Resist Pakistani military pressure without abandoning the Pakistani Taliban (TTP)" },
+    { "id": "afg_g2", "type": "IDEOLOGICAL", "priority": 90, "description": "Preserve the Islamic Emirate and the emir's absolute authority against internal and foreign challenges" },
+    { "id": "afg_g3", "type": "PRESTIGE", "targetCountryId": "CHN", "priority": 70, "description": "Win formal recognition and investment from China, Central Asia, and the Gulf following Russia's lead" },
+    { "id": "afg_g4", "type": "ECONOMIC", "priority": 65, "description": "Monetize mining and transit routes to survive aid cuts and sanctions" }
+  ],
+  "geo": {
+    "bounds": [60.5, 29.4, 74.9, 38.5],
+    "capital": { "name": "Kabul", "coordinates": [69.2075, 34.5553] }
+  }
+}

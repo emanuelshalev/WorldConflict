@@ -1,0 +1,383 @@
+{
+  "id": "quarantine",
+  "title": "Quarantine",
+  "tagline": "No blockade, no war, no gas: just very thorough customs officers.",
+  "hook": "In December 2025 the PLA's Justice Mission-2025 drills rehearsed sealing off Keelung and Kaohsiung, days after a record US$11.1bn US arms package. In 2026 Taiwan's opposition-run legislature cut President Lai's NT$1.25 trillion special defence budget roughly in half, and after the May 2026 Beijing summit Trump publicly warned Taipei against independence. Taiwan imports about 97% of its energy and reportedly holds only around 11 days of LNG.",
+  "sources": [
+    "https://focustaiwan.tw/politics/202512300008",
+    "https://focustaiwan.tw/politics/202604280021",
+    "https://theonlinecitizen.com/2026/05/16/trump-warns-taiwan-against-independence-after-beijing-summit-with-xi-jinping",
+    "https://ktvz.com/money/cnn-business-consumer/2026/01/06/china-bans-certain-rare-earths-and-other-exports-to-japan-for-military-purposes-over-takaichis-comments/",
+    "https://www.opb.org/article/2026/01/24/china-s-top-general-under-investigation-in-latest-military-purge/"
+  ],
+  "scenarioId": "2026",
+  "date": "2026-12",
+  "turns": 12,
+  "globalTension": 78,
+  "playable": [
+    {"countryId": "TWN", "role": "Keep the lights on and the island free without ever firing the first shot.", "difficulty": "BRUTAL"},
+    {"countryId": "CHN", "role": "Strangle Taipei politely, with paperwork, and never let it become a war.", "difficulty": "TOUGH"},
+    {"countryId": "USA", "role": "Reopen the sea lanes without a shooting war, a trade war or a broken promise.", "difficulty": "TOUGH"}
+  ],
+  "setup": {
+    "wars": [],
+    "relations": [
+      {"a": "CHN", "b": "TWN", "value": -80},
+      {"a": "USA", "b": "TWN", "value": 55},
+      {"a": "JPN", "b": "TWN", "value": 65},
+      {"a": "CHN", "b": "JPN", "value": -60},
+      {"a": "USA", "b": "CHN", "value": -40}
+    ],
+    "countries": {
+      "TWN": {"stability": 62, "approval": 50, "growthRate": 0.01, "mobilization": 30},
+      "CHN": {"stability": 74, "approval": 66, "mobilization": 35},
+      "JPN": {"mobilization": 25}
+    }
+  },
+  "objectives": {
+    "TWN": {
+      "title": "Eleven days of gas",
+      "briefing": "You are Taiwan's president, three days after a bruising local election, and the China Coast Guard has started 'inspecting' every ship bound for your ports. Keep energy flowing and the economy breathing, keep Washington and Tokyo in your corner, and never give Beijing the first shot it is waiting for. The legislature is not on your side.",
+      "primary": [
+        {"kind": "NO_WAR_WITH", "targetId": "CHN", "label": "Never fire the first shot: no war with China"},
+        {"kind": "RELATION_MIN", "targetId": "USA", "min": 56, "label": "Washington firmly in your corner (relations 56+)"},
+        {"kind": "SCORE_PAR", "min": 89, "label": "Leadership score of 89+: the island still works"}
+      ],
+      "bonus": [
+        {"kind": "RELATION_MIN", "targetId": "JPN", "min": 95, "label": "Tokyo stands with you (relations 95+)"},
+        {"kind": "STAT_MIN", "stat": "stability", "min": 60, "label": "Lights on, nerves steady (stability 60%+)"}
+      ],
+      "par": 97,
+      "debrief": "What really happened (to 2026): PLA blockade drills grew more realistic every year, from Joint Sword in 2024 to Strait Thunder-2025A and Justice Mission-2025, while Taiwan's divided government stalled its own defence budget and US policy swung between record arms sales and summit deals with Beijing. What experts fear: a gray-zone 'quarantine' run by coast guards and customs law rather than warships, legally deniable and never quite an act of war, that slowly strangles an island importing almost all of its energy, and forces Taipei or Washington to choose between capitulation and firing first."
+    },
+    "CHN": {
+      "title": "Customs, not cannons",
+      "briefing": "You are the General Secretary. Your coast guard is boarding ships bound for Taiwan under a 'customs inspection' regime that is not, officially, a blockade. Make Taipei accept the inspections or come to the table, without handing Washington and Tokyo a war, and keep the Party and the purged high command steady while you do it.",
+      "primary": [
+        {"kind": "NO_WAR_WITH", "targetId": "USA", "label": "No war with the United States"},
+        {"kind": "NO_WAR_WITH", "targetId": "TWN", "label": "No shooting war across the Strait"},
+        {"kind": "RELATION_MIN", "targetId": "USA", "min": -88, "label": "Washington still talking, not decoupling (relations -88+)"},
+        {"kind": "SCORE_PAR", "min": 120, "label": "Leadership score of 120+: the Party sees a win"}
+      ],
+      "bonus": [
+        {"kind": "STAT_MIN", "stat": "stability", "min": 88, "label": "Iron discipline at home (stability 88%+)"},
+        {"kind": "SCORE_PAR", "min": 122, "label": "Leadership score of 122+"}
+      ],
+      "par": 115,
+      "debrief": "What really happened (to 2026): Beijing rehearsed a blockade of Taiwan's two great ports in December 2025, punished Japan's prime minister for calling a Taiwan contingency 'survival-threatening' with seafood bans and a dual-use export ban, and extracted a public US warning to Taipei at the May 2026 summit. Meanwhile the Central Military Commission was reportedly hollowed out by purges, including Zhang Youxia in January 2026. What experts fear: that a quarantine designed to stay below the threshold of war meets a jittery commander, an untested chain of command and an ally that decides to escort."
+    },
+    "USA": {
+      "title": "Strategic ambiguity, tested",
+      "briefing": "You are the President. Beijing's coast guard is boarding Taiwan-bound tankers, Tokyo wants to know if you mean it, and you already have a navy busy blockading Iran. Get shipping moving again without a shooting war with China, without abandoning Taipei, and without the voters noticing what it cost.",
+      "primary": [
+        {"kind": "NO_WAR_WITH", "targetId": "CHN", "label": "No US war with China"},
+        {"kind": "WAR_ENDED", "targetId": "CHN", "otherId": "TWN", "label": "No shooting war across the Strait at the end"},
+        {"kind": "RELATION_MIN", "targetId": "TWN", "min": 50, "label": "Taipei still trusts you (relations 50+)"},
+        {"kind": "STAT_MIN", "stat": "approval", "min": 66, "label": "Approval of 66%+: the public backs your handling"}
+      ],
+      "bonus": [
+        {"kind": "RELATION_MIN", "targetId": "JPN", "min": 75, "label": "Alliance with Japan rock-solid (relations 75+)"},
+        {"kind": "SCORE_PAR", "min": 112, "label": "Leadership score of 112+"}
+      ],
+      "par": 107,
+      "debrief": "What really happened (to 2026): Washington approved a record US$11.1bn arms package for Taiwan in December 2025, then struck a trade truce with Beijing at Busan and extended it at the May 2026 Beijing summit, after which the President warned Taipei against independence. The Taiwan Relations Act still promises arms, not rescue. What experts fear: a quarantine that forces a binary choice the policy of ambiguity was built to avoid, escort and risk war or stand aside and watch every ally in Asia recalculate."
+    }
+  },
+  "scripted": {
+    "TWN": [
+      {
+        "turn": 0,
+        "templateId": "tw_penghu_boarding",
+        "headline": "China Coast Guard boards Taiwanese LNG tanker off Penghu",
+        "text": "Armed coast guard officers have boarded an LNG carrier bound for Taichung under Beijing's new 'customs inspection' regulations, held it for nine hours and released it with a stamped manifest. Four more tankers are waiting at sea. Beijing says it is routine law enforcement 'in China's own waters'.",
+        "decision": {
+          "title": "Boarding at Penghu",
+          "situation": "Sending the navy to escort the next tanker shows the inspections are illegal and puts a frigate within shouting range of a coast guard cutter. Complying under protest keeps the gas coming and quietly concedes Beijing's jurisdiction. Reflagging tankers to Japanese or American registries makes any boarding an international incident, if Washington and Tokyo agree.",
+          "affectedCountries": ["TWN", "CHN", "USA", "JPN"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "comply",
+          "options": [
+            {"id": "escort", "label": "Escort with the navy", "description": "Frigates alongside every tanker. Defiance, with a hair trigger.", "effects": {"approval": 6, "relations:CHN": -10, "mobilization": 8, "stability": -3}, "tensionDelta": 8, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "comply", "label": "Comply under protest", "description": "Let them stamp the papers. The gas arrives; so does the precedent.", "effects": {"approval": -10, "legitimacy": -4, "relations:CHN": 5, "stability": 2}, "tensionDelta": -3, "backedBy": ["DOMESTIC_ADVISOR"]},
+            {"id": "reflag", "label": "Reflag the tankers", "description": "Japanese and American flags on Taiwan's lifeline. Clever, expensive, and their call, not yours.", "effects": {"relations:USA": 5, "relations:JPN": 5, "relations:CHN": -8, "gdp": -0.5}, "tensionDelta": 4, "backedBy": ["FOREIGN_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 2,
+        "templateId": "tw_lng_reserves",
+        "headline": "LNG reserves fall to eight days as tankers queue outside the inspection zone",
+        "text": "Taipower reports gas stocks at eight days. Insurers have tripled premiums for Taiwan-bound cargoes and two Qatari tankers have diverted to Japan. TSMC asks, politely, whether its fabs will have power in January.",
+        "decision": {
+          "title": "Keeping the lights on",
+          "situation": "Rotating blackouts protect the fabs and enrage everyone else. Restarting mothballed coal plants buys weeks and chokes Taichung. Buying gas from Japan's strategic stockpile works if Tokyo agrees, and tells Beijing exactly where to apply pressure next.",
+          "affectedCountries": ["TWN", "JPN", "CHN"],
+          "urgency": "URGENT",
+          "defaultOptionId": "ration",
+          "options": [
+            {"id": "ration", "label": "Rotating blackouts", "description": "Fabs first, homes later. The economy survives; the public mood does not.", "effects": {"stability": -7, "approval": -5, "growth": -0.6}, "tensionDelta": 0, "backedBy": ["FINANCE_MINISTER"]},
+            {"id": "coal", "label": "Fire up the coal plants", "description": "Smog over Taichung, power in Taipei. Greens and the south furious.", "effects": {"approval": -4, "gdp": -0.4, "stability": 2}, "tensionDelta": 0, "backedBy": ["DOMESTIC_ADVISOR"]},
+            {"id": "japan", "label": "Borrow Japan's stockpile", "description": "Ask Tokyo for emergency cargoes. Solidarity, and a target painted on Japan.", "effects": {"relations:JPN": 6, "pc": -1, "gdp": -0.3, "stability": 3}, "tensionDelta": 3, "backedBy": ["FOREIGN_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 4,
+        "templateId": "tw_article9",
+        "headline": "Takaichi under pressure: will Tokyo call it a 'survival-threatening situation'?",
+        "text": "Japan's prime minister said in 2025 that a Taiwan contingency could threaten Japan's survival. Beijing answered with seafood bans and export controls. Now Taipei must decide whether to ask her to say it again, officially, with the legal consequences that implies.",
+        "decision": {
+          "title": "The Article 9 moment",
+          "situation": "A public request could bring Japan's navy into the escort business, and Beijing's full fury onto Tokyo. A quiet request keeps everyone's options open and commits no one. Not asking spares Japan and leaves you alone with the Coast Guard.",
+          "affectedCountries": ["TWN", "JPN", "CHN"],
+          "urgency": "URGENT",
+          "defaultOptionId": "silent",
+          "options": [
+            {"id": "public", "label": "Ask publicly", "description": "Put the question to Tokyo in front of the world. Allies or alibis, you will find out.", "effects": {"relations:JPN": 8, "relations:CHN": -12, "approval": 5}, "tensionDelta": 10, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "quiet", "label": "Ask through back channels", "description": "A discreet note to Tokyo. Deniable, and easy to decline.", "effects": {"relations:JPN": 3, "approval": -3}, "tensionDelta": 2, "backedBy": ["INTELLIGENCE_CHIEF"]},
+            {"id": "silent", "label": "Don't ask", "description": "Spare Tokyo the dilemma. Beijing notes you stand alone.", "effects": {"approval": -6, "relations:JPN": -4, "stability": -2}, "tensionDelta": -2, "backedBy": ["DOMESTIC_ADVISOR"]}
+          ]
+        }
+      },
+      {
+        "turn": 6,
+        "templateId": "tw_budget_war",
+        "headline": "Legislature kills emergency defence budget as blackouts spread",
+        "text": "The opposition majority has voted down the emergency defence and energy package for the second time, calling it 'provocation financed by debt'. Protesters for and against are outside the Legislative Yuan. Washington's arms deliveries depend on the money.",
+        "decision": {
+          "title": "The emergency budget",
+          "situation": "Forcing it through by decree and a snap referendum funds the escorts and tears the constitution's seams. A compromise at half the size keeps the peace at home and satisfies nobody in Washington. Letting it die avoids a constitutional crisis in the middle of a quarantine, and tells everyone Taiwan will not pay for its own defence.",
+          "affectedCountries": ["TWN", "USA"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "drop",
+          "options": [
+            {"id": "force", "label": "Force it through", "description": "Emergency decree and a referendum call. Money now, a constitutional fight for years.", "effects": {"stability": -10, "legitimacy": -6, "relations:USA": 10, "approval": -10}, "tensionDelta": 3, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "half", "label": "Settle for half", "description": "A deal with the opposition. Calm in Taipei, frowns in Washington.", "effects": {"approval": -12, "stability": -4, "relations:USA": -4}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "drop", "label": "Let it die", "description": "No crisis at home. A big one in every allied capital.", "effects": {"relations:USA": -12, "approval": -14, "stability": -3}, "tensionDelta": 0, "backedBy": ["DOMESTIC_ADVISOR"]}
+          ]
+        }
+      },
+      {
+        "turn": 8,
+        "templateId": "tw_warning_shots",
+        "headline": "Coast guard cutter fires warning shots across a Taiwanese frigate's bow",
+        "text": "A China Coast Guard cutter fired a burst into the sea ahead of a Taiwanese frigate escorting a fuel tanker near the median line. Nobody was hurt. Your captain requests permission to respond in kind. Beijing's spokesman calls the frigate 'an illegal intrusion'.",
+        "decision": {
+          "title": "The first shot",
+          "situation": "Returning fire is lawful, satisfying and exactly what Beijing's lawyers need to call it Taiwan's war. Holding fire and broadcasting the footage makes you the injured party and your sailors furious. Pulling the escorts back to territorial waters ends the confrontation and the escorts.",
+          "affectedCountries": ["TWN", "CHN", "USA"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "pullback",
+          "options": [
+            {"id": "respond", "label": "Respond in kind", "description": "Warning shots of your own and full mobilisation. Courage, and the trigger Beijing wanted.", "effects": {"approval": 5, "mobilization": 10, "stability": -4, "relations:CHN": -15, "relations:USA": -6}, "tensionDelta": 14, "actions": [{"type": "MILITARY_MOBILIZE"}], "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "broadcast", "label": "Hold fire, release the video", "description": "The world sees who shot first. Your navy sees a government that would not let it shoot back.", "effects": {"relations:USA": 6, "relations:JPN": 5, "approval": -4, "stability": -3}, "tensionDelta": 2, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "pullback", "label": "Pull escorts back", "description": "Retreat to the 12-mile line. No more incidents; no more escorts.", "effects": {"approval": -9, "stability": -4, "relations:USA": -5, "growth": -0.4}, "tensionDelta": -4, "backedBy": ["CHIEF_OF_STAFF"]}
+          ]
+        }
+      },
+      {
+        "turn": 10,
+        "templateId": "tw_beijing_offer",
+        "headline": "Beijing offers to 'streamline' inspections if Taipei registers ships with mainland customs",
+        "text": "The Taiwan Affairs Office proposes a fast lane: ships that file manifests with mainland customs in advance will be waved through within hours. The opposition calls it a pragmatic solution. Your party calls it annexation by paperwork.",
+        "decision": {
+          "title": "Annexation by paperwork",
+          "situation": "Accepting ends the queues and accepts that Beijing's customs law covers your ports. Refusing and appealing for international escorts keeps the principle and the queues. Proposing talks without preconditions splits the difference, and splits your own party.",
+          "affectedCountries": ["TWN", "CHN", "USA", "JPN"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "refuse",
+          "options": [
+            {"id": "accept", "label": "File the manifests", "description": "The tankers move. The sovereignty argument does not survive the paperwork.", "effects": {"approval": -12, "legitimacy": -8, "stability": 6, "relations:CHN": 12, "relations:USA": -8, "growth": 0.4}, "tensionDelta": -8, "backedBy": ["FINANCE_MINISTER"]},
+            {"id": "refuse", "label": "Refuse and call for escorts", "description": "No papers, no jurisdiction. Ask the world to sail with you.", "effects": {"relations:USA": 6, "stability": -6, "approval": 3, "growth": -0.4}, "tensionDelta": 6, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "talks", "label": "Offer talks, no preconditions", "description": "Meet them halfway, at a table. Your own party may not follow.", "effects": {"legitimacy": -5, "relations:CHN": 8, "approval": -2, "relations:USA": 4}, "tensionDelta": -6, "backedBy": ["FOREIGN_MINISTER"]}
+          ]
+        }
+      }
+    ],
+    "CHN": [
+      {
+        "turn": 0,
+        "templateId": "cn_inspection_regime",
+        "headline": "Coast Guard begins 'customs inspections' of Taiwan-bound shipping",
+        "text": "The regulations are published, the cutters are at sea and the first tanker has been boarded off Penghu. The Taiwan Affairs Office calls it routine law enforcement. The PLA Eastern Theater Command is, for now, merely 'monitoring'.",
+        "decision": {
+          "title": "How tight a squeeze?",
+          "situation": "Inspecting every energy cargo makes the point fast and invites an escort war. Selective boarding keeps it legal-looking and slow. Holding the regime on paper only gives Taipei time and your hawks a grievance.",
+          "affectedCountries": ["CHN", "TWN", "USA", "JPN"],
+          "urgency": "URGENT",
+          "defaultOptionId": "paper",
+          "options": [
+            {"id": "all", "label": "Inspect every energy cargo", "description": "Every LNG tanker, every time. Fast pressure, fast reactions.", "effects": {"approval": 5, "relations:TWN": -10, "relations:USA": -8, "relations:JPN": -6}, "tensionDelta": 8, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "selective", "label": "Selective boardings", "description": "One ship in five, chosen at random, lawyers on board. Strangulation in slow motion.", "effects": {"approval": 2, "relations:TWN": -4, "growth": -0.1}, "tensionDelta": 3, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "paper", "label": "Keep it on paper", "description": "Announce, don't enforce. The world relaxes; the Politburo hawks do not.", "effects": {"approval": -5, "legitimacy": -3}, "tensionDelta": -3, "backedBy": ["FINANCE_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 3,
+        "templateId": "cn_cmc_purge",
+        "headline": "Reports: Eastern Theater commanders absent from key meetings",
+        "text": "Foreign intelligence services report, and Party media do not deny, that several senior officers responsible for Taiwan operations have not been seen in weeks. After the reported investigations of He Weidong and Zhang Youxia, the Central Military Commission is said to be down to a handful of members. Readiness is, by some accounts, uncertain.",
+        "decision": {
+          "title": "Who commands the Strait?",
+          "situation": "Promoting young loyalists secures the chain of command and hands an operation of national importance to untested men. Recalling retired commanders brings experience and old loyalties. Another purge wave makes sure nobody is tempted, and nobody is left.",
+          "affectedCountries": ["CHN"],
+          "urgency": "URGENT",
+          "defaultOptionId": "purge",
+          "options": [
+            {"id": "loyalists", "label": "Promote loyalists", "description": "Young officers who owe you everything. Loyal, certainly; competent, perhaps.", "effects": {"stability": 3, "coupShield": 3, "mobilization": -5}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "veterans", "label": "Recall the veterans", "description": "Old hands back in uniform. Readiness up; so are questions about whose men they are.", "effects": {"mobilization": 6, "legitimacy": -3, "approval": 2}, "tensionDelta": 2, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "purge", "label": "Another anti-corruption wave", "description": "Clean house again. Nobody will plot; nobody will plan either.", "effects": {"coupShield": 4, "stability": -6, "approval": -3, "mobilization": -6}, "tensionDelta": 0, "backedBy": ["INTELLIGENCE_CHIEF"]}
+          ]
+        }
+      },
+      {
+        "turn": 5,
+        "templateId": "cn_tokyo_declaration",
+        "headline": "Japanese cabinet debates declaring a 'survival-threatening situation'",
+        "text": "Prime Minister Takaichi's cabinet is reportedly drafting a determination that would let Japan's forces escort Taiwan-bound shipping. Your ambassador has been summoned twice in a week. Japanese carmakers are asking how long rare-earth supplies will last; whether the January 2026 dual-use export ban is still fully enforced is itself unclear.",
+        "decision": {
+          "title": "Deterring Tokyo",
+          "situation": "A full rare-earth embargo hits Japan's industry hard and your own exporters too. Tourism and seafood bans are familiar and limited. Quiet talks with Tokyo might keep Japan out, and look like weakness at home.",
+          "affectedCountries": ["CHN", "JPN", "TWN"],
+          "urgency": "URGENT",
+          "defaultOptionId": "talks",
+          "options": [
+            {"id": "embargo", "label": "Full rare-earth embargo", "description": "Turn off the magnets. Japanese factories stall, and so do some of yours.", "effects": {"relations:JPN": -12, "gdp": -0.4, "approval": 6}, "tensionDelta": 6, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "tourism", "label": "Seafood and tourist bans", "description": "The familiar punishment. Painful for Hokkaido fishermen, mild for Tokyo.", "effects": {"relations:JPN": -6, "approval": 3, "growth": -0.1}, "tensionDelta": 2, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "talks", "label": "Quiet talks with Tokyo", "description": "Offer calm in exchange for restraint. The nationalists online will not be quiet.", "effects": {"relations:JPN": 6, "approval": -6, "legitimacy": -3}, "tensionDelta": -4, "backedBy": ["FINANCE_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 7,
+        "templateId": "cn_convoy",
+        "headline": "US and Japanese destroyers escort a tanker convoy toward Kaohsiung",
+        "text": "Three tankers, two American destroyers and a Japanese escort ship are steaming for Kaohsiung and have announced they will not stop for inspection. Your coast guard cutters are in position. The whole world is watching the plot on a screen.",
+        "decision": {
+          "title": "The convoy",
+          "situation": "Letting them pass punctures the quarantine and your prestige in one afternoon. Blocking with coast guard hulls risks a collision with an American warship, and a war nobody ordered. Announcing a 'pause' for talks with Taipei's opposition turns retreat into diplomacy, if anyone believes it.",
+          "affectedCountries": ["CHN", "USA", "JPN", "TWN"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "shadow",
+          "options": [
+            {"id": "shadow", "label": "Shadow and let them pass", "description": "Film them all the way in. No collision, no quarantine, no face.", "effects": {"approval": -10, "legitimacy": -6, "stability": -3}, "tensionDelta": -3, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "block", "label": "Block with coast guard hulls", "description": "White hulls across their bows. Whoever blinks loses; whoever doesn't may start a war.", "effects": {"approval": 6, "relations:USA": -10, "relations:JPN": -8, "stability": -5, "mobilization": 8}, "tensionDelta": 12, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "pause", "label": "Announce a pause for talks", "description": "Suspend inspections 'to create conditions' for talks with Taipei's opposition.", "effects": {"relations:TWN": 10, "relations:USA": 5, "approval": -6, "growth": 0.2}, "tensionDelta": -8, "backedBy": ["CHIEF_OF_STAFF"]}
+          ]
+        }
+      },
+      {
+        "turn": 10,
+        "templateId": "cn_kmt_offer",
+        "headline": "Opposition legislators in Taipei propose cross-strait talks 'without preconditions'",
+        "text": "A delegation of Taiwan's opposition lawmakers has arrived in Xiamen with an offer: cross-strait talks on shipping and energy, in exchange for an end to the inspections. President Lai has not endorsed it. Washington is watching.",
+        "decision": {
+          "title": "The opposition's offer",
+          "situation": "Accepting gives you talks with Taipei's legislature and a reason to stand down, while Lai is cut out. Demanding the inspections be accepted first keeps maximum pressure and may wreck the opposition's credibility. Lifting the quarantine as goodwill is generous, cheap and very hard to restart.",
+          "affectedCountries": ["CHN", "TWN", "USA"],
+          "urgency": "URGENT",
+          "defaultOptionId": "demand",
+          "options": [
+            {"id": "accept", "label": "Accept the talks", "description": "Negotiate with the legislature, not the president. Divide and talk.", "effects": {"relations:TWN": 12, "relations:USA": 5, "approval": -4}, "tensionDelta": -10, "actions": [{"type": "DIPLOMACY_IMPROVE_RELATIONS", "targetCountryId": "TWN"}], "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "demand", "label": "Inspections first", "description": "Accept the customs regime, then we talk. Pressure, and a humiliated opposition.", "effects": {"approval": 4, "relations:TWN": -6, "relations:USA": -4}, "tensionDelta": 4, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "lift", "label": "Lift it as goodwill", "description": "End the quarantine on your terms and claim the peace. The hawks will remember.", "effects": {"growth": 0.5, "approval": -8, "relations:USA": 8, "relations:JPN": 6}, "tensionDelta": -12, "backedBy": ["FINANCE_MINISTER"]}
+          ]
+        }
+      }
+    ],
+    "USA": [
+      {
+        "turn": 0,
+        "templateId": "us_ambiguity",
+        "headline": "Taipei asks: will the US Navy escort?",
+        "text": "China's coast guard has boarded a Taiwanese LNG tanker under a new customs regime. Taipei asks for escorts, Tokyo asks what you will do, and Beijing reminds you of the trade truce you extended in May. Your Navy is already blockading Iran.",
+        "decision": {
+          "title": "Washington's ambiguity",
+          "situation": "Declaring escort operations reassures every ally in Asia and points a destroyer at a coast guard cutter. Offering Beijing a trade sweetener for an end to the inspections is a deal, and a precedent. Demanding Taipei publicly disavow independence calms Beijing and stuns your friends.",
+          "affectedCountries": ["USA", "CHN", "TWN", "JPN"],
+          "urgency": "URGENT",
+          "defaultOptionId": "disavow",
+          "options": [
+            {"id": "escort", "label": "Announce escorts", "description": "The Navy sails with Taiwan's tankers. Clarity at last, and a collision course.", "effects": {"relations:TWN": 10, "relations:CHN": -12, "relations:JPN": 4, "mobilization": 6, "approval": -2}, "tensionDelta": 8, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "trade", "label": "Offer Beijing a trade deal", "description": "Tariff relief if the inspections end. Business, and an invitation to repeat.", "effects": {"relations:CHN": 10, "relations:TWN": -8, "growth": 0.3, "approval": 2}, "tensionDelta": -4, "backedBy": ["FINANCE_MINISTER"]},
+            {"id": "disavow", "label": "Make Taipei disavow independence", "description": "Lean on Lai, not Xi. Beijing is pleased; Tokyo and Taipei are appalled.", "effects": {"relations:CHN": 8, "relations:TWN": -12, "relations:JPN": -5, "approval": -3}, "tensionDelta": -2, "backedBy": ["CHIEF_OF_STAFF"]}
+          ]
+        }
+      },
+      {
+        "turn": 2,
+        "templateId": "us_soybeans",
+        "headline": "Beijing offers record soybean purchases, 'as friends'",
+        "text": "China's commerce ministry announces it will buy American soybeans and Boeing jets in record volumes, and hopes Washington will 'respect China's internal affairs' in the Strait. Farm-state senators are thrilled. Taipei is not.",
+        "decision": {
+          "title": "Soybeans for silence",
+          "situation": "Taking the deal pays your farmers and tells Asia what American commitments cost. Refusing it costs the farm belt. Countering with new chip export controls raises the stakes and the price of electronics.",
+          "affectedCountries": ["USA", "CHN", "TWN"],
+          "urgency": "URGENT",
+          "defaultOptionId": "accept",
+          "options": [
+            {"id": "accept", "label": "Take the deal", "description": "Farmers win, the trade deficit shrinks, allies take notes.", "effects": {"growth": 0.3, "approval": 4, "relations:TWN": -8, "relations:JPN": -5, "relationsAllies": -2}, "tensionDelta": -3, "backedBy": ["FINANCE_MINISTER"]},
+            {"id": "refuse", "label": "Politely decline", "description": "Not for sale. The farm belt grumbles.", "effects": {"approval": -4, "growth": -0.1, "relations:TWN": 3}, "tensionDelta": 0, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "chips", "label": "Counter with chip controls", "description": "Tighten semiconductor export controls. Leverage, and pricier phones.", "effects": {"relations:CHN": -10, "growth": -0.3, "relations:TWN": 6, "approval": -2}, "tensionDelta": 4, "backedBy": ["DEFENSE_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 5,
+        "templateId": "us_two_oceans",
+        "headline": "Navy warns it cannot sustain blockades in the Gulf and escorts in the Strait",
+        "text": "The Chief of Naval Operations tells you, in writing, that the fleet cannot hold the Iran blockade and surge to the Western Pacific at the same time. Gas prices are up, the Iran war is unpopular, and Beijing's cutters have just boarded a Japanese-flagged tanker.",
+        "decision": {
+          "title": "Two oceans, one Navy",
+          "situation": "Pulling a carrier from the Gulf signals resolve in Asia and eases the pressure on Tehran. Keeping it there tells Taipei and Tokyo where they rank. Asking Japan to take the lead on escorts shares the burden and the risk, and hands Beijing its favourite grievance.",
+          "affectedCountries": ["USA", "TWN", "JPN", "IRN", "CHN"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "gulf",
+          "options": [
+            {"id": "pivot", "label": "Swing a carrier to the Pacific", "description": "Asia first. Iran breathes easier; so do your Gulf critics.", "effects": {"relations:TWN": 6, "relations:SAU": -6, "relations:ARE": -6, "approval": -6, "stability": -4}, "tensionDelta": 4, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "gulf", "label": "Hold the Gulf", "description": "Finish one war first. Taipei and Tokyo hear 'later'.", "effects": {"relations:TWN": -8, "relations:JPN": -6, "approval": -5, "stability": -3}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "japan", "label": "Ask Japan to lead escorts", "description": "Tokyo's ships, your intelligence. Burden-sharing with a history lesson attached.", "effects": {"relations:JPN": 6, "relations:CHN": -8, "approval": -4, "stability": -3}, "tensionDelta": 6, "backedBy": ["FOREIGN_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 7,
+        "templateId": "us_convoy",
+        "headline": "Joint convoy ready: three tankers, two destroyers, one question",
+        "text": "A US–Japanese escort group is ready to take three tankers into Kaohsiung without stopping for inspection. China's coast guard has massed cutters on the route. Your admirals want a decision on rules of engagement by midnight.",
+        "decision": {
+          "title": "Run the gauntlet",
+          "situation": "Running the convoy could break the quarantine, or produce the first collision between American and Chinese ships in decades. A civilian charter convoy with no warships is safer and probably gets boarded. Standing down keeps the peace and tells Asia what your word is worth.",
+          "affectedCountries": ["USA", "CHN", "JPN", "TWN"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "standdown",
+          "options": [
+            {"id": "run", "label": "Run the convoy", "description": "Warships, tankers, no stops. History's most expensive game of chicken.", "effects": {"relations:CHN": -12, "relations:TWN": 10, "relationsAllies": 4, "approval": 3}, "tensionDelta": 10, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "charter", "label": "Civilian charter only", "description": "American-flagged tankers, no escorts. A test of Beijing's nerve, not yours.", "effects": {"relations:TWN": 4, "approval": -3, "relations:CHN": -4}, "tensionDelta": 3, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "standdown", "label": "Stand down", "description": "No convoy. Peace in the Strait, panic in Tokyo.", "effects": {"relations:TWN": -12, "relationsAllies": -5, "approval": -5}, "tensionDelta": -3, "backedBy": ["CHIEF_OF_STAFF"]}
+          ]
+        }
+      },
+      {
+        "turn": 10,
+        "templateId": "us_summit",
+        "headline": "Xi proposes an emergency summit 'to manage differences'",
+        "text": "Beijing offers a summit within weeks: the quarantine 'eased' in exchange for a US statement opposing Taiwan independence and a freeze on new arms sales. Taipei and Tokyo are begging you not to go. Wall Street is begging you to.",
+        "decision": {
+          "title": "Summit or standoff",
+          "situation": "Going to the summit probably ends the quarantine and certainly costs Taipei. Demanding the inspections end before any meeting keeps faith with allies and the crisis alive. Escalating with sanctions on Chinese shipping firms shows strength and hurts both economies.",
+          "affectedCountries": ["USA", "CHN", "TWN", "JPN"],
+          "urgency": "URGENT",
+          "defaultOptionId": "summit",
+          "options": [
+            {"id": "summit", "label": "Go to the summit", "description": "Ease the quarantine, freeze the arms. A deal, a photo, and a very quiet Taipei.", "effects": {"relations:CHN": 12, "relations:TWN": -10, "relations:JPN": -5, "approval": 4}, "tensionDelta": -10, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "first", "label": "Inspections end first", "description": "No summit while ships are boarded. Principled, and the crisis goes on.", "effects": {"relations:CHN": -6, "relations:TWN": 6, "approval": 1}, "tensionDelta": 2, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "sanction", "label": "Sanction China's shipping lines", "description": "COSCO on the blacklist. Leverage, and higher prices on every shelf.", "effects": {"relations:CHN": -12, "growth": -0.4, "relations:TWN": 6, "approval": -2}, "tensionDelta": 6, "backedBy": ["DEFENSE_MINISTER"]}
+          ]
+        }
+      }
+    ]
+  },
+  "debrief": ""
+}

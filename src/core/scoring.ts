@@ -1,3 +1,4 @@
+import { effectiveGrowth } from "./systems/economy.js";
 import type { CountryState, Score, WorldState } from "./types.js";
 
 /**
@@ -8,7 +9,12 @@ import type { CountryState, Score, WorldState } from "./types.js";
 
 function targetEconomic(player: CountryState): number {
   let target = 20;
-  target += player.growthRate * 450; // +3% growth → +13.5
+  // Real growth (after war, instability and embargo drags) against the country's own trend:
+  // matching your structural trend is par, beating it scores
+  const trend = player.trendGrowth ?? player.economyProfile?.growthRate ?? 0.02;
+  const real = player.realGrowth ?? effectiveGrowth(player);
+  // Growing at your trend scores what it always did (+3% -> +13.5); beating or missing it moves you
+  target += trend * 450 + Math.max(-0.08, Math.min(0.06, real - trend)) * 120;
   target -= Math.max(0, (player.debtGdpRatio - 100) / 10);
   if (player.underGlobalEmbargo) target -= 10;
   return clamp50(target);
@@ -78,55 +84,69 @@ export interface LeadershipAssessment {
   grade: string;
 }
 
-export function classifyLeadership(world: WorldState): LeadershipAssessment {
-  const player = world.countries.find((c) => c.id === world.playerCountryId);
-  const score = world.score;
-  if (!player) {
-    return { classification: "Unknown", justification: "", grade: "F" };
-  }
+const COVERT_HARD = ["INTEL_ASSASSINATE", "INTEL_COUP"];
+const COVERT_DIRTY = [
+  "INTEL_SABOTAGE",
+  "INTEL_DESTABILIZE",
+  "INTEL_SUPPORT_REBELS",
+  "INTEL_MISINFORMATION",
+];
+const DEPOSED = [
+  "LOST_ELECTION",
+  "DEPOSED_COUP",
+  "REVOLUTION",
+  "ASSASSINATED",
+  "IMPEACHED",
+  "COUNTRY_COLLAPSED",
+];
 
-  const warsStarted = world.timeline.filter(
-    (t) => t.category === "WAR" && t.description.includes(`${player.name} declared war`),
-  ).length;
-  const nukeUsed = world.timeline.some(
+/** Count what the player did: the director's action record, with a timeline fallback for old saves. */
+function playerRecord(world: WorldState, player: CountryState) {
+  const rec = world.director.record ?? {};
+  const n = (type: string) => rec[type] ?? 0;
+  const tried = (type: string) => rec[`${type}:tried`] ?? 0;
+  const timelineWars = world.timeline.filter(
     (t) =>
-      t.category === "NUCLEAR" &&
-      t.description.includes(player.name) &&
-      t.description.toLowerCase().includes("nuclear weapon"),
-  );
+      t.category === "WAR" &&
+      (t.description.startsWith(`WAR: ${player.name} attacks`) ||
+        t.description.includes(`${player.name} declared war`)),
+  ).length;
+  // The record is authoritative; the timeline is only a fallback for saves made before it existed
+  const recorded = Object.keys(rec).length > 0;
+  return {
+    // Timeline "attacks" include pact wars entered through crises; subtract those
+    wars: recorded
+      ? Math.max(n("DIPLOMACY_DECLARE_WAR"), timelineWars - n("DIPLOMACY_DECLARE_WAR:ally"))
+      : timelineWars,
+    allyWars: n("DIPLOMACY_DECLARE_WAR:ally"),
+    nukes: n("NUCLEAR_STRIKE"),
+    strikes: n("MILITARY_AIRSTRIKE"),
+    gambles: COVERT_HARD.reduce((s, t) => s + tried(t), 0),
+    dirty: COVERT_DIRTY.reduce((s, t) => s + n(t), 0),
+    peace: n("DIPLOMACY_MEDIATE") + n("DIPLOMACY_PROPOSE_CEASEFIRE"),
+    courting: n("DIPLOMACY_IMPROVE_RELATIONS") + n("DIPLOMACY_PROPOSE_ALLIANCE"),
+    crackdowns: world.director.record?.["DOMESTIC_POLICING:hard"] ?? 0,
+    reforms: n("DOMESTIC_REFORM"),
+    addresses: n("DOMESTIC_PROPAGANDA"),
+    orders: Object.entries(rec)
+      .filter(([k]) => !k.includes(":"))
+      .reduce((s, [, v]) => s + v, 0),
+  };
+}
 
-  let classification: string;
-  let justification: string;
-
-  if (nukeUsed) {
-    classification = "The Destroyer";
-    justification =
-      "History will remember one decision above all others: the day you reached for the nuclear option.";
-  } else if (warsStarted >= 2 && score.security > 30) {
-    classification = "Risk-Taking Expansionist";
-    justification = "You treated war as policy by other means — and largely got away with it.";
-  } else if (warsStarted >= 2) {
-    classification = "Reckless Adventurer";
-    justification =
-      "Repeated military gambles drained the nation's blood and treasure for little gain.";
-  } else if (score.economic > 35 && score.approval > 30) {
-    classification = "Pragmatic Stabilizer";
-    justification = "Steady economic stewardship and broad public support defined your tenure.";
-  } else if (score.prestige > 35) {
-    classification = "Master Diplomat";
-    justification =
-      "You made your nation respected abroad — alliances, summits, and standing carried your legacy.";
-  } else if (score.approval < 15) {
-    classification = "The Unloved";
-    justification = "Whatever your achievements, your people never forgave you for the costs.";
-  } else {
-    classification = "Cautious Caretaker";
-    justification = "You kept the ship of state afloat without redirecting its course.";
-  }
-
-  const total = score.total;
-  const grade =
-    total >= 160
+/**
+ * Grade follows the verdict first, the score second: a won session is never
+ * below C, a failed or deposed one never above D, and an early collapse is F.
+ */
+function gradeFor(world: WorldState): string {
+  const total = world.score.total;
+  const par = world.objective?.par ?? 100;
+  const ratio = total / Math.max(1, par);
+  const outcome = world.outcome;
+  const over = world.gameOver;
+  if (!over || !outcome) {
+    // Mid-game report: score bands
+    return total >= 160
       ? "S"
       : total >= 140
         ? "A"
@@ -137,6 +157,96 @@ export function classifyLeadership(world: WorldState): LeadershipAssessment {
             : total >= 50
               ? "D"
               : "F";
+  }
+  if (over.reason === "NUCLEAR_HOLOCAUST") return "F";
+  const progress = (over.turn + 1) / Math.max(1, world.maxTurns);
+  if (!outcome.victory) {
+    if (DEPOSED.includes(over.reason) || over.reason === "OBJECTIVE_FAILED") {
+      return progress < 0.5 || ratio < 0.6 ? "F" : "D";
+    }
+    return "D";
+  }
+  if (outcome.stars >= 3) return ratio >= 1.25 ? "S" : "A";
+  if (outcome.stars === 2) return ratio >= 1.15 ? "A" : "B";
+  return ratio >= 1.05 ? "B" : "C";
+}
 
-  return { classification, justification, grade };
+export function classifyLeadership(world: WorldState): LeadershipAssessment {
+  const player = world.countries.find((c) => c.id === world.playerCountryId);
+  const score = world.score;
+  if (!player) {
+    return { classification: "Unknown", justification: "", grade: "F" };
+  }
+
+  const r = playerRecord(world, player);
+  const months = Math.max(1, Math.min(world.turn, world.maxTurns));
+
+  let classification: string;
+  let justification: string;
+
+  if (r.nukes > 0) {
+    classification = "The Destroyer";
+    justification =
+      "History will remember one decision above all others: the day you reached for the nuclear option.";
+  } else if (r.wars >= 2 && score.security > 30) {
+    classification = "Risk-Taking Expansionist";
+    justification = "You treated war as policy by other means, and largely got away with it.";
+  } else if (r.wars >= 2) {
+    classification = "Reckless Adventurer";
+    justification =
+      "Repeated military gambles drained the nation's blood and treasure for little gain.";
+  } else if (r.wars === 0 && r.allyWars > 0) {
+    classification = "Loyal Ally";
+    justification =
+      "When a friend called for help, you went to war beside them. Whether that was wisdom or entanglement, history will argue.";
+  } else if (r.wars === 1) {
+    classification = "Warmonger";
+    justification =
+      "You reached for the sword when other doors were still open, and the world noticed.";
+  } else if (r.gambles >= 2 || (r.gambles >= 1 && months <= 12)) {
+    classification = "The Gambler";
+    justification =
+      "Coups and assassinations: you bet the state on operations that rarely go to plan.";
+  } else if (r.dirty + r.strikes >= Math.max(4, months / 4)) {
+    classification = "Shadow Operator";
+    justification =
+      "Sabotage, rebels and missiles in the night: your foreign policy ran on deniability.";
+  } else if (r.crackdowns >= 3) {
+    classification = "Iron Fist";
+    justification =
+      "Order was kept with batons and curfews. The streets were quiet; the people were not won.";
+  } else if (r.peace >= 3) {
+    classification = "Peacemaker";
+    justification =
+      "You spent your capital stopping other people's wars, and the world is calmer for it.";
+  } else if (r.courting >= Math.max(5, months / 3) && score.prestige > 28) {
+    classification = "Master Diplomat";
+    justification =
+      "You made your nation respected abroad: alliances, summits, and standing carried your legacy.";
+  } else if (score.economic > 35 && score.approval > 30) {
+    classification = "Pragmatic Stabilizer";
+    justification = "Steady economic stewardship and broad public support defined your tenure.";
+  } else if (r.reforms >= Math.max(4, months / 3)) {
+    classification = "The Reformer";
+    justification =
+      "You rebuilt institutions month after month, betting on the long game over applause.";
+  } else if (r.addresses >= Math.max(4, months / 3)) {
+    classification = "The Showman";
+    justification = "Speeches, rallies and the evening news: you governed from the podium.";
+  } else if (score.prestige > 35) {
+    classification = "Master Diplomat";
+    justification =
+      "You made your nation respected abroad: alliances, summits, and standing carried your legacy.";
+  } else if (score.approval < 15) {
+    classification = "The Unloved";
+    justification = "Whatever your achievements, your people never forgave you for the costs.";
+  } else if (r.orders < months / 2) {
+    classification = "Cautious Caretaker";
+    justification = "You kept the ship of state afloat without redirecting its course.";
+  } else {
+    classification = "Steady Hand";
+    justification = "Busy, measured and rarely dramatic: you managed crises rather than made them.";
+  }
+
+  return { classification, justification, grade: gradeFor(world) };
 }

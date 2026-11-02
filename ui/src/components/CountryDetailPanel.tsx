@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { countryNames, fetchPreview, useGameStore, useViewCountry } from '../store/gameStore';
+import { countryNames, queueOrder, useGameStore, useViewCountry } from '../store/gameStore';
 import type { UncertainRange } from '../store/gameStore';
+import { actionLabel, pcCost } from '../lib/actions';
 
 function fmtMoney(n: number): string {
   if (n >= 1e12) return `$${(n / 1e12).toFixed(1)}T`;
@@ -20,13 +21,13 @@ function Range({ r, fmt }: { r: UncertainRange; fmt: (n: number) => string }) {
 const S = {
   panel: {
     position: 'absolute' as const,
-    top: 12,
-    left: 52,
-    width: 330,
-    maxHeight: 'calc(100% - 24px)',
+    top: 64,
+    right: 12,
+    width: 'min(340px, calc(100vw - 24px))',
+    maxHeight: 'calc(100% - 100px)',
     overflowY: 'auto' as const,
-    background: 'rgba(13,15,20,0.94)',
-    border: '1px solid #2a2e3a',
+    background: 'rgba(20,27,39,0.96)',
+    border: '1px solid #2a3546',
     borderRadius: 10,
     padding: 14,
     color: '#ddd',
@@ -69,10 +70,23 @@ const LEVEL_COLORS: Record<string, string> = {
   WAR: '#ff4040',
 };
 
+// Same names as the desk's "All orders" list (ui/src/lib/actions.ts)
+type DossierOrder = { type: string; icon: string; label?: string; params?: Record<string, unknown>; danger?: boolean };
+const DOSSIER_ORDERS: DossierOrder[] = [
+  { type: 'DIPLOMACY_IMPROVE_RELATIONS', icon: '🤝' },
+  { type: 'DIPLOMACY_DENOUNCE', icon: '📢' },
+  { type: 'DIPLOMACY_PROPOSE_ALLIANCE', icon: '🛡' },
+  { type: 'INTEL_GATHER', icon: '🕵' },
+  { type: 'INTEL_DESTABILIZE', icon: '💣' },
+  { type: 'MILITARY_DEPLOY_BORDER', icon: '🪖', danger: true },
+  { type: 'MILITARY_AIRSTRIKE', icon: '✈️', label: 'Strike military targets in', params: { targetType: 'MILITARY' }, danger: true },
+  { type: 'DIPLOMACY_DECLARE_WAR', icon: '⚔️', danger: true },
+];
+const DOSSIER_ORDERS_AT_WAR: DossierOrder[] = [{ type: 'DIPLOMACY_PROPOSE_CEASEFIRE', icon: '🕊' }];
+
 export function CountryDetailPanel() {
   const selectedCountryId = useGameStore((s) => s.selectedCountryId);
   const selectCountry = useGameStore((s) => s.selectCountry);
-  const addPendingAction = useGameStore((s) => s.addPendingAction);
   const openModal = useGameStore((s) => s.openModal);
   const gameOver = useGameStore((s) => s.gameOver);
   const view = useViewCountry(selectedCountryId);
@@ -81,10 +95,9 @@ export function CountryDetailPanel() {
   if (!view) return null;
 
   const queueAction = async (type: string, label: string, params?: Record<string, unknown>) => {
-    const action = { type, targetCountryId: view.isPlayer ? undefined : view.id, params };
-    const preview = await fetchPreview(action);
-    addPendingAction({ ...action, label, preview: preview ?? undefined });
-    openModal('actionPreview');
+    // Same checks as the desk and the map menu; only preview what was actually queued
+    const ok = await queueOrder({ type, label, targetCountryId: view.isPlayer ? undefined : view.id, params });
+    if (ok) openModal('actionPreview');
   };
 
   const sys = view.politicalSystem;
@@ -94,7 +107,7 @@ export function CountryDetailPanel() {
       : 'none scheduled';
 
   return (
-    <div style={S.panel}>
+    <div className="dossier" style={S.panel} role="region" aria-label={`Dossier: ${view.name}`}>
       <button
         onClick={() => selectCountry(null)}
         style={{ float: 'right', background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: 16 }}
@@ -107,7 +120,7 @@ export function CountryDetailPanel() {
       </h3>
       <div style={S.sub}>
         {view.leader.title} <b style={{ color: '#ccd' }}>{view.leader.name}</b> ·{' '}
-        {view.leader.style.toLowerCase()} · in power since turn {view.leader.sinceTurn}
+        {view.leader.style.toLowerCase()} · {view.leader.sinceTurn === 0 ? 'in power before your term' : `in power since month ${view.leader.sinceTurn}`}
       </div>
 
       {!view.isPlayer && (
@@ -188,7 +201,7 @@ export function CountryDetailPanel() {
             <div style={{ marginTop: 4 }}>
               {view.history.keyEvents.map((e) => (
                 <div key={e.year + e.event} style={{ marginBottom: 5, fontSize: 11 }}>
-                  <b style={{ color: '#9ab' }}>{e.year}</b> — {e.event}
+                  <b style={{ color: '#9ab' }}>{e.year}</b>, {e.event}
                   <div style={{ color: '#788' }}>{e.impact}</div>
                 </div>
               ))}
@@ -200,44 +213,22 @@ export function CountryDetailPanel() {
       {!view.isPlayer && !gameOver && (
         <div style={S.section}>
           <div style={S.sectionTitle}>Actions</div>
-          {!view.atWarWith.includes(useGameStore.getState().worldState?.playerCountryId ?? '') ? (
-            <>
-              <button style={S.actionBtn} onClick={() => queueAction('DIPLOMACY_IMPROVE_RELATIONS', `Improve relations with ${view.name}`)}>
-                🤝 Improve relations <span style={{ color: '#667' }}>($100M/mo)</span>
-              </button>
-              <button style={S.actionBtn} onClick={() => queueAction('DIPLOMACY_DENOUNCE', `Denounce ${view.name}`)}>
-                📢 Denounce publicly
-              </button>
-              <button style={S.actionBtn} onClick={() => queueAction('DIPLOMACY_PROPOSE_ALLIANCE', `Propose alliance to ${view.name}`)}>
-                🛡 Propose military pact
-              </button>
-              <button style={S.actionBtn} onClick={() => queueAction('INTEL_GATHER', `Gather intelligence on ${view.name}`)}>
-                🕵 Gather intelligence
-              </button>
-              <button style={S.actionBtn} onClick={() => queueAction('INTEL_DESTABILIZE', `Destabilize ${view.name}`)}>
-                💣 Destabilize covertly
-              </button>
-              <button style={S.actionBtn} onClick={() => queueAction('MILITARY_DEPLOY_BORDER', `Deploy troops to ${view.name} border`)}>
-                🪖 Deploy troops to border
-              </button>
+          {(!view.atWarWith.includes(useGameStore.getState().worldState?.playerCountryId ?? '')
+            ? DOSSIER_ORDERS
+            : DOSSIER_ORDERS_AT_WAR
+          ).map((o) => {
+            const label = o.label ? `${o.label} ${view.name}` : actionLabel(o.type, view.name);
+            const pc = pcCost(o.type);
+            return (
               <button
-                style={{ ...S.actionBtn, borderColor: '#7a2a2a', color: '#ff9090' }}
-                onClick={() => queueAction('MILITARY_AIRSTRIKE', `Airstrike ${view.name}`, { targetType: 'MILITARY' })}
+                key={label}
+                style={o.danger ? { ...S.actionBtn, borderColor: '#7a2a2a', color: '#ff9090' } : S.actionBtn}
+                onClick={() => queueAction(o.type, label, o.params)}
               >
-                ✈️ Launch airstrike…
+                {o.icon} {label} <span style={{ color: '#F2A93B' }}>{pc ? `◆${pc}` : 'free'}</span>
               </button>
-              <button
-                style={{ ...S.actionBtn, borderColor: '#7a2a2a', color: '#ff6060' }}
-                onClick={() => queueAction('DIPLOMACY_DECLARE_WAR', `Declare war on ${view.name}`)}
-              >
-                ⚔️ Declare war
-              </button>
-            </>
-          ) : (
-            <button style={S.actionBtn} onClick={() => queueAction('DIPLOMACY_PROPOSE_CEASEFIRE', `Propose ceasefire to ${view.name}`)}>
-              🕊 Propose ceasefire
-            </button>
-          )}
+            );
+          })}
         </div>
       )}
     </div>

@@ -1,0 +1,84 @@
+{
+  "id": "SYR",
+  "iso3": "SYR",
+  "name": "Syria",
+  "population": 25000000,
+  "regimeType": "AUTOCRACY",
+  "politicalSystem": {
+    "type": "PERSONALIST_AUTOCRACY",
+    "powerCenters": ["EXECUTIVE", "MILITARY", "SECURITY_SERVICES", "RELIGIOUS"],
+    "electionCycleMonths": 0,
+    "nextElectionTurn": null,
+    "leaderTitle": "President"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1946, "event": "Independence from the French Mandate", "impact": "Born amid coups and pan-Arab rivalries; two decades of chronic instability followed" },
+      { "year": 1967, "event": "Loss of the Golan Heights to Israel in the Six-Day War", "impact": "Permanent territorial grievance and a frozen front with Israel that defined Ba'athist legitimacy" },
+      { "year": 1982, "event": "Hama massacre crushes the Muslim Brotherhood uprising", "impact": "Tens of thousands killed; fear and sectarian security rule became the regime's operating system" },
+      { "year": 2011, "event": "Uprising against Bashar al-Assad escalates into civil war", "impact": "Over half a million dead, half the population displaced, and the country carved up by foreign powers and militias" },
+      { "year": 2015, "event": "Russian military intervention rescues the Assad regime", "impact": "Locked Syria into dependence on Moscow and Tehran and froze the war for nearly a decade" },
+      { "year": 2023, "event": "Readmission to the Arab League and the February earthquake", "impact": "Arab normalization with Assad seemed to cement his survival even as the economy collapsed" },
+      { "year": 2024, "event": "HTS-led offensive topples Assad on 8 December; Israel seizes the Golan buffer zone and destroys most of the Syrian military", "impact": "End of 54 years of Assad rule; Iran's land bridge to Hezbollah severed; a new Sunni Islamist-rooted government inherits a ruined state" },
+      { "year": 2025, "event": "Ahmed al-Sharaa named interim president; coastal Alawite and Suwayda Druze massacres; US and EU lift sanctions and Sharaa visits the White House", "impact": "International rehabilitation of the new order, shadowed by sectarian violence and fears of minority persecution" },
+      { "year": 2026, "event": "January offensive against the Kurdish-led SDF ends in integration deals; US-mediated security talks with Israel collapse over the buffer zone", "impact": "Damascus reasserts control over the northeast and its oil, but the Israeli occupation of the south remains unresolved" }
+    ],
+    "historicalRivals": ["ISR", "IRN"],
+    "historicalAllies": ["TUR", "SAU"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "BALANCING",
+    "narrative": "A shattered state rebuilding under a former jihadist commander turned pragmatic president, courting Turkey, the Gulf and Washington for money and legitimacy. Its central challenge is holding together a mosaic of Alawites, Druze, Kurds and Sunni Islamists while Israeli troops sit on its southern soil."
+  },
+  "personality": {
+    "warPropensity": 30,
+    "allianceLoyalty": 50,
+    "diplomaticFlexibility": 70,
+    "riskTolerance": 50,
+    "expansionism": 15,
+    "isolationism": 20,
+    "ideologicalRigidity": 50,
+    "prestigeEmphasis": 50
+  },
+  "redLines": [
+    { "type": "TERRITORIAL", "description": "Partition of Syria or foreign-backed autonomy for the Kurdish northeast, Druze south or Alawite coast", "severity": 9 },
+    { "type": "TERRITORIAL", "targetCountryId": "ISR", "description": "Permanent Israeli annexation of the post-2024 buffer zone or advance toward Damascus", "severity": 8 },
+    { "type": "IDEOLOGICAL", "targetCountryId": "IRN", "description": "Return of Iranian-backed militias or a Hezbollah supply corridor through Syrian territory", "severity": 8 }
+  ],
+  "internalDivisions": [
+    { "kind": "RELIGIOUS", "name": "Alawite, Druze and Christian minorities fearful of Sunni Islamist rule", "strength": 30, "tension": 80 },
+    { "kind": "ETHNIC", "name": "Kurdish northeast and the incomplete integration of the SDF", "strength": 12, "tension": 65 },
+    { "kind": "IDEOLOGICAL", "name": "Hardline jihadist factions and ISIS remnants versus the pragmatic transitional government", "strength": 20, "tension": 60 }
+  ],
+  "economy": {
+    "gdp": 24000000000,
+    "growthRate": 0.02,
+    "debtGdpRatio": 90,
+    "sectors": { "agriculture": 30, "industry": 20, "services": 50 },
+    "keyResources": ["oil", "natural_gas", "phosphates", "wheat", "cotton"],
+    "keyExports": ["phosphates", "olive_oil", "textiles", "agricultural_goods"],
+    "developmentLevel": "DEVELOPING"
+  },
+  "military": {
+    "manpower": 120000,
+    "airpower": 40,
+    "doctrine": "DEFENSIVE",
+    "nuclearStatus": "NONE",
+    "warheads": 0,
+    "arms_suppliers": ["PRIVATE"]
+  },
+  "militaryBudgetPct": 4.0,
+  "stability": 30,
+  "legitimacy": 50,
+  "intelLevel": 35,
+  "insurgencyLevel": "REBELLION",
+  "goals": [
+    { "id": "syr_g1", "type": "SECURITY", "priority": 95, "description": "Consolidate central authority over all armed factions, the SDF and the Druze south" },
+    { "id": "syr_g2", "type": "ECONOMIC", "targetCountryId": "SAU", "priority": 90, "description": "Secure Gulf and Western reconstruction money now that sanctions have been lifted" },
+    { "id": "syr_g3", "type": "TERRITORIAL", "targetCountryId": "ISR", "priority": 70, "description": "Negotiate an Israeli withdrawal to the 1974 disengagement lines without war" },
+    { "id": "syr_g4", "type": "SECURITY", "priority": 65, "description": "Defeat ISIS remnants and prevent a return of Iranian influence" }
+  ],
+  "geo": {
+    "bounds": [35.7, 32.3, 42.4, 37.3],
+    "capital": { "name": "Damascus", "coordinates": [36.2765, 33.5138] }
+  }
+}

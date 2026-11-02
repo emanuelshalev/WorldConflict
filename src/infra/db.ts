@@ -1,5 +1,6 @@
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import { PrismaClient } from "@prisma/client";
+import { emptyUsage, type UsageTotals } from "../agents/usage.js";
 import { type Turn, type WorldState, WorldStateSchema } from "../core/types.js";
 
 const adapter = new PrismaBetterSqlite3({
@@ -30,7 +31,8 @@ export class GameDatabase {
     const saveGame = await prisma.saveGame.create({
       data: {
         name,
-        worldState: JSON.stringify(worldState),
+        // Never persist a state that could not be loaded again
+        worldState: JSON.stringify(WorldStateSchema.parse(worldState)),
         playerCountry: worldState.playerCountryId,
         playerId: playerId ?? null,
         leaderName: leaderName ?? null,
@@ -53,7 +55,9 @@ export class GameDatabase {
     return saveGame.id;
   }
 
-  async loadGame(saveId: string): Promise<{ worldState: WorldState; turnLogs: Turn[] } | null> {
+  async loadGame(
+    saveId: string,
+  ): Promise<{ worldState: WorldState; turnLogs: Turn[]; llmUsage: UsageTotals } | null> {
     const saveGame = await prisma.saveGame.findUnique({
       where: { id: saveId },
     });
@@ -78,15 +82,21 @@ export class GameDatabase {
       newspaper: [],
     }));
 
-    return { worldState, turnLogs };
+    const llmUsage = saveGame.llmUsage
+      ? (JSON.parse(saveGame.llmUsage) as UsageTotals)
+      : emptyUsage();
+
+    return { worldState, turnLogs, llmUsage };
   }
 
-  async updateSave(saveId: string, worldState: WorldState): Promise<void> {
+  async updateSave(saveId: string, worldState: WorldState, llmUsage?: UsageTotals): Promise<void> {
     await prisma.saveGame.update({
       where: { id: saveId },
       data: {
-        worldState: JSON.stringify(worldState),
+        // Never persist a state that could not be loaded again
+        worldState: JSON.stringify(WorldStateSchema.parse(worldState)),
         turn: worldState.turn,
+        ...(llmUsage ? { llmUsage: JSON.stringify(llmUsage) } : {}),
       },
     });
   }

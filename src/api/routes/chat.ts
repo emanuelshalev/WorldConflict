@@ -3,10 +3,11 @@ import { z } from "zod";
 import { AdvisorAgent } from "../../agents/advisorAgent.js";
 import { createLLMClient } from "../../agents/llmClient.js";
 import { ADVISOR_ROLES, type AdvisorRole } from "../../agents/schemas.js";
+import { addUsage, DEFAULT_MODELS, type LLMProvider, MeteredClient } from "../../agents/usage.js";
 import { gameDb } from "../../infra/db.js";
 
 const LLMConfigSchema = z.object({
-  provider: z.enum(["openai", "gemini", "ollama"]),
+  provider: z.enum(["openai", "gemini", "anthropic", "ollama", "local"]),
   apiKey: z.string().optional(),
   model: z.string().optional(),
   baseUrl: z.string().optional(),
@@ -27,41 +28,42 @@ const ChatRequestSchema = z.object({
   llm: LLMConfigSchema.optional(),
 });
 
-const advisorAgents: Map<string, AdvisorAgent> = new Map();
+const advisorAgents: Map<string, { agent: AdvisorAgent; client: MeteredClient | null }> = new Map();
 
 function agentKey(saveId: string, llm?: LLMConfigInput): string {
   if (!llm) return `${saveId}:env`;
   return `${saveId}:${llm.provider}:${llm.model ?? "default"}:${llm.apiKey?.slice(0, 8) ?? "nokey"}`;
 }
 
-function getAdvisorAgent(saveId: string, llm?: LLMConfigInput): AdvisorAgent {
+function getAdvisorAgent(
+  saveId: string,
+  llm?: LLMConfigInput,
+): { agent: AdvisorAgent; client: MeteredClient | null } {
   const key = agentKey(saveId, llm);
-  let agent = advisorAgents.get(key);
-  if (!agent) {
-    const llmClient = llm
-      ? createLLMClient(llm.provider, {
+  let entry = advisorAgents.get(key);
+  if (!entry) {
+    if (llm) {
+      const client = new MeteredClient(
+        createLLMClient(llm.provider, {
           apiKey: llm.apiKey,
           model: llm.model ?? defaultModel(llm.provider),
           baseUrl: llm.baseUrl,
-        })
-      : createLLMClient((process.env.LLM_PROVIDER as "openai" | "ollama" | "mock") ?? "mock");
-    agent = new AdvisorAgent(llmClient);
-    advisorAgents.set(key, agent);
+        }),
+        llm.provider,
+        "advisor",
+      );
+      entry = { agent: new AdvisorAgent(client), client };
+    } else {
+      const provider = (process.env.LLM_PROVIDER as "openai" | "ollama" | "mock") ?? "mock";
+      entry = { agent: new AdvisorAgent(createLLMClient(provider)), client: null };
+    }
+    advisorAgents.set(key, entry);
   }
-  return agent;
+  return entry;
 }
 
-function defaultModel(provider: string): string {
-  switch (provider) {
-    case "openai":
-      return "gpt-4o-mini";
-    case "gemini":
-      return "gemini-1.5-flash";
-    case "ollama":
-      return "llama3.2";
-    default:
-      return "gpt-4o-mini";
-  }
+function defaultModel(provider: LLMProvider): string {
+  return DEFAULT_MODELS[provider];
 }
 
 export async function chatRoutes(fastify: FastifyInstance): Promise<void> {
@@ -93,12 +95,22 @@ export async function chatRoutes(fastify: FastifyInstance): Promise<void> {
           });
         }
 
-        const agent = getAdvisorAgent(saveId, llm);
+        const { agent, client } = getAdvisorAgent(saveId, llm);
         const response = await agent.chat(role, playerCountry, worldState, message);
+
+        // Advisor LLM calls count toward the save's usage meter
+        let usage: { turnUsage: unknown; totalUsage: unknown } | undefined;
+        if (client) {
+          const turnUsage = client.drain();
+          const totalUsage = addUsage(saveData.llmUsage, turnUsage);
+          await gameDb.updateSave(saveId, worldState, totalUsage);
+          usage = { turnUsage, totalUsage };
+        }
 
         return reply.send({
           success: true,
           response,
+          usage,
         });
       } catch (error) {
         fastify.log.error(error);
@@ -123,7 +135,7 @@ export async function chatRoutes(fastify: FastifyInstance): Promise<void> {
           apiKey: llm.apiKey,
           model: llm.model ?? defaultModel(llm.provider),
           baseUrl: llm.baseUrl,
-          maxTokens: 20,
+          maxTokens: 300,
           timeout: 15000,
         });
         const response = await client.chat([{ role: "user", content: "Reply with exactly: OK" }]);
@@ -162,9 +174,9 @@ export async function chatRoutes(fastify: FastifyInstance): Promise<void> {
     ) => {
       try {
         const { saveId, role } = request.body;
-        const agent = advisorAgents.get(saveId);
-
-        if (agent) {
+        // Agents are keyed by save + LLM config, so clear every one for this save
+        for (const [key, { agent }] of advisorAgents) {
+          if (!key.startsWith(`${saveId}:`)) continue;
           if (role) {
             agent.clearSession(saveId, role);
           } else {
@@ -187,7 +199,9 @@ export async function chatRoutes(fastify: FastifyInstance): Promise<void> {
     "/advisor/:saveId",
     async (request: FastifyRequest<{ Params: { saveId: string } }>, reply: FastifyReply) => {
       const { saveId } = request.params;
-      advisorAgents.delete(saveId);
+      for (const key of [...advisorAgents.keys()]) {
+        if (key.startsWith(`${saveId}:`)) advisorAgents.delete(key);
+      }
 
       return reply.send({ success: true });
     },

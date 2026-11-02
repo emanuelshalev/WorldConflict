@@ -1,0 +1,222 @@
+/* Civic scenes: cabinet, tv_interview, press, address, exec_order, signing, summit.
+   Every class and keyframe is prefixed with its kind so groups never clash. */
+
+/* Staggered loops use positive animation-delay: hold the first keyframe during the delay instead of
+   showing the un-animated pose and popping into the loop when it starts. */
+svg.art [class] { animation-fill-mode: backwards; }
+
+.art-cabinet [class],
+.art-tv_interview [class],
+.art-press [class],
+.art-address [class],
+.art-exec_order [class],
+.art-signing [class],
+.art-summit [class] {
+  transform-box: fill-box;
+}
+
+/* ---------- cabinet ---------- */
+.art-cabinet .cab-pulse { animation: cabinet-pulse 7s ease-in-out infinite; }
+.art-cabinet .cab-scan { animation: cabinet-scan 5s linear infinite; transform-origin: center; }
+.art-cabinet .cab-line { stroke-dasharray: 160; animation: cabinet-line 9s ease-out infinite; }
+.art-cabinet .cab-bob { animation: cabinet-bob 7s ease-in-out infinite; transform-origin: center bottom; }
+.art-cabinet .cab-flag { animation: cabinet-flag 6s ease-in-out infinite; transform-origin: left top; }
+.art-cabinet .cab-blip { animation: cabinet-blip 2.4s ease-in-out infinite; transform-origin: center; }
+@keyframes cabinet-pulse { 0%, 100% { opacity: 0.8; } 45% { opacity: 1; } 52% { opacity: 0.9; } }
+@keyframes cabinet-scan { from { transform: translateY(-30px); } to { transform: translateY(90px); } }
+@keyframes cabinet-line { 0% { stroke-dashoffset: 160; } 55%, 100% { stroke-dashoffset: 0; } }
+@keyframes cabinet-bob { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-1.2px) rotate(0.6deg); } }
+@keyframes cabinet-flag { 0%, 100% { transform: skewY(0deg) scaleX(1); } 50% { transform: skewY(2deg) scaleX(0.97); } }
+@keyframes cabinet-blip { 0%, 100% { opacity: 0.3; transform: scale(0.7); } 50% { opacity: 1; transform: scale(1.2); } }
+
+/* ---------- tv_interview ---------- */
+.art-tv_interview .tv-tally { animation: tv_interview-tally 1.6s steps(1) infinite; }
+.art-tv_interview .tv-globe { animation: tv_interview-globe 12s linear infinite; transform-origin: center; }
+.art-tv_interview .tv-sweep { animation: tv_interview-sweep 11s ease-in-out infinite; transform-origin: center top; }
+.art-tv_interview .tv-nod { animation: tv_interview-nod 5s ease-in-out infinite; transform-origin: center bottom; }
+.art-tv_interview .tv-twinkle { animation: tv_interview-twinkle 4s ease-in-out infinite; }
+.art-tv_interview .tv-crawl { animation: tv_interview-crawl 14s linear infinite; }
+@keyframes tv_interview-tally { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+@keyframes tv_interview-globe { 0% { transform: scaleX(1); } 25% { transform: scaleX(0.15); } 50% { transform: scaleX(-1); } 75% { transform: scaleX(-0.15); } 100% { transform: scaleX(1); } }
+@keyframes tv_interview-sweep { 0%, 100% { transform: rotate(-7deg); } 50% { transform: rotate(7deg); } }
+@keyframes tv_interview-nod { 0%, 100% { transform: rotate(0); } 40% { transform: rotate(2.5deg); } 60% { transform: rotate(-1deg); } }
+@keyframes tv_interview-twinkle { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+/* One period of the crawl pattern (3 items x 65px), so the loop point is seamless. */
+@keyframes tv_interview-crawl { from { transform: translateX(0); } to { transform: translateX(-195px); } }
+
+/* ---------- press ---------- */
+.art-press .press-flash { opacity: 0; animation: press-flash 3.7s ease-out infinite; transform-origin: center; }
+.art-press .press-hand { animation: press-hand 4.5s ease-in-out infinite; transform-origin: center bottom; }
+.art-press .press-flag { animation: press-flag 7s ease-in-out infinite; transform-origin: left top; }
+.art-press .press-sway { animation: press-sway 6s ease-in-out infinite; transform-origin: center bottom; }
+.art-press .press-beam { animation: press-beam 8s ease-in-out infinite; }
+@keyframes press-flash { 0%, 100% { opacity: 0; transform: scale(0.4); } 3% { opacity: 1; transform: scale(1.15); } 9% { opacity: 0; transform: scale(0.9); } }
+@keyframes press-hand { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-5px) rotate(4deg); } }
+@keyframes press-flag { 0%, 100% { transform: skewY(0) scaleX(1); } 50% { transform: skewY(1.6deg) scaleX(0.97); } }
+@keyframes press-sway { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(1.4deg); } 70% { transform: rotate(-1.2deg); } }
+@keyframes press-beam { 0%, 100% { opacity: 0.75; } 50% { opacity: 1; } }
+
+/* ---------- address ---------- */
+.art-address .addr-tally { animation: address-tally 2s steps(1) infinite; }
+.art-address .addr-glint { animation: address-glint 9s ease-in-out infinite; }
+.art-address .addr-flag { animation: address-flag 8s ease-in-out infinite; transform-origin: left top; }
+.art-address .addr-breathe { animation: address-breathe 6s ease-in-out infinite; transform-origin: center bottom; }
+.art-address .addr-scroll { animation: address-scroll 27s linear infinite; }
+.art-address .addr-city { animation: address-city 5s ease-in-out infinite; }
+@keyframes address-tally { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+@keyframes address-glint { 0%, 100% { transform: translateX(-30px); opacity: 0; } 40% { opacity: 0.9; } 60% { transform: translateX(40px); opacity: 0; } }
+@keyframes address-flag { 0%, 100% { transform: skewY(0) scaleX(1); } 50% { transform: skewY(1.5deg) scaleX(0.97); } }
+@keyframes address-breathe { 0%, 100% { transform: scaleY(1) rotate(0); } 50% { transform: scaleY(1.012) rotate(0.5deg); } }
+/* One full period of the prompter lines (6 lines x 11px), clipped to the glass: seamless loop. */
+@keyframes address-scroll { from { transform: translateY(0); } to { transform: translateY(-66px); } }
+@keyframes address-city { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+/* ---------- exec_order ---------- */
+/* The signing arm is a jointed rig: shoulder and elbow pivots in absolute SVG units, so the arm
+   stays attached while the pen tip traces the signature path (angles solved by two-link IK). */
+.art-exec_order .exec-arm { transform-box: view-box; transform-origin: 356px 132px; animation: exec_order-arm 6.4s linear infinite; }
+.art-exec_order .exec-fore { transform-box: view-box; transform-origin: 390px 192px; animation: exec_order-fore 6.4s linear infinite; }
+.art-exec_order .exec-sign { stroke-dasharray: 90 120; animation: exec_order-sign 6.4s linear infinite; }
+.art-exec_order .exec-flash { opacity: 0; animation: exec_order-flash 4.3s ease-out infinite; transform-origin: center; }
+.art-exec_order .exec-flag { animation: exec_order-flag 7s ease-in-out infinite; transform-origin: left top; }
+.art-exec_order .exec-bob { animation: exec_order-bob 6s ease-in-out infinite; transform-origin: center bottom; }
+@keyframes exec_order-arm {
+  0% { transform: rotate(2.74deg); }
+  8% { transform: rotate(2.74deg); }
+  11% { transform: rotate(-3.32deg); }
+  14% { transform: rotate(-6.69deg); }
+  17% { transform: rotate(-4.06deg); }
+  20% { transform: rotate(-2.08deg); }
+  23% { transform: rotate(-7.59deg); }
+  26% { transform: rotate(-13.7deg); }
+  29% { transform: rotate(-16.64deg); }
+  32% { transform: rotate(-12.98deg); }
+  35% { transform: rotate(-7.52deg); }
+  38% { transform: rotate(-7.39deg); }
+  41% { transform: rotate(-14.12deg); }
+  44% { transform: rotate(-20.35deg); }
+  47% { transform: rotate(-20.82deg); }
+  50% { transform: rotate(-15.35deg); }
+  85% { transform: rotate(-15.35deg); }
+  90% { transform: rotate(-25.39deg); }
+  95% { transform: rotate(-15.95deg); }
+  100% { transform: rotate(2.74deg); }
+}
+@keyframes exec_order-fore {
+  0% { transform: rotate(5.15deg); }
+  8% { transform: rotate(5.15deg); }
+  11% { transform: rotate(14.33deg); }
+  14% { transform: rotate(15.24deg); }
+  17% { transform: rotate(6.47deg); }
+  20% { transform: rotate(-1.76deg); }
+  23% { transform: rotate(4.25deg); }
+  26% { transform: rotate(12.49deg); }
+  29% { transform: rotate(12.44deg); }
+  32% { transform: rotate(2.55deg); }
+  35% { transform: rotate(-9.94deg); }
+  38% { transform: rotate(-15.04deg); }
+  41% { transform: rotate(-6.26deg); }
+  44% { transform: rotate(1.66deg); }
+  47% { transform: rotate(-2.97deg); }
+  50% { transform: rotate(-16.3deg); }
+  85% { transform: rotate(-16.3deg); }
+  90% { transform: rotate(17.58deg); }
+  95% { transform: rotate(21.92deg); }
+  100% { transform: rotate(5.15deg); }
+}
+@keyframes exec_order-sign {
+  0%, 8% { stroke-dashoffset: 92; opacity: 1; }
+  50%, 85% { stroke-dashoffset: 0; opacity: 1; }
+  93% { stroke-dashoffset: 0; opacity: 0; }
+  94%, 100% { stroke-dashoffset: 92; opacity: 0; }
+}
+@keyframes exec_order-flash { 0%, 100% { opacity: 0; transform: scale(0.4); } 3% { opacity: 1; transform: scale(1.1); } 10% { opacity: 0; } }
+@keyframes exec_order-flag { 0%, 100% { transform: skewY(0) scaleX(1); } 50% { transform: skewY(1.5deg) scaleX(0.97); } }
+@keyframes exec_order-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.2px) rotate(0.5deg); } }
+
+/* ---------- signing ---------- */
+/* Jointed signing arms: pivots are set inline per signer (absolute SVG units). */
+.art-signing .sign-arm { transform-box: view-box; animation: signing-arm 6s linear infinite; }
+.art-signing .sign-fore { transform-box: view-box; animation: signing-fore 6s linear infinite; }
+.art-signing .sign-ink { stroke-dasharray: 30 40; animation: signing-ink 6s linear infinite; }
+.art-signing .sign-flash { opacity: 0; animation: signing-flash 3.9s ease-out infinite; transform-origin: center; }
+.art-signing .sign-flag { animation: signing-flag 7s ease-in-out infinite; transform-origin: left top; }
+.art-signing .sign-bob { animation: signing-bob 6s ease-in-out infinite; transform-origin: center bottom; }
+.art-signing .sign-glow { animation: signing-glow 8s ease-in-out infinite; }
+@keyframes signing-arm {
+  0% { transform: rotate(1.21deg); }
+  10% { transform: rotate(1.21deg); }
+  15% { transform: rotate(-3.83deg); }
+  20% { transform: rotate(-8.8deg); }
+  25% { transform: rotate(-10.44deg); }
+  30% { transform: rotate(-9.67deg); }
+  35% { transform: rotate(-10deg); }
+  40% { transform: rotate(-14.05deg); }
+  45% { transform: rotate(-19.29deg); }
+  50% { transform: rotate(-24.46deg); }
+  85% { transform: rotate(-24.46deg); }
+  92% { transform: rotate(-19.97deg); }
+  100% { transform: rotate(1.21deg); }
+}
+@keyframes signing-fore {
+  0% { transform: rotate(10.91deg); }
+  10% { transform: rotate(10.91deg); }
+  15% { transform: rotate(18.34deg); }
+  20% { transform: rotate(23.14deg); }
+  25% { transform: rotate(20.92deg); }
+  30% { transform: rotate(15.75deg); }
+  35% { transform: rotate(11.88deg); }
+  40% { transform: rotate(14.24deg); }
+  45% { transform: rotate(19.88deg); }
+  50% { transform: rotate(25.92deg); }
+  85% { transform: rotate(25.92deg); }
+  92% { transform: rotate(32.84deg); }
+  100% { transform: rotate(10.91deg); }
+}
+@keyframes signing-ink {
+  0%, 10% { stroke-dashoffset: 31; opacity: 1; }
+  50%, 85% { stroke-dashoffset: 0; opacity: 1; }
+  92% { stroke-dashoffset: 0; opacity: 0; }
+  93%, 100% { stroke-dashoffset: 31; opacity: 0; }
+}
+@keyframes signing-flash { 0%, 100% { opacity: 0; transform: scale(0.4); } 3% { opacity: 1; transform: scale(1.15); } 9% { opacity: 0; } }
+@keyframes signing-flag { 0%, 100% { transform: skewY(0) scaleX(1); } 50% { transform: skewY(1.6deg) scaleX(0.97); } }
+@keyframes signing-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.2px) rotate(0.6deg); } }
+@keyframes signing-glow { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
+
+/* ---------- summit ---------- */
+.art-summit .summit-shake { animation: summit-shake 2.6s ease-in-out infinite; transform-origin: center; }
+/* Handshake rig: pivots in absolute SVG units (shoulders, elbows); angles keep both hands on the clasp. */
+.art-summit .summit-armL,
+.art-summit .summit-foreL,
+.art-summit .summit-armR,
+.art-summit .summit-foreR { transform-box: view-box; animation: summit-armL 2.6s ease-in-out infinite; }
+.art-summit .summit-armL { transform-origin: 289px 95px; }
+.art-summit .summit-foreL { transform-origin: 298px 132px; animation-name: summit-foreL; }
+.art-summit .summit-armR { transform-origin: 351px 95px; animation-name: summit-armR; }
+.art-summit .summit-foreR { transform-origin: 342px 132px; animation-name: summit-foreR; }
+.art-summit .summit-flash { opacity: 0; animation: summit-flash 3.3s ease-out infinite; transform-origin: center; }
+.art-summit .summit-flag { animation: summit-flag 6s ease-in-out infinite; transform-origin: left top; }
+.art-summit .summit-bob { animation: summit-bob 5s ease-in-out infinite; transform-origin: center bottom; }
+.art-summit .summit-glow { animation: summit-glow 9s ease-in-out infinite; }
+@keyframes summit-shake { 0%, 100% { transform: translateY(0); } 25% { transform: translateY(-3px); } 50% { transform: translateY(1.5px); } 75% { transform: translateY(-2px); } }
+@keyframes summit-flash { 0%, 100% { opacity: 0; transform: scale(0.4); } 3% { opacity: 1; transform: scale(1.15); } 9% { opacity: 0; } }
+@keyframes summit-flag { 0%, 100% { transform: skewY(0) scaleX(1); } 50% { transform: skewY(2deg) scaleX(0.96); } }
+@keyframes summit-bob { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(2deg); } }
+@keyframes summit-armL { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-1.33deg); } 50% { transform: rotate(0.4deg); } 75% { transform: rotate(-0.81deg); } }
+@keyframes summit-foreL { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-7.73deg); } 50% { transform: rotate(4.14deg); } 75% { transform: rotate(-5.23deg); } }
+@keyframes summit-armR { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(1.33deg); } 50% { transform: rotate(-0.4deg); } 75% { transform: rotate(0.81deg); } }
+@keyframes summit-foreR { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(7.73deg); } 50% { transform: rotate(-4.14deg); } 75% { transform: rotate(5.23deg); } }
+@keyframes summit-glow { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .art-cabinet *,
+  .art-tv_interview *,
+  .art-press *,
+  .art-address *,
+  .art-exec_order *,
+  .art-signing *,
+  .art-summit * {
+    animation: none !important;
+  }
+}

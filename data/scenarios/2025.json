@@ -1,7 +1,7 @@
 {
   "id": "2025",
   "name": "Modern Era (2025)",
-  "description": "A multipolar world on edge: great-power competition between the US and China, war fatigue in Europe, a nuclear-threshold Iran, and an international order under strain.",
+  "description": "January 2025 (post-inauguration). A multipolar world on edge: great-power competition between the US and China, war fatigue in Europe, a nuclear-threshold Iran, and an international order under strain.",
   "startYear": 2025,
   "startMonth": 1,
   "globalTension": 55,
@@ -10,22 +10,22 @@
     "USA": { "name": "Donald Trump", "title": "President", "style": "HAWKISH", "origin": "ELECTED" },
     "CHN": { "name": "Xi Jinping", "title": "General Secretary", "style": "HARDLINER", "origin": "APPOINTED" },
     "RUS": { "name": "Vladimir Putin", "title": "President", "style": "HAWKISH", "origin": "ELECTED" },
-    "DEU": { "name": "Olaf Scholz", "title": "Chancellor", "style": "DOVISH", "origin": "ELECTED" },
+    "DEU": { "name": "Olaf Scholz", "title": "Chancellor", "style": "PRAGMATIC", "origin": "ELECTED" },
     "IND": { "name": "Narendra Modi", "title": "Prime Minister", "style": "HAWKISH", "origin": "ELECTED" },
-    "BRA": { "name": "Luiz Inácio Lula da Silva", "title": "President", "style": "DOVISH", "origin": "ELECTED" },
+    "BRA": { "name": "Luiz Inácio Lula da Silva", "title": "President", "style": "PRAGMATIC", "origin": "ELECTED" },
     "CAN": { "name": "Justin Trudeau", "title": "Prime Minister", "style": "DOVISH", "origin": "ELECTED" },
     "MEX": { "name": "Claudia Sheinbaum", "title": "President", "style": "PRAGMATIC", "origin": "ELECTED" },
     "FRA": { "name": "Emmanuel Macron", "title": "President", "style": "PRAGMATIC", "origin": "ELECTED" },
     "GBR": { "name": "Keir Starmer", "title": "Prime Minister", "style": "PRAGMATIC", "origin": "ELECTED" },
     "POL": { "name": "Donald Tusk", "title": "Prime Minister", "style": "PRAGMATIC", "origin": "ELECTED" },
     "TUR": { "name": "Recep Tayyip Erdoğan", "title": "President", "style": "HAWKISH", "origin": "ELECTED" },
-    "SAU": { "name": "Mohammed bin Salman", "title": "Crown Prince", "style": "PRAGMATIC", "origin": "SUCCESSION" },
+    "SAU": { "name": "Mohammed bin Salman", "title": "Crown Prince and Prime Minister", "style": "PRAGMATIC", "origin": "SUCCESSION" },
     "IRN": { "name": "Ali Khamenei", "title": "Supreme Leader", "style": "HARDLINER", "origin": "APPOINTED" },
     "ISR": { "name": "Benjamin Netanyahu", "title": "Prime Minister", "style": "HAWKISH", "origin": "ELECTED" },
     "EGY": { "name": "Abdel Fattah el-Sisi", "title": "President", "style": "HARDLINER", "origin": "COUP" },
     "JPN": { "name": "Shigeru Ishiba", "title": "Prime Minister", "style": "PRAGMATIC", "origin": "ELECTED" },
     "IDN": { "name": "Prabowo Subianto", "title": "President", "style": "PRAGMATIC", "origin": "ELECTED" },
-    "KOR": { "name": "Yoon Suk-yeol", "title": "President", "style": "HAWKISH", "origin": "ELECTED" },
+    "KOR": { "name": "Choi Sang-mok", "title": "Acting President", "style": "PRAGMATIC", "origin": "APPOINTED" },
     "PRK": { "name": "Kim Jong Un", "title": "Supreme Leader", "style": "HARDLINER", "origin": "SUCCESSION" },
     "AUS": { "name": "Anthony Albanese", "title": "Prime Minister", "style": "DOVISH", "origin": "ELECTED" },
     "PAK": { "name": "Shehbaz Sharif", "title": "Prime Minister", "style": "PRAGMATIC", "origin": "ELECTED" },
@@ -64,7 +64,10 @@
     ["USA", "AUS"],
     ["USA", "ISR"],
     ["RUS", "PRK"],
-    ["CHN", "PRK"]
+    ["CHN", "PRK"],
+    ["RUS", "BLR"]
   ],
-  "startingWars": []
+  "startingWars": [
+    { "attackerId": "RUS", "defenderId": "UKR", "frontline": 58, "exhaustion": 25, "note": "Russia advancing slowly in Donetsk after the failed 2024 Kursk gambit" }
+  ]
 }

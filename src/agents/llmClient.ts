@@ -1,4 +1,5 @@
 import type { z } from "zod";
+import { AnthropicClient } from "./providers/anthropic.js";
 
 interface OpenAIResponse {
   choices: Array<{ message?: { content?: string } }>;
@@ -211,7 +212,7 @@ export class GeminiClient implements LLMClient {
     this.config = {
       apiKey: config.apiKey ?? process.env.GEMINI_API_KEY,
       baseUrl: config.baseUrl ?? "https://generativelanguage.googleapis.com/v1beta",
-      model: config.model ?? "gemini-1.5-flash",
+      model: config.model ?? "gemini-2.5-flash",
       temperature: config.temperature ?? 0.7,
       maxTokens: config.maxTokens ?? 1000,
       timeout: config.timeout ?? 30000,
@@ -354,7 +355,9 @@ function zodToJsonSchema(_schema: z.ZodType): object {
  *
  * Supported providers:
  * - "openai": OpenAI API (requires OPENAI_API_KEY env var)
+ * - "anthropic": Claude via the Anthropic SDK (requires ANTHROPIC_API_KEY or a per-request key)
  * - "gemini": Google Gemini API (requires GEMINI_API_KEY env var)
+ * - "local": any OpenAI-compatible local server (LM Studio, vLLM) at baseUrl
  * - "ollama": Local Ollama server (no API key needed)
  * - "mock": Mock client for testing
  *
@@ -362,19 +365,28 @@ function zodToJsonSchema(_schema: z.ZodType): object {
  *   // Gemini
  *   const client = createLLMClient('gemini');
  *   // or with custom model
- *   const client = createLLMClient('gemini', { model: 'gemini-1.5-pro' });
+ *   const client = createLLMClient('gemini', { model: 'gemini-2.5-pro' });
  */
 export function createLLMClient(
-  provider: "openai" | "gemini" | "ollama" | "mock" = "openai",
+  provider: "openai" | "gemini" | "anthropic" | "ollama" | "local" | "mock" = "openai",
   config?: Partial<LLMClientConfig>,
 ): LLMClient {
   switch (provider) {
     case "openai":
       return new OpenAIClient(config);
+    case "anthropic":
+      return new AnthropicClient(config);
     case "gemini":
       return new GeminiClient(config);
     case "ollama":
       return new OllamaClient(config);
+    case "local":
+      // Any OpenAI-compatible local server (LM Studio, vLLM, llama.cpp server)
+      return new OpenAIClient({
+        apiKey: "local",
+        baseUrl: "http://localhost:1234/v1",
+        ...config,
+      });
     case "mock":
       return new MockLLMClient();
     default:

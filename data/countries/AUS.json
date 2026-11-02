@@ -19,7 +19,8 @@
       { "year": 1951, "event": "ANZUS Treaty signed", "impact": "US alliance becomes the bedrock of security policy for every government since" },
       { "year": 1999, "event": "Leads INTERFET intervention in East Timor", "impact": "Accepted responsibility as security provider in its immediate neighborhood" },
       { "year": 2020, "event": "Chinese trade coercion campaign", "impact": "Punitive tariffs after calling for COVID inquiry; resolve to resist economic blackmail" },
-      { "year": 2021, "event": "AUKUS pact announced", "impact": "Nuclear-powered submarine program; deepest-ever technological integration with the US and UK" }
+      { "year": 2021, "event": "AUKUS pact announced", "impact": "Nuclear-powered submarine program; deepest-ever technological integration with the US and UK" },
+      { "year": 2025, "event": "Albanese re-elected; Pentagon reviews AUKUS", "impact": "A strong mandate at home, but doubt over US submarine deliveries" }
     ],
     "historicalRivals": ["CHN"],
     "historicalAllies": ["USA", "GBR", "CAN", "JPN", "KOR"],
@@ -46,7 +47,7 @@
     { "kind": "IDEOLOGICAL", "name": "Climate policy vs mining economy divide", "strength": 45, "tension": 35 }
   ],
   "economy": {
-    "gdp": 1700000000000,
+    "gdp": 1800000000000,
     "growthRate": 0.018,
     "debtGdpRatio": 50,
     "sectors": { "agriculture": 2, "industry": 26, "services": 72 },

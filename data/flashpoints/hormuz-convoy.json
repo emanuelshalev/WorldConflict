@@ -1,0 +1,369 @@
+{
+  "id": "hormuz-convoy",
+  "title": "Hormuz Convoy",
+  "tagline": "A fifth of the world's oil, one narrow strait, and nobody willing to blink first.",
+  "hook": "Since the US–Israeli strikes of 28 February 2026 killed Ali Khamenei, Iran and the United States have fought an undeclared war: a US naval blockade of Iranian ports (from 13 April, reimposed 8 July after a brief Islamabad framework collapsed) against IRGC attacks on more than 24 ships near Hormuz in October alone. President Trump pledged no new strikes before the 3 November midterms; on 31 October Iran's foreign minister called a letter from Vice President Vance a 'positive step'. The IAEA believes more than 200 kg of 60% enriched uranium is likely intact in the Isfahan tunnels, unseen by inspectors since February.",
+  "sources": [
+    "https://en.wikipedia.org/wiki/2026_Iran_war",
+    "https://en.wikipedia.org/wiki/2026_Iran_war_ceasefire",
+    "https://www.aljazeera.com/news/2026/8/18/no-talks-with-iran-says-trump-as-us-president-stews-over-hormuz-deal",
+    "https://www.thenationalnews.com/news/europe/2026/03/10/irans-uranium-stockpile-likely-intact-in-isfahan-iaeas-grossi-says",
+    "https://www.cfr.org/article/united-states-blockades-strait-of-hormuz-after-u-s-iran-talks",
+    "https://www.energyconnects.com/news/gas-lng/2026/may/uae-is-said-to-have-hit-iran-earlier-in-war-as-israel-ties-grow/"
+  ],
+  "scenarioId": "2026",
+  "date": "2026-11",
+  "turns": 12,
+  "globalTension": 78,
+  "playable": [
+    {"countryId": "USA", "role": "Reopen the strait and settle the uranium question without a ground war or a midterm hangover.", "difficulty": "TOUGH"},
+    {"countryId": "IRN", "role": "Keep a wounded revolution alive under blockade, and decide what the uranium in Isfahan is for.", "difficulty": "BRUTAL"},
+    {"countryId": "ARE", "role": "Hedge between Washington and Tehran while Iranian drones fly over your ports.", "difficulty": "STEADY"}
+  ],
+  "setup": {
+    "wars": [
+      {"attackerId": "USA", "defenderId": "IRN", "frontline": 58, "exhaustion": 72},
+      {"attackerId": "ISR", "defenderId": "IRN", "frontline": 52, "exhaustion": 70}
+    ],
+    "relations": [
+      {"a": "USA", "b": "ARE", "value": 75},
+      {"a": "IRN", "b": "ARE", "value": -70},
+      {"a": "IRN", "b": "CHN", "value": 45},
+      {"a": "ARE", "b": "CHN", "value": 50}
+    ],
+    "countries": {
+      "IRN": {"stability": 75, "legitimacy": 50, "approval": 32, "mobilization": 65, "growthRate": 0.005, "insurgencyLevel": "UNREST", "nuclearStatus": "DEVELOPING", "nuclearProgress": 55},
+      "USA": {"approval": 44, "stability": 56},
+      "ARE": {"stability": 78, "approval": 70}
+    }
+  },
+  "objectives": {
+    "USA": {
+      "title": "Open the strait",
+      "briefing": "You are the President, it is the week of the midterms, and tankers are burning off Fujairah. End the shooting war with Iran on terms you can sell, keep Tehran from ever testing a bomb, and keep American voters on side. Nobody will thank you for a ground war.",
+      "primary": [
+        {"kind": "WAR_ENDED", "targetId": "USA", "otherId": "IRN", "label": "The shooting stops: no US–Iran war at the end (Hormuz reopens)"},
+        {"kind": "NO_NUCLEAR", "targetId": "IRN", "label": "Iran never tests a bomb"},
+        {"kind": "STAT_MIN", "stat": "approval", "min": 56, "label": "Approval of 56%+ after the midterms"},
+        {"kind": "RELATION_MIN", "targetId": "ARE", "min": 66, "label": "The Gulf still trusts you (UAE relations 66+)"},
+        {"kind": "RELATION_MIN", "targetId": "ISR", "min": 61, "label": "Israel stays on side (relations 61+)"}
+      ],
+      "bonus": [
+        {"kind": "SCORE_PAR", "min": 111, "label": "Leadership score of 111+"},
+        {"kind": "STAT_MIN", "stat": "stability", "min": 60, "label": "Stability of 60%+"}
+      ],
+      "par": 107,
+      "debrief": "What really happened: the 2026 Iran war killed a Supreme Leader but did not topple the regime. Hormuz was closed and reopened several times, a two-week ceasefire and the Islamabad framework both collapsed, and by November the conflict had settled into blockade versus harassment, at a cost of about $47bn and 23 American dead. What experts fear: a surviving hardline regime sitting on 200-plus kilograms of 60% uranium with every incentive for a crash bomb programme, or a Gulf energy shock that tips a 3%-growth world into recession."
+    },
+    "IRN": {
+      "title": "The revolution endures",
+      "briefing": "You speak for a Supreme Leader few have seen since March, reportedly wounded, and for a state under blockade and bombardment. Survive: get the blockade lifted, keep the security forces loyal and the streets quiet, and do not let the uranium become the excuse for a final strike. A test would make you a nuclear power and a pariah in the same afternoon.",
+      "primary": [
+        {"kind": "WAR_RESULT", "targetId": "USA", "min": 38, "label": "Outlast the Americans (a ceasefire, or the front no worse than 38)"},
+        {"kind": "STAT_MIN", "stat": "legitimacy", "min": 25, "label": "The system still commands obedience (legitimacy 25%+)"},
+        {"kind": "SCORE_PAR", "min": 57, "label": "Leadership score of 57+: a state, not a ruin"}
+      ],
+      "bonus": [
+        {"kind": "INSURGENCY_MAX", "level": "UNREST", "label": "The streets stay quiet (no rebellion)"},
+        {"kind": "RELATION_MIN", "targetId": "CHN", "min": 55, "label": "Beijing's lifeline secured (China relations 55+)"}
+      ],
+      "par": 97,
+      "debrief": "What really happened: the Islamic Republic absorbed the killing of Ali Khamenei, named his son Mojtaba Supreme Leader within ten days, crushed the January protests and kept firing at shipping under a US blockade; the new leader's health and grip on power remained the subject of rumour. What experts fear: a regime that concludes only a bomb guarantees survival, with a stockpile inspectors cannot see, or a sudden collapse that leaves that stockpile in nobody's hands."
+    },
+    "ARE": {
+      "title": "The hedger's victory",
+      "briefing": "You run the Gulf's most ambitious small state: Jebel Ali, Fujairah, an air force that reportedly struck Iran earlier in the war, and ties to Israel that Tehran has noticed. Keep your ports open and your skyline intact, stay Washington's indispensable partner, and leave the door to Tehran ajar for the day after. Above all, do not become the battlefield.",
+      "primary": [
+        {"kind": "WAR_ENDED", "targetId": "IRN", "otherId": "ARE", "label": "No open war with Iran at the end"},
+        {"kind": "RELATION_MIN", "targetId": "IRN", "min": -90, "label": "A door left open in Tehran (Iran relations -90+)"},
+        {"kind": "RELATION_MIN", "targetId": "USA", "min": 60, "label": "Still Washington's partner (US relations 60+)"},
+        {"kind": "SCORE_PAR", "min": 119, "label": "Leadership score of 119+: business as usual"},
+        {"kind": "STAT_MIN", "stat": "approval", "min": 80, "label": "Confidence at home (approval 80%+)"}
+      ],
+      "bonus": [
+        {"kind": "RELATION_MIN", "targetId": "IRN", "min": -40, "label": "A real channel to Tehran (Iran relations -40+)"}
+      ],
+      "par": 109,
+      "debrief": "What really happened: the UAE was reportedly among the Gulf states that struck Iran or its proxies during the 2026 war, while deepening its ties with Israel and absorbing missile and drone attacks on its own soil. What experts fear: that the Gulf's model of glittering neutrality cannot survive a long war at its doorstep: one successful strike on a desalination plant or a port, and the hedge becomes a front line."
+    }
+  },
+  "scripted": {
+    "USA": [
+      {
+        "turn": 0,
+        "templateId": "us_midterm_clock",
+        "headline": "Three days to the midterms: tanker ablaze off Fujairah",
+        "text": "An IRGC fast-attack boat has hit a Greek-flagged tanker with an anti-ship missile outside the strait. Oil is back above $100. You promised no new strikes before Tuesday's vote. Tehran is also, at last, answering the Vice President's letter.",
+        "decision": {
+          "title": "The midterm clock",
+          "situation": "Striking now shows strength and breaks your own campaign promise days before the vote. Escorting tankers with more destroyers is safe and slow and does nothing about the price at the pump. Or answer Tehran's 'positive step' through Oman and gamble that a quiet channel survives the weekend.",
+          "affectedCountries": ["USA", "IRN", "ARE"],
+          "urgency": "URGENT",
+          "defaultOptionId": "escort",
+          "options": [
+            {"id": "strike", "label": "Hit the IRGC navy now", "description": "Retaliatory strikes on Bandar Abbas. Hawks cheer, your promise dies, oil spikes again.", "effects": {"approval": 3, "relations:IRN": -10, "relations:ARE": -4, "growth": -0.2}, "tensionDelta": 8, "actions": [{"type": "MILITARY_AIRSTRIKE", "targetCountryId": "IRN", "params": {"targetType": "MILITARY"}}], "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "escort", "label": "More escorts, no strikes", "description": "Keep the promise and the convoys. Shipping insurers are not reassured.", "effects": {"approval": -3, "mobilization": 5, "growth": -0.3}, "tensionDelta": 2, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "oman", "label": "Reply via Muscat", "description": "A quiet answer to Tehran's quiet answer. Hawks will call it appeasement, if they find out.", "effects": {"approval": -5, "relations:IRN": 8, "relations:ISR": -6}, "tensionDelta": -5, "backedBy": ["FOREIGN_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 2,
+        "templateId": "us_mine",
+        "headline": "Mines in the shipping lane: a VLCC holed off Larak Island",
+        "text": "A very large crude carrier has struck a mine inside the traffic separation scheme. Navy minehunters are three days away. Lloyd's has suspended cover for the strait. Twenty more tankers are anchored off Fujairah, waiting to see what you do.",
+        "decision": {
+          "title": "Tanker hit in the strait",
+          "situation": "Expanding convoy escorts restores some traffic and commits more ships to a narrow, crowded sea. Striking the IRGC naval bases punishes the mining and invites Iranian missiles on Gulf hosts. A quiet signal through Oman might calm the strait and will be read in Congress as weakness.",
+          "affectedCountries": ["USA", "IRN", "ARE", "SAU"],
+          "urgency": "URGENT",
+          "defaultOptionId": "wait",
+          "options": [
+            {"id": "convoy", "label": "Full convoy operation", "description": "Destroyers alongside every tanker. Traffic recovers, slowly; a sailor's death is now a matter of time.", "effects": {"mobilization": 8, "growth": 0.3, "approval": 2, "relations:ARE": 5, "relations:SAU": 4}, "tensionDelta": 3, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "bases", "label": "Strike the IRGC naval bases", "description": "Punish the mining. Iranian missiles may answer on your Gulf hosts.", "effects": {"approval": 5, "relations:IRN": -12, "relations:ARE": -6, "relations:SAU": -4}, "tensionDelta": 8, "actions": [{"type": "MILITARY_AIRSTRIKE", "targetCountryId": "IRN", "params": {"targetType": "MILITARY"}}], "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "wait", "label": "Wait for the minehunters", "description": "Close the lane and clear it properly. Oil and your critics both rise.", "effects": {"approval": -5, "growth": -0.4}, "tensionDelta": 0, "backedBy": ["FINANCE_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 4,
+        "templateId": "us_qatari_text",
+        "headline": "The Qatari text: blockade lifted for inspectors' return",
+        "text": "Doha has revived its framework: the US blockade lifted in phases in exchange for IAEA access to Fordow, Natanz and the Isfahan tunnels, and a freeze on enrichment. Tehran has not said no. Jerusalem has said nothing printable.",
+        "decision": {
+          "title": "The Qatari text",
+          "situation": "Accepting gets inspectors back and ships moving, lets Iran keep a bruised regime and its know-how, and infuriates Israel. Countering with 'zero enrichment' is the safe Washington answer and probably kills the deal. Walking away keeps the blockade, the war and the oil price.",
+          "affectedCountries": ["USA", "IRN", "ISR", "ARE"],
+          "urgency": "URGENT",
+          "defaultOptionId": "walk",
+          "options": [
+            {"id": "accept", "label": "Accept the framework", "description": "Inspectors in, blockade off, war over on paper. Israel and your hawks call it a surrender.", "effects": {"relations:IRN": 14, "relations:ISR": -12, "approval": -4, "growth": 0.4}, "tensionDelta": -10, "actions": [{"type": "DIPLOMACY_PROPOSE_CEASEFIRE", "targetCountryId": "IRN"}], "backedBy": ["FOREIGN_MINISTER", "FINANCE_MINISTER"]},
+            {"id": "zero", "label": "Counter: zero enrichment", "description": "The maximal ask. Popular in the Senate, fatal in Tehran.", "effects": {"relations:IRN": -8, "approval": 3, "relations:ISR": 4}, "tensionDelta": 2, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "walk", "label": "Walk away", "description": "No talks. The blockade does the talking, and the oil price answers.", "effects": {"approval": -2, "growth": -0.3, "relations:ARE": -4}, "tensionDelta": 5, "backedBy": ["DEFENSE_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 6,
+        "templateId": "us_isfahan",
+        "headline": "Satellites show trucks at the Isfahan tunnel portals",
+        "text": "Overhead imagery shows heavy trucks entering and leaving the tunnel complex where the IAEA believes Iran's 60% uranium is stored. Analysts are split: dispersal, a breakout, or a decoy. Israel says it will act alone if you do not.",
+        "decision": {
+          "title": "Isfahan's tunnels",
+          "situation": "A bunker-buster strike may set the programme back and will certainly kill people and end any talks. A special-forces seizure raid could end the question for good, or become the hostage crisis that ends your presidency. Relying on monitoring keeps your options open while the trucks keep moving.",
+          "affectedCountries": ["USA", "IRN", "ISR"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "monitor",
+          "options": [
+            {"id": "bunker", "label": "Bunker-busters on Isfahan", "description": "Massive Ordnance Penetrators on the portals. The programme slips; the war hardens.", "effects": {"approval": 2, "relations:IRN": -14, "relations:ISR": 8, "relationsRivals": -4}, "tensionDelta": 10, "actions": [{"type": "MILITARY_AIRSTRIKE", "targetCountryId": "IRN", "params": {"targetType": "NUCLEAR"}}], "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "raid", "label": "Send in the raiders", "description": "Seize the canisters on the ground. Glory or Desert One, nothing in between.", "effects": {"approval": -6, "stability": -5, "relations:IRN": -12, "mobilization": 10}, "tensionDelta": 12, "actions": [{"type": "MILITARY_AIRSTRIKE", "targetCountryId": "IRN", "params": {"targetType": "NUCLEAR"}}, {"type": "MILITARY_AIRSTRIKE", "targetCountryId": "IRN", "params": {"targetType": "NUCLEAR"}}], "followUp": {"templateId": "rescue_outcome", "delay": 1}, "backedBy": ["INTELLIGENCE_CHIEF"]},
+            {"id": "monitor", "label": "Watch and wait", "description": "Satellites, sensors and patience. If it is a breakout, you will know when the world does.", "effects": {"approval": -6, "stability": -6, "relations:ISR": -6}, "tensionDelta": 0, "backedBy": ["FOREIGN_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 9,
+        "templateId": "us_last_offer",
+        "headline": "Tehran offers a 'grand bargain' through Islamabad",
+        "text": "Pakistan's army chief has flown to Washington with an Iranian offer: the 60% stockpile diluted under IAEA seals, the blockade lifted, and US forces drawn down from three Gulf bases. Israel calls it 'Munich on the Gulf'. Gas is $4.60 a gallon.",
+        "decision": {
+          "title": "The grand bargain",
+          "situation": "Taking it ends the war, lowers the oil price and trades away forward bases your generals spent twenty years building. Pocketing the stockpile offer while refusing the drawdown may get you half a deal, or none. Rejecting it keeps maximal pressure and the war that comes with it into a second year.",
+          "affectedCountries": ["USA", "IRN", "ISR", "PAK", "ARE"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "reject",
+          "options": [
+            {"id": "deal", "label": "Take the bargain", "description": "Peace, cheaper oil, fewer bases. The Gulf states wonder who protects them now.", "effects": {"relations:IRN": 15, "relations:ISR": -12, "relations:ARE": -6, "approval": 4, "growth": 0.5}, "tensionDelta": -12, "actions": [{"type": "DIPLOMACY_PROPOSE_CEASEFIRE", "targetCountryId": "IRN"}], "backedBy": ["FINANCE_MINISTER", "FOREIGN_MINISTER"]},
+            {"id": "half", "label": "Stockpile yes, bases no", "description": "Take the uranium, keep the bases. Tehran may walk; it may not.", "effects": {"relations:IRN": 4, "relations:PAK": 5, "approval": 2}, "tensionDelta": -4, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "reject", "label": "Maximum pressure", "description": "No deal with the regime that killed American sailors. The blockade stays; so does the war.", "effects": {"approval": -6, "growth": -0.4, "relations:ISR": 6}, "tensionDelta": 6, "backedBy": ["CHIEF_OF_STAFF"]}
+          ]
+        }
+      }
+    ],
+    "IRN": [
+      {
+        "turn": 0,
+        "templateId": "ir_vance_letter",
+        "headline": "The Vance letter: Washington writes to Mohsen Rezaei",
+        "text": "The American vice president has written to a veteran IRGC commander rather than to the government, a calculated snub and a calculated opening. The foreign minister calls it 'a positive step'. The Guards' naval commanders want to answer with another tanker.",
+        "decision": {
+          "title": "Answering Washington",
+          "situation": "Engaging through Oman could lift the blockade and will be read by the hardliners as fear. Answering with fire in the strait reminds the world what Hormuz costs and invites the next American salvo. Saying nothing while hitting shipping through deniable proxies keeps everyone guessing, including your own people.",
+          "affectedCountries": ["IRN", "USA", "ARE"],
+          "urgency": "URGENT",
+          "defaultOptionId": "fire",
+          "options": [
+            {"id": "engage", "label": "Engage through Muscat", "description": "A cautious yes. Traders cheer the rial; the Guards mutter about 'Westoxified' diplomats.", "effects": {"relations:USA": 8, "approval": 5, "legitimacy": -4, "coupShield": -1}, "tensionDelta": -6, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "fire", "label": "Answer with fire", "description": "Another tanker burns. Pride restored, blockade tightened, rial in free fall.", "effects": {"legitimacy": 4, "approval": -4, "growth": -0.6, "relations:ARE": -8}, "tensionDelta": 8, "backedBy": ["DEFENSE_MINISTER", "CHIEF_OF_STAFF"]},
+            {"id": "proxies", "label": "Let the proxies talk", "description": "Iraqi militias and Houthi drones do the signalling. Deniable, until it isn't.", "effects": {"relations:USA": -6, "relations:SAU": -6, "intel": 4, "legitimacy": 2}, "tensionDelta": 4, "actions": [{"type": "INTEL_SABOTAGE", "targetCountryId": "ARE"}], "backedBy": ["INTELLIGENCE_CHIEF"]}
+          ]
+        }
+      },
+      {
+        "turn": 2,
+        "templateId": "ir_rial",
+        "headline": "The rial collapses past a million to the dollar; bazaar on strike",
+        "text": "The Tehran bazaar has shut its shutters for the third day. Truck drivers in Isfahan have joined. The blockade has cut fuel imports and the rationing cards do not cover diesel. The Basij commanders ask for orders.",
+        "decision": {
+          "title": "The bazaar strikes",
+          "situation": "Paying off the bazaar with hard currency you do not have buys a month of quiet. Crushing the strike sends the January message again and feeds the next uprising. Blaming the blockade and opening the strategic reserves turns anger outward, for as long as the reserves last.",
+          "affectedCountries": ["IRN"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "crush",
+          "options": [
+            {"id": "pay", "label": "Pay the merchants", "description": "Subsidised dollars and tax relief. The treasury bleeds; the bazaar reopens.", "effects": {"stability": 5, "approval": 4, "gdp": -1.5, "growth": -0.3}, "tensionDelta": 0, "backedBy": ["FINANCE_MINISTER"]},
+            {"id": "crush", "label": "Send in the Basij", "description": "Batons, arrests, a televised confession or two. Order now, fury later.", "effects": {"stability": -4, "approval": -8, "legitimacy": -3, "coupShield": 2}, "tensionDelta": 0, "followUp": {"templateId": "crackdown_aftermath", "delay": 2}, "backedBy": ["INTELLIGENCE_CHIEF"]},
+            {"id": "reserves", "label": "Blame Washington, open the reserves", "description": "Fuel from strategic stocks and a nationwide sermon on the American siege.", "effects": {"approval": 5, "legitimacy": 3, "mobilization": -5, "gdp": -0.8}, "tensionDelta": 2, "backedBy": ["DOMESTIC_ADVISOR"]}
+          ]
+        }
+      },
+      {
+        "turn": 5,
+        "templateId": "ir_leader_health",
+        "headline": "Rumours sweep Tehran: the Supreme Leader has not been seen in 70 days",
+        "text": "Opposition channels claim Mojtaba Khamenei is incapacitated; a grainy video of him at prayer is dismissed as old footage. Senior clerics in Qom are quietly asking the Assembly of Experts about 'contingencies'. The Guards' commanders are asking each other the same thing.",
+        "decision": {
+          "title": "Who rules in Tehran?",
+          "situation": "Staging a public appearance risks exposing exactly what the rumours say. Handing day-to-day power to an IRGC council steadies the security forces and turns the theocracy into a garrison state. Letting the Assembly of Experts debate a leadership council is constitutionally tidy and might start a succession fight in the middle of a war.",
+          "affectedCountries": ["IRN"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "silence",
+          "options": [
+            {"id": "council", "label": "Hand power to a Guards council", "description": "The generals run the war and the streets. The clerics run the sermons.", "effects": {"stability": -3, "legitimacy": -9, "coupShield": 4, "mobilization": 6, "approval": -4}, "tensionDelta": 3, "backedBy": ["DEFENSE_MINISTER", "INTELLIGENCE_CHIEF"]},
+            {"id": "experts", "label": "Let the Assembly deliberate", "description": "Clerical process in public. Legitimate, slow, and an open invitation to factions.", "effects": {"legitimacy": 5, "stability": -8, "approval": -3}, "tensionDelta": 0, "followUp": {"templateId": "coup_plot", "delay": 2}, "backedBy": ["DOMESTIC_ADVISOR"]},
+            {"id": "silence", "label": "Say nothing", "description": "Release another video. Hope the rumours tire before the people do.", "effects": {"legitimacy": -8, "stability": -8, "approval": -6}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]}
+          ]
+        }
+      },
+      {
+        "turn": 7,
+        "templateId": "ir_breakout",
+        "headline": "Scientists: 'Weeks, not months', if the Leader gives the order",
+        "text": "The surviving heads of the programme report that the 60% stockpile in the tunnels is intact and that a crude device could be ready within weeks. Israeli jets have been probing the western air defences every night. A test would be seen from space and felt in every capital.",
+        "decision": {
+          "title": "The weapon in the tunnels",
+          "situation": "Ordering a crash programme may give you the only guarantee of survival the North Koreans ever found, and invites the strike that ends the regime first. Offering the stockpile under seals for the blockade trades your last card for oxygen. Keeping ambiguity, neither dash nor deal, is the comfortable choice, until the next satellite photo.",
+          "affectedCountries": ["IRN", "USA", "ISR"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "ambiguity",
+          "options": [
+            {"id": "dash", "label": "Order the dash", "description": "Fund the crash programme. Deterrence, or the excuse they have been waiting for.", "effects": {"legitimacy": 5, "approval": 3, "relations:USA": -12, "relations:CHN": -8}, "tensionDelta": 12, "actions": [{"type": "NUCLEAR_FUND_PROGRAM"}], "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "seals", "label": "Stockpile for the blockade", "description": "Dilute under IAEA seals in exchange for open ports. The hardliners call it a second Turkmenchay.", "effects": {"relations:USA": 14, "relations:CHN": 6, "legitimacy": -7, "growth": 0.6}, "tensionDelta": -10, "actions": [{"type": "DIPLOMACY_PROPOSE_CEASEFIRE", "targetCountryId": "USA"}], "backedBy": ["FOREIGN_MINISTER", "FINANCE_MINISTER"]},
+            {"id": "ambiguity", "label": "Keep them guessing", "description": "No test, no deal, no inspectors. The strike planners in Washington and Tel Aviv keep planning.", "effects": {"stability": -5, "approval": -4, "relations:CHN": -4}, "tensionDelta": 4, "backedBy": ["INTELLIGENCE_CHIEF"]}
+          ]
+        }
+      },
+      {
+        "turn": 10,
+        "templateId": "ir_china_lifeline",
+        "headline": "Beijing offers a lifeline, with a price tag in yuan",
+        "text": "China's special envoy proposes discounted oil purchases through Chinese-flagged tankers that the US Navy may hesitate to stop, plus a 25-year port concession at Jask. The Revolutionary Guards call it a sell-out; the finance ministry calls it payroll.",
+        "decision": {
+          "title": "The Chinese lifeline",
+          "situation": "Accepting brings money and a protector of sorts, and gives Beijing a naval foothold on your coast. Bargaining for better terms may lose the offer. Refusing preserves the revolution's independence and leaves the treasury empty for the winter.",
+          "affectedCountries": ["IRN", "CHN", "USA"],
+          "urgency": "URGENT",
+          "defaultOptionId": "refuse",
+          "options": [
+            {"id": "accept", "label": "Take Beijing's deal", "description": "Cash flow and a giant at your side. Jask becomes a little bit Chinese.", "effects": {"relations:CHN": 12, "growth": 0.8, "gdp": 1, "legitimacy": -4, "relations:USA": -6}, "tensionDelta": 3, "backedBy": ["FINANCE_MINISTER"]},
+            {"id": "haggle", "label": "Haggle over the port", "description": "Oil yes, Jask no. The envoy smiles and says he will consult.", "effects": {"relations:CHN": 4, "growth": 0.3}, "tensionDelta": 0, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "refuse", "label": "Neither East nor West", "description": "The founding slogan, and an empty treasury.", "effects": {"legitimacy": 3, "approval": -6, "growth": -0.4, "relations:CHN": -6}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]}
+          ]
+        }
+      }
+    ],
+    "ARE": [
+      {
+        "turn": 0,
+        "templateId": "ae_fujairah",
+        "headline": "Drone strike sets an oil terminal ablaze at Fujairah",
+        "text": "A swarm of Iranian-made drones, launched from the sea, has hit storage tanks at Fujairah, the outlet built so Emirati oil could bypass Hormuz. No group has claimed it. Washington wants to base more fighters at Al Dhafra; Tehran's ambassador has asked for a meeting.",
+        "decision": {
+          "title": "Fire at Fujairah",
+          "situation": "Opening Al Dhafra wider for the Americans gets you more protection and makes you a bigger target. Taking the Iranian ambassador's meeting keeps a channel open and annoys Washington and Jerusalem. Quietly retaliating with your own strike would restore deterrence and make you a co-belligerent in name as well as rumour.",
+          "affectedCountries": ["ARE", "IRN", "USA", "ISR"],
+          "urgency": "URGENT",
+          "defaultOptionId": "dhafra",
+          "options": [
+            {"id": "dhafra", "label": "More US jets at Al Dhafra", "description": "Lean on the superpower. Protection, and a bigger bullseye.", "effects": {"relations:USA": 6, "relations:IRN": -10, "stability": -4, "approval": -2}, "tensionDelta": 4, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "ambassador", "label": "Take the Iranian meeting", "description": "Coffee with the enemy. Washington asks pointed questions; the strikes may pause.", "effects": {"relations:IRN": 10, "relations:USA": -6, "relations:ISR": -5, "stability": 3}, "tensionDelta": -4, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "retaliate", "label": "A quiet strike of our own", "description": "Hit the launch site. Deterrence restored, deniability gone.", "effects": {"approval": 6, "relations:IRN": -14, "relations:USA": 4, "stability": -3}, "tensionDelta": 7, "actions": [{"type": "INTEL_SABOTAGE", "targetCountryId": "IRN"}], "backedBy": ["INTELLIGENCE_CHIEF"]}
+          ]
+        }
+      },
+      {
+        "turn": 3,
+        "templateId": "ae_insurers",
+        "headline": "Lloyd's pulls cover; Jebel Ali traffic down 40%",
+        "text": "War-risk premiums have made the Gulf uninsurable for half the world's fleet. Container lines are diverting to Red Sea and Indian ports. Dubai's property market, the national mood ring, is falling for the first time in four years.",
+        "decision": {
+          "title": "The insurance war",
+          "situation": "A sovereign guarantee of shipping losses keeps the port busy and puts the state balance sheet behind every hull. Asking Washington to reflag tankers under the US flag repeats 1987 and binds you tighter to the war. Riding it out preserves the reserves and the port's customers may not come back.",
+          "affectedCountries": ["ARE", "USA"],
+          "urgency": "URGENT",
+          "defaultOptionId": "ride",
+          "options": [
+            {"id": "guarantee", "label": "State insurance for every hull", "description": "Abu Dhabi underwrites the Gulf. Ships return; the bill is open-ended.", "effects": {"gdp": -0.8, "growth": 0.6, "approval": 4}, "tensionDelta": 0, "backedBy": ["FINANCE_MINISTER"]},
+            {"id": "reflag", "label": "Reflag under the Stars and Stripes", "description": "Operation Earnest Will, 2026 edition. Protection with American strings.", "effects": {"relations:USA": 8, "relations:IRN": -8, "growth": 0.3, "stability": -3}, "tensionDelta": 3, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "ride", "label": "Ride it out", "description": "Keep the sovereign funds intact. Watch the cranes stand still.", "effects": {"growth": -0.7, "approval": -6, "stability": -3}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]}
+          ]
+        }
+      },
+      {
+        "turn": 6,
+        "templateId": "ae_desal",
+        "headline": "Missile hits a desalination plant near Abu Dhabi",
+        "text": "An Iranian ballistic missile got through the air defences and struck the Taweelah desalination complex. Water pressure has dropped across the capital. Tehran claims it was aimed at Al Dhafra and 'deviated'. The Israelis are offering more air-defence batteries, and their crews.",
+        "decision": {
+          "title": "Water under fire",
+          "situation": "Accepting Israeli batteries and crews protects the water and makes the Abraham Accords a military alliance in all but name. Asking Washington for a public guarantee may produce a tweet rather than a battery. Offering Tehran a non-aggression understanding through Oman could stop the missiles and would infuriate every partner you have.",
+          "affectedCountries": ["ARE", "IRN", "ISR", "USA"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "washington",
+          "options": [
+            {"id": "israel", "label": "Israeli batteries and crews", "description": "Iron Dome over Abu Dhabi. Effective, and seen from Tehran to Cairo.", "effects": {"relations:ISR": 10, "relations:IRN": -12, "stability": 2, "approval": -6}, "tensionDelta": 5, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "washington", "label": "Demand a US guarantee", "description": "Call the White House. Expect sympathy, and a long wait.", "effects": {"relations:USA": 4, "stability": -8, "approval": -7}, "tensionDelta": 2, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "pact", "label": "Non-aggression via Oman", "description": "Promise Tehran your territory will not be used for strikes. The missiles might stop; your friends might too.", "effects": {"relations:IRN": 14, "relations:USA": -10, "relations:ISR": -8, "stability": -3}, "tensionDelta": -6, "backedBy": ["FOREIGN_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 8,
+        "templateId": "ae_islands",
+        "headline": "Iran lands marines on Abu Musa's disputed shore",
+        "text": "Iranian marines have reinforced Abu Musa and the Tunbs, islands the UAE has claimed since 1971, and declared a 'security zone' around them. Saudi Arabia offers diplomatic support; Washington offers a carrier, briefly. The Emirati public, rarely political, is angry.",
+        "decision": {
+          "title": "The islands",
+          "situation": "Taking the case to the Security Council is lawful and slow, and Russia and China will see to the rest. Probing the security zone with your navy shows resolve and could start the war you have spent a year avoiding. Swallowing it quietly keeps the peace and costs you something every Emirati will remember.",
+          "affectedCountries": ["ARE", "IRN", "SAU", "USA"],
+          "urgency": "URGENT",
+          "defaultOptionId": "swallow",
+          "options": [
+            {"id": "un", "label": "Take it to the UN", "description": "Resolutions and speeches. Righteous, and largely symbolic.", "effects": {"legitimacy": 4, "relations:IRN": -6, "relations:SAU": 4, "approval": 2}, "tensionDelta": 2, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "probe", "label": "Probe the zone", "description": "Send the corvettes in. Courage, or the first shot.", "effects": {"approval": 8, "relations:IRN": -14, "mobilization": 8, "stability": -4}, "tensionDelta": 8, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "swallow", "label": "Swallow it", "description": "Protest by letter. Peace preserved, pride surrendered.", "effects": {"approval": -8, "legitimacy": -4}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]}
+          ]
+        }
+      },
+      {
+        "turn": 10,
+        "templateId": "ae_day_after",
+        "headline": "Talk of a ceasefire, and of who rebuilds Iran",
+        "text": "With a settlement in the air, Western banks and Chinese builders are already lining up for post-war Iran, and Dubai is the obvious hub. Washington wants you to commit to its reconstruction terms; Tehran's merchants want Dubai's free zones open again.",
+        "decision": {
+          "title": "The day after",
+          "situation": "Committing to Washington's terms locks in the alliance and locks you out of Tehran's market. Reopening the free zones to Iranian traders now makes Dubai rich again and sanctions-busters again. Waiting keeps both doors ajar and neither side grateful.",
+          "affectedCountries": ["ARE", "USA", "IRN", "CHN"],
+          "urgency": "ROUTINE",
+          "defaultOptionId": "wait",
+          "options": [
+            {"id": "us_terms", "label": "Sign up to Washington's terms", "description": "Reconstruction on American conditions. A loyal ally, a smaller market.", "effects": {"relations:USA": 8, "relations:IRN": -6, "growth": 0.2}, "tensionDelta": 0, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "free_zones", "label": "Reopen the free zones", "description": "Iranian traders back in Deira. Profitable, and Treasury will notice.", "effects": {"relations:IRN": 10, "relations:USA": -8, "growth": 0.6, "gdp": 0.5}, "tensionDelta": -2, "backedBy": ["FINANCE_MINISTER"]},
+            {"id": "wait", "label": "Wait and see", "description": "Hedge until the shooting stops. Somebody else gets the first contracts.", "effects": {"growth": -0.2, "approval": -2}, "tensionDelta": 0, "backedBy": ["FOREIGN_MINISTER"]}
+          ]
+        }
+      }
+    ]
+  },
+  "debrief": ""
+}

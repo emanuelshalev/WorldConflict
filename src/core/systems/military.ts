@@ -1,5 +1,8 @@
+import { sharesLandBorder } from "../geography.js";
 import type { SeededRandom } from "../seed.js";
+import { possessive } from "../text.js";
 import type { ActiveWar, CountryState, WorldState } from "../types.js";
+import { threatCeiling } from "./economy.js";
 
 export type AirstrikeTarget = "MILITARY" | "INDUSTRIAL" | "NUCLEAR";
 
@@ -73,8 +76,14 @@ export function startWar(
   attacker.mobilizationLevel = Math.max(attacker.mobilizationLevel, 60);
   defender.mobilizationLevel = Math.max(defender.mobilizationLevel, 50);
   // War footing: budgets surge (hostility indicator)
-  attacker.militaryBudgetPercent = Math.min(20, attacker.militaryBudgetPercent * 1.5);
-  defender.militaryBudgetPercent = Math.min(20, defender.militaryBudgetPercent * 1.4);
+  attacker.militaryBudgetPercent = Math.max(
+    attacker.militaryBudgetPercent,
+    Math.min(40, attacker.militaryBudgetPercent * 1.5),
+  );
+  defender.militaryBudgetPercent = Math.max(
+    defender.militaryBudgetPercent,
+    Math.min(40, defender.militaryBudgetPercent * 1.4),
+  );
 
   const war: ActiveWar = {
     id: `war_${attackerId}_${defenderId}_${world.turn}`,
@@ -107,7 +116,8 @@ export function activateDefensivePacts(
     if (allyId === war.attackerId) continue;
     const loyaltyRoll = rng.next() * 100;
     if (loyaltyRoll < ally.personality.allianceLoyalty) {
-      startWar(world, allyId, war.attackerId);
+      const joinedWar = startWar(world, allyId, war.attackerId);
+      if (joinedWar) joinedWar.alliedWith = war.defenderId;
       joined.push(allyId);
     } else {
       // Refused the call: alliance strained
@@ -164,11 +174,28 @@ export function resolveWarMonth(
   attacker.approval = clamp(attacker.approval - (attackerLosing ? 2 : 0.5));
   defender.approval = clamp(defender.approval + (defenderLosing ? -2 : 1)); // rally round the flag while holding
 
-  // Economic damage proportional to how badly the war is going
-  attacker.gdp *= attackerLosing ? 0.985 : 0.993;
-  defender.gdp *= defenderLosing ? 0.975 : 0.988; // war fought on defender's soil
+  // Economic damage: heaviest where the fighting is. A ground war on your own soil
+  // (Ukraine 2022: about -29% in a year) is far worse than fighting abroad, and a
+  // distant air/naval campaign barely dents a large attacker's economy.
+  const groundWar = sharesLandBorder(attacker.id, defender.id) !== false;
+  // Economies adapt to a long war (Ukraine: -29% in 2022, then +5% in 2023); losing ground ruins them
+  const defenderMonthly = groundWar
+    ? defenderLosing
+      ? 0.015
+      : 0.004
+    : defenderLosing
+      ? 0.006
+      : 0.002;
+  const attackerMonthly = attackerLosing ? 0.006 : 0.002;
+  // A small enemy can only hurt a big economy so much (Russia grew through its war on Ukraine;
+  // the US barely feels an air war with Iran)
+  const reach = (self: CountryState, enemy: CountryState) =>
+    Math.min(1, Math.max(0.1, (3 * enemy.gdp) / Math.max(1, self.gdp)));
+  attacker.gdp *= 1 - attackerMonthly * reach(attacker, defender);
+  defender.gdp *= 1 - defenderMonthly * reach(defender, attacker);
 
-  war.exhaustion = clamp(war.exhaustion + 2 + (Math.abs(delta) < 2 ? 2 : 0));
+  // Exhaustion builds slowly: fastest in a stalemate that kills for nothing
+  war.exhaustion = clamp(war.exhaustion + 1 + (Math.abs(delta) < 2 ? 1 : 0));
 
   // End conditions
   let ended: WarEndResult | null = null;
@@ -176,14 +203,14 @@ export function resolveWarMonth(
     ended = endWar(world, war, war.attackerId, war.defenderId, rng);
   } else if (war.frontline <= 15) {
     ended = endWar(world, war, war.defenderId, war.attackerId, rng);
-  } else if (war.exhaustion >= 80 && rng.nextBool(0.35)) {
+  } else if (war.exhaustion >= 90 && rng.nextBool(0.25)) {
     ended = endWar(world, war, null, null, rng);
   }
 
   return { war, delta, attackerCasualties, defenderCasualties, ended };
 }
 
-function endWar(
+export function endWar(
   world: WorldState,
   war: ActiveWar,
   winnerId: string | null,
@@ -209,7 +236,8 @@ function endWar(
     // Spoils and humiliation
     const reparations = loser.gdp * 0.05;
     loser.gdp -= reparations;
-    winner.gdp += reparations * 0.6;
+    // A small winner cannot absorb a large loser's economy: transfers cap at 4% of its own GDP
+    winner.gdp += Math.min(reparations * 0.6, winner.gdp * 0.04);
     loser.stability = clamp(loser.stability - 15);
     loser.legitimacy = clamp(loser.legitimacy - 20);
     loser.approval = clamp(loser.approval - 15);
@@ -244,14 +272,16 @@ export function executeAirstrike(
   // Diplomatic fallout regardless of outcome
   defender.relations[attacker.id] = Math.max(-100, (defender.relations[attacker.id] ?? 0) - 30);
   attacker.relations[defender.id] = Math.max(-100, (attacker.relations[defender.id] ?? 0) - 20);
-  world.globalTension = clamp(world.globalTension + 5, 0, 100);
+  // A strike that opens hostilities shocks the world; one inside an ongoing war barely registers
+  const alreadyAtWar = attacker.atWarWith.includes(defender.id);
+  world.globalTension = clamp(world.globalTension + (alreadyAtWar ? 1 : 5), 0, 100);
 
   let crippledNuclearProgram = false;
   let description: string;
 
   if (!success) {
     if (targetType === "NUCLEAR") defender.nuclear.consecutiveStrikesTaken = 0;
-    description = `${attacker.name}'s airstrike against ${defender.name} was repelled by air defenses.`;
+    description = `${possessive(attacker.name)} airstrike against ${defender.name} was repelled by air defenses.`;
     return { success, description, crippledNuclearProgram };
   }
 
@@ -266,7 +296,7 @@ export function executeAirstrike(
     case "INDUSTRIAL": {
       defender.gdp *= 0.985;
       defender.stability = clamp(defender.stability - 4);
-      description = `${attacker.name} bombed ${defender.name}'s industrial heartland, crippling factories and power plants.`;
+      description = `${attacker.name} bombed ${possessive(defender.name)} industrial heartland, crippling factories and power plants.`;
       break;
     }
     case "NUCLEAR": {
@@ -279,12 +309,12 @@ export function executeAirstrike(
           defender.nuclear.funded = false;
           defender.nuclear.consecutiveStrikesTaken = 0;
           crippledNuclearProgram = true;
-          description = `Second consecutive strike on ${defender.name}'s enrichment facilities — the nuclear program is CRIPPLED.`;
+          description = `Second consecutive strike on ${possessive(defender.name)} enrichment facilities, the nuclear program is CRIPPLED.`;
         } else {
-          description = `${attacker.name} struck ${defender.name}'s nuclear facilities, setting the program back. One more successful strike could cripple it.`;
+          description = `${attacker.name} struck ${possessive(defender.name)} nuclear facilities, setting the program back. One more successful strike could cripple it.`;
         }
       } else if (defender.nuclear.status === "TESTED" || defender.nuclear.status === "ARMED") {
-        description = `${attacker.name} struck ${defender.name}'s nuclear sites — but the arsenal is dispersed and hardened. No meaningful damage.`;
+        description = `${attacker.name} struck ${possessive(defender.name)} nuclear sites, but the arsenal is dispersed and hardened. No meaningful damage.`;
       } else {
         description = `${attacker.name} struck suspected nuclear sites in ${defender.name}, but found no active program.`;
       }
@@ -308,16 +338,24 @@ export function withdrawFromBorder(country: CountryState, targetId: string): voi
 
 /** Border deployments continuously degrade relations (dynamic diplomacy from the original game). */
 export function applyBorderTensions(world: WorldState): void {
+  // Standing garrisons are the background of world politics, not fresh news: each
+  // adds a little to the global mood, and together they add at most 1.5 a month.
+  let standing = 0;
   for (const country of world.countries) {
     for (const dep of country.borderDeployments) {
       const target = world.countries.find((c) => c.id === dep.targetCountryId);
       if (!target || country.atWarWith.includes(target.id)) continue;
       target.relations[country.id] = Math.max(-100, (target.relations[country.id] ?? 0) - 3);
-      world.globalTension = clamp(world.globalTension + 0.5, 0, 100);
+      standing++;
       // Threatened countries arm in response (budget as hostility indicator)
-      target.militaryBudgetPercent = Math.min(20, target.militaryBudgetPercent + 0.1);
+      if (target.atWarWith.length === 0)
+        target.militaryBudgetPercent = Math.min(
+          Math.max(threatCeiling(target), target.militaryBudgetPercent),
+          target.militaryBudgetPercent + 0.1,
+        );
     }
   }
+  world.globalTension = clamp(world.globalTension + Math.min(1.5, standing * 0.15), 0, 100);
 }
 
 function clamp(v: number, min = 0, max = 100): number {

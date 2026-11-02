@@ -1,28 +1,49 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
-import { generateDeterministicIntents } from "../../agents/fallback.js";
+
+/** Saves with a turn in flight: a second /turn for the same save is refused, not run twice. */
+const turnsInFlight = new Set<string>();
+
+/** Malformed requests are the client's fault (400), not the server's (500). */
+function errorStatus(error: unknown): number {
+  return error instanceof z.ZodError ? 400 : 500;
+}
+
+import { AIConfigSchema, planTurn } from "../../agents/strategist.js";
+import { addUsage } from "../../agents/usage.js";
 import { createDataLoader } from "../../core/data-loader.js";
+import { objectiveStatus } from "../../core/objectives.js";
 import { previewAction } from "../../core/preview.js";
 import { classifyLeadership } from "../../core/scoring.js";
 import { createSeed } from "../../core/seed.js";
 import { buildPlayerView } from "../../core/systems/intelligence.js";
 import { TurnEngine } from "../../core/turn.js";
-import { ActionSchema, type WorldState } from "../../core/types.js";
+import {
+  ActionSchema,
+  DifficultySchema,
+  GameModeSchema,
+  type WorldState,
+} from "../../core/types.js";
 import { gameDb } from "../../infra/db.js";
 
 const NewGameSchema = z.object({
-  scenarioId: z.string().default("2025"),
+  scenarioId: z.string().default("2026"),
   playerCountryId: z.string(),
   seed: z.number().optional(),
   saveName: z.string().optional(),
   playerId: z.string().optional(),
   leaderName: z.string().min(1).max(40).optional(),
+  mode: GameModeSchema.default("FLASHPOINT"),
+  difficulty: DifficultySchema.default("STATESMAN"),
+  flashpointId: z.string().optional(),
+  daily: z.boolean().optional(), // date-seeded daily challenge
 });
 
 const TurnRequestSchema = z.object({
   saveId: z.string(),
   playerActions: z.array(ActionSchema),
   decisions: z.array(z.object({ decisionId: z.string(), optionId: z.string() })).default([]),
+  ai: AIConfigSchema.optional(),
 });
 
 const PreviewRequestSchema = z.object({
@@ -30,15 +51,125 @@ const PreviewRequestSchema = z.object({
   action: ActionSchema,
 });
 
+/**
+ * What the client may know. Foreign countries' hidden ground truth (true GDP,
+ * stability, military, nuclear progress, their beliefs and personalities) is
+ * replaced by the player's intelligence estimates: the fog of war must not be
+ * defeatable from devtools.
+ */
+export function publicWorldState(world: WorldState): WorldState {
+  const me = world.countries.find((c) => c.id === world.playerCountryId);
+  return {
+    ...world,
+    countries: world.countries.map((c) => {
+      if (c.id === world.playerCountryId) return c;
+      const b = me?.beliefs[c.id];
+      const hiddenNuclear = c.nuclear.status === "DEVELOPING" || c.nuclear.status === "LATENT";
+      return {
+        ...c,
+        gdp: b?.gdp ?? c.gdp,
+        stability: b?.stability ?? 50,
+        approval: 50,
+        legitimacy: 50,
+        manpower: 0,
+        airpower: 0,
+        mobilizationLevel: 0,
+        intelLevel: 0,
+        counterIntelLevel: 0,
+        beliefs: {},
+        borderDeployments: c.borderDeployments.filter((d) => d.targetCountryId === me?.id),
+        personality: {
+          warPropensity: 50,
+          allianceLoyalty: 50,
+          diplomaticFlexibility: 50,
+          riskTolerance: 50,
+          expansionism: 50,
+          isolationism: 50,
+          ideologicalRigidity: 50,
+          prestigeEmphasis: 50,
+        },
+        goals: [],
+        nuclear: {
+          ...c.nuclear,
+          status: hiddenNuclear && (b?.nuclearProgress ?? 0) < 20 ? "NONE" : c.nuclear.status,
+          progress: Math.round(b?.nuclearProgress ?? 0),
+          consecutiveStrikesTaken: c.nuclear.consecutiveStrikesTaken,
+        },
+        relations: Object.fromEntries(
+          Object.entries(c.relations).map(([id, v]) => [id, Math.round(v / 10) * 10]),
+        ),
+      };
+    }),
+  };
+}
+
 function turnPayload(worldState: WorldState) {
   return {
-    worldState,
+    worldState: publicWorldState(worldState),
     playerView: buildPlayerView(worldState),
+    objectiveStatus: objectiveStatus(worldState),
     pendingDecisions: worldState.pendingDecisions,
     score: worldState.score,
     gameOver: worldState.gameOver,
     playerBackstory: worldState.playerBackstory,
   };
+}
+
+/** How hard each nation is to lead (shown on the picker; tuned with scripts/simulate.ts). */
+const COUNTRY_DIFFICULTY: Record<string, "STEADY" | "TOUGH" | "BRUTAL"> = {
+  USA: "STEADY",
+  CHN: "STEADY",
+  IND: "STEADY",
+  SAU: "STEADY",
+  JPN: "STEADY",
+  AUS: "STEADY",
+  CAN: "STEADY",
+  ARE: "STEADY",
+  DEU: "TOUGH",
+  FRA: "TOUGH",
+  GBR: "TOUGH",
+  ITA: "TOUGH",
+  BRA: "TOUGH",
+  MEX: "TOUGH",
+  POL: "TOUGH",
+  TUR: "TOUGH",
+  EGY: "TOUGH",
+  IDN: "TOUGH",
+  KOR: "TOUGH",
+  ZAF: "TOUGH",
+  NGA: "TOUGH",
+  RUS: "TOUGH",
+  DNK: "TOUGH",
+  PHL: "TOUGH",
+  ISR: "BRUTAL",
+  IRN: "BRUTAL",
+  PRK: "BRUTAL",
+  PAK: "BRUTAL",
+  UKR: "BRUTAL",
+  TWN: "BRUTAL",
+  BLR: "TOUGH",
+  SYR: "BRUTAL",
+  IRQ: "BRUTAL",
+  PSX: "BRUTAL",
+  LBN: "BRUTAL",
+  YEM: "BRUTAL",
+  AFG: "BRUTAL",
+  VEN: "BRUTAL",
+  CUB: "BRUTAL",
+  SDN: "BRUTAL",
+  ETH: "BRUTAL",
+};
+
+/** The daily flashpoint: same scenario and country for everyone on a given date. */
+function dailyChallenge(
+  flashpoints: { id: string; title: string; playable: { countryId: string }[] }[],
+): { date: string; flashpointId: string; countryId: string; title: string } | null {
+  if (flashpoints.length === 0) return null;
+  const date = new Date().toISOString().slice(0, 10);
+  const h = createSeed(Number(date.slice(0, 4)), date);
+  const fp = flashpoints[h % flashpoints.length];
+  const country = fp.playable[Math.floor(h / 7) % fp.playable.length];
+  return { date, flashpointId: fp.id, countryId: country.countryId, title: fp.title };
 }
 
 export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
@@ -52,7 +183,43 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
       startYear: s.startYear,
       globalTension: s.globalTension,
     }));
-    return reply.send({ success: true, scenarios });
+    const flashpoints = dataLoader.loadAvailableFlashpoints().map((f) => ({
+      id: f.id,
+      title: f.title,
+      tagline: f.tagline,
+      hook: f.hook,
+      date: f.date,
+      turns: f.turns,
+      playable: f.playable,
+      objectives: Object.fromEntries(
+        Object.entries(f.objectives).map(([id, o]) => [
+          id,
+          { title: o.title, briefing: o.briefing },
+        ]),
+      ),
+    }));
+    return reply.send({
+      success: true,
+      scenarios,
+      flashpoints,
+      daily: dailyChallenge(flashpoints),
+    });
+  });
+
+  // ------------------------------------------------------------------
+  fastify.get("/countries", async (_request, reply: FastifyReply) => {
+    const loader = createDataLoader();
+    const countries = loader.loadAllCountries().map((c) => ({
+      id: c.id,
+      name: c.name,
+      regimeType: c.regimeType,
+      leaderTitle: c.politicalSystem.leaderTitle,
+      difficulty: COUNTRY_DIFFICULTY[c.id] ?? "TOUGH",
+      narrative: c.history.narrative ?? "",
+      capital: c.geo?.capital,
+      nuclear: c.military.nuclearStatus,
+    }));
+    return reply.send({ success: true, countries });
   });
 
   // ------------------------------------------------------------------
@@ -65,26 +232,41 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
       try {
         const body = NewGameSchema.parse(request.body);
         const { scenarioId, playerCountryId, saveName, playerId, leaderName } = body;
-        const seed =
-          body.seed ??
-          createSeed(Number.parseInt(scenarioId, 10), playerCountryId) +
-            (leaderName ? createSeed(7, leaderName) % 1000 : 0);
-
         const dataLoader = createDataLoader();
-        const worldState = dataLoader.initializeWorldState(
+        if (!dataLoader.loadAllCountries().some((c) => c.id === playerCountryId)) {
+          return reply
+            .status(400)
+            .send({ success: false, error: `Unknown country ${playerCountryId}` });
+        }
+        // Every game is different unless a seed is given; the daily challenge
+        // is the same world for everyone that day.
+        const today = new Date().toISOString().slice(0, 10);
+        const seed = body.daily
+          ? createSeed(Number(today.slice(0, 4)), today)
+          : (body.seed ?? createSeed(Date.now() % 100000, `${playerCountryId}${Math.random()}`));
+
+        const worldState = dataLoader.newGame({
           scenarioId,
           playerCountryId,
           seed,
           leaderName,
-        );
+          mode: body.mode,
+          difficulty: body.difficulty,
+          flashpointId: body.flashpointId,
+        });
 
-        const name = saveName ?? `${leaderName ?? "Leader"} of ${playerCountryId} (${scenarioId})`;
+        const label = body.flashpointId
+          ? dataLoader.loadFlashpoint(body.flashpointId).title
+          : `${body.mode.toLowerCase()} ${scenarioId}`;
+        const name =
+          saveName ??
+          `${worldState.countries.find((c) => c.id === playerCountryId)?.name ?? playerCountryId}, ${label}`;
         const saveId = await gameDb.saveGame(name, worldState, [], playerId, leaderName);
 
         return reply.send({ success: true, saveId, ...turnPayload(worldState) });
       } catch (error) {
         fastify.log.error(error);
-        return reply.status(500).send({
+        return reply.status(errorStatus(error)).send({
           success: false,
           error: error instanceof Error ? error.message : "Failed to create new game",
         });
@@ -101,48 +283,69 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
     ) => {
       try {
         const body = TurnRequestSchema.parse(request.body);
-        const { saveId, playerActions, decisions } = body;
-
-        const saveData = await gameDb.loadGame(saveId);
-        if (!saveData) {
-          return reply.status(404).send({ success: false, error: "Save game not found" });
+        const { saveId, playerActions, decisions, ai } = body;
+        if (turnsInFlight.has(saveId)) {
+          return reply
+            .status(409)
+            .send({ success: false, error: "This month is already being resolved" });
         }
+        turnsInFlight.add(saveId);
+        try {
+          const saveData = await gameDb.loadGame(saveId);
+          if (!saveData) {
+            return reply.status(404).send({ success: false, error: "Save game not found" });
+          }
 
-        const { worldState } = saveData;
-        if (worldState.gameOver) {
-          return reply.status(400).send({
-            success: false,
-            error: "The game is over. Start a new game or load an earlier save.",
+          const { worldState, llmUsage } = saveData;
+          if (worldState.gameOver) {
+            return reply.status(400).send({
+              success: false,
+              error: "The game is over. Start a new game or load an earlier save.",
+            });
+          }
+
+          const engine = new TurnEngine();
+          // AI intents come from the chosen tier; the engine stays deterministic given intents
+          const plan = await planTurn(worldState, ai, { sessionSpentUsd: llmUsage.costUsd ?? 0 });
+          const aiIntents = plan.intents;
+          const result = engine.executeTurn(worldState, playerActions, aiIntents, decisions);
+          const totalUsage = addUsage(llmUsage, plan.usage);
+
+          await gameDb.updateSave(saveId, result.newState, totalUsage);
+          await gameDb.addTurnLog(saveId, {
+            number: result.newState.turn,
+            date: result.newState.date,
+            events: result.events,
+            intents: aiIntents,
+            playerActions,
+            newspaper: result.newspaper,
           });
+
+          return reply.send({
+            success: true,
+            saveId,
+            ...turnPayload(result.newState),
+            events: result.events,
+            newspaper: result.newspaper,
+            governmentChanges: result.governmentChanges,
+            // Fog of war: only the player's own orders come back, never the AI's plans
+            resolvedActions: ownActions(result.resolvedActions, result.newState.playerCountryId),
+            rejectedActions: ownActions(result.rejectedActions, result.newState.playerCountryId),
+            ai: {
+              tier: ai?.tier ?? "ALGORITHMIC",
+              turnUsage: plan.usage,
+              totalUsage,
+              statements: plan.statements,
+              llmCountries: plan.llmCountries,
+              notice: plan.notice,
+            },
+          });
+        } finally {
+          turnsInFlight.delete(saveId);
         }
-
-        const engine = new TurnEngine();
-        const aiIntents = generateDeterministicIntents(worldState);
-        const result = engine.executeTurn(worldState, playerActions, aiIntents, decisions);
-
-        await gameDb.updateSave(saveId, result.newState);
-        await gameDb.addTurnLog(saveId, {
-          number: result.newState.turn,
-          date: result.newState.date,
-          events: result.events,
-          intents: aiIntents,
-          playerActions,
-          newspaper: result.newspaper,
-        });
-
-        return reply.send({
-          success: true,
-          saveId,
-          ...turnPayload(result.newState),
-          events: result.events,
-          newspaper: result.newspaper,
-          governmentChanges: result.governmentChanges,
-          resolvedActions: Object.fromEntries(result.resolvedActions),
-          rejectedActions: Object.fromEntries(result.rejectedActions),
-        });
       } catch (error) {
         fastify.log.error(error);
-        return reply.status(500).send({
+        return reply.status(errorStatus(error)).send({
           success: false,
           error: error instanceof Error ? error.message : "Failed to process turn",
         });
@@ -167,7 +370,7 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
         return reply.send({ success: true, preview });
       } catch (error) {
         fastify.log.error(error);
-        return reply.status(500).send({
+        return reply.status(errorStatus(error)).send({
           success: false,
           error: error instanceof Error ? error.message : "Failed to preview action",
         });
@@ -197,6 +400,11 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
             gameOver: world.gameOver,
             score: world.score,
             assessment,
+            mode: world.mode,
+            outcome: world.outcome,
+            objective: world.objective,
+            closeCalls: world.director.closeCalls,
+            comebacks: world.director.rallies,
             timeline: world.timeline,
             scoreHistory: world.scoreHistory,
             backstory: world.playerBackstory,
@@ -240,18 +448,22 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
   // ------------------------------------------------------------------
   fastify.get(
     "/saves",
-    async (request: FastifyRequest<{ Querystring: { playerId?: string } }>, reply: FastifyReply) => {
-    try {
-      const saves = await gameDb.listSaves(request.query.playerId);
-      return reply.send({ success: true, saves });
-    } catch (error) {
-      fastify.log.error(error);
-      return reply.status(500).send({
-        success: false,
-        error: error instanceof Error ? error.message : "Failed to list saves",
-      });
-    }
-  });
+    async (
+      request: FastifyRequest<{ Querystring: { playerId?: string } }>,
+      reply: FastifyReply,
+    ) => {
+      try {
+        const saves = await gameDb.listSaves(request.query.playerId);
+        return reply.send({ success: true, saves });
+      } catch (error) {
+        fastify.log.error(error);
+        return reply.status(500).send({
+          success: false,
+          error: error instanceof Error ? error.message : "Failed to list saves",
+        });
+      }
+    },
+  );
 
   // ------------------------------------------------------------------
   fastify.delete(
@@ -269,4 +481,10 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
       }
     },
   );
+}
+
+/** Keep only the player's entry of a per-country action map. */
+export function ownActions<T>(byCountry: Map<string, T[]>, playerId: string): Record<string, T[]> {
+  const mine = byCountry.get(playerId);
+  return mine ? { [playerId]: mine } : {};
 }

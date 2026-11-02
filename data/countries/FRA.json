@@ -19,9 +19,11 @@
       { "year": 1962, "event": "Algerian independence after eight years of war", "impact": "End of empire; pivot to influence networks in Africa rather than direct rule" },
       { "year": 1966, "event": "Withdrawal from NATO integrated military command", "impact": "Gaullist strategic autonomy; ally of the West but never a subordinate" },
       { "year": 1992, "event": "Maastricht Treaty", "impact": "Bet on European integration as a multiplier of French power" },
-      { "year": 2015, "event": "Paris terror attacks", "impact": "Intensified counterterrorism interventions in the Sahel and Middle East" }
+      { "year": 2015, "event": "Paris terror attacks", "impact": "Intensified counterterrorism interventions in the Sahel and Middle East" },
+      { "year": 2024, "event": "Snap dissolution produces a hung National Assembly", "impact": "No majority for any bloc; every budget becomes a survival vote" },
+      { "year": 2025, "event": "Prime-ministerial churn: Bayrou falls, Lecornu named, resigns and is reappointed", "impact": "Paralysis over debt and the budget ahead of the 2027 presidential election" }
     ],
-    "historicalRivals": ["DEU", "GBR", "RUS"],
+    "historicalRivals": ["RUS"],
     "historicalAllies": ["USA", "GBR", "DEU", "ITA", "POL", "CAN"],
     "sphereOfInfluence": [],
     "foreignPolicyOrientation": "INTERVENTIONIST",
@@ -48,9 +50,9 @@
     { "kind": "RELIGIOUS", "name": "Laicite and integration tensions in the banlieues", "strength": 35, "tension": 50 }
   ],
   "economy": {
-    "gdp": 3050000000000,
+    "gdp": 3200000000000,
     "growthRate": 0.011,
-    "debtGdpRatio": 111,
+    "debtGdpRatio": 116,
     "sectors": { "agriculture": 2, "industry": 17, "services": 81 },
     "keyResources": ["agriculture", "nuclear_energy", "aerospace", "tourism"],
     "keyExports": ["aircraft", "luxury_goods", "pharmaceuticals", "weapons", "wine"],

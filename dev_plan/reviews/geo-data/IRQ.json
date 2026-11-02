@@ -1,0 +1,84 @@
+{
+  "id": "IRQ",
+  "iso3": "IRQ",
+  "name": "Iraq",
+  "population": 46000000,
+  "regimeType": "DEMOCRACY",
+  "politicalSystem": {
+    "type": "PARLIAMENTARY_DEMOCRACY",
+    "powerCenters": ["EXECUTIVE", "LEGISLATURE", "RELIGIOUS", "SECURITY_SERVICES"],
+    "electionCycleMonths": 48,
+    "nextElectionTurn": null,
+    "leaderTitle": "Prime Minister"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1958, "event": "Revolution overthrows the Hashemite monarchy", "impact": "Opened two decades of coups culminating in Ba'athist one-party rule" },
+      { "year": 1980, "event": "Saddam Hussein invades Iran, starting an eight-year war", "impact": "Hundreds of thousands dead and a ruinous debt that pushed Baghdad toward Kuwait" },
+      { "year": 1990, "event": "Invasion of Kuwait and the 1991 Gulf War", "impact": "Crushing defeat, a decade of sanctions, and Kurdish self-rule under Western air cover" },
+      { "year": 2003, "event": "US-led invasion topples Saddam Hussein", "impact": "De-Ba'athification and sectarian power-sharing empowered Shia parties and opened the door to Iranian influence" },
+      { "year": 2014, "event": "ISIS captures Mosul; Sistani's fatwa births the Popular Mobilization Forces", "impact": "State near-collapse; Iran-aligned militias became a permanent armed power alongside the army" },
+      { "year": 2017, "event": "Defeat of ISIS and failed Kurdish independence referendum", "impact": "Baghdad retook Kirkuk; the federal-Kurdish balance tilted back to the center" },
+      { "year": 2019, "event": "Tishreen protest movement brings down the government", "impact": "Hundreds of protesters killed; deep youth alienation from the muhasasa sectarian system" },
+      { "year": 2024, "event": "Militia drone strikes on US forces after the Gaza war; US agrees to wind down the coalition mission", "impact": "Iraq became a battleground in the US-Iran confrontation it desperately wants to avoid" },
+      { "year": 2026, "event": "Ali al-Zaidi becomes prime minister after the November 2025 election; PMF factions fight alongside Iran in the 2026 war", "impact": "A new government under heavy US pressure to disarm Iran-aligned militias while Gulf states strike them" }
+    ],
+    "historicalRivals": ["IRN", "TUR"],
+    "historicalAllies": ["USA", "IRN"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "BALANCING",
+    "narrative": "An oil-rich, fractured federal democracy squeezed between Washington and Tehran, with an army that shares the battlefield with Iran-aligned militias. Its governments survive by balancing Shia, Sunni and Kurdish factions and by keeping foreign wars from being fought on Iraqi soil."
+  },
+  "personality": {
+    "warPropensity": 25,
+    "allianceLoyalty": 40,
+    "diplomaticFlexibility": 70,
+    "riskTolerance": 30,
+    "expansionism": 10,
+    "isolationism": 40,
+    "ideologicalRigidity": 40,
+    "prestigeEmphasis": 45
+  },
+  "redLines": [
+    { "type": "TERRITORIAL", "description": "Kurdish secession or foreign-backed partition of Iraq", "severity": 9 },
+    { "type": "TERRITORIAL", "targetCountryId": "TUR", "description": "Large-scale Turkish ground occupation in the Kurdistan Region beyond counter-PKK operations", "severity": 6 },
+    { "type": "ECONOMIC", "targetCountryId": "USA", "description": "US seizure of Iraqi oil revenues held at the New York Fed or secondary sanctions on Iraqi oil", "severity": 8 }
+  ],
+  "internalDivisions": [
+    { "kind": "RELIGIOUS", "name": "Shia-Sunni sectarian divide and the legacy of the ISIS war", "strength": 35, "tension": 50 },
+    { "kind": "ETHNIC", "name": "Kurdistan Region autonomy, oil revenues and disputed Kirkuk", "strength": 18, "tension": 55 },
+    { "kind": "IDEOLOGICAL", "name": "Iran-aligned militias versus state monopoly on arms", "strength": 30, "tension": 75 }
+  ],
+  "economy": {
+    "gdp": 265000000000,
+    "growthRate": 0.01,
+    "debtGdpRatio": 45,
+    "sectors": { "agriculture": 4, "industry": 50, "services": 46 },
+    "keyResources": ["oil", "natural_gas", "sulfur", "phosphates"],
+    "keyExports": ["crude_oil", "refined_petroleum", "dates"],
+    "developmentLevel": "EMERGING"
+  },
+  "military": {
+    "manpower": 390000,
+    "airpower": 360,
+    "doctrine": "DEFENSIVE",
+    "nuclearStatus": "NONE",
+    "warheads": 0,
+    "arms_suppliers": ["USA", "RUS", "FRA"]
+  },
+  "militaryBudgetPct": 3.0,
+  "stability": 42,
+  "legitimacy": 45,
+  "intelLevel": 45,
+  "insurgencyLevel": "UNREST",
+  "goals": [
+    { "id": "irq_g1", "type": "SECURITY", "priority": 90, "description": "Keep Iraq out of the US-Iran war and stop foreign strikes on its territory" },
+    { "id": "irq_g2", "type": "SECURITY", "targetCountryId": "IRN", "priority": 75, "description": "Establish a state monopoly on arms by absorbing or disarming the PMF militias" },
+    { "id": "irq_g3", "type": "ECONOMIC", "priority": 85, "description": "Protect oil export revenue and diversify routes away from Hormuz via Turkey and the Gulf" },
+    { "id": "irq_g4", "type": "SECURITY", "priority": 60, "description": "Prevent an ISIS resurgence along the Syrian border" }
+  ],
+  "geo": {
+    "bounds": [38.8, 29.1, 48.6, 37.4],
+    "capital": { "name": "Baghdad", "coordinates": [44.3661, 33.3152] }
+  }
+}

@@ -6,7 +6,7 @@
 **Realism:** While the game is framed as an amusing, stylized "Machiavellian fantasy" of cold war politics rather than a strictly realistic historical simulation, it grounds itself in real-world geopolitical tensions. It features actual regional actors (Egypt, Syria, Jordan, Lebanon, Iraq, Iran, Libya), historical global arms suppliers (the USA, UK, France, and a private dealer selling Soviet weapons), and real-world issues such as the "Palestinian problem," UN resolutions, espionage via Mossad, and nuclear proliferation.
 
 **2. Objective**
-The player's primary goal is to cause the defeat of the four bordering states—Egypt, Syria, Jordan, and Lebanon—either through military invasion or by plunging them into political destabilization and collapse. Simultaneously, the player must avoid being deposed via assassination or impeachment (triggered by public insecurity or Palestinian uprisings) and must carefully navigate nuclear brinkmanship to prevent a global nuclear holocaust.
+The player's primary goal is to cause the defeat of the four bordering states (Egypt, Syria, Jordan, and Lebanon) either through military invasion or by plunging them into political destabilization and collapse. Simultaneously, the player must avoid being deposed via assassination or impeachment (triggered by public insecurity or Palestinian uprisings) and must carefully navigate nuclear brinkmanship to prevent a global nuclear holocaust.
 
 **3. Timeline and Time Step**
 *   **Setting:** The game begins on January 1, 1997.
@@ -23,7 +23,7 @@ The game operates on a strictly linear, phase-by-phase monthly loop. The interfa
 **5. Player Actions**
 The player has a wide array of tools to influence the region:
 *   **Diplomatic Actions:** The player can attempt to improve, maintain, or worsen relations with any state. If relations are "Profitable," the player can request a military pact.
-*   **Espionage/Covert Actions:** The player can spend funds to increase or decrease a target government's stability, support or suppress insurgents, or—if the target is critically weak—attempt an assassination or a coup.
+*   **Espionage/Covert Actions:** The player can spend funds to increase or decrease a target government's stability, support or suppress insurgents, or (if the target is critically weak) attempt an assassination or a coup.
 *   **Military Procurement:** Players purchase specific units (tanks, anti-tank helicopters, SAMs, fighters) from different global powers. Access to high-tech gear requires a history of consistent purchasing. 
 *   **Offensive Military Actions:** Pre-war precision airstrikes can be ordered against military, civilian, industrial, or nuclear targets. Troops can be mobilized to the borders in small or full-scale deployments.
 *   **Nuclear Program:** The player can fund nuclear research for $20M per month. Once developed, the player has the discretionary power to launch a nuclear strike during a war.
@@ -57,7 +57,7 @@ The game's systems are highly reactive to the player's choices, generating a cas
 **Realism:** While the game is framed as an amusing, stylized "Machiavellian fantasy" of cold war politics rather than a strictly realistic historical simulation, it grounds itself in real-world geopolitical tensions. It features actual regional actors (Egypt, Syria, Jordan, Lebanon, Iraq, Iran, Libya), historical global arms suppliers (the USA, UK, France, and a private dealer selling Soviet weapons), and real-world issues such as the "Palestinian problem," UN resolutions, espionage via Mossad, and nuclear proliferation.
 
 **2. Objective**
-The player's primary goal is to cause the defeat of the four bordering states—Egypt, Syria, Jordan, and Lebanon—either through military invasion or by plunging them into political destabilization and collapse. Simultaneously, the player must avoid being deposed via assassination or impeachment (triggered by public insecurity or Palestinian uprisings) and must carefully navigate nuclear brinkmanship to prevent a global nuclear holocaust.
+The player's primary goal is to cause the defeat of the four bordering states (Egypt, Syria, Jordan, and Lebanon) either through military invasion or by plunging them into political destabilization and collapse. Simultaneously, the player must avoid being deposed via assassination or impeachment (triggered by public insecurity or Palestinian uprisings) and must carefully navigate nuclear brinkmanship to prevent a global nuclear holocaust.
 
 **3. Timeline and Time Step**
 *   **Setting:** The game begins on January 1, 1997.
@@ -74,7 +74,7 @@ The game operates on a strictly linear, phase-by-phase monthly loop. The interfa
 **5. Player Actions**
 The player has a wide array of tools to influence the region:
 *   **Diplomatic Actions:** The player can attempt to improve, maintain, or worsen relations with any state. If relations are "Profitable," the player can request a military pact.
-*   **Espionage/Covert Actions:** The player can spend funds to increase or decrease a target government's stability, support or suppress insurgents, or—if the target is critically weak—attempt an assassination or a coup.
+*   **Espionage/Covert Actions:** The player can spend funds to increase or decrease a target government's stability, support or suppress insurgents, or (if the target is critically weak) attempt an assassination or a coup.
 *   **Military Procurement:** Players purchase specific units (tanks, anti-tank helicopters, SAMs, fighters) from different global powers. Access to high-tech gear requires a history of consistent purchasing. 
 *   **Offensive Military Actions:** Pre-war precision airstrikes can be ordered against military, civilian, industrial, or nuclear targets. Troops can be mobilized to the borders in small or full-scale deployments.
 *   **Nuclear Program:** The player can fund nuclear research for $20M per month. Once developed, the player has the discretionary power to launch a nuclear strike during a war.

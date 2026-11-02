@@ -15,11 +15,12 @@
     "keyEvents": [
       { "year": 1948, "event": "Apartheid formally instituted", "impact": "Racial segregation made South Africa a global pariah and defined its politics for half a century" },
       { "year": 1976, "event": "Soweto uprising", "impact": "Student massacre galvanized internal resistance and international sanctions against the regime" },
-      { "year": 1989, "event": "Voluntary dismantling of nuclear weapons program", "impact": "Only state ever to build and then give up nuclear weapons; cornerstone of non-proliferation identity" },
+      { "year": 1989, "event": "Nuclear arsenal dismantled (decided 1989, completed 1991, disclosed 1993)", "impact": "Only state ever to build and then give up nuclear weapons; cornerstone of non-proliferation identity" },
       { "year": 1994, "event": "First democratic elections end apartheid", "impact": "Mandela's negotiated transition averted civil war and made reconciliation the founding national myth" },
       { "year": 1996, "event": "Truth and Reconciliation Commission", "impact": "Restorative justice model earned moral authority that underpins South Africa's global voice" },
       { "year": 2009, "event": "Zuma era and state capture", "impact": "Systemic corruption hollowed out state enterprises and eroded ANC legitimacy and service delivery" },
-      { "year": 2024, "event": "ANC loses its parliamentary majority", "impact": "First coalition government of national unity since 1994; era of dominant-party rule ended" }
+      { "year": 2024, "event": "ANC loses its parliamentary majority", "impact": "First coalition government of national unity since 1994; era of dominant-party rule ended" },
+      { "year": 2025, "event": "Rupture with the US: G20 boycott and exclusion from the 2026 G20", "impact": "Washington's hostility pushed Pretoria further toward BRICS partners" }
     ],
     "historicalRivals": [],
     "historicalAllies": ["NGA", "BRA", "IND", "CHN", "RUS"],
@@ -48,7 +49,7 @@
     { "kind": "REGIONAL", "name": "KwaZulu-Natal unrest and Zulu nationalist currents", "strength": 40, "tension": 40 }
   ],
   "economy": {
-    "gdp": 380000000000,
+    "gdp": 426000000000,
     "growthRate": 0.012,
     "debtGdpRatio": 74,
     "sectors": { "agriculture": 3, "industry": 25, "services": 72 },

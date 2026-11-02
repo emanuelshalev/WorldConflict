@@ -115,6 +115,7 @@ export const ActionTypeSchema = z.enum([
   "DIPLOMACY_BREAK_ALLIANCE",
   "DIPLOMACY_DECLARE_WAR",
   "DIPLOMACY_PROPOSE_CEASEFIRE",
+  "DIPLOMACY_MEDIATE", // broker talks between two belligerents (target = one of them)
   // Military
   "MILITARY_MOBILIZE",
   "MILITARY_DEMOBILIZE",
@@ -276,8 +277,14 @@ export const DecisionOptionSchema = z.object({
   // Actions injected next turn when chosen (resolved through normal pipeline)
   actions: z.array(ActionSchema).default([]),
   // Direct effects applied immediately on choice: e.g. { "relations:USA": -10, "stability": 5 }
+  // Keys: approval, stability, legitimacy, gdp (%), growth (pct-points/yr), pc, mobilization,
+  // insurgency (+/- levels), intel, coupShield (turns), relations:<ISO3>, relationsRivals, relationsAllies
   effects: z.record(z.string(), z.number()).default({}),
   tensionDelta: z.number().default(0),
+  // Delayed consequence: another crisis template fires `delay` turns later
+  followUp: z.object({ templateId: z.string(), delay: z.number().min(1) }).optional(),
+  // Which advisor backs this option (UI shows faces/endorsements)
+  backedBy: z.array(z.string()).default([]),
 });
 export type DecisionOption = z.infer<typeof DecisionOptionSchema>;
 
@@ -288,7 +295,10 @@ export const PendingDecisionSchema = z.object({
   situation: z.string(),
   affectedCountries: z.array(z.string()).default([]),
   options: z.array(DecisionOptionSchema),
-  deadlineTurn: z.number(), // auto-resolves to first option if ignored past this turn
+  deadlineTurn: z.number(), // auto-resolves to the default option if ignored past this turn
+  templateId: z.string().default("generic"),
+  urgency: z.enum(["ROUTINE", "URGENT", "EXISTENTIAL"]).default("URGENT"),
+  defaultOptionId: z.string().optional(), // what happens if the player does nothing
 });
 export type PendingDecision = z.infer<typeof PendingDecisionSchema>;
 
@@ -331,6 +341,8 @@ export const ActiveWarSchema = z.object({
   attackerCasualties: z.number().default(0),
   defenderCasualties: z.number().default(0),
   exhaustion: z.number().min(0).max(100).default(0), // pressure toward ceasefire
+  // Joined to help this country (pact or appeal): the war ends when that country's own war does
+  alliedWith: z.string().optional(),
 });
 export type ActiveWar = z.infer<typeof ActiveWarSchema>;
 
@@ -437,7 +449,7 @@ export const CountryProfileSchema = z.object({
 
   economy: EconomyProfileSchema,
   military: MilitaryProfileSchema,
-  militaryBudgetPct: z.number().min(0).max(20),
+  militaryBudgetPct: z.number().min(0).max(40),
 
   stability: z.number().min(0).max(100),
   legitimacy: z.number().min(0).max(100),
@@ -475,8 +487,11 @@ export const CountryStateSchema = z.object({
   // Economy
   gdp: z.number().min(0),
   growthRate: z.number(),
+  trendGrowth: z.number().optional(), // structural growth that shocks decay back toward
+  realGrowth: z.number().optional(), // last month's effective annual growth after war/instability/embargo drags
   debtGdpRatio: z.number().min(0),
-  militaryBudgetPercent: z.number().min(0).max(20),
+  militaryBudgetPercent: z.number().min(0).max(40), // wartime states exceed 20% (Ukraine ~26–30%)
+  baseMilitaryBudget: z.number().optional(), // peacetime share at the start: threats raise spending relative to it
   economyProfile: EconomyProfileSchema.optional(),
   embargoedBy: z.array(z.string()).default([]), // supplier/country ids enforcing embargo
   underGlobalEmbargo: z.boolean().default(false),
@@ -525,6 +540,9 @@ export const CountryStateSchema = z.object({
     sphereOfInfluence: [],
     foreignPolicyOrientation: "BALANCING",
   }),
+
+  // Geography: capital [lon, lat] (neighbor checks, refugee flows, map anchors)
+  capital: z.tuple([z.number(), z.number()]).optional(),
 
   // Bookkeeping
   collapsed: z.boolean().default(false),
@@ -587,6 +605,7 @@ export const GameOverReasonSchema = z.enum([
   "NUCLEAR_HOLOCAUST",
   "COUNTRY_COLLAPSED",
   "TERM_COMPLETED",
+  "OBJECTIVE_FAILED",
 ]);
 export type GameOverReason = z.infer<typeof GameOverReasonSchema>;
 
@@ -596,6 +615,129 @@ export const GameOverSchema = z.object({
   turn: z.number(),
 });
 export type GameOver = z.infer<typeof GameOverSchema>;
+
+// ============================================================================
+// Game modes, objectives, drama director, player turn report
+// ============================================================================
+
+export const GameModeSchema = z.enum(["FLASHPOINT", "TERM", "LEGACY"]);
+export type GameMode = z.infer<typeof GameModeSchema>;
+
+export const DifficultySchema = z.enum(["ANALYST", "STATESMAN", "STRONGMAN"]);
+export type Difficulty = z.infer<typeof DifficultySchema>;
+
+export const MODE_TURNS: Record<GameMode, number> = { FLASHPOINT: 12, TERM: 48, LEGACY: 120 };
+
+// A condition the player must satisfy (evaluated at the end, tracked every turn)
+export const ObjectiveConditionSchema = z.object({
+  kind: z.enum([
+    "SURVIVE", // stay in power to the end
+    "NO_NUCLEAR", // target never reaches maxStatus (TESTED by default)
+    "NO_WAR_WITH", // never at war with target
+    "WAR_RESULT", // war with target ended or frontline favorable (>= minFrontline from player side)
+    "STAT_MIN", // player stat >= min at the end (approval|stability|legitimacy)
+    "RELATION_MIN", // player relation with target >= min at the end
+    "SCORE_PAR", // final score >= par
+    "NOT_COLLAPSED", // target state still standing
+    "WAR_ENDED", // no war between targetId and otherId (third-party mediation goals)
+    "INSURGENCY_MAX", // player's insurgency at or below `level`
+  ]),
+  targetId: z.string().optional(),
+  otherId: z.string().optional(),
+  level: z.enum(["NONE", "UNREST", "REBELLION", "GUERILLA"]).optional(),
+  stat: z.enum(["approval", "stability", "legitimacy"]).optional(),
+  min: z.number().optional(),
+  maxStatus: z.enum(["LATENT", "DEVELOPING", "TESTED", "ARMED"]).optional(),
+  label: z.string(),
+});
+export type ObjectiveCondition = z.infer<typeof ObjectiveConditionSchema>;
+
+export const ObjectiveSchema = z.object({
+  title: z.string(),
+  briefing: z.string(),
+  primary: z.array(ObjectiveConditionSchema), // all required for victory (1 star)
+  bonus: z.array(ObjectiveConditionSchema).default([]), // each adds a star (max 3)
+  par: z.number().default(100), // expected score for skilled play
+  debrief: z.string().default(""), // "what really happened / what experts fear"
+});
+export type Objective = z.infer<typeof ObjectiveSchema>;
+
+export const ScheduledCrisisSchema = z.object({
+  templateId: z.string(),
+  turn: z.number(),
+  targetId: z.string().optional(),
+  // Authored crises (flashpoints) carry the full decision inline
+  decision: z.lazy(() => PendingDecisionSchema).optional(),
+  headline: z.string().optional(),
+  text: z.string().optional(),
+  // Authored crises that assume a war: skipped once that war is over
+  requiresWar: z.tuple([z.string(), z.string()]).optional(),
+});
+export type ScheduledCrisis = z.infer<typeof ScheduledCrisisSchema>;
+
+export const DirectorStateSchema = z.object({
+  dramaDebt: z.number().default(0), // turns since the player last faced a decision
+  lastUsed: z.record(z.string(), z.number()).default({}), // template id → turn last used
+  scheduled: z.array(ScheduledCrisisSchema).default([]),
+  coupWarnedTurn: z.number().nullable().default(null),
+  revoltWarnedTurn: z.number().nullable().default(null),
+  coupShieldUntil: z.number().default(-1),
+  counterIntelUntil: z.number().default(-1),
+  pactSuitor: z.string().optional(), // the government whose pact offer is on the desk // spy-hunt shield: foreign ops on the player often foiled
+  propagandaTurns: z.array(z.number()).default([]), // turns the player used propaganda
+  denounceTurns: z.array(z.number()).default([]), // turns the player denounced someone
+  reformTurns: z.array(z.number()).default([]), // turns the player launched a reform
+  lowPoint: z.number().default(100), // lowest min(approval, stability) seen, for comebacks
+  rallies: z.number().default(0), // comebacks achieved
+  closeCalls: z.number().default(0),
+  inDanger: z.boolean().default(false),
+  // What the player actually did: action type → times carried out ("TYPE:tried" counts attempts)
+  record: z.record(z.string(), z.number()).default({}),
+  // Headline number of each order type after each use: the evolution of a line of policy
+  ledger: z
+    .record(
+      z.string(),
+      z.array(z.object({ turn: z.number(), value: z.number(), target: z.string().optional() })),
+    )
+    .default({}),
+});
+export type DirectorState = z.infer<typeof DirectorStateSchema>;
+
+export const StatDeltaSchema = z.object({ before: z.number(), after: z.number() });
+
+export const PlayerTurnReportSchema = z.object({
+  turn: z.number(),
+  orders: z
+    .array(
+      z.object({
+        label: z.string(),
+        ok: z.boolean(),
+        detail: z.string(),
+        type: z.string().optional(), // action type, for the UI scene
+        target: z.string().optional(),
+        story: z.string().optional(), // a short dispatch of what the order did
+        facts: z
+          .array(
+            z.object({
+              label: z.string(),
+              before: z.number(),
+              after: z.number(),
+              unit: z.string().optional(),
+              good: z.boolean().optional(),
+            }),
+          )
+          .optional(),
+      }),
+    )
+    .default([]),
+  decisions: z
+    .array(z.object({ title: z.string(), choice: z.string(), templateId: z.string().optional() }))
+    .default([]),
+  deltas: z.record(z.string(), StatDeltaSchema).default({}),
+  causes: z.array(z.string()).default([]), // plain-language explanations of what moved
+  moments: z.array(z.string()).default([]), // milestone stamps: "RALLY", "CLOSE CALL", "FIRST ALLIANCE"…
+});
+export type PlayerTurnReport = z.infer<typeof PlayerTurnReportSchema>;
 
 // ============================================================================
 // WorldState Schema
@@ -623,6 +765,42 @@ export const WorldStateSchema = z.object({
   scoreHistory: z.array(HistorySampleSchema).default([]),
   gameOver: GameOverSchema.nullable().default(null),
   playerBackstory: z.string().default(""),
+
+  // Session structure (defaults keep pre-overhaul saves loadable)
+  scenarioId: z.string().default(""),
+  mode: GameModeSchema.default("LEGACY"),
+  difficulty: DifficultySchema.default("STATESMAN"),
+  maxTurns: z.number().default(120),
+  flashpointId: z.string().nullable().default(null),
+  objective: ObjectiveSchema.nullable().default(null),
+  politicalCapital: z.number().default(3),
+  director: DirectorStateSchema.default({
+    dramaDebt: 0,
+    lastUsed: {},
+    scheduled: [],
+    coupWarnedTurn: null,
+    revoltWarnedTurn: null,
+    coupShieldUntil: -1,
+    counterIntelUntil: -1,
+    propagandaTurns: [],
+    denounceTurns: [],
+    reformTurns: [],
+    lowPoint: 100,
+    rallies: 0,
+    closeCalls: 0,
+    inDanger: false,
+    record: {},
+    ledger: {},
+  }),
+  turnReport: PlayerTurnReportSchema.nullable().default(null),
+  outcome: z
+    .object({
+      victory: z.boolean(),
+      stars: z.number(),
+      conditions: z.array(z.object({ label: z.string(), met: z.boolean(), bonus: z.boolean() })),
+    })
+    .nullable()
+    .default(null),
 });
 export type WorldState = z.infer<typeof WorldStateSchema>;
 
@@ -718,35 +896,53 @@ export const SaveFileSchema = z.object({
 export type SaveFile = z.infer<typeof SaveFileSchema>;
 
 // ============================================================================
-// Tier 1 Countries (25 total)
+// Simulated countries (41): every one is playable and fully agent-driven
 // ============================================================================
 
 export const TIER1_COUNTRIES = [
+  // Great powers & original roster
   "USA",
   "CHN",
   "RUS",
   "DEU",
-  "IND", // Global Superpowers
+  "IND",
   "BRA",
   "CAN",
-  "MEX", // Americas
+  "MEX",
   "FRA",
   "GBR",
   "POL",
-  "TUR", // Europe
+  "TUR",
   "SAU",
   "IRN",
   "ISR",
-  "EGY", // Middle East
+  "EGY",
   "JPN",
   "IDN",
   "KOR",
-  "PRK", // Asia-Pacific
+  "PRK",
   "AUS",
   "PAK",
   "NGA",
   "ZAF",
-  "ITA", // Additional Tier 1
+  "ITA",
+  // 2026 hotspots (Natural Earth ADM0_A3 codes: Palestine is PSX)
+  "UKR",
+  "TWN",
+  "BLR",
+  "DNK",
+  "SYR",
+  "IRQ",
+  "PSX",
+  "LBN",
+  "YEM",
+  "ARE",
+  "AFG",
+  "PHL",
+  "VEN",
+  "CUB",
+  "SDN",
+  "ETH",
 ] as const;
 
 export type Tier1CountryCode = (typeof TIER1_COUNTRIES)[number];

@@ -20,7 +20,10 @@
       { "year": 1997, "event": "Arduous March famine", "impact": "Hundreds of thousands died after Soviet subsidies ended; regime learned it can survive total economic collapse" },
       { "year": 2006, "event": "First nuclear test", "impact": "Crossed the nuclear threshold; deterrent became the regime's ultimate insurance against invasion" },
       { "year": 2011, "event": "Kim Jong-un succession", "impact": "Third-generation rule consolidated through purges, including execution of Jang Song-thaek" },
-      { "year": 2017, "event": "Thermonuclear test and ICBM launches", "impact": "Demonstrated ability to threaten the US mainland; brinkmanship followed by summit diplomacy" }
+      { "year": 2017, "event": "Thermonuclear test and ICBM launches", "impact": "Demonstrated ability to threaten the US mainland; brinkmanship followed by summit diplomacy" },
+      { "year": 2024, "event": "Treaty with Russia and the 'two hostile states' doctrine", "impact": "A mutual-defense pact with Moscow; unification with the South formally abandoned" },
+      { "year": 2024, "event": "Troops sent to fight for Russia in Kursk", "impact": "Combat experience and Russian technology in exchange for soldiers and shells" },
+      { "year": 2026, "event": "9th Party Congress codifies the hostile-states line (February)", "impact": "Missile testing resumed in October with hypersonic and long-range volleys" }
     ],
     "historicalRivals": ["USA", "KOR", "JPN"],
     "historicalAllies": ["CHN", "RUS"],

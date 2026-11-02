@@ -1,0 +1,84 @@
+{
+  "id": "DNK",
+  "iso3": "DNK",
+  "name": "Denmark",
+  "population": 6000000,
+  "regimeType": "DEMOCRACY",
+  "politicalSystem": {
+    "type": "PARLIAMENTARY_DEMOCRACY",
+    "powerCenters": ["EXECUTIVE", "LEGISLATURE", "MONARCHY"],
+    "electionCycleMonths": 48,
+    "nextElectionTurn": null,
+    "leaderTitle": "Prime Minister"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1864, "event": "Defeat by Prussia and loss of Schleswig-Holstein", "impact": "Small-state realism: survival through alliances rather than arms alone" },
+      { "year": 1940, "event": "German occupation in a single morning", "impact": "Neutrality discredited; convinced Denmark to anchor itself in collective defense" },
+      { "year": 1949, "event": "Founding member of NATO", "impact": "Greenland's Thule base made Denmark a key Arctic partner of the United States" },
+      { "year": 1951, "event": "US-Denmark Greenland defense agreement", "impact": "Gave Washington extensive basing rights that frame today's Greenland bargaining" },
+      { "year": 1973, "event": "Joins the European Community", "impact": "Trade-dependent prosperity tied to Europe, with opt-outs guarding sovereignty" },
+      { "year": 2009, "event": "Greenland self-government act recognizes right to independence", "impact": "Greenland's future is legally Greenlanders' choice, limiting Copenhagen's room to bargain" },
+      { "year": 2022, "event": "Votes to scrap EU defense opt-out after Russia invades Ukraine", "impact": "Rapid rearmament and per-capita leadership in aid to Ukraine, including F-16s" },
+      { "year": 2025, "event": "Drone incursions over Danish airports and Trump's renewed Greenland push", "impact": "Simultaneous Russian hybrid threat and pressure from its own ally" },
+      { "year": 2026, "event": "Greenland tariff crisis defused at Davos; snap election returns Frederiksen as minority PM", "impact": "Sovereignty defended via NATO framework talks on Arctic security and expanded US basing" }
+    ],
+    "historicalRivals": ["RUS"],
+    "historicalAllies": ["USA", "GBR", "DEU", "FRA", "POL", "UKR"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "DEFENSIVE",
+    "narrative": "A wealthy, cohesive Nordic welfare state whose Arctic territory makes it a strategic actor far beyond its size. Firmly Atlanticist and among Ukraine's most generous backers, it now has to defend its sovereignty over Greenland against pressure from its own principal ally."
+  },
+  "personality": {
+    "warPropensity": 20,
+    "allianceLoyalty": 85,
+    "diplomaticFlexibility": 70,
+    "riskTolerance": 35,
+    "expansionism": 5,
+    "isolationism": 15,
+    "ideologicalRigidity": 40,
+    "prestigeEmphasis": 40
+  },
+  "redLines": [
+    { "type": "TERRITORIAL", "targetCountryId": "USA", "description": "Any forcible or coerced transfer of sovereignty over Greenland", "severity": 10 },
+    { "type": "ALLIANCE", "description": "Armed attack on a NATO member, especially in the Baltic Sea region", "severity": 9 },
+    { "type": "TERRITORIAL", "targetCountryId": "RUS", "description": "Russian sabotage of Baltic undersea infrastructure or drone attacks on Danish territory", "severity": 7 }
+  ],
+  "internalDivisions": [
+    { "kind": "REGIONAL", "name": "Greenland independence movement and Inuit self-determination", "strength": 15, "tension": 60 },
+    { "kind": "IDEOLOGICAL", "name": "Immigration and integration debate", "strength": 40, "tension": 45 },
+    { "kind": "IDEOLOGICAL", "name": "Fragmented parliament and minority-government fragility after 2026 election", "strength": 35, "tension": 40 }
+  ],
+  "economy": {
+    "gdp": 460000000000,
+    "growthRate": 0.02,
+    "debtGdpRatio": 30,
+    "sectors": { "agriculture": 1, "industry": 22, "services": 77 },
+    "keyResources": ["wind_energy", "north_sea_oil", "fisheries", "greenland_rare_earths"],
+    "keyExports": ["pharmaceuticals", "wind_turbines", "shipping_services", "pork", "machinery"],
+    "developmentLevel": "DEVELOPED"
+  },
+  "military": {
+    "manpower": 20000,
+    "airpower": 115,
+    "doctrine": "DEFENSIVE",
+    "nuclearStatus": "NONE",
+    "warheads": 0,
+    "arms_suppliers": ["USA", "PRIVATE"]
+  },
+  "militaryBudgetPct": 3.2,
+  "stability": 85,
+  "legitimacy": 85,
+  "intelLevel": 65,
+  "insurgencyLevel": "NONE",
+  "goals": [
+    { "id": "dnk_g1", "type": "TERRITORIAL", "targetCountryId": "USA", "priority": 95, "description": "Preserve sovereignty over Greenland while accommodating US Arctic security interests" },
+    { "id": "dnk_g2", "type": "SECURITY", "targetCountryId": "RUS", "priority": 85, "description": "Deter Russian hybrid attacks in the Baltic and rearm toward NATO's 5% target" },
+    { "id": "dnk_g3", "type": "SECURITY", "targetCountryId": "UKR", "priority": 75, "description": "Sustain military and industrial support for Ukraine" },
+    { "id": "dnk_g4", "type": "ECONOMIC", "priority": 60, "description": "Protect export prosperity from US tariffs through EU unity" }
+  ],
+  "geo": {
+    "bounds": [8.0, 54.5, 15.2, 57.8],
+    "capital": { "name": "Copenhagen", "coordinates": [12.5683, 55.6761] }
+  }
+}

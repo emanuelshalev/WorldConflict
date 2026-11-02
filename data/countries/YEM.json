@@ -1,0 +1,85 @@
+{
+  "id": "YEM",
+  "iso3": "YEM",
+  "name": "Yemen",
+  "population": 40000000,
+  "regimeType": "AUTOCRACY",
+  "politicalSystem": {
+    "type": "PERSONALIST_AUTOCRACY",
+    "powerCenters": ["RELIGIOUS", "MILITARY", "SECURITY_SERVICES"],
+    "electionCycleMonths": 0,
+    "nextElectionTurn": null,
+    "leaderTitle": "Leader of the Revolution"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1962, "event": "Revolution ends the Zaydi imamate in the north; civil war draws in Egypt and Saudi Arabia", "impact": "Northern Yemen became a proxy battlefield for regional powers" },
+      { "year": 1990, "event": "Unification of North and South Yemen", "impact": "A fragile merger; the 1994 civil war left southern grievances that never healed" },
+      { "year": 2004, "event": "Houthi insurgency begins in Saada", "impact": "Six wars against the Saleh government forged a battle-hardened Zaydi revivalist movement" },
+      { "year": 2011, "event": "Arab Spring forces Ali Abdullah Saleh from power", "impact": "Failed transition opened the way for the Houthis' march on the capital" },
+      { "year": 2014, "event": "Houthis seize Sanaa", "impact": "The internationally recognized government fled south, eventually to Riyadh and Aden" },
+      { "year": 2015, "event": "Saudi-led coalition intervenes", "impact": "A decade of war and blockade produced one of the world's worst humanitarian crises but failed to dislodge the Houthis" },
+      { "year": 2022, "event": "UN-brokered truce with Saudi Arabia", "impact": "Saudi-Houthi fighting largely stopped and back-channel talks began" },
+      { "year": 2023, "event": "Red Sea shipping campaign in support of Gaza", "impact": "Attacks on merchant ships rerouted global trade; US, UK and Israeli strikes followed but the Houthis gained regional stature" },
+      { "year": 2025, "event": "Israeli strike kills the Houthi prime minister and cabinet members; STC power grab in the south", "impact": "Leadership losses did not break the movement; the anti-Houthi camp fractured" },
+      { "year": 2026, "event": "Houthis join the Iran war, seize Mokha, Perim and the Bab al-Mandab coast, and strike Riyadh's airport", "impact": "Control of a second global chokepoint and open war with Saudi Arabia" }
+    ],
+    "historicalRivals": ["SAU", "ISR", "USA", "ARE"],
+    "historicalAllies": ["IRN"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "EXPANSIONIST",
+    "narrative": "Modeled as the Houthi (Ansar Allah) authority in Sanaa, which rules most of Yemen's population: a Zaydi revivalist militia-state that has outlasted Saudi bombing, US strikes and Israeli decapitation raids. Poor, besieged and ideologically fervent, it turns geography into leverage by threatening the Red Sea and Bab al-Mandab."
+  },
+  "personality": {
+    "warPropensity": 80,
+    "allianceLoyalty": 75,
+    "diplomaticFlexibility": 25,
+    "riskTolerance": 85,
+    "expansionism": 60,
+    "isolationism": 30,
+    "ideologicalRigidity": 85,
+    "prestigeEmphasis": 70
+  },
+  "redLines": [
+    { "type": "TERRITORIAL", "targetCountryId": "SAU", "description": "Saudi-backed ground offensive on Hodeidah, Sanaa or the Red Sea coast", "severity": 9 },
+    { "type": "IDEOLOGICAL", "description": "Assassination of Abdul-Malik al-Houthi or the senior leadership", "severity": 10 },
+    { "type": "ALLIANCE", "targetCountryId": "IRN", "description": "Direct attack aimed at overthrowing the Islamic Republic, the movement's patron", "severity": 8 }
+  ],
+  "internalDivisions": [
+    { "kind": "REGIONAL", "name": "Southern secessionism and the remnants of the Southern Transitional Council", "strength": 30, "tension": 70 },
+    { "kind": "IDEOLOGICAL", "name": "Saudi-backed Presidential Leadership Council forces holding Marib, Taiz and the east", "strength": 35, "tension": 85 },
+    { "kind": "RELIGIOUS", "name": "Zaydi-Shafi'i sectarian divide and AQAP jihadists", "strength": 40, "tension": 50 }
+  ],
+  "economy": {
+    "gdp": 17000000000,
+    "growthRate": -0.02,
+    "debtGdpRatio": 70,
+    "sectors": { "agriculture": 20, "industry": 15, "services": 65 },
+    "keyResources": ["oil", "natural_gas", "fish", "coffee"],
+    "keyExports": ["crude_oil", "fish", "coffee", "remittances"],
+    "developmentLevel": "DEVELOPING"
+  },
+  "military": {
+    "manpower": 220000,
+    "airpower": 20,
+    "doctrine": "GUERILLA",
+    "nuclearStatus": "NONE",
+    "warheads": 0,
+    "arms_suppliers": ["PRIVATE"]
+  },
+  "militaryBudgetPct": 12.0,
+  "stability": 25,
+  "legitimacy": 40,
+  "intelLevel": 40,
+  "insurgencyLevel": "GUERILLA",
+  "goals": [
+    { "id": "yem_g1", "type": "TERRITORIAL", "priority": 90, "description": "Extend control over all of Yemen, including Marib's energy fields and the southern ports" },
+    { "id": "yem_g2", "type": "SECURITY", "targetCountryId": "SAU", "priority": 85, "description": "Force Saudi Arabia into a settlement that pays salaries and ends the blockade" },
+    { "id": "yem_g3", "type": "IDEOLOGICAL", "targetCountryId": "ISR", "priority": 80, "description": "Sustain the Red Sea and Bab al-Mandab campaign as part of the axis of resistance" },
+    { "id": "yem_g4", "type": "PRESTIGE", "targetCountryId": "IRN", "priority": 60, "description": "Emerge as the strongest surviving member of Iran's axis" }
+  ],
+  "geo": {
+    "bounds": [42.5, 12.1, 53.1, 19.0],
+    "capital": { "name": "Sanaa", "coordinates": [44.191, 15.3694] }
+  }
+}

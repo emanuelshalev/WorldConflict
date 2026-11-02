@@ -1,0 +1,276 @@
+{
+  "id": "fire-on-the-nile",
+  "title": "Fire on the Nile",
+  "tagline": "Two generals, one country, and every neighbour holding a match.",
+  "hook": "Sudan's war between the army (SAF) and the Rapid Support Forces has run since April 2023 and become the world's largest displacement and hunger crisis. The RSF took El Fasher on 26 October 2025 amid mass atrocities, set up a parallel 'Tasis' government in Nyala and its own central bank (May 2026), and has besieged El Obeid, the gateway to Kordofan and the Nile valley, since July 2026. The Quad truce (US, Saudi Arabia, Egypt, UAE) has never held, and in September 2026 Ethiopia's Tigray war reignited next door, with Eritrean troops reported in Tigray.",
+  "sources": [
+    "https://www.aljazeera.com/news/2026/7/6/el-obeid-under-siege-by-rsf-could-this-be-sudans-next-el-fasher",
+    "https://en.wikipedia.org/wiki/2026_in_Sudan",
+    "https://tribune.com.pk/story/2633644/eritrean-troops-deployed-in-ethiopias-tigray-region",
+    "https://www.thestar.com.my/news/world/2026/09/23/tigrayan-leaders-say-new-war-with-ethiopian-government-has-begun-as-fighting-erupts"
+  ],
+  "scenarioId": "2026",
+  "date": "2026-11",
+  "turns": 12,
+  "globalTension": 72,
+  "playable": [
+    {"countryId": "SDN", "role": "Hold El Obeid and what is left of the state, while famine does the RSF's work for it.", "difficulty": "BRUTAL"},
+    {"countryId": "EGY", "role": "Keep the army in Khartoum standing and the Nile flowing, without a war you cannot afford.", "difficulty": "TOUGH"}
+  ],
+  "setup": {
+    "wars": [],
+    "relations": [
+      {"a": "SDN", "b": "ARE", "value": -70},
+      {"a": "SDN", "b": "EGY", "value": 45},
+      {"a": "SDN", "b": "ETH", "value": -45},
+      {"a": "EGY", "b": "ETH", "value": -70},
+      {"a": "EGY", "b": "ARE", "value": 40},
+      {"a": "SDN", "b": "TUR", "value": 50},
+      {"a": "SDN", "b": "USA", "value": 0}
+    ],
+    "countries": {
+      "SDN": {"stability": 24, "approval": 35, "legitimacy": 30, "insurgencyLevel": "GUERILLA", "mobilization": 60},
+      "EGY": {"stability": 50, "approval": 45, "growthRate": 0.03}
+    }
+  },
+  "debrief": "",
+  "scripted": {
+    "SDN": [
+      {
+        "turn": 0,
+        "templateId": "sd_quad_truce",
+        "headline": "The Quad tables a humanitarian truce for Kordofan",
+        "text": "Washington, Riyadh, Cairo and Abu Dhabi have put a three-month humanitarian truce on the table: aid corridors into Kordofan and Darfur, a freeze on offensives, and talks in Jeddah. The RSF has accepted 'in principle', as it has before. Your officers note that one of the four mediators is widely reported to be arming the other side.",
+        "decision": {
+          "title": "The Quad truce",
+          "situation": "Accepting brings food to starving towns, goodwill in Washington and Riyadh, and fury from the Islamist brigades and officers who say a truce lets the RSF regroup and partition the country. Rejecting it keeps the army's hands free and hands the RSF a propaganda win. Accepting only if the UAE is dropped as a guarantor is principled, and probably fatal to the deal.",
+          "affectedCountries": ["SDN", "USA", "SAU", "EGY", "ARE"],
+          "urgency": "URGENT",
+          "defaultOptionId": "reject",
+          "options": [
+            {"id": "accept", "label": "Accept the truce", "description": "Aid corridors open; partition lines harden; your hardliners mutter.", "effects": {"stability": 5, "relations:USA": 8, "relations:SAU": 8, "legitimacy": -4, "approval": 2}, "tensionDelta": -5, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "reject", "label": "Reject it and fight on", "description": "No truce while El Obeid is besieged. Famine keeps its own timetable.", "effects": {"approval": 3, "stability": -5, "relations:USA": -8, "mobilization": 6}, "tensionDelta": 3, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "no_uae", "label": "Accept, without Abu Dhabi", "description": "Name the elephant in the room. Cairo nods; the deal probably dies.", "effects": {"relations:EGY": 6, "relations:ARE": -8, "relations:USA": 3, "stability": 2, "legitimacy": 2}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]}
+          ]
+        }
+      },
+      {
+        "turn": 2,
+        "templateId": "sd_port_drones",
+        "headline": "Moscow offers drones for a naval base at Port Sudan",
+        "text": "Russia has revived its long-stalled request for a naval logistics base on the Red Sea coast, now with a sweetener: attack drones, electronic-warfare kits and instructors, delivered within weeks. Washington and Riyadh have made clear what they think of Russian warships at Port Sudan. Ankara offers drones too, cash up front.",
+        "decision": {
+          "title": "A port for arms",
+          "situation": "Taking the Russian deal gives your troops the drones they lack and makes Sudan a pawn in someone else's rivalry. Buying Turkish drones keeps your patrons calm and empties a treasury you barely have. Declining both keeps your hands clean and your soldiers outgunned.",
+          "affectedCountries": ["SDN", "RUS", "USA", "SAU", "TUR"],
+          "urgency": "URGENT",
+          "defaultOptionId": "decline",
+          "options": [
+            {"id": "russia", "label": "Trade the base for drones", "description": "Kamikaze drones now, a Russian flag on the Red Sea later.", "effects": {"relations:RUS": 12, "relations:USA": -12, "relations:SAU": -6, "mobilization": 8, "stability": 3}, "tensionDelta": 4, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "turkey", "label": "Buy Turkish drones", "description": "Bayraktars on credit you do not have. Ankara is pleased; the central bank is not.", "effects": {"relations:TUR": 8, "gdp": -0.5, "mobilization": 5, "stability": 1}, "tensionDelta": 1, "backedBy": ["FINANCE_MINISTER"]},
+            {"id": "decline", "label": "Decline both", "description": "No foreign bases, no new debts, no new drones.", "effects": {"stability": -4, "approval": -2}, "tensionDelta": 0, "backedBy": ["FOREIGN_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 4,
+        "templateId": "sd_el_obeid",
+        "headline": "El Obeid: the last road is cut",
+        "text": "RSF units have cut the road from Kosti, the last supply route into El Obeid. Half a million civilians and two army divisions are inside. Commanders warn that without relief the city could go the way of El Fasher, where the RSF's capture in October 2025 was followed by mass killings documented by the UN.",
+        "decision": {
+          "title": "The siege of El Obeid",
+          "situation": "A relief offensive along the Kosti road might break the siege and will cost the army men it cannot replace. An ICRC-brokered civilian corridor saves lives and lets the RSF claim the army abandoned the city. Arming the Islamist brigades and tribal militias adds fighters fast, and fighters you will not control after the war.",
+          "affectedCountries": ["SDN", "ARE", "USA"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "counter",
+          "options": [
+            {"id": "counter", "label": "Relief offensive on the Kosti road", "description": "Everything you have, down one road. Heroism, or a massacre of your reserves.", "effects": {"mobilization": 10, "stability": -7, "approval": 3, "legitimacy": -2}, "tensionDelta": 3, "backedBy": ["DEFENSE_MINISTER"], "actions": [{"type": "MILITARY_MOBILIZE"}]},
+            {"id": "corridor", "label": "An ICRC civilian corridor", "description": "Get the civilians out under the Red Cross flag. The RSF films the empty streets.", "effects": {"stability": 3, "approval": -6, "legitimacy": -3, "relations:USA": 6}, "tensionDelta": -3, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "militias", "label": "Arm the brigades and militias", "description": "Fighters by Friday. Washington lists the units; your successors inherit them.", "effects": {"stability": 5, "legitimacy": -6, "relations:USA": -8, "insurgency": -1}, "tensionDelta": 2, "backedBy": ["INTELLIGENCE_CHIEF"], "followUp": {"templateId": "coup_plot", "delay": 3}}
+          ]
+        }
+      },
+      {
+        "turn": 6,
+        "templateId": "sd_abu_dhabi",
+        "headline": "UN panel: RSF drones traced to Gulf supply routes",
+        "text": "A UN panel of experts reports that drones and munitions used by the RSF arrived via airstrips in Chad and Libya on flights linked to the UAE, which denies supplying either side. The report gives you a choice of weapons: law, publicity or a quiet deal.",
+        "decision": {
+          "title": "Confront Abu Dhabi",
+          "situation": "Taking the UAE to the ICJ and the Security Council wins sympathy and almost certainly no verdict in time. A quiet deal through Riyadh, gold concessions and a share of the peace in exchange for slowing the supply, works only if Abu Dhabi wants it to. Banning gold exports to the Emirates hits the RSF's gold trade and your own budget harder.",
+          "affectedCountries": ["SDN", "ARE", "SAU", "USA"],
+          "urgency": "URGENT",
+          "defaultOptionId": "icj",
+          "options": [
+            {"id": "icj", "label": "Sue at the ICJ, shout at the UN", "description": "Justice, eventually. Applause, immediately.", "effects": {"legitimacy": 5, "relations:ARE": -10, "approval": 3, "relations:USA": 2}, "tensionDelta": 2, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "deal", "label": "A quiet deal via Riyadh", "description": "Gold and silence for fewer drones over Kordofan, maybe.", "effects": {"relations:ARE": 10, "relations:SAU": 6, "legitimacy": -7, "stability": 5}, "tensionDelta": -4, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "gold", "label": "Ban gold exports to the Emirates", "description": "Starve the war economy, yours included.", "effects": {"gdp": -0.8, "relations:ARE": -8, "stability": 2, "approval": 2}, "tensionDelta": 0, "backedBy": ["FINANCE_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 8,
+        "templateId": "sd_famine",
+        "headline": "Famine confirmed in South Kordofan",
+        "text": "UN-backed food-security monitors have confirmed famine conditions in parts of South and North Kordofan, on top of Darfur. Aid agencies say millions are at risk and blame both sides for blocking convoys. Washington and Brussels want access through every crossing, including areas the RSF holds.",
+        "decision": {
+          "title": "Famine",
+          "situation": "Opening all crossings saves lives and feeds RSF-held towns, which your generals call feeding the enemy. Channelling aid only through army-held Port Sudan keeps control and turns hunger into a weapon in the eyes of the world. Selling gold reserves to buy grain directly is costly and slow, and entirely yours.",
+          "affectedCountries": ["SDN", "USA"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "army_only",
+          "options": [
+            {"id": "open", "label": "Open every crossing", "description": "Food reaches everyone, including the enemy's towns.", "effects": {"legitimacy": 5, "stability": -3, "relations:USA": 8, "approval": 2}, "tensionDelta": -2, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "army_only", "label": "Aid through Port Sudan only", "description": "Control the convoys, control the narrative, lose the world.", "effects": {"stability": 2, "relations:USA": -10, "legitimacy": -5, "approval": -3}, "tensionDelta": 0, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "grain", "label": "Sell gold, buy grain", "description": "Empty the vaults to fill the bowls.", "effects": {"gdp": -1, "approval": 5, "stability": 3}, "tensionDelta": 0, "backedBy": ["FINANCE_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 10,
+        "templateId": "sd_two_sudans",
+        "headline": "Nyala seeks recognition: is this the partition?",
+        "text": "The RSF's 'Tasis' government in Nyala has issued passports, printed currency and asked foreign capitals for recognition. None has granted it yet, but several have stopped saying never. Jeddah is offering one last round of talks; your generals want one last offensive.",
+        "decision": {
+          "title": "Two Sudans",
+          "situation": "Talks in Jeddah may freeze the war along today's lines, a de facto partition with the men responsible for El Fasher at the table. An all-out offensive with Egyptian air cover could change the map and could drag Ethiopia and Eritrea in. A federal offer to Darfur's communities over the RSF's head is the long game, if anyone is still listening.",
+          "affectedCountries": ["SDN", "EGY", "ETH", "ARE", "USA"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "offensive",
+          "options": [
+            {"id": "jeddah", "label": "Go to Jeddah", "description": "A ceasefire on today's lines. Peace, of a kind; a partition, of a kind.", "effects": {"stability": 6, "legitimacy": -6, "relations:USA": 8, "approval": -3}, "tensionDelta": -6, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "offensive", "label": "All-out offensive with Egyptian air cover", "description": "Win it on the battlefield, or lose it there.", "effects": {"mobilization": 10, "stability": -6, "relations:EGY": 6, "relations:ETH": -8, "approval": 3}, "tensionDelta": 6, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "federal", "label": "A federal offer to Darfur", "description": "Autonomy, aid and a seat for the communities the RSF claims to speak for.", "effects": {"legitimacy": 7, "stability": -3, "approval": -2, "relations:USA": 4}, "tensionDelta": -2, "backedBy": ["DOMESTIC_ADVISOR"]}
+          ]
+        }
+      }
+    ],
+    "EGY": [
+      {
+        "turn": 0,
+        "templateId": "eg_burhan_sos",
+        "headline": "Burhan asks Cairo for air cover",
+        "text": "Sudan's army chief wants Egyptian jets to hit RSF supply convoys crossing from Libya and Chad, as Cairo reportedly did, deniably, before. Your intelligence service says the convoys are tied to the UAE, the Gulf state whose billions keep your own economy afloat.",
+        "decision": {
+          "title": "Air cover for Burhan",
+          "situation": "Covert strikes keep Sudan's army standing and risk a quarrel with Abu Dhabi and a wider war along the Libyan and Ethiopian borders. Arms and advisers are cheaper and slower. Staying out and working through the Quad keeps your Gulf lenders happy and your southern flank exposed.",
+          "affectedCountries": ["EGY", "SDN", "ARE", "ETH"],
+          "urgency": "URGENT",
+          "defaultOptionId": "stay_out",
+          "options": [
+            {"id": "strikes", "label": "Deniable strikes on the convoys", "description": "Jets with no markings over the Sahara. Burhan is grateful; Abu Dhabi is not.", "effects": {"relations:SDN": 10, "relations:ARE": -10, "relations:ETH": -5, "approval": 3}, "tensionDelta": 4, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "advisers", "label": "Arms and advisers only", "description": "Ammunition, trainers, satellite pictures. Help, at arm's length.", "effects": {"relations:SDN": 6, "gdp": -0.2, "relations:ARE": -2}, "tensionDelta": 1, "backedBy": ["INTELLIGENCE_CHIEF"]},
+            {"id": "stay_out", "label": "Stay out; work the Quad", "description": "Diplomacy first. Burhan takes it personally.", "effects": {"relations:SDN": -8, "relations:ARE": 4, "stability": -3}, "tensionDelta": 0, "backedBy": ["FOREIGN_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 2,
+        "templateId": "eg_suez_empty",
+        "headline": "Suez Canal revenue down by more than half",
+        "text": "With the Houthis contesting Bab al-Mandab and Hormuz disrupted, ships are going round Africa. Canal revenue has collapsed for the third year running, and the IMF wants fuel and bread subsidies cut before the next tranche.",
+        "decision": {
+          "title": "The empty canal",
+          "situation": "Cutting subsidies unlocks the IMF and risks bread riots in a country that remembers 1977 and 2011. Selling another coastal megaproject to Gulf investors, as with Ras El-Hekma in 2024, brings billions and headlines about selling Egypt. Printing money postpones the pain and makes it larger.",
+          "affectedCountries": ["EGY", "ARE", "SAU"],
+          "urgency": "URGENT",
+          "defaultOptionId": "print",
+          "options": [
+            {"id": "cut", "label": "Cut the subsidies", "description": "The IMF smiles; the bakery queues do not.", "effects": {"growth": 0.5, "approval": -10, "stability": -4}, "tensionDelta": 0, "backedBy": ["FINANCE_MINISTER"], "followUp": {"templateId": "general_strike", "delay": 2}},
+            {"id": "sell", "label": "Sell another coastline", "description": "Gulf billions for a Mediterranean resort. 'Egypt for sale', say the hashtags.", "effects": {"gdp": 0.6, "legitimacy": -5, "relations:ARE": 6, "relations:SAU": 6}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "print", "label": "Print and wait", "description": "Inflation as policy. The pound remembers.", "effects": {"growth": -0.6, "stability": -4, "approval": -2}, "tensionDelta": 0, "backedBy": ["DOMESTIC_ADVISOR"]}
+          ]
+        }
+      },
+      {
+        "turn": 5,
+        "templateId": "eg_gerd",
+        "headline": "The Nile runs low: Ethiopia fills the dam in a drought year",
+        "text": "A dry season upstream and the Grand Ethiopian Renaissance Dam's reservoir operations have cut flows into Lake Nasser. Abiy Ahmed, fresh from a new term, talks of the Red Sea as Ethiopia's 'natural outlet'. Your generals remind you the Nile is a red line; your finance minister reminds you what a war costs.",
+        "decision": {
+          "title": "The Nile red line",
+          "situation": "Deploying jets to Sudanese airfields within range of the dam is a signal Addis cannot miss, and a step toward the regional war everyone fears. Asking Washington to mediate is safe and has failed before. Quietly backing Eritrea and the Tigrayan forces bleeds Abiy at home, and fuels a war next to the one already burning in Sudan.",
+          "affectedCountries": ["EGY", "ETH", "SDN", "USA"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "mediate",
+          "options": [
+            {"id": "deploy", "label": "Jets to Sudanese airfields", "description": "Rafales within range of the dam. Deterrence, or the first move of a war.", "effects": {"mobilization": 10, "relations:ETH": -14, "relations:SDN": 6, "approval": 6, "relations:USA": -4}, "tensionDelta": 8, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "mediate", "label": "Ask Washington to mediate", "description": "Another round of talks. Lake Nasser keeps dropping.", "effects": {"approval": -7, "legitimacy": -3, "relations:USA": 5}, "tensionDelta": -2, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "proxies", "label": "Back Eritrea and Tigray quietly", "description": "Let Abiy fight on two fronts. The Horn burns a little hotter.", "effects": {"relations:ETH": -10, "approval": 2, "stability": -2}, "tensionDelta": 4, "backedBy": ["INTELLIGENCE_CHIEF"], "actions": [{"type": "INTEL_SUPPORT_REBELS", "targetCountryId": "ETH"}]}
+          ]
+        }
+      },
+      {
+        "turn": 7,
+        "templateId": "eg_aswan",
+        "headline": "A new wave of Sudanese refugees reaches Aswan",
+        "text": "Fighting around El Obeid and famine in Kordofan have sent a new wave of Sudanese north; aid agencies estimate Egypt already hosts more than a million who fled since 2023. Aswan's hospitals are full, prices are rising and nationalist commentators want the border closed.",
+        "decision": {
+          "title": "Refugees at Aswan",
+          "situation": "Keeping the border open is humane, costly and unpopular in a squeezed economy. Closing it plays well at home and strands families in the desert. Taking an EU deal, money for keeping people from Europe, helps the budget and the refugees a little, and Brussels' conscience most of all.",
+          "affectedCountries": ["EGY", "SDN", "USA"],
+          "urgency": "URGENT",
+          "defaultOptionId": "close",
+          "options": [
+            {"id": "open", "label": "Keep the border open", "description": "Shelter for the desperate, bills for the treasury.", "effects": {"relations:SDN": 6, "gdp": -0.3, "approval": -4, "legitimacy": 3}, "tensionDelta": 0, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "close", "label": "Close the border", "description": "Popular in Cairo, deadly in the desert.", "effects": {"approval": 3, "legitimacy": -4, "relations:SDN": -6, "relations:USA": -4}, "tensionDelta": 0, "backedBy": ["INTELLIGENCE_CHIEF"]},
+            {"id": "eu_deal", "label": "Take Brussels' money", "description": "Euros for 'migration management'. Everyone pretends this is a solution.", "effects": {"gdp": 0.4, "relations:SDN": -2, "legitimacy": -2, "stability": 2}, "tensionDelta": 0, "backedBy": ["FINANCE_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 10,
+        "templateId": "eg_gulf_gold",
+        "headline": "Abu Dhabi's offer: twenty billion and a quieter Sudan policy",
+        "text": "Emirati investors are offering a new multi-billion investment package, port concessions and a currency swap. The unwritten condition, according to your intelligence chief, is that Cairo stops helping Burhan's offensive and backs a ceasefire 'on current lines', which would leave the RSF holding Darfur.",
+        "decision": {
+          "title": "Gold, guns and Abu Dhabi",
+          "situation": "Taking the money saves your economy and abandons your ally to a partition on the RSF's terms. Refusing publicly keeps faith with Khartoum's army and costs you your most generous lender. Hosting army-RSF talks in Cairo yourself is the statesman's way out, if both sides come.",
+          "affectedCountries": ["EGY", "ARE", "SDN", "USA"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "money",
+          "options": [
+            {"id": "money", "label": "Take the money", "description": "Twenty billion reasons to look away.", "effects": {"gdp": 1, "relations:ARE": 10, "relations:SDN": -12, "legitimacy": -5}, "tensionDelta": -2, "backedBy": ["FINANCE_MINISTER"]},
+            {"id": "refuse", "label": "Refuse, publicly", "description": "Loyalty to Khartoum, and a hole in the budget.", "effects": {"relations:ARE": -10, "relations:SDN": 8, "approval": 4, "gdp": -0.3}, "tensionDelta": 2, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "cairo_talks", "label": "Host talks in Cairo", "description": "The broker's chair: prestige if it works, embarrassment if nobody shows.", "effects": {"relations:USA": 8, "relations:SDN": -3, "relations:ARE": 4, "approval": 2}, "tensionDelta": -5, "backedBy": ["FOREIGN_MINISTER"]}
+          ]
+        }
+      }
+    ]
+  },
+  "objectives": {
+    "SDN": {
+      "title": "Hold the centre",
+      "briefing": "You command what remains of the Sudanese state from Port Sudan, with El Obeid under siege, famine spreading and a rival government in Nyala asking the world for recognition. Keep the army standing, keep your patrons in Cairo engaged and keep the country from splitting in two. There are no clean options; there are only fewer dead.",
+      "primary": [
+        {"kind": "INSURGENCY_MAX", "level": "REBELLION", "label": "Contain the RSF: insurgency pushed back to rebellion or less (El Obeid holds)"},
+        {"kind": "RELATION_MIN", "targetId": "EGY", "min": 37, "label": "Cairo still in your corner (relations 37+)"},
+        {"kind": "STAT_MIN", "stat": "approval", "min": 50, "label": "Sudanese still back the army (approval 50%+)"},
+        {"kind": "SCORE_PAR", "min": 63, "label": "Leadership score of 63+: a state that still feeds and governs"}
+      ],
+      "bonus": [
+        {"kind": "STAT_MIN", "stat": "legitimacy", "min": 35, "label": "A government Sudanese can recognise (legitimacy 35%+)"},
+        {"kind": "SCORE_PAR", "min": 71, "label": "Leadership score of 71+"}
+      ],
+      "par": 97,
+      "debrief": "What really happened: a power struggle between two generals who had seized power together in 2021 became, from April 2023, the world's largest displacement and hunger crisis. The army retook Khartoum in March 2025, but the RSF took El Fasher in October 2025 with mass atrocities, built a parallel government in Nyala and besieged El Obeid in 2026, while gold, Gulf money and drones kept both sides fighting and the Quad truce never held. What experts fear: a Libya-style permanent east-west partition, famine on a historic scale, and spillover into a Horn of Africa war involving Ethiopia, Eritrea and Egypt."
+    },
+    "EGY": {
+      "title": "Guardian of the Nile",
+      "briefing": "You rule a country of 110 million with an empty canal, an IMF programme and two wars on your southern horizon. Keep Sudan's army from collapsing, keep the Nile dispute from becoming a war with Ethiopia, and keep bread on the table at home. Your Gulf lenders and your Sudanese allies want opposite things.",
+      "primary": [
+        {"kind": "NO_WAR_WITH", "targetId": "ETH", "label": "No war with Ethiopia"},
+        {"kind": "NOT_COLLAPSED", "targetId": "SDN", "label": "Sudan's state survives"},
+        {"kind": "RELATION_MIN", "targetId": "SDN", "min": 40, "label": "Khartoum's army leans on you (relations 40+)"},
+        {"kind": "STAT_MIN", "stat": "approval", "min": 45, "label": "Bread on the table (approval 45%+)"},
+        {"kind": "SCORE_PAR", "min": 104, "label": "Leadership score of 104+"}
+      ],
+      "bonus": [
+        {"kind": "RELATION_MIN", "targetId": "ARE", "min": 40, "label": "The Gulf still lending (UAE relations 40+)"},
+        {"kind": "RELATION_MIN", "targetId": "SDN", "min": 60, "label": "Cairo is Port Sudan's first call (relations 60+)"}
+      ],
+      "par": 102,
+      "debrief": "What really happened: Egypt backed Sudan's army as its natural ally against an RSF tied to the UAE, Cairo's biggest investor, while Suez revenue collapsed under the Red Sea crisis and Ethiopia inaugurated the GERD in September 2025, hardening a dispute Cairo calls existential. What experts fear: that Sudan's partition, the GERD and Ethiopia's push for the Red Sea merge into one regional war, with Egypt's economy too weak to fight it and too exposed to stay out."
+    }
+  }
+}

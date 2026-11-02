@@ -1,0 +1,85 @@
+{
+  "id": "LBN",
+  "iso3": "LBN",
+  "name": "Lebanon",
+  "population": 5800000,
+  "regimeType": "DEMOCRACY",
+  "politicalSystem": {
+    "type": "PARLIAMENTARY_DEMOCRACY",
+    "powerCenters": ["EXECUTIVE", "LEGISLATURE", "RELIGIOUS", "MILITARY"],
+    "electionCycleMonths": 48,
+    "nextElectionTurn": null,
+    "leaderTitle": "President"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1943, "event": "Independence and the confessional National Pact", "impact": "Power divided by sect: a Maronite president, Sunni premier and Shia speaker, a formula that still governs" },
+      { "year": 1975, "event": "Civil war begins", "impact": "Fifteen years of sectarian war, Syrian and Israeli occupations and militia rule" },
+      { "year": 1982, "event": "Israeli invasion and siege of Beirut; birth of Hezbollah", "impact": "Iran's Revolutionary Guards founded the most powerful non-state army in the region" },
+      { "year": 1989, "event": "Taif Agreement ends the civil war", "impact": "Rebalanced sectarian power but left Hezbollah armed as the 'resistance'" },
+      { "year": 2005, "event": "Assassination of Rafik Hariri and the Cedar Revolution", "impact": "Syrian troops withdrew; politics split into pro- and anti-Hezbollah camps" },
+      { "year": 2006, "event": "Hezbollah-Israel war", "impact": "Massive destruction; UN Resolution 1701 demanded Hezbollah disarm south of the Litani, never enforced" },
+      { "year": 2019, "event": "Financial collapse and the 2020 Beirut port explosion", "impact": "One of the worst economic crises in modern history wiped out savings and gutted the middle class" },
+      { "year": 2024, "event": "Israel decapitates Hezbollah, killing Hassan Nasrallah; November ceasefire", "impact": "Hezbollah's aura of invincibility broken and its Syrian supply line lost when Assad fell weeks later" },
+      { "year": 2025, "event": "Joseph Aoun elected president and Nawaf Salam named prime minister; cabinet mandates the army to disarm Hezbollah", "impact": "First government in decades openly committed to a state monopoly on arms" },
+      { "year": 2026, "event": "Hezbollah joins the Iran war; Israel invades and occupies southern Lebanon; elections postponed to 2028; June framework agreement with Israel", "impact": "Lebanon is again a battlefield, with disarmament now tied to Israeli withdrawal" }
+    ],
+    "historicalRivals": ["ISR"],
+    "historicalAllies": ["FRA", "SAU", "USA"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "NON_ALIGNED",
+    "narrative": "A fragile confessional republic whose state has never held a monopoly on force, caught between an Iranian-built militia and an Israeli army that occupies its south. Bankrupt and war-scarred, it survives on diaspora remittances, Gulf and Western aid, and the hope that a reformist presidency can finally bring Hezbollah's guns under the state."
+  },
+  "personality": {
+    "warPropensity": 10,
+    "allianceLoyalty": 40,
+    "diplomaticFlexibility": 70,
+    "riskTolerance": 20,
+    "expansionism": 0,
+    "isolationism": 40,
+    "ideologicalRigidity": 30,
+    "prestigeEmphasis": 35
+  },
+  "redLines": [
+    { "type": "TERRITORIAL", "targetCountryId": "ISR", "description": "Permanent Israeli occupation or buffer zone in southern Lebanon", "severity": 9 },
+    { "type": "IDEOLOGICAL", "description": "Collapse of the sectarian balance or a return to civil war", "severity": 10 },
+    { "type": "ECONOMIC", "description": "Cutoff of Gulf and Western aid and reconstruction funding", "severity": 7 }
+  ],
+  "internalDivisions": [
+    { "kind": "RELIGIOUS", "name": "Hezbollah and the Shia community versus Christian and Sunni parties over disarmament", "strength": 35, "tension": 85 },
+    { "kind": "IDEOLOGICAL", "name": "Banking-crisis losers versus the entrenched political-financial elite", "strength": 60, "tension": 65 },
+    { "kind": "ETHNIC", "name": "Over a million Syrian refugees and Palestinian camps", "strength": 25, "tension": 55 }
+  ],
+  "economy": {
+    "gdp": 26000000000,
+    "growthRate": -0.03,
+    "debtGdpRatio": 160,
+    "sectors": { "agriculture": 5, "industry": 13, "services": 82 },
+    "keyResources": ["limestone", "water", "offshore_gas_prospects"],
+    "keyExports": ["jewelry", "agricultural_goods", "chemicals", "tourism", "remittances"],
+    "developmentLevel": "DEVELOPING"
+  },
+  "military": {
+    "manpower": 80000,
+    "airpower": 70,
+    "doctrine": "DEFENSIVE",
+    "nuclearStatus": "NONE",
+    "warheads": 0,
+    "arms_suppliers": ["USA", "FRA"]
+  },
+  "militaryBudgetPct": 3.0,
+  "stability": 25,
+  "legitimacy": 50,
+  "intelLevel": 40,
+  "insurgencyLevel": "REBELLION",
+  "goals": [
+    { "id": "lbn_g1", "type": "TERRITORIAL", "targetCountryId": "ISR", "priority": 95, "description": "Secure a full Israeli withdrawal from southern Lebanon and an end to strikes" },
+    { "id": "lbn_g2", "type": "SECURITY", "targetCountryId": "IRN", "priority": 85, "description": "Bring Hezbollah's arsenal under exclusive Lebanese Armed Forces control without civil war" },
+    { "id": "lbn_g3", "type": "ECONOMIC", "targetCountryId": "SAU", "priority": 80, "description": "Unlock Gulf and IMF money for reconstruction and banking-sector rescue" },
+    { "id": "lbn_g4", "type": "SECURITY", "targetCountryId": "SYR", "priority": 55, "description": "Demarcate and secure the Syrian border and return refugees" }
+  ],
+  "geo": {
+    "bounds": [35.1, 33.05, 36.65, 34.7],
+    "capital": { "name": "Beirut", "coordinates": [35.5018, 33.8938] }
+  }
+}

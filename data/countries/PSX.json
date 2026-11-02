@@ -1,0 +1,83 @@
+{
+  "id": "PSX",
+  "iso3": "PSX",
+  "name": "Palestine",
+  "population": 5400000,
+  "regimeType": "AUTOCRACY",
+  "politicalSystem": {
+    "type": "PERSONALIST_AUTOCRACY",
+    "powerCenters": ["EXECUTIVE", "PARTY", "SECURITY_SERVICES"],
+    "electionCycleMonths": 0,
+    "nextElectionTurn": null,
+    "leaderTitle": "President"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1948, "event": "The Nakba: some 700,000 Palestinians flee or are expelled during the first Arab-Israeli war", "impact": "Refugee identity and the right of return became the core of Palestinian nationalism" },
+      { "year": 1967, "event": "Israel occupies the West Bank, East Jerusalem and Gaza", "impact": "Began an occupation that has outlasted every peace process" },
+      { "year": 1987, "event": "First Intifada and founding of Hamas", "impact": "Grassroots revolt forced recognition of the PLO and created its Islamist rival" },
+      { "year": 1993, "event": "Oslo Accords create the Palestinian Authority", "impact": "Limited self-rule without statehood; settlements kept expanding" },
+      { "year": 2007, "event": "Hamas seizes Gaza after winning 2006 elections; Israeli-Egyptian blockade follows", "impact": "Split between a Fatah-run West Bank and a Hamas-run Gaza; no national elections since 2006" },
+      { "year": 2023, "event": "Hamas's October 7 attack on Israel triggers the Gaza war", "impact": "Tens of thousands killed, most of Gaza destroyed, famine conditions, and a genocide case at the ICJ" },
+      { "year": 2025, "event": "Wave of Western recognitions (France, UK, Canada, Australia); Trump-brokered Gaza ceasefire in October and UN Resolution 2803", "impact": "Diplomatic high-water mark for statehood while Gaza is split along Israel's 'yellow line'" },
+      { "year": 2026, "event": "Phase two: technocratic Gaza committee and stalled International Stabilization Force; Hamas refuses to disarm; PA elections slip", "impact": "Gaza remains a frozen war zone with Israel holding well over half the strip; West Bank settler violence surges" }
+    ],
+    "historicalRivals": ["ISR"],
+    "historicalAllies": ["EGY", "TUR", "SAU"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "DEFENSIVE",
+    "narrative": "A stateless nation split between an aging, aid-dependent Palestinian Authority in the West Bank and a battered but undefeated Hamas in Gaza. It wields more diplomatic recognition than ever and less control over its own territory than at any time since Oslo."
+  },
+  "personality": {
+    "warPropensity": 35,
+    "allianceLoyalty": 40,
+    "diplomaticFlexibility": 50,
+    "riskTolerance": 55,
+    "expansionism": 5,
+    "isolationism": 10,
+    "ideologicalRigidity": 70,
+    "prestigeEmphasis": 60
+  },
+  "redLines": [
+    { "type": "TERRITORIAL", "targetCountryId": "ISR", "description": "Formal Israeli annexation of the West Bank or Jordan Valley", "severity": 10 },
+    { "type": "TERRITORIAL", "targetCountryId": "ISR", "description": "Permanent expulsion of Gaza's population or annexation of the strip", "severity": 10 },
+    { "type": "IDEOLOGICAL", "description": "Imposed governance that excludes Palestinians or renounces statehood and the right of return", "severity": 8 }
+  ],
+  "internalDivisions": [
+    { "kind": "IDEOLOGICAL", "name": "Fatah-Hamas schism between the West Bank and Gaza", "strength": 60, "tension": 75 },
+    { "kind": "REGIONAL", "name": "Gaza's humanitarian catastrophe and clan militias versus the West Bank", "strength": 40, "tension": 85 },
+    { "kind": "IDEOLOGICAL", "name": "Youth alienation from the aging PA leadership and its security cooperation with Israel", "strength": 55, "tension": 70 }
+  ],
+  "economy": {
+    "gdp": 13000000000,
+    "growthRate": -0.05,
+    "debtGdpRatio": 55,
+    "sectors": { "agriculture": 7, "industry": 18, "services": 75 },
+    "keyResources": ["olives", "stone_and_marble", "offshore_gas_unexploited"],
+    "keyExports": ["stone", "olive_oil", "furniture", "agricultural_goods"],
+    "developmentLevel": "DEVELOPING"
+  },
+  "military": {
+    "manpower": 50000,
+    "airpower": 0,
+    "doctrine": "GUERILLA",
+    "nuclearStatus": "NONE",
+    "warheads": 0,
+    "arms_suppliers": ["PRIVATE"]
+  },
+  "militaryBudgetPct": 5.0,
+  "stability": 10,
+  "legitimacy": 30,
+  "intelLevel": 35,
+  "insurgencyLevel": "GUERILLA",
+  "goals": [
+    { "id": "psx_g1", "type": "TERRITORIAL", "targetCountryId": "ISR", "priority": 95, "description": "Achieve an internationally recognized independent state on the 1967 lines with East Jerusalem" },
+    { "id": "psx_g2", "type": "ECONOMIC", "priority": 90, "description": "Secure Gaza reconstruction funding and end the humanitarian catastrophe" },
+    { "id": "psx_g3", "type": "IDEOLOGICAL", "priority": 75, "description": "Reunify Gaza and the West Bank under a single Palestinian authority" },
+    { "id": "psx_g4", "type": "PRESTIGE", "priority": 70, "description": "Win full UN membership and further recognitions to isolate Israeli annexation" }
+  ],
+  "geo": {
+    "bounds": [34.2, 31.2, 35.6, 32.6],
+    "capital": { "name": "Ramallah (administrative; East Jerusalem claimed)", "coordinates": [35.2042, 31.9038] }
+  }
+}

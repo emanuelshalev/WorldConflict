@@ -1,11 +1,13 @@
+import { sharesLandBorder } from "./geography.js";
 import type { SeededRandom } from "./seed.js";
 import type { GovernmentChange } from "./systems/government.js";
 import type { WarMonthSummary } from "./systems/military.js";
+import { possessive } from "./text.js";
 import type { GameEvent, NewspaperEntry, WorldState } from "./types.js";
 
 /**
  * Turns the month's happenings into front-page copy. The newspaper is the
- * player's primary window on the world — written with drama, names, and
+ * player's primary window on the world: written with drama, names, and
  * consequence, like the original game's News Phase.
  */
 
@@ -20,6 +22,17 @@ const WAR_VERBS_STALL = [
   "bogs down in attrition",
   "trades trenches at terrible cost",
   "bleeds for every mile",
+];
+
+const AIR_VERBS_ADVANCE = [
+  "gains the upper hand in the air war",
+  "strikes deep and unanswered",
+  "tightens its grip on the sea lanes",
+];
+const AIR_VERBS_STALL = [
+  "trades missile barrages, no end in sight",
+  "air campaign settles into grim routine",
+  "strikes and counter-strikes change little",
 ];
 
 export function generateNewspaper(
@@ -43,7 +56,13 @@ export function generateNewspaper(
             ? `REVOLUTION TOPPLES ${(country?.name ?? change.countryId).toUpperCase()} GOVERNMENT`
             : change.kind === "ASSASSINATION"
               ? `LEADER OF ${(country?.name ?? change.countryId).toUpperCase()} ASSASSINATED`
-              : `${(country?.name ?? change.countryId).toUpperCase()} VOTES FOR CHANGE`,
+              : change.kind === "IMPEACHMENT"
+                ? country?.politicalSystem.type === "PRESIDENTIAL_DEMOCRACY"
+                  ? `${change.oldLeader.name.toUpperCase()} IMPEACHED AND REMOVED`
+                  : `${(country?.name ?? change.countryId).toUpperCase()} GOVERNMENT FALLS IN NO-CONFIDENCE VOTE`
+                : change.isPlayerDeposed
+                  ? `VOTERS OUST ${change.oldLeader.name.toUpperCase()}`
+                  : `${(country?.name ?? change.countryId).toUpperCase()} VOTES FOR CHANGE`,
       description: change.description,
       relatedCountries: [change.countryId],
       turn,
@@ -73,16 +92,22 @@ export function generateNewspaper(
     const attackerAdvancing = summary.delta > 1.5;
     const stalemate = Math.abs(summary.delta) <= 1.5;
     const monthCasualties = summary.attackerCasualties + summary.defenderCasualties;
-    const verb = stalemate ? rng.pick(WAR_VERBS_STALL) : rng.pick(WAR_VERBS_ADVANCE);
+    // No shared border, no trenches: air and sea campaigns get their own vocabulary
+    const ground = sharesLandBorder(attacker.id, defender.id) !== false;
+    const verb = stalemate
+      ? rng.pick(ground ? WAR_VERBS_STALL : AIR_VERBS_STALL)
+      : rng.pick(ground ? WAR_VERBS_ADVANCE : AIR_VERBS_ADVANCE);
     const leader = attackerAdvancing ? attacker : defender;
     entries.push({
       headline: stalemate
-        ? `WAR OF ATTRITION: ${attacker.name} offensive ${verb}`
+        ? ground
+          ? `WAR OF ATTRITION: ${attacker.name} offensive ${verb}`
+          : `${attacker.name.toUpperCase()}-${defender.name.toUpperCase()}: ${verb.toUpperCase()}`
         : `${leader.name.toUpperCase()} ${verb.toUpperCase()}`,
       description: `Fighting between ${attacker.name} and ${defender.name} claimed an estimated ${monthCasualties.toLocaleString()} casualties this month. ${
         stalemate
           ? "Military analysts see no end in sight."
-          : `${leader.name}'s forces hold the initiative; pressure mounts on ${leader.id === attacker.id ? defender.name : attacker.name} to seek terms.`
+          : `${possessive(leader.name)} forces hold the initiative; pressure mounts on ${leader.id === attacker.id ? defender.name : attacker.name} to seek terms.`
       }`,
       relatedCountries: [attacker.id, defender.id],
       turn,
@@ -90,8 +115,9 @@ export function generateNewspaper(
     });
   }
 
-  // Events become stories
+  // Events become stories (government changes already have their own entry)
   for (const event of events) {
+    if (event.id.startsWith("evt_gov_")) continue;
     entries.push({
       headline: event.title,
       description: event.description,
@@ -128,7 +154,7 @@ export function generateNewspaper(
         tension > 70
           ? "Foreign ministries from Washington to Beijing report crisis staffing. Markets twitch at every communiqué. Historians note that months like these often precede the storm."
           : tension > 40
-            ? "No new wars, no fallen governments — yet diplomats privately admit the great questions of our era remain unresolved."
+            ? "No new wars, no fallen governments, yet diplomats privately admit the great questions of our era remain unresolved."
             : "Trade flows, summits conclude amicably, and for one month at least, the world's leaders found more reasons to talk than to fight.",
       relatedCountries: [],
       turn,

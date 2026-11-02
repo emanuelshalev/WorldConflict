@@ -19,11 +19,14 @@
       { "year": 1989, "event": "Tiananmen Square crackdown", "impact": "Regime survival prioritized above all; social stability treated as existential" },
       { "year": 2001, "event": "WTO accession", "impact": "Export-led boom made China the world's factory and deeply integrated into global trade" },
       { "year": 2012, "event": "Xi Jinping becomes General Secretary", "impact": "Centralization of power, assertive 'wolf warrior' diplomacy, and the China Dream of rejuvenation by 2049" },
-      { "year": 2018, "event": "US-China trade and technology war begins", "impact": "Drive for technological self-sufficiency in chips, AI, and critical supply chains" }
+      { "year": 2018, "event": "US-China trade and technology war begins", "impact": "Drive for technological self-sufficiency in chips, AI, and critical supply chains" },
+      { "year": 2022, "event": "Xi Jinping secures a norm-breaking third term", "impact": "Collective leadership ended; loyalty to Xi became the organizing principle of the state" },
+      { "year": 2025, "event": "Purge of the Central Military Commission begins (He Weidong expelled)", "impact": "Reportedly extended in January 2026 to Zhang Youxia, raising doubts about PLA command and readiness" },
+      { "year": 2026, "event": "Trump-Xi Beijing summit extends the trade truce (May)", "impact": "Tariff détente with Washington, followed by a US warning to Taipei against independence" }
     ],
     "historicalRivals": ["USA", "JPN", "IND"],
     "historicalAllies": ["RUS", "PAK", "PRK"],
-    "sphereOfInfluence": ["PRK", "PAK", "IDN"],
+    "sphereOfInfluence": ["PRK", "PAK"],
     "foreignPolicyOrientation": "EXPANSIONIST",
     "narrative": "A rising superpower convinced that its return to centrality is the correction of a historical aberration. Plays a patient long game, preferring economic leverage and gray-zone coercion to open war, but regards Taiwan and territorial integrity as non-negotiable core interests."
   },
@@ -49,7 +52,7 @@
     { "kind": "IDEOLOGICAL", "name": "Party orthodoxy vs market liberalizers", "strength": 30, "tension": 25 }
   ],
   "economy": {
-    "gdp": 18530000000000,
+    "gdp": 19400000000000,
     "growthRate": 0.048,
     "debtGdpRatio": 84,
     "sectors": { "agriculture": 7, "industry": 38, "services": 55 },
@@ -62,7 +65,7 @@
     "airpower": 3285,
     "doctrine": "OFFENSIVE",
     "nuclearStatus": "ARMED",
-    "warheads": 500,
+    "warheads": 600,
     "arms_suppliers": ["RUS"]
   },
   "militaryBudgetPct": 1.7,
@@ -71,7 +74,7 @@
   "intelLevel": 88,
   "insurgencyLevel": "NONE",
   "goals": [
-    { "id": "chn_g1", "type": "TERRITORIAL", "priority": 95, "description": "Achieve reunification with Taiwan, by force if necessary" },
+    { "id": "chn_g1", "type": "TERRITORIAL", "targetCountryId": "TWN", "priority": 95, "description": "Achieve reunification with Taiwan, by force if necessary" },
     { "id": "chn_g2", "type": "ECONOMIC", "priority": 90, "description": "Achieve technological self-sufficiency in semiconductors, AI, and aerospace" },
     { "id": "chn_g3", "type": "PRESTIGE", "priority": 85, "description": "Displace the United States as the dominant power in the Asia-Pacific" },
     { "id": "chn_g4", "type": "SECURITY", "targetCountryId": "USA", "priority": 80, "description": "Break US containment via the first island chain and alliance network" },

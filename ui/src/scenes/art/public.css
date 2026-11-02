@@ -1,0 +1,481 @@
+/* Public-life scenes: parliament, econ_tv, election, un_vote, field_visit, streets, ceasefire */
+
+/* Staggered loops use positive animation-delay: hold the first keyframe during the delay instead of
+   showing the un-animated pose and popping into the loop when it starts. */
+svg.art [class] { animation-fill-mode: backwards; }
+
+
+.art-parliament .parl-label,
+.art-econ_tv .econ-label,
+.art-election .elec-label,
+.art-un_vote .unv-label {
+  font-family: var(--font-display);
+  font-weight: 800;
+}
+
+/* Parliament */
+.art-parliament .parl-bar {
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation: parl-fill 9s cubic-bezier(0.3, 0.7, 0.2, 1) infinite;
+}
+.art-parliament .parl-bar2 { animation-delay: 0.4s; }
+@keyframes parl-fill {
+  0% { transform: scaleX(0.02); }
+  45%, 92% { transform: scaleX(1); }
+  100% { transform: scaleX(0.02); }
+}
+.art-parliament .parl-pip,
+.art-parliament .parl-vote {
+  animation: parl-blink 9s steps(1) infinite;
+}
+@keyframes parl-blink {
+  0% { opacity: 0.15; }
+  12%, 94% { opacity: 1; }
+}
+.art-parliament .parl-flash {
+  opacity: 0;
+  animation: parl-flash 7s infinite;
+}
+@keyframes parl-flash {
+  0%, 90%, 100% { opacity: 0; }
+  92% { opacity: 1; }
+  95% { opacity: 0.2; }
+}
+.art-parliament .parl-shaft {
+  mix-blend-mode: screen;
+  animation: parl-shaft 11s ease-in-out infinite alternate;
+}
+@keyframes parl-shaft {
+  from { opacity: 0.55; }
+  to { opacity: 1; }
+}
+.art-parliament .parl-banner {
+  transform-box: fill-box;
+  transform-origin: top center;
+  animation: parl-ripple 6s ease-in-out infinite alternate;
+}
+@keyframes parl-ripple {
+  from { transform: skewY(0deg) scaleX(1); }
+  to { transform: skewY(1.5deg) scaleX(0.96); }
+}
+.art-parliament .parl-bob {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: parl-bob 5s ease-in-out infinite;
+}
+@keyframes parl-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-1.5px) rotate(2deg); }
+}
+.art-parliament .parl-scan { animation: parl-scan 4s steps(2) infinite; }
+@keyframes parl-scan {
+  0%, 100% { opacity: 0.03; }
+  50% { opacity: 0.08; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .art-parliament *,
+  .art-econ_tv *,
+  .art-election *,
+  .art-un_vote *,
+  .art-field_visit *,
+  .art-streets *,
+  .art-ceasefire * {
+    animation: none !important;
+  }
+}
+.art-parliament .parl-arm {
+  transform-box: fill-box;
+  transform-origin: left bottom;
+  animation: parl-arm 4s ease-in-out infinite;
+}
+@keyframes parl-arm {
+  0%, 100% { transform: rotate(0deg); }
+  40% { transform: rotate(-14deg); }
+  60% { transform: rotate(6deg); }
+}
+
+/* Business-news set */
+.art-econ_tv .econ-line {
+  stroke-dasharray: 1;
+  animation: econ-draw 8s cubic-bezier(0.45, 0.05, 0.3, 1) infinite;
+  filter: drop-shadow(0 0 4px currentColor);
+}
+@keyframes econ-draw {
+  0% { stroke-dashoffset: 1; }
+  60%, 94% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 1; }
+}
+.art-econ_tv .econ-area { animation: econ-area 8s ease-in-out infinite; }
+@keyframes econ-area {
+  0%, 20% { opacity: 0; }
+  62%, 92% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.art-econ_tv .econ-dot { animation: econ-dot 8s steps(1) infinite; }
+@keyframes econ-dot {
+  0% { opacity: 0; }
+  60%, 94% { opacity: 1; }
+}
+.art-econ_tv .econ-ping {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: econ-ping 1.6s ease-out infinite;
+}
+@keyframes econ-ping {
+  from { transform: scale(0.6); opacity: 0.5; }
+  to { transform: scale(2.2); opacity: 0; }
+}
+.art-econ_tv .econ-tick { animation: econ-tick 14s linear infinite; }
+@keyframes econ-tick {
+  from { transform: translateX(0); }
+  to { transform: translateX(-560px); }
+}
+.art-econ_tv .econ-sweep { animation: econ-sweep 7s ease-in-out infinite; }
+@keyframes econ-sweep {
+  0% { transform: translateX(-100px); }
+  60%, 100% { transform: translateX(560px); }
+}
+.art-econ_tv .econ-flicker,
+.art-econ_tv .econ-rig { animation: econ-flicker 5s steps(3) infinite; }
+@keyframes econ-flicker {
+  0%, 100% { opacity: 0.05; }
+  33% { opacity: 0.12; }
+  66% { opacity: 0.02; }
+}
+.art-econ_tv .econ-rig { animation-name: econ-rig; }
+@keyframes econ-rig {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+.art-econ_tv .econ-head {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: econ-head 6s ease-in-out infinite;
+}
+@keyframes econ-head {
+  0%, 100% { transform: rotate(0deg); }
+  30% { transform: rotate(4deg); }
+  70% { transform: rotate(-2deg); }
+}
+.art-econ_tv .econ-edge { animation: econ-edge 4s ease-in-out infinite alternate; }
+@keyframes econ-edge {
+  from { opacity: 0.5; }
+  to { opacity: 1; }
+}
+
+/* Election night */
+.art-election .elec-seat {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: elec-seat 11s ease-out infinite both;
+}
+@keyframes elec-seat {
+  0% { opacity: 0.22; transform: scale(0.6); }
+  4% { opacity: 1; transform: scale(1.35); }
+  8%, 90% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0.22; transform: scale(0.6); }
+}
+/* fill-box: the ballot tilts around its own centre (the SVG default origin is the canvas corner,
+   which made it slide sideways off the slot while falling). */
+.art-election .elec-ballot {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: elec-ballot 4.5s cubic-bezier(0.5, 0, 0.8, 0.6) infinite;
+}
+@keyframes elec-ballot {
+  0% { transform: translateY(-50px) rotate(-6deg); opacity: 0; }
+  15% { opacity: 1; }
+  70% { transform: translateY(32px) rotate(0deg); opacity: 1; }
+  78%, 100% { transform: translateY(46px); opacity: 0; }
+}
+.art-election .elec-tile { animation: elec-tile 6s ease-in-out infinite; }
+@keyframes elec-tile {
+  0%, 100% { opacity: 0.09; }
+  50% { opacity: 0.2; }
+}
+.art-election .elec-beam { animation: elec-beam 9s ease-in-out infinite alternate; }
+@keyframes elec-beam {
+  from { opacity: 0.03; }
+  to { opacity: 0.1; }
+}
+.art-election .elec-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: elec-ring 4s ease-out infinite;
+}
+@keyframes elec-ring {
+  from { transform: scale(0.6); opacity: 1; }
+  to { transform: scale(1.5); opacity: 0; }
+}
+.art-election .elec-live { animation: elec-live 1.4s steps(2) infinite; }
+@keyframes elec-live {
+  50% { opacity: 0.2; }
+}
+.art-election .elec-sweep { animation: elec-sweep 6s ease-in-out infinite; }
+@keyframes elec-sweep {
+  0% { transform: translateX(-70px); }
+  60%, 100% { transform: translateX(300px); }
+}
+.art-election .elec-arm {
+  transform-box: fill-box;
+  transform-origin: right bottom;
+  animation: elec-arm 5s ease-in-out infinite;
+}
+@keyframes elec-arm {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(7deg); }
+}
+.art-election .elec-confetti {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: elec-confetti 7s linear infinite;
+}
+@keyframes elec-confetti {
+  from { transform: translateY(0) rotate(0deg); }
+  to { transform: translateY(380px) rotate(540deg); }
+}
+
+/* General assembly */
+.art-un_vote .unv-light { animation: unv-light 10s steps(1) infinite; }
+@keyframes unv-light {
+  0% { opacity: 0.1; }
+  6%, 94% { opacity: 1; }
+}
+.art-un_vote .unv-hand {
+  transform-box: fill-box;
+  transform-origin: left bottom;
+  animation: unv-hand 7s ease-in-out infinite;
+}
+@keyframes unv-hand {
+  0%, 8% { transform: rotate(70deg); opacity: 0; }
+  18%, 86% { transform: rotate(0deg); opacity: 1; }
+  92%, 100% { transform: rotate(70deg); opacity: 0; }
+}
+.art-un_vote .unv-shaft {
+  mix-blend-mode: screen;
+  animation: unv-shaft 10s ease-in-out infinite alternate;
+}
+@keyframes unv-shaft {
+  from { opacity: 0.5; }
+  to { opacity: 1; }
+}
+.art-un_vote .unv-halo {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: unv-halo 6s ease-in-out infinite alternate;
+}
+@keyframes unv-halo {
+  from { transform: scale(0.94); opacity: 0.12; }
+  to { transform: scale(1.06); opacity: 0.26; }
+}
+
+/* Field visit */
+.art-field_visit .fv-bob {
+  animation: fv-bob 3.6s ease-in-out infinite;
+}
+@keyframes fv-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+.art-field_visit .fv-phone { opacity: 0.55; animation: fv-phone 5s infinite; }
+@keyframes fv-phone {
+  0%, 86%, 100% { opacity: 0.55; fill: #cfe6ff; }
+  88% { opacity: 1; fill: #ffffff; }
+  90% { opacity: 0.7; }
+}
+.art-field_visit .fv-flag,
+.art-field_visit .fv-bunt {
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation: fv-flag 2.8s ease-in-out infinite alternate;
+}
+.art-field_visit .fv-bunt { transform-origin: top center; }
+@keyframes fv-flag {
+  from { transform: skewY(-4deg) scaleX(1); }
+  to { transform: skewY(4deg) scaleX(0.92); }
+}
+/* The mic arm pivots at the reporter's shoulder (absolute SVG units) so it never slides off the body. */
+.art-field_visit .fv-mic {
+  transform-box: view-box;
+  transform-origin: 394px 178px;
+  animation: fv-mic 4s ease-in-out infinite;
+}
+@keyframes fv-mic {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-2.5deg); }
+}
+.art-field_visit .fv-leader {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: fv-lean 7s ease-in-out infinite;
+}
+@keyframes fv-lean {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(0.8deg); }
+}
+.art-field_visit .fv-tally { animation: fv-tally 1.2s steps(2) infinite; }
+@keyframes fv-tally {
+  50% { opacity: 0.25; }
+}
+.art-field_visit .fv-sun {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: fv-sun 8s ease-in-out infinite alternate;
+}
+@keyframes fv-sun {
+  from { transform: scale(0.96); opacity: 0.85; }
+  to { transform: scale(1.05); opacity: 1; }
+}
+.art-field_visit .fv-cloud { animation: fv-cloud 14s ease-in-out infinite alternate; }
+@keyframes fv-cloud {
+  from { transform: translateX(-20px); }
+  to { transform: translateX(20px); }
+}
+.art-field_visit .fv-wave {
+  transform-box: fill-box;
+  transform-origin: right bottom;
+  animation: fv-wave 2.4s ease-in-out infinite;
+}
+@keyframes fv-wave {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-9deg); }
+}
+
+/* Street protest */
+.art-streets .str-bob { animation: str-bob 1.8s ease-in-out infinite; }
+@keyframes str-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2.5px); }
+}
+.art-streets .str-sign {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: str-sign 2.6s ease-in-out infinite;
+}
+@keyframes str-sign {
+  0%, 100% { transform: rotate(-3deg) translateY(0); }
+  50% { transform: rotate(3deg) translateY(-3px); }
+}
+.art-streets .str-flare {
+  transform-box: fill-box;
+  transform-origin: center;
+  mix-blend-mode: screen;
+  animation: str-flare 0.9s steps(3) infinite;
+}
+@keyframes str-flare {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  33% { opacity: 0.75; transform: scale(0.88); }
+  66% { opacity: 0.92; transform: scale(1.06); }
+}
+.art-streets .str-candle {
+  transform-box: fill-box;
+  transform-origin: center;
+  mix-blend-mode: screen;
+  animation: str-candle 2.2s ease-in-out infinite alternate;
+}
+@keyframes str-candle {
+  from { opacity: 0.75; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1.08); }
+}
+.art-streets .str-smoke {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: str-smoke 13s ease-in-out infinite;
+}
+@keyframes str-smoke {
+  0% { transform: translate(-30px, 10px) scale(0.85); opacity: 0.4; }
+  50% { transform: translate(10px, -14px) scale(1.12); opacity: 0.9; }
+  100% { transform: translate(-30px, 10px) scale(0.85); opacity: 0.4; }
+}
+.art-streets .str-red { animation: str-red 0.8s steps(1) infinite; }
+.art-streets .str-blue { animation: str-red 0.8s steps(1) infinite; animation-delay: -0.4s; }
+@keyframes str-red {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+}
+.art-streets .str-flag {
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation: str-flag 2.4s ease-in-out infinite alternate;
+}
+@keyframes str-flag {
+  from { transform: skewY(-5deg) scaleX(1); }
+  to { transform: skewY(4deg) scaleX(0.9); }
+}
+.art-streets .str-win { animation: str-win 9s steps(1) infinite; }
+@keyframes str-win {
+  0%, 70% { opacity: 0.8; }
+  71%, 100% { opacity: 0.3; }
+}
+
+/* Ceasefire talks */
+/* Jointed reach: pivots in absolute SVG units (shoulder, then elbow), so the arms stay attached. */
+.art-ceasefire .cf-armL,
+.art-ceasefire .cf-foreL,
+.art-ceasefire .cf-armR,
+.art-ceasefire .cf-foreR {
+  transform-box: view-box;
+  animation: cf-armL 5s ease-in-out infinite;
+}
+.art-ceasefire .cf-armL { transform-origin: 226px 180px; }
+.art-ceasefire .cf-foreL { transform-origin: 270px 196px; animation-name: cf-foreL; }
+.art-ceasefire .cf-armR { transform-origin: 414px 180px; animation-name: cf-armR; }
+.art-ceasefire .cf-foreR { transform-origin: 370px 196px; animation-name: cf-foreR; }
+@keyframes cf-armL {
+  0%, 100% { transform: rotate(17.3deg); }
+  55%, 75% { transform: rotate(0deg); }
+}
+@keyframes cf-foreL {
+  0%, 100% { transform: rotate(-32.9deg); }
+  55%, 75% { transform: rotate(0deg); }
+}
+@keyframes cf-armR {
+  0%, 100% { transform: rotate(-17.3deg); }
+  55%, 75% { transform: rotate(0deg); }
+}
+@keyframes cf-foreR {
+  0%, 100% { transform: rotate(32.9deg); }
+  55%, 75% { transform: rotate(0deg); }
+}
+.art-ceasefire .cf-spark {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: cf-spark 5s ease-in-out infinite;
+}
+@keyframes cf-spark {
+  0%, 45%, 100% { transform: scale(0.4); opacity: 0; }
+  62% { transform: scale(1.4); opacity: 0.35; }
+}
+.art-ceasefire .cf-shaft {
+  mix-blend-mode: screen;
+  animation: cf-shaft 12s ease-in-out infinite alternate;
+}
+@keyframes cf-shaft {
+  from { opacity: 0.6; }
+  to { opacity: 1; }
+}
+.art-ceasefire .cf-bloom { animation: cf-bloom 9s ease-in-out infinite alternate; }
+@keyframes cf-bloom {
+  from { opacity: 0.8; }
+  to { opacity: 1; }
+}
+.art-ceasefire .cf-flag {
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation: cf-flag 3s ease-in-out infinite alternate;
+}
+@keyframes cf-flag {
+  from { transform: skewY(-3deg); }
+  to { transform: skewY(3deg) scaleX(0.92); }
+}
+.art-ceasefire .cf-nod {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: cf-nod 6s ease-in-out infinite;
+}
+@keyframes cf-nod {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(3deg); }
+}

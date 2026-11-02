@@ -2,7 +2,7 @@
   "id": "USA",
   "iso3": "USA",
   "name": "United States",
-  "population": 335000000,
+  "population": 342000000,
   "regimeType": "DEMOCRACY",
   "politicalSystem": {
     "type": "PRESIDENTIAL_DEMOCRACY",
@@ -19,11 +19,15 @@
       { "year": 1991, "event": "Cold War victory", "impact": "Sole superpower; unipolar moment and NATO expansion" },
       { "year": 2001, "event": "9/11 attacks", "impact": "War on Terror; two decades of Middle East intervention" },
       { "year": 2008, "event": "Global financial crisis", "impact": "Economic credibility damaged; domestic polarization deepened" },
-      { "year": 2021, "event": "Withdrawal from Afghanistan", "impact": "Pivot from counterinsurgency to great-power competition with China" }
+      { "year": 2021, "event": "Withdrawal from Afghanistan", "impact": "Pivot from counterinsurgency to great-power competition with China" },
+      { "year": 2025, "event": "'Liberation Day' universal tariffs (2 April)", "impact": "Set off a global tariff war; allies from Ottawa to Brussels re-priced the US as a transactional partner" },
+      { "year": 2026, "event": "Raid captures Nicolás Maduro in Caracas (3 January)", "impact": "Decapitation without regime change: Washington now steers an acting Venezuelan government on oil and migration" },
+      { "year": 2026, "event": "Supreme Court strikes down the IEEPA tariffs (20 February)", "impact": "The emergency tariffs fell 6-3; a 10% global tariff under Section 122 replaced them the same day" },
+      { "year": 2026, "event": "US-Israeli strikes on Iran kill Supreme Leader Khamenei (28 February)", "impact": "An undeclared war and naval blockade followed; Hormuz traffic and US midterm politics now move together" }
     ],
     "historicalRivals": ["RUS", "CHN", "IRN", "PRK"],
     "historicalAllies": ["GBR", "CAN", "AUS", "JPN", "KOR", "DEU", "FRA", "ISR", "POL", "ITA"],
-    "sphereOfInfluence": ["CAN", "MEX", "GBR", "JPN", "KOR", "AUS", "ISR"],
+    "sphereOfInfluence": ["MEX", "CUB", "VEN"],
     "foreignPolicyOrientation": "INTERVENTIONIST",
     "narrative": "The architect and guarantor of the post-1945 liberal order, accustomed to global leadership and uneasy about relative decline. Acts through alliances and overwhelming military superiority, but a polarized public limits appetite for long wars."
   },
@@ -48,7 +52,7 @@
     { "kind": "REGIONAL", "name": "Urban-rural divide", "strength": 60, "tension": 45 }
   ],
   "economy": {
-    "gdp": 27360000000000,
+    "gdp": 30500000000000,
     "growthRate": 0.024,
     "debtGdpRatio": 123,
     "sectors": { "agriculture": 1, "industry": 18, "services": 81 },
@@ -61,10 +65,10 @@
     "airpower": 13300,
     "doctrine": "EXPEDITIONARY",
     "nuclearStatus": "ARMED",
-    "warheads": 5044,
+    "warheads": 5177,
     "arms_suppliers": ["USA"]
   },
-  "militaryBudgetPct": 3.5,
+  "militaryBudgetPct": 3.3,
   "stability": 72,
   "legitimacy": 75,
   "intelLevel": 95,
@@ -73,7 +77,8 @@
     { "id": "usa_g1", "type": "SECURITY", "priority": 90, "description": "Maintain global military supremacy and deter peer competitors" },
     { "id": "usa_g2", "type": "SECURITY", "targetCountryId": "CHN", "priority": 85, "description": "Contain Chinese expansion in the Indo-Pacific" },
     { "id": "usa_g3", "type": "ECONOMIC", "priority": 80, "description": "Protect trade interests and dollar hegemony" },
-    { "id": "usa_g4", "type": "IDEOLOGICAL", "priority": 60, "description": "Promote democratic values and the rules-based order" }
+    { "id": "usa_g4", "type": "ECONOMIC", "priority": 70, "description": "Extract trade concessions from allies and rivals through tariffs" },
+    { "id": "usa_g5", "type": "SECURITY", "priority": 65, "description": "Secure the Western Hemisphere: cartels, Venezuela, Cuba and Greenland" }
   ],
   "geo": {
     "bounds": [-125.0, 24.5, -66.9, 49.4],

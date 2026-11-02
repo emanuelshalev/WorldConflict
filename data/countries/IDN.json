@@ -19,7 +19,9 @@
       { "year": 1997, "event": "Asian financial crisis", "impact": "Economic collapse toppled Suharto and seared a lasting caution about external economic dependence" },
       { "year": 1998, "event": "Reformasi democratic transition", "impact": "Successful democratization of the world's largest Muslim-majority nation; military pulled back from politics" },
       { "year": 2002, "event": "Loss of East Timor and Bali bombings", "impact": "Separatism and jihadist terror pushed counterterrorism and territorial integrity to the fore" },
-      { "year": 2014, "event": "Rise of Jokowi and infrastructure decade", "impact": "Development-first pragmatism, nickel-driven industrial policy, and hedging between the US and China" }
+      { "year": 2014, "event": "Rise of Jokowi and infrastructure decade", "impact": "Development-first pragmatism, nickel-driven industrial policy, and hedging between the US and China" },
+      { "year": 2024, "event": "Prabowo Subianto inaugurated president", "impact": "A former general promising continuity, food security and a bigger military role" },
+      { "year": 2025, "event": "Deadly nationwide protests over lawmakers' perks (August)", "impact": "Exposed anger at elite privilege and the limits of Prabowo's popularity" }
     ],
     "historicalRivals": [],
     "historicalAllies": ["AUS", "JPN", "IND"],
@@ -48,7 +50,7 @@
     { "kind": "ETHNIC", "name": "Tensions around the Chinese-Indonesian commercial minority", "strength": 10, "tension": 25 }
   ],
   "economy": {
-    "gdp": 1400000000000,
+    "gdp": 1430000000000,
     "growthRate": 0.051,
     "debtGdpRatio": 39,
     "sectors": { "agriculture": 13, "industry": 41, "services": 46 },

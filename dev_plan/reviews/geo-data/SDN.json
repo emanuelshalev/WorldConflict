@@ -1,0 +1,84 @@
+{
+  "id": "SDN",
+  "iso3": "SDN",
+  "name": "Sudan",
+  "population": 50000000,
+  "regimeType": "MILITARY_JUNTA",
+  "politicalSystem": {
+    "type": "MILITARY_JUNTA",
+    "powerCenters": ["MILITARY", "SECURITY_SERVICES", "RELIGIOUS"],
+    "electionCycleMonths": 0,
+    "nextElectionTurn": null,
+    "leaderTitle": "Chairman of the Sovereignty Council"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1956, "event": "Independence from Anglo-Egyptian rule", "impact": "Inherited a Khartoum-centred state that marginalized its peripheries, seeding decades of civil war" },
+      { "year": 1989, "event": "Bashir's Islamist military coup", "impact": "Thirty years of Islamist military rule, international isolation and terrorism-sponsor designation" },
+      { "year": 2003, "event": "Darfur war and creation of the Janjaweed militias", "impact": "Genocide charges against Bashir; the Janjaweed later became the Rapid Support Forces" },
+      { "year": 2011, "event": "Secession of South Sudan", "impact": "Lost three quarters of its oil output and much of its fiscal base" },
+      { "year": 2019, "event": "Revolution ousts Bashir; civilian-military transition", "impact": "A fragile power-sharing deal left army and RSF as rival armed centres of power" },
+      { "year": 2021, "event": "Burhan and Hemedti coup ends the civilian transition", "impact": "Western aid and debt relief frozen; generals' rivalry set the stage for war" },
+      { "year": 2023, "event": "War erupts between the army (SAF) and the RSF on 15 April", "impact": "World's largest displacement crisis: over 12 million displaced and famine declared in Darfur" },
+      { "year": 2025, "event": "Army retakes Khartoum (March); RSF captures El Fasher (October) with mass atrocities", "impact": "De facto east-west partition: RSF and its Tasis parallel government hold Darfur from Nyala, the army holds the Nile valley and east" },
+      { "year": 2026, "event": "Kordofan becomes the main front; siege and drone war around El Obeid; Hemedti sentenced to death in absentia", "impact": "Truce plans from the US-Saudi-Egypt-UAE Quad stall while foreign drones and gold financing sustain both sides" }
+    ],
+    "historicalRivals": ["ARE", "ETH"],
+    "historicalAllies": ["EGY", "TUR", "SAU"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "DEFENSIVE",
+    "narrative": "A shattered state where a military junta in Port Sudan and Khartoum fights a former militia that rules Darfur as a rival government. Both survive on gold exports and foreign patrons, turning the country into a proxy arena for Egypt, Turkey, the Gulf monarchies and Russia's Red Sea ambitions."
+  },
+  "personality": {
+    "warPropensity": 80,
+    "allianceLoyalty": 45,
+    "diplomaticFlexibility": 25,
+    "riskTolerance": 65,
+    "expansionism": 30,
+    "isolationism": 30,
+    "ideologicalRigidity": 60,
+    "prestigeEmphasis": 50
+  },
+  "redLines": [
+    { "type": "TERRITORIAL", "description": "International recognition of the RSF's parallel government or partition of Darfur", "severity": 10 },
+    { "type": "ALLIANCE", "targetCountryId": "ARE", "description": "Continued Emirati arming and financing of the RSF", "severity": 8 },
+    { "type": "TERRITORIAL", "description": "Loss of El Obeid, Port Sudan or the Nile corridor to the RSF", "severity": 9 }
+  ],
+  "internalDivisions": [
+    { "kind": "REGIONAL", "name": "RSF-held Darfur and western Kordofan (Tasis government) vs. army-held Nile valley and east", "strength": 45, "tension": 95 },
+    { "kind": "ETHNIC", "name": "Arab pastoralist militias vs. Masalit, Zaghawa, Fur and Nuba communities", "strength": 40, "tension": 90 },
+    { "kind": "IDEOLOGICAL", "name": "Islamist old guard and allied brigades vs. civilian pro-democracy movement", "strength": 35, "tension": 60 }
+  ],
+  "economy": {
+    "gdp": 32000000000,
+    "growthRate": -0.02,
+    "debtGdpRatio": 220,
+    "sectors": { "agriculture": 35, "industry": 20, "services": 45 },
+    "keyResources": ["gold", "oil_transit", "gum_arabic", "livestock", "arable_land"],
+    "keyExports": ["gold", "livestock", "sesame", "gum_arabic", "oil_transit_fees"],
+    "developmentLevel": "DEVELOPING"
+  },
+  "military": {
+    "manpower": 120000,
+    "airpower": 160,
+    "doctrine": "OFFENSIVE",
+    "nuclearStatus": "NONE",
+    "warheads": 0,
+    "arms_suppliers": ["RUS", "PRIVATE"]
+  },
+  "militaryBudgetPct": 8.0,
+  "stability": 12,
+  "legitimacy": 25,
+  "intelLevel": 40,
+  "insurgencyLevel": "GUERILLA",
+  "goals": [
+    { "id": "sdn_g1", "type": "SECURITY", "priority": 98, "description": "Defeat or contain the RSF and retake Kordofan and Darfur" },
+    { "id": "sdn_g2", "type": "SECURITY", "targetCountryId": "ARE", "priority": 80, "description": "Cut off foreign arms and gold-smuggling lifelines sustaining the RSF" },
+    { "id": "sdn_g3", "type": "ECONOMIC", "priority": 65, "description": "Restore Khartoum, revive gold and agricultural exports and avert famine" },
+    { "id": "sdn_g4", "type": "PRESTIGE", "priority": 50, "description": "Win international recognition as Sudan's sole legitimate government" }
+  ],
+  "geo": {
+    "bounds": [21.8, 8.7, 38.6, 22.2],
+    "capital": { "name": "Khartoum", "coordinates": [32.5599, 15.5007] }
+  }
+}

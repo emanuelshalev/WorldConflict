@@ -1,156 +1,110 @@
-# Setup Guide
+# 🛠 Setup Guide
 
-This guide will help you get World Conflict running on your local machine.
+Get World Conflict running locally in about two minutes.
 
-## Prerequisites
+---
 
-- **Node.js 20+** — [Download here](https://nodejs.org/)
-- **npm** — Comes with Node.js
+## 1. Prerequisites
 
-## Installation
+| Tool | Version | Notes |
+|---|---|---|
+| **Node.js** | **≥ 20.19** (22 LTS recommended) | Vite 7 and Prisma 7 refuse older versions. Check with `node -v`. |
+| npm | ≥ 10 | Ships with Node. |
+| Git | any | |
 
-### 1. Clone the Repository
+> **Stuck on an old system Node?** Install a user-local Node without touching the system one, e.g. download the official tarball for your OS/CPU from nodejs.org into `~/.local/share/node` and put its `bin/` first on your `PATH`, or use `nvm`, `fnm` or `volta`.
+
+---
+
+## 2. Install
 
 ```bash
-git clone https://github.com/yourusername/WorldConflict.git
+git clone https://github.com/emanuelshalev/WorldConflict.git
 cd WorldConflict
-```
 
-### 2. Install Dependencies
+npm install                 # backend + engine
+(cd ui && npm install)      # frontend (separate package)
 
-```bash
-# Install backend dependencies
-npm install
-
-# Install frontend dependencies
-cd ui && npm install && cd ..
-```
-
-### 3. Initialize the Database
-
-```bash
-npx prisma db push
-```
-
-This creates a SQLite database (`dev.db`) with the required schema.
-
-## Running the Game
-
-### Quick Start (Recommended)
-
-```bash
-npm run dev
-```
-
-This starts both servers:
-- **Backend API** at `http://localhost:8080`
-- **Frontend UI** at `http://localhost:5173`
-
-Open `http://localhost:5173` in your browser to play!
-
-### What Happens Under the Hood
-
-The `npm run dev` command uses [concurrently](https://www.npmjs.com/package/concurrently) to run both servers in parallel:
-
-```
-npm run dev
-    │
-    └── concurrently (runs both in parallel)
-            │
-            ├── [0] Backend API ──► tsx watch ──► Fastify ──► :8080
-            │                         └── SQLite DB (dev.db)
-            │
-            └── [1] Frontend UI ──► Vite ──► React app ──► :5173
-                                      └── calls API at :8080
-```
-
-The `[0]` and `[1]` prefixes in terminal output indicate which server the log came from.
-
-### Running Servers Separately (Optional)
-
-If you prefer to run each server in its own terminal:
-
-**Terminal 1 — Backend API:**
-```bash
-npm run dev:api
-```
-
-**Terminal 2 — Frontend UI:**
-```bash
-cd ui && npm run dev
-```
-
-## LLM Configuration (Optional)
-
-World Conflict can use AI language models to enhance advisor conversations and country behavior. This is **optional** — the game works perfectly fine with algorithmic fallbacks.
-
-### Option 1: OpenAI
-
-Create a `.env` file in the project root:
-
-```env
-OPENAI_API_KEY=your-api-key-here
-```
-
-### Option 2: Google Gemini
-
-```env
-GEMINI_API_KEY=your-api-key-here
-```
-
-### Option 3: Local Models (Ollama)
-
-1. Install [Ollama](https://ollama.ai/)
-2. Pull a model: `ollama pull llama2`
-3. The game will auto-detect Ollama running locally
-
-### No API Key?
-
-No problem! The game includes sophisticated algorithmic behavior that provides a great experience without any AI service.
-
-## Available Scripts
-
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start both servers (API + UI) |
-| `npm run dev:api` | Start only the backend API |
-| `npm run dev:ui` | Start only the frontend UI |
-| `npm run build` | Build for production |
-| `npm run test` | Run all tests |
-| `npm run lint` | Lint code |
-
-## Troubleshooting
-
-### Port Already in Use
-
-If port 8080 or 5173 is already in use:
-
-```bash
-# Find what's using the port (Windows)
-netstat -ano | findstr :8080
-
-# Find what's using the port (Mac/Linux)
-lsof -i :8080
-```
-
-### Database Issues
-
-If you encounter database errors, try resetting:
-
-```bash
-rm dev.db
-npx prisma db push
-```
-
-### Dependencies Not Found
-
-Make sure you've installed dependencies in both directories:
-
-```bash
-npm install
-cd ui && npm install
+cp .env.example .env        # DATABASE_URL="file:./dev.db" by default
+npx prisma db push          # creates the SQLite save database
 ```
 
 ---
 
-**Ready to play?** Head back to the [main page](../README.md) and start your leadership journey!
+## 3. Run
+
+```bash
+npm run dev
+```
+
+| Service | URL |
+|---|---|
+| 🎮 Game | http://localhost:5173 |
+| ⚡ API | http://localhost:8080 (health: `/health`) |
+
+The Vite dev server proxies `/api` to the backend, so the browser only talks to `:5173`.
+
+Run them separately if you prefer: `npm run dev:api` and `npm run dev:ui`.
+
+---
+
+## 4. Optional: LLM intelligence
+
+The game is **complete without any LLM**, every country is run by the built-in deterministic *PersonalityAI*.
+
+To let an LLM take over key decisions (or every major leader), open **⚙ Settings → World intelligence** in the game and choose:
+
+| Tier | What uses the LLM |
+|---|---|
+| Algorithmic | nothing (free, offline) |
+| LLM for key decisions | leaders at high-stakes moments (war, nukes, coups, ceasefires) + your advisors |
+| Full LLM | the ~6 most relevant leaders every month + advisors |
+
+| Provider | You need | Default model |
+|---|---|---|
+| Claude (Anthropic) | API key (`sk-ant-…`) | `claude-haiku-5-5` |
+| OpenAI | API key (`sk-…`) | `gpt-4o-mini` |
+| Google Gemini | API key (`AIza…`) | `gemini-2.5-flash` |
+| Ollama | Ollama running on the **server** machine | `llama3.2` |
+| LM Studio / vLLM | any OpenAI-compatible server, e.g. `http://localhost:1234/v1` | your loaded model |
+
+Keys entered in Settings are stored only in your browser and sent to your game server with each request. The settings screen shows an **up-front cost estimate** for the chosen model and tier, a **per-game spending cap**, and live usage (calls, tokens, dollars, fallbacks).
+
+### Server-side keys (optional)
+
+For the advisor endpoint you can also configure keys on the server in `.env`:
+
+```bash
+ANTHROPIC_API_KEY=
+OPENAI_API_KEY=
+GEMINI_API_KEY=
+LLM_PROVIDER=          # openai | ollama | mock, used only when the client sends no config
+PORT=8080
+CORS_ORIGINS=http://localhost:5173
+```
+
+> ⚠️ If you host the game publicly with server-side keys, every player spends **your** credits. Prefer bring-your-own keys in Settings.
+
+---
+
+## 5. Production build
+
+```bash
+npm run build              # tsc → dist/ (API) and vite build → ui/dist (game)
+node dist/api/server.js    # serve the API
+# serve ui/dist with any static host; set VITE_API_BASE at build time if the API lives elsewhere
+```
+
+---
+
+## 6. Troubleshooting
+
+| Symptom | Fix |
+|---|---|
+| `Unexpected end of JSON input` when starting a game | The UI can't reach the API. Is `npm run dev:api` running on :8080? |
+| Vite / Prisma error about the Node version | Upgrade to Node ≥ 20.19 (see prerequisites). |
+| `The table main.SaveGame does not exist` | Run `npx prisma db push`. |
+| `Cannot find module '.prisma/client/default'` | Run `npx prisma generate` (then `npx prisma db push`). |
+| Port already in use | `lsof -i :8080` / `lsof -i :5173` (macOS/Linux), or set `PORT` in `.env`. |
+| "Connection failed" testing an LLM | Check the key; for Ollama/LM Studio the URL is resolved **by the game server**, not your browser. |
+| Saves missing after clearing site data | Guest saves are tied to a browser id. Sign in (optional) to keep saves across browsers. |

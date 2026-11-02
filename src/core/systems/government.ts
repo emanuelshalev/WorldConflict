@@ -1,4 +1,6 @@
+import { raiseCrisis } from "../crises.js";
 import type { SeededRandom } from "../seed.js";
+import { possessive, withArticle } from "../text.js";
 import type {
   CountryState,
   GameEvent,
@@ -7,6 +9,7 @@ import type {
   LeaderStyle,
   WorldState,
 } from "../types.js";
+import { growthMood } from "./economy.js";
 
 export interface GovernmentChange {
   countryId: string;
@@ -101,28 +104,107 @@ const NAME_POOLS: Record<string, { first: string[]; last: string[] }> = {
     last: ["Thompson", "Wilson", "Mitchell", "Sullivan", "Reid"],
   },
   PAK: {
-    first: ["Imran", "Benazir", "Asif", "Nawaz", "Shahid"],
-    last: ["Khan", "Bhutto", "Sharif", "Malik", "Qureshi"],
+    first: ["Tariq", "Ayesha", "Faisal", "Saima", "Usman"],
+    last: ["Chaudhry", "Rana", "Malik", "Abbasi", "Butt"],
   },
   NGA: {
     first: ["Chukwu", "Amina", "Olusegun", "Ngozi", "Ibrahim"],
     last: ["Okafor", "Abubakar", "Adeyemi", "Balogun", "Eze"],
   },
   ZAF: {
-    first: ["Thabo", "Nomvula", "Sipho", "Lindiwe", "Jacob"],
-    last: ["Mbeki", "Dlamini", "Nkosi", "Khumalo", "Zulu"],
+    first: ["Themba", "Nomvula", "Sipho", "Lindiwe", "Pieter"],
+    last: ["Mokoena", "Dlamini", "Nkosi", "Khumalo", "van Wyk"],
   },
   ITA: {
     first: ["Marco", "Giulia", "Alessandro", "Francesca", "Luca"],
     last: ["Rossi", "Conti", "Ricci", "Marino", "Greco"],
   },
+  UKR: {
+    first: ["Oleksandr", "Olena", "Andriy", "Iryna", "Taras"],
+    last: ["Kovalenko", "Shevchenko", "Bondarenko", "Melnyk", "Tkachenko"],
+  },
+  TWN: {
+    first: ["Chia-hao", "Mei-ling", "Wen-chieh", "Hsiu-ying", "Kuo-wei"],
+    last: ["Chen", "Lin", "Huang", "Chang", "Wu"],
+  },
+  BLR: {
+    first: ["Alyaksandr", "Sviatlana", "Viktar", "Maryna", "Dzmitry"],
+    last: ["Kavalchuk", "Novik", "Sharko", "Zhuk", "Barysau"],
+  },
+  DNK: {
+    first: ["Mette", "Lars", "Anders", "Pia", "Rasmus"],
+    last: ["Jensen", "Nielsen", "Hansen", "Pedersen", "Larsen"],
+  },
+  SYR: {
+    first: ["Ahmad", "Rania", "Omar", "Lina", "Khaled"],
+    last: ["al-Hasan", "Haddad", "Khoury", "al-Ali", "Saleh"],
+  },
+  IRQ: {
+    first: ["Haider", "Zainab", "Mustafa", "Noor", "Ammar"],
+    last: ["al-Abadi", "al-Maliki", "Jabouri", "Hashemi", "Rubaie"],
+  },
+  PSX: {
+    first: ["Mohammad", "Hanan", "Mustafa", "Rawan", "Yousef"],
+    last: ["Barghouti", "Shtayyeh", "Abbas", "Nusseibeh", "Masri"],
+  },
+  LBN: {
+    first: ["Nawaf", "Rima", "Joseph", "Maya", "Najib"],
+    last: ["Salam", "Aoun", "Hariri", "Gemayel", "Frangieh"],
+  },
+  YEM: {
+    first: ["Abdulmalik", "Tawakkol", "Ahmed", "Amat", "Rashad"],
+    last: ["al-Houthi", "al-Alimi", "Saleh", "Hadi", "al-Ahmar"],
+  },
+  ARE: {
+    first: ["Mohamed", "Hamdan", "Mansour", "Saif", "Khaled"],
+    last: ["Al Nahyan", "Al Maktoum", "Al Nahyan", "Al Qasimi", "Al Nahyan"],
+  },
+  AFG: {
+    first: ["Hibatullah", "Sirajuddin", "Abdul", "Mohammad", "Amir"],
+    last: ["Akhundzada", "Haqqani", "Baradar", "Muttaqi", "Yaqoob"],
+  },
+  PHL: {
+    first: ["Ferdinand", "Sara", "Leni", "Manuel", "Risa"],
+    last: ["Santos", "Reyes", "Cruz", "Bautista", "Villanueva"],
+  },
+  VEN: {
+    first: ["Delcy", "María", "Juan", "Edmundo", "Leopoldo"],
+    last: ["Rodríguez", "Machado", "González", "López", "Pérez"],
+  },
+  CUB: {
+    first: ["Miguel", "Yamila", "Raúl", "Ernesto", "Lis"],
+    last: ["Díaz", "Fernández", "Cruz", "Morales", "Valdés"],
+  },
+  SDN: {
+    first: ["Osman", "Amna", "Khalid", "Fatima", "Yasir"],
+    last: ["Idris", "Abdelrahman", "el-Nur", "Babiker", "Elamin"],
+  },
+  ETH: {
+    first: ["Dawit", "Hiwot", "Tesfaye", "Meseret", "Yonas"],
+    last: ["Bekele", "Haile", "Tadesse", "Girma", "Alemu"],
+  },
 };
 
 const STYLES: LeaderStyle[] = ["HAWKISH", "DOVISH", "PRAGMATIC", "REFORMIST", "HARDLINER"];
 
-export function generateLeaderName(countryId: string, rng: SeededRandom): string {
+/**
+ * A plausible new leader. Never reuses a word of `avoid` (the outgoing leader's
+ * name), so a coup general does not share the surname of the man he deposes.
+ */
+export function generateLeaderName(countryId: string, rng: SeededRandom, avoid = ""): string {
   const pool = NAME_POOLS[countryId] ?? { first: ["Alex"], last: ["Novak"] };
-  return `${rng.pick(pool.first)} ${rng.pick(pool.last)}`;
+  const taken = new Set(avoid.toLowerCase().split(/\s+/));
+  const free = (names: string[]) => {
+    const ok = names.filter(
+      (n) =>
+        !n
+          .toLowerCase()
+          .split(/\s+/)
+          .some((w) => taken.has(w)),
+    );
+    return ok.length ? ok : names;
+  };
+  return `${rng.pick(free(pool.first))} ${rng.pick(free(pool.last))}`;
 }
 
 export function pickSuccessorStyle(
@@ -178,6 +260,14 @@ export interface GovernmentTickResult {
   events: GameEvent[];
 }
 
+/** A wealthy democracy whose army stays out of politics (USA, Germany, Japan...). */
+export function isConsolidatedDemocracy(country: CountryState): boolean {
+  if (country.regimeType !== "DEMOCRACY") return false;
+  if (country.politicalSystem.powerCenters.includes("MILITARY")) return false;
+  const perCapita = country.gdp / Math.max(1, country.population);
+  return perCapita >= 15000;
+}
+
 /**
  * Runs once per turn after wars/metrics: elections, coup risk, revolutions.
  */
@@ -206,7 +296,7 @@ export function runGovernmentDynamics(world: WorldState, rng: SeededRandom): Gov
           id: `evt_election_${country.id}_${world.turn}`,
           type: "GOVERNMENT",
           title: `${country.name}: ${country.leader.name} re-elected`,
-          description: `${country.leader.title} ${country.leader.name} secured another term in ${country.name}'s elections.`,
+          description: `${country.leader.title} ${country.leader.name} secured another term in ${possessive(country.name)} elections.`,
           affectedCountries: [country.id],
           turn: world.turn,
           severity: "NOTABLE",
@@ -223,8 +313,34 @@ export function runGovernmentDynamics(world: WorldState, rng: SeededRandom): Gov
       country.regimeType === "AUTOCRACY" ||
       country.regimeType === "MILITARY_JUNTA" ||
       country.regimeType === "COMMUNIST";
+    const consolidated = isConsolidatedDemocracy(country);
     const crisis = country.legitimacy < 30 || country.stability < 22;
-    if (crisis && (coupProne || country.stability < 15)) {
+    // Rich, long-standing democracies don't do coups: institutions absorb even deep crises
+    // Consolidated democracies remove leaders through institutions, never the army
+    const coupPossible = consolidated ? false : coupProne || country.stability < 15;
+    // A democracy removes a failing leader through its institutions (impeachment,
+    // no-confidence): consolidated or not, as long as the army isn't the arbiter
+    if (isPlayer && country.regimeType === "DEMOCRACY" && crisis && !coupPossible) {
+      const d = world.director;
+      const warned = d.coupWarnedTurn !== null && world.turn - d.coupWarnedTurn <= 8;
+      if (!warned) {
+        const warning = raiseCrisis(world, "ouster_vote", rng);
+        if (warning) events.push(warning);
+        d.coupWarnedTurn = world.turn;
+        continue;
+      }
+      let risk =
+        (30 - Math.min(30, country.legitimacy)) * 0.0022 +
+        (25 - Math.min(25, country.stability)) * 0.0022;
+      risk = collapseAdjusted(risk, country, world);
+      if (rng.next() < risk) {
+        const change = executeOuster(world, country, rng);
+        changes.push(change);
+        events.push(governmentEvent(world, change, "GOVERNMENT"));
+        continue;
+      }
+    }
+    if (crisis && coupPossible) {
       const losingWar = world.wars.some(
         (w) =>
           (w.attackerId === country.id && w.frontline < 35) ||
@@ -236,6 +352,24 @@ export function runGovernmentDynamics(world: WorldState, rng: SeededRandom): Gov
       if (losingWar) risk += 0.04;
       if (country.insurgencyLevel === "REBELLION") risk += 0.012;
       if (country.insurgencyLevel === "GUERILLA") risk += 0.03;
+      if (isPlayer) {
+        // Telegraph before striking: the player first learns of the plot and
+        // gets a chance to act. Only then can the officers move.
+        const d = world.director;
+        const warned = d.coupWarnedTurn !== null && world.turn - d.coupWarnedTurn <= 8;
+        const canSee = world.difficulty !== "STRONGMAN" || country.intelLevel >= 50;
+        if (!warned && canSee) {
+          const warning = raiseCrisis(world, "coup_plot", rng);
+          if (warning) events.push(warning);
+          d.coupWarnedTurn = world.turn;
+          continue;
+        }
+        risk = collapseAdjusted(risk, country, world);
+      }
+      // AI regimes: coups are real but rare events, not a monthly lottery
+      if (!isPlayer) risk *= AI_UPHEAVAL;
+      // A junta that just seized power isn't overthrown the next season
+      if (!isPlayer && world.turn - country.leader.sinceTurn < 18) risk = 0;
       if (rng.next() < risk) {
         const change = executeCoup(world, country, rng, isPlayer);
         changes.push(change);
@@ -245,11 +379,27 @@ export function runGovernmentDynamics(world: WorldState, rng: SeededRandom): Gov
     }
 
     // --- Revolution ---
-    if (
-      country.stability < 15 &&
-      (country.insurgencyLevel === "REBELLION" || country.insurgencyLevel === "GUERILLA")
-    ) {
-      if (rng.next() < 0.05) {
+    // Consolidated democracies channel anger into elections and courts: a revolution
+    // needs an armed insurgency AND a government that has lost almost all legitimacy
+    const revolutionary = consolidated
+      ? country.stability < 10 && country.insurgencyLevel === "GUERILLA" && country.legitimacy < 20
+      : country.stability < 15 &&
+        (country.insurgencyLevel === "REBELLION" || country.insurgencyLevel === "GUERILLA");
+    if (revolutionary) {
+      if (isPlayer) {
+        const d = world.director;
+        const warned = d.revoltWarnedTurn !== null && world.turn - d.revoltWarnedTurn <= 8;
+        if (!warned) {
+          const warning = raiseCrisis(world, "streets_boiling", rng);
+          if (warning) events.push(warning);
+          d.revoltWarnedTurn = world.turn;
+          continue;
+        }
+      }
+      if (
+        rng.next() <
+        (isPlayer ? (world.difficulty === "ANALYST" ? 0.03 : 0.05) : 0.05 * AI_UPHEAVAL)
+      ) {
         const change = executeRevolution(world, country, rng, isPlayer);
         changes.push(change);
         events.push(governmentEvent(world, change, "GOVERNMENT"));
@@ -260,6 +410,70 @@ export function runGovernmentDynamics(world: WorldState, rng: SeededRandom): Gov
   return { changes, events };
 }
 
+/**
+ * Player removal risk after shields and difficulty. Below 10 legitimacy nothing
+ * shields a leader nobody believes in any more, and the danger grows.
+ */
+function collapseAdjusted(risk: number, country: CountryState, world: WorldState): number {
+  let r = risk;
+  if (country.legitimacy < 10) r *= 1.6;
+  else if (world.turn < world.director.coupShieldUntil) r *= 0.25;
+  if (world.difficulty === "ANALYST") r *= 0.6;
+  return r;
+}
+
+/**
+ * Presidencies whose 2026 incumbent cannot run again (second-term or single-term
+ * limits): USA, France, Mexico, South Korea, Philippines, Brazil. The player is exempt:
+ * in a Term, "your" election is your party's verdict.
+ */
+const MAX_TERMS: Record<string, number> = {
+  USA: 2,
+  FRA: 2,
+  BRA: 2,
+  MEX: 1,
+  KOR: 1,
+  PHL: 1,
+  TWN: 2,
+  IDN: 2,
+  ZAF: 2,
+  TUR: 2,
+  EGY: 2,
+  CUB: 2,
+};
+/** Leaders already at their limit when the 2026 scenario opens (Trump, Macron, Lula, Sheinbaum, Lee, Marcos). */
+const AT_LIMIT_IN_2026 = new Set([
+  "USA",
+  "FRA",
+  "MEX",
+  "KOR",
+  "PHL",
+  "BRA",
+  "ZAF", // Ramaphosa: second term since 2024
+  "TUR", // Erdoğan: constitutionally barred from another term
+  "EGY", // Sisi: final term ends 2030
+  "CUB", // Díaz-Canel: second term ends 2028
+]);
+
+function termLimited(world: WorldState, country: CountryState): boolean {
+  const max = MAX_TERMS[country.id];
+  if (!max) return false;
+  if (
+    world.scenarioId === "2026" &&
+    country.leader.sinceTurn === 0 &&
+    AT_LIMIT_IN_2026.has(country.id)
+  )
+    return true;
+  // Leaders elected in-game: out once they have served their maximum number of full terms
+  const cycle = country.politicalSystem.electionCycleMonths;
+  return cycle > 0 && world.turn - country.leader.sinceTurn >= max * cycle - 1;
+}
+
+/** AI coup and revolution odds relative to the player's (playtests saw a Sudan coup every run). */
+const AI_UPHEAVAL = 0.35;
+
+const INCUMBENCY_FATIGUE = 7;
+
 function holdElection(
   world: WorldState,
   country: CountryState,
@@ -268,7 +482,8 @@ function holdElection(
 ): GovernmentChange | null {
   // Incumbent score: approval dominates, modified by economy and war fatigue
   let score = country.approval;
-  score += country.growthRate > 0.02 ? 8 : country.growthRate < 0 ? -10 : 0;
+  const mood = growthMood(country);
+  score += mood > 0 ? 8 : mood < 0 ? -10 : 0;
   const atWar = country.atWarWith.length > 0;
   if (atWar) {
     const losing = world.wars.some(
@@ -278,14 +493,44 @@ function holdElection(
     );
     score += losing ? -15 : -5;
   }
+  // "Time for a change": a government that has served a full term pays for it
+  if (world.turn - country.leader.sinceTurn >= 36) score -= INCUMBENCY_FATIGUE;
   score += rng.nextFloat(-8, 8); // campaign dynamics
+
+  // Term limits: the incumbent can't stand again. The ruling side's candidate inherits
+  // the record, so a popular government usually keeps power under a new leader.
+  if (!isPlayer && termLimited(world, country)) {
+    const oldLeader = { ...country.leader };
+    const continuity = score >= 45;
+    const style = continuity ? country.leader.style : pickSuccessorStyle(country, "ELECTION", rng);
+    country.leader = {
+      name: generateLeaderName(country.id, rng, country.leader.name),
+      title: country.politicalSystem.leaderTitle,
+      style,
+      origin: "ELECTED",
+      sinceTurn: world.turn,
+    };
+    applyLeaderStyleModifiers(country);
+    country.legitimacy = clamp(country.legitimacy + 10);
+    country.approval = 55;
+    return {
+      countryId: country.id,
+      kind: "ELECTION",
+      oldLeader,
+      newLeader: country.leader,
+      description: continuity
+        ? `Term-limited, ${oldLeader.name} hands over: ${country.leader.name} wins the election in ${withArticle(country.name)} for the governing side.`
+        : `Term-limited ${oldLeader.name} steps down, and the opposition's ${country.leader.name} wins the election in ${withArticle(country.name)}.`,
+      isPlayerDeposed: false,
+    };
+  }
 
   if (score >= 45) return null; // incumbent survives
 
   const oldLeader = { ...country.leader };
   const style = pickSuccessorStyle(country, "ELECTION", rng);
   const newLeader: Leader = {
-    name: isPlayer ? country.leader.name : generateLeaderName(country.id, rng),
+    name: isPlayer ? country.leader.name : generateLeaderName(country.id, rng, country.leader.name),
     title: country.politicalSystem.leaderTitle,
     style,
     origin: "ELECTED",
@@ -303,9 +548,34 @@ function holdElection(
     oldLeader,
     newLeader,
     description: isPlayer
-      ? `You were defeated at the polls. ${country.name}'s voters chose change.`
+      ? `You were defeated at the polls. ${possessive(country.name)} voters chose change.`
       : `${country.name} voted out ${oldLeader.title} ${oldLeader.name}; ${newLeader.name} takes office on a ${style.toLowerCase()} platform.`,
     isPlayerDeposed: isPlayer,
+  };
+}
+
+function executeOuster(
+  world: WorldState,
+  country: CountryState,
+  rng: SeededRandom,
+): GovernmentChange {
+  const oldLeader = { ...country.leader };
+  const presidential = country.politicalSystem.type === "PRESIDENTIAL_DEMOCRACY";
+  return {
+    countryId: country.id,
+    kind: "IMPEACHMENT",
+    oldLeader,
+    newLeader: {
+      name: generateLeaderName(country.id, rng, country.leader.name),
+      title: country.leader.title,
+      style: "PRAGMATIC",
+      origin: "ELECTED",
+      sinceTurn: world.turn,
+    },
+    description: presidential
+      ? "The votes were there. Impeached and convicted, you leave office in disgrace."
+      : "Your own benches voted with the opposition. The government falls, and with it, your premiership.",
+    isPlayerDeposed: true,
   };
 }
 
@@ -317,7 +587,7 @@ function executeCoup(
 ): GovernmentChange {
   const oldLeader = { ...country.leader };
   const newLeader: Leader = {
-    name: generateLeaderName(country.id, rng),
+    name: generateLeaderName(country.id, rng, country.leader.name),
     title: "General",
     style: pickSuccessorStyle(country, "COUP", rng),
     origin: "COUP",
@@ -357,7 +627,7 @@ function executeRevolution(
   const oldLeader = { ...country.leader };
   const becomesDemocracy = country.regimeType !== "DEMOCRACY" && rng.nextBool(0.5);
   const newLeader: Leader = {
-    name: generateLeaderName(country.id, rng),
+    name: generateLeaderName(country.id, rng, country.leader.name),
     title: becomesDemocracy ? "President" : "Chairman of the Revolutionary Council",
     style: pickSuccessorStyle(country, "REVOLUTION", rng),
     origin: "REVOLUTION",
@@ -404,7 +674,7 @@ export function replaceLeaderAfterAssassination(
 ): GovernmentChange {
   const oldLeader = { ...country.leader };
   const newLeader: Leader = {
-    name: generateLeaderName(country.id, rng),
+    name: generateLeaderName(country.id, rng, country.leader.name),
     title: country.politicalSystem.leaderTitle,
     style: pickSuccessorStyle(country, "SUCCESSION", rng),
     origin: "SUCCESSION",
@@ -437,7 +707,7 @@ export function installPuppetRegime(
 ): GovernmentChange {
   const oldLeader = { ...country.leader };
   const newLeader: Leader = {
-    name: generateLeaderName(country.id, rng),
+    name: generateLeaderName(country.id, rng, country.leader.name),
     title: "President",
     style: "PRAGMATIC",
     origin: "COUP",
@@ -458,7 +728,7 @@ export function installPuppetRegime(
     newLeader,
     description: isPlayer
       ? `A foreign-backed coup has toppled your government.`
-      : `Coup in ${country.name}: ${newLeader.name} seizes power — observers note the new government's striking alignment with foreign interests.`,
+      : `Coup in ${country.name}: ${newLeader.name} seizes power, observers note the new government's striking alignment with foreign interests.`,
     isPlayerDeposed: isPlayer,
   };
 }
@@ -471,14 +741,15 @@ function governmentEvent(
   return {
     id: `evt_gov_${change.countryId}_${world.turn}_${change.kind}`,
     type,
-    title:
+    title: `${
       change.kind === "ELECTION"
-        ? `Power changes hands in ${change.countryId}`
+        ? "Power changes hands in"
         : change.kind === "COUP"
-          ? `Military coup in ${change.countryId}`
+          ? "Military coup in"
           : change.kind === "REVOLUTION"
-            ? `Revolution in ${change.countryId}`
-            : `Government change in ${change.countryId}`,
+            ? "Revolution in"
+            : "Government change in"
+    } ${world.countries.find((c) => c.id === change.countryId)?.name ?? change.countryId}`,
     description: change.description,
     affectedCountries: [change.countryId],
     turn: world.turn,
@@ -493,12 +764,12 @@ function governmentEvent(
 export function generatePlayerBackstory(country: CountryState, rng: SeededRandom): string {
   const templates: Record<string, string[]> = {
     PRESIDENTIAL_DEMOCRACY: [
-      `After a snap election triggered by a corruption scandal that consumed your predecessor, your reformist coalition swept to power. The public expects change — and quickly.`,
-      `A narrow electoral-college victory after the sudden death of the incumbent has made you ${country.politicalSystem.leaderTitle} of ${country.name}. Half the country celebrates; the other half doubts your mandate.`,
+      `After a snap election triggered by a corruption scandal that consumed your predecessor, your reformist coalition swept to power. The public expects change, and quickly.`,
+      `A razor-thin election victory after the sudden death of the incumbent has made you ${country.politicalSystem.leaderTitle} of ${country.name}. Half the country celebrates; the other half doubts your mandate.`,
     ],
     PARLIAMENTARY_DEMOCRACY: [
       `After a snap election triggered by a corruption scandal, your coalition formed a narrow majority. Your government survives at the pleasure of restless coalition partners.`,
-      `A vote of no confidence toppled the last government. As the compromise candidate acceptable to all factions, you now lead ${country.name} — for as long as the coalition holds.`,
+      `A vote of no confidence toppled the last government. As the compromise candidate acceptable to all factions, you now lead ${country.name}, for as long as the coalition holds.`,
     ],
     SEMI_PRESIDENTIAL: [
       `Riding a wave of public anger at the political establishment, you won the presidency of ${country.name} as an outsider. The old parties control parliament and want you to fail.`,
@@ -519,7 +790,7 @@ export function generatePlayerBackstory(country: CountryState, rng: SeededRandom
       `The Assembly of Experts has elevated you as the new guardian of the revolution after your predecessor's death. The clerical establishment and the security services each believe you owe them.`,
     ],
     PERSONALIST_AUTOCRACY: [
-      `Your predecessor was assassinated at a military parade. As the security chief who restored order in the chaotic hours that followed, you now hold supreme power — built on fear and obligation.`,
+      `Your predecessor was assassinated at a military parade. As the security chief who restored order in the chaotic hours that followed, you now hold supreme power, built on fear and obligation.`,
     ],
   };
   const pool = templates[country.politicalSystem.type] ?? templates.PRESIDENTIAL_DEMOCRACY;

@@ -1,0 +1,84 @@
+{
+  "id": "ARE",
+  "iso3": "ARE",
+  "name": "United Arab Emirates",
+  "population": 11000000,
+  "regimeType": "MONARCHY",
+  "politicalSystem": {
+    "type": "ABSOLUTE_MONARCHY",
+    "powerCenters": ["MONARCHY", "SECURITY_SERVICES", "OLIGARCHS"],
+    "electionCycleMonths": 0,
+    "nextElectionTurn": null,
+    "leaderTitle": "President"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1971, "event": "Federation of the Trucial States after British withdrawal; Iran seizes Abu Musa and the Tunbs", "impact": "A small federation born with a territorial dispute with Iran that remains unresolved" },
+      { "year": 1981, "event": "Founding member of the Gulf Cooperation Council", "impact": "Anchored security in Gulf solidarity and the US umbrella" },
+      { "year": 2009, "event": "Dubai debt crisis bailed out by Abu Dhabi", "impact": "Consolidated Abu Dhabi's dominance over federal policy" },
+      { "year": 2015, "event": "Joins the Saudi-led war in Yemen", "impact": "Emirati forces built proxy armies in the south and seized ports and islands" },
+      { "year": 2017, "event": "Blockade of Qatar alongside Saudi Arabia and Egypt", "impact": "Showed an assertive, anti-Islamist foreign policy willing to break with neighbors" },
+      { "year": 2020, "event": "Abraham Accords normalize relations with Israel", "impact": "Opened defense and technology ties with Israel and a pivot from Arab consensus" },
+      { "year": 2022, "event": "Houthi missile and drone strikes on Abu Dhabi; Mohamed bin Zayed becomes president", "impact": "Exposed vulnerability at home and formalized MBZ's long-standing de facto rule" },
+      { "year": 2023, "event": "Accused of arming Sudan's Rapid Support Forces", "impact": "Africa ambitions entangled the UAE in the Sudan war and strained ties with Riyadh and Cairo" },
+      { "year": 2026, "event": "Iran's most-targeted Gulf state in the 2026 war; reportedly strikes Iran; split with Saudi Arabia after its southern Yemeni allies are crushed", "impact": "Moved from hedger to combatant and drew closer to Israel and the US" }
+    ],
+    "historicalRivals": ["IRN"],
+    "historicalAllies": ["USA", "SAU", "EGY", "ISR"],
+    "sphereOfInfluence": ["YEM", "SDN"],
+    "foreignPolicyOrientation": "INTERVENTIONIST",
+    "narrative": "A small, fabulously rich federation that punches far above its weight through money, ports, proxies and a modern military. Led by Mohamed bin Zayed, it combines a hard anti-Islamist line with commercial hedging between Washington, Beijing and Moscow, and has learned in 2026 that it sits on Iran's front line."
+  },
+  "personality": {
+    "warPropensity": 45,
+    "allianceLoyalty": 60,
+    "diplomaticFlexibility": 75,
+    "riskTolerance": 60,
+    "expansionism": 55,
+    "isolationism": 10,
+    "ideologicalRigidity": 45,
+    "prestigeEmphasis": 80
+  },
+  "redLines": [
+    { "type": "TERRITORIAL", "targetCountryId": "IRN", "description": "Missile and drone attacks on Emirati cities, ports and energy infrastructure", "severity": 9 },
+    { "type": "ECONOMIC", "description": "Closure of the Strait of Hormuz to Emirati trade and oil exports", "severity": 9 },
+    { "type": "IDEOLOGICAL", "description": "Rise of Muslim Brotherhood-style political Islam in the region", "severity": 7 }
+  ],
+  "internalDivisions": [
+    { "kind": "ETHNIC", "name": "Citizens are a small minority among nearly 90 percent expatriate residents", "strength": 85, "tension": 25 },
+    { "kind": "REGIONAL", "name": "Abu Dhabi dominance over Dubai and the poorer northern emirates", "strength": 30, "tension": 20 },
+    { "kind": "IDEOLOGICAL", "name": "Suppressed Islamist and reformist dissent", "strength": 10, "tension": 25 }
+  ],
+  "economy": {
+    "gdp": 550000000000,
+    "growthRate": 0.03,
+    "debtGdpRatio": 30,
+    "sectors": { "agriculture": 1, "industry": 45, "services": 54 },
+    "keyResources": ["oil", "natural_gas", "sovereign_wealth"],
+    "keyExports": ["crude_oil", "refined_petroleum", "gold", "aluminum", "re_exports", "logistics"],
+    "developmentLevel": "DEVELOPED"
+  },
+  "military": {
+    "manpower": 65000,
+    "airpower": 550,
+    "doctrine": "EXPEDITIONARY",
+    "nuclearStatus": "NONE",
+    "warheads": 0,
+    "arms_suppliers": ["USA", "FRA", "PRIVATE"]
+  },
+  "militaryBudgetPct": 5.0,
+  "stability": 80,
+  "legitimacy": 75,
+  "intelLevel": 75,
+  "insurgencyLevel": "NONE",
+  "goals": [
+    { "id": "are_g1", "type": "SECURITY", "targetCountryId": "IRN", "priority": 95, "description": "Stop Iranian strikes and reopen Hormuz on terms that cap Iran's missile and nuclear threat" },
+    { "id": "are_g2", "type": "ECONOMIC", "priority": 85, "description": "Remain the region's finance, logistics and AI hub and diversify beyond oil" },
+    { "id": "are_g3", "type": "SECURITY", "targetCountryId": "USA", "priority": 80, "description": "Lock in US security guarantees and advanced arms while deepening ties with Israel" },
+    { "id": "are_g4", "type": "PRESTIGE", "targetCountryId": "SDN", "priority": 60, "description": "Project influence over Red Sea and Horn of Africa ports and partners" }
+  ],
+  "geo": {
+    "bounds": [51.5, 22.6, 56.4, 26.1],
+    "capital": { "name": "Abu Dhabi", "coordinates": [54.3773, 24.4539] }
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "id": "VEN",
+  "iso3": "VEN",
+  "name": "Venezuela",
+  "population": 28400000,
+  "regimeType": "AUTOCRACY",
+  "politicalSystem": {
+    "type": "PERSONALIST_AUTOCRACY",
+    "powerCenters": ["EXECUTIVE", "MILITARY", "PARTY", "SECURITY_SERVICES"],
+    "electionCycleMonths": 72,
+    "nextElectionTurn": null,
+    "leaderTitle": "Acting President"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1976, "event": "Nationalization of the oil industry and creation of PDVSA", "impact": "Oil rents became the foundation of the state and of every government's patronage system" },
+      { "year": 1989, "event": "Caracazo riots against IMF austerity", "impact": "Hundreds killed by security forces; discredited the two-party system and paved the way for Chavez" },
+      { "year": 1999, "event": "Hugo Chavez takes office and launches the Bolivarian Revolution", "impact": "New constitution, fusion of party, army and state, and a petro-financed alliance network (Cuba, ALBA)" },
+      { "year": 2014, "event": "Oil price collapse and onset of economic implosion under Maduro", "impact": "Hyperinflation, GDP lost roughly three quarters, and nearly 8 million Venezuelans emigrated" },
+      { "year": 2019, "event": "Guaido interim presidency recognized by the US and ~50 states; US oil sanctions", "impact": "Dual-power standoff failed as the armed forces stayed loyal; sanctions deepened dependence on Russia, China and Iran" },
+      { "year": 2024, "event": "Disputed presidential election: Maduro declared winner despite opposition tally sheets showing a Gonzalez victory", "impact": "Mass repression, Gonzalez exiled; Machado became the face of the opposition and won the 2025 Nobel Peace Prize" },
+      { "year": 2025, "event": "US naval buildup in the Caribbean and lethal strikes on alleged drug boats from September", "impact": "Washington framed the regime as a narco-terrorist 'Cartel de los Soles' and prepared the ground for force" },
+      { "year": 2026, "event": "US raid captures Maduro in Caracas (3 January); Delcy Rodriguez sworn in as acting president", "impact": "Chavista apparatus survived under US tutelage: oil sector opened to foreign firms, US embassy reopened, amnesty law, but no election date" }
+    ],
+    "historicalRivals": ["USA"],
+    "historicalAllies": ["CUB", "RUS", "CHN", "IRN"],
+    "sphereOfInfluence": ["CUB"],
+    "foreignPolicyOrientation": "DEFENSIVE",
+    "narrative": "A petro-state hollowed out by a decade of collapse whose revolutionary leadership was decapitated by a US raid but not replaced. The surviving chavista elite now trades oil access and cooperation with Washington for survival, while a popular opposition waits for elections that keep receding."
+  },
+  "personality": {
+    "warPropensity": 20,
+    "allianceLoyalty": 35,
+    "diplomaticFlexibility": 60,
+    "riskTolerance": 35,
+    "expansionism": 15,
+    "isolationism": 30,
+    "ideologicalRigidity": 55,
+    "prestigeEmphasis": 45
+  },
+  "redLines": [
+    { "type": "IDEOLOGICAL", "description": "Forced handover of power to the opposition or prosecution of the remaining chavista leadership", "severity": 9 },
+    { "type": "TERRITORIAL", "targetCountryId": "USA", "description": "Large-scale US ground occupation or seizure of oil fields without a negotiated deal", "severity": 8 },
+    { "type": "ECONOMIC", "description": "Reimposition of a full oil embargo cutting the last source of hard currency", "severity": 8 }
+  ],
+  "internalDivisions": [
+    { "kind": "IDEOLOGICAL", "name": "Chavista establishment vs. democratic opposition (Machado/Gonzalez) demanding elections", "strength": 70, "tension": 80 },
+    { "kind": "IDEOLOGICAL", "name": "Rodriguez pragmatists vs. hardline security chiefs and colectivos wary of US deals", "strength": 30, "tension": 60 },
+    { "kind": "REGIONAL", "name": "Lawless mining arc and border zones held by ELN, gangs and Tren de Aragua", "strength": 20, "tension": 65 }
+  ],
+  "economy": {
+    "gdp": 85000000000,
+    "growthRate": 0.04,
+    "debtGdpRatio": 150,
+    "sectors": { "agriculture": 5, "industry": 40, "services": 55 },
+    "keyResources": ["oil", "natural_gas", "gold", "iron_ore", "bauxite", "coltan"],
+    "keyExports": ["crude_oil", "refined_petroleum", "gold", "iron_ore"],
+    "developmentLevel": "DEVELOPING"
+  },
+  "military": {
+    "manpower": 120000,
+    "airpower": 200,
+    "doctrine": "DEFENSIVE",
+    "nuclearStatus": "NONE",
+    "warheads": 0,
+    "arms_suppliers": ["RUS", "PRIVATE"]
+  },
+  "militaryBudgetPct": 1.0,
+  "stability": 35,
+  "legitimacy": 25,
+  "intelLevel": 40,
+  "insurgencyLevel": "UNREST",
+  "goals": [
+    { "id": "ven_g1", "type": "SECURITY", "priority": 95, "description": "Preserve the chavista state apparatus and its leaders' immunity through the US-managed transition" },
+    { "id": "ven_g2", "type": "ECONOMIC", "targetCountryId": "USA", "priority": 85, "description": "Trade oil access for sanctions relief and restore production with foreign investment" },
+    { "id": "ven_g3", "type": "IDEOLOGICAL", "priority": 60, "description": "Delay and shape elections to avoid a decisive opposition victory" },
+    { "id": "ven_g4", "type": "SECURITY", "priority": 55, "description": "Keep the armed forces cohesive and contain armed groups in the mining and border regions" }
+  ],
+  "geo": {
+    "bounds": [-73.4, 0.6, -59.8, 12.2],
+    "capital": { "name": "Caracas", "coordinates": [-66.9036, 10.4806] }
+  }
+}

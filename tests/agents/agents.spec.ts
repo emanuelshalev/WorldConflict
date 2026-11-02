@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { PersonalityAI, generateDeterministicIntents } from "../../src/agents/fallback.js";
 import { createDataLoader } from "../../src/core/data-loader.js";
 import { SeededRandom } from "../../src/core/seed.js";
-import { ActionSchema } from "../../src/core/types.js";
+import { ActionSchema, TIER1_COUNTRIES } from "../../src/core/types.js";
 
 const loader = createDataLoader();
 
@@ -10,7 +10,7 @@ describe("PersonalityAI", () => {
   it("produces valid intents for every AI country", () => {
     const world = loader.initializeWorldState("2025", "USA", 42);
     const intents = generateDeterministicIntents(world);
-    expect(intents.length).toBe(24); // everyone but the player
+    expect(intents.length).toBe(TIER1_COUNTRIES.length - 1); // everyone but the player
     for (const intent of intents) {
       expect(intent.actions.length).toBeLessThanOrEqual(3);
       for (const action of intent.actions) {

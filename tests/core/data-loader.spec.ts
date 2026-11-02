@@ -5,7 +5,7 @@ import { TIER1_COUNTRIES, WorldStateSchema } from "../../src/core/types.js";
 describe("DataLoader", () => {
   const loader = createDataLoader();
 
-  it("initializes a valid 2025 world with 25 countries", () => {
+  it("initializes a valid 2025 world with every simulated country", () => {
     const world = loader.initializeWorldState("2025", "USA", 42);
     expect(() => WorldStateSchema.parse(world)).not.toThrow();
     expect(world.countries.length).toBe(TIER1_COUNTRIES.length);
@@ -37,7 +37,8 @@ describe("DataLoader", () => {
   it("the player's country gets a generated leader and backstory", () => {
     const world = loader.initializeWorldState("2025", "DEU", 99);
     const player = world.countries.find((c) => c.id === "DEU");
-    expect(player?.leader.name).toBe("You");
+    expect(player?.leader.name).not.toBe("You");
+    expect(player?.leader.name.length).toBeGreaterThan(3);
     expect(world.playerBackstory.length).toBeGreaterThan(50);
   });
 
@@ -70,6 +71,6 @@ describe("DataLoader", () => {
   it("initializes beliefs so the player view works at turn 0", () => {
     const world = loader.initializeWorldState("2025", "USA", 42);
     const usa = world.countries.find((c) => c.id === "USA");
-    expect(Object.keys(usa?.beliefs ?? {}).length).toBe(24);
+    expect(Object.keys(usa?.beliefs ?? {}).length).toBe(40);
   });
 });

@@ -1,7 +1,9 @@
 import type { SeededRandom } from "../seed.js";
+import { possessive } from "../text.js";
 import type { CountryState, GameEvent, WorldState } from "../types.js";
 import { deescalateInsurgency, escalateInsurgency } from "./covert.js";
 import { shiftRelation } from "./diplomacy.js";
+import { growthMood } from "./economy.js";
 
 /**
  * Monthly domestic update: stability, legitimacy, approval, insurgencies.
@@ -36,17 +38,38 @@ export function updateDomestic(world: WorldState, rng: SeededRandom): GameEvent[
     for (const division of country.internalDivisions) {
       if (division.tension > 60) delta -= 0.3;
     }
-    // States fight for their survival: weak governments consolidate, crack down,
-    // call in favors — preventing every fragile state from spiraling to collapse
-    if (country.stability < 35) delta += 1.0;
-    if (country.stability < 20) delta += 0.8;
+    // AI states fight for their survival: weak governments consolidate, crack down,
+    // call in favors: preventing every fragile state from spiraling to collapse.
+    // The player gets explicit crisis cards (coup plots, protests) instead.
+    const isPlayer = country.id === world.playerCountryId;
+    if (!isPlayer) {
+      if (country.stability < 35) delta += 1.0;
+      if (country.stability < 20) delta += 0.8;
+    } else if (country.stability < 30) {
+      delta += 0.5; // institutions still push back a little
+      // A legitimate government is not stuck at rock bottom: the state slowly reasserts itself
+      if (country.stability < 15)
+        delta += (15 - country.stability) * 0.06 * (country.legitimacy / 60);
+    }
+    // No society stays perfectly calm: complacency, factions and news cycles erode the top
+    if (country.stability > 85) delta -= (country.stability - 85) * 0.1;
     country.stability = clamp(country.stability + delta);
+    if (country.legitimacy > 88)
+      country.legitimacy = clamp(country.legitimacy - (country.legitimacy - 88) * 0.12);
 
     // --- Approval drift (public mood tracks economy and peace) ---
     let approvalDelta = 0;
-    approvalDelta += country.growthRate > 0.02 ? 0.5 : country.growthRate < 0 ? -1 : 0;
+    const mood = growthMood(country);
+    approvalDelta += mood > 0 ? 0.5 : mood < 0 ? -1 : 0;
     approvalDelta += country.stability > 60 ? 0.3 : country.stability < 35 ? -0.8 : 0;
     if (country.underGlobalEmbargo) approvalDelta -= 0.5;
+    if (country.atWarWith.length > 0) approvalDelta -= 0.6; // war weariness
+    // Public opinion is fickle: approval drifts back toward the middle
+    approvalDelta += (50 - country.approval) * 0.04;
+    // Sky-high approval is a bubble: honeymoons and rallies fade faster than they form
+    if (country.approval > 75) approvalDelta -= (country.approval - 75) * 0.06;
+    // Incumbency fatigue: voters tire of the same face after two years
+    if (isPlayer && world.turn - country.leader.sinceTurn > 24) approvalDelta -= 0.6;
     country.approval = clamp(country.approval + approvalDelta);
 
     // --- Legitimacy converges slowly toward approval for democracies ---
@@ -87,7 +110,7 @@ export function updateDomestic(world: WorldState, rng: SeededRandom): GameEvent[
         id: `evt_unrest_${country.id}_${world.turn}`,
         type: "STABILITY",
         title: `Unrest spreads in ${country.name}`,
-        description: `Mass protests and strikes erupt across ${country.name} as faith in ${country.leader.title} ${country.leader.name}'s government collapses.`,
+        description: `Mass protests and strikes erupt across ${country.name} as faith in ${country.leader.title} ${possessive(country.leader.name)} government collapses.`,
         affectedCountries: [country.id],
         turn: world.turn,
         severity: "MAJOR",
@@ -95,7 +118,13 @@ export function updateDomestic(world: WorldState, rng: SeededRandom): GameEvent[
     }
 
     // --- Collapse check ---
-    if (country.stability <= 2 && country.legitimacy <= 10) {
+    // A player's state only collapses at the end of a lost civil war; before that
+    // they are deposed (with warning) by a coup or revolution.
+    const collapseThreshold =
+      country.stability <= 2 &&
+      country.legitimacy <= 10 &&
+      (!isPlayer || country.insurgencyLevel === "GUERILLA");
+    if (collapseThreshold) {
       country.collapsed = true;
       country.mobilizationLevel = 0;
       events.push({
@@ -113,16 +142,20 @@ export function updateDomestic(world: WorldState, rng: SeededRandom): GameEvent[
   return events;
 }
 
-export function applyPropaganda(country: CountryState): void {
-  country.legitimacy = clamp(country.legitimacy + 5);
-  country.approval = clamp(country.approval + 4);
-  country.stability = clamp(country.stability + 2);
+export function applyPropaganda(country: CountryState, effect = 1): void {
+  country.legitimacy = clamp(country.legitimacy + 5 * effect);
+  country.approval = clamp(country.approval + 4 * effect);
+  country.stability = clamp(country.stability + 2 * effect);
 }
 
-export function applyReform(country: CountryState): void {
-  country.stability = clamp(country.stability + 6);
-  country.legitimacy = clamp(country.legitimacy + 4);
-  country.approval = clamp(country.approval + 2);
+/** Diminishing returns: the last points toward a perfect state are the hardest. */
+export const reformHeadroom = (v: number) => Math.min(1, Math.max(0.15, (100 - v) / 45));
+
+export function applyReform(country: CountryState, effect = 1): void {
+  const headroom = reformHeadroom;
+  country.stability = clamp(country.stability + 6 * headroom(country.stability) * effect);
+  country.legitimacy = clamp(country.legitimacy + 4 * headroom(country.legitimacy) * effect);
+  // Reform wins no votes: its payoff is stability now and growth later
   // Reform slightly aggravates hardline factions in rigid systems
   if (country.personality.ideologicalRigidity > 70) {
     country.legitimacy = clamp(country.legitimacy - 2);

@@ -1,4 +1,4 @@
-# TASKS.md: World Conflicts — Complete Agent Execution Roadmap
+# TASKS.md: World Conflicts: Complete Agent Execution Roadmap
 
 > **Rules:** Work **top-to-bottom**. Complete **ALL P0 tasks** in a stage before next stage. One task at a time. Mark `[x]`. Move to **COMPLETED**. Follow `AGENTS_PLAN.md` verification protocol.
 
@@ -33,7 +33,7 @@
 ---
 
 ## Stage 1: Core Simulation Engine (3 days)
-**Pure deterministic logic — NO LLM/IO/HTTP dependencies**
+**Pure deterministic logic: NO LLM/IO/HTTP dependencies**
 
 ### P0 (Critical)
 - [x] **1.1** `src/core/world.ts`: WorldState class + initialization (empty 25-country shell)
@@ -45,7 +45,7 @@
 - [x] **1.7** `src/core/systems/military.ts`: Manpower, airpower, monthly war resolution
 - [x] **1.8** `src/core/systems/stability.ts`: Monthly decay/growth, collapse detection
 - [x] **1.9** `src/core/newspaper.ts`: Event→headline generation (deterministic)
-- [x] **1.10** Unit tests: `tests/core/` — 80 tests passing
+- [x] **1.10** Unit tests: `tests/core/`, 80 tests passing
 - [x] **1.11** Determinism test: Same seed → identical 24-turn simulation ✅
 
 ---

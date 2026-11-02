@@ -19,7 +19,9 @@
       { "year": 1990, "event": "Reunification", "impact": "Became Europe's economic anchor while reassuring neighbors of its benign intentions" },
       { "year": 2011, "event": "Eurozone debt crisis leadership", "impact": "Reluctant hegemon of the EU; fiscal discipline as ideology" },
       { "year": 2015, "event": "Refugee crisis and one million arrivals", "impact": "Deepened polarization and fueled the rise of the far-right AfD" },
-      { "year": 2022, "event": "Zeitenwende after Russia's invasion of Ukraine", "impact": "Historic break: 100bn euro rearmament fund, end of Russian energy dependence" }
+      { "year": 2022, "event": "Zeitenwende after Russia's invasion of Ukraine", "impact": "Historic break: 100bn euro rearmament fund, end of Russian energy dependence" },
+      { "year": 2025, "event": "Merz becomes chancellor after debt-brake reform for defense", "impact": "Exempting defense from the debt brake funds the path to 3.5% of GDP by 2029" },
+      { "year": 2026, "event": "AfD wins about 44% in Saxony-Anhalt (6 September)", "impact": "The far right leads national polls; the firewall against it strains" }
     ],
     "historicalRivals": ["RUS"],
     "historicalAllies": ["FRA", "USA", "GBR", "POL", "ITA"],
@@ -45,10 +47,11 @@
   "internalDivisions": [
     { "kind": "REGIONAL", "name": "East-West divide (former DDR alienation)", "strength": 35, "tension": 45 },
     { "kind": "IDEOLOGICAL", "name": "Far-right AfD surge vs centrist consensus", "strength": 40, "tension": 55 },
-    { "kind": "IDEOLOGICAL", "name": "Pacifist tradition vs rearmament advocates", "strength": 45, "tension": 35 }
+    { "kind": "IDEOLOGICAL", "name": "Pacifist tradition vs rearmament advocates", "strength": 45, "tension": 35 },
+    { "kind": "REGIONAL", "name": "AfD surge and the East-West divide", "strength": 30, "tension": 70 }
   ],
   "economy": {
-    "gdp": 4430000000000,
+    "gdp": 4750000000000,
     "growthRate": 0.014,
     "debtGdpRatio": 63,
     "sectors": { "agriculture": 1, "industry": 27, "services": 72 },
@@ -64,7 +67,7 @@
     "warheads": 0,
     "arms_suppliers": ["USA", "PRIVATE"]
   },
-  "militaryBudgetPct": 2.1,
+  "militaryBudgetPct": 2.4,
   "stability": 82,
   "legitimacy": 85,
   "intelLevel": 78,

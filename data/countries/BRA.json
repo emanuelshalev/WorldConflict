@@ -19,7 +19,9 @@
       { "year": 2003, "event": "Lula presidency begins", "impact": "Bolsa Família lifted millions from poverty; Brazil pursued South-South diplomacy and BRICS leadership" },
       { "year": 2014, "event": "Lava Jato corruption scandal erupts", "impact": "Sweeping investigations discredited the political class and fueled anti-establishment polarization" },
       { "year": 2016, "event": "Impeachment of Dilma Rousseff", "impact": "Deepened left-right rupture that culminated in the bitterly contested 2022 election" },
-      { "year": 2023, "event": "January 8 storming of government buildings", "impact": "Bolsonarista riot tested democratic institutions; polarization remains the central domestic fault line" }
+      { "year": 2023, "event": "January 8 storming of government buildings", "impact": "Bolsonarista riot tested democratic institutions; polarization remains the central domestic fault line" },
+      { "year": 2025, "event": "Bolsonaro convicted of plotting a coup; US imposes 50% tariffs", "impact": "Washington punished Brazil for the prosecution; sovereignty became a rallying cry for Lula" },
+      { "year": 2026, "event": "Lula narrowly wins the runoff against Flávio Bolsonaro (25 October)", "impact": "51.8% to 48.2%; the losing camp demands annulment and the right controls Congress" }
     ],
     "historicalRivals": [],
     "historicalAllies": ["USA", "IND", "ZAF"],
@@ -48,7 +50,7 @@
     { "kind": "IDEOLOGICAL", "name": "Agribusiness expansion versus environmental and indigenous protection", "strength": 50, "tension": 50 }
   ],
   "economy": {
-    "gdp": 2200000000000,
+    "gdp": 2300000000000,
     "growthRate": 0.025,
     "debtGdpRatio": 85,
     "sectors": { "agriculture": 7, "industry": 21, "services": 72 },

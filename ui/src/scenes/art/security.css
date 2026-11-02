@@ -1,0 +1,217 @@
+/* Security and crisis scene art: war_room, deployment, airstrike, nuclear, covert, disaster */
+
+/* Staggered loops use positive animation-delay: hold the first keyframe during the delay instead of
+   showing the un-animated pose and popping into the loop when it starts. */
+svg.art [class] { animation-fill-mode: backwards; }
+
+.art-war_room [class^='wr-'], .art-deployment [class^='dp-'], .art-airstrike [class^='as-'],
+.art-nuclear [class^='nu-'], .art-covert [class^='cv-'], .art-disaster [class^='ds-'] {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* ---------- war_room ---------- */
+.art-war_room .wr-front { animation: war_room-dash 6s linear infinite; }
+@keyframes war_room-dash { to { stroke-dashoffset: -66; } }
+.art-war_room .wr-ping { animation: war_room-ping 3s ease-out infinite; }
+@keyframes war_room-ping {
+  0% { transform: scale(0.3); opacity: 1; }
+  80%, 100% { transform: scale(1.8); opacity: 0; }
+}
+.art-war_room .wr-scan { animation: war_room-scan 8s linear infinite; transform-box: view-box; }
+@keyframes war_room-scan {
+  from { transform: translateX(-40px); }
+  to { transform: translateX(380px); }
+}
+.art-war_room .wr-sweep { animation: war_room-sweep 4s linear infinite; transform-origin: 67px 91px; transform-box: view-box; }
+@keyframes war_room-sweep { to { transform: rotate(360deg); } }
+.art-war_room .wr-flicker { animation: war_room-flicker 7s steps(1) infinite; }
+@keyframes war_room-flicker {
+  0%, 100% { opacity: 1; }
+  46% { opacity: 0.7; }
+  48% { opacity: 1; }
+  71% { opacity: 0.85; }
+  72% { opacity: 1; }
+}
+.art-war_room .wr-bar { animation: war_room-bar 5s ease-in-out infinite; transform-origin: left center; }
+@keyframes war_room-bar { 50% { transform: scaleX(0.6); } }
+.art-war_room .wr-trace { stroke-dasharray: 120; animation: war_room-trace 6s ease-in-out infinite; }
+@keyframes war_room-trace {
+  0% { stroke-dashoffset: 120; }
+  60%, 100% { stroke-dashoffset: 0; }
+}
+.art-war_room .wr-tableglow { animation: war_room-breathe 6s ease-in-out infinite; }
+@keyframes war_room-breathe { 50% { opacity: 0.08; } }
+.art-war_room .wr-flag { animation: war_room-flag 4s ease-in-out infinite; transform-origin: left center; }
+@keyframes war_room-flag { 50% { transform: skewY(6deg) scaleX(0.94); } }
+.art-war_room .wr-alert { animation: war_room-alert 4s ease-in-out infinite; }
+@keyframes war_room-alert {
+  0%, 50%, 100% { opacity: 0.3; }
+  25%, 75% { opacity: 1; }
+}
+.art-war_room .wr-beacon { animation: war_room-alert 4s ease-in-out infinite; }
+
+/* ---------- deployment ---------- */
+.art-deployment .dp-flag { animation: deployment-flag 3s ease-in-out infinite; transform-origin: left center; }
+@keyframes deployment-flag {
+  0%, 100% { transform: skewY(0deg) scaleX(1); }
+  50% { transform: skewY(-7deg) scaleX(0.92); }
+}
+.art-deployment .dp-dust { animation: deployment-dust 12s ease-in-out infinite; }
+@keyframes deployment-dust {
+  0%, 100% { transform: translateX(0) scale(1); opacity: 0.9; }
+  50% { transform: translateX(26px) scale(1.12); opacity: 0.65; }
+}
+.art-deployment .dp-dust2 { animation: deployment-dust 8s ease-in-out infinite reverse; }
+.art-deployment .dp-lane { animation: deployment-lane 2.6s linear infinite; }
+@keyframes deployment-lane { to { stroke-dashoffset: 52; } }
+.art-deployment .dp-heli { animation: deployment-heli 6s ease-in-out infinite; }
+@keyframes deployment-heli {
+  0%, 100% { transform: translate(0, 0) rotate(-3deg); }
+  50% { transform: translate(14px, -5px) rotate(-6deg); }
+}
+.art-deployment .dp-rotor { animation: deployment-rotor 0.25s linear infinite; }
+@keyframes deployment-rotor { 50% { transform: scaleX(0.35); } }
+.art-deployment .dp-smoke { animation: deployment-smoke 10s ease-in-out infinite; }
+@keyframes deployment-smoke { 50% { transform: translate(-12px, -10px) scale(1.15); } }
+
+/* ---------- airstrike ---------- */
+.art-airstrike .as-jet1 { animation: airstrike-fly 7s ease-in-out infinite; }
+.art-airstrike .as-jet2 { animation: airstrike-fly 8s ease-in-out infinite; }
+.art-airstrike .as-jet3 { animation: airstrike-fly 9s ease-in-out infinite; }
+@keyframes airstrike-fly {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(18px, -4px); }
+}
+.art-airstrike .as-burner { animation: airstrike-burn 0.6s ease-in-out infinite alternate; transform-origin: right center; }
+@keyframes airstrike-burn { to { transform: scaleX(1.35); opacity: 0.8; } }
+.art-airstrike .as-nav { animation: airstrike-blink 1.4s steps(1) infinite; }
+@keyframes airstrike-blink { 50% { opacity: 0.1; } }
+.art-airstrike .as-blast { animation: airstrike-blast 5s ease-out infinite; }
+@keyframes airstrike-blast {
+  0% { transform: scale(0.2); opacity: 0; }
+  6% { transform: scale(1.1); opacity: 1; }
+  40% { transform: scale(1); opacity: 0.75; }
+  75% { transform: scale(0.9); opacity: 0.45; }
+  100% { transform: scale(0.85); opacity: 0; }
+}
+.art-airstrike .as-ring { animation: airstrike-ring 5s ease-out infinite; }
+@keyframes airstrike-ring {
+  0% { transform: scale(0.3); opacity: 0; }
+  6% { opacity: 0.9; }
+  30%, 100% { transform: scale(3); opacity: 0; }
+}
+.art-airstrike .as-plume { animation: airstrike-plume 12s ease-in-out infinite; transform-origin: center bottom; }
+.art-airstrike .as-plume2 { animation-duration: 9s; }
+@keyframes airstrike-plume { 50% { transform: translateX(-8px) scaleY(1.08) skewX(-4deg); } }
+.art-airstrike .as-tracer { animation: airstrike-tracer 1.2s linear infinite; }
+@keyframes airstrike-tracer { to { stroke-dashoffset: -24; } }
+.art-airstrike .as-shimmer { animation: airstrike-shimmer 4s ease-in-out infinite; }
+@keyframes airstrike-shimmer { 50% { opacity: 0.55; transform: scaleX(1.06); } }
+.art-airstrike .as-twinkle { animation: airstrike-blink 5s ease-in-out infinite; }
+.art-airstrike .as-reticle { animation: airstrike-reticle 10s linear infinite; }
+@keyframes airstrike-reticle { to { transform: rotate(360deg); } }
+.art-airstrike .as-hud { animation: airstrike-hud 6s steps(1) infinite; }
+@keyframes airstrike-hud {
+  0%, 100% { opacity: 0.75; }
+  62% { opacity: 0.5; }
+  63% { opacity: 0.75; }
+}
+.art-airstrike .as-scan { animation: airstrike-scan 6s linear infinite; transform-box: view-box; }
+@keyframes airstrike-scan {
+  from { transform: translateY(0); }
+  to { transform: translateY(360px); }
+}
+
+/* ---------- nuclear ---------- */
+.art-nuclear .nu-led { animation: nuclear-led 3s steps(1) infinite; }
+@keyframes nuclear-led { 50% { opacity: 0.35; } }
+.art-nuclear .nu-trefoil { animation: nuclear-glow 6s ease-in-out infinite; }
+@keyframes nuclear-glow { 50% { opacity: 0.8; } }
+.art-nuclear .nu-sweep { animation: nuclear-sweep 4s linear infinite; transform-box: view-box; transform-origin: 0 0; }
+@keyframes nuclear-sweep {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.art-nuclear .nu-alarm { animation: nuclear-alarm 4s ease-in-out infinite; }
+@keyframes nuclear-alarm {
+  0%, 50%, 100% { opacity: 0.04; }
+  25%, 75% { opacity: 0.2; }
+}
+.art-nuclear .nu-klaxon { animation: nuclear-alarm-dot 2s steps(1) infinite; }
+@keyframes nuclear-alarm-dot { 50% { opacity: 0.3; } }
+
+/* ---------- covert ---------- */
+.art-covert .cv-pan { animation: covert-pan 14s ease-in-out infinite; }
+@keyframes covert-pan {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-14px, 6px); }
+}
+.art-covert .cv-reticle { animation: covert-lock 5s ease-in-out infinite; }
+@keyframes covert-lock {
+  0% { transform: scale(1.5); opacity: 0; }
+  20%, 80% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+.art-covert .cv-arc { stroke-dasharray: 3 3; animation: covert-arc 4s linear infinite; }
+@keyframes covert-arc { to { stroke-dashoffset: -36; } }
+.art-covert .cv-blip { animation: covert-blip 2.5s ease-in-out infinite; }
+@keyframes covert-blip { 50% { transform: scale(1.6); opacity: 0.4; } }
+.art-covert .cv-rec { animation: covert-rec 1.6s steps(1) infinite; }
+@keyframes covert-rec { 50% { opacity: 0; } }
+.art-covert .cv-cursor { animation: covert-cursor 6s steps(5) infinite; transform-box: view-box; }
+@keyframes covert-cursor { to { transform: translateY(50px); } }
+.art-covert .cv-wave { stroke-dasharray: 400; animation: covert-wave 5s linear infinite; }
+@keyframes covert-wave {
+  from { stroke-dashoffset: 400; }
+  to { stroke-dashoffset: 0; }
+}
+.art-covert .cv-flick { animation: covert-flick 7s steps(1) infinite; }
+@keyframes covert-flick {
+  0%, 100% { opacity: 1; }
+  33% { opacity: 0.7; }
+  34% { opacity: 1; }
+  80% { opacity: 0.85; }
+}
+.art-covert .cv-alert { animation: covert-alert 4s ease-in-out infinite; }
+@keyframes covert-alert { 50% { opacity: 0.22; } }
+
+/* ---------- disaster ---------- */
+.art-disaster .ds-strobeR { animation: disaster-strobe 1.2s steps(1) infinite; }
+.art-disaster .ds-strobeB { animation: disaster-strobe 1.2s steps(1) infinite; animation-delay: -0.6s; }
+@keyframes disaster-strobe {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.15; }
+}
+.art-disaster .ds-beam { animation: disaster-beam 10s ease-in-out infinite; transform-box: view-box; transform-origin: 0 0; }
+@keyframes disaster-beam {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-9deg); }
+}
+.art-disaster .ds-rotor { animation: disaster-rotor 0.3s linear infinite; }
+@keyframes disaster-rotor { 50% { transform: scaleX(0.35); } }
+.art-disaster .ds-nav { animation: disaster-strobe 1.6s steps(1) infinite; }
+.art-disaster .ds-boat { animation: disaster-bob 5s ease-in-out infinite; }
+@keyframes disaster-bob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(2px) rotate(-1.2deg); }
+}
+.art-disaster .ds-ripple { animation: disaster-ripple 4s ease-in-out infinite; }
+@keyframes disaster-ripple { 50% { transform: translateX(8px); opacity: 0.4; } }
+.art-disaster .ds-rain { animation: disaster-rain 0.7s linear infinite; transform-box: view-box; transform-origin: 0 0; }
+@keyframes disaster-rain {
+  from { transform: translate(0, 0); }
+  to { transform: translate(0, 48px); }
+}
+.art-disaster .ds-smoke { animation: disaster-smoke 12s ease-in-out infinite; }
+@keyframes disaster-smoke { 50% { transform: translate(-16px, -8px) scale(1.15); opacity: 0.5; } }
+.art-disaster .ds-cloud { animation: disaster-cloud 14s ease-in-out infinite; }
+@keyframes disaster-cloud { 50% { transform: translateX(20px); } }
+.art-disaster .ds-alert { animation: disaster-alert 4s ease-in-out infinite; }
+@keyframes disaster-alert { 50% { opacity: 0.18; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .art-war_room *, .art-deployment *, .art-airstrike *, .art-nuclear *, .art-covert *, .art-disaster * {
+    animation: none !important;
+  }
+}

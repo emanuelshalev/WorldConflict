@@ -2,8 +2,8 @@
   "id": "PAK",
   "iso3": "PAK",
   "name": "Pakistan",
-  "population": 235000000,
-  "regimeType": "DEMOCRACY",
+  "population": 241000000,
+  "regimeType": "AUTOCRACY",
   "politicalSystem": {
     "type": "PARLIAMENTARY_DEMOCRACY",
     "powerCenters": ["MILITARY", "EXECUTIVE", "LEGISLATURE"],
@@ -19,9 +19,14 @@
       { "year": 1979, "event": "Frontline role in the anti-Soviet Afghan jihad", "impact": "ISI became patron of jihadist proxies, a tool later turned on Kashmir and ultimately on Pakistan itself" },
       { "year": 1998, "event": "Nuclear tests at Chagai", "impact": "Matched India's tests and achieved the nuclear deterrent seen as the ultimate guarantee against conventional defeat" },
       { "year": 1999, "event": "Kargil conflict and Musharraf coup", "impact": "Nuclear-shadowed adventurism in Kashmir and the fourth military takeover confirmed army supremacy" },
-      { "year": 2021, "event": "Taliban return in Kabul and TTP resurgence", "impact": "Strategic-depth doctrine backfired as the Pakistani Taliban renewed its insurgency from Afghan soil" }
+      { "year": 2021, "event": "Taliban return in Kabul and TTP resurgence", "impact": "Strategic-depth doctrine backfired as the Pakistani Taliban renewed its insurgency from Afghan soil" },
+      { "year": 2023, "event": "Imran Khan jailed after clashes with the army", "impact": "The hybrid regime crushed the most popular politician; the military's dominance became explicit" },
+      { "year": 2025, "event": "Four-day missile and drone war with India (May)", "impact": "Army chief Asim Munir became Field Marshal; the clash was hailed at home as a victory" },
+      { "year": 2025, "event": "Strategic Mutual Defense Agreement with Saudi Arabia (17 September)", "impact": "A Gulf patron's security pact that raises questions about extended nuclear deterrence" },
+      { "year": 2025, "event": "27th Amendment makes Munir Chief of Defence Forces with immunity", "impact": "Formalized the army's supremacy over civilian institutions" },
+      { "year": 2026, "event": "Pakistan declares 'open war' on Taliban Afghanistan (27 February)", "impact": "Air strikes on Kabul and Kandahar; intermittent clashes continue despite a truce" }
     ],
-    "historicalRivals": ["IND"],
+    "historicalRivals": ["IND", "AFG"],
     "historicalAllies": ["CHN", "SAU"],
     "sphereOfInfluence": [],
     "foreignPolicyOrientation": "BALANCING",
@@ -48,7 +53,7 @@
     { "kind": "ETHNIC", "name": "Baloch separatist insurgency and Sindhi-Pashtun grievances", "strength": 30, "tension": 60 }
   ],
   "economy": {
-    "gdp": 340000000000,
+    "gdp": 400000000000,
     "growthRate": 0.02,
     "debtGdpRatio": 75,
     "sectors": { "agriculture": 23, "industry": 19, "services": 58 },

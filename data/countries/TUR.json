@@ -20,9 +20,12 @@
       { "year": 1980, "event": "Military coup", "impact": "Army as self-appointed guardian of the state; cycles of intervention and civilian pushback" },
       { "year": 2005, "event": "EU accession talks open then stall", "impact": "Disillusionment with Europe; pivot toward independent regional power role" },
       { "year": 2016, "event": "Failed coup attempt", "impact": "Mass purges of military and bureaucracy; deepened distrust of Western allies" },
-      { "year": 2017, "event": "Referendum creates executive presidential system", "impact": "Erdogan concentrates power; personalized, transactional foreign policy" }
+      { "year": 2017, "event": "Referendum creates executive presidential system", "impact": "Erdogan concentrates power; personalized, transactional foreign policy" },
+      { "year": 2023, "event": "Erdoğan re-elected in a runoff", "impact": "A third decade in power despite inflation and earthquake devastation" },
+      { "year": 2025, "event": "Istanbul mayor İmamoğlu arrested; PKK announces its dissolution", "impact": "Mass protests at home; the PKK peace process advanced, though its implementation remains uncertain" },
+      { "year": 2026, "event": "Mass corruption trial of İmamoğlu and about 400 others opens (9 March)", "impact": "The main challenger to Erdoğan is kept off the political field" }
     ],
-    "historicalRivals": ["RUS", "IRN", "EGY"],
+    "historicalRivals": ["RUS", "IRN", "ISR"],
     "historicalAllies": ["USA", "PAK"],
     "sphereOfInfluence": [],
     "foreignPolicyOrientation": "BALANCING",
@@ -48,7 +51,7 @@
     { "kind": "ETHNIC", "name": "Kurdish question in the southeast", "strength": 20, "tension": 70 }
   ],
   "economy": {
-    "gdp": 1150000000000,
+    "gdp": 1400000000000,
     "growthRate": 0.030,
     "debtGdpRatio": 30,
     "sectors": { "agriculture": 6, "industry": 31, "services": 63 },

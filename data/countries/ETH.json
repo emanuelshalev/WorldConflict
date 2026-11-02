@@ -1,0 +1,84 @@
+{
+  "id": "ETH",
+  "iso3": "ETH",
+  "name": "Ethiopia",
+  "population": 132000000,
+  "regimeType": "AUTOCRACY",
+  "politicalSystem": {
+    "type": "PARLIAMENTARY_DEMOCRACY",
+    "powerCenters": ["EXECUTIVE", "PARTY", "MILITARY", "SECURITY_SERVICES"],
+    "electionCycleMonths": 60,
+    "nextElectionTurn": null,
+    "leaderTitle": "Prime Minister"
+  },
+  "history": {
+    "keyEvents": [
+      { "year": 1896, "event": "Victory over Italy at Adwa", "impact": "Preserved independence and made Ethiopia a symbol of African sovereignty" },
+      { "year": 1974, "event": "Derg revolution overthrows Emperor Haile Selassie", "impact": "Marxist military rule, Red Terror and famine" },
+      { "year": 1991, "event": "EPRDF victory and Eritrea's de facto independence", "impact": "Ethnic federalism under Tigrayan-led rule; Ethiopia became landlocked when Eritrea seceded in 1993" },
+      { "year": 1998, "event": "Ethiopia-Eritrea border war", "impact": "Around 80,000 dead and a frozen hostility that lasted two decades" },
+      { "year": 2018, "event": "Abiy Ahmed becomes prime minister and makes peace with Eritrea", "impact": "Nobel Peace Prize, political opening and the sidelining of the TPLF" },
+      { "year": 2020, "event": "Tigray war begins (with Eritrean forces fighting alongside federal troops)", "impact": "Hundreds of thousands killed by war and famine before the 2022 Pretoria agreement" },
+      { "year": 2024, "event": "Somaliland port MoU, Amhara Fano insurgency and floating of the birr under an IMF program", "impact": "Sea-access ambitions alarmed neighbours while the economy was painfully liberalized" },
+      { "year": 2025, "event": "Grand Ethiopian Renaissance Dam inaugurated (September)", "impact": "National triumph and leverage over the Nile; Egypt and Sudan called it an existential threat" },
+      { "year": 2026, "event": "Prosperity Party landslide (June), Abiy's new term (October) and renewed war in Tigray from late September with Eritrean troops reported inside Tigray", "impact": "Pretoria peace collapsed; Abiy's Red Sea and Assab rhetoric raises the risk of interstate war with Eritrea" }
+    ],
+    "historicalRivals": ["EGY", "SDN"],
+    "historicalAllies": ["ARE", "TUR", "CHN", "USA"],
+    "sphereOfInfluence": [],
+    "foreignPolicyOrientation": "EXPANSIONIST",
+    "narrative": "Africa's second most populous country, an ancient empire turned fractious ethnic federation, ruled by a prime minister who sees sovereign Red Sea access as a historic mission. The Nile dam is its pride and Egypt's fear; Tigray, Amhara and Eritrea are its open wounds."
+  },
+  "personality": {
+    "warPropensity": 60,
+    "allianceLoyalty": 45,
+    "diplomaticFlexibility": 40,
+    "riskTolerance": 65,
+    "expansionism": 60,
+    "isolationism": 20,
+    "ideologicalRigidity": 50,
+    "prestigeEmphasis": 80
+  },
+  "redLines": [
+    { "type": "TERRITORIAL", "description": "Secession of Tigray or foreign (Eritrean) occupation of Ethiopian territory", "severity": 10 },
+    { "type": "ECONOMIC", "targetCountryId": "EGY", "description": "Military threat to the Grand Ethiopian Renaissance Dam", "severity": 10 },
+    { "type": "ECONOMIC", "description": "Permanent denial of access to the Red Sea through Djibouti, Eritrea or Somaliland", "severity": 7 }
+  ],
+  "internalDivisions": [
+    { "kind": "ETHNIC", "name": "Tigrayan TPLF forces at war with Addis Ababa again since September 2026", "strength": 8, "tension": 95 },
+    { "kind": "ETHNIC", "name": "Amhara Fano insurgency against the federal government", "strength": 25, "tension": 85 },
+    { "kind": "ETHNIC", "name": "Oromo grievances and the OLA insurgency", "strength": 35, "tension": 60 }
+  ],
+  "economy": {
+    "gdp": 125000000000,
+    "growthRate": 0.07,
+    "debtGdpRatio": 45,
+    "sectors": { "agriculture": 33, "industry": 25, "services": 42 },
+    "keyResources": ["hydropower", "arable_land", "gold", "potash", "natural_gas"],
+    "keyExports": ["coffee", "gold", "oilseeds", "cut_flowers", "electricity", "air_transport"],
+    "developmentLevel": "DEVELOPING"
+  },
+  "military": {
+    "manpower": 300000,
+    "airpower": 90,
+    "doctrine": "OFFENSIVE",
+    "nuclearStatus": "NONE",
+    "warheads": 0,
+    "arms_suppliers": ["RUS", "PRIVATE"]
+  },
+  "militaryBudgetPct": 1.7,
+  "stability": 30,
+  "legitimacy": 50,
+  "intelLevel": 50,
+  "insurgencyLevel": "REBELLION",
+  "goals": [
+    { "id": "eth_g1", "type": "SECURITY", "priority": 92, "description": "Crush the renewed Tigray rebellion and the Fano insurgency to hold the federation together" },
+    { "id": "eth_g2", "type": "TERRITORIAL", "priority": 80, "description": "Secure sovereign Red Sea access, through negotiation or pressure on Eritrea's port of Assab" },
+    { "id": "eth_g3", "type": "SECURITY", "targetCountryId": "EGY", "priority": 75, "description": "Protect the Renaissance Dam and resist Egyptian-led encirclement with Eritrea and Somalia" },
+    { "id": "eth_g4", "type": "ECONOMIC", "priority": 65, "description": "Complete IMF-backed reforms and sustain high growth for a fast-growing population" }
+  ],
+  "geo": {
+    "bounds": [33.0, 3.4, 48.0, 14.9],
+    "capital": { "name": "Addis Ababa", "coordinates": [38.7578, 9.0054] }
+  }
+}
