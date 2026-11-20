@@ -34,23 +34,25 @@ export interface TaggedItem extends FeedItem {
 // ----------------------------------------------------------------------------
 
 function decode(s: string): string {
-  return s
-    .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
-    // Feeds often escape the HTML inside descriptions: unescape it, then strip the tags
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/<[^>]+>/g, " ")
-    .replace(/&amp;/g, "&")
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;|&apos;|&#8217;|&rsquo;/g, "'")
-    .replace(/&#8216;|&lsquo;/g, "'")
-    .replace(/&#8220;|&#8221;|&ldquo;|&rdquo;/g, '"')
-    .replace(/&#8211;|&ndash;/g, "-")
-    .replace(/&#8212;|&mdash;|—/g, ", ")
-    .replace(/&nbsp;/g, " ")
-    .replace(/&#(\d+);/g, (_m, n) => String.fromCharCode(Number(n)))
-    .replace(/\s+/g, " ")
-    .trim();
+  return (
+    s
+      .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
+      // Feeds often escape the HTML inside descriptions: unescape it, then strip the tags
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/&amp;/g, "&")
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;|&apos;|&#8217;|&rsquo;/g, "'")
+      .replace(/&#8216;|&lsquo;/g, "'")
+      .replace(/&#8220;|&#8221;|&ldquo;|&rdquo;/g, '"')
+      .replace(/&#8211;|&ndash;/g, "-")
+      .replace(/&#8212;|&mdash;|—/g, ", ")
+      .replace(/&nbsp;/g, " ")
+      .replace(/&#(\d+);/g, (_m, n) => String.fromCharCode(Number(n)))
+      .replace(/\s+/g, " ")
+      .trim()
+  );
 }
 
 function tag(block: string, name: string): string {
@@ -391,7 +393,16 @@ const HISTORY_KINDS = new Set([
   "sanctions",
   "terror",
 ]);
-const CONFLICT_KINDS = new Set(["war", "ceasefire", "blockade", "nuclear", "sanctions", "coup", "assassination", "terror"]);
+const CONFLICT_KINDS = new Set([
+  "war",
+  "ceasefire",
+  "blockade",
+  "nuclear",
+  "sanctions",
+  "coup",
+  "assassination",
+  "terror",
+]);
 
 /** Turn tagged items into the reviewable proposal (no LLM needed). */
 export function buildProposal(
