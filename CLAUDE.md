@@ -9,8 +9,8 @@ World Conflict, a turn-based geopolitical simulation game set in Nov 2026 (41 co
 ## Commands
 
 ```bash
-npm install && cd ui && npm install && cd ..   # first-time setup (two installs)
-npx prisma db push                              # create/update dev.db (DATABASE_URL defaults to file:./dev.db)
+npm run setup        # first-time setup: both installs, .env, SQLite or JSON-file saves (setup.cmd / setup.sh)
+npx prisma db push   # (manual alternative) create/update dev.db (DATABASE_URL defaults to file:./dev.db)
 
 npm run dev          # backend (tsx watch, port 8080) + frontend (Vite, port 5173) concurrently
 npm run dev:api      # backend only
@@ -45,7 +45,7 @@ The simulation engine (`src/core/`) must be fully deterministic: same seed + sam
 - **Asymmetric information is real**: each country holds `beliefs` (noisy estimates of others' strength/GDP/stability/nuclear progress, accuracy driven by intel vs counter-intel). The AI decides from beliefs, not ground truth, and the API returns a belief-filtered `playerView` (with uncertainty ranges) for foreign countries.
 - `src/agents/fallback.ts`: `PersonalityAI`, the deterministic country AI: decisions weighted by personality traits, historical rivals/allies, red lines, leader style, regime constraints and beliefs. `strategist.ts` `planTurn(world, aiConfig)` is what `POST /api/turn` uses: it returns PersonalityAI intents, replacing selected countries' intents with validated LLM proposals per tier (fallback on any failure/timeout/budget cap). `usage.ts` meters tokens/cost (persisted per save in `SaveGame.llmUsage`). Providers: `llmClient.ts` (OpenAI, Gemini, Ollama, OpenAI-compatible `local`) and `providers/anthropic.ts` (official SDK).
 - `src/api/`: Fastify routes. `routes/game.ts` is stateless (loads from DB per request): `/new-game` (mode, difficulty, flashpointId, daily), `/turn` (`playerActions`, `decisions`, optional `ai` tier config), `/preview-action`, `/report/:saveId`, `/scenarios` (+ flashpoints + daily), `/countries`, `/saves`, `/load/:saveId`, `DELETE /save/:saveId`. Payloads pass through `publicWorldState()` so foreign ground truth never reaches the client.
-- `src/infra/db.ts`: Prisma + better-sqlite3 adapter. World state is stored as a JSON string in the `SaveGame` row and re-validated with `WorldStateSchema` on load. `DATABASE_URL` must be set in `.env` (`file:./dev.db`).
+- `src/infra/db.ts`: two save stores behind `gameDb`: SQLite via Prisma + better-sqlite3 (optional dependencies, loaded lazily; `DATABASE_URL`, default `file:./dev.db`) and `JsonStore` (one JSON file per save in `saves/`), used when `DB_DRIVER=json` or when SQLite fails to load. World state is re-validated with `WorldStateSchema` on write and on load. `npm run setup` (`scripts/setup.mjs`, wrappers `setup.cmd` / `setup.sh`) installs and picks the store.
 
 ### Frontend
 

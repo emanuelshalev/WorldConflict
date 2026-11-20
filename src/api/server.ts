@@ -1,6 +1,7 @@
 import "dotenv/config";
 import cors from "@fastify/cors";
 import Fastify from "fastify";
+import { gameDb } from "../infra/db.js";
 import { setupErrorHandler } from "./middleware/errorHandler.js";
 import { setupRateLimit } from "./middleware/rateLimit.js";
 import { authRoutes } from "./routes/auth.js";
@@ -32,6 +33,7 @@ server.get("/health", async (_request, _reply) => {
     status: "ok",
     timestamp: new Date().toISOString(),
     version: "2.0.0-rc.2",
+    saves: await gameDb.driver(),
   };
 });
 

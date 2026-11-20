@@ -1,7 +1,7 @@
 import { randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
-import { prisma } from "../../infra/db.js";
+import { gameDb } from "../../infra/db.js";
 
 const CredentialsSchema = z.object({
   name: z.string().min(2).max(32).trim(),
@@ -31,13 +31,11 @@ export async function authRoutes(fastify: FastifyInstance): Promise<void> {
     ) => {
       try {
         const { name, password } = CredentialsSchema.parse(request.body);
-        const existing = await prisma.player.findUnique({ where: { name } });
+        const existing = await gameDb.findPlayer(name);
         if (existing) {
           return reply.status(409).send({ success: false, error: "That name is already taken" });
         }
-        const player = await prisma.player.create({
-          data: { name, passwordHash: hashPassword(password) },
-        });
+        const player = await gameDb.createPlayer(name, hashPassword(password));
         return reply.send({ success: true, player: { id: player.id, name: player.name } });
       } catch (error) {
         fastify.log.error(error);
@@ -60,7 +58,7 @@ export async function authRoutes(fastify: FastifyInstance): Promise<void> {
     ) => {
       try {
         const { name, password } = CredentialsSchema.parse(request.body);
-        const player = await prisma.player.findUnique({ where: { name } });
+        const player = await gameDb.findPlayer(name);
         if (!player || !verifyPassword(password, player.passwordHash)) {
           return reply.status(401).send({ success: false, error: "Wrong name or password" });
         }

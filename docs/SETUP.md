@@ -18,6 +18,15 @@ Get World Conflict running locally in about two minutes.
 
 ## 2. Install
 
+**The easy way:** `setup.cmd` (Windows, double-click), `./setup.sh` (macOS/Linux) or `npm run setup`. It checks your Node version, installs the server and the interface, creates `.env`, and chooses where games are saved:
+
+- **SQLite** (`dev.db`) when its native module installs, which it does with a ready-made binary on Node 20/22/24 64-bit;
+- **JSON files** in `saves/` otherwise (`DB_DRIVER=json` in `.env`). Nothing to compile, no Python, no Visual Studio. The server also falls back to files on its own if SQLite fails to load.
+
+Flags: `npm run setup -- --start` launches the game afterwards; `-- --json` skips SQLite.
+
+**By hand:**
+
 ```bash
 git clone https://github.com/emanuelshalev/WorldConflict.git
 cd WorldConflict
@@ -101,6 +110,8 @@ node dist/api/server.js    # serve the API
 
 | Symptom | Fix |
 |---|---|
+| `gyp ERR! find Python` / `node-gyp rebuild` errors during install (Windows) | npm tried to compile SQLite because no ready-made binary fits your Node (32-bit, or a non-LTS version). Run **`setup.cmd`**: it saves to files instead. For SQLite, install Node 22 LTS **x64** and run setup again. |
+| `[db] SQLite unavailable ... saving games as JSON files` in the server log | Expected without SQLite: saves go to `saves/`. Run `npm run setup` again after fixing Node if you want SQLite. |
 | `Unexpected end of JSON input` when starting a game | The UI can't reach the API. Is `npm run dev:api` running on :8080? |
 | Vite / Prisma error about the Node version | Upgrade to Node ≥ 20.19 (see prerequisites). |
 | `The table main.SaveGame does not exist` | Run `npx prisma db push`. |

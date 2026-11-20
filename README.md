@@ -83,10 +83,15 @@ Providers: **Claude** (Haiku 5.5 default), **OpenAI**, **Gemini**, **Ollama** or
 
 ## 🚀 Quick start
 
+Install **Node.js 22 LTS** (64-bit) from [nodejs.org](https://nodejs.org), then:
+
+- **Windows:** double-click **`setup.cmd`**
+- **macOS / Linux:** `./setup.sh`
+- or anywhere: `npm run setup`
+
+Setup checks Node, installs everything and picks a save store that works on your machine (SQLite, or plain files in `saves/` if SQLite cannot be built: no Python or C++ tools needed). Then:
+
 ```bash
-# Node.js ≥ 20.19 (22 LTS recommended)
-npm install && (cd ui && npm install)
-npx prisma db push          # creates the local SQLite save database
 npm run dev                 # API on :8080, game on http://localhost:5173
 ```
 

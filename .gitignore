@@ -144,3 +144,6 @@ vite.config.ts.timestamp-*
 # Local SQLite database (created by 'npx prisma db push')
 dev.db
 dev.db-journal
+
+# Local save games (JSON store)
+saves/
