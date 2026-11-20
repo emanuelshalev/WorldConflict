@@ -1,0 +1,113 @@
+/* =========================================================================
+   Title screen: "The world tonight". The globe is the menu.
+   ========================================================================= */
+.ts2 { position: fixed; inset: 0; overflow: hidden; background: #05080f; color: var(--text-1); display: grid; grid-template-columns: minmax(0, 1fr) 420px; grid-template-rows: auto minmax(0, 1fr) 30px; }
+.tg { position: absolute; inset: 0; }
+.tg-map { position: absolute; inset: 0; }
+.tg-fallback { position: absolute; inset: 0; background: radial-gradient(60% 60% at 40% 50%, #12305e 0%, #071226 55%, #05080f 100%); }
+.ts2-vignette { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(5, 8, 15, .78) 0%, rgba(5, 8, 15, 0) 34%, rgba(5, 8, 15, 0) 60%, rgba(5, 8, 15, .65) 100%), linear-gradient(180deg, rgba(5, 8, 15, .7) 0%, rgba(5, 8, 15, 0) 18%, rgba(5, 8, 15, 0) 85%, rgba(5, 8, 15, .8) 100%); }
+
+.ts2-top { grid-column: 1 / -1; grid-row: 1; position: relative; z-index: 3; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 22px clamp(16px, 3vw, 36px) 0; pointer-events: none; }
+.ts2-top > * { pointer-events: auto; }
+.ts2-brand h1 { margin: 0; font-family: var(--font-news); font-weight: 400; font-size: clamp(34px, 4vw, 52px); letter-spacing: -.01em; line-height: 1; text-shadow: 0 2px 20px rgba(0, 0, 0, .6); }
+.ts2-brand small { display: block; margin-top: 6px; font-size: 11.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); }
+.ts2-actions { display: flex; gap: 8px; align-items: center; }
+
+.ts2-left { position: relative; z-index: 3; grid-column: 1; grid-row: 2; align-self: start; display: flex; flex-direction: column; gap: 14px; padding: 26px clamp(16px, 3vw, 36px); max-width: 430px; pointer-events: none; }
+.ts2-left > * { pointer-events: auto; }
+.ts2-dial { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; border-radius: 14px; background: rgba(10, 16, 28, .75); border: 1px solid var(--line-2); backdrop-filter: blur(8px); }
+.ts2-dial button { display: grid; gap: 3px; padding: 9px 10px; border-radius: 10px; border: 0; background: none; color: var(--text-2); cursor: pointer; text-align: left; font: inherit; }
+.ts2-dial button.on { background: var(--accent); color: var(--accent-ink); }
+.ts2-dial-time { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; opacity: .8; }
+.ts2-dial-name { display: flex; align-items: center; gap: 5px; font-weight: 650; font-size: 14px; }
+.ts2-dial-name svg { width: 16px; height: 16px; }
+.ts2-pitch { margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--text-2); text-shadow: 0 1px 8px #000; }
+.ts2-tag { margin: 8px 0 0; font-family: var(--font-news); font-weight: 400; font-size: clamp(30px, 3.4vw, 46px); line-height: 1.02; text-shadow: 0 2px 24px rgba(0, 0, 0, .7); }
+.ts2-tag em { color: var(--accent); font-style: italic; }
+.ts2-daily { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 12px; border: 1px solid rgba(245, 213, 71, .55); background: rgba(40, 32, 6, .7); color: var(--text-1); cursor: pointer; text-align: left; font: inherit; backdrop-filter: blur(6px); }
+.ts2-daily small { display: block; font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--nuke); }
+.ts2-daily b { font-size: 15px; }
+.ts2-daily svg { margin-left: auto; color: var(--nuke); }
+
+/* Pins */
+.tg-pin { position: relative; width: 22px; height: 22px; padding: 0; border: 0; background: none; cursor: pointer; }
+.tg-pin-dot { position: absolute; inset: 6px; border-radius: 50%; background: var(--war); box-shadow: 0 0 10px rgba(229, 56, 59, .9); }
+.tg-pin-ring { position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--war); animation: tg-ring 2.2s ease-out infinite; }
+.tg-pin.gold .tg-pin-dot { background: var(--nuke); box-shadow: 0 0 12px rgba(245, 213, 71, .9); }
+.tg-pin.gold .tg-pin-ring { border-color: var(--nuke); }
+.tg-pin.on .tg-pin-dot { inset: 3px; background: #fff; }
+.tg-pin-label { position: absolute; left: 26px; top: 50%; transform: translateY(-50%); white-space: nowrap; font: 600 12px/1 var(--font-ui); color: #fff; text-shadow: 0 1px 4px #000, 0 0 10px #000; opacity: 0; transition: opacity .2s; pointer-events: none; }
+.tg-pin:hover .tg-pin-label, .tg-pin.on .tg-pin-label, .tg-pin:focus-visible .tg-pin-label { opacity: 1; }
+@keyframes tg-ring { 0% { transform: scale(.5); opacity: .9; } 100% { transform: scale(1.9); opacity: 0; } }
+
+/* Dossier */
+.ts2-dossier { position: relative; z-index: 4; grid-column: 2; grid-row: 2; display: flex; flex-direction: column; gap: 10px; margin: 12px 16px 10px 0; padding: 14px; border-radius: 16px; background: rgba(12, 17, 28, .9); border: 1px solid var(--line-2); box-shadow: 0 20px 60px rgba(0, 0, 0, .55); backdrop-filter: blur(10px); overflow-y: auto; min-height: 0; animation: ts2-in .5s var(--ease-out); }
+@keyframes ts2-in { from { opacity: 0; transform: translateX(20px); } }
+.ts2-scene .scene { border-radius: 10px; }
+.ts2-crisis-nav { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 6px; align-items: center; }
+.ts2-crisis-nav select { padding: 7px 10px; font-weight: 600; }
+.ts2-hook { margin: 0; font-family: var(--font-serif); font-size: 16px; line-height: 1.4; color: var(--text-1); }
+.ts2-hook.small { font-family: var(--font-ui); font-size: 13px; color: var(--text-2); }
+.ts2-more summary { cursor: pointer; font-size: 12px; color: var(--intel); }
+.ts2-more p { margin: 6px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--text-2); }
+.ts2-label { font: 600 11px/1 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--text-3); margin-top: 4px; }
+.ts2-eras { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.ts2-eras button { display: grid; gap: 2px; padding: 8px 6px; border: 1px dashed var(--line-2); border-radius: 8px; background: none; color: var(--text-2); cursor: pointer; font: inherit; text-align: center; }
+.ts2-eras button b { font-size: 17px; color: var(--text-1); }
+.ts2-eras button span { font-size: 10.5px; line-height: 1.2; }
+.ts2-eras button.on { border-style: solid; border-color: var(--accent); background: rgba(242, 169, 59, .1); }
+.ts2-sides { display: grid; gap: 6px; }
+.ts2-sides.many { grid-template-columns: 1fr 1fr; max-height: 240px; overflow-y: auto; padding-right: 2px; }
+.ts2-side { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 9px 10px; border-radius: 10px; border: 1px solid var(--line); border-left: 4px solid var(--line-2); background: var(--surface-1); color: var(--text-1); cursor: pointer; text-align: left; font: inherit; }
+.ts2-sides.many .ts2-side { padding: 6px 8px; gap: 6px; }
+.ts2-side:hover { border-color: var(--line-2); }
+.ts2-side.on { border-color: var(--accent); background: rgba(242, 169, 59, .1); }
+.ts2-side.d-steady { border-left-color: var(--good); }
+.ts2-side.d-tough { border-left-color: var(--accent); }
+.ts2-side.d-brutal { border-left-color: var(--war); }
+.ts2-side-flag { font-size: 22px; }
+.ts2-sides.many .ts2-side-flag { font-size: 16px; }
+.ts2-side-body { display: grid; gap: 2px; min-width: 0; }
+.ts2-side-body b { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ts2-sides.many .ts2-side-body b { font-size: 12.5px; }
+.ts2-side-body small { font-size: 11.5px; line-height: 1.35; color: var(--text-2); }
+.ts2-pips { font-size: 10px; letter-spacing: 1px; color: var(--text-3); }
+.d-steady .ts2-pips { color: var(--good); }
+.d-tough .ts2-pips { color: var(--accent); }
+.d-brutal .ts2-pips { color: var(--war); }
+.ts2-brief { margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--text-2); }
+.ts2-brief b { color: var(--text-1); }
+.ts2-launch { margin-top: auto; display: grid; gap: 8px; padding-top: 8px; border-top: 1px solid var(--line); }
+.ts2-quiet { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.ts2-quiet .seg button { padding: 5px 10px; }
+.ts2-quiet input { flex: 1; min-width: 140px; padding: 6px 8px; }
+.ts2-as { background: none; border: 0; color: var(--text-2); font: inherit; font-size: 12.5px; cursor: pointer; display: inline-flex; gap: 4px; align-items: center; }
+.ts2-go { width: 100%; justify-content: center; }
+.ts2-go:not(.primary) { border-color: var(--accent); color: var(--accent); }
+
+.ts2-ticker { grid-column: 1 / -1; grid-row: 3; position: relative; z-index: 3; display: flex; align-items: center; overflow: hidden; background: rgba(5, 8, 15, .85); border-top: 1px solid var(--line); }
+.ts2-ticker .tag { flex: none; height: 100%; display: flex; align-items: center; padding: 0 10px; background: var(--war); color: #fff; font: 700 11px/1 var(--font-display); letter-spacing: .14em; }
+.ts2-ticker .track { white-space: nowrap; font: 12px/1 var(--font-mono); color: var(--text-2); padding-left: 100%; animation: ticker 90s linear infinite; }
+.ts2-ticker .track span { margin-right: 46px; }
+@media (prefers-reduced-motion: reduce) { .ts2-ticker .track { animation: none; padding-left: 12px; } .tg-pin-ring { animation: none; } }
+
+/* Phone and tablet: globe on top, the dossier as a sheet */
+@media (max-width: 900px) {
+  .ts2 { position: fixed; overflow-y: auto; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 44vh auto auto 28px; }
+  .tg { position: absolute; inset: 0 0 auto 0; height: calc(44vh + 120px); }
+  .ts2-vignette { height: calc(44vh + 120px); }
+  .ts2-top { padding-top: 14px; }
+  .ts2-brand h1 { font-size: 30px; }
+  .ts2-actions .ghost { display: none; }
+  .ts2-left { grid-row: 2; padding: 10px 16px; gap: 8px; max-width: none; }
+  .ts2-pitch, .ts2-tag { display: none; }
+  .ts2-daily { margin-top: auto; }
+  .ts2-dossier { grid-column: 1; grid-row: 3; margin: 0 10px 10px; overflow: visible; }
+  .ts2-left { justify-content: flex-end; align-self: stretch; }
+  .ts2-daily { padding: 8px 12px; }
+  .ts2-sides.many { max-height: 260px; }
+  .ts2-launch { position: sticky; bottom: 0; background: rgba(12, 17, 28, .97); margin: 0 -14px -14px; padding: 10px 14px calc(12px + env(safe-area-inset-bottom)); border-radius: 0 0 16px 16px; }
+  .ts2-ticker { grid-row: 5; position: sticky; bottom: 0; }
+  .tg-pin-label { display: none; }
+  .tg-pin.on .tg-pin-label { display: block; }
+}

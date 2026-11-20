@@ -1,13 +1,19 @@
-import { TitleMontage } from '../scenes/TitleMontage';
+import { SceneFrame } from '../scenes/SceneFrame';
+import { sceneForNews } from '../scenes/kinds';
+import { labelPoint, loadWorld, type WorldGeo } from '../scenes/worldGeo';
+import { type GlobePin, TitleGlobe } from './TitleGlobe';
+import '../styles/title.css';
 import { useEffect, useMemo, useState } from 'react';
 import {
   IconBolt,
+  IconChevronLeft,
+  IconChevronRight,
+  IconPencil,
   IconBuildingBank,
   IconCrown,
   IconFlame,
   IconPlayerPlay,
   IconSettings,
-  IconTargetArrow,
   IconUserCircle,
 } from '@tabler/icons-react';
 import {
@@ -150,194 +156,223 @@ export function TitleScreen() {
       daily: true,
     });
 
+  // The world tonight: pins on the live crises, tints on the sides or the playable nations
+  const [geo, setGeo] = useState<WorldGeo | null>(null);
+  useEffect(() => {
+    loadWorld().then(setGeo).catch(() => {});
+  }, []);
+  const [focus, setFocus] = useState<[number, number] | null>(null);
+  const [wide, setWide] = useState(() => window.innerWidth > 900);
+  useEffect(() => {
+    const on = () => setWide(window.innerWidth > 900);
+    window.addEventListener('resize', on);
+    return () => window.removeEventListener('resize', on);
+  }, []);
+  const pinAt = (ids: string[]): [number, number] | null => {
+    if (!geo) return null;
+    const pts = ids.map((id) => labelPoint(geo, id)).filter((x): x is [number, number] => !!x);
+    if (!pts.length) return null;
+    return [pts.reduce((s2, p2) => s2 + p2[0], 0) / pts.length, pts.reduce((s2, p2) => s2 + p2[1], 0) / pts.length];
+  };
+  const pins: GlobePin[] =
+    mode === 'FLASHPOINT'
+      ? flashpoints
+          .map((f) => ({ id: f.id, at: pinAt(f.playable.map((x) => x.countryId)), label: f.title, gold: daily?.flashpointId === f.id }))
+          .filter((x): x is GlobePin => !!x.at)
+      : [];
+  const DIFF_TINT = { STEADY: 'rgba(86,197,150,.55)', TOUGH: 'rgba(242,169,59,.55)', BRUTAL: 'rgba(229,56,59,.55)' } as const;
+  const tint: Record<string, string> = Object.fromEntries(
+    (usingFlashpoint && fp ? fp.playable.map((x) => [x.countryId, DIFF_TINT[x.difficulty]]) : countries.map((c) => [c.id, DIFF_TINT[c.difficulty].replace('.55', '.28')])),
+  );
+  const pickCrisis = (id: string) => {
+    setFlashpointId(id);
+    setMode('FLASHPOINT');
+    const f = flashpoints.find((x) => x.id === id);
+    if (f) setFocus(pinAt(f.playable.map((x) => x.countryId)));
+  };
+  const pickNation = (id: string) => {
+    if (!nationChoices.some((n) => n.id === id)) return;
+    setCountryId(id);
+    setFocus(pinAt([id]));
+  };
+  const fpIndex = flashpoints.findIndex((f) => f.id === flashpointId);
+  const scene = usingFlashpoint && fp ? sceneForNews('WAR', `${fp.title} ${fp.tagline}`) : 'war_room';
+  const tension = scenarios.find((x) => x.id === '2026')?.globalTension;
+  const pips = (d: 'STEADY' | 'TOUGH' | 'BRUTAL') => '●'.repeat(DIFF_ORDER[d] + 1) + '○'.repeat(2 - DIFF_ORDER[d]);
+  const [editName, setEditName] = useState(false);
+  const scenario = scenarios.find((x) => x.id === scenarioId);
+
   return (
-    <div className="title-screen">
-      <div className="title-inner">
-        <div className="title-top">
-          <div className="brand">
-            <img src="/favicon.svg" width={40} height={40} alt="" />
-            <div>
-              <h1>World Conflict</h1>
-              <small>Situation room · November 2026</small>
-            </div>
-          </div>
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            {resume && (
-              <button className="wc-btn primary" onClick={() => loadGame(resume)}>
-                <IconPlayerPlay size={16} /> Continue
-              </button>
-            )}
-            <button className="wc-btn ghost" onClick={() => openModal('saveLoad')}>
-              Saved games
-            </button>
-            <button className="icon-btn" title="AI & settings" onClick={() => openModal('settings')}>
-              <IconSettings size={18} />
-            </button>
-            <button
-              className="icon-btn"
-              title={player ? `Signed in as ${player.name}` : 'Sign in to sync saves (optional)'}
-              onClick={() => useGameStore.setState({ showLogin: true })}
-            >
-              <IconUserCircle size={18} />
-            </button>
-          </div>
+    <div className="ts2">
+      <TitleGlobe pins={pins} selectedPin={usingFlashpoint ? flashpointId : null} onPin={pickCrisis} tint={tint} selectedCountry={countryId} onCountry={pickNation} focus={focus} padRight={wide ? 440 : 0} />
+      <div className="ts2-vignette" aria-hidden />
+
+      <header className="ts2-top">
+        <div className="ts2-brand">
+          <h1>World Conflict</h1>
+          <small className="num">
+            The world tonight · {new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+            {tension !== undefined ? ` · tension ${tension}` : ''}
+          </small>
         </div>
-
-        <div className="hero">
-          <div>
-            <h2>
-              Lead your nation.
-              <br />
-              <em>Face the consequences.</em>
-            </h2>
-            <p>
-              Wars in Europe and the Gulf, a blockade in the Caribbean, a new supreme leader in
-              Tehran. Every country is run by an AI with its own history, red lines and
-              half-wrong intelligence. Step in, and see if you can do better.
-            </p>
-          </div>
-          <TitleMontage />
-        </div>
-
-        {daily && (
-          <div className="daily">
-            <span className="pulse-dot" />
-            <div style={{ flex: 1 }}>
-              <div className="display" style={{ fontSize: 13, color: 'var(--text-2)' }}>
-                Daily flashpoint · {daily.date}
-              </div>
-              <b style={{ fontSize: 17 }}>
-                {flag(daily.countryId)} {daily.title}
-              </b>
-              <div style={{ color: 'var(--text-3)', fontSize: 12 }}>
-                Same world for everyone today. Compare your stars.
-              </div>
-            </div>
-            <button className="wc-btn primary" onClick={playDaily} disabled={isLoading}>
-              <IconFlame size={16} /> Play today's crisis
+        <div className="ts2-actions">
+          {resume && (
+            <button className="wc-btn primary" onClick={() => loadGame(resume)}>
+              <IconPlayerPlay size={16} /> Continue
             </button>
-          </div>
-        )}
+          )}
+          <button className="wc-btn ghost" onClick={() => openModal('saveLoad')}>
+            Saved games
+          </button>
+          <button className="icon-btn" title="AI & settings" onClick={() => openModal('settings')}>
+            <IconSettings size={18} />
+          </button>
+          <button className="icon-btn" title={player ? `Signed in as ${player.name}` : 'Sign in to sync saves (optional)'} onClick={() => useGameStore.setState({ showLogin: true })}>
+            <IconUserCircle size={18} />
+          </button>
+        </div>
+      </header>
 
-        <div className="section-label">1 · How long do you have?</div>
-        <div className="mode-grid">
+      <section className="ts2-left">
+        <div className="ts2-dial" role="radiogroup" aria-label="How long do you have?">
           {MODES.map((m) => (
-            <button
-              key={m.id}
-              className={`mode-card ${mode === m.id ? 'active' : ''}`}
-              onClick={() => setMode(m.id)}
-            >
-              <div className="mode-time">{m.time}</div>
-              <h3 style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <button key={m.id} role="radio" aria-checked={mode === m.id} className={mode === m.id ? 'on' : ''} onClick={() => setMode(m.id)}>
+              <span className="ts2-dial-time num">{m.id === 'FLASHPOINT' ? '15 min' : m.id === 'TERM' ? '1 term' : 'Legacy'}</span>
+              <span className="ts2-dial-name">
                 {m.icon} {m.name}
-              </h3>
-              <p>{m.pitch}</p>
-              <div className="mode-meta">
-                {m.meta.map((x) => (
-                  <span className="chip" key={x}>
-                    {x}
-                  </span>
-                ))}
-              </div>
-            </button>
-          ))}
-        </div>
-
-        {mode === 'FLASHPOINT' && flashpoints.length > 0 && (
-          <>
-            <div className="section-label">2 · Pick a crisis</div>
-            <div className="fp-grid">
-              {flashpoints.map((f) => (
-                <button
-                  key={f.id}
-                  className={`fp-card ${flashpointId === f.id ? 'active' : ''}`}
-                  onClick={() => setFlashpointId(f.id)}
-                >
-                  <div className="fp-date">
-                    {f.date ?? ''} · {f.turns} MONTHS
-                  </div>
-                  <h4>{f.title}</h4>
-                  <p>{f.tagline}</p>
-                  <div style={{ marginTop: 8, fontSize: 18 }}>
-                    {f.playable.map((p) => flag(p.countryId)).join(' ')}
-                  </div>
-                </button>
-              ))}
-            </div>
-            {fp && (
-              <p style={{ color: 'var(--text-2)', fontSize: 13.5, lineHeight: 1.55, marginTop: 12 }}>
-                <IconTargetArrow size={14} style={{ verticalAlign: -2 }} /> {fp.hook}
-              </p>
-            )}
-          </>
-        )}
-
-        {mode !== 'FLASHPOINT' && scenarios.length > 0 && (
-          <>
-            <div className="section-label">2 · Choose your era</div>
-            <div className="seg">
-              {scenarios.map((s) => (
-                <button key={s.id} className={scenarioId === s.id ? 'on' : ''} onClick={() => setScenarioId(s.id)}>
-                  {s.name}
-                </button>
-              ))}
-            </div>
-            <p style={{ color: 'var(--text-2)', fontSize: 13.5, maxWidth: 760 }}>
-              {scenarios.find((s) => s.id === scenarioId)?.description}
-            </p>
-          </>
-        )}
-
-        <div className="section-label">
-          {mode === 'FLASHPOINT' && flashpoints.length > 0 ? '3 · Choose your side' : '3 · Choose your nation'}
-        </div>
-        <div className="nation-grid">
-          {nationChoices.map((n) => (
-            <button
-              key={n.id}
-              className={`nation ${countryId === n.id ? 'active' : ''}`}
-              onClick={() => setCountryId(n.id)}
-            >
-              <b>
-                {flag(n.id)} {n.name}
-              </b>
-              <span>{n.sub}</span>
-              <span className={`chip ${n.difficulty.toLowerCase()}`} style={{ alignSelf: 'flex-start' }}>
-                {DIFF_LABEL[n.difficulty]}
               </span>
             </button>
           ))}
         </div>
-
-        <div className="launch-bar">
-          <div className="summary">
-            <b>
-              {chosen ? `${flag(chosen.id)} ${chosen.name}` : 'Pick a nation'}
-              {usingFlashpoint && fp ? `, ${fp.title}` : ''}
-            </b>
-            <p>
-              {objective
-                ? `${objective.title}: ${objective.briefing}`
-                : (country?.narrative.split('. ').slice(0, 2).join('. ') ?? '')}
-            </p>
-          </div>
-          <div className="seg" title="Difficulty">
-            {(['ANALYST', 'STATESMAN', 'STRONGMAN'] as Difficulty[]).map((d) => (
-              <button key={d} className={difficulty === d ? 'on' : ''} onClick={() => setDifficulty(d)}>
-                {d === 'ANALYST' ? 'Story' : d === 'STATESMAN' ? 'Normal' : 'Hard'}
-              </button>
-            ))}
-          </div>
-          <input
-            className="leader-input"
-            placeholder="Play as the real leader, or type a name"
-            value={leaderName}
-            maxLength={40}
-            onChange={(e) => setLeaderName(e.target.value)}
-          />
-          <button className="wc-btn primary big" disabled={!countryId || isLoading} onClick={launch}>
-            {isLoading ? 'Briefing…' : 'Take office ▸'}
+        <p className="ts2-pitch">{MODES.find((m) => m.id === mode)?.pitch}</p>
+        <h2 className="ts2-tag">
+          {mode === 'FLASHPOINT' ? (
+            <>
+              Pick a fire.
+              <br />
+              <em>Put it out, or don't.</em>
+            </>
+          ) : (
+            <>
+              Pick a nation.
+              <br />
+              <em>Keep it standing.</em>
+            </>
+          )}
+        </h2>
+        {daily && (
+          <button className="ts2-daily" onClick={playDaily} disabled={isLoading}>
+            <span className="pulse-dot" />
+            <span>
+              <small className="num">Today's crisis · {daily.date}</small>
+              <b>
+                {flag(daily.countryId)} {daily.title}
+              </b>
+            </span>
+            <IconFlame size={18} />
           </button>
+        )}
+      </section>
+
+      <aside className="ts2-dossier" aria-label="Dossier">
+        {usingFlashpoint && fp ? (
+          <>
+            <div className="ts2-scene">
+              <SceneFrame key={fp.id} kind={scene} home={fp.playable[0]?.countryId} other={fp.playable[1]?.countryId} mood="bad" size="card" live kicker={`${fp.date ?? ''} · ${fp.turns} months`} headline={fp.title} />
+            </div>
+            <div className="ts2-crisis-nav">
+              <button className="icon-btn" aria-label="Previous crisis" onClick={() => pickCrisis(flashpoints[(fpIndex - 1 + flashpoints.length) % flashpoints.length].id)}>
+                <IconChevronLeft size={18} />
+              </button>
+              <select className="leader-input" value={fp.id} onChange={(e) => pickCrisis(e.target.value)} aria-label="Crisis">
+                {flashpoints.map((f) => (
+                  <option key={f.id} value={f.id}>
+                    {f.title}
+                  </option>
+                ))}
+              </select>
+              <button className="icon-btn" aria-label="Next crisis" onClick={() => pickCrisis(flashpoints[(fpIndex + 1) % flashpoints.length].id)}>
+                <IconChevronRight size={18} />
+              </button>
+            </div>
+            <p className="ts2-hook">{fp.tagline}</p>
+            <details className="ts2-more">
+              <summary>What is happening</summary>
+              <p>{fp.hook}</p>
+            </details>
+            <div className="ts2-label">Choose your side</div>
+          </>
+        ) : (
+          <>
+            <div className="ts2-label">The era</div>
+            <div className="ts2-eras">
+              {scenarios.map((x) => (
+                <button key={x.id} className={scenarioId === x.id ? 'on' : ''} onClick={() => setScenarioId(x.id)}>
+                  <b className="num">{x.startYear}</b>
+                  <span>{x.name.replace(/^\d{4}:?\s*/, '')}</span>
+                </button>
+              ))}
+            </div>
+            {scenario && <p className="ts2-hook small">{scenario.description}</p>}
+            <div className="ts2-label">Your nation · click the globe or the list</div>
+          </>
+        )}
+        <div className={`ts2-sides ${usingFlashpoint ? '' : 'many'}`}>
+          {nationChoices.map((n) => (
+            <button key={n.id} className={`ts2-side d-${n.difficulty.toLowerCase()} ${countryId === n.id ? 'on' : ''}`} onClick={() => pickNation(n.id)}>
+              <span className="ts2-side-flag">{flag(n.id)}</span>
+              <span className="ts2-side-body">
+                <b>{n.name}</b>
+                {usingFlashpoint && <small>{n.sub}</small>}
+              </span>
+              <span className="ts2-pips num" title={DIFF_LABEL[n.difficulty]}>
+                {pips(n.difficulty)}
+              </span>
+            </button>
+          ))}
+        </div>
+        {(objective || country) && (
+          <p className="ts2-brief">
+            {objective ? (
+              <>
+                <b>{objective.title}.</b> {objective.briefing.split('. ').slice(0, 2).join('. ')}.
+              </>
+            ) : (
+              country?.narrative.split('. ').slice(0, 2).join('. ')
+            )}
+          </p>
+        )}
+        <div className="ts2-launch">
+          <div className="ts2-quiet">
+            <div className="seg" title="Difficulty">
+              {(['ANALYST', 'STATESMAN', 'STRONGMAN'] as Difficulty[]).map((d) => (
+                <button key={d} className={difficulty === d ? 'on' : ''} onClick={() => setDifficulty(d)}>
+                  {d === 'ANALYST' ? 'Story' : d === 'STATESMAN' ? 'Normal' : 'Hard'}
+                </button>
+              ))}
+            </div>
+            {editName ? (
+              <input className="leader-input" autoFocus placeholder="Your name as leader" value={leaderName} maxLength={40} onChange={(e) => setLeaderName(e.target.value)} onBlur={() => setEditName(false)} />
+            ) : (
+              <button className="ts2-as" onClick={() => setEditName(true)}>
+                As: {leaderName.trim() || 'the real leader'} <IconPencil size={13} />
+              </button>
+            )}
+          </div>
+          <button className={`wc-btn big ${resume ? '' : 'primary'} ts2-go`} disabled={!countryId || isLoading} onClick={launch}>
+            {isLoading ? 'Briefing…' : `Take office${chosen ? ` as ${chosen.name}` : ''} ▸`}
+          </button>
+        </div>
+      </aside>
+
+      <div className="ts2-ticker" aria-hidden>
+        <span className="tag">LIVE</span>
+        <div className="track">
+          {flashpoints.map((f) => (
+            <span key={f.id}>
+              ◆ {f.title}: {f.tagline}
+            </span>
+          ))}
         </div>
       </div>
     </div>
