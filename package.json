@@ -17,7 +17,9 @@
     "perf": "vitest run tests/perf --reporter=verbose",
     "db:push": "prisma db push",
     "db:generate": "prisma generate",
-    "sim": "tsx scripts/simulate.ts"
+    "sim": "tsx scripts/simulate.ts",
+    "world:scan": "tsx scripts/world-scan.ts",
+    "world:apply": "tsx scripts/world-apply.ts"
   },
   "repository": {
     "type": "git",

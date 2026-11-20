@@ -1,0 +1,1 @@
+Proposals written by `npm run world:scan`: one JSON (edit `"accept": true`) and one Markdown report per run. Apply with `npm run world:apply -- <file>`. See docs/DEVELOPMENT.md, "Keeping the world current".

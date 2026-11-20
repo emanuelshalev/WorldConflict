@@ -98,6 +98,29 @@ Use the Natural Earth `ADM0_A3` code (the West Bank is `PSX`), validate against 
 
 ---
 
+## Keeping the world current (world scan)
+
+The world moves on after release. A regular scan keeps the game's history, leaders and playable crises current, with a human approving every change:
+
+```bash
+npm run world:scan                          # read the feeds in data/world-scan/sources.json
+npm run world:scan -- --input news.txt      # or a file: one headline per line, "2026-11-18 | headline | link"
+npm run world:scan -- --llm anthropic       # refine with an LLM (key in .env); add --draft to draft new flashpoints
+npm run world:apply -- data/world-scan/proposals/<date>.json            # apply items marked "accept": true
+npm run world:apply -- <file> --ids h-JPN-...,l-JPN,b-0                  # or exactly these ids
+```
+
+1. **Scan** tags each headline with the game's countries (names, demonyms, capitals, leaders: `data/world-scan/aliases.json`) and the kind of event (war, ceasefire, coup, election, leadership change, sanctions, nuclear, unrest, disaster, blockade, cyber, terror...). It writes `data/world-scan/proposals/<date>.json` and a readable `<date>.md`:
+   - **History entries** per country, skipping anything already in the profile's `keyEvents`.
+   - **Leader changes** (the heuristic flags them; the LLM step or a human fills in the name).
+   - **Crisis patterns**: each kind of event in the news, with the crisis cards that already cover it, and (with `--llm`) new dilemmas the game has no card for. Crisis cards are code in `src/core/crises.ts`, so these are a design backlog.
+   - **Flashpoint candidates**: pairs of countries named together in conflict news, marked when a flashpoint already covers them. With `--llm --draft`, the top two uncovered ones are drafted as full flashpoint files and validated against `FlashpointSchema`.
+   - **Briefing lines** for the 2026 scenario.
+2. **Review**: set `"accept": true` on what you want (edit the event or impact text freely).
+3. **Apply** appends history lines to `data/countries/*.json` (keeping the file layout and re-validating each profile), updates 2026 leaders and briefing lines (`b-<n>` ids), writes accepted flashpoint drafts to `data/flashpoints/` (they become playable), then starts the 2026 world and every flashpoint and plays three months as a smoke test. Run `npm test` and commit.
+
+Run it weekly or after a major world event. The feeds must be reachable from where it runs (a cloud session needs their hosts in its network allowlist); `--input` works offline with pasted headlines.
+
 ## Conventions
 
 - Conventional commits (`feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`).

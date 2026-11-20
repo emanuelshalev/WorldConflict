@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" width="1440" height="900" font-family="Geist, Inter, system-ui, sans-serif">
+  <!-- Sketch: "The world tonight" title screen, 1440x900. Full-bleed globe, diegetic dossier on the right. -->
+  <defs>
+    <radialGradient id="sky" cx="42%" cy="55%" r="75%">
+      <stop offset="0" stop-color="#13243b"/>
+      <stop offset="0.6" stop-color="#0b1220"/>
+      <stop offset="1" stop-color="#05070c"/>
+    </radialGradient>
+    <radialGradient id="globe" cx="40%" cy="38%" r="70%">
+      <stop offset="0" stop-color="#1b3352"/>
+      <stop offset="1" stop-color="#0c1726"/>
+    </radialGradient>
+    <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0.82" stop-color="#4fb3d9" stop-opacity="0"/>
+      <stop offset="0.9" stop-color="#4fb3d9" stop-opacity="0.25"/>
+      <stop offset="1" stop-color="#4fb3d9" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="pinglow">
+      <stop offset="0" stop-color="#e5383b" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#e5383b" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1440" height="900" fill="url(#sky)"/>
+
+  <!-- Globe (MapLibre globe projection, slow auto-rotate, tilted toward the picked crisis) -->
+  <circle cx="610" cy="500" r="430" fill="url(#halo)"/>
+  <circle cx="610" cy="500" r="380" fill="url(#globe)" stroke="#2a3546"/>
+  <g fill="#1f2a3a" stroke="#2f3d52" stroke-width="1">
+    <path d="M420 300 q60 -40 130 -20 q40 30 20 70 q-50 40 -110 30 q-50 -30 -40 -80z"/>
+    <path d="M560 380 q80 -30 170 0 q60 40 40 110 q-40 60 -120 50 q-80 -20 -90 -90z"/>
+    <path d="M640 520 q50 10 70 60 q10 70 -40 120 q-50 -30 -50 -90 q0 -60 20 -90z"/>
+    <path d="M760 330 q90 -20 160 30 q20 60 -40 90 q-70 10 -110 -30 q-30 -50 -10 -90z"/>
+    <path d="M330 480 q40 -10 60 30 q0 80 -30 140 q-40 -40 -40 -100z"/>
+  </g>
+  <!-- Arcs: live wars and standoffs -->
+  <g fill="none" stroke="#e5383b" stroke-width="1.6" stroke-dasharray="4 5" opacity="0.8">
+    <path d="M700 430 q40 -60 100 -40"/>
+    <path d="M650 470 q30 40 70 40"/>
+  </g>
+  <!-- Crisis pins: one per flashpoint, the daily one is gold -->
+  <g>
+    <circle cx="720" cy="505" r="34" fill="url(#pinglow)"/>
+    <circle cx="720" cy="505" r="9" fill="#e5383b" stroke="#fff" stroke-width="2"/>
+    <circle cx="805" cy="390" r="7" fill="#e5383b" stroke="#fff" stroke-width="1.5"/>
+    <circle cx="905" cy="455" r="7" fill="#e5383b" stroke="#fff" stroke-width="1.5"/>
+    <circle cx="455" cy="520" r="7" fill="#e5383b" stroke="#fff" stroke-width="1.5"/>
+    <circle cx="690" cy="610" r="7" fill="#e5383b" stroke="#fff" stroke-width="1.5"/>
+    <circle cx="935" cy="520" r="30" fill="#f2a93b" opacity="0.18"/>
+    <circle cx="935" cy="520" r="9" fill="#f2a93b" stroke="#fff" stroke-width="2"/>
+    <text x="950" y="514" fill="#f2a93b" font-size="11" font-family="Geist Mono, monospace" letter-spacing="1.5">TODAY</text>
+    <!-- selected pin label -->
+    <line x1="720" y1="505" x2="760" y2="560" stroke="#e8ecf2" stroke-width="1"/>
+    <rect x="760" y="548" width="196" height="40" rx="4" fill="#0b0f17" stroke="#e5383b"/>
+    <text x="772" y="565" fill="#e5383b" font-size="10" font-family="Geist Mono, monospace" letter-spacing="1.5">RED SEA · 12 MONTHS</text>
+    <text x="772" y="581" fill="#e8ecf2" font-size="13" font-weight="700">Bab al-Mandab Burning</text>
+  </g>
+
+  <!-- Top bar: wordmark left, continue + saves right -->
+  <text x="48" y="64" fill="#e8ecf2" font-family="Instrument Serif, Georgia, serif" font-size="44">WORLD CONFLICT</text>
+  <text x="50" y="88" fill="#8693a6" font-size="11" font-family="Geist Mono, monospace" letter-spacing="3">THE WORLD TONIGHT · 20 NOV 2026 · TENSION 72</text>
+  <rect x="1160" y="38" width="130" height="40" rx="20" fill="#f2a93b"/>
+  <text x="1182" y="63" fill="#1b1204" font-size="14" font-weight="700">Continue: Iran m3</text>
+  <text x="1310" y="63" fill="#a3aebf" font-size="14">Saves</text>
+  <circle cx="1380" cy="58" r="16" fill="none" stroke="#3a4759"/>
+
+  <!-- Mode dial: three tabs styled as a clock face selector -->
+  <g transform="translate(48 140)">
+    <text x="0" y="0" fill="#8693a6" font-size="11" font-family="Geist Mono, monospace" letter-spacing="2">HOW LONG DO YOU HAVE?</text>
+    <rect x="0" y="14" width="300" height="52" rx="26" fill="#141b27" stroke="#2a3546"/>
+    <rect x="4" y="18" width="104" height="44" rx="22" fill="#f2a93b"/>
+    <text x="22" y="45" fill="#1b1204" font-size="14" font-weight="700">15 min</text>
+    <text x="128" y="45" fill="#a3aebf" font-size="14">1 term</text>
+    <text x="214" y="45" fill="#a3aebf" font-size="14">Legacy</text>
+    <text x="0" y="92" fill="#a3aebf" font-size="13">Flashpoint: one crisis, one goal, a verdict.</text>
+  </g>
+
+  <!-- Bottom-left tagline, short -->
+  <text x="48" y="790" fill="#e8ecf2" font-family="Instrument Serif, Georgia, serif" font-size="56">Pick a fire.</text>
+  <text x="48" y="840" fill="#f2a93b" font-family="Instrument Serif, Georgia, serif" font-size="56">Put it out, or don't.</text>
+
+  <!-- Bottom ticker (lower third) -->
+  <rect x="0" y="868" width="1440" height="32" fill="#e5383b"/>
+  <text x="16" y="889" fill="#fff" font-size="12" font-weight="700" font-family="Geist Mono, monospace" letter-spacing="2">LIVE</text>
+  <text x="70" y="889" fill="#fff" font-size="13">Strikes on Iran enter a second month · Coast guard cutters ring Taiwan · Paris braces for another weekend in the streets ·</text>
+
+  <!-- Right: crisis dossier (slides in on pin pick) -->
+  <g transform="translate(1010 130)">
+    <rect width="390" height="720" rx="14" fill="#141b27" stroke="#2a3546"/>
+    <!-- scene thumbnail (SceneFrame card) -->
+    <rect x="16" y="16" width="358" height="190" rx="10" fill="#2b1a1a"/>
+    <rect x="16" y="150" width="358" height="56" fill="#000" opacity="0.35"/>
+    <rect x="28" y="28" width="60" height="18" rx="4" fill="#0b0f17"/>
+    <text x="36" y="41" fill="#fff" font-size="10" font-family="Geist Mono, monospace">BREAKING</text>
+    <text x="28" y="186" fill="#fff" font-size="20" font-weight="800">Bab al-Mandab Burning</text>
+    <text x="16" y="236" fill="#a3aebf" font-size="13">Houthi missiles reached Riyadh's airport.</text>
+    <text x="16" y="254" fill="#a3aebf" font-size="13">The Red Sea is closing. Who are you?</text>
+    <text x="16" y="292" fill="#8693a6" font-size="11" font-family="Geist Mono, monospace" letter-spacing="2">CHOOSE YOUR SIDE</text>
+    <!-- side cards: flag-tinted leader cards -->
+    <g>
+      <rect x="16" y="304" width="358" height="76" rx="10" fill="#1c2533" stroke="#f2a93b" stroke-width="2"/>
+      <rect x="16" y="304" width="8" height="76" rx="4" fill="#0f7a3a"/>
+      <circle cx="62" cy="342" r="24" fill="#243042" stroke="#0f7a3a" stroke-width="2"/>
+      <text x="96" y="332" fill="#e8ecf2" font-size="15" font-weight="700">Saudi Arabia</text>
+      <text x="96" y="350" fill="#a3aebf" font-size="12">Crown Prince: close the gate</text>
+      <text x="96" y="368" fill="#f2a93b" font-size="11" font-family="Geist Mono, monospace">TOUGH ●●○</text>
+    </g>
+    <g>
+      <rect x="16" y="390" width="358" height="76" rx="10" fill="#1c2533" stroke="#2a3546"/>
+      <rect x="16" y="390" width="8" height="76" rx="4" fill="#c8102e"/>
+      <circle cx="62" cy="428" r="24" fill="#243042" stroke="#c8102e" stroke-width="2"/>
+      <text x="96" y="418" fill="#e8ecf2" font-size="15" font-weight="700">Yemen (Houthis)</text>
+      <text x="96" y="436" fill="#a3aebf" font-size="12">Masters of the strait</text>
+      <text x="96" y="454" fill="#e5383b" font-size="11" font-family="Geist Mono, monospace">BRUTAL ●●●</text>
+    </g>
+    <g>
+      <rect x="16" y="476" width="358" height="76" rx="10" fill="#1c2533" stroke="#2a3546"/>
+      <rect x="16" y="476" width="8" height="76" rx="4" fill="#00732f"/>
+      <circle cx="62" cy="514" r="24" fill="#243042" stroke="#00732f" stroke-width="2"/>
+      <text x="96" y="504" fill="#e8ecf2" font-size="15" font-weight="700">UAE</text>
+      <text x="96" y="522" fill="#a3aebf" font-size="12">The southern game</text>
+      <text x="96" y="540" fill="#56c596" font-size="11" font-family="Geist Mono, monospace">STEADY ●○○</text>
+    </g>
+    <!-- difficulty + name collapsed into one line -->
+    <text x="16" y="590" fill="#8693a6" font-size="12">Story · <tspan fill="#e8ecf2" font-weight="700">Normal</tspan> · Hard     As: Mohammed bin Salman (edit)</text>
+    <!-- oath button -->
+    <rect x="16" y="620" width="358" height="72" rx="12" fill="#f2a93b"/>
+    <text x="110" y="664" fill="#1b1204" font-size="22" font-weight="800">Take office ▸</text>
+  </g>
+</svg>

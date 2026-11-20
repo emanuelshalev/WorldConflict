@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" width="1440" height="900" font-family="Geist, Inter, system-ui, sans-serif">
+  <!-- Sketch: Month debrief, page 2 "Diplomacy" (one card per counterpart). 1440x900. -->
+  <rect width="1440" height="900" fill="#0b0f17"/>
+  <!-- Header: month + page tabs + skip -->
+  <text x="48" y="52" fill="#8693a6" font-size="12" font-family="Geist Mono, monospace" letter-spacing="2">DEC 2026 · MONTH 1 DEBRIEF</text>
+  <g font-size="14">
+    <rect x="360" y="30" width="120" height="34" rx="17" fill="#141b27" stroke="#2a3546"/>
+    <text x="378" y="52" fill="#a3aebf">1 Highlight</text>
+    <rect x="490" y="30" width="130" height="34" rx="17" fill="#f2a93b"/>
+    <text x="508" y="52" fill="#1b1204" font-weight="700">2 Diplomacy · 3</text>
+    <rect x="630" y="30" width="170" height="34" rx="17" fill="#141b27" stroke="#2a3546"/>
+    <text x="648" y="52" fill="#a3aebf">3 Home &amp; security · 4</text>
+    <rect x="810" y="30" width="110" height="34" rx="17" fill="#141b27" stroke="#2a3546"/>
+    <text x="828" y="52" fill="#a3aebf">4 The paper</text>
+  </g>
+  <text x="1228" y="52" fill="#a3aebf" font-size="13">Dense view ▤   Skip ▸▸</text>
+
+  <!-- Card template drawn 3 times + handled-by-staff strip -->
+  <!-- Card 1: Iran, at war: call + spy order merged -->
+  <g transform="translate(48 96)">
+    <rect width="660" height="360" rx="14" fill="#141b27" stroke="#2a3546"/>
+    <!-- mini map strip (OutcomeMap) -->
+    <rect x="0" y="0" width="660" height="110" rx="14" fill="#0e1a2b"/>
+    <path d="M140 70 q160 -70 360 -10" fill="none" stroke="#4fb3d9" stroke-width="2" stroke-dasharray="5 5"/>
+    <circle cx="140" cy="70" r="6" fill="#3d8bfd"/><circle cx="500" cy="60" r="6" fill="#e5383b"/>
+    <text x="20" y="28" fill="#e5383b" font-size="11" font-family="Geist Mono, monospace" letter-spacing="2">AT WAR · IRAN</text>
+    <text x="20" y="140" fill="#e8ecf2" font-size="20" font-weight="800">Khamenei takes the call, and keeps the door ajar</text>
+    <!-- what you did: two lines with icons -->
+    <text x="20" y="172" fill="#a3aebf" font-size="13">☎ Secure line: you offered ceasefire talks   ·   ◉ Spy on Iran: success, they know it was you</text>
+    <!-- reaction quote -->
+    <rect x="20" y="188" width="4" height="54" fill="#f2a93b"/>
+    <text x="36" y="208" fill="#e8ecf2" font-size="16" font-family="Newsreader, Georgia, serif" font-style="italic">"Words are cheap, Mr President. Send your envoy to Muscat</text>
+    <text x="36" y="230" fill="#e8ecf2" font-size="16" font-family="Newsreader, Georgia, serif" font-style="italic">and we will listen. Your spies we have already heard."</text>
+    <!-- numbers -->
+    <text x="20" y="276" fill="#8693a6" font-size="11" font-family="Geist Mono, monospace">IRAN'S VIEW OF YOU</text>
+    <text x="20" y="300" fill="#e8ecf2" font-size="20" font-family="Geist Mono, monospace">-71 → <tspan fill="#56c596">-69</tspan></text>
+    <text x="210" y="276" fill="#8693a6" font-size="11" font-family="Geist Mono, monospace">INTEL ON IRAN</text>
+    <text x="210" y="300" fill="#e8ecf2" font-size="20" font-family="Geist Mono, monospace">42% → <tspan fill="#56c596">61%</tspan></text>
+    <text x="400" y="276" fill="#8693a6" font-size="11" font-family="Geist Mono, monospace">FRONT (50 = STALEMATE)</text>
+    <text x="400" y="300" fill="#e8ecf2" font-size="20" font-family="Geist Mono, monospace">58 → <tspan fill="#56c596">60</tspan></text>
+    <!-- watch line -->
+    <text x="20" y="338" fill="#4fb3d9" font-size="13">▸ Watch: a ceasefire proposal now starts from a warmer table. Hawks at home noticed (approval -0.5).</text>
+  </g>
+
+  <!-- Card 2: Japan -->
+  <g transform="translate(732 96)">
+    <rect width="660" height="172" rx="14" fill="#141b27" stroke="#2a3546"/>
+    <circle cx="44" cy="44" r="22" fill="#243042" stroke="#e8ecf2"/>
+    <text x="80" y="38" fill="#3d8bfd" font-size="11" font-family="Geist Mono, monospace" letter-spacing="2">ALLY · JAPAN · CALL</text>
+    <text x="80" y="60" fill="#e8ecf2" font-size="17" font-weight="800">You promised Takaichi full support</text>
+    <text x="80" y="88" fill="#e8ecf2" font-size="14" font-family="Newsreader, Georgia, serif" font-style="italic">"I will tell the Diet you said so. Do not make me a liar."</text>
+    <text x="80" y="122" fill="#e8ecf2" font-size="16" font-family="Geist Mono, monospace">View of you 48 → <tspan fill="#56c596">52</tspan></text>
+    <!-- sparkline -->
+    <polyline points="380,126 410,120 440,122 470,112 500,108 530,100" fill="none" stroke="#56c596" stroke-width="2"/>
+    <text x="80" y="154" fill="#4fb3d9" font-size="13">▸ Promise logged: Japan will call it in if China moves on the Senkakus.</text>
+  </g>
+
+  <!-- Card 3: Philippines -->
+  <g transform="translate(732 284)">
+    <rect width="660" height="172" rx="14" fill="#141b27" stroke="#2a3546"/>
+    <circle cx="44" cy="44" r="22" fill="#243042" stroke="#e8ecf2"/>
+    <text x="80" y="38" fill="#a3aebf" font-size="11" font-family="Geist Mono, monospace" letter-spacing="2">PHILIPPINES · STATE VISIT</text>
+    <text x="80" y="60" fill="#e8ecf2" font-size="17" font-weight="800">A working lunch with Marcos Jr.</text>
+    <text x="80" y="88" fill="#e8ecf2" font-size="14" font-family="Newsreader, Georgia, serif" font-style="italic">"Less ceremony, more substance. Manila likes that."</text>
+    <text x="80" y="122" fill="#e8ecf2" font-size="16" font-family="Geist Mono, monospace">View of you 35 → <tspan fill="#56c596">38</tspan>   Capital ◆ 0</text>
+    <text x="80" y="154" fill="#4fb3d9" font-size="13">▸ A full state visit would have bought +6 for 1◆.</text>
+  </g>
+
+  <!-- Handled by your staff: compact strip, no cards -->
+  <g transform="translate(48 480)">
+    <rect width="1344" height="56" rx="10" fill="#101620" stroke="#2a3546" stroke-dasharray="4 4"/>
+    <text x="20" y="34" fill="#8693a6" font-size="13">Handled by your staff:  Foreign ministry took the call from Delhi (India's view -1)  ·  Defence Minister ran the front meeting (no change)</text>
+  </g>
+
+  <!-- The world: what others did that touched you -->
+  <g transform="translate(48 560)">
+    <text x="0" y="0" fill="#8693a6" font-size="11" font-family="Geist Mono, monospace" letter-spacing="2">MEANWHILE, ABROAD (THAT TOUCHES YOU)</text>
+    <rect x="0" y="16" width="430" height="70" rx="10" fill="#141b27" stroke="#2a3546"/>
+    <text x="16" y="44" fill="#e8ecf2" font-size="14" font-weight="700">China moved troops to the Taiwan Strait</text>
+    <text x="16" y="66" fill="#a3aebf" font-size="12">Your ally Japan's view of China -4. Tension +3.</text>
+    <rect x="456" y="16" width="430" height="70" rx="10" fill="#141b27" stroke="#2a3546"/>
+    <text x="472" y="44" fill="#e8ecf2" font-size="14" font-weight="700">Russia denounced you at the UN</text>
+    <text x="472" y="66" fill="#a3aebf" font-size="12">Russia's view of you -3 (now -58).</text>
+    <rect x="912" y="16" width="432" height="70" rx="10" fill="#141b27" stroke="#2a3546"/>
+    <text x="928" y="44" fill="#e8ecf2" font-size="14" font-weight="700">Gaza: violence 64 → 70 (WAR)</text>
+    <text x="928" y="66" fill="#a3aebf" font-size="12">Aid getting through 22. A crossings crisis is likely.</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="48" y="860" fill="#8693a6" font-size="12" font-family="Geist Mono, monospace">← → pages · Esc to desk · 2 of 4</text>
+  <rect x="1180" y="828" width="212" height="48" rx="10" fill="#f2a93b"/>
+  <text x="1210" y="858" fill="#1b1204" font-size="16" font-weight="700">Home &amp; security ▸</text>
+</svg>
