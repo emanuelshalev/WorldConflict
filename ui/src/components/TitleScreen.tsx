@@ -177,8 +177,10 @@ export function TitleScreen() {
   const pins: GlobePin[] =
     mode === 'FLASHPOINT'
       ? flashpoints
-          .map((f) => ({ id: f.id, at: pinAt(f.playable.map((x) => x.countryId)), label: f.title, gold: daily?.flashpointId === f.id }))
-          .filter((x): x is GlobePin => !!x.at)
+          .flatMap((f): GlobePin[] => {
+            const at = pinAt(f.playable.map((x) => x.countryId));
+            return at ? [{ id: f.id, at, label: f.title, gold: daily?.flashpointId === f.id }] : [];
+          })
       : [];
   const DIFF_TINT = { STEADY: 'rgba(86,197,150,.55)', TOUGH: 'rgba(242,169,59,.55)', BRUTAL: 'rgba(229,56,59,.55)' } as const;
   const tint: Record<string, string> = Object.fromEntries(

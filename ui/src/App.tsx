@@ -113,6 +113,31 @@ function useModeKeys() {
   }, [])
 }
 
+/** The turn boundary: an "Orders sent" stamp and the calendar flipping to next month. */
+function TurnStamp() {
+  const world = useGameStore((s) => s.worldState)
+  if (!world) return (
+    <div className="loading-overlay">
+      <div className="loading-spinner" />
+    </div>
+  )
+  const [y, m] = world.date.split('-').map(Number)
+  const next = new Date(Date.UTC(m === 12 ? y + 1 : y, m === 12 ? 0 : m, 1))
+  const label = (d: Date) => d.toLocaleDateString('en-GB', { month: 'short', year: 'numeric', timeZone: 'UTC' }).toUpperCase()
+  return (
+    <div className="loading-overlay turn-stamp" role="status" aria-live="polite">
+      <div className="ts-card">
+        <span className="ts-stamp">Orders sent</span>
+        <div className="ts-flip num">
+          <span className="ts-from">{label(new Date(Date.UTC(y, m - 1, 1)))}</span>
+          <span className="ts-to">{label(next)}</span>
+        </div>
+        <small>The world answers…</small>
+      </div>
+    </div>
+  )
+}
+
 function Toast() {
   const error = useGameStore((s) => s.error)
   const setError = useGameStore((s) => s.setError)
@@ -199,9 +224,7 @@ function App() {
       )}
       {showLogin && <LoginScreen onClose={() => useGameStore.setState({ showLogin: false })} />}
       {isLoading && screen === 'game' && (
-        <div className="loading-overlay">
-          <div className="loading-spinner" />
-        </div>
+        <TurnStamp />
       )}
       <Toast />
     </>
