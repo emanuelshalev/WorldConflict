@@ -1,5 +1,6 @@
 import { sharesLandBorder } from "../geography.js";
 import type { SeededRandom } from "../seed.js";
+import { possessive } from "../text.js";
 import type { CountryState, GameEvent, WorldState } from "../types.js";
 
 export const NUCLEAR_RESEARCH_COST_M = 20; // $20M/month, from the original game
@@ -240,7 +241,7 @@ const AFTERMATH: Record<
   { title: (t: string, n: string[]) => string; text: (t: string, n: string[], f: number) => string }
 > = {
   1: {
-    title: (t) => `Radiation sickness overwhelms ${t}'s hospitals`,
+    title: (t) => `Radiation sickness overwhelms ${possessive(t)} hospitals`,
     text: (t) =>
       `Burn wards are full and doctors are rationing iodine. The World Health Organization calls the situation in ${t} "beyond any national capacity".`,
   },
@@ -252,10 +253,10 @@ const AFTERMATH: Record<
   3: {
     title: (t) => `Crops and water banned across the ${t} region`,
     text: (t) =>
-      `Contamination maps show a plume reaching far beyond ${t}'s borders. Food prices jump across the region.`,
+      `Contamination maps show a plume reaching far beyond ${possessive(t)} borders. Food prices jump across the region.`,
   },
   5: {
-    title: (t) => `${t}'s economy is in free fall`,
+    title: (t) => `${possessive(t)} economy is in free fall`,
     text: (t, _n, f) =>
       `Factories stand empty and insurers will not cover shipping. Radiation levels are still ${f > 60 ? "lethal" : "dangerous"} in the worst-hit zones.`,
   },

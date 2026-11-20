@@ -119,3 +119,12 @@
 .db-also-item i { font-family: var(--font-serif); font-size: 13px; color: var(--text-2); }
 .db-visual { overflow: hidden; display: flex; align-items: center; }
 .db-card.big .db-visual > .scene, .db-card.big .db-visual > .outcome-map { width: 100%; height: auto; min-height: 0; aspect-ratio: 16 / 9; }
+/* Playtest fixes: the page never grows past the screen; the front bar has room */
+.debrief { grid-template-columns: minmax(0, 1fr); }
+.db-head, .db-stage, .db-foot-bar { min-width: 0; }
+.db-tabs { min-width: 0; }
+.db-visual > .db-front { width: 100%; align-self: stretch; min-height: 120px; }
+.db-card:not(.big) .db-visual:has(> .db-front) { min-height: 120px; }
+.db-front small span { flex: 1; text-align: center; }
+.db-front small span:first-child { text-align: left; }
+.db-front small span:last-child { text-align: right; }

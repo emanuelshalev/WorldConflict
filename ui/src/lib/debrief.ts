@@ -48,6 +48,20 @@ export interface DebriefPage {
 type Decision = TurnReport['decisions'][number];
 type Order = TurnReport['orders'][number];
 
+const possessiveName = (n: string) => (/s$/i.test(n) ? `${n}'` : `${n}'s`);
+
+const DOMESTIC_VOICES = /^(On the street|Interior ministry|The establishment|Markets|The general staff|The evening news|UN )/;
+
+/** The counterpart's own reply first, and never one whose tone contradicts the month's change. */
+function pickReaction(id: string, list: Array<Reaction | undefined>, rel?: { before: number; after: number }): Reaction | undefined {
+  const d = rel ? rel.after - rel.before : 0;
+  const agrees = (r: Reaction) => !rel || (d > 0 ? r.tone !== 'angry' && r.tone !== 'cold' : d < 0 ? r.tone !== 'warm' : true);
+  const all = list.filter((r): r is Reaction => !!r);
+  const own = all.filter((r) => !DOMESTIC_VOICES.test(r.who));
+  void id;
+  return own.find(agrees) ?? all.find((r) => agrees(r) && DOMESTIC_VOICES.test(r.who) && !rel);
+}
+
 const KIND_WORD: Record<string, string> = { CALL: 'Call', VISIT: 'State visit', STAFF: 'Staff meeting', PRESS: 'Interview', CRISIS: 'Crisis' };
 
 function verdictOf(facts: ReportFact[] = [], reaction?: Reaction, ok = true): Verdict {
@@ -95,24 +109,31 @@ function orderCard(o: Order, i: number): OutcomeCardData {
 }
 
 /** Merge everything about one country into one card: meetings, orders, their moves, their view of you. */
-function countryCard(id: string, decisions: Array<[Decision, number]>, orders: Array<[Order, number]>, moves: string[], rel?: { before: number; after: number }): OutcomeCardData {
+const HOSTILE = /DENOUNCE|DECLARE_WAR|AIRSTRIKE|DEPLOY_BORDER|BREAK_ALLIANCE|NUCLEAR|INTEL_|MOBILIZE/;
+
+function countryCard(id: string, decisions: Array<[Decision, number]>, orders: Array<[Order, number]>, moveList: Array<{ type: string; label: string; target?: string }>, rel?: { before: number; after: number }, home?: string): OutcomeCardData {
+  const moves = moveList.map((m) => m.label);
+  const hostile = moveList.some((m) => HOSTILE.test(m.type));
+  const relDelta = rel ? rel.after - rel.before : 0;
+  decisions = [...decisions].sort((a, b) => Number(b[0].kind === 'CALL' || b[0].kind === 'VISIT') - Number(a[0].kind === 'CALL' || a[0].kind === 'VISIT'));
   const lead: OutcomeCardData = decisions[0] ? decisionCard(decisions[0][0], decisions[0][1]) : orders[0] ? orderCard(orders[0][0], orders[0][1]) : {
     key: `c-${id}`,
     kicker: countryName(id),
     country: id,
-    headline: `${countryName(id)} moves against you`,
+    headline: hostile ? `${countryName(id)} moves against you` : moveList.some((m) => m.target === home) ? `${countryName(id)} reaches out to you` : (moveList[0]?.label ?? countryName(id)),
     lines: [],
     facts: [],
-    verdict: 'bad',
+    verdict: hostile ? 'bad' : relDelta > 0 ? 'good' : 'neutral',
   };
   const extra: CardLine[] = [
     ...decisions.slice(1).map(([d]) => ({ text: `${KIND_WORD[d.kind ?? 'CRISIS']}: ${d.choice}`, icon: d.kind })),
     ...orders.slice(decisions[0] ? 0 : 1).map(([o]) => ({ text: `${o.label}${o.ok ? '' : ' (failed)'}`, icon: o.type, ok: o.ok })),
     ...moves.map((m) => ({ text: `They: ${m.replace(/^[^:]+: /, '')}`, icon: 'THEM' })),
   ];
-  const facts = [...lead.facts];
-  // The whole month's change in their view of you, when no card fact already shows it
-  if (rel && !facts.some((f) => / view of you$/.test(f.label))) facts.unshift({ label: `${countryName(id)}'s view of you (month)`, before: rel.before, after: rel.after });
+  // Their view of you over the whole month (all your dealings plus theirs), so the reply, the
+  // numbers and the verdict tell one story
+  const facts = rel ? lead.facts.filter((f) => !/ view of you$/.test(f.label)) : [...lead.facts];
+  if (rel) facts.unshift({ label: `${possessiveName(countryName(id))} view of you`, before: rel.before, after: rel.after });
   const firstOrder = orders[0]?.[0];
   return {
     ...lead,
@@ -121,8 +142,9 @@ function countryCard(id: string, decisions: Array<[Decision, number]>, orders: A
     country: id,
     lines: [...lead.lines, ...extra].slice(0, 5),
     facts: facts.slice(0, 3),
-    reaction: lead.reaction ?? orders.map(([o]) => o.reaction).find(Boolean),
+    reaction: pickReaction(id, [lead.reaction, ...decisions.map(([d]) => d.reaction), ...orders.map(([o]) => o.reaction)], rel),
     relation: rel,
+    verdict: rel ? (rel.after > rel.before ? 'good' : rel.after < rel.before ? 'bad' : lead.verdict) : lead.verdict,
     map: { target: id, effect: firstOrder ? mapEffect(firstOrder.type) ?? 'court' : decisions[0] ? 'court' : 'denounce' },
   };
 }
@@ -156,11 +178,12 @@ export function buildPages(report: TurnReport, world: WorldState): DebriefPage[]
   }
 
   // 2. Diplomacy: one card per counterpart country
-  const byCountry = new Map<string, { d: Array<[Decision, number]>; o: Array<[Order, number]>; m: string[] }>();
-  const slot = (id: string) => byCountry.get(id) ?? (byCountry.set(id, { d: [], o: [], m: [] }), byCountry.get(id) as { d: Array<[Decision, number]>; o: Array<[Order, number]>; m: string[] });
+  type Slot = { d: Array<[Decision, number]>; o: Array<[Order, number]>; m: Array<{ type: string; label: string; target?: string }> };
+  const byCountry = new Map<string, Slot>();
+  const slot = (id: string) => byCountry.get(id) ?? (byCountry.set(id, { d: [], o: [], m: [] }), byCountry.get(id) as Slot);
   for (const x of decisions) if (x[0].withCountry && x[0].attended !== false && x[0].withCountry !== home) slot(x[0].withCountry).d.push(x);
   for (const x of orders) if (x[0].target && x[0].target !== home) slot(x[0].target).o.push(x);
-  for (const m of moves) slot(m.actor).m.push(m.label);
+  for (const m of moves) slot(m.actor).m.push({ type: m.type, label: m.label, target: m.target });
   // Your own business with a country first (calls, visits, orders), then what others did to you
   const weight = (id: string, v: { d: unknown[]; o: unknown[]; m: unknown[] }) => {
     const r = relations.get(id);
@@ -168,7 +191,7 @@ export function buildPages(report: TurnReport, world: WorldState): DebriefPage[]
   };
   const diplomacy = [...byCountry.entries()]
     .sort((a, b) => weight(b[0], b[1]) - weight(a[0], a[1]))
-    .map(([id, v]) => countryCard(id, v.d, v.o, v.m, relations.get(id)));
+    .map(([id, v]) => countryCard(id, v.d, v.o, v.m, relations.get(id), home));
   const staffHandled = decisions.filter(([d]) => d.attended === false && d.kind !== 'CRISIS').map(([d]) => `${d.speaker ?? d.title}: ${d.choice.replace(/ \(you did not attend\)$/, '')}${d.watch ? `. ${d.watch}` : ''}`);
   const inCard = new Set([...byCountry.keys()]);
   const abroad = (report.world ?? []).filter((m) => m.target !== home && !inCard.has(m.actor)).slice(0, 4).map((m) => m.label);
@@ -183,7 +206,7 @@ export function buildPages(report: TurnReport, world: WorldState): DebriefPage[]
       key: `w${i}`,
       kicker: `War · ${countryName(w.vs)}`,
       country: w.vs,
-      headline: w.ended ? 'The guns fall silent' : `The front moves ${Math.abs(w.frontAfter - w.frontBefore)} ${w.frontAfter >= w.frontBefore ? 'in your favour' : 'against you'}`,
+      headline: w.ended ? 'The guns fall silent' : w.frontAfter === w.frontBefore ? 'The front holds' : `The front moves ${Math.abs(w.frontAfter - w.frontBefore)} ${w.frontAfter > w.frontBefore ? 'in your favour' : 'against you'}`,
       lines: [],
       facts: [{ label: 'Front (your side, 50 = stalemate)', before: w.frontBefore, after: w.frontAfter }],
       verdict: (w.frontAfter >= w.frontBefore ? 'good' : 'bad') as Verdict,

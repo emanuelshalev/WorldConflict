@@ -1283,7 +1283,8 @@ export class TurnEngine {
     // Hot zones: the metrics that moved most
     for (const h of world.hotspots) {
       const was = start.hot.get(h.id);
-      if (!was) continue;
+      // Only the governments that carry these places get them in their debrief
+      if (!was || ![h.occupier, h.people, "EGY", "USA"].includes(player.id)) continue;
       const moved = (["violence", "humanitarian", "aid", "governance", "control"] as const)
         .map((m) => ({
           id: h.id,
@@ -1293,7 +1294,7 @@ export class TurnEngine {
           after: Math.round(h[m]),
           phase: h.phase,
         }))
-        .filter((x) => Math.abs(x.after - x.before) >= 3 || was.phase !== h.phase)
+        .filter((x) => Math.abs(x.after - x.before) >= 5 || was.phase !== h.phase)
         .sort((a, b) => Math.abs(b.after - b.before) - Math.abs(a.after - a.before))
         .slice(0, 2);
       report.hot.push(...moved);
@@ -1337,8 +1338,10 @@ export class TurnEngine {
       if (sc > bestScore) [best, bestScore] = [{ ref: "order", index: i }, sc];
     });
     report.wars.forEach((w, i) => {
-      const sc =
-        Math.abs(w.frontAfter - w.frontBefore) >= 5 || w.ended
+      // A war that ends is the story of the month
+      const sc = w.ended
+        ? 60
+        : Math.abs(w.frontAfter - w.frontBefore) >= 5
           ? 10 + Math.abs(w.frontAfter - w.frontBefore)
           : 0;
       if (sc > bestScore) [best, bestScore] = [{ ref: "war", index: i }, sc];
@@ -1628,7 +1631,7 @@ function playerLead(
   if (h.ref === "decision") {
     const d = report.decisions[h.index];
     headline = d.headline ?? d.title;
-    lede = `${who} chose to ${d.choice.charAt(0).toLowerCase()}${d.choice.slice(1).replace(/\.$/, "")} (${d.title.replace(/[.?]$/, "")}).${d.facts?.[0] ? ` ${fmt(d.facts[0])}.` : ""}`;
+    lede = `On ${d.title.replace(/[.?:]$/, "").replace(/^./, (c) => c.toLowerCase())}, ${who} decided: ${d.choice.replace(/\.$/, "").replace(/ \(no decision taken\)$/, " (by default)")}.${d.facts?.[0] ? ` ${fmt(d.facts[0])}.` : ""}`;
     if (d.reaction)
       quote = `${d.reaction.who}: "${d.reaction.line.replace(/^'|'$/g, "").replace(/"/g, "'")}"`;
     next = d.watch ?? "";
@@ -1654,22 +1657,23 @@ function playerLead(
       : `The front moved ${Math.abs(moved)} points ${moved >= 0 ? "in our favour" : "against us"} this month (now ${w.frontAfter} of 100 from our side).`;
     related.push(w.vs);
   }
-  // Context: up to two other things the leader did this month
+  // Context: up to two other things the leader did this month, each phrased on its own terms
+  const cname = (id?: string) => withArticle(world.countries.find((c) => c.id === id)?.name ?? "");
   const others = [
     ...report.decisions
       .filter((d, i) => d.attended !== false && !(h.ref === "decision" && i === h.index))
       .map((d) =>
-        d.withCountry
-          ? `${d.choice.toLowerCase().replace(/\.$/, "")} (${d.kind === "CALL" ? "a call with" : d.kind === "VISIT" ? "a visit by" : "on"} ${world.countries.find((c) => c.id === d.withCountry)?.name})`
-          : d.choice.toLowerCase().replace(/\.$/, ""),
+        d.kind === "CALL"
+          ? `took a call from ${cname(d.withCountry)} ("${d.choice.replace(/\.$/, "")}")`
+          : d.kind === "VISIT"
+            ? `hosted ${cname(d.withCountry)} ("${d.choice.replace(/\.$/, "")}")`
+            : `answered "${d.title.replace(/[.?:]$/, "")}" with "${d.choice.replace(/\.$/, "")}"`,
       ),
     ...report.orders
       .filter((o, i) => o.ok && !(h.ref === "order" && i === h.index))
-      .map((o) => `ordered: ${o.label.toLowerCase()}`),
+      .map((o) => `ordered "${o.label}"`),
   ].slice(0, 2);
-  const context = others.length
-    ? `Elsewhere, ${surname} also chose to ${others.join(", and ")}.`
-    : "";
+  const context = others.length ? `Elsewhere, ${surname} ${others.join(" and ")}.` : "";
   const description = [lede, quote, context, next ? `What next: ${next}` : ""]
     .filter(Boolean)
     .join(" ");

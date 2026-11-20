@@ -63,7 +63,7 @@ export function OutcomeCard({ c, home, big = false }: { c: OutcomeCardData; home
         )}
         {c.reaction && (
           <blockquote className={`db-quote t-${c.reaction.tone}`}>
-            <p>{c.reaction.line.replace(/^'|'$/g, '')}</p>
+            <p>{/^'.*'$/.test(c.reaction.line) ? c.reaction.line.slice(1, -1) : c.reaction.line}</p>
             <cite>{c.reaction.who}</cite>
           </blockquote>
         )}

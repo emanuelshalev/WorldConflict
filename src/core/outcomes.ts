@@ -262,7 +262,7 @@ export function orderStory(
         pick(
           [
             `A state visit, a joint statement and a trade mission.${view || ` ${possessive(t)} view of you holds at ${Math.round(after.relFrom ?? 0)}.`}`,
-            `Your envoy spends the week in ${t}'s capital.${view || " Polite, but nothing moves yet."}`,
+            `Your envoy spends the week in ${possessive(t)} capital.${view || " Polite, but nothing moves yet."}`,
           ],
           seed,
         ) + nth

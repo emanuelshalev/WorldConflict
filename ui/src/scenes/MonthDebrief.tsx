@@ -9,6 +9,7 @@ import { StatCount } from './debriefParts';
 import './reel.css';
 import './debrief.css';
 
+const plural = (n: number, w: string) => `${n} ${w}${n === 1 ? '' : 's'}`;
 const DENSE_KEY = 'worldconflict.debriefDense';
 const readDense = () => {
   try {
@@ -75,12 +76,6 @@ export function MonthDebrief({ report, world, home, onDone }: { report: TurnRepo
     if (i >= pages.length) onDone();
     else setAt(Math.max(0, i));
   };
-  // The highlight moves on by itself once, unless the player takes over
-  useEffect(() => {
-    if (at !== 0 || touched.current || pages.length < 2 || pages[0]?.key !== 'highlight') return;
-    const t = setTimeout(() => !touched.current && setAt(1), 7000);
-    return () => clearTimeout(t);
-  }, [at, pages]);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       // Captured first, so the app's own Escape does not also close the paper behind us
@@ -173,7 +168,7 @@ export function MonthDebrief({ report, world, home, onDone }: { report: TurnRepo
               </div>
             )}
             <p className="db-summary">
-              {report.decisions.filter((d) => d.attended !== false).length} decisions, {report.orders.length} orders
+              {plural(report.decisions.filter((d) => d.attended !== false).length, 'decision')}, {plural(report.orders.length, 'order')}
               {(report.relations ?? []).length ? `, ${report.relations?.length} countries changed their view of you` : ''}
               {(report.wars ?? []).length ? `, ${report.wars?.length} war${report.wars?.length === 1 ? '' : 's'}` : ''}.
             </p>

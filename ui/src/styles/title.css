@@ -111,3 +111,12 @@
   .tg-pin-label { display: none; }
   .tg-pin.on .tg-pin-label { display: block; }
 }
+/* Playtest fixes */
+.ts2-launch { position: sticky; bottom: -14px; margin: 0 -14px -14px; padding: 10px 14px 14px; background: rgba(12, 17, 28, .98); border-radius: 0 0 16px 16px; z-index: 1; }
+.ts2-side, .ts2-dossier, .ts2-sides { min-width: 0; }
+.ts2-side-body small { overflow-wrap: anywhere; }
+@media (max-width: 900px) {
+  .ts2-ticker { display: none; }
+  .ts2 { grid-template-rows: auto 44vh auto auto; }
+  .ts2-dossier { max-width: calc(100vw - 20px); }
+}

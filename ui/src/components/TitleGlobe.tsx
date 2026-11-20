@@ -141,7 +141,7 @@ export function TitleGlobe({ pins, selectedPin, onPin, tint, selectedCountry, on
           e.stopPropagation();
           onPinRef.current(pin.id);
         });
-        const m = new maplibregl.Marker({ element: el, anchor: 'center' }).setLngLat(pin.at).addTo(map);
+        const m = new maplibregl.Marker({ element: el, anchor: 'center', opacityWhenCovered: '0' }).setLngLat(pin.at).addTo(map);
         p = { m, el };
         live.set(pin.id, p);
       }
@@ -172,7 +172,8 @@ export function TitleGlobe({ pins, selectedPin, onPin, tint, selectedCountry, on
     if (!map || !ready) return;
     map.setPadding({ top: 40, bottom: 40, left: 0, right: padRight });
     if (focus) {
-      hold.current = performance.now() + 9000;
+      // Once the player has picked a place, the globe stays put on it
+      hold.current = Number.POSITIVE_INFINITY;
       map.flyTo({ center: focus, zoom: window.innerWidth < 700 ? 1.6 : 2.3, duration: 1300, essential: true });
     }
   }, [focus, padRight, ready]);

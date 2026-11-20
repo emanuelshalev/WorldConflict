@@ -5,7 +5,7 @@
  * turn and item, never from the turn's random stream, so balance and determinism are untouched.
  */
 import type { OrderFact } from "./outcomes.js";
-import { possessive } from "./text.js";
+import { possessive, withArticle } from "./text.js";
 import type { CountryState, WorldState } from "./types.js";
 
 export type Tone = "warm" | "cold" | "angry" | "neutral";
@@ -207,9 +207,11 @@ interface LineCtx {
 function fill(line: string, ctx: LineCtx): string {
   return line
     .replaceAll("{L}", ctx.them ? surnameOf(ctx.them.leader.name) : "")
-    .replaceAll("{C}", ctx.them?.name ?? "")
-    .replaceAll("{possY}", possessive(ctx.player.name))
-    .replaceAll("{Y}", ctx.player.name);
+    .replaceAll("{C}", ctx.them ? withArticle(ctx.them.name) : "")
+    .replaceAll("{possY}", possessive(withArticle(ctx.player.name)))
+    .replaceAll("{Y}", withArticle(ctx.player.name))
+    .replace(/^the /, "The ")
+    .replace(/([.!?] )the /g, "$1The ");
 }
 
 // ----------------------------------------------------------------------------
@@ -355,7 +357,8 @@ export function outcomeHeadline(
         ? `${me} gets through the interview`
         : `${me} stumbles on prime time`;
   if (kind === "STAFF") return `${ctx.speaker ?? "Cabinet"}: ${ctx.choice.replace(/\.$/, "")}`;
-  return `${ctx.title.replace(/[?:.]$/, "")}: ${me} chooses to ${ctx.choice.charAt(0).toLowerCase()}${ctx.choice.slice(1).replace(/\.$/, "")}`;
+  // Option labels are not always verb phrases ("Only by referendum"): quote the choice
+  return `${me} on ${ctx.title.replace(/[?:.]$/, "")}: ${ctx.choice.replace(/\.$/, "")}`;
 }
 
 /** Only what the engine knows will happen next. */
