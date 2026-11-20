@@ -729,6 +729,19 @@ export type DirectorState = z.infer<typeof DirectorStateSchema>;
 
 export const StatDeltaSchema = z.object({ before: z.number(), after: z.number() });
 
+const ReportFactSchema = z.object({
+  label: z.string(),
+  before: z.number(),
+  after: z.number(),
+  unit: z.string().optional(),
+  good: z.boolean().optional(),
+});
+const ReactionSchema = z.object({
+  who: z.string(),
+  line: z.string(),
+  tone: z.enum(["warm", "cold", "angry", "neutral"]),
+});
+
 export const PlayerTurnReportSchema = z.object({
   turn: z.number(),
   orders: z
@@ -740,23 +753,69 @@ export const PlayerTurnReportSchema = z.object({
         type: z.string().optional(), // action type, for the UI scene
         target: z.string().optional(),
         story: z.string().optional(), // a short dispatch of what the order did
-        facts: z
-          .array(
-            z.object({
-              label: z.string(),
-              before: z.number(),
-              after: z.number(),
-              unit: z.string().optional(),
-              good: z.boolean().optional(),
-            }),
-          )
-          .optional(),
+        facts: z.array(ReportFactSchema).optional(),
+        reaction: ReactionSchema.optional(), // how the target answered (its real move first)
+        watch: z.string().optional(),
       }),
     )
     .default([]),
   decisions: z
-    .array(z.object({ title: z.string(), choice: z.string(), templateId: z.string().optional() }))
+    .array(
+      z.object({
+        title: z.string(),
+        choice: z.string(),
+        templateId: z.string().optional(),
+        // Rich outcome (reactions.ts); optional so older saves still load
+        kind: z.enum(["CRISIS", "CALL", "VISIT", "STAFF", "PRESS"]).optional(),
+        optionId: z.string().optional(),
+        withCountry: z.string().optional(),
+        speaker: z.string().optional(),
+        attended: z.boolean().optional(), // false: a deputy handled it, or nobody answered
+        headline: z.string().optional(),
+        facts: z.array(ReportFactSchema).optional(),
+        reaction: ReactionSchema.optional(),
+        watch: z.string().optional(),
+      }),
+    )
     .default([]),
+  // The month around the player: others' view of you, AI moves that touch you, fronts, hot zones
+  relations: z
+    .array(z.object({ id: z.string(), before: z.number(), after: z.number() }))
+    .default([]),
+  world: z
+    .array(
+      z.object({
+        actor: z.string(),
+        type: z.string(),
+        target: z.string().optional(),
+        label: z.string(),
+      }),
+    )
+    .default([]),
+  wars: z
+    .array(
+      z.object({
+        vs: z.string(),
+        frontBefore: z.number(),
+        frontAfter: z.number(),
+        ended: z.boolean().default(false),
+      }),
+    )
+    .default([]),
+  hot: z
+    .array(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        metric: z.string(),
+        before: z.number(),
+        after: z.number(),
+        phase: z.string(),
+      }),
+    )
+    .default([]),
+  tension: z.object({ before: z.number(), after: z.number() }).optional(),
+  highlight: z.object({ ref: z.enum(["decision", "order", "war"]), index: z.number() }).optional(),
   deltas: z.record(z.string(), StatDeltaSchema).default({}),
   causes: z.array(z.string()).default([]), // plain-language explanations of what moved
   moments: z.array(z.string()).default([]), // milestone stamps: "RALLY", "CLOSE CALL", "FIRST ALLIANCE"…

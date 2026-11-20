@@ -6,6 +6,17 @@ import { generateAgenda, MEETING_SLOTS } from "./meetings.js";
 import { generateNewspaper } from "./newspaper.js";
 import { computeOutcome, earlyFailure } from "./objectives.js";
 import { failStory, ledgerEntry, orderFacts, orderStory, snapshot } from "./outcomes.js";
+import {
+  bandOf,
+  crisisReaction,
+  findCountry,
+  hashParts,
+  meetingReaction,
+  orderReaction,
+  outcomeHeadline,
+  toneOf,
+  watchLine,
+} from "./reactions.js";
 import { updateScore } from "./scoring.js";
 import { combineSeed, SeededRandom } from "./seed.js";
 import { covertEvent, resolveCovertOp } from "./systems/covert.js";
@@ -50,6 +61,7 @@ import type {
   CountryState,
   GameEvent,
   GameOver,
+  Hotspot,
   NewspaperEntry,
   PlayerTurnReport,
   WorldState,
@@ -102,6 +114,17 @@ export class TurnEngine {
       deltas: {},
       causes: [],
       moments: [],
+      relations: [],
+      world: [],
+      wars: [],
+      hot: [],
+    };
+    // The month's starting picture, for the debrief (others' view of us, fronts, hot zones)
+    this.start = {
+      rel: new Map(world.countries.map((c) => [c.id, c.relations[world.playerCountryId] ?? 0])),
+      front: new Map(world.wars.map((w) => [w.id, w.frontline])),
+      hot: new Map(world.hotspots.map((h) => [h.id, { ...h }])),
+      tension: world.globalTension,
     };
     const before = playerBefore
       ? {
@@ -419,9 +442,9 @@ export class TurnEngine {
     // Phase 9: newspaper
     // ------------------------------------------------------------------
     const player = world.countries.find((c) => c.id === world.playerCountryId);
-    if (player && before) this.finishReport(world, player, before, events);
+    if (player && before) this.finishReport(world, player, before, events, resolvedActions);
     const newspaper = generateNewspaper(world, events, warSummaries, governmentChanges, rng);
-    const lead = player ? playerHeadline(world, player, report) : null;
+    const lead = player ? playerLead(world, player, report) : null;
     if (lead) newspaper.unshift(lead);
     // The player's own catastrophes and gambles own the front page
     if (player) {
@@ -480,6 +503,12 @@ export class TurnEngine {
 
   // --------------------------------------------------------------------
   private report: PlayerTurnReport | null = null;
+  private start: {
+    rel: Map<string, number>;
+    front: Map<string, number>;
+    hot: Map<string, Hotspot>;
+    tension: number;
+  } | null = null;
 
   private resolveDecisions(world: WorldState, choices: DecisionChoice[]): Action[] {
     const injected: Action[] = [];
@@ -500,15 +529,42 @@ export class TurnEngine {
       const option = pending.options.find((o) => o.id === choice?.optionId) ?? pending.options[0];
       if (!option) continue;
 
+      const snapBefore = outcomeSnap(world, player);
       applyEffects(world, player, option.effects);
       world.globalTension = clamp01(world.globalTension + option.tensionDelta);
       injected.push(...option.actions);
       if (option.followUp)
         scheduleFollowUp(world, option.followUp.templateId, option.followUp.delay);
+      const relKey = Object.keys(option.effects).find((k) => k.startsWith("relations:"));
+      const otherId =
+        relKey?.split(":")[1] ?? pending.affectedCountries.find((id) => id !== player.id);
+      const them = findCountry(world, otherId);
+      const facts = decisionFacts(
+        world,
+        option.effects,
+        option.tensionDelta,
+        snapBefore,
+        outcomeSnap(world, player),
+      );
+      const seed = hashParts(world.seed, world.turn, pending.id, option.id);
+      const reaction = crisisReaction(option.effects, { them, player }, facts, seed);
       this.report?.decisions.push({
         title: pending.title,
         choice: byDefault ? `${option.label} (no decision taken)` : option.label,
         templateId: pending.templateId,
+        kind: "CRISIS",
+        optionId: option.id,
+        withCountry: them?.id,
+        attended: !byDefault,
+        headline: outcomeHeadline(
+          "CRISIS",
+          reaction?.tone ?? "neutral",
+          { them, player, title: pending.title, choice: option.label },
+          seed,
+        ),
+        facts,
+        reaction,
+        watch: watchLine({ followUpDelay: option.followUp?.delay }),
       });
       world.pendingDecisions = world.pendingDecisions.filter((d) => d.id !== pending.id);
     }
@@ -525,12 +581,65 @@ export class TurnEngine {
       }
       option ??= deputy;
       if (!option) continue;
+      const them = findCountry(world, meeting.withCountry);
+      const bandBefore = bandOf(player, them);
+      const snapBefore = outcomeSnap(world, player);
       applyEffects(world, player, option.effects);
       world.globalTension = clamp01(world.globalTension + option.tensionDelta);
+      const facts = decisionFacts(
+        world,
+        option.effects,
+        option.tensionDelta,
+        snapBefore,
+        outcomeSnap(world, player),
+      );
+      const attendedIt = option !== deputy;
+      const seed = hashParts(world.seed, world.turn, meeting.id, option.id);
+      // The tone follows the measured change: their view of us, else our approval
+      const relFact = them
+        ? facts.find((f) => f.label === `${possessive(them.name)} view of you`)
+        : undefined;
+      const apprFact = facts.find((f) => f.label === "Approval");
+      const delta = relFact
+        ? relFact.after - relFact.before
+        : apprFact
+          ? apprFact.after - apprFact.before
+          : 0;
+      const reaction = attendedIt
+        ? meetingReaction(meeting.kind, { them, player, speaker: meeting.speaker }, delta, seed)
+        : undefined;
       this.report?.decisions.push({
         title: meeting.title,
-        choice: option === deputy ? `${option.label} (you did not attend)` : option.label,
+        choice: attendedIt ? option.label : `${option.label} (you did not attend)`,
         templateId: meeting.templateId,
+        kind: meeting.kind,
+        optionId: option.id,
+        withCountry: them?.id,
+        speaker: meeting.speaker,
+        attended: attendedIt,
+        headline: attendedIt
+          ? outcomeHeadline(
+              meeting.kind,
+              toneOf(delta),
+              {
+                them,
+                player,
+                speaker: meeting.speaker,
+                title: meeting.title,
+                choice: option.label,
+              },
+              seed,
+            )
+          : `${meeting.speaker}: handled by your staff`,
+        facts,
+        reaction,
+        watch: watchLine({
+          bandBefore,
+          bandAfter: bandOf(player, them),
+          country: them?.name,
+          deputyCaller: !attendedIt && meeting.kind === "CALL" ? meeting.speaker : undefined,
+          staffHold: meeting.kind === "STAFF" && /^(hold|deputy|course|wait)$/.test(option.id),
+        }),
       });
     }
     world.agenda = [];
@@ -1020,9 +1129,11 @@ export class TurnEngine {
     player: CountryState,
     before: { approval: number; stability: number; legitimacy: number; gdp: number; score: number },
     events: GameEvent[],
+    resolved: Map<string, Action[]> = new Map(),
   ): void {
     const report = this.report;
     if (!report) return;
+    this.monthContext(world, player, report, resolved);
     report.deltas = {
       approval: { before: before.approval, after: player.approval },
       stability: { before: before.stability, after: player.stability },
@@ -1079,6 +1190,160 @@ export class TurnEngine {
       );
       if (newPact) report.moments.push("NEW ALLIANCE");
     }
+  }
+
+  /**
+   * The month around the player, for the debrief: who changed their view of us, what the AI did
+   * that touches us, how the fronts and hot zones moved, and the single most important outcome.
+   */
+  private monthContext(
+    world: WorldState,
+    player: CountryState,
+    report: PlayerTurnReport,
+    resolved: Map<string, Action[]>,
+  ): void {
+    const start = this.start;
+    if (!start) return;
+    const name = (id: string) => world.countries.find((c) => c.id === id)?.name ?? id;
+    // Others' view of us: the five biggest movers
+    report.relations = world.countries
+      .filter((c) => c.id !== player.id && !c.collapsed)
+      .map((c) => ({
+        id: c.id,
+        before: start.rel.get(c.id) ?? 0,
+        after: c.relations[player.id] ?? 0,
+      }))
+      .filter((r) => Math.abs(r.after - r.before) >= 1)
+      .sort((a, b) => Math.abs(b.after - b.before) - Math.abs(a.after - a.before))
+      .slice(0, 5)
+      .map((r) => ({ ...r, before: Math.round(r.before), after: Math.round(r.after) }));
+    // AI moves that touch us: aimed at us or an ally, or by a country at war with us
+    const rank = (t: string) =>
+      t === "NUCLEAR_STRIKE"
+        ? 0
+        : t === "DIPLOMACY_DECLARE_WAR"
+          ? 1
+          : t.startsWith("MILITARY_AIRSTRIKE")
+            ? 2
+            : t === "DIPLOMACY_DENOUNCE"
+              ? 4
+              : t.startsWith("MILITARY")
+                ? 3
+                : t.startsWith("INTEL")
+                  ? 5
+                  : 6;
+    const moves: Array<{ actor: string; type: string; target?: string; label: string; r: number }> =
+      [];
+    for (const [actor, actions] of resolved) {
+      if (actor === player.id) continue;
+      for (const a of actions) {
+        const t = a.targetCountryId;
+        const touches =
+          t === player.id ||
+          (t && player.alliances.includes(t)) ||
+          player.atWarWith.includes(actor);
+        if (!touches || a.type === "ECONOMY_ADJUST_MILITARY_BUDGET") continue;
+        moves.push({
+          actor,
+          type: a.type,
+          target: t,
+          label: `${name(actor)}: ${orderLabel(world, a)}`,
+          r: rank(a.type),
+        });
+      }
+    }
+    report.world = moves
+      .sort((a, b) => a.r - b.r)
+      .slice(0, 12)
+      .map(({ r: _r, ...m }) => m);
+    // Our wars: the front from our side, start and end of the month
+    const ours = (w: { attackerId: string; defenderId: string }) =>
+      w.attackerId === player.id || w.defenderId === player.id;
+    for (const [id, front] of start.front) {
+      const now = world.wars.find((w) => w.id === id);
+      const attacker = id.split("_")[1];
+      const defender = id.split("_")[2];
+      if (attacker !== player.id && defender !== player.id) continue;
+      const mine = (f: number) => (attacker === player.id ? f : 100 - f);
+      report.wars.push({
+        vs: attacker === player.id ? defender : attacker,
+        frontBefore: Math.round(mine(front)),
+        frontAfter: Math.round(mine(now?.frontline ?? front)),
+        ended: !now,
+      });
+    }
+    for (const w of world.wars.filter((x) => ours(x) && !start.front.has(x.id))) {
+      report.wars.push({
+        vs: w.attackerId === player.id ? w.defenderId : w.attackerId,
+        frontBefore: 50,
+        frontAfter: Math.round(w.attackerId === player.id ? w.frontline : 100 - w.frontline),
+        ended: false,
+      });
+    }
+    // Hot zones: the metrics that moved most
+    for (const h of world.hotspots) {
+      const was = start.hot.get(h.id);
+      if (!was) continue;
+      const moved = (["violence", "humanitarian", "aid", "governance", "control"] as const)
+        .map((m) => ({
+          id: h.id,
+          name: h.name,
+          metric: m,
+          before: Math.round(was[m]),
+          after: Math.round(h[m]),
+          phase: h.phase,
+        }))
+        .filter((x) => Math.abs(x.after - x.before) >= 3 || was.phase !== h.phase)
+        .sort((a, b) => Math.abs(b.after - b.before) - Math.abs(a.after - a.before))
+        .slice(0, 2);
+      report.hot.push(...moved);
+    }
+    report.tension = { before: Math.round(start.tension), after: Math.round(world.globalTension) };
+    // Orders: the target's real answer this month, else a line by how its view of us moved
+    report.orders.forEach((o, i) => {
+      if (!o.target || o.target === player.id) return;
+      const them = findCountry(world, o.target);
+      if (!them) return;
+      const real = (resolved.get(o.target) ?? []).find((a) => a.targetCountryId === player.id);
+      const d = (them.relations[player.id] ?? 0) - (start.rel.get(o.target) ?? 0);
+      o.reaction = orderReaction(
+        { them, player },
+        d,
+        real ? orderLabel(world, real).replace(/^./, (c) => c.toLowerCase()) : undefined,
+        hashParts(world.seed, world.turn, o.label, i),
+      );
+    });
+    // The highlight: the outcome that moved the most
+    const size = (facts: Array<{ label: string; before: number; after: number }> = []) =>
+      facts.reduce(
+        (s, f) =>
+          s +
+          (/view of you/.test(f.label)
+            ? Math.abs(f.after - f.before) / 2
+            : /Approval|Stability|Legitimacy/.test(f.label)
+              ? Math.abs(f.after - f.before)
+              : 0),
+        0,
+      );
+    let best: PlayerTurnReport["highlight"];
+    let bestScore = -1;
+    report.decisions.forEach((d, i) => {
+      if (d.attended === false) return;
+      const sc = size(d.facts) + (d.kind === "CRISIS" ? 8 : 0);
+      if (sc > bestScore) [best, bestScore] = [{ ref: "decision", index: i }, sc];
+    });
+    report.orders.forEach((o, i) => {
+      const sc = size(o.facts) + (/war|ceasefire|pact|strike|coup/i.test(o.label) && o.ok ? 15 : 0);
+      if (sc > bestScore) [best, bestScore] = [{ ref: "order", index: i }, sc];
+    });
+    report.wars.forEach((w, i) => {
+      const sc =
+        Math.abs(w.frontAfter - w.frontBefore) >= 5 || w.ended
+          ? 10 + Math.abs(w.frontAfter - w.frontBefore)
+          : 0;
+      if (sc > bestScore) [best, bestScore] = [{ ref: "war", index: i }, sc];
+    });
+    report.highlight = best;
   }
 
   // --------------------------------------------------------------------
@@ -1240,33 +1505,178 @@ function orderTag(world: WorldState, action: Action) {
   };
 }
 
-function playerHeadline(
+/** The numbers a decision can move, read just before and after its effects apply. */
+function outcomeSnap(world: WorldState, player: CountryState): Record<string, number> {
+  const s: Record<string, number> = {
+    approval: player.approval,
+    stability: player.stability,
+    legitimacy: player.legitimacy,
+    mobilization: player.mobilizationLevel,
+    intel: player.counterIntelLevel,
+    pc: world.politicalCapital,
+    gdp: player.gdp,
+    tension: world.globalTension,
+  };
+  for (const c of world.countries)
+    if (c.id !== player.id) s[`relations:${c.id}`] = c.relations[player.id] ?? 0;
+  for (const h of world.hotspots)
+    for (const m of ["violence", "humanitarian", "aid", "control", "governance"] as const)
+      s[`hot:${h.id}:${m}`] = h[m];
+  return s;
+}
+
+const ZONE_METRIC: Record<string, string> = {
+  violence: "violence",
+  humanitarian: "hunger",
+  aid: "aid getting in",
+  control: "ground held",
+  governance: "civil order",
+};
+
+/** Up to three measured facts for a decision, biggest first. */
+function decisionFacts(
+  world: WorldState,
+  effects: Record<string, number>,
+  tensionDelta: number,
+  before: Record<string, number>,
+  after: Record<string, number>,
+): Array<{ label: string; before: number; after: number; unit?: string; good?: boolean }> {
+  const keys = new Set(Object.keys(effects).filter((k) => k in before));
+  if (tensionDelta) keys.add("tension");
+  const out: Array<{
+    label: string;
+    before: number;
+    after: number;
+    unit?: string;
+    good?: boolean;
+    w: number;
+  }> = [];
+  for (const k of keys) {
+    let b = before[k];
+    let a = after[k];
+    if (Math.abs(a - b) < 0.5 && k !== "gdp") continue;
+    let label = k;
+    let unit: string | undefined = "%";
+    let good = true;
+    let w = Math.abs(a - b);
+    if (k.startsWith("relations:")) {
+      label = `${possessive(world.countries.find((c) => c.id === k.split(":")[1])?.name ?? k)} view of you`;
+      unit = undefined;
+      w /= 1.5;
+    } else if (k.startsWith("hot:")) {
+      const [, id, m] = k.split(":");
+      label = `${id === "GAZA" ? "Gaza" : "West Bank"}: ${ZONE_METRIC[m] ?? m}`;
+      unit = undefined;
+      good = !/violence|humanitarian|control/.test(m);
+    } else if (k === "gdp") {
+      if (Math.abs(a / b - 1) < 0.0005) continue;
+      label = "Economy";
+      unit = "$B";
+      w = Math.abs(a / b - 1) * 600;
+      b /= 1e9;
+      a /= 1e9;
+    } else if (k === "pc") {
+      label = "Political capital";
+      unit = "◆";
+    } else if (k === "tension") {
+      label = "World tension";
+      unit = undefined;
+      good = false;
+    } else if (k === "mobilization") label = "Mobilization";
+    else if (k === "intel") label = "Counter-intelligence";
+    else label = k.charAt(0).toUpperCase() + k.slice(1);
+    out.push({
+      label,
+      before: Math.round(b * 10) / 10,
+      after: Math.round(a * 10) / 10,
+      unit,
+      good,
+      w,
+    });
+  }
+  return out
+    .sort((x, y) => y.w - x.w)
+    .slice(0, 3)
+    .map(({ w: _w, ...f }) => f);
+}
+
+/**
+ * The front-page lead: the month's highlight told as a story, with the numbers it moved, the
+ * reply it drew, what else the leader did and what comes next. Never a list of option labels.
+ */
+function playerLead(
   world: WorldState,
   player: CountryState,
   report: PlayerTurnReport,
 ): NewspaperEntry | null {
-  const who = `${player.leader.title} ${player.leader.name}`;
-  // "Marcos Jr." -> "Marcos", not "Jr."
   const parts = player.leader.name.split(" ").filter((p) => !/^(jr\.?|sr\.?|ii|iii|iv)$/i.test(p));
   const surname = parts.at(-1) ?? player.leader.name;
-  const decision = report.decisions[0];
-  const order = report.orders.find((o) => o.ok) ?? report.orders[0];
-  if (!decision && !order) return null;
-  // Routine orders (an address, a reform, a courtesy call) don't make the front page
-  const notable =
-    /^(Declare war|Airstrike|NUCLEAR|Back coup|Assassinate|Offer pact|Propose ceasefire|Mediate|Break pact|Arm rebels)/i;
-  if (!decision && !report.orders.some((o) => o.ok && notable.test(o.label))) return null;
-  const headline = decision
-    ? `${possessive(player.leader.name.split(" ").length <= 3 ? player.leader.name : surname).toUpperCase()} ANSWER TO ${decision.title.replace(/["“”]/g, "").toUpperCase()}: ${decision.choice.replace(" (no decision taken)", "").toUpperCase()}`
-    : `${player.name.toUpperCase()}: ${order.label.toUpperCase()}${order.ok ? "" : ", BLOCKED"}`;
-  const lines = [
-    ...report.decisions.map((d) => `Faced with “${d.title}”, ${who} decided: ${d.choice}.`),
-    ...report.orders.map((o) => `${o.label}: ${o.detail}.`),
-  ];
+  const who = `${player.leader.title} ${surname}`;
+  const h = report.highlight;
+  if (!h) return null;
+  const fmt = (f: { label: string; before: number; after: number; unit?: string }) => {
+    const n = (v: number) =>
+      f.unit === "$B" ? `$${Math.round(v)}B` : `${Math.round(v)}${f.unit === "%" ? "%" : ""}`;
+    const verb = f.after > f.before ? "rose" : "fell";
+    return `${f.label} ${verb} from ${n(f.before)} to ${n(f.after)}`;
+  };
+  let headline = "";
+  let lede = "";
+  let quote = "";
+  let next = "";
+  const related = [player.id];
+  if (h.ref === "decision") {
+    const d = report.decisions[h.index];
+    headline = d.headline ?? d.title;
+    lede = `${who} chose to ${d.choice.charAt(0).toLowerCase()}${d.choice.slice(1).replace(/\.$/, "")} (${d.title.replace(/[.?]$/, "")}).${d.facts?.[0] ? ` ${fmt(d.facts[0])}.` : ""}`;
+    if (d.reaction)
+      quote = `${d.reaction.who}: "${d.reaction.line.replace(/^'|'$/g, "").replace(/"/g, "'")}"`;
+    next = d.watch ?? "";
+    if (d.withCountry) related.push(d.withCountry);
+  } else if (h.ref === "order") {
+    const o = report.orders[h.index];
+    headline = `${player.name}: ${o.label}${o.ok ? "" : ", and it fails"}`;
+    lede = `${o.story ?? o.detail}`.replace(/\.\.+/g, ".").replace(/([^.!?])$/, "$1.");
+    if (o.reaction)
+      quote = `${o.reaction.who}: "${o.reaction.line.replace(/^'|'$/g, "").replace(/"/g, "'")}"`;
+    if (o.target) related.push(o.target);
+  } else {
+    const w = report.wars[h.index];
+    const them = world.countries.find((c) => c.id === w.vs)?.name ?? w.vs;
+    const moved = w.frontAfter - w.frontBefore;
+    headline = w.ended
+      ? `The war with ${them} is over`
+      : moved >= 0
+        ? `${player.name} gains ground against ${them}`
+        : `${them} pushes ${possessive(player.name)} forces back`;
+    lede = w.ended
+      ? `After months of fighting, the guns fall silent on the ${player.name}-${them} front.`
+      : `The front moved ${Math.abs(moved)} points ${moved >= 0 ? "in our favour" : "against us"} this month (now ${w.frontAfter} of 100 from our side).`;
+    related.push(w.vs);
+  }
+  // Context: up to two other things the leader did this month
+  const others = [
+    ...report.decisions
+      .filter((d, i) => d.attended !== false && !(h.ref === "decision" && i === h.index))
+      .map((d) =>
+        d.withCountry
+          ? `${d.choice.toLowerCase().replace(/\.$/, "")} (${d.kind === "CALL" ? "a call with" : d.kind === "VISIT" ? "a visit by" : "on"} ${world.countries.find((c) => c.id === d.withCountry)?.name})`
+          : d.choice.toLowerCase().replace(/\.$/, ""),
+      ),
+    ...report.orders
+      .filter((o, i) => o.ok && !(h.ref === "order" && i === h.index))
+      .map((o) => `ordered: ${o.label.toLowerCase()}`),
+  ].slice(0, 2);
+  const context = others.length
+    ? `Elsewhere, ${surname} also chose to ${others.join(", and ")}.`
+    : "";
+  const description = [lede, quote, context, next ? `What next: ${next}` : ""]
+    .filter(Boolean)
+    .join(" ");
   return {
     headline,
-    description: lines.join(" "),
-    relatedCountries: [player.id],
+    description,
+    relatedCountries: related,
     turn: world.turn,
     category: "DOMESTIC",
   };

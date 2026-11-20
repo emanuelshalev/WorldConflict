@@ -29,6 +29,9 @@ export interface TaggedItem extends FeedItem {
   salience: number;
 }
 
+/** Em and en dashes (written as escapes: the repo bans the literal characters). */
+const DASHES = /[\u2013\u2014]/g;
+
 // ----------------------------------------------------------------------------
 // Feeds
 // ----------------------------------------------------------------------------
@@ -47,7 +50,8 @@ function decode(s: string): string {
       .replace(/&#8216;|&lsquo;/g, "'")
       .replace(/&#8220;|&#8221;|&ldquo;|&rdquo;/g, '"')
       .replace(/&#8211;|&ndash;/g, "-")
-      .replace(/&#8212;|&mdash;|—/g, ", ")
+      .replace(/&#8212;|&mdash;/g, ", ")
+      .replace(DASHES, ", ")
       .replace(/&nbsp;/g, " ")
       .replace(/&#(\d+);/g, (_m, n) => String.fromCharCode(Number(n)))
       .replace(/\s+/g, " ")
@@ -694,7 +698,7 @@ export function applyProposal(p: Proposal, dataPath: string, only?: Set<string>)
   const take = <T extends { id: string; accept: boolean }>(x: T) =>
     only ? only.has(x.id) : x.accept;
   const res: ApplyResult = { changed: [], skipped: [] };
-  const clean = (s: string) => s.replace(/—|–/g, ", ").replace(/"/g, "'").trim();
+  const clean = (s: string) => s.replace(DASHES, ", ").replace(/"/g, "'").trim();
 
   for (const h of p.history.filter(take)) {
     const file = join(dataPath, "countries", `${h.country}.json`);
@@ -829,5 +833,5 @@ export function proposalMarkdown(p: Proposal, names: Record<string, string>): st
     ...(p.briefing.length ? p.briefing.map((b, i) => `- \`b-${i}\` ${b}`) : ["- none"]),
     "",
   );
-  return out.join("\n").replace(/—/g, ", ");
+  return out.join("\n").replace(DASHES, ", ");
 }
