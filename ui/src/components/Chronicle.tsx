@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { countryName, useGameStore, usePlayerCountry } from '../store/gameStore';
 import { flag, money, monthLabel } from '../lib/format';
 import { useModalFocus } from '../lib/useModalFocus';
-import { OutcomeReel } from '../scenes/OutcomeReel';
+import { MonthDebrief } from '../scenes/MonthDebrief';
 import { SceneFrame } from '../scenes/SceneFrame';
-import { sceneForNews } from '../scenes/kinds';
+import { sceneForAction, sceneForCrisis, sceneForNews } from '../scenes/kinds';
 
 const MOMENT_COLOR: Record<string, string> = {
   'CLOSE CALL': '#b3261e',
@@ -56,12 +56,31 @@ export function Chronicle() {
   const ref = useModalFocus<HTMLDivElement>(!!(show && world && me) && !reel);
   if (!show || !world || !me) return null;
   if (reel && report0)
-    return <OutcomeReel growth={me.realGrowth} ledger={world.director.ledger} report={report0} date={world.date} turn={world.turn} home={me.id} onDone={() => setReelTurn(world.turn)} />;
+    return <MonthDebrief report={report0} world={world} home={me.id} onDone={() => setReelTurn(world.turn)} />;
 
   const news = world.newspaper;
   const lead = news.find((n) => n.relatedCountries.includes(me.id)) ?? news[0];
   const rest = news.filter((n) => n !== lead).slice(0, 8);
   const report = world.turnReport;
+  // The lead is the month's highlight: illustrate it with that item's own scene
+  const hl = report?.highlight;
+  const hd = hl?.ref === 'decision' ? report?.decisions[hl.index] : undefined;
+  const ho = hl?.ref === 'order' ? report?.orders[hl.index] : undefined;
+  const leadScene = lead?.relatedCountries.includes(me.id)
+    ? hd
+      ? hd.kind === 'CALL' || hd.kind === 'VISIT'
+        ? 'summit'
+        : hd.kind === 'STAFF'
+          ? 'cabinet'
+          : hd.kind === 'PRESS'
+            ? 'tv_interview'
+            : sceneForCrisis(hd.templateId, hd.title)
+      : ho?.type
+        ? sceneForAction(ho.type)
+        : hl?.ref === 'war'
+          ? 'war_room'
+          : undefined
+    : undefined;
   const delta = (k: string) => (report?.deltas[k] ? report.deltas[k].after - report.deltas[k].before : 0);
   const fmt = (v: number, suffix = '') => (
     <b className={v > 0.4 ? 'delta-up' : v < -0.4 ? 'delta-down' : ''} style={{ color: Math.abs(v) <= 0.4 ? undefined : undefined }}>
@@ -94,7 +113,7 @@ export function Chronicle() {
         {lead && (
           <div className="lead">
             <SceneFrame
-              kind={sceneForNews(lead.category, lead.headline)}
+              kind={leadScene ?? sceneForNews(lead.category, lead.headline)}
               home={me.id}
               other={lead.relatedCountries.find((id) => id !== me.id)}
               mood={['WAR', 'NUCLEAR'].includes(lead.category) ? 'bad' : 'neutral'}
@@ -104,7 +123,25 @@ export function Chronicle() {
               <span className="kicker">{lead.category}</span>
             </div>
             <h3>{lead.headline}</h3>
-            <p>{lead.description}</p>
+            {(() => {
+              // The engine's lead carries a quote "Who: ..." and a "What next:" line: lay them out
+              const hl = report?.highlight;
+              const src = hl?.ref === 'decision' ? report?.decisions[hl.index] : hl?.ref === 'order' ? report?.orders[hl.index] : undefined;
+              const r = src?.reaction;
+              const quoteText = r ? `${r.who}: "${r.line.replace(/^'|'$/g, '').replace(/"/g, "'")}"` : '';
+              const [body, next] = lead.description.replace(quoteText, '').split(' What next: ');
+              return (
+                <>
+                  <p className="lede">{body.replace(/\s{2,}/g, ' ').trim()}</p>
+                  {r && lead.relatedCountries.includes(me.id) && (
+                    <blockquote className="pull">
+                      “{r.line.replace(/^'|'$/g, '')}”<cite>{r.who}</cite>
+                    </blockquote>
+                  )}
+                  {next && <p className="next">What next: {next}</p>}
+                </>
+              );
+            })()}
           </div>
         )}
 
@@ -135,25 +172,6 @@ export function Chronicle() {
                 {fmt(delta('score'))}
               </div>
             </div>
-            {(report.orders.length > 0 || report.decisions.length > 0 || report.causes.length > 0) && (
-              <ul className="causes">
-                {report.decisions.map((d) => (
-                  <li key={d.title}>
-                    <b style={{ color: '#f4efe4' }}>{d.title}:</b> {d.choice}
-                  </li>
-                ))}
-                {report.orders.map((o, i) => (
-                  <li key={`${o.label}-${i}`} style={{ color: o.ok ? undefined : '#ff9a9b' }}>
-                    {o.ok ? '✓' : '✗'} {o.label}, {o.detail}
-                  </li>
-                ))}
-                {report.causes.slice(0, 5).map((c, i) => (
-                  <li key={`${i}-${c}`} style={{ color: '#b9b2a2' }}>
-                    {c}
-                  </li>
-                ))}
-              </ul>
-            )}
             {report.moments.map((m) => (
               <span key={m} className="moment-stamp" style={{ color: MOMENT_COLOR[m] === '#1e7d4f' ? 'var(--good)' : m === 'NEW ALLIANCE' ? 'var(--intel)' : '#ff6b6d' }}>
                 {m}

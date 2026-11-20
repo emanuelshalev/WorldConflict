@@ -153,7 +153,7 @@ function CrisisDetail({ d }: { d: PendingDecision }) {
   );
 }
 
-const KIND_SCENE: Record<Meeting['kind'], Parameters<typeof SceneFrame>[0]['kind']> = { CALL: 'address', STAFF: 'cabinet', VISIT: 'summit', PRESS: 'tv_interview' };
+const KIND_SCENE: Record<Meeting['kind'], Parameters<typeof SceneFrame>[0]['kind']> = { CALL: 'summit', STAFF: 'cabinet', VISIT: 'summit', PRESS: 'tv_interview' };
 const KIND_WORD: Record<Meeting['kind'], string> = { CALL: 'Call', STAFF: 'Staff meeting', VISIT: 'State visit', PRESS: 'Interview' };
 
 function advisorFor(m: Meeting): string {

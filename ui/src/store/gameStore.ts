@@ -194,12 +194,48 @@ export interface TurnReport {
     type?: string;
     target?: string;
     story?: string;
-    facts?: Array<{ label: string; before: number; after: number; unit?: string; good?: boolean }>;
+    facts?: ReportFact[];
+    reaction?: Reaction;
+    watch?: string;
   }>;
-  decisions: Array<{ title: string; choice: string; templateId?: string }>;
+  decisions: Array<{
+    title: string;
+    choice: string;
+    templateId?: string;
+    kind?: 'CRISIS' | 'CALL' | 'VISIT' | 'STAFF' | 'PRESS';
+    optionId?: string;
+    withCountry?: string;
+    speaker?: string;
+    attended?: boolean;
+    headline?: string;
+    facts?: ReportFact[];
+    reaction?: Reaction;
+    watch?: string;
+  }>;
   deltas: Record<string, { before: number; after: number }>;
   causes: string[];
   moments: string[];
+  relations?: Array<{ id: string; before: number; after: number }>;
+  world?: Array<{ actor: string; type: string; target?: string; label: string }>;
+  wars?: Array<{ vs: string; frontBefore: number; frontAfter: number; ended: boolean }>;
+  hot?: Array<{ id: string; name: string; metric: string; before: number; after: number; phase: string }>;
+  tension?: { before: number; after: number };
+  highlight?: { ref: 'decision' | 'order' | 'war'; index: number };
+}
+
+export interface ReportFact {
+  label: string;
+  before: number;
+  after: number;
+  unit?: string;
+  good?: boolean;
+}
+
+/** How the other side answered (src/core/reactions.ts): the tone follows the measured change. */
+export interface Reaction {
+  who: string;
+  line: string;
+  tone: 'warm' | 'cold' | 'angry' | 'neutral';
 }
 
 export interface Outcome {

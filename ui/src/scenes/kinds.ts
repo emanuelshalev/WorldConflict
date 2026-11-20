@@ -133,7 +133,7 @@ const CRISIS_SCENES: Record<string, SceneKind> = {
   shock_terror: 'disaster',
   shock_disaster: 'disaster',
   election_campaign: 'election',
-  meeting_call: 'address',
+  meeting_call: 'summit', // both leaders on screen (a phone call is a two-sided scene)
   meeting_staff: 'cabinet',
   meeting_visit: 'summit',
   meeting_press: 'tv_interview',

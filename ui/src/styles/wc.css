@@ -2295,3 +2295,9 @@ kbd { font-family: var(--font-mono); font-size: 10px; padding: 1px 5px; border: 
 .cmd-strip .strip-over { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--war); }
 @media (max-width: 1099px) { .rail, .rail.sheet-open { background: #0a0e18; } }
 @media (max-width: 900px) { .hud .pc-word { display: none; } }
+/* Chronicle lead: a story, a pull quote, what next */
+.lead .lede { font-size: 17px; line-height: 1.5; }
+.lead .lede::first-letter { font-family: var(--font-news); font-size: 3.1em; float: left; line-height: .85; margin: 4px 8px 0 0; color: #1b1a17; }
+.lead .pull { margin: 12px 0; padding: 10px 0 10px 18px; border-left: 4px solid #8a2a1c; font-family: var(--font-news); font-size: 24px; line-height: 1.25; color: #1b1a17; }
+.lead .pull cite { display: block; margin-top: 6px; font-family: var(--font-mono); font-style: normal; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: #6b6458; }
+.lead .next { font-family: var(--font-mono); font-size: 12.5px; color: #8a2a1c; letter-spacing: .02em; }
