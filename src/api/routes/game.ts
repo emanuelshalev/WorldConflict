@@ -115,6 +115,24 @@ function turnPayload(worldState: WorldState) {
   };
 }
 
+/**
+ * What kind of fire a flashpoint is, for its pin on the title globe: nuclear rivals, an open war,
+ * a standoff at sea, or a regime in crisis. Keyword-based so scanned flashpoints get one too.
+ */
+function flashpointKind(f: {
+  title: string;
+  tagline: string;
+  hook: string;
+  setup: { wars: unknown[] };
+}) {
+  const text = `${f.title} ${f.tagline} ${f.hook}`.toLowerCase();
+  if (/nuclear/.test(text)) return "NUCLEAR";
+  if (f.setup.wars.length > 0) return "WAR";
+  if (/coup|regime|dictator|junta|generals|civil war|uprising/.test(text)) return "REGIME";
+  if (/strait|shoal|convoy|blockade|quarantine|naval|coast guard|sea\b/.test(text)) return "SEA";
+  return "WAR";
+}
+
 /** How hard each nation is to lead (shown on the picker; tuned with scripts/simulate.ts). */
 const COUNTRY_DIFFICULTY: Record<string, "STEADY" | "TOUGH" | "BRUTAL"> = {
   USA: "STEADY",
@@ -191,6 +209,11 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
       date: f.date,
       turns: f.turns,
       playable: f.playable,
+      kind: flashpointKind(f),
+      // Who is fighting whom when it opens (the title globe draws these as live lines)
+      rivals: f.setup.wars.length
+        ? f.setup.wars.map((w) => [w.attackerId, w.defenderId])
+        : [[f.playable[0]?.countryId, f.playable[1]?.countryId]].filter((p) => p[0] && p[1]),
       objectives: Object.fromEntries(
         Object.entries(f.objectives).map(([id, o]) => [
           id,

@@ -1,7 +1,10 @@
 import { SceneFrame } from '../scenes/SceneFrame';
 import { sceneForNews } from '../scenes/kinds';
 import { labelPoint, loadWorld, type WorldGeo } from '../scenes/worldGeo';
-import { type GlobePin, TitleGlobe } from './TitleGlobe';
+import { type GlobeArc, type GlobePin, TitleGlobe } from './TitleGlobe';
+import { MapKey } from './MapKey';
+import { CRISIS_KINDS, kindOf } from '../lib/crisisKind';
+import { iconSvg } from '../lib/iconSvg';
 import '../styles/title.css';
 import { useEffect, useMemo, useState } from 'react';
 import {
@@ -168,20 +171,45 @@ export function TitleScreen() {
     window.addEventListener('resize', on);
     return () => window.removeEventListener('resize', on);
   }, []);
+  // A crisis sits where it burns: between its two local sides (great powers that join from
+  // afar, like the US over Taiwan, would drag the pin into the middle of an ocean)
   const pinAt = (ids: string[]): [number, number] | null => {
     if (!geo) return null;
-    const pts = ids.map((id) => labelPoint(geo, id)).filter((x): x is [number, number] => !!x);
+    const local = ids.filter((id) => !['USA', 'CHN', 'RUS'].includes(id));
+    const pts = (local.length ? local : ids)
+      .map((id) => labelPoint(geo, id))
+      .filter((x): x is [number, number] => !!x);
     if (!pts.length) return null;
-    return [pts.reduce((s2, p2) => s2 + p2[0], 0) / pts.length, pts.reduce((s2, p2) => s2 + p2[1], 0) / pts.length];
+    const [a, b] = pts;
+    if (!b) return a;
+    let dl = b[0] - a[0];
+    if (dl > 180) dl -= 360;
+    if (dl < -180) dl += 360;
+    if (Math.hypot(dl, b[1] - a[1]) > 35) return a; // too far apart: the first side's capital region
+    return [a[0] + dl / 2, (a[1] + b[1]) / 2];
   };
   const pins: GlobePin[] =
     mode === 'FLASHPOINT'
       ? flashpoints
           .flatMap((f): GlobePin[] => {
             const at = pinAt(f.playable.map((x) => x.countryId));
-            return at ? [{ id: f.id, at, label: f.title, gold: daily?.flashpointId === f.id }] : [];
+            const k = CRISIS_KINDS[kindOf(f.kind)];
+            return at
+              ? [{ id: f.id, at, label: f.title, gold: daily?.flashpointId === f.id, color: k.color, iconSvg: iconSvg(k.icon), sub: `${k.label} · ${f.playable.map((x) => flag(x.countryId)).join(' ')}` }]
+              : [];
           })
       : [];
+  // Rival lines: who is fighting or facing off in each crisis (the selected one brighter)
+  const arcs: GlobeArc[] = geo
+    ? flashpoints.flatMap((f) =>
+        (f.rivals ?? []).flatMap(([a, b]) => {
+          const pa = labelPoint(geo, a);
+          const pb = labelPoint(geo, b);
+          return pa && pb ? [{ from: pa, to: pb, color: CRISIS_KINDS[kindOf(f.kind)].color, on: usingFlashpoint && f.id === flashpointId }] : [];
+        }),
+      )
+    : [];
+  const liveWars = new Set(flashpoints.filter((f) => kindOf(f.kind) === 'WAR').flatMap((f) => (f.rivals ?? []).map((r) => [...r].sort().join('-')))).size;
   const DIFF_TINT = { STEADY: 'rgba(86,197,150,.55)', TOUGH: 'rgba(242,169,59,.55)', BRUTAL: 'rgba(229,56,59,.55)' } as const;
   const tint: Record<string, string> = Object.fromEntries(
     (usingFlashpoint && fp ? fp.playable.map((x) => [x.countryId, DIFF_TINT[x.difficulty]]) : countries.map((c) => [c.id, DIFF_TINT[c.difficulty].replace('.55', '.28')])),
@@ -206,7 +234,7 @@ export function TitleScreen() {
 
   return (
     <div className="ts2">
-      <TitleGlobe pins={pins} selectedPin={usingFlashpoint ? flashpointId : null} onPin={pickCrisis} tint={tint} selectedCountry={countryId} onCountry={pickNation} focus={focus} padRight={wide ? 440 : 0} />
+      <TitleGlobe arcs={arcs} pins={pins} selectedPin={usingFlashpoint ? flashpointId : null} onPin={pickCrisis} tint={tint} selectedCountry={countryId} onCountry={pickNation} focus={focus} padRight={wide ? 440 : 0} />
       <div className="ts2-vignette" aria-hidden />
 
       <header className="ts2-top">
@@ -216,6 +244,22 @@ export function TitleScreen() {
             The world tonight · {new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
             {tension !== undefined ? ` · tension ${tension}` : ''}
           </small>
+        </div>
+        <div className="ts2-status" aria-label="State of the world">
+          <span>
+            <b className="num">{flashpoints.length}</b> live crises
+          </span>
+          <span>
+            <b className="num">{liveWars}</b> open wars
+          </span>
+          <span>
+            <b className="num">{countries.length || 41}</b> nations
+          </span>
+          {tension !== undefined && (
+            <span className="ts2-tension" title="Global tension: how close the world is to a wider war">
+              Tension <i style={{ ['--t' as string]: `${tension}%` }} /> <b className="num">{tension}</b>
+            </span>
+          )}
         </div>
         <div className="ts2-actions">
           {resume && (
@@ -366,6 +410,8 @@ export function TitleScreen() {
           </button>
         </div>
       </aside>
+
+      <MapKey mode={usingFlashpoint ? 'crisis' : 'nation'} />
 
       <div className="ts2-ticker" aria-hidden>
         <span className="tag">LIVE</span>

@@ -29,17 +29,6 @@
 .ts2-daily b { font-size: 15px; }
 .ts2-daily svg { margin-left: auto; color: var(--nuke); }
 
-/* Pins */
-.tg-pin { position: relative; width: 22px; height: 22px; padding: 0; border: 0; background: none; cursor: pointer; }
-.tg-pin-dot { position: absolute; inset: 6px; border-radius: 50%; background: var(--war); box-shadow: 0 0 10px rgba(229, 56, 59, .9); }
-.tg-pin-ring { position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--war); animation: tg-ring 2.2s ease-out infinite; }
-.tg-pin.gold .tg-pin-dot { background: var(--nuke); box-shadow: 0 0 12px rgba(245, 213, 71, .9); }
-.tg-pin.gold .tg-pin-ring { border-color: var(--nuke); }
-.tg-pin.on .tg-pin-dot { inset: 3px; background: #fff; }
-.tg-pin-label { position: absolute; left: 26px; top: 50%; transform: translateY(-50%); white-space: nowrap; font: 600 12px/1 var(--font-ui); color: #fff; text-shadow: 0 1px 4px #000, 0 0 10px #000; opacity: 0; transition: opacity .2s; pointer-events: none; }
-.tg-pin:hover .tg-pin-label, .tg-pin.on .tg-pin-label, .tg-pin:focus-visible .tg-pin-label { opacity: 1; }
-@keyframes tg-ring { 0% { transform: scale(.5); opacity: .9; } 100% { transform: scale(1.9); opacity: 0; } }
-
 /* Dossier */
 .ts2-dossier { position: relative; z-index: 4; grid-column: 2; grid-row: 2; display: flex; flex-direction: column; gap: 10px; margin: 12px 16px 10px 0; padding: 14px; border-radius: 16px; background: rgba(12, 17, 28, .9); border: 1px solid var(--line-2); box-shadow: 0 20px 60px rgba(0, 0, 0, .55); backdrop-filter: blur(10px); overflow-y: auto; min-height: 0; animation: ts2-in .5s var(--ease-out); }
 @keyframes ts2-in { from { opacity: 0; transform: translateX(20px); } }
@@ -119,4 +108,98 @@
   .ts2-ticker { display: none; }
   .ts2 { grid-template-rows: auto 44vh auto auto; }
   .ts2-dossier { max-width: calc(100vw - 20px); }
+}
+
+/* Pins. The marker element itself must keep MapLibre's own absolute positioning:
+   setting position on .tg-pin (as before) made every pin drift off its country. */
+.tg-pin { width: 30px; height: 30px; padding: 0; border: 0; background: none; cursor: pointer; --pin: #ff4d4f; }
+.tg-pin > * { position: absolute; }
+.tg-pin-badge { inset: 3px; display: grid; place-items: center; border-radius: 50%; background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--pin) 85%, #fff) 0%, var(--pin) 55%, color-mix(in srgb, var(--pin) 60%, #000) 100%); border: 1.5px solid rgba(255, 255, 255, .85); box-shadow: 0 0 14px var(--pin), 0 2px 6px rgba(0, 0, 0, .6); transition: transform .2s; }
+.tg-pin-badge svg { display: block; filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .5)); }
+.tg-pin:hover .tg-pin-badge, .tg-pin.on .tg-pin-badge { transform: scale(1.18); }
+.tg-pin-ring { inset: 0; border-radius: 50%; border: 2px solid var(--pin); opacity: 0; animation: tg-ring 2.4s ease-out infinite; pointer-events: none; }
+.tg-pin-ring.r2 { animation-delay: 1.2s; }
+.tg-pin.on .tg-pin-ring { border-color: #fff; }
+.tg-pin.gold .tg-pin-badge { border-color: var(--nuke); box-shadow: 0 0 0 3px rgba(245, 213, 71, .35), 0 0 22px rgba(245, 213, 71, .8); }
+.tg-pin.gold .tg-pin-ring { border-color: var(--nuke); }
+.tg-pin-today { display: none; left: 50%; top: -15px; transform: translateX(-50%); font: 800 9px/1 var(--font-mono); letter-spacing: .14em; padding: 2px 5px; border-radius: 3px; background: var(--nuke); color: #1b1204; pointer-events: none; }
+.tg-pin.gold .tg-pin-today { display: block; }
+.tg-pin-card { left: 38px; top: 50%; transform: translateY(-50%); display: grid; gap: 2px; padding: 6px 9px; border-radius: 8px; background: rgba(8, 12, 22, .9); border: 1px solid color-mix(in srgb, var(--pin) 60%, transparent); white-space: nowrap; text-align: left; opacity: 0; transition: opacity .2s; pointer-events: none; box-shadow: 0 6px 18px rgba(0, 0, 0, .5); }
+.tg-pin-card b { font: 650 12.5px/1.1 var(--font-ui); color: #fff; }
+.tg-pin-card small { font: 11px/1.2 var(--font-ui); color: var(--text-2); }
+.tg-pin:hover .tg-pin-card, .tg-pin.on .tg-pin-card, .tg-pin:focus-visible .tg-pin-card { opacity: 1; }
+@keyframes tg-ring { 0% { transform: scale(.55); opacity: .9; } 100% { transform: scale(2.1); opacity: 0; } }
+
+/* Space around the globe: stars, a faint galaxy band, a slow twinkle */
+.tg { background:
+  radial-gradient(1px 1px at 12% 18%, #fff 50%, transparent 51%), radial-gradient(1px 1px at 27% 72%, #cfe0ff 50%, transparent 51%),
+  radial-gradient(1.5px 1.5px at 41% 9%, #fff 50%, transparent 51%), radial-gradient(1px 1px at 63% 83%, #fff 50%, transparent 51%),
+  radial-gradient(1px 1px at 78% 22%, #ffe9c4 50%, transparent 51%), radial-gradient(1.5px 1.5px at 88% 61%, #fff 50%, transparent 51%),
+  radial-gradient(1px 1px at 5% 55%, #fff 50%, transparent 51%), radial-gradient(1px 1px at 52% 40%, #cfe0ff 50%, transparent 51%),
+  radial-gradient(1px 1px at 70% 6%, #fff 50%, transparent 51%), radial-gradient(1px 1px at 95% 92%, #fff 50%, transparent 51%),
+  radial-gradient(1px 1px at 33% 95%, #fff 50%, transparent 51%), radial-gradient(1.5px 1.5px at 18% 38%, #ffe9c4 50%, transparent 51%),
+  linear-gradient(115deg, transparent 30%, rgba(90, 120, 200, .07) 45%, rgba(160, 110, 200, .06) 55%, transparent 70%),
+  radial-gradient(70% 60% at 45% 50%, #0b1730 0%, #05080f 70%);
+}
+.tg::before, .tg::after { content: ''; position: absolute; inset: 0; pointer-events: none; background-repeat: repeat; }
+.tg::before { background-image: radial-gradient(1px 1px at 20px 30px, rgba(255, 255, 255, .7), transparent 2px), radial-gradient(1px 1px at 140px 90px, rgba(255, 255, 255, .5), transparent 2px), radial-gradient(1px 1px at 260px 160px, rgba(200, 220, 255, .6), transparent 2px); background-size: 300px 220px; animation: tg-twinkle 6s ease-in-out infinite alternate; }
+.tg::after { background-image: radial-gradient(1px 1px at 80px 140px, rgba(255, 255, 255, .6), transparent 2px), radial-gradient(1.2px 1.2px at 210px 40px, rgba(255, 240, 210, .6), transparent 2px); background-size: 260px 260px; animation: tg-twinkle 8s 2s ease-in-out infinite alternate; }
+.tg-map { z-index: 1; }
+@keyframes tg-twinkle { from { opacity: .35; } to { opacity: .9; } }
+
+/* World status strip under the title */
+.ts2-top { flex-wrap: wrap; }
+.ts2-status { order: 3; flex-basis: 100%; display: flex; gap: 16px; flex-wrap: wrap; margin-top: 10px; font-size: 12.5px; color: var(--text-2); }
+.ts2-status span { display: inline-flex; align-items: baseline; gap: 5px; text-shadow: 0 1px 6px #000; }
+.ts2-status b { font-size: 16px; color: var(--text-1); }
+.ts2-tension { align-items: center !important; }
+.ts2-tension i { display: inline-block; width: 70px; height: 5px; border-radius: 3px; background: linear-gradient(90deg, #56c596, #f2a93b 55%, #e5383b); position: relative; overflow: hidden; }
+.ts2-tension i::after { content: ''; position: absolute; inset: 0 0 0 var(--t); background: rgba(10, 14, 24, .85); }
+
+/* Map key */
+.map-key { position: absolute; z-index: 3; left: clamp(16px, 3vw, 36px); bottom: 44px; width: 300px; border-radius: 12px; background: rgba(10, 15, 26, .82); border: 1px solid var(--line-2); backdrop-filter: blur(8px); box-shadow: 0 10px 30px rgba(0, 0, 0, .45); }
+.mk-head { display: flex; align-items: center; gap: 6px; width: 100%; padding: 9px 12px; background: none; border: 0; color: var(--text-1); font: 600 12px/1 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; cursor: pointer; }
+.mk-head svg:last-child { margin-left: auto; }
+.mk-body { display: grid; grid-template-columns: 1fr; gap: 10px; padding: 0 12px 12px; max-height: 46vh; overflow-y: auto; }
+.mk-group h4 { margin: 2px 0 6px; font: 600 10.5px/1.2 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--text-3); }
+.mk-row { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 9px; align-items: center; margin: 5px 0; }
+.mk-row b { display: block; font-size: 12.5px; color: var(--text-1); font-weight: 600; }
+.mk-row small { display: block; font-size: 11px; color: var(--text-3); line-height: 1.3; }
+.mk-pin { width: 22px; height: 22px; display: grid; place-items: center; border-radius: 50%; background: var(--pin); border: 1.5px solid rgba(255, 255, 255, .85); box-shadow: 0 0 10px var(--pin); }
+.mk-pin.today { background: #3a2f08; border-color: var(--nuke); box-shadow: 0 0 0 3px rgba(245, 213, 71, .3), 0 0 12px rgba(245, 213, 71, .7); }
+.mk-pin.today i { font-style: normal; color: var(--nuke); font-size: 12px; }
+.mk-line { height: 0; border-top: 2px dashed #ff4d4f; width: 24px; }
+.mk-sw { width: 22px; height: 15px; border-radius: 4px; border: 1px solid rgba(255, 255, 255, .15); }
+.mk-sw.steady { background: rgba(86, 197, 150, .6); }
+.mk-sw.tough { background: rgba(242, 169, 59, .6); }
+.mk-sw.brutal { background: rgba(229, 56, 59, .6); }
+.mk-sw.picked { background: transparent; border: 2px solid #ffd08a; }
+.mk-sw.other { background: #18233a; }
+@media (max-width: 900px) {
+  .map-key { position: relative; left: auto; bottom: auto; width: auto; margin: 0 10px 10px; grid-column: 1; grid-row: 4; }
+  .ts2-status { gap: 10px; font-size: 11.5px; }
+  .ts2-status b { font-size: 14px; }
+  .tg-pin-card { display: none; }
+  .tg-pin.on .tg-pin-card { display: grid; opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) { .tg::before, .tg::after, .tg-pin-ring { animation: none; } }
+/* Compact key: one strip of chips, full key on click */
+.map-key { width: auto; max-width: min(640px, calc(100vw - 480px)); }
+.map-key.open { width: 320px; }
+.mk-mini { display: flex; flex-wrap: wrap; gap: 6px 12px; padding: 0 12px 10px; }
+.mk-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--text-2); white-space: nowrap; }
+.mk-chip .mk-pin { width: 18px; height: 18px; }
+.mk-chip .mk-sw { width: 12px; height: 10px; margin-right: -3px; }
+@media (max-width: 900px) { .map-key { max-width: none; } .map-key.open { width: auto; } }
+@media (max-width: 900px) {
+  .ts2-top { flex-wrap: wrap; align-items: center; }
+  .ts2-brand small { display: none; }
+  .ts2-brand h1 { font-size: 27px; }
+  .ts2-actions { flex-wrap: nowrap; }
+  .ts2-status { margin-top: 6px; gap: 10px; }
+  .ts2-status span:nth-child(3) { display: none; }
+  .ts2-tension i { width: 44px; }
+  .ts2 { grid-template-rows: auto 46vh auto auto; }
+  .tg, .ts2-vignette { height: calc(46vh + 96px); }
+  .ts2-left { gap: 6px; padding-bottom: 6px; }
 }

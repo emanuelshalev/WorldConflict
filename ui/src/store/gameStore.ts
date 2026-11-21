@@ -267,6 +267,10 @@ export interface FlashpointInfo {
   turns: number;
   playable: Array<{ countryId: string; role: string; difficulty: 'STEADY' | 'TOUGH' | 'BRUTAL' }>;
   objectives: Record<string, { title: string; briefing: string }>;
+  /** What kind of fire it is (title globe pin): see ui/src/lib/crisisKind.ts. */
+  kind?: 'WAR' | 'SEA' | 'REGIME' | 'NUCLEAR';
+  /** Who is fighting or facing off when it opens (lines on the title globe). */
+  rivals?: Array<[string, string]>;
 }
 
 export interface ScenarioInfo {
