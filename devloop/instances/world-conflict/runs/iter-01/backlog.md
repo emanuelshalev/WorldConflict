@@ -15,3 +15,5 @@
 | B-11 | Tension reads 74.2 (tile), 71.6 (card), 71 (paper) in the same month | QA repro #6 | Month WP-H (result card) | Open |
 | B-12 | Title preselects the first flashpoint, not today's crisis (TitleScreen.tsx:107) | QA repro #8d | Month WP-G (onboarding) | Open |
 | B-13 | Escape does not close the newspaper opened after the debrief | QA repro | Month WP-H | Open |
+| B-14 | Reveal home-press quote says "Approval from 64%" while the approval series starts at 56 (Bab al-Mandab run) | Reveal UI agent | Engine (reveal-text.ts) | Open |
+| B-15 | Engine still sends the series label "Leadership score" (UI relabels to "Score"); fixture perception.approval lacks elections | Reveal UI agent | Engine | Open |
