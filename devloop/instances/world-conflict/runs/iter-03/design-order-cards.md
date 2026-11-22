@@ -20,7 +20,7 @@ Personas this must serve (RS-007 mapping): Noah and Olivia follow icons and colo
 1. **A pictogram per order type**, 28 icons (one per registry id in `ui/src/lib/orders.ts`), drawn for this game on one grid, bold filled silhouettes, one idea each, monochrome (colour never carries the meaning). Plus 3 reserve icons (sanctions, aid, trade deal) for the Economy orders the registry does not have yet.
 2. **Six visual families**: the five D-66 families (Diplomacy, Military, Covert, Economy, Home) plus Nuclear as a hazard variant of Military (yellow plate with hazard stripes). Each family is always shown four ways at once: pictogram, family word, plate colour, edge. Never colour alone.
 3. **The card leads with a pictogram plate** (52 px tile, 42 px compact, 46 px row): a solid light family-coloured token with the dark pictogram, overlapping the bottom of a **taller, full-colour scene band** (104 px tile, up from 62). The body paper is lighter and tinted by the family at the top.
-4. **Recognition is the acceptance bar**: the panel names the unlabeled icons; 80% pooled before ship (`icon-recognition-test.md`). Round 1 scored 74%, round 2 82%, round 3 84%; nine icons were redrawn for round 2, six for round 3 and three for the final replicated run (section 3.4, D-74).
+4. **Recognition is the acceptance bar**: the panel names the unlabeled icons; 80% pooled before ship (`icon-recognition-test.md`). Round 1 scored 74%, round 2 82%, round 3 84%, the replicated final run 87%; nine icons were redrawn for round 2, six for round 3, three for the final run, and two fallbacks applied after it (section 3.4, D-74, D-75). From iteration 4 icons are validated in real use (section 3.4).
 
 ## 3. Icon system
 
@@ -55,10 +55,11 @@ Source of truth: `concepts/order-icons/build.mjs` (generates every SVG, the spri
 | Jet diving | strike from the air | strike military targets |
 | Tank | the army on the ground | mass troops at border, withdraw troops |
 | Helmet | soldiers, the army | mobilize, stand down, back a coup (final) |
-| Radiation sign | a nuclear site | strike nuclear sites (final) |
+| Radiation sign in square brackets, SITES tag | a nuclear site, targeted | strike nuclear sites (final, D-75) |
+| Police star | the police | soft policing, hard crackdown (final, D-75) |
 | Split or crack | break it | break pact, destabilize |
 
-### 3.3 Catalogue (28 registry orders)
+### 3.3 Final catalogue (28 registry orders, as built in iteration 4)
 
 | Registry id | Order | Family | Pictogram (one idea) | Why this picture |
 |---|---|---|---|---|
@@ -75,7 +76,7 @@ Source of truth: `concepts/order-icons/build.mjs` (generates every SVG, the spri
 | `deploy-border` | Mass troops at border | Military | Tank facing a dashed border line, arrow towards it | The border line is the subject; the barrel and arrow point at it |
 | `withdraw-border` | Withdraw troops | Military | Same tank turned away, arrow back | Mirror of deploy, with the line kept on the same side so the direction is the only difference |
 | `airstrike-military` | Strike military targets | Military | Jet diving onto a blast | Air attack in one look; the blast says "strike", not "fly" |
-| `airstrike-nuclear` | Strike nuclear sites | Military | A finned bomb falling on a reactor dome marked with a large radiation sign (final) | The radiation trefoil is the one sign that says "nuclear" on a place; a dome, not a chimney or cooling tower, so it is not a factory or power plant; no jet, no mushroom |
+| `airstrike-nuclear` | Strike nuclear sites | Military | Text-forward: the radiation sign inside square target brackets, over a SITES tag (final, D-75) | The radiation sign is the one cue that says nuclear; square brackets target a place, unlike the round crosshair of Assassinate; no dome, head or person anywhere (the dome read as a leader); no mushroom, so not Nuclear strike; the SITES tag (drawn as paths, no font) settles it in words |
 | `fund-nuclear` | Fund nuclear program | Nuclear | Atom with a coin badge | Money into the program; atom is the program in all three nuclear icons |
 | `nuclear-strike` | Nuclear strike | Nuclear | Mushroom cloud | Unmistakable; must never be confused with anything (danger order) |
 | `spy` | Spy on | Covert | Agent in a fedora and dark glasses, collar up | The pop-culture spy; recognised by children and casual players (Noah, Olivia) |
@@ -89,13 +90,15 @@ Source of truth: `concepts/order-icons/build.mjs` (generates every SVG, the spri
 | `reform` | Reform program | Economy | Sprout growing out of a gear | Fixing the machine so it grows; "reform", "growth" and "modernise" all count |
 | `address` | National address | Home | The leader at a lectern on a TV screen, with a flag (round 2) | A televised speech to the nation; the microphone and podium read as a plant pot |
 | `policing-soft` | Soft policing | Home | A police badge (star shield) with a speech-bubble badge (round 3) | The badge is the police sign in every country; no cap, because after round 2 any headgear read as army |
-| `policing-hard` | Hard crackdown | Home | Riot officer: visored helmet, shield, raised baton (round 2) | A person in riot gear is force; the bare shield and baton read as a document and a pen ("sign a law") |
+| `policing-hard` | Hard crackdown | Home | A line of three riot police: visored helmets behind tall shields, star on the middle shield (final, D-75) | A shield wall is the picture of a crackdown; no stick anywhere (batons read as a pen, a shovel, a broom); the police star ties it to Soft policing, the shields and visors make it force |
 
 Reserve (not in the registry yet, same grammar, family Economy): `reserve-sanctions` padlock with a $ (frozen money), `reserve-aid` care package with a heart, `reserve-trade` container ship with two-way arrows. They are drawn so a future sanctions, aid or trade order lands in the system without a new style; they are not part of the recognition test.
 
 Note on the brief: the brief listed sanctions, aid and trade deal as order types; the registry (`ui/src/lib/orders.ts`, engine `src/core/orders.ts`) has no such orders today (it has 28: the 6 diplomacy, declare war, 7 military, 2 nuclear, 8 covert, 4 domestic). The set follows the registry.
 
-### 3.4 Round 2 redraws (D-70, after the panel test)
+### 3.4 Test rounds and redraws (D-70 to D-75)
+
+#### Round 2 (D-70, after round 1)
 
 Round 1: 74% weighted, 75% unweighted (bar 80%), `concept-tests/RESULTS.md`. Rule for the redraws: an icon must not show what people misread it as, and it should borrow from icons that scored 9/9 (swords, jet, atom, spy, helmet, handshake) so the set gets more consistent, not less. The 13 icons at 9/9 are unchanged (2, 4, 6, 7, 8, 9, 12, 14, 17, 18, 20, 21, 28 in round 1 numbering). Soft policing (67%) is also unchanged, as it was not on the redraw list.
 
@@ -149,7 +152,7 @@ Round 3 passed the pool, but icons whose drawing never changed swung by up to 67
 | `deploy-border` | Mass troops at border | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
 | `withdraw-border` | Withdraw troops | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
 | `airstrike-military` | Strike military targets | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
-| `airstrike-nuclear` | Strike nuclear sites | 78 | 56 | 44 | none (redrawn for the final run) | untested | 0 | final redraw |
+| `airstrike-nuclear` | Strike nuclear sites | Military | Text-forward: the radiation sign inside square target brackets, over a SITES tag (final, D-75) | The radiation sign is the one cue that says nuclear; square brackets target a place, unlike the round crosshair of Assassinate; no dome, head or person anywhere (the dome read as a leader); no mushroom, so not Nuclear strike; the SITES tag (drawn as paths, no font) settles it in words |
 | `fund-nuclear` | Fund nuclear program | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
 | `nuclear-strike` | Nuclear strike | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
 | `spy` | Spy on | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
@@ -163,7 +166,7 @@ Round 3 passed the pool, but icons whose drawing never changed swung by up to 67
 | `reform` | Reform program | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
 | `address` | National address | 0 | 100 | 100 | 2,3 | 100% | 2 | ok |
 | `policing-soft` | Soft policing | 67 | 11 | 100 | 3 | 100% | 1 | ok (one round only) |
-| `policing-hard` | Hard crackdown | 56 | 56 | 33 | 2,3 | 44% | 2 | watch (unchanged per D-74; replicate decides) |
+| `policing-hard` | Hard crackdown | Home | A line of three riot police: visored helmets behind tall shields, star on the middle shield (final, D-75) | A shield wall is the picture of a crackdown; no stick anywhere (batons read as a pen, a shovel, a broom); the police star ties it to Soft policing, the shields and visors make it force |
 
 Average of the 25 tested current drawings: 92.1%
 
@@ -176,9 +179,22 @@ Three icons failed in every round and are redrawn; every other icon is byte-iden
 | Hunt foreign spies (0, 67, 44) | R1 sanctions, ban; R2 investigate, spy on; R3 "spy in a car" (the level cuffs read as wheels; confused with spy by 4) | The spy figure small at top left, a pair of open handcuffs angled at bottom right with lock blocks and a short chain | No slash, no lens, no level pair of rings: the cuffs are offset and tilted with their lock blocks, which wheels and binoculars do not have; the spy is the object, the cuffs are the action (arrest) |
 
 
+#### Closing the icon design (D-75)
+
+Final replicated run (`concept-tests/RESULTS-final.md`): 87% pooled, noise about 9 points per icon. Dedicated icon rounds stop here. The two consistent failures get the documented fallbacks without another test:
+
+| Order | Final run | Fallback applied | Why |
+|---|---|---|---|
+| Strike nuclear sites | 22% (four drawings, every round failed; last read as a bomb at a leader, a crackdown, a coup) | Text-forward: radiation sign in square target brackets over a SITES tag | Every picture of a building was read as something else (factory, head); the radiation sign plus a word cannot be. Square brackets keep it apart from the round crosshair of Assassinate; no mushroom keeps it apart from Nuclear strike. The tag is drawn as paths (5 block letters, 1.7-unit stroke), so the build needs no font; legible from 34 px, so on cards the plate is at least 34 px and the 24 px tray slot relies on the title |
+| Hard crackdown | 44% (A 78%, B 11%; read as cleaning or digging on sheet B) | A riot police line: three visored helmets behind tall shields, police star on the middle shield | The baton was the broom, the shovel and, in round 1, the pen: no stick at all now. The police star (soft policing, 100% in round 3) says police, the shield wall says force |
+
+Every other icon is unchanged from the final run. The A/B sheet PNGs and keys are kept as the record of what the panel answered; the sheet HTML files load the live sprite, so they now show the final drawings.
+
+**Validation in real use (D-75).** Icons are no longer validated by a dedicated test. They are checked in real use: (1) the iteration-4 playtests (synthetic panel and CEO) log any order picked or skipped by mistake, and any "what is this?" about an order card, by order id; (2) the debrief log notes when a player gives an order and then removes it; (3) any order id with two or more such reports across sessions is redrawn in `build.mjs` and the fix ships with the next build, with no separate test round. In the game every card keeps its title, family word and, for danger orders, the confirm face, so the icon helps at a glance but is never the only cue. Watch first: Strike nuclear sites and Hard crackdown (untested final drawings), Feed disinformation and Denounce (read as speech or announcement in the final run).
+
 ### 3.5 Legibility check
 
-Verified on the contact sheet at 96, 48, 34 (plate) and 24 px, plate and bare. Strong at 24 px: swords, megaphone, mushroom, spy, dynamite, crosshair, magnifier, TV, shields, mask bubble. Acceptable at 24 px, best at 34 px plate: mobilize and stand down (the helmets merge, the badge carries the difference), strike nuclear sites and destabilize (fine detail), arm rebels (the rifle is partly hidden by the fist). Rule: on cards the icon is never smaller than 28 px; the 24 px size is for the tray slot and inline text only.
+Verified on the contact sheet at 96, 48, 34 (plate) and 24 px, plate and bare. Strong at 24 px: swords, megaphone, mushroom, spy, dynamite, crosshair, magnifier, TV, shields, mask bubble. Acceptable at 24 px, best at 34 px plate: mobilize and stand down (the helmets merge, the badge carries the difference), destabilize (fine detail), strike nuclear sites (the SITES tag needs 34 px or more), arm rebels (the rifle is partly hidden by the fist). Rule: on cards the icon is never smaller than 28 px; the 24 px size is for the tray slot and inline text only.
 
 ## 4. Family colours
 

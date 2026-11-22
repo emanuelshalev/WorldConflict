@@ -221,13 +221,28 @@ export const ICONS = [
       fl(star(13.5, 35, 10.5, 4.6, 8)) + `<ellipse cx="22.5" cy="25.5" rx="3.2" ry="1.7" transform="rotate(-45 22.5 25.5)"/>`,
   },
   {
-    id: 'airstrike-nuclear', family: 'mil', label: 'Strike nuclear sites', idea: 'A bomb falling on a reactor dome marked with the radiation sign', rev: 4, was: 'r1 atom in a crosshair (nuclear strike); r2 jet onto an atom (nuclear bomber); r3 bomb on a cooling tower (factory, power plant)',
-    accept: ['strike nuclear sites', 'bomb nuclear sites', 'bomb a reactor', 'bomb nuclear facility', 'bomb nuclear plant', 'attack nuclear plant', 'airstrike on nuclear', 'hit nuclear facility', 'attack reactor', 'destroy nuclear program', 'bomb their nuclear program', 'strike the reactor', 'bomb radioactive site'],
+    id: 'airstrike-nuclear', family: 'mil', label: 'Strike nuclear sites', idea: 'Radiation sign in square target brackets over a SITES tag', rev: 5, was: 'r1 atom in crosshair; r2 jet onto atom; r3 bomb on cooling tower; final run bomb on reactor dome (read as a bomb at a leader)',
+    accept: ['strike nuclear sites', 'target nuclear sites', 'bomb nuclear sites', 'nuclear sites', 'hit nuclear facility', 'attack reactor', 'destroy nuclear program', 'target radioactive sites'],
     svg: (id) => {
-      const tre = [0, 120, 240].map((a) => `<path d="M24 32.5L${(24 + 11 * Math.cos(((a - 120) * Math.PI) / 180)).toFixed(2)} ${(32.5 + 11 * Math.sin(((a - 120) * Math.PI) / 180)).toFixed(2)}A11 11 0 0 1 ${(24 + 11 * Math.cos(((a - 60) * Math.PI) / 180)).toFixed(2)} ${(32.5 + 11 * Math.sin(((a - 60) * Math.PI) / 180)).toFixed(2)}Z" fill="${K}"/>`).join('');
-      return knock(id, fl('M2 46V33C2 19 46 19 46 33V46Z'), tre + circ(24, 32.5, 4.6, W) + circ(24, 32.5, 2.6, K)) +
-        `<g transform="translate(-4 5) rotate(28 30 9)">${fl('M27 1.5C27 -0.5 33 -0.5 33 1.5V11C33 13.6 31.5 15.3 30 15.8C28.5 15.3 27 13.6 27 11Z') + fl('M25.5 0L27.5 3H32.5L34.5 0Z')}</g>` +
-        st('M17 16L14.5 13M33 13.5L36.5 11M33.5 19.5L37.5 18.5', 2.4);
+      const c = [24, 18.5];
+      const r = 11.5;
+      const blade = (a) => {
+        const p = (ang, rr) => `${(c[0] + rr * Math.cos((ang * Math.PI) / 180)).toFixed(2)} ${(c[1] + rr * Math.sin((ang * Math.PI) / 180)).toFixed(2)}`;
+        return `M${p(a - 30, 4.2)}L${p(a - 30, r)}A${r} ${r} 0 0 1 ${p(a + 30, r)}L${p(a + 30, 4.2)}A4.2 4.2 0 0 0 ${p(a - 30, 4.2)}Z`;
+      };
+      const trefoil = [-90, 30, 150].map((a) => fl(blade(a))).join('') + circ(c[0], c[1], 2.6);
+      const brackets = st('M4 9V3.5H9.5M38.5 3.5H44V9M44 28V33.5H38.5M9.5 33.5H4V28', 3.2);
+      const x0 = 9.4;
+      const w = 4.4;
+      const g = 1.8;
+      const L = (i) => x0 + i * (w + g);
+      const letters =
+        `M${L(0) + w} 39.9H${L(0)}V42.5H${L(0) + w}V45.1H${L(0)}` +
+        `M${L(1) + w / 2} 39.9V45.1M${L(1) + 0.6} 39.9H${L(1) + w - 0.6}M${L(1) + 0.6} 45.1H${L(1) + w - 0.6}` +
+        `M${L(2)} 39.9H${L(2) + w}M${L(2) + w / 2} 39.9V45.1` +
+        `M${L(3) + w} 39.9H${L(3)}V45.1H${L(3) + w}M${L(3)} 42.5H${L(3) + w - 1}` +
+        `M${L(4) + w} 39.9H${L(4)}V42.5H${L(4) + w}V45.1H${L(4)}`;
+      return trefoil + brackets + knock(id, rect(3, 37.5, 42, 10, 2.5), `<path d="${letters}" fill="none" stroke="${K}" stroke-width="1.7" stroke-linecap="square"/>`);
     },
   },
   // ---------------- Nuclear (military, hazard) ----------------
@@ -336,14 +351,16 @@ export const ICONS = [
         fl(star(21, 20, 8.5, 3.6, 5), K) + `<path d="M8 13.5H34" fill="none" stroke="${K}" stroke-width="1.8"/>`)),
   },
   {
-    id: 'policing-hard', family: 'home', label: 'Hard crackdown', idea: 'Riot officer: visored helmet, shield, raised baton', rev: 2, was: 'Riot shield and baton (read as sign a law, a document and a pen)',
-    accept: ['crackdown', 'hard crackdown', 'riot police', 'riot control', 'repression', 'police force', 'police violence', 'force', 'martial law', 'suppress protests', 'hard policing', 'police', 'police brutality', 'clamp down'],
-    svg: (id) =>
-      knock(id,
-        fl('M14 17C14 5.5 34 5.5 34 17Z') + rect(12.5, 17.6, 23, 3.4, 1.4) + circ(24, 24.5, 4.8) + fl('M9.5 46C9.5 35.5 15.5 31 24 31C32.5 31 38.5 35.5 38.5 46Z'),
-        rect(16, 19.6, 16, 1.4, 0, K) + `<path d="M2 25.5H21.5V39C21.5 44 17 47.5 11.75 47.5C6.5 47.5 2 44 2 39Z" fill="${K}" stroke="${K}" stroke-width="5"/>` + crossedLine('M33 33L45 4.5', 9.5)) +
-      fl('M2 25.5H21.5V39C21.5 44 17 47.5 11.75 47.5C6.5 47.5 2 44 2 39Z').replace('/>', '/>') +
-      st('M33 33L45 4.5', 4.8) + st('M37.2 23.5L42.6 25.8', 3.2),
+    id: 'policing-hard', family: 'home', label: 'Hard crackdown', idea: 'A line of riot police: visored helmets behind tall shields', rev: 3, was: 'r1 shield and baton (sign a law); r2-final riot officer with baton (soldier digging, cleaning)',
+    accept: ['crackdown', 'hard crackdown', 'riot police', 'riot control', 'police line', 'shield wall', 'repression', 'police force', 'martial law', 'suppress protests', 'hard policing', 'police', 'clamp down', 'riot squad'],
+    svg: (id) => {
+      const helmet = (cx) => fl(`M${cx - 6.5} 13.5C${cx - 6.5} 4 ${cx + 6.5} 4 ${cx + 6.5} 13.5Z`) + rect(cx - 7.5, 13.5, 15, 3, 1.2);
+      const shield = (x, c) => `<rect x="${x}" y="18.5" width="14" height="27" rx="3"${c ? ` fill="${c}"` : ''}/>`;
+      const visor = (cx) => rect(cx - 5, 10, 10, 1.8, 0.6, K);
+      const sides = knock(`${id}-s`, helmet(9) + helmet(39) + shield(2) + shield(32), `<rect x="15" y="14" width="18" height="34" rx="4" fill="${K}"/>` + visor(9) + visor(39) + rect(4.5, 22, 9, 2, 0.8, K) + rect(34.5, 22, 9, 2, 0.8, K));
+      const mid = knock(`${id}-m`, helmet(24) + shield(17), visor(24) + rect(19.5, 22, 9, 2, 0.8, K) + fl(star(24, 33, 5, 2.1, 5), K));
+      return sides + mid;
+    },
   },
 ];
 
