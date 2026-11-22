@@ -18,6 +18,7 @@
     "db:push": "prisma db push",
     "db:generate": "prisma generate",
     "sim": "tsx scripts/simulate.ts",
+    "bench:reveal": "tsx scripts/simulate.ts --benchmark 1",
     "world:scan": "tsx scripts/world-scan.ts",
     "world:apply": "tsx scripts/world-apply.ts",
     "setup": "node scripts/setup.mjs",

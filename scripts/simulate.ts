@@ -221,6 +221,16 @@ function playerOrders(policy: string, world: WorldState, rng: SeededRandom): Act
 }
 
 // ----------------------------------------------------------------------------
+// Reveal benchmarks (npm run bench:reveal): every seat with smart / random / none,
+// scored like the end screen; writes data/benchmarks/ (see scripts/benchmark.ts)
+// ----------------------------------------------------------------------------
+if (args.get("benchmark") === "1") {
+  const { runBenchmark } = await import("./benchmark.js");
+  await runBenchmark({ args, playerOrders, decide });
+  process.exit(0);
+}
+
+// ----------------------------------------------------------------------------
 // Run
 // ----------------------------------------------------------------------------
 
