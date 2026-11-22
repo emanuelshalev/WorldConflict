@@ -1527,6 +1527,8 @@ export interface SaveRecord {
   branchable: boolean;
   whatIf?: boolean;
   opening?: string;
+  /** The world's current date (YYYY-MM): the branch picker names each month's date. */
+  date?: string;
 }
 
 /** Saves of the signed-in account and of this browser's guest id together. */
