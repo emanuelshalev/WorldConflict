@@ -1,0 +1,22 @@
+# Triage protocol (version 1.0)
+
+Sits between the panel and the backlog. Output: `<instance>/runs/iter-NN/triage.md` and `findings.json`.
+
+1. **Collect** every friction, bug and suggestion from the session reports.
+2. **Deduplicate and cluster** by cause, not by symptom. A cluster gets an id `F-NN-k` (iteration, index).
+3. **Reproduce bugs.** QA re-runs the reported steps on the same build. Only reproduced bugs are filed; the verified-bug rate is tracked.
+4. **Weigh.** Cluster weight = sum of panel weights of the personas who hit it. Real signals (RS-*) count as automatic priority.
+5. **Decide** using thresholds set in advance:
+   - **Fix now** if severity S1/S2, or weight >= 0.30, or it maps to an owner goal.
+   - **Propose adding** a capability when a weighted share >= 0.30 fails at the same goal for the same reason across at least two archetypes and two consecutive builds (one build if it matches a real signal).
+   - **Rework** when completion is acceptable but one archetype's time or retries are far worse.
+   - **Never remove** a feature (instance rule, if the owner sets it). Low-use features are surfaced better or made optional instead.
+6. **Ledger.** Every decision that changes the product gets an entry in `<instance>/ledger.md`.
+
+## Release gate (template)
+Each instance defines concrete thresholds in `<instance>/gate.md`. The template:
+- Every goal in `<instance>/goals.md` verified by QA and confirmed by the panel.
+- No open S1 or S2 finding.
+- Weighted recommend >= the instance threshold, no persona below its floor.
+- The early-quitter persona completes a first session without quitting.
+- The instance's own quality checks (tests, lints, build, domain harnesses) are green.

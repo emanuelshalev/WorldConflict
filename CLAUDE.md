@@ -78,4 +78,5 @@ Static data is JSON in `data/`: 41 country profiles in `data/countries/` (valida
 - Backend is linted/formatted by Biome (2-space indent, 100-char lines); the UI uses its own ESLint config. Don't run Biome on `ui/`.
 - No em dash characters anywhere (docs, site, game text, code, commit messages); use commas, colons, parentheses or a hyphen. `tests/repo-style.spec.ts` enforces it for tracked files.
 - Commit messages: conventional-commit style (`feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`).
+- Development process lives in `devloop/`, a self-contained, reusable module (method, Playwright kit, templates, `HOW_WE_WORK.md`, `LEARNINGS.md`); World Conflict specifics (customer panel, team charters, goals, gate, decision ledger, journal, iteration runs) are in `devloop/instances/world-conflict/`. Keep product details out of `devloop/method`, `kit` and `templates`. `npm run playtest:smoke` runs the UI smoke playtest (needs `npm run dev`).
 - Design docs and project specs live in `dev_plan/` (`spec.md`, `reviews/` expert & persona reviews, `project_status.html` live status page). Public docs: `docs/` (SETUP, GAMEPLAY, ARCHITECTURE, API, DEVELOPMENT).

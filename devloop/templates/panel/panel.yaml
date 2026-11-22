@@ -1,0 +1,7 @@
+version: 1.0
+updated: YYYY-MM-DD
+coverage_axes: {}       # axis -> values the owner wants covered
+archetypes: []          # {id, file, weight, kind}
+variant_rotation: round_robin
+global_adjustments: []
+calibration_sources: []

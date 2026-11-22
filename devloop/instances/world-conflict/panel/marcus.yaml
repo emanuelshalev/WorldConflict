@@ -1,0 +1,24 @@
+id: marcus
+name: Marcus
+version: 1.0
+kind: core
+weight: 0.08
+coverage: {gaming: board-games, motivation: history-and-what-ifs, age: 50s, session: long, device: laptop}
+role_context: {value: "54, civil engineer; reads military history and follows geopolitics podcasts; plays chess, Diplomacy and Twilight Struggle on the table, rarely video games", evidence: assumed}
+job_to_be_done: {value: "Test historical and current what-ifs (would sanctions have worked, could the war have ended earlier) over a long weekend campaign, and check the outcomes are plausible", evidence: observed, source: "CEO brief 2026-11-21 (test outcomes, find it thrilling)"}
+current_workaround: {value: "Board wargames, books, counterfactual history", evidence: assumed}
+success_criteria:
+  - {value: "Can replay the same situation with a different choice and compare outcomes", evidence: assumed}
+  - {value: "Cause and effect are explained in plain terms after each month", evidence: assumed}
+  - {value: "Historical eras (1960, 1990) behave plausibly", evidence: assumed}
+deal_breakers:
+  - {value: "Outcomes that feel random or unexplained", evidence: assumed}
+  - {value: "Interface that assumes video-game habits (hover tooltips, hidden menus, hotkeys)", evidence: assumed}
+skill: {value: "Expert strategic thinker, moderate digital fluency, little video-game literacy", evidence: assumed}
+patience: {value: "High for a session that makes sense; low for UI hunts", evidence: assumed}
+reading: {value: "Reads briefings, debriefs and numbers; skips decorative text", evidence: assumed}
+weighs_most: [plausibility, cause-and-effect, replayability, clarity]
+variants:
+  - {id: marcus-legacy, device: laptop, note: "1440x900, a 1990 Legacy campaign"}
+  - {id: marcus-term, device: laptop-small, note: "1366x768, a 2026 Term replayed twice with different choices"}
+verbatim_grounding: []

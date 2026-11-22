@@ -1,0 +1,20 @@
+id: <slug>
+name: <Name>
+version: 1.0
+kind: core            # core | negative (skeptic, early quitter)
+weight: 0.00
+coverage: {}          # the coverage-matrix cells this persona represents
+role_context: {value: "", evidence: assumed}
+job_to_be_done: {value: "", evidence: assumed}
+current_workaround: {value: "", evidence: assumed}
+success_criteria:
+  - {value: "", evidence: assumed}
+deal_breakers:
+  - {value: "", evidence: assumed}
+skill: {value: "", evidence: assumed}
+patience: {value: "", evidence: assumed}
+reading: {value: "", evidence: assumed}
+weighs_most: []
+variants:
+  - {id: <slug>-a, device: laptop, note: ""}
+verbatim_grounding: []   # real quotes from interviews or signals, if any

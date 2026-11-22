@@ -20,7 +20,8 @@
     "sim": "tsx scripts/simulate.ts",
     "world:scan": "tsx scripts/world-scan.ts",
     "world:apply": "tsx scripts/world-apply.ts",
-    "setup": "node scripts/setup.mjs"
+    "setup": "node scripts/setup.mjs",
+    "playtest:smoke": "node devloop/instances/world-conflict/smoke.mjs"
   },
   "repository": {
     "type": "git",

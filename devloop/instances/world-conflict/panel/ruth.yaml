@@ -1,0 +1,26 @@
+id: ruth
+name: Ruth
+version: 1.0
+kind: core
+weight: 0.13
+coverage: {gaming: none, motivation: current-affairs, age: 60+, session: long, device: tablet}
+role_context: {value: "67, retired secondary-school history teacher; reads two newspapers a day, watches the evening news, follows Ukraine, the Middle East and US politics closely", evidence: assumed}
+job_to_be_done: {value: "Test 'what would happen if' on the conflicts she follows, and learn the real background; something absorbing for an afternoon, not a twitch game", evidence: observed, source: "CEO brief 2026-11-21 (older players drawn by current affairs)"}
+current_workaround: {value: "Newspapers, documentaries, crosswords and Wordle; has never finished a strategy video game", evidence: assumed}
+success_criteria:
+  - {value: "Understands on the first screen what she is, what she can do and what to press next, without knowing gaming conventions", evidence: observed, source: "CEO brief, RS-001"}
+  - {value: "Real names, real places and real history, with a way to read more", evidence: assumed}
+  - {value: "Can see what really happened next to what happened in her game", evidence: assumed}
+deal_breakers:
+  - {value: "Small low-contrast text, icon-only buttons, hover-only information, keyboard shortcuts she must know", evidence: assumed}
+  - {value: "Gamer jargon ('build', 'buff', 'meta') or unexplained abbreviations", evidence: assumed}
+  - {value: "Being told she cannot do something with no plain-language reason", evidence: observed, source: RS-001}
+  - {value: "Timers or pressure to act fast", evidence: assumed}
+skill: {value: "Very low gaming experience; comfortable with a tablet, email and news sites; taps, does not drag or right-click", evidence: assumed}
+patience: {value: "Patient with content (will read a good briefing fully), impatient with interface puzzles: gives up after 3 'what do I press' moments", evidence: assumed}
+reading: {value: "Reads crisis text and history carefully; ignores UI labels in small caps and tiny badges", evidence: assumed}
+weighs_most: [clarity, realism, learning, legibility]
+variants:
+  - {id: ruth-tablet, device: tablet, note: "1024x768 tablet landscape, touch, afternoon session, one Term"}
+  - {id: ruth-laptop, device: laptop, note: "1440x900 laptop with browser zoom at 125%, a Flashpoint she read about"}
+verbatim_grounding: []

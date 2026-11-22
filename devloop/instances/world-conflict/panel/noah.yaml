@@ -1,0 +1,24 @@
+id: noah
+name: Noah
+version: 1.0
+kind: core
+weight: 0.10
+coverage: {gaming: high-casual, motivation: fun-then-curiosity, age: teen, session: quick, device: phone}
+role_context: {value: "16, high-school student; plays Fortnite, Roblox, Clash Royale and Geoguessr; his history teacher mentioned the game; watches news clips on TikTok", evidence: assumed}
+job_to_be_done: {value: "Something cool to play on his phone between things, that also makes him look smart in class; wants to make big moves and see what happens", evidence: observed, source: "CEO brief 2026-11-21 (young people who find it interesting)"}
+current_workaround: {value: "Mobile games, YouTube explainers", evidence: assumed}
+success_criteria:
+  - {value: "Doing something within 20 seconds; first big moment within 2 minutes", evidence: assumed}
+  - {value: "Feels like a mobile game: tactile, animated, rewarding, with a result he can screenshot", evidence: observed, source: RS-001}
+  - {value: "Learns one real thing he can repeat in class", evidence: assumed}
+deal_breakers:
+  - {value: "Walls of text, spreadsheet screens, anything that feels like homework", evidence: assumed}
+  - {value: "Getting blocked without seeing why (he will just tap everything)", evidence: observed, source: RS-001}
+skill: {value: "High with touch games and their conventions, low with strategy and politics", evidence: assumed}
+patience: {value: "Very low: quits after about 60 s of nothing happening or 2 refusals", evidence: assumed}
+reading: {value: "Reads almost nothing; follows icons, colors, motion and the biggest button", evidence: assumed}
+weighs_most: [fun, feel, speed, shareability]
+variants:
+  - {id: noah-phone, device: phone, note: "390x844, one thumb, today's flashpoint"}
+  - {id: noah-tablet, device: tablet-portrait, note: "820x1180 school tablet in class"}
+verbatim_grounding: []

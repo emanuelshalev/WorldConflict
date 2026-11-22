@@ -1,0 +1,24 @@
+id: priya
+name: Priya
+version: 1.0
+kind: core
+weight: 0.10
+role_context: {value: "22, international-relations student who follows Ukraine, Iran, Taiwan and Venezuela daily", evidence: inferred, source: "rounds 1-3"}
+job_to_be_done: {value: "Play out today's news, learn how the actors think, and see plausible futures", evidence: inferred, source: "rounds 1-3"}
+current_workaround: {value: "News podcasts, Twitter threads, Model UN", evidence: assumed}
+success_criteria:
+  - {value: "Leaders, alliances and events match reality as of Nov 2026", evidence: inferred, source: round3}
+  - {value: "Debriefs explain the real-world context", evidence: inferred, source: round2}
+  - {value: "Understands what each choice is meant to achieve before taking it", evidence: observed, source: RS-001}
+deal_breakers:
+  - {value: "Factual errors about current leaders or alliances", evidence: inferred, source: round3}
+  - {value: "Being unable to do the obvious diplomatic move without a clear reason", evidence: observed, source: RS-001}
+skill: {value: "Mid gamer, expert in current affairs", evidence: inferred}
+patience: {value: "Medium; forgives clunky UI if content is accurate, but not opaque refusals", evidence: inferred}
+reading: {value: "Reads crisis text and debriefs fully, skims UI chrome", evidence: inferred}
+weighs_most: [realism, learning, clarity]
+variants:
+  - {id: priya-flash, device: "1440x900 laptop", note: "two current-events flashpoints"}
+  - {id: priya-tablet, device: "820x1180 tablet portrait", note: "in a lecture break"}
+verbatim_grounding:
+  - "Ukraine and Taiwan are missing? (round 1, within five minutes)"
