@@ -8,6 +8,7 @@ Base URL: `http://localhost:8080`. All bodies are JSON. Every response has `succ
 | GET | `/api/llm/status` | Which server-side LLM keys are configured |
 | GET | `/api/scenarios` | Scenarios, flashpoints and today's daily challenge |
 | GET | `/api/countries` | Playable nations with difficulty tags |
+| GET | `/api/codex?scenario=&flashpoint=` | Real-world explanations (codex entries, situation briefings) for one game |
 | POST | `/api/new-game` | Start a session |
 | POST | `/api/turn` | Resolve one month |
 | POST | `/api/preview-action` | Predict an order's effects (no state change) |
@@ -128,6 +129,42 @@ While a game runs, `worldState.chronicle` is sent without its ground-truth parts
 ## GET `/api/runs?seat=<seatKey>&playerId=|guestId=&limit=50`
 
 `runs`: the owner's runs (newest first; `parts`, `achievements`, `detail` with `seedCode`, `series`, `choices`, `aiTier`). `top`: the seat's top 20 among signed-in players. Seat keys are `flashpointId:COUNTRY` or `scenario:MODE:COUNTRY`.
+
+## GET `/api/codex?scenario=<id>&flashpoint=<id>`
+
+The codex for one game (design-learn.md §7): real-world explanations of the people, places, groups, terms and events that crisis and briefing text names, plus the situation briefings. Static content from `data/codex/` (schemas in `src/core/codex.ts`), not part of `WorldState`: fetched once at new game or load and kept by the client. Both parameters are optional: `flashpoint` alone implies its scenario and start date, no parameters means scenario `2026`. 404 for an unknown scenario or flashpoint, 400 for a malformed id.
+
+```json
+{
+  "success": true,
+  "version": "3f2a9c0d1e4b5a67",
+  "scenarioId": "2026",
+  "flashpointId": "ceasefire-or-collapse",
+  "date": "2026-11",
+  "entries": [
+    {
+      "id": "fortress-belt", "kind": "place", "name": "The fortress belt",
+      "aliases": ["fortress belt"], "avoid": [], "countryId": "UKR", "obscurity": 3,
+      "short": "Four fortified cities in Ukrainian-held Donetsk ...", "long": "...",
+      "related": ["kramatorsk", "sloviansk"], "map": { "countries": ["UKR"], "points": [] },
+      "valid": { "from": "2022-09" }, "sources": ["https://..."], "asOf": "2026-11-22"
+    }
+  ],
+  "situations": [
+    {
+      "id": "ceasefire-or-collapse", "title": "...", "oneLine": "...",
+      "whoIsWho": [{ "entryId": "volodymyr-zelensky", "stance": "..." }],
+      "whyItMatters": "...", "timeline": [{ "date": "2022-02-24", "text": "...", "source": "https://..." }],
+      "gameStarts": "2026-11", "map": { "countries": ["UKR", "RUS"], "points": [] },
+      "onThisCard": [], "sources": ["https://..."], "asOf": "2026-11-22"
+    }
+  ]
+}
+```
+
+- `entries`: only those valid at `date` (`valid.from <= date <= valid.to`), with the scenario's `eras[scenarioId]` override applied (`name`, extra `aliases`, `short`, `long`, `obscurity`); `eras` and `reviewedBy` are not sent. Aliases are strings (case-insensitive, whole word) or `{ text, caseSensitive, wholeWord }`.
+- `situations`: the flashpoint's briefing (id = flashpoint id) and the scenario's (`scenario-<scenarioId>`), whichever exist, flashpoint first.
+- `version` is a content hash and also the `ETag`; `If-None-Match` with it answers 304. `Cache-Control: public, max-age=86400`.
 
 ## POST `/api/preview-action`
 

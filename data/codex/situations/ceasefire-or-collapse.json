@@ -1,0 +1,34 @@
+{
+  "id": "ceasefire-or-collapse",
+  "title": "Ceasefire or collapse: Ukraine, November 2026",
+  "oneLine": "Russia's offensive has stalled, the US wants a deal, and the gap is Donetsk: Moscow demands all of it, Kyiv says no land goes without a national vote.",
+  "whoIsWho": [
+    { "entryId": "volodymyr-zelensky", "stance": "No withdrawal from Donetsk without a referendum; needs Western money and weapons." },
+    { "entryId": "vladimir-putin", "stance": "The rest of Donetsk first, then a ceasefire; talks continue, so does the war." },
+    { "entryId": "washington", "stance": "Brokering talks and wants a deal fast, with a 'free economic zone' on the table." }
+  ],
+  "whyItMatters": "The biggest war in Europe since 1945. Whatever line is drawn in Donetsk decides whether Ukraine keeps its strongest defences, and whether a ceasefire holds or only rearms both sides.",
+  "timeline": [
+    { "date": "2014-03", "text": "Russia annexes Crimea; Russian-backed fighters take parts of Donetsk and Luhansk." },
+    { "date": "2022-02-24", "text": "Russia launches its full-scale invasion of Ukraine." },
+    { "date": "2022-09-30", "text": "Russia claims to annex four Ukrainian regions, Donetsk among them." },
+    {
+      "date": "2026-10-27",
+      "text": "A local ceasefire takes effect in Oleshky, planned to run to 1 November.",
+      "source": "https://www.khaleejtimes.com/europe/russia-ukraine-hold-peace-talks-nov-2026-ceasefire-oleshky"
+    },
+    {
+      "date": "2026-11",
+      "text": "US-brokered technical talks expected in Abu Dhabi.",
+      "source": "https://www.al-monitor.com/originals/2026/11/us-attempts-new-peace-push-first-russia-ukraine-talks-nine-months"
+    }
+  ],
+  "gameStarts": "2026-11",
+  "map": { "countries": ["UKR", "RUS"], "points": [{ "name": "Kramatorsk", "lon": 37.56, "lat": 48.72 }] },
+  "onThisCard": ["fortress-belt", "us-midterms-2026"],
+  "sources": [
+    "https://en.wikipedia.org/wiki/Peace_negotiations_in_the_Russian_invasion_of_Ukraine",
+    "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-october-16-2026"
+  ],
+  "asOf": "2026-11-22"
+}

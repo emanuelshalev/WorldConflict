@@ -2,6 +2,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { z } from "zod";
 import { startSnapshot } from "./chronicle.js";
+import { type Codex, CodexFileSchema, SituationSchema } from "./codex.js";
 import { runDirector } from "./crises.js";
 import { generateAgenda } from "./meetings.js";
 import { combineSeed, createSeed, SeededRandom } from "./seed.js";
@@ -771,7 +772,44 @@ export class DataLoader {
     }
   }
 
+  // --- Codex (design-learn.md §7): data/codex/*.json entries, data/codex/situations/*.json ---
+  private codexCache: Codex | null = null;
+
+  /** The whole codex, validated. A deep copy: callers may not mutate the cache. */
+  loadCodex(): Codex {
+    if (!this.codexCache) {
+      const dir = join(this.dataPath, "codex");
+      const jsonIn = (d: string): string[] => {
+        try {
+          return readdirSync(d)
+            .filter((f) => f.endsWith(".json"))
+            .sort();
+        } catch {
+          return [];
+        }
+      };
+      const read = (path: string): unknown => JSON.parse(readFileSync(path, "utf-8"));
+      const entries = jsonIn(dir).flatMap((f) => {
+        const parsed = CodexFileSchema.safeParse(read(join(dir, f)));
+        if (!parsed.success) throw new Error(`data/codex/${f}: ${parsed.error.message}`);
+        return parsed.data;
+      });
+      const sitDir = join(dir, "situations");
+      const situations = jsonIn(sitDir).map((f) => {
+        const parsed = SituationSchema.safeParse(read(join(sitDir, f)));
+        if (!parsed.success) throw new Error(`data/codex/situations/${f}: ${parsed.error.message}`);
+        if (parsed.data.id !== f.replace(/\.json$/, "")) {
+          throw new Error(`data/codex/situations/${f}: id "${parsed.data.id}" must match the file`);
+        }
+        return parsed.data;
+      });
+      this.codexCache = { entries, situations };
+    }
+    return structuredClone(this.codexCache);
+  }
+
   clearCache(): void {
+    this.codexCache = null;
     this.countriesCache.clear();
     this.scenariosCache.clear();
   }
