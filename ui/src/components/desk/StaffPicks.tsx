@@ -1,7 +1,7 @@
-import { useId, useRef, useState } from 'react';
+import { useId, useState } from 'react';
 import { IconCheck, IconChecks, IconChevronDown, IconInfoCircle, IconListDetails, IconPencil } from '@tabler/icons-react';
 import { type StaffPickItem, approveAll, approveLabel, approveStaffPick, openStaffPick } from '../../lib/month';
-import { useStaffPicks } from '../../lib/useStaffPicks';
+import { useRecommendedOpen, useStaffPicks } from '../../lib/useStaffPicks';
 import { TERMS } from '../../lib/glossary';
 import { sound } from '../../lib/sound';
 import '../../styles/month.css';
@@ -17,7 +17,6 @@ import '../../styles/staff-picks.css';
  */
 
 const SEEN_KEY = 'worldconflict.recommendedSeen';
-const OPEN_KEY = 'worldconflict.recommendedOpen';
 
 function readKey(k: string): string | null {
   try {
@@ -125,28 +124,28 @@ function MainButton({ n, breakdown, against, folded, onUnfold, onApprove, kbd, l
 export function StaffPicks({ variant, onNavigate }: { variant: Variant; onNavigate?: () => void }) {
   const { items, n, breakdown, against } = useStaffPicks();
   const uid = useId();
-  const headId = `${uid}-head`;
-  const whyId = `${uid}-why`;
-  const listId = `${uid}-list`;
+  // The strip's group moves between the act row (folded) and its own row (open): stable ids, so
+  // focus can follow it across the remount
+  const base = variant === 'strip' ? 'recommended-strip' : uid;
+  const headId = `${base}-head`;
+  const whyId = `${base}-why`;
+  const listId = `${base}-list`;
+  const mainId = `${base}-main`;
   const [why, setWhy] = useState(() => readKey(SEEN_KEY) !== '1');
   // Map mode starts folded behind "Review n recommended" (D-72; the globe keeps its room): on large
   // screens the list opens in the strip, on phones, tablets and short screens as a sheet over the
-  // globe (staff-picks.css, 1280 x 820). The player's choice is remembered.
-  const [open, setOpen] = useState(() => readKey(OPEN_KEY) === '1');
-  // A double press on "Review n recommended" must not land on the Accept that replaces it
-  const unfoldedAt = useRef(0);
+  // globe (staff-picks.css, 1280 x 820). The player's choice is remembered (lib/useStaffPicks).
+  const open = useRecommendedOpen((st) => st.open);
   const folded = variant === 'strip' && !open;
-  const mainId = `${uid}-main`;
   const seen = () => writeKey(SEEN_KEY, '1');
   const setOpenKept = (v: boolean) => {
-    setOpen(v);
-    writeKey(OPEN_KEY, v ? '1' : '0');
-    if (v) unfoldedAt.current = Date.now();
+    useRecommendedOpen.getState().setOpen(v);
     // Keyboard focus follows: to the group's title when it opens, to the button when it folds
-    window.requestAnimationFrame(() => document.getElementById(v ? headId : mainId)?.focus());
+    window.requestAnimationFrame(() => window.requestAnimationFrame(() => document.getElementById(v ? headId : mainId)?.focus()));
   };
   const approve = () => {
-    if (Date.now() - unfoldedAt.current < 600) return;
+    // A double press on "Review n recommended" must not land on the Accept that replaces it
+    if (Date.now() - useRecommendedOpen.getState().openedAt < 600) return;
     approveAll();
     sound.play('stamp');
     seen();

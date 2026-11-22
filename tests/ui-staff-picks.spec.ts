@@ -139,6 +139,9 @@ describe("RS-005: staff picks are listed next to their Approve button", () => {
     expect(group).toContain("TERMS.recommended.definition");
     // Map mode: folded behind "Review n recommended" by default
     expect(group).toContain("Review {n} recommended");
-    expect(group).toContain("useState(() => readKey(OPEN_KEY) === '1')");
+    expect(ui("lib/useStaffPicks.ts")).toContain("return localStorage.getItem(OPEN_KEY) === '1';");
+    // QA AC3: folded, the button sits in the act row (no extra strip row over the globe)
+    expect(rail).toContain('const hasPicks = picks.items.length > 0 && recOpen;');
+    expect(rail).toContain('{!hasPicks && <StaffPicks variant="strip" />}');
   });
 });

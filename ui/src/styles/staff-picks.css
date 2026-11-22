@@ -52,7 +52,7 @@
 /* Map mode: a full-width row of the command strip; the cards side by side on wide screens */
 .cmd-strip .staff-picks.v-strip { grid-area: picks; padding: 8px 10px 10px; }
 .cmd-strip .staff-picks.v-strip.is-folded { padding: 0; }
-.cmd-strip .staff-picks.v-strip.is-empty { grid-area: auto; padding: 0; border: 0; background: none; }
+.cmd-strip .staff-picks.v-strip.is-empty { grid-area: auto; display: block; padding: 0; border: 0; background: none; }
 .cmd-strip .staff-picks.v-strip.is-empty .sp-main { min-height: 44px; width: auto; }
 .staff-picks.v-strip { grid-template-columns: minmax(0, 1fr) minmax(220px, 320px); grid-template-areas: 'head main' 'why why' 'list list'; align-items: center; column-gap: 12px; }
 .staff-picks.v-strip .sp-head { grid-area: head; }
@@ -75,8 +75,8 @@
    Hide list or Escape folds it back into the button */
 @media (max-width: 1279px), (max-height: 820px) {
   .cmd-strip .staff-picks.v-strip:not(.is-folded):not(.is-empty) { position: fixed; left: max(8px, calc(50% - 400px)); right: max(8px, calc(50% - 400px)); bottom: calc(8px + env(safe-area-inset-bottom)); max-height: 80vh; overflow-y: auto; overscroll-behavior: contain; z-index: 40; padding-bottom: 0; background: #0c111d; box-shadow: 0 0 0 100vmax rgba(3, 5, 11, 0.6), 0 -12px 40px rgba(0, 0, 0, 0.6); grid-template-columns: minmax(0, 1fr); grid-template-areas: 'head' 'why' 'list' 'main'; }
-  .cmd-strip .staff-picks.v-strip:not(.is-folded) .sp-list { max-height: none; overflow: visible; grid-template-columns: minmax(0, 1fr); }
-  .cmd-strip .staff-picks.v-strip:not(.is-folded) .sp-main { position: sticky; bottom: 0; background: #17120a; box-shadow: 0 12px 0 #0c111d; margin-bottom: 12px; }
+  .cmd-strip .staff-picks.v-strip:not(.is-folded):not(.is-empty) .sp-list { max-height: none; overflow: visible; grid-template-columns: minmax(0, 1fr); }
+  .cmd-strip .staff-picks.v-strip:not(.is-folded):not(.is-empty) .sp-main { position: sticky; bottom: 0; background: #17120a; box-shadow: 0 12px 0 #0c111d; margin-bottom: 12px; }
 }
 @media (min-width: 900px) and (max-width: 1279px), (min-width: 900px) and (max-height: 820px) {
   /* clear of the news ticker */
@@ -87,4 +87,18 @@
   .cmd-strip .strip-act { flex-wrap: wrap; }
   .cmd-strip .strip-act .staff-picks.is-empty { flex: 1 1 100%; }
   .cmd-strip .strip-act .staff-picks.is-empty .sp-main { width: 100%; }
+}
+
+/* Map mode, folded (the default): "Review n recommended" sits in the strip's act row beside Desk and
+   Execute, one line high, so the globe keeps its height (QA AC3); what it covers stays in its
+   accessible name. On phones it takes its own line above Desk and Execute. */
+.cmd-strip .strip-act .staff-picks.is-folded { display: block; }
+.cmd-strip .strip-act .staff-picks.is-folded .sp-main { width: auto; min-height: 44px; padding: 0 14px; }
+@media (min-width: 900px) {
+  .cmd-strip .strip-act .staff-picks.is-folded .sp-main-sub { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
+@media (max-width: 899px) {
+  .cmd-strip .strip-act .staff-picks.is-folded, .cmd-strip .strip-act .staff-picks.is-empty { flex: 1 1 100%; order: -1; }
+  .cmd-strip .strip-act .staff-picks.is-folded .sp-main { width: 100%; padding: 6px 12px; white-space: normal; }
+  .cmd-strip .strip-act .staff-picks .sp-main { white-space: normal; }
 }

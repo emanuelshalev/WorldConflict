@@ -7,7 +7,7 @@ import { pcCost } from '../../lib/actions';
 import { budgetShare, budgetStatus, money } from '../../lib/budget';
 import { crisisSelection, pcIncome, planSummary, proposalEffects } from '../../lib/month';
 import { StaffPicks } from './StaffPicks';
-import { useStaffPicks } from '../../lib/useStaffPicks';
+import { useRecommendedOpen, useStaffPicks } from '../../lib/useStaffPicks';
 import { approveProposal } from '../../store/gameStore';
 import { TERMS, term } from '../../lib/glossary';
 import { ActionIcon } from '../../scenes/icons';
@@ -409,13 +409,15 @@ export function CommandStrip() {
   // its room (QA AC3); the toggle opens it
   const [tray, setTray] = useState(false);
   const picks = useStaffPicks();
+  const recOpen = useRecommendedOpen((s) => s.open);
   // Collapsed, the toggle still says how many suggestions wait behind it (QA S2-1 with AC3)
   const advice = useAdvisorRows();
   const staffN = advice.filter((r) => r.staff).length;
   if (!world || !b) return null;
   const cabinet = decisions.filter((d) => !reviewed[d.id]).length;
-  // RS-005: the staff picks sit next to their Approve button, or only the disabled button when none wait
-  const hasPicks = picks.items.length > 0;
+  // RS-005: open, the Recommended list has its own row; folded (the default) or empty, only its
+  // button sits in the act row, so the globe keeps its height (QA AC3)
+  const hasPicks = picks.items.length > 0 && recOpen;
   return (
     <div className={`cmd-strip${tray ? ' tray-open' : ''}${hasPicks ? ' has-picks' : ''}`}>
       <div className="strip-chips">
