@@ -1,0 +1,48 @@
+{
+  "persona": "olivia",
+  "variant": "olivia-laptop",
+  "panel_version": "1.2",
+  "learn": {
+    "preferred": "C",
+    "why": "Only C leaves the text alone and gives me one big friendly button, 'What is going on here?', that I can ignore. A underlines things in the middle of a paragraph and a popup covers the text and the Execute button, which feels like homework. B is a whole second tab of small text, a list, which looks like work software. C's drawer has a map and pictures, but it is still long; I would only read the first two lines. Honestly, the crisis text itself is already a wall of text for me and I would have left around there; none of these fix that.",
+    "would_turn_off": ["underlines", "the Briefing tab", "In your game lines", "codex unlock toast (+4 new in your codex)", "brief me on each new crisis"],
+    "points": {"A": 25, "B": 15, "C": 60},
+    "familiarity_level_i_would_pick": "Guide me",
+    "unknown_terms_i_saw": ["Donetsk oblast", "fortress belt", "Kramatorsk", "Sloviansk", "demilitarising", "the midterms (vaguely)", "the Rada", "Pokrovsk axis", "Oleshky", "Dnipro", "Moscow (as shorthand for government)", "Washington (as shorthand)", "referendum (roughly)", "Mobilization", "Legitimacy", "Abu Dhabi talks"],
+    "kill_criteria_hit": ["wall of text before the first action (crisis text plus three option cards, then drawer text)", "UI looks like work software: small grey text, 'Briefing 7' list tab, small 'i' icons", "popup in A covers the Execute button and the cards"],
+    "answers": {
+      "Q1": "Donetsk oblast: never. fortress belt: later, if at all. Kramatorsk, Sloviansk: never. demilitarising: never. the Rada: later. midterms: I think US elections, later. Pokrovsk axis, Oleshky, Dnipro: never. Moscow calls it 'a basis': I do not get it. Honestly I would look up nothing right now; I want to pick a card.",
+      "Q2": "A: maybe, underlined words look like links so I would poke one, but the popup is huge and covers the buttons, and I would not do it twice. B: no, a side list of seven things with small text is a form, I would not open it. C: yes, one blue button and little i marks I can ignore; the drawer map is nice to look at.",
+      "Q3": "'fortress belt', variant C 3/5: I can see the button, the map shows the red hatched area and the dotted circle, so I get 'the contested bit'. The text is still a lot to read. In A I found it in one hover (4/5) but the card is dense.",
+      "Q4": "A 2, B 4, C 4 (A: the popup hides the options and Execute; B: sits to the side, only in the way if I look at it; C: little i marks are quiet, drawer opens over the right side).",
+      "Q5": "I would pick 'Guide me' because I know nothing, but only if it stays short. First thing off: the underlines, then the toast and 'In your game' lines. The onboarding screen asks 'How well do you follow world news?' which is a bit of a test, I would feel judged, but the three big choices are fine and I would tap the first. The Take office button is good.",
+      "Q6": "Open before choosing: maybe once, if the button is bright. First read: the map, then the one-line summary. I would not read why it matters or what really happened. Missing: a plain one-line 'what each choice does to me' without Approval triple-arrow codes; the cards use words like Mobilization and Legitimacy that I cannot parse.",
+      "Q7": "'18 of 31 met' sounds like a collection, I like collecting a bit (like stickers), so maybe I would tap a NEW badge once. Not after the game ends, I would be gone.",
+      "Q8": "A 15, B 5, C1 10, C2 30, D 10, E 5, F 25 (sum 100)",
+      "Q9": "C: make the 'What is going on here?' button open a three-sentence card with a picture, and hide the rest behind a 'more' tap.",
+      "Q10": "'As of Nov 2026' and the source count mean nothing to me and I would not read them. One wrong fact would not make me stop, I would not notice; I would just feel the game is serious. Facts flagged: []"
+    }
+  },
+  "worldmap": {
+    "preferred": "B",
+    "why": "B looks like a real globe with a few numbered fires, so I know where to look and it is calmer. A has labels and pins stacked on top of each other (Iran, Pakistan, Laos card over the pins) and a huge key at the bottom with ten symbols, which looks like a chart for work. B's colours are prettier and the five fires list is easy to scan, though the right panel text gets cut off at the edge. Honest caveat: I do not know most countries on either, so what matters is that something is big and obvious to tap.",
+    "points": {"A": 35, "B": 65},
+    "era_change_noticed": true,
+    "unknown_terms_i_saw": ["Warsaw Pact", "SEATO, CENTO", "Sino-Soviet alliance (cracking)", "Non-aligned", "Divided Berlin", "Algerian War", "Laos and Vietnam insurgency", "Korean armistice line", "Taiwan Strait shelling", "Trucial States", "Belgian Congo", "Ukrainian SSR", "Hormuz Convoy", "Bab al-Mandab", "Scarborough Line", "Quarantine", "Saudi-Pakistani defence pact", "Alternate history", "New START", "caretaker (Israel PM)", "Stability: strained / steady / solid", "Ceasefire or Collapse"],
+    "kill_criteria_hit": ["A: label overlaps (Iran, Pakistan, Laos card on pins; card in 2026 covers Cuba and the Pick a nation text)", "A: legend of ten symbols is work-software density", "B: text in the right panel is cut off at the edge in 2026", "Stability colours (B) are not clear to me: what does orange mean, I would guess danger but I only guessed"],
+    "answers": {
+      "Q1": "S1 (A): 1960, red Soviet Union and blue West, I get 'two sides'; names like Divided Berlin and A fourth atomic power mean little. S4 (B): 1960 too, I see a numbered list, five fires, which reads faster. B told me faster because of the list.",
+      "Q2": "Yes, 1960 has old names (Soviet Union, Belgian Congo) and sepia; 2026 is different. I do not know enough to spot mistakes. The list of leaders changed with the era which was a nice touch.",
+      "Q3": "Mostly readable on 1440. In S1, the Laos and Vietnam card sits on Iran and Pakistan and Trucial States overlaps. Not checked on the phone. Missing: nothing I would look for, I do not know where much is.",
+      "Q4": "Pin I do not get: the little purple crown with Castro's Cuba (I think a person, a leader?). The dashed and faded pins are small, I could not tell them apart from solid ones. Dotted lines versus solid red: not sure, the red arc over Europe in 2026 just looks like decoration.",
+      "Q5": "No, I did not notice the rim markers. I would expect tapping one to spin the globe to it.",
+      "Q6": "S2: card next to the pin is nicer, it pops up where I tap and has buttons Play it as a 15-minute Flashpoint, which I like. But it covers other things. S4 panel is steadier. Phone not looked at closely.",
+      "Q7": "B default with five fires. I would not flip the switch.",
+      "Q8": "Blocs colours (A) tell me who is on whose side if I know the legend; stability colours (B) are prettier but I could not say what orange means without reading. I could tell blue from red, not the orange tones from each other.",
+      "Q9": "A moment worth having, the year rolling and the sepia is a fun bit, and it is short. I would try 1960 just to see it, once or twice.",
+      "Q10": "Yes, the globe fills the screen better than a plain title. On a phone I cannot say.",
+      "Q11": "B. One change: make the five fires into big tappable cards with a picture, and keep labels off the map entirely until I tap."
+    }
+  },
+  "verbatim": "I do not know what a fortress belt is and I do not want homework, just give me a big button that shows me on a map and let me pick a card."
+}

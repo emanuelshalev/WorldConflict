@@ -1,0 +1,48 @@
+{
+  "persona": "leo",
+  "variant": "leo-stream",
+  "panel_version": "1.2",
+  "learn": {
+    "preferred": "C",
+    "why": "On stream I do not want chat watching me read a wall of underlined words. C keeps the crisis text clean and dramatic, and the full-screen 'What is going on here?' drawer with map, who is who and 'what really happened' is a visual moment I can open on camera and talk over. The '+4 new in your codex' toast is a small hit of progression. A is okay, the hover popup with the little map is nice, but it covers the choice cards. B is a boring sidebar list.",
+    "would_turn_off": ["underlines (look like links, clutter on camera)", "Briefing tab (B), reads like homework", "the 'i' per paragraph if it gets noisy on screen", "Brief me on each new crisis (auto-popup would kill the pacing)"],
+    "points": {"A": 30, "B": 15, "C": 55},
+    "familiarity_level_i_would_pick": "Some help",
+    "unknown_terms_i_saw": ["Donetsk oblast (never)", "fortress belt (now, sounds cool)", "Kramatorsk and Sloviansk (never)", "the midterms (I know the word, not the date)", "the Rada (later)", "Pokrovsk axis (never)", "Oleshky (never)", "Abu Dhabi talks (later)", "Dnipro (never)"],
+    "kill_criteria_hit": [],
+    "answers": {
+      "Q1": "Zelensky, Putin, Trump, Macron, Moscow, Washington I know. Donetsk oblast, fortress belt, Kramatorsk, Sloviansk, the Rada, Pokrovsk, Oleshky, Dnipro I could not explain to a friend. Fortress belt: look up now because it sounds like a boss level. The rest: later or never.",
+      "Q2": "A: maybe, soft underlines are fine but the popup covered the cards, and underlines look like ad links on stream. B: no, a sidebar list means I look away from the drama. C: yes, text stays clean and the big drawer is a thing I can open on purpose.",
+      "Q3": "Fortress belt, variant A or C. A: hover shows it at once, clear in one read, 5. C: the drawer is clear but I have to click, 4.",
+      "Q4": "A 3, B 4, C 5.",
+      "Q5": "Some help. Turn off underlines first, then the toast if it covers the choice cards.",
+      "Q6": "Yes, I would open it once per new crisis, for the content, not to choose. First read: the map, then who is who. The one-line summary is fine as a caption. Missing: what each choice would do to the war, honestly I would pick by the cards anyway.",
+      "Q7": "18 of 31 met is a collect-them-all bar, that I like, mild pull. I would glance at the codex after the game ends only if it makes a shareable card.",
+      "Q8": "A 15, B 5, C1 5, C2 30, D 15, E 10, F 20 (sum 100). Note F and C2 are high because I want to skip help fast and open the big view for content.",
+      "Q9": "C, and make the drawer a full-screen cinematic stinger with a short fade-in so it looks great on stream.",
+      "Q10": "Do not care about 'As of Nov 2026' or the source count. One wrong fact would not stop me, I would make it a joke, unless it is wrong about something chat knows. Facts flagged: none."
+    }
+  },
+  "worldmap": {
+    "preferred": "A",
+    "why": "A looks like a war room: every situation has a name label on the globe, I can read the story at a glance and it is better on camera. B is prettier in the colours but the numbered fires make me read a side list. Chat will want to point at names on the map. Better with B's rim markers and bigger names.",
+    "points": {"A": 60, "B": 40},
+    "era_change_noticed": true,
+    "unknown_terms_i_saw": ["Laos and Vietnam insurgency", "Congo independence", "Algerian War", "Divided Berlin (I know the idea, not the 1960 story)", "Korean armistice line", "Scarborough Line", "Bab al-Mandab", "Hormuz (heard of it)", "Sino-Soviet alliance (cracking)", "Kramatorsk"],
+    "kill_criteria_hit": [],
+    "answers": {
+      "Q1": "S1 (A): 1960 from the title and the Soviet Union, a Cold War split, Berlin, a nuke thing in Africa and a war in Algeria. S4 (B): also 1960, but I had to look at the right panel. A told me faster.",
+      "Q2": "Yes, different worlds: Soviet Union and Warsaw Pact red in 1960 and in 2026 Russia and a different set of pins (S1 vs S2). Nothing looked wrong to me, but I would not know a Belgian Congo error anyway.",
+      "Q3": "Names readable on desktop. In S1 the Laos and Vietnam pin label sits over Iran and Pakistan region and Iraq/Iran labels crowd each other. In S2 the Hormuz card covers Iran and Gulf names. Missing: Japan, Mexico, Brazil, Germany label on 1960 (West Germany is there).",
+      "Q4": "The Taiwan Strait shelling anchor pin: I guess a naval standoff. Hollow dashed brewing pins versus solid ones read OK. Dotted rival lines versus solid red war front read fine, the red arc in S2 is cool.",
+      "Q5": "I noticed 3, 4, 5 in S4 only because of the numbers on the rim. I would expect a tap to spin the globe to it, that would be a nice show.",
+      "Q6": "Card next to the pin (S2) is faster for me, I do not look away. The panel (S4) shows more but is more reading. Phone view not my device.",
+      "Q7": "Leave A's all-on default, it fills the screen with stuff to talk about. I would flip B's switch immediately.",
+      "Q8": "Blocs (A) helped me pick a nation, colours obvious: blue NATO, red Warsaw Pact. B's stability glow is pretty, but orange versus red-brown is hard to tell apart.",
+      "Q9": "Worth having, it is a clip moment: the year rolling and sepia 1960 settling. I would flip eras more just to show chat. Sound on the year stamp would be a bonus.",
+      "Q10": "Yes, both fill the screen far better than the S0 title globe. Phone not tested.",
+      "Q11": "A, with B's rim markers and spin-to-pin. One change: make the pins pulse and the labels bigger so it is readable at stream size."
+    }
+  },
+  "verbatim": "Give me the big full-screen briefing and the war-room map with names on every fire, keep the little underlines off my stream, and let me flip eras with a sound so chat can clip it."
+}

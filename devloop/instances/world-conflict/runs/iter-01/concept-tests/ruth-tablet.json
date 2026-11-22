@@ -1,0 +1,81 @@
+{
+  "persona": "ruth",
+  "variant": "ruth-tablet",
+  "panel_version": "1.2",
+  "learn": {
+    "preferred": "C",
+    "why": "I read the crisis paragraph clean and then, if I want, press one big labelled button 'What is going on here?'. That button has words on it, which I can find. The drawer gives me a map, who is who, why it matters and what really happened, which is exactly what I want as a retired history teacher. A is clever but the names are only faintly underlined and the popup covers the very text I am reading (in the 1440 shot it hides the end of the sentence). I would probably not notice the underline on a tablet and I tap, I do not hover. B is a good list, but it is a side tab I must remember to open, and the tiny 'This month / Briefing 7' switch is the kind of small label I ignore. C's tiny 'i' circles at paragraph ends are too small for my fingers and eyes, so I would rely on the button, not the 'i'.",
+    "would_turn_off": ["the tiny 'i' per paragraph (too small to tap, I use the big button)", "the codex unlock toast at the bottom (it appears over the page while I am reading)", "keyboard hint 'press I to hide marks' (I have no keyboard on a tablet)", "underlines fading and 'Stop marking names I know' (a thing to manage)"],
+    "points": {"A": 25, "B": 25, "C": 50},
+    "familiarity_level_i_would_pick": "Guide me",
+    "unknown_terms_i_saw": [
+      "Donetsk oblast: I know Donetsk, but 'oblast' is a word I half know; later",
+      "fortress belt: never heard it as a name; now",
+      "Kramatorsk and Sloviansk: I know them from the news but could not place them on a map; now",
+      "the Rada: I know it is the Ukrainian parliament; I would not need it, but a line is fine; never",
+      "'by spreadsheet': a joke I did not fully get; later",
+      "Pokrovsk axis: I know Pokrovsk was in the news, 'axis' is military jargon; later",
+      "Druzhkivka and Kostiantynivka: unknown; later",
+      "the midterms: I know these (US elections), and note they were on 3 November, so 'before the midterms' reads wrong to me",
+      "Mobilization / Tension arrows on the option cards: unexplained small text; never",
+      "Staff pick, Approve staff pick, Consult your staff: what is 'staff' to me and what do I press; now",
+      "Political capital with diamonds: no idea what it spends; now"
+    ],
+    "kill_criteria_hit": [
+      "A: popup covers the crisis text and relies on hover/tap on faint dotted underlines (hover-only information is a deal breaker on a tablet)",
+      "C: the 'i' marker is tiny and icon-only (deal breaker), though the labelled button saves it",
+      "Tiny letter-spaced small-caps labels throughout (APPROVAL, STABILITY, CRISES, THIS MONTH) which I ignore"
+    ],
+    "answers": {
+      "Q1": "See unknown_terms_i_saw. The ones I want now: the fortress belt, Kramatorsk and Sloviansk (where are they), and what 'Staff pick' means. The rest later or never.",
+      "Q2": "A: maybe. First I see an underline I might not notice; if I tap it I get a nice card with a little map, which I like, but it sits on top of the text I am reading. B: maybe. A tidy list, but I have to open a tab and I read the list instead of the story. C: yes. A button that says in words what it does; I would use it in my first game.",
+      "Q3": "Fortress belt, variant C, 4. I press 'What is going on here?' and the drawer has a map with Kramatorsk marked, and the history timeline. It is a bit far down to find the answer to 'fortress belt' specifically; A answers that term in one tap with a nicer one-liner (3 for finding it, 5 for the explanation).",
+      "Q4": "A 3, B 4, C 5. C leaves the text alone and only shows the button. A competes with the text. B takes up a column I do not need while choosing.",
+      "Q5": "I would pick Guide me. The first thing I switch off is the tiny 'i' and the toast. The 'In your game' lines I would keep: seeing what is true in my game next to what really happened is what I came for.",
+      "Q6": "Yes, I would open it before choosing, every new crisis. I read the one-line summary, then 'What really happened' timeline, then who is who. Missing: what each choice would likely do to the real-world stakes (the cards say only arrows) and a plain note on what 'strained' and 'holding' mean. The drawer is long; on a tablet I would want to scroll it with my finger without the page behind it moving.",
+      "Q7": "Yes, '18 of 31 met' is like a crossword, I would want to fill it. NEW badges are fine. I would certainly look at the codex after the game, it is the thing I would keep. Grey 'Met later in this crisis' boxes are a nice teaser.",
+      "Q8": "A 15, B 10, C1 5, C2 30, D 15, E 15, F 10 (sum 100)",
+      "Q9": "C. Make the 'What is going on here?' button larger and put it first, and add a labelled 'Explain' word next to the tiny 'i' so I do not need to find it.",
+      "Q10": "Yes, 'As of Nov 2026' matters a lot to me, I am a teacher; the source count is good but I would want to see the source names. One wrong fact would make me stop trusting it, I check things. Facts flagged: 'before the midterms' when the midterms were on 3 November and it is now later in November; also the drawer says Putin is 'Russia's leader since 2000' which is loosely right (he was PM for a time), I would accept it."
+    }
+  },
+  "worldmap": {
+    "preferred": "B",
+    "why": "On B the first screen shows five numbered fires in a list with words, and the countries glow by how shaky they are, which tells me quickly where the trouble is. A is busier: lots of boxed labels laid over the globe, and in the 1960 shot some labels sit on top of each other and over countries (Laos and Vietnam insurgency crossing Iran and Pakistan labels, 'Trucial States' under it). I like A's blocs colouring for 1960 because I teach that Cold War picture, but B lets me switch to Blocs too, and B's list is something I can tap with a finger. I would turn on the switch to show all situations. Stability colours are not obvious to me without the key, so I would start on Blocs.",
+    "points": {"A": 40, "B": 60},
+    "era_change_noticed": true,
+    "unknown_terms_i_saw": [
+      "Trucial States: vaguely, from history, not a name I would look at",
+      "Scarborough Line: I do not know it; South China Sea geography is not mine",
+      "Quarantine (2026 situation): unclear what is being quarantined",
+      "Water War: guessed India and Pakistan, not sure",
+      "Hormuz Convoy: I know Hormuz, not the 'convoy' event",
+      "Bab al-Mandab: I know it vaguely as the Red Sea strait",
+      "Mojtaba Khamenei as Supreme Leader: new to me, would want a line on that",
+      "Lai Ching-te for Taiwan: I know the name, not well",
+      "Armed truce, Standoff at sea, Regime in crisis, Frozen, Brewing: the key words are plain enough but 'Brewing' and 'Frozen' icons are tiny",
+      "Strained 48 / Holding 55 / Solid 76 / Steady 66: a number and a word, I do not know the scale",
+      "Sino-Soviet alliance (cracking): I know this from teaching"
+    ],
+    "kill_criteria_hit": [
+      "A: some labels overlap other labels in 1960 (Laos and Vietnam insurgency, Trucial States, Iran, Pakistan)",
+      "A and B: the key and the on-map pin icons are small; the pins and Brewing/Frozen symbols are hard to tell apart without reading",
+      "B: stability colours are not self-explanatory (orange-red, slate), a Blocs default would be clearer to me",
+      "B: bottom of the side panel is overlapped by the 'Concept B: not the live game' line in the screenshot, hiding the nation percentage"
+    ],
+    "answers": {
+      "Q1": "Both: January 1960, found from the header text and the Soviet Union and the US leaders. Biggest things: Berlin, the Algerian war, Taiwan Strait and Cuba; the nuclear club growing. A told me faster because every situation has a name on the map; B told me with the numbered list, which I could read without squinting. Slight edge A for first 5 seconds, B for reading.",
+      "Q2": "Yes, they are different worlds: 1960 has the Soviet Union huge in one colour and West Germany and Belgian Congo, French Algeria and British Nigeria labelled; 2026 has Russia, Ukraine and the Gulf fires. Very good touch that names change (Soviet Union to Russia, Belgian Congo, French Algeria). Possible wrongness: in 1960 A the label 'Congo independence' is about June 1960, game is January so it should be 'brewing', and it is shown as such. 'Trucial States' is right for the era. Nothing I would call an error on 1960; 1990 shows Soviet Union, Czechoslovakia, Yugoslavia and North Yemen, correct. Also in 1990 'Soviet republics break away' is right for 1990 as a dissolving state.",
+      "Q3": "Mostly readable at 1440 but small on my tablet; the country names are white on dark and fine, but in A the situation labels cut across Iran, Pakistan and each other in 1960. On the phone I would expect worse. Missing names I looked for: Poland and Hungary in 1960 (not labelled), Cuba labelled only as 'Castro's Cuba' pin with no country name on the globe because it is at the edge, Korea.",
+      "Q4": "'A fourth atomic power' pin in A: I guessed it means France's coming bomb, correct for the era. Hollow dashed and faded pins read as less urgent in the key, but at normal size I could not tell them apart without the key. Dotted lines as rivals and solid red as a war front: yes if I read the key, which I would.",
+      "Q5": "I noticed the numbers 3, 4 and 5 on the rim only because they are in the list too. I would expect tapping one to turn the globe to it. A count chip 'three more on the far side' would help.",
+      "Q6": "A (card by the pin) shows leaders, a status word and numbers, and sits on top of the globe covering other countries and the 'Pick a nation' text. B's side panel is easier on a tablet: it is a fixed place and does not cover the map. The phone bottom sheet looked clear.",
+      "Q7": "I would leave B's five fires on by default; A's everything-at-once is too much to take in. I would flip the switch once out of curiosity, then leave it on when I know what I am doing.",
+      "Q8": "Bloc colours helped me choose a nation, since that is how I think about the world (NATO, Warsaw Pact). Stability colours are a second layer I would not understand without a key. I could tell the colours apart in the key, but the orange and red-brown are close. The orange 'shaky' and the sandy colour for non-aligned are too similar in B 2026.",
+      "Q9": "A fine moment: the year rolling and the world changing is charming and only about a second. It would make me try the 1960 era once or twice. As long as I can skip it it is not a delay. Reading the frames, the camera turns and the year number is clear.",
+      "Q10": "The new globe is bigger and handsomer than a flat title picture. On a phone I doubt I could tap a small pin with a finger, the pins look about thumb-nail size. On my 1024 tablet it works.",
+      "Q11": "B with A's switch on, but with Blocs as the starting colour. One sentence: B's list of fires is what lets me read and tap, and A's names on the map give me the pictures. Change: start on Blocs and keep the situation labels from touching each other."
+    }
+  },
+  "verbatim": "I like it when a button says in words what it will do, so give me a big 'What is going on here?' and a list I can tap, and please keep the little icons and the pop-ups that cover my reading to a minimum."
+}

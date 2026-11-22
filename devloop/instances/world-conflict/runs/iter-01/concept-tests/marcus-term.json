@@ -1,0 +1,70 @@
+{
+  "persona": "marcus",
+  "variant": "marcus-term",
+  "panel_version": "1.2",
+  "learn": {
+    "preferred": "B",
+    "why": "It is the only one with nothing hidden: a visible Briefing tab listing every name with one line, no hover needed (hover tooltips are a deal-breaker for me), and its 'What is going on here' box links to the full briefing. C's full drawer (map, who is who, why it matters, dated timeline of what really happened) is the best content I saw and I would read it before choosing, but it is reached through a tiny 'i' and a button, and it covers half the crisis text. A depends on hovering a faint underline and its popup covers the options and the Execute button.",
+    "would_turn_off": ["underlines (A)", "codex unlock toast", "the NEW badges and 'entries met' progress count"],
+    "points": {"A": 15, "B": 45, "C": 40},
+    "familiarity_level_i_would_pick": "Some help",
+    "unknown_terms_i_saw": [
+      "Oleshky (later)",
+      "Pokrovsk axis (later, I know 2024 headlines only vaguely)",
+      "fortress belt, Druzhkivka, Kostiantynivka (now; I know Donbas, not the 2025-26 front)",
+      "Abu Dhabi talks / Abu Dhabi peace talks (now)",
+      "Mojtaba Khamenei as Supreme Leader (now, I did not know this)",
+      "Saudi-Pakistani defence pact (now)",
+      "New START is dead (later)",
+      "Hormuz Convoy, Scarborough Line, Water War, Quarantine situations (later)",
+      "Lai Ching-te (later)",
+      "the Rada (never, I can guess: parliament)",
+      "Moscow and Washington as shorthand (never, obvious)"
+    ],
+    "kill_criteria_hit": [
+      "A: Q4 = 2 for me at my level; the popup card hides the order cards and Execute month, and it needs hover (deal-breaker)",
+      "Fact flag: text says 'before the midterms' while the codex entry says 2026's were 3 November and the game starts later in November"
+    ],
+    "answers": {
+      "Q1": "Unknown: Oleshky (later), fortress belt/Druzhkivka/Kostiantynivka (now), Pokrovsk axis (later), Abu Dhabi talks (now), the midterms timing confusion (now). Donetsk oblast, Kramatorsk, Sloviansk, Rada, Moscow and Washington I can explain. Demilitarising and 'by spreadsheet' read fine.",
+      "Q2": "A: maybe, faint underlines look like links and I would have to hover; the popup is clear but covers my choices. B: yes, a list I can read like a footnote column, and the text stays clean. C: maybe, the 'i' is too small and I would not spot it, but the 'What is going on here?' button is visible and good.",
+      "Q3": "fortress belt, variant B: 4. It is listed in the right panel, expands in place with the Dnipro point, and ties to the text by highlight. Variant A also gives a clear explanation (map plus 'Front line 52 of 100') but via hover.",
+      "Q4": "A 2, B 4, C 4 (C's drawer covers the crisis text when open, but I choose when to open it).",
+      "Q5": "I would pick Some help. First thing off: the underlines. Also the codex unlock toast and NEW badges, which feel like a video game.",
+      "Q6": "Yes, I would open it before choosing. First read the 'what really happened' timeline, then why it matters, then the map. Missing: what each option historically risks (precedents: Minsk, Korean armistice), and what the 'free economic zone' means in law. The 'In your game' line (front line 52, close to stalemate) is the most useful single line anywhere.",
+      "Q7": "Not much. '18 of 31 met' is a video-game progress bar, I would not chase it. I might browse the codex after the game, as a reference, especially the timeline entries.",
+      "Q8": "A 10, B 20, C1 5, C2 30, D 5, E 25, F 5 (sum 100)",
+      "Q9": "B, with the one sentence: put the full 'What is going on here' briefing (timeline and who is who) one click from the Briefing tab, as the drawer in C, and show dates on every claim.",
+      "Q10": "'As of Nov 2026' and source count matter to me, plausibility is my whole reason to play; one wrong fact would make me doubt every cause-and-effect line. Facts flagged: 'before the midterms' (midterms were 3 Nov 2026, already past in a November game); 'Putin leader since 2000' is imprecise (PM 2008-12); 'Zelensky president since 2019' ok; 'Trump since Jan 2025' ok; 'Feb 2022 and Sep 2022' ok; 'largest war in Europe since 1945' ok; 27 Oct 2026 local ceasefire in Oleshky, I cannot verify."
+    }
+  },
+  "worldmap": {
+    "preferred": "A",
+    "why": "Bloc colours are what I read a Cold War map by, and A names every situation on the globe so I get the year and the big issues without a side panel. B's stability shading is opaque and in 1960 paints Sudan and Ethiopia as shaky for no reason I can check, which smells like unexplained numbers. B's real borders and outlines are nicer, though.",
+    "points": {"A": 60, "B": 40},
+    "era_change_noticed": true,
+    "unknown_terms_i_saw": [
+      "Trucial States (1960 label; I know it as Gulf sheikhdoms, fine)",
+      "2026: Hormuz Convoy, Bab al-Mandab Burning, Quarantine, Scarborough Line, Water War, Mojtaba Khamenei, Lai Ching-te, Saudi-Pakistani defence pact, Abu Dhabi peace talks, New START dead (I would want these explained)"
+    ],
+    "kill_criteria_hit": [
+      "Q2 anachronism: 'Ukrainian SSR' offered as a playable nation with 'leader invented for this era' in 1960 (S1) is odd, and 'Taiwan Strait shelling' was the 1958 crisis, not live in January 1960",
+      "1990 (B): 'Iraq eyes Kuwait' pin in January 1990 is early (invasion was August)",
+      "Q3 collision: in A 2026 (S2) the Hormuz card covers the Castro's Cuba pin and the legend; in B 1990, the West Germany label sits on its pin and the Kashmir and Afghan pins crowd each other"
+    ],
+    "answers": {
+      "Q1": "S1 (A): January 1960 is in the header; Berlin, Algeria, the atomic race (France), Taiwan Strait, Laos and Vietnam, Congo. Fast. S4 (B): also 1960, five numbered fires, but I had to read the side panel to know what they were. A told me faster.",
+      "Q2": "Yes, different worlds: Soviet Union and Warsaw Pact red block in 1960, Yugoslavia and West Germany labels, 'Nigeria (British)', 'French Algeria', 'Belgian Congo' all correct for early 1960; in 1990 West Germany, Czechoslovakia and Soviet Union still stand, North Yemen appears. Great. Doubts: Ukrainian SSR as a playable nation, Taiwan Strait shelling pin (1958), Iraq-Kuwait pin in January 1990, and why the Soviet Union leader is 66 'Steady' while Gorbachev is 32 'Shaky' (fine, plausible).",
+      "Q3": "Mostly readable at 1440 and I would manage at 1366. Collision: A 2026 card hides names; B labels like West Germany and France overlap pins in Europe. Missing in B 1960: East Germany, Poland, Hungary, Cuba names, China (the biggest Cold War actor beside USSR is unnamed in 1960 B).",
+      "Q4": "Pin I do not understand: the purple crown icon on Castro's Cuba, I guess 'regime in crisis', the key tells me so. Hollow dashed brewing pins and faded frozen ones read as different from solid ones, yes. Dotted rival lines versus solid red war front are distinguishable but I only found them via the key.",
+      "Q5": "I did not notice the rim markers (3, 4, 5) at first; in B they are tiny. I expect a tap to rotate the globe to that situation. Add 'N more on the far side' chip.",
+      "Q6": "A (card by the pin) shows the situation, three leaders and strength numbers and the two 'Play as' buttons. B (side panel) shows the same without covering the map. I prefer the side panel because it does not hide the map; on the phone, the bottom sheet looks clear.",
+      "Q7": "Leave A's density on by default, I want to see everything; I would flip nothing. B's hidden eight situations and rival lines would force me to hunt for the switch.",
+      "Q8": "Blocs helped me choose a nation, I understand NATO versus Warsaw Pact at a glance. B's stability scale (orange-red to slate) is hard to tell apart: orange and sand and red blur on a dark globe. I would want Blocs as default.",
+      "Q9": "Worth it once, the year rolling 2026 to 1960 gives a sense of time travel and I would switch eras more. At 0.9 s it is not a delay. I would not want it every time.",
+      "Q10": "Yes, the new globe fills the screen better than the old title globe. On a phone I cannot judge, 1440 only.",
+      "Q11": "A, with B's real borders and the bloc outlines on top, because I read history by alliances; one change: show stability only on request and always label China in 1960."
+    }
+  },
+  "verbatim": "Show me the dated timeline of what really happened before I choose, keep it in a panel I can read without hovering, and colour my 1960 map by alliance like a proper Cold War atlas."
+}

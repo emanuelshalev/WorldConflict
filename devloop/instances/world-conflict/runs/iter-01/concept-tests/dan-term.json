@@ -1,0 +1,62 @@
+{
+  "persona": "dan",
+  "variant": "dan-term",
+  "panel_version": "1.2",
+  "learn": {
+    "preferred": "B",
+    "why": "It never touches the crisis text, it shows the whole cast of names on the card at once so I can scan it in one pass, and it does not cover the orders or Execute. A's popover sits on top of the Execute button and the option cards while open. C's drawer covers the middle of the screen. My complaint with B: the Briefing tab replaces the 'This month' tab, so I lose my budget and orders rail while reading. It needs to sit beside it, and it needs C's 'In your game' line (front line 52 of 100) on each entry, because that is the only part that tells me something I cannot get from a wiki.",
+    "would_turn_off": ["the codex unlock toast (+4 new in your codex)", "NEW badges and the 'entries met' counter", "underlines (A)", "the per-paragraph 'i' (C) if the drawer exists anyway"],
+    "points": {"A": 25, "B": 42, "C": 33},
+    "familiarity_level_i_would_pick": "I know this",
+    "unknown_terms_i_saw": [
+      "the fortress belt (I know the Kramatorsk-Sloviansk agglomeration; the label as a game term is new)",
+      "Pokrovsk axis (know the front, not the exact current line)",
+      "Oleshky (do not know the location or why a local ceasefire there matters)",
+      "27 Oct 2026 local ceasefire in Oleshky and Nov 2026 talks in Abu Dhabi (post-dates what I follow)",
+      "Mojtaba Khamenei as Supreme Leader (newest office holder, I would want that explained)",
+      "Lai Ching-te (know of him, would not swear to the office)",
+      "Rada (know it, only flagging that A/B/C all treat it as unknown)"
+    ],
+    "kill_criteria_hit": [],
+    "answers": {
+      "Q1": "Donetsk oblast: never (I know it). Fortress belt: later, from the game's point of view I want the exact cities listed, which B and A do. Kramatorsk, Sloviansk: never. The midterms: never. Moscow and Washington as shorthand: never. Rada: never. Nothing in the two paragraphs blocks me. What I would want to look up right now is the trade-off, not the vocabulary: what exactly does 'by referendum' cost me with Washington.",
+      "Q2": "A: maybe, soft underlines are fine, but the popover opened over the Execute button and the right two option cards, and I read the option cards while choosing. B: yes, clean text and a list I can scan and ignore, the highlight-on-hover link between list and text is good. C: maybe, the 'i' marks are nice and quiet, but the full drawer takes the middle of the screen and covers the options.",
+      "Q3": "Fortress belt, B: 4. I see the entry on the right with four cities and a Codex link, and one read is enough. A gives the same text plus a map and the 'In your game' line, which is better content (5 for the content) but the placement costs it a point. Variant I like best: B, scored 4.",
+      "Q4": "A 3, B 5, C 3. A and C both cover parts of the decision when open. B never does but it swaps out the This month rail, which I would fix.",
+      "Q5": "I know this. I do not want underlines painted over text I already read. Turn off first: the codex unlock toast and the NEW badges. Then underlines.",
+      "Q6": "Yes, once per new crisis, I would open it before choosing because the 'what really happened' timeline and the line 'From November 2026 on, this is your game' tell me where reality ends and my simulation starts. Read first: what really happened, then who is who (the 'wants' lines are what the AI will act on, which is the information I want), then the map. Missing: what each option does to each actor's 'wants', i.e. why the game says Putin wants all of Donetsk, and what hidden numbers (the beliefs) that maps to.",
+      "Q7": "Do not care about '18 of 31 met'. It reads like a collectathon and I will not open entries for a counter. I would browse the codex after the game, only the 'How the game works' category, if it explains the rules and formulas.",
+      "Q8": "A 12, B 20, C1 5, C2 20, D 8, E 25, F 10 (sum 100). 'In your game' lines are what I would pay for: facts about my state, not a history lesson.",
+      "Q9": "B. One sentence: show the Briefing next to the This month rail instead of replacing it, and put the 'In your game' line from A on each entry.",
+      "Q10": "Matters a lot. 'As of Nov 2026 / 2 src' is exactly what I want, and I would want to click the sources. One wrong fact would not make me quit, but one wrong fact with no source would make me stop trusting the 'who wants what' lines, which I use for decisions. Facts flagged: 'Russia invaded in 2022 and holds about a fifth of Ukraine' is roughly right but I would want the number sourced. 'Local ceasefire in Oleshky 27 Oct 2026' and 'US-brokered talks in Abu Dhabi' I cannot verify. 'Before the midterms' sits oddly next to a note that the 2026 midterms were on 3 November."
+    }
+  },
+  "worldmap": {
+    "preferred": "B",
+    "why": "Stability shading with bloc outlines carries two layers of information on one globe, which is the depth I want, and the five numbered fires are a readable list with the real briefing in a side panel. Concept A is more legible at first sight but the colour only tells me alliance, which I already know, and pins with long labels collide with country names. I would flip the switch to show all situations and rival lines in my first minute and then leave it on.",
+    "points": {"A": 38, "B": 62},
+    "era_change_noticed": true,
+    "unknown_terms_i_saw": [
+      "Scarborough Line and Quarantine as pin names (guess South China Sea and a Taiwan blockade, not sure)",
+      "Water War (guess India and Pakistan, Indus)",
+      "Mojtaba Khamenei as Supreme Leader (new to me)",
+      "Saudi-Pakistani defence pact (I would have to check that one)",
+      "Abu Dhabi peace talks and the 'local ceasefire' framing in the 2026 blurb"
+    ],
+    "kill_criteria_hit": ["A: label collision, 'Laos and Vietnam insurgency' pill sits on top of the Iran and Pakistan names in the 1960 shot (acceptance 7 or 9 of design-worldmap)"],
+    "answers": {
+      "Q1": "S1 (A, 1960): the date is in the header, Cold War split into red Warsaw Pact and blue NATO, Berlin and Algeria and Taiwan Strait pinned: I read it in 3 seconds. S4 (B, 1960): also readable, but the stability colours make the Soviet Union look slate grey and 'weak', which is not what 1960 felt like. A told me faster, B told me more.",
+      "Q2": "Yes, different worlds: S1 and S4 have Warsaw Pact, Czechoslovakia, Yugoslavia, French Algeria, Belgian Congo, Nigeria (British); S5 1990 has West Germany, North Yemen and a dissolving Warsaw Pact; S2 and S5 2026 has Russia and Belarus and the Saudi-Pakistani pact. Anachronism check: French Algeria in January 1960 correct, Nigeria (British) correct (independence Oct 1960), Belgian Congo correct. Congo independence pinned in S1 is June 1960, a few months after the January start, I would accept it as the scenario's year. 1990 'Iraq eyes Kuwait' is early (the invasion was August) but it is brewing, so fine. The 1990 stability colouring has the Soviet Union in red with 'Shaky 32', good. Nothing I would log as a P1 bug, but 'Afghan civil war' in January 1990 and 'Kashmir uprising' are right.",
+      "Q3": "S1 and S4: country names are readable at 1440. Collisions: in S1 the 'Laos and Vietnam insurgency' pill lands on Iran and Pakistan, and 'Taiwan Strait shelling' sits across the Pakistan label. In S4 (2026 hover) the Ukraine tooltip sits on France. Missing for me: Poland, Ukraine in 1960 (rightly part of the Soviet Union), Iran/Iraq are fine, China is missing in the 1960 B shot. Could not judge the phone shots in detail.",
+      "Q4": "Pin 4 in S4 (Castro's Cuba) is on the rim and I read it as a regime-in-crisis marker. The hollow dashed 'brewing' and faded 'frozen' pins read differently from solid ones in the key, but in the map itself the difference is subtle at this size. Dotted lines read as rivals, solid red as a war front, from the key.",
+      "Q5": "I noticed 3, 4 and 5 on the rim of S4 because I read everything, but I would not expect everyone to. I expect tapping one to turn the globe to it. A 'three more on the far side' chip would help.",
+      "Q6": "S2: card next to the pin gives the situation, three leaders with Strained 48 and Holding 55 numbers and the play buttons: good. S4: same content in the panel, a bit more room, and it keeps the globe clear. I prefer the panel, because the card on the pin covers the neighbours (it hid Iraq and Israel in S2). The bottom sheet on the phone I could not fully assess.",
+      "Q7": "I would leave the full set with rival lines on, I want the whole board. Yes I would flip the switch every time. For a new player, five fires is cleaner.",
+      "Q8": "B's stability colouring helped me choose, shaky nations glow, so I see where a regime might crack, and the bloc outlines keep alliances. A's bloc fill is easier to tell apart but only gives alliances. I could tell the stability colours apart; red versus orange-red at Sudan and Ethiopia is borderline.",
+      "Q9": "A worthwhile moment, 0.9 seconds is fine and I would switch eras once or twice for the effect. It is not something I would sit through every time; make it skippable on repeat use.",
+      "Q10": "Yes, either is bigger and more alive than today's globe. On a phone I would need to tap a pin, I cannot judge from the shots I looked at.",
+      "Q11": "B with A's switch on. Change: let me choose bloc fill and stability shading at the same time (fill by bloc, glow by stability) and stop labels from landing on pins."
+    }
+  },
+  "verbatim": "Give me the stability glow and the bloc outlines together, a briefing that sits next to my orders instead of on top of them, and a line telling me what is true in my game right now, and I will stop reading the codex and read the numbers."
+}

@@ -1,0 +1,48 @@
+{
+  "persona": "sam",
+  "variant": "sam-desktop",
+  "panel_version": "1.2",
+  "learn": {
+    "preferred": "B",
+    "why": "It is the only one that does not touch the crisis text. The briefing sits in the right column where the 'This month' tab already lives, it is a calm, aligned list, and pointing at an entry lights the phrase in the text (Frostpunk-style codex logic, but passive). A fights the reading flow: the popover in the 1440 shot lands on top of the text it explains AND covers the Execute month button, and the dotted underlines on a serif paragraph read like spellcheck. C is the most crafted piece (the drawer with map, who is who and timeline is genuinely nice) but the 'i' glyphs trailing every paragraph are tiny, low contrast and look like help-desk chrome; the drawer also slides over the choice cards while you decide. B's weakness: a 'Briefing 7' tab means two tabs to remember in the same panel and the list is still cards of text. The full briefing from C should hang off B's 'Full briefing with map' link, so one system, one name.",
+    "would_turn_off": ["underlines (A): first thing off", "the codex unlock toast '+4 new in your codex' (bottom toast floats over empty space, repeats what the panel already shows)", "'Mark names again' and 'Clear codex progress' as two near-identical outline buttons stacked in Settings", "'In your game' lines are fine, keep"],
+    "points": {"A": 22, "B": 45, "C": 33},
+    "familiarity_level_i_would_pick": "I know this",
+    "unknown_terms_i_saw": ["Donetsk oblast (I know Donetsk, 'oblast' I could guess)", "the fortress belt (the four city names, Kramatorsk and Sloviansk I half know, Druzhkivka and Kostiantynivka no)", "the Rada (guessable, not sure)", "demilitarising the unoccupied part", "Pokrovsk axis", "Oleshky", "Abu Dhabi talks context"],
+    "kill_criteria_hit": ["A: popover covers the Execute month button and the paragraph it explains at 1440 (Q4 = 2 for me)"],
+    "answers": {
+      "Q1": "Fortress belt: later (it is the central term of the dilemma, so actually now, but only as a one-liner). Rada: later. Donetsk oblast: never, I get it from context. Pokrovsk axis, Oleshky: never. Midterms: I know them. Druzhkivka and Kostiantynivka: never, they are just names.",
+      "Q2": "A: no for my first game, the dotted underlines look like typos and the popover occludes the page. B: yes, text stays clean and the highlight-on-point is a nice small reactive moment. C: maybe, the 'i' is too small and too faint but the drawer behind it is the best content in the set.",
+      "Q3": "Fortress belt, variant B, 4. It is listed as the second entry, one line, expandable, and the line is clear. Lose a point because the expanded state is a different row height and the chevron is tiny and hard to hit.",
+      "Q4": "A 2, B 4, C 3. B is at 4 not 5 because 'Briefing 7' replaces 'This month' in the same column: the thing I need to decide (what this costs me) is hidden behind a tab while I read the history.",
+      "Q5": "I know this. Turn off first: underlines. Then the codex toast.",
+      "Q6": "Yes I would open it once, to see if the game is worth my time. First read: the map, then 'what really happened'. Craft note: the timeline dots are nice, but 'Why it matters' is a lonely paragraph in a two-column grid with a big empty hole under it; the layout is unbalanced. Missing: the consequences of each choice are not tied back into the briefing, which is what I need to choose.",
+      "Q7": "'18 of 31 met' is a Pokedex-style completion bar and it works on me a bit, I like a progress meter, but only if entries have art. Currently they are small icons in a flat grid of text tiles, which is the generic dashboard look. After the game I would open it once if the end screen links to it.",
+      "Q8": "A 12, B 18, C1 5, C2 25, D 12, E 10, F 18 = 100.",
+      "Q9": "B. Make 'Briefing' a header strip inside the crisis card instead of a tab that displaces 'This month', so both stay visible.",
+      "Q10": "'As of Nov 2026 - 2 src' is nice honest micro-typography and signals craft, but it is mono caps at 10px, barely legible. One wrong fact would not make me stop trusting on its own, a wrong date in the UI would. Facts flagged: none I am sure of; 'before the midterms' reads odd when the screenshot's own briefing says the midterms were 3 November."
+    }
+  },
+  "worldmap": {
+    "preferred": "B",
+    "why": "B looks like a designed object: stability shading, outlines, numbered fires, a calm right panel. A is louder, which is fun, but at 1440 it is a label-collision mess (see defects). B reads as an atlas, A as a Risk board. B with A's switch is the answer, and the pin cards should open in the panel, not next to the pin.",
+    "points": {"A": 35, "B": 65},
+    "era_change_noticed": true,
+    "unknown_terms_i_saw": ["Trucial States (not sure it is on a 1960 map as shown)", "Scarborough Line", "Bab al-Mandab (I know it vaguely)", "New START", "Sino-Soviet alliance (cracking)", "Laos and Vietnam insurgency"],
+    "kill_criteria_hit": ["A 1960 1440: labels collide: 'Laos and Vietnam insurgency' pill sits on Iran/Pakistan/'Trucial States', 'Taiwan Strait shelling' crosses 'Pakistan'", "A 2026 1440: Hormuz card covers 'Castro...' and half the legend, and the legend Difficulty tab is clipped under the card", "B 1960 1440: the mock footer 'Concept B' overlaps the 76% in the nation list", "B 2026 hover tooltip for Ukraine covers the sentence it is next to and sits over 'France' label", "B 2026 fires list: subtitles are clipped with no ellipsis ('...and so is Washington v')"],
+    "answers": {
+      "Q1": "S1 A: 1960 stated in the header, a red Soviet block against a blue West, Berlin and Algerian War pins: I got it in 5 seconds because of the labelled pills. S4 B: 1960, same two blocs, five numbered fires; slower to read because I have to hunt the list, but prettier. A told me faster, B made me want to look.",
+      "Q2": "Yes, different worlds: 1960 has the Soviet Union as one red slab, 'Nigeria (British)' and 'Belgian Congo' labels, Ukrainian SSR in the list; 1990 shows Soviet Union still but with Kohl and Gorbachev, Wall falls; 2026 has Russia, Ukraine, Kazakhstan as separate shapes. Possible oddities: in 1960 B, Czechoslovakia and Yugoslavia are outlined but sit in the same blue-grey as the Soviet Union, so they look absorbed; 'Trucial States' on 1960 A is plausible but tiny; the 1990 B globe still shows Sudan, Ethiopia in red 'shaky' which is fine. The 1960 B globe shows modern country outlines for Africa (Sudan, Ethiopia, Egypt as modern polygons, Saudi as is) with only two names swapped, so the colonial map is half faked. 2026 intro ends with a double period 'first month..'.",
+      "Q3": "At 1440 mostly readable; names are white with a dark halo. Collisions in A 1960: 'Iran' and 'Iraq' hidden behind pills, 'Trucial States' under 'Laos and Vietnam insurgency', 'Taiwan Strait shelling' pill over Pakistan. Missing: China is not labeled in 1960 at all, and I looked for it first; Japan, Brazil, Mexico, Canada never labeled. B has fewer collisions but 'Czechoslovakia' and 'Yugoslavia' are in italic grey and low contrast.",
+      "Q4": "The dotted-ring pin by Cuba I guessed as a regime crisis, the crown icon is a bit obscure. Hollow dashed vs solid read as different in the legend but at pin size it is a pixel's difference; frozen vs open is a stretch. Dotted lines vs solid red war line: yes distinct, though the dotted orange rival line in A is nearly invisible on the Soviet red.",
+      "Q5": "I did not notice them in S4 until I was told: they are tiny and the dotted arc on the left reads as decoration. I would expect a tap to rotate the globe to that situation. Make them 2x and add the count chip.",
+      "Q6": "S2 A: the card next to the pin is immediate, but it covers the map and other labels; two-leader rows are tidy. S4 B: panel is steadier and keeps the map clear. Panel wins for me. Phone bottom sheet I only glanced at; it looked fine.",
+      "Q7": "B's default, five fires. I would flip the switch once to see if something is hidden, then leave it on only if labels stop colliding.",
+      "Q8": "B's stability colouring helped me more: orange-red shaky nations pop, solid ones recede. The colours are distinguishable at 1440 but orange vs a warm sand (Sudan/Iran in 1990) are close. Blocs in A tell the geopolitical story faster but with five competing blues. I would keep both as a toggle, the Colour by control is already there, good.",
+      "Q9": "A moment worth having if it stays under a second: the year roll over the turning globe, sepia settling, is the one thing that made me feel a person designed this. One tick: the '1996' mid-roll frame in S7 is a reminder that a number rolling past the target year looks like a bug when frozen. I would switch eras more, yes, but skip it on repeat visits.",
+      "Q10": "Yes, the globe fills the screen well, much better than a static title. On phone I did not review closely; pins looked small.",
+      "Q11": "B with A's switch on by default off, and move all pin cards into the panel; fix the clipped fire subtitles and the footer overlapping the nation list."
+    }
+  },
+  "verbatim": "The time-travel globe and the way the briefing stays out of the text tell me somebody with taste worked on this, but every popover that lands on top of the thing it explains tells me nobody tested it at 1440."
+}

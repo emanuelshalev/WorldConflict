@@ -1,0 +1,48 @@
+{
+  "persona": "noah",
+  "variant": "noah-phone",
+  "panel_version": "1.2",
+  "learn": {
+    "preferred": "A",
+    "why": "Tap a word, get a bottom sheet with one line and a shield icon, close it, keep playing. It stays in the thing I am already doing. B is a big list of 7 names before I have even chosen, that is homework. C's full page is a wall of text with a map and 4 bios, I would swipe it away. A's 'In your game' line (front line 52 of 100) is the only bit that felt like a game.",
+    "would_turn_off": ["the codex unlock toast", "brief me on each new crisis", "the Briefing button and list", "the italic serif crisis paragraph itself (too much text)"],
+    "points": {"A": 55, "B": 15, "C": 30},
+    "familiarity_level_i_would_pick": "Some help",
+    "unknown_terms_i_saw": ["demilitarising", "unoccupied", "Donetsk oblast", "fortress belt", "Kramatorsk", "Sloviansk", "internationally run economic zone", "Moscow calls it a basis (Moscow = Russia?)", "the midterms", "accepting in principle", "referendum", "the Rada", "front line 52 of 100", "stalemate", "staff pick", "consult your staff", "Druzhkivka", "Kostiantynivka"],
+    "kill_criteria_hit": ["Q3 for B: I could not tell what the list did for the choice, scores 2 for me", "C's deep briefing is a wall of text: deal breaker"],
+    "answers": {
+      "Q1": "Do not know or could not explain: Donetsk oblast (later, maybe never), fortress belt (now, it sounds cool), Kramatorsk and Sloviansk (never), demilitarising (never, I guess no army), internationally run economic zone (later), 'a basis' (never), midterms (now, a little, I heard it on TikTok but not what it does here), accepting in principle (never), referendum (later, I think it is a vote), the Rada (never). I know Ukraine, Russia, Putin, Trump, Zelensky, US.",
+      "Q2": "A: yes. The dotted underlines are small, and the tap sheet is quick, like a tooltip in Clash Royale. B: no. A button with '7 names' is a chore, and the panel covers half the screen. C: maybe. The 'i' idea is fine but the 'What is going on here' page looks like a school worksheet, though the map is cool.",
+      "Q3": "Fortress belt, variant A, 4/5. I tapped the underlined phrase and got 'Four fortified cities... Ukraine's strongest line in the east' plus 'Front line 52 of 100'. The one read worked. 'More' and 'Codex' buttons I would ignore.",
+      "Q4": "A 4, B 2, C 4 (the 'i' is quiet, but I wonder if I would even see it).",
+      "Q5": "Some help. Guide me sounds like for kids, I know this is a lie. Turn off first: the 'brief me on each new crisis' and the codex toast. Underlines I would keep.",
+      "Q6": "No, I would not open it before choosing, I want to pick and see what happens. If I did, the one-line summary first, then the map. Who is who has Trump and Putin, which I know, so I would skip it. Missing: what happens if I say yes or no, in 5 words.",
+      "Q7": "'18 of 31 met' is a bit like collecting cards, so I might open a few NEW entries, but only if it pings. After the game I would look at it for a screenshot, probably not read. Medium care.",
+      "Q8": "A 30, B 5, C1 10, C2 10, D 15, E 20, F 10 (sum 100)",
+      "Q9": "A. Make the sheet only ever one line and one 'In your game' fact, with no More button unless I ask.",
+      "Q10": "'As of Nov 2026' I would not notice. One wrong fact I would not catch, but if my teacher caught it I would stop quoting it. Facts flagged: none, I would not know."
+    }
+  },
+  "worldmap": {
+    "preferred": "B",
+    "why": "Numbered fires 1 to 5 tell me where to tap first and the stability colors (orange-red shaky) look like danger on a map. A on 2026 has lots of red war icons and a card but it felt noisy. B also has a bigger list of the situations as chips with numbers below the globe.",
+    "points": {"A": 40, "B": 60},
+    "era_change_noticed": true,
+    "unknown_terms_i_saw": ["Kazakhstan (where?)", "Yemen", "Hormuz", "Bab al-Mandab", "Abu Dhabi peace talks", "New START", "Divided Berlin", "Algerian War", "Khrushchev", "Eisenhower", "decolonization", "bloc", "tension 74", "Stability and Difficulty colour modes"],
+    "kill_criteria_hit": ["Q3 phone: A 2026 shows the Ukraine label sitting under a pin and Kazakhstan label near pins, a bit crowded", "A 2026 bottom sheet covers the list and the era buttons, text behind it is a mess"],
+    "answers": {
+      "Q1": "S1/S3 A 1960: January 1960 is in the header. I see Soviet Union in red, a blue West, France with an icon, Berlin pin. A war icon near France/Algeria. B 1960 told me faster, because the pins have numbers and the list says 'Divided Berlin, Algerian' right under. B was faster.",
+      "Q2": "Yes, different. 1960 has a sepia/orange feel and names like Soviet Union and 'Nigeria (British)' which is a cool detail. 2026 has Russia and Ukraine. Between eras the year text and country names changed. I would not notice an anachronism, I do not know the old borders.",
+      "Q3": "Mostly readable on the phone. In A 2026 the Ukraine label is jammed against a pin, and Russia/Kazakhstan are big but fine. Yemen sits right on a pin in A. B 2026 is cleaner. Missing: I looked for Taiwan and China and did not see them on the phone globe.",
+      "Q4": "The yellow one with the radiation-like icon near India, I think it is a nuclear thing. The anchor pins I guess are ships or the sea. Dashed vs solid I would not notice at this size. Red war icon yes, that I get. The dotted lines I did not notice.",
+      "Q5": "I saw a small purple arrow on the left edge, in both. I would expect it to spin the globe to that spot. Taiwan, Cuba, Korea I did not look for.",
+      "Q6": "A card next to the pin on a phone is the bottom sheet: it shows 3 countries with a number each (Holding 57) and two buttons 'Lead Russia', 'Lead Ukraine' and the big orange Play. That is clear and fun, I like picking a side. But it covers the buttons below. I do not know what 'Holding 57' means.",
+      "Q7": "Five numbered fires by default. It is already a lot on a phone. I would not flip the switch, maybe once if I was bored.",
+      "Q8": "Stability coloring: I could see shaky orange-red vs slate, it looks like a heat map, which I get right away. Blocs colouring I did not know the colors mean. I could tell most colors apart, the orange vs red a little less.",
+      "Q9": "Cool moment, 1 second is fine and the year rolling is satisfying. I would switch eras more because of it, at least to show a friend. If it was longer than 1.5 s it would be a delay.",
+      "Q10": "Yes bigger than a normal menu, but on the phone the globe is half the screen and the pins are tappable, about thumb size, fine. The 2026 pins are a bit small and close near Yemen and Iran.",
+      "Q11": "B. Numbered fires are a to-do list for my thumb. One change: make the number pins bigger and tap-to-go on the rim marker, and say in 3 words what the colors mean."
+    }
+  },
+  "verbatim": "Just let me tap the thing and blow stuff up, give me one line if I get stuck and put the big orange button right there."
+}

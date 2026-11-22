@@ -1,0 +1,62 @@
+{
+  "persona": "priya",
+  "variant": "priya-flash",
+  "panel_version": "1.2",
+  "learn": {
+    "preferred": "C",
+    "why": "I follow Ukraine daily, so I only want help when I ask for it. C leaves the crisis text completely clean and puts the depth behind one button. The 'What really happened' timeline and the 'Who is who' with what each leader wants are the parts that teach me how the actors think, which is why I play. A is the one that gets in the way: the hover card covers the crisis text and the choice cards, and the underlines make me read as if I were being tested. B is a close second because it is clean and it shows the whole glossary at once, but a permanent seventh-tab pane steals the space I use to compare the options.",
+    "would_turn_off": ["underlines (A)", "brief me on each new crisis", "codex unlock toast", "In your game lines only if they are not tied to a number I can verify"],
+    "points": {"A": 22, "B": 31, "C": 47},
+    "familiarity_level_i_would_pick": "I know this",
+    "unknown_terms_i_saw": [
+      "the fortress belt as a named term (I know the four cities, not that label)",
+      "Oleshky local ceasefire on 27 Oct 2026 (I have no record of this, so I would check it)",
+      "Pokrovsk axis (I know Pokrovsk; 'axis' as a game term is fine)",
+      "Moscow calls it 'a basis' (I would want the quote source)"
+    ],
+    "kill_criteria_hit": [
+      "A: the hover card covers the sentence I am reading and the option cards, Q4 would be 3 for me at 'I know this', not 4"
+    ],
+    "answers": {
+      "Q1": "Donetsk oblast, Kramatorsk, Sloviansk, the Rada, the midterms: I know all of them and could explain them to a friend. 'Fortress belt' I know in substance (Sloviansk, Kramatorsk, Druzhkivka, Kostiantynivka) but not as a label. Oleshky I know as a town in Kherson but not as a ceasefire site. Look up: later, only the Oleshky ceasefire. Never: everything else.",
+      "Q2": "A: maybe, a nice peek but the card covers the text I am reading and the underline is a nag on names I know. B: maybe-yes, clean text, I can ignore the tab, and the highlight-on-hover link is neat. C: yes, I would never see it unless I want it, and the quiet i is almost invisible.",
+      "Q3": "Fortress belt, C, 5: one click on 'What is going on here?' shows the map with the Russian-held area hatched and who is who. B would be 4 because the one-liner is clear but the map is a click deeper.",
+      "Q4": "A 3, B 4, C 5.",
+      "Q5": "I know this. First thing off: the underlines. Then the 'brief me on each new crisis' toggle and the codex unlock toast.",
+      "Q6": "Yes, once, to check the map and the dates. I would read 'What really happened' first, then who is who. Missing: what each side's red lines are, and what Kyiv's other options cost beyond the three cards.",
+      "Q7": "'18 of 31 met' does not move me while playing, but I would open the codex after the game, as a revision list. NEW badges: no.",
+      "Q8": "A 8, B 12, C1 12, C2 28, D 8, E 12, F 20 (sum 100)",
+      "Q9": "C: make the briefing optional per crisis and link every claim to its source so I can check it.",
+      "Q10": "As of Nov 2026 and the source count matter a lot to me, one wrong fact and I stop trusting the game (my deal-breaker). Facts flagged: (1) 'Washington wants an answer before the midterms' in the crisis text, but the midterms were on 3 November 2026 and the game says it is November 2026 after them, and the codex card itself says 2026's were on 3 November, so the game contradicts itself. (2) Putin as 'Russia's leader since 2000' is right by the loose count (acting 1999-2000); fine. (3) Oleshky ceasefire 27 Oct 2026 and Abu Dhabi talks: I cannot verify them, they must be sourced. (4) Zelensky 'since 2019', Trump 'since Jan 2025', Macron 'since 2017': correct. (5) A typo, 'first month..' with two dots, in the era blurb."
+    }
+  },
+  "worldmap": {
+    "preferred": "B",
+    "why": "B draws real country borders and shades by stability, so I can see where the pressure is without a legend lecture, and the five numbered fires are a clean agenda for the era. A is prettier at a glance but it fills the globe with blob labels and big pins, and the open card covers Iran and the legend. I would flip B's switch once to see the rivals, then leave it off.",
+    "points": {"A": 36, "B": 64},
+    "era_change_noticed": true,
+    "unknown_terms_i_saw": [
+      "1960: Trucial States (I would have to look up), Laos and Vietnam insurgency framing, Taiwan Strait shelling dated to 1958",
+      "1990: Soviet republics break away as a 'fire' in Jan 1990 (early but plausible)",
+      "Stability labels like Strained 48, Holding 55 (what the number scale means)"
+    ],
+    "kill_criteria_hit": [
+      "A 2026 (S2): the Hormuz card sits on top of Iran, the Gulf labels and half the legend; 'Bab al-Mandab Burning' label is cut by the card",
+      "B 2026 (S5): the Ukraine hover tooltip sits on top of Europe, covering France and Poland names; fire list descriptions are cut off at the panel edge"
+    ],
+    "answers": {
+      "Q1": "S1 and S4: January 1960, Cold War, divided Berlin, Algeria, a split world with Soviet Union in red. B told me faster because the numbered fires list gives the agenda in five lines; A's labels are on the map but compete with country names.",
+      "Q2": "Yes, they look like different worlds: in 1960 the Soviet Union is one big block, in 1990 the Warsaw Pact is dissolving and Germany is the story, in 2026 Russia/Belarus and China/North Korea are the blocs. Possible issues: 1960 'Taiwan Strait shelling' is the 1958 crisis, close to 1960 but I would check; 1960 Soviet map looks fine; Ukrainian SSR leader 'invented for this era' is honest. Nothing glaringly wrong. 1990 shows West Germany still separate, which is right for January 1990.",
+      "Q3": "At 1440 the names read fine in both. In A the pin labels (Divided Berlin, Algerian War) sit next to West Germany and France and crowd Europe; in B the country names sit right on the number markers in Europe (S4). I looked for Taiwan, Cuba, Korea and Venezuela in 2026 and did not see Venezuela or Taiwan labelled.",
+      "Q4": "I do not know what the purple crown pin is until I read the key ('Regime in crisis'). Hollow dashed brewing pins do read different from solid ones. Dotted rivalry lines vs the solid red war front read fine in A.",
+      "Q5": "I noticed the small rim markers (3 and 4 and 5 near the edge) because of the numbers, but they are small. I would expect a tap to rotate the globe to that fire.",
+      "Q6": "A card next to the pin is fast for one look but covers the map; the side panel in B is steadier and shows leaders and stability together. On the phone I only glanced; the sheet is acceptable. I prefer the panel.",
+      "Q7": "Leave B's five fires on by default. I would flip the switch once per game to see rival lines, because that is how I think about Iran or Taiwan.",
+      "Q8": "Stability shading helped me choose a nation: the orange-red states (Sudan, Ethiopia, Iran) are exactly the ones I would want to play. Bloc colours in A are clear too, and B's bloc outlines keep that. I could tell them apart, though the orange of Pakistan and China North Korea bloc is close.",
+      "Q9": "A moment worth having, once. Under a second is fine and it makes me want to try 1960 and 1990. I would switch eras more because of it.",
+      "Q10": "Yes, the globe fills more of the screen than the old title globe. On the phone I could not judge the tap size well from the shots.",
+      "Q11": "B with A's switch on once I want it. One change: put the Ukraine hover and all cards so they never cover the country names, and make the rim markers show a 'more on the far side' count."
+    }
+  },
+  "verbatim": "Give me the clean text and the map with real borders, let me open the briefing when I want to check it, and please do not tell me Washington wants an answer before midterms that already happened."
+}

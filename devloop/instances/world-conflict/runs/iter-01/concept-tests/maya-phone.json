@@ -1,0 +1,48 @@
+{
+  "persona": "maya",
+  "variant": "maya-phone",
+  "panel_version": "1.2",
+  "learn": {
+    "preferred": "A",
+    "why": "On a phone commute I want the help right where I am reading, one tap, one line, then back to the card. A shows exactly that: tap 'the fortress belt', get a one-line sheet plus 'In your game: front line 52, you hold the belt', and Close. B makes me leave the card and read a list of 7 names. C hides the point behind a tiny 'i' and a long scroll of map, people and timeline I will not read on the bus.",
+    "would_turn_off": ["Codex unlock toast and 'N of 31 met' progress", "'Brief me on each new crisis' auto-opening panels", "The 'More' and 'Codex' buttons on the peek sheet (keep only Close and tap-away)", "Underlines on anything after the first couple of meetings"],
+    "points": {"A": 52, "B": 18, "C": 30},
+    "familiarity_level_i_would_pick": "Some help",
+    "unknown_terms_i_saw": ["Donetsk oblast: later", "fortress belt: now", "Kramatorsk and Sloviansk: never", "the midterms (I half know it is a US election, not why it sets a deadline): later", "referendum on land (I know the word, not why it blocks a deal): never", "Rada: later", "Pokrovsk axis: never", "unoccupied part, 'a basis': never"],
+    "kill_criteria_hit": ["B on phone: a bottom panel that covers most of the card and lists 7 names is a screen full of small things with no obvious next step", "C on phone: long scroll (map, who is who) before I can choose, past my 40 s patience"],
+    "answers": {
+      "Q1": "Donetsk oblast, the fortress belt, Kramatorsk, Sloviansk, 'a basis', the midterms (why the deadline), referendum angle, the Rada. I know Ukraine and Russia are at war and the US is pushing a deal. Fortress belt now, midterms later, the rest never.",
+      "Q2": "A: yes, dotted underlines are quiet and the peek sheet is one line plus 'In your game', I would use it in game one. B: maybe, a 'Briefing 7 names' pill is clear but opening a list over the card feels like homework. C: no for the first game, the 'i' is tiny on a phone and the full briefing is a page.",
+      "Q3": "Fortress belt, A, 5: tap the underline, one sentence, 'You hold the belt' tells me why I care. B would be 4, C 3 (too much around it).",
+      "Q4": "A 4, B 3, C 4 (C is invisible until I want it, but the 'What is going on here?' button is easy to ignore)",
+      "Q5": "Some help. Turn off first: the codex unlock toast and progress counter, I do not collect things, I want to play the crisis.",
+      "Q6": "Probably not before choosing; maybe once for the first crisis only. First read: the one-line summary ('Russia invaded in 2022 and holds about a fifth'), then maybe the map. Missing: what each of my three options will cost me, not more background.",
+      "Q7": "'18 of 31 met' would not make me open more. I might glance at the codex after the game, only if I lost and wanted to know why.",
+      "Q8": "A 25 B 8 C1 5 C2 15 D 7 E 25 F 15 (sum 100)",
+      "Q9": "A: show 'In your game' on every peek and make the sheet auto-dismiss on tapping the choice cards, so the help never blocks the decision.",
+      "Q10": "'As of Nov 2026' is nice but I would not notice it. One wrong fact would bother me a bit, only if I caught it. Facts flagged: none I could judge."
+    }
+  },
+  "worldmap": {
+    "preferred": "B",
+    "why": "B puts five numbered fires on the globe, so on a phone I see in a glance what the month is about, and the strip under it lists them in order like cards. A is more pins and names fighting for room on a small globe, and bloc colours need a key I do not know.",
+    "points": {"A": 38, "B": 62},
+    "era_change_noticed": true,
+    "unknown_terms_i_saw": ["Divided Berlin (I know it vaguely, not why a situation)", "Algerian War: never", "Khrushchev, Eisenhower: vaguely", "Hormuz: later", "Bab al-Mandab, Houthis: never", "Abu Dhabi talks: never", "blocs, NATO vs Warsaw Pact: vaguely", "tension 74: what is the scale?"],
+    "kill_criteria_hit": ["A phone 2026 (sheet opened): the Open war sheet covers the globe and the card behind it is a jumble of overlapping text", "Both: country names crowd the pins (Ukraine, Russia, Kazakhstan, Iran sit on or next to pins)", "Rim markers on the far side are tiny and I would miss them"],
+    "answers": {
+      "Q1": "S6/S3 1960: the year is in the header, January 1960. Biggest things: a Soviet bloc versus the West, France, Berlin. B told me faster, the numbers 1 to 5 read as a to-do list. 2026: Russia and Ukraine, the Middle East, Yemen.",
+      "Q2": "Yes, 1960 is sepia-ish and orange and the country names change (Soviet Union, 'Nigeria (British)'), 2026 has more red war pins. I cannot spot an anachronism, I do not know 1960 well enough.",
+      "Q3": "On the phone I can read big names (Russia, India, Soviet Union) but small ones are cramped; Ukraine and Kazakhstan touch pins in the 2026 A shot, and Israel next to Iran is crowded. I looked for China and the US, neither is on screen.",
+      "Q4": "The pin by Kazakhstan with the trefoil, I guessed nuclear. Hollow versus faded I could not tell on a phone. Red crossed swords means war, yes. I did not see the dotted rival lines at this size.",
+      "Q5": "I did not notice the rim markers; I saw one purple arrow on the left edge and guessed it spins the globe. Add a chip like '3 more on the far side'.",
+      "Q6": "A phone bottom sheet (A 2026) is clear: war title, three leaders, one big orange button 'Play it as a 15-minute Flashpoint'. Great for me. It covers the list below, fine. Next to the pin is harder on a phone than a sheet.",
+      "Q7": "B's five numbered fires by default. I would flip the switch rarely, maybe once out of curiosity.",
+      "Q8": "A's bloc colours: red and blue I get, others no. B's stability glow (orange-red shaky) tells me where trouble is without a key, but I could not tell which countries are playable. For choosing a nation, neither helped much; the list below did.",
+      "Q9": "A moment worth having, under a second, the year rolling is fun and makes me tap 1960 just to see it. It would not be a delay for me. I would switch eras more because of it, once or twice.",
+      "Q10": "The new globe fills the width better than a title screen would. On the phone the pins are just big enough to tap, but the numbers and names are tiny.",
+      "Q11": "B. One change: put the situation cards (1 to 5) as the main thing and make the globe the backdrop, and make pin labels never collide with country names."
+    }
+  },
+  "verbatim": "Just let me tap the weird word, give me one line and what it means for me, and let me get back to my choice before my stop."
+}
