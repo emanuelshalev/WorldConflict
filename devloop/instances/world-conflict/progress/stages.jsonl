@@ -60,3 +60,8 @@
 {"t": "2026-11-22T20:11:59Z", "kind": "resume", "note": "backfilled"}
 {"t":"2026-11-22T20:40:01.116Z","iteration":3,"stage":"Verify","kind":"unit-done","units":1,"note":"gate-fixes merged: full verify green (733a0f9)"}
 {"t":"2026-11-22T12:56:00.000Z","iteration":4,"stage":"Design","kind":"start","note":"iteration 4 designs (agenda, order cards) running in parallel with iteration 3"}
+{"t":"2026-11-22T21:26:52.911Z","iteration":3,"stage":"Verify","kind":"unit-done","units":1,"note":"staff picks (RS-005) merged, crisis copy and month-1 shortcut fixed (9624de4); final full verify running"}
+{"t":"2026-11-22T21:40:30.856Z","iteration":3,"stage":"Verify","kind":"unit-done","units":1,"note":"final full verify green at 9624de4"}
+{"t":"2026-11-22T21:40:35.824Z","iteration":3,"stage":"Verify","kind":"end"}
+{"t":"2026-11-22T21:40:35.824Z","iteration":3,"stage":"Use","kind":"start"}
+{"t":"2026-11-22T21:40:35.824Z","iteration":3,"stage":"Use","kind":"unit-total","units":10}
