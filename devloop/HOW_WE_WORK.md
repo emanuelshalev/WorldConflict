@@ -33,3 +33,5 @@ Version 1.4, 2026-11-23. Changed only through journal entries (`instances/*/jour
 | 8. Gate | Group Manager | Pass: release candidate tag. Fail: next iteration |
 
 Iteration 0 is special: interviews and a baseline usage round on the current build, before any building, so the first goals come from evidence.
+
+- **The status page follows a protocol, not memory.** Every section has a tier (live, merge, feedback, iteration close, on change) triggered by loop events; generated sections are injected from their source files, only judgement is hand-written, every section carries an as-of stamp and the page check fails on a stale one (method/status-page.md).
