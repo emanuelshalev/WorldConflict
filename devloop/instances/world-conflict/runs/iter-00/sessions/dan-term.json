@@ -1,0 +1,45 @@
+{
+ "persona": "dan", "variant": "dan-term", "panel_version": "1.1", "build": "b271008", "iteration": 0, "minutes_played": 45,
+ "scenarios": [
+  {"id": "D1", "outcome": "partial", "turns": 12,
+   "steps": ["Title: One Term, 2026 era, Pakistan (three red dots, tough), Normal", "Read the desk, All orders catalogue, searched orders", "Queued then removed a nuclear strike on India to see the preview (53% success, 8% def)", "Approved all staff suggestions and executed month 1 to 12", "Tried to switch to Map mode at month 12 (screenshots hung)"],
+   "notes": "I understood the order catalogue and costs, but never learned why individual orders are refused or what the hidden limits are. I played 11 months on staff autopilot, which kept me alive and tension falling; that is exactly the dominant-strategy smell."},
+  {"id": "D2", "outcome": "partial", "turns": 12,
+   "steps": ["Pressed Approve staff suggestions and Execute every month", "Watched score: 100, 97, 95, 94, 93 (never rising)", "Mission bonus needs score 115 and relations -70 with Afghanistan"],
+   "notes": "Approve-all appears to be a safe default move; I could not tell in 12 months whether any active play beats it, because nothing tells me what would."}
+ ],
+ "friction": [
+  {"where": "Desk, All orders: dimmed orders (Strike nuclear sites, Declare war, Sabotage)", "expected": "A tooltip or line saying what is missing (target, capital, rule)", "happened": "Clicking or hovering a dimmed order does nothing and shows no reason. Without a target the chips just sit there.", "kind": "blocked", "screenshot": "devloop/instances/world-conflict/runs/iter-00/shots/dan-term/013-hov.png"},
+  {"where": "Month debrief and top bar: Score", "expected": "A line saying why score fell 3 while approval, stability and legitimacy rose", "happened": "Score went 100 to 97 with every visible meter up. The table says only 'War weariness weighs on the public mood'. Score kept sliding to 93 with no breakdown.", "kind": "other", "screenshot": "devloop/instances/world-conflict/runs/iter-00/shots/dan-term/017-m1.png"},
+  {"where": "Desk, crisis card image", "expected": "Art matching the crisis (assassination attempt)", "happened": "Month 2 crisis re-used the month 1 refugees rally image.", "kind": "other", "screenshot": "devloop/instances/world-conflict/runs/iter-00/shots/dan-term/025-desk2.png"},
+  {"where": "Desk, meetings", "expected": "Different calls over a year", "happened": "The same Afghan leader call with 'Offer talks on a ceasefire' as the staff suggestion at months 5, 7, 8 with nearly identical text.", "kind": "other", "screenshot": "devloop/instances/world-conflict/runs/iter-00/shots/dan-term/034-dm7.png"},
+  {"where": "Title screen to desk", "expected": "A clear click on 'One Term'", "happened": "The click-by-label failed on the tab and on several buttons whose labels contain extra text (needed to tap text or coordinates).", "kind": "retry", "screenshot": "devloop/instances/world-conflict/runs/iter-00/shots/dan-term/002-term.png"},
+  {"where": "Desk, All orders search", "expected": "Enter on a half-typed query to do nothing risky", "happened": "Enter on 'nuclear strike india' instantly queued a nuclear site strike with no confirm. I removed it, but an accidental Enter would have queued it.", "kind": "other", "screenshot": "devloop/instances/world-conflict/runs/iter-00/shots/dan-term/015-nukeIndia.png"},
+  {"where": "Map mode", "expected": "Parity with the desk and a normal screenshot", "happened": "After switching to Map at month 12, every screenshot timed out for minutes (machine load was high, so unconfirmed). I could not test map and desk parity.", "kind": "parity"},
+  {"where": "Capital meter", "expected": "To see the capital refill rule", "happened": "Showed 1 left of 3 almost every month; I never saw how capital is earned or why it stays low.", "kind": "hesitation", "screenshot": "devloop/instances/world-conflict/runs/iter-00/shots/dan-term/027-now.png"}
+ ],
+ "bugs": [
+  {"title": "Dimmed orders give no reason", "steps": ["Desk, All orders", "Click or hover 'Strike nuclear sites in ...' without a target"], "expected": "Reason shown (pick a target / rule)", "actual": "Nothing visible happens", "severity": "S2", "screenshot": "devloop/instances/world-conflict/runs/iter-00/shots/dan-term/013-hov.png"},
+  {"title": "Enter in order search queues a nuclear strike with no confirmation", "steps": ["All orders", "Type 'nuclear strike india'", "Press Enter"], "expected": "Selection or confirmation for an irreversible order", "actual": "Strike on India queued at once", "severity": "S3", "screenshot": "devloop/instances/world-conflict/runs/iter-00/shots/dan-term/015-nukeIndia.png"},
+  {"title": "Crisis card art repeated from previous crisis", "steps": ["Finish month 1 refugees crisis", "Open month 2 assassination crisis"], "expected": "Different art", "actual": "Same rally image", "severity": "S4", "screenshot": "devloop/instances/world-conflict/runs/iter-00/shots/dan-term/025-desk2.png"}
+ ],
+ "suggestions": [
+  {"what": "Show the reason on every dimmed or refused order, in the chip itself, with the rule and what unlocks it", "goal_served": "D1"},
+  {"what": "A score breakdown (four 50-point components, target vs current, monthly delta) one tap from the top bar", "goal_served": "D1"},
+  {"what": "A 'what if I do nothing but approve all' baseline so I can see whether active play beats autopilot, and make staff picks sometimes wrong", "goal_served": "D2"},
+  {"what": "Make staff suggestions vary and react to the state; stop repeating the same call", "goal_served": "D2"}
+ ],
+ "delight": ["Table view of the month debrief with a 'Why your numbers moved' row and before/after numbers (devloop/instances/world-conflict/runs/iter-00/shots/dan-term/018-table.png)", "Order search with typed targets and previews (53% success, defence cost) (devloop/instances/world-conflict/runs/iter-00/shots/dan-term/015-nukeIndia.png)", "Crisis options show signed effect arrows and who backs each option (devloop/instances/world-conflict/runs/iter-00/shots/dan-term/006-desk1.png)", "Globe title screen and newspaper look crafted (devloop/instances/world-conflict/runs/iter-00/shots/dan-term/001-title.png, devloop/instances/world-conflict/runs/iter-00/shots/dan-term/024-p5e.png)"],
+ "scores": {
+  "fun": {"value": 5, "reason": "Good setup and crises, but 11 of 12 months on approve-all with little to decide."},
+  "clarity": {"value": 6, "reason": "Debrief table is great; score movement and capital rules are opaque."},
+  "visual": {"value": 8, "reason": "Illustrated crisis scenes, newspaper and globe look crafted, apart from repeated art."},
+  "feels_like_a_game": {"value": 7, "reason": "Feels designed, not a dashboard, though the staff autopilot makes it feel like a managed menu."},
+  "agency": {"value": 5, "reason": "Dimmed orders silently refuse; I never knew the rule behind them."},
+  "realism": {"value": 6, "reason": "Pakistan's dilemmas (Afghan war, Iran refugees, India) are right, but Afghan calls repeat."},
+  "replay": {"value": 5, "reason": "Unproven; I could not find whether anything beats autopilot in 12 months."},
+  "recommend": {"value": 5, "reason": "I would tell Paradox friends to wait until score is explained and autopilot is not enough."}
+ },
+ "quit_point": "Month 8: the Afghan ceasefire call came back with the same text, score still sliding, and I had decided nothing beyond Approve all for seven months. I would have stopped that evening.",
+ "verbatim": "Show me why the score moved and why an order is refused, and make approve-all not good enough, and then it is a game."
+}

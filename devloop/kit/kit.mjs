@@ -35,16 +35,18 @@ export function deviceFor(device = '') {
 
 export async function launch({ variant = 'qa', device = variant, out = `/tmp/playtest/${variant}`, base = process.env.DEVLOOP_BASE_URL ?? 'http://localhost:5173/', video = false } = {}) {
   fs.mkdirSync(out, { recursive: true });
-  const browser = await chromium.launch();
-  const context = await browser.newContext({
+  // Persistent profile per output folder: a restarted driver keeps localStorage (guest id, saves).
+  const profile = path.join(out, '.profile');
+  const context = await chromium.launchPersistentContext(profile, {
     ...deviceFor(device),
     ...(video ? { recordVideo: { dir: path.join(out, 'video') } } : {}),
   });
-  const page = await context.newPage();
+  const browser = { close: async () => {} };
+  const page = context.pages()[0] ?? (await context.newPage());
   const errors = [];
   page.on('pageerror', (e) => errors.push(e.message));
   page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
-  let n = 0;
+  let n = fs.readdirSync(out).reduce((m, f) => Math.max(m, Number.parseInt(f, 10) || 0, Number.parseInt(f.replace(/^burst-/, ''), 10) || 0), 0);
   const logFile = path.join(out, 'log.jsonl');
   const log = (entry) => fs.appendFileSync(logFile, `${JSON.stringify({ t: new Date().toISOString(), ...entry })}\n`);
 
@@ -66,7 +68,7 @@ export async function launch({ variant = 'qa', device = variant, out = `/tmp/pla
     async look(name, { full = false } = {}) {
       await page.waitForTimeout(700);
       const file = path.join(out, `${String(++n).padStart(3, '0')}-${name}.png`);
-      await page.screenshot({ path: file, fullPage: full });
+      await page.screenshot({ path: file, fullPage: full, scale: 'css' }); // 1 screenshot px = 1 tap px
       const view = await page.evaluate(() => {
         const vis = (el) => {
           const r = el.getBoundingClientRect();
@@ -130,7 +132,7 @@ export async function launch({ variant = 'qa', device = variant, out = `/tmp/pla
       let i = 0;
       while (Date.now() - t0 < ms) {
         const f = path.join(dir, `${String(i++).padStart(3, '0')}.png`);
-        await page.screenshot({ path: f });
+        await page.screenshot({ path: f, scale: 'css' });
         frames.push(f);
         await page.waitForTimeout(every);
       }

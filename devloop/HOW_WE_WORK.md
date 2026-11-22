@@ -1,6 +1,6 @@
 # How we work (current state)
 
-Version 1.1, 2026-11-21. Changed only through journal entries (`instances/*/journal.md`) and mirrored on the instance status page.
+Version 1.2, 2026-11-22. Changed only through journal entries (`instances/*/journal.md`) and mirrored on the instance status page.
 
 ## Principles
 1. **Customers decide, builders build.** Synthetic customers run in fresh sessions, blind to design intent and the goal list, on a different model from the builders where possible.
@@ -10,7 +10,9 @@ Version 1.1, 2026-11-21. Changed only through journal entries (`instances/*/jour
 5. **Never remove a capability** without an owner decision; improve, surface or make optional.
 6. **Parallel by default, isolated when touching shared files**: independent workstreams run as parallel agents with narrow briefs; overlapping edits use separate worktrees or are sequenced.
 7. **Verify before the panel sees it**: tests, lints, build, domain harnesses, smoke playtest through the real UI.
-8. **Report often**: the status page and journal are updated at each stage so the owner can follow without asking.
+8. **Isolate agents and respect capacity**: each agent has its own port, scratch and output folder; at most about 1 browser persona per 5 CPU cores at once.
+9. **Reach the end**: each usage round, at least 3 personas reach an end screen.
+10. **Report often**: the status page and journal are updated at each stage so the owner can follow without asking.
 
 ## Iteration
 | Stage | Who | Output |

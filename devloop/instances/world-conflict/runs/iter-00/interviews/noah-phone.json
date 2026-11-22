@@ -1,0 +1,7 @@
+{ "persona": "noah", "variant": "noah-phone", "panel_version": "1.1",
+  "pains": ["games that make me read before I can do anything", "tutorials that go on forever", "stuff that looks like a spreadsheet", "getting blocked and not knowing why", "no cool result to show friends"],
+  "points": {"C1": 10, "C2": 5, "C3": 5, "C4": 5, "C5": 5, "C6": 20, "C7": 0, "C8": 20, "C9": 0, "C10": 3, "C11": 17, "C12": 10},
+  "cut": ["C7", "C9"],
+  "objections": ["If it feels like homework I am out", "Too much text", "My friends only care if it looks like a real game and I can post something", "Needs to work with one thumb on my phone"],
+  "quit_moment": "In a strategy game on my phone I quit when it opened with a wall of text and menus, around 30 seconds in, before I had tapped anything fun.",
+  "verbatim": "Just let me nuke something, or at least do something huge, and give me a card I can post." }

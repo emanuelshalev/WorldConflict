@@ -1,0 +1,7 @@
+{ "persona": "leo", "variant": "leo-stream", "panel_version": "1.1",
+  "pains": ["dead air on stream while a game loads or asks me to read", "games where wild moves are silently refused", "static dashboards that look dead on camera", "end screens that are one line with nothing to clip"],
+  "points": {"C1": 10, "C2": 3, "C3": 2, "C4": 0, "C5": 3, "C6": 22, "C7": 0, "C8": 30, "C9": 0, "C10": 0, "C11": 10, "C12": 20},
+  "cut": ["C4", "C9"],
+  "objections": ["If nukes and coups are gated and boring, chat leaves", "If the end card is not postable, no video", "Chat needs to understand what is happening in 5 seconds without me reading aloud"],
+  "quit_moment": "Plague Inc style clones: quit when the big event was just a text popup and I had to read a wall of text on camera.",
+  "verbatim": "Give me a nuke going off full screen and a card I can post, and I will stream it all night." }

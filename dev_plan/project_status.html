@@ -631,14 +631,14 @@ $('decisionlist').innerHTML = STATUS.decisions.map((d) =>
 // LOOP DATA: the synthetic-customer development loop (updated every stage)
 // =====================================================================
 const LOOP = {
-  updated: "2026-11-22 06:10",
+  updated: "2026-11-22 08:30",
   iteration: 0,
-  stage: 5, // index into stages
-  now: "<b>Iteration 0, stage 5 (Use): baseline.</b> The loop is set up as a reusable module (<code>devloop/</code>). Nine synthetic customers are being interviewed and are playing the current build (v0.9.0) through the real UI in parallel, blind to your feedback, so we can check that the recalibrated panel finds the problems you found. Next: triage, then the first build iteration on the goals below.",
+  stage: 6, // index into stages
+  now: "<b>Iteration 0, stage 6 (Triage), and iteration 1 design has started.</b> All 9 customers played the v0.9.0 baseline. Weighted would-recommend is <b>4.9/10</b> (gate: 7.0); 6 of 9 would have quit; nobody reached the end of a game. The recalibrated panel independently found 6 of your 7 points (fidelity 6/7). QA is reproducing the reported bugs on a quiet machine (most freezes were our own machine overload). Four design workstreams are writing specs in parallel: <b>orders</b> (never blocked, point at it, one vocabulary, desk/map parity), <b>month</b> (your move, goal line, suggestions, shorter month), <b>feel</b> (a game, not a dashboard), and <b>the reveal</b> (your new end-of-game request, with achievements, perception, stats and ranking).",
   stages: [
     ["Plan", "goals"], ["Design", "specs"], ["Build", "code"], ["Verify", "QA"], ["Use", "customers"], ["Triage", "decide"], ["Report", "status"], ["Gate", "RC?"],
   ],
-  kpis: [["Iteration", "0 <small>baseline</small>"], ["Customer personas", "9"], ["Team personas", "8"], ["Real signals", "1 <small>CEO</small>"], ["Decisions logged", "D-42"], ["Release gate", "<span style='color:var(--brand)'>not met</span>"]],
+  kpis: [["Iteration", "0 <small>baseline</small>"], ["Customer personas", "9"], ["Team personas", "8"], ["Real signals", "2 <small>CEO</small>"], ["Baseline recommend", "4.9 <small>/10 weighted</small>"], ["Decisions logged", "D-44"], ["Release gate", "<span style='color:var(--brand)'>not met</span>"]],
   goals: [
     ["G1", "A", "Never blocked without a reason and a way forward", "CEO RS-001", "planned"],
     ["G2", "A", "Point at what you mean (warnings highlight the element)", "CEO RS-001", "planned"],
@@ -649,6 +649,7 @@ const LOOP = {
     ["G7", "A", "A game, not a dashboard (art-directed, reactive UI)", "CEO RS-001", "planned"],
     ["G8", "A", "A wide audience: non-gamers, teens, quick and long sessions", "CEO brief", "planned"],
     ["G9", "A", "Learn and test real history (what really happened, replay to compare)", "CEO brief", "planned"],
+    ["G10", "A", "The reveal: an end of game worth waiting for (achievements, perception, stats, ranking)", "CEO RS-002", "planned"],
     ["P1", "B", "Reusable method, kept apart from the game", "CEO", "doing"],
     ["P2", "B", "Fast, safe iterations (more change, zero regressions)", "CEO", "planned"],
     ["P3", "B", "Quality by construction (ledger, spec or test, QA on every change)", "Method", "doing"],
@@ -658,13 +659,12 @@ const LOOP = {
   ],
   // recommend scores per iteration (null = not yet played)
   personas: ["maya", "olivia", "ruth", "noah", "priya", "dan", "sam", "leo", "marcus"],
-  heat: { "0": {} },
+  heat: { "0": { maya: 6, olivia: 3, ruth: 4, noah: 4, priya: 5, dan: 5, sam: 6, leo: 5, marcus: 6 } },
   iterations: [
-    { n: 0, title: "Setup and baseline", state: "doing", dates: "2026-11-21 to now",
-      summary: "Tagged v0.9.0 and branched. Built the synthetic-customer loop as a reusable <code>devloop/</code> module: 9 customer personas from a coverage matrix, 8 team charters, fixed interview and session protocols, a report schema, triage rules, a decision ledger, a Playwright kit with a persistent driver so agents play turn by turn, and a smoke playtest. Recalibrated the panel against your playtest.",
-      highlights: ["Your playtest is real signal RS-001; it showed the old panel was too patient and too polite, so we added a skeptic (Sam), an early quitter (Olivia), and three new audiences (Ruth 67, Noah 16, Marcus 54).", "The method is product-agnostic: copy <code>devloop/</code> to another repo and start from <code>templates/</code>.", "Customer agents play through the real UI at their own device size, on a different model from the builders."],
-      lowlights: ["The first smoke script was flaky: it treated a control hidden behind a closing overlay as clickable. Fixed with reachability checks; the lesson is in LEARNINGS.", "Earlier persona rounds rated visuals 7/10; that confidence was misplaced."] },
-  ],
+    { n: 0, title: "Setup and baseline", state: "doing", dates: "2026-11-21 to 2026-11-22",
+      summary: "Tagged v0.9.0 and branched. Built the synthetic-customer loop as a reusable <code>devloop/</code> module (9 customer personas from a coverage matrix, 8 team charters, protocols, report schema, triage rules, ledger, Playwright kit with a persistent driver). Recalibrated the panel against your playtest, then ran the baseline: 9 interviews and 9 play sessions on v0.9.0. Weighted recommend <b>4.9</b>. Top wishes from the interviews (weighted 100-point trade-off): see why before trying (15), a clear move and goal (13), a crafted game feel (13), real-world content (9), a shorter month (9). Triage: 15 clusters, see <code>runs/iter-00/triage.md</code>.",
+      highlights: ["The recalibrated panel found 6 of your 7 points without being told, including the political capital toast versus the tiny meter (Leo) and the two capital representations (Sam).", "Everyone loved the globe title screen and the newspaper; visual scores 7 to 8.", "Wide panel paid off: Ruth (67) and Noah (16) surfaced legibility, abbreviation and pacing problems no gamer persona raised.", "Marcus asked for same-seed replays and side-by-side runs, which fits your ranking ask."],
+      lowlights: ["Running 9 browsers at once overloaded the machine (load 137 on 20 cores): 6 of 9 sessions froze, which muddied performance evidence. Now capped at 4 at a time.", "Nobody reached the end of a game, so the panel missed the weak ending you flagged (RS-002). Now at least 3 personas must reach the end each iteration.", "Agents shared a scratch folder and one overwrote another's script; each now gets its own.", "Approve all + Execute is an autopilot that wins (Dan): the game rarely asks for a real decision."] },
   stageMatrix: {
     // persona/group -> [Plan, Design, Build, Verify, Use, Triage, Report, Gate]
     "👔 CEO": ["Sets goals, gives feedback", "", "", "", "Real signal (optional)", "", "Reads status", "Accepts RC"],
@@ -705,7 +705,7 @@ const LOOP = {
     ["🔍", "QA Engineer", "Tests, harness, playtest kit, bug reproduction, visual QA"],
     ["🌍", "Content Consultant", "Facts, leaders, crisis writing, debriefs"],
   ],
-  howVersion: "v1.1 · 2026-11-21",
+  howVersion: "v1.2 · 2026-11-22",
   principles: [
     ["Customers decide, builders build", "Customer agents run fresh, blind to design intent and goals, on a different model from the builders."],
     ["Real signals win", "Your feedback calibrates the panel. When a real person disagrees with the panel, we go with the person."],
@@ -714,9 +714,11 @@ const LOOP = {
     ["Never remove a capability", "Improve it, surface it better or make it optional."],
     ["Parallel by default", "Independent work runs as parallel agents with narrow briefs; overlapping edits are isolated or sequenced."],
     ["Verify before customers see it", "Tests, lints, build, balance harness and a smoke playtest through the real UI."],
+    ["Isolate agents, respect capacity", "Each agent has its own port, scratch and output folder; at most about one browser persona per 5 CPU cores at once."],
+    ["Reach the end", "Every usage round, at least 3 personas reach an end screen."],
     ["Report often", "This page and the journal update at every stage."],
   ],
-  gate: ["Every game goal G1 to G9 verified by QA and confirmed by the panel", "No open S1 or S2 finding", "Weighted would-recommend 7.0 or more, nobody below 6", "Weighted feels-like-a-game and agency 7.0 or more", "Olivia (early quitter) and Ruth (non-gamer) finish a first session without quitting", "Tests, lints, build, balance harness and smoke playtest green"],
+  gate: ["Every game goal G1 to G10 verified by QA and confirmed by the panel", "No open S1 or S2 finding", "Weighted would-recommend 7.0 or more, nobody below 6", "Weighted feels-like-a-game and agency 7.0 or more", "Olivia (early quitter) and Ruth (non-gamer) finish a first session without quitting", "Tests, lints, build, balance harness and smoke playtest green"],
   journal: [
     { date: "2026-11-21", iter: 0, title: "Setup", items: [
       "<b>Found:</b> three earlier persona rounds rated visuals 7/10, yet your playtest found the UI dashboard-like, blocking and unclear. The panel was too patient, read too carefully, and had no skeptic or quitter, which is the bias the research predicts.",
@@ -728,6 +730,13 @@ const LOOP = {
       "<b>Found:</b> the panel was mostly gamers. <b>Changed:</b> coverage matrix first, then Ruth (67, non-gamer, news), Noah (16, mobile gamer) and Marcus (54, board gamer, history what-ifs); goals G8 (wide audience) and G9 (learn and test real history).",
       "<b>Found:</b> only the product had goals. <b>Changed:</b> track B goals for agentic development practice (P1 to P6), measured every iteration.",
       "<b>Found:</b> one-shot scripts lose the browser between steps, so agents could not play turn by turn. <b>Changed:</b> a persistent driver keeps one browser open per customer." ] },
+    { date: "2026-11-22", iter: 0, title: "Baseline round", items: [
+      "<b>Found:</b> 9 browsers at once overloaded the machine and froze 6 sessions. <b>Changed:</b> at most about one browser persona per 5 CPU cores at once; QA reproduces any freeze alone before it is filed.",
+      "<b>Found:</b> agents shared a scratch folder and collided. <b>Changed:</b> every agent has its own port, scratch folder and output folder.",
+      "<b>Found:</b> a restarted browser lost the game and overwrote screenshots; phone screenshots were 2x so taps missed. <b>Changed:</b> persistent browser profile, continued numbering, screenshots at CSS scale.",
+      "<b>Found:</b> nobody reached the end, and your next feedback was about the end. <b>Changed:</b> at least 3 personas must reach an end screen every iteration.",
+      "<b>Found:</b> the hold-out check worked (6 of 7). <b>Kept:</b> one real statement stays hidden each time new real feedback arrives.",
+      "<b>Changed:</b> design starts in parallel with QA reproduction, from one shared brief file, so four specs are written at once." ] },
   ],
 };
 

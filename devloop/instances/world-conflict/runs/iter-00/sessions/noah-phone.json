@@ -1,0 +1,166 @@
+{
+ "persona": "noah",
+ "variant": "noah-phone",
+ "panel_version": "1.1",
+ "build": "b271008",
+ "iteration": 0,
+ "minutes_played": 9,
+ "scenarios": [
+  {
+   "id": "N1",
+   "outcome": "partial",
+   "turns": 1,
+   "steps": [
+    "Title: tapped big yellow Take office as Saudi Arabia",
+    "Skipped briefing, Take office",
+    "Dismissed hint, tapped Bomb Sanaa",
+    "Execute month",
+    "Saw strike scene and tension 76 to 82",
+    "Tried to continue debrief: taps lagged or did nothing; later landed on month 2 desk; Approve 4 and Execute did not respond"
+   ],
+   "notes": "Started in about 15 s and first big moment at about 1 min, good. Then the app got sluggish and I could not progress."
+  },
+  {
+   "id": "N2",
+   "outcome": "abandoned",
+   "turns": 1,
+   "steps": [
+    "Never reached an end card or any shareable result"
+   ],
+   "notes": "Only saw the month 1 debrief card, which is screenshot-worthy but not a share card."
+  }
+ ],
+ "friction": [
+  {
+   "where": "Title, today's crisis banner vs selected card",
+   "expected": "Today's crisis is what I play",
+   "happened": "Banner says Hormuz Convoy but the card selected is Bab al-Mandab Burning, button says Saudi Arabia; confusing",
+   "kind": "misread",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-00/shots/noah-phone/001-title.png"
+  },
+  {
+   "where": "Briefing screen",
+   "expected": "short",
+   "happened": "Same paragraph twice (italic intro and Your mission box), pure text wall",
+   "kind": "dashboard-feel",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-00/shots/noah-phone/002-start.png"
+  },
+  {
+   "where": "Desk, month 1",
+   "expected": "tap the big move",
+   "happened": "Hint box, header meters, mission chip, 6 labels, small bottom sheet; lots of words (A massive air campaign... paragraph) before the options",
+   "kind": "dashboard-feel",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-00/shots/noah-phone/003-desk1.png"
+  },
+  {
+   "where": "Debrief card",
+   "expected": "next page opens on tap",
+   "happened": "Taps on Diplomacy tab and the Diplomacy next button timed out or did nothing; screenshots hung for 30 s; page seemed frozen",
+   "kind": "blocked",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-00/shots/noah-phone/011-deb2b.png"
+  },
+  {
+   "where": "Desk month 2",
+   "expected": "Approve 4 and Execute month respond",
+   "happened": "Taps did nothing visible, twice; ghost text from the previous screen faded behind the new one",
+   "kind": "blocked",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-00/shots/noah-phone/016-m2b.png"
+  },
+  {
+   "where": "Debrief headline",
+   "expected": "readable headline",
+   "happened": "Salman on After the Riyadh airport strike: Bomb Sanaa, reads like a bug",
+   "kind": "naming",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-00/shots/noah-phone/005-exec1.png"
+  }
+ ],
+ "bugs": [
+  {
+   "title": "UI becomes unresponsive after Execute month on phone viewport",
+   "steps": [
+    "Start Saudi flashpoint",
+    "Choose Bomb Sanaa",
+    "Execute month",
+    "Try tapping debrief tabs, Next, then Approve 4 and Execute on month 2"
+   ],
+   "expected": "Taps respond within a second",
+   "actual": "Clicks time out at 4 s, screenshots time out at 30 s, taps do nothing; Escape key did move on to the next month",
+   "severity": "S1",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-00/shots/noah-phone/016-m2b.png"
+  },
+  {
+   "title": "Debrief headline grammar",
+   "steps": [
+    "Choose Bomb Sanaa, Execute"
+   ],
+   "expected": "Saudi Arabia strikes Sanaa",
+   "actual": "Salman on After the Riyadh airport strike: Bomb Sanaa",
+   "severity": "S3",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-00/shots/noah-phone/005-exec1.png"
+  },
+  {
+   "title": "Briefing text duplicated",
+   "steps": [
+    "Take office as Saudi Arabia"
+   ],
+   "expected": "Intro once",
+   "actual": "Same paragraph in italic and in mission box",
+   "severity": "S4",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-00/shots/noah-phone/002-start.png"
+  }
+ ],
+ "suggestions": [
+  {
+   "what": "Make the first month one screen: a big picture, 3 big buttons, no hint box",
+   "goal_served": "N1"
+  },
+  {
+   "what": "Give a share card right after the first month debrief",
+   "goal_served": "N2"
+  },
+  {
+   "what": "Make taps respond instantly and keep animations light on phones",
+   "goal_served": "N1"
+  }
+ ],
+ "delight": [
+  "Title globe with pulsing crisis pins and a giant yellow button, I started in 15 seconds (devloop/instances/world-conflict/runs/iter-00/shots/noah-phone/001-title.png)",
+  "Bomb Sanaa gave a jet strike scene and tension jumped 76 to 82 with red bars, that was the big moment (devloop/instances/world-conflict/runs/iter-00/shots/noah-phone/005-exec1.png)"
+ ],
+ "scores": {
+  "fun": {
+   "value": 5,
+   "reason": "The one bomb was fun, then it stalled"
+  },
+  "clarity": {
+   "value": 4,
+   "reason": "Too many labels and words on the desk, banner and card mismatch"
+  },
+  "visual": {
+   "value": 8,
+   "reason": "Scenes and globe look like a real game"
+  },
+  "feels_like_a_game": {
+   "value": 6,
+   "reason": "Looks like one but lags and stuck taps break it"
+  },
+  "agency": {
+   "value": 3,
+   "reason": "Taps stopped working and I did not know why"
+  },
+  "realism": {
+   "value": 6,
+   "reason": "Real names and events, I did not check more"
+  },
+  "replay": {
+   "value": 3,
+   "reason": "I would not come back if it freezes"
+  },
+  "recommend": {
+   "value": 4,
+   "reason": "Looks cool but froze on my phone before anything else happened"
+  }
+ },
+ "quit_point": "About 5 minutes in, month 2 desk: tapped Approve 4 and Execute month, nothing happened twice after the debrief already felt stuck.",
+ "verbatim": "The bomb part was sick, but then it froze and I just closed it."
+}

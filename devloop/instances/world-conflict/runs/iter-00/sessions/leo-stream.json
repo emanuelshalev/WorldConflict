@@ -1,0 +1,40 @@
+{
+ "persona":"leo","variant":"leo-stream","panel_version":"1.1","build":"b271008","iteration":0,"minutes_played":35,
+ "scenarios":[
+  {"id":"L1","outcome":"partial","turns":1,"steps":["Picked Water War (India vs Pakistan nuclear rivals) from the globe, chose Pakistan","Read the mission card, took office","Approved the staff picks and executed month 1","Read the debrief and the newspaper"],"notes":"Only one of 10 months played: the host machine was at load average ~110, so screenshots timed out and actions took 30-60 s. Part of the slowness may be the environment, but I could not tell. No full-screen stinger was seen for the crisis or the month."},
+  {"id":"L2","outcome":"partial","turns":1,"steps":["Opened All orders","Tapped greyed Nuclear strike and Declare war: nothing happened, no reason","Searched 'declare war on india': got the right order","Enter gave a capital toast; removed staff orders to free capital; declare war then never queued"],"notes":"Wild moves exist and the search is good, but I never got a war or a nuke to actually happen, and the refusal was a tiny toast that stayed stuck on screen."}
+ ],
+ "friction":[
+  {"where":"Title screen, side cards","expected":"tap the Pakistan card","happened":"text tap on the card label did nothing, needed a coordinate tap (may be the driver)","kind":"retry","screenshot":"devloop/instances/world-conflict/runs/iter-00/shots/leo-stream/005-pk.png"},
+  {"where":"All orders, greyed orders (Nuclear strike, Declare war)","expected":"a reason or a target prompt","happened":"tap did nothing at all, no message","kind":"blocked","screenshot":"devloop/instances/world-conflict/runs/iter-00/shots/leo-stream/011-nuke.png"},
+  {"where":"All orders search","expected":"'nuke india' finds the nuclear option","happened":"No order matches; only exact verbs work","kind":"hesitation","screenshot":"devloop/instances/world-conflict/runs/iter-00/shots/leo-stream/013-s.png"},
+  {"where":"All orders, Declare war on India","expected":"queued, or a clear funny reason","happened":"toast 'Not enough political capital (2 needed)' with 1 left, then after freeing capital to 3 the order still did not queue and the old toast never went away","kind":"blocked","screenshot":"devloop/instances/world-conflict/runs/iter-00/shots/leo-stream/028-w10.png"},
+  {"where":"Desk first screen","expected":"punchy","happened":"dense three-column dashboard, lots of small text and tiny arrows; staff pre-fills everything so my chaos has to fight the defaults","kind":"dashboard-feel","screenshot":"devloop/instances/world-conflict/runs/iter-00/shots/leo-stream/008-g2.png"},
+  {"where":"Month debrief page 1","expected":"a big stinger for a war month","happened":"half the screen empty, no motion I could see, a thin progress bar for the front","kind":"dashboard-feel","screenshot":"devloop/instances/world-conflict/runs/iter-00/shots/leo-stream/033-e2.png"}
+ ],
+ "bugs":[
+  {"title":"Declare war on India does not queue after capital is freed","steps":["Pakistan, Water War, month 1","All orders, search 'declare war on india', Enter: capital toast","Remove the two staff Court orders (capital 3 of 3)","Press Enter or tap the order again"],"expected":"order queued","actual":"nothing queued, stale toast remains","severity":"S2","screenshot":"devloop/instances/world-conflict/runs/iter-00/shots/leo-stream/028-w10.png"},
+  {"title":"Greyed orders give no feedback when tapped","steps":["All orders","tap Nuclear strike or Declare war with no target"],"expected":"prompt to pick a target or a reason","actual":"nothing","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-00/shots/leo-stream/011-nuke.png"},
+  {"title":"Capital toast contradicts the meter","steps":["Declare war on India with 1 capital left and 2 queued Court orders"],"expected":"explains that the staff orders already took the capital","actual":"just '2 needed'","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-00/shots/leo-stream/020-w3.png"}
+ ],
+ "suggestions":[
+  {"what":"Make the first month of a war or nuke a full-screen animated stinger with sound before the debrief","goal_served":"L1"},
+  {"what":"Greyed or refused wild orders say why in one funny line, on the button, and offer the fix","goal_served":"L2"},
+  {"what":"A Chaos staff mode that pre-fills nothing and surfaces the wildest legal order","goal_served":"L2"},
+  {"what":"Search understands nuke, coup, invade as synonyms","goal_served":"L2"},
+  {"what":"Share card or clip button right on the debrief page","goal_served":"L1"}
+ ],
+ "delight":["Globe title with pinned flashpoints and a Today's Crisis tag looks great on stream (devloop/instances/world-conflict/runs/iter-00/shots/leo-stream/001-title.png)","Newspaper front page with illustrated scene is postable (devloop/instances/world-conflict/runs/iter-00/shots/leo-stream/034-e3.png)","Order search with real verbs is quick (devloop/instances/world-conflict/runs/iter-00/shots/leo-stream/017-s5.png)"],
+ "scores":{
+  "fun":{"value":5,"reason":"One safe month played; the premise is great but I never got my chaos."},
+  "clarity":{"value":6,"reason":"Desk layout explained in a banner, but dense."},
+  "visual":{"value":7,"reason":"Title globe and newspaper illustrations look good; debrief and desk are dashboard-like."},
+  "feels_like_a_game":{"value":5,"reason":"Menus and cards over a static map; no sound heard, little motion."},
+  "agency":{"value":4,"reason":"Wild orders refused silently or unreliable; staff defaults pull me to safe play."},
+  "realism":{"value":7,"reason":"Real leaders, real flashpoint, believable headlines."},
+  "replay":{"value":6,"reason":"Eight flashpoints and sides invite another run if chaos works."},
+  "recommend":{"value":5,"reason":"I would not put it on stream yet: no big moment landed in my first 30 minutes and slow screens make dead air."}
+ },
+ "quit_point":"Month 1, All orders: Declare war on India would not queue after I freed the capital, and the stuck toast was the only explanation. Dead air on camera, I would switch games.",
+ "verbatim":"I came to start a war on stream and got a very polite spreadsheet about it."
+}

@@ -1,0 +1,7 @@
+{ "persona": "olivia", "variant": "olivia-laptop", "panel_version": "1.1",
+  "pains": ["games that open with walls of text before I can do anything", "buttons that do nothing and no reason given", "screens that look like a spreadsheet or work app", "not knowing if I am winning"],
+  "points": {"C1": 25, "C2": 10, "C3": 15, "C4": 5, "C5": 0, "C6": 25, "C7": 0, "C8": 10, "C9": 0, "C10": 0, "C11": 10, "C12": 0},
+  "cut": ["C9", "C10"],
+  "objections": ["Sounds like homework, not a game", "I would not send it to friends unless it is pretty and instant", "Friends who play Candy Crush would bounce on the first text-heavy screen"],
+  "quit_moment": "Last time it was a city-builder tutorial: a fourth popup of text before I could place a single thing, I closed the tab.",
+  "verbatim": "If I have not done something fun and seen it react within two minutes, I am gone." }

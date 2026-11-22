@@ -16,3 +16,12 @@ Newest entries at the bottom. Each entry names an area for improvement in our pr
 - **Change.** Coverage matrix first, then three new archetypes (Ruth, Noah, Marcus); nine archetypes in total; a second must-complete persona (Ruth) in the gate; new goals G8 (wide audience) and G9 (learn and test real history). (D-40)
 - **Observation.** Only product quality had goals.
 - **Change.** Added track B goals (P1 to P6) for agentic development practice, measured each iteration, with cross-project lessons in `devloop/LEARNINGS.md`. (D-42)
+
+## 2026-11-22 · Iteration 0 · Baseline round
+
+- **Observation.** Nine browser sessions at once pushed the load average to 110-137 on 20 cores; 6 of 9 sessions froze and the evidence about performance became ambiguous. **Change.** At most 4 browser sessions at once per machine (D-44); QA reproduces any freeze alone before it is filed.
+- **Observation.** Customers shared one scratch folder; one overwrote another's helper script and commands hit the wrong browser. **Change.** Each customer gets its own scratch folder and port, named in its brief.
+- **Observation.** A restarted driver lost the game (new guest id) and overwrote screenshots; phone screenshots were at 2x, so tap coordinates were off by half. **Change.** Kit: persistent browser profile per persona, screenshot numbering continues, screenshots at CSS scale.
+- **Observation.** Nobody reached the end of a game, and the CEO's next signal (RS-002) was about exactly that. **Change.** Every iteration at least 3 personas must reach an end screen, and the end has its own scenario.
+- **Observation.** The recalibrated panel predicted 6 of 7 RS-001 statements without being told (fidelity 6/7). Calibration worked.
+- **Observation.** Design started while QA reproduced bugs, in parallel: four design workstreams (orders, month, feel, reveal) from one shared brief. Writing a shared brief file kept each agent prompt short and consistent.

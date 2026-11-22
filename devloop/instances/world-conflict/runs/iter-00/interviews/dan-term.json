@@ -1,0 +1,7 @@
+{ "persona": "dan", "variant": "dan-term", "panel_version": "1.1",
+  "pains": ["Opaque numbers: I cannot see why a value moved", "Fake depth, one repeated move wins", "Orders refused with no rule shown", "Nothing to optimise once the country is at peace", "Orders that exist on the map but not in the menus or the reverse"],
+  "points": {"C1": 22, "C2": 6, "C3": 4, "C4": 4, "C5": 14, "C6": 2, "C7": 8, "C8": 0, "C9": 22, "C10": 4, "C11": 8, "C12": 0},
+  "cut": ["C8", "C12"],
+  "objections": ["Any sign the AI cheats or that one move dominates", "No way to audit why a score changed", "Shallow systems that stop mattering after year one", "Friends who play Paradox games would want a tooltip on every number"],
+  "quit_moment": "In a Paradox-style game I quit when I find the exploit loop (for example spamming one action) and the rest of the systems stop mattering, usually around hour 6.",
+  "verbatim": "Show me the rule behind every number and give me a reason to keep playing at peace, and I will give you my evenings." }

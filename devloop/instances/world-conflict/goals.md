@@ -17,6 +17,7 @@ Derived from the CEO playtest (RS-001) and confirmed or refined by the panel int
 | G7 | **A game, not a dashboard** | Art-directed, tactile, reactive UI: order cards, capital as a visible resource, motion and feedback on every action, consistent grid and alignment; Sam scores visual and feels-like-a-game >= 7. | RS-001 |
 | G8 | **A wide audience** | Non-gamers (Ruth, Marcus) and teens (Noah) finish a first session without help; quick (Flashpoint) and long (Term/Legacy) sessions both score recommend >= 6 with the personas who prefer them; legible at 125% zoom and on a tablet. | CEO brief 2026-11-21 |
 | G9 | **Learn and test real history** | After a session the player can see what really happened versus their outcome, and replay with a different choice to compare. | CEO brief 2026-11-21 |
+| G10 | **The reveal: an end of game worth waiting for** | A staged, illustrated end sequence: verdict and grade, achievements unlocked, what went well and badly, how the leadership was perceived (public, allies, rivals, history), a timeline of key moments with timing, measured stats (approval, economy, stability, tension, wars, lives, deals) with charts, "what really happened" side by side, a comparable score with a ranking against past runs and other leaders (local leaderboard; per-seat best), and a clear "beat this next time" hook. Personas say they look forward to the end. | CEO RS-002 |
 
 ## Track B: best agentic development practices
 

@@ -1,0 +1,7 @@
+{ "persona": "maya", "variant": "maya-phone", "panel_version": "1.1",
+  "pains": ["I never know what I am supposed to do next or what the goal is", "Repeated cards or messages make me quit", "Screens full of tiny buttons", "Being told not enough X without knowing what X is", "Sessions that run longer than a commute"],
+  "points": {"C1": 15, "C2": 5, "C3": 25, "C4": 15, "C5": 0, "C6": 10, "C7": 5, "C8": 5, "C9": 0, "C10": 2, "C11": 15, "C12": 3},
+  "cut": ["C9", "C5"],
+  "objections": ["If it looks like a spreadsheet I will not recommend it", "My friends will not read a manual either", "Needs to be playable one-handed on a phone"],
+  "quit_moment": "Quit a similar game when the same crisis card showed up twice in a row and I had no idea what my approval number meant.",
+  "verbatim": "Just tell me what my move is and whether I am winning, and let me be done by my stop." }

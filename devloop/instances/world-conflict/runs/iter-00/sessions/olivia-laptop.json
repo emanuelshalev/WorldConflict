@@ -1,0 +1,37 @@
+{
+ "persona":"olivia","variant":"olivia-laptop","panel_version":"1.1","build":"b271008","iteration":0,"minutes_played":6,
+ "scenarios":[
+  {"id":"O1","outcome":"partial","turns":1,"steps":["Opened title, saw globe, pressed the big Take office as Saudi Arabia button","Hit a mission wall of text on a dark overlay, pressed Take office","Desk screen: picked the staff-picked Back channel card, pressed Execute month","Saw the What happened page with a Yemen reaction and meters moving","Month 2: pressed Approve 4 suggestions then Execute month, the tab froze"],"notes":"First satisfying reaction came at roughly 2 minutes, then the second Execute froze the page."},
+  {"id":"O2","outcome":"abandoned","turns":1,"steps":["Chose the peace-minded Back channel via Muscat crisis response"],"notes":"Never got to see peace happen: Yemen's view of me went from -100 to -90 only; then the tab froze."}
+ ],
+ "friction":[
+  {"where":"Mission intro overlay","expected":"Start playing","happened":"Full paragraph of text, the sentence 'You are the Crown Prince and Prime Minister' appears twice (italic and mission box)","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-00/shots/olivia-laptop/002-after-start.png"},
+  {"where":"Desk first screen","expected":"One obvious thing to tap","happened":"Three panes, 6 sidebar groups, meetings, capital dots, orders, a tip banner; looks like work software","kind":"dashboard-feel","screenshot":"devloop/instances/world-conflict/runs/iter-00/shots/olivia-laptop/003-desk1.png"},
+  {"where":"Desk, Execute vs Approve","expected":"Clear which button advances the month","happened":"Two buttons, Approve 4 suggestions and Execute month, unclear if Execute alone is enough","kind":"hesitation","screenshot":"devloop/instances/world-conflict/runs/iter-00/shots/olivia-laptop/003-desk1.png"},
+  {"where":"Debrief page tabs","expected":"Tapping the Diplomacy tab goes to page 2","happened":"Tab did not respond to my click on the first try; only the bottom button worked","kind":"retry","screenshot":"devloop/instances/world-conflict/runs/iter-00/shots/olivia-laptop/006-deb4.png"},
+  {"where":"Month-2 desk","expected":"Result of my Sanctions on Iran vote","happened":"Approve then Execute month made the page freeze for good","kind":"blocked","screenshot":"devloop/instances/world-conflict/runs/iter-00/shots/olivia-laptop/012-m2-approved.png"}
+ ],
+ "bugs":[
+  {"title":"Page freezes completely after Execute month on month 2","steps":["Start Saudi Flashpoint","Month 1: Execute with Back channel","Debrief pages, To your desk","Approve 4 suggestions","Execute month"],"expected":"Month 2 debrief","actual":"Tab unresponsive for 2+ minutes; screenshots, goto and reload all time out; no page errors logged","severity":"S1","screenshot":"devloop/instances/world-conflict/runs/iter-00/shots/olivia-laptop/012-m2-approved.png"},
+  {"title":"Debrief tab 'Diplomacy' ignored a click","steps":["After Execute, click the Diplomacy tab at the top"],"expected":"Opens page 2","actual":"Stayed on page 1 (the label matcher may have hit another element)","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-00/shots/olivia-laptop/006-deb4.png"},
+  {"title":"Mission intro repeats the same sentence twice","steps":["Start any Flashpoint"],"expected":"Say it once","actual":"'You are the Crown Prince and Prime Minister' in italic intro and in mission card","severity":"S4","screenshot":"devloop/instances/world-conflict/runs/iter-00/shots/olivia-laptop/002-after-start.png"}
+ ],
+ "suggestions":[
+  {"what":"Cut the mission intro to one line and one Go button; show the goal as an icon strip","goal_served":"Have fun within two minutes, no wall of text"},
+  {"what":"On first month show one highlighted card and one big Do it button; hide meetings, capital dots and the sidebar until needed","goal_served":"Never feel stupid or blocked"},
+  {"what":"Make the result of a choice bigger and quicker, with the world map reacting, before any numbers","goal_served":"See something satisfying happen because of a choice"}
+ ],
+ "delight":["Title globe with a pulsing pin and 'Pick a fire' looked like a real game","The Back channel result page with a character quote and a green bar going up (004-exec1.png)","The newspaper front page in the chronicle (008-deb-p4.png)"],
+ "scores":{
+  "fun":{"value":4,"reason":"One nice payoff, then nothing more because the game froze."},
+  "clarity":{"value":4,"reason":"Cards were readable but the desk had too many panes, buttons and tiny grey labels."},
+  "visual":{"value":8,"reason":"Title globe, illustrated crisis cards and newspaper look crafted."},
+  "feels_like_a_game":{"value":5,"reason":"Title and result look like a game, the desk looks like work software."},
+  "agency":{"value":4,"reason":"I could pick, but the staff pre-filled everything and the final freeze left me stuck with no explanation."},
+  "realism":{"value":6,"reason":"Real leader names and headlines felt believable; I did not dig."},
+  "replay":{"value":3,"reason":"I would not reopen a game that hung."},
+  "recommend":{"value":3,"reason":"Pretty, but it froze in month 2 and the desk screen is too heavy for a friend who just wants a quick game."}
+ },
+ "quit_point":"Month 2: pressed Execute month after Approve 4 suggestions and the tab froze (about 5 minutes in); before that, the mission text wall and dense desk had already used up my first confusion.",
+ "verbatim":"It looked great on the first screen and then I got a desk full of tiny labels, and when I pressed the big orange button the second time it just froze. Closed."
+}

@@ -1,0 +1,50 @@
+{
+ "persona": "marcus", "variant": "marcus-term", "panel_version": "1.1", "build": "b271008", "iteration": 0,
+ "minutes_played": 60,
+ "scenarios": [
+  {"id": "K1", "outcome": "partial", "turns": 19,
+   "steps": ["Title: picked One Term (label click failed, tapped by coordinates), 2026 era, Ukraine from the globe",
+             "Run A: followed every staff pick for 9 months (Gaza vote yes in month 1)",
+             "Run B: new game, same nation; first crisis was different (Hostages in Belarus), took the non-staff option; Gaza vote came in month 2 and I voted No, the opposite of A",
+             "Compared Israel/Egypt/Saudi reactions to the same vote: clear and plausible",
+             "Ran B on staff defaults to month 10 and compared stats with A at the same date"],
+   "notes": "The two runs cannot be a clean A/B: crisis order and content differ between games, no seed or replay control. The single like-for-like pair (the Gaza vote) was explained well. A at Aug 2027: approval 45, stability 33, score 81, GDP -14.8%. B at Aug 2027: approval 61, stability 51, score 85. I cannot tell which of my choices caused the gap."},
+  {"id": "K2", "outcome": "abandoned", "turns": 0, "steps": ["Not played: 1990 Legacy belongs to the other variant"], "notes": "n/a for this variant"}
+ ],
+ "friction": [
+  {"where": "Title, mode tabs", "expected": "Click One Term by its label", "happened": "Label click did not register in the driver; coordinate tap worked", "kind": "retry", "screenshot": "devloop/instances/world-conflict/runs/iter-00/shots/marcus-term/002-term.png"},
+  {"where": "Title, nation list on 1366x768", "expected": "See the list of nations", "happened": "Only one row of the list is visible in a tiny window; I used the globe instead", "kind": "hesitation", "screenshot": "devloop/instances/world-conflict/runs/iter-00/shots/marcus-term/004-term3.png"},
+  {"where": "New game from the same nation", "expected": "Same opening so I can compare choices", "happened": "A different first crisis; no seed, no restart-from-month, no replay", "kind": "other", "screenshot": "devloop/instances/world-conflict/runs/iter-00/shots/marcus-term/050-B1.png"},
+  {"where": "Debrief card for a crisis", "expected": "Approval change equals the headline change", "happened": "Card says approval 59 to 57 while the month tile says -5.3; the rest of the drop is not explained there", "kind": "misread", "screenshot": "devloop/instances/world-conflict/runs/iter-00/shots/marcus-term/051-B1-a.png"},
+  {"where": "Debrief, UN vote scene", "expected": "Vote tally to follow my choice", "happened": "Scene tally (YES 10 NO 6) is identical whether I voted yes or no", "kind": "other", "screenshot": "devloop/instances/world-conflict/runs/iter-00/shots/marcus-term/057-B2r.png"},
+  {"where": "Debrief navigation", "expected": "Obvious way back to the desk", "happened": "Four pages, the newspaper is a modal I had to scroll to the bottom to close", "kind": "hesitation", "screenshot": "devloop/instances/world-conflict/runs/iter-00/shots/marcus-term/016-m1f.png"},
+  {"where": "Desk, monthly Putin call and Reform program", "expected": "Different business each month", "happened": "Same staff suggestions repeat (Reform program, ceasefire call) every month; I just approve all", "kind": "dashboard-feel", "screenshot": "devloop/instances/world-conflict/runs/iter-00/shots/marcus-term/060-B4-desk.png"},
+  {"where": "Month result, war line", "expected": "Front position and what it means", "happened": "'The front moves 1 against you' with no scale or map", "kind": "misread", "screenshot": "devloop/instances/world-conflict/runs/iter-00/shots/marcus-term/071-B9-a.png"},
+  {"where": "Whole game", "expected": "Responsive screens", "happened": "Several taps timed out and one screen froze for minutes (machine was heavily loaded, so possibly not the game)", "kind": "other"}
+ ],
+ "bugs": [
+  {"title": "Lowercase 'gaza' and clumsy headline in the paper", "steps": ["Vote yes on Gaza UN vote", "Open The paper"], "expected": "On Gaza: the UN vote", "actual": "'On gaza: the UN vote, President Zelensky decided: Vote yes.' and headline 'Zelensky on Gaza: the UN vote: Vote yes'", "severity": "S4", "screenshot": "devloop/instances/world-conflict/runs/iter-00/shots/marcus-term/014-m1d.png"},
+  {"title": "Crisis titles spliced into headlines read badly", "steps": ["Pick Call for national unity after the assassination attempt"], "expected": "Readable headline", "actual": "'Zelensky on You survived an assassination attempt: Call for national unity'", "severity": "S4", "screenshot": "devloop/instances/world-conflict/runs/iter-00/shots/marcus-term/071-B9-a.png"},
+  {"title": "Same tank picture for every war in the paper, with the wrong flag motif", "steps": ["Open The paper"], "expected": "Scene matches the theatre", "actual": "One desert tank image recoloured per country, for Ukraine and Yemen alike", "severity": "S4", "screenshot": "devloop/instances/world-conflict/runs/iter-00/shots/marcus-term/015-m1e.png"}
+ ],
+ "suggestions": [
+  {"what": "Restart this exact scenario with the same seed, or rewind to any month, and show a side-by-side of two runs", "goal_served": "replay with a different choice and compare"},
+  {"what": "After each crisis choice, list the three or four biggest causes of the month's change in each number (the tile and the card disagree today)", "goal_served": "cause and effect in plain terms"},
+  {"what": "Show the front line / war status of my own war as a plain gauge with a legend and a trend", "goal_served": "plausibility check of the war"},
+  {"what": "Make the nation list on the title screen scrollable with a visible window on small laptops", "goal_served": "clarity"},
+  {"what": "Vary the staff's monthly suggestions and explain why each one is made", "goal_served": "agency"}
+ ],
+ "delight": ["Reaction panel after a crisis (Israel 10 to 6, Egypt and Saudi +3) with the opposite vote giving the opposite signs: exactly the cause and effect I wanted (devloop/instances/world-conflict/runs/iter-00/shots/marcus-term/009-m1.png vs devloop/instances/world-conflict/runs/iter-00/shots/marcus-term/057-B2r.png)", "Real recent events (the embezzlement scandal around the inner circle, the Hormuz war, an actual Gaza vote) make the 2026 world feel current", "Choices list the consequences with arrows before I commit"],
+ "scores": {
+  "fun": {"value": 6, "reason": "The decisions are interesting and the news is current, but after a few months I was approving staff defaults."},
+  "clarity": {"value": 7, "reason": "Desk layout reads like a briefing; the per-choice consequences are visible. Docked for tile versus card number mismatch and the cryptic front line."},
+  "visual": {"value": 7, "reason": "Illustrated scenes are good, a few repeat; I mostly ignored decoration, as expected."},
+  "feels_like_a_game": {"value": 6, "reason": "Reads more like a managed briefing than a game, which suits me."},
+  "agency": {"value": 6, "reason": "I always knew what to do, but the staff defaults make the best move too easy and my choices matter less than the drift (A lost 19 score points in 9 months doing everything the staff said)."},
+  "realism": {"value": 6, "reason": "Reactions to the Gaza vote are plausible; Putin repeatedly taking the call about talks every month and a GDP of -15% with approval 45 felt gamey. Not tested on 1960 or 1990."},
+  "replay": {"value": 4, "reason": "No seed, no rewind, different openings each game, so I cannot test a what-if cleanly. That is my main use."},
+  "recommend": {"value": 6, "reason": "I would show it to my Diplomacy group for the reaction panels, but I would warn them that what-if replay is not there yet."}
+ },
+ "quit_point": null,
+ "verbatim": "The month-end reactions tell me why things happened, which is rare; but let me rewind and rerun the same month, or it is a toy for what-ifs."
+}

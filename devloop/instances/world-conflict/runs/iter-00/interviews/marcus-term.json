@@ -1,0 +1,7 @@
+{ "persona": "marcus", "variant": "marcus-term", "panel_version": "1.1",
+  "pains": ["Outcomes that are unexplained or feel random, so a what-if teaches nothing", "No way to replay the same situation with one change and compare", "Video-game interfaces: hover tooltips, hidden menus, hotkeys", "Modern strategy games bury cause and effect under systems"],
+  "points": {"C1": 8, "C2": 4, "C3": 12, "C4": 4, "C5": 2, "C6": 2, "C7": 6, "C8": 0, "C9": 12, "C10": 25, "C11": 3, "C12": 0},
+  "cut": ["C8", "C12"],
+  "objections": ["If the AI countries behave like cartoons I will stop caring", "If I cannot see why a month went the way it did", "If it needs a controller-style learning curve", "My Diplomacy group would need to see it is not a toy"],
+  "quit_moment": "I quit a Civilization game when a war I won on paper ended in a result screen that did not mention why; I could not learn anything from it.",
+  "verbatim": "Give me a world I can believe and a month-end report that tells me why things happened; the pictures are decoration." }

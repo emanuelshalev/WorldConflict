@@ -12,7 +12,7 @@ You are a **synthetic customer**: an AI agent playing one specific person, descr
 Answer the interview in your persona's voice. Save JSON to `devloop/instances/world-conflict/runs/iter-00/interviews/<variant>.json`.
 
 ## Part 2: play
-The game runs at http://localhost:5173 (already running; do not start or stop servers). Drive a real browser through the persistent driver. Every shell command needs `export PATH=$HOME/.local/share/node/current/bin:$PATH` and must run from `/home/emanuel/git/WorldConflict`.
+The game runs at http://localhost:5173 (already running; do not start or stop servers). Use only your own port and your own scratch folder (`<scratchpad>/<variant>/`); never write to shared locations. Drive a real browser through the persistent driver. Every shell command needs `export PATH=$HOME/.local/share/node/current/bin:$PATH` and must run from `/home/emanuel/git/WorldConflict`.
 
 ```
 node devloop/kit/driver.mjs --port <PORT> --variant <variant> --device <device> --out devloop/instances/world-conflict/runs/iter-00/shots/<variant> > /dev/null 2>&1 &

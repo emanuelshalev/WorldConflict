@@ -1,0 +1,7 @@
+{ "persona": "sam", "variant": "sam-desktop", "panel_version": "1.1",
+  "pains": ["Games that look like AI-generated dashboards: text cards, pill buttons, no art direction", "Inconsistent vocabulary for the same resource", "Two paths to the same action that behave differently", "No feedback (hover, press, motion, sound) when I act", "Misaligned rows and sloppy spacing"],
+  "points": {"C1": 5, "C2": 5, "C3": 5, "C4": 3, "C5": 15, "C6": 30, "C7": 15, "C8": 7, "C9": 0, "C10": 5, "C11": 5, "C12": 5},
+  "cut": ["C9", "C12"],
+  "objections": ["If it looks like a dashboard of cards and pill buttons I will not recommend it to anyone", "Desk and map doing the same thing differently", "Several names for one resource", "My studio friends will check for craft and for AI-slop signals within a minute; they need to see real art direction and sound"],
+  "quit_moment": "Quit a Suzerain-like indie sim clone after about five minutes when every screen was the same grey card list and buttons gave no feedback.",
+  "verbatim": "Show me one screen with real art direction and one button that feels good to press, and I will give you the rest of the five minutes." }

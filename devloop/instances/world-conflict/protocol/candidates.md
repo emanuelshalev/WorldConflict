@@ -16,3 +16,4 @@ Phrased as player-facing outcomes, not implementation. Spread 100 points; cut th
 | C10 | More accurate real-world content and richer debriefs about what really happened. |
 | C11 | A shorter, faster month: fewer screens between my decision and the result. |
 | C12 | A better share card and replay highlights to post. |
+| C13 | The end of a game is a big reveal: achievements, what went right and wrong, how I was seen, my stats, and a ranking I want to beat next time. |
