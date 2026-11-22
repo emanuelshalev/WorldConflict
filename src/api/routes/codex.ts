@@ -24,13 +24,20 @@ function pad(n: number): string {
  * the codex entries valid at the game's start month with era overrides applied, and the
  * situation briefings for the flashpoint and the scenario. Static content, so it is cached by
  * content hash (`ETag`, `If-None-Match` → 304) for a day.
+ *
+ * Outside production (`watchData`, default `NODE_ENV !== "production"`) every request compares a
+ * stamp of the data files (`DataLoader.codexStamp`) and drops the caches when a file changed,
+ * and the browser is told to revalidate (`no-cache`) instead of keeping the payload for a day:
+ * a running dev server never serves a codex older than the data on disk (B-21).
  */
 export async function codexRoutes(
   fastify: FastifyInstance,
-  opts: { loader?: DataLoader } = {},
+  opts: { loader?: DataLoader; watchData?: boolean } = {},
 ): Promise<void> {
   const loader = opts.loader ?? createDataLoader();
+  const watchData = opts.watchData ?? process.env.NODE_ENV !== "production";
   const payloads = new Map<string, { body: CodexPayload & { success: true }; etag: string }>();
+  let stamp = watchData ? loader.codexStamp() : "";
 
   fastify.get("/codex", async (request: FastifyRequest, reply: FastifyReply) => {
     const parsed = QuerySchema.safeParse(request.query);
@@ -38,6 +45,14 @@ export async function codexRoutes(
       return reply.status(400).send({ success: false, error: "Bad scenario or flashpoint id" });
     }
     const { scenario, flashpoint } = parsed.data;
+    if (watchData) {
+      const now = loader.codexStamp();
+      if (now !== stamp) {
+        stamp = now;
+        payloads.clear();
+        loader.clearCache();
+      }
+    }
     const key = `${scenario ?? ""}|${flashpoint ?? ""}`;
     let cached = payloads.get(key);
     if (!cached) {
@@ -62,7 +77,7 @@ export async function codexRoutes(
       payloads.set(key, cached);
     }
     reply.header("ETag", cached.etag);
-    reply.header("Cache-Control", "public, max-age=86400");
+    reply.header("Cache-Control", watchData ? "no-cache" : "public, max-age=86400");
     if (request.headers["if-none-match"] === cached.etag) return reply.status(304).send();
     return cached.body;
   });
