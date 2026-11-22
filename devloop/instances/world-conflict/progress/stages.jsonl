@@ -65,3 +65,6 @@
 {"t":"2026-11-22T21:40:35.824Z","iteration":3,"stage":"Verify","kind":"end"}
 {"t":"2026-11-22T21:40:35.824Z","iteration":3,"stage":"Use","kind":"start"}
 {"t":"2026-11-22T21:40:35.824Z","iteration":3,"stage":"Use","kind":"unit-total","units":10}
+{"t":"2026-11-22T22:14:40.705Z","iteration":3,"stage":"Use","kind":"unit-done","units":10,"note":"QA + 9 sessions done"}
+{"t":"2026-11-22T22:14:46.109Z","iteration":3,"stage":"Use","kind":"end"}
+{"t":"2026-11-22T22:14:46.109Z","iteration":3,"stage":"Triage","kind":"start"}
