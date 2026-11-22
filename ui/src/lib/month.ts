@@ -254,7 +254,8 @@ export interface MissionTag {
 export function goalName(c: Pick<ConditionStatus, 'label' | 'short'> | undefined, fallback = ''): string {
   if (!c) return fallback;
   const inner = /\(([^)]+)\)/.exec(c.label)?.[1];
-  if (inner && inner.length <= 26 && /\d/.test(inner)) return inner;
+  // "stability 78%+", "US relations 70+"; a bare "relations 40+" does not say whose, so the label wins
+  if (inner && inner.length <= 26 && /\d/.test(inner) && !/^relations\b/i.test(inner)) return inner;
   return c.short ?? c.label.replace(/\s*[(:].*$/, '');
 }
 

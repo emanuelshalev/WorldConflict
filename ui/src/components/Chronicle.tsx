@@ -8,6 +8,7 @@ import { readAfterMonth } from '../lib/afterMonth';
 import { bigMomentFor } from '../lib/moments';
 import { BigMoment } from './BigMoment';
 import { useCoach } from '../lib/coach';
+import '../scenes/result.css';
 import { SceneFrame } from '../scenes/SceneFrame';
 import { sceneForAction, sceneForCrisis, sceneForNews } from '../scenes/kinds';
 
@@ -182,6 +183,12 @@ export function Chronicle() {
   );
   return (
     <div ref={ref} className="overlay" onClick={close} role="dialog" aria-modal="true" aria-label="Monthly report">
+      <button type="button" className="wc-btn primary paper-next" onClick={(e) => {
+          e.stopPropagation();
+          close();
+        }}>
+        {gameOver ? 'See your verdict' : 'Next month'} ▸
+      </button>
       <article className="paper" onClick={(e) => e.stopPropagation()}>
         <div className="masthead">
           <h2>The World Chronicle</h2>

@@ -85,9 +85,7 @@ export function Hud() {
         {flag(me.id)}
       </div>
       <div className="hud-who">
-        <b>
-          {me.leader.title} {me.leader.name}
-        </b>
+        <b title={`${me.leader.title} ${me.leader.name}`}>{me.leader.name}</b>
         <span>
           {me.name} · <span className="num">{monthLabel(world.date)}</span> · Month{' '}
           <span className="num">

@@ -36,8 +36,9 @@ export function metricWord(c: ConditionStatus): string {
   if (c.unit === 'front') return 'front';
   if (c.unit === 'score') return 'score';
   if (c.unit === 'view') {
-    const who = inner.replace(/[\d+%]+.*$/, '').trim();
-    return who || 'their view of you';
+    const who = inner.replace(/[\d+%-]+.*$/, '').trim();
+    // "US relations 70+" names the country; a bare "relations 61+" leaves it to the label
+    return who && who.toLowerCase() !== 'relations' ? who : `${c.short ?? 'their view of you'}:`;
   }
   return c.short ?? c.label;
 }

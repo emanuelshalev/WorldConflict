@@ -148,7 +148,7 @@ export function ResultCard({ report, world, home, onNext, onEverything, onPaper,
           {mm && mm.c.now !== undefined && (
             <button type="button" className="rc-mission" onClick={() => useGameStore.getState().setDrawer('objective')}>
               <span>
-                Mission{['front', 'score'].includes(metricWord(mm.c)) || mm.c.unit === 'view' ? ` (${mm.c.short ?? ''})` : ''}: <b>{metricWord(mm.c)} {r1(mm.before)} → {r1(mm.c.now)}{u(mm.c)}</b>
+                Mission{['front', 'score'].includes(metricWord(mm.c)) ? ` (${mm.c.short ?? ''})` : ''}: <b>{metricWord(mm.c)} {r1(mm.before)} → {r1(mm.c.now)}{u(mm.c)}</b>
                 {mm.c.need !== undefined ? `, needs ${r1(mm.c.need)}${u(mm.c)}.` : '.'}
               </span>
               <Segments status={status} size="lg" />
