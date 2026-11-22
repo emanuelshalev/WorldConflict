@@ -10,7 +10,14 @@
     "https://www.euronews.com/2025/12/20/the-eu-plans-to-raise-90-billion-in-joint-debt-for-ukraine-heres-how",
     "https://ukranews.com/en/news/1183407-zelenskyy-proposes-rada-extend-martial-law-and-mobilization-until-january-29-2027",
     "https://www.al-monitor.com/originals/2026/11/us-attempts-new-peace-push-first-russia-ukraine-talks-nine-months",
-    "https://saudigazette.com.sa/article/666189/world/abu-dhabi-talks-end-with-russia-ukraine-deal-on-prisoner-swap"
+    "https://saudigazette.com.sa/article/666189/world/abu-dhabi-talks-end-with-russia-ukraine-deal-on-prisoner-swap",
+    "https://www.aljazeera.com/news/2026/11/20/kushner-says-russia-ok-with-nato-like-security-pact-for-ukraine-is-it",
+    "https://www.cfr.org/articles/what-the-abu-dhabi-talks-did-and-didnt-achieve",
+    "https://aljazeera.com/news/2026/11/20/ukraine-strikes-kerch-bridge-as-putin-ally-declares-no-one-needs",
+    "https://en.wikipedia.org/wiki/Coalition_of_the_willing_(Russo-Ukrainian_war)",
+    "https://www.aljazeera.com/news/2025/11/21/trumps-28-point-ukraine-plan-in-full-what-it-means-could-it-work",
+    "https://meduza.io/en/feature/2025/12/24/20-points-to-peace",
+    "https://babel.ua/en/news/123312-iaea-zaporizhzhia-npp-will-need-special-status-in-case-of-signing-of-a-peace-agreement-between-ukraine-and-russia"
   ],
   "scenarioId": "2026",
   "date": "2026-11",
@@ -427,6 +434,44 @@
         }
       },
       {
+        "turn": 3,
+        "requiresWar": ["RUS", "UKR"],
+        "templateId": "ua_article5_like",
+        "headline": "Washington floats an 'Article 5-like' guarantee; Moscow still calls NATO's unacceptable",
+        "text": "Since the coalition of the willing met in Berlin in November, Jared Kushner has told allies that Moscow is 'comfortable' with a post-war guarantee modelled on NATO's Article 5. Putin says Ukraine has a right to security but that NATO membership and the alliance's guarantees are 'unacceptable', and nobody has said whose soldiers would stand behind the words.",
+        "decision": {
+          "title": "A guarantee on paper",
+          "situation": "The Americans want an answer before the next round. Holding out for a treaty ratified by the US Senate is the only guarantee that survives a change of president, and it may never come. Taking the words now and negotiating the teeth later keeps Washington moving. Or ask for something smaller and harder: arms, training and intelligence written into law, the 'porcupine' instead of a promise.",
+          "affectedCountries": ["UKR", "USA", "RUS", "GBR", "FRA", "DEU"],
+          "urgency": "URGENT",
+          "defaultOptionId": "framework",
+          "options": [
+            {"id": "ratified", "label": "Only a ratified treaty", "description": "A guarantee the US Senate votes on, or none. Europe applauds; Washington's envoys sigh.", "effects": {"relations:USA": -4, "relations:GBR": 3, "approval": 5, "legitimacy": 2}, "tensionDelta": 2, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "framework", "label": "Take the words, fight for the teeth", "description": "Accept the Article 5-like language now and negotiate what it means later. The talks move; critics ask what you got.", "effects": {"relations:USA": 6, "relations:RUS": 2, "approval": -4, "legitimacy": -2}, "tensionDelta": -3, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "arsenal", "label": "A guarantee by arsenal", "description": "Codified weapons, training and intelligence commitments instead of a promise of troops. Less than NATO, harder to walk away from.", "effects": {"relations:USA": 3, "relations:GBR": 4, "stability": 2, "approval": -1}, "tensionDelta": 0, "backedBy": ["DEFENSE_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 4,
+        "requiresWar": ["RUS", "UKR"],
+        "templateId": "ua_donbas_for_nato",
+        "headline": "The envoys' trade: the rest of Donetsk for a path into NATO",
+        "text": "Since the Abu Dhabi round of 10-11 November, reports say Washington's envoys have sounded Kyiv out on a bargain: withdraw from the part of Donetsk Russia has failed to take, the fortress belt around Kramatorsk and Sloviansk, in return for a green light on NATO. Moscow rejects any NATO path for Ukraine, and Washington has confirmed nothing in public.",
+        "decision": {
+          "title": "Land for a promise",
+          "situation": "Your generals say the fortress belt is the best defensive line you have left. Your envoys say the Americans will not wait forever. Refuse and keep the land; explore it quietly and risk the Rada and the street if it leaks; or bind any change of borders to a national referendum after a ceasefire, as you have promised before.",
+          "affectedCountries": ["UKR", "USA", "RUS"],
+          "urgency": "EXISTENTIAL",
+          "defaultOptionId": "refuse",
+          "options": [
+            {"id": "refuse", "label": "No withdrawal from free land", "description": "Not one town Russia could not take by force. The army cheers; Washington's patience thins.", "effects": {"relations:USA": -6, "relations:RUS": -4, "approval": 6, "legitimacy": 2}, "tensionDelta": 2, "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "explore", "label": "Explore it quietly", "description": "Let your negotiators test the offer. Washington warms at once; if it leaks, parliament will move against you.", "effects": {"relations:USA": 8, "approval": -8, "legitimacy": -4}, "tensionDelta": -4, "backedBy": ["FOREIGN_MINISTER"], "followUp": {"templateId": "ouster_vote", "delay": 2}},
+            {"id": "referendum", "label": "Only by referendum, after a ceasefire", "description": "Borders change only if Ukrainians vote for it, and only once the guns stop. Principled, slow, and Moscow hates it.", "effects": {"relations:USA": 2, "relations:RUS": -2, "approval": 2, "legitimacy": 3}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]}
+          ]
+        }
+      },
+      {
         "turn": 5,
         "requiresWar": ["RUS", "UKR"],
         "templateId": "ua_manpower",
@@ -460,6 +505,25 @@
             {"id": "accept", "label": "Accept it publicly", "description": "European boots as a guarantee. Moscow's red line, Europe's credibility, your insurance policy.", "effects": {"relations:GBR": 8, "relations:FRA": 8, "relations:RUS": -10, "approval": 6, "relations:USA": -4}, "tensionDelta": 8, "backedBy": ["FOREIGN_MINISTER", "DEFENSE_MINISTER"]},
             {"id": "reserve", "label": "Keep it in the drawer", "description": "Thank them warmly and say nothing binding. Nobody escalates; nobody is reassured.", "effects": {"relations:GBR": -3, "approval": -2}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]},
             {"id": "neutral", "label": "Trade neutrality for the force", "description": "Offer to shelve NATO membership in the treaty if the force is written into the ceasefire. Clever, and nationalists will call it Minsk III.", "effects": {"relations:USA": 8, "relations:RUS": 5, "approval": -7, "legitimacy": -3}, "tensionDelta": -6, "backedBy": ["FOREIGN_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 8,
+        "requiresWar": ["RUS", "UKR"],
+        "templateId": "ua_znpp",
+        "headline": "Who runs the Zaporizhzhia plant after a ceasefire?",
+        "text": "Europe's largest nuclear station, held by Russia since March 2022 and in cold shutdown, sits on the talks' list of territorial issues. Washington's 28-point draft of November 2025 had it restarted under IAEA supervision with its power split 50:50 between Russia and Ukraine; Kyiv's later 20-point answer proposed a joint venture with the United States instead. The IAEA says the plant will need a special status in any deal.",
+        "decision": {
+          "title": "The plant at Enerhodar",
+          "situation": "Engineers warn that restarting the reactors under split control may be impossible in their current state. An American operator under IAEA supervision keeps Washington invested; the 50:50 split is what the Americans first wrote down; refusing any Russian role keeps the principle and leaves your grid short for another winter.",
+          "affectedCountries": ["UKR", "USA", "RUS"],
+          "urgency": "URGENT",
+          "defaultOptionId": "refuse",
+          "options": [
+            {"id": "us_operator", "label": "An American operator, IAEA-supervised", "description": "A joint venture with US firms: Ukrainian plant, American staff, inspectors on site. Moscow calls it occupation by contract.", "effects": {"relations:USA": 6, "relations:RUS": -4, "gdp": 0.2}, "tensionDelta": 0, "backedBy": ["FINANCE_MINISTER"]},
+            {"id": "split", "label": "Accept the 50:50 split", "description": "Power for both sides under IAEA supervision. The lights come back sooner; so do the accusations of selling out.", "effects": {"relations:USA": 4, "relations:RUS": 4, "approval": -6, "legitimacy": -2}, "tensionDelta": -3, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "refuse", "label": "Ukrainian plant, Ukrainian control", "description": "No Russian role, no shared output. The principle holds; the energy gap stays open into next winter.", "effects": {"relations:USA": -3, "relations:RUS": -4, "approval": 4}, "tensionDelta": 2, "backedBy": ["DEFENSE_MINISTER"], "followUp": {"templateId": "energy_shock", "delay": 1}}
           ]
         }
       },
@@ -615,6 +679,25 @@
         }
       },
       {
+        "turn": 3,
+        "requiresWar": ["RUS", "UKR"],
+        "templateId": "us_article5_like",
+        "headline": "An 'Article 5-like' guarantee: who signs it?",
+        "text": "In Berlin in November Jared Kushner told the coalition of the willing that Moscow could live with an Article 5-style guarantee for post-war Ukraine, provided it serves American interests and sits in a broader package. Putin still calls NATO's own guarantees 'unacceptable'. Since January a Democratic Senate has had its own view of any commitment it did not vote on.",
+        "decision": {
+          "title": "The guarantee",
+          "situation": "Kyiv and the Europeans want a guarantee that outlives your term, which means a treaty the Senate ratifies. A presidential letter is quicker and binds no successor. Or let Europe guarantee and back it from offshore, which costs less and reassures less.",
+          "affectedCountries": ["USA", "UKR", "RUS", "DEU", "GBR", "FRA"],
+          "urgency": "URGENT",
+          "defaultOptionId": "letter",
+          "options": [
+            {"id": "treaty", "label": "Send a treaty to the Senate", "description": "Two-thirds of the Senate, a real commitment and a real fight. Kyiv and Europe believe you; Moscow does not like it.", "effects": {"relations:UKR": 8, "relationsAllies": 3, "relations:RUS": -6, "approval": -2, "pc": -1}, "tensionDelta": 2, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "letter", "label": "A presidential letter, not a treaty", "description": "Words from the Oval Office, no vote, no successor bound. Moscow shrugs; Kyiv files it next to the Budapest Memorandum.", "effects": {"relations:UKR": 3, "relations:RUS": 2, "relations:DEU": -2, "approval": 1}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "offshore", "label": "Europe guarantees, America backs it from offshore", "description": "European troops, American intelligence and air power over the horizon. Cheaper for you, thinner for Kyiv.", "effects": {"relations:DEU": 4, "relations:GBR": 3, "relations:UKR": -2, "approval": 3}, "tensionDelta": 0, "backedBy": ["DEFENSE_MINISTER"]}
+          ]
+        }
+      },
+      {
         "turn": 5,
         "templateId": "us_article4",
         "headline": "Russian drones over Poland; Warsaw invokes Article 4",
@@ -647,6 +730,25 @@
             {"id": "backstop", "label": "Give the backstop", "description": "Air cover and intelligence if Russia breaks the ceasefire. The deal lives; so does a new commitment.", "effects": {"relations:UKR": 10, "relations:RUS": -10, "relationsAllies": 4, "approval": -3}, "tensionDelta": 4, "backedBy": ["FOREIGN_MINISTER", "DEFENSE_MINISTER"]},
             {"id": "refuse", "label": "No American guarantee", "description": "Europe's war, Europe's guarantee. Kyiv balks and Europe fumes.", "effects": {"relations:UKR": -10, "relations:RUS": 6, "relationsAllies": -3, "approval": 2}, "tensionDelta": 2, "backedBy": ["CHIEF_OF_STAFF"]},
             {"id": "minerals", "label": "Contractors, not troops", "description": "A minerals partnership with US firms in the east: a tripwire with a profit margin.", "effects": {"relations:UKR": 6, "relations:RUS": -3, "gdp": 0.2, "approval": 2}, "tensionDelta": 0, "backedBy": ["FINANCE_MINISTER"]}
+          ]
+        }
+      },
+      {
+        "turn": 8,
+        "requiresWar": ["RUS", "UKR"],
+        "templateId": "us_europe_seat",
+        "headline": "Moscow widens the table to Europe's security order",
+        "text": "Since Abu Dhabi, Russian negotiators have tied any ceasefire to talks on NATO's posture in Europe. Medvedev wrote in November that 'no-one needs Europe', and Kushner has asked the Europeans to name a single negotiator. Berlin and Paris want a chair at the table; Moscow wants Europe on the menu.",
+        "decision": {
+          "title": "Europe's chair",
+          "situation": "Giving Europe a seat makes the deal theirs as well as yours and slows everything down. Insisting on Ukraine first and Europe's architecture after is the line the allies prefer. Or settle the big questions with Moscow directly and present the result: fast, popular at home, and a wound in the alliance that will not close quickly.",
+          "affectedCountries": ["USA", "RUS", "UKR", "DEU", "FRA", "GBR"],
+          "urgency": "URGENT",
+          "defaultOptionId": "sequence",
+          "options": [
+            {"id": "seat", "label": "Give Europe its chair", "description": "One European negotiator in every room. The allies are grateful; Moscow digs in.", "effects": {"relations:DEU": 8, "relations:FRA": 6, "relations:RUS": -4, "approval": -1}, "tensionDelta": 0, "backedBy": ["FOREIGN_MINISTER"]},
+            {"id": "sequence", "label": "Ukraine first, Europe after", "description": "A ceasefire framework now, talks on Europe's security order once the guns stop. Everyone grumbles a little.", "effects": {"relations:UKR": 4, "relations:DEU": 3, "relations:RUS": -2}, "tensionDelta": 0, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "bilateral", "label": "Settle it with Moscow over Europe's head", "description": "A great-power bargain, announced from Washington. Fast and popular at home; Europe will remember it.", "effects": {"relations:RUS": 8, "relations:DEU": -10, "relationsAllies": -4, "approval": 3}, "tensionDelta": -4, "backedBy": ["DOMESTIC_ADVISOR"]}
           ]
         }
       },
