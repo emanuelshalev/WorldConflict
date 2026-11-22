@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useExecute } from '../../lib/useExecute';
-import { IconAlertTriangle, IconCheck, IconChecks, IconChevronDown, IconChevronUp, IconLayoutDashboard, IconPlus, IconSend, IconX } from '@tabler/icons-react';
+import { IconAlertTriangle, IconCheck, IconChevronDown, IconChevronUp, IconLayoutDashboard, IconPlus, IconSend, IconX } from '@tabler/icons-react';
 import { MEETING_SLOTS, type PendingAction, useGameStore } from '../../store/gameStore';
 import { flag } from '../../lib/format';
 import { pcCost } from '../../lib/actions';
 import { budgetShare, budgetStatus, money } from '../../lib/budget';
-import { approveAll, crisisSelection, pcIncome, pendingApprovals, planSummary, proposalEffects } from '../../lib/month';
+import { crisisSelection, pcIncome, planSummary, proposalEffects } from '../../lib/month';
+import { StaffPicks } from './StaffPicks';
+import { useStaffPicks } from '../../lib/useStaffPicks';
 import { approveProposal } from '../../store/gameStore';
 import { TERMS, term } from '../../lib/glossary';
 import { ActionIcon } from '../../scenes/icons';
@@ -259,24 +261,6 @@ export function Readiness() {
   );
 }
 
-export function ApproveButton({ compact = false }: { compact?: boolean }) {
-  useGameStore((s) => s.decisionChoices);
-  useGameStore((s) => s.reviewed);
-  useGameStore((s) => s.pendingActions);
-  const { crises, orders, meetings, deputies } = pendingApprovals();
-  const n = crises.length + orders.length + meetings.length + (deputies.length && !meetings.length && !crises.length && !orders.length ? deputies.length : 0);
-  if (n === 0) return null;
-  const against = planSummary().against.filter((x) => x.kind === 'crisis').length;
-  const label = compact ? term(TERMS.approveAll.compact, n) : term(TERMS.approveAll.name, n);
-  return (
-    <button type="button" className="wc-btn approve" onClick={approveAll} title="Confirm the cabinet's crisis picks, approve the staff's proposed orders (this spends their political capital) and attend the suggested meetings (Shift+A)">
-      <IconChecks size={16} aria-hidden /> {label}
-      {against > 0 && <span className="approve-against"> ({against} against your mission)</span>}
-      {!compact && <kbd>Shift+A</kbd>}
-    </button>
-  );
-}
-
 /** The meter an Execute-blocked reason is about. */
 const reasonTarget = (r: string) => (/capital/i.test(r) ? 'capital' : /defense/i.test(r) ? 'defense' : /meeting/i.test(r) ? 'meetings' : 'orders');
 
@@ -343,7 +327,7 @@ export function CommandRail({ catalogTarget, simple = false }: { catalogTarget: 
         )}
       </div>
       <div className="rail-foot">
-        {!simple && <ApproveButton />}
+        {!simple && <StaffPicks variant="rail" />}
         {ex.reason && (
           <button type="button" className="hint over" role="alert" onClick={() => pointTo(reasonTarget(ex.reason ?? ''))}>
             <IconAlertTriangle size={13} aria-hidden /> {ex.reason}
@@ -385,7 +369,7 @@ export function CommandBar({ catalogTarget, simple = false }: { catalogTarget: s
               </>
             )}
             <Readiness />
-            <ApproveButton />
+            <StaffPicks variant="sheet" onNavigate={() => setSheet(false)} />
           </div>
         )}
         {ex.reason && (
@@ -423,10 +407,13 @@ export function CommandStrip() {
   // The advisors get their own full-width row (QA S2-1), collapsed by default so the globe keeps
   // its room (QA AC3); the toggle opens it
   const [tray, setTray] = useState(false);
+  const picks = useStaffPicks();
   if (!world || !b) return null;
   const cabinet = decisions.filter((d) => !reviewed[d.id]).length;
+  // RS-005: the staff picks sit next to their Approve button, or only the disabled button when none wait
+  const hasPicks = picks.items.length > 0;
   return (
-    <div className={`cmd-strip${tray ? ' tray-open' : ''}`}>
+    <div className={`cmd-strip${tray ? ' tray-open' : ''}${hasPicks ? ' has-picks' : ''}`}>
       <div className="strip-chips">
         <span className={`chip-b seals${b.pc.left < 0 ? ' over' : ''}`} data-point="capital">
           <CapitalSeals left={Math.max(0, b.pc.left)} held={Math.min(b.pc.orders, Math.max(0, b.pc.bank + b.pc.crisis + b.pc.meetings))} proposed={b.proposed.pc} size={18} text={term(TERMS.capital.compact, b.pc.left)} />
@@ -439,6 +426,7 @@ export function CommandStrip() {
           {tray ? <IconChevronDown size={15} aria-hidden /> : <IconChevronUp size={15} aria-hidden />} Your advisors suggest
         </button>
       </div>
+      {hasPicks && <StaffPicks variant="strip" />}
       {tray && (
         <div className="strip-advisors" id="strip-advisors">
           <AdvisorList compact max={2} />
@@ -448,7 +436,7 @@ export function CommandStrip() {
         <button type="button" className="wc-btn" onClick={() => setDeskMode('desk')} title="Back to the desk (M)" data-desk-switch="">
           <IconLayoutDashboard size={16} aria-hidden /> Desk
         </button>
-        <ApproveButton compact />
+        {!hasPicks && <StaffPicks variant="strip" />}
         {ex.reason && (
           <span className="strip-over">
             <IconAlertTriangle size={13} aria-hidden /> {ex.reason}

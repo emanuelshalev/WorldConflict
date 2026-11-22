@@ -100,6 +100,16 @@ export const TERMS = {
     definition: 'What your staff would do. Approve it or choose yourself.',
     banned: [/^\s*Suggested\s*$/, /\bStaff suggests\b/i, /^\s*Staff\s*$/],
   },
+  staffPicks: {
+    id: 'staffPicks',
+    name: 'Staff picks',
+    compact: 'Staff picks',
+    // The first-use line next to every Approve control (RS-005). Truthful: an unreviewed crisis
+    // still runs on the cabinet's answer, so "nothing happens until you approve" would mislead.
+    definition:
+      "Your cabinet's suggestions for this month. Staff orders and meetings happen only if you approve; crisis answers stand unless you change them.",
+    banned: [],
+  },
   proposed: {
     id: 'proposed',
     name: 'Proposed by staff',
