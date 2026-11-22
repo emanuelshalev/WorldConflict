@@ -24,6 +24,8 @@ Derived from the CEO playtest (RS-001) and confirmed or refined by the panel int
 
 ## Track B: best agentic development practices
 
+Vision (CEO 2026-11-23): not a collection of coding agents, but a system that knows how to translate product objectives into engineering work, generate and evaluate alternatives, build and validate software, gather simulated and real customer feedback, improve products without regressing, and learn which development strategies produce the best results (P8 to P13).
+
 | ID | Goal | Measured by | Source |
 |---|---|---|---|
 | P1 | **Reusable method** | `devloop/` has no product-specific content outside `instances/`; a new instance can start from `templates/` | CEO 2026-11-21 |
@@ -33,5 +35,11 @@ Derived from the CEO playtest (RS-001) and confirmed or refined by the panel int
 | P5 | **Learning loop on the process** | Every iteration adds at least one journal entry with a process change, reflected in `devloop/HOW_WE_WORK.md`; cross-project lessons go to `devloop/LEARNINGS.md` | CEO 2026-11-21 |
 | P7 | **Estimate and learn** | Every stage shows progress within the stage (work units done of total), ETA for the current and every later stage and the iteration, and expected consumption; estimates are logged and scored against actuals each iteration (median absolute error shrinks as history grows) | CEO 2026-11-23 |
 | P6 | **Panel fidelity** | The panel predicts real signals (hold-out checks); evidence mix shifts toward observed | Method |
+| P8 | **Objectives become engineering work** | Each product goal and real signal traces to briefs, work packages and acceptance criteria; every merged change names the goal or finding it serves (ledger, registry) | CEO 2026-11-23 |
+| P9 | **Generate and evaluate alternatives** | Design questions get at least two alternatives, tested with the panel (concept tests with replicates, D-74) before build; the choice and its evidence are in the ledger | CEO 2026-11-23 |
+| P10 | **Build and validate** | Software is built by agents and validated by a deterministic controller and gates (D-77): no merge or publish without a green verify on the exact commit and QA before customers | CEO 2026-11-23 |
+| P11 | **Simulated and real feedback** | Every iteration combines synthetic panel sessions with real signals (CEO and real players); real signals at S2+ veto the gate; panel predictions are checked against real signals (P6) | CEO 2026-11-23 |
+| P12 | **Improve without regressing** | Every addressed finding keeps a guard covering its class (D-60, D-76); regressions and guard gaps per iteration trend to zero (product goal G13 is the product-side view) | CEO 2026-11-23 |
+| P13 | **Learn which strategies work** | Each iteration records the strategies used (parallelism, models, test design, concept rounds) and their outcome per unit of time and consumption; the quality scorecard (D-78) and estimate accuracy (P7) show which strategies produce the best results, and the method adopts them | CEO 2026-11-23 |
 
 Release gate: see `../../method/triage.md` (gate thresholds) and `gate.md`.
