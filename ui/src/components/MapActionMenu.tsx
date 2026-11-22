@@ -5,6 +5,8 @@ import { flag } from '../lib/format';
 import { ordersFor } from '../lib/orders';
 import { TERMS, term } from '../lib/glossary';
 import { OrderCard } from './orders/OrderCard';
+import { CountryPicker } from './orders/CountryPicker';
+import { relationWord } from '../lib/ease';
 import { useMonthView } from './orders/useOrders';
 
 interface Props {
@@ -15,6 +17,8 @@ interface Props {
   /** The visible part of the map (not under the HUD or desk), relative to the container. */
   bounds: { top: number; bottom: number; left: number; right: number };
   onClose: () => void;
+  /** Aim the menu at another country (the header's country picker). */
+  onChangeCountry?: (id: string) => void;
   /** Dev gallery: never dock as a phone sheet. */
   inline?: boolean;
 }
@@ -28,7 +32,7 @@ const narrow = () => typeof window !== 'undefined' && window.innerWidth < 700;
  * expands in place to the exact list the desk catalog shows for that target (`ordersFor`, the
  * parity rule). It stays open after an order is added: the card stamps and the ◆ ticks down.
  */
-export function MapActionMenu({ countryId, x, y, bounds, onClose, inline = false }: Props) {
+export function MapActionMenu({ countryId, x, y, bounds, onClose, onChangeCountry, inline = false }: Props) {
   const world = useGameStore((s) => s.worldState);
   const view = useGameStore((s) => s.playerView.find((v) => v.id === countryId));
   const selectCountry = useGameStore((s) => s.selectCountry);
@@ -73,6 +77,8 @@ export function MapActionMenu({ countryId, x, y, bounds, onClose, inline = false
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return;
       if (ref.current?.querySelector('[data-confirm]')) return;
+      // The country picker's list closes first
+      if (document.querySelector('.cp-pop')) return;
       e.stopImmediatePropagation();
       onClose();
     };
@@ -90,7 +96,7 @@ export function MapActionMenu({ countryId, x, y, bounds, onClose, inline = false
   const short = ordersFor(me, view);
   const orders = expanded ? all : short.length ? short : all.slice(0, 6);
   const atWar = me.atWarWith.includes(countryId);
-  const rel = Math.round(view.relationWithPlayer);
+  const relWord = relationWord(view.relationWithPlayer, { atWar, ally: me.alliances.includes(countryId) });
   const left = Math.max(0, month.pcLeft);
 
   return (
@@ -103,13 +109,15 @@ export function MapActionMenu({ countryId, x, y, bounds, onClose, inline = false
       onPointerDown={(e) => e.stopPropagation()}
     >
       <div className="mam-head">
-        <span className="mam-flag" aria-hidden>
-          {flag(countryId)}
-        </span>
+        {!onChangeCountry && (
+          <span className="mam-flag" aria-hidden>
+            {flag(countryId)}
+          </span>
+        )}
         <div className="mam-title">
-          <b>{view.name}</b>
-          <span className={`mam-rel ${atWar ? 'war' : rel >= 20 ? 'warm' : rel <= -20 ? 'cold' : ''}`}>
-            {atWar ? 'At war with you' : `${view.diplomaticLevel.replace(/_/g, ' ').toLowerCase()} · ${rel > 0 ? '+' : ''}${rel}`}
+          {onChangeCountry ? <CountryPicker value={countryId} onChange={onChangeCountry} compact label="Orders for" /> : <b>{view.name}</b>}
+          <span className={`mam-rel rel-chip rel-${relWord.tone}`}>
+            <i aria-hidden /> {relWord.word}
           </span>
         </div>
         <span className="mam-pc num" data-point="capital" aria-label={`${TERMS.capital.name}: ${left} left`}>

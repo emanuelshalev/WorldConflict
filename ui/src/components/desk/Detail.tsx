@@ -1,7 +1,6 @@
 import { type ComponentType, useMemo, useRef, useState } from 'react';
 import { IconArrowLeft, IconArrowRight, IconPlus, IconX } from '@tabler/icons-react';
 import { type PendingAction, countryName, orderKey, queueOrder, useGameStore, usePlayerCountry } from '../../store/gameStore';
-import { flag } from '../../lib/format';
 import { pcCost } from '../../lib/actions';
 import { budgetShare } from '../../lib/budget';
 import { computeSuggestions } from '../../lib/staff';
@@ -12,6 +11,7 @@ import { ActionIcon } from '../../scenes/icons';
 import { actionFamily } from '../../scenes/actionIcons';
 import { deskItems } from '../../lib/deskItems';
 import { DecisionStage } from './YourMove';
+import { CountryPicker } from '../orders/CountryPicker';
 import { AdvisorList } from './AdvisorList';
 import { whyLine } from '../../lib/advisorRows';
 import { STATE_WORD, nowNeed, stateOf } from '../../lib/goals';
@@ -173,14 +173,7 @@ function DeskCatalog({ target, setTarget }: { target: string; setTarget: (id: st
           }}
           aria-label="Search orders (Up/Down to choose, Enter to add)"
         />
-        <select className="leader-input" value={target} onChange={(e) => setTarget(e.target.value)} aria-label="Target country">
-          <option value="">Target: pick a country</option>
-          {others.map((v) => (
-            <option key={v.id} value={v.id}>
-              {flag(v.id)} {v.name} ({Math.round(v.relationWithPlayer)})
-            </option>
-          ))}
-        </select>
+        <CountryPicker value={target} onChange={setTarget} mapPick placeholder="Target: choose a country" />
       </div>
       {!query && !target && <p className="hint">Orders aimed at a country need a target: pick a country first.</p>}
       {query ? (

@@ -3,6 +3,7 @@ import { countryNames, useGameStore, useViewCountry } from '../store/gameStore';
 import type { UncertainRange } from '../store/gameStore';
 import { ordersFor } from '../lib/orders';
 import { OrderCard } from './orders/OrderCard';
+import { CountryPicker, RelationChip } from './orders/CountryPicker';
 
 function fmtMoney(n: number): string {
   if (n >= 1e12) return `$${(n / 1e12).toFixed(1)}T`;
@@ -93,7 +94,8 @@ export function CountryDetailPanel() {
     <div className="dossier" style={S.panel} role="region" aria-label={`Dossier: ${view.name}`}>
       <button
         onClick={() => selectCountry(null)}
-        style={{ float: 'right', background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: 16 }}
+        style={{ float: 'right', background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: 20, width: 44, height: 44, margin: '-10px -10px 0 0' }}
+        aria-label="Close the dossier"
       >
         ×
       </button>
@@ -107,6 +109,11 @@ export function CountryDetailPanel() {
       </div>
 
       {!view.isPlayer && (
+        <div className="dossier-pick">
+          <CountryPicker value={view.id} onChange={(id) => selectCountry(id)} compact label="Dossier" />
+        </div>
+      )}
+      {!view.isPlayer && (
         <div
           style={{
             background: '#161a24',
@@ -114,13 +121,16 @@ export function CountryDetailPanel() {
             padding: '6px 10px',
             marginBottom: 6,
             border: `1px solid ${LEVEL_COLORS[view.diplomaticLevel] ?? '#2a2e3a'}`,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            flexWrap: 'wrap',
           }}
         >
-          Relations:{' '}
-          <b style={{ color: LEVEL_COLORS[view.diplomaticLevel] ?? '#ccc' }}>
-            {view.diplomaticLevel.replace('_', ' ')}
-          </b>{' '}
-          ({Math.round(view.relationWithPlayer)})
+          Relations: <RelationChip id={view.id} />
+          <b style={{ color: LEVEL_COLORS[view.diplomaticLevel] ?? '#ccc', textTransform: 'lowercase' }}>
+            {view.diplomaticLevel.replace(/_/g, ' ')}
+          </b>
         </div>
       )}
 

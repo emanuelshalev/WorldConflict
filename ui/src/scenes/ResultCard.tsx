@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { IconArrowRight, IconChevronRight, IconLayoutList, IconNews } from '@tabler/icons-react';
+import { IconArrowRight, IconChevronDown, IconChevronRight, IconChevronUp, IconLayoutList, IconNews } from '@tabler/icons-react';
+import { monthScene } from '../lib/monthArt';
 import type { ConditionStatus, ReportFact, TurnReport, WorldState } from '../store/gameStore';
 import { countryName, useGameStore } from '../store/gameStore';
 import { buildPages } from '../lib/debrief';
@@ -93,13 +94,36 @@ export function ResultCard({ report, world, home, onNext, onEverything, onPaper,
   const homePage = pages.findIndex((p) => p.key === 'home');
   const also = pages.slice(1).flatMap((p, pi) => p.cards.slice(0, 2).map((c) => ({ c, page: pi + 1 })));
   useEffect(() => nextRef.current?.focus({ preventScroll: true }), []);
+  // One big visual outcome on the picture (the month's lead number), the art chosen by what
+  // happened (lib/monthArt, shared with the paper), the rest one tap away
+  const saveId = useGameStore((s) => s.saveId);
+  const scene = useMemo(() => monthScene(report, world, saveId) ?? card?.scene, [report, world, saveId, card?.scene]);
+  const lead0 = facts[0];
+  const big = lead0 && Math.abs(lead0.after - lead0.before) >= 1 ? (() => {
+    const delta = lead0.after - lead0.before;
+    const good = /tension/i.test(lead0.label) ? delta <= 0 : (lead0.good ?? delta >= 0);
+    const v = card?.verdict;
+    const word = v === 'good' ? 'It worked' : v === 'bad' ? 'Backfired' : v === 'mixed' ? 'Mixed result' : good ? 'A step forward' : 'A step back';
+    return { delta, good, word, label: lead0.label };
+  })() : null;
+  const [moreOpen, setMoreOpen] = useState(false);
   const u = (c: ConditionStatus) => (c.unit === '%' ? '%' : '');
   return (
     <div ref={ref} className="result-overlay" role="dialog" aria-modal="true" aria-label={`${monthLabel(world.date)}: your month`}>
       <article className={`result-card v-${card?.verdict ?? 'neutral'}`} data-settle="result">
         <div className="rc-visual">
-          {card?.scene ? <SceneFrame kind={card.scene} home={home} other={card.country} mood={moodForVerdict(card.verdict)} size="card" play={false} /> : <div className="rc-blank" />}
+          {scene ? <SceneFrame kind={scene} home={home} other={card?.country} mood={moodForVerdict(card?.verdict)} size="card" play={false} /> : <div className="rc-blank" />}
           <span className="rc-date num">{monthLabel(world.date)} · Your month</span>
+          {big && (
+            <div className={`rc-big ${big.good ? 'good' : 'bad'}`} data-result-big="">
+              <span className="rc-big-word">{big.word}</span>
+              <span className="rc-big-num num">
+                {big.delta > 0 ? '+' : ''}
+                {r1(big.delta)}
+              </span>
+              <span className="rc-big-label">{big.label}</span>
+            </div>
+          )}
           {step && (
             <span className="rc-step">
               <Stamp word="STEP ACHIEVED" ink="good" size="md" delay={600} sound />
@@ -125,6 +149,21 @@ export function ResultCard({ report, world, home, onNext, onEverything, onPaper,
               <cite>{card.reaction.who}</cite>
             </blockquote>
           )}
+          {mm && mm.c.now !== undefined && (
+            <button type="button" className="rc-mission" onClick={() => useGameStore.getState().setDrawer('objective')}>
+              <span>
+                Mission{['front', 'score'].includes(metricWord(mm.c)) ? ` (${mm.c.short ?? ''})` : ''}: <b>{metricWord(mm.c)} {r1(mm.before)} → {r1(mm.c.now)}{u(mm.c)}</b>
+                {mm.c.need !== undefined ? `, needs ${r1(mm.c.need)}${u(mm.c)}.` : '.'}
+              </span>
+              <Segments status={status} size="lg" />
+            </button>
+          )}
+          <CoachResultLine />
+          <button type="button" className="rc-more-toggle" onClick={() => setMoreOpen((v) => !v)} aria-expanded={moreOpen} aria-controls="rc-more" data-result-more="">
+            {moreOpen ? <IconChevronUp size={16} aria-hidden /> : <IconChevronDown size={16} aria-hidden />} {moreOpen ? 'Fewer details' : 'The numbers, the score and the rest of the month'}
+          </button>
+          {moreOpen && (
+          <div className="rc-more" id="rc-more">
           {facts.length > 0 && (
             <div className="rc-deltas">
               {facts.map((f) => (
@@ -145,15 +184,6 @@ export function ResultCard({ report, world, home, onNext, onEverything, onPaper,
             </p>
           )}
           {followUp && <p className="rc-later">The outcome of {followUp.title} comes in {Math.max(1, followUp.due - world.turn)} month{followUp.due - world.turn > 1 ? 's' : ''}; we will tell you.</p>}
-          {mm && mm.c.now !== undefined && (
-            <button type="button" className="rc-mission" onClick={() => useGameStore.getState().setDrawer('objective')}>
-              <span>
-                Mission{['front', 'score'].includes(metricWord(mm.c)) ? ` (${mm.c.short ?? ''})` : ''}: <b>{metricWord(mm.c)} {r1(mm.before)} → {r1(mm.c.now)}{u(mm.c)}</b>
-                {mm.c.need !== undefined ? `, needs ${r1(mm.c.need)}${u(mm.c)}.` : '.'}
-              </span>
-              <Segments status={status} size="lg" />
-            </button>
-          )}
           {report.score && (
             <p className="rc-score">
               {scoreLine(report.score)}{' '}
@@ -168,7 +198,6 @@ export function ResultCard({ report, world, home, onNext, onEverything, onPaper,
               <span className="rc-headline">{lead.headline}</span>
             </button>
           )}
-          <CoachResultLine />
           {also.length > 0 && (
             <div className="rc-also" aria-label="Also this month">
               {also.slice(0, 4).map(({ c, page }) => (
@@ -180,17 +209,6 @@ export function ResultCard({ report, world, home, onNext, onEverything, onPaper,
               ))}
             </div>
           )}
-          <footer className="rc-foot">
-            <button type="button" className="wc-btn rc-secondary" onClick={() => onEverything(0)}>
-              <IconLayoutList size={16} aria-hidden /> See everything
-            </button>
-            <button type="button" className="link rc-read" onClick={onPaper}>
-              <IconNews size={15} aria-hidden /> Read the paper
-            </button>
-            <button ref={nextRef} type="button" className="wc-btn primary rc-next" onClick={onNext}>
-              {nextLabel} <IconArrowRight size={17} aria-hidden />
-            </button>
-          </footer>
           <label className="rc-after">
               After each month:
               <select
@@ -206,7 +224,19 @@ export function ResultCard({ report, world, home, onNext, onEverything, onPaper,
                 <option value="everything">Everything</option>
               </select>
             </label>
-
+          </div>
+          )}
+          <footer className="rc-foot">
+            <button type="button" className="wc-btn rc-secondary" onClick={() => onEverything(0)}>
+              <IconLayoutList size={16} aria-hidden /> See everything
+            </button>
+            <button type="button" className="link rc-read" onClick={onPaper}>
+              <IconNews size={15} aria-hidden /> Read the paper
+            </button>
+            <button ref={nextRef} type="button" className="wc-btn primary rc-next" onClick={onNext}>
+              {nextLabel} <IconArrowRight size={17} aria-hidden />
+            </button>
+          </footer>
         </div>
       </article>
     </div>

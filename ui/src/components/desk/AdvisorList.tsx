@@ -9,6 +9,7 @@ import { CardCost } from '../game/CardShell';
 import { pointTo } from '../../lib/pointer';
 import { sound } from '../../lib/sound';
 import { useGoalHighlight } from '../../lib/goals';
+import { bigMove } from '../../lib/ease';
 import { CoachBubble } from './Coach';
 import '../../styles/month.css';
 
@@ -111,6 +112,57 @@ function AdvisorRow({ r, compact }: { r: Row; compact?: boolean }) {
   );
 }
 
+/**
+ * "Big move" (F-01-6): with 3 or more seals unspent, one clearly labelled suggestion that spends
+ * them on the mission in one press (lib/ease bigMove over the advisors' suggestions and the
+ * engine's mission impact).
+ */
+export function BigMove({ rows }: { rows: Row[] }) {
+  const actions = useGameStore((s) => s.pendingActions);
+  const impacts = useGameStore((s) => s.orderImpact);
+  useGameStore((s) => s.decisionChoices);
+  const [busy, setBusy] = useState(false);
+  const left = capitalLeft();
+  const move = bigMove(
+    rows.map((r) => {
+      const imp = impacts[r.label];
+      return {
+        key: r.key,
+        label: r.label,
+        cost: pcCost(r.action.type),
+        // The engine's mission impact; without it, the advisor's own "Mission: ..." line
+        helps: imp ? imp.helps.length + imp.bonusHelps.length * 0.5 : /\bMission:/.test(r.why) ? 1 : 0,
+        risky: !!imp && imp.hurts.length + imp.breaks.length > 0,
+        queued: actions.some((a) => orderKey(a) === orderKey(r.action)),
+      };
+    }),
+    left,
+    MAX_ORDERS - actions.length,
+  );
+  if (!move) return null;
+  const go = async () => {
+    if (busy) return;
+    setBusy(true);
+    for (const p of move.picks) {
+      const r = rows.find((x) => x.key === p.key);
+      if (r) await queueOrder({ ...r.action, origin: 'player', why: `${r.who}: ${r.why}` });
+    }
+    setBusy(false);
+    sound.play('stamp');
+  };
+  return (
+    <div className="big-move" data-big-move="" role="group" aria-label="Big move">
+      <span className="big-move-tag">Big move</span>
+      <p className="big-move-text">
+        You have <b>◆ {left}</b> unspent. Put <b>◆ {move.seals}</b> into your mission: <b>{move.picks.map((p) => p.label).join(' + ')}</b>.
+      </p>
+      <button type="button" className="wc-btn primary small big-move-go" onClick={() => void go()} disabled={busy}>
+        {busy ? 'Adding...' : `Do it (◆ ${move.seals})`}
+      </button>
+    </div>
+  );
+}
+
 export function AdvisorList({ compact = false, max = 3 }: { compact?: boolean; max?: number }) {
   const rows = useAdvisorRows();
   const [all, setAll] = useState(false);
@@ -125,6 +177,7 @@ export function AdvisorList({ compact = false, max = 3 }: { compact?: boolean; m
         </h3>
       )}
       {!compact && <CoachBubble step="advisors" place="above" />}
+      {!compact && <BigMove rows={rows} />}
       <div className="adv-list">
         {shown.map((r) => (
           <AdvisorRow key={r.key} r={r} compact={compact} />

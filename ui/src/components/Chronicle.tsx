@@ -11,6 +11,7 @@ import { useCoach } from '../lib/coach';
 import '../scenes/result.css';
 import { SceneFrame } from '../scenes/SceneFrame';
 import { sceneForAction, sceneForCrisis, sceneForNews } from '../scenes/kinds';
+import { monthScene } from '../lib/monthArt';
 
 const MOMENT_COLOR: Record<string, string> = {
   'CLOSE CALL': '#b3261e',
@@ -158,7 +159,9 @@ export function Chronicle() {
   const hl = report?.highlight;
   const hd = hl?.ref === 'decision' ? report?.decisions[hl.index] : undefined;
   const ho = hl?.ref === 'order' ? report?.orders[hl.index] : undefined;
-  const leadScene = lead?.relatedCountries.includes(me.id)
+  // The same picture as the result card when the lead is your month (lib/monthArt)
+  const shared = lead?.relatedCountries.includes(me.id) && report && (hd || ho) ? monthScene(report, world, useGameStore.getState().saveId) : undefined;
+  const leadScene = shared ?? (lead?.relatedCountries.includes(me.id)
     ? hd
       ? hd.kind === 'CALL' || hd.kind === 'VISIT'
         ? 'summit'
@@ -172,7 +175,7 @@ export function Chronicle() {
         : hl?.ref === 'war'
           ? 'war_room'
           : undefined
-    : undefined;
+    : undefined);
   const delta = (k: string) => (report?.deltas[k] ? report.deltas[k].after - report.deltas[k].before : 0);
   const fmt = (v: number, suffix = '') => (
     <b className={v > 0.4 ? 'delta-up' : v < -0.4 ? 'delta-down' : ''} style={{ color: Math.abs(v) <= 0.4 ? undefined : undefined }}>

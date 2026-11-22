@@ -10,9 +10,12 @@ import {
   IconScale,
   IconShield,
   IconCoin,
+  IconMapPin,
   type Icon,
 } from '@tabler/icons-react';
 import { useGameStore } from '../store/gameStore';
+import { pushRecentTarget } from '../lib/ease';
+import '../styles/picker.css';
 import type { Hotspot, PlayerViewCountry, War, WorldState } from '../store/gameStore';
 import { CountryDetailPanel } from './CountryDetailPanel';
 import { MapGuide } from './MapGuide';
@@ -158,6 +161,33 @@ interface MenuState {
   bounds: { top: number; bottom: number; left: number; right: number };
 }
 
+/** The tap that finishes "Pick on the map": the target, then back to the desk's order list. */
+function finishMapPick(id: string) {
+  pushRecentTarget(id);
+  useGameStore.setState({ mapPick: false, orderTarget: id, deskMode: 'desk', deskView: 'full', focus: { kind: 'catalog' }, selectedCountryId: null });
+}
+
+/** "Tap a country": what the map is waiting for, and a way out. */
+function MapPickBanner() {
+  const setMapPick = useGameStore((s) => s.setMapPick);
+  const setDeskMode = useGameStore((s) => s.setDeskMode);
+  return (
+    <div className="map-pick-banner" role="status">
+      <IconMapPin size={18} aria-hidden /> Tap a country to aim your order
+      <button
+        type="button"
+        className="wc-btn small"
+        onClick={() => {
+          setMapPick(false);
+          setDeskMode('desk');
+        }}
+      >
+        Cancel
+      </button>
+    </div>
+  );
+}
+
 export function MapView() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
@@ -190,6 +220,7 @@ export function MapView() {
   const pendingActions = useGameStore((s) => s.pendingActions);
   const mapLayer = useGameStore((s) => s.mapLayer);
   const selectedCountryId = useGameStore((s) => s.selectedCountryId);
+  const mapPick = useGameStore((s) => s.mapPick);
   const showChronicle = useGameStore((s) => s.showChronicle);
   const activeModal = useGameStore((s) => s.activeModal);
   const saveId = useGameStore((s) => s.saveId);
@@ -671,6 +702,12 @@ export function MapView() {
           setMenu(null);
           return;
         }
+        // "Pick on the map" (the desk's country picker): the tap names the target, back to the desk
+        if (s.mapPick && id !== s.worldState.playerCountryId) {
+          setMenu(null);
+          finishMapPick(id);
+          return;
+        }
         if (id === s.worldState.playerCountryId || s.gameOver) {
           setMenu(null);
           s.selectCountry(s.selectedCountryId === id ? null : id);
@@ -798,6 +835,10 @@ export function MapView() {
         map,
         (id) => {
           const st = useGameStore.getState();
+          if (st.mapPick && id !== st.worldState?.playerCountryId) {
+            finishMapPick(id);
+            return;
+          }
           st.selectCountry(st.selectedCountryId === id ? null : id);
         },
         (id) => {
@@ -1185,6 +1226,8 @@ export function MapView() {
         </button>
       </div>
 
+      {mapPick && <MapPickBanner />}
+
       {/* Map rubric: colors, icons, interactions */}
       {showGuide && <MapGuide onClose={() => setShowGuide(false)} />}
 
@@ -1197,6 +1240,7 @@ export function MapView() {
           y={menu.y}
           bounds={menu.bounds}
           onClose={closeMenu}
+          onChangeCountry={(id) => setMenu((m) => (m ? { ...m, id } : m))}
         />
       )}
 
