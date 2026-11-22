@@ -98,7 +98,7 @@
     "JPN": { "USA": 70, "KOR": -30, "CHN": -50, "RUS": -40, "PRK": -60 },
     "TUR": { "USA": 65, "GBR": 55, "RUS": -50, "DEU": 50 },
     "IDN": { "USA": -10, "RUS": 30, "CHN": 20, "AUS": -15 },
-    "ZAF": { "GBR": 40, "USA": 20, "IND": -30 }
+    "ZAF": { "GBR": 40, "USA": 20, "IND": -30, "NGA": -40 }
   },
   "alliances": [
     ["USA", "GBR", "CAN", "FRA", "DEU", "ITA", "TUR"],
@@ -123,10 +123,10 @@
   "eraStatus": {
     "UKR": {"status":"PART_OF","partOf":"RUS","label":"Ukrainian SSR","note":"A republic of the Soviet Union, governed from Moscow."},
     "BLR": {"status":"PART_OF","partOf":"RUS","label":"Byelorussian SSR","note":"A republic of the Soviet Union, governed from Moscow."},
-    "SYR": {"status":"PART_OF","partOf":"EGY","label":"United Arab Republic (Syria)","note":"Merged with Egypt as the United Arab Republic from February 1958 to September 1961."},
+    "SYR": {"status":"PART_OF","partOf":"EGY","until":"1961-10","label":"United Arab Republic (Syria)","note":"Merged with Egypt as the United Arab Republic from February 1958 to September 1961."},
     "PSX": {"status":"NOT_INDEPENDENT","label":"West Bank (Jordan)","note":"Annexed by Jordan in 1950; Gaza is under Egyptian administration."},
     "ARE": {"status":"NOT_INDEPENDENT","label":"Trucial States","note":"Sheikhdoms under British protection; the UAE is founded in December 1971."},
-    "NGA": {"status":"NOT_INDEPENDENT","label":"Nigeria (British)","note":"A self-governing British federation; independent on 1 October 1960."}
+    "NGA": {"status":"NOT_INDEPENDENT","until":"1960-10","label":"Nigeria (British)","note":"A self-governing British federation; independent on 1 October 1960."}
   },
   "merged": {
     "RUS": ["UKR","BLR","EST","LVA","LTU","MDA","GEO","ARM","AZE","KAZ","UZB","TKM","KGZ","TJK"],

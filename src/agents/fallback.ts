@@ -1,3 +1,4 @@
+import { eraAbsent, opposingCamps } from "../core/era.js";
 import { combineSeed, createSeed, SeededRandom } from "../core/seed.js";
 import { isNuclearOperational, shouldSeekNuclearWeapons } from "../core/systems/nuclear.js";
 import type { Action, CountryIntent, CountryState, WorldState } from "../core/types.js";
@@ -21,6 +22,9 @@ export class PersonalityAI {
     const candidates: Candidate[] = [];
     const p = country.personality;
     const reasoning: string[] = [];
+    // Only sovereign states are partners, rivals or targets (era.ts: no Ukrainian SSR in 1990)
+    const states = world.countries.filter((c) => !eraAbsent(c));
+    const stateById = (id: string) => states.find((c) => c.id === id);
 
     const believedStability = (targetId: string): number =>
       country.beliefs[targetId]?.stability ?? 50;
@@ -96,7 +100,7 @@ export class PersonalityAI {
         country.leader.style === "HARDLINER" &&
         p.riskTolerance > 80
       ) {
-        const enemy = world.countries.find((c) => c.id === enemyId);
+        const enemy = stateById(enemyId);
         if (enemy && !isNuclearOperational(enemy)) {
           candidates.push({
             action: { type: "NUCLEAR_STRIKE", targetCountryId: enemyId },
@@ -110,7 +114,7 @@ export class PersonalityAI {
     // ------------------------------------------------------------------
     // 3. Red-line and threat responses
     // ------------------------------------------------------------------
-    for (const other of world.countries) {
+    for (const other of states) {
       if (other.id === country.id || other.collapsed) continue;
 
       // Troops on our border → respond in kind
@@ -180,7 +184,7 @@ export class PersonalityAI {
       p.expansionism > 50
     ) {
       const targets = (country.history.historicalRivals ?? [])
-        .map((id) => world.countries.find((c) => c.id === id))
+        .map((id) => stateById(id))
         .filter(
           (t): t is CountryState =>
             !!t &&
@@ -194,7 +198,7 @@ export class PersonalityAI {
       for (const target of targets) {
         // Pact allies of the target deter aggression
         const protectedByPact = target.alliances.some((aid) => {
-          const ally = world.countries.find((c) => c.id === aid);
+          const ally = stateById(aid);
           return ally && (ally.beliefs ? believedStrength(aid) > myStrength : false);
         });
         if (protectedByPact && p.riskTolerance < 70) continue;
@@ -211,7 +215,7 @@ export class PersonalityAI {
     // ------------------------------------------------------------------
     // 5. Diplomacy: build the friendships history suggests
     // ------------------------------------------------------------------
-    const friendCandidates = world.countries.filter(
+    const friendCandidates = states.filter(
       (o) =>
         o.id !== country.id &&
         !o.collapsed &&
@@ -222,7 +226,8 @@ export class PersonalityAI {
       const relation = country.relations[other.id] ?? 0;
       const isHistoricalAlly = (country.history.historicalAllies ?? []).includes(other.id);
       const inSphere = (country.history.sphereOfInfluence ?? []).includes(other.id);
-      if (relation >= 60) {
+      // Era blocs: no pact across the Cold War line (NATO and the Warsaw Pact)
+      if (relation >= 60 && !opposingCamps(world, country.id, other.id)) {
         candidates.push({
           action: { type: "DIPLOMACY_PROPOSE_ALLIANCE", targetCountryId: other.id },
           weight: 25 + p.allianceLoyalty / 4 + (isHistoricalAlly ? 20 : 0),
@@ -237,7 +242,7 @@ export class PersonalityAI {
     // Hawkish leaders denounce rivals to play to the home crowd
     if (country.leader.style === "HAWKISH" || country.leader.style === "HARDLINER") {
       const rival = (country.history.historicalRivals ?? [])
-        .map((id) => world.countries.find((c) => c.id === id))
+        .map((id) => stateById(id))
         .find((c) => c && !c.collapsed && !country.atWarWith.includes(c.id));
       if (rival) {
         candidates.push({
@@ -252,7 +257,7 @@ export class PersonalityAI {
     // ------------------------------------------------------------------
     if (country.intelLevel > 55 && !electionSoon) {
       for (const rid of country.history.historicalRivals ?? []) {
-        const rival = world.countries.find((c) => c.id === rid);
+        const rival = stateById(rid);
         if (!rival || rival.collapsed) continue;
         const belief = country.beliefs[rid];
         if ((belief?.accuracy ?? 0) < 45) {
@@ -345,7 +350,7 @@ export const FallbackAI = PersonalityAI;
 export function generateDeterministicIntents(world: WorldState): CountryIntent[] {
   const ai = new PersonalityAI();
   return world.countries
-    .filter((c) => c.id !== world.playerCountryId && !c.collapsed)
+    .filter((c) => c.id !== world.playerCountryId && !c.collapsed && !eraAbsent(c))
     .map((country) => {
       const rng = new SeededRandom(
         combineSeed(combineSeed(world.seed, world.turn), createSeed(7, country.id)),

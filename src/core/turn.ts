@@ -2,6 +2,7 @@ import { actionRules, orderKey } from "./availability.js";
 import { recordMonth } from "./chronicle.js";
 import { actionCostM, actionCostPC, MAX_ORDERS, PC_CAP, politicalCapitalIncome } from "./costs.js";
 import { applyEffects, raiseCrisis, runDirector, scheduleFollowUp } from "./crises.js";
+import { applyEraTransitions, eraAbsent, opposingCamps, worldYear } from "./era.js";
 import { EventEngine } from "./events.js";
 import { beginMonth, explainMonth, type MonthStart } from "./explain.js";
 import { sharesLandBorder } from "./geography.js";
@@ -152,6 +153,7 @@ export class TurnEngine {
     // ------------------------------------------------------------------
     // Phase 1: world events + the player's crises (drama director)
     // ------------------------------------------------------------------
+    events.push(...applyEraTransitions(world));
     events.push(...this.eventEngine.generateEvents(world, rng));
     const directed = runDirector(world, rng);
     events.push(...directed.events);
@@ -774,6 +776,13 @@ export class TurnEngine {
         ok: false,
         reason: `${target.name} has collapsed; there is no government to deal with`,
       };
+    // Era filter (era.ts): a republic of the Soviet Union or a colony has no foreign policy
+    if (eraAbsent(actor)) return { ok: false, reason: `${actor.name} is not a sovereign state` };
+    if (target && eraAbsent(target))
+      return {
+        ok: false,
+        reason: `${target.name} is not a sovereign state in ${worldYear(world)}`,
+      };
 
     switch (action.type) {
       case "DIPLOMACY_IMPROVE_RELATIONS": {
@@ -818,6 +827,9 @@ export class TurnEngine {
       }
       case "DIPLOMACY_PROPOSE_ALLIANCE": {
         if (!target) return { ok: false, reason: "No target" };
+        // The era's blocs hold: no pact across the Cold War line (NATO and the Warsaw Pact)
+        if (opposingCamps(world, actor.id, target.id))
+          return { ok: false, reason: `${target.name} will not sign a pact across the bloc line` };
         // Nobody signs the player into a pact: the offer lands on the desk as a crisis card
         if (target.id === world.playerCountryId && actor.id !== world.playerCountryId) {
           const lastOffer = world.director.lastUsed.pact_offer ?? -99;

@@ -1,4 +1,5 @@
 import { actionCostM, actionCostPC, MAX_ORDERS, PC_CAP, politicalCapitalIncome } from "./costs.js";
+import { eraAbsent, opposingCamps, worldYear } from "./era.js";
 import { allianceOdds, canDeclareWar } from "./systems/diplomacy.js";
 import { monthlyDefenseBudgetM } from "./systems/military.js";
 import { possessive, withArticle } from "./text.js";
@@ -28,6 +29,7 @@ export type OrderBlockCode =
   | "GAME_OVER"
   | "SELF_TARGET"
   | "TARGET_COLLAPSED"
+  | "NOT_A_STATE"
   | "INVALID_VALUE"
   | "AT_WAR"
   | "NOT_AT_WAR"
@@ -159,6 +161,8 @@ export function actionRules(
       "TARGET_COLLAPSED",
       `${cap(T)} has collapsed: there is no government to deal with.`,
     );
+  if (target && eraAbsent(target))
+    return block("NOT_A_STATE", `${cap(T)} is not a sovereign state in ${worldYear(world)}.`);
   if (
     action.value !== undefined &&
     (!Number.isFinite(action.value) || action.value < 0) &&
@@ -178,6 +182,8 @@ export function actionRules(
       break;
     case "DIPLOMACY_PROPOSE_ALLIANCE": {
       if (!target) break;
+      if (opposingCamps(world, actor.id, target.id))
+        return block("PACT_REFUSED", `${cap(T)} will not sign a pact across the bloc line.`);
       const odds = allianceOdds(actor, target);
       if (odds.refusal) return block("PACT_REFUSED", odds.refusal);
       break;

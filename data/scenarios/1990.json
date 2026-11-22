@@ -6,6 +6,13 @@
   "startMonth": 1,
   "globalTension": 35,
   "multipliers": { "gdpGrowth": 1.0, "militarySpending": 1.1, "stability": 1.0 },
+  "termReview": {
+    "RUS": {
+      "title": "Hold the Union together",
+      "briefing": "January 1990: the shops are empty, Lithuania is weeks from declaring independence, Azerbaijan is in revolt and the hardliners in the Politburo are counting your mistakes. In four years the Party reviews your record, and the bar is survival, not prosperity: keep the Union standing and the Party behind you.",
+      "scorePar": 90
+    }
+  },
   "leaders": {
     "USA": { "name": "George H. W. Bush", "title": "President", "style": "PRAGMATIC", "origin": "ELECTED" },
     "CHN": { "name": "Jiang Zemin", "title": "General Secretary", "style": "HARDLINER", "origin": "APPOINTED" },

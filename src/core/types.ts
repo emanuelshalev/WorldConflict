@@ -559,6 +559,11 @@ export const CountryStateSchema = z.object({
 
   // Bookkeeping
   collapsed: z.boolean().default(false),
+  // Not a sovereign state at the scenario date (era.ts): the Ukrainian SSR in 1990, the
+  // Trucial States in 1960. No foreign policy, no world events; `eraUntil` (YYYY-MM) is the
+  // month it becomes a state, if that falls inside the game.
+  eraStatus: z.enum(["PART_OF", "NOT_INDEPENDENT"]).optional(),
+  eraUntil: z.string().optional(),
 });
 export type CountryState = z.infer<typeof CountryStateSchema>;
 
@@ -1057,6 +1062,10 @@ export const WorldStateSchema = z.object({
     .nullable()
     .default(null),
   chronicle: ChronicleSchema.optional(), // the session's record for the end reveal (chronicle.ts)
+  // The scenario's blocs (NATO, the Warsaw Pact...): AI pacts never cross opposing camps (era.ts)
+  blocs: z
+    .array(z.object({ id: z.string(), side: z.string(), members: z.array(z.string()) }))
+    .default([]),
 });
 export type WorldState = z.infer<typeof WorldStateSchema>;
 

@@ -12,7 +12,7 @@ export function updateDomestic(world: WorldState, rng: SeededRandom): GameEvent[
   const events: GameEvent[] = [];
 
   for (const country of world.countries) {
-    if (country.collapsed) continue;
+    if (country.collapsed || country.eraStatus) continue; // era.ts: not a state, no politics of its own
 
     // --- Stability drift ---
     let delta = 0;
