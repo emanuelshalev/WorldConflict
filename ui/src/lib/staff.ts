@@ -1,6 +1,7 @@
 import {
   type CountryFull,
   type DecisionOption,
+  type Impact,
   type Meeting,
   type Objective,
   type PendingAction,
@@ -8,15 +9,35 @@ import {
   type PlayerViewCountry,
   type WorldState,
   countryName,
+  useGameStore,
 } from '../store/gameStore';
 import { effectArrows } from './format';
 import { pcCost } from './actions';
 
 /**
  * What the staff recommend each month: the suggested orders (mission first, then wars, then the
- * home front), the staff pick for each crisis, and the suggested answer for each meeting. Pure
- * functions of the payload, so the desk, the map strip and the month's defaults agree.
+ * home front), the cabinet pick for each crisis, and the suggested answer for each meeting.
+ *
+ * The engine computes all of this now (src/core/advisors.ts) and sends it with every payload as
+ * `advice` and `missionImpact`; these functions are an adapter that reads the payload when it is
+ * there and fall back to the old client-side reckoning (older servers, previews, tests).
  */
+
+/** The server's advice, when it is for the world currently loaded. */
+function serverAdvice(world: WorldState | null | undefined) {
+  const s = useGameStore.getState();
+  return world && s.worldState === world ? s.advice : null;
+}
+
+/** The engine's mission impact of a crisis or meeting option, if the payload carried it. */
+export function optionImpact(decisionId: string, optionId: string): Impact | undefined {
+  return useGameStore.getState().missionImpact[decisionId]?.[optionId];
+}
+
+/** The option with the best mission score (engine), or undefined when unknown. */
+export function missionPickId(decisionId: string): string | undefined {
+  return useGameStore.getState().advice?.missionPicks[decisionId];
+}
 
 export interface Suggestion {
   who: string;
@@ -49,6 +70,8 @@ const STAT_NAMES: Record<string, string> = { approval: 'Approval', stability: 'S
 const INSURGENCY_ORDER = ['NONE', 'UNREST', 'REBELLION', 'GUERILLA'];
 
 export function computeSuggestions(world: WorldState | null, view: PlayerViewCountry[], me: CountryFull | null | undefined): Suggestion[] {
+  const advice = serverAdvice(world);
+  if (advice) return advice.suggestions.map((s) => ({ ...s, action: { ...s.action, type: s.action.type as PendingAction['type'] } }));
   {
     if (!world || !me) return [];
     relationMemory.set(world.turn, { ...me.relations });
@@ -210,6 +233,10 @@ const backers = (o: DecisionOption) => o.backedBy?.length ?? 0;
 export function crisisStaffPick(d: PendingDecision, objective: Objective | null | undefined, pcAvailable = 99): DecisionOption {
   const affordable = d.options.filter((o) => (o.effects.pc ?? 0) >= 0 || pcAvailable + (o.effects.pc ?? 0) >= 0);
   const pool = affordable.length ? affordable : d.options;
+  // The engine's cabinet pick (it may work against the mission on STATESMAN and STRONGMAN)
+  const server = useGameStore.getState().advice?.cabinetPicks[d.id];
+  const fromServer = server ? pool.find((o) => o.id === server) : undefined;
+  if (fromServer) return fromServer;
   const safe = pool.filter((o) => !missionRisk(o, objective));
   const candidates = safe.length ? safe : pool;
   return [...candidates].sort(

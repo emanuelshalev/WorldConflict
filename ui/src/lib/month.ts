@@ -89,7 +89,9 @@ export async function setupMonth(): Promise<void> {
     // 2. Orders: up to three safe staff suggestions within the capital
     if (!useGameStore.getState().staffOrders) return;
     const me = world.countries.find((c) => c.id === world.playerCountryId);
-    const suggestions = computeSuggestions(world, s.playerView, me);
+    // The engine's staff queue first (variety rules: no order type two months running, at most
+    // twice in four months; safe and affordable), else the top suggestions
+    const suggestions = s.advice?.staffOrders ?? computeSuggestions(world, s.playerView, me);
     // Last month's orders: the staff do not repeat one on their own
     const lastMonth = new Set((world.turnReport?.orders ?? []).map((o) => o.label));
     let queued = 0;

@@ -149,6 +149,30 @@ function countryCard(id: string, decisions: Array<[Decision, number]>, orders: A
   };
 }
 
+/** The report item behind a home card key (`d3`, `o1`), when it repeats last month's. */
+function repeatOf(report: TurnReport, key: string): boolean {
+  const i = Number(key.slice(1));
+  if (key.startsWith('o')) return !!report.orders[i]?.repeat;
+  if (key.startsWith('d')) return !!report.decisions[i]?.repeat;
+  return false;
+}
+
+const ordinal = (n: number) => `${n}${n % 10 === 1 && n !== 11 ? 'st' : n % 10 === 2 && n !== 12 ? 'nd' : n % 10 === 3 && n !== 13 ? 'rd' : 'th'}`;
+const DIMINISHING = new Set(['DOMESTIC_REFORM', 'DOMESTIC_PROPAGANDA']);
+
+/** "Reform program again (3rd in 6 months): Stability +1.2, smaller each time". */
+function repeatLine(report: TurnReport, c: OutcomeCardData): string {
+  const i = Number(c.key.slice(1));
+  const order = c.key.startsWith('o') ? report.orders[i] : undefined;
+  const label = order ? order.label : (report.decisions[i]?.choice ?? c.headline);
+  const count = order?.again && order.again > 1 ? ` (${ordinal(order.again)} in 6 months)` : '';
+  const f = c.facts[0];
+  const d = f ? Math.round((f.after - f.before) * 10) / 10 : 0;
+  const fact = f && d ? `: ${f.label} ${d > 0 ? '+' : ''}${d}` : ': the same result as last month';
+  const less = order?.type && DIMINISHING.has(order.type) && (order.again ?? 0) >= 2 ? ', smaller each time' : '';
+  return `${label} again${count}${fact}${less}`;
+}
+
 export function buildPages(report: TurnReport, world: WorldState): DebriefPage[] {
   const home = world.playerCountryId;
   const decisions = report.decisions.map((d, i) => [d, i] as [Decision, number]);
@@ -192,7 +216,13 @@ export function buildPages(report: TurnReport, world: WorldState): DebriefPage[]
   const diplomacy = [...byCountry.entries()]
     .sort((a, b) => weight(b[0], b[1]) - weight(a[0], a[1]))
     .map(([id, v]) => countryCard(id, v.d, v.o, v.m, relations.get(id), home));
-  const staffHandled = decisions.filter(([d]) => d.attended === false && d.kind !== 'CRISIS').map(([d]) => `${d.speaker ?? d.title}: ${d.choice.replace(/ \(you did not attend\)$/, '')}${d.watch ? `. ${d.watch}` : ''}`);
+  // Staff-handled meetings: the ones that moved something get a line; routine ones one count (R4)
+  const deputyMeetings = decisions.filter(([d]) => d.attended === false && d.kind !== 'CRISIS');
+  const routine = deputyMeetings.filter(([d]) => !d.watch && !(d.facts ?? []).length).length;
+  const staffHandled = [
+    ...deputyMeetings.filter(([d]) => d.watch || (d.facts ?? []).length).map(([d]) => `${d.speaker ?? d.title}: ${d.choice.replace(/ \(you did not attend\)$/, '')}${d.watch ? `. ${d.watch}` : ''}`),
+    ...(routine ? [`Your staff handled ${routine} routine meeting${routine > 1 ? 's' : ''}`] : []),
+  ];
   const inCard = new Set([...byCountry.keys()]);
   const abroad = (report.world ?? []).filter((m) => m.target !== home && !inCard.has(m.actor)).slice(0, 4).map((m) => m.label);
   const movers = (report.relations ?? []).filter((r) => !inCard.has(r.id)).slice(0, 3).map((r) => `${countryName(r.id)}'s view of you: ${r.before} → ${r.after}`);
@@ -229,7 +259,17 @@ export function buildPages(report: TurnReport, world: WorldState): DebriefPage[]
       map: { target: id === 'GAZA' ? 'GAZ' : 'PSX', effect: bad > 0 ? 'strike' : 'none' },
     });
   }
-  const homeFoot = report.causes.length ? [{ title: 'Why your numbers moved', items: report.causes.slice(0, 4) }] : [];
+  // Repeats (R5): an order or decision with the same result as last month collapses to one line
+  const repeats = homeCards.filter((c) => repeatOf(report, c.key) && c.key !== highlight?.key);
+  for (const c of repeats) homeCards.splice(homeCards.indexOf(c), 1);
+  const againItems = repeats.map((c) => repeatLine(report, c));
+  // Causes that also moved last month come after the new ones, as "Still: ..."
+  const still = new Set(report.causesRepeated ?? []);
+  const causes = [...report.causes.filter((c) => !still.has(c)), ...report.causes.filter((c) => still.has(c)).map((c) => `Still: ${c.charAt(0).toLowerCase()}${c.slice(1)}`)];
+  const homeFoot = [
+    ...(againItems.length ? [{ title: 'Again this month', items: againItems }] : []),
+    ...(causes.length ? [{ title: 'Why your numbers moved', items: causes.slice(0, 4) }] : []),
+  ];
 
   const isHighlight = (c: OutcomeCardData) => !!highlight && (c.key === highlight.key || (highlight.country !== undefined && c.key === `c-${highlight.country}` && c.lines.length <= 1));
   const pages: DebriefPage[] = [];
