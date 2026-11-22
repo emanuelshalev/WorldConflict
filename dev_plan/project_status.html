@@ -80,6 +80,27 @@
   .timeline .date { font-size: 12px; color: var(--muted); font-weight: 600; }
   details { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; margin: 8px 0; }
   details summary { cursor: pointer; font-weight: 600; }
+
+  .stepper { display: flex; gap: 0; margin: 14px 0 6px; overflow-x: auto; padding-bottom: 4px; }
+  .step { flex: 1 1 0; min-width: 104px; text-align: center; position: relative; padding-top: 34px; font-size: 12.5px; color: var(--muted); }
+  .step::before { content: ''; position: absolute; top: 13px; left: 0; right: 0; height: 4px; background: var(--line); }
+  .step:first-child::before { left: 50%; } .step:last-child::before { right: 50%; }
+  .step .dot { position: absolute; top: 2px; left: 50%; transform: translateX(-50%); width: 26px; height: 26px; border-radius: 50%; background: #fff; border: 3px solid var(--line); display: grid; place-items: center; font-size: 12px; font-weight: 700; z-index: 1; }
+  .step.done::before { background: var(--done); } .step.done .dot { border-color: var(--done); background: var(--done); color: #fff; }
+  .step.now .dot { border-color: var(--doing); background: var(--doing-soft); color: var(--doing); box-shadow: 0 0 0 5px rgba(176,109,0,.15); }
+  .step.now { color: var(--ink); font-weight: 700; }
+  .step b { display: block; color: var(--ink); font-size: 13px; }
+  .heat td.h { text-align: center; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+  .persona { display: grid; grid-template-columns: 52px 1fr; gap: 12px; align-items: start; }
+  .avatar { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; font-size: 26px; background: var(--navy-soft); }
+  .avatar.neg { background: var(--brand-soft); } .avatar.team { background: var(--done-soft); }
+  .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+  .tag { font-size: 11.5px; background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; color: var(--muted); }
+  .stagetbl td { font-size: 13px; } .stagetbl td.now { background: var(--doing-soft); }
+  .journal .entry { border-left: 4px solid var(--navy); background: var(--panel); border-radius: 0 12px 12px 0; padding: 12px 16px; margin: 12px 0; }
+  .journal .entry .date { font-size: 12px; color: var(--muted); font-weight: 600; }
+  .journal .entry ul { margin: 6px 0 0; padding-left: 20px; }
+  .hl { color: var(--done); } .ll { color: var(--brand); }
   footer { text-align: center; color: var(--muted); font-size: 12.5px; padding: 30px; }
   @media (max-width: 640px) { header { padding: 20px 16px 0; } main { padding: 20px 16px 60px; } td, th { padding: 7px 8px; } }
 </style>
@@ -87,20 +108,24 @@
 <body>
 <header>
   <h1>🌍 World Conflict: <span>Project Status</span></h1>
-  <div class="sub">Engagement overhaul · branch <code style="background:rgba(255,255,255,.15);color:#fff">feat/engagement-overhaul</code> · autonomous development log for owner review</div>
+  <div class="sub">Road to the public release candidate · branch <code style="background:rgba(255,255,255,.15);color:#fff">dev/rc1-synthetic-loop</code> (from <code style="background:rgba(255,255,255,.15);color:#fff">v0.9.0</code>) · synthetic-customer development loop · live log for the CEO</div>
   <div class="meta" id="meta"></div>
   <nav id="tabs">
-    <button data-tab="plan" class="active">🧭 Plan Overview</button>
+    <button data-tab="iter" class="active">🔁 Iterations</button>
+    <button data-tab="personas">👥 Personas</button>
+    <button data-tab="how">🛠 How we work</button>
+    <button data-tab="plan">🧭 Plan Overview</button>
     <button data-tab="arch">🏗 Architecture</button>
     <button data-tab="tasks">✅ Development Status</button>
     <button data-tab="blockers">🚧 Blockers</button>
     <button data-tab="decisions">⚖️ Decision Points</button>
+    <button data-tab="journal">📓 Journal</button>
   </nav>
 </header>
 
 <main>
 <!-- ============================================================ PLAN -->
-<section class="tab active" id="plan">
+<section class="tab" id="plan">
   <h2>Mission</h2>
   <p>Turn World Conflict from a working systems prototype into a game people <b>finish, share and come back to</b>: a geopolitical sim rooted in the real world of <b>November 2026</b>, playable in a <b>10–15 minute Flashpoint</b> or a <b>multi-day Campaign</b>, beautiful on desktop and mobile, with optional LLM intelligence whose cost is always visible.</p>
 
@@ -264,6 +289,143 @@ flowchart LR
   <div class="callout info">Decisions taken along the way. <b>Owner</b> = you decided; <b>Agent</b> = taken autonomously and open for your review, comment on any you'd like changed.</div>
   <div id="decisionlist"></div>
 </section>
+
+<!-- ============================================================ ITERATIONS -->
+<section class="tab active" id="iter">
+  <h2>Where we are</h2>
+  <div class="callout info" id="nowbox"></div>
+  <div class="stepper" id="stepper"></div>
+  <p class="muted" id="iterlabel"></p>
+  <div class="grid" id="loopkpis"></div>
+
+  <h2>Goals</h2>
+  <p class="muted">Two tracks set by the CEO: <b>A</b> a fantastic game (gates the release candidate) and <b>B</b> the best agentic development practices (how we get there; lessons go to the reusable <code>devloop/</code> module).</p>
+  <table><thead><tr><th style="width:52px">ID</th><th>Goal</th><th style="width:150px">Source</th><th style="width:110px">Status</th></tr></thead><tbody id="goalrows"></tbody></table>
+
+  <h2>Would recommend, by persona and iteration</h2>
+  <p class="muted">Synthetic panel scores (1 to 10). Gate: weighted 7.0 or more, nobody below 6. Shares are of the synthetic panel, not the market.</p>
+  <div id="heat"></div>
+
+  <h2>Iteration log</h2>
+  <div id="iterlog"></div>
+</section>
+
+<!-- ============================================================ PERSONAS -->
+<section class="tab" id="personas">
+  <h2>Who is involved</h2>
+  <p>Three groups: the <b>CEO</b> (real customer number one and owner), the <b>builder team</b> (agents that design, build and test), and the <b>synthetic customer panel</b> (agents that play like real people and are never told what the team hopes to hear). Real signals calibrate the panel.</p>
+  <div class="mermaid-like" style="border:1px solid var(--line);border-radius:12px;padding:12px;margin:12px 0 20px;overflow-x:auto">
+  <svg viewBox="0 0 1000 470" width="100%" style="min-width:720px;font-family:Inter,sans-serif" role="img" aria-label="Relationships between the CEO, the builder team and the customer panel">
+    <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5b6478"/></marker></defs>
+    <rect x="380" y="14" width="240" height="54" rx="12" fill="#fdecea" stroke="#b3261e" stroke-width="1.5"/><text x="500.0" y="37.0" text-anchor="middle" font-size="14" font-weight="700" fill="#1b2030">👔 CEO</text><text x="500.0" y="55.0" text-anchor="middle" font-size="12.5" font-weight="400" fill="#5b6478">owner · real customer #1</text>
+    <rect x="380" y="118" width="240" height="54" rx="12" fill="#e3f4ea" stroke="#1e7d4f" stroke-width="1.5"/><text x="500.0" y="141.0" text-anchor="middle" font-size="14" font-weight="700" fill="#1b2030">🧭 Group Manager</text><text x="500.0" y="159.0" text-anchor="middle" font-size="12.5" font-weight="400" fill="#5b6478">plans · triages · reports</text>
+    <rect x="20" y="222" width="290" height="230" rx="14" fill="#f7f8fb" stroke="#e3e6ee"/><text x="165" y="244" text-anchor="middle" font-size="12" font-weight="700" fill="#1e7d4f">DESIGN</text>
+    <rect x="40" y="256" width="250" height="40" rx="12" fill="#e3f4ea" stroke="#1e7d4f" stroke-width="1.5"/><text x="165.0" y="281.0" text-anchor="middle" font-size="14" font-weight="700" fill="#1b2030">🎲 Game Designer</text><rect x="40" y="304" width="250" height="40" rx="12" fill="#e3f4ea" stroke="#1e7d4f" stroke-width="1.5"/><text x="165.0" y="329.0" text-anchor="middle" font-size="14" font-weight="700" fill="#1b2030">🎨 Art Director</text><rect x="40" y="352" width="250" height="40" rx="12" fill="#e3f4ea" stroke="#1e7d4f" stroke-width="1.5"/><text x="165.0" y="377.0" text-anchor="middle" font-size="14" font-weight="700" fill="#1b2030">🧩 UX Designer</text><rect x="40" y="400" width="250" height="40" rx="12" fill="#e3f4ea" stroke="#1e7d4f" stroke-width="1.5"/><text x="165.0" y="425.0" text-anchor="middle" font-size="14" font-weight="700" fill="#1b2030">🌍 Content Consultant</text>
+    <rect x="355" y="222" width="290" height="182" rx="14" fill="#f7f8fb" stroke="#e3e6ee"/><text x="500" y="244" text-anchor="middle" font-size="12" font-weight="700" fill="#1e7d4f">BUILD AND VERIFY</text>
+    <rect x="375" y="256" width="250" height="40" rx="12" fill="#e3f4ea" stroke="#1e7d4f" stroke-width="1.5"/><text x="500.0" y="281.0" text-anchor="middle" font-size="14" font-weight="700" fill="#1b2030">💻 Frontend Engineer</text><rect x="375" y="304" width="250" height="40" rx="12" fill="#e3f4ea" stroke="#1e7d4f" stroke-width="1.5"/><text x="500.0" y="329.0" text-anchor="middle" font-size="14" font-weight="700" fill="#1b2030">⚙️ Engine Engineer</text><rect x="375" y="352" width="250" height="40" rx="12" fill="#e3f4ea" stroke="#1e7d4f" stroke-width="1.5"/><text x="500.0" y="377.0" text-anchor="middle" font-size="14" font-weight="700" fill="#1b2030">🔍 QA Engineer</text>
+    <rect x="690" y="222" width="290" height="230" rx="14" fill="#f7f8fb" stroke="#e3e6ee"/><text x="835" y="244" text-anchor="middle" font-size="12" font-weight="700" fill="#1f3a5f">CUSTOMER PANEL · BLIND</text>
+    <rect x="710" y="256" width="250" height="54" rx="12" fill="#e8eef7" stroke="#1f3a5f" stroke-width="1.5"/><text x="835.0" y="279.0" text-anchor="middle" font-size="14" font-weight="700" fill="#1b2030">Quick sessions</text><text x="835.0" y="297.0" text-anchor="middle" font-size="12.5" font-weight="400" fill="#5b6478">Maya · Olivia · Noah</text><rect x="710" y="318" width="250" height="54" rx="12" fill="#e8eef7" stroke="#1f3a5f" stroke-width="1.5"/><text x="835.0" y="341.0" text-anchor="middle" font-size="14" font-weight="700" fill="#1b2030">Long sessions</text><text x="835.0" y="359.0" text-anchor="middle" font-size="12.5" font-weight="400" fill="#5b6478">Ruth · Marcus · Dan</text><rect x="710" y="380" width="250" height="54" rx="12" fill="#e8eef7" stroke="#1f3a5f" stroke-width="1.5"/><text x="835.0" y="403.0" text-anchor="middle" font-size="14" font-weight="700" fill="#1b2030">News · stream · craft</text><text x="835.0" y="421.0" text-anchor="middle" font-size="12.5" font-weight="400" fill="#5b6478">Priya · Leo · Sam</text>
+    <g stroke="#5b6478" stroke-width="1.6" fill="none" marker-end="url(#ar)">
+      <path d="M470,68 L470,116"/><path d="M530,118 L530,70"/>
+      <path d="M380,150 C250,150 165,170 165,220"/>
+      <path d="M310,330 L353,330"/>
+      <path d="M645,330 L688,330"/>
+      <path d="M835,220 C835,160 720,145 622,145"/>
+      <path d="M620,40 C860,40 960,120 960,220" stroke-dasharray="5 5"/>
+    </g>
+    <g font-size="12" fill="#5b6478">
+      <text x="462" y="97" text-anchor="end">goals, feedback</text><text x="538" y="97">status, RC</text>
+      <text x="250" y="168">briefs</text><text x="332" y="320" text-anchor="middle">specs</text><text x="667" y="320" text-anchor="middle">build</text>
+      <text x="760" y="160">session reports</text><text x="830" y="70">calibrates the panel</text>
+    </g>
+  </svg></div>
+
+  <h2>What each persona does at each stage</h2>
+  <p class="muted">The highlighted column is the current stage.</p>
+  <div style="overflow-x:auto"><table class="stagetbl" id="stagetbl"></table></div>
+
+  <h2>Customer panel <span class="muted" style="font-size:14px;font-weight:500" id="panelver"></span></h2>
+  <p class="muted">Coverage matrix first, then personas: gamers and non-gamers, teens to retirees, quick sessions to long campaigns, phone to desktop. Every attribute carries an evidence tag (assumed, inferred, observed). Files: <code>devloop/instances/world-conflict/panel/</code>.</p>
+  <div style="overflow-x:auto"><table id="coverage"></table></div>
+  <div class="grid" id="customers"></div>
+
+  <h2>Builder team</h2>
+  <p class="muted">Charters: <code>devloop/instances/world-conflict/team/</code>. Builders never grade their own work.</p>
+  <div class="grid" id="team"></div>
+</section>
+
+<!-- ============================================================ HOW WE WORK -->
+<section class="tab" id="how">
+  <h2>How we work <span class="muted" style="font-size:14px;font-weight:500" id="howver"></span></h2>
+  <p>We follow the synthetic-customer method (<i>Leveraging Synthetic Customers to Develop Your Product</i>): customer agents are interviewed, use every build through the real UI, and report in a fixed format; the team reacts; every decision is recorded; real feedback corrects the panel. This tab always shows the <b>current</b> process. Each change comes from a journal entry (last tab).</p>
+
+  <h3>The loop</h3>
+  <div class="mermaid">
+flowchart LR
+  P["1 Plan<br/>goals for this iteration"] --> D["2 Design<br/>specs + concepts"] --> B["3 Build<br/>parallel agents"] --> V["4 Verify<br/>tests, smoke, visual QA"] --> U["5 Use<br/>blind customer sessions"] --> T["6 Triage<br/>cluster, reproduce, decide"] --> R["7 Report<br/>status page, journal, tag"] --> G{"8 Gate"}
+  G -- "fail" --> P
+  G -- "pass" --> RC(["Release candidate"])
+  RS[("Real signals<br/>CEO, players")] -. "calibrate" .-> U
+  L[("Decision ledger")] -.-> P
+  T --> L
+  </div>
+
+  <h3>One iteration, step by step</h3>
+  <div class="mermaid">
+sequenceDiagram
+  participant GM as Group Manager
+  participant DS as Designers
+  participant EN as Engineers
+  participant QA as QA
+  participant CP as Customer panel
+  participant CEO as CEO
+  GM->>DS: Goals + findings (never customer answers to aim for)
+  DS->>EN: Specs, concepts, acceptance criteria
+  EN->>QA: Build + tests
+  QA->>QA: Tests, lints, build, harness, smoke playtest, visual QA
+  QA->>CP: Verified build (no change notes)
+  CP->>GM: Schema-valid session reports + screenshots
+  GM->>QA: Reproduce reported bugs
+  GM->>GM: Cluster, weigh, decide, ledger
+  GM->>CEO: Status page + journal update
+  CEO-->>GM: Real feedback (calibrates the panel)
+  </div>
+
+  <h3>Principles</h3>
+  <div class="grid" id="principles"></div>
+
+  <h3>Reusable module</h3>
+  <p class="muted">The method is kept apart from the game so it can be copied to another project: nothing in <code>method/</code>, <code>kit/</code> or <code>templates/</code> knows about World Conflict.</p>
+  <div class="mermaid">
+flowchart TB
+  subgraph DL["devloop/ (reusable)"]
+    M["method/<br/>interview, usage session, report schema,<br/>triage, calibration, metrics, panel, team"]
+    K["kit/<br/>Playwright kit, persistent driver"]
+    TP["templates/<br/>starting files for a new product"]
+    HW["HOW_WE_WORK.md · LEARNINGS.md"]
+  end
+  subgraph WC["devloop/instances/world-conflict/"]
+    PN["panel/ (9 personas)"]
+    TM["team/ (8 charters)"]
+    GL["goals · gate · ledger · journal"]
+    RN["runs/iter-NN/<br/>interviews, sessions, triage"]
+  end
+  TP -. "copy" .-> WC
+  M --> RN
+  K --> RN
+  WC -- "lessons" --> HW
+  </div>
+
+  <h3>Release gate</h3>
+  <ul id="gate"></ul>
+</section>
+
+<!-- ============================================================ JOURNAL -->
+<section class="tab" id="journal">
+  <h2>Journal</h2>
+  <p class="muted">What we learned about how we work, and what we changed. Oldest first, so the newest entry is always at the bottom. Each change is reflected in the "How we work" tab and in <code>devloop/HOW_WE_WORK.md</code>; lessons that apply to any project go to <code>devloop/LEARNINGS.md</code>.</p>
+  <div class="journal" id="journallist"></div>
+</section>
 </main>
 <footer>Last updated <span id="updated"></span> · generated by the development agent · single-file page, edit the <code>STATUS</code> object to update</footer>
 
@@ -273,9 +435,9 @@ flowchart LR
 // STATUS DATA: the only part that changes between updates
 // =====================================================================
 const STATUS = {
-  updated: "2026-11-01",
-  branch: "ccr-fc426113-gp9q7q (built on feat/engagement-overhaul)",
-  phase: "Release candidate 2.0.0-rc.2",
+  updated: "2026-11-22",
+  branch: "dev/rc1-synthetic-loop (from v0.9.0)",
+  phase: "Iteration 0 · road to RC",
   timeline: [
     { date: "2026-11-01", state: "done", title: "Kick-off & baseline", text: "Branch, Node 22 toolchain, 52/52 tests, fixed broken dev proxy (sign-up failed on main), headless playtest harness, UI screenshot tours." },
     { date: "2026-11-01", state: "done", title: "Expert & persona reviews", text: "Game design, UX/visual, geopolitics (+16 country profiles) and a four-persona playtest. Headline findings: one dominant strategy (propaganda), only 2 crisis templates, silent coups, tension pinned ~90, 3–6 h sessions, forced login, broken map, stale 2025 data. → <code>dev_plan/reviews/</code>" },
@@ -465,6 +627,137 @@ $('blockrows').innerHTML = STATUS.blockers.map((b) =>
 $('decisionlist').innerHTML = STATUS.decisions.map((d) =>
   `<details ${d.who === 'Agent' ? 'open' : ''}><summary><span class="mono">${d.id}</span> ${d.title} <span class="badge ${d.who === 'Agent' ? 'b-updated' : 'b-done'}">${d.who}</span></summary><p>${d.text}</p></details>`).join('');
 
+// =====================================================================
+// LOOP DATA: the synthetic-customer development loop (updated every stage)
+// =====================================================================
+const LOOP = {
+  updated: "2026-11-22 06:10",
+  iteration: 0,
+  stage: 5, // index into stages
+  now: "<b>Iteration 0, stage 5 (Use): baseline.</b> The loop is set up as a reusable module (<code>devloop/</code>). Nine synthetic customers are being interviewed and are playing the current build (v0.9.0) through the real UI in parallel, blind to your feedback, so we can check that the recalibrated panel finds the problems you found. Next: triage, then the first build iteration on the goals below.",
+  stages: [
+    ["Plan", "goals"], ["Design", "specs"], ["Build", "code"], ["Verify", "QA"], ["Use", "customers"], ["Triage", "decide"], ["Report", "status"], ["Gate", "RC?"],
+  ],
+  kpis: [["Iteration", "0 <small>baseline</small>"], ["Customer personas", "9"], ["Team personas", "8"], ["Real signals", "1 <small>CEO</small>"], ["Decisions logged", "D-42"], ["Release gate", "<span style='color:var(--brand)'>not met</span>"]],
+  goals: [
+    ["G1", "A", "Never blocked without a reason and a way forward", "CEO RS-001", "planned"],
+    ["G2", "A", "Point at what you mean (warnings highlight the element)", "CEO RS-001", "planned"],
+    ["G3", "A", "One vocabulary (one name per concept, everywhere)", "CEO RS-001", "planned"],
+    ["G4", "A", "Clear what is expected each month", "CEO RS-001", "planned"],
+    ["G5", "A", "Suggestions visible, explained, one tap to accept", "CEO RS-001", "planned"],
+    ["G6", "A", "Desk and map parity", "CEO RS-001", "planned"],
+    ["G7", "A", "A game, not a dashboard (art-directed, reactive UI)", "CEO RS-001", "planned"],
+    ["G8", "A", "A wide audience: non-gamers, teens, quick and long sessions", "CEO brief", "planned"],
+    ["G9", "A", "Learn and test real history (what really happened, replay to compare)", "CEO brief", "planned"],
+    ["P1", "B", "Reusable method, kept apart from the game", "CEO", "doing"],
+    ["P2", "B", "Fast, safe iterations (more change, zero regressions)", "CEO", "planned"],
+    ["P3", "B", "Quality by construction (ledger, spec or test, QA on every change)", "Method", "doing"],
+    ["P4", "B", "Parallel agents at scale with clear briefs and isolation", "CEO", "doing"],
+    ["P5", "B", "A learning loop on the process (journal, How we work)", "CEO", "doing"],
+    ["P6", "B", "Panel fidelity: the panel predicts real feedback", "Method", "doing"],
+  ],
+  // recommend scores per iteration (null = not yet played)
+  personas: ["maya", "olivia", "ruth", "noah", "priya", "dan", "sam", "leo", "marcus"],
+  heat: { "0": {} },
+  iterations: [
+    { n: 0, title: "Setup and baseline", state: "doing", dates: "2026-11-21 to now",
+      summary: "Tagged v0.9.0 and branched. Built the synthetic-customer loop as a reusable <code>devloop/</code> module: 9 customer personas from a coverage matrix, 8 team charters, fixed interview and session protocols, a report schema, triage rules, a decision ledger, a Playwright kit with a persistent driver so agents play turn by turn, and a smoke playtest. Recalibrated the panel against your playtest.",
+      highlights: ["Your playtest is real signal RS-001; it showed the old panel was too patient and too polite, so we added a skeptic (Sam), an early quitter (Olivia), and three new audiences (Ruth 67, Noah 16, Marcus 54).", "The method is product-agnostic: copy <code>devloop/</code> to another repo and start from <code>templates/</code>.", "Customer agents play through the real UI at their own device size, on a different model from the builders."],
+      lowlights: ["The first smoke script was flaky: it treated a control hidden behind a closing overlay as clickable. Fixed with reachability checks; the lesson is in LEARNINGS.", "Earlier persona rounds rated visuals 7/10; that confidence was misplaced."] },
+  ],
+  stageMatrix: {
+    // persona/group -> [Plan, Design, Build, Verify, Use, Triage, Report, Gate]
+    "👔 CEO": ["Sets goals, gives feedback", "", "", "", "Real signal (optional)", "", "Reads status", "Accepts RC"],
+    "🧭 Group Manager": ["Picks 3 to 5 goals", "Briefs designers", "Coordinates agents", "Checks gate inputs", "Briefs customers (blind)", "Clusters, decides, ledger", "Status page, journal, tag", "Pass or iterate"],
+    "🎲 Game Designer": ["Reads findings", "Loop, rules, suggestions spec", "Reviews builds", "", "", "Proposes fixes", "", ""],
+    "🎨 Art Director": ["", "Concepts, components, motion", "Reviews UI", "Visual QA checklist", "", "Visual findings", "", ""],
+    "🧩 UX Designer": ["", "Flows, messages, parity spec", "Reviews UI", "Acceptance criteria", "", "UX findings", "", ""],
+    "💻 Frontend Eng.": ["", "Feasibility", "Implements UI", "Fixes", "", "", "", ""],
+    "⚙️ Engine Eng.": ["", "Feasibility", "Rules, reasons API", "Fixes, harness", "", "", "", ""],
+    "🔍 QA Engineer": ["", "Test plan", "Writes tests", "Runs everything", "Watches for crashes", "Reproduces bugs", "", "Confirms green"],
+    "🌍 Content Consultant": ["", "Facts and copy", "Reviews text", "", "", "Realism findings", "", ""],
+    "👥 Customer panel": ["Interviews (iteration 0)", "", "", "", "Play the build, report", "", "", "Recommend scores"],
+  },
+  customers: [
+    ["maya", "Maya", 29, "📱", "core", 0.18, "Casual, plays on the commute", "A satisfying story with a clear outcome in 10 to 15 minutes", ["casual", "quick", "phone/laptop"]],
+    ["olivia", "Olivia", 34, "🚪", "negative", 0.13, "Early quitter, casual mobile gamer", "Fun within two minutes; never feel stupid or blocked", ["casual", "quick", "quits fast"]],
+    ["ruth", "Ruth", 67, "📰", "core", 0.13, "Retired history teacher, reads two papers a day, never played strategy games", "Test what-ifs on the news she follows and learn the real background, at her own pace", ["non-gamer", "long", "tablet", "legibility"]],
+    ["noah", "Noah", 16, "🎮", "core", 0.10, "High-school student, Fortnite and Clash Royale", "Start in seconds on his phone, do something huge, screenshot it", ["teen", "quick", "phone"]],
+    ["priya", "Priya", 22, "🌐", "core", 0.10, "IR student, follows the news daily", "Play out today's news, learn how actors think", ["current affairs", "quick", "laptop"]],
+    ["dan", "Dan", 41, "♟️", "core", 0.10, "Grand-strategy veteran", "Real depth, transparent rules, no dominant strategy", ["veteran", "long", "desktop"]],
+    ["sam", "Sam", 38, "🔎", "negative", 0.09, "Skeptic: UX lead at a game studio", "Decide in five minutes whether it is a crafted game or an AI dashboard", ["critic", "craft", "desktop"]],
+    ["leo", "Leo", 26, "🎥", "core", 0.09, "Streamer", "Dramatic, clip-able moments and a shareable end screen", ["drama", "stream", "desktop"]],
+    ["marcus", "Marcus", 54, "📚", "core", 0.08, "Engineer, board wargamer, history buff", "Replay what-ifs and check outcomes are plausible", ["board games", "long", "laptop"]],
+  ],
+  coverage: { head: ["", "Gaming experience", "Motivation", "Age", "Session", "Device"], rows: [
+    ["Noah", "high-casual", "fun, learning", "teen", "quick", "phone"], ["Priya", "casual", "current affairs", "20s", "quick", "laptop"],
+    ["Leo", "high-casual", "drama to share", "20s", "both", "desktop"], ["Maya", "casual", "fun and feel", "20s", "quick", "phone"],
+    ["Olivia", "casual", "fun and feel", "30s", "quick", "laptop"], ["Sam", "professional critic", "craft", "30s", "quick", "desktop"],
+    ["Dan", "strategy veteran", "depth", "40s", "long", "desktop"], ["Marcus", "board games", "history what-ifs", "50s", "long", "laptop"],
+    ["Ruth", "none", "current affairs, learning", "60+", "long", "tablet"] ] },
+  team: [
+    ["🧭", "Group Manager", "Goals, iteration plan, ledger, release gate, status page"],
+    ["🎲", "Game Designer", "Monthly loop, what the player is asked to do, suggestions, pacing, balance"],
+    ["🎨", "Art Director", "Visual identity, game-like components, illustration, motion, sound"],
+    ["🧩", "UX Designer", "Flows, block messages, one vocabulary, desk/map parity, onboarding, accessibility"],
+    ["💻", "Frontend Engineer", "React UI, interaction, animation, performance"],
+    ["⚙️", "Engine Engineer", "Simulation, rules, previews, structured reasons, determinism"],
+    ["🔍", "QA Engineer", "Tests, harness, playtest kit, bug reproduction, visual QA"],
+    ["🌍", "Content Consultant", "Facts, leaders, crisis writing, debriefs"],
+  ],
+  howVersion: "v1.1 · 2026-11-21",
+  principles: [
+    ["Customers decide, builders build", "Customer agents run fresh, blind to design intent and goals, on a different model from the builders."],
+    ["Real signals win", "Your feedback calibrates the panel. When a real person disagrees with the panel, we go with the person."],
+    ["Spec before code", "Anything you see starts as a designer concept and an interaction spec with acceptance criteria."],
+    ["Every change is traceable", "Ledger entry with evidence, alternatives, expected effect and what would reverse it."],
+    ["Never remove a capability", "Improve it, surface it better or make it optional."],
+    ["Parallel by default", "Independent work runs as parallel agents with narrow briefs; overlapping edits are isolated or sequenced."],
+    ["Verify before customers see it", "Tests, lints, build, balance harness and a smoke playtest through the real UI."],
+    ["Report often", "This page and the journal update at every stage."],
+  ],
+  gate: ["Every game goal G1 to G9 verified by QA and confirmed by the panel", "No open S1 or S2 finding", "Weighted would-recommend 7.0 or more, nobody below 6", "Weighted feels-like-a-game and agency 7.0 or more", "Olivia (early quitter) and Ruth (non-gamer) finish a first session without quitting", "Tests, lints, build, balance harness and smoke playtest green"],
+  journal: [
+    { date: "2026-11-21", iter: 0, title: "Setup", items: [
+      "<b>Found:</b> three earlier persona rounds rated visuals 7/10, yet your playtest found the UI dashboard-like, blocking and unclear. The panel was too patient, read too carefully, and had no skeptic or quitter, which is the bias the research predicts.",
+      "<b>Changed:</b> added a skeptic and an early quitter, lowered patience and reading for every persona, customers now run on a different model and blind to intent, and the release gate is higher.",
+      "<b>Changed:</b> your remark about the credit bar is a hold-out check: the corrected panel must find it on the old build without being told.",
+      "<b>Changed:</b> spec before code. Every UI goal starts with an Art Director concept and a UX spec, because earlier UI work went straight to code and drifted toward generic components." ] },
+    { date: "2026-11-21", iter: 0, title: "Your course corrections", items: [
+      "<b>Found:</b> the loop was mixed into game files. <b>Changed:</b> it is now the self-contained <code>devloop/</code> module (method, kit, templates) with World Conflict as one instance.",
+      "<b>Found:</b> the panel was mostly gamers. <b>Changed:</b> coverage matrix first, then Ruth (67, non-gamer, news), Noah (16, mobile gamer) and Marcus (54, board gamer, history what-ifs); goals G8 (wide audience) and G9 (learn and test real history).",
+      "<b>Found:</b> only the product had goals. <b>Changed:</b> track B goals for agentic development practice (P1 to P6), measured every iteration.",
+      "<b>Found:</b> one-shot scripts lose the browser between steps, so agents could not play turn by turn. <b>Changed:</b> a persistent driver keeps one browser open per customer." ] },
+  ],
+};
+
+const badgeS = (s) => `<span class="badge b-${s}">${s === 'doing' ? 'in progress' : s}</span>`;
+$('nowbox').innerHTML = LOOP.now + `<div class="muted" style="margin-top:6px;font-size:12.5px">Updated ${LOOP.updated}</div>`;
+$('stepper').innerHTML = LOOP.stages.map(([n, sub], i) => {
+  const st = i + 1 < LOOP.stage ? 'done' : i + 1 === LOOP.stage ? 'now' : '';
+  return `<div class="step ${st}"><span class="dot">${st === 'done' ? '✓' : i + 1}</span><b>${n}</b>${sub}</div>`;
+}).join('');
+$('iterlabel').textContent = `Iteration ${LOOP.iteration}, stage ${LOOP.stage} of ${LOOP.stages.length}`;
+$('loopkpis').innerHTML = LOOP.kpis.map(([k, v]) => `<div class="card"><div class="muted">${k}</div><div class="kpi">${v}</div></div>`).join('');
+$('goalrows').innerHTML = LOOP.goals.map(([id, tr, g, src, st]) => `<tr><td class="mono">${id}</td><td>${g}</td><td class="muted">${src}</td><td>${badgeS(st)}</td></tr>`).join('');
+const iters = Object.keys(LOOP.heat);
+const col = (v) => v == null ? '#f7f8fb' : v >= 8 ? '#c9ecd8' : v >= 7 ? '#e3f4ea' : v >= 6 ? '#fff3dc' : v >= 4 ? '#fde2c8' : '#fdecea';
+$('heat').innerHTML = `<div style="overflow-x:auto"><table class="heat"><thead><tr><th>Persona</th>${iters.map((i) => `<th style="text-align:center">Iter ${i}</th>`).join('')}</tr></thead><tbody>${
+  LOOP.personas.map((p) => `<tr><td><b>${p[0].toUpperCase() + p.slice(1)}</b></td>${iters.map((i) => { const v = LOOP.heat[i][p]; return `<td class="h" style="background:${col(v)}">${v ?? '·'}</td>`; }).join('')}</tr>`).join('')}</tbody></table></div>`;
+$('iterlog').innerHTML = LOOP.iterations.slice().reverse().map((it) => `<details ${it.state === 'doing' ? 'open' : ''}><summary>Iteration ${it.n}: ${it.title} ${badgeS(it.state)} <span class="muted" style="font-weight:400">${it.dates}</span></summary>
+  <p>${it.summary}</p><div class="grid"><div class="card"><h4 class="hl">Highlights</h4><ul>${it.highlights.map((h) => `<li>${h}</li>`).join('')}</ul></div>
+  <div class="card"><h4 class="ll">Lowlights</h4><ul>${it.lowlights.map((h) => `<li>${h}</li>`).join('')}</ul></div></div></details>`).join('');
+$('stagetbl').innerHTML = `<thead><tr><th>Who</th>${LOOP.stages.map(([n], i) => `<th class="${i + 1 === LOOP.stage ? 'now' : ''}">${i + 1}. ${n}</th>`).join('')}</tr></thead><tbody>${
+  Object.entries(LOOP.stageMatrix).map(([who, cells]) => `<tr><td><b>${who}</b></td>${cells.map((c, i) => `<td class="${i + 1 === LOOP.stage ? 'now' : ''}">${c || '<span class="muted">·</span>'}</td>`).join('')}</tr>`).join('')}</tbody>`;
+$('panelver').textContent = 'panel v1.1 · 9 archetypes';
+$('coverage').innerHTML = `<thead><tr>${LOOP.coverage.head.map((h) => `<th>${h}</th>`).join('')}</tr></thead><tbody>${LOOP.coverage.rows.map((r) => `<tr>${r.map((c, i) => i ? `<td>${c}</td>` : `<td><b>${c}</b></td>`).join('')}</tr>`).join('')}</tbody>`;
+$('customers').innerHTML = LOOP.customers.map(([id, n, age, ic, kind, w, who, job, tags]) => `<div class="card persona"><div class="avatar ${kind === 'negative' ? 'neg' : ''}">${ic}</div><div><h4>${n}, ${age} ${kind === 'negative' ? '<span class="badge b-open">negative</span>' : ''}</h4><div class="muted">${who}</div><div style="margin-top:4px"><b>Wants:</b> ${job}</div><div class="tags"><span class="tag">weight ${w.toFixed(2)}</span>${tags.map((t) => `<span class="tag">${t}</span>`).join('')}</div></div></div>`).join('');
+$('team').innerHTML = LOOP.team.map(([ic, n, own]) => `<div class="card persona"><div class="avatar team">${ic}</div><div><h4>${n}</h4><div class="muted">${own}</div></div></div>`).join('');
+$('howver').textContent = LOOP.howVersion;
+$('principles').innerHTML = LOOP.principles.map(([t, d]) => `<div class="card"><h4>${t}</h4>${d}</div>`).join('');
+$('gate').innerHTML = LOOP.gate.map((g) => `<li>${g}</li>`).join('');
+$('journallist').innerHTML = LOOP.journal.map((j) => `<div class="entry"><div class="date">${j.date} · iteration ${j.iter}</div><b>${j.title}</b><ul>${j.items.map((i) => `<li>${i}</li>`).join('')}</ul></div>`).join('');
+
 // Tabs + lazy mermaid rendering (hidden diagrams render with zero size)
 mermaid.initialize({ startOnLoad: false, theme: 'base', themeVariables: {
   primaryColor: '#e8eef7', primaryBorderColor: '#1f3a5f', primaryTextColor: '#1b2030',
@@ -477,7 +770,7 @@ const show = async (id) => {
   history.replaceState(null, '', `#${id}`);
 };
 $('tabs').addEventListener('click', (e) => { const t = e.target.closest('button')?.dataset.tab; if (t) show(t); });
-show(location.hash.slice(1) || 'plan');
+show(location.hash.slice(1) || 'iter');
 </script>
 </body>
 </html>
