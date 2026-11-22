@@ -14,7 +14,7 @@ Version 1.3, 2026-11-22. Changed only through journal entries (`instances/*/jour
 9. **Check reports like code**: run `kit/page-check.mjs` on any status page before committing it.
 10. **Reach the end**: each usage round, at least 3 personas reach an end screen.
 11. **Measure consumption**: every agent gets a description its usage rule can match; the orchestrator logs stage boundaries in the usage registry; consumption is regenerated with each status update.
-12. **Report often**: the status page and journal are updated at each stage so the owner can follow without asking.
+12. **Report often**: the status page and journal are updated at each stage and after every merge, so the owner can follow without asking.
 
 ## Iteration
 | Stage | Who | Output |
