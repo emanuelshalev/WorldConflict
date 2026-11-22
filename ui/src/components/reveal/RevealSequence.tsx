@@ -4,7 +4,7 @@ import type { RevealPayload } from '../../store/gameStore';
 import { useReducedMotion } from '../../lib/motion';
 import { sound } from '../../lib/sound';
 import { previousBest, recordRun, runsForSeat, type StoredRun } from '../../lib/runs';
-import { cellsToEmoji, revealShareText } from '../../lib/shareCard';
+import { cellsToEmoji, drawRevealCard, revealShareText, shareImage } from '../../lib/shareCard';
 import { SoundToggle } from '../game/SoundToggle';
 import { StageRail, StageDots } from './StageRail';
 import { AchievementsStage, CountStage, MomentsStage, NumbersStage, SeenStage, TruthStage, VerdictStage, type StageProps } from './stages';
@@ -221,14 +221,9 @@ export function RevealSequence({ r, saveId, actions, daily = null, extras, recor
         return rank(animateStage(7));
     }
   };
-  const share = async () => {
-    try {
-      if (navigator.share) await navigator.share({ text: shareText, title: 'World Conflict' });
-      else await navigator.clipboard.writeText(shareText);
-    } catch {
-      /* cancelled */
-    }
-  };
+  // The picture is the default share (lib/shareCard shareImage); the button says what happened
+  const [shared, setShared] = useState('');
+  const share = async () => setShared(await shareImage(drawRevealCard(card), shareText, fileStem));
 
   return (
     <div className={`rv-root mode-${mode}`} role="dialog" aria-modal="true" aria-label="The reveal">
@@ -276,7 +271,7 @@ export function RevealSequence({ r, saveId, actions, daily = null, extras, recor
                     Full report
                   </button>
                   <button type="button" className="rv-btn primary" onClick={share}>
-                    Share result
+                    {shared || 'Share card'}
                   </button>
                 </span>
               )}

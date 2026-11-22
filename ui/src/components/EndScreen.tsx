@@ -15,7 +15,7 @@ import {
 import { flag } from '../lib/format';
 import { useModalFocus } from '../lib/useModalFocus';
 import { mergeRemoteRuns } from '../lib/runs';
-import { cellsToEmoji, drawClassicCard, monthCells, publicSite } from '../lib/shareCard';
+import { cellsToEmoji, drawClassicCard, monthCells, publicSite, shareImage } from '../lib/shareCard';
 import { RevealSequence } from './reveal/RevealSequence';
 import { END_SCENE } from './reveal/model';
 import { CodexEndLine } from './learn/CodexEndLine';
@@ -102,19 +102,19 @@ export function EndScreen() {
   const archetype = report?.assessment.classification ?? '';
   const shareText = `WORLD CONFLICT${isDaily ? ` · Daily ${new Date().toISOString().slice(0, 10)}` : ''}, ${flag(me.id)} ${me.name}: ${title}\n${verdict} · ${'★'.repeat(stars)}${'☆'.repeat(3 - stars)} · grade ${grade} · score ${world.score?.total ?? 0}\nMonth ${Math.min(world.turn, world.maxTurns)}/${world.maxTurns}${storyHeadline(world.newspaper ?? [], me.name) ? ` · "${storyHeadline(world.newspaper ?? [], me.name)}"` : ''}\n${grid}\n${archetype}\nhttps://${publicSite()}`;
 
+  // The picture is the default share here too (lib/shareCard shareImage)
   const share = async () => {
-    try {
-      if (navigator.share) await navigator.share({ text: shareText, title: 'World Conflict' });
-      else {
-        await navigator.clipboard.writeText(shareText);
-        setCopied(true);
-      }
-    } catch {
-      /* user cancelled */
-    }
+    const done = await shareImage(cardUrl(), shareText, `world-conflict-${me.id.toLowerCase()}`);
+    if (done) setCopied(true);
   };
   const download = () => {
-    const url = drawClassicCard({
+    const a = document.createElement('a');
+    a.href = cardUrl();
+    a.download = `world-conflict-${me.id.toLowerCase()}.png`;
+    a.click();
+  };
+  const cardUrl = () =>
+    drawClassicCard({
       title,
       country: me.name,
       flagEmoji: flag(me.id),
@@ -132,11 +132,6 @@ export function EndScreen() {
       conditions: outcome?.conditions ?? [],
       site: publicSite(),
     });
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `world-conflict-${me.id.toLowerCase()}.png`;
-    a.click();
-  };
   const rematch = () =>
     startGame({
       mode: world.mode,

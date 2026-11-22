@@ -3,7 +3,9 @@ import { IconArrowRight, IconChevronDown, IconChevronRight, IconChevronUp, IconL
 import { monthScene } from '../lib/monthArt';
 import type { ConditionStatus, ReportFact, TurnReport, WorldState } from '../store/gameStore';
 import { countryName, useGameStore } from '../store/gameStore';
-import { buildPages } from '../lib/debrief';
+import { buildPages, yourMoveCard } from '../lib/debrief';
+import { resultBig } from '../lib/outcome';
+import { StatusLine } from './OutcomeCard';
 import { monthLabel } from '../lib/format';
 import { moodForVerdict } from './kinds';
 import { SceneFrame } from './SceneFrame';
@@ -87,10 +89,16 @@ export function ResultCard({ report, world, home, onNext, onEverything, onPaper,
   const ref = useModalFocus<HTMLDivElement>(true);
   const [after, setAfter] = useState<AfterMonth>(readAfterMonth);
   const nextRef = useRef<HTMLButtonElement>(null);
-  const card = pages[0]?.cards[0];
-  const h = report.highlight;
+  // "What your choice did" is the engine's yourMove (F-02-2, QA S2-1): the player's own decision
+  // or order. The month's highlight can be a front that moved on its own; it is never told as
+  // the choice, and gets its own "not from your choice" line below.
+  const own = useMemo(() => yourMoveCard(report), [report]);
+  const card = own ?? pages[0]?.cards[0];
+  const h = report.yourMove ?? (report.highlight?.ref !== 'war' ? report.highlight : undefined);
   const hd = h?.ref === 'decision' ? report.decisions[h.index] : undefined;
   const ho = h?.ref === 'order' ? report.orders[h.index] : undefined;
+  const warHl = report.highlight?.ref === 'war' ? report.wars?.[report.highlight.index] : undefined;
+  const meanwhile = own && warHl ? warHl : undefined;
   const chose = hd ? hd.choice.replace(/\s*\((no decision taken|you did not attend)\)\s*$/, '') : ho?.label;
   // "What your choice did" shows only what the choice itself moved (its own measured facts; month
   // stats as its share). The month's totals, which include everyone else's moves, sit on their own
@@ -117,9 +125,7 @@ export function ResultCard({ report, world, home, onNext, onEverything, onPaper,
   const lead0 = facts[0];
   const big = lead0 && Math.abs(lead0.after - lead0.before) >= 1 ? (() => {
     const delta = lead0.after - lead0.before;
-    const good = /tension/i.test(lead0.label) ? delta <= 0 : (lead0.good ?? delta >= 0);
-    const v = card?.verdict;
-    const word = v === 'good' ? 'It worked' : v === 'bad' ? 'Backfired' : v === 'mixed' ? 'Mixed result' : good ? 'A step forward' : 'A step back';
+    const { good, word } = resultBig(lead0, card?.status);
     return { delta, good, word, label: lead0.label };
   })() : null;
   const [moreOpen, setMoreOpen] = useState(false);
@@ -152,13 +158,25 @@ export function ResultCard({ report, world, home, onNext, onEverything, onPaper,
               Remember {resolved.title}? <b>{resolved.headline}</b>
             </p>
           )}
-          <span className="rc-kicker">What your choice did</span>
+          <span className="rc-kicker">{own ? 'What your choice did' : 'The month'}</span>
           {chose && (
             <p className="rc-chose">
               You {ho ? 'ordered' : 'chose'}: <b>{chose}</b>
             </p>
           )}
           <h2 className="rc-sentence">{card?.headline ?? 'A quiet month: the world moved on its own.'}</h2>
+          {own?.status && <StatusLine status={own.status} reason={own.reason} />}
+          {meanwhile && (
+            <p className="rc-meanwhile" data-result-meanwhile="">
+              Not from your choice:{' '}
+              {meanwhile.ended
+                ? `the war with ${countryName(meanwhile.vs)} is over`
+                : meanwhile.frontAfter >= meanwhile.frontBefore
+                  ? `your forces gain ground against ${countryName(meanwhile.vs)}`
+                  : `${countryName(meanwhile.vs)} pushes your forces back`}{' '}
+              (front {meanwhile.frontBefore} → {meanwhile.frontAfter}).
+            </p>
+          )}
           {card?.reaction && (
             <blockquote className={`rc-quote t-${card.reaction.tone}`}>
               <p>

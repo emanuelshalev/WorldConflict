@@ -40,6 +40,13 @@
 .v-bad .db-verdict { color: var(--bad); }
 .db-headline { margin: 0; font-family: var(--font-news); font-weight: 400; font-size: 22px; line-height: 1.15; letter-spacing: -.005em; }
 .db-card.big .db-headline { font-size: 30px; }
+/* F-02-2: the engine's status for the player's item, in words, next to the stamp */
+.db-status { margin: 6px 0 0; font-size: 13.5px; line-height: 1.35; color: var(--text-2); }
+.db-status b { font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
+.db-status.s-done b { color: var(--good); }
+.db-status.s-partly b { color: var(--accent); }
+.db-status.s-failed b, .db-status.s-refused b { color: #ff8486; }
+.db-status.s-no_effect b { color: var(--text-2); }
 .db-lines { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: 13px; color: var(--text-2); }
 .db-lines li { display: flex; gap: 7px; align-items: flex-start; }
 .db-lines li svg { flex: none; margin-top: 2px; color: var(--text-3); }

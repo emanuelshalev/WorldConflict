@@ -167,7 +167,7 @@ function strip(g: CanvasRenderingContext2D, x: number, y: number, width: number,
   return y + Math.ceil(cells.length / perRow) * (size + gap);
 }
 
-function gradeBlock(g: CanvasRenderingContext2D, cx: number, top: number, d: RevealCardData, scale = 1): void {
+function gradeBlock(g: CanvasRenderingContext2D, cx: number, top: number, d: RevealCardData, scale = 1, colW = 300): number {
   g.textAlign = 'center';
   g.fillStyle = '#a3aebf';
   g.font = `500 ${18 * scale}px "Geist Mono", monospace`;
@@ -188,9 +188,48 @@ function gradeBlock(g: CanvasRenderingContext2D, cx: number, top: number, d: Rev
   g.font = `${36 * scale}px sans-serif`;
   g.fillText('★'.repeat(d.stars) + '☆'.repeat(Math.max(0, 3 - d.stars)), cx, top + 300 * scale);
   g.fillStyle = '#c4ccd8';
-  g.font = `500 ${19 * scale}px "Geist Mono", monospace`;
-  d.rankLines.slice(0, 2).forEach((l, i) => g.fillText(l, cx, top + (340 + i * 28) * scale));
+  // Rank lines fit the grade column: shrink, then wrap, never run off the card (Leo's clipped card)
+  let y = top + 340 * scale;
+  for (const l of d.rankLines.slice(0, 2)) {
+    const t = fitText(g, l, colW, (px) => `500 ${px}px "Geist Mono", monospace`, 19 * scale, 14 * scale, 2);
+    t.lines.forEach((line) => {
+      g.fillText(line, cx, y);
+      y += t.size * 1.4;
+    });
+  }
   g.textAlign = 'left';
+  return y;
+}
+
+/**
+ * Text that fits a box: the largest font size from `size` down to `min` at which it fits one
+ * line, else wrapped at `min` over at most `lines` lines (2.8: nothing on a share card is clipped).
+ */
+export function fitText(g: CanvasRenderingContext2D, text: string, width: number, font: (px: number) => string, size: number, min: number, lines = 1): { lines: string[]; size: number } {
+  for (let s = Math.round(size); s >= min; s--) {
+    g.font = font(s);
+    if (g.measureText(text).width <= width) return { lines: [text], size: s };
+  }
+  g.font = font(min);
+  return { lines: wrap(g, text, width, lines), size: min };
+}
+
+/** Draw text that fits: returns the y under the last line. */
+function drawFit(g: CanvasRenderingContext2D, text: string, x: number, y: number, width: number, font: (px: number) => string, size: number, min: number, lines = 1, lead = 1.25): number {
+  const t = fitText(g, text, width, font, size, min, lines);
+  t.lines.forEach((l, i) => g.fillText(l, x, y + i * t.size * lead));
+  return y + (t.lines.length - 1) * t.size * lead;
+}
+
+/** A faint flag behind the left column: the card's picture, so it is not a text box. */
+function heroFlag(g: CanvasRenderingContext2D, d: RevealCardData, x: number, y: number, size: number): void {
+  if (!d.flagEmoji) return;
+  g.save();
+  g.globalAlpha = 0.1;
+  g.font = `${size}px sans-serif`;
+  g.textAlign = 'right';
+  g.fillText(d.flagEmoji, x, y);
+  g.restore();
 }
 
 export function drawRevealCard(d: RevealCardData): string {
@@ -201,29 +240,31 @@ export function drawRevealCard(d: RevealCardData): string {
   if (!g) return '';
   background(g, 1200, 630);
   missionBar(g, 1200, d);
+  // Left column 60..840, grade column centred on 1020 (300 wide); every line shrinks or wraps to
+  // its box, and the seals take only the room left above the footer
+  const L = 60;
+  const W = 780;
+  heroFlag(g, d, 840, 600, 300);
+  const mono = (w: number) => (px: number) => `${w} ${px}px "Geist Mono", monospace`;
   g.fillStyle = '#a3aebf';
-  g.font = '600 24px "Geist Mono", monospace';
-  g.fillText(fit(g, `WORLD CONFLICT · ${d.title.toUpperCase()}${d.daily ? ` · DAILY ${d.daily}` : ''}`, 800), 60, 70);
+  drawFit(g, `WORLD CONFLICT · ${d.title.toUpperCase()}${d.daily ? ` · DAILY ${d.daily}` : ''}`, L, 70, W, mono(600), 24, 16);
   g.fillStyle = d.victory ? '#f2a93b' : '#ff8486';
-  g.font = '600 24px "Geist Mono", monospace';
-  g.fillText(`${d.verdict} · ${d.dateLabel}`, 60, 116);
+  drawFit(g, `${d.verdict} · ${d.dateLabel}`, L, 112, W, mono(600), 24, 16);
   g.fillStyle = '#e8ecf2';
-  g.font = '700 60px "Geist", sans-serif';
-  g.fillText(fit(g, `${d.flagEmoji} ${d.country.toUpperCase()}`, 800), 60, 186);
+  drawFit(g, `${d.flagEmoji} ${d.country.toUpperCase()}`, L, 178, W, (px) => `700 ${px}px "Geist", sans-serif`, 60, 36);
   g.fillStyle = '#a3aebf';
-  g.font = '500 28px "Geist", Inter, sans-serif';
-  g.fillText(fit(g, d.subtitle, 800), 60, 232);
-  const after = strip(g, 60, 268, 760, d.cells);
+  let y = drawFit(g, d.subtitle, L, 222, W, (px) => `500 ${px}px "Geist", Inter, sans-serif`, 28, 22, 2);
+  y = strip(g, L, y + 22, 760, d.cells, 26);
   if (d.bestMoment) {
     g.fillStyle = '#e8ecf2';
-    g.font = 'italic 400 28px "Instrument Serif", Georgia, serif';
-    g.fillText(fit(g, `Best moment: ${d.bestMoment}`, 760), 60, after + 34);
+    y = drawFit(g, `Best moment: ${d.bestMoment}`, L, y + 30, W, (px) => `italic 400 ${px}px "Instrument Serif", Georgia, serif`, 28, 22, 2);
   }
-  d.seals.slice(0, 3).forEach((s, i) => sealOn(g, 60 + 44 + i * 104, after + 108, 88, s));
-  gradeBlock(g, 1010, 76, d);
+  const room = 556 - (y + 12);
+  const seal = Math.min(88, room);
+  if (seal >= 48) d.seals.slice(0, 3).forEach((s, i) => sealOn(g, L + seal / 2 + i * (seal + 16), y + 12 + seal / 2, seal, s));
+  gradeBlock(g, 1020, 76, d, 1, 300);
   g.fillStyle = '#c4ccd8';
-  g.font = '500 22px "Geist Mono", monospace';
-  g.fillText(fit(g, `Can you beat ${d.score}? Seed ${d.seedCode} · ${d.site}`, 1080), 60, 600);
+  drawFit(g, `Can you beat ${d.score}? Seed ${d.seedCode} · ${d.site}`, L, 600, 1080, mono(500), 22, 14);
   return c.toDataURL('image/png');
 }
 
@@ -236,30 +277,29 @@ export function drawRevealPortrait(d: RevealCardData): string {
   background(g, 1080, 1350);
   missionBar(g, 1080, d);
   const L = 72;
+  const W = 936;
+  heroFlag(g, d, 1040, 1240, 520);
+  const mono = (w: number) => (px: number) => `${w} ${px}px "Geist Mono", monospace`;
   g.fillStyle = '#a3aebf';
-  g.font = '600 28px "Geist Mono", monospace';
-  g.fillText(fit(g, `WORLD CONFLICT · ${d.title.toUpperCase()}`, 936), L, 92);
+  drawFit(g, `WORLD CONFLICT · ${d.title.toUpperCase()}`, L, 92, W, mono(600), 28, 18);
   g.fillStyle = d.victory ? '#f2a93b' : '#ff8486';
-  g.fillText(`${d.verdict} · ${d.dateLabel}`, L, 142);
+  drawFit(g, `${d.verdict} · ${d.dateLabel}`, L, 142, W, mono(600), 28, 18);
   g.fillStyle = '#e8ecf2';
-  g.font = '700 72px "Geist", sans-serif';
-  g.fillText(fit(g, `${d.flagEmoji} ${d.country.toUpperCase()}`, 936), L, 230);
+  drawFit(g, `${d.flagEmoji} ${d.country.toUpperCase()}`, L, 230, W, (px) => `700 ${px}px "Geist", sans-serif`, 72, 40);
   g.fillStyle = '#a3aebf';
-  g.font = '500 32px "Geist", Inter, sans-serif';
-  wrap(g, d.subtitle, 936, 2).forEach((l, i) => g.fillText(l, L, 284 + i * 42));
-  gradeBlock(g, 540, 400, d, 1.25);
-  let y = strip(g, L, 900, 936, d.cells, 60);
+  drawFit(g, d.subtitle, L, 284, W, (px) => `500 ${px}px "Geist", Inter, sans-serif`, 32, 24, 3);
+  const gy = gradeBlock(g, 540, 420, d, 1.25, W);
+  let y = strip(g, L, Math.max(920, gy + 24), W, d.cells, 60);
   if (d.bestMoment) {
     g.fillStyle = '#e8ecf2';
-    g.font = 'italic 400 36px "Instrument Serif", Georgia, serif';
-    wrap(g, `Best moment: ${d.bestMoment}`, 936, 2).forEach((l, i) => g.fillText(l, L, y + 46 + i * 44));
-    y += 46 + 88;
+    y = drawFit(g, `Best moment: ${d.bestMoment}`, L, y + 46, W, (px) => `italic 400 ${px}px "Instrument Serif", Georgia, serif`, 36, 26, 3);
   }
-  d.seals.slice(0, 3).forEach((s, i) => sealOn(g, L + 60 + i * 140, y + 70, 116, s));
+  const room = 1212 - (y + 20);
+  const seal = Math.min(116, room);
+  if (seal >= 56) d.seals.slice(0, 3).forEach((s, i) => sealOn(g, L + seal / 2 + i * (seal + 24), y + 20 + seal / 2, seal, s));
   g.fillStyle = '#c4ccd8';
-  g.font = '500 28px "Geist Mono", monospace';
-  g.fillText(fit(g, `Can you beat ${d.score}?`, 936), L, 1262);
-  g.fillText(fit(g, `Seed ${d.seedCode} · ${d.site}`, 936), L, 1302);
+  drawFit(g, `Can you beat ${d.score}?`, L, 1262, W, mono(500), 28, 18);
+  drawFit(g, `Seed ${d.seedCode} · ${d.site}`, L, 1302, W, mono(500), 28, 18);
   return c.toDataURL('image/png');
 }
 
@@ -284,6 +324,31 @@ export function downloadDataUrl(url: string, name: string): void {
   a.href = url;
   a.download = name;
   a.click();
+}
+
+/**
+ * The default share is the picture (F-02-3, Leo: "a text box I would not post"): the card PNG
+ * through the system share sheet when it accepts files, else the card is saved and the text
+ * copied. Returns the feedback to show ("" when the player cancelled).
+ */
+export async function shareImage(url: string, text: string, fileStem: string): Promise<string> {
+  try {
+    const blob = url ? await (await fetch(url)).blob() : null;
+    const file = blob ? new File([blob], `${fileStem}.png`, { type: 'image/png' }) : null;
+    if (file && navigator.canShare?.({ files: [file] })) {
+      await navigator.share({ files: [file], text, title: 'World Conflict' });
+      return 'Shared';
+    }
+  } catch (e) {
+    if ((e as Error)?.name === 'AbortError') return '';
+  }
+  downloadDataUrl(url, `${fileStem}.png`);
+  try {
+    await navigator.clipboard.writeText(text);
+    return url ? 'Card saved, text copied' : 'Text copied';
+  } catch {
+    return url ? 'Card saved' : 'Could not share';
+  }
 }
 
 /** The earlier card (no reveal available): grade, stars, leadership score and the emoji grid. */

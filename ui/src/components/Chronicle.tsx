@@ -13,6 +13,8 @@ import { SceneFrame } from '../scenes/SceneFrame';
 import { sceneForAction, sceneForCrisis, sceneForNews } from '../scenes/kinds';
 import { ExplainText } from './learn/ExplainText';
 import { monthScene } from '../lib/monthArt';
+import { STATUS_WORD, statusOf } from '../lib/outcome';
+import type { OutcomeStatus } from '../store/gameStore';
 
 const MOMENT_COLOR: Record<string, string> = {
   'CLOSE CALL': '#b3261e',
@@ -274,6 +276,22 @@ export function Chronicle() {
                 {m}
               </span>
             ))}
+            {/* What became of each of your orders and answers, in the engine's words (F-02-2) */}
+            {(() => {
+              const items = [
+                ...report.decisions.filter((d) => d.attended !== false).map((d) => ({ label: d.choice.replace(/\s*\((no decision taken|you did not attend)\)\s*$/, ''), s: statusOf(d), why: d.reason })),
+                ...report.orders.map((o) => ({ label: o.label, s: statusOf(o), why: o.reason })),
+              ].filter((x) => x.s).slice(0, 6);
+              return items.length > 0 ? (
+                <ul className="paper-status" aria-label="Your orders and answers">
+                  {items.map((x, i) => (
+                    <li key={`${x.label}-${i}`} data-status={x.s} title={x.why}>
+                      <b className={`s-${(x.s as string).toLowerCase()}`}>{STATUS_WORD[x.s as OutcomeStatus]}</b> {x.label}
+                    </li>
+                  ))}
+                </ul>
+              ) : null;
+            })()}
           </div>
         )}
 

@@ -1,10 +1,11 @@
-import type { Reaction, ReportFact, TurnReport, WorldState } from '../store/gameStore';
+import type { OutcomeStatus, Reaction, ReportFact, TurnReport, WorldState } from '../store/gameStore';
+import { STATUS_WORD, statusOf, verdictForStatus } from './outcome';
 import { countryName } from '../store/gameStore';
 import type { SceneKind } from '../scenes/kinds';
 import { actionFamily, guardFamily, sceneForAction, sceneForDecision, sceneForOutcome } from '../scenes/kinds';
 import type { MapEffect } from '../scenes/OutcomeMap';
 import { mapEffect } from './mapEffect';
-import { factTone, shareFacts } from './numbers';
+import { shareFacts } from './numbers';
 
 /**
  * The month debrief: the turn report grouped into at most three pages (the month's highlight,
@@ -37,6 +38,12 @@ export interface OutcomeCardData {
   front?: { before: number; after: number; ended: boolean };
   /** Their view of you, before and after the month (diplomacy cards). */
   relation?: { before: number; after: number };
+  /**
+   * The engine's status for the player's own item(s) on this card, and why (F-02-2). Absent on
+   * cards that are not the player's doing (a front, a hot zone, a foreign move): those get no stamp.
+   */
+  status?: OutcomeStatus;
+  reason?: string;
 }
 
 export interface DebriefPage {
@@ -66,10 +73,9 @@ function pickReaction(id: string, list: Array<Reaction | undefined>, rel?: { bef
 
 const KIND_WORD: Record<string, string> = { CALL: 'Call', VISIT: 'State visit', STAFF: 'Staff meeting', PRESS: 'Interview', CRISIS: 'Crisis' };
 
-function verdictOf(facts: ReportFact[] = [], reaction?: Reaction, ok = true): Verdict {
-  if (!ok) return 'bad';
-  const score = facts.reduce((s, f) => s + ({ good: 1, bad: -1, flat: 0 } as const)[factTone(f)], 0) + (reaction?.tone === 'warm' ? 1 : reaction?.tone === 'angry' || reaction?.tone === 'cold' ? -1 : 0);
-  return score > 0 ? 'good' : score < 0 ? 'bad' : 'neutral';
+/** The card's verdict is its engine status, never a tally of the colours of its numbers (F-02-2). */
+function verdictOf(status: OutcomeStatus): Verdict {
+  return verdictForStatus(status);
 }
 
 /**
@@ -88,8 +94,11 @@ function orderScene(o: Order, verdict: Verdict): SceneKind | undefined {
 }
 
 function decisionCard(d: Decision, i: number): OutcomeCardData {
-  const verdict = verdictOf(d.facts, d.reaction, !/no decision taken/.test(d.choice));
+  const status = statusOf(d) ?? 'DONE';
+  const verdict = verdictOf(status);
   return {
+    status,
+    reason: d.reason,
     key: `d${i}`,
     kicker: `${KIND_WORD[d.kind ?? 'CRISIS'] ?? 'Decision'}${d.withCountry ? ` · ${countryName(d.withCountry)}` : ''}`,
     country: d.withCountry,
@@ -103,13 +112,18 @@ function decisionCard(d: Decision, i: number): OutcomeCardData {
   };
 }
 
+const HEADLINE_SUFFIX: Partial<Record<OutcomeStatus, string>> = { FAILED: ': it failed', REFUSED: ': refused', NO_EFFECT: ': no effect', PARTLY: ': partly done' };
+
 function orderCard(o: Order, i: number): OutcomeCardData {
-  const verdict = verdictOf(o.facts, o.reaction, o.ok);
+  const status = statusOf(o) ?? 'DONE';
+  const verdict = verdictOf(status);
   return {
+    status,
+    reason: o.reason,
     key: `o${i}`,
     kicker: `Order${o.target ? ` · ${countryName(o.target)}` : ''}`,
     country: o.target,
-    headline: o.label + (o.ok ? '' : ': it failed'),
+    headline: o.label + (HEADLINE_SUFFIX[status] ?? ''),
     lines: [{ text: (o.story ?? o.detail).replace(/\.\.+/g, '.'), icon: o.type, ok: o.ok }],
     reaction: o.reaction,
     facts: shareFacts(o.facts),
@@ -129,7 +143,7 @@ function countryCard(id: string, decisions: Array<[Decision, number]>, orders: A
   const relDelta = rel ? rel.after - rel.before : 0;
   decisions = [...decisions].sort((a, b) => Number(b[0].kind === 'CALL' || b[0].kind === 'VISIT') - Number(a[0].kind === 'CALL' || a[0].kind === 'VISIT'));
   // R5: one card, one verdict. If one of your own orders failed, it leads the card
-  const failed = orders.find(([o]) => !o.ok);
+  const failed = orders.find(([o]) => statusOf(o) === 'FAILED' || statusOf(o) === 'REFUSED');
   if (failed) orders = [failed, ...orders.filter((x) => x !== failed)];
   const lead: OutcomeCardData = failed ? orderCard(failed[0], failed[1]) : decisions[0] ? decisionCard(decisions[0][0], decisions[0][1]) : orders[0] ? orderCard(orders[0][0], orders[0][1]) : {
     key: `c-${id}`,
@@ -142,7 +156,7 @@ function countryCard(id: string, decisions: Array<[Decision, number]>, orders: A
   };
   const extra: CardLine[] = [
     ...decisions.slice(failed ? 0 : 1).map(([d]) => ({ text: `${KIND_WORD[d.kind ?? 'CRISIS']}: ${d.choice}`, icon: d.kind })),
-    ...orders.slice(failed || !decisions[0] ? 1 : 0).map(([o]) => ({ text: `${o.label}${o.ok ? '' : ' (failed)'}`, icon: o.type, ok: o.ok })),
+    ...orders.slice(failed || !decisions[0] ? 1 : 0).map(([o]) => { const s = statusOf(o) ?? 'DONE'; return { text: `${o.label}${s === 'DONE' ? '' : ` (${STATUS_WORD[s].toLowerCase()})`}`, icon: o.type, ok: s !== 'FAILED' && s !== 'REFUSED' }; }),
     ...moves.map((m) => ({ text: `They: ${m.replace(/^[^:]+: /, '')}`, icon: 'THEM' })),
   ];
   // Their view of you over the whole month (all your dealings plus theirs), so the reply, the
@@ -152,23 +166,29 @@ function countryCard(id: string, decisions: Array<[Decision, number]>, orders: A
   const facts = rel ? lead.facts.map((f) => (/ view of you$/.test(f.label) ? { ...f, label: 'Their view, from your move', share: true } : f)) : [...lead.facts];
   if (rel) facts.unshift({ label: `${possessiveName(countryName(id))} view of you this month`, before: rel.before, after: rel.after });
   const firstOrder = orders[0]?.[0];
-  const relVerdict: Verdict = rel ? (rel.after > rel.before ? 'good' : rel.after < rel.before ? 'bad' : lead.verdict) : lead.verdict;
-  // R5: a failure in the card caps it at mixed (the relation still improved) or bad, and the
-  // headline names the failure first
-  const verdict: Verdict = failed ? (relVerdict === 'good' ? 'mixed' : 'bad') : relVerdict;
+  // R5 with the engine's statuses (F-02-2): one card, one status. Your items set it; a card with
+  // only their moves has none (no stamp), so "China moves against you" is never stamped FAILED.
+  const mine = orders.length + decisions.length;
+  const failedStatus = failed ? statusOf(failed[0]) : undefined;
+  const status: OutcomeStatus | undefined = !mine ? undefined : failed ? (mine > 1 ? 'PARTLY' : failedStatus) : lead.status;
+  const reason = failed && mine > 1 ? `${failed[0].label}: ${failed[0].reason ?? failed[0].detail}` : lead.reason;
+  const verdict: Verdict = status ? verdictOf(status) : lead.verdict;
   const other = decisions[0] ? decisionCard(decisions[0][0], decisions[0][1]) : undefined;
-  const headline = failed ? `${failed[0].label} failed${other ? `; ${other.headline.charAt(0).toLowerCase()}${other.headline.slice(1)}` : ''}` : lead.headline;
+  const failWord = failedStatus === 'REFUSED' ? 'refused' : 'failed';
+  const headline = failed ? `${failed[0].label} ${failWord}${other ? `; ${other.headline.charAt(0).toLowerCase()}${other.headline.slice(1)}` : ''}` : lead.headline;
   return {
     ...lead,
     headline,
     key: `c-${id}`,
-    kicker: `${countryName(id)}${decisions.length + orders.length + moves.length > 1 ? ` · ${decisions.length + orders.length + moves.length} items` : ''}`,
     country: id,
     lines: [...lead.lines, ...extra].slice(0, 5),
     facts: facts.slice(0, 3),
     reaction: pickReaction(id, [lead.reaction, ...decisions.map(([d]) => d.reaction), ...orders.map(([o]) => o.reaction)], rel),
     relation: rel,
     verdict,
+    status,
+    reason,
+    kicker: `${countryName(id)}${mine ? '' : ' · their move'}${decisions.length + orders.length + moves.length > 1 ? ` · ${decisions.length + orders.length + moves.length} items` : ''}`,
     scene: failed ? orderScene(failed[0], 'bad') : lead.scene && sceneForOutcome(lead.scene, verdict),
     map: { target: id, effect: firstOrder ? mapEffect(firstOrder.type) ?? 'court' : decisions[0] ? 'court' : 'denounce' },
   };
@@ -310,4 +330,21 @@ export function buildPages(report: TurnReport, world: WorldState): DebriefPage[]
   const homeShown = homeCards.filter((c) => !isHighlight(c));
   if (homeShown.length || homeFoot.length) pages.push({ key: 'home', title: security ? 'Home and security' : 'Home front', cards: homeShown, footnotes: homeFoot });
   return pages.slice(0, 3);
+}
+
+/**
+ * The card for "What your choice did" on the result card: the engine's `yourMove`, the player's
+ * own decision or order. Never the month's front: a war highlight is not the player's choice
+ * (QA S2-1, Maya's "Your forces gain ground against Iran" two months running).
+ */
+export function yourMoveCard(report: TurnReport): OutcomeCardData | null {
+  const h = report.highlight;
+  const ref = report.yourMove ?? (h && h.ref !== 'war' ? { ref: h.ref, index: h.index } : undefined);
+  if (!ref) return null;
+  if (ref.ref === 'decision') {
+    const d = report.decisions[ref.index];
+    return d ? decisionCard(d, ref.index) : null;
+  }
+  const o = report.orders[ref.index];
+  return o ? orderCard(o, ref.index) : null;
 }
