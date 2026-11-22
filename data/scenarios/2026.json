@@ -183,9 +183,7 @@
     {"id":"CHNPRK","name":"China and North Korea","side":"EAST2","members":["CHN","PRK"],"note":"Allied by treaty since 1961."},
     {"id":"SAUPAK","name":"Saudi-Pakistani defence pact","side":"OTHER","members":["SAU","PAK"],"note":"Strategic Mutual Defence Agreement signed in September 2025."}
   ],
-  "eraStatus": {
-    "PSX": {"status":"NOT_INDEPENDENT","label":"West Bank","note":"Under Israeli occupation; the Palestinian Authority administers parts of it. Most UN members recognise a State of Palestine."}
-  },
+  "eraStatus": {},
   "merged": {},
   "mapLabels": [],
   "situations": [

@@ -16,6 +16,9 @@ const TAKES_THE = new Set([
   "Democratic Republic of the Congo",
   "Gambia",
   "Bahamas",
+  "Soviet Union",
+  "West Bank",
+  "Trucial States",
 ]);
 
 /** "the Philippines", "the United States", but "Iran". */
