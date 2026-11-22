@@ -55,3 +55,34 @@ T7. Compare (show the other variant, same month).
 - Any persona failing T3 on the Skip meaning: change the Skip copy before build.
 - Two or more experts saying Guided slows them: Full desk becomes the default from month 4 for players who switched once.
 - Any affordance doubt reported by two or more personas becomes a named fix in WP-A5.
+
+---
+
+# Round 2 (D-70): the hybrid
+
+Same setup, same personas and devices, fresh eyes (do not show round 1 shots or results). One design, no A/B: show the `agenda-h-*` screenshots at each persona's own width (`-390.png` phones, `-1024.png` Ruth, `-1440.png` laptops). Do not use the words "recommended", "skip", "step" or "done" in questions before the persona does.
+
+R1. First look (`agenda-h-desk-m1`, 10 seconds, then hide). "What do you have to do this month? Say it as a to-do list." "Where would you press first?" Pass: names going through the things (or "answer the crisis, then the order") and a first press on an option or Next, not Execute.
+
+R2. Month 4 (`agenda-h-desk-m4`). "How many things this month, and how many are done?" "What will happen if you press Execute month now?" Pass: "6, 1 done"; names at least two of: your choice happens, ministers take meetings (with a cost), proposed orders do not run.
+
+R3. Choosing and skipping (same mock). "How do you answer Xi? What happens if you skip the call, exactly?" Pass: presses an option card; for Skip names the Foreign Minister answering, the free cost and China -3.
+
+R4. After a skip (`agenda-h-skip`). "What happened to Xi's call? Can you change your mind? What is this screen asking now?" Pass: Foreign Minister answered, China -3, Undo; routine meetings can be left to ministers.
+
+R5. All of them (`agenda-h-list`). "How would you jump to the proposed orders?" Pass: "All 6" or "List", then the row.
+
+R6. Review (`agenda-h-review`). "What will Execute do? How would you undo one thing?" Pass: names the decisions and the capital carried over; Change or Undo on a row.
+
+R7. Map (`agenda-h-map`). "What is left to do, and how do you do it from the map? What does the button in the middle of the bottom bar do?" Pass: answers Xi from the card; "opens the recommendations to check", not "approves".
+
+R8. Clickable or not (`agenda-h-desk-m4`, `agenda-h-review`). "Point at five things you can press and three you cannot. Anything you are not sure about?" Record every doubt as friction of kind "affordance".
+
+R9. Experts only (`agenda-h-fulldesk`): "Would this view let you go at your pace? Anything still slowing you?"
+
+R10. Words. "Which words here did you not understand?" (expect to check: recommended, routine meetings, political capital, execute).
+
+## Round 2 decision rule
+- Ships to build if at least 7 of 9 pass R1 to R3 together, at least 7 of 9 pass R7, and no affordance doubt is reported by 3 or more personas.
+- Any doubt reported by 2 personas: named fix before build, no retest.
+- Fewer than 7 of 9 on R1 to R3: escalate the options to the CEO (D-70 risk).
