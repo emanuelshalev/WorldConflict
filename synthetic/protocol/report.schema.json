@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Synthetic customer session report",
+  "type": "object",
+  "required": ["persona", "variant", "panel_version", "build", "iteration", "scenarios", "friction", "bugs", "suggestions", "scores", "quit_point", "verbatim"],
+  "properties": {
+    "persona": { "type": "string" },
+    "variant": { "type": "string" },
+    "panel_version": { "type": "string" },
+    "build": { "type": "string", "description": "git short hash of the build played" },
+    "iteration": { "type": "integer" },
+    "minutes_played": { "type": "number" },
+    "scenarios": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "outcome", "steps", "turns"],
+        "properties": {
+          "id": { "type": "string" },
+          "outcome": { "enum": ["achieved", "partial", "abandoned"] },
+          "steps": { "type": "array", "items": { "type": "string" } },
+          "turns": { "type": "integer" },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "friction": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["where", "expected", "happened", "kind"],
+        "properties": {
+          "where": { "type": "string", "description": "screen and element" },
+          "expected": { "type": "string" },
+          "happened": { "type": "string" },
+          "kind": { "enum": ["hesitation", "misread", "retry", "backtrack", "blocked", "dashboard-feel", "naming", "parity", "other"] },
+          "screenshot": { "type": "string" }
+        }
+      }
+    },
+    "bugs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title", "steps", "expected", "actual", "severity"],
+        "properties": {
+          "title": { "type": "string" },
+          "steps": { "type": "array", "items": { "type": "string" } },
+          "expected": { "type": "string" },
+          "actual": { "type": "string" },
+          "severity": { "enum": ["S1", "S2", "S3", "S4"] },
+          "screenshot": { "type": "string" }
+        }
+      }
+    },
+    "suggestions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["what", "goal_served"],
+        "properties": { "what": { "type": "string" }, "goal_served": { "type": "string" } }
+      }
+    },
+    "delight": { "type": "array", "items": { "type": "string" } },
+    "scores": {
+      "type": "object",
+      "required": ["fun", "clarity", "visual", "feels_like_a_game", "agency", "realism", "replay", "recommend"],
+      "properties": {
+        "fun": { "$ref": "#/$defs/score" },
+        "clarity": { "$ref": "#/$defs/score" },
+        "visual": { "$ref": "#/$defs/score" },
+        "feels_like_a_game": { "$ref": "#/$defs/score" },
+        "agency": { "$ref": "#/$defs/score", "description": "never felt blocked without knowing why" },
+        "realism": { "$ref": "#/$defs/score" },
+        "replay": { "$ref": "#/$defs/score" },
+        "recommend": { "$ref": "#/$defs/score" }
+      }
+    },
+    "quit_point": { "type": ["string", "null"], "description": "exact moment the persona would have quit, or null" },
+    "verbatim": { "type": "string" }
+  },
+  "$defs": {
+    "score": {
+      "type": "object",
+      "required": ["value", "reason"],
+      "properties": { "value": { "type": "integer", "minimum": 1, "maximum": 10 }, "reason": { "type": "string" } }
+    }
+  }
+}

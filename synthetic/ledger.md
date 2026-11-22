@@ -1,0 +1,12 @@
+# Decision ledger
+
+Every feature added or reworked, and every architectural change, with the evidence that justified it. Entries are never edited, only superseded. The loop reads this before proposing. Numbering continues from the project status page (D-1 to D-35 covered the engagement overhaul).
+
+Columns: **Type** add / rework / re-prioritize / re-architect / process. **Evidence** cluster ids, panel version, weighted share, real signals. **Reversal** the evidence that would undo it. **Outcome** filled in later.
+
+| ID | Date | Type | Decision | Evidence | Alternatives | Expected effect | Reversal | Outcome |
+|---|---|---|---|---|---|---|---|---|
+| D-36 | 2026-11-21 | process | Adopt the synthetic-customer loop (panel, interviews, usage every build, triage, ledger, calibration, release gate) | CEO request; article method | Ad-hoc persona rounds as before | Traceable decisions; panel predicts the CEO | Panel fails to predict real feedback after 2 calibrations | Open |
+| D-37 | 2026-11-21 | process | Recalibrate the panel: add Olivia (early quitter) and Sam (skeptic); lower patience/reading globally; reweight toward Maya-like players | RS-001 (CEO), RS-000 (real players less patient) | Keep the 4-persona panel | Panel reports the CEO's issues on the v0.9.0 baseline (hold-out check) | Baseline round fails to surface RS-001 issues | Open |
+| D-38 | 2026-11-21 | process | Customers run on a different model from the builders, blind to design intent | Article guardrail (echo chamber) | Same model | Less self-praise; wider spread | Spread collapses anyway | Open |
+| D-39 | 2026-11-21 | process | Raise the release gate: weighted recommend >= 7.0, none < 6, feels-like-a-game and agency >= 7.0, Olivia completes a session | RS-001 says round-3 scores (6-7) overstated quality | Keep the old gate (recommend >= 6) | RC that the CEO would accept | CEO accepts an RC below the gate | Open |
