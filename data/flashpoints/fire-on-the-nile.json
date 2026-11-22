@@ -7,7 +7,9 @@
     "https://www.aljazeera.com/news/2026/7/6/el-obeid-under-siege-by-rsf-could-this-be-sudans-next-el-fasher",
     "https://en.wikipedia.org/wiki/2026_in_Sudan",
     "https://tribune.com.pk/story/2633644/eritrean-troops-deployed-in-ethiopias-tigray-region",
-    "https://www.thestar.com.my/news/world/2026/09/23/tigrayan-leaders-say-new-war-with-ethiopian-government-has-begun-as-fighting-erupts"
+    "https://www.thestar.com.my/news/world/2026/09/23/tigrayan-leaders-say-new-war-with-ethiopian-government-has-begun-as-fighting-erupts",
+    "https://www.aljazeera.com/news/2026/11/14/how-saf-successes-in-sudans-kordofan-could-turn-tide-against-the-rsf",
+    "https://www.aljazeera.com/news/2026/9/29/ethiopia-blames-regional-rivals-as-risk-of-conflict-spillover-rises"
   ],
   "scenarioId": "2026",
   "date": "2026-11",
@@ -253,7 +255,100 @@
         {"kind": "SCORE_PAR", "min": 71, "label": "Leadership score of 71+"}
       ],
       "par": 97,
-      "debrief": "What really happened: a power struggle between two generals who had seized power together in 2021 became, from April 2023, the world's largest displacement and hunger crisis. The army retook Khartoum in March 2025, but the RSF took El Fasher in October 2025 with mass atrocities, built a parallel government in Nyala and besieged El Obeid in 2026, while gold, Gulf money and drones kept both sides fighting and the Quad truce never held. What experts fear: a Libya-style permanent east-west partition, famine on a historic scale, and spillover into a Horn of Africa war involving Ethiopia, Eritrea and Egypt."
+      "debrief": "What really happened: a power struggle between two generals who had seized power together in 2021 became, from April 2023, the world's largest displacement and hunger crisis. The army retook Khartoum in March 2025, but the RSF took El Fasher in October 2025 with mass atrocities, built a parallel government in Nyala and besieged El Obeid in 2026, while gold, Gulf money and drones kept both sides fighting and the Quad truce never held. What experts fear: a Libya-style permanent east-west partition, famine on a historic scale, and spillover into a Horn of Africa war involving Ethiopia, Eritrea and Egypt.",
+      "reality": {
+        "asOf": "2026-11",
+        "rows": [
+          {
+            "topic": "El Obeid",
+            "real": "The army and allied forces reportedly broke the RSF siege of El Obeid by mid-November 2026.",
+            "yours": {
+              "kind": "INSURGENCY_MAX",
+              "level": "REBELLION",
+              "label": "Insurgency no worse than REBELLION"
+            },
+            "yoursText": {
+              "met": "You pushed the RSF war back down to a rebellion.",
+              "missed": "The RSF war still raged at full strength."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The west",
+            "real": "The RSF still holds most of Darfur, including El Fasher, and runs a rival 'Tasis' government in Nyala.",
+            "yours": {
+              "kind": "INSURGENCY_MAX",
+              "level": "UNREST",
+              "label": "Insurgency no worse than UNREST"
+            },
+            "yoursText": {
+              "met": "Sudan ended under one government.",
+              "missed": "Sudan stayed divided."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "Egypt",
+            "real": "Cairo stayed the army's closest backer.",
+            "yours": {
+              "kind": "RELATION_MIN",
+              "targetId": "EGY",
+              "min": 37,
+              "label": "Egypt relations at 37 or more"
+            },
+            "yoursText": {
+              "met": "Cairo stayed at your side.",
+              "missed": "Cairo cooled on you."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The people",
+            "real": "The world's largest displacement and hunger crisis; famine was confirmed in parts of Darfur and Kordofan in late 2025.",
+            "yours": {
+              "kind": "STAT_MIN",
+              "stat": "approval",
+              "min": 50,
+              "label": "Approval at 50% or more"
+            },
+            "yoursText": {
+              "met": "Most Sudanese still backed the state.",
+              "missed": "Most Sudanese had lost faith in the state."
+            },
+            "better": "met"
+          }
+        ],
+        "fear": "A Libya-style permanent partition, famine on a historic scale, and a wider Horn of Africa war drawing in Ethiopia, Eritrea and Egypt.",
+        "sources": [
+          0,
+          1,
+          4
+        ]
+      },
+      "signature": {
+        "id": "nile_sdn_one_sudan",
+        "name": "One Sudan",
+        "rule": "Finish with the insurgency at UNREST or lower, legitimacy at 45 or more and Egyptian relations at 50 or more.",
+        "conditions": [
+          {
+            "kind": "INSURGENCY_MAX",
+            "level": "UNREST",
+            "label": "Insurgency no worse than UNREST"
+          },
+          {
+            "kind": "STAT_MIN",
+            "stat": "legitimacy",
+            "min": 45,
+            "label": "Legitimacy at 45 or more"
+          },
+          {
+            "kind": "RELATION_MIN",
+            "targetId": "EGY",
+            "min": 50,
+            "label": "Egypt relations at 50 or more"
+          }
+        ]
+      }
     },
     "EGY": {
       "title": "Guardian of the Nile",
@@ -270,7 +365,100 @@
         {"kind": "RELATION_MIN", "targetId": "SDN", "min": 60, "label": "Cairo is Port Sudan's first call (relations 60+)"}
       ],
       "par": 102,
-      "debrief": "What really happened: Egypt backed Sudan's army as its natural ally against an RSF tied to the UAE, Cairo's biggest investor, while Suez revenue collapsed under the Red Sea crisis and Ethiopia inaugurated the GERD in September 2025, hardening a dispute Cairo calls existential. What experts fear: that Sudan's partition, the GERD and Ethiopia's push for the Red Sea merge into one regional war, with Egypt's economy too weak to fight it and too exposed to stay out."
+      "debrief": "What really happened: Egypt backed Sudan's army as its natural ally against an RSF tied to the UAE, Cairo's biggest investor, while Suez revenue collapsed under the Red Sea crisis and Ethiopia inaugurated the GERD in September 2025, hardening a dispute Cairo calls existential. What experts fear: that Sudan's partition, the GERD and Ethiopia's push for the Red Sea merge into one regional war, with Egypt's economy too weak to fight it and too exposed to stay out.",
+      "reality": {
+        "asOf": "2026-11",
+        "rows": [
+          {
+            "topic": "Sudan's army",
+            "real": "With Egyptian backing, the army held Khartoum and reportedly broke the siege of El Obeid in November.",
+            "yours": {
+              "kind": "NOT_COLLAPSED",
+              "targetId": "SDN",
+              "label": "Sudan still standing"
+            },
+            "yoursText": {
+              "met": "The Sudanese state was still standing at the end.",
+              "missed": "The Sudanese state collapsed."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "Ethiopia",
+            "real": "No war, but Addis Ababa accused Cairo of backing rebels as Tigray fighting resumed in September; Egypt denied it.",
+            "yours": {
+              "kind": "NO_WAR_WITH",
+              "targetId": "ETH",
+              "label": "Never at war with Ethiopia"
+            },
+            "yoursText": {
+              "met": "No war with Ethiopia.",
+              "missed": "You went to war with Ethiopia."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The Emirates",
+            "real": "Ties with the UAE, Egypt's biggest investor and the RSF's alleged patron (Abu Dhabi denies it), stayed intact.",
+            "yours": {
+              "kind": "RELATION_MIN",
+              "targetId": "ARE",
+              "min": 40,
+              "label": "UAE relations at 40 or more"
+            },
+            "yoursText": {
+              "met": "Abu Dhabi stayed a partner.",
+              "missed": "Sudan's war soured ties with Abu Dhabi."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "Home",
+            "real": "Suez revenue collapsed with Red Sea shipping; the GERD dispute remains unresolved.",
+            "yours": {
+              "kind": "STAT_MIN",
+              "stat": "approval",
+              "min": 45,
+              "label": "Approval at 45% or more"
+            },
+            "yoursText": {
+              "met": "The public stayed with you.",
+              "missed": "Hard times eroded your support."
+            },
+            "better": "met"
+          }
+        ],
+        "fear": "Sudan's partition, the GERD and Ethiopia's push for the Red Sea merging into one regional war, with Egypt too weak to fight it and too exposed to stay out.",
+        "sources": [
+          1,
+          3,
+          5
+        ]
+      },
+      "signature": {
+        "id": "nile_egy_keeper_of_the_river",
+        "name": "Keeper of the River",
+        "rule": "Never at war with Ethiopia, with Sudanese relations at 60 or more and Emirati relations at 50 or more.",
+        "conditions": [
+          {
+            "kind": "NO_WAR_WITH",
+            "targetId": "ETH",
+            "label": "Never at war with Ethiopia"
+          },
+          {
+            "kind": "RELATION_MIN",
+            "targetId": "SDN",
+            "min": 60,
+            "label": "Sudan relations at 60 or more"
+          },
+          {
+            "kind": "RELATION_MIN",
+            "targetId": "ARE",
+            "min": 50,
+            "label": "UAE relations at 50 or more"
+          }
+        ]
+      }
     }
   }
 }

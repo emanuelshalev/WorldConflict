@@ -7,7 +7,11 @@
     "https://euronews.com/2026/09/10/houthis-seize-red-sea-port-city-in-push-to-seize-bab-el-mandeb",
     "https://wtop.com/world/2026/01/yemens-southern-transitional-council-to-dismantle-a-day-after-its-leader-fled-to-the-uae/",
     "https://en.wikipedia.org/wiki/2026_Iran_war",
-    "https://www.energyconnects.com/news/gas-lng/2026/may/uae-is-said-to-have-hit-iran-earlier-in-war-as-israel-ties-grow/"
+    "https://www.energyconnects.com/news/gas-lng/2026/may/uae-is-said-to-have-hit-iran-earlier-in-war-as-israel-ties-grow/",
+    "https://www.aljazeera.com/news/2026/11/15/yemeni-government-forces-redeploy-from-bab-al-mandeb-to-defend-aden",
+    "https://www.thenationalnews.com/news/mena/2026/11/15/southern-yemeni-forces-withdraw-from-area-near-bab-al-mandab/",
+    "https://npr.org/2026/09/18/nx-s1-5973810/houthi-attacks-saudi-oil-world-markets",
+    "https://www.aljazeera.com/news/2026/10/6/yemen-war-whats-the-latest-on-the-battlefield"
   ],
   "scenarioId": "2026",
   "date": "2026-11",
@@ -51,7 +55,104 @@
         {"kind": "RELATION_MIN", "targetId": "USA", "min": 70, "label": "Washington firmly behind you (US relations 70+)"}
       ],
       "par": 117,
-      "debrief": "What really happened: the Iran war turned the Houthis from a shipping nuisance into a force contesting the strait itself; by October 2026 they held Mokha, reportedly Perim, and could hit Riyadh, while the Saudi-backed counteroffensive ground forward slowly. What experts fear: a permanent closure of Bab al-Mandab that, together with Hormuz, cuts both of the Gulf's sea exits, and a Saudi–Emirati rift that hands the south of Yemen to whoever has the most guns."
+      "debrief": "What really happened: the Iran war turned the Houthis from a shipping nuisance into a force contesting the strait itself; by October 2026 they held Mokha, reportedly Perim, and could hit Riyadh, while the Saudi-backed counteroffensive ground forward slowly. What experts fear: a permanent closure of Bab al-Mandab that, together with Hormuz, cuts both of the Gulf's sea exits, and a Saudi–Emirati rift that hands the south of Yemen to whoever has the most guns.",
+      "reality": {
+        "asOf": "2026-11",
+        "rows": [
+          {
+            "topic": "The strait",
+            "real": "The Houthis took Mokha in September; after an October push, government forces pulled back from Bab al-Mandab on 15 November.",
+            "yours": {
+              "kind": "WAR_RESULT",
+              "targetId": "YEM",
+              "min": 58,
+              "label": "Front at 58 or better, or war over"
+            },
+            "yoursText": {
+              "met": "You held the line against the Houthis, or ended the war.",
+              "missed": "The Houthis gained ground on your watch."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "Peace",
+            "real": "No Saudi-Houthi truce as of late November 2026.",
+            "yours": {
+              "kind": "WAR_ENDED",
+              "targetId": "YEM",
+              "otherId": "SAU",
+              "label": "No Saudi-Houthi war at the end"
+            },
+            "yoursText": {
+              "met": "A peace with the Houthis came in month {firstMet}.",
+              "missed": "Still at war with the Houthis at the end."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The Emirates",
+            "real": "The Saudi-Emirati rift over Yemen and Sudan was the widest in years, fought through rival proxies.",
+            "yours": {
+              "kind": "RELATION_MIN",
+              "targetId": "ARE",
+              "min": 40,
+              "label": "UAE relations at 40 or more"
+            },
+            "yoursText": {
+              "met": "You repaired ties with Abu Dhabi.",
+              "missed": "The rift with Abu Dhabi stayed open."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The home front",
+            "real": "Houthi strikes hit Saudi oil sites in September and killed 13 at Riyadh's airport in October.",
+            "yours": {
+              "kind": "STAT_MIN",
+              "stat": "stability",
+              "min": 78,
+              "label": "Stability at 78 or more"
+            },
+            "yoursText": {
+              "met": "The kingdom ended stable.",
+              "missed": "The war shook the kingdom's stability."
+            },
+            "better": "met"
+          }
+        ],
+        "fear": "Bab al-Mandab closed for good alongside Hormuz, cutting both of the Gulf's sea exits, and a southern Yemen carved up by rival militias.",
+        "sources": [
+          0,
+          4,
+          6,
+          7
+        ]
+      },
+      "signature": {
+        "id": "bab_sau_peace_on_the_strait",
+        "name": "Peace on the Strait",
+        "rule": "End the Houthi war with Emirati relations at 40 or more and US relations at 70 or more.",
+        "conditions": [
+          {
+            "kind": "WAR_ENDED",
+            "targetId": "YEM",
+            "otherId": "SAU",
+            "label": "No Saudi-Houthi war at the end"
+          },
+          {
+            "kind": "RELATION_MIN",
+            "targetId": "ARE",
+            "min": 40,
+            "label": "UAE relations at 40 or more"
+          },
+          {
+            "kind": "RELATION_MIN",
+            "targetId": "USA",
+            "min": 70,
+            "label": "US relations at 70 or more"
+          }
+        ]
+      }
     },
     "YEM": {
       "title": "Masters of the strait",
@@ -67,7 +168,104 @@
         {"kind": "STAT_MIN", "stat": "stability", "min": 35, "label": "No bread riots in Sanaa (stability 35%+)"}
       ],
       "par": 97,
-      "debrief": "What really happened: after the 2022 truce the Houthis built a missile and drone arsenal, used the Gaza war and then the 2026 Iran war to attack shipping and Israel, and in September 2026 seized Mokha in a push on Bab al-Mandab. A Saudi-backed counteroffensive followed in October. What experts fear: a movement that controls the strait and the hunger of millions, which can hold world trade hostage for salaries and recognition, and finds that it works."
+      "debrief": "What really happened: after the 2022 truce the Houthis built a missile and drone arsenal, used the Gaza war and then the 2026 Iran war to attack shipping and Israel, and in September 2026 seized Mokha in a push on Bab al-Mandab. A Saudi-backed counteroffensive followed in October. What experts fear: a movement that controls the strait and the hunger of millions, which can hold world trade hostage for salaries and recognition, and finds that it works.",
+      "reality": {
+        "asOf": "2026-11",
+        "rows": [
+          {
+            "topic": "The strait",
+            "real": "Took Mokha in September; after the government pullback of 15 November, the Houthis reportedly hold the heights over the strait.",
+            "yours": {
+              "kind": "WAR_RESULT",
+              "targetId": "SAU",
+              "min": 22,
+              "label": "Front at 22 or better, or war over"
+            },
+            "yoursText": {
+              "met": "Your fighters kept their gains at the strait, or the war ended.",
+              "missed": "The counteroffensive pushed you back from the strait."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "Recognition",
+            "real": "Recognised by almost no government; public salaries in the north reportedly still unpaid.",
+            "yours": {
+              "kind": "STAT_MIN",
+              "stat": "legitimacy",
+              "min": 30,
+              "label": "Legitimacy at 30 or more"
+            },
+            "yoursText": {
+              "met": "Your authority ended with some legitimacy (30 or more).",
+              "missed": "Your authority rested on force alone."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "Peace",
+            "real": "No deal with Riyadh as of late November; the UN roadmap of 2023 stayed frozen.",
+            "yours": {
+              "kind": "WAR_ENDED",
+              "targetId": "YEM",
+              "otherId": "SAU",
+              "label": "No Saudi-Houthi war at the end"
+            },
+            "yoursText": {
+              "met": "A peace with Riyadh came in month {firstMet}.",
+              "missed": "No peace with Riyadh by the end."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The people",
+            "real": "Millions in Houthi areas reportedly face hunger after aid cuts and strikes on Hodeidah.",
+            "yours": {
+              "kind": "STAT_MIN",
+              "stat": "stability",
+              "min": 35,
+              "label": "Stability at 35 or more"
+            },
+            "yoursText": {
+              "met": "Life behind your lines held together.",
+              "missed": "Life behind your lines came apart."
+            },
+            "better": "met"
+          }
+        ],
+        "fear": "A movement that learns that holding world trade hostage pays, while millions go hungry behind its lines.",
+        "sources": [
+          0,
+          4,
+          5,
+          6
+        ]
+      },
+      "signature": {
+        "id": "bab_yem_salaries_not_missiles",
+        "name": "Salaries, Not Missiles",
+        "rule": "End the war with Saudi Arabia with legitimacy and stability both at 45 or more.",
+        "conditions": [
+          {
+            "kind": "WAR_ENDED",
+            "targetId": "YEM",
+            "otherId": "SAU",
+            "label": "No Saudi-Houthi war at the end"
+          },
+          {
+            "kind": "STAT_MIN",
+            "stat": "legitimacy",
+            "min": 45,
+            "label": "Legitimacy at 45 or more"
+          },
+          {
+            "kind": "STAT_MIN",
+            "stat": "stability",
+            "min": 45,
+            "label": "Stability at 45 or more"
+          }
+        ]
+      }
     },
     "ARE": {
       "title": "The southern game",
@@ -83,7 +281,101 @@
         {"kind": "STAT_MIN", "stat": "approval", "min": 80, "label": "Confidence at home (approval 80%+)"}
       ],
       "par": 112,
-      "debrief": "What really happened: the UAE built a southern Yemeni network around the STC and island bases, then watched it fracture in January 2026 when the STC leader fled to Abu Dhabi and the council announced its own dissolution. The Saudi–Emirati partnership that launched the 2015 intervention is now a rivalry fought through proxies from Aden to Khartoum. What experts fear: that the two Gulf powers, each sure it is indispensable to Washington, keep feeding rival militias until southern Yemen becomes another Libya on the world's busiest shipping lane."
+      "debrief": "What really happened: the UAE built a southern Yemeni network around the STC and island bases, then watched it fracture in January 2026 when the STC leader fled to Abu Dhabi and the council announced its own dissolution. The Saudi–Emirati partnership that launched the 2015 intervention is now a rivalry fought through proxies from Aden to Khartoum. What experts fear: that the two Gulf powers, each sure it is indispensable to Washington, keep feeding rival militias until southern Yemen becomes another Libya on the world's busiest shipping lane.",
+      "reality": {
+        "asOf": "2026-11",
+        "rows": [
+          {
+            "topic": "The Saudi ally",
+            "real": "The Saudi-Emirati rift over Yemen and Sudan was the widest in years, fought by proxy.",
+            "yours": {
+              "kind": "RELATION_MIN",
+              "targetId": "SAU",
+              "min": 40,
+              "label": "Saudi relations at 40 or more"
+            },
+            "yoursText": {
+              "met": "Riyadh and Abu Dhabi ended on good terms.",
+              "missed": "The rift with Riyadh stayed open."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The south",
+            "real": "The UAE-backed STC announced its own dissolution in January 2026 after its leader fled to Abu Dhabi; few believe it is gone.",
+            "yours": {
+              "kind": "NO_WAR_WITH",
+              "targetId": "YEM",
+              "label": "Never at war with the Houthis"
+            },
+            "yoursText": {
+              "met": "You stayed out of the Houthi war.",
+              "missed": "You were drawn into war with the Houthis."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "No Gulf war",
+            "real": "No open Saudi-Emirati clash: the rivalry stayed in the hands of proxies.",
+            "yours": {
+              "kind": "NO_WAR_WITH",
+              "targetId": "SAU",
+              "label": "Never at war with Saudi Arabia"
+            },
+            "yoursText": {
+              "met": "Not a shot fired between Gulf allies.",
+              "missed": "You went to war with Saudi Arabia."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "Washington",
+            "real": "Stayed close to Washington while expanding ties with Israel, reportedly.",
+            "yours": {
+              "kind": "RELATION_MIN",
+              "targetId": "USA",
+              "min": 90,
+              "label": "US relations at 90 or more"
+            },
+            "yoursText": {
+              "met": "Washington's closest Gulf partner, by the end.",
+              "missed": "Washington kept you at arm's length."
+            },
+            "better": "met"
+          }
+        ],
+        "fear": "Two Gulf powers, each sure it is indispensable to Washington, feeding rival militias until southern Yemen becomes another Libya on a key shipping lane.",
+        "sources": [
+          1,
+          4,
+          5
+        ]
+      },
+      "signature": {
+        "id": "bab_are_quiet_broker",
+        "name": "Quiet Broker",
+        "rule": "The Saudi-Houthi war ends, with Saudi relations at 50 or more and US relations at 90 or more.",
+        "conditions": [
+          {
+            "kind": "WAR_ENDED",
+            "targetId": "YEM",
+            "otherId": "SAU",
+            "label": "No Saudi-Houthi war at the end"
+          },
+          {
+            "kind": "RELATION_MIN",
+            "targetId": "SAU",
+            "min": 50,
+            "label": "Saudi relations at 50 or more"
+          },
+          {
+            "kind": "RELATION_MIN",
+            "targetId": "USA",
+            "min": 90,
+            "label": "US relations at 90 or more"
+          }
+        ]
+      }
     }
   },
   "scripted": {

@@ -9,7 +9,10 @@
     "https://www.aljazeera.com/news/2026/8/18/no-talks-with-iran-says-trump-as-us-president-stews-over-hormuz-deal",
     "https://www.thenationalnews.com/news/europe/2026/03/10/irans-uranium-stockpile-likely-intact-in-isfahan-iaeas-grossi-says",
     "https://www.cfr.org/article/united-states-blockades-strait-of-hormuz-after-u-s-iran-talks",
-    "https://www.energyconnects.com/news/gas-lng/2026/may/uae-is-said-to-have-hit-iran-earlier-in-war-as-israel-ties-grow/"
+    "https://www.energyconnects.com/news/gas-lng/2026/may/uae-is-said-to-have-hit-iran-earlier-in-war-as-israel-ties-grow/",
+    "https://www.aljazeera.com/news/2026/11/2/iran-pushing-accelerated-plan-for-ceasefire-talks-with-us",
+    "https://euronews.com/2026/11/21/iran-attacks-us-bases-in-bahrain-as-its-tankers-get-ready-to-break-the-us-blockade",
+    "https://www.al-monitor.com/originals/2026/09/us-and-iran-discuss-phased-deal-reopen-hormuz-and-end-us-blockade-sources-say"
   ],
   "scenarioId": "2026",
   "date": "2026-11",
@@ -53,7 +56,105 @@
         {"kind": "STAT_MIN", "stat": "stability", "min": 60, "label": "Stability of 60%+"}
       ],
       "par": 107,
-      "debrief": "What really happened: the 2026 Iran war killed a Supreme Leader but did not topple the regime. Hormuz was closed and reopened several times, a two-week ceasefire and the Islamabad framework both collapsed, and by November the conflict had settled into blockade versus harassment, at a cost of about $47bn and 23 American dead. What experts fear: a surviving hardline regime sitting on 200-plus kilograms of 60% uranium with every incentive for a crash bomb programme, or a Gulf energy shock that tips a 3%-growth world into recession."
+      "debrief": "What really happened: the 2026 Iran war killed a Supreme Leader but did not topple the regime. Hormuz was closed and reopened several times, a two-week ceasefire and the Islamabad framework both collapsed, and by November the conflict had settled into blockade versus harassment, at a cost of about $47bn and 23 American dead. What experts fear: a surviving hardline regime sitting on 200-plus kilograms of 60% uranium with every incentive for a crash bomb programme, or a Gulf energy shock that tips a 3%-growth world into recession.",
+      "reality": {
+        "asOf": "2026-11",
+        "rows": [
+          {
+            "topic": "The strait",
+            "real": "Still largely shut in late November: a US blockade of Iranian ports against IRGC attacks on shipping.",
+            "yours": {
+              "kind": "WAR_ENDED",
+              "targetId": "USA",
+              "otherId": "IRN",
+              "label": "No US-Iran war at the end"
+            },
+            "yoursText": {
+              "met": "Reopened: the US-Iran war ended in month {firstMet}.",
+              "missed": "Still contested: the US-Iran war was running at the end."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The uranium",
+            "real": "No test, but over 200 kg of 60% uranium is reportedly intact at Isfahan, unseen by inspectors since February.",
+            "yours": {
+              "kind": "NO_NUCLEAR",
+              "targetId": "IRN",
+              "maxStatus": "DEVELOPING",
+              "label": "Iran never passes DEVELOPING"
+            },
+            "yoursText": {
+              "met": "Iran never got beyond a developing programme.",
+              "missed": "Iran crossed the threshold on your watch."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The Gulf partners",
+            "real": "Gulf hosts absorbed Iranian missiles and drones; US bases in Bahrain were reportedly hit again on 21 November.",
+            "yours": {
+              "kind": "RELATION_MIN",
+              "targetId": "ARE",
+              "min": 66,
+              "label": "UAE relations at 66 or more"
+            },
+            "yoursText": {
+              "met": "The UAE stayed close to Washington to the end.",
+              "missed": "The UAE drifted away from Washington."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The home front",
+            "real": "About $47bn and 23 American dead, reportedly; the President paused new strikes before the 3 November midterms.",
+            "yours": {
+              "kind": "STAT_MIN",
+              "stat": "approval",
+              "min": 56,
+              "label": "Approval at 56% or more"
+            },
+            "yoursText": {
+              "met": "Your approval finished at 56% or better.",
+              "missed": "Your approval finished below 56%."
+            },
+            "better": "met"
+          }
+        ],
+        "fear": "A surviving hardline regime with a hidden 60% stockpile and every reason to race for a bomb, or a Gulf energy shock that tips the world into recession.",
+        "sources": [
+          0,
+          1,
+          3,
+          6,
+          7
+        ]
+      },
+      "signature": {
+        "id": "hormuz_usa_strait_open",
+        "name": "Strait Open, Bomb Never",
+        "rule": "End both the US and the Israeli wars with Iran, and Iran never passes DEVELOPING.",
+        "conditions": [
+          {
+            "kind": "WAR_ENDED",
+            "targetId": "USA",
+            "otherId": "IRN",
+            "label": "No US-Iran war at the end"
+          },
+          {
+            "kind": "WAR_ENDED",
+            "targetId": "ISR",
+            "otherId": "IRN",
+            "label": "No Israel-Iran war at the end"
+          },
+          {
+            "kind": "NO_NUCLEAR",
+            "targetId": "IRN",
+            "maxStatus": "DEVELOPING",
+            "label": "Iran never passes DEVELOPING"
+          }
+        ]
+      }
     },
     "IRN": {
       "title": "The revolution endures",
@@ -68,7 +169,103 @@
         {"kind": "RELATION_MIN", "targetId": "CHN", "min": 55, "label": "Beijing's lifeline secured (China relations 55+)"}
       ],
       "par": 97,
-      "debrief": "What really happened: the Islamic Republic absorbed the killing of Ali Khamenei, named his son Mojtaba Supreme Leader within ten days, crushed the January protests and kept firing at shipping under a US blockade; the new leader's health and grip on power remained the subject of rumour. What experts fear: a regime that concludes only a bomb guarantees survival, with a stockpile inspectors cannot see, or a sudden collapse that leaves that stockpile in nobody's hands."
+      "debrief": "What really happened: the Islamic Republic absorbed the killing of Ali Khamenei, named his son Mojtaba Supreme Leader within ten days, crushed the January protests and kept firing at shipping under a US blockade; the new leader's health and grip on power remained the subject of rumour. What experts fear: a regime that concludes only a bomb guarantees survival, with a stockpile inspectors cannot see, or a sudden collapse that leaves that stockpile in nobody's hands.",
+      "reality": {
+        "asOf": "2026-11",
+        "rows": [
+          {
+            "topic": "The regime",
+            "real": "Survived the killing of Ali Khamenei; Mojtaba Khamenei was named Supreme Leader within ten days.",
+            "yours": {
+              "kind": "STAT_MIN",
+              "stat": "legitimacy",
+              "min": 25,
+              "label": "Legitimacy at 25 or more"
+            },
+            "yoursText": {
+              "met": "The Islamic Republic ended with its legitimacy intact.",
+              "missed": "Legitimacy collapsed beneath the regime."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The war",
+            "real": "No ceasefire as of late November; Tehran says Hormuz reopens only after the US blockade is lifted.",
+            "yours": {
+              "kind": "WAR_ENDED",
+              "targetId": "USA",
+              "otherId": "IRN",
+              "label": "No US-Iran war at the end"
+            },
+            "yoursText": {
+              "met": "You ended the war with America in month {firstMet}.",
+              "missed": "Still at war with the United States at the end."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The bomb",
+            "real": "No test; the 60% stockpile reportedly survives in the Isfahan tunnels, beyond inspectors' sight.",
+            "yours": {
+              "kind": "NO_NUCLEAR",
+              "targetId": "IRN",
+              "maxStatus": "DEVELOPING",
+              "label": "Programme stays short of a test"
+            },
+            "yoursText": {
+              "met": "You kept the programme short of a test.",
+              "missed": "You tested: the world now knows."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The streets",
+            "real": "The January protests were crushed; discontent reportedly simmered under the blockade.",
+            "yours": {
+              "kind": "INSURGENCY_MAX",
+              "level": "UNREST",
+              "label": "Insurgency no worse than UNREST"
+            },
+            "yoursText": {
+              "met": "Discontent never turned into armed rebellion.",
+              "missed": "Unrest grew into armed rebellion."
+            },
+            "better": "met"
+          }
+        ],
+        "fear": "A regime that decides only a bomb guarantees survival, or a sudden collapse that leaves an unseen stockpile in nobody's hands.",
+        "sources": [
+          0,
+          1,
+          3,
+          6
+        ]
+      },
+      "signature": {
+        "id": "hormuz_irn_no_bomb_peace",
+        "name": "Survival Without the Bomb",
+        "rule": "End both wars on Iran (with the US and with Israel) without ever testing a weapon.",
+        "conditions": [
+          {
+            "kind": "WAR_ENDED",
+            "targetId": "USA",
+            "otherId": "IRN",
+            "label": "No US-Iran war at the end"
+          },
+          {
+            "kind": "WAR_ENDED",
+            "targetId": "ISR",
+            "otherId": "IRN",
+            "label": "No Israel-Iran war at the end"
+          },
+          {
+            "kind": "NO_NUCLEAR",
+            "targetId": "IRN",
+            "maxStatus": "DEVELOPING",
+            "label": "Programme stays short of a test"
+          }
+        ]
+      }
     },
     "ARE": {
       "title": "The hedger's victory",
@@ -84,7 +281,103 @@
         {"kind": "RELATION_MIN", "targetId": "IRN", "min": -40, "label": "A real channel to Tehran (Iran relations -40+)"}
       ],
       "par": 109,
-      "debrief": "What really happened: the UAE was reportedly among the Gulf states that struck Iran or its proxies during the 2026 war, while deepening its ties with Israel and absorbing missile and drone attacks on its own soil. What experts fear: that the Gulf's model of glittering neutrality cannot survive a long war at its doorstep: one successful strike on a desalination plant or a port, and the hedge becomes a front line."
+      "debrief": "What really happened: the UAE was reportedly among the Gulf states that struck Iran or its proxies during the 2026 war, while deepening its ties with Israel and absorbing missile and drone attacks on its own soil. What experts fear: that the Gulf's model of glittering neutrality cannot survive a long war at its doorstep: one successful strike on a desalination plant or a port, and the hedge becomes a front line.",
+      "reality": {
+        "asOf": "2026-11",
+        "rows": [
+          {
+            "topic": "The hedge",
+            "real": "The UAE reportedly struck Iran or its proxies early in the war, while deepening ties with Israel.",
+            "yours": {
+              "kind": "WAR_ENDED",
+              "targetId": "IRN",
+              "otherId": "ARE",
+              "label": "No UAE-Iran war at the end"
+            },
+            "yoursText": {
+              "met": "No war with Iran at the end.",
+              "missed": "Still at war with Iran at the end."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "Washington",
+            "real": "Stayed a close US partner while Iranian missiles and drones reportedly hit Emirati soil.",
+            "yours": {
+              "kind": "RELATION_MIN",
+              "targetId": "USA",
+              "min": 60,
+              "label": "US relations at 60 or more"
+            },
+            "yoursText": {
+              "met": "Washington still counted you as a close partner.",
+              "missed": "Ties with Washington cooled."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "Tehran",
+            "real": "Relations with Iran reportedly at their lowest in decades.",
+            "yours": {
+              "kind": "RELATION_MIN",
+              "targetId": "IRN",
+              "min": -40,
+              "label": "Iran relations at -40 or more"
+            },
+            "yoursText": {
+              "met": "You kept a working line open to Tehran.",
+              "missed": "Relations with Iran stayed at rock bottom."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "Home",
+            "real": "Trade and daily life carried on under air-defence alerts, reportedly, but the neutral-haven image took a hit.",
+            "yours": {
+              "kind": "STAT_MIN",
+              "stat": "approval",
+              "min": 80,
+              "label": "Approval at 80% or more"
+            },
+            "yoursText": {
+              "met": "Public confidence held at 80% or more.",
+              "missed": "Public confidence slipped below 80%."
+            },
+            "better": "met"
+          }
+        ],
+        "fear": "That a long war next door ends the Gulf's model of glittering neutrality: one hit on a desalination plant or a port, and the hedge becomes a front line.",
+        "sources": [
+          0,
+          5,
+          7
+        ]
+      },
+      "signature": {
+        "id": "hormuz_are_friends_with_all",
+        "name": "Friends With Everyone",
+        "rule": "No war with Iran at the end, US relations at 80 or more and Iran relations at -20 or more.",
+        "conditions": [
+          {
+            "kind": "WAR_ENDED",
+            "targetId": "IRN",
+            "otherId": "ARE",
+            "label": "No UAE-Iran war at the end"
+          },
+          {
+            "kind": "RELATION_MIN",
+            "targetId": "USA",
+            "min": 80,
+            "label": "US relations at 80 or more"
+          },
+          {
+            "kind": "RELATION_MIN",
+            "targetId": "IRN",
+            "min": -20,
+            "label": "Iran relations at -20 or more"
+          }
+        ]
+      }
     }
   },
   "scripted": {

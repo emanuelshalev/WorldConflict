@@ -6,7 +6,10 @@
   "sources": [
     "https://en.wikipedia.org/wiki/2026_in_Venezuela",
     "https://en.wikipedia.org/wiki/2026_in_Cuba",
-    "https://www.pbs.org/newshour/world/who-is-delcy-rodriguez-venezuelas-interim-president-after-maduros-ouster"
+    "https://www.pbs.org/newshour/world/who-is-delcy-rodriguez-venezuelas-interim-president-after-maduros-ouster",
+    "https://www.aljazeera.com/news/2026/9/24/venezuelas-delcy-rodriguez-promises-elections-at-un-gives-no-date",
+    "https://www.aljazeera.com/news/2026/3/13/cuban-president-diaz-canel-says-talks-held-with-us-amid-trump-threats",
+    "https://www.npr.org/2026/03/16/nx-s1-5749457/cuba-blackout-sanctions-oil"
   ],
   "scenarioId": "2026",
   "date": "2026-11",
@@ -45,7 +48,88 @@
         {"kind": "STAT_MIN", "stat": "approval", "min": 50, "label": "Approval of 50%+"}
       ],
       "par": 102,
-      "debrief": "What really happened: Maduro's capture in January 2026 decapitated the regime without dismantling it. Delcy Rodríguez kept the chavista state together by becoming useful to Washington: a new hydrocarbons law, deportation flights, an embassy reopened and US sanctions on her lifted in April, with elections promised but undated and the opposition sidelined. What experts fear: an 'authoritarian transition without democracy', in which oil deals buy a protectorate's permanence and Venezuelans' votes are postponed indefinitely."
+      "debrief": "What really happened: Maduro's capture in January 2026 decapitated the regime without dismantling it. Delcy Rodríguez kept the chavista state together by becoming useful to Washington: a new hydrocarbons law, deportation flights, an embassy reopened and US sanctions on her lifted in April, with elections promised but undated and the opposition sidelined. What experts fear: an 'authoritarian transition without democracy', in which oil deals buy a protectorate's permanence and Venezuelans' votes are postponed indefinitely.",
+      "reality": {
+        "asOf": "2026-11",
+        "rows": [
+          {
+            "topic": "Washington",
+            "real": "Delcy Rodríguez won sanctions relief and a reopened US embassy by making herself useful to Washington.",
+            "yours": {
+              "kind": "RELATION_MIN",
+              "targetId": "USA",
+              "min": 15,
+              "label": "US relations at 15 or more"
+            },
+            "yoursText": {
+              "met": "You stayed on Washington's good side.",
+              "missed": "Washington turned against you."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "Elections",
+            "real": "Promised at the UN in September and again in late October 2026, still with no date.",
+            "yours": {
+              "kind": "STAT_MIN",
+              "stat": "legitimacy",
+              "min": 50,
+              "label": "Legitimacy at 50 or more"
+            },
+            "yoursText": {
+              "met": "Your government ended with real legitimacy (50 or more).",
+              "missed": "Your mandate stayed thin."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The street",
+            "real": "The opposition was largely sidelined from the transition, reportedly.",
+            "yours": {
+              "kind": "STAT_MIN",
+              "stat": "approval",
+              "min": 50,
+              "label": "Approval at 50% or more"
+            },
+            "yoursText": {
+              "met": "Most Venezuelans ended up backing you.",
+              "missed": "Most Venezuelans did not back you."
+            },
+            "better": "met"
+          }
+        ],
+        "fear": "An authoritarian transition without democracy: oil deals buy permanence and the vote is postponed indefinitely.",
+        "sources": [
+          0,
+          2,
+          3
+        ]
+      },
+      "signature": {
+        "id": "caracas_ven_ballots",
+        "name": "Ballots, Not Bargains",
+        "rule": "Finish with legitimacy at 60 or more, approval at 55% or more and US relations at 30 or more.",
+        "conditions": [
+          {
+            "kind": "STAT_MIN",
+            "stat": "legitimacy",
+            "min": 60,
+            "label": "Legitimacy at 60 or more"
+          },
+          {
+            "kind": "STAT_MIN",
+            "stat": "approval",
+            "min": 55,
+            "label": "Approval at 55% or more"
+          },
+          {
+            "kind": "RELATION_MIN",
+            "targetId": "USA",
+            "min": 30,
+            "label": "US relations at 30 or more"
+          }
+        ]
+      }
     },
     "CUB": {
       "title": "Keep the lights and the Party on",
@@ -60,7 +144,103 @@
         {"kind": "STAT_MIN", "stat": "stability", "min": 40, "label": "Streets calm (stability 40%+)"}
       ],
       "par": 97,
-      "debrief": "What really happened: after Maduro's fall cut Cuba's last oil lifeline, the US blockade from January 2026 and Mexico's halt to shipments brought total grid collapse in March, protests and a burned Party office in Morón. Havana answered with talks, a pardon of 2,010 prisoners and a private-enterprise package, while Washington indicted Raúl Castro and sanctioned Díaz-Canel. What experts fear: a humanitarian collapse and a new mass exodus across the Florida Straits, or a hard-line crackdown that ends any chance of a managed transition."
+      "debrief": "What really happened: after Maduro's fall cut Cuba's last oil lifeline, the US blockade from January 2026 and Mexico's halt to shipments brought total grid collapse in March, protests and a burned Party office in Morón. Havana answered with talks, a pardon of 2,010 prisoners and a private-enterprise package, while Washington indicted Raúl Castro and sanctioned Díaz-Canel. What experts fear: a humanitarian collapse and a new mass exodus across the Florida Straits, or a hard-line crackdown that ends any chance of a managed transition.",
+      "reality": {
+        "asOf": "2026-11",
+        "rows": [
+          {
+            "topic": "The grid",
+            "real": "Repeated nationwide blackouts, including a total grid collapse in March, after oil shipments stopped.",
+            "yours": {
+              "kind": "STAT_MIN",
+              "stat": "stability",
+              "min": 40,
+              "label": "Stability at 40 or more"
+            },
+            "yoursText": {
+              "met": "The lights, and the state, held.",
+              "missed": "The country kept sliding."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The Party",
+            "real": "Survived protests, including a burned Party office in Morón, with a mass pardon and a private-enterprise package.",
+            "yours": {
+              "kind": "STAT_MIN",
+              "stat": "legitimacy",
+              "min": 22,
+              "label": "Legitimacy at 22 or more"
+            },
+            "yoursText": {
+              "met": "The Party kept its claim to rule.",
+              "missed": "The Party's authority cracked."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "Washington",
+            "real": "Talks with the US were confirmed in March, while Washington indicted Raúl Castro and sanctioned Díaz-Canel.",
+            "yours": {
+              "kind": "RELATION_MIN",
+              "targetId": "USA",
+              "min": -50,
+              "label": "US relations at -50 or more"
+            },
+            "yoursText": {
+              "met": "You thawed ties with Washington.",
+              "missed": "Relations with Washington stayed frozen."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "Caracas",
+            "real": "Venezuelan oil, Cuba's lifeline, stopped after Maduro's capture.",
+            "yours": {
+              "kind": "RELATION_MIN",
+              "targetId": "VEN",
+              "min": 40,
+              "label": "Venezuela relations at 40 or more"
+            },
+            "yoursText": {
+              "met": "Caracas stayed a friend.",
+              "missed": "Caracas drifted away."
+            },
+            "better": "met"
+          }
+        ],
+        "fear": "A humanitarian collapse and a new exodus across the Florida Straits, or a crackdown that ends any chance of a managed transition.",
+        "sources": [
+          1,
+          4,
+          5
+        ]
+      },
+      "signature": {
+        "id": "caracas_cub_lights_on",
+        "name": "Lights Back On",
+        "rule": "Finish with stability at 50 or more, approval at 45% or more and US relations at -25 or more.",
+        "conditions": [
+          {
+            "kind": "STAT_MIN",
+            "stat": "stability",
+            "min": 50,
+            "label": "Stability at 50 or more"
+          },
+          {
+            "kind": "STAT_MIN",
+            "stat": "approval",
+            "min": 45,
+            "label": "Approval at 45% or more"
+          },
+          {
+            "kind": "RELATION_MIN",
+            "targetId": "USA",
+            "min": -25,
+            "label": "US relations at -25 or more"
+          }
+        ]
+      }
     },
     "USA": {
       "title": "Regime change, without the change",
@@ -77,7 +257,106 @@
         {"kind": "SCORE_PAR", "min": 109, "label": "Leadership score of 109+"}
       ],
       "par": 107,
-      "debrief": "What really happened: the January 2026 raid removed Maduro but Washington chose oil and order over a democratic handover, lifting sanctions on Rodríguez and sidelining Machado, while an oil blockade pushed Cuba into blackouts and talks. What experts fear: that 'decapitation without regime change' becomes the template, leaving a dependent autocracy in Caracas, a humanitarian collapse in Havana and a hemisphere newly convinced that sovereignty is negotiable."
+      "debrief": "What really happened: the January 2026 raid removed Maduro but Washington chose oil and order over a democratic handover, lifting sanctions on Rodríguez and sidelining Machado, while an oil blockade pushed Cuba into blackouts and talks. What experts fear: that 'decapitation without regime change' becomes the template, leaving a dependent autocracy in Caracas, a humanitarian collapse in Havana and a hemisphere newly convinced that sovereignty is negotiable.",
+      "reality": {
+        "asOf": "2026-11",
+        "rows": [
+          {
+            "topic": "Venezuela",
+            "real": "No US ground war after the January raid; Maduro is on trial in New York.",
+            "yours": {
+              "kind": "NO_WAR_WITH",
+              "targetId": "VEN",
+              "label": "Never at war with Venezuela"
+            },
+            "yoursText": {
+              "met": "No war with Venezuela.",
+              "missed": "You went to war with Venezuela."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "Cuba",
+            "real": "A US oil blockade since January left Cuba in blackouts; talks were confirmed in March, with no deal as of late 2026.",
+            "yours": {
+              "kind": "RELATION_MIN",
+              "targetId": "CUB",
+              "min": -40,
+              "label": "Cuba relations at -40 or more"
+            },
+            "yoursText": {
+              "met": "You opened a real thaw with Havana.",
+              "missed": "Havana stayed an adversary."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The hemisphere",
+            "real": "Mexico reportedly halted oil shipments to Cuba under US pressure, while governments across the region condemned the raid.",
+            "yours": {
+              "kind": "RELATION_MIN",
+              "targetId": "MEX",
+              "min": 50,
+              "label": "Mexico relations at 50 or more"
+            },
+            "yoursText": {
+              "met": "Mexico stayed a willing partner.",
+              "missed": "Mexico kept its distance."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The home front",
+            "real": "The President's approval sat in the low 40s through much of 2026, by most polls.",
+            "yours": {
+              "kind": "STAT_MIN",
+              "stat": "approval",
+              "min": 55,
+              "label": "Approval at 55% or more"
+            },
+            "yoursText": {
+              "met": "Your approval finished at 55% or better.",
+              "missed": "Your approval finished below 55%."
+            },
+            "better": "met"
+          }
+        ],
+        "fear": "That decapitation without regime change becomes the template: a dependent autocracy in Caracas, collapse in Havana, sovereignty up for negotiation.",
+        "sources": [
+          0,
+          1,
+          3
+        ]
+      },
+      "signature": {
+        "id": "caracas_usa_transition",
+        "name": "Transition, Not Occupation",
+        "rule": "Never at war with Venezuela or Cuba, with Venezuelan relations at 40 or more and Mexican relations at 60 or more.",
+        "conditions": [
+          {
+            "kind": "NO_WAR_WITH",
+            "targetId": "VEN",
+            "label": "Never at war with Venezuela"
+          },
+          {
+            "kind": "NO_WAR_WITH",
+            "targetId": "CUB",
+            "label": "Never at war with Cuba"
+          },
+          {
+            "kind": "RELATION_MIN",
+            "targetId": "VEN",
+            "min": 40,
+            "label": "Venezuela relations at 40 or more"
+          },
+          {
+            "kind": "RELATION_MIN",
+            "targetId": "MEX",
+            "min": 60,
+            "label": "Mexico relations at 60 or more"
+          }
+        ]
+      }
     }
   },
   "scripted": {

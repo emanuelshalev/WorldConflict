@@ -8,7 +8,9 @@
     "https://tribune.com.pk/story/2612412/",
     "https://www.arabnews.pk/node/2622517",
     "https://365.military.com/feature/2026/02/27/pakistan-declares-open-war-afghan-taliban-airstrikes-hammer-kabul-and-kandahar.html",
-    "https://www.theweek.in/news/defence/2026/06/09/india-expands-nuclear-arsenal-to-190-warheads-deploys-some-for-first-time-sipri.html"
+    "https://www.theweek.in/news/defence/2026/06/09/india-expands-nuclear-arsenal-to-190-warheads-deploys-some-for-first-time-sipri.html",
+    "https://www.chathamhouse.org/2026/04/india-and-pakistan-still-cannot-agree-restore-indus-waters-treaty-re-engagement-could-help",
+    "https://www.dawn.com/news/2006820/india-actively-working-to-restrict-water-flows-to-pakistan-after-indus-waters-treaty-suspension"
   ],
   "scenarioId": "2026",
   "date": "2026-11",
@@ -46,7 +48,108 @@
         {"kind": "STAT_MIN", "stat": "stability", "min": 70, "label": "Calm at home (stability 70%+)"}
       ],
       "par": 105,
-      "debrief": "What really happened: after Pahalgam in April 2025, India struck what it called terrorist infrastructure on 7 May; four days of drone, missile and air-base strikes followed before a ceasefire on 10 May, with Washington and Gulf capitals working the phones. India then held the Indus Waters Treaty in abeyance and through 2026 moved to restrict the western rivers. What experts fear: that water turns a recurring terror-and-retaliation cycle into a permanent existential grievance, and that each round starts higher up the escalation ladder than the last, with less time for anyone to call a halt."
+      "debrief": "What really happened: after Pahalgam in April 2025, India struck what it called terrorist infrastructure on 7 May; four days of drone, missile and air-base strikes followed before a ceasefire on 10 May, with Washington and Gulf capitals working the phones. India then held the Indus Waters Treaty in abeyance and through 2026 moved to restrict the western rivers. What experts fear: that water turns a recurring terror-and-retaliation cycle into a permanent existential grievance, and that each round starts higher up the escalation ladder than the last, with less time for anyone to call a halt.",
+      "reality": {
+        "asOf": "2026-11",
+        "rows": [
+          {
+            "topic": "War",
+            "real": "Four days of strikes in May 2025 ended in a ceasefire; no new war through November 2026. (This scenario's Jammu attack is fictional.)",
+            "yours": {
+              "kind": "NO_WAR_WITH",
+              "targetId": "PAK",
+              "label": "Never at war with Pakistan"
+            },
+            "yoursText": {
+              "met": "No war with Pakistan.",
+              "missed": "It came to war with Pakistan."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The rivers",
+            "real": "The Indus Waters Treaty stayed 'in abeyance' and India worked to restrict the western rivers.",
+            "yours": {
+              "kind": "RELATION_MIN",
+              "targetId": "PAK",
+              "min": -60,
+              "label": "Pakistan relations at -60 or more"
+            },
+            "yoursText": {
+              "met": "You thawed ties with Pakistan.",
+              "missed": "Relations with Pakistan stayed frozen."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "Washington",
+            "real": "US-India ties were strained by US tariffs in 2025 before trade talks resumed, reportedly.",
+            "yours": {
+              "kind": "RELATION_MIN",
+              "targetId": "USA",
+              "min": 30,
+              "label": "US relations at 30 or more"
+            },
+            "yoursText": {
+              "met": "Washington stayed a partner.",
+              "missed": "Washington drifted away."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The home front",
+            "real": "Operation Sindoor was broadly popular at home, by most accounts.",
+            "yours": {
+              "kind": "STAT_MIN",
+              "stat": "approval",
+              "min": 70,
+              "label": "Approval at 70% or more"
+            },
+            "yoursText": {
+              "met": "The country rallied behind you (70% or more).",
+              "missed": "Your approval finished below 70%."
+            },
+            "better": "met"
+          }
+        ],
+        "fear": "Water turning a recurring terror-and-retaliation cycle into a permanent grievance, each round starting higher up the escalation ladder.",
+        "sources": [
+          0,
+          4,
+          5,
+          6
+        ]
+      },
+      "signature": {
+        "id": "water_ind_deterrence_without_war",
+        "name": "Deterrence Without War",
+        "rule": "Never at war with Pakistan, with US relations at 50 or more and approval and stability both at 70 or more.",
+        "conditions": [
+          {
+            "kind": "NO_WAR_WITH",
+            "targetId": "PAK",
+            "label": "Never at war with Pakistan"
+          },
+          {
+            "kind": "RELATION_MIN",
+            "targetId": "USA",
+            "min": 50,
+            "label": "US relations at 50 or more"
+          },
+          {
+            "kind": "STAT_MIN",
+            "stat": "approval",
+            "min": 70,
+            "label": "Approval at 70% or more"
+          },
+          {
+            "kind": "STAT_MIN",
+            "stat": "stability",
+            "min": 70,
+            "label": "Stability at 70 or more"
+          }
+        ]
+      }
     },
     "PAK": {
       "title": "Deterrence on two fronts",
@@ -61,7 +164,109 @@
         {"kind": "STAT_MIN", "stat": "stability", "min": 50, "label": "The state holds (stability 50%+)"}
       ],
       "par": 97,
-      "debrief": "What really happened: in May 2025 Pakistan answered Operation Sindoor with its own drone, missile and air strikes, claimed Indian jets downed, and accepted a ceasefire after four days; Asim Munir emerged a Field Marshal and, by late 2025, constitutionally Chief of Defence Forces. In 2026 Pakistan was simultaneously fighting the Afghan Taliban and warning that any Indian diversion of the Indus would be an act of war. What experts fear: a state that leans on early nuclear signalling to offset conventional weakness, facing a neighbour that no longer believes the signal, over a river 240 million people depend on."
+      "debrief": "What really happened: in May 2025 Pakistan answered Operation Sindoor with its own drone, missile and air strikes, claimed Indian jets downed, and accepted a ceasefire after four days; Asim Munir emerged a Field Marshal and, by late 2025, constitutionally Chief of Defence Forces. In 2026 Pakistan was simultaneously fighting the Afghan Taliban and warning that any Indian diversion of the Indus would be an act of war. What experts fear: a state that leans on early nuclear signalling to offset conventional weakness, facing a neighbour that no longer believes the signal, over a river 240 million people depend on.",
+      "reality": {
+        "asOf": "2026-11",
+        "rows": [
+          {
+            "topic": "India",
+            "real": "No new war after the four-day conflict of May 2025. (This scenario's Jammu attack is fictional.)",
+            "yours": {
+              "kind": "NO_WAR_WITH",
+              "targetId": "IND",
+              "label": "Never at war with India"
+            },
+            "yoursText": {
+              "met": "No war with India.",
+              "missed": "It came to war with India."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The rivers",
+            "real": "India kept the treaty in abeyance; Pakistan won a supplementary arbitration award, but no water deal.",
+            "yours": {
+              "kind": "RELATION_MIN",
+              "targetId": "IND",
+              "min": -60,
+              "label": "India relations at -60 or more"
+            },
+            "yoursText": {
+              "met": "You thawed ties with India.",
+              "missed": "Relations with India stayed frozen."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "Riyadh",
+            "real": "Pakistan signed a mutual defence pact with Saudi Arabia in September 2025.",
+            "yours": {
+              "kind": "RELATION_MIN",
+              "targetId": "SAU",
+              "min": 74,
+              "label": "Saudi relations at 74 or more"
+            },
+            "yoursText": {
+              "met": "Riyadh stood firmly with you.",
+              "missed": "Riyadh kept its distance."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The western front",
+            "real": "Open fighting with the Afghan Taliban from February 2026, reportedly.",
+            "yours": {
+              "kind": "STAT_MIN",
+              "stat": "stability",
+              "min": 50,
+              "label": "Stability at 50 or more"
+            },
+            "yoursText": {
+              "met": "The state held on both fronts.",
+              "missed": "Two fronts strained the state."
+            },
+            "better": "met"
+          }
+        ],
+        "fear": "Early nuclear signalling to offset conventional weakness, aimed at a neighbour that no longer believes it, over a river 240 million people depend on.",
+        "sources": [
+          0,
+          2,
+          3,
+          5,
+          6
+        ]
+      },
+      "signature": {
+        "id": "water_pak_two_fronts_no_war",
+        "name": "Two Fronts, No War",
+        "rule": "Never at war with India, with US relations at 50 or more, Saudi relations at 80 or more and stability at 50 or more.",
+        "conditions": [
+          {
+            "kind": "NO_WAR_WITH",
+            "targetId": "IND",
+            "label": "Never at war with India"
+          },
+          {
+            "kind": "RELATION_MIN",
+            "targetId": "USA",
+            "min": 50,
+            "label": "US relations at 50 or more"
+          },
+          {
+            "kind": "RELATION_MIN",
+            "targetId": "SAU",
+            "min": 80,
+            "label": "Saudi relations at 80 or more"
+          },
+          {
+            "kind": "STAT_MIN",
+            "stat": "stability",
+            "min": 50,
+            "label": "Stability at 50 or more"
+          }
+        ]
+      }
     }
   },
   "scripted": {
