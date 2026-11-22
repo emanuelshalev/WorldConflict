@@ -13,6 +13,7 @@ goals.md       track A (game, G1-G9) and track B (practice, P1-P6)
 gate.md        release-candidate gate for this game
 ledger.md      decision ledger
 journal.md     process learnings (newest at the bottom)
+progress/      stage log, estimate snapshots and config for kit/progress.mjs
 smoke.mjs      QA smoke playtest through the real UI
 verify.config.mjs  the verify gate for this game (npm run verify)
 regressions.yaml   every addressed finding and the guard that keeps it fixed
@@ -47,3 +48,22 @@ Other flags: `--only a,b`, `--skip a,b`, `--bail`, `--list`, `--out <dir>`, `--s
 - **Balance bands** (`tests/balance/bands.spec.ts`, excluded from `npm test`, part of the default gate): 12 games (`BALANCE_GAMES`) per seat with smart, none and random on the Term core five plus Iran and three flashpoint seats, against the CLAUDE.md bands. Known gaps live in `tests/balance/exemptions.json` with a note (Iran Term; the random policy below its band, ledger D-49); exempt checks still print their measured value.
 - **Finding guards** (`regressions.yaml`): `node devloop/kit/regressions.mjs devloop/instances/world-conflict/regressions.yaml check|run|changed`. Every fix adds an entry with its guard (`../../method/triage.md` step 7); `tests/regressions-registry.spec.ts` fails `npm test` when an entry loses its guard or a Done backlog item is missing.
 
+
+## Progress and ETAs
+
+The Iterations tab shows progress within the current stage, ETAs for the rest of the iteration and expected tokens, from `progress/` (method and stage definitions in `progress/README.md`). Record each transition with one command, then regenerate the page:
+
+```bash
+export PATH=$HOME/.local/share/node/current/bin:$PATH
+P=devloop/instances/world-conflict/progress/config.json
+node devloop/kit/progress.mjs $P --done 1 --note "gate-fixes merged"        # a unit of the current stage is finished
+node devloop/kit/progress.mjs $P --start Use --total 9                      # closes Verify, starts Use with 9 sessions
+node devloop/kit/progress.mjs $P --start Triage                             # closes Use
+node devloop/kit/progress.mjs $P --start Plan --iteration 4                 # next iteration's plan (iteration defaults to the next one)
+node devloop/kit/progress.mjs $P --skip Design                              # a stage this iteration does not run
+node devloop/kit/progress.mjs $P --pause --note "machine shutdown"          # and --resume when work restarts
+node devloop/kit/progress.mjs $P                                            # print the estimate
+node devloop/kit/progress.mjs $P --inject dev_plan/project_status.html PROGRESS && node devloop/kit/page-check.mjs dev_plan/project_status.html
+```
+
+`--at <ISO time>` backdates an event. Use `--stage` / `--iteration` when the event is not for the current stage. Keep the plan for the rest of the iteration (units, size, notes) in `progress/config.json`. At each Report stage, read the Estimate accuracy table on the status page and note in the journal what to change.
