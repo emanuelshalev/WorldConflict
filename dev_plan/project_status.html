@@ -412,7 +412,7 @@ flowchart LR
   <h3>The loop</h3>
   <div class="mermaid">
 flowchart LR
-  P["1 Plan<br/>goals for this iteration"] --> D["2 Design<br/>specs + concepts"] --> B["3 Build<br/>parallel agents"] --> V["4 Verify<br/>tests, smoke, visual QA"] --> U["5 Use<br/>blind customer sessions"] --> T["6 Triage<br/>cluster, reproduce, decide"] --> R["7 Report<br/>status page, journal, tag"] --> G{"8 Gate"}
+  P["1 Plan<br/>goals for this iteration"] --> D["2 Design<br/>specs + concepts"] --> B["3 Build<br/>parallel agents"] --> V["4 Verify<br/>one verify gate:<br/>tests, guards, visuals"] --> U["5 Use<br/>blind customer sessions"] --> T["6 Triage<br/>regressions first,<br/>cluster, decide"] --> R["7 Report<br/>status page, journal, tag"] --> G{"8 Gate"}
   G -- "fail" --> P
   G -- "pass" --> RC(["Release candidate"])
   RS[("Real signals<br/>CEO, players")] -. "calibrate" .-> U
@@ -814,7 +814,7 @@ const LOOP = {
     ["🔍", "QA Engineer", "Tests, harness, playtest kit, bug reproduction, visual QA"],
     ["🌍", "Content Consultant", "Facts, leaders, crisis writing, debriefs"],
   ],
-  howVersion: "v1.3 · 2026-11-22",
+  howVersion: "v1.4 · 2026-11-23",
   principles: [
     ["Customers decide, builders build", "Customer agents run fresh, blind to design intent and goals, on a different model from the builders."],
     ["Real signals win", "Your feedback calibrates the panel. When a real person disagrees with the panel, we go with the person."],
@@ -825,6 +825,8 @@ const LOOP = {
     ["Verify before customers see it", "Tests, lints, build, balance harness and a smoke playtest through the real UI."],
     ["Isolate agents, respect capacity", "Each agent has its own port, scratch and output folder; at most about one browser persona per 5 CPU cores at once."],
     ["Reach the end", "Every usage round, at least 3 personas reach an end screen."],
+    ["Fixed stays fixed", "Every addressed finding gets an automated guard before it counts as fixed. One verify command runs every test, guard, visual check and balance band before any merge or customer round; new feedback is checked against past fixes first, and a regression is fixed before new work."],
+    ["Compare like with like", "Each customer replays a fixed control scenario every iteration plus one new one, so changes across iterations mean something; one-point moves are noise unless behaviour backs them."],
     ["Measure consumption", "Every agent is named so its tokens are attributed automatically; the Consumption tab is regenerated with each update."],
     ["Report often", "This page and the journal update at every stage."],
   ],
@@ -862,6 +864,10 @@ const LOOP = {
       "<b>Found (my error):</b> one multi-path checkout aborted while resolving 63 generated files and I committed conflict markers; the reveal ran without benchmarks during the round. <b>Changed:</b> a repository test fails on conflict markers; generated files are resolved per file or regenerated; full tests before any customer round (D-57).",
       "<b>Found:</b> a rule for historical accuracy removed seats (West Bank, 1960 Nigeria). <b>Changed:</b> accuracy by default, with an explicit What-if option; never remove a seat (D-56).",
       "<b>Found:</b> the status page lagged behind merges. <b>Changed:</b> it updates after every merge." ] },
+    { date: "2026-11-23", iter: 3, title: "Stability becomes a goal and a way of working", items: [
+      "<b>Found:</b> you asked whether the degradation was real. Per-customer moves of one point were within noise (one session each, rotating crisis, seed and device); the real signal was two customers hitting the same quit point. <b>Changed:</b> a fixed control scenario per customer every iteration, behaviour over scores.",
+      "<b>Found:</b> checks beyond the unit tests ran only when someone remembered, and scripts drifted from the interface. <b>Changed:</b> one verify command before every merge and customer round, with visual regression and balance bands.",
+      "<b>Your rule:</b> what was addressed must not be ruined by new fixes. <b>Changed:</b> product goal G13 (fixed stays fixed) gating the release; a regression registry gives every fixed finding an automated guard; new feedback is checked against it first; How we work v1.4." ] },
   ],
 };
 

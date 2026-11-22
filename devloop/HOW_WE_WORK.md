@@ -1,6 +1,6 @@
 # How we work (current state)
 
-Version 1.3, 2026-11-22. Changed only through journal entries (`instances/*/journal.md`) and mirrored on the instance status page.
+Version 1.4, 2026-11-23. Changed only through journal entries (`instances/*/journal.md`) and mirrored on the instance status page.
 
 ## Principles
 1. **Customers decide, builders build.** Synthetic customers run in fresh sessions, blind to design intent and the goal list, on a different model from the builders where possible.
@@ -14,7 +14,9 @@ Version 1.3, 2026-11-22. Changed only through journal entries (`instances/*/jour
 9. **Check reports like code**: run `kit/page-check.mjs` on any status page before committing it.
 10. **Reach the end**: each usage round, at least 3 personas reach an end screen.
 11. **Measure consumption**: every agent gets a description its usage rule can match; the orchestrator logs stage boundaries in the usage registry; consumption is regenerated with each status update.
-12. **Report often**: the status page and journal are updated at each stage and after every merge, so the owner can follow without asking.
+12. **Fixed stays fixed.** Every addressed finding gets an automated guard in the regression registry before it is marked fixed. One command (`verify`) runs all tests, lints, build, UI smoke, visual regression, balance bands and every guard; it must pass before any merge and any panel round. New feedback is checked against the registry first; a regressed finding is at least S2 and is fixed before new work.
+13. **Compare like with like.** Each persona replays a fixed control scenario every iteration plus one rotating scenario; single-score moves of one point are noise unless behaviour backs them.
+14. **Report often**: the status page and journal are updated at each stage and after every merge, so the owner can follow without asking.
 
 ## Iteration
 | Stage | Who | Output |
@@ -22,9 +24,9 @@ Version 1.3, 2026-11-22. Changed only through journal entries (`instances/*/jour
 | 1. Plan | Group Manager | 3 to 5 goals for the iteration, each tied to findings and gate criteria |
 | 2. Design | Designer, UX, Art Director | Specs, concepts, acceptance criteria (`runs/iter-NN/design-*.md`) |
 | 3. Build | Engineers (parallel agents) | Code, tests, ledger entries |
-| 4. Verify | QA | Green checks, smoke playtest, regression checks, visual QA screenshots |
+| 4. Verify | QA | `verify` gate green: tests, lints, build, smoke, visual regression, balance bands, every regression guard |
 | 5. Use | Customer panel (blind, parallel) | Schema-valid session reports with screenshots |
-| 6. Triage | Group Manager + QA | Clusters, reproduced bugs, decisions (`runs/iter-NN/triage.md`) |
+| 6. Triage | Group Manager + QA | Regression check against the registry first, then clusters, reproduced bugs, decisions; every fix adds a guard |
 | 7. Report | Group Manager | Status page, journal, tag `iter-NN`, push |
 | 8. Gate | Group Manager | Pass: release candidate tag. Fail: next iteration |
 
