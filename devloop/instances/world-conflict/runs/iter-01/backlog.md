@@ -21,3 +21,5 @@
 | B-17 | Nations that did not exist in an era (1960 UKR, BLR, SYR, ARE, PSX; 1990 UKR, BLR) are still playable with generated leaders; eraStatus now marks them; make them non-playable in newGame and the title UI | Era content agent, concept test (Marcus) | Worldmap W5 / engine | Open |
 | B-18 | 1990 Soviet Union Term: smart play wins about 31% (band 65%+), pre-existing | Era content agent sim | Engine balance | Open |
 | B-19 | data/scenarios/2026.json briefing and description still say "This week: US midterms (3 Nov)" while the game opens later in November | Codex 2026 agent | Content | Open |
+| B-20 | Hormuz Convoy USA objective label still "Approval of 56%+ after the midterms" (shown on option tags and the goal line) | Group Manager review | Content | Open |
+| B-21 | Codex API caches per process: a running server serves stale codex after data merges (hid the briefings in review); invalidate on file change in dev or restart servers after data merges | Group Manager review | Engine / process | Open |
