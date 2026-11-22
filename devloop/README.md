@@ -22,6 +22,7 @@ devloop/
     kit.mjs            Playwright kit: act by visible label, screenshots, control dumps, frame bursts
     driver.mjs, act.mjs persistent browser per persona, one command per shell call
     page-check.mjs     loads a page, visits every tab, fails on script errors
+    feedback-digest.mjs builds per-iteration customer feedback data for status pages
   templates/           starting files for a new instance
   instances/
     world-conflict/    the first instance (a geopolitical strategy game)
@@ -44,3 +45,6 @@ plan -> design -> build -> verify -> use (blind panel) -> triage -> ledger -> re
 5. Write `goals.md` and `gate.md` from the owner's brief; start `ledger.md` and `journal.md`.
 6. Write an instance smoke script with `kit/kit.mjs` (requires `playwright` as a dev dependency; set `DEVLOOP_BASE_URL`).
 7. Iteration 0: interviews, a baseline usage round, and triage before any building.
+
+## Reporting
+`kit/feedback-digest.mjs <instance> <n> --inject <page.html> FEEDBACK` turns each iteration's session reports, interviews, panel weights and the curated `runs/iter-NN/patterns.json` (written during triage) into the per-iteration feedback browser on the status page. Run `kit/page-check.mjs` afterwards.

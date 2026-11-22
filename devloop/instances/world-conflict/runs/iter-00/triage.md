@@ -7,7 +7,7 @@ Panel v1.1, 9 sessions, 9 interviews. Bug verdicts pending QA reproduction (`qa-
 |---|---|---|---|---|---|---|---|---|---|
 | 6 | 3 | 4 | 4 | 5 | 5 | 6 | 5 | 6 | **4.9** |
 
-Visual 7 to 8 everywhere, but feels-like-a-game 5 to 7, agency 3 to 7, clarity 4 to 7. Six of nine would have quit; nobody reached the end of a game.
+Visual 7 to 8 everywhere, but feels-like-a-game 5 to 7, agency 3 to 7, clarity 4 to 7. Seven of nine would have quit; nobody reached the end of a game.
 
 ## Interview trade-off (weighted 100 points)
 C1 see why before trying 15.1 · C3 clear move and goal 13.0 · C6 crafted game feel 13.0 · C10 real-world content 9.3 · C11 shorter month 9.2 · C8 big moments 7.8 · C4 suggestions 7.1 · C2 warnings point 6.1 · C7 vocabulary 4.9 · C5 parity 4.4 · C12 share 4.3 · C9 depth 3.4 (cut by 82%).

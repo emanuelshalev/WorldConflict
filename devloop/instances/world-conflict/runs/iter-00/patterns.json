@@ -1,0 +1,25 @@
+{
+  "headline": "Beautiful first impression, then the game stops explaining itself. Players love the globe, the scenes and the newspaper, but get blocked without reasons, cannot tell what they are trying to achieve, and drift into pressing Approve and Execute.",
+  "loved": [
+    {"what": "The globe title screen: pinned live crises, one big button, in a game in seconds", "who": ["maya", "olivia", "noah", "sam", "leo", "dan", "priya"]},
+    {"what": "The newspaper front page and illustrated debrief scenes with leaders' quotes", "who": ["olivia", "maya", "sam", "leo", "ruth"]},
+    {"what": "Crisis options that show their effects and who backs them before you commit", "who": ["priya", "dan", "ruth"]},
+    {"what": "Real, current leaders and places", "who": ["priya", "ruth", "marcus"]}
+  ],
+  "patterns": [
+    {"id": "F-00-3", "title": "Too much text, too dense", "detail": "The briefing repeats the same paragraph two or three times; the desk reads like work software; tiny abbreviations (APPR, STAB, CAP) and unexplained counters (Orders 2/6, In person 0/3).", "who": ["olivia", "noah", "maya", "ruth"], "goal": "G4 G8", "tone": "bad"},
+    {"id": "F-00-1", "title": "Blocked with no reason", "detail": "Greyed orders do nothing on tap or hover; a 'Not enough political capital' toast lingers while the meter says something else; the war order never queued.", "who": ["leo", "dan", "sam", "ruth"], "goal": "G1 G2 G3", "tone": "bad", "ceo": true},
+    {"id": "F-00-2", "title": "What am I trying to do?", "detail": "Mission 2/4 pill does nothing; no link between choices and the goal; the score falls while every stat rises.", "who": ["maya", "ruth", "dan"], "goal": "G4", "tone": "bad", "ceo": true},
+    {"id": "F-00-5", "title": "The game contradicts itself", "detail": "Jets over a diplomatic choice, a check mark over a failed order, deltas that disagree between cards and tiles, 'Your call' after approving.", "who": ["sam", "priya", "maya", "ruth"], "goal": "G7", "tone": "bad"},
+    {"id": "F-00-4", "title": "Feels like a dashboard", "detail": "Presses have no motion or sound, the stage has dead space, big moments have no stinger.", "who": ["sam", "olivia", "noah", "leo"], "goal": "G7", "tone": "bad", "ceo": true},
+    {"id": "F-00-8", "title": "Autopilot wins", "detail": "Approve all and Execute kept every player alive; the staff do the thinking, so months blur.", "who": ["dan", "priya", "leo"], "goal": "G4", "tone": "bad"},
+    {"id": "F-00-7", "title": "Repetition", "detail": "The same crisis returns (months 5, 7, 8), identical leader replies, the same Home page every month.", "who": ["dan", "priya", "maya"], "goal": "G4", "tone": "bad"},
+    {"id": "F-00-10", "title": "Teach me what really happened", "detail": "Debriefs restate my choice instead of real-world context; Marcus wants same-seed replays to compare outcomes.", "who": ["priya", "ruth", "marcus"], "goal": "G9 G10", "tone": "wish"}
+  ],
+  "surprises": [
+    "Nobody reached the end of a game: the panel never saw the ending the CEO later flagged (RS-002).",
+    "Teen and retiree agree: Noah and Ruth both want one big, plain choice per month.",
+    "Visual scores are high (7 to 8) while 'feels like a game' is 5 to 7: looks are not the problem, interaction is."
+  ],
+  "environment": "Machine overload (9 browsers at once) froze 6 of 9 sessions; freezes are being reproduced separately and are not counted as game bugs yet."
+}
