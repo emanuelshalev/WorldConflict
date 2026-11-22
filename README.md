@@ -32,6 +32,9 @@ Pick a nation. Every other government is an agent with its own history, red line
 | 🎢 **Drama by design** | 30+ crisis cards grounded in real historical patterns, delayed consequences, shocks that test comfortable leaders, coup plots you can *see coming*. |
 | 🌍 **The real world, today** | 41 nations with current leaders, active wars and fresh history up to Oct 2026, plus a debrief of what really happened. |
 | 🕵️ **Asymmetric information** | You see your spies' estimates, not the truth. So does everyone else. Miscalculation is a feature. |
+| 🗺 **Four eras** | 1960, 1990, January 2025 and November 2026, each with its real leaders, blocs and borders on the globe (the Soviet Union, East Germany). |
+| 📖 **Learn as you play** | Never heard of the fortress belt? Tap the name. Explainers, situation briefings and a codex of about 560 real people, places and events, as much or as little as you want. |
+| 🏁 **An ending worth reaching** | A staged reveal: Presidency Score, achievements with measured rarity, what your spies could not see, what really happened, and a ranking against simulated leaders. Replay the same seed or share a card. |
 | 🤖 **AI you control, and pay for knowingly** | Free algorithmic leaders, or let an LLM (Claude, OpenAI, Gemini, or a local model) take over key decisions. Cost shown up front and live. |
 
 ---
@@ -48,7 +51,7 @@ Pick a nation. Every other government is an agent with its own history, red line
 <td><img src="docs/images/world.jpg" alt="World drawer" /><br/><b>Watch the fronts.</b> Wars, alliances, friends and enemies, as your intelligence services see them.</td>
 </tr>
 <tr>
-<td><img src="docs/images/end.jpg" alt="End screen" /><br/><b>Get your verdict.</b> Grade, stars, a month-by-month emoji strip to share, and what really happened.</td>
+<td><img src="docs/images/end.jpg" alt="End screen" /><br/><b>Get your verdict.</b> A staged reveal: grade, stars, Presidency Score, achievements, what really happened, and a share card.</td>
 <td><img src="docs/images/settings.jpg" alt="AI settings" /><br/><b>Decide who runs the world.</b> Algorithmic, LLM for key decisions, or full LLM, with a spending cap.</td>
 </tr>
 </table>
@@ -104,11 +107,17 @@ No API key needed. To use an LLM, open **⚙ Settings** in the game, or see the 
 | | |
 |---|---|
 | **[Setup guide](docs/SETUP.md)** | Install, run, configure LLMs, troubleshoot |
-| **[Game guide](docs/GAMEPLAY.md)** | Modes, the desk, crises, political capital, scoring, tips |
+| **[Game guide](docs/GAMEPLAY.md)** | Modes, eras, the month, orders, the reveal, learning aids, tips |
 | **[Architecture](docs/ARCHITECTURE.md)** | Engine, turn pipeline, AI tiers, data model, with diagrams |
 | **[API reference](docs/API.md)** | REST endpoints |
 | **[Development guide](docs/DEVELOPMENT.md)** | Code layout, testing, the playtest harness, contributing |
 | **[Project status](dev_plan/project_status.html)** | Live development plan, tasks, decisions |
+
+---
+
+## 🔁 How it is developed
+
+World Conflict is built with a synthetic-customer development loop: persona agents play every build through the real UI and report, builder agents design and build, and every decision goes into a ledger. The loop is a reusable module in **[devloop/](devloop/README.md)** (method, Playwright kit, templates), with this game as its first instance in `devloop/instances/world-conflict/`. See the [development guide](docs/DEVELOPMENT.md#the-development-loop-devloop).
 
 ---
 
