@@ -54,8 +54,11 @@
 .cmd-strip .strip-advisors .adv-row { min-width: 0; }
 .cmd-strip .strip-advisors .adv-label { white-space: normal; overflow: visible; }
 .cmd-strip .strip-advisors .adv-add { min-height: 44px; }
+/* The folded toggle names every suggestion: the strip reaches them all (QA S2-1 with AC3) */
+.cmd-strip .strip-advisors .advisors.compact .adv-more { display: inline-flex; align-items: center; }
 .strip-tray-btn { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line-2); background: none; color: var(--text-1); font: inherit; font-size: 13px; cursor: pointer; }
 .strip-tray-btn[aria-expanded='true'] { border-color: var(--intel); color: #9fdcf4; }
+.strip-tray-n { min-width: 22px; height: 22px; margin-left: 4px; padding: 0 6px; border-radius: 999px; background: rgba(79, 179, 217, 0.18); color: #9fdcf4; font-size: 12px; font-weight: 700; display: inline-grid; place-items: center; }
 .cmd-strip .chip-b { min-height: 44px; }
 @media (max-width: 899px) {
   .cmd-strip { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'chips' 'adv' 'act'; }
