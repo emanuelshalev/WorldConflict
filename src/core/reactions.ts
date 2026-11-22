@@ -81,13 +81,25 @@ const VISIT: Record<Tone, string[]> = {
     "A memorable visit. {C} leaves with more friends in {Y} than it arrived with.",
     "The honour guard, the dinner, the joint statement: our press is calling it a new chapter.",
     "We came for one agreement and left with three ideas. Thank you.",
+    "Our ministers worked through the night. The texts we signed are better than the ones we brought.",
+    "I leave {Y} with a full notebook and a date for the next meeting.",
+    "Today our two countries spoke as partners. My people will hear that tonight.",
   ],
   cold: [
     "A short meeting, a shorter statement. {C} had hoped for more.",
     "Our delegation flew home early. The communique says 'frank exchanges'.",
+    "We listened. We did not hear what we came to hear.",
+    "The dinner was long and the answers were short.",
   ],
-  angry: ["{C} will not forget how its leader was received in {Y}."],
-  neutral: ["Polite, correct, forgettable. The photographs were good."],
+  angry: [
+    "{C} will not forget how its leader was received in {Y}.",
+    "I did not cross half the world to be lectured.",
+  ],
+  neutral: [
+    "Polite, correct, forgettable. The photographs were good.",
+    "We agreed to keep talking. That is all we agreed.",
+    "A useful exchange. Nothing more, nothing less.",
+  ],
 };
 
 const PRESS: Record<Tone, string[]> = {
