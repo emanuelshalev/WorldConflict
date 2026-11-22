@@ -21,6 +21,7 @@
 | B-17 | Nations that did not exist in an era (1960 UKR, BLR, SYR, ARE, PSX; 1990 UKR, BLR) are still playable with generated leaders; eraStatus now marks them; make them non-playable in newGame and the title UI | Era content agent, concept test (Marcus) | Worldmap W5 / engine | Open |
 | B-18 | 1990 Soviet Union Term: smart play wins about 31% (band 65%+), pre-existing | Era content agent sim | Engine balance | Open |
 | B-19 | data/scenarios/2026.json briefing and description still say "This week: US midterms (3 Nov)" while the game opens later in November | Codex 2026 agent | Content | Open |
+<<<<<<< HEAD
 | B-20 | Hormuz Convoy USA objective label still "Approval of 56%+ after the midterms" (shown on option tags and the goal line) | Group Manager review | Content | Open |
 | B-21 | Codex API caches per process: a running server serves stale codex after data merges (hid the briefings in review); invalidate on file change in dev or restart servers after data merges | Group Manager review | Engine / process | Open |
 | B-22 | Main UI bundle above the 1,100 kB warning after iteration 2 merges; lazy-load heavy surfaces (reveal, codex drawer, galleries, maplibre) | Build warning | Frontend | Open |
@@ -28,3 +29,12 @@
 | B-24 | ui/public/era/shapes.geojson missing: East Germany paints as West Germany, South Yemen not drawn | worldmap-eras | Content (W4 shapes) | Open |
 | B-25 | 1960 data lists Algeria in labelAllow and also a "French Algeria" era label (code lets the era label win) | worldmap-eras | Content | Open |
 | B-26 | Era situation cards have no codexId, so no "What is going on here?" link from the title globe | worldmap-eras | Content + UI | Open |
+=======
+| B-20 | Hormuz Convoy USA objective label still "Approval of 56%+ after the midterms" (shown on option tags and the goal line) | Group Manager review | Content | Done (label now "Voters stay on side (approval 56%+)"; tests/core/era-content.spec.ts) |
+| B-21 | Codex API caches per process: a running server serves stale codex after data merges (hid the briefings in review); invalidate on file change in dev or restart servers after data merges | Group Manager review | Engine / process | Done (dev server re-reads data on file change via a size+mtime stamp, browser revalidates with no-cache; production keeps the day cache and ETag; tests/api/codex.spec.ts) |
+| B-22 | Main UI bundle above the 1,100 kB warning after iteration 2 merges; lazy-load heavy surfaces (reveal, codex drawer, galleries, maplibre) | Build warning | Frontend | Done (main chunk 1,159.9 kB to 647.9 kB: lazy save/load, advisor, settings, login, end screen + reveal, moments gallery; React vendor chunk fixed; tests/ui/bundle-split.spec.ts) |
+| B-23 | GBR 1960 Term below the 65% seat floor (about 49% smart) | fix-history harness | Engine balance | Open |
+| B-24 | ui/public/era/shapes.geojson missing: East Germany paints as West Germany, South Yemen not drawn | worldmap-eras | Content (W4 shapes) | Done (DDR and YMD outlines: outer borders from the Natural Earth 1:110m polygons in world.geojson, inner German and 1967-1990 Yemeni borders hand-simplified; YMD named in the 1990 non-aligned bloc so the globe draws it; tests/core/era-content.spec.ts) |
+| B-25 | 1960 data lists Algeria in labelAllow and also a "French Algeria" era label (code lets the era label win) | worldmap-eras | Content | Done (DZA removed from 1960 labelAllow; a point-in-polygon test checks every era label against labelAllow; tests/core/era-content.spec.ts) |
+| B-26 | Era situation cards have no codexId, so no "What is going on here?" link from the title globe | worldmap-eras | Content + UI | Done (35 of 37 era situations carry a codexId; the situation card opens the entry explainer or the flashpoint briefing; tests/core/era-content.spec.ts, tests/ui-learn-aids.spec.ts) |
+>>>>>>> cleanup-2

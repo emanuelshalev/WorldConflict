@@ -13,7 +13,7 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { generateDeterministicIntents } from "../src/agents/fallback.js";
-import { createDataLoader, type FlashpointData } from "../src/core/data-loader.js";
+import { createDataLoader, type FlashpointData, unplayableReason } from "../src/core/data-loader.js";
 import {
   type AchievementRarity,
   type BenchmarkStats,
@@ -91,9 +91,12 @@ export async function runBenchmark({ args, playerOrders, decide }: BenchmarkDeps
           countryId: p.countryId,
           flashpoint: fp,
         });
+  // Nations that are not states in the era (the West Bank, Soviet republics in 1960) cannot be
+  // played, so they have no seat (newGame refuses them)
+  const eraScenario = loader.loadScenario(scenario);
   for (const mode of modes.filter((m) => m !== "FLASHPOINT"))
     for (const id of TIER1_COUNTRIES)
-      seats.push({ seatKey: `${scenario}:${mode}:${id}`, mode, scenarioId: scenario, countryId: id });
+      if (!unplayableReason(eraScenario, id)) seats.push({ seatKey: `${scenario}:${mode}:${id}`, mode, scenarioId: scenario, countryId: id });
 
   const earned: Partial<Record<GameMode, Record<string, number>>> = {};
   const played: Partial<Record<GameMode, number>> = {};

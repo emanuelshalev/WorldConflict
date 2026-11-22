@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync } from "node:fs";
+import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { z } from "zod";
 import { startSnapshot } from "./chronicle.js";
@@ -937,6 +937,35 @@ export class DataLoader {
       this.codexCache = { entries, situations };
     }
     return structuredClone(this.codexCache);
+  }
+
+  /**
+   * A fingerprint of the files the codex payload is built from (codex entries, situations,
+   * scenarios, flashpoints): every file's name, size and mtime. It changes when a data file is
+   * edited, added or removed, so a dev server can drop its caches instead of serving stale data.
+   */
+  codexStamp(): string {
+    const parts: string[] = [];
+    for (const sub of ["codex", "codex/situations", "scenarios", "flashpoints"]) {
+      const dir = join(this.dataPath, sub);
+      let files: string[] = [];
+      try {
+        files = readdirSync(dir)
+          .filter((f) => f.endsWith(".json"))
+          .sort();
+      } catch {
+        continue;
+      }
+      for (const f of files) {
+        try {
+          const st = statSync(join(dir, f));
+          parts.push(`${sub}/${f}:${st.size}:${st.mtimeMs}`);
+        } catch {
+          // Removed between the listing and the stat: the next stamp sees it gone.
+        }
+      }
+    }
+    return parts.join("|");
   }
 
   clearCache(): void {

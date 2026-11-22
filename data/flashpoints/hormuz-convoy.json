@@ -49,7 +49,7 @@
       "primary": [
         {"kind": "WAR_ENDED", "targetId": "USA", "otherId": "IRN", "label": "The shooting stops: no US–Iran war at the end (Hormuz reopens)"},
         {"kind": "NO_NUCLEAR", "targetId": "IRN", "label": "Iran never tests a bomb"},
-        {"kind": "STAT_MIN", "stat": "approval", "min": 56, "label": "Approval of 56%+ after the midterms"},
+        {"kind": "STAT_MIN", "stat": "approval", "min": 56, "label": "Voters stay on side (approval 56%+)"},
         {"kind": "RELATION_MIN", "targetId": "ARE", "min": 66, "label": "The Gulf still trusts you (UAE relations 66+)"},
         {"kind": "RELATION_MIN", "targetId": "ISR", "min": 61, "label": "Israel stays on side (relations 61+)"}
       ],

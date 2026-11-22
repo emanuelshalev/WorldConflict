@@ -138,3 +138,60 @@ describe("situation lookup", () => {
     expect(situationFor([], "x", "2026")).toBeNull();
   });
 });
+
+// B-26: the title globe's situation card opens the codex for the situation's codexId
+describe("era situation codex link", () => {
+  const payload = (situations: string[], entries: string[]) =>
+    ({
+      scenarioId: "1960",
+      flashpointId: null,
+      date: "1960-01",
+      version: "v",
+      situations: situations.map((id) => ({ id })),
+      entries: entries.map((id) => ({ id })),
+    }) as never;
+
+  it("resolves a briefing first, then an entry, else nothing", async () => {
+    const { codexTargetFor } = await load();
+    const p = payload(["scenario-1960"], ["algerian-war"]);
+    expect(codexTargetFor("algerian-war", p)).toEqual({ kind: "entry", id: "algerian-war" });
+    expect(codexTargetFor("scenario-1960", p)).toEqual({ kind: "briefing", situationId: "scenario-1960" });
+    expect(codexTargetFor("berlin-wall", p)).toBeNull();
+    expect(codexTargetFor(undefined, p)).toBeNull();
+    expect(codexTargetFor("algerian-war", null)).toBeNull();
+  });
+
+  it("opens the explainer for an entry and the briefing for a codex situation", async () => {
+    const { openSituationCodex, useExplain } = await load();
+    const { useGameStore } = await import("../ui/src/store/gameStore.js");
+    useGameStore.setState({ codex: payload(["scenario-1960"], ["algerian-war"]) });
+    expect(await openSituationCodex({ codexId: "algerian-war", title: "Algerian War" }, "1960", null)).toBe(true);
+    expect(useExplain.getState().target).toEqual({ kind: "entry", id: "algerian-war" });
+    expect(await openSituationCodex({ codexId: "scenario-1960" }, "1960", null)).toBe(true);
+    expect(useExplain.getState().briefing?.situationId).toBe("scenario-1960");
+    expect(await openSituationCodex({ codexId: "nowhere" }, "1960", null)).toBe(false);
+  });
+
+  it("loads a flashpoint's codex before opening its briefing", async () => {
+    const fetchMock = vi.fn(async (_url: string) => ({
+      ok: true,
+      json: async () => ({
+        success: true,
+        version: "v2",
+        scenarioId: "2026",
+        flashpointId: "hormuz-convoy",
+        date: "2026-11",
+        situations: [{ id: "hormuz-convoy" }, { id: "scenario-2026" }],
+        entries: [],
+      }),
+    }));
+    vi.stubGlobal("fetch", fetchMock);
+    const { openSituationCodex, useExplain } = await load();
+    const { useGameStore } = await import("../ui/src/store/gameStore.js");
+    useGameStore.setState({ codex: payload(["scenario-2026"], []) });
+    const ok = await openSituationCodex({ codexId: "hormuz-convoy", flashpointId: "hormuz-convoy" }, "2026", null);
+    expect(ok).toBe(true);
+    expect(String(fetchMock.mock.calls[0]?.[0])).toContain("flashpoint=hormuz-convoy");
+    expect(useExplain.getState().briefing?.situationId).toBe("hormuz-convoy");
+  });
+});

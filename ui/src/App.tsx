@@ -1,26 +1,30 @@
 import './App.css'
 import './styles/wc.css'
-import { useEffect, useState } from 'react'
+import { Suspense, lazy, useEffect, useState } from 'react'
 import { IconX } from '@tabler/icons-react'
 import { MapView } from './components/MapView'
-import { SaveLoadModal } from './components/SaveLoadModal'
-import { AdvisorModal } from './components/AdvisorModal'
 import { ActionPreviewModal } from './components/ActionPreviewModal'
 import { BackstoryModal } from './components/BackstoryModal'
-import { SettingsModal } from './components/SettingsModal'
-import { LoginScreen } from './components/LoginScreen'
 import { TitleScreen } from './components/TitleScreen'
 import { Hud } from './components/Hud'
 import { Desk } from './components/Desk'
 import { CommandStrip } from './components/desk/CommandRail'
 import { Drawers } from './components/Drawers'
 import { Chronicle, DangerVignette, Stinger } from './components/Chronicle'
-import { EndScreen } from './components/EndScreen'
 import { useGameStore, usePlayerCountry } from './store/gameStore'
 import { GoalLine } from './components/desk/GoalLine'
 import { ScoreWhySheet } from './components/ScoreWhy'
-import { MomentGallery } from './components/MomentGallery'
 import { useScoreWhy } from './lib/scoreWhy'
+
+// Rarely opened surfaces load on first use (B-22): each one is mounted only while it can show,
+// and renders exactly as before once its chunk arrives. The end screen (and the reveal behind
+// it) mounts as soon as the game is over, because it fetches the report and the reveal then.
+const SaveLoadModal = lazy(() => import('./components/SaveLoadModal').then((m) => ({ default: m.SaveLoadModal })))
+const AdvisorModal = lazy(() => import('./components/AdvisorModal').then((m) => ({ default: m.AdvisorModal })))
+const SettingsModal = lazy(() => import('./components/SettingsModal').then((m) => ({ default: m.SettingsModal })))
+const LoginScreen = lazy(() => import('./components/LoginScreen').then((m) => ({ default: m.LoginScreen })))
+const EndScreen = lazy(() => import('./components/EndScreen').then((m) => ({ default: m.EndScreen })))
+const MomentGallery = lazy(() => import('./components/MomentGallery').then((m) => ({ default: m.MomentGallery })))
 import { Explainer } from './components/learn/Explainer'
 import { SituationBriefing } from './components/learn/SituationBriefing'
 
@@ -160,7 +164,12 @@ function App() {
   const gameOver = useGameStore((s) => s.gameOver)
   const showLogin = useGameStore((s) => s.showLogin)
   const isLoading = useGameStore((s) => s.isLoading)
-  if (window.location.hash === '#moments') return <MomentGallery />
+  const activeModal = useGameStore((s) => s.activeModal)
+  if (window.location.hash === '#moments') return (
+    <Suspense fallback={null}>
+      <MomentGallery />
+    </Suspense>
+  )
 
   return (
     <>
@@ -184,10 +193,12 @@ function App() {
       )}
 
       <Drawers />
-      <SaveLoadModal />
-      <AdvisorModal />
+      <Suspense fallback={null}>
+        {activeModal === 'saveLoad' && <SaveLoadModal />}
+        {activeModal === 'advisor' && <AdvisorModal />}
+        {activeModal === 'settings' && <SettingsModal />}
+      </Suspense>
       <ActionPreviewModal />
-      <SettingsModal />
       {screen === 'game' && (
         <>
           <BackstoryModal />
@@ -195,10 +206,18 @@ function App() {
           <ScoreWhySheet />
           <Stinger />
           <DangerVignette />
-          <EndScreen />
+          {gameOver && (
+            <Suspense fallback={null}>
+              <EndScreen />
+            </Suspense>
+          )}
         </>
       )}
-      {showLogin && <LoginScreen onClose={() => useGameStore.setState({ showLogin: false })} />}
+      {showLogin && (
+        <Suspense fallback={null}>
+          <LoginScreen onClose={() => useGameStore.setState({ showLogin: false })} />
+        </Suspense>
+      )}
       {isLoading && screen === 'game' && (
         <TurnStamp />
       )}

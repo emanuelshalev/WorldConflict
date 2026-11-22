@@ -5,10 +5,17 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   build: {
-    // The map engine is large and changes rarely: ship it as its own cacheable chunk
+    // The map engine and React are large and change rarely: ship them as their own cacheable
+    // chunks. A function, because the app imports subpaths (`react-dom/client`,
+    // `react-dom/server`) that the object form (bare package names) did not catch.
     rollupOptions: {
       output: {
-        manualChunks: { maplibre: ['maplibre-gl'], react: ['react', 'react-dom', 'zustand'] },
+        manualChunks(id) {
+          if (!id.includes('/node_modules/')) return undefined
+          if (/\/node_modules\/(maplibre-gl|@maplibre)\//.test(id)) return 'maplibre'
+          if (/\/node_modules\/(react|react-dom|scheduler|zustand)\//.test(id)) return 'react'
+          return undefined
+        },
       },
     },
     chunkSizeWarningLimit: 1100,
