@@ -14,6 +14,7 @@ gate.md        release-candidate gate for this game
 ledger.md      decision ledger
 journal.md     process learnings (newest at the bottom)
 progress/      stage log, estimate snapshots and config for kit/progress.mjs
+loop/          loop controller config, state and events (kit/loop.mjs; state committed only from the shared checkout)
 smoke.mjs      QA smoke playtest through the real UI
 verify.config.mjs  the verify gate for this game (npm run verify)
 regressions.yaml   every addressed finding and the guard that keeps it fixed

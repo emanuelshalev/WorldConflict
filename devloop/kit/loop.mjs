@@ -1,0 +1,531 @@
+#!/usr/bin/env node
+// Loop controller: a deterministic state machine for an iterative development loop. It owns stage
+// transitions, preconditions and mandatory gates; the AI Group Manager makes the judgments inside
+// it (priorities, severity, design trade-offs, what feedback means). Product-agnostic: stages,
+// gates, rules and code paths come from the instance config (`<instance>/loop/config.json`).
+//
+//   node devloop/kit/loop.mjs [--config <instance>/loop/config.json] <command> [options]
+//
+// Commands:
+//   status                                  where the loop is, what the current code has passed, what is owed
+//   init --iteration N --stage S [--since ISO]  create the state file (once, when adopting the controller)
+//   start <Stage>                           enter a stage (same rules as advance --to)
+//   advance [--to Stage]                    move to the next legal stage; refuses when a precondition fails
+//   record <gate> --result pass|fail [--commit <sha>] [--evidence <path>] [--note "..."]
+//                                           record a gate result on a commit (and its code tree)
+//   check <action> [--commit <sha>] [--tree <tree-ish>]
+//                                           exit 0 when every rule for the action holds, else 1 with reasons
+//                                           (actions: publish, merge, enter:<Stage>, or any `on` in the rules)
+//   override <rule> --reason "..." [--ttl minutes]
+//                                           let one rule pass for a while (default 60 min); logged as an event
+//                                           and as a draft row in the instance ledger
+//   progress <progress.mjs options>         pass a progress event through (--total N, --done N --note, --pause)
+//   log [--n 20]                            the last events
+//
+// The config path defaults to $DEVLOOP_LOOP_CONFIG, else the only devloop/instances/*/loop/config.json.
+//
+// Config (see devloop/templates/loop-config.json):
+// {
+//   "stages": ["Plan", "Design", ...],
+//   "transitions": { "Plan": ["Design", "Build"], ... },   // legal next stages (default: the next one);
+//                                                          // stages jumped over are logged as skipped;
+//                                                          // entering the first stage starts a new iteration
+//   "gates": ["verify", "qa", "triage", "status-refresh"],
+//   "rules": { "<id>": { "on": "enter:Use" | ["publish", ...], "gate": "qa",
+//                        "match": "code" | "commit" | "iteration" | "after-merge", "why": "..." } },
+//   "code": { "include": ["src/**", ...], "exclude": ["**/*.md"] },  // what counts as code for "code" matches
+//   "sharedBranch": "dev/main-loop", "publishBranch": "main", "remote": "origin", "tagPrefix": "iter-",
+//   "sharedState": true,               // state lives in the main worktree, so every worktree records to one place
+//   "state": "state.json", "events": "events.jsonl", "ledger": "../ledger.md",   // relative to the config
+//   "progress": { "config": "../progress/config.json",
+//                 "inject": { "page": "../../../../dev_plan/status.html", "marker": "PROGRESS", "args": [] } }
+// }
+//
+// Matches: "commit" needs the record on that exact commit (a descendant that only changes the
+// controller's own files counts as the same commit); "code" needs it on the same code tree (a hash
+// of the files matched by `code`, so commits to docs or the loop do not invalidate a pass);
+// "iteration" needs a pass in the current iteration; "after-merge" needs a pass recorded after the
+// last merge into the shared branch (none needed when nothing was merged). The latest record wins:
+// a fail after a pass on the same code blocks again.
+import { spawnSync } from 'node:child_process';
+import crypto from 'node:crypto';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { globToRegExp } from './regressions.mjs';
+
+const KIT = path.dirname(fileURLToPath(import.meta.url));
+
+// ---------------------------------------------------------------- git helpers
+export function git(cwd, args, { allowFail = false, raw = false } = {}) {
+  const r = spawnSync('git', args, { cwd, encoding: 'utf8', maxBuffer: 1 << 28 });
+  if (r.status !== 0) {
+    if (allowFail) return null;
+    throw new Error(`git ${args.join(' ')}: ${(r.stderr || r.stdout || '').trim()}`);
+  }
+  return raw ? r.stdout : r.stdout.trim();
+}
+
+export const repoRoot = (cwd) => git(cwd, ['rev-parse', '--show-toplevel']);
+
+/** Root of the main worktree (the shared checkout), from any worktree of the repository. */
+export function mainWorktree(cwd) {
+  const out = git(cwd, ['worktree', 'list', '--porcelain'], { allowFail: true });
+  const first = out?.split('\n').find((l) => l.startsWith('worktree '));
+  return first ? first.slice('worktree '.length) : repoRoot(cwd);
+}
+
+export const resolveCommit = (cwd, ref) => git(cwd, ['rev-parse', '--verify', `${ref}^{commit}`]);
+
+/** sha256 (16 hex) over the files of a commit or tree that the `code` globs select. */
+export function codeTree(cwd, treeish, code = {}, extraExclude = []) {
+  const inc = (code.include ?? ['**']).map(globToRegExp);
+  const exc = [...(code.exclude ?? []), ...extraExclude].map(globToRegExp);
+  const out = git(cwd, ['ls-tree', '-r', '-z', '--full-tree', treeish], { raw: true });
+  const lines = out
+    .split('\0')
+    .filter(Boolean)
+    .filter((l) => {
+      const p = l.slice(l.indexOf('\t') + 1);
+      return inc.some((r) => r.test(p)) && !exc.some((r) => r.test(p));
+    })
+    .sort();
+  return crypto.createHash('sha256').update(lines.join('\n')).digest('hex').slice(0, 16);
+}
+
+/** Files with uncommitted changes (tracked or untracked) that the `code` globs select. */
+export function dirtyCodeFiles(cwd, code = {}, extraExclude = []) {
+  const inc = (code.include ?? ['**']).map(globToRegExp);
+  const exc = [...(code.exclude ?? []), ...extraExclude].map(globToRegExp);
+  const out = git(cwd, ['status', '--porcelain', '-z', '--untracked-files=all'], { raw: true });
+  const files = [];
+  const parts = out.split('\0').filter(Boolean);
+  for (let i = 0; i < parts.length; i++) {
+    const st = parts[i].slice(0, 2);
+    files.push(parts[i].slice(3));
+    if (st[0] === 'R' || st[0] === 'C') i++; // rename source follows
+  }
+  return files.filter((p) => inc.some((r) => r.test(p)) && !exc.some((r) => r.test(p)));
+}
+
+// ---------------------------------------------------------------- config and state
+export function findConfig(cwd, explicit) {
+  if (explicit) return path.resolve(cwd, explicit);
+  if (process.env.DEVLOOP_LOOP_CONFIG) return path.resolve(cwd, process.env.DEVLOOP_LOOP_CONFIG);
+  let root;
+  try {
+    root = repoRoot(cwd);
+  } catch {
+    return null;
+  }
+  const inst = path.join(root, 'devloop', 'instances');
+  if (!fs.existsSync(inst)) return null;
+  const found = fs
+    .readdirSync(inst)
+    .map((d) => path.join(inst, d, 'loop', 'config.json'))
+    .filter((f) => fs.existsSync(f));
+  return found.length === 1 ? found[0] : null;
+}
+
+/** Everything a command needs: config, where state lives, a clock. */
+export function loadLoop({ cwd = process.cwd(), config } = {}) {
+  const cfgPath = findConfig(cwd, config);
+  if (!cfgPath || !fs.existsSync(cfgPath)) throw new Error('no loop config (pass --config or set DEVLOOP_LOOP_CONFIG)');
+  const cfg = JSON.parse(fs.readFileSync(cfgPath, 'utf8'));
+  const cfgDir = path.dirname(cfgPath);
+  const repo = repoRoot(cfgDir);
+  const rel = path.relative(repo, cfgDir);
+  const stateRoot = cfg.sharedState === false ? repo : mainWorktree(repo);
+  // The config's folder, seen from the checkout that holds the state
+  const dir = rel.startsWith('..') ? cfgDir : path.join(stateRoot, rel);
+  const at = (p) => (p ? path.resolve(dir, p) : null);
+  return {
+    cfg,
+    cfgPath,
+    repo,
+    stateRoot,
+    dir,
+    loopRel: rel.startsWith('..') ? null : rel.split(path.sep).join('/'),
+    paths: {
+      state: at(cfg.state ?? 'state.json'),
+      events: at(cfg.events ?? 'events.jsonl'),
+      ledger: at(cfg.ledger),
+      progress: at(cfg.progress?.config),
+      page: at(cfg.progress?.inject?.page),
+    },
+    now: () => (process.env.DEVLOOP_NOW ? new Date(process.env.DEVLOOP_NOW) : new Date()),
+  };
+}
+
+const emptyState = () => ({ version: 1, iteration: null, stage: null, stageSince: null, records: [], merges: [], overrides: [], publishes: [] });
+
+export function readState(ctx) {
+  if (!fs.existsSync(ctx.paths.state)) return emptyState();
+  return { ...emptyState(), ...JSON.parse(fs.readFileSync(ctx.paths.state, 'utf8')) };
+}
+
+export function writeState(ctx, state) {
+  fs.mkdirSync(path.dirname(ctx.paths.state), { recursive: true });
+  const tmp = `${ctx.paths.state}.${process.pid}.tmp`;
+  fs.writeFileSync(tmp, `${JSON.stringify(state, null, 2)}\n`);
+  fs.renameSync(tmp, ctx.paths.state);
+}
+
+export function appendEvent(ctx, ev) {
+  fs.mkdirSync(path.dirname(ctx.paths.events), { recursive: true });
+  const line = { t: ctx.now().toISOString(), ...ev };
+  fs.appendFileSync(ctx.paths.events, `${JSON.stringify(line)}\n`);
+  return line;
+}
+
+export function readEvents(ctx) {
+  if (!fs.existsSync(ctx.paths.events)) return [];
+  return fs
+    .readFileSync(ctx.paths.events, 'utf8')
+    .split('\n')
+    .filter((l) => l.trim())
+    .map((l) => JSON.parse(l));
+}
+
+const loopExclude = (ctx) => (ctx.loopRel ? [`${ctx.loopRel}/**`] : []);
+export const codeTreeOf = (ctx, treeish) => codeTree(ctx.repo, treeish, ctx.cfg.code, loopExclude(ctx));
+
+/** The commit the loop is about: the shared branch tip when it exists, else HEAD. */
+export function loopTarget(ctx) {
+  const b = ctx.cfg.sharedBranch;
+  if (b && git(ctx.repo, ['rev-parse', '--verify', '--quiet', `refs/heads/${b}`], { allowFail: true })) return resolveCommit(ctx.repo, `refs/heads/${b}`);
+  return resolveCommit(ctx.repo, 'HEAD');
+}
+
+// ---------------------------------------------------------------- rules
+const asList = (v) => (Array.isArray(v) ? v : v == null ? [] : [v]);
+export const rulesFor = (cfg, action) => Object.entries(cfg.rules ?? {}).filter(([, r]) => asList(r.on).includes(action));
+
+/** A descendant of `a` that changes only the controller's own files is the same commit for "commit" matches. */
+function sameCommit(ctx, a, b) {
+  if (a === b) return true;
+  if (!ctx.loopRel) return false;
+  if (git(ctx.repo, ['merge-base', '--is-ancestor', a, b], { allowFail: true }) === null) return false;
+  const changed = git(ctx.repo, ['diff', '--name-only', a, b]).split('\n').filter(Boolean);
+  return changed.every((f) => f.startsWith(`${ctx.loopRel}/`));
+}
+
+export function activeOverride(ctx, state, rule) {
+  const now = ctx.now().getTime();
+  return [...state.overrides].reverse().find((o) => o.rule === rule && Date.parse(o.until) > now) ?? null;
+}
+
+/**
+ * Evaluate every rule that applies to `action`. opts: commit (sha or ref), tree (tree-ish for
+ * code matches, e.g. a merge result), codeTree (precomputed hash).
+ */
+export function evaluate(ctx, action, opts = {}, state = readState(ctx)) {
+  const results = [];
+  let commit = null;
+  let ct = opts.codeTree ?? null;
+  const target = () => {
+    if (!commit) commit = opts.commit ? resolveCommit(ctx.repo, opts.commit) : loopTarget(ctx);
+    return commit;
+  };
+  const tree = () => {
+    if (!ct) ct = codeTreeOf(ctx, opts.tree ?? target());
+    return ct;
+  };
+  for (const [id, rule] of rulesFor(ctx.cfg, action)) {
+    const recs = state.records.filter((r) => r.gate === rule.gate);
+    let pool;
+    let what;
+    const match = rule.match ?? 'code';
+    if (match === 'commit') {
+      pool = recs.filter((r) => sameCommit(ctx, r.commit, target()));
+      what = `commit ${target().slice(0, 9)}`;
+    } else if (match === 'code') {
+      pool = recs.filter((r) => r.codeTree === tree());
+      what = `code tree ${tree()}${opts.tree ? ` (of ${String(opts.tree).slice(0, 12)})` : ` (commit ${target().slice(0, 9)})`}`;
+    } else if (match === 'iteration') {
+      pool = recs.filter((r) => r.iteration === state.iteration);
+      what = `iteration ${state.iteration}`;
+    } else if (match === 'after-merge') {
+      const last = state.merges.at(-1);
+      if (!last) {
+        results.push({ rule: id, ok: true, why: rule.why, detail: 'no merge recorded' });
+        continue;
+      }
+      pool = recs.filter((r) => Date.parse(r.t) > Date.parse(last.t));
+      what = `after the merge of ${last.branch} at ${last.t}`;
+    } else throw new Error(`rule ${id}: unknown match ${match}`);
+    const latest = pool.sort((a, b) => Date.parse(a.t) - Date.parse(b.t)).at(-1);
+    let ok = latest?.result === 'pass';
+    let detail = latest ? `${rule.gate} ${latest.result} on ${what} at ${latest.t}` : `no ${rule.gate} record on ${what}`;
+    let overridden = null;
+    if (!ok) {
+      overridden = activeOverride(ctx, state, id);
+      if (overridden) {
+        ok = true;
+        detail += `; overridden until ${overridden.until}: ${overridden.reason}`;
+      }
+    }
+    results.push({ rule: id, ok, why: rule.why, detail, overridden: overridden ? overridden.t : undefined });
+  }
+  return { action, ok: results.every((r) => r.ok), results, commit, codeTree: ct };
+}
+
+export function legalNext(cfg, stage) {
+  if (stage == null) return [cfg.stages[0]];
+  const t = cfg.transitions?.[stage];
+  if (t) return t;
+  const i = cfg.stages.indexOf(stage);
+  return [cfg.stages[(i + 1) % cfg.stages.length]];
+}
+
+// ---------------------------------------------------------------- progress (devloop/kit/progress.mjs)
+function progress(ctx, args, { inject = true } = {}) {
+  if (!ctx.paths.progress) return [];
+  const script = path.join(KIT, 'progress.mjs');
+  const notes = [];
+  const run = (a) => {
+    const r = spawnSync(process.execPath, [script, ctx.paths.progress, ...a], { cwd: ctx.stateRoot, encoding: 'utf8' });
+    if (r.status !== 0) notes.push(`progress ${a.join(' ')} failed: ${(r.stderr || r.stdout).trim().split('\n').at(-1)}`);
+    return r.status === 0;
+  };
+  if (args) run([...args, '--no-usage', '--no-record']);
+  const inj = ctx.cfg.progress?.inject;
+  if (inject && inj && ctx.paths.page && fs.existsSync(ctx.paths.page)) run(['--inject', ctx.paths.page, inj.marker ?? 'PROGRESS', ...(inj.args ?? [])]);
+  for (const n of notes) console.error(`warning: ${n}`);
+  return notes;
+}
+
+// ---------------------------------------------------------------- commands
+export function init(ctx, { iteration, stage, since }) {
+  const state = readState(ctx);
+  if (state.stage) throw new Error(`state already exists (iteration ${state.iteration}, ${state.stage})`);
+  if (!ctx.cfg.stages.includes(stage)) throw new Error(`unknown stage ${stage}`);
+  const now = ctx.now().toISOString();
+  if (!Number.isInteger(Number(iteration)) || iteration === undefined) throw new Error('init needs --iteration N');
+  Object.assign(state, { iteration: Number(iteration), stage, stageSince: since ? new Date(since).toISOString() : now });
+  writeState(ctx, state);
+  appendEvent(ctx, { kind: 'init', iteration: state.iteration, stage, since: state.stageSince });
+  return state;
+}
+
+export function advance(ctx, to) {
+  const state = readState(ctx);
+  if (!state.stage) throw new Error('no state yet: run `loop init --iteration N --stage S` first');
+  const { stages } = ctx.cfg;
+  const from = state.stage;
+  const legal = legalNext(ctx.cfg, from);
+  const dest = to ?? legal[0];
+  if (!stages.includes(dest)) throw new Error(`unknown stage ${dest} (stages: ${stages.join(', ')})`);
+  const transRule = `transition:${from}->${dest}`;
+  let viaOverride = null;
+  if (!legal.includes(dest)) {
+    viaOverride = activeOverride(ctx, state, transRule);
+    if (!viaOverride) throw new Error(`${from} -> ${dest} is not a legal transition (legal: ${legal.join(', ')}); override rule "${transRule}" with a reason if this is a deliberate call`);
+  }
+  const check = evaluate(ctx, `enter:${dest}`, {}, state);
+  if (!check.ok) {
+    const e = new Error(`cannot enter ${dest}:\n${formatResults(check)}`);
+    e.check = check;
+    throw e;
+  }
+  const newIteration = dest === stages[0] && from !== null;
+  const iteration = newIteration ? state.iteration + 1 : state.iteration;
+  const fi = stages.indexOf(from);
+  const di = stages.indexOf(dest);
+  const skipped = !newIteration && di > fi ? stages.slice(fi + 1, di) : [];
+  const now = ctx.now().toISOString();
+  Object.assign(state, { iteration, stage: dest, stageSince: now });
+  writeState(ctx, state);
+  const ev = appendEvent(ctx, {
+    kind: 'transition',
+    from,
+    to: dest,
+    iteration,
+    skipped: skipped.length ? skipped : undefined,
+    overrides: [viaOverride?.t, ...check.results.filter((r) => r.overridden).map((r) => r.overridden)].filter(Boolean),
+  });
+  if (newIteration) progress(ctx, ['--end', from, '--iteration', String(iteration - 1), '--at', now], { inject: false });
+  for (const s of skipped) progress(ctx, ['--skip', s, '--iteration', String(iteration), '--at', now], { inject: false });
+  progress(ctx, ['--start', dest, '--iteration', String(iteration), '--at', now]);
+  return { state, event: ev, check };
+}
+
+export function record(ctx, { gate, result, commit = 'HEAD', evidence, note, codeTree: given, extra }) {
+  const gates = ctx.cfg.gates ?? [];
+  if (!gates.includes(gate)) throw new Error(`unknown gate ${gate} (gates: ${gates.join(', ')})`);
+  if (result !== 'pass' && result !== 'fail') throw new Error('--result must be pass or fail');
+  if (result === 'pass' && !evidence) throw new Error('a pass needs --evidence <path>');
+  if (evidence && !fs.existsSync(path.resolve(evidence))) throw new Error(`evidence ${evidence} does not exist`);
+  const state = readState(ctx);
+  const sha = resolveCommit(ctx.repo, commit);
+  const rec = {
+    gate,
+    result,
+    commit: sha,
+    codeTree: given ?? codeTreeOf(ctx, sha),
+    evidence: evidence ? path.relative(ctx.repo, path.resolve(evidence)).split(path.sep).join('/') : undefined,
+    note,
+    t: ctx.now().toISOString(),
+    iteration: state.iteration,
+    stage: state.stage,
+    ...extra,
+  };
+  state.records.push(rec);
+  writeState(ctx, state);
+  appendEvent(ctx, { kind: 'record', ...rec });
+  return rec;
+}
+
+const isOverridable = (cfg, rule) => Object.hasOwn(cfg.rules ?? {}, rule) || /^transition:\S+->\S+$/.test(rule) || /^guard:[a-z-]+$/.test(rule);
+
+export function override(ctx, { rule, reason, ttl = 60 }) {
+  if (!isOverridable(ctx.cfg, rule)) throw new Error(`unknown rule ${rule} (rules: ${Object.keys(ctx.cfg.rules ?? {}).join(', ')}, transition:<From>-><To>, guard:<name>)`);
+  if (!reason || !String(reason).trim()) throw new Error('an override needs --reason "..."');
+  const state = readState(ctx);
+  const now = ctx.now();
+  const o = { rule, reason: String(reason).trim(), t: now.toISOString(), until: new Date(now.getTime() + Number(ttl) * 60000).toISOString(), iteration: state.iteration, stage: state.stage };
+  state.overrides.push(o);
+  writeState(ctx, state);
+  appendEvent(ctx, { kind: 'override', ...o });
+  const row = ctx.paths.ledger ? appendLedgerDraft(ctx, o) : null;
+  return { override: o, ledgerRow: row };
+}
+
+function appendLedgerDraft(ctx, o) {
+  const file = ctx.paths.ledger;
+  const src = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : '';
+  const ids = [...src.matchAll(/^\|\s*D-(\d+)\s*\|/gm)].map((m) => Number(m[1]));
+  const id = `D-${ids.length ? Math.max(...ids) + 1 : 1}`;
+  const cell = (s) => String(s).replace(/\|/g, '/').replace(/\s+/g, ' ');
+  const row = `| ${id} | ${o.t.slice(0, 10)} | process | DRAFT: override of loop rule \`${cell(o.rule)}\` at ${o.stage ?? '?'} (iteration ${o.iteration ?? '?'}), valid until ${o.until}: ${cell(o.reason)} | loop events.jsonl ${o.t} | Follow the rule | The loop continues past a rule the owner or Group Manager chose to skip | The skipped check finds a problem later | Draft: Group Manager completes or supersedes |`;
+  fs.appendFileSync(file, `${src && !src.endsWith('\n') ? '\n' : ''}${row}\n`);
+  return row;
+}
+
+export function formatResults(check) {
+  return check.results.map((r) => `  ${r.ok ? 'ok  ' : 'FAIL'} ${r.rule}: ${r.detail}${!r.ok && r.why ? `\n       why: ${r.why}` : ''}`).join('\n') || '  (no rules)';
+}
+
+function status(ctx) {
+  const state = readState(ctx);
+  const lines = [];
+  lines.push(`Iteration ${state.iteration ?? '?'}, stage ${state.stage ?? '(none)'} since ${state.stageSince ?? '?'}`);
+  let target = null;
+  try {
+    target = loopTarget(ctx);
+  } catch {}
+  if (target) {
+    const ct = codeTreeOf(ctx, target);
+    lines.push(`Target ${ctx.cfg.sharedBranch ?? 'HEAD'} at ${target.slice(0, 9)}, code tree ${ct}`);
+    for (const g of ctx.cfg.gates ?? []) {
+      const last = state.records.filter((r) => r.gate === g).at(-1);
+      if (!last) continue;
+      const on = last.commit === target ? 'this commit' : last.codeTree === ct ? 'this code tree' : `other code (${last.commit.slice(0, 9)})`;
+      lines.push(`  ${g.padEnd(15)} last ${last.result} on ${on} at ${last.t}`);
+    }
+  }
+  const last = state.merges.at(-1);
+  if (last) {
+    const refreshed = state.records.some((r) => r.gate === 'status-refresh' && r.result === 'pass' && Date.parse(r.t) > Date.parse(last.t));
+    lines.push(`Last merge: ${last.branch} at ${last.t}${refreshed ? '' : ' (status refresh owed)'}`);
+  }
+  const live = state.overrides.filter((o) => Date.parse(o.until) > ctx.now().getTime());
+  for (const o of live) lines.push(`Override active: ${o.rule} until ${o.until} (${o.reason})`);
+  if (state.stage) {
+    lines.push('Next:');
+    for (const s of legalNext(ctx.cfg, state.stage)) {
+      const c = evaluate(ctx, `enter:${s}`, {}, state);
+      lines.push(`  ${s}: ${c.ok ? 'ready' : 'blocked'}`);
+      if (c.results.length) lines.push(formatResults(c).replace(/^/gm, '  '));
+    }
+  }
+  return lines.join('\n');
+}
+
+// ---------------------------------------------------------------- CLI
+function parseCli(argv) {
+  const pos = [];
+  const opt = {};
+  for (let i = 0; i < argv.length; i++) {
+    const a = argv[i];
+    if (a.startsWith('--')) {
+      const [k, v] = a.slice(2).split(/=(.*)/s);
+      if (v !== undefined) opt[k] = v;
+      else if (argv[i + 1] !== undefined && !argv[i + 1].startsWith('--')) opt[k] = argv[++i];
+      else opt[k] = true;
+    } else pos.push(a);
+  }
+  return { pos, opt };
+}
+
+export function main(argv, cwd = process.cwd()) {
+  const cmdIdx = argv.findIndex((a, i) => !a.startsWith('--') && argv[i - 1] !== '--config');
+  const cmd = argv[cmdIdx];
+  // progress passes its options through untouched
+  if (cmd === 'progress') {
+    const ci = argv.indexOf('--config');
+    const ctx = loadLoop({ cwd, config: ci >= 0 && ci < cmdIdx ? argv[ci + 1] : undefined });
+    const state = readState(ctx);
+    const rest = argv.slice(cmdIdx + 1);
+    const args = rest.includes('--iteration') || ['--pause', '--resume'].some((f) => rest.includes(f)) ? rest : [...rest, '--iteration', String(state.iteration)];
+    const notes = progress(ctx, args);
+    appendEvent(ctx, { kind: 'progress', args: rest, iteration: state.iteration, stage: state.stage });
+    return notes.length ? 1 : 0;
+  }
+  const { pos, opt } = parseCli(argv);
+  const ctx = loadLoop({ cwd, config: opt.config });
+  switch (pos[0]) {
+    case 'status':
+    case undefined:
+      console.log(status(ctx));
+      return 0;
+    case 'init':
+      init(ctx, { iteration: opt.iteration, stage: opt.stage, since: opt.since });
+      console.log(`initialised: iteration ${opt.iteration}, ${opt.stage}`);
+      return 0;
+    case 'start':
+    case 'advance': {
+      const to = pos[0] === 'start' ? pos[1] : opt.to;
+      if (pos[0] === 'start' && !to) throw new Error('usage: loop start <Stage>');
+      const { state, event } = advance(ctx, to);
+      console.log(`iteration ${state.iteration}: ${event.from} -> ${event.to}${event.skipped ? ` (skipped ${event.skipped.join(', ')})` : ''}`);
+      return 0;
+    }
+    case 'record': {
+      const rec = record(ctx, { gate: pos[1], result: opt.result, commit: opt.commit ?? 'HEAD', evidence: opt.evidence, note: opt.note });
+      console.log(`recorded ${rec.gate} ${rec.result} on ${rec.commit.slice(0, 9)} (code tree ${rec.codeTree})`);
+      return 0;
+    }
+    case 'check': {
+      if (!pos[1]) throw new Error('usage: loop check <action> [--commit sha] [--tree tree-ish]');
+      const c = evaluate(ctx, pos[1], { commit: opt.commit, tree: opt.tree });
+      if (c.results.some((r) => r.overridden)) appendEvent(ctx, { kind: 'override-used', action: pos[1], rules: c.results.filter((r) => r.overridden).map((r) => r.rule) });
+      if (c.ok) {
+        if (!opt.quiet) console.log(`ok: ${pos[1]}\n${formatResults(c)}`);
+        return 0;
+      }
+      console.error(`blocked: ${pos[1]}\n${formatResults(c)}\nRecord the missing gate, or \`loop override <rule> --reason "..."\` if this is a deliberate call.`);
+      return 1;
+    }
+    case 'override': {
+      const { override: o, ledgerRow } = override(ctx, { rule: pos[1], reason: opt.reason, ttl: opt.ttl ?? 60 });
+      console.log(`override ${o.rule} until ${o.until}${ledgerRow ? '\nledger draft appended; complete it before the next Report' : ''}`);
+      return 0;
+    }
+    case 'log': {
+      for (const e of readEvents(ctx).slice(-Number(opt.n ?? 20))) console.log(JSON.stringify(e));
+      return 0;
+    }
+    default:
+      throw new Error(`unknown command ${pos[0]} (status, init, start, advance, record, check, override, progress, log)`);
+  }
+}
+
+if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
+  try {
+    process.exitCode = main(process.argv.slice(2));
+  } catch (e) {
+    console.error(`loop: ${e.message}`);
+    process.exitCode = 2;
+  }
+}

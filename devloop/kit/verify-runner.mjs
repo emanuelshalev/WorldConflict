@@ -29,7 +29,14 @@
 // --out changes the run folder (wiped per run) so parallel runs do not collide.
 // A flag in `flags` adds its steps and is visible to the
 // step functions as ctx.flags.has(name). Steps keep going after a failure unless --bail.
-import { spawn } from 'node:child_process';
+//
+// Loop controller (optional): when a loop config is found (config.loop.config, $DEVLOOP_LOOP_CONFIG,
+// or the only devloop/instances/*/loop/config.json), a full gate run records its result with
+// `kit/loop.mjs record verify` on the commit and code tree it ran on. Only runs of a recording mode
+// count (config.loop.recordModes, default ['default', 'full']) without --only, --skip or extra flags,
+// and only when HEAD did not move and no code file had uncommitted changes. `loop: false` turns it
+// off; without a loop config the runner works exactly as before.
+import { spawn, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import net from 'node:net';
 import path from 'node:path';
@@ -153,6 +160,7 @@ export async function runVerify(config, argv = process.argv.slice(3)) {
     return 0;
   }
   const steps = parsed.opts.serve ? [] : selectSteps(config, parsed);
+  const headAtStart = gitHead(root);
   fs.rmSync(out, { recursive: true, force: true });
   fs.mkdirSync(out, { recursive: true });
 
@@ -277,8 +285,48 @@ export async function runVerify(config, argv = process.argv.slice(3)) {
   console.log('-'.repeat(14 + w + 2 + 8 + 9 + 20));
   for (const r of results) console.log(`${r.id.padEnd(14)}${r.label.padEnd(w + 2)}${(r.ok ? 'PASS' : 'FAIL').padEnd(8)}${fmtTime(r.ms).padStart(7)}  ${r.note}`);
   console.log(`\n${failed.length ? `FAILED: ${failed.map((r) => r.id).join(', ')}` : 'ALL PASSED'} in ${fmtTime(Date.now() - t0)} (logs in ${path.relative(process.cwd(), out) || out}/)`);
-  fs.writeFileSync(path.join(out, 'summary.json'), JSON.stringify({ name: config.name, results, ok: failed.length === 0 }, null, 2));
+  fs.writeFileSync(path.join(out, 'summary.json'), JSON.stringify({ name: config.name, commit: headAtStart, results, ok: failed.length === 0 }, null, 2));
+  await recordInLoop(config, parsed, { root, ok: failed.length === 0, evidence: path.join(out, 'summary.json'), headAtStart, steps: results.map((r) => r.id) });
   return failed.length ? 1 : 0;
+}
+
+function gitHead(cwd) {
+  const r = spawnSync('git', ['rev-parse', 'HEAD'], { cwd, encoding: 'utf8' });
+  return r.status === 0 ? r.stdout.trim() : null;
+}
+
+/** Record the gate result with the loop controller, when there is one (see the header). */
+export async function recordInLoop(config, parsed, { root, ok, evidence, headAtStart, steps }) {
+  if (config.loop === false || !headAtStart) return null;
+  const recordModes = config.loop?.recordModes ?? ['default', 'full'];
+  const counted = !parsed.opts.only && parsed.opts.skip.size === 0 && parsed.flags.size === 0 && !parsed.opts.serve && [...parsed.modes].some((m) => recordModes.includes(m));
+  if (!counted) return null;
+  let loop;
+  let ctx;
+  try {
+    loop = await import('./loop.mjs');
+    ctx = loop.loadLoop({ cwd: root, config: config.loop?.config });
+  } catch {
+    return null; // no controller config: nothing to record
+  }
+  try {
+    const head = loop.resolveCommit(root, 'HEAD');
+    if (head !== headAtStart) {
+      console.log(`loop: HEAD moved during the run (${headAtStart.slice(0, 9)} -> ${head.slice(0, 9)}); result not recorded`);
+      return null;
+    }
+    const dirty = loop.dirtyCodeFiles(root, ctx.cfg.code, ctx.loopRel ? [`${ctx.loopRel}/**`] : []);
+    if (dirty.length) {
+      console.log(`loop: ${dirty.length} code file(s) had uncommitted changes (${dirty.slice(0, 3).join(', ')}${dirty.length > 3 ? ', ...' : ''}); result not recorded`);
+      return null;
+    }
+    const rec = loop.record(ctx, { gate: 'verify', result: ok ? 'pass' : 'fail', commit: head, evidence, note: `modes ${[...parsed.modes].join(',')}`, extra: { steps } });
+    console.log(`loop: recorded verify ${rec.result} on ${rec.commit.slice(0, 9)} (code tree ${rec.codeTree})`);
+    return rec;
+  } catch (e) {
+    console.log(`loop: could not record the result: ${e.message}`);
+    return null;
+  }
 }
 
 // CLI: node verify-runner.mjs <config.mjs> [options]

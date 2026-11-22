@@ -1,0 +1,38 @@
+{
+  "stages": ["Plan", "Design", "Build", "Verify", "Use", "Triage", "Report", "Gate"],
+  "transitions": {
+    "Plan": ["Design", "Build"],
+    "Design": ["Build"],
+    "Build": ["Verify"],
+    "Verify": ["Use", "Build"],
+    "Use": ["Triage"],
+    "Triage": ["Report"],
+    "Report": ["Gate"],
+    "Gate": ["Plan"]
+  },
+  "gates": ["verify", "qa", "triage", "status-refresh"],
+  "rules": {
+    "verify-before-use": { "on": "enter:Use", "gate": "verify", "match": "code", "why": "The panel only sees a build that passed the verify gate" },
+    "qa-before-use": { "on": "enter:Use", "gate": "qa", "match": "code", "why": "QA verifies the build before the customer round, not alongside it" },
+    "triage-before-report": { "on": "enter:Report", "gate": "triage", "match": "iteration", "why": "The report states triage decisions" },
+    "status-refresh-after-merge": { "on": ["enter:Report", "enter:Gate"], "gate": "status-refresh", "match": "after-merge", "why": "The owner follows the loop on the status page" },
+    "verify-before-publish": { "on": "publish", "gate": "verify", "match": "commit", "why": "Only an exact verified commit is published" },
+    "verify-before-merge": { "on": "merge", "gate": "verify", "match": "code", "why": "Verify passes on the merge result before any merge" }
+  },
+  "code": {
+    "include": ["src/**", "tests/**", "package.json", "package-lock.json", "devloop/kit/**"],
+    "exclude": []
+  },
+  "sharedBranch": "dev/main-loop",
+  "publishBranch": "main",
+  "remote": "origin",
+  "tagPrefix": "iter-",
+  "sharedState": true,
+  "state": "state.json",
+  "events": "events.jsonl",
+  "ledger": "../ledger.md",
+  "progress": {
+    "config": "../progress/config.json",
+    "inject": { "page": "../status.html", "marker": "PROGRESS", "args": [] }
+  }
+}
