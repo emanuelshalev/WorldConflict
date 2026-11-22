@@ -133,6 +133,12 @@ const CRISIS_SCENES: Record<string, SceneKind> = {
   shock_terror: 'disaster',
   shock_disaster: 'disaster',
   election_campaign: 'election',
+  // One Term "Start with" openings (src/core/opening.ts), by situation kind
+  opening_war: 'war_room',
+  opening_sea: 'war_room',
+  opening_regime: 'cabinet',
+  opening_nuclear: 'nuclear',
+  opening_truce: 'war_room',
   meeting_call: 'summit', // both leaders on screen (a phone call is a two-sided scene)
   meeting_staff: 'cabinet',
   meeting_visit: 'summit',

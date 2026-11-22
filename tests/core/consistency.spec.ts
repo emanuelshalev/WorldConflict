@@ -173,7 +173,7 @@ describe("reported cases (iteration 1 panel)", () => {
     expect(sign?.effects["ceasefire:RUS"]).toBe(1);
     expect(sign?.actions.some((a) => a.type === "DIPLOMACY_PROPOSE_CEASEFIRE")).toBe(false);
     let reached = 0;
-    for (const seed of [...SEEDS, 2000, 3000, 4000]) {
+    for (const seed of [...SEEDS, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000]) {
       const rng = new SeededRandom(combineSeed(seed, 99));
       let world = loader.newGame({ scenarioId: "2026", playerCountryId: "UKR", seed, mode: "FLASHPOINT", flashpointId: "ceasefire-or-collapse", difficulty: "STATESMAN" });
       const engine = new TurnEngine();
