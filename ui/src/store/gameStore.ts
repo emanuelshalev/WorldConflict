@@ -244,6 +244,19 @@ export interface Advice {
   deputies: string[];
   /** The orders the staff queue on their own (variety rules applied, safe, affordable). */
   staffOrders: Array<AdviceSuggestion & { successChance: number | null }>;
+  /** decisionId → what the desk may say about the mission pick (src/core/advisors.ts MissionNote). */
+  missionNotes?: Record<string, MissionNote>;
+}
+
+export interface MissionNote {
+  optionId: string;
+  kind: 'best' | 'tradeoff' | 'least';
+  /** "Best for your mission", "Best trade-off: helps Front, costs Approval", "Least harm ..." */
+  text: string;
+  helps: string[];
+  costs: string[];
+  /** Offer a switch only when the cabinet pick hurts a goal the mission pick does not. */
+  switchFrom: { cabinetId: string; goal: string; breaks: boolean } | null;
 }
 
 export interface ScoreTerm {
@@ -331,6 +344,8 @@ export interface ReportFact {
   after: number;
   unit?: string;
   good?: boolean;
+  /** UI only (lib/numbers.ts): one move's share of a month stat, shown as a signed change. */
+  share?: boolean;
 }
 
 /** How the other side answered (src/core/reactions.ts): the tone follows the measured change. */
@@ -480,7 +495,7 @@ export type OrderBlockCode =
   | 'DUPLICATE' | 'NEEDS_TARGET'
   | 'GAME_OVER' | 'SELF_TARGET' | 'TARGET_COLLAPSED' | 'NOT_A_STATE' | 'INVALID_VALUE'
   | 'AT_WAR' | 'NOT_AT_WAR' | 'ALREADY_AT_WAR' | 'TARGET_NOT_AT_WAR' | 'PARTY_TO_WAR'
-  | 'NOT_ALLIED' | 'PACT_REFUSED' | 'RELATIONS_MAXED' | 'NO_WARHEADS' | 'PROGRAM_MAXED'
+  | 'NOT_ALLIED' | 'PACT_REFUSED' | 'RELATIONS_MAXED' | 'NO_WARHEADS' | 'PROGRAM_MAXED' | 'FULLY_MOBILIZED'
   | 'TOO_PROTECTED' | 'TOO_STABLE' | 'NO_TROOPS';
 
 export type PointTarget = 'capital' | 'orders' | 'meetings' | 'defense' | 'tray' | 'target' | 'mission';
@@ -1631,6 +1646,10 @@ export interface RevealPayload {
     classification: string;
     justification: string;
     conditions: Array<{ label: string; met: boolean; bonus: boolean }>;
+    /** Primary goals missed at the end (src/core/reveal.ts MissedGoal); absent on old payloads. */
+    missed?: Array<{ label: string; short: string; now: number | null; need: number | null; gap: number | null; unit: string | null }>;
+    /** "You missed Israel relations 61+ by 1 (60 of 61)."; null on a win. */
+    missedLine?: string | null;
     score: number;
     par: number;
   };

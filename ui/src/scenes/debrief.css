@@ -56,6 +56,7 @@
 .fact-chip { font-style: normal; margin-left: 8px; font-size: 11px; padding: 1px 6px; border-radius: 999px; background: rgba(255, 255, 255, .06); color: var(--text-2); }
 .fact.good .fact-chip { background: rgba(86, 197, 150, .15); color: var(--good); }
 .fact.bad .fact-chip { background: rgba(229, 56, 59, .15); color: #ff8a8b; }
+.fact.share .fact-chip { margin-left: 0; }
 
 /* Front bar */
 .db-front { position: relative; height: 100%; min-height: 110px; display: grid; align-items: center; padding: 22px 18px; background: linear-gradient(90deg, rgba(229, 56, 59, .25), rgba(255, 255, 255, .04) 50%, rgba(86, 197, 150, .25)); }
@@ -73,8 +74,8 @@
 .db-stat-label { grid-column: 1 / -1; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--text-3); }
 .db-stat-value { font-size: 24px; font-weight: 600; }
 .db-stat-delta { font-size: 13px; color: var(--text-3); }
-.db-stat.up .db-stat-delta { color: var(--good); }
-.db-stat.down .db-stat-delta { color: #ff8a8b; }
+.db-stat.good .db-stat-delta { color: var(--good); }
+.db-stat.bad .db-stat-delta { color: #ff8a8b; }
 .db-moments { display: flex; gap: 8px; flex-wrap: wrap; }
 .db-moment { font: 700 12px/1 var(--font-mono); letter-spacing: .14em; padding: 7px 12px; border: 2px solid var(--accent); color: var(--accent); border-radius: 4px; transform: rotate(-2deg); animation: db-stamp .5s .6s cubic-bezier(.2, 1.6, .4, 1) both; }
 @keyframes db-stamp { from { opacity: 0; transform: scale(1.6) rotate(-8deg); } }

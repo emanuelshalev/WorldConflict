@@ -76,6 +76,16 @@
   font-size: 16px;
   margin: 12px 0 0;
 }
+.rv-missed {
+  margin: 12px 0 0;
+  max-width: 600px;
+  padding: 8px 12px;
+  border-left: 3px solid var(--accent);
+  background: var(--surface-2);
+  color: var(--text-1);
+  font-size: 16px;
+  line-height: 1.45;
+}
 .rv-hint {
   font-size: 13px;
   color: var(--text-3);

@@ -119,7 +119,8 @@ export function rarestSeals(r: RevealPayload) {
 
 export function rankLines(r: RevealPayload, history: StoredRun[]): string[] {
   const out: string[] = [];
-  if (r.ranking.percentile !== null) out.push(`Top ${Math.max(1, 100 - r.ranking.percentile)}% of simulated leaders`);
+  // The same phrasing as the ranking headline ("better than 34%"), never a flipped "top 66%"
+  if (r.ranking.percentile !== null) out.push(`Better than ${r.ranking.percentile}% of simulated leaders`);
   if (history.length > 1) {
     const pos = 1 + history.filter((h) => h.presidencyScore > r.presidency.total).length;
     out.push(`#${pos} of your ${history.length} runs`);
@@ -136,7 +137,8 @@ export function cardData(r: RevealPayload, history: StoredRun[], daily: string |
     verdict: r.verdict.label,
     victory: r.verdict.victory,
     dateLabel: lastMonthLabel(r, true),
-    subtitle: [r.verdict.classification, end ? `war ended in month ${end.month}` : r.seat.title].filter(Boolean).join(' · '),
+    // A failed run says what it missed, so the card is honest and still worth posting
+    subtitle: [r.verdict.classification, !r.verdict.victory && r.verdict.missedLine ? r.verdict.missedLine.replace(/\.$/, '') : end ? `war ended in month ${end.month}` : r.seat.title].filter(Boolean).join(' · '),
     bestMoment: r.moments.best ? `${r.moments.best.title}, month ${r.moments.best.month}` : '',
     grade: r.verdict.grade,
     stars: r.verdict.stars,

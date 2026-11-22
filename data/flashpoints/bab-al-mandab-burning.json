@@ -468,7 +468,7 @@
           "urgency": "EXISTENTIAL",
           "defaultOptionId": "refuse",
           "options": [
-            {"id": "pay", "label": "Pay the salaries", "description": "Buy the peace outright. Expensive, effective, and galling.", "effects": {"gdp": -0.8, "stability": 6, "approval": -4, "relations:YEM": 12}, "tensionDelta": -10, "actions": [{"type": "DIPLOMACY_PROPOSE_CEASEFIRE", "targetCountryId": "YEM"}], "backedBy": ["FINANCE_MINISTER", "FOREIGN_MINISTER"]},
+            {"id": "pay", "label": "Pay the salaries", "description": "Buy the peace outright. Expensive, effective, and galling.", "effects": {"gdp": -0.8, "stability": 6, "approval": -4, "relations:YEM": 12, "ceasefire:YEM": 1}, "tensionDelta": -10, "backedBy": ["FINANCE_MINISTER", "FOREIGN_MINISTER"]},
             {"id": "un", "label": "Through UN accounts, for Perim", "description": "Salaries under supervision in exchange for the island. Principled, and possibly too clever.", "effects": {"relations:YEM": 5, "relations:USA": 5, "approval": 2, "gdp": -0.4}, "tensionDelta": -4, "backedBy": ["DOMESTIC_ADVISOR"]},
             {"id": "refuse", "label": "No tribute", "description": "Fight on. The airport will be hit again; you will be seen not to have paid.", "effects": {"approval": 3, "stability": -6, "growth": -0.4}, "tensionDelta": 4, "backedBy": ["DEFENSE_MINISTER"]}
           ]
@@ -562,7 +562,7 @@
           "urgency": "EXISTENTIAL",
           "defaultOptionId": "reject",
           "options": [
-            {"id": "accept", "label": "Take the salaries", "description": "Paid civil servants, a quiet strait, and a movement that has to govern in peacetime.", "effects": {"approval": 8, "stability": 6, "relations:SAU": 12, "legitimacy": -3, "relations:IRN": -4}, "tensionDelta": -10, "actions": [{"type": "DIPLOMACY_PROPOSE_CEASEFIRE", "targetCountryId": "SAU"}], "backedBy": ["FOREIGN_MINISTER", "DOMESTIC_ADVISOR"]},
+            {"id": "accept", "label": "Take the salaries", "description": "Paid civil servants, a quiet strait, and a movement that has to govern in peacetime.", "effects": {"approval": 8, "stability": 6, "relations:SAU": 12, "legitimacy": -3, "relations:IRN": -4, "ceasefire:SAU": 1}, "tensionDelta": -10, "backedBy": ["FOREIGN_MINISTER", "DOMESTIC_ADVISOR"]},
             {"id": "recognition", "label": "Demand recognition", "description": "Salaries and the seat at the UN. Bold, and Riyadh may walk.", "effects": {"legitimacy": 6, "relations:SAU": -4, "approval": -2}, "tensionDelta": 2, "backedBy": ["CHIEF_OF_STAFF"]},
             {"id": "reject", "label": "Keep the strait", "description": "The gate to the Red Sea is not for sale. Neither, it turns out, is bread.", "effects": {"legitimacy": 3, "approval": -7, "stability": -6}, "tensionDelta": 5, "backedBy": ["DEFENSE_MINISTER"]}
           ]

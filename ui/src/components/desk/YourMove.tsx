@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { IconCheck, IconChevronDown, IconChevronUp, IconMessageCircle, IconUserShare } from '@tabler/icons-react';
-import { type DecisionOption, type Meeting, MEETING_SLOTS, type PendingDecision, countryName, useGameStore, usePlayerCountry } from '../../store/gameStore';
+import { type DecisionOption, type Meeting, MEETING_SLOTS, type MissionNote, type PendingDecision, countryName, useGameStore, usePlayerCountry } from '../../store/gameStore';
 import { ADVISOR_NAMES, arrowText, effectArrows, flag } from '../../lib/format';
 import { cabinetPick, crisisSelection, splitLede, effectWords, meetingPick, meetingSelection, missionPick, missionTag, type Selection } from '../../lib/month';
 import { SceneFrame } from '../../scenes/SceneFrame';
@@ -68,6 +68,7 @@ function OptionCard({
   chosenId,
   sel,
   tag,
+  tagText,
   home,
   other,
   disabledReason,
@@ -84,6 +85,7 @@ function OptionCard({
   chosenId?: string;
   sel: Selection;
   tag?: CardTag;
+  tagText?: string;
   home?: string;
   other?: string;
   disabledReason?: string;
@@ -114,6 +116,7 @@ function OptionCard({
       keyHint={i + 1}
       cost={<CardCost seals={pc < 0 ? -pc : 0} gain={pc > 0 ? pc : 0} />}
       tag={tag}
+      tagText={tagText}
       ribbon={mt ? { tone: mt.tone === 'risk' ? 'risk' : 'help', text: `${mt.text}${mt.more > 0 ? ` +${mt.more} more` : ''}` } : undefined}
       layout={phone ? 'row' : 'tile'}
       state={disabledReason ? 'unavailable' : chosen ? (sel.kind === 'approved' ? 'approved' : 'chosen') : 'rest'}
@@ -196,7 +199,11 @@ export function DecisionStage({ item, primary = false, onlyLede = false }: { ite
   const options = meeting ? item.options.filter((o) => o.id !== meeting.defaultOptionId) : item.options;
   const sel = meeting ? meetingSelection(meeting, choices, reviewed) : crisisSelection(item, choices, reviewed);
   const cab = meeting ? meetingPick(meeting) : cabinetPick(item);
-  const best = meeting ? undefined : missionPick(item);
+  // The engine's mission note: the honest words for the mission pick (a trade-off is named as one)
+  const note = meeting ? undefined : useGameStore.getState().advice?.missionNotes?.[item.id];
+  const notes = !!useGameStore.getState().advice?.missionNotes;
+  const best = meeting ? undefined : notes ? (note ? item.options.find((o) => o.id === note.optionId) : undefined) : missionPick(item);
+  const bestText = note ? bestTagText(note) : undefined;
   const chosenId = choices[item.id] ?? (meeting ? undefined : cab?.id);
   const urgency = item.urgency === 'EXISTENTIAL' ? 'Existential' : item.urgency === 'URGENT' ? 'Urgent' : '';
   const kindWord = meeting ? KIND_WORD[meeting.kind] : 'Crisis';
@@ -208,7 +215,8 @@ export function DecisionStage({ item, primary = false, onlyLede = false }: { ite
   const attended = meeting ? agenda.filter((x) => x.id !== meeting.id && choices[x.id] && choices[x.id] !== x.defaultOptionId).length : 0;
   const full = !!meeting && attended >= MEETING_SLOTS && !choices[meeting.id];
   const cabTag = cab ? missionTag(useGameStore.getState().missionImpact[item.id]?.[cab.id], status) : null;
-  const disagree = !meeting && cab && best && best.id !== cab.id && cabTag?.tone === 'risk' && sel.kind === 'cabinet';
+  // Offer a switch only when the mission pick is better on the very goal the cabinet pick hurts
+  const disagree = !meeting && cab && best && best.id !== cab.id && sel.kind === 'cabinet' && (notes ? note?.switchFrom?.cabinetId === cab.id : cabTag?.tone === 'risk');
   // The highlighted objective (goal line step): which options move it
   const helpsHighlighted = (o: DecisionOption) => hl !== null && !!useGameStore.getState().missionImpact[item.id]?.[o.id]?.links?.some((l) => l.index === hl && l.effect === 'helps');
   const lead = cab?.backedBy[0] ?? (meeting ? advisorFor(meeting) : 'CHIEF_OF_STAFF');
@@ -290,6 +298,7 @@ export function DecisionStage({ item, primary = false, onlyLede = false }: { ite
             chosenId={meeting ? choices[item.id] : chosenId}
             sel={sel}
             tag={cab?.id === o.id ? (best && best.id === o.id ? 'both' : 'cabinet') : best?.id === o.id ? 'best' : undefined}
+            tagText={best?.id === o.id && bestText ? (cab?.id === o.id ? bestText.both : bestText.best) : undefined}
             home={home}
             other={other}
             disabledReason={full ? 'Your calendar is full.' : undefined}
@@ -302,7 +311,8 @@ export function DecisionStage({ item, primary = false, onlyLede = false }: { ite
       </div>
       {disagree && cab && best && (
         <p className="move-disagree" role="note">
-          Your cabinet backs <b>{cab.label}</b>, but it {cabTag?.text.startsWith('Breaks') ? 'breaks' : 'hurts'} {cabTag?.text.replace(/^\w+: /, '')}.{' '}
+          Your cabinet backs <b>{cab.label}</b>, but it {(note?.switchFrom ? note.switchFrom.breaks : cabTag?.text.startsWith('Breaks')) ? 'breaks' : 'hurts'} {note?.switchFrom?.goal ?? cabTag?.text.replace(/^\w+: /, '')}.
+          {note?.kind === 'tradeoff' || note?.kind === 'least' ? ` ${best.label} spares it, though it costs ${note.costs.join(' and ')}.` : ''}{' '}
           <button type="button" className="wc-btn small" onClick={() => choose(item.id, best.id)}>
             Switch to {best.label}
           </button>
@@ -312,6 +322,14 @@ export function DecisionStage({ item, primary = false, onlyLede = false }: { ite
       {more && <MoreDetail item={item} options={options} />}
     </article>
   );
+}
+
+/** The tag words for the mission pick: alone, and when it is also the cabinet's pick. */
+function bestTagText(note: MissionNote): { best: string; both: string } {
+  return {
+    best: note.text,
+    both: note.kind === 'best' ? 'Cabinet pick · good for your mission' : `Cabinet pick · ${note.text.charAt(0).toLowerCase()}${note.text.slice(1)}`,
+  };
 }
 
 /** The month's primary decision, or a quiet month's top advisor move. */

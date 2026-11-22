@@ -985,6 +985,8 @@ export const ChronicleSchema = z.object({
       relations: z.record(z.string(), z.number()).default({}), // tracked relations at the start
       hostile: z.array(z.string()).default([]), // already at -60 or worse with the player
       approval: z.number().optional(),
+      stability: z.number().optional(),
+      realGrowth: z.number().optional(),
       score: z.number().optional(),
     })
     .optional(),

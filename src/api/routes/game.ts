@@ -142,6 +142,7 @@ export function monthAdvice(world: WorldState) {
         meetingPicks: {},
         deputies: [],
         staffOrders: [],
+        missionNotes: {},
       } as Advice,
       missionImpact: {},
       orderImpact: {},

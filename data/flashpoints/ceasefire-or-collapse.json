@@ -540,7 +540,7 @@
           "urgency": "EXISTENTIAL",
           "defaultOptionId": "refuse",
           "options": [
-            {"id": "sign", "label": "Sign the ceasefire", "description": "The shooting stops. The occupied land is lost for a generation, and so may be your coalition.", "effects": {"relations:USA": 10, "approval": -8, "stability": 6, "legitimacy": -4}, "tensionDelta": -10, "actions": [{"type": "DIPLOMACY_PROPOSE_CEASEFIRE", "targetCountryId": "RUS"}], "backedBy": ["FOREIGN_MINISTER", "CHIEF_OF_STAFF"]},
+            {"id": "sign", "label": "Sign the ceasefire", "description": "The shooting stops. The occupied land is lost for a generation, and so may be your coalition.", "effects": {"relations:USA": 10, "approval": -8, "stability": 6, "legitimacy": -4, "ceasefire:RUS": 1}, "tensionDelta": -10, "backedBy": ["FOREIGN_MINISTER", "CHIEF_OF_STAFF"]},
             {"id": "refuse", "label": "Refuse without guarantees", "description": "No signature without the annex. Kyiv applauds; Washington threatens to walk away.", "effects": {"relations:USA": -12, "approval": 6, "stability": -4}, "tensionDelta": 4, "backedBy": ["DEFENSE_MINISTER"]},
             {"id": "referendum", "label": "Put it to the people", "description": "A national vote in a country at war, under drones. Legitimacy if you win; chaos either way.", "effects": {"legitimacy": 8, "stability": -6, "approval": 3, "relations:USA": -3}, "tensionDelta": 0, "backedBy": ["DOMESTIC_ADVISOR"]}
           ]

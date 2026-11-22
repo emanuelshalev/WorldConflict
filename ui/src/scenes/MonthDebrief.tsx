@@ -6,6 +6,7 @@ import { buildPages, type DebriefPage, type OutcomeCardData } from '../lib/debri
 import { monthLabel } from '../lib/format';
 import { OutcomeCard } from './OutcomeCard';
 import { StatCount } from './debriefParts';
+import { fmtValue, shownDelta, signed } from '../lib/numbers';
 import './reel.css';
 import './debrief.css';
 import './result.css';
@@ -24,7 +25,7 @@ const readDense = () => {
 function DenseTable({ pages }: { pages: DebriefPage[] }) {
   const rows = pages.flatMap((p) => p.cards.map((c) => ({ p, c })));
   const fmt = (c: OutcomeCardData) =>
-    c.facts.map((f) => `${f.label} ${Math.round(f.before * 10) / 10}→${Math.round(f.after * 10) / 10}`).join(' · ');
+    c.facts.map((f: ReportFact) => (f.share ? `${f.label}, from this ${signed(shownDelta(f.before, f.after, f.unit, true))}` : `${f.label} ${fmtValue(f.before, f.unit)}→${fmtValue(f.after, f.unit)}`)).join(' · ');
   return (
     <div className="db-dense-wrap">
       <table className="db-dense">
@@ -67,12 +68,9 @@ function DenseTable({ pages }: { pages: DebriefPage[] }) {
  * security), several outcomes per page, then the paper. Keys: 1-4, arrows, Enter, Esc.
  */
 export function MonthDebrief({ report, world, home, onDone, onNext, onBack, initialPage = 0, nextLabel = 'Next month' }: { report: TurnReport; world: WorldState; home: string; onDone: () => void; onNext?: () => void; onBack?: () => void; initialPage?: number; nextLabel?: string }) {
-  // One tension number everywhere (B-11): the month's start and the world's tension now, rounded
-  const pages = useMemo(() => {
-    const now = Math.round(world.globalTension);
-    const fix = (f: ReportFact) => (/tension/i.test(f.label) && report.tension ? { ...f, before: report.tension.before, after: now } : f);
-    return buildPages(report, world).map((p) => ({ ...p, cards: p.cards.map((c) => ({ ...c, facts: c.facts.map(fix) })) }));
-  }, [report, world]);
+  // One tension number everywhere (B-11): the month's total lives on the World tension tile; a card
+  // shows only its own move's share (lib/numbers.ts), never the month total under one order (F-01-3)
+  const pages = useMemo(() => buildPages(report, world), [report, world]);
   const [at, setAt] = useState(() => Math.max(0, Math.min(initialPage, pages.length - 1)));
   const [dense, setDense] = useState(readDense);
   const touched = useRef(dense);

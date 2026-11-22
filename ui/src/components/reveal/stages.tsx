@@ -157,6 +157,11 @@ export function VerdictStage({ r, animate, ghost }: StageProps) {
               </>
             ) : null}
           </div>
+          {r.verdict.missedLine && (
+            <p className="rv-missed" role="note">
+              {r.verdict.missedLine}
+            </p>
+          )}
           <p className="rv-body">
             {[r.verdict.description, r.verdict.justification]
               .filter(Boolean)

@@ -33,6 +33,7 @@ import {
   useGameStore,
 } from '../store/gameStore';
 import { flag } from '../lib/format';
+import { defaultSide } from '../lib/sides';
 import { YourRecord } from './reveal/YourRecord';
 import { ExplainText } from './learn/ExplainText';
 import { SituationButton } from './learn/SituationBriefing';
@@ -234,6 +235,9 @@ export function TitleScreen() {
     setFlashpointId(id);
     setMode('FLASHPOINT');
     const f = flashpoints.find((x) => x.id === id);
+    // A new crisis selects its own first side (or today's), so the launch button names the card
+    // that is highlighted, not a side kept from the last crisis
+    setPickedCountry(defaultSide(f, daily));
     if (f) setFocus(pinAt(f.playable.map((x) => x.countryId)));
   };
   const pickNation = (id: string) => {

@@ -67,6 +67,8 @@
         "bonus": true
       }
     ],
+    "missed": [],
+    "missedLine": null,
     "score": 119,
     "par": 107
   },
@@ -103,7 +105,7 @@
         "label": "Leadership",
         "value": 163,
         "max": 300,
-        "detail": "Average leadership score 109 (x1.5)"
+        "detail": "Average score 109 (x1.5)"
       },
       {
         "id": "finish",
@@ -181,18 +183,6 @@
         "name": "Bulletproof",
         "rule": "Real growth never negative",
         "hint": "Keep real growth above zero every month",
-        "infamy": false,
-        "signature": false,
-        "tier": "UNCOMMON",
-        "rate": null,
-        "turn": 11,
-        "month": 12
-      },
-      {
-        "id": "no_shot_fired",
-        "name": "Never Fired a Shot",
-        "rule": "No airstrike, invasion or attack order all session",
-        "hint": "Get through a whole session without an attack order",
         "infamy": false,
         "signature": false,
         "tier": "UNCOMMON",
@@ -601,7 +591,7 @@
           52,
           50
         ],
-        "start": 72,
+        "start": 78,
         "end": 50,
         "min": 50,
         "max": 72,
@@ -610,7 +600,7 @@
       },
       {
         "id": "score",
-        "label": "Leadership score",
+        "label": "Score",
         "unit": "",
         "higherIsBetter": true,
         "months": [
@@ -745,7 +735,6 @@
       "cooler_heads",
       "iron_approval",
       "no_recession",
-      "no_shot_fired",
       "peacemaker",
       "steady_state",
       "clean_sheet"

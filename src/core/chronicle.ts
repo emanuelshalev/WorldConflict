@@ -114,6 +114,8 @@ export function startSnapshot(world: WorldState): Chronicle {
     relations: Object.fromEntries(tracked.map((id) => [id, Math.round(me.relations[id] ?? 0)])),
     hostile: others.filter((c) => (me.relations[c.id] ?? 0) <= -60).map((c) => c.id),
     approval: round1(me.approval),
+    stability: round1(me.stability),
+    realGrowth: Math.round((me.realGrowth ?? me.growthRate ?? 0) * 10000) / 10000,
     score: world.score.total,
   };
   return chronicle;
@@ -259,8 +261,20 @@ export function recordMonth(
 
   // ---- Orders: covert results and the orders that moved the most ---------------------
   const orderMoments: ChronicleMoment[] = [];
-  let okDeals = 0;
-  let okAlliances = 0;
+  // Deals carried out this month: every agreement the player's own actions closed, orders and
+  // crisis answers alike (the engine's resolved list holds both), counted once
+  const mine = ctx.resolved?.get(me.id) ?? [];
+  const resolvedDeals = mine.filter((a) => DEAL_ORDERS.has(a.type));
+  const fromResolved = ctx.resolved !== undefined;
+  const okDeals = fromResolved
+    ? resolvedDeals.length
+    : orders.filter((o) => o.ok && o.type && DEAL_ORDERS.has(o.type)).length;
+  const okAlliances = fromResolved
+    ? resolvedDeals.filter((a) => a.type === "DIPLOMACY_PROPOSE_ALLIANCE").length
+    : orders.filter((o) => o.ok && o.type === "DIPLOMACY_PROPOSE_ALLIANCE").length;
+  const okCeasefires = fromResolved
+    ? resolvedDeals.filter((a) => a.type === "DIPLOMACY_PROPOSE_CEASEFIRE").length
+    : orders.filter((o) => o.ok && o.type === "DIPLOMACY_PROPOSE_CEASEFIRE").length;
   for (const o of orders) {
     const covert = /^(Success|Failed): /.test(o.detail);
     if (covert && o.type !== "INTEL_GATHER" && o.type !== "INTEL_COUNTER_INTEL") {
@@ -280,8 +294,6 @@ export function recordMonth(
         continue;
       }
     }
-    if (o.ok && o.type && DEAL_ORDERS.has(o.type)) okDeals += 1;
-    if (o.ok && o.type === "DIPLOMACY_PROPOSE_ALLIANCE") okAlliances += 1;
     const weight = factWeight(o.facts);
     if (Math.abs(weight) < 2 && !(o.ok && o.type === "DIPLOMACY_DECLARE_WAR")) continue;
     orderMoments.push({
@@ -310,6 +322,7 @@ export function recordMonth(
       with: id,
     });
   ch.deals += okDeals + Math.max(0, newPacts.length - okAlliances);
+  let ceasefiresSigned = 0;
 
   // ---- Wars: who started and ended what (public), the player's own fronts -----------
   if (before) {
@@ -338,7 +351,10 @@ export function recordMonth(
       const enemy = w.attackerId === me.id ? w.defenderId : w.attackerId;
       const ended = ctx.wars?.find((s) => s.war.id === w.id)?.ended;
       const winner = ended?.winnerId ?? null;
-      if (!winner) ch.firsts[`ceasefire:${enemy}`] ??= turn;
+      if (!winner) {
+        ch.firsts[`ceasefire:${enemy}`] ??= turn;
+        ceasefiresSigned += 1;
+      }
       const won = winner === me.id;
       moments.push({
         turn,
@@ -355,6 +371,9 @@ export function recordMonth(
       });
     }
   }
+  // A ceasefire you were party to is a deal you signed, however it was reached (a crisis answer,
+  // a call, exhaustion talks); proposals already counted above are not counted twice
+  ch.deals += Math.max(0, ceasefiresSigned - okCeasefires);
   for (const s of ctx.wars ?? []) {
     if (s.war.attackerId === me.id) ch.casualties += Math.round(s.attackerCasualties);
     else if (s.war.defenderId === me.id) ch.casualties += Math.round(s.defenderCasualties);
@@ -435,7 +454,7 @@ export function recordMonth(
     moments.push({
       turn,
       kind: "RECORD",
-      title: `Leadership score at a new high: ${world.score.total}`,
+      title: `Score at a new high: ${world.score.total}`,
       detail: "Your best month yet",
       tone: "good",
       weight: 2,

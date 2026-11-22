@@ -71,7 +71,12 @@ const CASES: Array<[id: string, earn: Mut, miss: Mut]> = [
   ["quick_peace", (_w, ch) => {
     for (const m of ch.moments) if (m.kind === "WAR_END") m.turn = 2;
   }, () => {}],
-  ["no_shot_fired", () => {}, (w) => { w.director.record["MILITARY_AIRSTRIKE:tried"] = 1; }],
+  // F-01-2: at war (even defending) or answering a crisis with an attack is firing a shot
+  ["no_shot_fired", (_w, ch) => {
+    ch.moments = ch.moments.filter((m) => m.kind !== "WAR_START" && m.kind !== "WAR_END");
+    for (const s of ch.series) s.playerWars = 0;
+    for (const m of ch.moments) if (m.kind === "CRISIS") m.choice = "Reply via Muscat";
+  }, (w) => { w.director.record["MILITARY_AIRSTRIKE:tried"] = 1; }],
   ["comeback_kid", (w, ch) => {
     w.director.rallies = 1;
     ch.moments.push({ turn: 4, kind: "COMEBACK", title: "c", detail: "", tone: "good", weight: 12 });
