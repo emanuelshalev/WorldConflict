@@ -1,10 +1,16 @@
-import { IconBook2, IconNews, IconUsers, IconWorld, IconX } from '@tabler/icons-react';
+import { Suspense, lazy } from 'react';
+import { IconBook, IconBook2, IconNews, IconUsers, IconWorld, IconX } from '@tabler/icons-react';
 import { type ConditionStatus, countryName, orderKey, queueOrder, useGameStore, usePlayerCountry } from '../store/gameStore';
 import { flag, monthLabel } from '../lib/format';
 import { useModalFocus } from '../lib/useModalFocus';
 import { primaryId, primaryItem } from '../lib/month';
 import { STATE_WORD, nowNeed, stateOf } from '../lib/goals';
 import { useScoreWhy } from '../lib/scoreWhy';
+import { metCount } from '../lib/learn';
+import { useExplain } from './learn/explain';
+
+// The codex page loads on first open (keeps the main bundle small)
+const Codex = lazy(() => import('./learn/Codex').then((m) => ({ default: m.Codex })));
 
 const CABINET = [
   { id: 'FOREIGN_MINISTER', name: 'Foreign Minister', lens: 'Alliances, rivals, the art of the deal' },
@@ -19,12 +25,16 @@ export function Drawers() {
   const drawer = useGameStore((s) => s.drawer);
   const setDrawer = useGameStore((s) => s.setDrawer);
   const ref = useModalFocus<HTMLElement>(!!drawer);
+  // The codex counter is silent: a number on its tab, never a toast (D-53)
+  const met = useGameStore((s) => metCount(s.learn));
+  const codexNonce = useExplain((s) => s.codexNonce);
   if (!drawer) return null;
   const tabs = [
     { id: 'cabinet', label: 'Cabinet', icon: <IconUsers size={15} /> },
     { id: 'world', label: 'World', icon: <IconWorld size={15} /> },
     { id: 'chronicle', label: 'Chronicle', icon: <IconNews size={15} /> },
     { id: 'objective', label: 'Mission', icon: <IconBook2 size={15} /> },
+    { id: 'codex', label: 'Codex', icon: <IconBook size={15} />, count: met },
   ] as const;
   return (
     <>
@@ -40,6 +50,7 @@ export function Drawers() {
           {tabs.map((t) => (
             <button key={t.id} className={drawer === t.id ? 'on' : ''} onClick={() => setDrawer(t.id)}>
               {t.icon} {t.label}
+              {'count' in t && t.count > 0 && <span className="num lx-tab-count">{t.count}</span>}
             </button>
           ))}
         </div>
@@ -48,6 +59,11 @@ export function Drawers() {
           {drawer === 'world' && <WorldPanel />}
           {drawer === 'chronicle' && <ChroniclePanel />}
           {drawer === 'objective' && <MissionPanel />}
+          {drawer === 'codex' && (
+            <Suspense fallback={<p className="hint">Opening the codex...</p>}>
+              <Codex key={codexNonce} />
+            </Suspense>
+          )}
         </div>
       </aside>
     </>

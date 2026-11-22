@@ -21,6 +21,8 @@ import { GoalLine } from './components/desk/GoalLine'
 import { ScoreWhySheet } from './components/ScoreWhy'
 import { MomentGallery } from './components/MomentGallery'
 import { useScoreWhy } from './lib/scoreWhy'
+import { Explainer } from './components/learn/Explainer'
+import { SituationBriefing } from './components/learn/SituationBriefing'
 
 function Ticker() {
   const world = useGameStore((s) => s.worldState)
@@ -62,7 +64,7 @@ function Ticker() {
   )
 }
 
-/** Global keys: M switches Map and Desk, N shows or hides the news ticker. */
+/** Global keys: M switches Map and Desk, N shows or hides the news ticker, I hides the codex underlines for this session. */
 function useModeKeys() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -73,6 +75,7 @@ function useModeKeys() {
       if (s.screen !== 'game' || s.activeModal || s.showChronicle) return
       if (e.key === 'm' || e.key === 'M') s.setDeskMode(s.deskMode === 'map' ? 'desk' : 'map')
       else if (e.key === 'n' || e.key === 'N') s.setShowTicker(!s.showTicker)
+      else if (e.key === 'i' || e.key === 'I') s.toggleCodexMarks()
       else return
       e.preventDefault()
     }
@@ -199,6 +202,8 @@ function App() {
       {isLoading && screen === 'game' && (
         <TurnStamp />
       )}
+      <SituationBriefing />
+      <Explainer />
       <Toast />
     </>
   )

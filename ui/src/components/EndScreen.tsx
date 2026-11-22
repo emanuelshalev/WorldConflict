@@ -18,6 +18,8 @@ import { mergeRemoteRuns } from '../lib/runs';
 import { cellsToEmoji, drawClassicCard, monthCells, publicSite } from '../lib/shareCard';
 import { RevealSequence } from './reveal/RevealSequence';
 import { END_SCENE } from './reveal/model';
+import { CodexEndLine } from './learn/CodexEndLine';
+import { ExplainText } from './learn/ExplainText';
 
 const REASON_TEXT: Record<string, string> = {
   TERM_COMPLETED: 'MISSION COMPLETE',
@@ -212,6 +214,7 @@ export function EndScreen() {
                 </ul>
               </>
             )}
+            <CodexEndLine />
           </div>
         }
       />
@@ -267,7 +270,8 @@ export function EndScreen() {
               <p>Best streak {streak.best}. A new crisis drops tomorrow, same world for everyone.</p>
             </div>
           )}
-          {world.objective?.debrief && <div className="debrief">{world.objective.debrief}</div>}
+          {world.objective?.debrief && <ExplainText as="div" className="debrief" text={world.objective.debrief} info where="Debrief" />}
+          <CodexEndLine />
           <div className="end-actions">
             <button className="wc-btn primary" onClick={share}>
               <IconShare size={16} /> {copied ? 'Copied!' : 'Share result'}

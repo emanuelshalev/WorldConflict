@@ -11,6 +11,7 @@ import {
 import { useModalFocus } from '../lib/useModalFocus';
 import { SoundSettingsSection } from './game/SoundToggle';
 import { MonthSettings } from './desk/MonthSettings';
+import { ExplanationsSettings } from './learn/FamiliarityPrompt';
 
 const CHAT_TEST_URL = `${(import.meta.env.VITE_API_BASE ?? '/api').replace(/\/$/, '')}/chat/test`;
 
@@ -142,6 +143,7 @@ function Inner({ onClose }: { onClose: () => void }) {
           </label>
           <MonthSettings />
         </div>
+        <ExplanationsSettings />
         <SoundSettingsSection />
         <div>
           <div className="section-label">Who runs the world?</div>

@@ -3,6 +3,7 @@ import { llmRequestBody, useGameStore } from '../store/gameStore'
 import type { CountryFull, War, WorldState } from '../store/gameStore';
 import { answerQuestion } from '../utils/advisorBrain';
 import { useModalFocus } from '../lib/useModalFocus';
+import { ExplainText } from './learn/ExplainText';
 
 const ADVISOR_API_URL = `${(import.meta.env.VITE_API_BASE ?? '/api').replace(/\/$/, '')}/chat/advisor`;
 
@@ -599,7 +600,7 @@ export function AdvisorModal() {
                             {msg.role === 'user' ? '👤 You' : `${selectedAdvisor?.icon} ${selectedAdvisor?.name}`}
                           </span>
                         </div>
-                        <p className="message-content">{msg.content}</p>
+                        {msg.role === 'user' ? <p className="message-content">{msg.content}</p> : <ExplainText as="p" className="message-content" text={msg.content} where={selectedAdvisor?.name ?? 'Your cabinet'} />}
                       </div>
                     ))}
                     <div ref={chatEndRef} />

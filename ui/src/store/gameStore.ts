@@ -595,7 +595,7 @@ export interface GameState extends CodexSlice {
   setShowChronicle: (show: boolean) => void;
   showLogin: boolean;
   isDaily: boolean;
-  drawer: 'cabinet' | 'world' | 'chronicle' | 'objective' | null;
+  drawer: 'cabinet' | 'world' | 'chronicle' | 'objective' | 'codex' | null;
   setDrawer: (drawer: GameState['drawer']) => void;
   isLoading: boolean;
   /** The global toast: network and server problems only (predictable refusals live on the order card). */

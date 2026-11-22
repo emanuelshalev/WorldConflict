@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { IconBook2, IconBroadcast, IconBroadcastOff, IconChevronDown, IconChevronUp, IconLayoutDashboard, IconMap2, IconMenu2, IconNews, IconSettings, IconUsers, IconWorld } from '@tabler/icons-react';
+import { IconBook, IconBook2, IconBroadcast, IconBroadcastOff, IconChevronDown, IconChevronUp, IconLayoutDashboard, IconMap2, IconMenu2, IconNews, IconSettings, IconUsers, IconWorld } from '@tabler/icons-react';
 import { budgetStatus } from '../lib/budget';
 import { useGameStore, usePlayerCountry } from '../store/gameStore';
 import { flag, money, monthLabel } from '../lib/format';
@@ -8,6 +8,7 @@ import { pcIncome } from '../lib/month';
 import { CapitalSeals } from './game/CapitalSeal';
 import { SoundToggle } from './game/SoundToggle';
 import { scoreLine, useScoreWhy } from '../lib/scoreWhy';
+import { LearnChip } from './learn/LearnChip';
 import '../styles/hud.css';
 
 /**
@@ -170,6 +171,7 @@ export function Hud() {
         </div>
       )}
       <div className="hud-menu">
+        <LearnChip />
         <SoundToggle className="hud-sound" />
         <button className="icon-btn hide-phone" aria-pressed={showTicker} title={showTicker ? 'Hide the news ticker (N)' : 'Show the news ticker (N)'} aria-label={showTicker ? 'Hide the news ticker' : 'Show the news ticker'} onClick={() => setShowTicker(!showTicker)}>
           {showTicker ? <IconBroadcast size={18} /> : <IconBroadcastOff size={18} />}
@@ -210,6 +212,9 @@ export function Hud() {
           </button>
           <button type="button" className="wc-btn ghost" onClick={() => setDrawer('chronicle')}>
             <IconNews size={16} aria-hidden /> Chronicle
+          </button>
+          <button type="button" className="wc-btn ghost" onClick={() => setDrawer('codex')}>
+            <IconBook size={16} aria-hidden /> Codex
           </button>
           <button type="button" className="wc-btn ghost" onClick={() => setDeskMode(deskMode === 'map' ? 'desk' : 'map')}>
             {deskMode === 'map' ? <IconLayoutDashboard size={16} aria-hidden /> : <IconMap2 size={16} aria-hidden />} {deskMode === 'map' ? 'Desk' : 'Map'}

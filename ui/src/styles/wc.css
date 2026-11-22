@@ -46,6 +46,12 @@
   --rarity-rare: #4fb3d9;
   --rarity-legendary: #f2a93b;
   --infamy: #e5383b;
+
+  /* Learning aids (design-learn.md): marks are intel blue at 62%, fading to 30% once opened */
+  --learn-mark: rgba(79, 179, 217, 0.62);
+  --learn-mark-known: rgba(79, 179, 217, 0.3);
+  --learn-tint: rgba(79, 179, 217, 0.12);
+  --real: #f2a93b; /* "In your game" (amber) versus the real world */
 }
 
 html,

@@ -2,6 +2,7 @@ import { StrictMode, lazy, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import './styles/feel.css'
+import './styles/learn.css'
 import App from './App.tsx'
 
 const Gallery = lazy(() => import('./scenes/Gallery'))

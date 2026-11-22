@@ -4,6 +4,10 @@ import { useGameStore, usePlayerCountry } from '../store/gameStore';
 import { flag, monthLabel, withArticle } from '../lib/format';
 import { useModalFocus } from '../lib/useModalFocus';
 import { STATE_WORD, nowNeed, stateOf } from '../lib/goals';
+import { ExplainText } from './learn/ExplainText';
+import { FamiliarityPrompt } from './learn/FamiliarityPrompt';
+import { WhoRow } from './learn/WhoIsWho';
+import { useSituation } from './learn/explain';
 import '../styles/month.css';
 
 /**
@@ -30,6 +34,8 @@ export function BackstoryModal() {
   const pending = useGameStore((s) => s.pendingDecisions);
   const player = usePlayerCountry();
   const [full, setFull] = useState(false);
+  const situation = useSituation();
+  const markAsked = useGameStore((s) => s.markFamiliarityAsked);
 
   const ref = useModalFocus<HTMLDivElement>(!!(showBackstory && player && worldState));
   if (!showBackstory || !player || !worldState) return null;
@@ -61,7 +67,8 @@ export function BackstoryModal() {
         <p className="briefing-role">
           {title} of {withArticle(player.name)}
         </p>
-        {hook && <p className="briefing-hook">{hook}</p>}
+        {hook && <ExplainText as="p" className="briefing-hook" text={hook} info where="Your briefing" />}
+        {situation && <WhoRow situation={situation} />}
         <section className="briefing-mission" aria-label="Your mission">
           <h2>
             Your mission: <span>{objective?.title ?? 'Stay in power'}</span>
@@ -97,7 +104,17 @@ export function BackstoryModal() {
           Approval {Math.round(player.approval)}% · Stability {Math.round(player.stability)}% · {player.politicalSystem.type.replace(/_/g, ' ').toLowerCase()}
           {pending.length > 0 && <span className="briefing-hot"> · a crisis is already on your desk</span>}
         </div>
-        <button type="button" className="wc-btn primary big briefing-go" onClick={dismissBackstory} autoFocus>
+        <FamiliarityPrompt />
+        <button
+          type="button"
+          className="wc-btn primary big briefing-go"
+          onClick={() => {
+            // "Take office" answers the familiarity question with the level on screen (Some help by default)
+            markAsked();
+            dismissBackstory();
+          }}
+          autoFocus
+        >
           Take office ▸
         </button>
         {(rest.length > 0 || storyRest.length > 0) && (
@@ -107,8 +124,8 @@ export function BackstoryModal() {
         )}
         {full && (
           <div className="briefing-full">
-            {rest.length > 0 && <p>{rest.join(' ')}</p>}
-            {storyRest.length > 0 && <p className="briefing-story">{storyRest.join(' ')}</p>}
+            {rest.length > 0 && <ExplainText as="p" text={rest.join(' ')} info where="Your briefing" />}
+            {storyRest.length > 0 && <ExplainText as="p" className="briefing-story" text={storyRest.join(' ')} info where="Your briefing" />}
           </div>
         )}
       </div>
