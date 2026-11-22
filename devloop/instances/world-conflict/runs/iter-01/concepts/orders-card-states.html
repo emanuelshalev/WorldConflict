@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Order card states</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* House tokens, copied from ui/src/styles/wc.css */
+:root {
+  --bg-0: #0b0f17; --ocean: #0e1a2b; --land: #1f2a3a;
+  --surface-1: #141b27; --surface-2: #1c2533; --surface-3: #243042;
+  --line: #2a3546; --line-2: #3a4759;
+  --text-1: #e8ecf2; --text-2: #a3aebf; --text-3: #8693a6;
+  --accent: #f2a93b; --accent-ink: #1b1204;
+  --intel: #4fb3d9; --ally: #3d8bfd; --rival: #f26b3a; --war: #e5383b; --nuke: #f5d547; --good: #56c596;
+  --font-ui: 'Geist', 'Inter', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+  --r-sm: 6px; --r-md: 10px; --r-lg: 16px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  /* New tokens proposed by design-orders.md */
+  --fam-diplo: #4c8dff; --fam-mil: #ff5a4f; --fam-intel: #36c5f0; --fam-nuke: #f5d547; --fam-home: #b48cff;
+  --point-ring: 0 0 0 2px var(--accent), 0 0 0 6px rgba(242,169,59,.28);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg-0); color: var(--text-1); font-family: var(--font-ui); -webkit-font-smoothing: antialiased; }
+.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.page { max-width: 1440px; margin: 0 auto; padding: 24px 16px 64px; }
+h1 { font-size: 22px; margin: 0 0 4px; letter-spacing: .01em; }
+.lede { color: var(--text-2); margin: 0 0 24px; font-size: 14px; max-width: 900px; line-height: 1.5; }
+h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .14em; color: var(--text-3); margin: 36px 0 12px; font-weight: 600; }
+.note { color: var(--text-3); font-size: 12px; line-height: 1.45; margin-top: 8px; }
+
+/* ---------- HUD strip with the pointed meter ---------- */
+.hud { display: flex; align-items: center; gap: 28px; background: var(--surface-1); border: 1px solid var(--line); border-radius: var(--r-md); padding: 10px 18px; flex-wrap: wrap; }
+.hud .who b { display: block; font-size: 15px; }
+.hud .who span { font-size: 12px; color: var(--text-3); }
+.stat label { display: block; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--text-3); margin-bottom: 2px; }
+.stat .v { font-size: 17px; font-weight: 600; }
+.cap { position: relative; padding: 6px 10px; border-radius: var(--r-sm); }
+.cap .row { display: flex; align-items: center; gap: 8px; }
+.pips { display: inline-flex; gap: 3px; }
+.pips i { width: 12px; height: 12px; transform: rotate(45deg) scale(.82); border: 1.5px solid var(--accent); display: inline-block; border-radius: 2px; }
+.pips i.left { background: var(--accent); }
+.pips i.held { border-style: dashed; background: repeating-linear-gradient(135deg, rgba(242,169,59,.35) 0 2px, transparent 2px 4px); }
+.pips i.next { border-color: rgba(242,169,59,.45); border-style: dotted; }
+.cap .txt { font-size: 13px; }
+.cap .sub { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+.pointed { animation: point 0.8s var(--ease-out) 2; box-shadow: var(--point-ring); }
+@keyframes point { 0% { box-shadow: 0 0 0 0 rgba(242,169,59,.0); transform: scale(1);} 40% { box-shadow: 0 0 0 2px var(--accent), 0 0 0 10px rgba(242,169,59,.25); transform: scale(1.04);} 100% { box-shadow: var(--point-ring); transform: scale(1);} }
+.callout { position: absolute; top: calc(100% + 10px); left: 10px; background: var(--accent); color: var(--accent-ink); font-size: 12px; font-weight: 600; padding: 5px 9px; border-radius: 6px; white-space: nowrap; }
+.callout::before { content: ""; position: absolute; top: -5px; left: 16px; width: 10px; height: 10px; background: var(--accent); transform: rotate(45deg); }
+
+/* ---------- Order card ---------- */
+.cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.card-wrap .cap-title { font-size: 12px; color: var(--text-2); margin-bottom: 8px; font-weight: 600; }
+.card-wrap .cap-title em { font-style: normal; color: var(--text-3); font-weight: 400; }
+.oc { position: relative; background: var(--surface-2); border: 1px solid var(--line-2); border-radius: var(--r-md); padding: 12px 12px 10px; display: flex; flex-direction: column; gap: 8px; min-height: 168px; text-align: left; color: inherit; font: inherit; width: 100%; cursor: pointer; transition: transform .12s var(--ease-out), border-color .12s; }
+.oc:hover { transform: translateY(-1px); }
+.oc::before { content: ""; position: absolute; left: -1px; top: 10px; bottom: 10px; width: 3px; border-radius: 3px; background: var(--fam); }
+.oc.diplo { --fam: var(--fam-diplo); } .oc.mil { --fam: var(--fam-mil); } .oc.intel { --fam: var(--fam-intel); } .oc.nuke { --fam: var(--fam-nuke); }
+.oc .top { display: flex; gap: 10px; align-items: flex-start; }
+.oc .ico { flex: none; width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; background: color-mix(in srgb, var(--fam) 18%, transparent); color: var(--fam); }
+.oc .label { font-size: 14px; font-weight: 600; line-height: 1.25; }
+.oc .tag { display: inline-block; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: #ffb4a8; border: 1px solid rgba(229,56,59,.5); border-radius: 4px; padding: 1px 5px; margin-top: 4px; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { font-family: var(--font-mono); font-size: 12px; padding: 2px 7px; border-radius: 999px; border: 1px solid var(--line-2); color: var(--text-2); white-space: nowrap; }
+.chip.pc { color: var(--accent); border-color: rgba(242,169,59,.45); }
+.chip.pc.short { color: #ff8a7a; border-color: rgba(229,56,59,.6); background: rgba(229,56,59,.1); }
+.chip.def { color: var(--intel); border-color: rgba(79,179,217,.45); }
+.chip.chance b { color: var(--text-1); font-weight: 600; }
+.foot { margin-top: auto; border-top: 1px solid var(--line); padding-top: 8px; font-size: 12px; line-height: 1.4; color: var(--text-2); }
+.foot .why { display: flex; gap: 6px; align-items: flex-start; }
+.foot .why svg { flex: none; margin-top: 2px; }
+.fix { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 7px; }
+.fix button { font: inherit; font-size: 12px; font-weight: 600; color: var(--accent); background: transparent; border: 1px solid rgba(242,169,59,.5); border-radius: 6px; padding: 4px 8px; cursor: pointer; }
+.fix .refill { font-size: 12px; color: var(--text-3); align-self: center; }
+.add { display: flex; justify-content: space-between; align-items: center; color: var(--text-1); font-weight: 600; }
+.add kbd { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); border: 1px solid var(--line-2); border-radius: 4px; padding: 0 5px; font-weight: 400; }
+
+.oc.state-short { border-color: rgba(242,169,59,.55); background: linear-gradient(180deg, var(--surface-2), #1f2430); }
+.oc.state-short .label { color: var(--text-1); }
+.oc.state-invalid { background: var(--surface-1); border-style: dashed; border-color: var(--line-2); cursor: default; }
+.oc.state-invalid .ico { filter: grayscale(1); opacity: .7; }
+.oc.state-invalid .label { color: var(--text-2); }
+.oc.state-invalid .chips { opacity: .7; }
+.oc.state-queued { border-color: rgba(86,197,150,.6); background: linear-gradient(180deg, rgba(86,197,150,.10), var(--surface-2)); }
+.oc.state-queued .done { display: flex; justify-content: space-between; align-items: center; color: var(--good); font-weight: 600; }
+.oc.state-queued .done button { font: inherit; font-size: 12px; color: var(--text-2); background: transparent; border: 1px solid var(--line-2); border-radius: 6px; padding: 3px 8px; }
+.stamp { position: absolute; top: 10px; right: 10px; width: 22px; height: 22px; border-radius: 50%; background: var(--good); display: grid; place-items: center; color: #08130e; animation: stampIn .35s var(--ease-out); }
+@keyframes stampIn { from { transform: scale(1.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.shake { animation: shake .18s linear 1; }
+@keyframes shake { 25% { transform: translateX(-3px);} 75% { transform: translateX(3px);} }
+
+/* ---------- Confirm face ---------- */
+.confirm { background: linear-gradient(180deg, #2a1416, var(--surface-2)); border: 1px solid rgba(229,56,59,.7); border-radius: var(--r-md); padding: 14px; display: flex; flex-direction: column; gap: 10px; min-height: 168px; }
+.confirm h4 { margin: 0; font-size: 15px; }
+.confirm p { margin: 0; font-size: 12px; color: var(--text-2); line-height: 1.45; }
+.confirm ul { margin: 0; padding-left: 16px; font-size: 12px; color: var(--text-1); line-height: 1.5; }
+.confirm .acts { display: flex; gap: 8px; margin-top: auto; }
+.confirm .acts button { flex: 1; font: inherit; font-size: 13px; font-weight: 600; border-radius: 8px; padding: 9px 10px; cursor: pointer; }
+.btn-cancel { background: var(--surface-3); color: var(--text-1); border: 1px solid var(--line-2); outline: 2px solid var(--accent); outline-offset: 2px; }
+.btn-go { background: var(--war); color: #fff; border: 1px solid #ff6b6e; position: relative; overflow: hidden; }
+.btn-go .hold { position: absolute; inset: 0; background: rgba(255,255,255,.22); transform-origin: left; transform: scaleX(.55); }
+.btn-go span { position: relative; }
+
+/* ---------- Map menu panel ---------- */
+.stage { display: grid; grid-template-columns: 1fr 380px; gap: 20px; align-items: start; }
+.mapbox { position: relative; min-height: 470px; border-radius: var(--r-lg); border: 1px solid var(--line); background: radial-gradient(ellipse at 45% 40%, #15243a 0, var(--ocean) 55%, var(--bg-0) 100%); overflow: hidden; }
+.mapbox svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.menu { position: absolute; right: 24px; top: 24px; width: 380px; background: rgba(20,27,39,.97); border: 1px solid var(--line-2); border-radius: var(--r-md); padding: 10px; box-shadow: 0 10px 40px rgba(0,0,0,.45); }
+.menu-head { display: flex; align-items: center; gap: 10px; padding: 4px 4px 10px; border-bottom: 1px solid var(--line); margin-bottom: 10px; }
+.menu-head b { font-size: 15px; display: block; }
+.menu-head small { color: var(--rival); font-size: 12px; }
+.menu-head .pcm { margin-left: auto; font-size: 12px; color: var(--accent); border: 1px solid rgba(242,169,59,.45); border-radius: 999px; padding: 3px 8px; }
+.menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.mini { background: var(--surface-2); border: 1px solid var(--line-2); border-radius: 8px; padding: 8px; font-size: 12px; position: relative; }
+.mini::before { content: ""; position: absolute; left: -1px; top: 8px; bottom: 8px; width: 3px; border-radius: 3px; background: var(--fam); }
+.mini.diplo { --fam: var(--fam-diplo); } .mini.mil { --fam: var(--fam-mil); } .mini.intel { --fam: var(--fam-intel); } .mini.nuke { --fam: var(--fam-nuke); }
+.mini b { display: block; font-size: 13px; margin-bottom: 4px; }
+.mini .chips .chip { font-size: 11px; padding: 1px 6px; }
+.mini .r { margin-top: 5px; color: var(--text-3); font-size: 11px; line-height: 1.35; }
+.mini.q { border-color: rgba(86,197,150,.6); }
+.mini.q .r { color: var(--good); }
+.mini.s { border-color: rgba(242,169,59,.55); }
+.mini.s .r { color: #ffc88a; }
+.mini.x { border-style: dashed; background: var(--surface-1); }
+.mini.x b { color: var(--text-2); }
+.more { margin-top: 8px; width: 100%; font: inherit; font-size: 12px; color: var(--text-2); background: transparent; border: 1px dashed var(--line-2); border-radius: 8px; padding: 8px; text-align: left; }
+.more b { color: var(--text-1); }
+.rail { background: var(--surface-1); border: 1px solid var(--line); border-radius: var(--r-md); padding: 12px; }
+.rail h5 { margin: 0 0 8px; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--text-3); font-weight: 600; }
+.meter { display: grid; grid-template-columns: 130px 1fr auto; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 6px; font-size: 12px; }
+.meter .ml { color: var(--text-2); }
+.meter .mt { color: var(--text-1); }
+.ticks { display: inline-flex; gap: 3px; }
+.ticks i { width: 10px; height: 10px; border: 1.5px solid var(--line-2); border-radius: 2px; }
+.ticks i.on { background: var(--text-2); border-color: var(--text-2); }
+.slot { margin-top: 6px; display: flex; justify-content: space-between; align-items: center; background: var(--surface-2); border: 1px solid var(--line-2); border-radius: 8px; padding: 8px 10px; font-size: 12px; }
+.slot .chip { font-size: 11px; }
+.slot.hl { box-shadow: var(--point-ring); }
+
+/* ---------- Phone ---------- */
+.phones { display: flex; gap: 28px; flex-wrap: wrap; align-items: flex-start; }
+.phone { width: 390px; max-width: 100%; border: 1px solid var(--line-2); border-radius: 28px; overflow: hidden; background: var(--bg-0); }
+.phone .ph-hud { padding: 12px 16px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; background: var(--surface-1); }
+.phone .ph-hud b { font-size: 14px; }
+.phone .ph-hud .cap { padding: 4px 8px; }
+.phone .ph-map { height: 150px; background: radial-gradient(ellipse at 50% 30%, #15243a, var(--ocean)); }
+.sheet { background: var(--surface-1); border-top: 1px solid var(--line-2); border-radius: 18px 18px 0 0; margin-top: -18px; position: relative; padding: 10px 16px 16px; }
+.sheet .grab { width: 44px; height: 4px; background: var(--line-2); border-radius: 4px; margin: 0 auto 10px; }
+.row { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--line); min-height: 56px; }
+.row:last-child { border-bottom: 0; }
+.row .ico { flex: none; width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; background: color-mix(in srgb, var(--fam) 18%, transparent); color: var(--fam); }
+.row.diplo { --fam: var(--fam-diplo); } .row.mil { --fam: var(--fam-mil); } .row.intel { --fam: var(--fam-intel); } .row.nuke { --fam: var(--fam-nuke); }
+.row .body { flex: 1; min-width: 0; }
+.row .body b { font-size: 14px; display: block; }
+.row .body .r { font-size: 12px; color: var(--text-2); margin-top: 3px; line-height: 1.35; }
+.row .act { flex: none; align-self: center; font-size: 12px; font-weight: 600; border-radius: 8px; padding: 8px 10px; border: 1px solid var(--line-2); color: var(--text-1); background: var(--surface-3); min-width: 64px; text-align: center; }
+.row.q .act { color: var(--good); border-color: rgba(86,197,150,.6); background: transparent; }
+.row.s .act { color: var(--accent); border-color: rgba(242,169,59,.5); background: transparent; }
+.row.x .act { color: var(--text-3); background: transparent; border-style: dashed; }
+.row.x b { color: var(--text-2); }
+.ph-strip { display: flex; gap: 8px; padding: 8px 16px; border-top: 1px solid var(--line); font-size: 12px; background: var(--surface-1); }
+.ph-strip span { border: 1px solid var(--line-2); border-radius: 999px; padding: 4px 9px; }
+.ph-strip span.pointed { border-color: var(--accent); color: var(--accent); }
+
+@media (max-width: 1100px) {
+  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stage { grid-template-columns: 1fr; }
+  .menu { position: relative; right: auto; top: auto; margin: 16px; width: auto; }
+  .mapbox { min-height: 0; }
+  .mapbox svg { display: none; }
+}
+@media (max-width: 560px) { .cards { grid-template-columns: 1fr; } .card-wrap { grid-column: auto !important; } .callout { position: static; display: inline-block; margin-top: 8px; } .callout::before { display: none; } .meter { grid-template-columns: 1fr auto; } .meter .ticks { display: none; } }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>Order card: one component, five states</h1>
+  <p class="lede">Concept for design-orders.md (G1, G2, G3, G6). Seat: Pakistan, Water War, month 1 of 10. Political capital: 3 this month, 2 held by the staff's two orders, 1 left. Target: India (not at war). Every state shows its cost, its chance and, when it cannot be given, why and how to fix it, on the card itself and before the player taps.</p>
+
+  <h2>1. The player taps "Declare war on India" with 1 ◆ left: the meter it means is pointed at</h2>
+  <div class="hud">
+    <div class="who"><b>Prime Minister Shehbaz Sharif</b><span>Pakistan · Nov 2026 · month 1 of 10</span></div>
+    <div class="stat"><label>Approval</label><div class="v num">40%</div></div>
+    <div class="stat"><label>Stability</label><div class="v num">42%</div></div>
+    <div class="stat"><label>Legitimacy</label><div class="v num">45%</div></div>
+    <div class="stat"><label>Economy</label><div class="v num">$400B</div></div>
+    <div class="stat cap pointed" data-point="capital">
+      <label>Political capital</label>
+      <div class="row"><span class="pips" aria-hidden="true"><i class="left"></i><i class="held"></i><i class="held"></i><i class="next"></i><i class="next"></i></span><span class="txt num">◆ 1 left</span></div>
+      <div class="sub">2 held by orders · +2 next month</div>
+      <div class="callout">Declare war on India needs ◆ 2</div>
+    </div>
+    <div class="stat"><label>World tension</label><div class="v num">71</div></div>
+    <div class="stat"><label>Score</label><div class="v num">100</div></div>
+  </div>
+  <p class="note" style="margin-top:44px">Pips mean the same thing everywhere: a filled diamond is capital you can still spend, a hatched one is held by an order in this month (frees if you remove it), a dotted one is next month's refill. The HUD and the desk rail draw this one meter, so "◆ 1 left" never shows as filled on one and empty on the other. The pulse runs twice (1.6 s), then a static ring stays while the reason is on screen. Reduced motion: ring only.</p>
+
+  <h2>2. The four states of the card (desk All orders, staff picks, map menu)</h2>
+  <div class="cards">
+    <div class="card-wrap">
+      <div class="cap-title">Available <em>· tap or Enter adds it</em></div>
+      <button class="oc intel" type="button">
+        <div class="top">
+          <span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/></svg></span>
+          <div><div class="label">Spy on India</div></div>
+        </div>
+        <div class="chips"><span class="chip pc">◆ 1</span><span class="chip chance"><b>71%</b> chance</span></div>
+        <div class="foot"><div class="add"><span>+ Add to this month</span><kbd>Enter</kbd></div><div style="color:var(--text-3);margin-top:4px">Sharpens your estimate of India's forces and nuclear progress.</div></div>
+      </button>
+    </div>
+
+    <div class="card-wrap">
+      <div class="cap-title">Unaffordable <em>· budget block, with the fix</em></div>
+      <div class="oc mil state-short shake" role="button" aria-disabled="true">
+        <div class="top">
+          <span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 17.5 3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M19 21l2-2"/></svg></span>
+          <div><div class="label">Declare war on India</div><span class="tag">No undo</span></div>
+        </div>
+        <div class="chips"><span class="chip pc short">◆ 2</span><span class="chip">Force ratio 0.62</span></div>
+        <div class="foot">
+          <div class="why"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#f2a93b" stroke-width="2.4"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span><b style="color:var(--text-1)">Needs ◆ 2, you have ◆ 1.</b></span></div>
+          <div class="fix"><button type="button">Remove a staff order (frees ◆ 1)</button><span class="refill">or wait: +2 next month</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-wrap">
+      <div class="cap-title">Invalid <em>· rule block, reason first</em></div>
+      <div class="oc nuke state-invalid" role="button" aria-disabled="true">
+        <div class="top">
+          <span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"/><path d="M12 2a10 10 0 0 1 8.66 5L14 11M12 2a10 10 0 0 0-8.66 5L10 11M12 22a10 10 0 0 0 8.66-5L14 13M12 22a10 10 0 0 1-8.66-5L10 13"/></svg></span>
+          <div><div class="label">Nuclear strike on India</div><span class="tag">No undo</span></div>
+        </div>
+        <div class="chips"><span class="chip">free</span><span class="chip">53% chance</span></div>
+        <div class="foot">
+          <div class="why"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#a3aebf" stroke-width="2.4"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span><b style="color:var(--text-1)">Only in wartime.</b> You are not at war with India.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-wrap">
+      <div class="cap-title">Queued <em>· in this month, tap again opens it</em></div>
+      <div class="oc diplo state-queued">
+        <span class="stamp"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></span>
+        <div class="top">
+          <span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 11l3-3 4 4 3-3M3 12l4 4 4-1 3 3 7-7"/></svg></span>
+          <div><div class="label">Court India</div></div>
+        </div>
+        <div class="chips"><span class="chip pc">◆ 1 held</span><span class="chip">Relations +5 to +7</span></div>
+        <div class="foot"><div class="done"><span>In this month</span><button type="button">Remove</button></div><div style="color:var(--text-3);margin-top:4px">Staff pick: Foreign Minister</div></div>
+      </div>
+    </div>
+  </div>
+  <p class="note">Precedence when several blocks apply: the rule block wins (it shows the permanent reason first, so nobody frees capital for an order the rules forbid anyway). Text never drops below 4.5:1 contrast; unavailability is shown by the dashed border, the lock or info glyph and the reason line, not by fading the whole card to 40%.</p>
+
+  <h2>3. Irreversible orders flip to a confirm face (never a native dialog, never on Enter alone)</h2>
+  <div class="cards">
+    <div class="card-wrap">
+      <div class="cap-title">Declare war: confirm face <em>· focus lands on Keep the peace</em></div>
+      <div class="confirm">
+        <h4>Declare war on India?</h4>
+        <p>There is no undo. What your staff expect:</p>
+        <ul><li>World tension +15</li><li>You are outmatched (force ratio 0.62)</li><li>Both arsenals are operational: this war can end civilization</li></ul>
+        <div class="acts"><button class="btn-cancel" type="button">Keep the peace</button><button class="btn-go" type="button"><span>Declare war</span></button></div>
+      </div>
+    </div>
+    <div class="card-wrap">
+      <div class="cap-title">Nuclear strike: hold to authorize <em>· 1.2 s press, Space or Enter held</em></div>
+      <div class="confirm">
+        <h4>Authorize a nuclear strike on India?</h4>
+        <p>There is no undo. A total embargo follows, every nation turns on you (relations -60), and India can strike back.</p>
+        <div class="acts"><button class="btn-cancel" type="button">Stand down</button><button class="btn-go" type="button"><span class="hold"></span><span>Hold to authorize</span></button></div>
+      </div>
+    </div>
+    <div class="card-wrap" style="grid-column: span 2">
+      <div class="cap-title">Desk rail while the card is pointed at <em>· same meter, same pips, the slots that would free capital glow</em></div>
+      <div class="rail">
+        <h5>This month</h5>
+        <div class="meter pointed" data-point="capital"><span class="ml">Political capital</span><span class="pips"><i class="left"></i><i class="held"></i><i class="held"></i><i class="next"></i><i class="next"></i></span><span class="mt num">◆ 1 left of 3</span></div>
+        <div class="meter"><span class="ml">Orders this month</span><span class="ticks"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i></span><span class="mt num">2 of 6</span></div>
+        <div class="meter"><span class="ml">Meetings</span><span class="ticks"><i></i><i></i><i></i></span><span class="mt num">0 of 3 attended</span></div>
+        <div class="slot hl"><span>Court Saudi Arabia <span style="color:var(--text-3)">· Staff pick</span></span><span class="chip pc">◆ 1 held</span></div>
+        <div class="slot hl"><span>Court United States <span style="color:var(--text-3)">· Staff pick</span></span><span class="chip pc">◆ 1 held</span></div>
+      </div>
+    </div>
+  </div>
+
+  <h2>4. The map menu uses the same card (desktop 1440 and tablet 1024)</h2>
+  <div class="stage">
+    <div class="mapbox">
+      <svg viewBox="0 0 800 470" aria-hidden="true">
+        <path d="M120 180 L250 120 L330 160 L360 250 L300 330 L200 340 L130 290 Z" fill="#f2a93b" fill-opacity=".75" stroke="#0b0f17"/>
+        <path d="M330 160 L470 110 L560 170 L590 260 L520 380 L420 420 L360 330 L360 250 Z" fill="#f26b3a" fill-opacity=".55" stroke="#0b0f17"/>
+        <circle cx="460" cy="250" r="7" fill="#f2a93b"/><circle cx="460" cy="250" r="16" fill="none" stroke="#f2a93b" stroke-opacity=".5"/>
+        <text x="200" y="240" fill="#1b1204" font-family="Geist, sans-serif" font-size="14" font-weight="600">Pakistan</text>
+        <text x="440" y="290" fill="#e8ecf2" font-family="Geist, sans-serif" font-size="14" font-weight="600">India</text>
+      </svg>
+      <div class="menu">
+        <div class="menu-head"><span style="font-size:20px">IN</span><div><b>India</b><small>Rival · relations -62</small></div><span class="pcm num">◆ 1 left</span></div>
+        <div class="menu-grid">
+          <div class="mini intel"><b>Spy on India</b><div class="chips"><span class="chip pc">◆ 1</span><span class="chip">71%</span></div><div class="r">+ Add</div></div>
+          <div class="mini diplo q"><b>Court India</b><div class="chips"><span class="chip pc">◆ 1 held</span></div><div class="r">In this month</div></div>
+          <div class="mini mil s"><b>Declare war on India</b><div class="chips"><span class="chip pc short">◆ 2</span></div><div class="r">Needs ◆ 2, you have ◆ 1</div></div>
+          <div class="mini mil"><b>Mass troops facing India</b><div class="chips"><span class="chip">free</span><span class="chip def">6% defense</span></div><div class="r">+ Add</div></div>
+          <div class="mini intel"><b>Destabilize India</b><div class="chips"><span class="chip pc short">◆ 2</span><span class="chip">48%</span></div><div class="r" style="color:#ffc88a">Needs ◆ 2, you have ◆ 1</div></div>
+          <div class="mini nuke x"><b>Nuclear strike on India</b><div class="chips"><span class="chip">free</span></div><div class="r">Only in wartime</div></div>
+        </div>
+        <button class="more" type="button"><b>All 19 orders for India</b> · same list as the desk</button>
+      </div>
+    </div>
+    <div>
+      <p class="note" style="margin-top:0">Map menu rules: the six most relevant orders for the target, ranked by the shared registry (ui/src/lib/orders.ts), then "All 19 orders for India", which expands in place to the exact list the desk shows for India. Tapping an available card queues it and the menu stays open: the card stamps, the header ◆ ticks down, the HUD meter pulses once. Hover (desktop) or the card's info button (touch) opens the same preview panel the desk shows: summary, effects, risks, mission warning.</p>
+      <p class="note">At 1024 the menu is the same width (380px) and the reason lines wrap to two lines. At 390 the menu becomes a bottom sheet of rows (next section).</p>
+    </div>
+  </div>
+
+  <h2>5. Phone, 390 wide: bottom sheet of rows, reason always visible</h2>
+  <div class="phones">
+    <div class="phone">
+      <div class="ph-hud"><b>Pakistan · month 1</b><div class="cap pointed" style="position:relative"><span class="pips"><i class="left"></i><i class="held"></i><i class="held"></i></span> <span class="num" style="font-size:13px">◆ 1 left</span></div></div>
+      <div class="ph-map"></div>
+      <div class="sheet">
+        <div class="grab"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><b>India</b><span class="num" style="font-size:12px;color:var(--accent)">◆ 1 left</span></div>
+        <div class="row intel"><span class="ico">◉</span><div class="body"><b>Spy on India</b><div class="r">◆ 1 · 71% chance</div></div><span class="act">Add</span></div>
+        <div class="row diplo q"><span class="ico">⇄</span><div class="body"><b>Court India</b><div class="r">In this month · ◆ 1 held</div></div><span class="act">Remove</span></div>
+        <div class="row mil s"><span class="ico">⚔</span><div class="body"><b>Declare war on India</b><div class="r"><b style="display:inline;font-size:12px;color:#ffc88a">Needs ◆ 2, you have ◆ 1.</b> +2 next month.</div></div><span class="act">Free ◆ 1</span></div>
+        <div class="row nuke x"><span class="ico">☢</span><div class="body"><b>Nuclear strike on India</b><div class="r">Only in wartime. You are not at war with India.</div></div><span class="act">Why</span></div>
+      </div>
+      <div class="ph-strip"><span class="pointed num">◆ 1 left</span><span class="num">Orders 2 of 6</span><span class="num">Meetings 0 of 3</span></div>
+    </div>
+    <div style="max-width:520px">
+      <p class="note" style="margin-top:0">Phone rules: rows are at least 56px tall with a 44px action button; the reason sits under the label in 12px, never in a tooltip. The action button carries the fix verb ("Free ◆ 1" opens the tray with the removable orders glowing). Pointing on the phone pulses both the HUD diamond and the matching chip in the bottom strip, since the rail is collapsed. The chip strip spells the names out ("Orders 2 of 6", "Meetings 0 of 3"), never "2/6" or "In person".</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

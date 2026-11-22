@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Political Capital Seal</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..800&family=Geist+Mono:wght@400..700&family=Instrument+Serif&display=swap" rel="stylesheet" />
+<!-- Concept: political capital as a wax seal you spend (design-feel.md section 2). -->
+<style>
+:root {
+  --bg-0: #0b0f17; --surface-1: #141b27; --surface-2: #1c2533; --surface-3: #243042; --line: #2a3546; --line-2: #3a4759;
+  --text-1: #e8ecf2; --text-2: #a3aebf; --text-3: #8693a6; --accent: #f2a93b; --accent-ink: #1b1204; --war: #e5383b; --good: #56c596;
+  --font-display: 'Geist', system-ui, sans-serif; --font-mono: 'Geist Mono', ui-monospace, monospace; --font-news: 'Instrument Serif', Georgia, serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: radial-gradient(120% 70% at 50% 0%, #101a2c, var(--bg-0) 60%); color: var(--text-1); font-family: var(--font-display); -webkit-font-smoothing: antialiased; padding: 28px 32px 48px; }
+h1 { font-family: var(--font-news); font-weight: 400; font-size: 40px; margin: 0 0 4px; }
+.lede { color: var(--text-2); font-size: 16px; margin: 0 0 18px; max-width: 86ch; line-height: 1.45; }
+h2 { font-size: 15px; color: var(--text-2); font-weight: 650; margin: 30px 0 12px; }
+.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.seal { width: var(--s, 24px); height: var(--s, 24px); flex: none; display: block; }
+.grid { display: grid; gap: 16px; }
+.g5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.g2 { grid-template-columns: 1.1fr 1fr; }
+.panel { padding: 16px; border-radius: 14px; border: 1px solid var(--line); background: rgba(20,27,39,.7); display: grid; gap: 10px; align-content: start; }
+.panel b { font-size: 15px; }
+.panel p { margin: 0; font-size: 14px; color: var(--text-2); line-height: 1.45; }
+.panel .spec { font: 500 12.5px var(--font-mono); color: var(--text-3); }
+.stage { height: 84px; display: flex; align-items: center; gap: 10px; }
+.anat { display: grid; grid-template-columns: 220px 1fr; gap: 20px; align-items: center; }
+.anat ul { margin: 0; padding-left: 18px; color: var(--text-2); font-size: 14px; line-height: 1.6; }
+.anat ul b { color: var(--text-1); }
+.sizes { display: flex; gap: 28px; align-items: end; }
+.sizes figure { margin: 0; display: grid; gap: 6px; justify-items: center; font: 500 12.5px var(--font-mono); color: var(--text-3); }
+/* Motion frames */
+.film { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.frame { position: relative; height: 120px; border-radius: 10px; border: 1px solid var(--line); background: #0c111a; overflow: hidden; }
+.frame .t { position: absolute; left: 8px; top: 6px; font: 600 12px var(--font-mono); color: var(--text-3); }
+.frame .bankbox { position: absolute; left: 10px; bottom: 12px; display: flex; gap: 4px; padding: 6px; border: 1px solid var(--line-2); border-radius: 8px; }
+.frame .bankbox .seal { --s: 22px; }
+.frame .cardbox { position: absolute; right: 10px; top: 24px; width: 96px; height: 80px; border-radius: 8px; border: 1px solid var(--line-2); background: linear-gradient(#1f2939, #161d2a); }
+.frame .cardbox .hole { position: absolute; right: 6px; top: 6px; width: 22px; height: 22px; border-radius: 50%; border: 1.5px dashed rgba(242,169,59,.7); }
+.frame .fly { position: absolute; }
+.frame .stampmini { position: absolute; right: 18px; top: 52px; font: 800 10px var(--font-mono); color: var(--accent); border: 2px solid var(--accent); border-radius: 4px; padding: 2px 5px; transform: rotate(-8deg); }
+.frame .arc { position: absolute; inset: 0; }
+.legend { font-size: 13.5px; color: var(--text-2); margin-top: 6px; }
+.where { width: 100%; border-collapse: collapse; font-size: 14px; }
+.where th, .where td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.where th { color: var(--text-2); font-weight: 650; font-size: 13px; }
+.where td.ex { display: flex; gap: 6px; align-items: center; }
+.where .bad { color: #ff8e8f; }
+.chip { display: inline-flex; gap: 6px; align-items: center; padding: 4px 10px 4px 5px; border-radius: 999px; background: rgba(0,0,0,.5); border: 1px solid var(--line-2); font-weight: 650; font-size: 13px; }
+.mint { animation: mint 1.6s ease-out 2; } /* plays twice on load: no idle loops */
+@keyframes mint { 0% { transform: scale(.2); opacity: 0; } 30% { transform: scale(1.15); opacity: 1; } 45%, 100% { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .mint { animation: none; } }
+@media (max-width: 1000px) { .g5, .film { grid-template-columns: repeat(2, minmax(0, 1fr)); } .g2, .anat { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="sealWax" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#ffe2a3" /><stop offset=".35" stop-color="#f5b14a" /><stop offset=".8" stop-color="#c47d22" /><stop offset="1" stop-color="#8d5512" /></radialGradient>
+    <linearGradient id="shine" x1="0" y1="0" x2="1" y2="1"><stop offset=".35" stop-color="#fff" stop-opacity="0" /><stop offset=".5" stop-color="#fff" stop-opacity=".8" /><stop offset=".65" stop-color="#fff" stop-opacity="0" /></linearGradient>
+    <symbol id="seal" viewBox="0 0 40 40">
+      <path d="M20 2.5c2.3 0 3 1.6 5 2.2 2 .6 3.6-.4 5.3.9 1.7 1.3 1.2 3 2.3 4.8 1.1 1.8 2.9 2.1 3.4 4.2.5 2-.8 3.3-.8 5.4s1.3 3.4.8 5.4c-.5 2.1-2.3 2.4-3.4 4.2-1.1 1.8-.6 3.5-2.3 4.8-1.7 1.3-3.3.3-5.3.9-2 .6-2.7 2.2-5 2.2s-3-1.6-5-2.2c-2-.6-3.6.4-5.3-.9-1.7-1.3-1.2-3-2.3-4.8C4.3 27.8 2.5 27.5 2 25.4c-.5-2 .8-3.3.8-5.4S1.5 16.6 2 14.6c.5-2.1 2.3-2.4 3.4-4.2 1.1-1.8.6-3.5 2.3-4.8C9.4 4.3 11 5.3 13 4.7c2-.6 2.7-2.2 5-2.2z" fill="url(#sealWax)" />
+      <circle cx="20" cy="20" r="12.2" fill="none" stroke="#8d5512" stroke-width="1.4" opacity=".7" />
+      <path d="M20 12.5l7.5 7.5-7.5 7.5-7.5-7.5z" fill="#9a5c14" /><path d="M20 13.8l6.2 6.2-6.2 6.2" fill="none" stroke="#ffe0a0" stroke-width=".9" opacity=".7" />
+    </symbol>
+    <symbol id="seal-imprint" viewBox="0 0 40 40">
+      <circle cx="20" cy="20" r="16.5" fill="rgba(242,169,59,.06)" stroke="#f2a93b" stroke-width="1.6" stroke-dasharray="3 3" opacity=".75" />
+      <path d="M20 13l7 7-7 7-7-7z" fill="none" stroke="#f2a93b" stroke-width="1.4" opacity=".6" />
+    </symbol>
+    <symbol id="seal-short" viewBox="0 0 40 40">
+      <circle cx="20" cy="20" r="16.5" fill="rgba(229,56,59,.12)" stroke="#e5383b" stroke-width="2" stroke-dasharray="3 3" />
+      <path d="M20 11v12M20 27.5v1.5" stroke="#ff8e8f" stroke-width="3" stroke-linecap="round" />
+    </symbol>
+    <symbol id="seal-broken" viewBox="0 0 40 40">
+      <use href="#seal" opacity=".55" />
+      <path d="M8 14l9 5-3 6 8 3 3 8M30 6l-6 9 7 4" stroke="#1b1204" stroke-width="1.8" fill="none" />
+    </symbol>
+    <symbol id="seal-new" viewBox="0 0 40 40">
+      <use href="#seal" /><circle cx="20" cy="20" r="18" fill="url(#shine)" />
+    </symbol>
+  </defs>
+</svg>
+
+<h1>The political capital seal</h1>
+<p class="lede">Political capital is one physical thing: a wax seal with an embossed diamond. You get 2 a month (3 in a Flashpoint), you can hold 6, and every order that costs capital carries its seals. One rule everywhere: <b>a full seal is one you can still spend</b>. A dashed imprint is a seal already placed on something this month. The word is always "political capital" (never "credit", "capital points" or "Cap").</p>
+
+<h2>Anatomy and sizes</h2>
+<div class="panel anat">
+  <svg class="seal" style="--s: 200px"><use href="#seal" /></svg>
+  <div>
+    <ul>
+      <li><b>Wax blob</b>: 16-lobe edge, radial gradient from #ffe2a3 to #8d5512 (light from top left, the same key light as the scenes).</li>
+      <li><b>Ring</b>: pressed ring at 61% radius, darker stroke plus a 0.7px highlight offset up-left (the emboss).</li>
+      <li><b>Diamond</b>: the ◆ glyph the game already uses, pressed in (#9a5c14) with a lit edge, so text "◆2" and the seal read as the same thing.</li>
+      <li><b>One SVG symbol</b>, five variants: full, imprint, short, broken (spent at Execute), new (minted). Component: <span class="num">&lt;CapitalSeals left committed short size /&gt;</span>.</li>
+    </ul>
+    <div class="sizes" style="margin-top:16px">
+      <figure><svg class="seal" style="--s:18px"><use href="#seal" /></svg>18 inline</figure>
+      <figure><svg class="seal" style="--s:24px"><use href="#seal" /></svg>24 HUD, card cost</figure>
+      <figure><svg class="seal" style="--s:38px"><use href="#seal" /></svg>38 rail bank</figure>
+      <figure><svg class="seal" style="--s:56px"><use href="#seal" /></svg>56 onboarding, end screen</figure>
+    </div>
+  </div>
+</div>
+
+<h2>States</h2>
+<div class="grid g5">
+  <div class="panel"><b>Available</b><div class="stage"><svg class="seal" style="--s:44px"><use href="#seal" /></svg><svg class="seal" style="--s:44px"><use href="#seal" /></svg></div><p>Full wax. Counted in "2 left".</p><span class="spec">static, no idle animation</span></div>
+  <div class="panel"><b>Placed this month</b><div class="stage"><svg class="seal" style="--s:44px"><use href="#seal" /></svg><svg class="seal" style="--s:44px"><use href="#seal-imprint" /></svg><svg class="seal" style="--s:44px"><use href="#seal-imprint" /></svg></div><p>The imprint stays in the bank; the seal itself sits on the order in the plan. Hover an imprint: the order it sits on is outlined.</p><span class="spec">imprint = committed, refundable</span></div>
+  <div class="panel"><b>Short</b><div class="stage"><svg class="seal" style="--s:44px"><use href="#seal" /></svg><svg class="seal" style="--s:44px"><use href="#seal-short" /></svg></div><p>Shown only while a card that needs more is hovered or pressed: how many are missing, in red, next to the real bank.</p><span class="spec">2 red flashes, 2 x 180 ms</span></div>
+  <div class="panel"><b>Minted</b><div class="stage"><svg class="seal mint" style="--s:44px"><use href="#seal-new" /></svg></div><p>Monthly refill and crisis options that give capital ("+1 political capital"). Pops in with a shine sweep.</p><span class="spec">360 ms pop + 500 ms shine, "refund" sound</span></div>
+  <div class="panel"><b>Spent</b><div class="stage"><svg class="seal" style="--s:44px"><use href="#seal-broken" /></svg></div><p>At Execute the seals on orders crack as the month stamp lands (the existing turn stamp), then fade.</p><span class="spec">inside the 1.5 s execute stamp</span></div>
+</div>
+
+<h2>Spend: queue an order costing 1 (frames)</h2>
+<div class="film">
+  <div class="frame"><span class="t">0 ms press</span><div class="bankbox"><svg class="seal"><use href="#seal" /></svg><svg class="seal"><use href="#seal" /></svg></div><div class="cardbox" style="transform: translateY(2px) scale(.985)"><span class="hole"></span></div></div>
+  <div class="frame"><span class="t">80 ms lift</span><div class="bankbox"><svg class="seal"><use href="#seal" /></svg><svg class="seal"><use href="#seal-imprint" /></svg></div><svg class="seal fly" style="--s:26px; left:62px; bottom:40px"><use href="#seal" /></svg><div class="cardbox"><span class="hole"></span></div></div>
+  <div class="frame"><span class="t">250 ms arc peak</span><div class="bankbox"><svg class="seal"><use href="#seal" /></svg><svg class="seal"><use href="#seal-imprint" /></svg></div><svg class="arc" viewBox="0 0 200 120" preserveAspectRatio="none"><path d="M60 92 Q110 0 172 34" fill="none" stroke="#f2a93b" stroke-dasharray="3 4" opacity=".5" /></svg><svg class="seal fly" style="--s:30px; left:44%; top:14px; transform: rotate(20deg)"><use href="#seal" /></svg><div class="cardbox" style="opacity:.9"><span class="hole"></span></div></div>
+  <div class="frame"><span class="t">420 ms land, "spend"</span><div class="bankbox"><svg class="seal"><use href="#seal" /></svg><svg class="seal"><use href="#seal-imprint" /></svg></div><div class="cardbox"><svg class="seal" style="--s:22px; position:absolute; right:6px; top:6px"><use href="#seal" /></svg></div><span class="stampmini">ORDERED</span></div>
+  <div class="frame"><span class="t">700 ms settled</span><div class="bankbox"><svg class="seal"><use href="#seal" /></svg><svg class="seal"><use href="#seal-imprint" /></svg></div><div class="cardbox" style="border-style:dashed;background:none"></div></div>
+</div>
+<p class="legend">Easing <span class="num">cubic-bezier(.34, 1.3, .64, 1)</span> along a quadratic arc that peaks 60px above the straight line, scale 1 to 1.25 to 0.62, rotate 20 degrees. Refund is the same path reversed with "refund" sound. Reduced motion: no flight; the bank seal crossfades to an imprint in 120 ms and the count text flashes accent once.</p>
+
+<h2>One representation everywhere</h2>
+<div class="panel">
+  <table class="where">
+    <tr><th>Place</th><th>Today (iteration 0)</th><th>New</th><th>Example</th></tr>
+    <tr><td>HUD</td><td class="bad">"CAPITAL" and diamonds that go empty as you spend; "CAP ◆ 1" on phone</td><td>"Political capital", seals 24px, "1 left"</td><td class="ex"><svg class="seal"><use href="#seal" /></svg><svg class="seal"><use href="#seal-imprint" /></svg><svg class="seal"><use href="#seal-imprint" /></svg><span class="num">1 left</span></td></tr>
+    <tr><td>Desk rail</td><td class="bad">"◆ Capital" pips that fill as you spend (opposite of the HUD)</td><td>Bank of 38px seals, same rule, with the sentence naming what the imprints are on</td><td class="ex"><svg class="seal" style="--s:30px"><use href="#seal" /></svg><svg class="seal" style="--s:30px"><use href="#seal-imprint" /></svg></td></tr>
+    <tr><td>Order and option cards</td><td class="bad">"◆2" text, "free", "+◆1" in a corner</td><td>Seal chip; holes for missing seals; "free" stays a word</td><td class="ex"><span class="chip"><svg class="seal" style="--s:20px"><use href="#seal" /></svg><svg class="seal" style="--s:20px"><use href="#seal" /></svg></span><span class="chip">free</span><span class="chip" style="color:#7fdcb2"><svg class="seal" style="--s:20px"><use href="#seal-new" /></svg> +1</span></td></tr>
+    <tr><td>Map action menu</td><td class="bad">"◆1" at top, reason only in a native tooltip</td><td>Same seal chip per row, reason line under the row</td><td class="ex"><span class="chip"><svg class="seal" style="--s:20px"><use href="#seal" /></svg></span></td></tr>
+    <tr><td>Refusal copy</td><td class="bad">"Not enough political capital (2 needed)" toast</td><td>On the card: "Needs 2 seals, you have 1." plus a fix ("Remove Reform program to free 2.")</td><td></td></tr>
+    <tr><td>Phone command bar</td><td class="bad">"◆ 1 left · Orders 1/6 · In person 0/3"</td><td>Seals 22px + "This month: 2 decided"</td><td class="ex"><svg class="seal" style="--s:22px"><use href="#seal" /></svg><svg class="seal" style="--s:22px"><use href="#seal-imprint" /></svg></td></tr>
+  </table>
+</div>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Month Result Card</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..800&family=Geist+Mono:wght@400..700&family=Instrument+Serif:ital@0;1&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400&display=swap" rel="stylesheet" />
+<style>
+:root{--bg-0:#0b0f17;--ocean:#0e1a2b;--surface-1:#141b27;--surface-2:#1c2533;--surface-3:#243042;--line:#2a3546;--line-2:#3a4759;--text-1:#e8ecf2;--text-2:#a3aebf;--text-3:#8693a6;--accent:#f2a93b;--accent-ink:#1b1204;--intel:#4fb3d9;--war:#e5383b;--good:#56c596;--bad:#e5383b;--font-ui:'Geist','Inter',system-ui,sans-serif;--font-mono:'Geist Mono',ui-monospace,monospace;--font-news:'Instrument Serif',Georgia,serif;--font-serif:'Newsreader',Georgia,serif}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:rgba(5,8,13,1);color:var(--text-1);font-family:var(--font-ui);-webkit-font-smoothing:antialiased}
+.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.card{width:960px;max-width:100%;background:var(--surface-1);border:1px solid var(--line-2);border-top:3px solid var(--good);border-radius:18px;overflow:hidden;display:grid;grid-template-columns:420px 1fr;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.scene{position:relative;min-height:420px;background:radial-gradient(90% 70% at 50% 60%,#1d3a4a 0%,#0e1a2b 60%,#0b0f17 100%);overflow:hidden}
+.scene svg{position:absolute;inset:0;width:100%;height:100%}
+.kick{position:absolute;left:14px;top:14px;font-size:11px;font-weight:700;letter-spacing:.1em;background:rgba(0,0,0,.6);padding:4px 8px;border-radius:4px}
+.stamp{position:absolute;right:14px;bottom:14px;transform:rotate(-6deg);border:2px solid var(--good);color:var(--good);font-weight:800;letter-spacing:.12em;font-size:13px;padding:5px 10px;border-radius:6px;background:rgba(11,15,23,.6)}
+.txt{padding:22px 24px 18px;display:flex;flex-direction:column}
+.date{font-size:12px;letter-spacing:.14em;color:var(--text-3)}
+.you{font-size:12.5px;color:var(--text-2);margin-top:10px}
+.you b{color:var(--accent)}
+h1{font-family:var(--font-news);font-weight:400;font-size:34px;line-height:1.08;margin:6px 0 10px}
+.quote{border-left:2px solid var(--good);padding-left:10px;font-family:var(--font-serif);font-style:italic;color:var(--text-2);font-size:15px;margin-bottom:14px}
+.quote small{display:block;font-style:normal;font-family:var(--font-ui);font-size:12px;color:var(--text-3);margin-top:3px}
+.delta{margin:8px 0}
+.delta .l{display:flex;justify-content:space-between;font-size:14px}
+.delta .l span:last-child b{font-size:16px}
+.bar{height:6px;background:var(--line);border-radius:3px;margin-top:5px;position:relative;overflow:hidden}
+.bar i{position:absolute;left:0;top:0;bottom:0;border-radius:3px}
+.chip{font-size:12px;padding:1px 6px;border-radius:4px;margin-left:6px}
+.chip.g{background:rgba(86,197,150,.18);color:var(--good)}.chip.b{background:rgba(229,56,59,.18);color:#ff7a7c}
+.split{font-size:12.5px;color:var(--text-3);margin-top:3px}
+.mission{margin-top:14px;background:var(--surface-2);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:10px;padding:10px 12px;font-size:14px}
+.mission b{color:var(--text-1)}
+.mission .segs{display:flex;gap:4px;margin-top:8px}
+.mission .segs i{flex:1;height:6px;border-radius:3px;background:var(--line-2)}
+.segs i.ok{background:var(--good)}.segs i.close{background:var(--accent)}.segs i.off{background:var(--bad)}
+.score{margin-top:10px;font-size:13.5px;color:var(--text-2);line-height:1.45}
+.score a{color:var(--intel);text-decoration:none;font-weight:600}
+.paper{margin-top:12px;display:flex;gap:10px;align-items:center;background:#e9e4d8;color:#1a1a1a;border-radius:8px;padding:8px 10px}
+.paper .mast{font-family:var(--font-news);font-size:13px;border-right:1px solid #999;padding-right:8px;white-space:nowrap}
+.paper .hl{font-family:var(--font-news);font-size:16px;line-height:1.1}
+.coachline{margin-top:10px;font-size:13px;color:#04131b;background:var(--intel);border-radius:8px;padding:7px 10px;font-weight:600}
+.foot{display:flex;gap:10px;margin-top:16px;align-items:center}
+.sec{height:48px;padding:0 14px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line-2);color:var(--text-1);font:inherit;font-weight:600}
+.link{color:var(--text-2);font-size:13.5px;text-decoration:none}
+.next{margin-left:auto;height:52px;padding:0 26px;border-radius:12px;background:var(--accent);color:var(--accent-ink);border:0;font:inherit;font-weight:800;font-size:16px}
+@media (max-width:700px){
+  .wrap{padding:0;align-items:stretch}
+  .card{grid-template-columns:1fr;border-radius:0;border-left:0;border-right:0;min-height:100vh}
+  .scene{min-height:230px}
+  .txt{padding:16px 16px 18px}
+  h1{font-size:28px}
+  .foot{position:sticky;bottom:0;background:var(--surface-1);padding-top:10px;flex-wrap:wrap}
+  .next{flex:1;margin-left:0;height:56px}
+  .sec{flex:1}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="card" role="dialog" aria-label="December 2026: your month">
+    <div class="scene">
+      <svg viewBox="0 0 420 420" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <rect x="0" y="300" width="420" height="120" fill="#0b0f17"/>
+        <ellipse cx="210" cy="300" rx="150" ry="22" fill="#1c2533"/>
+        <rect x="120" y="230" width="180" height="12" rx="4" fill="#243042"/>
+        <circle cx="150" cy="200" r="20" fill="#3a4759"/><rect x="128" y="220" width="44" height="60" rx="14" fill="#3a4759"/>
+        <circle cx="270" cy="200" r="20" fill="#3a4759"/><rect x="248" y="220" width="44" height="60" rx="14" fill="#3a4759"/>
+        <path d="M172 240 Q210 226 248 240" stroke="#56c596" stroke-width="3" fill="none" stroke-dasharray="6 6"/>
+        <text x="210" y="120" text-anchor="middle" fill="#a3aebf" font-family="Geist" font-size="13" letter-spacing="3">MUSCAT</text>
+      </svg>
+      <span class="kick">DECEMBER 2026 · YOUR MONTH</span>
+      <span class="stamp">STEP ACHIEVED</span>
+    </div>
+    <div class="txt">
+      <div class="date">WHAT YOUR CHOICE DID</div>
+      <div class="you">You chose: <b>Back channel via Muscat</b></div>
+      <h1>The back channel held: no missiles on Riyadh this month, and Yemen is listening.</h1>
+      <div class="quote">"A constructive signal."<small>Abdul-Malik al-Houthi, Leader of the Revolution</small></div>
+
+      <div class="delta"><div class="l"><span>Yemen's view of you</span><span class="num">-100 → <b style="color:var(--good)">-90</b><span class="chip g">+10</span></span></div><div class="bar"><i style="width:5%;background:var(--good)"></i></div></div>
+      <div class="delta"><div class="l"><span>World tension</span><span class="num">76 → <b style="color:var(--good)">71</b><span class="chip g">-5</span></span></div><div class="bar"><i style="width:71%;background:var(--good)"></i></div></div>
+      <div class="delta"><div class="l"><span>Approval</span><span class="num">64 → <b style="color:#ff7a7c">58%</b><span class="chip b">-6</span></span></div><div class="bar"><i style="width:58%;background:var(--bad)"></i></div>
+        <div class="split">Your choice -2 · the war and markets -4 · <a href="#" style="color:var(--intel);text-decoration:none">Why?</a></div></div>
+
+      <div class="mission">Mission: <b>stability 62 → 69%</b>, needs 78%. Ceasefire talks are open.
+        <div class="segs"><i class="close"></i><i class="ok"></i><i class="close"></i><i class="close"></i></div>
+      </div>
+      <div class="score"><b style="color:var(--text-1)">Score 100 → 100.</b> The war still pulls security down; higher stability lifted it back. Heading to 104 if this holds. <a href="#">Why your score moved</a></div>
+      <div class="paper"><span class="mast">The World Herald</span><span class="hl">Riyadh opens a door in Muscat; Sanaa calls it "constructive"</span></div>
+      <div class="coachline">Your mission bar moved. Tap it any time to see what each goal needs.</div>
+      <div class="foot">
+        <button class="sec">See everything</button>
+        <a class="link" href="#">Read the paper</a>
+        <button class="next">Next month</button>
+      </div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reveal Storyboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-0:#0b0f17; --ocean:#0e1a2b; --surface-1:#141b27; --surface-2:#1c2533; --surface-3:#243042;
+  --line:#2a3546; --line-2:#3a4759; --text-1:#e8ecf2; --text-2:#a3aebf; --text-3:#8693a6;
+  --accent:#f2a93b; --accent-ink:#1b1204; --intel:#4fb3d9; --ally:#3d8bfd; --rival:#f26b3a;
+  --war:#e5383b; --good:#56c596; --bad:#e5383b;
+  --rarity-common:#8693a6; --rarity-uncommon:#56c596; --rarity-rare:#4fb3d9; --rarity-legendary:#f2a93b; --infamy:#e5383b;
+  --font-ui:'Geist','Inter',system-ui,sans-serif; --font-mono:'Geist Mono',ui-monospace,monospace;
+  --font-news:'Instrument Serif',Georgia,serif;
+  --r-sm:6px; --r-md:10px; --r-lg:16px; --ease-out:cubic-bezier(0.16,1,0.3,1);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg-0);color:var(--text-1);font-family:var(--font-ui);-webkit-font-smoothing:antialiased}
+.mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.caps{font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.16em;font-size:12px;color:var(--text-3)}
+.news{font-family:var(--font-news);font-weight:400}
+.frame{position:relative;min-height:100vh;display:grid;grid-template-columns:220px 1fr;border-bottom:1px dashed var(--line-2);
+  background:radial-gradient(1200px 600px at 70% -10%, rgba(242,169,59,.08), transparent 60%), var(--bg-0)}
+.frame-label{position:absolute;top:8px;right:12px;font:500 11px var(--font-mono);color:var(--text-3);letter-spacing:.12em}
+/* stage rail */
+.rail{border-right:1px solid var(--line);padding:28px 18px;display:flex;flex-direction:column;gap:4px;background:rgba(20,27,39,.6)}
+.rail .brand{font:600 12px var(--font-mono);letter-spacing:.2em;color:var(--text-3);margin-bottom:18px}
+.rail .st{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--r-sm);color:var(--text-3);font-size:14px}
+.rail .st i{width:22px;height:22px;border-radius:50%;border:1px solid var(--line-2);display:grid;place-items:center;font:600 11px var(--font-mono);font-style:normal}
+.rail .st.seen{color:var(--text-2)} .rail .st.seen i{background:var(--surface-3);color:var(--good);border-color:var(--good)}
+.rail .st.cur{background:var(--surface-2);color:var(--text-1);box-shadow:inset 2px 0 0 var(--accent)} .rail .st.cur i{border-color:var(--accent);color:var(--accent)}
+.rail .st.next-big{margin-top:auto;border:1px dashed var(--line-2)}
+.rail .skip{margin-top:14px;font-size:13px;color:var(--text-3);text-decoration:underline;text-underline-offset:3px}
+.dots{display:none}
+.main{padding:40px 56px 110px;max-width:1180px;width:100%}
+.ctrl{position:absolute;left:220px;right:0;bottom:0;display:flex;align-items:center;justify-content:space-between;padding:18px 56px;border-top:1px solid var(--line);background:rgba(11,15,23,.9)}
+.btn{display:inline-flex;align-items:center;gap:8px;height:46px;padding:0 20px;border-radius:var(--r-md);border:1px solid var(--line-2);background:var(--surface-2);color:var(--text-1);font:600 15px var(--font-ui)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.ghost{background:transparent}
+.hint{font-size:13px;color:var(--text-3)}
+h1.news{font-size:56px;line-height:1.02;margin:6px 0 10px}
+h2.news{font-size:40px;line-height:1.05;margin:4px 0 18px}
+.card{background:var(--surface-1);border:1px solid var(--line);border-radius:var(--r-lg);padding:20px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+/* f0 */
+.scene{position:relative;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--line);aspect-ratio:21/9;background:#0a1220}
+.scene svg{width:100%;height:100%;display:block}
+.scene .lower{position:absolute;left:0;right:0;bottom:0;padding:18px 24px;background:linear-gradient(transparent, rgba(5,8,14,.92))}
+.strip{display:flex;gap:6px;margin-top:22px}
+.strip span{flex:1;height:34px;border-radius:5px;background:var(--surface-3);position:relative}
+.strip span.g{background:#2f8f6b}.strip span.y{background:#b9862d}.strip span.r{background:#a83234}
+.strip span.cur{outline:2px solid var(--accent);outline-offset:2px}
+.strip-lab{display:flex;gap:6px;margin-top:6px}.strip-lab b{flex:1;text-align:center;font:500 11px var(--font-mono);color:var(--text-3)}
+/* f1 */
+.verdict-wrap{display:grid;grid-template-columns:1fr 300px;gap:40px;align-items:center}
+.stamp{display:inline-block;border:4px solid var(--good);color:var(--good);font:700 30px var(--font-mono);letter-spacing:.14em;padding:10px 18px;border-radius:8px;transform:rotate(-4deg);
+  box-shadow:0 0 0 2px rgba(86,197,150,.15), inset 0 0 22px rgba(86,197,150,.12);animation:slam .5s var(--ease-out) both}
+@keyframes slam{from{transform:rotate(-4deg) scale(1.5);opacity:0}to{transform:rotate(-4deg) scale(1);opacity:1}}
+.gradebox{width:300px;border:2px solid var(--accent);border-radius:var(--r-lg);padding:22px;text-align:center;background:linear-gradient(180deg,rgba(242,169,59,.1),transparent)}
+.gradebox .g{font:700 120px/1 var(--font-ui);color:var(--accent)}
+.gradebox .stars{font-size:34px;color:var(--accent);letter-spacing:6px;margin:6px 0}
+.ps{margin-top:30px}
+.ps-total{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+.ps-total .n{font:700 84px/1 var(--font-mono);letter-spacing:-.02em}
+.ps-total .of{color:var(--text-3);font:500 20px var(--font-mono)}
+.ribbon{display:inline-flex;align-items:center;gap:8px;background:rgba(242,169,59,.14);border:1px solid rgba(242,169,59,.5);color:var(--accent);padding:6px 12px;border-radius:999px;font:600 13px var(--font-mono);letter-spacing:.08em}
+.parts{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:18px}
+.part .bar{height:8px;border-radius:4px;background:var(--surface-3);overflow:hidden;margin:8px 0 6px}
+.part .bar b{display:block;height:100%;background:var(--accent)}
+.part .v{font:600 22px var(--font-mono)} .part .v small{color:var(--text-3);font-size:13px}
+.part p{margin:0;font-size:13px;color:var(--text-3);line-height:1.35}
+/* f2 seals */
+.seals{display:grid;grid-template-columns:repeat(7,1fr);gap:14px}
+.seal{text-align:center;padding:16px 8px 14px;border-radius:var(--r-lg);background:var(--surface-1);border:1px solid var(--line)}
+.seal svg{width:96px;height:96px}
+.seal h4{margin:10px 0 4px;font-size:15px;line-height:1.2}
+.seal .tier{font:600 11px var(--font-mono);letter-spacing:.14em;text-transform:uppercase}
+.seal .meta{font-size:12px;color:var(--text-3);margin-top:4px;line-height:1.35}
+.seal.infamy{border-color:rgba(229,56,59,.45);background:linear-gradient(180deg,rgba(229,56,59,.08),var(--surface-1))}
+.seal.locked{opacity:.75;border-style:dashed} .seal.locked h4{color:var(--text-2)}
+.seal.new{animation:drop .6s var(--ease-out) both}
+@keyframes drop{from{transform:translateY(-24px) scale(1.1);opacity:0}to{transform:none;opacity:1}}
+/* f3 */
+.axis{position:relative;height:150px;margin:10px 0 24px}
+.axis svg{width:100%;height:100%;overflow:visible}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.mlist{list-style:none;margin:0;padding:0}
+.mlist li{display:grid;grid-template-columns:78px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.mlist li:first-child{border-top:0}
+.mlist .m{font:600 13px var(--font-mono);color:var(--text-3);padding-top:3px}
+.mlist b{display:block;font-size:16px;margin-bottom:3px}
+.mlist span{font-size:14px;color:var(--text-2)}
+.well h3{color:var(--good)} .bad h3{color:var(--war)}
+.cols h3{margin:0 0 6px;font:600 12px var(--font-mono);letter-spacing:.16em;text-transform:uppercase}
+.timing{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
+.chip{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border-radius:999px;border:1px solid var(--line-2);background:var(--surface-2);font-size:14px}
+.chip b{font-family:var(--font-mono);color:var(--accent)}
+/* f4 */
+.chart{width:100%;height:auto;display:block}
+.press{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+.press .card{padding:16px 18px}
+.press q{display:block;font:400 21px/1.2 var(--font-news);quotes:none;margin:8px 0 0}
+.rel{display:grid;grid-template-columns:28px 1fr 90px 160px 64px;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line);font-size:14px}
+.rel:first-of-type{border-top:0}
+.rel .nums{font:500 13px var(--font-mono);color:var(--text-2);text-align:right}
+.rel .lab{font:600 12px var(--font-mono);text-transform:uppercase;letter-spacing:.08em}
+.judge{margin-top:22px;padding:22px 26px;border-left:3px solid var(--accent);background:linear-gradient(90deg,rgba(242,169,59,.08),transparent)}
+.judge p{margin:6px 0 0;font:400 30px/1.15 var(--font-news)}
+/* f5 */
+.mini .top{display:flex;justify-content:space-between;align-items:baseline}
+.mini .big{font:700 30px var(--font-mono)}
+.mini .delta{font:600 13px var(--font-mono)}
+.mini .foot{display:flex;justify-content:space-between;font:500 12px var(--font-mono);color:var(--text-3);margin-top:6px}
+.counts{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;margin-top:6px}
+.counts div{display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding:6px 0;font-size:14px;color:var(--text-2)}
+.counts b{font:600 18px var(--font-mono);color:var(--text-1)}
+/* f6 */
+.declass{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:22px}
+.dc{border:1px solid rgba(79,179,217,.4);background:linear-gradient(180deg,rgba(79,179,217,.08),var(--surface-1))}
+.dc .row{display:flex;gap:26px;align-items:flex-end;margin-top:10px}
+.dc .row div{font-size:13px;color:var(--text-3)}
+.dc .row b{display:block;font:700 34px var(--font-mono);color:var(--text-1)}
+.dc .row .believed b{color:var(--text-3);text-decoration:line-through;text-decoration-thickness:2px}
+.dc .row .actual b{color:var(--intel)}
+.redact{display:inline-block;background:#000;color:#000;border-radius:3px;padding:0 6px}
+table.truth{width:100%;border-collapse:separate;border-spacing:0;font-size:15px}
+.truth th{text-align:left;padding:10px 14px;font:600 12px var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--line-2)}
+.truth td{padding:14px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.4}
+.truth td.topic{font-weight:600;width:16%}
+.truth td.yours{width:34%} .truth td.real{width:36%;color:var(--text-2)}
+.v{display:inline-block;font:700 11px var(--font-mono);letter-spacing:.12em;padding:5px 9px;border-radius:999px;text-transform:uppercase}
+.v.better{background:rgba(86,197,150,.15);color:var(--good);border:1px solid rgba(86,197,150,.4)}
+.v.same{background:rgba(163,174,191,.12);color:var(--text-2);border:1px solid var(--line-2)}
+.v.worse{background:rgba(229,56,59,.14);color:#ff8486;border:1px solid rgba(229,56,59,.45)}
+.v.ctx{background:rgba(79,179,217,.12);color:var(--intel);border:1px solid rgba(79,179,217,.4)}
+.mchip{display:none}
+.truth tr.fear td{background:rgba(242,169,59,.05)}
+.sources{margin-top:12px;font-size:13px;color:var(--text-3)}
+.sources a{color:var(--text-2)}
+/* f7 */
+.rank{display:grid;grid-template-columns:330px 1fr;gap:28px}
+.ladder svg{width:100%;height:auto;display:block}
+.hist{width:100%;border-collapse:collapse;font-size:14px}
+.hist td{padding:10px 8px;border-top:1px solid var(--line)}
+.hist tr.me td{background:rgba(242,169,59,.08)}
+.hist .s{font:600 15px var(--font-mono)}
+.beat{margin:18px 0;padding:16px 18px;border-radius:var(--r-md);border:1px solid rgba(242,169,59,.45);background:rgba(242,169,59,.07)}
+.beat b{color:var(--accent)}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.seedcode{font:600 13px var(--font-mono);color:var(--text-2);margin-top:8px}
+.split{margin-top:16px;font-size:14px;color:var(--text-2)}
+.split b{color:var(--text-1)}
+.share{margin-top:22px}
+.sharecard{width:100%;aspect-ratio:1200/630;border-radius:10px;overflow:hidden;border:1px solid var(--line-2);background:linear-gradient(135deg,#0b0f17,#1c2533);position:relative;padding:4.5% 5%;container-type:inline-size}
+.sharecard .topbar{position:absolute;left:0;right:0;top:0;height:1.2cqw;display:flex;gap:.4cqw}
+.sharecard .topbar i{flex:1;background:var(--good)}.sharecard .topbar i.b{background:var(--accent)}
+.sc-brand{font:600 2.1cqw var(--font-mono);letter-spacing:.2em;color:var(--text-3)}
+.sc-v{font:600 2cqw var(--font-mono);color:var(--accent);margin-top:1.4cqw}
+.sc-c{font:700 5.2cqw/1 var(--font-ui);margin-top:1cqw}
+.sc-l{font:500 2.3cqw var(--font-ui);color:var(--text-2);margin-top:.8cqw}
+.sc-strip{display:flex;gap:.5cqw;margin-top:2.6cqw;width:56%}
+.sc-strip span{flex:1;height:2.6cqw;border-radius:.4cqw;background:#2f8f6b}.sc-strip span.y{background:#b9862d}
+.sc-best{font:italic 400 2.4cqw var(--font-news);margin-top:1.4cqw;color:var(--text-1)}
+.sc-seals{display:flex;gap:1.2cqw;margin-top:2cqw}
+.sc-seals svg{width:6.5cqw;height:6.5cqw}
+.sc-right{position:absolute;right:5%;top:12%;width:27%;text-align:center}
+.sc-right .ps{font:700 8.6cqw/1 var(--font-mono);margin:0}
+.sc-right .gr{display:inline-block;border:.35cqw solid var(--accent);color:var(--accent);font:700 6cqw/1 var(--font-ui);padding:.6cqw 2cqw;border-radius:1cqw;margin-top:1.4cqw}
+.sc-right .st{color:var(--accent);font-size:3cqw;letter-spacing:.4cqw;margin-top:.8cqw}
+.sc-right .rk{font:500 1.7cqw var(--font-mono);color:var(--text-2);margin-top:1cqw;line-height:1.35}
+.sc-foot{position:absolute;left:5%;bottom:5%;font:500 1.8cqw var(--font-mono);color:var(--text-2)}
+
+/* ---------- 390 phone ---------- */
+@media (max-width: 700px) {
+  .frame{grid-template-columns:1fr;min-height:auto}
+  .rail{display:none}
+  .dots{display:flex;align-items:center;gap:6px;padding:16px 16px 0}
+  .dots i{width:8px;height:8px;border-radius:50%;background:var(--line-2)}
+  .dots i.seen{background:var(--good)} .dots i.cur{width:22px;border-radius:4px;background:var(--accent)}
+  .dots span{margin-left:8px;font:600 12px var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--text-2)}
+  .dots a{margin-left:auto;font-size:13px;color:var(--text-3)}
+  .main{padding:14px 16px 20px}
+  .ctrl{left:0;padding:12px 16px;position:static} /* sticky bottom bar in the app; static here so frame screenshots do not overlap */
+  .frame-label{position:static;display:block;padding:10px 16px 0}
+  .stamp{margin-top:12px}
+  .ctrl .hint{display:none}
+  .ctrl .btn{height:48px}
+  h1.news{font-size:38px} h2.news{font-size:30px;margin-bottom:12px}
+  .grid2,.grid3,.cols,.press,.declass,.rank{grid-template-columns:1fr}
+  .verdict-wrap{grid-template-columns:1fr;gap:18px}
+  .gradebox{width:100%;display:flex;align-items:center;justify-content:space-around;padding:12px}
+  .gradebox .g{font-size:76px}
+  .stamp{font-size:20px;padding:8px 12px}
+  .ps-total .n{font-size:60px}
+  .parts{grid-template-columns:1fr 1fr}
+  .seals{grid-template-columns:1fr 1fr;gap:10px}
+  .seal svg{width:72px;height:72px}
+  .scene{aspect-ratio:16/10}
+  .rel{grid-template-columns:24px 1fr 76px 64px}
+  .rel .bar{display:none}
+  .judge p{font-size:23px}
+  table.truth thead{display:none}
+  table.truth, .truth tbody, .truth tr, .truth td{display:block;width:auto !important}
+  .truth tr{border:1px solid var(--line);border-radius:var(--r-md);margin-bottom:10px;background:var(--surface-1)}
+  .truth td{border:0;padding:8px 14px}
+  .truth td.topic{padding-top:12px;display:flex;justify-content:space-between;align-items:center}
+  .truth td[data-l]::before{content:attr(data-l);display:block;font:600 11px var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--text-3);margin-bottom:3px}
+  .truth td.vcell{display:none}
+  .mchip{display:inline-block}
+  .counts{grid-template-columns:1fr}
+  .strip{gap:3px}.strip span{height:26px}
+}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+</style>
+</head>
+<body>
+
+<!-- ============ FRAME 0: THE COUNT ============ -->
+<section class="frame" data-stage="0">
+  <div class="frame-label">FRAME 0 . THE COUNT</div>
+  <div class="main">
+    <div class="caps">Hormuz Convoy . United States . October 2027 . Month 12 of 12</div>
+    <h1 class="news">The record is sealed.</h1>
+    <div class="scene">
+      <svg viewBox="0 0 640 274" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <defs>
+          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b1426"/><stop offset=".7" stop-color="#1a2338"/><stop offset="1" stop-color="#2b2a33"/></linearGradient>
+          <radialGradient id="glow" cx=".5" cy=".75" r=".55"><stop offset="0" stop-color="#f2a93b" stop-opacity=".55"/><stop offset="1" stop-color="#f2a93b" stop-opacity="0"/></radialGradient>
+          <linearGradient id="dome" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1b2232"/><stop offset=".6" stop-color="#2c3448"/><stop offset="1" stop-color="#151b28"/></linearGradient>
+        </defs>
+        <rect width="640" height="274" fill="url(#sky)"/>
+        <rect width="640" height="274" fill="url(#glow)"/>
+        <g fill="#e8ecf2" opacity=".5"><circle cx="60" cy="30" r="1"/><circle cx="140" cy="54" r="1"/><circle cx="520" cy="26" r="1.2"/><circle cx="590" cy="70" r="1"/><circle cx="420" cy="40" r=".8"/></g>
+        <!-- capitol-like dome silhouette (generic) -->
+        <g transform="translate(320 200)">
+          <rect x="-160" y="0" width="320" height="40" fill="#141a26"/>
+          <rect x="-120" y="-34" width="240" height="34" fill="url(#dome)"/>
+          <path d="M-70 -34 Q0 -120 70 -34 Z" fill="url(#dome)"/>
+          <rect x="-8" y="-98" width="16" height="22" fill="#2c3448"/>
+          <rect x="-1.5" y="-124" width="3" height="28" fill="#a3aebf"/>
+          <path d="M1.5 -124 h20 l-4 6 4 6 h-20z" fill="#3d8bfd" opacity=".9"/>
+          <g fill="#f2a93b" opacity=".85">
+            <rect x="-110" y="-26" width="6" height="14"/><rect x="-90" y="-26" width="6" height="14"/><rect x="-70" y="-26" width="6" height="14"/>
+            <rect x="64" y="-26" width="6" height="14"/><rect x="84" y="-26" width="6" height="14"/><rect x="104" y="-26" width="6" height="14"/>
+          </g>
+          <path d="M-70 -34 Q0 -120 70 -34" fill="none" stroke="#f2a93b" stroke-opacity=".5" stroke-width="1.5"/>
+        </g>
+        <rect y="240" width="640" height="34" fill="#0a0e16"/>
+        <g fill="#0a0e16"><circle cx="90" cy="244" r="10"/><rect x="82" y="248" width="16" height="30" rx="5"/><circle cx="560" cy="246" r="9"/><rect x="552" y="250" width="16" height="28" rx="5"/></g>
+      </svg>
+      <div class="lower">
+        <div class="caps" style="color:var(--accent)">Counting the verdict of history</div>
+        <div class="news" style="font-size:24px;margin-top:4px">Twelve months, one strait, nine decisions.</div>
+      </div>
+    </div>
+    <div class="strip" aria-label="One square per month">
+      <span class="y"></span><span class="y"></span><span class="y"></span><span class="g"></span><span class="g"></span><span class="g"></span><span class="g"></span><span class="g"></span><span class="g"></span><span class="g"></span><span class="g"></span><span class="g cur"></span>
+    </div>
+    <div class="strip-lab"><b>N</b><b>D</b><b>J</b><b>F</b><b>M</b><b>A</b><b>M</b><b>J</b><b>J</b><b>A</b><b>S</b><b>O</b></div>
+    <p class="hint" style="margin-top:10px">Each square is a month: green steady, amber strained, red on the edge. The cells fill one by one, then the verdict lands.</p>
+  </div>
+  <div class="ctrl"><span class="hint">Space or right arrow: next . the verdict is next</span><button class="btn primary">The verdict &rsaquo;</button></div>
+</section>
+
+<!-- ============ FRAME 1: THE VERDICT ============ -->
+<section class="frame" data-stage="1">
+  <div class="frame-label">FRAME 1 . THE VERDICT</div>
+  <div class="main">
+    <div class="verdict-wrap">
+      <div>
+        <span class="stamp">MISSION COMPLETE</span>
+        <h1 class="news" style="margin-top:22px">&#127482;&#127480; Open the strait</h1>
+        <div style="font-size:18px;color:var(--text-2)">President of the United States . <b style="color:var(--text-1)">Master Diplomat</b></div>
+        <p style="color:var(--text-2);max-width:560px;line-height:1.5;margin-top:12px">The shooting stopped in month 6, Iran never tested, and American voters came back by the summer. Every goal met, both bonuses earned.</p>
+      </div>
+      <div class="gradebox">
+        <div><div class="caps">Grade</div><div class="g">A</div></div>
+        <div><div class="stars">&#9733;&#9733;&#9733;</div><div class="caps">3 of 3 stars</div></div>
+      </div>
+    </div>
+    <div class="ps card" style="margin-top:28px">
+      <div class="caps">Presidency score</div>
+      <div class="ps-total"><span class="n" id="psn">724</span><span class="of">/ 1000</span><span class="ribbon">&#9650; NEW PERSONAL BEST +113</span></div>
+      <div class="parts">
+        <div class="part"><div class="caps">Mission</div><div class="bar"><b style="width:100%"></b></div><div class="v">400 <small>/ 400</small></div><p>5 of 5 goals and stay in power (300), 2 bonuses (100)</p></div>
+        <div class="part"><div class="caps">Timing</div><div class="bar"><b style="width:50%"></b></div><div class="v">50 <small>/ 100</small></div><p>All goals held for 6 of 12 months (from month 7)</p></div>
+        <div class="part"><div class="caps">Leadership</div><div class="bar"><b style="width:54%"></b></div><div class="v">163 <small>/ 300</small></div><p>Average monthly score 108.6 x 1.5</p></div>
+        <div class="part"><div class="caps">Finish</div><div class="bar"><b style="width:55%"></b></div><div class="v">111 <small>/ 200</small></div><p>Final score 119 against par 107</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="ctrl"><button class="btn ghost">&lsaquo; Back</button><span class="hint">Next: 7 achievements</span><button class="btn primary">Achievements &rsaquo;</button></div>
+</section>
+
+<!-- ============ FRAME 2: ACHIEVEMENTS ============ -->
+<section class="frame" data-stage="2">
+  <div class="frame-label">FRAME 2 . ACHIEVEMENTS</div>
+  <div class="main">
+    <div class="caps">Achievements . 6 earned . 1 infamy</div>
+    <h2 class="news">What you will be remembered for</h2>
+    <div class="seals" id="seals"></div>
+    <div class="caps" style="margin:26px 0 10px">Within reach next time</div>
+    <div class="seals" id="locked"></div>
+  </div>
+  <div class="ctrl"><button class="btn ghost">&lsaquo; Back</button><span class="hint">Rarity is measured: share of simulated leaders who earn it on this seat</span><button class="btn primary">The moments &rsaquo;</button></div>
+</section>
+
+<!-- ============ FRAME 3: MOMENTS ============ -->
+<section class="frame" data-stage="3">
+  <div class="frame-label">FRAME 3 . THE MOMENTS</div>
+  <div class="main">
+    <div class="caps">The moments . November 2026 to October 2027</div>
+    <h2 class="news">The war ended in month 6 of 12.</h2>
+    <div class="axis card" style="padding:14px 20px"><svg id="axis" viewBox="0 0 1000 120" preserveAspectRatio="none"></svg></div>
+    <div class="cols">
+      <div class="card well"><h3>What went well</h3>
+        <ul class="mlist">
+          <li><span class="m">MONTH 6</span><div><b>The shooting stops</b><span>Ceasefire with Iran. World tension 72 to 63 in one month.</span></div></li>
+          <li><span class="m">MONTH 5</span><div><b>You took the Qatari text</b><span>Blockade lifted for inspectors. Iran relations -78 to -60. The turning point.</span></div></li>
+          <li><span class="m">MONTH 3</span><div><b>Full convoy operation</b><span>Tankers moved again. Real growth 1.4% to 1.8% by month 5.</span></div></li>
+        </ul>
+      </div>
+      <div class="card bad"><h3>What went badly</h3>
+        <ul class="mlist">
+          <li><span class="m">MONTH 8</span><div><b>Cyber operation exposed</b><span>Caught in Bandar Abbas port systems. Israel relations 70 to 62, one point above your line.</span></div></li>
+          <li><span class="m">MONTH 1</span><div><b>The Muscat reply leaked</b><span>Midterm week. Approval 44% to 41%, your lowest.</span></div></li>
+          <li><span class="m">MONTH 7</span><div><b>You watched the Isfahan trucks</b><span>Iran's real progress rose 55% to 61%. You saw 48%.</span></div></li>
+        </ul>
+      </div>
+    </div>
+    <div class="timing">
+      <span class="chip">War with Iran ended <b>month 6</b></span>
+      <span class="chip">Iran kept from a bomb <b>12 of 12</b></span>
+      <span class="chip">Approval 56%+ <b>from month 7</b></span>
+      <span class="chip">All goals held <b>from month 7</b></span>
+    </div>
+  </div>
+  <div class="ctrl"><button class="btn ghost">&lsaquo; Back</button><span class="hint">Next: how you were seen</span><button class="btn primary">How you were seen &rsaquo;</button></div>
+</section>
+
+<!-- ============ FRAME 4: PERCEPTION ============ -->
+<section class="frame" data-stage="4">
+  <div class="frame-label">FRAME 4 . HOW YOU WERE SEEN</div>
+  <div class="main">
+    <div class="caps">How you were seen</div>
+    <h2 class="news">Punished in November, thanked by summer.</h2>
+    <div class="grid2">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="caps">Public approval</span><span class="mono" style="font-size:13px;color:var(--text-3)">start 44 . low 41 . high 61 . end 61</span></div>
+        <svg class="chart" id="appr" viewBox="0 0 520 220"></svg>
+        <div style="display:flex;gap:18px;font-size:13px;color:var(--text-3)"><span><b style="color:var(--accent)">&#9473;</b> This run</span><span><b>&#9476;</b> Your best before (611)</span><span><b style="color:var(--text-2)">&#9474;</b> Midterms</span></div>
+      </div>
+      <div class="card">
+        <div class="caps" style="margin-bottom:8px">Allies and rivals . before and after</div>
+        <div id="rels"></div>
+      </div>
+    </div>
+    <div class="press">
+      <div class="card"><div class="caps">The capital's paper</div><q>He kept his promise and the strait. November punished the first; the summer rewarded the second.</q></div>
+      <div class="card"><div class="caps">Gulf business daily</div><q>Abu Dhabi got its tankers back. It also noticed who Washington called first: Muscat.</q></div>
+      <div class="card"><div class="caps">Tehran state television</div><q>The Americans came to Islamabad because the resistance did not kneel.</q></div>
+    </div>
+    <div class="judge"><div class="caps" style="color:var(--accent)">History's judgement</div><p>A president who answered a missile with a letter, chose the quiet channel over a loud war, and was proved right by the summer. Israel never quite forgave the leak.</p></div>
+  </div>
+  <div class="ctrl"><button class="btn ghost">&lsaquo; Back</button><span class="hint">Press outlets are fictional, written from your numbers</span><button class="btn primary">The numbers &rsaquo;</button></div>
+</section>
+
+<!-- ============ FRAME 5: NUMBERS ============ -->
+<section class="frame" data-stage="5">
+  <div class="frame-label">FRAME 5 . THE NUMBERS</div>
+  <div class="main">
+    <div class="caps">The numbers . 12 months</div>
+    <h2 class="news">Measured, month by month.</h2>
+    <div class="grid3" id="minis"></div>
+  </div>
+  <div class="ctrl"><button class="btn ghost">&lsaquo; Back</button><span class="hint">Next: what you could not see, and what really happened</span><button class="btn primary">The truth &rsaquo;</button></div>
+</section>
+
+<!-- ============ FRAME 6: THE TRUTH ============ -->
+<section class="frame" data-stage="6">
+  <div class="frame-label">FRAME 6 . THE TRUTH</div>
+  <div class="main">
+    <div class="caps" style="color:var(--intel)">Declassified . what your intelligence could not see</div>
+    <h2 class="news">The fog lifts.</h2>
+    <div class="declass">
+      <div class="card dc"><div class="caps">Iran's nuclear programme, month 12</div>
+        <div class="row"><div class="believed">Your estimate<b>48%</b></div><div class="actual">Actual<b>61%</b></div><div>DEVELOPING . never tested. Closer than you thought.</div></div></div>
+      <div class="card dc"><div class="caps">Operations against you</div>
+        <div class="row"><div class="actual">Foiled<b>2</b></div><div class="actual">Never detected<b>1</b></div><div>An IRGC cyber probe on Gulf ports in month 4 went unnoticed.</div></div></div>
+    </div>
+    <div class="caps">What really happened . as of November 2026</div>
+    <table class="truth">
+      <thead><tr><th>Topic</th><th>In your world</th><th>In the real world</th><th></th></tr></thead>
+      <tbody>
+        <tr><td class="topic">The strait <span class="mchip v better">Better</span></td><td class="yours" data-l="Your world">Reopened. The US-Iran war ended in month 6 (April 2027).</td><td class="real" data-l="Real world">Closed and reopened several times. By November, a US blockade against IRGC harassment of shipping.</td><td class="vcell"><span class="v better">Better</span></td></tr>
+        <tr><td class="topic">Diplomacy <span class="mchip v better">Better</span></td><td class="yours" data-l="Your world">The Qatari framework, accepted in month 5, held to the end.</td><td class="real" data-l="Real world">A two-week ceasefire and the Islamabad framework both collapsed.</td><td class="vcell"><span class="v better">Better</span></td></tr>
+        <tr><td class="topic">The uranium <span class="mchip v same">Same</span></td><td class="yours" data-l="Your world">Iran never tested, but its real progress reached 61%.</td><td class="real" data-l="Real world">The IAEA believes 200+ kg of 60% uranium is likely intact in the Isfahan tunnels, unseen since February.</td><td class="vcell"><span class="v same">Same</span></td></tr>
+        <tr><td class="topic">The cost <span class="mchip v ctx">Context</span></td><td class="yours" data-l="Your world">An estimated 140 lives lost on your side (simulated).</td><td class="real" data-l="Real world">About $47bn and 23 American dead, reportedly.</td><td class="vcell"><span class="v ctx">Context</span></td></tr>
+        <tr class="fear"><td class="topic">What experts feared <span class="mchip v same">Open</span></td><td class="yours" data-l="Your world">The regime survived with 61% progress: the fear is still live.</td><td class="real" data-l="Real world">A hardline regime with every incentive for a crash bomb programme, or a Gulf energy shock that tips the world into recession.</td><td class="vcell"><span class="v same">Open</span></td></tr>
+      </tbody>
+    </table>
+    <div class="sources">Sources: <a href="#">Wikipedia, 2026 Iran war</a> . <a href="#">CFR, US blockades Hormuz</a> . <a href="#">The National, IAEA on Isfahan</a> . <a href="#">Read the full debrief</a></div>
+  </div>
+  <div class="ctrl"><button class="btn ghost">&lsaquo; Back</button><span class="hint">Next: your rank, and a rematch</span><button class="btn primary">Ranking &rsaquo;</button></div>
+</section>
+
+<!-- ============ FRAME 7: RANKING AND REPLAY ============ -->
+<section class="frame" data-stage="7">
+  <div class="frame-label">FRAME 7 . RANKING AND REPLAY</div>
+  <div class="main">
+    <div class="caps">Hormuz Convoy . United States . Statesman</div>
+    <h2 class="news">Better than 81% of simulated competent leaders.</h2>
+    <div class="rank">
+      <div class="card ladder"><div class="caps" style="margin-bottom:8px">Presidency score ladder</div><svg id="ladder" viewBox="0 0 300 420"></svg><p class="hint" style="margin:6px 0 0">Benchmarks: 36 simulated runs per staff policy on this seat (Statesman). Percentile is against the competent staff runs.</p></div>
+      <div>
+        <div class="card">
+          <div class="caps" style="margin-bottom:6px">Your record on this seat</div>
+          <table class="hist">
+            <tr class="me"><td>Today</td><td class="s">724</td><td>A</td><td style="color:var(--accent)">&#9733;&#9733;&#9733;</td><td>Strait Open, Bomb Never</td></tr>
+            <tr><td>19 Nov</td><td class="s">611</td><td>B</td><td style="color:var(--accent)">&#9733;&#9733;&#9734;</td><td>Peacemaker</td></tr>
+            <tr><td>18 Nov</td><td class="s">538</td><td>C</td><td style="color:var(--accent)">&#9733;&#9734;&#9734;</td><td>The Hawk (infamy)</td></tr>
+          </table>
+          <div class="split">Compared with 19 Nov: <b>your choices split in month 1</b> (Reply via Muscat vs Hit the IRGC navy now). Same opening.</div>
+        </div>
+        <div class="beat">Beat <b>724</b> next time: hold every goal from month 5 for about <b>+17 Timing</b>, or end on approval 65%+ for <b>Landslide</b> (you: 61%).</div>
+        <div class="actions">
+          <button class="btn primary">&#8635; Replay same opening</button>
+          <button class="btn">New world</button>
+          <button class="btn">Compare runs</button>
+        </div>
+        <div class="seedcode">Seed HZ-USA-48213 . first crisis: "Three days to the midterms: tanker ablaze off Fujairah"</div>
+        <div class="share">
+          <div class="caps" style="margin-bottom:8px">Share card</div>
+          <div class="sharecard">
+            <div class="topbar"><i></i><i></i><i></i><i></i><i></i><i></i><i class="b"></i><i class="b"></i></div>
+            <div class="sc-brand">WORLD CONFLICT . HORMUZ CONVOY</div>
+            <div class="sc-v">MISSION COMPLETE . OCT 2027</div>
+            <div class="sc-c">&#127482;&#127480; UNITED STATES</div>
+            <div class="sc-l">Master Diplomat . war ended in month 6</div>
+            <div class="sc-strip"><span class="y"></span><span class="y"></span><span class="y"></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="sc-best">Best moment: the shooting stops, month 6</div><div class="sc-seals" id="scseals"></div>
+            <div class="sc-right"><div class="caps" style="font-size:1.6cqw">Presidency score</div><div class="ps">724</div><div class="gr">A</div><div class="st">&#9733;&#9733;&#9733;</div><div class="rk">Top 19% of simulated leaders<br>#1 of your 3 runs</div></div>
+            <div class="sc-foot">Can you beat 724? Seed HZ-USA-48213 . worldconflict.game</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ctrl"><button class="btn ghost">&lsaquo; Back</button><span class="hint">The full report stays in your saves</span><button class="btn primary">Share result</button></div>
+</section>
+
+<script>
+const STAGES=['The count','The verdict','Achievements','The moments','How you were seen','The numbers','The truth','Ranking'];
+document.querySelectorAll('.frame').forEach(f=>{
+  const s=+f.dataset.stage;
+  const rail=document.createElement('aside');rail.className='rail';
+  rail.innerHTML='<div class="brand">THE REVEAL</div>'+STAGES.map((n,i)=>`<div class="st ${i<s?'seen':i===s?'cur':''} ${i===7&&s<7?'next-big':''}"><i>${i<s?'&#10003;':i}</i>${n}</div>`).join('')+'<a class="skip">Skip to the report</a>';
+  f.insertBefore(rail,f.firstChild);
+  const dots=document.createElement('div');dots.className='dots';
+  dots.innerHTML=STAGES.map((n,i)=>`<i class="${i<s?'seen':i===s?'cur':''}"></i>`).join('')+`<span>${STAGES[s]}</span><a>Skip</a>`;
+  f.querySelector('.main').prepend(dots);
+});
+
+/* seals */
+const TIER={Common:'--rarity-common',Uncommon:'--rarity-uncommon',Rare:'--rarity-rare',Legendary:'--rarity-legendary'};
+const GLYPH={dove:'M-14 4 q8 -16 22 -10 q-4 -10 6 -14 q-2 8 4 12 q-6 2 -8 8 q-10 10 -24 4z',star:'M0 -16 L4.7 -5 L16 -5 L7 2 L10 14 L0 7 L-10 14 L-7 2 L-16 -5 L-4.7 -5Z',
+  wave:'M-16 2 q4 -6 8 0 t8 0 t8 0 t8 0 v8 h-32z M-6 -14 h12 v12 h-12z',check:'M-12 0 l8 8 l16 -16',clock:'M0 -14 a14 14 0 1 0 0.01 0 M0 -8 v8 l6 4',shield:'M0 -16 l13 5 v8 q0 12 -13 19 q-13 -7 -13 -19 v-8z',
+  eye:'M-16 0 q16 -16 32 0 q-16 16 -32 0z M0 -5 a5 5 0 1 0 .01 0',temp:'M-3 -14 h6 v18 a7 7 0 1 1 -6 0z',up:'M-14 10 l10 -10 l6 6 l12 -14'};
+function seal(t,g,inf,locked){
+  const c=inf?'var(--infamy)':`var(${TIER[t]})`;
+  const teeth=Array.from({length:24},(_,i)=>{const a=i/24*Math.PI*2,r=i%2?40:44;return `${(48+Math.cos(a)*r).toFixed(1)},${(48+Math.sin(a)*r).toFixed(1)}`}).join(' ');
+  return `<svg viewBox="0 0 96 96" aria-hidden="true"><polygon points="${teeth}" fill="${locked?'none':'#141b27'}" stroke="${c}" stroke-width="2" ${locked?'stroke-dasharray="3 3"':''}/>
+  <circle cx="48" cy="48" r="31" fill="${locked?'none':'#1c2533'}" stroke="${c}" stroke-opacity=".6"/>
+  <g transform="translate(48 48)"><path d="${GLYPH[g]}" fill="${g==='check'||g==='clock'||g==='up'?'none':c}" stroke="${c}" stroke-width="${g==='check'||g==='clock'||g==='up'?3:0}" stroke-linecap="round" stroke-linejoin="round" opacity="${locked?.5:1}"/></g></svg>`;
+}
+const EARNED=[
+  ['Peacemaker','Uncommon','dove','Month 6','27%'],
+  ['Cooler Heads','Uncommon','temp','Month 8','22%'],
+  ['Never Fired a Shot','Uncommon','shield','Month 12','18%'],
+  ['Clean Sheet','Rare','check','Month 12','11%'],
+  ['Quick Peace','Rare','clock','Month 6','9%'],
+  ['Strait Open, Bomb Never','Rare','wave','Month 6 . signature','6%'],
+];
+document.getElementById('seals').innerHTML=EARNED.map(([n,t,g,m,p],i)=>`<div class="seal new" style="animation-delay:${i*0.25}s">${seal(t,g)}<h4>${n}</h4><div class="tier" style="color:var(${TIER[t]})">${t}</div><div class="meta">${m}<br>earned by ${p}</div></div>`).join('')
+ + `<div class="seal infamy new" style="animation-delay:1.6s">${seal('Common','eye',true)}<h4>Caught Red-Handed</h4><div class="tier" style="color:var(--infamy)">Infamy . common</div><div class="meta">Month 8<br>earned by 41%</div></div>`;
+document.getElementById('locked').innerHTML=[
+  ['Landslide','Rare','up','Approval 65%+ at the end. You: 61%','7%'],
+  ['Bridge Builder','Rare','dove','Iran relations up 40+. You: +36','5%'],
+].map(([n,t,g,m,p])=>`<div class="seal locked">${seal(t,g,false,true)}<h4>${n}</h4><div class="tier" style="color:var(${TIER[t]})">${t} . locked</div><div class="meta">${m}<br>earned by ${p}</div></div>`).join('');
+document.getElementById('scseals').innerHTML=seal('Rare','wave')+seal('Rare','clock')+seal('Rare','check');
+
+/* data */
+const M=['N','D','J','F','M','A','M','J','J','A','S','O'];
+const D={
+  approval:[44,41,43,46,49,53,58,57,56,58,59,61],
+  ghost:[44,42,40,38,41,45,47,50,52,51,54,55],
+  growth:[1.9,1.6,1.4,1.5,1.8,2.1,2.4,2.5,2.6,2.6,2.7,2.8],
+  stability:[56,55,55,57,58,60,62,62,61,62,63,63],
+  tension:[78,80,76,72,68,63,55,52,58,54,50,47],
+  score:[100,97,98,101,104,108,113,115,114,116,118,119],
+};
+function line(vals,w,h,pad,min,max){return vals.map((v,i)=>`${(pad+i*(w-2*pad)/(vals.length-1)).toFixed(1)},${(h-pad-(v-min)/(max-min)*(h-2*pad)).toFixed(1)}`).join(' ')}
+
+/* moment axis */
+(function(){
+  const W=1000,y=70,x=i=>30+i*(940/11);
+  let s=`<line x1="30" y1="${y}" x2="970" y2="${y}" stroke="#3a4759" stroke-width="2"/>`;
+  M.forEach((m,i)=>{s+=`<line x1="${x(i)}" y1="${y-5}" x2="${x(i)}" y2="${y+5}" stroke="#3a4759"/><text x="${x(i)}" y="${y+26}" fill="#8693a6" font-family="Geist Mono" font-size="13" text-anchor="middle">${i+1}</text>`});
+  s+=`<rect x="${x(6)}" y="${y-3}" width="${x(11)-x(6)}" height="6" rx="3" fill="#56c596" opacity=".55"/>`;
+  const mk=[[0,'#e5383b',8,'Muscat leak'],[2,'#56c596',9,'Convoy'],[4,'#f2a93b',9,'Turning point'],[5,'#f2a93b',14,'Ceasefire'],[6,'#e5383b',8,'Isfahan'],[7,'#e5383b',13,'Leak exposed'],[9,'#56c596',9,'Islamabad']];
+  mk.forEach(([i,c,r,l],k)=>{const up=k%2===0;s+=`<circle cx="${x(i)}" cy="${y}" r="${r}" fill="${c}" stroke="#0b0f17" stroke-width="3"/>${r>12?`<circle cx="${x(i)}" cy="${y}" r="${r+6}" fill="none" stroke="${c}" stroke-opacity=".4"/>`:''}<text x="${x(i)}" y="${up?y-r-10:y+r+40}" fill="${r>12?c:'#a3aebf'}" font-family="Geist" font-weight="${r>12?700:500}" font-size="${r>12?15:13}" text-anchor="middle">${l}</text>`});
+  s+=`<text x="${x(11)}" y="${y-22}" fill="#56c596" font-family="Geist Mono" font-size="12" text-anchor="end">ALL GOALS HELD</text>`;
+  document.getElementById('axis').innerHTML=s;
+})();
+
+/* approval chart */
+(function(){
+  const w=520,h=220,p=26,min=30,max=70;
+  let s='';
+  [40,50,60].forEach(v=>{const yy=h-p-(v-min)/(max-min)*(h-2*p);s+=`<line x1="${p}" x2="${w-p}" y1="${yy}" y2="${yy}" stroke="#2a3546"/><text x="${p-6}" y="${yy+4}" fill="#8693a6" font-family="Geist Mono" font-size="11" text-anchor="end">${v}</text>`});
+  const y56=h-p-(56-min)/(max-min)*(h-2*p);
+  s+=`<line x1="${p}" x2="${w-p}" y1="${y56}" y2="${y56}" stroke="#56c596" stroke-dasharray="4 4" stroke-opacity=".7"/><text x="${p+70}" y="${y56-6}" fill="#56c596" font-family="Geist Mono" font-size="11">GOAL 56%</text>`;
+  s+=`<line x1="${p}" x2="${p}" y1="${p}" y2="${h-p}" stroke="#a3aebf" stroke-opacity=".6"/><text x="${p+6}" y="${p+8}" fill="#a3aebf" font-family="Geist Mono" font-size="11">MIDTERMS</text>`;
+  s+=`<polyline points="${line(D.ghost,w,h,p,min,max)}" fill="none" stroke="#a3aebf" stroke-width="2" stroke-dasharray="5 5" stroke-opacity=".7"/>`;
+  s+=`<polyline points="${line(D.approval,w,h,p,min,max)}" fill="none" stroke="#f2a93b" stroke-width="3" stroke-linejoin="round"/>`;
+  const pts=line(D.approval,w,h,p,min,max).split(' ');const last=pts[11].split(','),low=pts[1].split(',');
+  s+=`<circle cx="${last[0]}" cy="${last[1]}" r="5" fill="#f2a93b"/><text x="${last[0]-8}" y="${last[1]-10}" fill="#f2a93b" font-family="Geist Mono" font-weight="700" font-size="14" text-anchor="end">61%</text>`;
+  s+=`<circle cx="${low[0]}" cy="${low[1]}" r="4" fill="#e5383b"/><text x="${+low[0]+8}" y="${+low[1]+16}" fill="#ff8486" font-family="Geist Mono" font-size="12">41% low</text>`;
+  M.forEach((m,i)=>{s+=`<text x="${p+i*(w-2*p)/11}" y="${h-6}" fill="#8693a6" font-family="Geist Mono" font-size="11" text-anchor="middle">${m}</text>`});
+  document.getElementById('appr').innerHTML=s;
+})();
+
+/* relations */
+document.getElementById('rels').innerHTML=[
+  ['&#127462;&#127466;','United Arab Emirates',75,71,'Cooler','var(--text-2)','goal 66+'],
+  ['&#127470;&#127473;','Israel',74,62,'Cooler','#ff8486','goal 61+'],
+  ['&#127480;&#127462;','Saudi Arabia',55,63,'Closer','var(--good)',''],
+  ['&#127470;&#127479;','Iran',-80,-44,'Thaw','var(--intel)','rival'],
+].map(([f,n,a,b,l,c,g])=>{
+  const X=v=>80+v*0.8;const x1=Math.min(X(a),X(b)),x2=Math.max(X(a),X(b));
+  return `<div class="rel"><span style="font-size:20px">${f}</span><span>${n}<br><small style="color:var(--text-3)">${g}</small></span><span class="nums">${a} &rarr; <b style="color:var(--text-1)">${b}</b></span>
+  <svg class="bar" viewBox="0 0 160 16" width="160" height="16"><line x1="80" x2="80" y1="0" y2="16" stroke="#3a4759"/><rect x="0" y="6" width="160" height="4" rx="2" fill="#243042"/><rect x="${x1}" y="5" width="${Math.max(2,x2-x1)}" height="6" rx="3" fill="${b>a?'#3d8bfd':'#f26b3a'}"/><circle cx="${X(b)}" cy="8" r="5" fill="${b>a?'#3d8bfd':'#f26b3a'}" stroke="#0b0f17" stroke-width="2"/></svg>
+  <span class="lab" style="color:${c}">${l}</span></div>`}).join('');
+
+/* minis */
+(function(){
+  const defs=[
+    ['Approval','approval','%',30,70,'#f2a93b','low 41 (M2) . high 61 (M12)'],
+    ['Real growth','growth','%',0,3.5,'#56c596','low 1.4 (M3) . high 2.8 (M12)'],
+    ['Stability','stability','%',45,70,'#4fb3d9','low 55 (M2) . high 63 (M11)'],
+    ['World tension','tension','',30,90,'#e5383b','high 80 (M2) . low 47 (M12)'],
+    ['Leadership score','score','',90,125,'#a3aebf','par 107 crossed in month 6'],
+  ];
+  let s=defs.map(([n,k,u,min,max,c,foot])=>{
+    const v=D[k],a=v[0],b=v[v.length-1],d=(b-a);const good=k==='tension'?d<0:d>0;
+    return `<div class="card mini"><div class="top"><span class="caps">${n}</span><span class="delta" style="color:${good?'var(--good)':'var(--war)'}">${d>0?'+':''}${Number.isInteger(d)?d:d.toFixed(1)}</span></div>
+    <div class="big">${b}${u}</div><svg class="chart" viewBox="0 0 300 90"><polyline points="${line(v,300,90,6,min,max)}" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round"/></svg>
+    <div class="foot"><span>start ${a}${u}</span><span>${foot}</span></div></div>`}).join('');
+  s+=`<div class="card mini"><span class="caps">Counts</span><div class="counts">
+    <div>Wars ended<b>1</b></div><div>Wars started<b>0</b></div><div>Deals signed<b>3</b></div><div>Crises decided<b>9</b></div>
+    <div>Orders given<b>41</b></div><div>Close calls<b>1</b></div><div title="Simulated estimate, your side">Lives lost (est.)<b>140</b></div><div>Staff advice followed<b>6/9</b></div></div></div>`;
+  document.getElementById('minis').innerHTML=s;
+})();
+
+/* ladder */
+(function(){
+  const top=20,bot=380,lo=200,hi=850,y=v=>bot-((v-lo)/(hi-lo))*(bot-top),X=128;
+  let s=`<line x1="${X}" x2="${X}" y1="${top}" y2="${bot}" stroke="#3a4759" stroke-width="10" stroke-linecap="round"/>`;
+  s+=`<rect x="${X-5}" y="${y(701)}" width="10" height="${y(612)-y(701)}" fill="#4fb3d9" opacity=".7" rx="4"/>`;
+  [250,500].forEach(v=>s+=`<line x1="${X-14}" x2="${X-8}" y1="${y(v)}" y2="${y(v)}" stroke="#8693a6"/><text x="${X-18}" y="${y(v)+4}" fill="#8693a6" font-family="Geist Mono" font-size="11" text-anchor="end">${v}</text>`);
+  const T=[[802,'Best known run','#a3aebf',0],[701,'Competent, top 10%','#4fb3d9',0],[612,'Competent, median','#4fb3d9',-6],[611,'Your best before','#a3aebf',10],[371,'Random staff','#8693a6',0],[236,'Do-nothing staff','#8693a6',0]];
+  T.forEach(([v,l,c,o])=>{s+=`<line x1="${X+6}" x2="${X+18}" y1="${y(v)}" y2="${y(v)}" stroke="${c}"/><text x="${X+24}" y="${y(v)+4+o}" fill="${c}" font-family="Geist" font-size="12.5">${l} <tspan font-family="Geist Mono">${v}</tspan></text>`});
+  s+=`<circle cx="${X}" cy="${y(724)}" r="10" fill="#f2a93b" stroke="#0b0f17" stroke-width="3"/><line x1="${X-12}" x2="${X-26}" y1="${y(724)}" y2="${y(724)}" stroke="#f2a93b" stroke-width="2"/>
+  <text x="${X-30}" y="${y(724)-2}" fill="#f2a93b" font-family="Geist Mono" font-weight="700" font-size="18" text-anchor="end">YOU</text><text x="${X-30}" y="${y(724)+16}" fill="#f2a93b" font-family="Geist Mono" font-weight="700" font-size="18" text-anchor="end">724</text>`;
+  s+=`<text x="${X}" y="${bot+28}" fill="#8693a6" font-family="Geist Mono" font-size="11" text-anchor="middle">scale 200 to 850</text>`;
+  document.getElementById('ladder').innerHTML=s;
+})();
+</script>
+</body>
+</html>

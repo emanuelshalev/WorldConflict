@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Month 1 Desk 390</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..800&family=Geist+Mono:wght@400..700&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400&display=swap" rel="stylesheet" />
+<style>
+:root{--bg-0:#0b0f17;--ocean:#0e1a2b;--surface-1:#141b27;--surface-2:#1c2533;--surface-3:#243042;--line:#2a3546;--line-2:#3a4759;--text-1:#e8ecf2;--text-2:#a3aebf;--text-3:#8693a6;--accent:#f2a93b;--accent-ink:#1b1204;--intel:#4fb3d9;--war:#e5383b;--good:#56c596;--bad:#e5383b;--font-ui:'Geist','Inter',system-ui,sans-serif;--font-mono:'Geist Mono',ui-monospace,monospace;--font-serif:'Newsreader',Georgia,serif;--r-sm:6px;--r-md:10px;--r-lg:16px}
+*{box-sizing:border-box}
+html,body{margin:0;background:#05080d;color:var(--text-1);font-family:var(--font-ui);-webkit-font-smoothing:antialiased}
+.phone{width:390px;min-height:844px;margin:0 auto;background:var(--bg-0);position:relative;padding-bottom:110px}
+.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+/* HUD */
+.hud{padding:12px 16px 10px;border-bottom:1px solid var(--line);background:linear-gradient(#0f1520,#0b0f17)}
+.hud-top{display:flex;align-items:center;gap:10px}
+.flag{font-size:22px}
+.who b{display:block;font-size:16px}
+.who span{font-size:13px;color:var(--text-2)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+.stat{background:var(--surface-1);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+.stat i{display:block;font-style:normal;font-size:11px;color:var(--text-3);letter-spacing:.04em}
+.stat b{font-size:15px}
+/* goal line */
+.goal{margin:12px 16px 0;background:var(--surface-1);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:var(--r-md);padding:10px 12px;display:block;width:calc(100% - 32px);text-align:left;color:inherit;font:inherit;cursor:pointer}
+.goal-row{display:flex;align-items:center;gap:8px}
+.goal-row svg{flex:none}
+.goal-title{font-weight:700;font-size:15px}
+.goal-meta{margin-left:auto;font-size:12px;color:var(--text-2)}
+.segs{display:flex;gap:4px;margin:8px 0 6px}
+.segs i{flex:1;height:6px;border-radius:3px;background:var(--line-2)}
+.segs i.ok{background:var(--good)}.segs i.close{background:var(--accent)}.segs i.off{background:var(--bad)}
+.segs i.bonus{flex:none;width:10px;height:6px;border:1px solid var(--text-3);background:none}
+.step{font-size:13.5px;color:var(--text-2)}
+.step b{color:var(--text-1)}
+.coach{position:relative;margin:14px 16px 0;background:var(--intel);color:#04131b;border-radius:12px;padding:10px 12px;font-size:14.5px;font-weight:600;display:flex;gap:8px;align-items:center}
+.coach:after{content:"";position:absolute;left:28px;bottom:-7px;border:8px solid transparent;border-top-color:var(--intel);border-bottom:0}
+.coach small{font-weight:500;opacity:.8;margin-left:auto;font-size:12px}
+/* your move */
+.move{margin:12px 16px 0;background:var(--surface-1);border:1px solid var(--line-2);border-radius:var(--r-lg);overflow:hidden}
+.scene{height:150px;position:relative;background:radial-gradient(120% 90% at 50% 100%,#5a2a12 0%,#2a1410 35%,#0e1a2b 75%);overflow:hidden}
+.scene svg{position:absolute;inset:0}
+.kick{position:absolute;left:12px;top:12px;display:flex;gap:6px}
+.pill{font-size:11px;font-weight:700;letter-spacing:.08em;padding:3px 8px;border-radius:4px;background:rgba(0,0,0,.6)}
+.pill.red{background:var(--war)}
+.move-body{padding:12px 14px 14px}
+.label-sm{font-size:12px;letter-spacing:.12em;color:var(--accent);font-weight:700}
+.move h2{margin:4px 0 6px;font-size:22px;line-height:1.15}
+.lede{margin:0;font-size:16px;line-height:1.45;color:var(--text-2)}
+.lede a{color:var(--intel);text-decoration:none;font-weight:600}
+.opts{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.opt{position:relative;text-align:left;font:inherit;color:inherit;background:var(--surface-2);border:1px solid var(--line-2);border-radius:12px;padding:12px 14px;min-height:72px;cursor:pointer;animation:pulse 1.6s ease-out 1}
+.opt.pick{border-color:var(--accent);background:#2a2214}
+.opt b{font-size:17px;display:block}
+.opt .d{font-size:14px;color:var(--text-2);margin:3px 0 8px;line-height:1.35}
+.badge{display:inline-block;margin-bottom:6px;font-size:11px;font-weight:700;letter-spacing:.04em;padding:3px 7px;border-radius:999px;border:1px solid var(--accent);color:var(--accent)}
+.foot{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.tag{font-size:12.5px;font-weight:700;padding:3px 8px;border-radius:999px}
+.tag.help{background:rgba(86,197,150,.15);color:var(--good);border:1px solid rgba(86,197,150,.5)}
+.tag.hurt{background:rgba(229,56,59,.14);color:#ff7a7c;border:1px solid rgba(229,56,59,.5)}
+.tag.bonus{color:var(--good);border:1px dashed rgba(86,197,150,.6)}
+.eff{font-size:13px;color:var(--text-2)}
+.eff .up{color:var(--good)}.eff .dn{color:#ff7a7c}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(79,179,217,.6)}100%{box-shadow:0 0 0 10px rgba(79,179,217,0)}}
+.backers{font-size:12.5px;color:var(--text-3);margin-top:10px}
+/* advisors */
+h3{margin:22px 16px 8px;font-size:13px;letter-spacing:.12em;color:var(--text-3);font-weight:700}
+.adv{margin:0 16px 8px;background:var(--surface-1);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;grid-template-columns:36px 1fr auto;gap:10px;align-items:start}
+.av{width:36px;height:36px;border-radius:50%;background:var(--surface-3);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--text-2)}
+.adv b{font-size:15px}
+.adv .why{font-size:13.5px;color:var(--text-2);margin:3px 0 6px;line-height:1.35}
+.adv .why em{font-style:normal;color:var(--text-1)}
+.add{min-width:64px;height:44px;border-radius:10px;border:1px solid var(--accent);background:none;color:var(--accent);font:inherit;font-weight:700;font-size:14px}
+.add.on{background:rgba(86,197,150,.12);border-color:var(--good);color:var(--good)}
+.cost{font-size:12px;color:var(--accent);display:block;text-align:center;margin-top:4px}
+.staffq{font-size:11.5px;color:var(--text-3);font-weight:600;letter-spacing:.04em}
+/* also */
+.also{margin:0 16px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.also div{display:flex;align-items:center;gap:10px;padding:14px 12px;font-size:14.5px;border-bottom:1px solid var(--line);min-height:52px}
+.also div:last-child{border-bottom:0}
+.also span{color:var(--text-2);font-size:13px;margin-left:auto}
+.also .mis{color:var(--accent);font-weight:600}
+/* footer */
+.sticky{position:absolute;left:0;right:0;bottom:0;background:rgba(11,15,23,.97);border-top:1px solid var(--line);padding:10px 16px 14px}
+.budget{font-size:13px;color:var(--text-2);margin-bottom:8px;display:flex;gap:12px}
+.budget b{color:var(--accent)}
+.foot-row{display:flex;gap:10px;align-items:center}
+.ghost{flex:none;height:56px;padding:0 14px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line-2);color:var(--text-1);font:inherit;font-weight:600}
+.exec{flex:1;height:56px;border-radius:12px;background:var(--accent);color:var(--accent-ink);border:0;font:inherit;font-weight:800;font-size:17px}
+.plan{font-size:12.5px;color:var(--text-3);margin-top:6px;text-align:center}
+.anno{position:absolute;right:-250px;width:230px;font-size:12px;color:#9fb6cf;border-left:2px solid #4fb3d9;padding-left:8px}
+@media (max-width:700px){.anno{display:none}}
+</style>
+</head>
+<body>
+<div class="phone">
+  <header class="hud">
+    <div class="hud-top"><span class="flag">🇸🇦</span><div class="who"><b>Mohammed bin Salman</b><span>Saudi Arabia · Nov 2026 · month 1 of 12</span></div></div>
+    <div class="stats">
+      <div class="stat"><i>Approval</i><b class="num">64%</b></div>
+      <div class="stat"><i>Stability</i><b class="num">62%</b></div>
+      <div class="stat"><i>Capital</i><b class="num" style="color:var(--accent)">◆ 1 left</b></div>
+      <div class="stat"><i>Score</i><b class="num">100</b></div>
+    </div>
+  </header>
+
+  <button class="goal" aria-label="Mission: Close the gate. 1 of 4 on track. Open the mission">
+    <div class="goal-row">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f2a93b" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="#f2a93b"/></svg>
+      <span class="goal-title">Close the gate</span>
+      <span class="goal-meta num">1 of 4 on track</span>
+    </div>
+    <div class="segs" aria-hidden="true"><i class="off"></i><i class="ok"></i><i class="off"></i><i class="close"></i><i class="bonus"></i><i class="bonus"></i></div>
+    <div class="step">This month: <b>stability 62%, needs 78%</b> · tap for all goals</div>
+  </button>
+
+  <div class="coach" role="note">This is your move this month. Pick one. <small>1 of 3</small></div>
+
+  <article class="move" aria-label="Your move">
+    <div class="scene">
+      <svg viewBox="0 0 390 150" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+        <g fill="#0b0f17" opacity=".95">
+          <rect x="20" y="96" width="22" height="54"/><rect x="46" y="80" width="16" height="70"/><rect x="66" y="104" width="30" height="46"/><rect x="100" y="70" width="14" height="80"/><rect x="118" y="92" width="26" height="58"/><rect x="150" y="60" width="18" height="90"/><rect x="172" y="88" width="32" height="62"/><rect x="210" y="76" width="16" height="74"/><rect x="230" y="98" width="24" height="52"/><rect x="258" y="66" width="20" height="84"/><rect x="282" y="94" width="30" height="56"/><rect x="316" y="82" width="18" height="68"/><rect x="338" y="102" width="34" height="48"/>
+        </g>
+        <circle cx="196" cy="98" r="22" fill="#ff8a3a" opacity=".35"/><circle cx="196" cy="98" r="9" fill="#ffc46b" opacity=".7"/>
+        <path d="M40 40 L150 66" stroke="#ffc46b" stroke-width="1.5" opacity=".6"/>
+        <path d="M120 40l26 4-6 6 10 6-14-2-8 8 2-10-12-4z" fill="#c9d3e0" opacity=".8"/>
+      </svg>
+      <div class="kick"><span class="pill red">URGENT</span><span class="pill">🇸🇦 🇾🇪</span></div>
+    </div>
+    <div class="move-body">
+      <div class="label-sm">YOUR MOVE · CRISIS</div>
+      <h2>After the Riyadh airport strike</h2>
+      <p class="lede">A Houthi missile killed 13 at your capital's airport, and the kingdom wants an answer. <a href="#">More</a></p>
+      <div class="opts" role="radiogroup" aria-label="Your answer">
+        <button class="opt" role="radio" aria-checked="false">
+          <b>Bomb Sanaa</b>
+          <div class="d">Revenge from the air. Civilians will die, and it looks like 2015 again.</div>
+          <div class="foot"><span class="tag hurt">Hurts: stability 78%</span><span class="eff"><span class="up">Approval up</span> · <span class="dn">US view down</span></span></div>
+        </button>
+        <button class="opt pick" role="radio" aria-checked="true">
+          <span class="badge">CABINET PICK · GOOD FOR MISSION</span>
+          <b>Back channel via Muscat</b>
+          <div class="d">Quiet talks through Oman with the men who just hit you. Could stop the missiles. Looks weak.</div>
+          <div class="foot"><span class="tag help">Helps: a ceasefire</span><span class="eff"><span class="up">Tension down</span> · <span class="dn">Approval down</span></span></div>
+        </button>
+        <button class="opt" role="radio" aria-checked="false">
+          <b>Invite US and Israeli strikes</b>
+          <div class="d">Washington hits the launchers for you. Effective, and a political earthquake at home.</div>
+          <div class="foot"><span class="tag bonus">Helps: Washington (bonus)</span><span class="eff"><span class="dn">Approval down</span> · <span class="dn">Tension up</span></span></div>
+        </button>
+      </div>
+      <div class="backers">Cabinet pick: Back channel via Muscat · backed by your Foreign Minister</div>
+    </div>
+  </article>
+
+  <h3>YOUR ADVISORS SUGGEST</h3>
+  <div class="adv">
+    <div class="av">IM</div>
+    <div><span class="staffq">QUEUED BY STAFF</span><br><b>Reform program</b>
+      <div class="why"><em>Stability 62%, the mission needs 78%.</em> Reform takes months to pay off, so start now.</div>
+      <span class="tag help">Helps: stability 78%</span></div>
+    <div><button class="add on" aria-pressed="true">Added</button><span class="cost num">◆2</span></div>
+  </div>
+  <div class="adv">
+    <div class="av">FM</div>
+    <div><b>Court the United States</b>
+      <div class="why"><em>US view of you 60, your bonus needs 70.</em> Their envoy is in the region this month.</div>
+      <span class="tag bonus">Helps: Washington (bonus)</span></div>
+    <div><button class="add">Add</button><span class="cost num">◆1</span></div>
+  </div>
+  <div class="adv">
+    <div class="av">FM</div>
+    <div><b>Propose ceasefire to Yemen</b>
+      <div class="why"><em>Front 42 your way, the mission needs 58 or a ceasefire.</em> They are 68% exhausted.</div>
+      <span class="tag help">Helps: a ceasefire</span></div>
+    <div><button class="add" disabled style="opacity:.55">Add</button><span class="cost num" style="color:var(--text-3)">Needs ◆2, 1 left</span></div>
+  </div>
+
+  <h3>ALSO ON YOUR DESK</h3>
+  <div class="also">
+    <div class="mis">📞 Mohammed bin Zayed calls <span>mission: no war with the Emirates</span></div>
+    <div>2 more calls · staff will attend 1, a deputy takes 1 <span>›</span></div>
+  </div>
+
+  <div class="sticky">
+    <div class="budget"><span><b class="num">◆ 1 of 3</b> political capital left</span><span class="num">Orders 1 of 6</span></div>
+    <div class="foot-row"><button class="ghost">Full desk</button><button class="exec">Execute month</button></div>
+    <div class="plan">Cabinet pick on 1 crisis · 1 staff order · staff take 3 calls</div>
+  </div>
+</div>
+</body>
+</html>

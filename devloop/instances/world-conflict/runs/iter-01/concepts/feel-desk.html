@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Desk Stage Concept</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..800&family=Geist+Mono:wght@400..700&family=Instrument+Serif:ital@0;1&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400&display=swap" rel="stylesheet" />
+<!--
+  Concept: World Conflict desk, "the crisis is the stage" (design-feel.md, sections 3 and 1).
+  One responsive file: screenshot at 1440x900, 1024x768 and 390x844.
+  Force card states for the static shots with classes: .is-hover, .is-chosen.
+-->
+<style>
+:root {
+  --bg-0: #0b0f17; --surface-1: #141b27; --surface-2: #1c2533; --surface-3: #243042;
+  --line: #2a3546; --line-2: #3a4759;
+  --text-1: #e8ecf2; --text-2: #a3aebf; --text-3: #8693a6;
+  --accent: #f2a93b; --accent-ink: #1b1204; --intel: #4fb3d9; --war: #e5383b; --good: #56c596;
+  --font-display: 'Geist', 'Inter', system-ui, sans-serif; --font-mono: 'Geist Mono', ui-monospace, monospace;
+  --font-news: 'Instrument Serif', Georgia, serif; --font-serif: 'Newsreader', Georgia, serif;
+  --r-sm: 6px; --r-md: 10px; --r-lg: 16px;
+  /* New feel tokens */
+  --card-top: #1f2939; --card-bot: #161d2a; --card-edge: #070a10;
+  --seal-hi: #ffd88a; --seal: #f2a93b; --seal-lo: #a4641a;
+  --dur-press: 80ms; --dur-quick: 140ms; --dur-move: 280ms; --dur-travel: 420ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); --ease-stamp: cubic-bezier(.2, 1.6, .4, 1);
+  --fs-meta: 13px; --fs-body: 15px; --fs-lead: 16px; --fs-card: 19px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--bg-0); color: var(--text-1); font-family: var(--font-display); -webkit-font-smoothing: antialiased; overflow: hidden; }
+.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+button { font: inherit; color: inherit; }
+
+/* ---------- App frame ---------- */
+.app { height: 100vh; display: grid; grid-template-rows: 64px minmax(0, 1fr) 32px; grid-template-columns: minmax(0, 1fr); }
+.hud { display: flex; align-items: center; gap: 22px; padding: 0 18px; border-bottom: 1px solid var(--line); background: linear-gradient(#111827, #0d131e); }
+.who { display: flex; gap: 12px; align-items: center; min-width: 0; }
+.who .flagchip { width: 34px; height: 24px; border-radius: 3px; background: #006c35; position: relative; flex: none; }
+.who .flagchip::after { content: ''; position: absolute; left: 7px; right: 7px; bottom: 7px; height: 2px; background: #fff; opacity: .85; }
+.who b { display: block; font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 340px; }
+.who small { color: var(--text-2); font-size: 13px; }
+.stats { display: flex; gap: 22px; margin-left: auto; align-items: center; }
+.stat { display: grid; gap: 2px; }
+.stat .lbl { font-size: 12px; color: var(--text-2); font-weight: 600; }
+.stat .val { font-size: 18px; font-weight: 650; }
+.stat .val small { font-size: 13px; color: var(--good); font-weight: 600; margin-left: 4px; }
+.tension-bar { width: 96px; height: 6px; border-radius: 3px; background: linear-gradient(90deg, #56c596, #f2a93b 55%, #e5383b); position: relative; margin-top: 7px; }
+.tension-bar i { position: absolute; top: -4px; left: 76%; width: 3px; height: 14px; background: #fff; border-radius: 2px; box-shadow: 0 0 0 2px var(--bg-0); }
+.hud-tools { display: flex; gap: 8px; }
+.icon-btn { width: 44px; height: 44px; border-radius: 10px; border: 1px solid var(--line-2); background: var(--surface-2); display: grid; place-items: center; cursor: pointer; }
+.icon-btn svg { width: 20px; height: 20px; stroke: var(--text-1); fill: none; stroke-width: 1.8; }
+.seg { display: flex; border: 1px solid var(--line-2); border-radius: 10px; overflow: hidden; }
+.seg button { height: 42px; padding: 0 14px; background: none; border: 0; font-weight: 600; font-size: 14px; color: var(--text-2); }
+.seg button.on { background: var(--surface-3); color: var(--text-1); }
+
+/* ---------- Capital seal (one component everywhere) ---------- */
+.seals { display: inline-flex; gap: 4px; align-items: center; }
+.seal { width: var(--s, 24px); height: var(--s, 24px); flex: none; display: block; }
+.seal.spent { opacity: 1; }
+.cap-stat .val { display: flex; gap: 8px; align-items: center; }
+.cap-stat .val .num { font-size: 15px; color: var(--text-2); font-weight: 600; }
+
+/* ---------- Desk grid ---------- */
+.desk { display: grid; grid-template-columns: 264px minmax(0, 1fr) 360px; min-height: 0; background: radial-gradient(120% 90% at 50% 0%, #0f1728 0%, var(--bg-0) 62%); }
+.nav { border-right: 1px solid var(--line); padding: 14px 12px; display: flex; flex-direction: column; gap: 4px; overflow: auto; }
+.nav h6 { margin: 14px 8px 6px; font-size: 13px; font-weight: 650; color: var(--text-2); display: flex; justify-content: space-between; }
+.nav h6 .num { font-weight: 500; }
+.tab { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 8px 10px; border-radius: 10px; border: 1px solid transparent; background: none; text-align: left; cursor: pointer; font-size: 15px; transition: background var(--dur-quick); }
+.tab:hover { background: rgba(255,255,255,.04); }
+.tab.on { background: var(--surface-2); border-color: var(--line-2); box-shadow: inset 4px 0 0 var(--war); }
+.tab .ti { width: 32px; height: 32px; flex: none; border-radius: 8px; background: var(--surface-3); display: grid; place-items: center; font-size: 15px; }
+.tab .tl { flex: 1; min-width: 0; }
+.tab .tl b { display: block; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tab .tl span { font-size: var(--fs-meta); color: var(--text-2); }
+.state { width: 14px; height: 14px; border-radius: 50%; flex: none; border: 2px solid var(--text-3); }
+.state.staff { border-color: var(--accent); background: linear-gradient(90deg, var(--accent) 50%, transparent 50%); }
+.state.done { border-color: var(--accent); background: var(--accent); }
+.state.wait { border-color: var(--intel); }
+
+/* ---------- Centre stage ---------- */
+.stage { position: relative; min-width: 0; display: grid; grid-template-rows: minmax(240px, 1fr) auto auto auto; min-height: 0; padding: 18px 24px 12px; gap: 0; overflow: hidden; }
+.hero { position: relative; border-radius: var(--r-lg); overflow: hidden; min-height: 240px; box-shadow: 0 24px 60px rgba(0,0,0,.5); isolation: isolate; }
+.hero svg.art { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(5,8,14,0) 35%, rgba(5,8,14,.55) 62%, rgba(5,8,14,.94) 100%); z-index: 1; }
+.bug { position: absolute; top: 14px; left: 14px; z-index: 2; font: 700 12px var(--font-mono); letter-spacing: .14em; background: rgba(0,0,0,.55); padding: 6px 10px; border-radius: 5px; display: flex; gap: 8px; align-items: center; }
+.bug i { width: 8px; height: 8px; border-radius: 50%; background: var(--war); }
+.lower { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 0 26px 60px; display: grid; gap: 8px; }
+.kicker { display: inline-flex; gap: 8px; align-items: center; width: max-content; background: var(--war); color: #fff; font-weight: 700; font-size: 13px; letter-spacing: .06em; padding: 4px 10px; border-radius: 4px; }
+.lower h1 { margin: 0; font-family: var(--font-news); font-weight: 400; font-size: clamp(30px, 3.1vw, 44px); line-height: 1.02; letter-spacing: -.01em; }
+.lower p { margin: 0; max-width: 68ch; font-family: var(--font-serif); font-size: var(--fs-lead); line-height: 1.45; color: #d5dbe5; }
+.coach { position: absolute; top: 14px; right: 14px; z-index: 3; width: 290px; padding: 12px 14px; border-radius: 12px; background: rgba(14, 26, 43, .92); border: 1px solid rgba(79,179,217,.55); font-size: 14px; line-height: 1.4; box-shadow: 0 10px 30px rgba(0,0,0,.5); }
+.coach b { color: var(--intel); }
+.coach .row { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+.coach .row span { color: var(--text-2); font-size: 13px; }
+.coach button { min-height: 36px; padding: 0 14px; border-radius: 8px; border: 1px solid var(--intel); background: none; color: var(--intel); font-weight: 650; cursor: pointer; }
+
+/* Staff line: who advises what, one row, sits on the hero's bottom edge */
+.staffline { position: relative; z-index: 4; display: flex; align-items: center; gap: 12px; margin: -46px 26px 0; height: 46px; font-size: 14px; color: var(--text-2); }
+.avatar { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(#3a4759, #243042); display: grid; place-items: center; font-size: 12px; font-weight: 700; color: var(--text-1); border: 1px solid var(--line-2); }
+.staffline b { color: var(--text-1); font-weight: 600; }
+.staffline .ghost { margin-left: auto; min-height: 36px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--line-2); background: rgba(10,14,22,.6); font-size: 14px; font-weight: 600; cursor: pointer; }
+
+/* ---------- Briefing cards ---------- */
+.cards { position: relative; z-index: 5; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 14px; }
+.card { position: relative; display: grid; grid-template-rows: 118px auto; text-align: left; padding: 0; cursor: pointer; border-radius: 14px; border: 1px solid var(--line-2); background: linear-gradient(var(--card-top), var(--card-bot)); box-shadow: 0 4px 0 var(--card-edge), 0 10px 24px rgba(0,0,0,.35); transition: transform var(--dur-quick) var(--ease-out), box-shadow var(--dur-quick) var(--ease-out), border-color var(--dur-quick), opacity var(--dur-move); overflow: visible; }
+.card .pic { position: relative; border-radius: 13px 13px 0 0; overflow: hidden; }
+.card .pic > svg { width: 100%; height: 100%; display: block; transition: filter var(--dur-quick); filter: saturate(.85) brightness(.9); }
+.card .key { position: absolute; left: 10px; top: 10px; width: 26px; height: 26px; border-radius: 6px; background: rgba(0,0,0,.6); border: 1px solid rgba(255,255,255,.25); font: 700 13px var(--font-mono); display: grid; place-items: center; }
+.card .cost { position: absolute; right: 10px; top: 10px; display: flex; gap: 6px; align-items: center; padding: 3px 9px 3px 4px; border-radius: 999px; background: rgba(0,0,0,.6); font-size: 13px; font-weight: 650; }
+.card .cost.free { padding: 4px 10px; color: var(--text-2); }
+.card .body { padding: 12px 14px 14px; display: grid; gap: 8px; align-content: start; }
+.card h3 { margin: 0; font-size: var(--fs-card); line-height: 1.15; font-weight: 680; letter-spacing: -.01em; }
+.card .desc { font-size: var(--fs-body); line-height: 1.4; color: var(--text-2); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.fx { display: flex; flex-wrap: wrap; gap: 6px; }
+.fx span { display: inline-flex; gap: 5px; align-items: center; font-size: 13px; font-weight: 600; padding: 3px 8px; border-radius: 6px; white-space: nowrap; }
+.fx .up { background: rgba(86,197,150,.12); color: #7fdcb2; }
+.fx .dn { background: rgba(229,56,59,.13); color: #ff8e8f; }
+.fx .tri { font-size: 10px; letter-spacing: -1px; }
+.card .by { font-size: var(--fs-meta); color: var(--text-3); display: flex; gap: 6px; align-items: center; }
+.card .by .avatar { width: 22px; height: 22px; font-size: 10px; }
+.tagclip { position: absolute; top: -12px; left: 46px; z-index: 2; background: var(--accent); color: var(--accent-ink); font-size: 13px; font-weight: 750; padding: 4px 10px 4px 22px; border-radius: 4px; box-shadow: 0 3px 8px rgba(0,0,0,.4); }
+.tagclip::before { content: ''; position: absolute; left: 7px; top: -5px; width: 8px; height: 18px; border: 2px solid #c9ccd2; border-radius: 5px; }
+.ribbon { position: absolute; left: 0; right: 0; bottom: 0; padding: 5px 12px; font-size: 13px; font-weight: 650; color: #fff; background: linear-gradient(90deg, rgba(229,56,59,.92), rgba(229,56,59,.65)); display: flex; gap: 6px; align-items: center; }
+.stamp { position: absolute; right: 14px; top: 64px; z-index: 3; font: 800 17px var(--font-mono); letter-spacing: .16em; color: var(--accent); border: 3px solid var(--accent); border-radius: 6px; padding: 6px 10px; transform: rotate(-8deg); background: rgba(27,18,4,.55); box-shadow: 0 0 0 2px rgba(27,18,4,.55); opacity: 0; pointer-events: none; mix-blend-mode: normal; }
+/* States */
+.card:hover, .card.is-hover { transform: translateY(-4px); box-shadow: 0 8px 0 var(--card-edge), 0 18px 34px rgba(0,0,0,.45); border-color: #56657c; }
+.card:hover .pic > svg, .card.is-hover .pic > svg { filter: none; }
+.card:active { transform: translateY(2px) scale(.985); box-shadow: 0 1px 0 var(--card-edge), 0 4px 10px rgba(0,0,0,.3); transition-duration: var(--dur-press); }
+.card.is-chosen { border: 2px solid var(--accent); box-shadow: 0 4px 0 #5b3a0b, 0 0 0 4px rgba(242,169,59,.16), 0 14px 30px rgba(0,0,0,.45); }
+.card.is-chosen .pic > svg { filter: none; }
+.card.is-chosen .stamp { opacity: 1; animation: stamp-in var(--dur-move) var(--ease-stamp) both; }
+.cards.has-choice .card:not(.is-chosen):not(.is-hover) { opacity: .78; }
+@keyframes stamp-in { from { opacity: 0; transform: scale(1.8) rotate(-16deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .card, .card:hover, .card:active { transition: border-color 120ms, opacity 120ms; transform: none !important; }
+  .card.is-chosen .stamp { animation: none; }
+}
+
+.itemnav { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; font-size: 14px; color: var(--text-2); }
+.itemnav button { min-height: 40px; padding: 0 12px; border-radius: 8px; border: 1px solid transparent; background: none; color: var(--text-2); font-weight: 600; cursor: pointer; display: flex; gap: 8px; align-items: center; }
+.kbd { font: 600 12px var(--font-mono); border: 1px solid var(--line-2); border-radius: 4px; padding: 1px 6px; }
+
+/* ---------- Command rail ---------- */
+.rail { border-left: 1px solid var(--line); display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; min-height: 0; background: linear-gradient(#0f1520, #0b0f17); }
+.minimap { height: 150px; position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
+.minimap svg { width: 100%; height: 100%; }
+.minimap small { position: absolute; left: 12px; bottom: 8px; font-size: 13px; color: var(--text-2); }
+.bank { padding: 14px 16px; border-bottom: 1px solid var(--line); display: grid; gap: 10px; }
+.bank-head { display: flex; justify-content: space-between; align-items: baseline; }
+.bank-head b { font-size: 15px; }
+.bank-head span { font-size: 14px; color: var(--text-2); }
+.bank-head span strong { color: var(--text-1); font-size: 16px; }
+.bank-seals { display: flex; gap: 8px; align-items: center; }
+.bank-seals .seal { --s: 38px; }
+.bank-note { font-size: 13px; color: var(--text-2); line-height: 1.35; }
+.bank-note b { color: var(--text-1); font-weight: 600; }
+.meters { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.meter { padding: 8px 10px; border-radius: 8px; background: var(--surface-1); border: 1px solid var(--line); font-size: 13px; color: var(--text-2); }
+.meter b { display: block; color: var(--text-1); font-size: 15px; margin-top: 2px; }
+.month { padding: 14px 16px; overflow: auto; display: grid; gap: 8px; align-content: start; }
+.month h6 { margin: 0 0 2px; font-size: 13px; color: var(--text-2); font-weight: 650; display: flex; justify-content: space-between; }
+.slot { display: grid; grid-template-columns: 54px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 6px 10px 6px 6px; border-radius: 10px; background: linear-gradient(var(--card-top), var(--card-bot)); border: 1px solid var(--line-2); box-shadow: 0 2px 0 var(--card-edge); min-height: 52px; }
+.slot .mini { width: 54px; height: 38px; border-radius: 6px; overflow: hidden; }
+.slot .mini svg { width: 100%; height: 100%; }
+.slot b { font-size: 14px; font-weight: 600; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.slot small { font-size: 13px; color: var(--text-2); }
+.slot .minstamp { font: 800 10px var(--font-mono); letter-spacing: .12em; color: var(--accent); border: 2px solid var(--accent); border-radius: 4px; padding: 2px 5px; transform: rotate(-6deg); }
+.slot .on-seals { display: flex; gap: 2px; }
+.slot .on-seals .seal { --s: 20px; }
+.slot.empty { background: none; box-shadow: none; border: 1.5px dashed var(--line-2); color: var(--text-3); font-size: 14px; grid-template-columns: 1fr; text-align: center; min-height: 40px; }
+.go { padding: 14px 16px 16px; border-top: 1px solid var(--line); display: grid; gap: 10px; }
+.btn2 { min-height: 48px; border-radius: 12px; border: 1px solid rgba(242,169,59,.5); background: rgba(242,169,59,.06); color: var(--accent); font-weight: 650; font-size: 15px; cursor: pointer; }
+.execute { position: relative; min-height: 64px; border-radius: 14px; border: 0; background: linear-gradient(#ffc061, #f2a93b 55%, #e09424); color: var(--accent-ink); font-size: 19px; font-weight: 750; letter-spacing: -.01em; cursor: pointer; box-shadow: 0 5px 0 #8c5a12, 0 12px 30px rgba(242,169,59,.25); transition: transform var(--dur-press), box-shadow var(--dur-press); display: grid; place-items: center; }
+.execute small { display: block; font-size: 13px; font-weight: 600; opacity: .75; }
+.execute:active { transform: translateY(4px); box-shadow: 0 1px 0 #8c5a12, 0 4px 12px rgba(242,169,59,.2); }
+
+.ticker { display: flex; align-items: center; gap: 12px; border-top: 1px solid var(--line); background: #080b11; font-size: 13px; color: var(--text-2); padding-right: 12px; }
+.ticker .live { background: var(--war); color: #fff; font: 700 12px var(--font-mono); height: 100%; display: grid; place-items: center; padding: 0 12px; letter-spacing: .1em; }
+
+/* Phone-only parts hidden on desktop */
+.phone-only { display: none; }
+
+/* ---------- 1024 (tablet landscape): filing tabs on top, rail stays ---------- */
+@media (max-width: 1279px) {
+  .desk { grid-template-columns: minmax(0, 1fr) 320px; }
+  .nav { display: none; }
+  .tabs-top { display: flex !important; }
+  .stage { grid-template-rows: auto minmax(200px, 1fr) auto auto auto; padding-top: 12px; }
+  .tabs-top { margin-bottom: 12px; }
+  .stats .opt { display: none; }
+  .who b { max-width: 260px; }
+  .coach { width: 260px; }
+  .card { grid-template-rows: 96px auto; }
+  .card .desc { display: none; }
+  .card .by { display: none; }
+  .fx { gap: 5px; }
+  .fx span { padding: 2px 6px; }
+  .lower { padding-bottom: 56px; }
+  .lower p { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 15px; }
+  .bank-seals .seal { --s: 34px; }
+}
+.tabs-top { display: none; gap: 6px; overflow-x: auto; margin-bottom: 12px; scrollbar-width: none; }
+.tabs-top .tab { flex: none; min-height: 44px; border: 1px solid var(--line); background: var(--surface-1); padding: 6px 12px 6px 8px; }
+.tabs-top .tab .tl b { max-width: 210px; font-size: 14px; }
+.tabs-top .tab .ti { width: 28px; height: 28px; }
+
+/* ---------- 390 (phone) ---------- */
+@media (max-width: 640px) {
+  body { overflow: auto; }
+  .app { height: auto; min-height: 100vh; grid-template-rows: auto auto; }
+  .ticker, .rail, .desktop-only { display: none; }
+  .phone-only { display: initial; }
+  .hud { flex-wrap: wrap; padding: 10px 16px 8px; gap: 8px; position: sticky; top: 0; z-index: 20; }
+  .who b { font-size: 16px; max-width: 250px; }
+  .hud-tools .seg, .hud-tools .ib-x { display: none; }
+  .hud-tools { margin-left: auto; position: absolute; right: 16px; top: 10px; }
+  .hud { position: sticky; }
+  .stats { width: 100%; margin: 0; gap: 0; justify-content: space-between; }
+  .stats .stat { padding-right: 6px; }
+  .stats .opt, .stats .tab-opt { display: none; }
+  .stats .more { display: grid !important; place-items: center; width: 44px; height: 44px; border-radius: 10px; border: 1px solid var(--line-2); background: var(--surface-2); font-size: 18px; }
+  .stat .val { font-size: 17px; }
+  .desk { grid-template-columns: minmax(0, 1fr); display: block; }
+  .stage { display: block; padding: 10px 0 110px; overflow: visible; }
+  .tabs-top { padding: 0 16px; margin-bottom: 10px; }
+  .hero { border-radius: 0; height: 236px; min-height: 0; }
+  .lower { padding: 0 16px 16px; }
+  .lower h1 { font-size: 30px; }
+  .lower p { display: none; }
+  .coach { display: none; }
+  .situation-m { display: block !important; padding: 14px 16px 4px; font-family: var(--font-serif); font-size: 17px; line-height: 1.5; color: #d5dbe5; margin: 0; }
+  .staffline { margin: 0; padding: 8px 16px; height: auto; flex-wrap: wrap; }
+  .staffline .ghost { margin-left: 0; }
+  .cards { grid-template-columns: 1fr; padding: 0 16px; gap: 18px; margin-top: 18px; }
+  .card { grid-template-rows: none; grid-template-columns: 108px minmax(0, 1fr); min-height: 150px; }
+  .card .pic { border-radius: 13px 0 0 13px; }
+  .card .desc { display: none; }
+  .card .cost { top: 8px; bottom: auto; right: auto; left: 8px; }
+  .card .key { display: none; }
+  .card .body { padding: 12px 12px 12px 14px; }
+  .card h3 { font-size: 19px; padding-right: 0; }
+  .stamp { top: auto; bottom: 34px; right: auto; left: 10px; font-size: 13px; padding: 4px 7px; }
+  .tagclip { left: 120px; }
+  .card .pic { display: grid; grid-template-rows: 1fr auto; }
+  .ribbon { position: static; border-radius: 0 0 0 13px; font-size: 12px; padding: 4px 6px; }
+  .itemnav { padding: 0 16px; }
+  .itemnav .kbd { display: none; }
+  .cmdbar { display: grid !important; position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: center; padding: 10px 16px calc(12px + env(safe-area-inset-bottom)); background: rgba(9, 13, 20, .96); border-top: 1px solid var(--line-2); backdrop-filter: blur(8px); }
+  .cmdbar .sheet { display: grid; gap: 4px; min-height: 56px; padding: 6px 12px; border-radius: 12px; border: 1px solid var(--line-2); background: var(--surface-2); text-align: left; cursor: pointer; }
+  .cmdbar .sheet small { font-size: 13px; color: var(--text-2); }
+  .cmdbar .seal { --s: 22px; }
+  .cmdbar .execute { min-height: 56px; font-size: 18px; }
+}
+.situation-m, .cmdbar, .stats .more { display: none; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="sealWax" cx="38%" cy="32%" r="75%">
+      <stop offset="0" stop-color="#ffe2a3" /><stop offset=".35" stop-color="#f5b14a" /><stop offset=".8" stop-color="#c47d22" /><stop offset="1" stop-color="#8d5512" />
+    </radialGradient>
+    <!-- Available seal: wax blob, inner ring, embossed diamond -->
+    <symbol id="seal" viewBox="0 0 40 40">
+      <path d="M20 2.5c2.3 0 3 1.6 5 2.2 2 .6 3.6-.4 5.3.9 1.7 1.3 1.2 3 2.3 4.8 1.1 1.8 2.9 2.1 3.4 4.2.5 2-.8 3.3-.8 5.4s1.3 3.4.8 5.4c-.5 2.1-2.3 2.4-3.4 4.2-1.1 1.8-.6 3.5-2.3 4.8-1.7 1.3-3.3.3-5.3.9-2 .6-2.7 2.2-5 2.2s-3-1.6-5-2.2c-2-.6-3.6.4-5.3-.9-1.7-1.3-1.2-3-2.3-4.8C4.3 27.8 2.5 27.5 2 25.4c-.5-2 .8-3.3.8-5.4S1.5 16.6 2 14.6c.5-2.1 2.3-2.4 3.4-4.2 1.1-1.8.6-3.5 2.3-4.8C9.4 4.3 11 5.3 13 4.7c2-.6 2.7-2.2 5-2.2z" fill="url(#sealWax)" />
+      <circle cx="20" cy="20" r="12.2" fill="none" stroke="#8d5512" stroke-width="1.4" opacity=".7" />
+      <circle cx="20" cy="20" r="12.2" fill="none" stroke="#ffe7b0" stroke-width=".7" opacity=".55" transform="translate(-.6 -.6)" />
+      <path d="M20 12.5l7.5 7.5-7.5 7.5-7.5-7.5z" fill="#9a5c14" />
+      <path d="M20 13.8l6.2 6.2-6.2 6.2" fill="none" stroke="#ffe0a0" stroke-width=".9" opacity=".7" />
+    </symbol>
+    <!-- Committed seal: the imprint left behind in the bank -->
+    <symbol id="seal-imprint" viewBox="0 0 40 40">
+      <circle cx="20" cy="20" r="16.5" fill="rgba(242,169,59,.06)" stroke="#f2a93b" stroke-width="1.6" stroke-dasharray="3 3" opacity=".75" />
+      <path d="M20 13l7 7-7 7-7-7z" fill="none" stroke="#f2a93b" stroke-width="1.4" opacity=".6" />
+    </symbol>
+  </defs>
+</svg>
+
+<div class="app">
+  <!-- HUD -->
+  <header class="hud">
+    <div class="who">
+      <span class="flagchip" aria-hidden="true"></span>
+      <div>
+        <b>Crown Prince Mohammed bin Salman</b>
+        <small>Saudi Arabia · November 2026 · Month 1 of 12</small>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><span class="lbl">Approval</span><span class="val num">64%</span></div>
+      <div class="stat"><span class="lbl">Stability</span><span class="val num">62%</span></div>
+      <div class="stat opt"><span class="lbl">Legitimacy</span><span class="val num">75%</span></div>
+      <div class="stat opt"><span class="lbl">Economy</span><span class="val num">$1.24T<small>+3.2%</small></span></div>
+      <div class="stat cap-stat"><span class="lbl">Political capital</span><span class="val"><span class="seals"><svg class="seal"><use href="#seal" /></svg><svg class="seal"><use href="#seal-imprint" /></svg><svg class="seal"><use href="#seal-imprint" /></svg></span><span class="num">1 left</span></span></div>
+      <div class="stat opt"><span class="lbl">World tension</span><span class="tension-bar"><i></i></span></div>
+      <div class="stat opt"><span class="lbl">Leadership score</span><span class="val num">100</span></div>
+      <button class="more" aria-label="All indicators">⌄</button>
+    </div>
+    <div class="hud-tools">
+      <div class="seg"><button>Map</button><button class="on">Desk</button></div>
+      <button class="icon-btn" aria-label="Sound on (press to mute)" title="Sound on"><svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z" /><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" /></svg></button>
+      <button class="icon-btn ib-x" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" /></svg></button>
+    </div>
+  </header>
+
+  <main class="desk">
+    <!-- Navigator: filing tabs -->
+    <nav class="nav" aria-label="This month">
+      <button class="tab"><span class="ti">◎</span><span class="tl"><b>Mission</b><span>1 of 4 goals · 12 months</span></span></button>
+      <h6>Needs you <span class="num">1</span></h6>
+      <button class="tab on"><span class="ti">⚠</span><span class="tl"><b>After the Riyadh airport strike</b><span>Crisis · staff pick ready</span></span><span class="state staff"></span></button>
+      <h6>Meetings <span class="num">0 of 3 in person</span></h6>
+      <button class="tab"><span class="ti">☎</span><span class="tl"><b>Abdul-Malik al-Houthi</b><span>Call · Yemen</span></span><span class="state wait"></span></button>
+      <button class="tab"><span class="ti">☎</span><span class="tl"><b>Prime Minister Sharif</b><span>Call · Pakistan</span></span><span class="state wait"></span></button>
+      <button class="tab"><span class="ti">♟</span><span class="tl"><b>Defence Minister</b><span>Staff meeting</span></span><span class="state wait"></span></button>
+      <button class="tab"><span class="ti">✈</span><span class="tl"><b>President Trump</b><span>State visit · United States</span></span><span class="state wait"></span></button>
+      <h6>Orders <span class="num">1 of 6</span></h6>
+      <button class="tab"><span class="ti">✦</span><span class="tl"><b>Staff suggestions</b><span>1 queued</span></span></button>
+      <button class="tab"><span class="ti">⌕</span><span class="tl"><b>All orders</b><span>Search or browse</span></span></button>
+    </nav>
+
+    <!-- Stage -->
+    <section class="stage">
+      <div class="tabs-top" role="tablist" aria-label="This month">
+        <button class="tab on"><span class="ti">⚠</span><span class="tl"><b>Crisis: Riyadh airport strike</b></span><span class="state staff"></span></button>
+        <button class="tab"><span class="ti">☎</span><span class="tl"><b>Call: al-Houthi</b></span><span class="state wait"></span></button>
+        <button class="tab"><span class="ti">☎</span><span class="tl"><b>Call: Sharif</b></span><span class="state wait"></span></button>
+        <button class="tab"><span class="ti">✈</span><span class="tl"><b>Visit: Trump</b></span><span class="state wait"></span></button>
+        <button class="tab"><span class="ti">✦</span><span class="tl"><b>Orders</b></span></button>
+      </div>
+
+      <figure class="hero" style="margin:0">
+        <!-- Hero scene: airstrike aftermath (house style: layered planes, one strong light source, flag accents) -->
+        <svg class="art" viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <defs>
+            <linearGradient id="hs-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#070b16" /><stop offset=".55" stop-color="#1a1430" /><stop offset=".8" stop-color="#5a2418" /><stop offset="1" stop-color="#8a3a16" /></linearGradient>
+            <radialGradient id="hs-fire" cx="50%" cy="100%" r="60%"><stop offset="0" stop-color="#ffb347" stop-opacity=".95" /><stop offset=".35" stop-color="#ff6a2b" stop-opacity=".55" /><stop offset="1" stop-color="#ff6a2b" stop-opacity="0" /></radialGradient>
+            <linearGradient id="hs-smoke" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#3a2a2a" stop-opacity=".9" /><stop offset="1" stop-color="#1b1b2a" stop-opacity="0" /></linearGradient>
+            <linearGradient id="hs-ground" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a1416" /><stop offset="1" stop-color="#07080c" /></linearGradient>
+          </defs>
+          <rect width="640" height="360" fill="url(#hs-sky)" />
+          <g fill="#ffffff" opacity=".6"><circle cx="60" cy="40" r=".8" /><circle cx="140" cy="70" r=".6" /><circle cx="520" cy="36" r=".9" /><circle cx="590" cy="88" r=".6" /><circle cx="400" cy="52" r=".7" /></g>
+          <!-- distant skyline -->
+          <path d="M0 236h30v-20h14v-26h10v26h22v-12h18v-34h8v34h20v-18h26v40h40v-14h16v-46l6-10 6 10v46h18v-22h30v28h44v-18h20v-30h12v30h26v-10h22v22h36v-26h18v-40h10v40h22v-16h28v28h30v-12h24v24h22v-20h20v26H640v40H0z" fill="#120f1c" />
+          <!-- fire glow behind terminal -->
+          <ellipse cx="330" cy="262" rx="260" ry="120" fill="url(#hs-fire)" />
+          <!-- smoke plumes -->
+          <path d="M300 250c-30-40 10-70-10-110-14-28 6-60 40-80 18 30-4 56 10 84 16 32 30 60 0 106z" fill="url(#hs-smoke)" />
+          <path d="M370 252c-20-30 18-56 2-92-10-24 10-46 34-60 10 26-6 44 6 66 14 28 18 54-14 86z" fill="url(#hs-smoke)" opacity=".8" />
+          <!-- terminal with arched roof, damaged section -->
+          <path d="M110 268v-34c60-26 160-34 220-34s160 8 220 34v34z" fill="#1c1a24" />
+          <path d="M110 234c60-26 160-34 220-34s160 8 220 34" fill="none" stroke="#ffb347" stroke-width="1.4" opacity=".55" />
+          <path d="M300 268l6-40 14 10 10-18 12 22 10-8 8 34z" fill="#ff7a2e" opacity=".9" />
+          <path d="M312 268l4-24 10 8 8-12 6 16 8-4 4 16z" fill="#ffd27a" />
+          <!-- control tower with flag-green accent -->
+          <rect x="468" y="150" width="14" height="118" fill="#17151f" />
+          <path d="M454 138h42l-6 16h-30z" fill="#22202c" />
+          <rect x="458" y="141" width="34" height="6" fill="#006c35" opacity=".85" />
+          <circle cx="475" cy="134" r="2.4" fill="#e5383b" />
+          <!-- ground and runway lights -->
+          <rect y="268" width="640" height="92" fill="url(#hs-ground)" />
+          <g fill="#ffcf7a"><circle cx="20" cy="300" r="1.6" /><circle cx="80" cy="304" r="1.7" /><circle cx="140" cy="308" r="1.8" /><circle cx="200" cy="312" r="1.9" /><circle cx="260" cy="316" r="2" /><circle cx="320" cy="320" r="2.1" /><circle cx="380" cy="324" r="2.2" /><circle cx="440" cy="328" r="2.3" /><circle cx="500" cy="332" r="2.4" /><circle cx="560" cy="336" r="2.5" /><circle cx="620" cy="340" r="2.6" /></g>
+          <!-- emergency vehicles, rim lit -->
+          <g><rect x="170" y="276" width="56" height="20" rx="3" fill="#0d0d14" /><rect x="170" y="276" width="56" height="2" fill="#ff9a4a" opacity=".7" /><circle cx="182" cy="298" r="5" fill="#050507" /><circle cx="214" cy="298" r="5" fill="#050507" /><rect x="190" y="271" width="8" height="5" fill="#e5383b" /><rect x="198" y="271" width="8" height="5" fill="#3d8bfd" /></g>
+          <g><rect x="430" y="280" width="48" height="18" rx="3" fill="#0d0d14" /><rect x="430" y="280" width="48" height="2" fill="#ff9a4a" opacity=".7" /><circle cx="440" cy="300" r="4.5" fill="#050507" /><circle cx="468" cy="300" r="4.5" fill="#050507" /><rect x="446" y="275" width="7" height="5" fill="#e5383b" /></g>
+          <!-- cordon silhouettes -->
+          <g fill="#08080c"><rect x="250" y="282" width="8" height="22" rx="3" /><circle cx="254" cy="278" r="4.5" /><rect x="268" y="284" width="8" height="20" rx="3" /><circle cx="272" cy="280" r="4.2" /><rect x="386" y="283" width="8" height="21" rx="3" /><circle cx="390" cy="279" r="4.4" /></g>
+        </svg>
+        <span class="bug"><i></i>BREAKING</span>
+        <aside class="coach desktop-only" role="note">
+          <b>Your desk.</b> Everything that needs you is on the left. Pick a card to answer, then press <b>Execute the month</b>.
+          <div class="row"><span>Tip 1 of 3</span><button>Got it</button></div>
+        </aside>
+        <figcaption class="lower">
+          <span class="kicker">URGENT · SAUDI ARABIA, YEMEN, UNITED STATES</span>
+          <h1>After the Riyadh airport strike</h1>
+          <p>A Houthi missile hit the main terminal at dawn. The public wants an answer, Oman is offering a quiet line, and Washington is offering its jets.</p>
+        </figcaption>
+      </figure>
+      <p class="situation-m">A Houthi missile hit the main terminal at dawn. The public wants an answer, Oman is offering a quiet line, and Washington is offering its jets.</p>
+
+      <div class="staffline">
+        <span class="avatar">FM</span>
+        <span><b>Foreign Minister:</b> "Oman already talks to them. Use it."</span>
+        <button class="ghost">Ask your staff</button>
+      </div>
+
+      <div class="cards has-choice" role="radiogroup" aria-label="Your answer">
+        <button class="card is-hover" role="radio" aria-checked="false">
+          <div class="pic">
+            <svg viewBox="0 0 320 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <defs><linearGradient id="c1s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a0e1a" /><stop offset=".7" stop-color="#6b2416" /><stop offset="1" stop-color="#c2511c" /></linearGradient></defs>
+              <rect width="320" height="140" fill="url(#c1s)" />
+              <path d="M0 140V104l40-22 30 14 44-34 40 28 36-20 50 30 40-18 40 20v38z" fill="#1a0f14" />
+              <g fill="#0b0b10"><path d="M110 46l40 6-40 6 10-6z" /><path d="M150 30l34 5-34 5 8-5z" /><path d="M176 58l30 4-30 4 7-4z" /></g>
+              <g stroke="#ffd9b0" stroke-width="1" opacity=".35"><path d="M110 52H20" /><path d="M150 35H70" /><path d="M176 62H110" /></g>
+              <circle cx="232" cy="112" r="10" fill="#ffb347" opacity=".9" /><circle cx="232" cy="112" r="22" fill="#ff6a2b" opacity=".3" />
+            </svg>
+            <span class="key">1</span>
+            <span class="cost free">free</span>
+            <span class="ribbon">⚠ Risks your mission: Yemen ceasefire</span>
+          </div>
+          <div class="body">
+            <h3>Bomb Sanaa</h3>
+            <div class="desc">The full air force. Revenge, ruins and familiar headlines from 2015.</div>
+            <div class="fx"><span class="up"><span class="tri">▲▲</span> Approval</span><span class="dn"><span class="tri">▼▼</span> Legitimacy</span><span class="dn"><span class="tri">▲▲</span> Tension</span><span class="dn"><span class="tri">▼▼</span> United States</span></div>
+            <div class="by"><span class="avatar">DM</span> Backed by the Defence Minister</div>
+          </div>
+        </button>
+
+        <button class="card is-chosen" role="radio" aria-checked="true">
+          <span class="tagclip">Staff pick</span>
+          <div class="pic">
+            <svg viewBox="0 0 320 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <defs><radialGradient id="c2l" cx="62%" cy="40%" r="60%"><stop offset="0" stop-color="#ffcf7a" stop-opacity=".55" /><stop offset="1" stop-color="#ffcf7a" stop-opacity="0" /></radialGradient></defs>
+              <rect width="320" height="140" fill="#1d1712" />
+              <path d="M40 20h80v90H40z" fill="#0f2238" /><path d="M40 20q40-24 80 0" fill="#0f2238" />
+              <rect x="40" y="76" width="80" height="34" fill="#123a52" /><path d="M66 78l14-26 2 26z" fill="#e8e1d0" opacity=".85" /><path d="M58 80h34l-4 6H62z" fill="#3a2a1a" />
+              <rect width="320" height="140" fill="url(#c2l)" />
+              <rect x="150" y="96" width="110" height="10" rx="3" fill="#4a3220" /><rect x="160" y="106" width="6" height="22" fill="#2c1e14" /><rect x="244" y="106" width="6" height="22" fill="#2c1e14" />
+              <rect x="196" y="86" width="18" height="10" rx="2" fill="#0d0d10" /><path d="M199 86q6-8 12 0" stroke="#0d0d10" stroke-width="3" fill="none" />
+              <g fill="#0b0a0c"><rect x="122" y="70" width="30" height="40" rx="10" /><circle cx="137" cy="60" r="9" /><rect x="262" y="70" width="30" height="40" rx="10" /><circle cx="277" cy="60" r="9" /></g>
+              <path d="M152 72v38" stroke="#ffcf7a" stroke-width="1.2" opacity=".7" /><path d="M262 72v38" stroke="#ffcf7a" stroke-width="1.2" opacity=".7" />
+              <path d="M226 30v26" stroke="#3a2a1a" stroke-width="2" /><path d="M214 56h24l-6-12h-12z" fill="#ffcf7a" />
+            </svg>
+            <span class="key">2</span>
+            <span class="cost free">free</span>
+          </div>
+          <span class="stamp">YOUR CALL</span>
+          <div class="body">
+            <h3>Back channel via Muscat</h3>
+            <div class="desc">Talk to the men who just bombed your airport. Quietly, and hope it stays quiet.</div>
+            <div class="fx"><span class="dn"><span class="tri">▼▼</span> Approval</span><span class="up"><span class="tri">▲▲</span> Yemen</span><span class="up"><span class="tri">▼▼</span> Tension</span><span class="up"><span class="tri">▲</span> Stability</span></div>
+            <div class="by"><span class="avatar">FM</span> Backed by the Foreign Minister</div>
+          </div>
+        </button>
+
+        <button class="card" role="radio" aria-checked="false">
+          <div class="pic">
+            <svg viewBox="0 0 320 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <defs><linearGradient id="c3s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0c1626" /><stop offset=".7" stop-color="#22405e" /><stop offset="1" stop-color="#355c7a" /></linearGradient></defs>
+              <rect width="320" height="140" fill="url(#c3s)" />
+              <rect y="104" width="320" height="36" fill="#0d1b2a" />
+              <path d="M40 104l20-16h200l22 16z" fill="#2a3442" /><path d="M60 88h200" stroke="#f5f5f5" stroke-width="1" opacity=".5" stroke-dasharray="8 6" />
+              <rect x="210" y="66" width="22" height="22" fill="#1f2834" /><rect x="216" y="56" width="8" height="10" fill="#1f2834" />
+              <g fill="#0e141c"><path d="M90 84l28 3-28 3 6-3z" /><path d="M140 82l28 3-28 3 6-3z" /></g>
+              <g><rect x="248" y="40" width="22" height="14" fill="#b22234" /><rect x="248" y="42" width="22" height="2" fill="#fff" /><rect x="248" y="46" width="22" height="2" fill="#fff" /><rect x="248" y="50" width="22" height="2" fill="#fff" /><rect x="248" y="40" width="9" height="7" fill="#3c3b6e" /></g>
+              <g><rect x="276" y="40" width="22" height="14" fill="#fff" /><rect x="276" y="42" width="22" height="2" fill="#0038b8" /><rect x="276" y="50" width="22" height="2" fill="#0038b8" /></g>
+              <path d="M258 54v34M287 54v34" stroke="#9aa4b2" stroke-width="1" />
+            </svg>
+            <span class="key">3</span>
+            <span class="cost free">free</span>
+          </div>
+          <div class="body">
+            <h3>Invite American and Israeli strikes</h3>
+            <div class="desc">Let the superpowers hit the launchers. Effective, and a political earthquake at home.</div>
+            <div class="fx"><span class="dn"><span class="tri">▼▼</span> Approval</span><span class="up"><span class="tri">▲▲</span> United States</span><span class="dn"><span class="tri">▼▼</span> Iran</span><span class="dn"><span class="tri">▲▲</span> Tension</span></div>
+            <div class="by"><span class="avatar">IC</span> Backed by the Intelligence Chief</div>
+          </div>
+        </button>
+      </div>
+
+      <div class="itemnav">
+        <button><span class="kbd">K</span> Mission</button>
+        <button>Next: call with Abdul-Malik al-Houthi <span class="kbd">J</span></button>
+      </div>
+    </section>
+
+    <!-- Command rail -->
+    <aside class="rail">
+      <div class="minimap">
+        <svg viewBox="0 0 360 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <rect width="360" height="150" fill="#0e1a2b" />
+          <path d="M120 20l60-8 50 30 30 40-10 30-50 20-40-6-30-30-20-40z" fill="#f2a93b" opacity=".85" />
+          <path d="M200 118l50-20 20 14-18 22-40 6z" fill="#e5383b" opacity=".85" />
+          <path d="M60 10l50 10-10 40-40 10z" fill="#1f2a3a" /><path d="M280 30l60 10v60l-50-10z" fill="#1f2a3a" />
+          <circle cx="190" cy="66" r="4" fill="#fff" /><circle cx="190" cy="66" r="10" fill="none" stroke="#fff" stroke-opacity=".5" />
+          <path d="M235 120q-30-30-45-54" stroke="#ff8e8f" stroke-dasharray="4 4" fill="none" stroke-width="1.5" />
+        </svg>
+        <small>Saudi Arabia and Yemen: after the Riyadh airport strike</small>
+      </div>
+      <div class="bank">
+        <div class="bank-head"><b>Political capital</b><span><strong class="num">1</strong> of 3 left</span></div>
+        <div class="bank-seals">
+          <svg class="seal"><use href="#seal" /></svg>
+          <svg class="seal"><use href="#seal-imprint" /></svg>
+          <svg class="seal"><use href="#seal-imprint" /></svg>
+        </div>
+        <div class="bank-note"><b>2 seals are on Reform program.</b> Remove it to get them back. Next month you get 2 more (up to 6).</div>
+        <div class="meters">
+          <div class="meter">Orders<b class="num">1 of 6</b></div>
+          <div class="meter">In person<b class="num">0 of 3 meetings</b></div>
+        </div>
+      </div>
+      <div class="month">
+        <h6>This month you will <span class="num">2 decided</span></h6>
+        <div class="slot">
+          <span class="mini"><svg viewBox="0 0 54 38"><rect width="54" height="38" fill="#1d1712" /><circle cx="34" cy="14" r="14" fill="#ffcf7a" opacity=".35" /><rect x="14" y="26" width="28" height="4" fill="#4a3220" /></svg></span>
+          <span><b>Back channel via Muscat</b><small>Crisis answer</small></span>
+          <span class="minstamp">YOUR CALL</span>
+        </div>
+        <div class="slot">
+          <span class="mini"><svg viewBox="0 0 54 38"><rect width="54" height="38" fill="#2a2216" /><rect x="10" y="10" width="34" height="22" fill="#e8e1d0" /><path d="M14 16h24M14 21h20M14 26h14" stroke="#7a6a50" /></svg></span>
+          <span><b>Reform program</b><small>Order · staff suggested</small></span>
+          <span class="on-seals"><svg class="seal"><use href="#seal" /></svg><svg class="seal"><use href="#seal" /></svg></span>
+        </div>
+        <div class="slot empty">Empty order slot (4 more this month)</div>
+        <div class="slot empty">4 meetings: a deputy goes unless you answer</div>
+      </div>
+      <div class="go">
+        <button class="btn2">Approve the 4 staff suggestions</button>
+        <button class="execute">Execute the month<small>12 months left</small></button>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="ticker"><span class="live">LIVE</span><span>No news yet: the first headlines arrive after your first month</span></footer>
+</div>
+
+<!-- Phone command bar -->
+<div class="cmdbar">
+  <button class="sheet" aria-label="This month: 2 decided, open the list">
+    <span class="seals"><svg class="seal"><use href="#seal" /></svg><svg class="seal"><use href="#seal-imprint" /></svg><svg class="seal"><use href="#seal-imprint" /></svg></span>
+    <small>This month: 2 decided ⌃</small>
+  </button>
+  <button class="execute">Execute the month</button>
+</div>
+</body>
+</html>

@@ -660,27 +660,27 @@ $('decisionlist').innerHTML = STATUS.decisions.map((d) =>
 // LOOP DATA: the synthetic-customer development loop (updated every stage)
 // =====================================================================
 const LOOP = {
-  updated: "2026-11-22 08:30",
-  iteration: 0,
-  stage: 6, // index into stages
-  now: "<b>Iteration 0, stage 6 (Triage), and iteration 1 design has started.</b> All 9 customers played the v0.9.0 baseline. Weighted would-recommend is <b>4.9/10</b> (gate: 7.0); 7 of 9 would have quit; nobody reached the end of a game. The recalibrated panel independently found 6 of your 7 points (fidelity 6/7). QA is reproducing the reported bugs on a quiet machine (most freezes were our own machine overload). Four design workstreams are writing specs in parallel: <b>orders</b> (never blocked, point at it, one vocabulary, desk/map parity), <b>month</b> (your move, goal line, suggestions, shorter month), <b>feel</b> (a game, not a dashboard), and <b>the reveal</b> (your new end-of-game request, with achievements, perception, stats and ranking).",
+  updated: "2026-11-22 10:40",
+  iteration: 1,
+  stage: 3, // index into stages
+  now: "<b>Iteration 1, stage 3 (Build).</b> Three of four design specs are done: <b>orders</b> (reasons on every control, point at the element, one vocabulary, one order card on desk and map), <b>month</b> (Your move, goal line with progress, advisors with why-now, a 2-screen month, score explained, autopilot no longer wins) and <b>the reveal</b> (election-night end sequence, Presidency Score, 37 achievements, perception, declassified truth, ranking and same-seed replay). Building now in parallel: order availability and glossary (main branch), month engine and reveal engine (isolated worktrees), real-history content for all 8 flashpoints. Waiting on the <b>feel</b> visual language spec before the UI build, and on QA's bug reproduction.",
   stages: [
     ["Plan", "goals"], ["Design", "specs"], ["Build", "code"], ["Verify", "QA"], ["Use", "customers"], ["Triage", "decide"], ["Report", "status"], ["Gate", "RC?"],
   ],
-  kpis: [["Iteration", "0 <small>baseline</small>"], ["Customer personas", "9"], ["Team personas", "8"], ["Real signals", "2 <small>CEO</small>"], ["Baseline recommend", "4.9 <small>/10 weighted</small>"], ["Decisions logged", "D-44"], ["Release gate", "<span style='color:var(--brand)'>not met</span>"]],
+  kpis: [["Iteration", "1 <small>building</small>"], ["Customer personas", "9"], ["Team personas", "8"], ["Real signals", "2 <small>CEO</small>"], ["Baseline recommend", "4.9 <small>/10 weighted</small>"], ["Decisions logged", "D-48"], ["Release gate", "<span style='color:var(--brand)'>not met</span>"]],
   goals: [
-    ["G1", "A", "Never blocked without a reason and a way forward", "CEO RS-001", "planned"],
-    ["G2", "A", "Point at what you mean (warnings highlight the element)", "CEO RS-001", "planned"],
-    ["G3", "A", "One vocabulary (one name per concept, everywhere)", "CEO RS-001", "planned"],
-    ["G4", "A", "Clear what is expected each month", "CEO RS-001", "planned"],
-    ["G5", "A", "Suggestions visible, explained, one tap to accept", "CEO RS-001", "planned"],
-    ["G6", "A", "Desk and map parity", "CEO RS-001", "planned"],
-    ["G7", "A", "A game, not a dashboard (art-directed, reactive UI)", "CEO RS-001", "planned"],
+    ["G1", "A", "Never blocked without a reason and a way forward", "CEO RS-001", "doing"],
+    ["G2", "A", "Point at what you mean (warnings highlight the element)", "CEO RS-001", "doing"],
+    ["G3", "A", "One vocabulary (one name per concept, everywhere)", "CEO RS-001", "doing"],
+    ["G4", "A", "Clear what is expected each month", "CEO RS-001", "doing"],
+    ["G5", "A", "Suggestions visible, explained, one tap to accept", "CEO RS-001", "doing"],
+    ["G6", "A", "Desk and map parity", "CEO RS-001", "doing"],
+    ["G7", "A", "A game, not a dashboard (art-directed, reactive UI)", "CEO RS-001", "doing"],
     ["G8", "A", "A wide audience: non-gamers, teens, quick and long sessions", "CEO brief", "planned"],
     ["G9", "A", "Learn and test real history (what really happened, replay to compare)", "CEO brief", "planned"],
-    ["G10", "A", "The reveal: an end of game worth waiting for (achievements, perception, stats, ranking)", "CEO RS-002", "planned"],
+    ["G10", "A", "The reveal: an end of game worth waiting for (achievements, perception, stats, ranking)", "CEO RS-002", "doing"],
     ["P1", "B", "Reusable method, kept apart from the game", "CEO", "doing"],
-    ["P2", "B", "Fast, safe iterations (more change, zero regressions)", "CEO", "planned"],
+    ["P2", "B", "Fast, safe iterations (more change, zero regressions)", "CEO", "doing"],
     ["P3", "B", "Quality by construction (ledger, spec or test, QA on every change)", "Method", "doing"],
     ["P4", "B", "Parallel agents at scale with clear briefs and isolation", "CEO", "doing"],
     ["P5", "B", "A learning loop on the process (journal, How we work)", "CEO", "doing"],
@@ -690,10 +690,14 @@ const LOOP = {
   personas: ["maya", "olivia", "ruth", "noah", "priya", "dan", "sam", "leo", "marcus"],
   heat: { "0": { maya: 6, olivia: 3, ruth: 4, noah: 4, priya: 5, dan: 5, sam: 6, leo: 5, marcus: 6 } },
   iterations: [
-    { n: 0, title: "Setup and baseline", state: "doing", dates: "2026-11-21 to 2026-11-22",
+    { n: 0, title: "Setup and baseline", state: "done", dates: "2026-11-21 to 2026-11-22",
       summary: "Tagged v0.9.0 and branched. Built the synthetic-customer loop as a reusable <code>devloop/</code> module (9 customer personas from a coverage matrix, 8 team charters, protocols, report schema, triage rules, ledger, Playwright kit with a persistent driver). Recalibrated the panel against your playtest, then ran the baseline: 9 interviews and 9 play sessions on v0.9.0. Weighted recommend <b>4.9</b>. Top wishes from the interviews (weighted 100-point trade-off): see why before trying (15), a clear move and goal (13), a crafted game feel (13), real-world content (9), a shorter month (9). Triage: 15 clusters, see <code>runs/iter-00/triage.md</code>.",
       highlights: ["The recalibrated panel found 6 of your 7 points without being told, including the political capital toast versus the tiny meter (Leo) and the two capital representations (Sam).", "Everyone loved the globe title screen and the newspaper; visual scores 7 to 8.", "Wide panel paid off: Ruth (67) and Noah (16) surfaced legibility, abbreviation and pacing problems no gamer persona raised.", "Marcus asked for same-seed replays and side-by-side runs, which fits your ranking ask."],
       lowlights: ["Running 9 browsers at once overloaded the machine (load 137 on 20 cores): 6 of 9 sessions froze, which muddied performance evidence. Now capped at 4 at a time.", "Nobody reached the end of a game, so the panel missed the weak ending you flagged (RS-002). Now at least 3 personas must reach the end each iteration.", "Agents shared a scratch folder and one overwrote another's script; each now gets its own.", "Approve all + Execute is an autopilot that wins (Dan): the game rarely asks for a real decision."] },
+    { n: 1, title: "Unblock, clarify, reveal", state: "doing", dates: "2026-11-22 to now",
+      summary: "Goals: G1 to G5 (never blocked, point at it, one vocabulary, your move, suggestions), G6 parity, G7 feel, G10 the reveal. Design first: four specs with concepts and 100+ numbered acceptance criteria in <code>runs/iter-01/</code>. Build in parallel work packages with single owners per file.",
+      highlights: ["Designers found root causes, not symptoms: greyed orders were waiting for a target, Enter queued orders instantly, the two capital meters counted in opposite directions, four separate order lists existed, and the staff pick filtered out every option that hurt the mission (why autopilot won).", "The reveal design turns your end-of-game ask into seven stages with a comparable 0-1000 score and a ranking ladder."],
+      lowlights: ["The harness had no policy that plays like the staff, so autopilot had never been measured; adding it now."] },
   ],
   stageMatrix: {
     // persona/group -> [Plan, Design, Build, Verify, Use, Triage, Report, Gate]

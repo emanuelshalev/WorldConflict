@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Month 1 Desk 1440</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..800&family=Geist+Mono:wght@400..700&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400&display=swap" rel="stylesheet" />
+<style>
+:root{--bg-0:#0b0f17;--ocean:#0e1a2b;--land:#1f2a3a;--surface-1:#141b27;--surface-2:#1c2533;--surface-3:#243042;--line:#2a3546;--line-2:#3a4759;--text-1:#e8ecf2;--text-2:#a3aebf;--text-3:#8693a6;--accent:#f2a93b;--accent-ink:#1b1204;--intel:#4fb3d9;--war:#e5383b;--good:#56c596;--bad:#e5383b;--font-ui:'Geist','Inter',system-ui,sans-serif;--font-mono:'Geist Mono',ui-monospace,monospace;--r-md:10px;--r-lg:16px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg-0);color:var(--text-1);font-family:var(--font-ui);-webkit-font-smoothing:antialiased}
+.app{width:1440px;height:900px;display:grid;grid-template-rows:60px 52px 1fr;overflow:hidden}
+.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.hud{display:flex;align-items:center;gap:26px;padding:0 18px;border-bottom:1px solid var(--line);background:linear-gradient(#0f1520,#0b0f17)}
+.hud .who b{display:block;font-size:17px}.hud .who span{font-size:12.5px;color:var(--text-2)}
+.hs i{display:block;font-style:normal;font-size:11px;color:var(--text-3);letter-spacing:.06em}
+.hs b{font-size:16px}
+.hud .sp{flex:1}
+/* goal line */
+.goalbar{display:flex;align-items:center;gap:16px;padding:0 18px;border-bottom:1px solid var(--line);background:var(--surface-1)}
+.goalbar .t{font-weight:700;font-size:15px;display:flex;gap:8px;align-items:center}
+.segs{display:flex;gap:4px;width:240px}
+.segs i{flex:1;height:7px;border-radius:4px;background:var(--line-2)}
+.segs i.ok{background:var(--good)}.segs i.close{background:var(--accent)}.segs i.off{background:var(--bad)}
+.segs i.bonus{flex:none;width:12px;border:1px solid var(--text-3);background:none}
+.goalbar .m{font-size:13px;color:var(--text-2)}
+.goalbar .step{font-size:13.5px;color:var(--text-2);padding:5px 10px;border:1px dashed var(--accent);border-radius:999px}
+.goalbar .step b{color:var(--text-1)}
+.switch{margin-left:auto;display:flex;border:1px solid var(--line-2);border-radius:8px;overflow:hidden}
+.switch span{padding:6px 12px;font-size:13px;color:var(--text-2)}
+.switch span.on{background:var(--surface-3);color:var(--text-1);font-weight:600}
+/* body */
+.body{display:grid;grid-template-columns:280px 1fr 380px;min-height:0}
+.nav{border-right:1px solid var(--line);padding:14px 12px;overflow:hidden}
+.nh{font-size:11.5px;letter-spacing:.12em;color:var(--text-3);margin:14px 6px 6px;display:flex;justify-content:space-between}
+.obj{padding:8px 8px;border-radius:8px;font-size:13px;display:grid;grid-template-columns:8px 1fr;gap:8px;align-items:start}
+.obj i{width:8px;height:28px;border-radius:4px;background:var(--line-2);display:block}
+.obj i.ok{background:var(--good)}.obj i.close{background:var(--accent)}.obj i.off{background:var(--bad)}
+.obj b{display:block;font-weight:600}
+.obj span{color:var(--text-2);font-size:12.5px}
+.row{display:flex;align-items:center;gap:8px;padding:9px 8px;border-radius:8px;font-size:13.5px}
+.row.on{background:var(--surface-2);border:1px solid var(--accent)}
+.row .tg{margin-left:auto;font-size:11px;padding:2px 7px;border-radius:999px;border:1px solid var(--accent);color:var(--accent);white-space:nowrap}
+.row .tg.ok{border-color:var(--good);color:var(--good)}
+.row .tg.dep{border-color:var(--line-2);color:var(--text-3)}
+.center{padding:18px 26px;overflow:hidden}
+.mv{display:grid;grid-template-columns:300px 1fr;gap:20px;align-items:start}
+.scene{height:170px;border-radius:14px;position:relative;overflow:hidden;background:radial-gradient(120% 90% at 50% 100%,#5a2a12 0%,#2a1410 35%,#0e1a2b 75%);border:1px solid var(--line)}
+.scene svg{position:absolute;inset:0}
+.pill{position:absolute;left:10px;top:10px;font-size:11px;font-weight:700;letter-spacing:.08em;padding:3px 8px;border-radius:4px;background:var(--war)}
+.ls{font-size:12px;letter-spacing:.12em;color:var(--accent);font-weight:700}
+h2{margin:4px 0 8px;font-size:26px;line-height:1.1}
+.sit{margin:0;font-size:15.5px;line-height:1.5;color:var(--text-2)}
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.opt{position:relative;background:var(--surface-2);border:1px solid var(--line-2);border-radius:12px;padding:14px;min-height:178px;display:flex;flex-direction:column}
+.opt.pick{border-color:var(--accent);background:#2a2214}
+.opt b{font-size:17px}
+.badge{align-self:flex-start;font-size:11px;font-weight:700;letter-spacing:.04em;padding:3px 8px;border-radius:999px;border:1px solid var(--accent);color:var(--accent);margin:6px 0 2px}
+.opt .d{font-size:13.5px;color:var(--text-2);line-height:1.4;margin:6px 0 10px}
+.tag{align-self:flex-start;font-size:12.5px;font-weight:700;padding:3px 8px;border-radius:999px;margin-top:auto}
+.tag.help{background:rgba(86,197,150,.15);color:var(--good);border:1px solid rgba(86,197,150,.5)}
+.tag.hurt{background:rgba(229,56,59,.14);color:#ff7a7c;border:1px solid rgba(229,56,59,.5)}
+.tag.bonus{color:var(--good);border:1px dashed rgba(86,197,150,.6)}
+.arr{font-family:var(--font-mono);font-size:12px;margin-top:8px;line-height:1.6}
+.arr .u{color:var(--good)}.arr .dn{color:#ff7a7c}
+.bk{font-size:12px;color:var(--text-3);margin-top:6px}
+.sel{display:flex;gap:12px;align-items:center;margin-top:12px;font-size:13px}
+.sel .st{padding:4px 10px;border-radius:999px;border:1px solid var(--accent);color:var(--accent);font-weight:600}
+.sel a{color:var(--intel);text-decoration:none;font-weight:600}
+h3{font-size:12px;letter-spacing:.12em;color:var(--text-3);margin:22px 0 10px}
+.advs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.adv{background:var(--surface-1);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;grid-template-columns:34px 1fr auto;gap:10px}
+.av{width:34px;height:34px;border-radius:50%;background:var(--surface-3);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--text-2)}
+.adv b{font-size:14.5px}
+.adv .why{font-size:13px;color:var(--text-2);margin:3px 0 6px;line-height:1.35}
+.adv .why em{font-style:normal;color:var(--text-1)}
+.add{min-width:64px;height:40px;border-radius:9px;border:1px solid var(--accent);background:none;color:var(--accent);font:inherit;font-weight:700}
+.add.on{border-color:var(--good);color:var(--good);background:rgba(86,197,150,.12)}
+.cost{display:block;text-align:center;font-size:12px;color:var(--accent);margin-top:4px}
+.sq{font-size:11px;color:var(--text-3);font-weight:600;letter-spacing:.05em}
+.coach{position:relative;display:inline-block;margin:14px 0 -4px 330px;background:var(--intel);color:#04131b;border-radius:12px;padding:9px 12px;font-size:14px;font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+.coach:after{content:"";position:absolute;left:24px;bottom:-7px;border:8px solid transparent;border-top-color:var(--intel);border-bottom:0}
+.coach small{font-weight:500;opacity:.75;margin-left:8px}
+/* rail */
+.rail{border-left:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+.map{height:170px;background:var(--ocean);position:relative;border-bottom:1px solid var(--line)}
+.rail-in{padding:12px 16px;flex:1;overflow:hidden}
+.bud{display:grid;grid-template-columns:1fr auto;gap:6px 10px;font-size:13px;color:var(--text-2)}
+.bud b{color:var(--text-1);font-weight:600}
+.pc{color:var(--accent)}
+.plan{margin-top:12px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.plan div{padding:9px 11px;font-size:13px;border-bottom:1px solid var(--line)}
+.plan div:last-child{border-bottom:0}
+.plan small{display:block;color:var(--text-3);font-size:12px;margin-top:2px}
+.score{margin-top:12px;font-size:12.5px;color:var(--text-2);background:var(--surface-1);border:1px solid var(--line);border-radius:10px;padding:9px 11px}
+.score b{color:var(--text-1)}
+.rail-foot{padding:12px 16px 16px;border-top:1px solid var(--line)}
+.appr{width:100%;height:44px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line-2);color:var(--accent);font:inherit;font-weight:700;margin-bottom:8px}
+.exec{width:100%;height:54px;border-radius:12px;background:var(--accent);color:var(--accent-ink);border:0;font:inherit;font-weight:800;font-size:17px}
+.sum{font-size:12px;color:var(--text-3);text-align:center;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="hud">
+    <span style="font-size:26px">🇸🇦</span>
+    <div class="who"><b>Mohammed bin Salman</b><span>Saudi Arabia · Nov 2026 · month 1 of 12</span></div>
+    <div class="hs"><i>APPROVAL</i><b class="num">64%</b></div>
+    <div class="hs"><i>STABILITY</i><b class="num">62%</b></div>
+    <div class="hs"><i>LEGITIMACY</i><b class="num">75%</b></div>
+    <div class="hs"><i>ECONOMY</i><b class="num">$1.24T</b></div>
+    <div class="hs"><i>POLITICAL CAPITAL</i><b class="num" style="color:var(--accent)">◆ 1 of 3 left</b></div>
+    <div class="hs"><i>WORLD TENSION</i><b class="num">76</b></div>
+    <div class="hs"><i>SCORE</i><b class="num">100</b></div>
+    <span class="sp"></span>
+  </header>
+
+  <div class="goalbar">
+    <span class="t"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f2a93b" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="#f2a93b"/></svg>Close the gate</span>
+    <div class="segs"><i class="off"></i><i class="ok"></i><i class="off"></i><i class="close"></i><i class="bonus"></i><i class="bonus"></i></div>
+    <span class="m num">1 of 4 on track · month 1 of 12</span>
+    <span class="step">This month: <b>stability 62%, needs 78%</b></span>
+    <div class="switch"><span>Focus</span><span class="on">Full desk</span></div>
+  </div>
+
+  <div class="body">
+    <nav class="nav">
+      <div class="nh"><span>MISSION</span><span class="num">12 mo</span></div>
+      <div class="obj"><i class="off"></i><div><b>Houthis off the coast</b><span>front 42, needs 58 or a ceasefire</span></div></div>
+      <div class="obj"><i class="ok"></i><div><b>No war with the Emirates</b><span>on track</span></div></div>
+      <div class="obj"><i class="off"></i><div><b>Keep the kingdom calm</b><span>stability 62%, needs 78%</span></div></div>
+      <div class="obj"><i class="close"></i><div><b>Vision 2030 alive</b><span>score 100, needs 114 · heading to 98</span></div></div>
+      <div class="nh"><span>CRISES</span><span class="num">1</span></div>
+      <div class="row on">🇸🇦 🇾🇪 After the Riyadh airport strike <span class="tg">Cabinet pick</span></div>
+      <div class="nh"><span>MEETINGS</span><span class="num">0 of 3 in person</span></div>
+      <div class="row">📞 🇦🇪 Mohammed bin Zayed <span class="tg">Mission</span></div>
+      <div class="row">📞 🇾🇪 Abdul-Malik al-Houthi <span class="tg dep">Staff</span></div>
+      <div class="row">📞 🇵🇰 Prime Minister Sharif <span class="tg dep">Deputy</span></div>
+      <div class="row">👥 Defence Minister <span class="tg dep">Staff</span></div>
+      <div class="nh"><span>ORDERS</span><span class="num">1 of 6</span></div>
+      <div class="row">Advisors' suggestions <span class="tg ok">1 added</span></div>
+      <div class="row">All orders <span style="margin-left:auto;color:var(--text-3)">/</span></div>
+    </nav>
+
+    <main class="center" style="position:relative">
+            <div class="mv">
+        <div class="scene">
+          <svg viewBox="0 0 300 170" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+            <g fill="#0b0f17"><rect x="10" y="110" width="20" height="60"/><rect x="34" y="92" width="14" height="78"/><rect x="52" y="118" width="26" height="52"/><rect x="82" y="80" width="14" height="90"/><rect x="100" y="104" width="24" height="66"/><rect x="128" y="70" width="16" height="100"/><rect x="148" y="100" width="28" height="70"/><rect x="180" y="86" width="14" height="84"/><rect x="198" y="110" width="22" height="60"/><rect x="224" y="78" width="18" height="92"/><rect x="246" y="106" width="28" height="64"/></g>
+            <circle cx="160" cy="112" r="24" fill="#ff8a3a" opacity=".35"/><circle cx="160" cy="112" r="10" fill="#ffc46b" opacity=".7"/>
+            <path d="M90 44l28 4-6 6 10 6-15-2-8 8 2-10-13-4z" fill="#c9d3e0" opacity=".8"/>
+          </svg>
+          <span class="pill">URGENT 🇸🇦 🇾🇪 🇺🇸</span>
+        </div>
+        <div>
+          <div class="ls">YOUR MOVE · CRISIS</div>
+          <h2>After the Riyadh airport strike</h2>
+          <p class="sit">A Houthi missile killed 13 at your capital's airport, and the kingdom wants an answer. Bombing Sanaa satisfies the anger; a back channel through Oman could stop the missiles and looks weak; American and Israeli strikes tie you openly to Israel. <a href="#" style="color:var(--intel);text-decoration:none;font-weight:600">Less</a></p>
+        </div>
+      </div>
+      <div class="coach">This is your move this month. Pick one.<small>1 of 3</small></div>
+      <div class="opts">
+        <div class="opt"><b>Bomb Sanaa</b><div class="d">The full air force. Revenge, ruins, and familiar headlines from 2015.</div>
+          <span class="tag hurt">Hurts: stability 78%</span>
+          <div class="arr"><span class="u">Approval ▲▲</span> <span class="dn">Stability ▼ Legitimacy ▼▼ US view ▼▼ Tension ▲▲</span></div>
+          <div class="bk">Backed by Defence Minister</div></div>
+        <div class="opt pick"><b>Back channel via Muscat</b><span class="badge">CABINET PICK · GOOD FOR MISSION</span><div class="d">Talk to the men who just bombed your airport. Quietly, and hope it stays quiet.</div>
+          <span class="tag help">Helps: a ceasefire · stability</span>
+          <div class="arr"><span class="dn">Approval ▼▼</span> <span class="u">Stability ▲ Yemen view ▲▲ Tension ▼▼</span></div>
+          <div class="bk">Backed by Foreign Minister</div></div>
+        <div class="opt"><b>Invite US and Israeli strikes</b><div class="d">Let the superpowers hit the launchers. Effective, and a political earthquake at home.</div>
+          <span class="tag bonus">Helps: Washington (bonus)</span>
+          <div class="arr"><span class="dn">Approval ▼▼ Legitimacy ▼ Iran view ▼▼ Tension ▲▲</span> <span class="u">US view ▲▲</span></div>
+          <div class="bk">Backed by Intelligence Chief</div></div>
+      </div>
+      <div class="sel"><span class="st">Cabinet pick: Back channel via Muscat</span><a href="#">Approve cabinet pick</a><a href="#">Ask your staff</a></div>
+
+      <h3>YOUR ADVISORS SUGGEST</h3>
+      <div class="advs">
+        <div class="adv"><div class="av">IM</div><div><span class="sq">QUEUED BY STAFF</span><br><b>Reform program</b><div class="why"><em>Stability 62%, the mission needs 78%.</em> Reform takes months to pay off, so start now.</div><span class="tag help">Helps: stability 78%</span></div><div><button class="add on">Added</button><span class="cost num">◆2</span></div></div>
+        <div class="adv"><div class="av">FM</div><div><b>Court the United States</b><div class="why"><em>US view of you 60, your bonus needs 70.</em> Their envoy is in the region this month.</div><span class="tag bonus">Helps: Washington (bonus)</span></div><div><button class="add">Add</button><span class="cost num">◆1</span></div></div>
+      </div>
+    </main>
+
+    <aside class="rail">
+      <div class="map">
+        <svg viewBox="0 0 380 170" width="380" height="170" aria-hidden="true">
+          <path d="M120 30 L230 24 L280 60 L300 110 L250 140 L200 150 L150 120 L120 80 Z" fill="#f2a93b" opacity=".75" stroke="#ffd28a"/>
+          <path d="M200 150 L250 140 L262 160 L210 168 Z" fill="#e5383b" opacity=".85"/>
+          <text x="180" y="86" fill="#1b1204" font-size="12" font-family="Geist" font-weight="700">Saudi Arabia</text>
+          <text x="214" y="162" fill="#fff" font-size="11" font-family="Geist">Yemen</text>
+        </svg>
+      </div>
+      <div class="rail-in">
+        <div class="bud">
+          <span>Political capital</span><b class="num pc">◆ 1 of 3 left</b>
+          <span>Defence budget</span><b>untouched ($8.7B a month)</b>
+          <span>Orders</span><b class="num">1 of 6</b>
+          <span>Meetings in person</span><b class="num">0 of 3</b>
+        </div>
+        <div class="plan">
+          <div><b>After the Riyadh airport strike:</b> Back channel via Muscat<small>Cabinet pick · helps a ceasefire</small></div>
+          <div><b>Reform program</b> ◆2<small>Interior Minister: stability 62%, the mission needs 78%</small></div>
+          <div>Calls: staff attend 2, a deputy takes 2<small>Mohammed bin Zayed is a mission call: attend in person?</small></div>
+        </div>
+        <div class="score"><b>Score 100.</b> Heading to 98 if nothing changes: the Houthi war pulls security down; strong growth lifts the economy. <a href="#" style="color:var(--intel);text-decoration:none">Why?</a></div>
+      </div>
+      <div class="rail-foot">
+        <button class="appr">Approve 4 suggestions</button>
+        <button class="exec">Execute month</button>
+        <div class="sum">Cabinet pick on 1 crisis · 1 staff order · staff take 3 calls · 12 months left</div>
+      </div>
+    </aside>
+  </div>
+</div>
+</body>
+</html>
