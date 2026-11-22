@@ -249,8 +249,18 @@ export function endWar(
     loser.stability = clamp(loser.stability - 15);
     loser.legitimacy = clamp(loser.legitimacy - 20);
     loser.approval = clamp(loser.approval - 15);
-    winner.approval = clamp(winner.approval + 12);
-    winner.legitimacy = clamp(winner.legitimacy + 8);
+    // No victory parade after a mushroom cloud: a war won with a nuclear weapon brings no rally
+    const nuclearWin = (world.director?.shocks ?? []).some(
+      (s) =>
+        s.kind === "NUCLEAR_STRIKE" &&
+        s.by === winner.id &&
+        s.target === loser.id &&
+        world.turn - s.turn <= 12,
+    );
+    if (!nuclearWin) {
+      winner.approval = clamp(winner.approval + 12);
+      winner.legitimacy = clamp(winner.legitimacy + 8);
+    }
     loser.insurgencyLevel = loser.insurgencyLevel === "NONE" ? "UNREST" : loser.insurgencyLevel;
     description = `${winner.name} has defeated ${loser.name}. ${loser.name} accepts humiliating terms; its government totters.`;
   } else {

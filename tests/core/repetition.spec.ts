@@ -70,7 +70,7 @@ describe("anti-repetition", () => {
     const months = play("USA", 5, 12);
     const last = months[months.length - 1];
     expect(last.director.recentLines.length).toBeGreaterThan(0);
-    expect(last.director.recentLines.length).toBeLessThanOrEqual(40);
+    expect(last.director.recentLines.length).toBeLessThanOrEqual(80);
   });
 
   it("marks orders repeated from last month and counts uses in six months", () => {

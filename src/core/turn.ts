@@ -26,6 +26,7 @@ import {
 } from "./reactions.js";
 import { updateScore } from "./scoring.js";
 import { combineSeed, SeededRandom } from "./seed.js";
+import { decisionOutcome, orderOutcome } from "./status.js";
 import { covertEvent, resolveCovertOp } from "./systems/covert.js";
 import {
   applyDiplomaticDrift,
@@ -57,6 +58,7 @@ import {
 import {
   applyFallout,
   executeNuclearStrike,
+  isNuclearOperational,
   progressNuclearPrograms,
   startNuclearProgram,
 } from "./systems/nuclear.js";
@@ -324,6 +326,19 @@ export class TurnEngine {
           push(rejectedActions, actor.id, { action, reason: outcome.reason });
         }
         if (isPlayer) tensionAfterPlayer = world.globalTension;
+        // A crisis answer that set off an order which then failed stood only in part
+        const from = injected.has(action) ? this.injectedFrom.get(action) : undefined;
+        const rolled = outcome.covert?.success ?? outcome.chance?.success ?? true;
+        if (from !== undefined && (!outcome.ok || !rolled)) {
+          const d = report.decisions[from];
+          if (d) {
+            const failedAction = {
+              label: orderLabel(world, action),
+              reason: outcome.reason.split(/(?<=\.)\s/)[0] ?? outcome.reason,
+            };
+            Object.assign(d, decisionOutcome({ ...d, failedAction }));
+          }
+        }
         if (isPlayer && !injected.has(action)) {
           const covert = outcome.covert;
           const snapAfter = snapshot(world, actor, orderTarget);
@@ -352,16 +367,29 @@ export class TurnEngine {
               if (line.length > 24) line.splice(0, line.length - 24);
             }
           }
+          const detail = covert
+            ? `${covert.success ? "Success" : "Failed"}: ${outcome.reason}`
+            : outcome.ok
+              ? outcome.reason || "Carried out"
+              : outcome.reason;
+          const chance = covert
+            ? { success: covert.success, exposed: covert.exposed }
+            : outcome.chance;
+          const ok = done && (chance?.success ?? true);
           report.orders.push({
             ...orderTag(world, action),
-            ok: done,
-            detail: covert
-              ? `${covert.success ? "Success" : "Failed"}: ${outcome.reason}`
-              : outcome.ok
-                ? outcome.reason || "Carried out"
-                : outcome.reason,
+            ok,
+            detail,
             ...(story ? { story } : {}),
             ...(facts.length ? { facts } : {}),
+            ...orderOutcome({
+              type: action.type,
+              ok,
+              detail,
+              facts,
+              chance,
+              target: orderTarget?.name,
+            }),
           });
           if (covert?.toppled)
             report.moments.push(action.type === "INTEL_COUP" ? "REGIME CHANGE" : "ASSASSINATION");
@@ -554,6 +582,8 @@ export class TurnEngine {
 
   // --------------------------------------------------------------------
   private report: PlayerTurnReport | null = null;
+  /** Orders a crisis answer set in motion, and the report decision they came from. */
+  private injectedFrom = new Map<Action, number>();
   private month: MonthStart | null = null;
   private start: {
     rel: Map<string, number>;
@@ -564,6 +594,7 @@ export class TurnEngine {
 
   private resolveDecisions(world: WorldState, choices: DecisionChoice[]): Action[] {
     const injected: Action[] = [];
+    this.injectedFrom = new Map();
     const player = world.countries.find((c) => c.id === world.playerCountryId);
     if (!player) return injected;
 
@@ -585,6 +616,7 @@ export class TurnEngine {
       applyEffects(world, player, option.effects);
       world.globalTension = clamp01(world.globalTension + option.tensionDelta);
       injected.push(...option.actions);
+      for (const a of option.actions) this.injectedFrom.set(a, this.report?.decisions.length ?? 0);
       if (option.followUp)
         scheduleFollowUp(world, option.followUp.templateId, option.followUp.delay, pending.title);
       const relKey = Object.keys(option.effects).find((k) => k.startsWith("relations:"));
@@ -617,6 +649,7 @@ export class TurnEngine {
         facts,
         reaction,
         watch: watchLine({ followUpDelay: option.followUp?.delay }),
+        ...decisionOutcome({ kind: "CRISIS", attended: !byDefault, byDefault, facts }),
       });
       world.pendingDecisions = world.pendingDecisions.filter((d) => d.id !== pending.id);
     }
@@ -693,6 +726,7 @@ export class TurnEngine {
           deputyAtWar: !!them && player.atWarWith.includes(them.id),
           staffHold: meeting.kind === "STAFF" && /^(hold|deputy|course|wait)$/.test(option.id),
         }),
+        ...decisionOutcome({ kind: meeting.kind, attended: attendedIt, facts }),
       });
     }
     world.agenda = [];
@@ -742,6 +776,52 @@ export class TurnEngine {
     if (shocks.length > 40) shocks.splice(0, shocks.length - 40);
   }
 
+  /**
+   * A strike on a nuclear power outside a war: the target declares war on the striker, its
+   * defence pacts come in, the world shocks (a CRITICAL war event lifts the tension cap) and the
+   * striker's public turns on a war with a nuclear power nobody voted for. Returns the line
+   * appended to the order's reason.
+   */
+  private actOfWar(
+    world: WorldState,
+    actor: CountryState,
+    target: CountryState,
+    rng: SeededRandom,
+    events: GameEvent[],
+  ): string {
+    if (target.collapsed || !canDeclareWar(target, actor).allowed) return "";
+    const war = startWar(world, target.id, actor.id);
+    if (!war) return "";
+    const joined = activateDefensivePacts(world, war, rng);
+    const democracy = actor.regimeType === "DEMOCRACY";
+    const approvalHit = democracy ? 10 : 5;
+    actor.approval = clamp01(actor.approval - approvalHit);
+    actor.legitimacy = clamp01(actor.legitimacy - (democracy ? 6 : 3));
+    actor.stability = clamp01(actor.stability - 4);
+    world.globalTension = clamp01(world.globalTension + 20);
+    const names = joined.map((id) => world.countries.find((c) => c.id === id)?.name ?? id);
+    events.push({
+      id: `evt_war_${target.id}_${actor.id}_${world.turn}`,
+      type: "WAR",
+      title: `WAR: ${target.name} attacks ${actor.name}`,
+      description: `${target.leader.title} ${target.leader.name} answered ${possessive(actor.name)} strike with a declaration of war.${
+        names.length > 0
+          ? ` Honoring defense pacts, ${names.join(", ")} joined against ${actor.name}.`
+          : ""
+      } Both sides hold nuclear weapons or the means to answer them; the world stands at the brink.`,
+      affectedCountries: [actor.id, target.id, ...joined],
+      turn: world.turn,
+      severity: "CRITICAL",
+    });
+    if (actor.id === world.playerCountryId) {
+      this.report?.moments.push("ACT OF WAR");
+      this.report?.causes.push(
+        `You struck a nuclear power in peacetime: ${target.name} declared war (approval −${approvalHit})`,
+      );
+    }
+    return ` ${target.name} answers with a declaration of war.`;
+  }
+
   // --------------------------------------------------------------------
   private applyAction(
     world: WorldState,
@@ -754,6 +834,8 @@ export class TurnEngine {
     ok: boolean;
     reason: string;
     covert?: { success: boolean; exposed: boolean; toppled: boolean };
+    // A roll the order made (airstrike, mediation): how it went, for the report's status
+    chance?: { success: boolean; partial?: string; none?: string };
   } {
     const target = action.targetCountryId
       ? world.countries.find((c) => c.id === action.targetCountryId)
@@ -937,7 +1019,13 @@ export class TurnEngine {
             severity: "MAJOR",
           });
         }
-        return { ok: result.ok, reason: result.reason };
+        return {
+          ok: result.ok,
+          reason: result.reason,
+          ...(result.ok && !result.ended
+            ? { chance: { success: true, partial: result.reason } }
+            : {}),
+        };
       }
       case "MILITARY_MOBILIZE": {
         actor.mobilizationLevel = clamp01(actor.mobilizationLevel + 20);
@@ -971,6 +1059,8 @@ export class TurnEngine {
       case "MILITARY_AIRSTRIKE": {
         if (!target) return { ok: false, reason: "No target" };
         const targetType = ((action.params?.targetType as string) ?? "MILITARY") as AirstrikeTarget;
+        const wasAtWar = actor.atWarWith.includes(target.id);
+        const armed = isNuclearOperational(target);
         const outcome = executeAirstrike(world, actor, target, targetType, rng);
         events.push({
           id: `evt_strike_${actor.id}_${target.id}_${world.turn}`,
@@ -983,7 +1073,21 @@ export class TurnEngine {
           turn: world.turn,
           severity: outcome.crippledNuclearProgram ? "CRITICAL" : "MAJOR",
         });
-        return { ok: true, reason: "" };
+        // Bombing a nuclear power in peacetime is an act of war, and it answers with one (F-02-3)
+        const answer = !wasAtWar && armed ? this.actOfWar(world, actor, target, rng, events) : "";
+        const hardened = outcome.success && targetType === "NUCLEAR" && armed;
+        return {
+          ok: true,
+          reason: `${outcome.description}${answer}`,
+          chance: {
+            success: outcome.success,
+            ...(hardened
+              ? {
+                  none: `The arsenal is dispersed and hardened: no meaningful damage.${answer}`,
+                }
+              : {}),
+          },
+        };
       }
       case "MILITARY_DEPLOY_BORDER": {
         if (!target) return { ok: false, reason: "No target" };
@@ -1018,6 +1122,12 @@ export class TurnEngine {
           return { ok: false, reason: "Nuclear release is only authorized in wartime" };
         }
         const result = executeNuclearStrike(world, actor, target, rng);
+        if (actor.id === world.playerCountryId) {
+          this.report?.moments.push("NUCLEAR STRIKE");
+          this.report?.causes.push(
+            `You used a nuclear weapon on ${target.name}: a global embargo, relations with every state collapse, and the public recoils`,
+          );
+        }
         events.push({
           id: `evt_nuke_${actor.id}_${target.id}_${world.turn}`,
           type: "NUCLEAR",
@@ -1321,7 +1431,9 @@ export class TurnEngine {
     report.world = moves
       .sort((a, b) => a.r - b.r)
       .slice(0, 12)
-      .map(({ r: _r, ...m }) => m);
+      .map(({ r: _r, ...m }) => ({ ...m, status: "DONE" as const }));
+    // Every order carries one status: the refusals pushed before resolution get theirs here
+    for (const o of report.orders) if (!o.status) Object.assign(o, orderOutcome(o));
     // Our wars: the front from our side, start and end of the month
     const ours = (w: { attackerId: string; defenderId: string }) =>
       w.attackerId === player.id || w.defenderId === player.id;
@@ -1403,6 +1515,10 @@ export class TurnEngine {
       const sc = size(o.facts) + (/war|ceasefire|pact|strike|coup/i.test(o.label) && o.ok ? 15 : 0);
       if (sc > bestScore) [best, bestScore] = [{ ref: "order", index: i }, sc];
     });
+    // The player's own move of the month, chosen before the fronts compete for the highlight:
+    // a front that moved on its own can lead the paper, never "What your choice did"
+    const own = best as PlayerTurnReport["highlight"];
+    if (own && own.ref !== "war") report.yourMove = { ref: own.ref, index: own.index };
     report.wars.forEach((w, i) => {
       // A war that ends is the story of the month
       const sc = w.ended
