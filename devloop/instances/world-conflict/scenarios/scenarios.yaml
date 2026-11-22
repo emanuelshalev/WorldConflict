@@ -28,3 +28,16 @@ noah:
 marcus:
   - {id: K1, goal: "I want to replay the same crisis twice with opposite choices and see whether the outcomes differ for reasons I can follow."}
   - {id: K2, goal: "I want a long 1990 campaign and to check that the world behaves like it plausibly could have."}
+
+# Control scenarios (D-59): the same seat and seed every iteration, on the anchor device, so
+# iterations compare like with like. Start them with the seed code under "Play a seed" on the title screen.
+control:
+  maya:   {code: CO-UKR-MAYA1,    device: phone,   play: "Flashpoint to the end (12 months)"}
+  olivia: {code: CA-USA-OLIV1,    device: laptop,  play: "Flashpoint, as far as she would"}
+  ruth:   {code: CO-UKR-RUTH1,    device: tablet,  play: "Flashpoint to the end (12 months)"}
+  noah:   {code: HC-ARE-NOAH1,    device: phone,   play: "Flashpoint, as far as he would"}
+  priya:  {code: CO-UKR-PRIY1,    device: laptop,  play: "Flashpoint to the end (12 months)"}
+  dan:    {code: T2026-RUS-DAN01, device: desktop, play: "One Term, at least 12 months"}
+  sam:    {code: SL-CHN-SAM01,    device: desktop, play: "Flashpoint, as far as he would"}
+  leo:    {code: QU-CHN-LEO01,    device: desktop, play: "Flashpoint to the end (12 months)"}
+  marcus: {code: T1990-USA-MARC1, device: desktop, play: "One Term, at least 12 months"}
