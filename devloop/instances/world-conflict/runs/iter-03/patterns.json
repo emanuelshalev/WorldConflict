@@ -1,0 +1,269 @@
+{
+  "headline": "Nobody quit and the surface works (visual 7.4, Ruth and Priya recommend at 7, the truth table is the best part), but the game stopped asking questions: from month 3 everyone found that Accept all plus Execute was right, so agency (6.3) and replay (5.8) lag and the weighted recommend is flat at 6.2. Trust is the second drag: numbers and lines contradict or repeat, and several registered findings came back (eleven registry matches, one confirmed regression of RS-001-5, the desk advisor cards).",
+  "loved": [
+    {
+      "what": "The reveal, especially the truth table against the real world, the grade and seals, and a clear way back (RS-004)",
+      "who": [
+        "ruth",
+        "priya",
+        "maya",
+        "sam",
+        "leo"
+      ]
+    },
+    {
+      "what": "Result cards with a big number, stamps, quote and newspaper; scenes that look like a real game",
+      "who": [
+        "noah",
+        "ruth",
+        "olivia",
+        "sam",
+        "maya"
+      ]
+    },
+    {
+      "what": "Forecasts and score breakdowns that say why every number moved, and warnings that name the mission it would break",
+      "who": [
+        "dan",
+        "leo",
+        "priya"
+      ]
+    },
+    {
+      "what": "Seed codes and Replay same opening: the same seed gives the same result",
+      "who": [
+        "leo",
+        "marcus",
+        "maya",
+        "priya"
+      ]
+    }
+  ],
+  "patterns": [
+    {
+      "id": "F-03-1",
+      "title": "Accept all autopilot: nothing to decide after month 3",
+      "detail": "Everyone guessed 'answer the crisis, skip the rest' and was right; capital sat unspent at the cap; crises answered unread; Olivia and Sam won on picks.",
+      "who": [
+        "maya",
+        "olivia",
+        "ruth",
+        "noah",
+        "priya",
+        "dan",
+        "sam",
+        "leo",
+        "marcus"
+      ],
+      "goal": "G4 G5 G7",
+      "tone": "bad",
+      "ceo": true
+    },
+    {
+      "id": "F-03-2",
+      "title": "Advisor cards collapse to one letter per line (regression of RS-001-5)",
+      "detail": "Desk 'Your advisors suggest' unreadable at every width from month 2; the guard only covered the Map strip.",
+      "who": [
+        "dan",
+        "marcus",
+        "priya",
+        "sam"
+      ],
+      "goal": "G5 G13",
+      "tone": "bad"
+    },
+    {
+      "id": "F-03-3",
+      "title": "Map mode hides the story and loses the player",
+      "detail": "Crisis text missing, risky orders accepted unread, Add not confirmed, flips back to Desk, Map switch buried on phones, verbs differ from the desk.",
+      "who": [
+        "maya",
+        "olivia",
+        "ruth",
+        "noah",
+        "sam",
+        "leo",
+        "marcus"
+      ],
+      "goal": "G6",
+      "tone": "bad",
+      "ceo": true
+    },
+    {
+      "id": "F-03-4",
+      "title": "Numbers and words contradict",
+      "detail": "Mission strip vs report, verdict 5 of 5 vs 4, 13 orders for 1, moments under the wrong heading, 0 before counting, a FAILED order nobody gave.",
+      "who": [
+        "marcus",
+        "sam",
+        "leo",
+        "ruth",
+        "priya",
+        "olivia",
+        "dan"
+      ],
+      "goal": "G10 G13",
+      "tone": "bad"
+    },
+    {
+      "id": "F-03-5",
+      "title": "Repeated and boilerplate lines",
+      "detail": "Same reply from every leader, reused quotes, Court Iran monthly, staff courting a relation at -99, generic templates after the war ended.",
+      "who": [
+        "dan",
+        "marcus",
+        "priya",
+        "leo",
+        "sam"
+      ],
+      "goal": "G9 G13",
+      "tone": "bad"
+    },
+    {
+      "id": "F-03-6",
+      "title": "Plausibility breaks the spell",
+      "detail": "1990 Iraq nuclear program and outbreak, Australia spying on China, one order ending the Ukraine war in month 3, seat counts for one-party states.",
+      "who": [
+        "marcus",
+        "leo",
+        "dan",
+        "sam",
+        "priya",
+        "olivia",
+        "ruth"
+      ],
+      "goal": "G9 G13",
+      "tone": "bad"
+    },
+    {
+      "id": "F-03-7",
+      "title": "Phone reveal: sound button on Main menu and Skip",
+      "detail": "Side effect of the RS-004 fix; tapping Skip leaves the reveal.",
+      "who": [
+        "maya",
+        "noah"
+      ],
+      "goal": "G10",
+      "tone": "bad"
+    },
+    {
+      "id": "F-03-8",
+      "title": "Layout seams and overlaps",
+      "detail": "Labels over headlines, tablet rail overlap, truncated header, stamps over labels, reused crisis art.",
+      "who": [
+        "ruth",
+        "noah",
+        "sam",
+        "dan"
+      ],
+      "goal": "G7 G13",
+      "tone": "bad"
+    },
+    {
+      "id": "F-03-9",
+      "title": "Newcomers still meet homework",
+      "detail": "Goal text with '-90+', unfamiliar names the i chips do not reach, no consequence line before accepting a meeting.",
+      "who": [
+        "noah",
+        "olivia",
+        "maya",
+        "dan"
+      ],
+      "goal": "G8 G12",
+      "tone": "bad",
+      "ceo": true
+    },
+    {
+      "id": "F-03-10",
+      "title": "Play a seed is hard to find and use",
+      "detail": "First tap failed, field hidden until tapped, the disabled button beside Today's crisis looks like the real one.",
+      "who": [
+        "maya",
+        "olivia",
+        "ruth",
+        "priya",
+        "dan",
+        "leo",
+        "marcus",
+        "sam"
+      ],
+      "goal": "G9",
+      "tone": "bad"
+    },
+    {
+      "id": "F-03-11",
+      "title": "Which answer did I pick?",
+      "detail": "No clear selected state on crisis answers; headings do not respond, cards do not look pressable.",
+      "who": [
+        "ruth",
+        "priya",
+        "marcus",
+        "noah"
+      ],
+      "goal": "G7",
+      "tone": "bad"
+    },
+    {
+      "id": "F-03-12",
+      "title": "Way back works, labels are muddy",
+      "detail": "New game vs New world vs Replay, a label that looks like a button, Compare runs greyed; one big Play again was asked for twice.",
+      "who": [
+        "maya",
+        "noah",
+        "priya",
+        "ruth",
+        "olivia"
+      ],
+      "goal": "G9 G10",
+      "tone": "wish"
+    },
+    {
+      "id": "F-03-13",
+      "title": "Reveal polish",
+      "detail": "Score 0 before counting, static on a wide stream, share buttons below the footer, stages 4 to 8 are homework for a teen, jargon in the truth table.",
+      "who": [
+        "leo",
+        "olivia",
+        "noah",
+        "ruth",
+        "sam",
+        "priya",
+        "maya"
+      ],
+      "goal": "G10",
+      "tone": "wish"
+    },
+    {
+      "id": "F-03-14",
+      "title": "One vocabulary, not yet",
+      "detail": "Cabinet pick vs Recommended, staff proposals, Hostile vs lamentable, Accept vs Add.",
+      "who": [
+        "sam",
+        "olivia",
+        "dan",
+        "noah"
+      ],
+      "goal": "G3",
+      "tone": "bad"
+    },
+    {
+      "id": "F-03-16",
+      "title": "Replay a choice and compare, in the session",
+      "detail": "Branch exists in Saved games but nobody found it from the debrief; what should I do differently?",
+      "who": [
+        "marcus",
+        "maya",
+        "noah"
+      ],
+      "goal": "G9",
+      "tone": "wish"
+    }
+  ],
+  "surprises": [
+    "The simplest path (Accept all, Execute) was the right answer in most months, and the more the game made that easy the less any persona felt clever.",
+    "Leo's deliberate war on Japan was the best clip of the round: a wild move with a clear warning and loud consequences is the strongest argument for the consequence work in iteration 2.",
+    "Noah (a teen) found Play a seed easiest and clarity hardest: the entry works, the goal text does not.",
+    "Eight of nine personas reached the reveal or their stop point without a single quit, yet the weighted recommend did not move from 6.3."
+  ],
+  "environment": "Build d70608a (code as of 9624de4); the full verify gate passed but missed the desk advisor-card regression because its guard covered only the Map strip. Control seeds were fixed for the first time (D-59). Drivers sometimes failed the first click on 'Play a seed' while the globe was turning, which may overstate F-03-10 (QA notes the field itself looks like text). Several customer-reported bugs are not yet QA-reproduced."
+}
