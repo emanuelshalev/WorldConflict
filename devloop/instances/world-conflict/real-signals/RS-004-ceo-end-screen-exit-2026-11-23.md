@@ -1,5 +1,7 @@
 # RS-004: CEO playtest of iter-2 on main (2026-11-23)
 
+Build played: `main` at tag `iter-2` (67c9b11). Fixes for iteration 3 live on dev/rc1-synthetic-loop until `iter-3` is published.
+
 > At the end when the score card is revealed there is no clear way to go back to the start page to play again. I am stuck with the final report.
 
 ## Cause

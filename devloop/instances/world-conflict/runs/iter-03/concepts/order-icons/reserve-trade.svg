@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" fill="currentColor" role="img" aria-label="Trade deal (reserve)" data-order-id="reserve-trade" data-family="econ">
+  <title>Trade deal (reserve)</title>
+  <mask id="oi-reserve-trade" maskUnits="userSpaceOnUse" x="0" y="0" width="48" height="48"><rect width="48" height="48" fill="#fff"/></mask><g mask="url(#oi-reserve-trade)"><path d="M3 31H45L40 42H9Z"/><rect x="9" y="23.5" width="8" height="6.2" rx="1"/><rect x="18" y="23.5" width="8" height="6.2" rx="1"/><rect x="27" y="23.5" width="8" height="6.2" rx="1"/><rect x="36" y="19" width="5" height="10.7" rx="1"/></g><path d="M8 7H30M26 3L30.5 7L26 11" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M40 15H18M22 11L17.5 15L22 19" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

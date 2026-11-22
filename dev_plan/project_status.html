@@ -724,14 +724,14 @@ $('decisionlist').innerHTML = STATUS.decisions.map((d) =>
 // LOOP DATA: the synthetic-customer development loop (updated every stage)
 // =====================================================================
 const LOOP = {
-  updated: "2026-11-23 05:00",
+  updated: "2026-11-23 11:00",
   iteration: 3,
-  stage: 3, // index into stages
-  now: "<b>Iteration 3, stage 3 (Build): 2 of 3 packages merged.</b> New: <b>newcomers first</b> (the briefing never opens by itself; month 1 opens with one sentence saying how you win; Guide me shows fewer words; staff only propose orders and nothing is spent until you approve; the dead Desk button is fixed and one order card is used everywhere; the in-game globe reaches 900 px). Merged: <b>seats and replay</b> (West Bank playable again; nations that did not exist yet via a What if option; Replay and Branch from this month in Saved games, tested to reproduce the original game exactly; guest saves no longer lost when browser storage is cleared; One Term 'Start with' picks your opening war). Iteration 2 is published on <b>main</b> (tag iter-2) for your playtest. Iteration 2 closed at weighted recommend <b>6.3</b> (Maya and Priya 8; Olivia and Noah 5). Branch is green and pushed (514 tests; the merge accident is fully repaired and now guarded by a test). Three packages building in parallel: <b>outcome truth</b> (one status vocabulary from the engine so words never contradict results, correct attribution, real consequences for nuclear strikes, an image share card), <b>newcomers first</b> (no auto-open briefing, the one goal in one sentence in month 1, staff propose and you spend, map/desk parity, globe fit), and <b>seats and replay</b> (West Bank and historical seats back with a What-if option, replay and branch from saved games, saved-game fix, pick your opening war in One Term).",
+  stage: 4, // index into stages
+  now: "<b>Resumed after the machine restart (iteration 3, stage 4: Verify).</b> Finishing the gate fixes (7 failing guards and 6 visual diffs from the first full gate run) and the staff-picks fix for your RS-005, both resumed from their saved branches; the iteration-4 designs (guided agenda, order cards) are resumed too. Next: green verify gate, QA, the iteration-3 customer round, then iter-3 on main.",
   stages: [
     ["Plan", "goals"], ["Design", "specs"], ["Build", "code"], ["Verify", "QA"], ["Use", "customers"], ["Triage", "decide"], ["Report", "status"], ["Gate", "RC?"],
   ],
-  kpis: [["Iteration", "3 <small>building</small>"], ["Customer personas", "9"], ["Team personas", "8"], ["Real signals", "3 <small>CEO</small>"], ["Recommend", "6.3 <small>4.9 · 6.2 · 6.3</small>"], ["Decisions logged", "D-58"], ["Release gate", "<span style='color:var(--brand)'>not met</span>"]],
+  kpis: [["Iteration", "3 <small>paused at verify</small>"], ["Customer personas", "9"], ["Team personas", "8"], ["Real signals", "3 <small>CEO</small>"], ["Recommend", "6.3 <small>4.9 · 6.2 · 6.3</small>"], ["Decisions logged", "D-58"], ["Release gate", "<span style='color:var(--brand)'>not met</span>"]],
   goals: [
     ["G1", "A", "Never blocked without a reason and a way forward", "CEO RS-001", "done"],
     ["G2", "A", "Point at what you mean (warnings highlight the element)", "CEO RS-001", "done"],

@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agenda A, month 4</title>
+<link rel="stylesheet" href="agenda.css">
+</head>
+<body>
+<!-- Concept mock, variant A (left agenda column). Month 4 of a Taiwan Strait Flashpoint as the USA:
+     1 crisis (handled), 4 meetings, 2 staff proposals, your own moves. The current item is Xi's call. -->
+<header class="hud">
+  <span class="who">🇺🇸 President <span class="label wide-only">· USA</span></span>
+  <span class="stat"><b class="num">48%</b><span>Approval</span></span>
+  <span class="stat wide-only"><b class="num">71</b><span>Stability</span></span>
+  <span class="stat"><b class="num">◆ 3 of 6</b><span>Political capital</span></span>
+  <span class="stat wide-only"><b class="num">62</b><span>World tension</span></span>
+  <span class="grow"></span>
+  <div class="seg" role="tablist" aria-label="View"><button class="on" role="tab" aria-selected="true">Desk</button><button role="tab" aria-selected="false">Map</button></div>
+</header>
+<div class="goal">
+  <span class="label">Mission</span><b>Keep the Strait open without a war</b>
+  <span class="segs" aria-hidden><i></i><i></i><i class="amber"></i></span>
+  <span class="num" style="color:var(--text-2);font-size:14px">2 of 3 on track · month 4 of 12</span>
+  <span class="grow"></span>
+  <div class="seg wide-only" role="tablist" aria-label="Desk view"><button class="on" role="tab" aria-selected="true">Guided</button><button role="tab" aria-selected="false">Full desk</button></div>
+</div>
+
+<!-- Tablet (1024): the agenda as a stepper above the item -->
+<nav class="topbar tablet-stepper" aria-label="This month: go through these">
+  <div class="lead"><b><span class="step-n now" style="display:inline-grid;width:20px;height:20px;font-size:12px">1</span> Go through these</b><span class="num">2 of 8 handled</span></div>
+  <button class="ac done"><span class="no">✓</span><span class="t"><b>PLA drills</b><small class="tag mine">Your pick</small></span></button>
+  <button class="ac on" aria-current="step"><span class="no">2</span><span class="t"><b>Xi Jinping calls</b><small class="tag needs">Now</small></span></button>
+  <button class="ac"><span class="no">3</span><span class="t"><b>Takaichi visits</b><small class="tag needs">Needs you</small></span></button>
+  <button class="ac"><span class="no">4</span><span class="t"><b>Readiness meeting</b><small class="tag needs">Needs you</small></span></button>
+  <button class="ac skipped"><span class="no">5</span><span class="t"><b>CNN interview</b><small class="tag skip">Skipped</small></span></button>
+  <button class="ac"><span class="no">6</span><span class="t"><b>Court India</b><small class="tag staff">Staff pick</small></span></button>
+  <button class="ac"><span class="no">7</span><span class="t"><b>Intel on China</b><small class="tag staff">Staff pick</small></span></button>
+  <button class="ac"><span class="no">8</span><span class="t"><b>Your own moves</b><small class="tag">Optional</small></span></button>
+</nav>
+
+<!-- Phone (390): the agenda as a sticky pill that opens a sheet -->
+<div class="phone-agenda phone-only" style="flex-direction:column;gap:4px">
+  <button class="ac agenda-pill" aria-haspopup="dialog" aria-label="This month's agenda: item 2 of 8, Xi Jinping calls. 2 of 8 handled. Open the list">
+    <span class="step-n now">1</span>
+    <span class="t"><b>Item 2 of 8 · Xi Jinping calls</b><small class="num">2 of 8 handled · tap for the list</small></span>
+    <span class="cue">▾</span>
+  </button>
+  <div class="minibar" aria-hidden><i class="done"></i><i class="now"></i><i></i><i></i><i class="skip"></i><i></i><i></i><i></i></div>
+</div>
+
+<main class="desk">
+  <!-- LEFT: 1 Go through these -->
+  <aside class="col col-agenda" aria-label="This month: go through these">
+    <div class="step-h"><span class="step-n now">1</span><div><h2>This month: go through these</h2><p>In order, or click any item</p></div></div>
+    <div class="progress"><b class="num">2 of 8 handled</b>
+      <div class="bar" aria-hidden><i class="done"></i><i class="now"></i><i></i><i></i><i class="skip"></i><i></i><i></i><i></i></div>
+    </div>
+    <ol class="agenda">
+      <li class="grp">Crisis</li>
+      <li><button class="ac done"><span class="no">✓</span><span class="t"><b>PLA drills close the north channel</b><small class="tag mine">Your pick: joint patrol with Japan</small></span><span class="cue">›</span></button></li>
+      <li class="grp">Meetings · you can attend 3</li>
+      <li><button class="ac on" aria-current="step"><span class="no">2</span><span class="t"><b>🇨🇳 Xi Jinping calls</b><small class="tag needs">Now: needs you</small></span><span class="cue">›</span></button></li>
+      <li><button class="ac"><span class="no">3</span><span class="t"><b>🇯🇵 PM Takaichi visits</b><small class="tag needs">Needs you</small></span><span class="cue">›</span></button></li>
+      <li><button class="ac"><span class="no">4</span><span class="t"><b>Staff meeting: readiness</b><small class="tag needs">Needs you</small></span><span class="cue">›</span></button></li>
+      <li><button class="ac skipped"><span class="no">5</span><span class="t"><b>CNN interview</b><small class="tag skip">Skipped: a deputy answers</small></span><span class="cue">›</span></button></li>
+      <li class="grp">Orders</li>
+      <li><button class="ac"><span class="no">6</span><span class="t"><b>Staff propose: Court India</b><small class="tag staff">Staff pick waiting · ◆ 1</small></span><span class="cue">›</span></button></li>
+      <li><button class="ac"><span class="no">7</span><span class="t"><b>Staff propose: Intel on China</b><small class="tag staff">Staff pick waiting · ◆ 1</small></span><span class="cue">›</span></button></li>
+      <li><button class="ac"><span class="no">8</span><span class="t"><b>Your own moves</b><small class="tag">Optional · 3 suggestions, all orders</small></span><span class="cue">›</span></button></li>
+    </ol>
+    <div class="agenda-foot">
+      <span>Keys: J and K walk the list, 1 to 3 pick an answer.</span>
+      <button class="lnk" style="text-align:left">Open the full desk: everything at once</button>
+    </div>
+  </aside>
+
+  <!-- CENTRE: the current item -->
+  <section class="col col-item" aria-label="Item 2 of 8">
+    <div class="item-nav">
+      <button class="btn small">‹ <span class="wide-only">Back</span></button>
+      <span class="where">Item <b>2 of 8</b> · Meeting (call)</span>
+      <button class="btn small"><span>Next<span class="wide-only">: Takaichi visits</span></span> ›</button>
+    </div>
+    <div class="hero">
+      <svg viewBox="0 0 800 220" preserveAspectRatio="xMidYMid slice" aria-hidden>
+        <rect x="0" y="150" width="800" height="70" fill="#0c1a2c"/>
+        <path d="M0 150 Q200 138 400 150 T800 150 V220 H0Z" fill="#10233a"/>
+        <rect x="520" y="40" width="190" height="120" rx="10" fill="#16263d" stroke="#2c4566"/>
+        <circle cx="615" cy="88" r="22" fill="#24395a"/><rect x="580" y="114" width="70" height="34" rx="14" fill="#24395a"/>
+        <rect x="90" y="60" width="210" height="14" rx="7" fill="#e5383b" opacity=".75"/><rect x="90" y="84" width="150" height="10" rx="5" fill="#a3aebf" opacity=".35"/>
+      </svg>
+      <div class="shade"></div>
+      <div class="txt">
+        <div class="kick">Call on the secure line · 🇨🇳 China</div>
+        <h1>Xi Jinping</h1>
+        <p>"Your ships are sailing into a storm. Pull the patrol back and we can talk about the exercise."</p>
+      </div>
+    </div>
+    <div class="item-body">
+      <div class="staffline"><span class="avatar">SS</span><span>Your Secretary of State backs <b style="color:var(--text-1)">Offer a quiet pause</b>. Pick an answer, or take the staff pick below.</span></div>
+      <div class="opts" role="radiogroup" aria-label="Your answer">
+        <button class="ac opt on" role="radio" aria-checked="true">
+          <span class="top"><b>Hold firm: the patrol stays</b><span class="radio"></span></span>
+          <span class="fx"><span class="up">Strait open ▲</span> · <span class="down">China relations ▼ 6</span></span>
+          <span class="tag mine">Helps: Strait open</span>
+        </button>
+        <button class="ac opt" role="radio" aria-checked="false">
+          <span class="top"><b>Offer a quiet pause</b><span class="radio"></span></span>
+          <span class="fx"><span class="up">Tension ▼</span> · <span class="down">Japan trust ▼ 4</span></span>
+          <span class="tag risk">Hurts: Japan on side</span>
+          <span class="who">Staff pick (Secretary of State)</span>
+        </button>
+        <button class="ac opt" role="radio" aria-checked="false">
+          <span class="top"><b>Propose a hotline</b><span class="radio"></span></span>
+          <span class="fx"><span class="up">Tension ▼▼</span> · <span class="up">China relations ▲ 5</span> · ◆ 1</span>
+          <span class="tag">No mission effect</span>
+        </button>
+      </div>
+      <div class="handle" aria-label="How do you handle this call?">
+        <h3>How do you handle this call?</h3>
+        <p class="lead">Every item ends with one of three choices. Each takes you to the next item.</p>
+        <div class="handle-row">
+          <button class="btn primary"><span class="k">YOUR ANSWER</span>Take the call: "Hold firm"<span class="sub">You attend (meeting 1 of 3) · then item 3</span></button>
+          <button class="btn"><span class="k">STAFF PICK</span>Accept "Offer a quiet pause"<span class="sub">You attend with the staff's answer</span></button>
+          <button class="btn skip"><span class="k">SKIP</span>Send a deputy<span class="sub">Default answer, free. Xi notices you were not there.</span></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RIGHT: 2 Review, 3 Execute -->
+  <aside class="col col-plan" aria-label="Your plan: what will happen">
+    <div class="step-h"><span class="step-n">2</span><div><h2>Your plan: what will happen</h2><p>Updates as you go through</p></div></div>
+    <div class="plan">
+      <section>
+        <h3>You decided <span class="cnt num">1</span></h3>
+        <button class="ac prow"><span class="t"><b>Joint patrol with Japan</b><small>PLA drills close the north channel</small><span class="fxl">Strait open ▲ · Japan on side ▲</span></span><span class="cue">›</span></button>
+      </section>
+      <section class="staff-group" aria-label="Staff picks">
+        <h3 style="margin:0">Staff picks <span class="cnt num">4 waiting for your OK</span></h3>
+        <p class="why">What your staff would do. Nothing here happens unless you approve it.</p>
+        <div class="staff-pick"><span class="t"><b>Xi call: offer a quiet pause</b><small>If you do nothing: a deputy goes</small></span><span class="acts"><button class="btn small">Approve</button></span></div>
+        <div class="staff-pick"><span class="t"><b>Takaichi visit: reaffirm the alliance</b><small>If you do nothing: a deputy goes</small></span><span class="acts"><button class="btn small">Approve</button></span></div>
+        <div class="staff-pick"><span class="t"><b>Court India · ◆ 1</b><small>India ties +6, approval +2 · else not run</small></span><span class="acts"><button class="btn small">Approve</button></span></div>
+        <div class="staff-pick"><span class="t"><b>Intel on China · ◆ 1</b><small>Sharper estimates, 3 months · else not run</small></span><span class="acts"><button class="btn small">Approve</button></span></div>
+        <button class="btn good">Approve 4 staff picks (◆ 2)</button>
+      </section>
+      <section>
+        <h3>Skipped <span class="cnt num">1</span></h3>
+        <div class="skips"><div class="skip-row"><span class="tag skip"></span><span class="t" style="display:grid"><b style="font-size:14px">CNN interview</b><small style="color:var(--text-2);font-size:13px">A deputy answers with the default line. <button class="lnk">Undo</button></small></span></div></div>
+      </section>
+      <section>
+        <h3>Budgets</h3>
+        <div class="budgets">
+          <div class="panel stat"><span>Political capital</span><b class="num">◆ 3 of 6 left</b><span class="seals" aria-hidden><i></i><i></i><i></i><i class="prop"></i><i class="prop"></i><i class="used"></i></span></div>
+          <div class="panel stat"><span>Orders this month</span><b class="num">0 of 6</b></div>
+          <div class="panel stat"><span>Meetings</span><b class="num">0 of 3</b></div>
+          <div class="panel stat"><span>Defense budget</span><b class="num">12% used</b></div>
+        </div>
+      </section>
+    </div>
+    <div class="plan-foot">
+      <div class="step-h" style="padding:0"><span class="step-n">3</span><h2>Execute</h2></div>
+      <p class="left" style="margin:0">6 items not handled yet. If you execute now, deputies take 3 meetings and the 2 proposals do not run.</p>
+      <button class="btn primary big">Execute month <span class="sub" style="display:inline;margin-left:6px">9 months left</span></button>
+    </div>
+  </aside>
+</main>
+
+<!-- Phone command bar -->
+<div class="cmdbar phone-only">
+  <button class="btn" style="flex:1;justify-content:space-between"><span>Your plan · 4 staff picks</span><span>▴</span></button>
+  <button class="btn primary">Execute</button>
+</div>
+</body>
+</html>
