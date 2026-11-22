@@ -16,39 +16,51 @@ You are the newly installed leader of one of **41 nations** in the world of **No
 
 The **Daily Flashpoint** is the same crisis, nation and world for everyone that day. Build a streak.
 
+### Pick an era and a nation
+
+The title screen is a globe. In a Flashpoint it pins every crisis: pick one, then a side. In One Term and Legacy it shows the world of the era you pick (1960, 1990, 2025 or 2026): choosing another era turns the globe and rolls the year to it. The globe shows the era's main situations ("This era's 5 fires", or all of them and the rival lines with one switch), colours countries by bloc, stability or difficulty, and paints borders as they were then (the Soviet Union as one country, East Germany, South Yemen, era names such as Zaire). Click a country for its card: its leader in that era, its bloc, and **Lead** it. A situation on the globe can open as a 15-minute Flashpoint when one covers it.
+
+You govern as the era's real leader by default: Eisenhower, Khrushchev or de Gaulle in 1960, Bush, Gorbachev or Thatcher in 1990, Trump, Putin or Scholz in January 2025, and the leaders in office in November 2026. A few leaders are invented for an era and say so. Nations that were not sovereign states at the time (Ukraine and Belarus inside the Soviet Union in 1960 and 1990, Syria inside the United Arab Republic and Nigeria before independence in 1960, the Trucial States before the UAE, and the West Bank in every era) are greyed out with a "not playable" note: they stay on the map, but have no foreign policy of their own in that era.
+
 **Difficulty:** *Story* (more political capital, gentler coups) · *Normal* · *Hard* (coups are only telegraphed if your intelligence is good). Every nation also shows a tag: **Steady**, **Tough** or **Brutal**.
 
 ---
 
 ## 2. Your month, on one screen
 
-The game has two modes, switched in the HUD or with **M**:
+The game has two views, switched in the HUD or with **M**:
 
 - **Desk** (where every month starts): you decide.
-- **Map**: the full globe with its layers, dossiers and legend, to investigate the world. A strip along the bottom keeps your budgets, what is still waiting and **Execute** in view, so you can finish a month from here too.
+- **Map**: the full globe with its layers, dossiers and legend, to investigate the world. A strip along the bottom keeps your budgets, your advisors, what is still waiting and **Execute** in view, so you can finish a month from here too. **Whole world** (bottom left) zooms back out; country names appear as you zoom in.
+
+Under the HUD, on both views, the **goal line** shows your mission: how many goals are on track, the month ("month 3 of 12"), and **This month:** the next step toward it (press it to see what moves it). Press the rest of the line to open the **Mission sheet**, with each goal and its state. The same line switches the desk between **Focus** (one thing at a time) and **Full desk** (navigator, item, budgets and Execute side by side).
 
 ```
 + HUD: leader | approval | stability | legitimacy | economy | political capital | world tension | score | [Map|Desk] +
++ GOAL LINE: 1 of 2 on track · month 3 of 12 · This month: ...                       [Focus | Full desk]  +
 | NAVIGATOR             | THE ITEM IN FOCUS                     | 2D MAP OF THE SUBJECT       |
-|  Mission              |  a crisis, a meeting, the staff        | BUDGETS (political capital, |
-|  Crises               |  picks, or all orders                  |   defense budget, orders    |
+|  Mission              |  your move, a crisis, a meeting,       | BUDGETS (political capital, |
+|  Crises               |  the advisors, or all orders           |   defense budget, orders    |
 |  Meetings             |  (previous / next: K / J)              |   0 of 6, meetings 0 of 3)  |
 |  Staff orders         |                                        | THIS MONTH YOU WILL ...     |
 |  All orders           |                                        | BEFORE YOU EXECUTE          |
-|                       |                                        | [Approve all] [Execute]     |
+|                       |                                        | [Approve picks] [Execute]   |
 + NEWS TICKER (hide with N) ---------------------------------------------------------------------+
 ```
 
-Your staff fill the desk in before you arrive, so you only change what you disagree with:
+Each month comes down to three things:
 
-1. **Crises** start on the **staff pick** (the option most ministers back that does not endanger your mission). Pick another option, or approve the pick. Arrows show the **direction and rough size** of consequences (Approval ▲▲, Tension ▼...), not exact numbers.
-2. **Orders**: the staff queue up to two safe orders, never a long shot or a repeat of last month, and always leave you at least 1 ◆ (turn this off in Settings). Remove any with its x, add others from the **staff picks** or **All orders** (search with **/**, e.g. "spy iran"). Clicking a country on the big map makes it the order target.
-3. **Meetings** show a suggested answer but wait for you: approve it, pick another, or send a deputy. **Approve all** (Shift+A) confirms the crisis picks, attends the three best meetings and sends deputies to the rest.
-4. **Execute month** (Ctrl+Enter). The right column always shows what you are proceeding with, what each budget has left, and what still needs you. Going over a budget disables Execute and says why. The world then moves: each order and answer plays as a news scene with what it changed, and the **World Chronicle** leads with *your* decision.
+1. **Your move.** The month's main decision (a crisis, or a meeting when nothing is burning) as one card. Each option shows its two biggest effects as arrows; **How much?** shows rough sizes ("Approval about -3"). Ribbons say which goal an option **Helps**, **Hurts** or **Breaks**. Your cabinet's pick is marked; when it hurts your mission the card says so and offers the option that does not ("Your cabinet backs X, but it hurts Y... Switch to Z"). On Story difficulty the cabinet never picks against your mission. **Ask your staff** opens the right minister with the question already asked.
+2. **Your advisors suggest** a few orders, each with one line on why now. Press **Add**, then **Undo** within a few seconds if you change your mind. When you have ◆ 3 or more unspent, a **Big move** suggests up to three orders that help the mission together ("Do it"). Your staff also put up to two safe orders in the month for you (tagged "Added by staff"; never a long shot or a repeat of last month, always leaving ◆ 1). Remove any of them, or turn this off in Settings ("Staff pre-select orders").
+3. **Execute month** (Ctrl+Enter). The rail always shows what you are proceeding with, what each budget has left and what still needs you. **Approve staff picks** (Shift+A) confirms the crisis picks and the meeting answers in one press.
 
-**After Execute: the month debrief.** At most three pages, then the paper: **The month** (the outcome that mattered most, your stats counting to their new values, milestones, and a jump list), **Diplomacy** (one card per country: your calls, visits and orders with them, their reply and their own moves against you, their view of you before and after), and **Home and security** (domestic answers, wars with the front's move, Gaza and the West Bank). Every card shows what you did, how the other side answered (the tone always matches what the numbers did), the numbers that moved, and what to watch next. Meetings your deputies took and the rest of the world sit in footnotes; a Table view shows everything at once. Keys 1-4, arrows, Esc. The paper then leads with your month as a story.
+Month 1 is quieter: Focus view shows only your move, and the advisors and the rest of the desk wait behind **Show the whole desk**. A three-step guide points at your move, your advisors and Execute the first time (Settings: **Show me around again**).
 
-Your picks are saved as you go, so a reload brings back the same desk. Keys: M (Map/Desk), J/K (next/previous item), 1-3 (choose an option), Enter (approve the staff pick or suggestion in focus), Delete (remove the order in focus), / (search orders, Up/Down and Enter), Shift+A (approve all), G (map legend), N (news ticker), Ctrl+Enter (execute).
+**After Execute: the result card.** A big month (a war, a nuclear strike, a coup, a fall from power, a peace, a mission complete) first plays a short full-screen moment with its own sound; any key skips it, and there is at most one a month. Then the **result card** ("What your choice did"): what your move changed, your mission row, the follow-ups that will come due ("comes in 2 months; we will tell you"), **Why your score moved**, and a thumbnail of the paper. **Next month** goes straight back to the desk; **See everything** opens the details (the outcomes grouped as the month, diplomacy by country, and home and security, with what each side did and the numbers that moved); **Read the paper** opens the World Chronicle, which leads with *your* decision. Settings, **After each month**, chooses between the result card only (the default), the card and the details, or everything including the paper.
+
+**Sound.** The game makes its own sounds (taps, the stamp when you add an order, the spend of political capital, a refusal, Execute, and a short sting for big moments). It is on by default; mute it from the HUD or set the volume in Settings.
+
+Your picks are saved as you go, so a reload brings back the same desk. Keys: M (Map/Desk), J/K (next/previous item), 1-4 (choose an option), Enter (approve the staff pick or suggestion in focus), Delete (remove the order in focus), / (search orders, Up/Down and Enter), Shift+A (approve the staff picks), G (map legend), N (news ticker), I (hide or show name underlines), Ctrl+Enter (execute).
 
 ### Your calendar
 
@@ -68,8 +80,8 @@ Some places make the news every month without being states. **Gaza** has its own
 
 - Every month a zone drifts with the situation and usually has one incident in the paper: strikes near the yellow line, aid held at Kerem Shalom, Rafah reopening, clan fighting, the stabilization force arriving, settler attacks, raids in the northern camps, unpaid PA salaries. A Gaza ceasefire can collapse when violence runs high, and mediators can restore one after a war.
 - The zones weigh on the countries involved: Israel's stability when violence is high, the West Bank's stability and economy, Egypt during a Gaza war, and opinion against Israel in Europe, the Gulf and beyond when people go hungry.
-- **Decisions:** Israel faces ceasefire breaches (targeted strikes, resume the offensive, or the mediators), the crossings, the stabilization force asking for Rafah, Hamas refusing to disarm, settler violence and a sovereignty bill. Egypt decides on Rafah; the United States on famine warnings, the force and the green light for a new war. The West Bank answers raids and an offer to govern Gaza on conditions. Contributors are asked for troops; rich states pledge at the reconstruction conference; everyone else votes at the UN.
-- Israel, the West Bank, Egypt and the United States get a standing **Gaza and the West Bank** staff meeting. Click Gaza or a zone's beacon for its card, and ask your Foreign Minister for a line.
+- **Decisions:** Israel faces ceasefire breaches (targeted strikes, resume the offensive, or the mediators), the crossings, the stabilization force asking for Rafah, Hamas refusing to disarm, settler violence and a sovereignty bill. Egypt decides on Rafah; the United States on famine warnings, the force and the green light for a new war. Contributors are asked for troops; rich states pledge at the reconstruction conference; everyone else votes at the UN.
+- Israel, Egypt and the United States get a standing **Gaza and the West Bank** staff meeting. Click Gaza or a zone's beacon for its card, and ask your Foreign Minister for a line.
 
 Era by era: the 2026 world opens on the fragile October 2025 ceasefire, 2025 opens on the war, 1990 on the first intifada, and 1960 has no zones.
 
@@ -77,7 +89,17 @@ Era by era: the 2026 world opens on the fragile October 2025 ceasefire, 2025 ope
 
 Diplomatic, domestic and covert orders cost **political capital**. You get 2 ◆ a month (3 in a Flashpoint, +1 on Story difficulty) and can bank up to 6. It's meant to be scarce: a reform (2 ◆) is a month's budget, so every month is a choice. Popularity doesn't pay extra capital, and trouble doesn't take it away. You can give at most 6 orders a month (**orders this month**), and each order only once per target. Military hardware and nuclear work cost money as a share of your **defense budget** instead.
 
-Every order shows whether you can give it before you pick it. An order you can't afford says what it needs and what you have ("Needs ◆ 2, you have ◆ 1."), with a fix (remove an order, or wait for next month's refill). An order the situation rules out says why ("Only in wartime. You are not at war with India.") and offers a valid order instead when there is one. Declaring war and nuclear strikes have **no undo**, so they ask for a second, deliberate confirmation.
+### Giving orders
+
+Orders look the same everywhere: the **All orders** list on the desk, the menu that opens when you click a country on the map (its six most relevant orders, then "All orders for ... · same list as the desk"), and a country's dossier. Each order card shows its cost, its chance when the outcome is uncertain, and **whether you can give it before you press it**:
+
+- An order you can't afford says what it needs and what you have ("Needs ◆ 2, you have ◆ 1."), with a fix: a button to remove an order that frees enough, or "wait: +2 next month". The budget it is about lights up (the political capital meter, the orders count, the defense budget).
+- An order the situation rules out says why ("Only in wartime. You are not at war with India.", "Ukraine is not a sovereign state in 1990.") and offers a valid order instead when there is one (a ceasefire instead of a war you are already in, Destabilize before an assassination).
+- An order already in the month shows **In this month** with **Remove**. **How much?** shows the forecast: effects, risks and costs.
+
+Nothing is refused after the fact for a reason the card could have shown. To change the country, use the picker at the top of the list (type a name, or pick from the suggested countries: the crisis, recent targets, wars, allies, rivals, neighbours) or **Pick on the map**.
+
+Some orders turn the card over to ask again: **Declare war** ("Keep the peace" or "Declare war": there is no undo), a **nuclear strike** (hold the button to authorize), and any order that would fail, endanger or cost a bonus star of your mission ("... anyway?").
 
 | Order | ◆ | Order | ◆ |
 |---|---|---|---|
@@ -119,7 +141,7 @@ One name per idea, everywhere in the game:
 | **Revolution** | *The streets are boiling* crisis when stability is very low and an insurgency is active. Consolidated democracies only fall to revolution in an armed (guerrilla) uprising with legitimacy under 20. |
 | **Defence pacts** | Nobody signs you into a treaty: when a government wants a pact, it lands on your desk as a crisis card. Pacts are rare, never signed with a country at war, and nobody has a formal treaty with Taiwan. If you join an ally's war, you go home when their war ends. |
 | **Election defeat** | The HUD counts down to the election; *Campaign endgame* card; the screen pulses red if you trail. Voters weigh approval first, then the economy and any war, and a government that has served three years or more pays a "time for a change" penalty. In the 2026 world, foreign elections fall on their real dates (US November 2028, Pakistan February 2029…). |
-| **Objective failure** | The mission chip shows each condition live (○ pending · ✓ met · ✗ failed). |
+| **Objective failure** | The goal line counts the goals on track every month; the Mission sheet shows each one live (pending, met, failed), and an order or option that would break one says so before you choose it. |
 | **Nuclear holocaust** | Using a nuclear weapon can trigger retaliation chains. Don't. |
 
 A red heartbeat around the screen means you are in danger: approval, stability or legitimacy near collapse, or a plot in motion.
@@ -146,11 +168,42 @@ You play as the era's **real leader** by default (type a name on the title scree
 
 Economy: growth shocks (oil spikes, crises, financial panics) fade back toward each country's structural trend within about a year, and voters judge growth against what is normal for *their* country. The growth figure in the HUD is **real growth**: what actually happened to GDP, including war damage, crisis hits and reparations. A ground war on your own soil is ruinous; a distant air and naval campaign costs far less. Defence budgets rise when rivals mobilise, but only to about one and a half times their peacetime level without a war. Stability, legitimacy and approval are hard to keep at the very top and recover slowly from the very bottom.
 
-Four components, 0–50 each: **Economy**, **Security**, **Approval**, **Prestige** (total 0–200, start 100). They drift each month toward what your situation deserves, so sustained performance matters more than one good month. Your end screen shows a **grade**, **stars**, a leadership **archetype** read from what you actually did (*Warmonger*, *The Gambler*, *Shadow Operator*, *Iron Fist*, *Peacemaker*, *The Reformer*, *Master Diplomat*, *Steady Hand*…), a month-by-month emoji strip, and, for flashpoints, what really happened.
+Four components, 0–50 each: **Economy**, **Security**, **Approval**, **Prestige** (total 0–200, start 100). They drift each month toward what your situation deserves, so sustained performance matters more than one good month. **Why your score moved** (on the HUD score and the result card) names the terms behind each part.
+
+### The reveal
+
+The session ends with a reveal in eight short stages. Space or the right arrow moves on, the left arrow goes back, and **Skip to the report** jumps to the end. It plays once per save (**Replay the reveal** from the report).
+
+1. **The count**: one square per month (green steady, amber strained, red on the edge, black the fall).
+2. **The verdict**: a stamp (*Mission complete*, *Voted out*, *Four more years*...), your **grade** and **stars**, a leadership archetype read from what you actually did (*Warmonger*, *Shadow Operator*, *Peacemaker*, *Steady Hand*...), and your **Presidency Score** counting up.
+3. **Achievements**: the seals you earned ("What you will be remembered for"), each with its rarity, and two you could reach next time. There are 37, some of them infamy seals for what went badly (they never cost score), plus one signature seal per flashpoint side. Rarity (Common, Uncommon, Rare, Legendary) is measured, not guessed: "earned by N% of simulated leaders".
+4. **The moments**: your best and worst month, the turning point, what went well and badly.
+5. **How you were seen**: approval over time, elections, relations, the press and history's judgement.
+6. **The numbers**: five charts and your counts.
+7. **The truth**: "The fog lifts": the real figures your intelligence could not see (a rival's nuclear program, a rival's real strength, the covert operations run against you). In a Flashpoint, a table compares your world with what really happened ("In your world", "In the real world", each row marked Better, Same, Worse or Context), with sources.
+8. **Ranking**: where your score sits on a ladder of simulated leaders on the same seat (do-nothing staff, random staff, competent staff), "better than N% of simulated competent leaders", your record on this seat and your personal best.
+
+The **Presidency Score** (0 to 1000) adds four parts: **Mission** (up to 400, goals met), **Timing** (up to 100, how many months your goals held), **Leadership** (up to 300, your average monthly score) and **Finish** (up to 200, your final score against par). Being removed from office multiplies it by 0.6; a nuclear holocaust leaves nothing. **Career points** weigh it by difficulty (x0.85 Story, x1 Normal, x1.15 Hard).
+
+**Replay and share.** Every game has a seed code (for example `HC-USA-3PX` for a Flashpoint, `T2026-USA-...` for a Term). **Replay same opening** plays the same world and first crisis again; **Compare runs** puts two runs side by side and shows the month your choices split. **Share result** shares a text summary (verdict, stars, grade, score, the emoji strip and the seed), and **Save card** / **Phone card** save an image card. On the title screen, **Your record** lists your runs and **Play a friend's seed** starts a game from a code.
 
 ---
 
-## 6. Tips
+## 6. Learning as you play
+
+You don't need to know who the Houthis are or where the fortress belt is. The game explains the real world it is set in, as much as you want:
+
+- **How well do you follow world news?** Asked once before your first month, and changeable from the book chip on the HUD or in Settings, **Explanations**:
+  - **Guide me**: names you may not know are underlined (a few per paragraph, never names you have already met), and each new crisis opens with its briefing.
+  - **Some help** (recommended): clean text, an "i" after each paragraph that names its people and places, and **What is going on here?** on every crisis.
+  - **I know this**: clean text with a faint "i". The codex is there if you want it.
+- **Explainers** open on a tap or click, never on hover: one line, **More** for the full entry, and an "In your game" line on what that person or place is doing now. On a phone they open as a sheet at the bottom.
+- **Situation briefings** (**What is going on here?**): who is who, why it matters, a short timeline of what really happened up to the point where the game takes over, and sources.
+- **The codex** (in the drawers): every person, place, group, term, event and situation the game mentions, searchable, with the ones you have just met marked **New**, plus "How the game works". Entries follow the era: you read about Gorbachev's Soviet Union in 1990, not today's Russia.
+
+Your progress (your level, names you have met and opened) stays in your browser; **Clear codex progress** in Settings resets it.
+
+## 7. Tips
 
 - **Read the arrows twice.** The option that helps approval today often costs you legitimacy or allies tomorrow.
 - **Don't spam national addresses.** Each repeat within six months works 40% less, and the press notices.

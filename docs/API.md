@@ -7,6 +7,7 @@ Base URL: `http://localhost:8080`. All bodies are JSON. Every response has `succ
 | GET | `/health` | Liveness |
 | GET | `/api/llm/status` | Which server-side LLM keys are configured |
 | GET | `/api/scenarios` | Scenarios, flashpoints and today's daily challenge |
+| GET | `/api/scenarios/:id/map` | The era map for the title globe |
 | GET | `/api/countries` | Playable nations with difficulty tags |
 | GET | `/api/codex?scenario=&flashpoint=` | Real-world explanations (codex entries, situation briefings) for one game |
 | POST | `/api/new-game` | Start a session |
@@ -14,6 +15,9 @@ Base URL: `http://localhost:8080`. All bodies are JSON. Every response has `succ
 | POST | `/api/preview-action` | Predict an order's effects (no state change) |
 | POST | `/api/orders/menu` | Every order for one target, with cost, chance and availability |
 | GET | `/api/report/:saveId` | End-of-session report |
+| GET | `/api/reveal/:saveId` | The end-of-session reveal (after the game) |
+| POST | `/api/runs` | Record a finished run |
+| GET | `/api/runs?seat=` | Run history for a seat |
 | GET | `/api/load/:saveId` | Load a save |
 | GET | `/api/saves?playerId=` | List saves for an account or guest id |
 | DELETE | `/api/save/:saveId` | Delete a save |
@@ -42,9 +46,14 @@ Base URL: `http://localhost:8080`. All bodies are JSON. Every response has `succ
   "gameOver": null,
   "playerBackstory": "…",
   "pcIncome": 3,   // political capital refill next month (2, 3 in a Flashpoint, +1 on Analyst)
-  "pcCap": 6       // the most political capital the bank can hold
+  "pcCap": 6,      // the most political capital the bank can hold
+  "advice": { "suggestions": [], "cabinetPicks": {}, "missionPicks": {}, "meetingPicks": {}, "deputies": [], "staffOrders": [], "missionNotes": {} },
+  "missionImpact": { /* per crisis or meeting option: helps / hurts / breaks objectives */ },
+  "orderImpact": { /* the same for each suggested order */ }
 }
 ```
+
+`advice`, `missionImpact`, `orderImpact` and `objectiveStatus` come from `monthAdvice()` (`src/core/advisors.ts`, `missionImpact.ts`) and are computed from the player's beliefs, never ground truth. The desk, the map strip and the harness `staff` policy all read the same advice.
 
 Notable `worldState` fields: `mode` (`FLASHPOINT|TERM|LEGACY`), `maxTurns`, `difficulty`, `objective`, `politicalCapital`, `turnReport` (orders, decisions, deltas, causes, moments), `outcome` (`victory`, `stars`, `conditions`), `director` (`closeCalls`, `rallies`).
 
@@ -66,7 +75,7 @@ Notable `worldState` fields: `mode` (`FLASHPOINT|TERM|LEGACY`), `maxTurns`, `dif
 }
 ```
 
-Only `playerCountryId` is required. Without `flashpointId`, `mode` + `scenarioId` start a Term/Legacy (or generic 12-month) game. `daily: true` seeds the world from today's date. Omit `seed` for a fresh world each time. The same `seed` on the same seat gives the same starting world and opening crisis ("Replay same opening").
+Only `playerCountryId` is required. A country that is not a sovereign state in the chosen scenario (its `eraStatus`, for example Ukraine in 1990) is refused with a 400. Without `flashpointId`, `mode` + `scenarioId` start a Term/Legacy (or generic 12-month) game. `daily: true` seeds the world from today's date. Omit `seed` for a fresh world each time. The same `seed` on the same seat gives the same starting world and opening crisis ("Replay same opening").
 
 `seedCode` ("Play this seed") replaces `playerCountryId` + `seed` + seat: `HC-USA-3AF` is flashpoint seat (two-letter flashpoint prefix: initials of its id, e.g. `hormuz-convoy` = HC), country and base-36 seed; `T2026-USA-3AF` / `L2026-…` are Term / Legacy on a scenario. An unknown code is a 400.
 
@@ -133,6 +142,31 @@ While a game runs, `worldState.chronicle` is sent without its ground-truth parts
 
 `runs`: the owner's runs (newest first; `parts`, `achievements`, `detail` with `seedCode`, `series`, `choices`, `aiTier`). `top`: the seat's top 20 among signed-in players. Seat keys are `flashpointId:COUNTRY` or `scenario:MODE:COUNTRY`.
 
+## GET `/api/scenarios/:id/map`
+
+The era map for the title globe (`buildEraMap` in `src/core/era-map.ts`), display data built from the scenario file and the country profiles; the engine never reads it. 404 for an unknown scenario, `Cache-Control: public, max-age=3600`.
+
+```jsonc
+{
+  "success": true,
+  "map": {
+    "scenarioId": "1990", "year": 1990, "month": 1, "name": "…", "tension": 40,
+    "focus": [20, 30],                 // where the globe turns for this era
+    "countries": [{ "id": "UKR", "name": "…", "leader": { "name": "…", "title": "…", "sinceDate": "…" },
+                    "stability": 60, "bloc": "WARSAW", "status": "PART_OF", "partOf": "RUS",
+                    "label": "Ukrainian SSR", "note": "…", "nuclear": "NONE" }],
+    "blocs": [{ "id": "…", "name": "…", "side": "EAST", "members": [] }],
+    "situations": [ /* heaviest first: kind, phase, at, weight, blurb, flashpointId?, codexId? */ ],
+    "wars": [{ "a": "…", "b": "…" }],
+    "rivals": [{ "a": "…", "b": "…", "relation": -70 }],   // top 8 at -60 or worse, not at war
+    "merged": [{ "id": "…", "partOf": "RUS" }],            // borders painted as their parent
+    "hotspots": [], "labels": [], "labelAllow": []
+  }
+}
+```
+
+`status` is `STATE`, `PART_OF` or `NOT_INDEPENDENT`; a country without `leader` has a leader invented for the era.
+
 ## GET `/api/codex?scenario=<id>&flashpoint=<id>`
 
 The codex for one game (design-learn.md §7): real-world explanations of the people, places, groups, terms and events that crisis and briefing text names, plus the situation briefings. Static content from `data/codex/` (schemas in `src/core/codex.ts`), not part of `WorldState`: fetched once at new game or load and kept by the client. Both parameters are optional: `flashpoint` alone implies its scenario and start date, no parameters means scenario `2026`. 404 for an unknown scenario or flashpoint, 400 for a malformed id.
@@ -167,7 +201,7 @@ The codex for one game (design-learn.md §7): real-world explanations of the peo
 
 - `entries`: only those valid at `date` (`valid.from <= date <= valid.to`), with the scenario's `eras[scenarioId]` override applied (`name`, extra `aliases`, `short`, `long`, `obscurity`); `eras` and `reviewedBy` are not sent. Aliases are strings (case-insensitive, whole word) or `{ text, caseSensitive, wholeWord }`.
 - `situations`: the flashpoint's briefing (id = flashpoint id) and the scenario's (`scenario-<scenarioId>`), whichever exist, flashpoint first.
-- `version` is a content hash and also the `ETag`; `If-None-Match` with it answers 304. `Cache-Control: public, max-age=86400`.
+- `version` is a content hash and also the `ETag`; `If-None-Match` with it answers 304. `Cache-Control: public, max-age=86400` in production. Outside production (`NODE_ENV !== "production"`) the route checks a stamp of `data/codex`, `data/codex/situations`, `data/scenarios` and `data/flashpoints` on every request, drops its caches when a file changed, and sends `no-cache`, so a running dev server never serves stale codex content.
 
 ## POST `/api/preview-action`
 
