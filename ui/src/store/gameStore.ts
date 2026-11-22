@@ -1348,3 +1348,91 @@ export function useViewCountry(id: string | null): PlayerViewCountry | null {
   if (!id) return null;
   return playerView.find((c) => c.id === id) ?? null;
 }
+
+// ============================================================================
+// Era map (title globe; WP-W3). Mirrors src/core/era-map.ts and the era fields
+// of ScenarioSchema in src/core/data-loader.ts (types are duplicated, not shared).
+// ============================================================================
+
+export type SituationKind = 'WAR' | 'SEA' | 'REGIME' | 'NUCLEAR' | 'TRUCE';
+export type SituationPhase = 'ACTIVE' | 'BREWING' | 'FROZEN';
+export type BlocSide = 'WEST' | 'WEST2' | 'EAST' | 'EAST2' | 'NONALIGNED' | 'OTHER';
+export type LngLat = [number, number];
+
+export interface EraSituation {
+  id: string;
+  title: string;
+  kind: SituationKind;
+  phase: SituationPhase;
+  at: LngLat;
+  countries: string[];
+  line?: { from: string; to: string; style: 'front' | 'rival' | 'blockade' };
+  weight: number;
+  blurb: string;
+  since?: string;
+  flashpointId?: string;
+  codexId?: string;
+  sources: string[];
+}
+
+export interface EraBloc {
+  id: string;
+  name: string;
+  side: BlocSide;
+  members: string[];
+  note?: string;
+}
+
+export interface EraMapCountry {
+  id: string;
+  name: string;
+  leader?: { name: string; title: string; sinceDate?: string };
+  stability: number;
+  bloc?: string;
+  status: 'STATE' | 'PART_OF' | 'NOT_INDEPENDENT';
+  partOf?: string;
+  label?: string;
+  note?: string;
+  nuclear: string;
+}
+
+export interface EraMapLabel {
+  at: LngLat;
+  name: string;
+  rank: number;
+}
+
+export interface EraMap {
+  scenarioId: string;
+  year: number;
+  month: number;
+  name: string;
+  tension: number;
+  focus: LngLat;
+  countries: EraMapCountry[];
+  blocs: EraBloc[];
+  situations: EraSituation[];
+  wars: Array<{ a: string; b: string }>;
+  rivals: Array<{ a: string; b: string; relation: number }>;
+  merged: Array<{ id: string; partOf: string }>;
+  hotspots: Array<{ id: string; name: string; center: LngLat; phase: string }>;
+  labels: EraMapLabel[];
+  labelAllow?: string[];
+}
+
+const eraMapCache = new Map<string, Promise<EraMap>>();
+
+/** The era map for a scenario, cached in memory per session (a failed fetch is retried next call). */
+export function fetchEraMap(scenarioId: string): Promise<EraMap> {
+  const hit = eraMapCache.get(scenarioId);
+  if (hit) return hit;
+  const p = fetch(`${API_BASE}/scenarios/${encodeURIComponent(scenarioId)}/map`)
+    .then((r) => r.json())
+    .then((data) => {
+      if (!data.success) throw new Error(data.error || 'Failed to fetch era map');
+      return data.map as EraMap;
+    });
+  p.catch(() => eraMapCache.delete(scenarioId));
+  eraMapCache.set(scenarioId, p);
+  return p;
+}

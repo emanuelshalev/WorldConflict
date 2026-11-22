@@ -19,6 +19,7 @@ import {
   suggestionImpact,
 } from "../../core/advisors.js";
 import { createDataLoader, type DataLoader } from "../../core/data-loader.js";
+import { buildEraMap } from "../../core/era-map.js";
 import { objectiveStatus } from "../../core/objectives.js";
 import { previewAction } from "../../core/preview.js";
 import { buildReveal, parseSeedCode, type RevealPayload, seatKeyOf } from "../../core/reveal.js";
@@ -274,6 +275,21 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
       daily: dailyChallenge(flashpoints),
     });
   });
+
+  // ------------------------------------------------------------------
+  // Era map for the title globe (display data, see src/core/era-map.ts)
+  fastify.get(
+    "/scenarios/:id/map",
+    async (request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
+      const loader = createDataLoader();
+      const { id } = request.params;
+      const known = loader.loadAvailableScenarios().some((s) => s.id === id);
+      if (!known) return reply.code(404).send({ success: false, error: "Unknown scenario" });
+      const map = buildEraMap(loader.loadScenario(id), loader.loadAllCountries());
+      reply.header("Cache-Control", "public, max-age=3600");
+      return reply.send({ success: true, map });
+    },
+  );
 
   // ------------------------------------------------------------------
   fastify.get("/countries", async (_request, reply: FastifyReply) => {
