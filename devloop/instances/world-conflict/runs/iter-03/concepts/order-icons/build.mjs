@@ -113,10 +113,9 @@ export const ICONS = [
     accept: ['court', 'improve relations', 'friendship', 'handshake', 'deal', 'agreement', 'make friends', 'cooperation', 'diplomacy'],
     svg: (id) =>
       knock(id,
-        fl('M2.5 29L10.5 21L17 27.5L9 35.5Z') + fl('M45.5 29L37.5 21L31 27.5L39 35.5Z') +
-        fl('M14.5 24L21.5 17.2Q24 15 26.5 17.2L33.5 24L26.6 32Q24 34.6 21.4 32Z') +
-        fl('M20 18.5L27.5 14.5Q30 13.6 31.5 15.5L33 17.5L27 19.5Z'),
-        crossedLine('M20.6 27.6L25.6 22.6M23.6 30.6L28.6 25.6M18 24.6L23 19.6', 2) + crossedLine('M12.2 22.6L18.6 29M35.8 22.6L29.4 29', 2.4)),
+        fl('M0.5 25L8.5 18.5L15 27L7 33.5Z') + fl('M47.5 25L39.5 18.5L33 27L41 33.5Z') +
+        fl('M12 23.5L19.5 15.5H28.5L36.5 23.5L28.5 33.5Q24 37.5 19.5 33.5Z'),
+        crossedLine('M18.4 28.6L23.4 23.6M21.6 31.8L26.6 26.8M25.4 33.6L29.6 29.4M19 20.5L27 20.5L33 26', 2.2) + crossedLine('M9.6 20L15.6 28M38.4 20L32.4 28', 2.6)),
   },
   {
     id: 'denounce', family: 'diplo', label: 'Denounce', idea: 'Megaphone shouting',
@@ -174,12 +173,10 @@ export const ICONS = [
     id: 'mobilize', family: 'mil', label: 'Mobilize forces', idea: 'Soldiers, up',
     accept: ['mobilize', 'mobilise', 'call up', 'reserves', 'raise army', 'recruit', 'more troops', 'build army', 'draft', 'troops up'],
     svg: (id) => {
-      const bust = (cx, cy, s) =>
-        fl(`M${cx - 8.5 * s} ${cy}A${8.5 * s} ${8.5 * s} 0 0 1 ${cx + 8.5 * s} ${cy}Z`) + rect(cx - 10.5 * s, cy - 0.4, 21 * s, 3.2 * s, 1.4 * s) +
-        circ(cx, cy + 6.5 * s, 4.6 * s) +
-        fl(`M${cx - 11 * s} ${cy + 22 * s}C${cx - 11 * s} ${cy + 15 * s} ${cx - 7 * s} ${cy + 12.5 * s} ${cx} ${cy + 12.5 * s}C${cx + 7 * s} ${cy + 12.5 * s} ${cx + 11 * s} ${cy + 15 * s} ${cx + 11 * s} ${cy + 22 * s}Z`);
-      const backCut = `<path d="M10 33A12 12 0 0 1 30 33V48H10Z" fill="${K}"/><circle cx="20" cy="15" r="13" fill="${K}"/>`;
-      return badged(id, knock(`${id}-k`, bust(9.5, 11, 0.72) + bust(31, 11, 0.72), backCut) + bust(20, 15, 1), 'up');
+      const helmet = (cx, cy, s) =>
+        fl(`M${cx - 10 * s} ${cy}C${cx - 10 * s} ${cy - 14 * s} ${cx + 10 * s} ${cy - 14 * s} ${cx + 10 * s} ${cy}Z`) + rect(cx - 13 * s, cy + 0.8 * s, 26 * s, 3.6 * s, 1.8 * s) + st(`M${cx - 7 * s} ${cy + 4.4 * s}Q${cx} ${cy + 11 * s} ${cx + 7 * s} ${cy + 4.4 * s}`, 2.4 * s);
+      const front = `<path d="M7 33C7 13 33 13 33 33Z" fill="${K}" stroke="${K}" stroke-width="5"/><rect x="2.5" y="31.5" width="35" height="8" fill="${K}"/>`;
+      return badged(id, knock(`${id}-k`, helmet(12, 16, 0.75) + helmet(34, 16, 0.75), front) + helmet(20, 33, 1), 'up');
     },
   },
   {
@@ -215,7 +212,7 @@ export const ICONS = [
   {
     id: 'airstrike-nuclear', family: 'mil', label: 'Strike nuclear sites', idea: 'Crosshair on an atom',
     accept: ['strike nuclear sites', 'bomb nuclear', 'target nuclear program', 'hit nuclear facility', 'attack reactor', 'destroy nuclear program', 'nuclear target'],
-    svg: (id) => knock(id, atom(24, 24, 14, 5.4, 3.2), crossedLine('M24 2V13M24 35V46M2 24H13M35 24H46', 7)) + `<circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="3.4"/>` + st('M24 2V13M24 35V46M2 24H13M35 24H46', 3.4),
+    svg: () => atom(24, 24, 15, 5.8, 3.6) + `<circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="3.2"/>` + st('M24 0.5V7.5M24 40.5V47.5M0.5 24H7.5M40.5 24H47.5', 3.6),
   },
   // ---------------- Nuclear (military, hazard) ----------------
   {
@@ -264,10 +261,10 @@ export const ICONS = [
     id: 'arm-rebels', family: 'intel', label: 'Arm rebels', idea: 'Raised fist and a rifle',
     accept: ['arm rebels', 'support rebels', 'rebels', 'insurgents', 'revolution', 'uprising', 'guerrilla', 'arm the opposition', 'rebellion', 'militia'],
     svg: (id) => {
-      const rifle = `<g transform="rotate(-42 24 24)">${fl('M3 21.5L13 20.6V27.4L4 30.4Z') + rect(13, 20.8, 17, 5.4, 1) + fl('M21.5 26H26L27.2 33.5H23Z') + rect(30, 21.8, 15, 2.8, 1) + rect(40, 19.4, 2, 2.6, 0.5)}</g>`;
-      const fist = rect(15, 11, 18, 14, 4.5) + rect(18.5, 24, 11, 21, 2);
-      return knock(id, rifle, `<g><rect x="12.5" y="8.5" width="23" height="19" rx="6" fill="${K}"/><rect x="16" y="22" width="16" height="26" rx="3" fill="${K}"/></g>`) +
-        knock(`${id}-f`, fist, crossedLine('M19.6 11.5V17.5M24 11.5V17.5M28.4 11.5V17.5', 2) + crossedLine('M15.5 19.5H26', 2));
+      const rifle = `<g transform="rotate(-45 24 24)">${fl('M1 21.4L11 20.4V27.6L2 30.6Z') + rect(11, 20.6, 19, 5.6, 1) + fl('M23 26H27.5L29 34H24.6Z') + rect(30, 21.8, 17, 3, 1) + rect(43, 19.2, 2, 2.8, 0.5)}</g>`;
+      const fist = rect(17.5, 15, 15, 12, 4) + rect(20, 26, 10, 19, 2);
+      return knock(id, rifle, `<rect x="15" y="12.5" width="20" height="17" rx="6" fill="${K}"/><rect x="17.5" y="24" width="15" height="24" rx="3" fill="${K}"/>`) +
+        knock(`${id}-f`, fist, crossedLine('M21.4 15.5V20.5M25 15.5V20.5M28.6 15.5V20.5', 1.8) + crossedLine('M17.5 22.3H27', 1.8));
     },
   },
   {
@@ -315,7 +312,7 @@ export const ICONS = [
     accept: ['soft policing', 'community policing', 'police talks', 'negotiate', 'police dialogue', 'calm policing', 'police', 'dialogue', 'mediation police'],
     svg: (id) =>
       talkBadged(id,
-        knock(`${id}-c`, fl('M6.5 20.5C6.5 12.5 14.5 9 24 9C33.5 9 41.5 12.5 41.5 20.5Z') + rect(8.5, 21.8, 31, 5, 1) + fl('M9.5 28.4H38.5C35.5 33.6 30 35.4 24 35.4C18 35.4 12.5 33.6 9.5 28.4Z'), fl(star(24, 15.6, 4.6, 1.9, 5), K))),
+        knock(`${id}-c`, fl('M3 14.5C3 9 13.5 6.5 24 6.5C34.5 6.5 45 9 45 14.5L38.5 22H9.5Z') + rect(10, 23.4, 28, 5, 1) + fl('M10 30H38C36.5 34.6 31 36.4 24 36.4C17 36.4 11.5 34.6 10 30Z'), fl(star(24, 14.4, 5, 2.1, 5), K))),
   },
   {
     id: 'policing-hard', family: 'home', label: 'Hard crackdown', idea: 'Riot shield and baton',
