@@ -28,7 +28,7 @@ Version 1.4, 2026-11-23. Changed only through journal entries (`instances/*/jour
 | 4. Verify | QA | `verify` gate green: tests, lints, build, smoke, visual regression, balance bands, every regression guard |
 | 5. Use | Customer panel (blind, parallel) | Schema-valid session reports with screenshots |
 | 6. Triage | Group Manager + QA | Regression check against the registry first, then clusters, reproduced bugs, decisions; every fix adds a guard |
-| 7. Report | Group Manager | Status page, journal, tag `iter-NN`, push |
+| 7. Report | Group Manager | Status page, journal; after a green verify gate, fast-forward `main` to the finished iteration and tag it `iter-N` so the owner can playtest it from `main` |
 | 8. Gate | Group Manager | Pass: release candidate tag. Fail: next iteration |
 
 Iteration 0 is special: interviews and a baseline usage round on the current build, before any building, so the first goals come from evidence.

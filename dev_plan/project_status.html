@@ -155,7 +155,7 @@
 <body>
 <header>
   <h1>🌍 World Conflict: <span>Project Status</span></h1>
-  <div class="sub">Road to the public release candidate · branch <code style="background:rgba(255,255,255,.15);color:#fff">dev/rc1-synthetic-loop</code> (from <code style="background:rgba(255,255,255,.15);color:#fff">v0.9.0</code>) · synthetic-customer development loop · live log for the CEO</div>
+  <div class="sub">Road to the public release candidate · latest finished iteration on <code style="background:rgba(255,255,255,.15);color:#fff">main</code> (tag <code style="background:rgba(255,255,255,.15);color:#fff">iter-2</code>) · work in progress on branch <code style="background:rgba(255,255,255,.15);color:#fff">dev/rc1-synthetic-loop</code> (from <code style="background:rgba(255,255,255,.15);color:#fff">v0.9.0</code>) · synthetic-customer development loop · live log for the CEO</div>
   <div class="meta" id="meta"></div>
   <nav id="tabs">
     <button data-tab="iter" class="active">🔁 Iterations</button>
@@ -827,6 +827,7 @@ const LOOP = {
     ["Reach the end", "Every usage round, at least 3 personas reach an end screen."],
     ["Fixed stays fixed", "Every addressed finding gets an automated guard before it counts as fixed. One verify command runs every test, guard, visual check and balance band before any merge or customer round; new feedback is checked against past fixes first, and a regression is fixed before new work."],
     ["Compare like with like", "Each customer replays a fixed control scenario every iteration plus one new one, so changes across iterations mean something; one-point moves are noise unless behaviour backs them."],
+    ["Playtest from main", "At the end of every iteration, after a green verify gate, main is fast-forwarded to that iteration and tagged iter-N, so you can always play the latest finished iteration from main."],
     ["Measure consumption", "Every agent is named so its tokens are attributed automatically; the Consumption tab is regenerated with each update."],
     ["Report often", "This page and the journal update at every stage."],
   ],
