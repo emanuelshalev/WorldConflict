@@ -221,11 +221,14 @@ export const ICONS = [
       fl(star(13.5, 35, 10.5, 4.6, 8)) + `<ellipse cx="22.5" cy="25.5" rx="3.2" ry="1.7" transform="rotate(-45 22.5 25.5)"/>`,
   },
   {
-    id: 'airstrike-nuclear', family: 'mil', label: 'Strike nuclear sites', idea: 'Jet diving onto an atom', rev: 2, was: 'Crosshair on an atom (read as nuclear strike)',
-    accept: ['strike nuclear sites', 'bomb nuclear sites', 'bomb nuclear facility', 'airstrike on nuclear', 'air strike nuclear', 'target nuclear program', 'hit nuclear facility', 'attack reactor', 'destroy nuclear program', 'bomb their nuclear program'],
-    svg: () =>
-      `<g transform="translate(33 14) rotate(-135) scale(0.64) translate(-24 -24)">${fl(JET)}</g>` +
-      atom(14.5, 33.5, 11.5, 4.4, 3) + st('M24.5 21.5L27 24M20 19.5L21.5 22.5M27.5 26.5L30.5 28', 2.6),
+    id: 'airstrike-nuclear', family: 'mil', label: 'Strike nuclear sites', idea: 'A bomb falling on a cooling tower with an atom sign', rev: 3, was: 'r1 atom in a crosshair (read as nuclear strike); r2 jet onto an atom (read as nuclear bomber)',
+    accept: ['strike nuclear sites', 'bomb nuclear sites', 'bomb nuclear plant', 'bomb a reactor', 'bomb nuclear facility', 'attack nuclear plant', 'airstrike on nuclear', 'hit nuclear facility', 'attack reactor', 'destroy nuclear program', 'bomb their nuclear program', 'strike the reactor'],
+    svg: (id) =>
+      knock(id, fl('M12 46C14.5 37 14.5 27 11.5 17H32.5C29.5 27 29.5 37 32 46Z') + rect(10, 14, 24, 3.6, 1.2), circ(22, 31.5, 6.6, K)) +
+      circ(22, 31.5, 1.8) + [0, 120, 240].map((a) => `<ellipse cx="22" cy="31.5" rx="5.6" ry="2" transform="rotate(${a} 22 31.5)" fill="none" stroke="currentColor" stroke-width="1.4"/>`).join('') +
+      st('M16 10.5C15 8 17.5 6.5 16.5 3.5M22 10.5C21 8 23.5 6.5 22.5 3.5', 2.2) +
+      `<g transform="rotate(35 40 12)">${fl('M37 4.5C37 2.5 43 2.5 43 4.5V15C43 17.8 41.5 19.5 40 20C38.5 19.5 37 17.8 37 15Z') + fl('M35.5 3L37.5 6H42.5L44.5 3Z')}</g>` +
+      fl(star(37.5, 22.5, 6.5, 2.6, 8)),
   },
   // ---------------- Nuclear (military, hazard) ----------------
   {
@@ -250,12 +253,13 @@ export const ICONS = [
     svg: (id) => knock(id, spyHead(), spyCut()),
   },
   {
-    id: 'counter-intel', family: 'intel', label: 'Hunt foreign spies', idea: 'Magnifying glass finding a spy', rev: 2, was: 'Spy with a no sign (read as ban, sanctions, embargo)',
-    accept: ['counter intelligence', 'counter-intel', 'counterintelligence', 'hunt spies', 'catch spies', 'find spies', 'find the spy', 'spot spies', 'spy hunt', 'search for spies', 'expose spies', 'root out spies'],
+    id: 'counter-intel', family: 'intel', label: 'Hunt foreign spies', idea: 'A spy above a pair of handcuffs', rev: 3, was: 'r1 spy under a no sign (read as sanctions); r2 magnifier on a spy (read as investigate, spy on)',
+    accept: ['counter intelligence', 'counter-intel', 'counterintelligence', 'hunt spies', 'catch spies', 'arrest spies', 'jail spies', 'spy caught', 'handcuff spies', 'captured spy', 'lock up spies', 'expose spies', 'root out spies', 'find spies', 'stop spies'],
     svg: (id) =>
-      `<clipPath id="${id}-c"><circle cx="19.5" cy="19.5" r="12.4"/></clipPath>` +
-      `<g clip-path="url(#${id}-c)"><g transform="translate(19.5 21.5) scale(0.56) translate(-24 -26.5)">${knock(`${id}-s`, spyHead(), spyCut())}</g></g>` +
-      `<circle cx="19.5" cy="19.5" r="15" fill="none" stroke="currentColor" stroke-width="4.4"/>` + st('M30.5 30.5L43 43', 7.5),
+      knock(id, `<g transform="translate(24 19) scale(0.78) translate(-24 -26.5)">${knock(`${id}-s`, spyHead(), spyCut())}</g>`, `<rect x="0" y="30.5" width="48" height="18" fill="${K}"/>`) +
+      `<circle cx="9" cy="40.5" r="5.6" fill="none" stroke="currentColor" stroke-width="3.4"/><circle cx="39" cy="40.5" r="5.6" fill="none" stroke="currentColor" stroke-width="3.4"/>` +
+      rect(11.5, 32.5, 6, 4.6, 1.2) + rect(30.5, 32.5, 6, 4.6, 1.2) +
+      [19.5, 24, 28.5].map((x) => `<ellipse cx="${x}" cy="35" rx="2.5" ry="1.6" fill="none" stroke="currentColor" stroke-width="1.8"/>`).join(''),
   },
   {
     id: 'sabotage', family: 'intel', label: 'Sabotage', idea: 'Dynamite with a lit fuse',
@@ -263,25 +267,20 @@ export const ICONS = [
     svg: (id) => knock(id, rect(7, 22, 8, 22, 2) + rect(16.5, 22, 8, 22, 2) + rect(26, 22, 8, 22, 2), rect(6, 29, 30, 1.6, 0, K) + rect(6, 35.4, 30, 1.6, 0, K)) + st('M20.5 22C20.5 15.5 26 13.6 30.5 11.6', 2.8) + fl(star(35, 9, 7, 2.8, 8)),
   },
   {
-    id: 'destabilize', family: 'intel', label: 'Destabilize', idea: 'A domed capitol with its flag, split and toppling', rev: 2, was: 'Columned building cracking (read as bank or economic collapse)',
-    accept: ['destabilize', 'destabilise', 'undermine', 'unrest', 'weaken government', 'topple government', 'topple', 'government crisis', 'collapse the government', 'chaos', 'subvert', 'unstable government', 'break the government'],
-    svg: (id) => {
-      const capitol = fl('M15 21C15 10.5 33 10.5 33 21Z') + rect(14, 21.6, 20, 4, 1) + rect(8, 27, 32, 10, 1) + rect(4, 38.4, 40, 5.4, 1.2) + rect(22.6, 8, 2.8, 3.6, 0.6) + st('M24 9V1.8', 2) + fl('M24.8 1.6H31.5L29.6 3.8L31.5 6H24.8Z');
-      const cut = `<path d="M12.5 30h3.5v4h-3.5zM19 30h3.5v4H19zM25.5 30h3.5v4h-3.5zM32 30h3.5v4H32z" fill="${K}"/>`;
-      const body = knock(`${id}-w`, capitol, cut);
-      const crack = `<path d="M25.5 10L21.5 20L27 27.5L21 35L24.5 45" fill="none" stroke="${K}" stroke-width="2.6" stroke-linejoin="miter"/>`;
-      return `<g transform="rotate(-11 24 44)">${knock(`${id}-c`, body, crack)}</g>` + st('M41 14Q45 18 43.5 23M44 8Q47.5 10 47 14', 2.4) + rect(41, 39, 4, 4, 0.8) + rect(36.5, 43, 3, 3, 0.6);
-    },
+    id: 'destabilize', family: 'intel', label: 'Destabilize', idea: 'A leaning tower of blocks with a flag on top, one block pushed out', rev: 3, was: 'r1 columned building (read as bank); r2 tilted capitol (read as a ship, blockade)',
+    accept: ['destabilize', 'destabilise', 'undermine', 'unstable', 'make unstable', 'weaken', 'weaken government', 'topple', 'collapse', 'about to collapse', 'chaos', 'subvert', 'shake the country', 'jenga'],
+    svg: () =>
+      `<g transform="rotate(-8 16 46)">${rect(8, 37, 20, 7, 1.2) + rect(8, 28.5, 9, 7, 1.2) + rect(19, 28.5, 9, 7, 1.2) + rect(8, 20, 20, 7, 1.2) + rect(9, 11.5, 9, 7, 1.2) + rect(19.5, 11.5, 9, 7, 1.2) + st('M18 11V3', 2) + fl('M18.8 2.6H25.5L23.6 4.8L25.5 7H18.8Z')}</g>` +
+      `<g transform="rotate(-8 16 46)">${rect(31, 28.5, 9, 7, 1.2)}</g>` + st('M44 26L47 24M44.5 33L47.5 34.5', 2.2) + rect(4, 44, 40, 2.6, 1.3),
   },
   {
-    id: 'arm-rebels', family: 'intel', label: 'Arm rebels', idea: 'Raised fist and a rifle',
-    accept: ['arm rebels', 'support rebels', 'rebels', 'insurgents', 'revolution', 'uprising', 'guerrilla', 'arm the opposition', 'rebellion', 'militia'],
-    svg: (id) => {
-      const rifle = `<g transform="rotate(-45 24 24)">${fl('M1 21.4L11 20.4V27.6L2 30.6Z') + rect(11, 20.6, 19, 5.6, 1) + fl('M23 26H27.5L29 34H24.6Z') + rect(30, 21.8, 17, 3, 1) + rect(43, 19.2, 2, 2.8, 0.5)}</g>`;
-      const fist = rect(17.5, 15, 15, 12, 4) + rect(20, 26, 10, 19, 2);
-      return knock(id, rifle, `<rect x="15" y="12.5" width="20" height="17" rx="6" fill="${K}"/><rect x="17.5" y="24" width="15" height="24" rx="3" fill="${K}"/>`) +
-        knock(`${id}-f`, fist, crossedLine('M21.4 15.5V20.5M25 15.5V20.5M28.6 15.5V20.5', 1.8) + crossedLine('M17.5 22.3H27', 1.8));
-    },
+    id: 'arm-rebels', family: 'intel', label: 'Arm rebels', idea: 'A raised fist holding a rifle aloft', rev: 3, was: 'r1 and r2 fist in front of a diagonal rifle (r2: rifle hidden, read as protest, riot)',
+    accept: ['arm rebels', 'support rebels', 'rebels', 'insurgents', 'revolution', 'armed uprising', 'uprising', 'guerrilla', 'arm the opposition', 'rebellion', 'militia', 'give guns to rebels', 'armed revolt'],
+    svg: (id) =>
+      knock(id,
+        fl('M1.5 11.5L10.5 10.5V17.5L2.5 20Z') + rect(10.5, 10.5, 18, 6, 1) + fl('M20 16H24.5L26.5 25.5H22Z') + rect(28.5, 11.8, 18, 3, 1) + rect(42.5, 9.4, 2, 2.6, 0.5),
+        `<rect x="9.5" y="14" width="20" height="17" rx="6" fill="${K}"/>`) +
+      knock(`${id}-f`, rect(12, 16.5, 15, 12, 4) + rect(14.5, 27.5, 10, 18.5, 2), crossedLine('M16 17V22M19.5 17V22M23 17V22', 1.8) + crossedLine('M12 23.8H21.5', 1.8)),
   },
   {
     id: 'disinformation', family: 'intel', label: 'Feed disinformation', idea: 'A speech bubble wearing a mask',
@@ -301,14 +300,12 @@ export const ICONS = [
     },
   },
   {
-    id: 'coup', family: 'intel', label: 'Back a coup', idea: 'A soldier helmet knocking the crown off', rev: 2, was: 'Crown with swap arrows (read as election or reshuffle)',
-    accept: ['coup', 'military coup', 'overthrow', 'overthrow the leader', 'military takeover', 'army takes over', 'seize power', 'topple leader', 'topple the king', 'regime change', 'junta', 'take over the government', 'depose'],
+    id: 'coup', family: 'intel', label: 'Back a coup', idea: 'A tank knocking the crown off', rev: 3, was: 'r1 crown with swap arrows (read as election); r2 helmet over a crown (read as a masked agent, cyberattack)',
+    accept: ['coup', 'military coup', 'overthrow', 'overthrow the leader', 'overthrow the king', 'military takeover', 'army takes over', 'seize power', 'topple leader', 'topple the king', 'regime change', 'junta', 'take over the government', 'depose', 'tanks topple the king'],
     svg: (id) =>
-      knock(id,
-        fl('M10 22C10 4 38 4 38 22Z') + rect(5.5, 22.6, 37, 4.6, 2.3) + st('M15 27.5Q24 36 33 27.5', 2.6),
-        `<g transform="translate(3 -5) rotate(-28 15 38)"><path d="M6 43L4.6 33L9.6 37L14.5 30.5L19.4 37L24.4 33L23 43Z" fill="${K}" stroke="${K}" stroke-width="5" stroke-linejoin="round"/></g>`) +
-      `<g transform="translate(3 -5) rotate(-28 15 38)">${fl('M6 43L4.6 33L9.6 37L14.5 30.5L19.4 37L24.4 33L23 43Z')}${rect(6, 44.4, 17, 3, 1)}</g>` +
-      st('M32 33L38 35.5M31 39L36.5 42.5M34 28L40 28.5', 2.6),
+      `<g transform="translate(-1 6)">${knock(`${id}-t`, tank(), tankCut())}</g>` +
+      `<g transform="translate(34 13) rotate(24) scale(0.78) translate(-38 -14.5)">${fl('M29 19L27.5 8.5L33 12.5L38 5.5L43 12.5L48.5 8.5L47 19Z') + rect(29, 20.5, 18, 3.4, 1)}</g>` +
+      st('M30 27.5L33.5 25M24.5 22L26 18.5', 2.4),
   },
   // ---------------- Economy ----------------
   {
@@ -329,11 +326,11 @@ export const ICONS = [
       fl('M19 36H29L31 42.5H17Z') + rect(13, 42, 22, 3.2, 1.6),
   },
   {
-    id: 'policing-soft', family: 'home', label: 'Soft policing', idea: 'Police cap and a speech bubble',
-    accept: ['soft policing', 'community policing', 'police talks', 'negotiate', 'police dialogue', 'calm policing', 'police', 'dialogue', 'mediation police'],
+    id: 'policing-soft', family: 'home', label: 'Soft policing', idea: 'A police badge with a speech bubble', rev: 3, was: 'r1 and r2 peaked cap with a speech bubble (r2: read as talk to the military, once helmets meant army)',
+    accept: ['soft policing', 'community policing', 'police talks', 'police dialogue', 'police negotiate', 'calm policing', 'police', 'police talk to people', 'dialogue', 'gentle policing', 'police outreach', 'peaceful policing'],
     svg: (id) =>
-      talkBadged(id,
-        knock(`${id}-c`, fl('M3 14.5C3 9 13.5 6.5 24 6.5C34.5 6.5 45 9 45 14.5L38.5 22H9.5Z') + rect(10, 23.4, 28, 5, 1) + fl('M10 30H38C36.5 34.6 31 36.4 24 36.4C17 36.4 11.5 34.6 10 30Z'), fl(star(24, 14.4, 5, 2.1, 5), K))),
+      talkBadged(id, knock(`${id}-b`, fl('M21 3L25.5 6.2L31 5L34 9.5L39 11V22C39 32 31.5 38.5 21 42C10.5 38.5 3 32 3 22V11L8 9.5L11 5L16.5 6.2Z'),
+        fl(star(21, 20, 8.5, 3.6, 5), K) + `<path d="M8 13.5H34" fill="none" stroke="${K}" stroke-width="1.8"/>`)),
   },
   {
     id: 'policing-hard', family: 'home', label: 'Hard crackdown', idea: 'Riot officer: visored helmet, shield, raised baton', rev: 2, was: 'Riot shield and baton (read as sign a law, a document and a pen)',
@@ -389,7 +386,7 @@ fs.writeFileSync(
 );
 
 // Recognition sheet: a fixed shuffle (no family grouping, no colour, no labels)
-const order = ICONS.map((i, n) => ({ i, k: (n * 11 + 7) % 29 })).sort((a, b) => a.k - b.k).map((x) => x.i);
+const order = ICONS.map((i, n) => ({ i, k: (n * 13 + 2) % 29 })).sort((a, b) => a.k - b.k).map((x) => x.i);
 fs.writeFileSync(path.join(here, 'recognition-key.json'), JSON.stringify(order.map((i, n) => ({ n: n + 1, id: i.id, label: i.label, accept: i.accept })), null, 2));
 const cell = (i, n) =>
   `<figure><span class="n">${n + 1}</span><div class="big"><svg viewBox="0 0 48 48"><use href="#oi-${i.id}"/></svg></div><div class="small"><svg viewBox="0 0 48 48"><use href="#oi-${i.id}"/></svg><svg viewBox="0 0 48 48" class="inv"><use href="#oi-${i.id}"/></svg></div><div class="line"></div></figure>`;
