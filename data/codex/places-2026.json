@@ -1,0 +1,5189 @@
+[
+  {
+    "id": "washington",
+    "kind": "place",
+    "name": "Washington",
+    "aliases": [
+      {
+        "text": "Washington",
+        "caseSensitive": true
+      }
+    ],
+    "avoid": [
+      "Washington State",
+      "Washington state",
+      "George Washington",
+      "Washington Post"
+    ],
+    "countryId": "USA",
+    "obscurity": 1,
+    "short": "The US capital, Washington, D.C. In the news, shorthand for the American government.",
+    "map": {
+      "countries": [
+        "USA"
+      ],
+      "points": [
+        {
+          "name": "Washington",
+          "lon": -77.04,
+          "lat": 38.9
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "moscow",
+    "kind": "place",
+    "name": "Moscow",
+    "aliases": [
+      {
+        "text": "Moscow",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "RUS",
+    "obscurity": 1,
+    "short": "Russia's capital. In the news, shorthand for the Russian government.",
+    "map": {
+      "countries": [
+        "RUS"
+      ],
+      "points": [
+        {
+          "name": "Moscow",
+          "lon": 37.62,
+          "lat": 55.76
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "eras": {
+      "1960": {
+        "short": "Capital of the Soviet Union. In the news, shorthand for the Soviet government."
+      }
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "kyiv",
+    "kind": "place",
+    "name": "Kyiv",
+    "aliases": [
+      {
+        "text": "Kyiv",
+        "caseSensitive": true
+      },
+      {
+        "text": "Kiev",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "UKR",
+    "obscurity": 1,
+    "short": "Ukraine's capital, on the Dnipro river. In the news, shorthand for the Ukrainian government.",
+    "map": {
+      "countries": [
+        "UKR"
+      ],
+      "points": [
+        {
+          "name": "Kyiv",
+          "lon": 30.52,
+          "lat": 50.45
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "beijing",
+    "kind": "place",
+    "name": "Beijing",
+    "aliases": [
+      {
+        "text": "Beijing",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "CHN",
+    "obscurity": 1,
+    "short": "China's capital. In the news, shorthand for the Chinese government.",
+    "map": {
+      "countries": [
+        "CHN"
+      ],
+      "points": [
+        {
+          "name": "Beijing",
+          "lon": 116.4,
+          "lat": 39.9
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "tehran",
+    "kind": "place",
+    "name": "Tehran",
+    "aliases": [
+      {
+        "text": "Tehran",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "IRN",
+    "obscurity": 1,
+    "short": "Iran's capital. In the news, shorthand for the Iranian government.",
+    "map": {
+      "countries": [
+        "IRN"
+      ],
+      "points": [
+        {
+          "name": "Tehran",
+          "lon": 51.39,
+          "lat": 35.69
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "taipei",
+    "kind": "place",
+    "name": "Taipei",
+    "aliases": [
+      {
+        "text": "Taipei",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "TWN",
+    "obscurity": 1,
+    "short": "Taiwan's capital. In the news, shorthand for Taiwan's government.",
+    "map": {
+      "countries": [
+        "TWN"
+      ],
+      "points": [
+        {
+          "name": "Taipei",
+          "lon": 121.56,
+          "lat": 25.04
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "tokyo",
+    "kind": "place",
+    "name": "Tokyo",
+    "aliases": [
+      {
+        "text": "Tokyo",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "JPN",
+    "obscurity": 1,
+    "short": "Japan's capital. In the news, shorthand for the Japanese government.",
+    "map": {
+      "countries": [
+        "JPN"
+      ],
+      "points": [
+        {
+          "name": "Tokyo",
+          "lon": 139.69,
+          "lat": 35.69
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "manila",
+    "kind": "place",
+    "name": "Manila",
+    "aliases": [
+      {
+        "text": "Manila",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "PHL",
+    "obscurity": 1,
+    "short": "Capital of the Philippines. In the news, shorthand for the Philippine government.",
+    "map": {
+      "countries": [
+        "PHL"
+      ],
+      "points": [
+        {
+          "name": "Manila",
+          "lon": 120.98,
+          "lat": 14.6
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "riyadh",
+    "kind": "place",
+    "name": "Riyadh",
+    "aliases": [
+      {
+        "text": "Riyadh",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "SAU",
+    "obscurity": 1,
+    "short": "Saudi Arabia's capital. In the news, shorthand for the Saudi government. Houthi missiles hit its main airport in October 2026.",
+    "related": [
+      "king-khalid-airport"
+    ],
+    "map": {
+      "countries": [
+        "SAU"
+      ],
+      "points": [
+        {
+          "name": "Riyadh",
+          "lon": 46.72,
+          "lat": 24.71
+        }
+      ]
+    },
+    "valid": {
+      "from": "2026-10"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "abu-dhabi",
+    "kind": "place",
+    "name": "Abu Dhabi",
+    "aliases": [
+      {
+        "text": "Abu Dhabi",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "ARE",
+    "obscurity": 1,
+    "short": "Capital of the United Arab Emirates, and in 2026 the venue of US-brokered Russia-Ukraine talks.",
+    "related": [
+      "abu-dhabi-talks"
+    ],
+    "map": {
+      "countries": [
+        "ARE"
+      ],
+      "points": [
+        {
+          "name": "Abu Dhabi",
+          "lon": 54.37,
+          "lat": 24.45
+        }
+      ]
+    },
+    "valid": {
+      "from": "2026-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "cairo",
+    "kind": "place",
+    "name": "Cairo",
+    "aliases": [
+      {
+        "text": "Cairo",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "EGY",
+    "obscurity": 1,
+    "short": "Egypt's capital, the largest city in the Arab world. In the news, shorthand for the Egyptian government.",
+    "map": {
+      "countries": [
+        "EGY"
+      ],
+      "points": [
+        {
+          "name": "Cairo",
+          "lon": 31.24,
+          "lat": 30.04
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "caracas",
+    "kind": "place",
+    "name": "Caracas",
+    "aliases": [
+      {
+        "text": "Caracas",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "VEN",
+    "obscurity": 1,
+    "short": "Venezuela's capital. In the news, shorthand for the Venezuelan government.",
+    "map": {
+      "countries": [
+        "VEN"
+      ],
+      "points": [
+        {
+          "name": "Caracas",
+          "lon": -66.9,
+          "lat": 10.49
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "havana",
+    "kind": "place",
+    "name": "Havana",
+    "aliases": [
+      {
+        "text": "Havana",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "CUB",
+    "obscurity": 1,
+    "short": "Cuba's capital. In the news, shorthand for the Cuban government.",
+    "map": {
+      "countries": [
+        "CUB"
+      ],
+      "points": [
+        {
+          "name": "Havana",
+          "lon": -82.37,
+          "lat": 23.11
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "islamabad",
+    "kind": "place",
+    "name": "Islamabad",
+    "aliases": [
+      {
+        "text": "Islamabad",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "PAK",
+    "obscurity": 2,
+    "short": "Pakistan's capital. In 2026 it briefly hosted a US-Iran framework that collapsed within weeks.",
+    "related": [
+      "rawalpindi"
+    ],
+    "map": {
+      "countries": [
+        "PAK"
+      ],
+      "points": [
+        {
+          "name": "Islamabad",
+          "lon": 73.05,
+          "lat": 33.68
+        }
+      ]
+    },
+    "valid": {
+      "from": "2026-04"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "new-delhi",
+    "kind": "place",
+    "name": "New Delhi",
+    "aliases": [
+      {
+        "text": "New Delhi",
+        "caseSensitive": true
+      },
+      {
+        "text": "Delhi",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "IND",
+    "obscurity": 1,
+    "short": "India's capital. In the news, shorthand for the Indian government.",
+    "map": {
+      "countries": [
+        "IND"
+      ],
+      "points": [
+        {
+          "name": "New Delhi",
+          "lon": 77.21,
+          "lat": 28.61
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "jerusalem",
+    "kind": "place",
+    "name": "Jerusalem",
+    "aliases": [
+      {
+        "text": "Jerusalem",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "ISR",
+    "obscurity": 1,
+    "short": "The city both Israel and the Palestinians claim as their capital; Israel's government sits there.",
+    "long": "Israel annexed East Jerusalem after 1967, a move most countries do not recognise. In the news, 'Jerusalem' usually means the Israeli government.",
+    "map": {
+      "countries": [
+        "ISR"
+      ],
+      "points": [
+        {
+          "name": "Jerusalem",
+          "lon": 35.21,
+          "lat": 31.77
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "tel-aviv",
+    "kind": "place",
+    "name": "Tel Aviv",
+    "aliases": [
+      {
+        "text": "Tel Aviv",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "ISR",
+    "obscurity": 1,
+    "short": "Israel's largest city and business centre; many countries keep their embassies there.",
+    "map": {
+      "countries": [
+        "ISR"
+      ],
+      "points": [
+        {
+          "name": "Tel Aviv",
+          "lon": 34.78,
+          "lat": 32.09
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "warsaw",
+    "kind": "place",
+    "name": "Warsaw",
+    "aliases": [
+      {
+        "text": "Warsaw",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "POL",
+    "obscurity": 1,
+    "short": "Poland's capital. In the news, shorthand for the Polish government.",
+    "map": {
+      "countries": [
+        "POL"
+      ],
+      "points": [
+        {
+          "name": "Warsaw",
+          "lon": 21.01,
+          "lat": 52.23
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "berlin",
+    "kind": "place",
+    "name": "Berlin",
+    "aliases": [
+      {
+        "text": "Berlin",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "DEU",
+    "obscurity": 1,
+    "short": "Germany's capital. In the news, shorthand for the German government.",
+    "map": {
+      "countries": [
+        "DEU"
+      ],
+      "points": [
+        {
+          "name": "Berlin",
+          "lon": 13.4,
+          "lat": 52.52
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "london",
+    "kind": "place",
+    "name": "London",
+    "aliases": [
+      {
+        "text": "London",
+        "caseSensitive": true
+      }
+    ],
+    "avoid": [
+      "London, Ontario"
+    ],
+    "countryId": "GBR",
+    "obscurity": 1,
+    "short": "The UK capital. In the news, shorthand for the British government.",
+    "map": {
+      "countries": [
+        "GBR"
+      ],
+      "points": [
+        {
+          "name": "London",
+          "lon": -0.13,
+          "lat": 51.51
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "paris",
+    "kind": "place",
+    "name": "Paris",
+    "aliases": [
+      {
+        "text": "Paris",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "FRA",
+    "obscurity": 1,
+    "short": "France's capital. In the news, shorthand for the French government.",
+    "map": {
+      "countries": [
+        "FRA"
+      ],
+      "points": [
+        {
+          "name": "Paris",
+          "lon": 2.35,
+          "lat": 48.86
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "brussels",
+    "kind": "place",
+    "name": "Brussels",
+    "aliases": [
+      {
+        "text": "Brussels",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "BEL",
+    "obscurity": 1,
+    "short": "Belgium's capital, home of the EU institutions and NATO headquarters. In the news, often shorthand for the EU.",
+    "related": [
+      "eu",
+      "nato"
+    ],
+    "map": {
+      "countries": [
+        "BEL"
+      ],
+      "points": [
+        {
+          "name": "Brussels",
+          "lon": 4.35,
+          "lat": 50.85
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "ankara",
+    "kind": "place",
+    "name": "Ankara",
+    "aliases": [
+      {
+        "text": "Ankara",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "TUR",
+    "obscurity": 1,
+    "short": "Turkey's capital. In the news, shorthand for the Turkish government.",
+    "map": {
+      "countries": [
+        "TUR"
+      ],
+      "points": [
+        {
+          "name": "Ankara",
+          "lon": 32.85,
+          "lat": 39.93
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "canberra",
+    "kind": "place",
+    "name": "Canberra",
+    "aliases": [
+      {
+        "text": "Canberra",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "AUS",
+    "obscurity": 2,
+    "short": "Australia's capital. In the news, shorthand for the Australian government.",
+    "map": {
+      "countries": [
+        "AUS"
+      ],
+      "points": [
+        {
+          "name": "Canberra",
+          "lon": 149.13,
+          "lat": -35.28
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "baghdad",
+    "kind": "place",
+    "name": "Baghdad",
+    "aliases": [
+      {
+        "text": "Baghdad",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "IRQ",
+    "obscurity": 1,
+    "short": "Iraq's capital. In the news, shorthand for the Iraqi government.",
+    "map": {
+      "countries": [
+        "IRQ"
+      ],
+      "points": [
+        {
+          "name": "Baghdad",
+          "lon": 44.37,
+          "lat": 33.31
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "kabul",
+    "kind": "place",
+    "name": "Kabul",
+    "aliases": [
+      {
+        "text": "Kabul",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "AFG",
+    "obscurity": 1,
+    "short": "Afghanistan's capital, under Taliban rule since August 2021.",
+    "related": [
+      "taliban"
+    ],
+    "map": {
+      "countries": [
+        "AFG"
+      ],
+      "points": [
+        {
+          "name": "Kabul",
+          "lon": 69.18,
+          "lat": 34.53
+        }
+      ]
+    },
+    "valid": {
+      "from": "2021-08"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "doha",
+    "kind": "place",
+    "name": "Doha",
+    "aliases": [
+      {
+        "text": "Doha",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "QAT",
+    "obscurity": 2,
+    "short": "Capital of Qatar, a frequent go-between in Middle East talks, from Gaza to Iran and Afghanistan.",
+    "related": [
+      "qatar"
+    ],
+    "map": {
+      "countries": [
+        "QAT"
+      ],
+      "points": [
+        {
+          "name": "Doha",
+          "lon": 51.53,
+          "lat": 25.29
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "muscat",
+    "kind": "place",
+    "name": "Muscat",
+    "aliases": [
+      {
+        "text": "Muscat",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "OMN",
+    "obscurity": 2,
+    "short": "Capital of Oman, the quiet channel through which Washington, Tehran and the Houthis pass messages.",
+    "related": [
+      "oman"
+    ],
+    "map": {
+      "countries": [
+        "OMN"
+      ],
+      "points": [
+        {
+          "name": "Muscat",
+          "lon": 58.41,
+          "lat": 23.59
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "sanaa",
+    "kind": "place",
+    "name": "Sanaa",
+    "aliases": [
+      {
+        "text": "Sanaa",
+        "caseSensitive": true
+      },
+      {
+        "text": "Sana'a",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "YEM",
+    "obscurity": 2,
+    "short": "Yemen's historic capital, held by the Houthis since 2014.",
+    "related": [
+      "houthis"
+    ],
+    "map": {
+      "countries": [
+        "YEM"
+      ],
+      "points": [
+        {
+          "name": "Sanaa",
+          "lon": 44.21,
+          "lat": 15.35
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "aden",
+    "kind": "place",
+    "name": "Aden",
+    "aliases": [
+      {
+        "text": "Aden",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "YEM",
+    "obscurity": 2,
+    "short": "Port city in southern Yemen, seat of the internationally recognised government since the Houthis took Sanaa.",
+    "related": [
+      "presidential-leadership-council",
+      "stc"
+    ],
+    "map": {
+      "countries": [
+        "YEM"
+      ],
+      "points": [
+        {
+          "name": "Aden",
+          "lon": 45.03,
+          "lat": 12.79
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "khartoum",
+    "kind": "place",
+    "name": "Khartoum",
+    "aliases": [
+      {
+        "text": "Khartoum",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "SDN",
+    "obscurity": 2,
+    "short": "Sudan's capital, where the Blue and White Nile meet; wrecked by fighting and retaken by the army in 2025.",
+    "map": {
+      "countries": [
+        "SDN"
+      ],
+      "points": [
+        {
+          "name": "Khartoum",
+          "lon": 32.53,
+          "lat": 15.5
+        }
+      ]
+    },
+    "valid": {
+      "from": "2025-03"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "port-sudan",
+    "kind": "place",
+    "name": "Port Sudan",
+    "aliases": [
+      {
+        "text": "Port Sudan",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "SDN",
+    "obscurity": 2,
+    "short": "Sudan's main Red Sea port, where the army-led government moved after war engulfed Khartoum.",
+    "related": [
+      "saf"
+    ],
+    "map": {
+      "countries": [
+        "SDN"
+      ],
+      "points": [
+        {
+          "name": "Port Sudan",
+          "lon": 37.22,
+          "lat": 19.62
+        }
+      ]
+    },
+    "valid": {
+      "from": "2023-04"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "addis-ababa",
+    "kind": "place",
+    "name": "Addis Ababa",
+    "aliases": [
+      {
+        "text": "Addis Ababa",
+        "caseSensitive": true
+      },
+      {
+        "text": "Addis",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "ETH",
+    "obscurity": 2,
+    "short": "Ethiopia's capital and seat of the African Union.",
+    "map": {
+      "countries": [
+        "ETH"
+      ],
+      "points": [
+        {
+          "name": "Addis Ababa",
+          "lon": 38.76,
+          "lat": 9.03
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "rawalpindi",
+    "kind": "place",
+    "name": "Rawalpindi",
+    "aliases": [
+      {
+        "text": "Rawalpindi",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "PAK",
+    "obscurity": 3,
+    "short": "City next to Islamabad that hosts Pakistan's army headquarters. In the news, shorthand for the military.",
+    "related": [
+      "asim-munir"
+    ],
+    "map": {
+      "countries": [
+        "PAK"
+      ],
+      "points": [
+        {
+          "name": "Rawalpindi",
+          "lon": 73.05,
+          "lat": 33.6
+        }
+      ]
+    },
+    "valid": {
+      "from": "1947-08"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "mexico-city",
+    "kind": "place",
+    "name": "Mexico City",
+    "aliases": [
+      {
+        "text": "Mexico City",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "MEX",
+    "obscurity": 1,
+    "short": "Mexico's capital. In the news, shorthand for the Mexican government.",
+    "map": {
+      "countries": [
+        "MEX"
+      ],
+      "points": [
+        {
+          "name": "Mexico City",
+          "lon": -99.13,
+          "lat": 19.43
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "donetsk-oblast",
+    "kind": "place",
+    "name": "Donetsk oblast",
+    "aliases": [
+      "Donetsk oblast",
+      "Donetsk region",
+      "Donetsk"
+    ],
+    "countryId": "UKR",
+    "obscurity": 2,
+    "short": "A region of eastern Ukraine, part of the industrial Donbas. Russia holds most of it and claims all of it.",
+    "long": "Russian-backed separatists seized its capital, the city of Donetsk, in 2014. Russia claimed to annex the whole oblast in September 2022. Ukraine still holds the north-west, including the fortress belt, and says any withdrawal needs a referendum.",
+    "related": [
+      "fortress-belt",
+      "kramatorsk",
+      "sloviansk",
+      "pokrovsk"
+    ],
+    "map": {
+      "countries": [
+        "UKR",
+        "RUS"
+      ],
+      "points": [
+        {
+          "name": "Donetsk oblast",
+          "lon": 37.8,
+          "lat": 48
+        }
+      ]
+    },
+    "valid": {
+      "from": "2022-09"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Donetsk_Oblast"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "fortress-belt",
+    "kind": "place",
+    "name": "The fortress belt",
+    "aliases": [
+      "fortress belt"
+    ],
+    "countryId": "UKR",
+    "obscurity": 3,
+    "short": "Four fortified cities in Ukrainian-held Donetsk: Sloviansk, Kramatorsk, Druzhkivka and Kostiantynivka. Ukraine's strongest line in the east.",
+    "long": "Fortified since 2014. Russia demands the whole of Donetsk in any deal; giving the belt up without a fight would leave open country between the front and the Dnipro.",
+    "related": [
+      "kramatorsk",
+      "sloviansk",
+      "donetsk-oblast"
+    ],
+    "valid": {
+      "from": "2022-09"
+    },
+    "sources": [
+      "https://www.understandingwar.org/"
+    ],
+    "asOf": "2026-11-22",
+    "map": {
+      "countries": [
+        "UKR"
+      ],
+      "points": [
+        {
+          "name": "Sloviansk",
+          "lon": 37.62,
+          "lat": 48.85
+        },
+        {
+          "name": "Kramatorsk",
+          "lon": 37.56,
+          "lat": 48.72
+        },
+        {
+          "name": "Druzhkivka",
+          "lon": 37.53,
+          "lat": 48.62
+        },
+        {
+          "name": "Kostiantynivka",
+          "lon": 37.71,
+          "lat": 48.53
+        }
+      ]
+    }
+  },
+  {
+    "id": "kramatorsk",
+    "kind": "place",
+    "name": "Kramatorsk",
+    "aliases": [
+      "Kramatorsk"
+    ],
+    "countryId": "UKR",
+    "obscurity": 3,
+    "short": "An industrial city in Donetsk oblast, seat of Ukraine's regional government since 2014 and part of the fortress belt.",
+    "related": [
+      "fortress-belt",
+      "sloviansk"
+    ],
+    "map": {
+      "countries": [
+        "UKR"
+      ],
+      "points": [
+        {
+          "name": "Kramatorsk",
+          "lon": 37.56,
+          "lat": 48.72
+        }
+      ]
+    },
+    "valid": {
+      "from": "2014-10"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Kramatorsk"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "sloviansk",
+    "kind": "place",
+    "name": "Sloviansk",
+    "aliases": [
+      "Sloviansk",
+      "Slovyansk"
+    ],
+    "countryId": "UKR",
+    "obscurity": 3,
+    "short": "A city in northern Donetsk oblast, held by Russian-backed fighters in 2014 until Ukraine retook it; anchor of the fortress belt.",
+    "related": [
+      "fortress-belt",
+      "kramatorsk"
+    ],
+    "map": {
+      "countries": [
+        "UKR"
+      ],
+      "points": [
+        {
+          "name": "Sloviansk",
+          "lon": 37.62,
+          "lat": 48.85
+        }
+      ]
+    },
+    "valid": {
+      "from": "2014-07"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Sloviansk"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "pokrovsk",
+    "kind": "place",
+    "name": "Pokrovsk",
+    "aliases": [
+      "Pokrovsk axis",
+      "Pokrovsk"
+    ],
+    "countryId": "UKR",
+    "obscurity": 3,
+    "short": "A mining town and road hub in western Donetsk, focus of Russia's main offensive from 2024 and ruined by the fighting.",
+    "related": [
+      "donetsk-oblast"
+    ],
+    "map": {
+      "countries": [
+        "UKR"
+      ],
+      "points": [
+        {
+          "name": "Pokrovsk",
+          "lon": 37.18,
+          "lat": 48.28
+        }
+      ]
+    },
+    "valid": {
+      "from": "2024-02"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Pokrovsk_offensive"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "huliaipole",
+    "kind": "place",
+    "name": "Huliaipole",
+    "aliases": [
+      "Huliaipole",
+      "Hulyaipole"
+    ],
+    "countryId": "UKR",
+    "obscurity": 3,
+    "short": "A small town in Zaporizhzhia region on the southern front, under heavy Russian pressure since 2025.",
+    "map": {
+      "countries": [
+        "UKR"
+      ],
+      "points": [
+        {
+          "name": "Huliaipole",
+          "lon": 36.26,
+          "lat": 47.66
+        }
+      ]
+    },
+    "valid": {
+      "from": "2025-06"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "oleshky",
+    "kind": "place",
+    "name": "Oleshky",
+    "aliases": [
+      "Oleshky"
+    ],
+    "countryId": "UKR",
+    "obscurity": 3,
+    "short": "A Russian-occupied town on the Dnipro's left bank near Kherson, site of a short local ceasefire in late October 2026.",
+    "related": [
+      "oleshky-ceasefire"
+    ],
+    "map": {
+      "countries": [
+        "UKR"
+      ],
+      "points": [
+        {
+          "name": "Oleshky",
+          "lon": 32.69,
+          "lat": 46.62
+        }
+      ]
+    },
+    "valid": {
+      "from": "2022-03"
+    },
+    "sources": [
+      "https://www.khaleejtimes.com/europe/russia-ukraine-hold-peace-talks-nov-2026-ceasefire-oleshky"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "odesa",
+    "kind": "place",
+    "name": "Odesa",
+    "aliases": [
+      "Odesa",
+      "Odessa"
+    ],
+    "countryId": "UKR",
+    "obscurity": 2,
+    "short": "Ukraine's main Black Sea port, through which most of its grain exports leave; Russian nationalists have long coveted it.",
+    "map": {
+      "countries": [
+        "UKR"
+      ],
+      "points": [
+        {
+          "name": "Odesa",
+          "lon": 30.72,
+          "lat": 46.48
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "crimea",
+    "kind": "place",
+    "name": "Crimea",
+    "aliases": [
+      "Crimea",
+      "Crimean peninsula"
+    ],
+    "countryId": "UKR",
+    "obscurity": 1,
+    "short": "A Black Sea peninsula that Russia seized from Ukraine and annexed in 2014, a move most countries reject.",
+    "map": {
+      "countries": [
+        "UKR",
+        "RUS"
+      ],
+      "points": [
+        {
+          "name": "Crimea",
+          "lon": 34.1,
+          "lat": 45
+        }
+      ]
+    },
+    "valid": {
+      "from": "2014-03"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "donbas",
+    "kind": "place",
+    "name": "The Donbas",
+    "aliases": [
+      "Donbas",
+      "Donbass"
+    ],
+    "countryId": "UKR",
+    "obscurity": 2,
+    "short": "Ukraine's eastern coal and steel heartland, made up of Donetsk and Luhansk regions; fought over since 2014.",
+    "related": [
+      "donetsk-oblast"
+    ],
+    "map": {
+      "countries": [
+        "UKR",
+        "RUS"
+      ],
+      "points": [
+        {
+          "name": "Donbas",
+          "lon": 38.5,
+          "lat": 48.3
+        }
+      ]
+    },
+    "valid": {
+      "from": "2014-04"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "lublin",
+    "kind": "place",
+    "name": "Lublin province",
+    "aliases": [
+      "Lublin province",
+      "Lublin"
+    ],
+    "countryId": "POL",
+    "obscurity": 3,
+    "short": "A region of eastern Poland bordering Ukraine and Belarus, where stray Russian drones have crossed into NATO airspace.",
+    "related": [
+      "nato-article-4"
+    ],
+    "map": {
+      "countries": [
+        "POL"
+      ],
+      "points": [
+        {
+          "name": "Lublin province",
+          "lon": 22.57,
+          "lat": 51.25
+        }
+      ]
+    },
+    "valid": {
+      "from": "2025-09"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "suwalki-gap",
+    "kind": "place",
+    "name": "The Suwałki Gap",
+    "aliases": [
+      "Suwałki Gap",
+      "Suwalki Gap",
+      "Suwałki",
+      "Suwalki"
+    ],
+    "countryId": "POL",
+    "obscurity": 3,
+    "short": "A 65 km strip of Polish-Lithuanian border between Belarus and Russia's Kaliningrad: NATO's most exposed point.",
+    "long": "If Russia closed it, the three Baltic states would be cut off by land from the rest of NATO. Military planners on both sides watch it closely.",
+    "related": [
+      "kaliningrad"
+    ],
+    "map": {
+      "countries": [
+        "POL",
+        "LTU",
+        "BLR",
+        "RUS"
+      ],
+      "points": [
+        {
+          "name": "Suwałki Gap",
+          "lon": 23,
+          "lat": 54.2
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "kaliningrad",
+    "kind": "place",
+    "name": "Kaliningrad",
+    "aliases": [
+      "Kaliningrad"
+    ],
+    "countryId": "RUS",
+    "obscurity": 2,
+    "short": "A Russian enclave on the Baltic between Poland and Lithuania, heavily armed and home to nuclear-capable Iskander missiles.",
+    "related": [
+      "suwalki-gap",
+      "iskander"
+    ],
+    "map": {
+      "countries": [
+        "RUS"
+      ],
+      "points": [
+        {
+          "name": "Kaliningrad",
+          "lon": 20.51,
+          "lat": 54.71
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "rostov-on-don",
+    "kind": "place",
+    "name": "Rostov-on-Don",
+    "aliases": [
+      "Rostov-on-Don",
+      "Rostov"
+    ],
+    "countryId": "RUS",
+    "obscurity": 3,
+    "short": "Southern Russian city that hosts the headquarters running the war in Ukraine; Wagner mutineers seized it in 2023.",
+    "related": [
+      "yevgeny-prigozhin"
+    ],
+    "map": {
+      "countries": [
+        "RUS"
+      ],
+      "points": [
+        {
+          "name": "Rostov-on-Don",
+          "lon": 39.72,
+          "lat": 47.23
+        }
+      ]
+    },
+    "valid": {
+      "from": "2023-06"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "buryatia",
+    "kind": "place",
+    "name": "Buryatia",
+    "aliases": [
+      "Buryatia"
+    ],
+    "countryId": "RUS",
+    "obscurity": 3,
+    "short": "A poor Siberian republic near Mongolia that has sent a disproportionate share of Russia's soldiers to the war.",
+    "map": {
+      "countries": [
+        "RUS"
+      ],
+      "points": [
+        {
+          "name": "Buryatia",
+          "lon": 108,
+          "lat": 52
+        }
+      ]
+    },
+    "valid": {
+      "from": "2022-09"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "alaska",
+    "kind": "place",
+    "name": "Alaska",
+    "aliases": [
+      {
+        "text": "Alaska",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "USA",
+    "obscurity": 1,
+    "short": "The US state where Trump and Putin met in August 2025 for a summit on Ukraine that produced no deal.",
+    "related": [
+      "alaska-summit-2025"
+    ],
+    "map": {
+      "countries": [
+        "USA"
+      ],
+      "points": [
+        {
+          "name": "Alaska",
+          "lon": -149.9,
+          "lat": 61.22
+        }
+      ]
+    },
+    "valid": {
+      "from": "2025-08"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "geneva",
+    "kind": "place",
+    "name": "Geneva",
+    "aliases": [
+      {
+        "text": "Geneva",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "CHE",
+    "obscurity": 2,
+    "short": "Swiss city that hosts UN agencies and many peace talks, including US-Ukraine rounds in 2025.",
+    "map": {
+      "countries": [
+        "CHE"
+      ],
+      "points": [
+        {
+          "name": "Geneva",
+          "lon": 6.14,
+          "lat": 46.2
+        }
+      ]
+    },
+    "valid": {
+      "from": "2025-11"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "strait-of-hormuz",
+    "kind": "place",
+    "name": "The Strait of Hormuz",
+    "aliases": [
+      "Strait of Hormuz",
+      "Hormuz"
+    ],
+    "countryId": "IRN",
+    "obscurity": 1,
+    "short": "The narrow sea lane between Iran and Oman through which about a fifth of the world's oil normally passes.",
+    "long": "At its narrowest it is about 33 km wide. Iran has threatened for decades to close it; in 2026 it was closed and reopened as the US blockaded Iranian ports and the Revolutionary Guards attacked ships.",
+    "related": [
+      "us-blockade-of-iran",
+      "irgc"
+    ],
+    "map": {
+      "countries": [
+        "IRN",
+        "OMN",
+        "ARE"
+      ],
+      "points": [
+        {
+          "name": "Strait of Hormuz",
+          "lon": 56.3,
+          "lat": 26.6
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Strait_of_Hormuz"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "fujairah",
+    "kind": "place",
+    "name": "Fujairah",
+    "aliases": [
+      "Fujairah"
+    ],
+    "countryId": "ARE",
+    "obscurity": 3,
+    "short": "An Emirati port on the Gulf of Oman, outside Hormuz, built up so UAE oil could bypass the strait.",
+    "map": {
+      "countries": [
+        "ARE"
+      ],
+      "points": [
+        {
+          "name": "Fujairah",
+          "lon": 56.33,
+          "lat": 25.12
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "jebel-ali",
+    "kind": "place",
+    "name": "Jebel Ali",
+    "aliases": [
+      "Jebel Ali"
+    ],
+    "countryId": "ARE",
+    "obscurity": 3,
+    "short": "Dubai's giant container port, the busiest in the Middle East.",
+    "related": [
+      "dubai",
+      "dp-world"
+    ],
+    "map": {
+      "countries": [
+        "ARE"
+      ],
+      "points": [
+        {
+          "name": "Jebel Ali",
+          "lon": 55.03,
+          "lat": 25.01
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "dubai",
+    "kind": "place",
+    "name": "Dubai",
+    "aliases": [
+      {
+        "text": "Dubai",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "ARE",
+    "obscurity": 1,
+    "short": "The UAE's business and tourism hub, a trading gateway for Iran and much of the region.",
+    "map": {
+      "countries": [
+        "ARE"
+      ],
+      "points": [
+        {
+          "name": "Dubai",
+          "lon": 55.27,
+          "lat": 25.2
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "al-dhafra",
+    "kind": "place",
+    "name": "Al Dhafra Air Base",
+    "aliases": [
+      "Al Dhafra",
+      "Al Dhafra Air Base"
+    ],
+    "countryId": "ARE",
+    "obscurity": 3,
+    "short": "An Emirati air base near Abu Dhabi that hosts US fighter jets and drones.",
+    "map": {
+      "countries": [
+        "ARE"
+      ],
+      "points": [
+        {
+          "name": "Al Dhafra Air Base",
+          "lon": 54.55,
+          "lat": 24.25
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "taweelah",
+    "kind": "place",
+    "name": "Taweelah",
+    "aliases": [
+      "Taweelah"
+    ],
+    "countryId": "ARE",
+    "obscurity": 3,
+    "short": "A coastal industrial zone near Abu Dhabi with one of the world's largest desalination plants, which supplies drinking water.",
+    "map": {
+      "countries": [
+        "ARE"
+      ],
+      "points": [
+        {
+          "name": "Taweelah",
+          "lon": 54.69,
+          "lat": 24.78
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "abu-musa-tunbs",
+    "kind": "place",
+    "name": "Abu Musa and the Tunbs",
+    "aliases": [
+      "Abu Musa",
+      "Tunbs",
+      "Greater and Lesser Tunb"
+    ],
+    "countryId": "ARE",
+    "obscurity": 3,
+    "short": "Three small Gulf islands near Hormuz that Iran has held since 1971 and the UAE still claims.",
+    "map": {
+      "countries": [
+        "IRN",
+        "ARE"
+      ],
+      "points": [
+        {
+          "name": "Abu Musa and the Tunbs",
+          "lon": 55.03,
+          "lat": 25.87
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "isfahan",
+    "kind": "place",
+    "name": "Isfahan",
+    "aliases": [
+      "Isfahan",
+      "Esfahan"
+    ],
+    "countryId": "IRN",
+    "obscurity": 2,
+    "short": "A historic Iranian city with a nuclear complex whose tunnels are believed to hold Iran's stock of 60% enriched uranium.",
+    "long": "The IAEA's chief said in March 2026 that more than 200 kg of uranium enriched to 60% was likely intact there. Inspectors have had no access since February 2026.",
+    "related": [
+      "enrichment",
+      "iaea",
+      "fordow",
+      "natanz"
+    ],
+    "map": {
+      "countries": [
+        "IRN"
+      ],
+      "points": [
+        {
+          "name": "Isfahan",
+          "lon": 51.67,
+          "lat": 32.65
+        }
+      ]
+    },
+    "valid": {
+      "from": "2026-03"
+    },
+    "sources": [
+      "https://www.thenationalnews.com/news/europe/2026/03/10/irans-uranium-stockpile-likely-intact-in-isfahan-iaeas-grossi-says"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "fordow",
+    "kind": "place",
+    "name": "Fordow",
+    "aliases": [
+      "Fordow",
+      "Fordo"
+    ],
+    "countryId": "IRN",
+    "obscurity": 2,
+    "short": "An Iranian uranium enrichment site buried inside a mountain near Qom, bombed by the US in June 2025.",
+    "related": [
+      "enrichment",
+      "natanz",
+      "isfahan"
+    ],
+    "map": {
+      "countries": [
+        "IRN"
+      ],
+      "points": [
+        {
+          "name": "Fordow",
+          "lon": 50.99,
+          "lat": 34.88
+        }
+      ]
+    },
+    "valid": {
+      "from": "2025-06"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "natanz",
+    "kind": "place",
+    "name": "Natanz",
+    "aliases": [
+      "Natanz"
+    ],
+    "countryId": "IRN",
+    "obscurity": 2,
+    "short": "Iran's main uranium enrichment plant, partly underground, attacked repeatedly by Israel and the US.",
+    "related": [
+      "enrichment",
+      "fordow"
+    ],
+    "map": {
+      "countries": [
+        "IRN"
+      ],
+      "points": [
+        {
+          "name": "Natanz",
+          "lon": 51.73,
+          "lat": 33.72
+        }
+      ]
+    },
+    "valid": {
+      "from": "2010-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "qom",
+    "kind": "place",
+    "name": "Qom",
+    "aliases": [
+      "Qom"
+    ],
+    "countryId": "IRN",
+    "obscurity": 2,
+    "short": "Iran's holy city and centre of Shia scholarship, where senior clerics weigh in on the succession.",
+    "related": [
+      "assembly-of-experts"
+    ],
+    "map": {
+      "countries": [
+        "IRN"
+      ],
+      "points": [
+        {
+          "name": "Qom",
+          "lon": 50.88,
+          "lat": 34.64
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "bandar-abbas",
+    "kind": "place",
+    "name": "Bandar Abbas",
+    "aliases": [
+      "Bandar Abbas"
+    ],
+    "countryId": "IRN",
+    "obscurity": 3,
+    "short": "Iran's main port on the Strait of Hormuz and a base for its navy and the Revolutionary Guards' fast boats.",
+    "map": {
+      "countries": [
+        "IRN"
+      ],
+      "points": [
+        {
+          "name": "Bandar Abbas",
+          "lon": 56.27,
+          "lat": 27.18
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "jask",
+    "kind": "place",
+    "name": "Jask",
+    "aliases": [
+      "Jask"
+    ],
+    "countryId": "IRN",
+    "obscurity": 3,
+    "short": "A small Iranian port on the Gulf of Oman, outside Hormuz, that Tehran wants to turn into an oil and naval hub.",
+    "map": {
+      "countries": [
+        "IRN"
+      ],
+      "points": [
+        {
+          "name": "Jask",
+          "lon": 57.77,
+          "lat": 25.64
+        }
+      ]
+    },
+    "valid": {
+      "from": "2021-07"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "larak-island",
+    "kind": "place",
+    "name": "Larak Island",
+    "aliases": [
+      "Larak Island",
+      "Larak"
+    ],
+    "countryId": "IRN",
+    "obscurity": 3,
+    "short": "An Iranian island in the narrowest part of Hormuz, next to the shipping lanes, used by the Revolutionary Guards.",
+    "map": {
+      "countries": [
+        "IRN"
+      ],
+      "points": [
+        {
+          "name": "Larak Island",
+          "lon": 56.35,
+          "lat": 26.86
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "bab-al-mandab",
+    "kind": "place",
+    "name": "Bab al-Mandab",
+    "aliases": [
+      "Bab al-Mandab",
+      "Bab el-Mandeb",
+      "Bab al-Mandeb"
+    ],
+    "countryId": "YEM",
+    "obscurity": 2,
+    "short": "The strait between Yemen and Djibouti at the southern mouth of the Red Sea, on the route to the Suez Canal.",
+    "long": "About 30 km wide. Around a tenth of world seaborne trade passed through before Houthi attacks from 2023 sent ships around Africa. In 2026 the Houthis pushed down the coast to the strait itself.",
+    "related": [
+      "red-sea",
+      "perim",
+      "houthis",
+      "suez-canal"
+    ],
+    "map": {
+      "countries": [
+        "YEM",
+        "DJI",
+        "ERI"
+      ],
+      "points": [
+        {
+          "name": "Bab al-Mandab",
+          "lon": 43.33,
+          "lat": 12.58
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Bab-el-Mandeb"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "red-sea",
+    "kind": "place",
+    "name": "The Red Sea",
+    "aliases": [
+      "Red Sea"
+    ],
+    "obscurity": 1,
+    "short": "The sea between Africa and Arabia linking the Suez Canal to the Indian Ocean, one of the world's busiest trade routes.",
+    "related": [
+      "bab-al-mandab",
+      "suez-canal"
+    ],
+    "map": {
+      "countries": [
+        "EGY",
+        "SDN",
+        "ERI",
+        "SAU",
+        "YEM"
+      ],
+      "points": [
+        {
+          "name": "Red Sea",
+          "lon": 38.5,
+          "lat": 20
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "perim",
+    "kind": "place",
+    "name": "Perim",
+    "aliases": [
+      "Perim",
+      "Perim island"
+    ],
+    "countryId": "YEM",
+    "obscurity": 3,
+    "short": "A small volcanic island in the middle of Bab al-Mandab. The Houthis reportedly seized it in 2026; this is not independently confirmed.",
+    "related": [
+      "bab-al-mandab"
+    ],
+    "map": {
+      "countries": [
+        "YEM"
+      ],
+      "points": [
+        {
+          "name": "Perim",
+          "lon": 43.42,
+          "lat": 12.66
+        }
+      ]
+    },
+    "valid": {
+      "from": "2026-09"
+    },
+    "sources": [
+      "https://euronews.com/2026/09/10/houthis-seize-red-sea-port-city-in-push-to-seize-bab-el-mandeb"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "mokha",
+    "kind": "place",
+    "name": "Mokha",
+    "aliases": [
+      "Mokha",
+      "Mocha",
+      "al-Mokha"
+    ],
+    "countryId": "YEM",
+    "obscurity": 3,
+    "short": "A Red Sea port in Yemen, once famous for coffee, taken by the Houthis on 10 September 2026.",
+    "related": [
+      "houthi-red-sea-offensive-2026"
+    ],
+    "map": {
+      "countries": [
+        "YEM"
+      ],
+      "points": [
+        {
+          "name": "Mokha",
+          "lon": 43.25,
+          "lat": 13.32
+        }
+      ]
+    },
+    "valid": {
+      "from": "2026-09"
+    },
+    "sources": [
+      "https://euronews.com/2026/09/10/houthis-seize-red-sea-port-city-in-push-to-seize-bab-el-mandeb"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "dhubab",
+    "kind": "place",
+    "name": "Dhubab",
+    "aliases": [
+      "Dhubab"
+    ],
+    "countryId": "YEM",
+    "obscurity": 3,
+    "short": "A coastal district at the mouth of the Red Sea, fought over in 2026 and retaken by government forces in October.",
+    "map": {
+      "countries": [
+        "YEM"
+      ],
+      "points": [
+        {
+          "name": "Dhubab",
+          "lon": 43.4,
+          "lat": 12.94
+        }
+      ]
+    },
+    "valid": {
+      "from": "2026-10"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "khokha",
+    "kind": "place",
+    "name": "Khokha",
+    "aliases": [
+      "Khokha",
+      "al-Khawkhah"
+    ],
+    "countryId": "YEM",
+    "obscurity": 3,
+    "short": "A small Red Sea fishing town north of Mokha, a staging point for government forces.",
+    "map": {
+      "countries": [
+        "YEM"
+      ],
+      "points": [
+        {
+          "name": "Khokha",
+          "lon": 43.25,
+          "lat": 13.8
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "hodeidah",
+    "kind": "place",
+    "name": "Hodeidah",
+    "aliases": [
+      "Hodeidah",
+      "Hudaydah"
+    ],
+    "countryId": "YEM",
+    "obscurity": 2,
+    "short": "Yemen's main Red Sea port, held by the Houthis; most of the north's food and fuel comes through it.",
+    "map": {
+      "countries": [
+        "YEM"
+      ],
+      "points": [
+        {
+          "name": "Hodeidah",
+          "lon": 42.95,
+          "lat": 14.8
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "socotra",
+    "kind": "place",
+    "name": "Socotra",
+    "aliases": [
+      "Socotra"
+    ],
+    "countryId": "YEM",
+    "obscurity": 3,
+    "short": "A Yemeni island in the Arabian Sea, famous for its unique plants, where the UAE built an airstrip and a military foothold.",
+    "map": {
+      "countries": [
+        "YEM"
+      ],
+      "points": [
+        {
+          "name": "Socotra",
+          "lon": 53.87,
+          "lat": 12.5
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "marib",
+    "kind": "place",
+    "name": "Marib",
+    "aliases": [
+      "Marib"
+    ],
+    "countryId": "YEM",
+    "obscurity": 3,
+    "short": "An oil-producing province east of Sanaa, a long-held government and tribal stronghold against the Houthis.",
+    "map": {
+      "countries": [
+        "YEM"
+      ],
+      "points": [
+        {
+          "name": "Marib",
+          "lon": 45.32,
+          "lat": 15.46
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "al-bayda",
+    "kind": "place",
+    "name": "Al-Bayda",
+    "aliases": [
+      "al-Bayda",
+      "Bayda"
+    ],
+    "countryId": "YEM",
+    "obscurity": 3,
+    "short": "A mountainous Yemeni province of powerful tribes, between Houthi-held north and the south.",
+    "map": {
+      "countries": [
+        "YEM"
+      ],
+      "points": [
+        {
+          "name": "Al-Bayda",
+          "lon": 45.57,
+          "lat": 13.99
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "mukalla",
+    "kind": "place",
+    "name": "Mukalla",
+    "aliases": [
+      "Mukalla"
+    ],
+    "countryId": "YEM",
+    "obscurity": 3,
+    "short": "Port capital of Yemen's eastern Hadramawt province on the Arabian Sea.",
+    "map": {
+      "countries": [
+        "YEM"
+      ],
+      "points": [
+        {
+          "name": "Mukalla",
+          "lon": 49.12,
+          "lat": 14.54
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "ras-tanura",
+    "kind": "place",
+    "name": "Ras Tanura",
+    "aliases": [
+      "Ras Tanura"
+    ],
+    "countryId": "SAU",
+    "obscurity": 3,
+    "short": "Saudi Arabia's largest oil export terminal and refinery, on the Gulf coast.",
+    "map": {
+      "countries": [
+        "SAU"
+      ],
+      "points": [
+        {
+          "name": "Ras Tanura",
+          "lon": 50.16,
+          "lat": 26.64
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "yanbu",
+    "kind": "place",
+    "name": "Yanbu",
+    "aliases": [
+      "Yanbu"
+    ],
+    "countryId": "SAU",
+    "obscurity": 3,
+    "short": "Saudi Red Sea port at the end of a pipeline that lets oil bypass Hormuz.",
+    "map": {
+      "countries": [
+        "SAU"
+      ],
+      "points": [
+        {
+          "name": "Yanbu",
+          "lon": 38.06,
+          "lat": 24.09
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "jizan",
+    "kind": "place",
+    "name": "Jizan",
+    "aliases": [
+      "Jizan",
+      "Jazan"
+    ],
+    "countryId": "SAU",
+    "obscurity": 3,
+    "short": "Saudi province and port on the Yemeni border, often hit by Houthi fire.",
+    "map": {
+      "countries": [
+        "SAU"
+      ],
+      "points": [
+        {
+          "name": "Jizan",
+          "lon": 42.55,
+          "lat": 16.89
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "king-khalid-airport",
+    "kind": "place",
+    "name": "King Khalid International Airport",
+    "aliases": [
+      "King Khalid International",
+      "King Khalid International Airport",
+      "Riyadh's airport"
+    ],
+    "countryId": "SAU",
+    "obscurity": 3,
+    "short": "Riyadh's main airport, struck by a Houthi missile on 10 October 2026 that killed 13 people.",
+    "map": {
+      "countries": [
+        "SAU"
+      ],
+      "points": [
+        {
+          "name": "King Khalid International Airport",
+          "lon": 46.7,
+          "lat": 24.96
+        }
+      ]
+    },
+    "valid": {
+      "from": "2026-10"
+    },
+    "sources": [
+      "https://www.aljazeera.com/news/2026/10/6/yemen-war-whats-the-latest-on-the-battlefield"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "neom",
+    "kind": "place",
+    "name": "NEOM",
+    "aliases": [
+      {
+        "text": "NEOM",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "SAU",
+    "obscurity": 2,
+    "short": "A planned $500bn futuristic city on Saudi Arabia's Red Sea coast, flagship of Vision 2030.",
+    "related": [
+      "vision-2030"
+    ],
+    "map": {
+      "countries": [
+        "SAU"
+      ],
+      "points": [
+        {
+          "name": "NEOM",
+          "lon": 35.2,
+          "lat": 28
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "jeddah",
+    "kind": "place",
+    "name": "Jeddah",
+    "aliases": [
+      {
+        "text": "Jeddah",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "SAU",
+    "obscurity": 2,
+    "short": "Saudi Arabia's Red Sea port city, host of repeated talks between Sudan's warring sides.",
+    "map": {
+      "countries": [
+        "SAU"
+      ],
+      "points": [
+        {
+          "name": "Jeddah",
+          "lon": 39.17,
+          "lat": 21.49
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "suez-canal",
+    "kind": "place",
+    "name": "The Suez Canal",
+    "aliases": [
+      "Suez Canal",
+      {
+        "text": "Suez",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "EGY",
+    "obscurity": 1,
+    "short": "Egypt's canal linking the Mediterranean and the Red Sea, a major source of hard currency for Cairo.",
+    "long": "Before Houthi attacks began in late 2023, about 12% of world trade used it. Ships rerouting around Africa have cut Egypt's canal revenue by more than half.",
+    "related": [
+      "red-sea",
+      "bab-al-mandab"
+    ],
+    "map": {
+      "countries": [
+        "EGY"
+      ],
+      "points": [
+        {
+          "name": "Suez Canal",
+          "lon": 32.35,
+          "lat": 30.6
+        }
+      ]
+    },
+    "valid": {
+      "from": "2024-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "cape-of-good-hope",
+    "kind": "place",
+    "name": "The Cape of Good Hope",
+    "aliases": [
+      "Cape of Good Hope",
+      "around the Cape",
+      "round Africa",
+      "around Africa"
+    ],
+    "countryId": "ZAF",
+    "obscurity": 2,
+    "short": "The southern tip of Africa: the long way round for ships avoiding the Red Sea, adding 10 to 14 days.",
+    "map": {
+      "countries": [
+        "ZAF"
+      ],
+      "points": [
+        {
+          "name": "Cape of Good Hope",
+          "lon": 18.47,
+          "lat": -34.36
+        }
+      ]
+    },
+    "valid": {
+      "from": "2024-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "somaliland",
+    "kind": "place",
+    "name": "Somaliland",
+    "aliases": [
+      "Somaliland"
+    ],
+    "countryId": "SOM",
+    "obscurity": 3,
+    "short": "A self-declared state in northern Somalia on the Gulf of Aden, unrecognised by most countries, with an Emirati-run port.",
+    "map": {
+      "countries": [
+        "SOM"
+      ],
+      "points": [
+        {
+          "name": "Somaliland",
+          "lon": 44.06,
+          "lat": 9.56
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "oman",
+    "kind": "place",
+    "name": "Oman",
+    "aliases": [
+      {
+        "text": "Oman",
+        "caseSensitive": true
+      },
+      "Omani"
+    ],
+    "countryId": "OMN",
+    "obscurity": 2,
+    "short": "A Gulf sultanate on the far side of Hormuz, trusted by both Washington and Tehran as a quiet mediator.",
+    "related": [
+      "muscat"
+    ],
+    "map": {
+      "countries": [
+        "OMN"
+      ],
+      "points": [
+        {
+          "name": "Oman",
+          "lon": 58.41,
+          "lat": 23.59
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "qatar",
+    "kind": "place",
+    "name": "Qatar",
+    "aliases": [
+      {
+        "text": "Qatar",
+        "caseSensitive": true
+      },
+      "Qatari"
+    ],
+    "countryId": "QAT",
+    "obscurity": 2,
+    "short": "A small, gas-rich Gulf state that hosts the largest US base in the region and mediates in many conflicts.",
+    "related": [
+      "doha"
+    ],
+    "map": {
+      "countries": [
+        "QAT"
+      ],
+      "points": [
+        {
+          "name": "Qatar",
+          "lon": 51.53,
+          "lat": 25.29
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "bahrain",
+    "kind": "place",
+    "name": "Bahrain",
+    "aliases": [
+      {
+        "text": "Bahrain",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "BHR",
+    "obscurity": 2,
+    "short": "A Gulf island kingdom that hosts the US Navy's Fifth Fleet; Iran attacked US bases there in November 2026.",
+    "map": {
+      "countries": [
+        "BHR"
+      ],
+      "points": [
+        {
+          "name": "Bahrain",
+          "lon": 50.58,
+          "lat": 26.22
+        }
+      ]
+    },
+    "valid": {
+      "from": "2026-11"
+    },
+    "sources": [
+      "https://euronews.com/2026/11/21/iran-attacks-us-bases-in-bahrain-as-its-tankers-get-ready-to-break-the-us-blockade"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "eritrea",
+    "kind": "place",
+    "name": "Eritrea",
+    "aliases": [
+      {
+        "text": "Eritrea",
+        "caseSensitive": true
+      },
+      "Eritrean"
+    ],
+    "countryId": "ERI",
+    "obscurity": 2,
+    "short": "A closed, one-man-ruled state on the Red Sea that fought Ethiopia in 1998 to 2000; its troops are reported in Tigray again.",
+    "related": [
+      "tigray"
+    ],
+    "map": {
+      "countries": [
+        "ERI"
+      ],
+      "points": [
+        {
+          "name": "Eritrea",
+          "lon": 38.93,
+          "lat": 15.32
+        }
+      ]
+    },
+    "valid": {
+      "from": "2026-09"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "libya",
+    "kind": "place",
+    "name": "Libya",
+    "aliases": [
+      {
+        "text": "Libya",
+        "caseSensitive": true
+      },
+      "Libyan"
+    ],
+    "countryId": "LBY",
+    "obscurity": 1,
+    "short": "A North African oil state split between rival governments since 2014; its eastern strongman's airstrips feed Sudan's war.",
+    "map": {
+      "countries": [
+        "LBY"
+      ],
+      "points": [
+        {
+          "name": "Libya",
+          "lon": 13.19,
+          "lat": 32.89
+        }
+      ]
+    },
+    "valid": {
+      "from": "2023-04"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "chad",
+    "kind": "place",
+    "name": "Chad",
+    "aliases": [
+      {
+        "text": "Chad",
+        "caseSensitive": true
+      }
+    ],
+    "avoid": [
+      "Lake Chad"
+    ],
+    "countryId": "TCD",
+    "obscurity": 2,
+    "short": "Sudan's western neighbour; airstrips near the border are reported supply routes for the RSF.",
+    "map": {
+      "countries": [
+        "TCD"
+      ],
+      "points": [
+        {
+          "name": "Chad",
+          "lon": 15.04,
+          "lat": 12.13
+        }
+      ]
+    },
+    "valid": {
+      "from": "2023-04"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "el-fasher",
+    "kind": "place",
+    "name": "El Fasher",
+    "aliases": [
+      "El Fasher",
+      "al-Fashir"
+    ],
+    "countryId": "SDN",
+    "obscurity": 2,
+    "short": "Capital of North Darfur, taken by the RSF on 26 October 2025 after an 18-month siege, amid mass killings.",
+    "related": [
+      "rsf",
+      "darfur",
+      "fall-of-el-fasher"
+    ],
+    "map": {
+      "countries": [
+        "SDN"
+      ],
+      "points": [
+        {
+          "name": "El Fasher",
+          "lon": 25.35,
+          "lat": 13.63
+        }
+      ]
+    },
+    "valid": {
+      "from": "2025-10"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Fall_of_El_Fasher"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "el-obeid",
+    "kind": "place",
+    "name": "El Obeid",
+    "aliases": [
+      "El Obeid",
+      "al-Ubayyid"
+    ],
+    "countryId": "SDN",
+    "obscurity": 2,
+    "short": "Capital of North Kordofan and gateway to the Nile valley, besieged by the RSF from July 2026.",
+    "long": "Hundreds of thousands of civilians and two army divisions are inside. In November 2026 the army reportedly broke the siege; the city's fate decides whether the war moves east toward the Nile.",
+    "related": [
+      "siege-of-el-obeid",
+      "kordofan"
+    ],
+    "map": {
+      "countries": [
+        "SDN"
+      ],
+      "points": [
+        {
+          "name": "El Obeid",
+          "lon": 30.22,
+          "lat": 13.18
+        }
+      ]
+    },
+    "valid": {
+      "from": "2026-07"
+    },
+    "sources": [
+      "https://www.aljazeera.com/news/2026/7/6/el-obeid-under-siege-by-rsf-could-this-be-sudans-next-el-fasher",
+      "https://en.wikipedia.org/wiki/Siege_of_El_Obeid"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "nyala",
+    "kind": "place",
+    "name": "Nyala",
+    "aliases": [
+      "Nyala"
+    ],
+    "countryId": "SDN",
+    "obscurity": 3,
+    "short": "Sudan's second city, in South Darfur, seat of the RSF's rival 'Tasis' government.",
+    "related": [
+      "tasis"
+    ],
+    "map": {
+      "countries": [
+        "SDN"
+      ],
+      "points": [
+        {
+          "name": "Nyala",
+          "lon": 24.88,
+          "lat": 12.05
+        }
+      ]
+    },
+    "valid": {
+      "from": "2025-07"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "kordofan",
+    "kind": "place",
+    "name": "Kordofan",
+    "aliases": [
+      "Kordofan",
+      "North Kordofan",
+      "South Kordofan"
+    ],
+    "countryId": "SDN",
+    "obscurity": 3,
+    "short": "Sudan's central region between Darfur and the Nile, the war's main battlefield in 2026; famine is confirmed there.",
+    "map": {
+      "countries": [
+        "SDN"
+      ],
+      "points": [
+        {
+          "name": "Kordofan",
+          "lon": 30,
+          "lat": 12.5
+        }
+      ]
+    },
+    "valid": {
+      "from": "2026-07"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "darfur",
+    "kind": "place",
+    "name": "Darfur",
+    "aliases": [
+      "Darfur"
+    ],
+    "countryId": "SDN",
+    "obscurity": 2,
+    "short": "Western Sudan, scene of genocide in the 2000s; almost all of it is now held by the RSF.",
+    "related": [
+      "rsf",
+      "el-fasher"
+    ],
+    "map": {
+      "countries": [
+        "SDN"
+      ],
+      "points": [
+        {
+          "name": "Darfur",
+          "lon": 24.5,
+          "lat": 13.5
+        }
+      ]
+    },
+    "valid": {
+      "from": "2025-10"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "kosti",
+    "kind": "place",
+    "name": "Kosti",
+    "aliases": [
+      "Kosti"
+    ],
+    "countryId": "SDN",
+    "obscurity": 3,
+    "short": "A White Nile river town on the main road west to El Obeid.",
+    "map": {
+      "countries": [
+        "SDN"
+      ],
+      "points": [
+        {
+          "name": "Kosti",
+          "lon": 32.66,
+          "lat": 13.16
+        }
+      ]
+    },
+    "valid": {
+      "from": "2026-07"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "nile",
+    "kind": "place",
+    "name": "The Nile",
+    "aliases": [
+      "Nile",
+      "Blue Nile",
+      "White Nile"
+    ],
+    "obscurity": 1,
+    "short": "The world's longest river, flowing north through Sudan and Egypt; Egypt gets almost all its water from it.",
+    "related": [
+      "gerd",
+      "lake-nasser"
+    ],
+    "map": {
+      "countries": [
+        "EGY",
+        "SDN",
+        "ETH"
+      ],
+      "points": [
+        {
+          "name": "Nile",
+          "lon": 32.53,
+          "lat": 15.6
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "gerd",
+    "kind": "place",
+    "name": "The Grand Ethiopian Renaissance Dam",
+    "aliases": [
+      "Grand Ethiopian Renaissance Dam",
+      {
+        "text": "GERD",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "ETH",
+    "obscurity": 2,
+    "short": "Africa's largest hydropower dam, on the Blue Nile in Ethiopia, inaugurated in 2025 over Egypt's objections.",
+    "long": "Egypt fears Ethiopia can cut its water in a drought year; Ethiopia says the dam is about electricity, not control. Years of talks have produced no binding deal on how it is filled and run.",
+    "related": [
+      "nile",
+      "abiy-ahmed"
+    ],
+    "map": {
+      "countries": [
+        "ETH"
+      ],
+      "points": [
+        {
+          "name": "Grand Ethiopian Renaissance Dam",
+          "lon": 35.09,
+          "lat": 11.21
+        }
+      ]
+    },
+    "valid": {
+      "from": "2025-09"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Grand_Ethiopian_Renaissance_Dam"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "lake-nasser",
+    "kind": "place",
+    "name": "Lake Nasser",
+    "aliases": [
+      "Lake Nasser"
+    ],
+    "countryId": "EGY",
+    "obscurity": 3,
+    "short": "The huge reservoir behind Egypt's Aswan High Dam, the country's water bank.",
+    "map": {
+      "countries": [
+        "EGY"
+      ],
+      "points": [
+        {
+          "name": "Lake Nasser",
+          "lon": 32.5,
+          "lat": 22.8
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "aswan",
+    "kind": "place",
+    "name": "Aswan",
+    "aliases": [
+      "Aswan"
+    ],
+    "countryId": "EGY",
+    "obscurity": 2,
+    "short": "Southern Egyptian city by the High Dam, the first stop for many Sudanese refugees.",
+    "map": {
+      "countries": [
+        "EGY"
+      ],
+      "points": [
+        {
+          "name": "Aswan",
+          "lon": 32.9,
+          "lat": 24.09
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "ras-el-hekma",
+    "kind": "place",
+    "name": "Ras El-Hekma",
+    "aliases": [
+      "Ras El-Hekma",
+      "Ras El Hekma"
+    ],
+    "countryId": "EGY",
+    "obscurity": 3,
+    "short": "A Mediterranean headland the UAE agreed to develop for $35bn in 2024, a lifeline for Egypt's economy.",
+    "map": {
+      "countries": [
+        "EGY"
+      ],
+      "points": [
+        {
+          "name": "Ras El-Hekma",
+          "lon": 27.98,
+          "lat": 31.21
+        }
+      ]
+    },
+    "valid": {
+      "from": "2024-02"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "tigray",
+    "kind": "place",
+    "name": "Tigray",
+    "aliases": [
+      "Tigray",
+      "Tigrayan"
+    ],
+    "countryId": "ETH",
+    "obscurity": 2,
+    "short": "Ethiopia's northern region, devastated by war from 2020 to 2022; fighting with the federal government resumed in 2026.",
+    "related": [
+      "eritrea",
+      "abiy-ahmed",
+      "tigray-war-2026"
+    ],
+    "map": {
+      "countries": [
+        "ETH"
+      ],
+      "points": [
+        {
+          "name": "Tigray",
+          "lon": 39.47,
+          "lat": 13.5
+        }
+      ]
+    },
+    "valid": {
+      "from": "2026-09"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "horn-of-africa",
+    "kind": "place",
+    "name": "The Horn of Africa",
+    "aliases": [
+      "Horn of Africa"
+    ],
+    "obscurity": 2,
+    "short": "The peninsula of north-east Africa: Ethiopia, Eritrea, Djibouti and Somalia, facing Arabia across the Red Sea.",
+    "map": {
+      "countries": [
+        "ETH",
+        "ERI",
+        "DJI",
+        "SOM"
+      ],
+      "points": [
+        {
+          "name": "Horn of Africa",
+          "lon": 43,
+          "lat": 8
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "miraflores",
+    "kind": "place",
+    "name": "Miraflores Palace",
+    "aliases": [
+      "Miraflores"
+    ],
+    "countryId": "VEN",
+    "obscurity": 3,
+    "short": "The presidential palace in Caracas; in the news, shorthand for whoever holds power in Venezuela.",
+    "map": {
+      "countries": [
+        "VEN"
+      ],
+      "points": [
+        {
+          "name": "Miraflores Palace",
+          "lon": -66.92,
+          "lat": 10.51
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "fuerte-tiuna",
+    "kind": "place",
+    "name": "Fuerte Tiuna",
+    "aliases": [
+      "Fuerte Tiuna"
+    ],
+    "countryId": "VEN",
+    "obscurity": 3,
+    "short": "Venezuela's main military complex in Caracas, home of the defence ministry; US forces struck it during the January 2026 raid.",
+    "related": [
+      "maduro-capture-2026"
+    ],
+    "map": {
+      "countries": [
+        "VEN"
+      ],
+      "points": [
+        {
+          "name": "Fuerte Tiuna",
+          "lon": -66.92,
+          "lat": 10.46
+        }
+      ]
+    },
+    "valid": {
+      "from": "2026-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "maiquetia",
+    "kind": "place",
+    "name": "Maiquetía",
+    "aliases": [
+      "Maiquetía",
+      "Maiquetia"
+    ],
+    "countryId": "VEN",
+    "obscurity": 3,
+    "short": "Site of Caracas's international airport, on the coast below the capital.",
+    "map": {
+      "countries": [
+        "VEN"
+      ],
+      "points": [
+        {
+          "name": "Maiquetía",
+          "lon": -66.99,
+          "lat": 10.6
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "orinoco-belt",
+    "kind": "place",
+    "name": "The Orinoco belt",
+    "aliases": [
+      "Orinoco belt",
+      "Orinoco"
+    ],
+    "countryId": "VEN",
+    "obscurity": 3,
+    "short": "A region of heavy oil along Venezuela's Orinoco river: on paper, the largest proven oil reserves on Earth.",
+    "related": [
+      "pdvsa"
+    ],
+    "map": {
+      "countries": [
+        "VEN"
+      ],
+      "points": [
+        {
+          "name": "Orinoco belt",
+          "lon": -64,
+          "lat": 8.5
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "florida-straits",
+    "kind": "place",
+    "name": "The Florida Straits",
+    "aliases": [
+      "Florida Straits",
+      "Straits of Florida"
+    ],
+    "countryId": "USA",
+    "obscurity": 2,
+    "short": "The 150 km stretch of sea between Cuba and Florida, crossed by Cuban migrants on rafts in every crisis.",
+    "map": {
+      "countries": [
+        "USA",
+        "CUB"
+      ],
+      "points": [
+        {
+          "name": "Florida Straits",
+          "lon": -81,
+          "lat": 24
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "moron",
+    "kind": "place",
+    "name": "Morón",
+    "aliases": [
+      "Morón"
+    ],
+    "countryId": "CUB",
+    "obscurity": 3,
+    "short": "A town in central Cuba where protesters burned a Communist Party office in March 2026 during blackouts.",
+    "map": {
+      "countries": [
+        "CUB"
+      ],
+      "points": [
+        {
+          "name": "Morón",
+          "lon": -78.63,
+          "lat": 22.11
+        }
+      ]
+    },
+    "valid": {
+      "from": "2026-03"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "santiago-de-cuba",
+    "kind": "place",
+    "name": "Santiago de Cuba",
+    "aliases": [
+      "Santiago de Cuba",
+      {
+        "text": "Santiago",
+        "caseSensitive": true
+      }
+    ],
+    "avoid": [
+      "Santiago de Chile",
+      "Santiago, Chile"
+    ],
+    "countryId": "CUB",
+    "obscurity": 3,
+    "short": "Cuba's second city, in the east, cradle of the 1959 revolution.",
+    "map": {
+      "countries": [
+        "CUB"
+      ],
+      "points": [
+        {
+          "name": "Santiago de Cuba",
+          "lon": -75.82,
+          "lat": 20.02
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "guiteras-plant",
+    "kind": "place",
+    "name": "The Antonio Guiteras power plant",
+    "aliases": [
+      "Antonio Guiteras",
+      "Guiteras"
+    ],
+    "countryId": "CUB",
+    "obscurity": 3,
+    "short": "Cuba's largest oil-fired power station, near Matanzas; when it trips, much of the island goes dark.",
+    "map": {
+      "countries": [
+        "CUB"
+      ],
+      "points": [
+        {
+          "name": "Antonio Guiteras power plant",
+          "lon": -81.53,
+          "lat": 23.05
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "bejucal",
+    "kind": "place",
+    "name": "Bejucal",
+    "aliases": [
+      "Bejucal"
+    ],
+    "countryId": "CUB",
+    "obscurity": 3,
+    "short": "A town south of Havana with a signals intelligence station that US officials say China uses to listen to the US.",
+    "map": {
+      "countries": [
+        "CUB"
+      ],
+      "points": [
+        {
+          "name": "Bejucal",
+          "lon": -82.39,
+          "lat": 22.93
+        }
+      ]
+    },
+    "valid": {
+      "from": "2023-06"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "mariel",
+    "kind": "place",
+    "name": "Mariel",
+    "aliases": [
+      "Mariel"
+    ],
+    "countryId": "CUB",
+    "obscurity": 3,
+    "short": "A Cuban port west of Havana, famous for the 1980 boatlift of 125,000 Cubans to Florida.",
+    "map": {
+      "countries": [
+        "CUB"
+      ],
+      "points": [
+        {
+          "name": "Mariel",
+          "lon": -82.75,
+          "lat": 23.02
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "taiwan-strait",
+    "kind": "place",
+    "name": "The Taiwan Strait",
+    "aliases": [
+      "Taiwan Strait",
+      "the Strait"
+    ],
+    "countryId": "TWN",
+    "obscurity": 1,
+    "short": "The 130 to 180 km wide sea between China and Taiwan, one of the world's busiest shipping lanes.",
+    "related": [
+      "median-line"
+    ],
+    "map": {
+      "countries": [
+        "CHN",
+        "TWN"
+      ],
+      "points": [
+        {
+          "name": "Taiwan Strait",
+          "lon": 119.5,
+          "lat": 24.5
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "keelung",
+    "kind": "place",
+    "name": "Keelung",
+    "aliases": [
+      "Keelung"
+    ],
+    "countryId": "TWN",
+    "obscurity": 3,
+    "short": "Taiwan's main northern port, near Taipei; Chinese drills in December 2025 rehearsed sealing it off.",
+    "map": {
+      "countries": [
+        "TWN"
+      ],
+      "points": [
+        {
+          "name": "Keelung",
+          "lon": 121.74,
+          "lat": 25.13
+        }
+      ]
+    },
+    "valid": {
+      "from": "2025-12"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "kaohsiung",
+    "kind": "place",
+    "name": "Kaohsiung",
+    "aliases": [
+      "Kaohsiung"
+    ],
+    "countryId": "TWN",
+    "obscurity": 2,
+    "short": "Taiwan's biggest port and second city, in the south; a main entry point for fuel.",
+    "map": {
+      "countries": [
+        "TWN"
+      ],
+      "points": [
+        {
+          "name": "Kaohsiung",
+          "lon": 120.3,
+          "lat": 22.62
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "taichung",
+    "kind": "place",
+    "name": "Taichung",
+    "aliases": [
+      "Taichung"
+    ],
+    "countryId": "TWN",
+    "obscurity": 3,
+    "short": "A city on Taiwan's west coast with a huge gas and coal power station and LNG terminal.",
+    "map": {
+      "countries": [
+        "TWN"
+      ],
+      "points": [
+        {
+          "name": "Taichung",
+          "lon": 120.68,
+          "lat": 24.15
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "penghu",
+    "kind": "place",
+    "name": "Penghu",
+    "aliases": [
+      "Penghu",
+      "Pescadores"
+    ],
+    "countryId": "TWN",
+    "obscurity": 3,
+    "short": "A Taiwanese island group in the middle of the Taiwan Strait.",
+    "map": {
+      "countries": [
+        "TWN"
+      ],
+      "points": [
+        {
+          "name": "Penghu",
+          "lon": 119.58,
+          "lat": 23.57
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "xiamen",
+    "kind": "place",
+    "name": "Xiamen",
+    "aliases": [
+      "Xiamen"
+    ],
+    "countryId": "CHN",
+    "obscurity": 3,
+    "short": "A Chinese port city facing Taiwan, a favourite venue for cross-strait contacts.",
+    "map": {
+      "countries": [
+        "CHN"
+      ],
+      "points": [
+        {
+          "name": "Xiamen",
+          "lon": 118.09,
+          "lat": 24.48
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "hainan",
+    "kind": "place",
+    "name": "Hainan",
+    "aliases": [
+      "Hainan"
+    ],
+    "countryId": "CHN",
+    "obscurity": 2,
+    "short": "China's southernmost province, an island hosting naval bases for the South China Sea.",
+    "map": {
+      "countries": [
+        "CHN"
+      ],
+      "points": [
+        {
+          "name": "Hainan",
+          "lon": 110.35,
+          "lat": 20.02
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "hokkaido",
+    "kind": "place",
+    "name": "Hokkaido",
+    "aliases": [
+      "Hokkaido"
+    ],
+    "countryId": "JPN",
+    "obscurity": 2,
+    "short": "Japan's northern main island, a tourism and seafood region hit by Chinese boycotts.",
+    "map": {
+      "countries": [
+        "JPN"
+      ],
+      "points": [
+        {
+          "name": "Hokkaido",
+          "lon": 141.35,
+          "lat": 43.06
+        }
+      ]
+    },
+    "valid": {
+      "from": "2025-11"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "busan",
+    "kind": "place",
+    "name": "Busan",
+    "aliases": [
+      "Busan"
+    ],
+    "countryId": "KOR",
+    "obscurity": 2,
+    "short": "South Korea's main port and second city.",
+    "map": {
+      "countries": [
+        "KOR"
+      ],
+      "points": [
+        {
+          "name": "Busan",
+          "lon": 129.07,
+          "lat": 35.18
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "south-china-sea",
+    "kind": "place",
+    "name": "The South China Sea",
+    "aliases": [
+      "South China Sea"
+    ],
+    "obscurity": 1,
+    "short": "A sea of vital shipping lanes, fish and gas, almost all of which China claims against its neighbours.",
+    "long": "An international tribunal in The Hague ruled in 2016 that China's sweeping claims have no legal basis. Beijing rejects the ruling and has built artificial islands with runways.",
+    "related": [
+      "scarborough-shoal",
+      "arbitration-case-2016"
+    ],
+    "map": {
+      "countries": [
+        "CHN",
+        "PHL",
+        "VNM",
+        "MYS",
+        "BRN",
+        "IDN",
+        "TWN"
+      ],
+      "points": [
+        {
+          "name": "South China Sea",
+          "lon": 114,
+          "lat": 13
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "scarborough-shoal",
+    "kind": "place",
+    "name": "Scarborough Shoal",
+    "aliases": [
+      "Scarborough Shoal",
+      "Scarborough"
+    ],
+    "countryId": "PHL",
+    "obscurity": 2,
+    "short": "A reef and lagoon 220 km off the Philippine coast, under Chinese control since a 2012 standoff and claimed by both.",
+    "long": "China calls it Huangyan Island. The 2016 Hague ruling said it is a traditional fishing ground for both. In June and July 2026 Chinese and Philippine ships faced off there again; Manila fears China will turn it into an artificial island.",
+    "related": [
+      "south-china-sea",
+      "mutual-defense-treaty"
+    ],
+    "map": {
+      "countries": [
+        "PHL",
+        "CHN"
+      ],
+      "points": [
+        {
+          "name": "Scarborough Shoal",
+          "lon": 117.76,
+          "lat": 15.15
+        }
+      ]
+    },
+    "valid": {
+      "from": "2012-04"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Scarborough_Shoal",
+      "https://www.thejakartapost.com/world/2026/07/23/china-fires-water-cannon-on-philippine-ship-at-scarborough-shoal-manila-says"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "reed-bank",
+    "kind": "place",
+    "name": "Reed Bank",
+    "aliases": [
+      "Reed Bank"
+    ],
+    "countryId": "PHL",
+    "obscurity": 3,
+    "short": "A submerged reef west of Palawan believed to hold large gas reserves, claimed by both the Philippines and China.",
+    "map": {
+      "countries": [
+        "PHL"
+      ],
+      "points": [
+        {
+          "name": "Reed Bank",
+          "lon": 116.9,
+          "lat": 11.4
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "malampaya",
+    "kind": "place",
+    "name": "Malampaya",
+    "aliases": [
+      "Malampaya"
+    ],
+    "countryId": "PHL",
+    "obscurity": 3,
+    "short": "The Philippines' only major gas field, which powers much of Luzon and is running dry.",
+    "map": {
+      "countries": [
+        "PHL"
+      ],
+      "points": [
+        {
+          "name": "Malampaya",
+          "lon": 119,
+          "lat": 11.5
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "zambales",
+    "kind": "place",
+    "name": "Zambales",
+    "aliases": [
+      "Zambales"
+    ],
+    "countryId": "PHL",
+    "obscurity": 3,
+    "short": "A province on Luzon's west coast, the nearest Philippine land to Scarborough Shoal.",
+    "map": {
+      "countries": [
+        "PHL"
+      ],
+      "points": [
+        {
+          "name": "Zambales",
+          "lon": 120.08,
+          "lat": 15.33
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "luzon",
+    "kind": "place",
+    "name": "Luzon",
+    "aliases": [
+      "Luzon"
+    ],
+    "countryId": "PHL",
+    "obscurity": 2,
+    "short": "The largest Philippine island, home to Manila and to several sites US forces can use.",
+    "map": {
+      "countries": [
+        "PHL"
+      ],
+      "points": [
+        {
+          "name": "Luzon",
+          "lon": 121,
+          "lat": 16
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "subic",
+    "kind": "place",
+    "name": "Subic Bay",
+    "aliases": [
+      "Subic Bay",
+      {
+        "text": "Subic",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "PHL",
+    "obscurity": 3,
+    "short": "A deep-water bay on Luzon, a giant US naval base until 1992 and a shipyard and port today.",
+    "map": {
+      "countries": [
+        "PHL"
+      ],
+      "points": [
+        {
+          "name": "Subic Bay",
+          "lon": 120.27,
+          "lat": 14.8
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "davao",
+    "kind": "place",
+    "name": "Davao",
+    "aliases": [
+      {
+        "text": "Davao",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "PHL",
+    "obscurity": 2,
+    "short": "The biggest city on Mindanao, power base of the Duterte family.",
+    "related": [
+      "sara-duterte"
+    ],
+    "map": {
+      "countries": [
+        "PHL"
+      ],
+      "points": [
+        {
+          "name": "Davao",
+          "lon": 125.61,
+          "lat": 7.07
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "mindanao",
+    "kind": "place",
+    "name": "Mindanao",
+    "aliases": [
+      "Mindanao"
+    ],
+    "countryId": "PHL",
+    "obscurity": 2,
+    "short": "The large southern Philippine island, home of the Duterte family's political base.",
+    "map": {
+      "countries": [
+        "PHL"
+      ],
+      "points": [
+        {
+          "name": "Mindanao",
+          "lon": 125,
+          "lat": 7.5
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "the-hague",
+    "kind": "place",
+    "name": "The Hague",
+    "aliases": [
+      {
+        "text": "The Hague",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "NLD",
+    "obscurity": 2,
+    "short": "Dutch city that hosts international courts: the ICC, the ICJ and the Permanent Court of Arbitration.",
+    "related": [
+      "icc",
+      "icj"
+    ],
+    "map": {
+      "countries": [
+        "NLD"
+      ],
+      "points": [
+        {
+          "name": "Hague",
+          "lon": 4.3,
+          "lat": 52.08
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "indus",
+    "kind": "place",
+    "name": "The Indus",
+    "aliases": [
+      "Indus river",
+      {
+        "text": "Indus",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "PAK",
+    "obscurity": 2,
+    "short": "The great river of Pakistan, rising in Tibet and flowing through Indian-held Kashmir; the basin feeds most of Pakistan's farms.",
+    "related": [
+      "indus-waters-treaty",
+      "chenab"
+    ],
+    "map": {
+      "countries": [
+        "PAK",
+        "IND",
+        "CHN"
+      ],
+      "points": [
+        {
+          "name": "Indus",
+          "lon": 71,
+          "lat": 30
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "chenab",
+    "kind": "place",
+    "name": "The Chenab",
+    "aliases": [
+      "Chenab"
+    ],
+    "countryId": "IND",
+    "obscurity": 3,
+    "short": "One of the Indus treaty's 'western rivers', reserved for Pakistan, flowing from Indian-held Jammu into Pakistani Punjab.",
+    "related": [
+      "indus-waters-treaty",
+      "baglihar-salal",
+      "marala"
+    ],
+    "map": {
+      "countries": [
+        "IND",
+        "PAK"
+      ],
+      "points": [
+        {
+          "name": "Chenab",
+          "lon": 74.5,
+          "lat": 32.9
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "baglihar-salal",
+    "kind": "place",
+    "name": "Baglihar and Salal dams",
+    "aliases": [
+      "Baglihar",
+      "Salal"
+    ],
+    "countryId": "IND",
+    "obscurity": 3,
+    "short": "Two Indian hydropower dams on the Chenab whose gates let India time the river's flow into Pakistan.",
+    "related": [
+      "chenab"
+    ],
+    "map": {
+      "countries": [
+        "IND"
+      ],
+      "points": [
+        {
+          "name": "Baglihar and Salal dams",
+          "lon": 75.1,
+          "lat": 33.15
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "marala",
+    "kind": "place",
+    "name": "Marala Headworks",
+    "aliases": [
+      "Marala headworks",
+      "Marala"
+    ],
+    "countryId": "PAK",
+    "obscurity": 3,
+    "short": "The barrage where the Chenab enters Pakistan and feeds Punjab's irrigation canals.",
+    "map": {
+      "countries": [
+        "PAK"
+      ],
+      "points": [
+        {
+          "name": "Marala Headworks",
+          "lon": 74.47,
+          "lat": 32.67
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "jammu",
+    "kind": "place",
+    "name": "Jammu",
+    "aliases": [
+      "Jammu",
+      "Jammu and Kashmir"
+    ],
+    "countryId": "IND",
+    "obscurity": 2,
+    "short": "A city and region in Indian-administered Kashmir; Pakistan claims all of Kashmir.",
+    "related": [
+      "kashmir"
+    ],
+    "map": {
+      "countries": [
+        "IND"
+      ],
+      "points": [
+        {
+          "name": "Jammu",
+          "lon": 74.86,
+          "lat": 32.73
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "kashmir",
+    "kind": "place",
+    "name": "Kashmir",
+    "aliases": [
+      "Kashmir"
+    ],
+    "countryId": "IND",
+    "obscurity": 1,
+    "short": "A Himalayan region divided between India, Pakistan and China, claimed in full by India and Pakistan since 1947.",
+    "related": [
+      "line-of-control"
+    ],
+    "map": {
+      "countries": [
+        "IND",
+        "PAK",
+        "CHN"
+      ],
+      "points": [
+        {
+          "name": "Kashmir",
+          "lon": 75,
+          "lat": 34
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "pahalgam",
+    "kind": "place",
+    "name": "Pahalgam",
+    "aliases": [
+      "Pahalgam"
+    ],
+    "countryId": "IND",
+    "obscurity": 2,
+    "short": "A Kashmir resort town where gunmen killed 26 people, mostly tourists, on 22 April 2025.",
+    "related": [
+      "pahalgam-attack"
+    ],
+    "map": {
+      "countries": [
+        "IND"
+      ],
+      "points": [
+        {
+          "name": "Pahalgam",
+          "lon": 75.32,
+          "lat": 34.02
+        }
+      ]
+    },
+    "valid": {
+      "from": "2025-04"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "punjab",
+    "kind": "place",
+    "name": "Punjab",
+    "aliases": [
+      "Punjab"
+    ],
+    "obscurity": 2,
+    "short": "A fertile farming region split between India and Pakistan in 1947; Pakistan's breadbasket depends on Indus waters.",
+    "map": {
+      "countries": [
+        "PAK",
+        "IND"
+      ],
+      "points": [
+        {
+          "name": "Punjab",
+          "lon": 74.3,
+          "lat": 31.5
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "lahore",
+    "kind": "place",
+    "name": "Lahore",
+    "aliases": [
+      "Lahore"
+    ],
+    "countryId": "PAK",
+    "obscurity": 2,
+    "short": "Pakistan's second city and capital of its Punjab province, about 25 km from the Indian border.",
+    "map": {
+      "countries": [
+        "PAK"
+      ],
+      "points": [
+        {
+          "name": "Lahore",
+          "lon": 74.36,
+          "lat": 31.55
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "pathankot",
+    "kind": "place",
+    "name": "Pathankot",
+    "aliases": [
+      "Pathankot"
+    ],
+    "countryId": "IND",
+    "obscurity": 3,
+    "short": "An Indian Punjab town with a major air base near the Pakistani border.",
+    "map": {
+      "countries": [
+        "IND"
+      ],
+      "points": [
+        {
+          "name": "Pathankot",
+          "lon": 75.65,
+          "lat": 32.27
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "amritsar",
+    "kind": "place",
+    "name": "Amritsar",
+    "aliases": [
+      "Amritsar"
+    ],
+    "countryId": "IND",
+    "obscurity": 2,
+    "short": "An Indian Punjab city near the Pakistani border, home of the Sikh Golden Temple.",
+    "map": {
+      "countries": [
+        "IND"
+      ],
+      "points": [
+        {
+          "name": "Amritsar",
+          "lon": 74.87,
+          "lat": 31.63
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "mumbai",
+    "kind": "place",
+    "name": "Mumbai",
+    "aliases": [
+      "Mumbai"
+    ],
+    "countryId": "IND",
+    "obscurity": 1,
+    "short": "India's financial capital and largest city, home of its main stock exchanges.",
+    "map": {
+      "countries": [
+        "IND"
+      ],
+      "points": [
+        {
+          "name": "Mumbai",
+          "lon": 72.88,
+          "lat": 19.08
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "ladakh",
+    "kind": "place",
+    "name": "Ladakh",
+    "aliases": [
+      "Ladakh"
+    ],
+    "countryId": "IND",
+    "obscurity": 2,
+    "short": "A high-altitude Indian territory facing China, where the two armies clashed in 2020.",
+    "related": [
+      "line-of-actual-control"
+    ],
+    "map": {
+      "countries": [
+        "IND"
+      ],
+      "points": [
+        {
+          "name": "Ladakh",
+          "lon": 77.58,
+          "lat": 34.15
+        }
+      ]
+    },
+    "valid": {
+      "from": "2020-06"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "line-of-control",
+    "kind": "place",
+    "name": "The Line of Control",
+    "aliases": [
+      "Line of Control",
+      {
+        "text": "LoC",
+        "caseSensitive": true
+      }
+    ],
+    "obscurity": 2,
+    "short": "The military line dividing Indian- and Pakistani-held Kashmir since 1972; not an agreed border.",
+    "related": [
+      "kashmir"
+    ],
+    "map": {
+      "countries": [
+        "IND",
+        "PAK"
+      ],
+      "points": [
+        {
+          "name": "Line of Control",
+          "lon": 74,
+          "lat": 34
+        }
+      ]
+    },
+    "valid": {
+      "from": "1972-07"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "line-of-actual-control",
+    "kind": "place",
+    "name": "The Line of Actual Control",
+    "aliases": [
+      "Line of Actual Control",
+      {
+        "text": "LAC",
+        "caseSensitive": true
+      }
+    ],
+    "obscurity": 2,
+    "short": "The disputed, undemarcated line between Indian- and Chinese-held territory in the Himalayas.",
+    "related": [
+      "ladakh"
+    ],
+    "map": {
+      "countries": [
+        "IND",
+        "CHN"
+      ],
+      "points": [
+        {
+          "name": "Line of Actual Control",
+          "lon": 78.5,
+          "lat": 34
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "kurram",
+    "kind": "place",
+    "name": "Kurram",
+    "aliases": [
+      "Kurram"
+    ],
+    "countryId": "PAK",
+    "obscurity": 3,
+    "short": "A tribal district of north-west Pakistan on the Afghan border, often hit by militant attacks.",
+    "map": {
+      "countries": [
+        "PAK"
+      ],
+      "points": [
+        {
+          "name": "Kurram",
+          "lon": 70.1,
+          "lat": 33.9
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "brahmaputra",
+    "kind": "place",
+    "name": "The Brahmaputra",
+    "aliases": [
+      "Brahmaputra"
+    ],
+    "countryId": "IND",
+    "obscurity": 2,
+    "short": "A great river rising in Tibet and flowing through India; China's dams upstream worry New Delhi.",
+    "map": {
+      "countries": [
+        "CHN",
+        "IND",
+        "BGD"
+      ],
+      "points": [
+        {
+          "name": "Brahmaputra",
+          "lon": 91.7,
+          "lat": 26.2
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "kandahar",
+    "kind": "place",
+    "name": "Kandahar",
+    "aliases": [
+      "Kandahar"
+    ],
+    "countryId": "AFG",
+    "obscurity": 2,
+    "short": "Afghanistan's second city, birthplace of the Taliban and seat of its supreme leader.",
+    "map": {
+      "countries": [
+        "AFG"
+      ],
+      "points": [
+        {
+          "name": "Kandahar",
+          "lon": 65.71,
+          "lat": 31.61
+        }
+      ]
+    },
+    "valid": {
+      "from": "2016-05"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "gaza-strip",
+    "kind": "place",
+    "name": "The Gaza Strip",
+    "aliases": [
+      "Gaza Strip",
+      "Gaza"
+    ],
+    "countryId": "PSX",
+    "obscurity": 1,
+    "short": "A 41 km coastal strip of about two million Palestinians, devastated by war since October 2023; a ceasefire holds, with violations.",
+    "long": "Hamas ruled it from 2007. The war after its 7 October 2023 attack on Israel killed tens of thousands and destroyed most buildings. Under the October 2025 US-backed plan, a ceasefire holds with violations, Israeli troops control much of the strip and aid remains far below need.",
+    "related": [
+      "hamas",
+      "rafah",
+      "gaza-ceasefire-2025"
+    ],
+    "map": {
+      "countries": [
+        "PSX"
+      ],
+      "points": [
+        {
+          "name": "Gaza Strip",
+          "lon": 34.39,
+          "lat": 31.42
+        }
+      ]
+    },
+    "valid": {
+      "from": "2025-10"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Gaza_war",
+      "https://en.wikipedia.org/wiki/Gaza_peace_plan"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "west-bank",
+    "kind": "place",
+    "name": "The West Bank",
+    "aliases": [
+      "West Bank"
+    ],
+    "countryId": "PSX",
+    "obscurity": 1,
+    "short": "Palestinian territory west of the Jordan river, occupied by Israel since 1967, with about 700,000 Israeli settlers.",
+    "long": "Parts are run by the Palestinian Authority; Israel controls most of the land and security. Settler violence and military raids rose sharply after 2023, and Israeli ministers push to annex it.",
+    "related": [
+      "palestinian-authority",
+      "jordan-valley",
+      "settlements"
+    ],
+    "map": {
+      "countries": [
+        "PSX"
+      ],
+      "points": [
+        {
+          "name": "West Bank",
+          "lon": 35.25,
+          "lat": 31.95
+        }
+      ]
+    },
+    "valid": {
+      "from": "2023-10"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "rafah",
+    "kind": "place",
+    "name": "Rafah",
+    "aliases": [
+      "Rafah",
+      "Rafah crossing"
+    ],
+    "countryId": "PSX",
+    "obscurity": 2,
+    "short": "The southern Gaza town on the Egyptian border; its crossing is the strip's only gate not run by Israel.",
+    "related": [
+      "gaza-strip"
+    ],
+    "map": {
+      "countries": [
+        "PSX"
+      ],
+      "points": [
+        {
+          "name": "Rafah",
+          "lon": 34.25,
+          "lat": 31.29
+        }
+      ]
+    },
+    "valid": {
+      "from": "2005-11"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "khan-younis",
+    "kind": "place",
+    "name": "Khan Younis",
+    "aliases": [
+      "Khan Younis",
+      "Khan Yunis"
+    ],
+    "countryId": "PSX",
+    "obscurity": 2,
+    "short": "Southern Gaza's largest city, largely destroyed in the war.",
+    "map": {
+      "countries": [
+        "PSX"
+      ],
+      "points": [
+        {
+          "name": "Khan Younis",
+          "lon": 34.3,
+          "lat": 31.35
+        }
+      ]
+    },
+    "valid": {
+      "from": "2024-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "kerem-shalom",
+    "kind": "place",
+    "name": "Kerem Shalom",
+    "aliases": [
+      "Kerem Shalom"
+    ],
+    "countryId": "ISR",
+    "obscurity": 3,
+    "short": "The main Israeli crossing for aid trucks into Gaza, where Israel, Egypt and Gaza meet.",
+    "map": {
+      "countries": [
+        "ISR"
+      ],
+      "points": [
+        {
+          "name": "Kerem Shalom",
+          "lon": 34.27,
+          "lat": 31.23
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "sinai",
+    "kind": "place",
+    "name": "Sinai",
+    "aliases": [
+      "Sinai",
+      "Sinai peninsula"
+    ],
+    "countryId": "EGY",
+    "obscurity": 2,
+    "short": "Egypt's desert peninsula bordering Israel and Gaza; Cairo refuses to let Gazans be pushed into it.",
+    "map": {
+      "countries": [
+        "EGY"
+      ],
+      "points": [
+        {
+          "name": "Sinai",
+          "lon": 33.8,
+          "lat": 29.5
+        }
+      ]
+    },
+    "valid": {
+      "from": "2023-10"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "jordan-valley",
+    "kind": "place",
+    "name": "The Jordan Valley",
+    "aliases": [
+      "Jordan Valley"
+    ],
+    "countryId": "PSX",
+    "obscurity": 3,
+    "short": "The eastern strip of the West Bank along the Jordan river, which Israeli leaders want to keep or annex.",
+    "related": [
+      "west-bank"
+    ],
+    "map": {
+      "countries": [
+        "PSX"
+      ],
+      "points": [
+        {
+          "name": "Jordan Valley",
+          "lon": 35.5,
+          "lat": 32
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "greenland",
+    "kind": "place",
+    "name": "Greenland",
+    "aliases": [
+      {
+        "text": "Greenland",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "DNK",
+    "obscurity": 1,
+    "short": "The world's largest island, a self-governing part of Denmark, which Trump says the US should own.",
+    "map": {
+      "countries": [
+        "DNK"
+      ],
+      "points": [
+        {
+          "name": "Greenland",
+          "lon": -51.72,
+          "lat": 64.18
+        }
+      ]
+    },
+    "valid": {
+      "from": "2025-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "florida",
+    "kind": "place",
+    "name": "Florida",
+    "aliases": [
+      {
+        "text": "Florida",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "USA",
+    "obscurity": 1,
+    "short": "The US state 150 km from Cuba, home of most Cuban and Venezuelan exiles and their politicians.",
+    "related": [
+      "florida-straits"
+    ],
+    "map": {
+      "countries": [
+        "USA"
+      ],
+      "points": [
+        {
+          "name": "Florida",
+          "lon": -80.19,
+          "lat": 25.76
+        }
+      ]
+    },
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "new-york",
+    "kind": "place",
+    "name": "New York",
+    "aliases": [
+      {
+        "text": "New York",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "USA",
+    "obscurity": 1,
+    "short": "The US city where Maduro is on trial in federal court and where the UN has its headquarters.",
+    "related": [
+      "nicolas-maduro"
+    ],
+    "map": {
+      "countries": [
+        "USA"
+      ],
+      "points": [
+        {
+          "name": "New York",
+          "lon": -74,
+          "lat": 40.71
+        }
+      ]
+    },
+    "valid": {
+      "from": "2026-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "miami",
+    "kind": "place",
+    "name": "Miami",
+    "aliases": [
+      {
+        "text": "Miami",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "USA",
+    "obscurity": 1,
+    "short": "Florida city, capital of the Cuban and Venezuelan diasporas.",
+    "map": {
+      "countries": [
+        "USA"
+      ],
+      "points": [
+        {
+          "name": "Miami",
+          "lon": -80.19,
+          "lat": 25.76
+        }
+      ]
+    },
+    "valid": {
+      "from": "2026-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  }
+]

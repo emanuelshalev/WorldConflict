@@ -271,7 +271,7 @@
     },
     "USA": {
       "title": "The dealmaker",
-      "briefing": "You are the President of the United States, two days before the midterms, with a peace plan in your pocket and a war with Iran on the side. Get Moscow and Kyiv to stop shooting on terms both can live with, without American troops on the ground and without wrecking the alliance. Voters are watching the price of gas, not the map.",
+      "briefing": "You are the President of the United States, three weeks after the midterms, with a new Congress sitting in January, a peace plan in your pocket and a war with Iran on the side. Get Moscow and Kyiv to stop shooting on terms both can live with, without American troops on the ground and without wrecking the alliance. Voters are watching the price of gas, not the map.",
       "primary": [
         {"kind": "NO_WAR_WITH", "targetId": "RUS", "label": "No US war with Russia"},
         {"kind": "WAR_ENDED", "targetId": "RUS", "otherId": "UKR", "label": "The guns fall silent: no Russia–Ukraine war at the end"},
@@ -580,18 +580,18 @@
       {
         "turn": 0,
         "templateId": "us_midterm_peace",
-        "headline": "Two days to the midterms: aides want a peace 'announcement'",
-        "text": "Your political team wants a dramatic Ukraine announcement before Tuesday. The State Department has a ceasefire framework the Russians half-like and the Ukrainians hate. The Pentagon reminds you that you are also running a blockade of Iran.",
+        "headline": "Before the new Congress: aides want a peace 'announcement'",
+        "text": "Your political team wants a dramatic Ukraine announcement before the new Congress is sworn in on 3 January. The State Department has a ceasefire framework the Russians half-like and the Ukrainians hate. The Pentagon reminds you that you are also running a blockade of Iran.",
         "decision": {
-          "title": "Peace by Tuesday",
-          "situation": "Announcing the 'free economic zone' as an agreed framework would make headlines and might bounce Kyiv into it. Leaning on Moscow with new sanctions on its oil buyers shows strength, and annoys China, India and the oil price. Or wait until after the vote and let the diplomats do it properly.",
+          "title": "Peace by January",
+          "situation": "Announcing the 'free economic zone' as an agreed framework would make headlines and might bounce Kyiv into it. Leaning on Moscow with new sanctions on its oil buyers shows strength, and annoys China, India and the oil price. Or wait for the new Congress and let the diplomats do it properly.",
           "affectedCountries": ["USA", "UKR", "RUS"],
           "urgency": "URGENT",
           "defaultOptionId": "wait",
           "options": [
             {"id": "announce", "label": "Announce a framework", "description": "Declare a deal before it exists. Voters like it; Kyiv feels ambushed.", "effects": {"approval": 6, "relations:UKR": -10, "relations:RUS": 6, "relations:DEU": -4}, "tensionDelta": -4, "backedBy": ["CHIEF_OF_STAFF"]},
-            {"id": "sanction", "label": "Squeeze Moscow's oil buyers", "description": "Secondary tariffs on Russian crude. Leverage, and higher prices at the pump in an election week.", "effects": {"relations:RUS": -8, "relations:UKR": 6, "relations:IND": -6, "growth": -0.2, "approval": -2}, "tensionDelta": 3, "backedBy": ["FINANCE_MINISTER", "FOREIGN_MINISTER"]},
-            {"id": "wait", "label": "Wait until after the vote", "description": "No stunts. Your opponents call it drift.", "effects": {"approval": -3}, "tensionDelta": 0, "backedBy": ["FOREIGN_MINISTER"]}
+            {"id": "sanction", "label": "Squeeze Moscow's oil buyers", "description": "Secondary tariffs on Russian crude. Leverage, and higher prices at the pump before the holidays.", "effects": {"relations:RUS": -8, "relations:UKR": 6, "relations:IND": -6, "growth": -0.2, "approval": -2}, "tensionDelta": 3, "backedBy": ["FINANCE_MINISTER", "FOREIGN_MINISTER"]},
+            {"id": "wait", "label": "Wait for the new Congress", "description": "No stunts. Your opponents call it drift.", "effects": {"approval": -3}, "tensionDelta": 0, "backedBy": ["FOREIGN_MINISTER"]}
           ]
         }
       },

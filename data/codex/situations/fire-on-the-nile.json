@@ -1,0 +1,99 @@
+{
+  "id": "fire-on-the-nile",
+  "title": "Fire on the Nile: Sudan's war and its neighbours",
+  "oneLine": "Sudan's army and the RSF have fought since April 2023; the RSF holds Darfur, the battle is for Kordofan, and every neighbour is taking sides.",
+  "whoIsWho": [
+    {
+      "entryId": "abdel-fattah-al-burhan",
+      "stance": "Army chief ruling from Port Sudan; wants to win, not split the country."
+    },
+    {
+      "entryId": "rsf",
+      "stance": "Holds Darfur, runs a rival government in Nyala and wants it recognised."
+    },
+    {
+      "entryId": "abdel-fattah-el-sisi",
+      "stance": "Backs Sudan's army; also needs the Gulf money of the UAE, the RSF's reported patron."
+    },
+    {
+      "entryId": "mohamed-bin-zayed",
+      "stance": "Widely reported to arm the RSF, which the UAE denies; a member of the Quad mediators."
+    },
+    {
+      "entryId": "abiy-ahmed",
+      "stance": "Runs the giant Nile dam Egypt fears, while war returns to Tigray."
+    }
+  ],
+  "whyItMatters": "The world's largest hunger and displacement crisis: famine is confirmed and more than 12 million have fled their homes. Sudan sits on the Nile and the Red Sea, so its collapse pulls in Egypt, Ethiopia and the Gulf.",
+  "timeline": [
+    {
+      "date": "2019-04",
+      "text": "Mass protests end Omar al-Bashir's 30-year rule."
+    },
+    {
+      "date": "2021-10",
+      "text": "Army and RSF together oust the civilian-led government."
+    },
+    {
+      "date": "2023-04-15",
+      "text": "War breaks out between the army and the RSF."
+    },
+    {
+      "date": "2025-10-26",
+      "text": "The RSF takes El Fasher amid mass killings.",
+      "source": "https://en.wikipedia.org/wiki/Fall_of_El_Fasher"
+    },
+    {
+      "date": "2026-07",
+      "text": "The RSF besieges El Obeid, gateway to the Nile valley.",
+      "source": "https://www.aljazeera.com/news/2026/7/6/el-obeid-under-siege-by-rsf-could-this-be-sudans-next-el-fasher"
+    },
+    {
+      "date": "2026-09",
+      "text": "War between Ethiopia and Tigray resumes next door.",
+      "source": "https://www.thestar.com.my/news/world/2026/09/23/tigrayan-leaders-say-new-war-with-ethiopian-government-has-begun-as-fighting-erupts"
+    },
+    {
+      "date": "2026-11",
+      "text": "The army reportedly breaks the El Obeid siege.",
+      "source": "https://www.aljazeera.com/news/2026/11/14/how-saf-successes-in-sudans-kordofan-could-turn-tide-against-the-rsf"
+    }
+  ],
+  "gameStarts": "2026-11",
+  "map": {
+    "countries": [
+      "SDN",
+      "EGY",
+      "ETH"
+    ],
+    "points": [
+      {
+        "name": "El Obeid",
+        "lon": 30.22,
+        "lat": 13.18
+      },
+      {
+        "name": "Port Sudan",
+        "lon": 37.22,
+        "lat": 19.62
+      },
+      {
+        "name": "Nyala",
+        "lon": 24.88,
+        "lat": 12.05
+      }
+    ]
+  },
+  "onThisCard": [
+    "el-obeid",
+    "darfur",
+    "gerd",
+    "quad",
+    "tasis"
+  ],
+  "sources": [
+    "https://en.wikipedia.org/wiki/2026_in_Sudan",
+    "https://en.wikipedia.org/wiki/Siege_of_El_Obeid"
+  ],
+  "asOf": "2026-11-22"
+}

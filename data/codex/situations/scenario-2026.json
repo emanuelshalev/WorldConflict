@@ -1,0 +1,87 @@
+{
+  "id": "scenario-2026",
+  "title": "The world in November 2026",
+  "oneLine": "Wars in Ukraine, around Iran and in the Red Sea, no nuclear arms treaty left, a US president who just lost Congress, and allies still sore over tariffs.",
+  "whoIsWho": [
+    {
+      "entryId": "donald-trump",
+      "stance": "Midway through his second term; Democrats take Congress in January."
+    },
+    {
+      "entryId": "vladimir-putin",
+      "stance": "Grinding on in Ukraine while talking to Washington."
+    },
+    {
+      "entryId": "xi-jinping",
+      "stance": "Holds a trade truce with Washington and keeps up pressure on Taiwan."
+    },
+    {
+      "entryId": "mojtaba-khamenei",
+      "stance": "Iran's new Supreme Leader, at war with the US and Israel, rarely seen."
+    },
+    {
+      "entryId": "volodymyr-zelensky",
+      "stance": "Holding the line, refusing to give up Donetsk without a vote."
+    },
+    {
+      "entryId": "benjamin-netanyahu",
+      "stance": "Caretaker after an inconclusive election, still at war with Iran."
+    }
+  ],
+  "whyItMatters": "Several wars run at once, the big powers' nuclear arsenals are unconstrained for the first time in 50 years, and oil and shipping routes are under fire. Every crisis you face pulls on the same ships, money and attention.",
+  "timeline": [
+    {
+      "date": "2022-02-24",
+      "text": "Russia invades Ukraine."
+    },
+    {
+      "date": "2025-10",
+      "text": "A US-brokered ceasefire pauses the Gaza war.",
+      "source": "https://en.wikipedia.org/wiki/Gaza_peace_plan"
+    },
+    {
+      "date": "2026-01-03",
+      "text": "US forces capture Venezuela's Maduro.",
+      "source": "https://en.wikipedia.org/wiki/2026_in_Venezuela"
+    },
+    {
+      "date": "2026-02",
+      "text": "New START expires; Supreme Court strikes down Trump's emergency tariffs.",
+      "source": "https://en.wikipedia.org/wiki/New_START"
+    },
+    {
+      "date": "2026-02-28",
+      "text": "US-Israeli strikes kill Iran's Supreme Leader; war begins.",
+      "source": "https://en.wikipedia.org/wiki/2026_Iran_war"
+    },
+    {
+      "date": "2026-09",
+      "text": "The Houthis push to the Bab al-Mandab strait.",
+      "source": "https://euronews.com/2026/09/10/houthis-seize-red-sea-port-city-in-push-to-seize-bab-el-mandeb"
+    },
+    {
+      "date": "2026-10-27",
+      "text": "Israel's election ends with no majority.",
+      "source": "https://www.aljazeera.com/news/2026/10/29/israel-election-result-shows-no-overall-majority-as-vote-count-complete"
+    },
+    {
+      "date": "2026-11-03",
+      "text": "US midterms: Democrats win the House and Senate.",
+      "source": "https://www.aljazeera.com/news/2026/11/4/democratic-party-gains-us-house-majority-in-2026-midterm-elections"
+    }
+  ],
+  "gameStarts": "2026-11",
+  "onThisCard": [
+    "us-midterms-2026",
+    "new-start",
+    "tariffs",
+    "iran-war-2026",
+    "brazil-election-2026"
+  ],
+  "sources": [
+    "https://en.wikipedia.org/wiki/2026_Iran_war",
+    "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-october-16-2026",
+    "https://www.aljazeera.com/news/2026/11/4/democratic-party-gains-us-house-majority-in-2026-midterm-elections"
+  ],
+  "asOf": "2026-11-22"
+}

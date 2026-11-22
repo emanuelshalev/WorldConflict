@@ -1,0 +1,97 @@
+{
+  "id": "bab-al-mandab-burning",
+  "title": "Bab al-Mandab Burning: Yemen's war reaches the strait",
+  "oneLine": "The Houthis have pushed down Yemen's coast to the mouth of the Red Sea, Saudi Arabia is fighting back, and its Emirati ally has become a rival.",
+  "whoIsWho": [
+    {
+      "entryId": "mohammed-bin-salman",
+      "stance": "Wants the Houthis off the coast or a deal that stops the strikes on Saudi cities."
+    },
+    {
+      "entryId": "abdul-malik-al-houthi",
+      "stance": "Holds Sanaa and Mokha; wants Saudi-paid salaries and recognition as Yemen's power."
+    },
+    {
+      "entryId": "mohamed-bin-zayed",
+      "stance": "Backs southern forces and ports in Yemen; at odds with Riyadh over Yemen and Sudan."
+    },
+    {
+      "entryId": "presidential-leadership-council",
+      "stance": "Yemen's recognised government in Aden, Saudi-backed, outgunned on the coast."
+    },
+    {
+      "entryId": "stc",
+      "stance": "Southern separatists who 'dissolved' in January but are still armed."
+    }
+  ],
+  "whyItMatters": "Bab al-Mandab is the southern gate to the Suez Canal. Houthi attacks have already sent ships around Africa, emptying Egypt's canal. A Saudi-Emirati split would leave the region's richest powers fighting each other's proxies.",
+  "timeline": [
+    {
+      "date": "2014-09",
+      "text": "The Houthis seize Yemen's capital, Sanaa."
+    },
+    {
+      "date": "2015-03",
+      "text": "A Saudi-led coalition goes to war against them."
+    },
+    {
+      "date": "2023-11",
+      "text": "The Houthis start attacking ships in the Red Sea over Gaza."
+    },
+    {
+      "date": "2026-01",
+      "text": "The UAE-backed STC says it will dissolve after its leader flees to Abu Dhabi.",
+      "source": "https://wtop.com/world/2026/01/yemens-southern-transitional-council-to-dismantle-a-day-after-its-leader-fled-to-the-uae/"
+    },
+    {
+      "date": "2026-09-10",
+      "text": "The Houthis take Mokha; reports say Perim too.",
+      "source": "https://euronews.com/2026/09/10/houthis-seize-red-sea-port-city-in-push-to-seize-bab-el-mandeb"
+    },
+    {
+      "date": "2026-10-10",
+      "text": "A Houthi missile kills 13 at Riyadh's airport."
+    },
+    {
+      "date": "2026-11-15",
+      "text": "Government forces pull back from the strait to defend Aden.",
+      "source": "https://www.aljazeera.com/news/2026/11/15/yemeni-government-forces-redeploy-from-bab-al-mandeb-to-defend-aden"
+    }
+  ],
+  "gameStarts": "2026-11",
+  "map": {
+    "countries": [
+      "YEM",
+      "SAU",
+      "ARE"
+    ],
+    "points": [
+      {
+        "name": "Bab al-Mandab",
+        "lon": 43.33,
+        "lat": 12.58
+      },
+      {
+        "name": "Mokha",
+        "lon": 43.25,
+        "lat": 13.32
+      },
+      {
+        "name": "Aden",
+        "lon": 45.03,
+        "lat": 12.79
+      }
+    ]
+  },
+  "onThisCard": [
+    "bab-al-mandab",
+    "houthis",
+    "perim",
+    "vision-2030"
+  ],
+  "sources": [
+    "https://www.aljazeera.com/news/2026/10/6/yemen-war-whats-the-latest-on-the-battlefield",
+    "https://npr.org/2026/09/18/nx-s1-5973810/houthi-attacks-saudi-oil-world-markets"
+  ],
+  "asOf": "2026-11-22"
+}

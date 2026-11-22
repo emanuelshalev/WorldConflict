@@ -1,0 +1,98 @@
+{
+  "id": "quarantine",
+  "title": "Quarantine: Taiwan under customs inspection",
+  "oneLine": "In this scenario China's coast guard starts 'inspecting' every ship bound for Taiwan: not a blockade on paper, but an island with days of gas can feel it fast.",
+  "whoIsWho": [
+    {
+      "entryId": "lai-ching-te",
+      "stance": "Taiwan's president; must keep energy flowing without firing first, with a hostile legislature."
+    },
+    {
+      "entryId": "xi-jinping",
+      "stance": "Wants Taipei to bend without a war, while his high command is thinned by purges."
+    },
+    {
+      "entryId": "donald-trump",
+      "stance": "Navy already busy blockading Iran; values his trade truce with Beijing."
+    },
+    {
+      "entryId": "sanae-takaichi",
+      "stance": "Said a Taiwan attack could threaten Japan's survival; Beijing has punished Japan since."
+    },
+    {
+      "entryId": "kmt",
+      "stance": "Taiwan's opposition; cut the defence budget and favours talks with Beijing."
+    }
+  ],
+  "whyItMatters": "Taiwan makes most of the world's advanced chips and imports about 97% of its energy. A coast guard squeeze could choke it without a shot, forcing Washington and Tokyo to choose between escalation and backing down.",
+  "timeline": [
+    {
+      "date": "1949",
+      "text": "Defeated Nationalists retreat to Taiwan; Beijing has claimed it ever since."
+    },
+    {
+      "date": "2022-08",
+      "text": "China holds its largest drills around Taiwan after a US House Speaker visits."
+    },
+    {
+      "date": "2024-05",
+      "text": "Lai Ching-te becomes president; the opposition controls the legislature."
+    },
+    {
+      "date": "2025-11",
+      "text": "Japan's Takaichi links a Taiwan crisis to Japan's survival; Beijing retaliates."
+    },
+    {
+      "date": "2025-12",
+      "text": "Justice Mission-2025 drills rehearse sealing off Keelung and Kaohsiung.",
+      "source": "https://focustaiwan.tw/politics/202512300008"
+    },
+    {
+      "date": "2026-05",
+      "text": "Legislature cuts Lai's special defence budget by about 38%.",
+      "source": "https://breakingdefense.com/2026/05/taiwans-parliament-passes-pared-back-supplementary-defense-budget/"
+    },
+    {
+      "date": "2026-05",
+      "text": "After a Beijing summit, Trump warns Taipei against independence.",
+      "source": "https://theonlinecitizen.com/2026/05/16/trump-warns-taiwan-against-independence-after-beijing-summit-with-xi-jinping"
+    }
+  ],
+  "gameStarts": "2026-12",
+  "map": {
+    "countries": [
+      "TWN",
+      "CHN",
+      "JPN"
+    ],
+    "points": [
+      {
+        "name": "Kaohsiung",
+        "lon": 120.3,
+        "lat": 22.62
+      },
+      {
+        "name": "Keelung",
+        "lon": 121.74,
+        "lat": 25.13
+      },
+      {
+        "name": "Penghu",
+        "lon": 119.58,
+        "lat": 23.57
+      }
+    ]
+  },
+  "onThisCard": [
+    "quarantine",
+    "china-coast-guard",
+    "taiwan-strait",
+    "lng",
+    "legislative-yuan"
+  ],
+  "sources": [
+    "https://focustaiwan.tw/politics/202604280021",
+    "https://www.opb.org/article/2026/01/24/china-s-top-general-under-investigation-in-latest-military-purge/"
+  ],
+  "asOf": "2026-11-22"
+}
