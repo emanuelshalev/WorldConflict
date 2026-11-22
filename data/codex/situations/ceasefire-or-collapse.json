@@ -3,29 +3,78 @@
   "title": "Ceasefire or collapse: Ukraine, November 2026",
   "oneLine": "Russia's offensive has stalled, the US wants a deal, and the gap is Donetsk: Moscow demands all of it, Kyiv says no land goes without a national vote.",
   "whoIsWho": [
-    { "entryId": "volodymyr-zelensky", "stance": "No withdrawal from Donetsk without a referendum; needs Western money and weapons." },
-    { "entryId": "vladimir-putin", "stance": "The rest of Donetsk first, then a ceasefire; talks continue, so does the war." },
-    { "entryId": "washington", "stance": "Brokering talks and wants a deal fast, with a 'free economic zone' on the table." }
+    {
+      "entryId": "volodymyr-zelensky",
+      "stance": "No withdrawal from Donetsk without a referendum; needs Western money, weapons and guarantees."
+    },
+    {
+      "entryId": "vladimir-putin",
+      "stance": "The rest of Donetsk first, then a ceasefire; talks continue, so does the war."
+    },
+    {
+      "entryId": "donald-trump",
+      "stance": "Wants a deal fast, with a 'free economic zone' in Donetsk on the table, and no US troops."
+    },
+    {
+      "entryId": "coalition-of-the-willing",
+      "stance": "Britain, France and others offer a European force, but only after a ceasefire."
+    }
   ],
-  "whyItMatters": "The biggest war in Europe since 1945. Whatever line is drawn in Donetsk decides whether Ukraine keeps its strongest defences, and whether a ceasefire holds or only rearms both sides.",
+  "whyItMatters": "The biggest war in Europe since 1945. Whatever line is drawn in Donetsk decides whether Ukraine keeps its strongest defences, and whether a ceasefire holds or only lets both sides rearm.",
   "timeline": [
-    { "date": "2014-03", "text": "Russia annexes Crimea; Russian-backed fighters take parts of Donetsk and Luhansk." },
-    { "date": "2022-02-24", "text": "Russia launches its full-scale invasion of Ukraine." },
-    { "date": "2022-09-30", "text": "Russia claims to annex four Ukrainian regions, Donetsk among them." },
+    {
+      "date": "2014-03",
+      "text": "Russia annexes Crimea; Russian-backed fighters take parts of Donetsk and Luhansk."
+    },
+    {
+      "date": "2022-02-24",
+      "text": "Russia launches its full-scale invasion of Ukraine."
+    },
+    {
+      "date": "2022-09-30",
+      "text": "Russia claims to annex four Ukrainian regions, Donetsk among them."
+    },
+    {
+      "date": "2025-08-15",
+      "text": "Trump and Putin meet in Alaska; no deal.",
+      "source": "https://en.wikipedia.org/wiki/2025_Russia%E2%80%93United_States_summit"
+    },
     {
       "date": "2026-10-27",
-      "text": "A local ceasefire takes effect in Oleshky, planned to run to 1 November.",
+      "text": "A local ceasefire takes effect around Oleshky, planned to run to 1 November.",
       "source": "https://www.khaleejtimes.com/europe/russia-ukraine-hold-peace-talks-nov-2026-ceasefire-oleshky"
     },
     {
-      "date": "2026-11",
-      "text": "US-brokered technical talks expected in Abu Dhabi.",
-      "source": "https://www.al-monitor.com/originals/2026/11/us-attempts-new-peace-push-first-russia-ukraine-talks-nine-months"
+      "date": "2026-11-11",
+      "text": "Abu Dhabi talks end with a prisoner-swap deal and no deal on land.",
+      "source": "https://aljazeera.com/news/2026/11/11/russia-ukraine-talks-in-abu-dhabi-end-with-prisoner-exchange-agreement"
     }
   ],
   "gameStarts": "2026-11",
-  "map": { "countries": ["UKR", "RUS"], "points": [{ "name": "Kramatorsk", "lon": 37.56, "lat": 48.72 }] },
-  "onThisCard": ["fortress-belt", "us-midterms-2026"],
+  "map": {
+    "countries": [
+      "UKR",
+      "RUS"
+    ],
+    "points": [
+      {
+        "name": "Kramatorsk",
+        "lon": 37.56,
+        "lat": 48.72
+      },
+      {
+        "name": "Kyiv",
+        "lon": 30.52,
+        "lat": 50.45
+      }
+    ]
+  },
+  "onThisCard": [
+    "fortress-belt",
+    "free-economic-zone",
+    "martial-law",
+    "abu-dhabi-talks"
+  ],
   "sources": [
     "https://en.wikipedia.org/wiki/Peace_negotiations_in_the_Russian_invasion_of_Ukraine",
     "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-october-16-2026"

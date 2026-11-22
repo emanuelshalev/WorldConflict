@@ -1,0 +1,93 @@
+{
+  "id": "caracas-after-maduro",
+  "title": "Caracas After Maduro: an improvised transition",
+  "oneLine": "US forces seized Maduro in January 2026; his deputy now runs Venezuela with Washington's blessing, while a US oil blockade leaves Cuba in the dark.",
+  "whoIsWho": [
+    {
+      "entryId": "delcy-rodriguez",
+      "stance": "Acting president; trades oil and cooperation for survival, promises elections with no date."
+    },
+    {
+      "entryId": "maria-corina-machado",
+      "stance": "Nobel laureate and opposition leader; wants a real election, soon."
+    },
+    {
+      "entryId": "donald-trump",
+      "stance": "Captured a dictator; now wants oil deals, an election and no Marines on the ground."
+    },
+    {
+      "entryId": "miguel-diaz-canel",
+      "stance": "Leads Cuba through blackouts and a US blockade; talks with Washington, gives little."
+    },
+    {
+      "entryId": "raul-castro",
+      "stance": "Aged 95, still the weight behind Cuba's old guard."
+    }
+  ],
+  "whyItMatters": "Venezuela sits on the world's largest proven oil reserves and eight million of its people have fled. How the transition ends, by a vote, a deal or a coup, decides US influence in Latin America and whether Cuba's system survives.",
+  "timeline": [
+    {
+      "date": "2013-03",
+      "text": "Hugo Chávez dies; Nicolás Maduro succeeds him."
+    },
+    {
+      "date": "2024-07",
+      "text": "Maduro claims a disputed election that independent counts say he lost."
+    },
+    {
+      "date": "2026-01-03",
+      "text": "A US raid captures Maduro, who is flown to trial in New York.",
+      "source": "https://en.wikipedia.org/wiki/2026_in_Venezuela"
+    },
+    {
+      "date": "2026-01-05",
+      "text": "Delcy Rodríguez is sworn in as acting president."
+    },
+    {
+      "date": "2026-01",
+      "text": "A US oil blockade of Cuba begins; blackouts spread.",
+      "source": "https://en.wikipedia.org/wiki/2026_in_Cuba"
+    },
+    {
+      "date": "2026-03-14",
+      "text": "The US embassy in Caracas reopens."
+    },
+    {
+      "date": "2026-09-24",
+      "text": "At the UN, Rodríguez promises elections but names no date.",
+      "source": "https://www.aljazeera.com/news/2026/9/24/venezuelas-delcy-rodriguez-promises-elections-at-un-gives-no-date"
+    }
+  ],
+  "gameStarts": "2026-11",
+  "map": {
+    "countries": [
+      "VEN",
+      "CUB",
+      "USA"
+    ],
+    "points": [
+      {
+        "name": "Caracas",
+        "lon": -66.9,
+        "lat": 10.49
+      },
+      {
+        "name": "Havana",
+        "lon": -82.37,
+        "lat": 23.11
+      }
+    ]
+  },
+  "onThisCard": [
+    "maduro-capture-2026",
+    "cuba-oil-blockade",
+    "orinoco-belt",
+    "chavismo"
+  ],
+  "sources": [
+    "https://en.wikipedia.org/wiki/2026_in_Venezuela",
+    "https://en.wikipedia.org/wiki/2026_in_Cuba",
+    "https://www.npr.org/2026/03/16/nx-s1-5749457/cuba-blackout-sanctions-oil"
+  ],
+  "asOf": "2026-11-22"
+}

@@ -1,0 +1,88 @@
+{
+  "id": "water-war",
+  "title": "Water War: India, Pakistan and the Indus",
+  "oneLine": "India has suspended the treaty that shares the Indus rivers; Pakistan calls diversion an act of war. In this scenario, a massacre near Jammu lights the fuse again.",
+  "whoIsWho": [
+    {
+      "entryId": "narendra-modi",
+      "stance": "Promised that 'blood and water cannot flow together'; under pressure to answer any attack."
+    },
+    {
+      "entryId": "asim-munir",
+      "stance": "Pakistan's field marshal and real power; facing India in the east and the Taliban in the west."
+    },
+    {
+      "entryId": "shehbaz-sharif",
+      "stance": "Pakistan's prime minister, governing alongside the army."
+    },
+    {
+      "entryId": "indus-waters-treaty",
+      "stance": "The 1960 water deal India holds 'in abeyance' since April 2025."
+    }
+  ],
+  "whyItMatters": "Two nuclear-armed states, and a river system that feeds most of Pakistan's farms. In May 2025 they fought a four-day drone and missile war; the next round could move faster and further.",
+  "timeline": [
+    {
+      "date": "1947",
+      "text": "Partition: India and Pakistan both claim Kashmir."
+    },
+    {
+      "date": "1960-09",
+      "text": "The World Bank brokers the Indus Waters Treaty."
+    },
+    {
+      "date": "2025-04-22",
+      "text": "Gunmen kill 26 people at Pahalgam in Kashmir.",
+      "source": "https://en.wikipedia.org/wiki/2025_Pahalgam_attack"
+    },
+    {
+      "date": "2025-04-23",
+      "text": "India puts the Indus Waters Treaty 'in abeyance'."
+    },
+    {
+      "date": "2025-05",
+      "text": "Operation Sindoor: four days of strikes, then a ceasefire.",
+      "source": "https://en.wikipedia.org/wiki/2025_India%E2%80%93Pakistan_conflict"
+    },
+    {
+      "date": "2025-11",
+      "text": "A constitutional amendment makes Munir Chief of Defence Forces.",
+      "source": "https://tribune.com.pk/story/2612412/"
+    },
+    {
+      "date": "2026-02-27",
+      "text": "Pakistan declares 'open war' on the Afghan Taliban.",
+      "source": "https://www.arabnews.pk/node/2622517"
+    }
+  ],
+  "gameStarts": "2026-11",
+  "map": {
+    "countries": [
+      "IND",
+      "PAK"
+    ],
+    "points": [
+      {
+        "name": "Jammu",
+        "lon": 74.86,
+        "lat": 32.73
+      },
+      {
+        "name": "Marala headworks",
+        "lon": 74.47,
+        "lat": 32.67
+      }
+    ]
+  },
+  "onThisCard": [
+    "chenab",
+    "operation-sindoor",
+    "line-of-control",
+    "kashmir"
+  ],
+  "sources": [
+    "https://www.isas.nus.edu.sg/papers/the-indus-waters-treaty-india-pakistan-tensions-persist/",
+    "https://www.dawn.com/news/2006820/india-actively-working-to-restrict-water-flows-to-pakistan-after-indus-waters-treaty-suspension"
+  ],
+  "asOf": "2026-11-22"
+}

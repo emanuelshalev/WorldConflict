@@ -1,0 +1,87 @@
+{
+  "id": "scarborough-line",
+  "title": "Scarborough Line: a shoal and a treaty",
+  "oneLine": "China and the Philippines keep clashing at Scarborough Shoal; Washington says its 1951 treaty covers Philippine ships there, and Manila's politics are at war with themselves.",
+  "whoIsWho": [
+    {
+      "entryId": "ferdinand-marcos-jr",
+      "stance": "Leans on the US alliance and publicises Chinese pressure at sea."
+    },
+    {
+      "entryId": "xi-jinping",
+      "stance": "Wants the shoal held and the US treaty left dormant, without a war."
+    },
+    {
+      "entryId": "sara-duterte",
+      "stance": "Vice President on trial before the Senate; her camp wants a softer line on China."
+    },
+    {
+      "entryId": "mutual-defense-treaty",
+      "stance": "The 1951 pact; Washington says an attack on Philippine vessels would trigger it."
+    }
+  ],
+  "whyItMatters": "If China builds an island at Scarborough it gains a base 220 km from Manila, overlooking routes toward Taiwan. A fatal incident could test whether the US treaty means what Washington says.",
+  "timeline": [
+    {
+      "date": "1951-08",
+      "text": "The US and the Philippines sign their Mutual Defense Treaty."
+    },
+    {
+      "date": "2012-04",
+      "text": "A standoff ends with China in control of Scarborough Shoal.",
+      "source": "https://en.wikipedia.org/wiki/Scarborough_Shoal"
+    },
+    {
+      "date": "2016-07",
+      "text": "A Hague tribunal rejects China's sweeping South China Sea claims."
+    },
+    {
+      "date": "2025-03",
+      "text": "Rodrigo Duterte is arrested and sent to the ICC."
+    },
+    {
+      "date": "2026-06-20",
+      "text": "Chinese and Philippine warships face off at the shoal."
+    },
+    {
+      "date": "2026-07-06",
+      "text": "Sara Duterte's Senate impeachment trial begins.",
+      "source": "https://www.aljazeera.com/news/2026/7/6/impeachment-trial-of-philippine-vice-president-sara-duterte-begins"
+    },
+    {
+      "date": "2026-07-23",
+      "text": "China's coast guard fires water cannon on Philippine ships.",
+      "source": "https://www.thejakartapost.com/world/2026/07/23/china-fires-water-cannon-on-philippine-ship-at-scarborough-shoal-manila-says"
+    }
+  ],
+  "gameStarts": "2026-11",
+  "map": {
+    "countries": [
+      "PHL",
+      "CHN"
+    ],
+    "points": [
+      {
+        "name": "Scarborough Shoal",
+        "lon": 117.76,
+        "lat": 15.15
+      },
+      {
+        "name": "Manila",
+        "lon": 120.98,
+        "lat": 14.6
+      }
+    ]
+  },
+  "onThisCard": [
+    "scarborough-shoal",
+    "edca",
+    "china-coast-guard",
+    "arbitration-case-2016"
+  ],
+  "sources": [
+    "https://news.usni.org/2026/10/09/philippine-and-chinese-incidents-spike-in-south-china-sea-luzon-strait",
+    "https://news.usni.org/2026/08/03/chinese-warships-bombers-surge-to-scarborough-shoal-for-drills"
+  ],
+  "asOf": "2026-11-22"
+}

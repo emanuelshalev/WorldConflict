@@ -1,0 +1,102 @@
+{
+  "id": "hormuz-convoy",
+  "title": "Hormuz Convoy: the undeclared Iran war",
+  "oneLine": "Since strikes killed Ali Khamenei in February 2026, a US blockade of Iran and Revolutionary Guards attacks on shipping have kept the world's key oil strait half shut.",
+  "whoIsWho": [
+    {
+      "entryId": "donald-trump",
+      "stance": "Wants the strait open and no Iranian bomb, without a ground war; just lost Congress."
+    },
+    {
+      "entryId": "mojtaba-khamenei",
+      "stance": "Iran's new Supreme Leader, reportedly wounded and rarely seen; the Guards fill the gap."
+    },
+    {
+      "entryId": "irgc",
+      "stance": "Attacks tankers near Hormuz and argues for answering every US move with fire."
+    },
+    {
+      "entryId": "mohamed-bin-zayed",
+      "stance": "His ports and skyline are in range; he hedges between Washington and Tehran."
+    },
+    {
+      "entryId": "benjamin-netanyahu",
+      "stance": "Co-belligerent since February; says Israel will strike alone if needed."
+    }
+  ],
+  "whyItMatters": "About a fifth of the world's oil normally passes through Hormuz, so every attack moves prices everywhere. And more than 200 kg of near-bomb-grade uranium is believed hidden in Isfahan, unseen by inspectors since February.",
+  "timeline": [
+    {
+      "date": "2025-06",
+      "text": "Israel and the US bomb Iran's nuclear sites in a 12-day war.",
+      "source": "https://en.wikipedia.org/wiki/Iran%E2%80%93Israel_war"
+    },
+    {
+      "date": "2026-02-28",
+      "text": "US-Israeli strikes kill Supreme Leader Ali Khamenei; war begins.",
+      "source": "https://en.wikipedia.org/wiki/2026_Iran_war"
+    },
+    {
+      "date": "2026-03",
+      "text": "The Assembly of Experts names his son Mojtaba Supreme Leader."
+    },
+    {
+      "date": "2026-04-13",
+      "text": "The US Navy begins blockading Iranian ports.",
+      "source": "https://www.cfr.org/article/united-states-blockades-strait-of-hormuz-after-u-s-iran-talks"
+    },
+    {
+      "date": "2026-07-08",
+      "text": "A framework agreed in Islamabad collapses; the blockade returns.",
+      "source": "https://en.wikipedia.org/wiki/2026_Iran_war_ceasefire"
+    },
+    {
+      "date": "2026-10",
+      "text": "Revolutionary Guards attacks hit more than 24 ships near Hormuz."
+    },
+    {
+      "date": "2026-10-31",
+      "text": "Tehran calls a letter from Vice President Vance 'a positive step'.",
+      "source": "https://easternherald.com/2026/10/31/rezaei-vance-letter-us-iran-talks/"
+    }
+  ],
+  "gameStarts": "2026-11",
+  "map": {
+    "countries": [
+      "IRN",
+      "ARE",
+      "OMN",
+      "USA"
+    ],
+    "points": [
+      {
+        "name": "Strait of Hormuz",
+        "lon": 56.3,
+        "lat": 26.6
+      },
+      {
+        "name": "Isfahan",
+        "lon": 51.67,
+        "lat": 32.65
+      },
+      {
+        "name": "Fujairah",
+        "lon": 56.33,
+        "lat": 25.12
+      }
+    ]
+  },
+  "onThisCard": [
+    "strait-of-hormuz",
+    "enrichment",
+    "iaea",
+    "us-blockade-of-iran",
+    "isfahan"
+  ],
+  "sources": [
+    "https://en.wikipedia.org/wiki/2026_Iran_war",
+    "https://www.thenationalnews.com/news/europe/2026/03/10/irans-uranium-stockpile-likely-intact-in-isfahan-iaeas-grossi-says",
+    "https://www.aljazeera.com/news/2026/11/2/iran-pushing-accelerated-plan-for-ceasefire-talks-with-us"
+  ],
+  "asOf": "2026-11-22"
+}

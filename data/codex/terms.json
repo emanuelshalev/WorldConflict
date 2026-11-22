@@ -1,0 +1,2803 @@
+[
+  {
+    "id": "nato",
+    "kind": "group",
+    "name": "NATO",
+    "aliases": [
+      {
+        "text": "NATO",
+        "caseSensitive": true
+      },
+      "North Atlantic Treaty Organization",
+      "the Atlantic alliance"
+    ],
+    "obscurity": 1,
+    "short": "The North Atlantic Treaty Organization: a military alliance of 32 countries in which an attack on one is an attack on all.",
+    "long": "Founded in 1949 to deter the Soviet Union. Article 5 commits members to help an attacked ally. Finland (2023) and Sweden (2024) joined after Russia's full-scale invasion of Ukraine. Ukraine is not a member.",
+    "related": [
+      "nato-article-5",
+      "nato-article-4"
+    ],
+    "valid": {
+      "from": "1949-04"
+    },
+    "eras": {
+      "1960": {
+        "short": "The North Atlantic Treaty Organization: 15 Western countries pledged to defend each other against the Soviet bloc.",
+        "long": "Founded in 1949. West Germany joined in 1955, and the Soviet Union answered with the Warsaw Pact the same year. Article 5 commits members to help an attacked ally."
+      },
+      "1990": {
+        "short": "The North Atlantic Treaty Organization: 16 Western countries pledged to defend each other, now facing a collapsing Soviet bloc."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/NATO"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "nato-article-5",
+    "kind": "group",
+    "name": "NATO Article 5",
+    "aliases": [
+      {
+        "text": "Article 5",
+        "caseSensitive": true
+      }
+    ],
+    "obscurity": 2,
+    "short": "The NATO treaty clause saying an armed attack on one member is an attack on all; used only once, after 9/11.",
+    "related": [
+      "nato",
+      "nato-article-4"
+    ],
+    "valid": {
+      "from": "1949-04"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/North_Atlantic_Treaty"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "nato-article-4",
+    "kind": "group",
+    "name": "NATO Article 4",
+    "aliases": [
+      {
+        "text": "Article 4",
+        "caseSensitive": true
+      }
+    ],
+    "obscurity": 3,
+    "short": "The NATO clause letting any member call urgent consultations when it feels threatened; a step short of Article 5.",
+    "long": "Poland invoked it in September 2025 after about 19 Russian drones crossed its airspace, several of them shot down.",
+    "related": [
+      "nato",
+      "nato-article-5"
+    ],
+    "valid": {
+      "from": "1949-04"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/North_Atlantic_Treaty"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "eu",
+    "kind": "group",
+    "name": "The European Union",
+    "aliases": [
+      {
+        "text": "EU",
+        "caseSensitive": true
+      },
+      "European Union"
+    ],
+    "obscurity": 1,
+    "short": "A union of 27 European countries with a single market, shared laws and, for most, the euro.",
+    "long": "It has funded much of Ukraine's budget since 2022, including a plan agreed in December 2025 to raise 90 billion euros in joint debt.",
+    "related": [
+      "brussels"
+    ],
+    "valid": {
+      "from": "1993-11"
+    },
+    "sources": [
+      "https://www.euronews.com/2025/12/20/the-eu-plans-to-raise-90-billion-in-joint-debt-for-ukraine-heres-how"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "un",
+    "kind": "group",
+    "name": "The United Nations",
+    "aliases": [
+      {
+        "text": "UN",
+        "caseSensitive": true
+      },
+      "United Nations"
+    ],
+    "obscurity": 1,
+    "short": "The world body of 193 countries, founded in 1945, that runs peacekeeping and aid agencies and hosts the Security Council.",
+    "related": [
+      "un-security-council",
+      "un-general-assembly"
+    ],
+    "valid": {
+      "from": "1945-10"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "un-security-council",
+    "kind": "group",
+    "name": "The UN Security Council",
+    "aliases": [
+      "Security Council",
+      "UN Security Council"
+    ],
+    "obscurity": 1,
+    "short": "The UN body that can impose sanctions or authorise force; its five permanent members (US, Russia, China, UK, France) each have a veto.",
+    "related": [
+      "un"
+    ],
+    "valid": {
+      "from": "1945-10"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "un-general-assembly",
+    "kind": "group",
+    "name": "The UN General Assembly",
+    "aliases": [
+      "General Assembly",
+      "UN General Assembly"
+    ],
+    "obscurity": 2,
+    "short": "The UN's parliament of all 193 member states; its votes carry moral weight but cannot be enforced.",
+    "related": [
+      "un"
+    ],
+    "valid": {
+      "from": "1945-10"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "un-secretary-general",
+    "kind": "group",
+    "name": "The UN Secretary-General",
+    "aliases": [
+      "UN Secretary-General",
+      "Secretary-General"
+    ],
+    "obscurity": 2,
+    "short": "The UN's chief official, António Guterres since 2017; his second term ends in December 2026.",
+    "related": [
+      "un"
+    ],
+    "valid": {
+      "from": "2017-01"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Secretary-General_of_the_United_Nations"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "iaea",
+    "kind": "group",
+    "name": "The IAEA",
+    "aliases": [
+      {
+        "text": "IAEA",
+        "caseSensitive": true
+      },
+      "International Atomic Energy Agency"
+    ],
+    "obscurity": 2,
+    "short": "The International Atomic Energy Agency: the UN's nuclear watchdog, whose inspectors check that nuclear material is not turned into bombs.",
+    "long": "Based in Vienna and led by Rafael Grossi. Its inspectors have had no access to Iran's main nuclear sites since the strikes of February 2026, so nobody can confirm where Iran's enriched uranium is.",
+    "related": [
+      "enrichment",
+      "isfahan"
+    ],
+    "valid": {
+      "from": "1957-07"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/International_Atomic_Energy_Agency"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "imf",
+    "kind": "group",
+    "name": "The IMF",
+    "aliases": [
+      {
+        "text": "IMF",
+        "caseSensitive": true
+      },
+      "International Monetary Fund"
+    ],
+    "obscurity": 2,
+    "short": "The International Monetary Fund: lends to countries in financial trouble, usually in exchange for tax rises and subsidy cuts.",
+    "valid": {
+      "from": "1945-12"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "world-bank",
+    "kind": "group",
+    "name": "The World Bank",
+    "aliases": [
+      "World Bank"
+    ],
+    "obscurity": 2,
+    "short": "A global lender for development projects; it brokered the 1960 Indus Waters Treaty and has a role in its disputes.",
+    "related": [
+      "indus-waters-treaty"
+    ],
+    "valid": {
+      "from": "1945-12"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "world-food-programme",
+    "kind": "group",
+    "name": "The World Food Programme",
+    "aliases": [
+      "World Food Programme",
+      "World Food Program",
+      {
+        "text": "WFP",
+        "caseSensitive": true
+      }
+    ],
+    "obscurity": 2,
+    "short": "The UN's food-aid agency, the world's largest humanitarian organisation.",
+    "valid": {
+      "from": "1961-12"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "icrc",
+    "kind": "group",
+    "name": "The ICRC (Red Cross)",
+    "aliases": [
+      {
+        "text": "ICRC",
+        "caseSensitive": true
+      },
+      "Red Cross",
+      "International Committee of the Red Cross"
+    ],
+    "obscurity": 1,
+    "short": "The International Committee of the Red Cross: a neutral Swiss organisation that helps war victims and brokers prisoner and aid deals.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "icc",
+    "kind": "group",
+    "name": "The International Criminal Court",
+    "aliases": [
+      {
+        "text": "ICC",
+        "caseSensitive": true
+      },
+      "International Criminal Court"
+    ],
+    "obscurity": 2,
+    "short": "A court in The Hague that tries individuals for genocide, war crimes and crimes against humanity.",
+    "long": "It has issued warrants for Vladimir Putin and Benjamin Netanyahu, and holds Rodrigo Duterte awaiting trial. The US, Russia, China and Israel are not members.",
+    "related": [
+      "the-hague",
+      "rodrigo-duterte"
+    ],
+    "valid": {
+      "from": "2002-07"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "icj",
+    "kind": "group",
+    "name": "The International Court of Justice",
+    "aliases": [
+      {
+        "text": "ICJ",
+        "caseSensitive": true
+      },
+      "International Court of Justice",
+      "World Court"
+    ],
+    "obscurity": 2,
+    "short": "The UN's top court in The Hague, which settles disputes between states, such as Sudan's case against the UAE.",
+    "related": [
+      "the-hague"
+    ],
+    "valid": {
+      "from": "1946-04"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "asean",
+    "kind": "group",
+    "name": "ASEAN",
+    "aliases": [
+      {
+        "text": "ASEAN",
+        "caseSensitive": true
+      }
+    ],
+    "obscurity": 2,
+    "short": "The Association of Southeast Asian Nations: 11 countries that work by consensus, so rarely confront China.",
+    "valid": {
+      "from": "1967-08"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "quad",
+    "kind": "group",
+    "name": "The Quad",
+    "aliases": [
+      {
+        "text": "Quad",
+        "caseSensitive": true
+      },
+      "the Quad"
+    ],
+    "obscurity": 3,
+    "short": "A name used for two groups: the Sudan mediators (US, Saudi Arabia, Egypt, UAE) and the Indo-Pacific club (US, India, Japan, Australia).",
+    "long": "In Sudan news, the Quad is the four-country group that has proposed truces since 2025; one of its members, the UAE, is accused of arming the RSF. In Asia, the Quad is a security dialogue of four democracies wary of China.",
+    "valid": {
+      "from": "2025-09"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "opec-plus",
+    "kind": "group",
+    "name": "OPEC+",
+    "aliases": [
+      "OPEC+",
+      {
+        "text": "OPEC",
+        "caseSensitive": true
+      }
+    ],
+    "obscurity": 2,
+    "short": "The oil producers' club led by Saudi Arabia and Russia that sets output targets to steer the oil price.",
+    "valid": {
+      "from": "2016-12"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "abraham-accords",
+    "kind": "group",
+    "name": "The Abraham Accords",
+    "aliases": [
+      "Abraham Accords"
+    ],
+    "obscurity": 2,
+    "short": "The 2020 US-brokered deals in which the UAE, Bahrain, Morocco and Sudan recognised Israel.",
+    "related": [
+      "mohamed-bin-zayed"
+    ],
+    "valid": {
+      "from": "2020-09"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Abraham_Accords"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "white-house",
+    "kind": "group",
+    "name": "The White House",
+    "aliases": [
+      {
+        "text": "White House",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "USA",
+    "obscurity": 1,
+    "short": "The US president's home and office in Washington; in the news, shorthand for the president and his staff.",
+    "related": [
+      "washington"
+    ],
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "pentagon",
+    "kind": "group",
+    "name": "The Pentagon",
+    "aliases": [
+      {
+        "text": "Pentagon",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "USA",
+    "obscurity": 1,
+    "short": "Headquarters of the US Department of Defense; shorthand for the US military leadership.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "state-department",
+    "kind": "group",
+    "name": "The State Department",
+    "aliases": [
+      "State Department",
+      "US Secretary of State",
+      "Secretary of State"
+    ],
+    "countryId": "USA",
+    "obscurity": 2,
+    "short": "The US foreign ministry, led by the Secretary of State.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "us-congress",
+    "kind": "group",
+    "name": "The US Congress",
+    "aliases": [
+      {
+        "text": "Congress",
+        "caseSensitive": true
+      },
+      "US Congress"
+    ],
+    "avoid": [
+      "Indian National Congress",
+      "Congress party"
+    ],
+    "countryId": "USA",
+    "obscurity": 1,
+    "short": "America's parliament: the House and the Senate. It controls the budget, declares war and must approve treaties.",
+    "long": "Democrats won both chambers in the 3 November 2026 midterms. Until the new Congress is sworn in on 3 January 2027, the outgoing 'lame-duck' Congress still sits.",
+    "related": [
+      "us-midterms-2026",
+      "lame-duck"
+    ],
+    "valid": {
+      "from": "2026-11"
+    },
+    "sources": [
+      "https://www.aljazeera.com/news/2026/11/4/democratic-party-gains-us-house-majority-in-2026-midterm-elections"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "us-supreme-court",
+    "kind": "group",
+    "name": "The US Supreme Court",
+    "aliases": [
+      "Supreme Court",
+      "US Supreme Court"
+    ],
+    "countryId": "USA",
+    "obscurity": 1,
+    "short": "America's highest court; in February 2026 it struck down Trump's emergency tariffs.",
+    "related": [
+      "tariffs"
+    ],
+    "valid": {
+      "from": "2026-02"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "centcom",
+    "kind": "group",
+    "name": "CENTCOM",
+    "aliases": [
+      {
+        "text": "CENTCOM",
+        "caseSensitive": true
+      },
+      "Central Command"
+    ],
+    "countryId": "USA",
+    "obscurity": 3,
+    "short": "US Central Command: the headquarters running American forces across the Middle East.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "us-navy",
+    "kind": "group",
+    "name": "The US Navy",
+    "aliases": [
+      "US Navy",
+      "U.S. Navy"
+    ],
+    "countryId": "USA",
+    "obscurity": 1,
+    "short": "The world's largest navy; in 2026 it was blockading Iran while being asked to watch the Taiwan Strait.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "us-seventh-fleet",
+    "kind": "group",
+    "name": "The US Seventh Fleet",
+    "aliases": [
+      "Seventh Fleet",
+      "US Seventh Fleet"
+    ],
+    "countryId": "USA",
+    "obscurity": 3,
+    "short": "The US Navy's forward fleet in the Western Pacific, based in Japan.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "coast-guard-us",
+    "kind": "group",
+    "name": "The US Coast Guard",
+    "aliases": [
+      "US Coast Guard",
+      "U.S. Coast Guard"
+    ],
+    "countryId": "USA",
+    "obscurity": 2,
+    "short": "America's maritime police, which intercepts migrants at sea in the Florida Straits.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "justice-department",
+    "kind": "group",
+    "name": "The Justice Department",
+    "aliases": [
+      "Justice Department",
+      "Department of Justice"
+    ],
+    "countryId": "USA",
+    "obscurity": 2,
+    "short": "The US federal prosecutors, who charged Maduro and other Venezuelan officials.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "treasury",
+    "kind": "group",
+    "name": "The US Treasury",
+    "aliases": [
+      {
+        "text": "Treasury",
+        "caseSensitive": true
+      },
+      "US Treasury"
+    ],
+    "countryId": "USA",
+    "obscurity": 2,
+    "short": "The US finance ministry, which runs American sanctions programmes.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "kremlin",
+    "kind": "group",
+    "name": "The Kremlin",
+    "aliases": [
+      {
+        "text": "Kremlin",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "RUS",
+    "obscurity": 1,
+    "short": "The fortress in Moscow where Russia's president works; shorthand for Putin and his government.",
+    "related": [
+      "moscow",
+      "vladimir-putin"
+    ],
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "verkhovna-rada",
+    "kind": "group",
+    "name": "The Verkhovna Rada",
+    "aliases": [
+      "Verkhovna Rada",
+      {
+        "text": "Rada",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "UKR",
+    "obscurity": 2,
+    "short": "Ukraine's parliament: 450 seats in Kyiv. It must approve laws, budgets and each extension of martial law.",
+    "related": [
+      "martial-law"
+    ],
+    "valid": {
+      "from": "1991-08"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Verkhovna_Rada"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "duma",
+    "kind": "group",
+    "name": "The State Duma",
+    "aliases": [
+      "State Duma",
+      {
+        "text": "Duma",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "RUS",
+    "obscurity": 2,
+    "short": "The lower house of Russia's parliament, dominated by the pro-Kremlin United Russia party.",
+    "related": [
+      "united-russia"
+    ],
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "united-russia",
+    "kind": "group",
+    "name": "United Russia",
+    "aliases": [
+      "United Russia"
+    ],
+    "countryId": "RUS",
+    "obscurity": 3,
+    "short": "The pro-Kremlin party that controls Russia's parliament and most regions.",
+    "valid": {
+      "from": "2001-12"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "rosgvardia",
+    "kind": "group",
+    "name": "Rosgvardia",
+    "aliases": [
+      "Rosgvardia",
+      "National Guard of Russia"
+    ],
+    "countryId": "RUS",
+    "obscurity": 3,
+    "short": "Russia's National Guard, created in 2016 to crush unrest at home; it reports directly to Putin.",
+    "valid": {
+      "from": "2016-04"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "fsb",
+    "kind": "group",
+    "name": "The FSB",
+    "aliases": [
+      {
+        "text": "FSB",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "RUS",
+    "obscurity": 2,
+    "short": "Russia's main security service, successor to the Soviet KGB's domestic arm.",
+    "valid": {
+      "from": "1995-04"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "wagner-group",
+    "kind": "group",
+    "name": "The Wagner Group",
+    "aliases": [
+      "Wagner Group",
+      {
+        "text": "Wagner",
+        "caseSensitive": true
+      }
+    ],
+    "avoid": [
+      "Richard Wagner"
+    ],
+    "countryId": "RUS",
+    "obscurity": 2,
+    "short": "A Russian mercenary force that fought in Ukraine, Syria and Africa; it mutinied in 2023 and was absorbed by the state.",
+    "related": [
+      "yevgeny-prigozhin"
+    ],
+    "valid": {
+      "from": "2023-08"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "isw",
+    "kind": "group",
+    "name": "ISW",
+    "aliases": [
+      {
+        "text": "ISW",
+        "caseSensitive": true
+      },
+      "Institute for the Study of War"
+    ],
+    "countryId": "USA",
+    "obscurity": 3,
+    "short": "The Institute for the Study of War, a Washington think tank whose daily maps track the front line in Ukraine.",
+    "valid": {
+      "from": "2022-02"
+    },
+    "sources": [
+      "https://www.understandingwar.org/"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "coalition-of-the-willing",
+    "kind": "group",
+    "name": "The coalition of the willing",
+    "aliases": [
+      "coalition of the willing",
+      "reassurance force"
+    ],
+    "obscurity": 2,
+    "short": "A group of about 30 countries led by Britain and France planning a European force for Ukraine after any ceasefire.",
+    "long": "The force would police the air and Black Sea and train Ukraine's army, deployable only after a ceasefire. Moscow says foreign troops in Ukraine would be legitimate targets.",
+    "related": [
+      "london",
+      "paris"
+    ],
+    "valid": {
+      "from": "2025-03"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "martial-law",
+    "kind": "term",
+    "name": "Martial law",
+    "aliases": [
+      "martial law"
+    ],
+    "countryId": "UKR",
+    "obscurity": 2,
+    "short": "Emergency rule that gives the state wartime powers; in Ukraine it also bars elections and men aged 18 to 60 from leaving.",
+    "long": "In force since 24 February 2022 and extended every 90 days by parliament, most recently to January 2027.",
+    "related": [
+      "verkhovna-rada"
+    ],
+    "valid": {
+      "from": "2022-02"
+    },
+    "sources": [
+      "https://ukranews.com/en/news/1183407-zelenskyy-proposes-rada-extend-martial-law-and-mobilization-until-january-29-2027"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "mobilisation",
+    "kind": "term",
+    "name": "Mobilisation",
+    "aliases": [
+      "mobilisation",
+      "mobilization",
+      "mobilisation age"
+    ],
+    "obscurity": 2,
+    "short": "Calling up civilians to the army. Ukraine drafts men from 25; lowering the age is politically explosive.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "free-economic-zone",
+    "kind": "term",
+    "name": "The 'free economic zone'",
+    "aliases": [
+      "free economic zone"
+    ],
+    "countryId": "UKR",
+    "obscurity": 3,
+    "short": "A US idea for ending the war: Ukraine pulls out of the rest of Donetsk, which becomes a demilitarised zone run internationally.",
+    "long": "Moscow has called the idea 'a basis'. Kyiv says giving up land, including its fortress belt, needs a national referendum.",
+    "related": [
+      "donetsk-oblast",
+      "fortress-belt",
+      "referendum"
+    ],
+    "valid": {
+      "from": "2025-11"
+    },
+    "sources": [
+      "https://www.al-monitor.com/originals/2026/11/us-attempts-new-peace-push-first-russia-ukraine-talks-nine-months"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "referendum",
+    "kind": "term",
+    "name": "Referendum",
+    "aliases": [
+      "referendum",
+      "national vote"
+    ],
+    "obscurity": 2,
+    "short": "A vote of the whole electorate on one question. Ukraine's constitution says only one can approve a change to its territory.",
+    "long": "Article 73 of Ukraine's constitution reserves changes to the country's territory for an all-Ukrainian referendum, so a president cannot simply sign land away. A vote cannot be held under martial law.",
+    "related": [
+      "martial-law"
+    ],
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Constitution_of_Ukraine"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "security-guarantees",
+    "kind": "term",
+    "name": "Security guarantees",
+    "aliases": [
+      "security guarantees",
+      "security guarantee",
+      "backstop"
+    ],
+    "obscurity": 2,
+    "short": "Promises by other countries to defend Ukraine if Russia attacks again; Kyiv's price for any ceasefire.",
+    "related": [
+      "coalition-of-the-willing"
+    ],
+    "valid": {
+      "from": "2022-02"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "minsk-agreements",
+    "kind": "term",
+    "name": "The Minsk agreements",
+    "aliases": [
+      "Minsk agreements",
+      "Minsk III"
+    ],
+    "avoid": [
+      "Minsk, Belarus"
+    ],
+    "countryId": "BLR",
+    "obscurity": 3,
+    "short": "Ceasefire deals for eastern Ukraine signed in Minsk in 2014 and 2015 that froze the war without ending it; 'Minsk III' means a repeat.",
+    "valid": {
+      "from": "2015-02"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "patriot",
+    "kind": "term",
+    "name": "Patriot",
+    "aliases": [
+      {
+        "text": "Patriot",
+        "caseSensitive": true
+      },
+      {
+        "text": "Patriots",
+        "caseSensitive": true
+      }
+    ],
+    "avoid": [
+      "Patriotic"
+    ],
+    "countryId": "USA",
+    "obscurity": 2,
+    "short": "The US-made Patriot system: Ukraine's best defence against ballistic missiles, in short supply and expensive.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "iskander",
+    "kind": "term",
+    "name": "Iskander",
+    "aliases": [
+      "Iskander",
+      "Iskanders"
+    ],
+    "countryId": "RUS",
+    "obscurity": 3,
+    "short": "A Russian short-range ballistic missile that can carry a nuclear warhead; based in Kaliningrad and Belarus.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "oreshnik",
+    "kind": "term",
+    "name": "Oreshnik",
+    "aliases": [
+      "Oreshnik"
+    ],
+    "countryId": "RUS",
+    "obscurity": 3,
+    "short": "A new Russian intermediate-range ballistic missile, first fired at Ukraine in November 2024 and deployed to Belarus.",
+    "valid": {
+      "from": "2024-11"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "national-wealth-fund",
+    "kind": "term",
+    "name": "The National Wealth Fund",
+    "aliases": [
+      "National Wealth Fund"
+    ],
+    "countryId": "RUS",
+    "obscurity": 3,
+    "short": "Russia's rainy-day fund of oil money, drained to pay for the war.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "new-start",
+    "kind": "term",
+    "name": "New START",
+    "aliases": [
+      "New START"
+    ],
+    "obscurity": 2,
+    "short": "The last treaty capping US and Russian nuclear forces; it expired in February 2026 with no replacement.",
+    "long": "Signed in 2010, it limited each side to 1,550 deployed strategic warheads. For the first time since 1972, no treaty now limits the two biggest nuclear arsenals.",
+    "related": [
+      "new-start-expiry"
+    ],
+    "valid": {
+      "from": "2011-02"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/New_START"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "bayraktar",
+    "kind": "term",
+    "name": "Bayraktar drones",
+    "aliases": [
+      "Bayraktar",
+      "Bayraktars"
+    ],
+    "countryId": "TUR",
+    "obscurity": 3,
+    "short": "Turkish-made armed drones, cheap and effective, sold to dozens of countries from Ukraine to Sudan's neighbours.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "irgc",
+    "kind": "group",
+    "name": "The IRGC (Revolutionary Guards)",
+    "aliases": [
+      {
+        "text": "IRGC",
+        "caseSensitive": true
+      },
+      "Revolutionary Guards",
+      "Islamic Revolutionary Guard Corps",
+      "the Guards"
+    ],
+    "countryId": "IRN",
+    "obscurity": 2,
+    "short": "Iran's Revolutionary Guards: an elite force, separate from the army, that protects the regime, runs missiles and owns much of the economy.",
+    "long": "Created after the 1979 revolution. Its navy has attacked ships near Hormuz throughout the 2026 war, and its Quds Force arms allied groups abroad. It has gained power since the Supreme Leader was killed.",
+    "related": [
+      "basij",
+      "strait-of-hormuz"
+    ],
+    "valid": {
+      "from": "1979-05"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Islamic_Revolutionary_Guard_Corps"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "basij",
+    "kind": "group",
+    "name": "The Basij",
+    "aliases": [
+      "Basij"
+    ],
+    "countryId": "IRN",
+    "obscurity": 3,
+    "short": "A volunteer militia under the Revolutionary Guards, used to break up protests and strikes in Iran.",
+    "related": [
+      "irgc"
+    ],
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "assembly-of-experts",
+    "kind": "group",
+    "name": "The Assembly of Experts",
+    "aliases": [
+      "Assembly of Experts"
+    ],
+    "countryId": "IRN",
+    "obscurity": 3,
+    "short": "The elected council of 88 senior clerics that chooses, and in theory can remove, Iran's Supreme Leader.",
+    "long": "It chose Mojtaba Khamenei in March 2026, days after his father was killed.",
+    "related": [
+      "supreme-leader",
+      "mojtaba-khamenei"
+    ],
+    "valid": {
+      "from": "2026-03"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "supreme-leader",
+    "kind": "term",
+    "name": "Supreme Leader",
+    "aliases": [
+      {
+        "text": "Supreme Leader",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "IRN",
+    "obscurity": 2,
+    "short": "Iran's highest office: a cleric with the last word on war, the nuclear programme and the army. The Taliban's leader uses the same title.",
+    "related": [
+      "assembly-of-experts",
+      "mojtaba-khamenei"
+    ],
+    "valid": {
+      "from": "1979-12"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "islamic-republic",
+    "kind": "term",
+    "name": "The Islamic Republic",
+    "aliases": [
+      "Islamic Republic"
+    ],
+    "countryId": "IRN",
+    "obscurity": 1,
+    "short": "Iran's system since the 1979 revolution: elected bodies under the authority of senior clerics.",
+    "valid": {
+      "from": "1979-04"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "axis-of-resistance",
+    "kind": "group",
+    "name": "The Axis of Resistance",
+    "aliases": [
+      "Axis of Resistance",
+      "the Axis"
+    ],
+    "countryId": "IRN",
+    "obscurity": 3,
+    "short": "Iran's name for its network of allied armed groups: Hezbollah, the Houthis, Iraqi militias and, formerly, Hamas and Assad's Syria.",
+    "related": [
+      "houthis",
+      "hamas"
+    ],
+    "valid": {
+      "from": "2003-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "enrichment",
+    "kind": "term",
+    "name": "Uranium enrichment",
+    "aliases": [
+      "enrichment",
+      "enriched uranium",
+      "60% enriched uranium"
+    ],
+    "obscurity": 2,
+    "short": "Concentrating the type of uranium that splits: about 4% fuels power plants, 90% makes bombs. Iran had reached 60%.",
+    "long": "Iran is believed to hold more than 200 kg of 60% uranium, enough for several bombs if enriched further. Getting from 60% to 90% takes weeks, not years, which is why its location matters.",
+    "related": [
+      "iaea",
+      "isfahan",
+      "fordow",
+      "natanz"
+    ],
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "bunker-buster",
+    "kind": "term",
+    "name": "Bunker-buster",
+    "aliases": [
+      "bunker-buster",
+      "bunker-busters",
+      "Massive Ordnance Penetrator",
+      "Massive Ordnance Penetrators"
+    ],
+    "countryId": "USA",
+    "obscurity": 3,
+    "short": "A heavy bomb built to punch through rock and concrete before exploding; only the US has the biggest kind, used on Fordow in 2025.",
+    "valid": {
+      "from": "2025-06"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "rial",
+    "kind": "term",
+    "name": "The rial",
+    "aliases": [
+      "rial"
+    ],
+    "countryId": "IRN",
+    "obscurity": 3,
+    "short": "Iran's currency, which has lost most of its value under sanctions, war and blockade.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "bazaar",
+    "kind": "term",
+    "name": "The bazaar",
+    "aliases": [
+      "bazaar"
+    ],
+    "countryId": "IRN",
+    "obscurity": 3,
+    "short": "Tehran's old market and its merchants, a political force: when the bazaar strikes, Iran's rulers take notice.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "operation-earnest-will",
+    "kind": "term",
+    "name": "Operation Earnest Will",
+    "aliases": [
+      "Operation Earnest Will",
+      "Earnest Will"
+    ],
+    "countryId": "USA",
+    "obscurity": 3,
+    "short": "The 1987 to 1988 US operation that put Kuwaiti tankers under the US flag and escorted them through the Gulf during the Iran-Iraq war.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "desert-one",
+    "kind": "term",
+    "name": "Desert One",
+    "aliases": [
+      "Desert One",
+      "Operation Eagle Claw"
+    ],
+    "countryId": "USA",
+    "obscurity": 3,
+    "short": "The failed 1980 US raid to free hostages in Tehran, which ended in a deadly crash in the desert.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "iron-dome",
+    "kind": "term",
+    "name": "Iron Dome",
+    "aliases": [
+      "Iron Dome"
+    ],
+    "countryId": "ISR",
+    "obscurity": 2,
+    "short": "Israel's short-range rocket defence system; in the news, often shorthand for Israeli air defence.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "lloyds",
+    "kind": "term",
+    "name": "Lloyd's of London",
+    "aliases": [
+      "Lloyd's",
+      "Lloyd's of London"
+    ],
+    "countryId": "GBR",
+    "obscurity": 2,
+    "short": "The London insurance market; when it stops covering ships in a sea, most shipping stops too.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "war-risk-insurance",
+    "kind": "term",
+    "name": "War-risk insurance",
+    "aliases": [
+      "war-risk premiums",
+      "war-risk insurance",
+      "war-risk"
+    ],
+    "obscurity": 3,
+    "short": "Extra insurance ships need to sail into conflict zones; when premiums soar, trade goes elsewhere.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "vlcc",
+    "kind": "term",
+    "name": "VLCC (supertanker)",
+    "aliases": [
+      {
+        "text": "VLCC",
+        "caseSensitive": true
+      },
+      "supertanker",
+      "very large crude carrier"
+    ],
+    "obscurity": 3,
+    "short": "A 'very large crude carrier': a supertanker carrying about two million barrels of oil.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "lng",
+    "kind": "term",
+    "name": "LNG",
+    "aliases": [
+      {
+        "text": "LNG",
+        "caseSensitive": true
+      },
+      "liquefied natural gas"
+    ],
+    "obscurity": 2,
+    "short": "Liquefied natural gas: gas cooled to a liquid and shipped by tanker. Taiwan and Japan depend on it for power.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "reflagging",
+    "kind": "term",
+    "name": "Reflagging",
+    "aliases": [
+      "reflag",
+      "reflagging",
+      "reflagged"
+    ],
+    "obscurity": 3,
+    "short": "Registering a merchant ship under another country's flag, usually to get that country's navy to protect it.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "convoy",
+    "kind": "term",
+    "name": "Convoy",
+    "aliases": [
+      "convoy",
+      "convoys"
+    ],
+    "obscurity": 1,
+    "short": "Merchant ships sailing together under warship escort to deter attacks.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "mines",
+    "kind": "term",
+    "name": "Naval mines",
+    "aliases": [
+      "sea mines",
+      "naval mines"
+    ],
+    "obscurity": 2,
+    "short": "Explosives laid at sea that sink or cripple ships; cheap to lay, slow and dangerous to clear.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "houthis",
+    "kind": "group",
+    "name": "The Houthis",
+    "aliases": [
+      "Houthis",
+      "Houthi",
+      "Ansar Allah",
+      "Houthi movement"
+    ],
+    "countryId": "YEM",
+    "obscurity": 2,
+    "short": "An armed Shia movement from northern Yemen that holds Sanaa and most Yemenis, allied with Iran and at war with Saudi Arabia.",
+    "long": "They seized the capital in 2014, survived a Saudi-led war from 2015 and, from late 2023, attacked ships in the Red Sea in the name of Gaza. In September 2026 they pushed down the coast to Mokha and the Bab al-Mandab strait.",
+    "related": [
+      "abdul-malik-al-houthi",
+      "sanaa",
+      "bab-al-mandab",
+      "axis-of-resistance"
+    ],
+    "valid": {
+      "from": "2014-09"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Houthis"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "stc",
+    "kind": "group",
+    "name": "The STC",
+    "aliases": [
+      {
+        "text": "STC",
+        "caseSensitive": true
+      },
+      "Southern Transitional Council"
+    ],
+    "countryId": "YEM",
+    "obscurity": 3,
+    "short": "The Southern Transitional Council: UAE-backed separatists seeking a southern Yemeni state. It 'dissolved' in January 2026; few believe it.",
+    "long": "Its fighters held Aden and much of the south. In January 2026 its leader fled to Abu Dhabi and the council announced it would disband, but its armed units remain.",
+    "related": [
+      "aden",
+      "presidential-leadership-council",
+      "mohamed-bin-zayed"
+    ],
+    "valid": {
+      "from": "2026-01"
+    },
+    "sources": [
+      "https://wtop.com/world/2026/01/yemens-southern-transitional-council-to-dismantle-a-day-after-its-leader-fled-to-the-uae/"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "presidential-leadership-council",
+    "kind": "group",
+    "name": "The Presidential Leadership Council",
+    "aliases": [
+      "Presidential Leadership Council",
+      "Presidential Council",
+      {
+        "text": "PLC",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "YEM",
+    "obscurity": 3,
+    "short": "The eight-member body, formed in 2022 with Saudi backing, that leads Yemen's internationally recognised government from Aden.",
+    "related": [
+      "aden",
+      "stc"
+    ],
+    "valid": {
+      "from": "2022-04"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "vision-2030",
+    "kind": "term",
+    "name": "Vision 2030",
+    "aliases": [
+      "Vision 2030"
+    ],
+    "countryId": "SAU",
+    "obscurity": 2,
+    "short": "Mohammed bin Salman's plan to diversify Saudi Arabia away from oil with tourism, giga-projects and foreign investment.",
+    "related": [
+      "mohammed-bin-salman",
+      "neom"
+    ],
+    "valid": {
+      "from": "2016-04"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "future-investment-initiative",
+    "kind": "term",
+    "name": "The Future Investment Initiative",
+    "aliases": [
+      "Future Investment Initiative",
+      {
+        "text": "FII",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "SAU",
+    "obscurity": 3,
+    "short": "Riyadh's annual investment conference, nicknamed 'Davos in the Desert'.",
+    "valid": {
+      "from": "2017-10"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "dp-world",
+    "kind": "group",
+    "name": "DP World",
+    "aliases": [
+      "DP World"
+    ],
+    "countryId": "ARE",
+    "obscurity": 3,
+    "short": "Dubai's state-owned port and logistics giant, running terminals from Somaliland to Europe.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "rsf",
+    "kind": "group",
+    "name": "The RSF",
+    "aliases": [
+      {
+        "text": "RSF",
+        "caseSensitive": true
+      },
+      "Rapid Support Forces"
+    ],
+    "countryId": "SDN",
+    "obscurity": 2,
+    "short": "The Rapid Support Forces: a paramilitary that grew out of the Darfur militias and has fought Sudan's army since April 2023.",
+    "long": "Led by Mohamed Hamdan Dagalo, known as Hemedti. It holds almost all of Darfur, took El Fasher in October 2025 amid mass killings, and runs a rival government from Nyala. The UAE is widely reported to arm it, which the UAE denies.",
+    "related": [
+      "saf",
+      "tasis",
+      "darfur",
+      "el-fasher"
+    ],
+    "valid": {
+      "from": "2023-04"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Rapid_Support_Forces"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "saf",
+    "kind": "group",
+    "name": "The SAF (Sudan's army)",
+    "aliases": [
+      {
+        "text": "SAF",
+        "caseSensitive": true
+      },
+      "Sudanese Armed Forces",
+      "Sudan's army"
+    ],
+    "countryId": "SDN",
+    "obscurity": 3,
+    "short": "The Sudanese Armed Forces, led by General al-Burhan, backed by Egypt and fighting the RSF since 2023.",
+    "related": [
+      "abdel-fattah-al-burhan",
+      "rsf"
+    ],
+    "valid": {
+      "from": "2023-04"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "tasis",
+    "kind": "group",
+    "name": "Tasis",
+    "aliases": [
+      "Tasis"
+    ],
+    "countryId": "SDN",
+    "obscurity": 3,
+    "short": "The RSF's rival 'government of peace and unity', based in Nyala, which no country has recognised.",
+    "related": [
+      "rsf",
+      "nyala"
+    ],
+    "valid": {
+      "from": "2025-07"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "famine",
+    "kind": "term",
+    "name": "Famine",
+    "aliases": [
+      "famine"
+    ],
+    "obscurity": 1,
+    "short": "The most severe hunger level, declared by UN-backed monitors when people are dying of starvation in large numbers.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "pla",
+    "kind": "group",
+    "name": "The PLA",
+    "aliases": [
+      {
+        "text": "PLA",
+        "caseSensitive": true
+      },
+      "People's Liberation Army",
+      "PLA Navy"
+    ],
+    "countryId": "CHN",
+    "obscurity": 2,
+    "short": "The People's Liberation Army: China's armed forces, commanded by the Communist Party rather than the state.",
+    "related": [
+      "central-military-commission",
+      "eastern-theater-command"
+    ],
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "central-military-commission",
+    "kind": "group",
+    "name": "The Central Military Commission",
+    "aliases": [
+      "Central Military Commission",
+      {
+        "text": "CMC",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "CHN",
+    "obscurity": 3,
+    "short": "The Communist Party body, chaired by Xi Jinping, that commands China's armed forces; purges have left it with few members.",
+    "related": [
+      "xi-jinping",
+      "zhang-youxia",
+      "he-weidong"
+    ],
+    "valid": {
+      "from": "2025-10"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "eastern-theater-command",
+    "kind": "group",
+    "name": "The Eastern Theater Command",
+    "aliases": [
+      "Eastern Theater Command",
+      "Eastern Theater"
+    ],
+    "countryId": "CHN",
+    "obscurity": 3,
+    "short": "The PLA headquarters responsible for Taiwan and the East China Sea; it runs the big drills around the island.",
+    "valid": {
+      "from": "2016-02"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "china-coast-guard",
+    "kind": "group",
+    "name": "The China Coast Guard",
+    "aliases": [
+      "China Coast Guard"
+    ],
+    "countryId": "CHN",
+    "obscurity": 2,
+    "short": "China's maritime police, the world's largest coast guard; it uses water cannon and ramming to push its claims.",
+    "valid": {
+      "from": "2013-07"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "taiwan-affairs-office",
+    "kind": "group",
+    "name": "The Taiwan Affairs Office",
+    "aliases": [
+      "Taiwan Affairs Office"
+    ],
+    "countryId": "CHN",
+    "obscurity": 3,
+    "short": "Beijing's government office for Taiwan policy and its main spokesman on cross-strait issues.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "politburo",
+    "kind": "group",
+    "name": "The Politburo",
+    "aliases": [
+      "Politburo"
+    ],
+    "countryId": "CHN",
+    "obscurity": 2,
+    "short": "The Communist Party's top leadership body in China, 24 members with a smaller standing committee on top.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "united-front",
+    "kind": "group",
+    "name": "The United Front",
+    "aliases": [
+      "United Front"
+    ],
+    "countryId": "CHN",
+    "obscurity": 3,
+    "short": "The Communist Party's influence network that cultivates friendly groups abroad, especially among Chinese communities.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "legislative-yuan",
+    "kind": "group",
+    "name": "The Legislative Yuan",
+    "aliases": [
+      "Legislative Yuan"
+    ],
+    "countryId": "TWN",
+    "obscurity": 3,
+    "short": "Taiwan's parliament, controlled since 2024 by opposition parties that cut President Lai's defence spending.",
+    "related": [
+      "kmt",
+      "lai-ching-te"
+    ],
+    "valid": {
+      "from": "2024-02"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "kmt",
+    "kind": "group",
+    "name": "The KMT (Kuomintang)",
+    "aliases": [
+      {
+        "text": "KMT",
+        "caseSensitive": true
+      },
+      "Kuomintang"
+    ],
+    "countryId": "TWN",
+    "obscurity": 2,
+    "short": "Taiwan's main opposition party, which favours closer ties with Beijing; with allies it controls the legislature.",
+    "related": [
+      "legislative-yuan"
+    ],
+    "valid": {
+      "from": "2024-02"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "tsmc",
+    "kind": "group",
+    "name": "TSMC",
+    "aliases": [
+      {
+        "text": "TSMC",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "TWN",
+    "obscurity": 2,
+    "short": "Taiwan Semiconductor Manufacturing Company: maker of most of the world's advanced chips, and a heavy user of electricity.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "cosco",
+    "kind": "group",
+    "name": "COSCO",
+    "aliases": [
+      {
+        "text": "COSCO",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "CHN",
+    "obscurity": 3,
+    "short": "China's state shipping giant, one of the world's largest container lines.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "taiwan-relations-act",
+    "kind": "term",
+    "name": "The Taiwan Relations Act",
+    "aliases": [
+      "Taiwan Relations Act"
+    ],
+    "countryId": "USA",
+    "obscurity": 3,
+    "short": "The 1979 US law that keeps unofficial ties with Taiwan and commits Washington to supply it with defensive arms.",
+    "valid": {
+      "from": "1979-04"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "strategic-ambiguity",
+    "kind": "term",
+    "name": "Strategic ambiguity",
+    "aliases": [
+      "strategic ambiguity"
+    ],
+    "countryId": "USA",
+    "obscurity": 3,
+    "short": "America's long-standing refusal to say whether it would defend Taiwan, meant to deter both Beijing and Taipei.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "median-line",
+    "kind": "term",
+    "name": "The median line",
+    "aliases": [
+      "median line"
+    ],
+    "countryId": "TWN",
+    "obscurity": 3,
+    "short": "An unofficial line down the middle of the Taiwan Strait that both sides mostly respected until China began crossing it in 2022.",
+    "related": [
+      "taiwan-strait"
+    ],
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "quarantine",
+    "kind": "term",
+    "name": "Quarantine (at sea)",
+    "aliases": [
+      "quarantine",
+      "customs inspection",
+      "customs inspections"
+    ],
+    "obscurity": 2,
+    "short": "Stopping and inspecting ships under a police or customs pretext: a blockade in effect, without the legal act of war.",
+    "long": "A coast guard 'quarantine' lets Beijing squeeze Taiwan's fuel and trade while claiming it is routine law enforcement, which makes it harder for others to respond with force.",
+    "related": [
+      "blockade",
+      "china-coast-guard"
+    ],
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "survival-threatening-situation",
+    "kind": "term",
+    "name": "'Survival-threatening situation'",
+    "aliases": [
+      "survival-threatening situation"
+    ],
+    "countryId": "JPN",
+    "obscurity": 3,
+    "short": "The legal finding under Japan's 2015 security laws that lets its forces fight to defend an ally even if Japan is not attacked.",
+    "related": [
+      "sanae-takaichi"
+    ],
+    "valid": {
+      "from": "2015-09"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "justice-mission-2025",
+    "kind": "term",
+    "name": "Justice Mission-2025",
+    "aliases": [
+      "Justice Mission-2025",
+      "Justice Mission"
+    ],
+    "countryId": "CHN",
+    "obscurity": 3,
+    "short": "Chinese military drills around Taiwan in December 2025 that rehearsed sealing off the ports of Keelung and Kaohsiung.",
+    "related": [
+      "keelung",
+      "kaohsiung"
+    ],
+    "valid": {
+      "from": "2025-12"
+    },
+    "sources": [
+      "https://focustaiwan.tw/politics/202512300008"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "joint-sword-strait-thunder",
+    "kind": "term",
+    "name": "Joint Sword and Strait Thunder",
+    "aliases": [
+      "Joint Sword",
+      "Strait Thunder"
+    ],
+    "countryId": "CHN",
+    "obscurity": 3,
+    "short": "Names of earlier Chinese drills around Taiwan, in 2023 to 2024 and in April 2025.",
+    "valid": {
+      "from": "2025-04"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "mutual-defense-treaty",
+    "kind": "term",
+    "name": "The US-Philippines Mutual Defense Treaty",
+    "aliases": [
+      "Mutual Defense Treaty",
+      "1951 Mutual Defense Treaty",
+      "Article IV"
+    ],
+    "countryId": "PHL",
+    "obscurity": 2,
+    "short": "The 1951 treaty committing the US and the Philippines to help each other if attacked; Washington says it covers the South China Sea.",
+    "related": [
+      "edca",
+      "scarborough-shoal"
+    ],
+    "valid": {
+      "from": "1951-08"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Mutual_Defense_Treaty_(United_States%E2%80%93Philippines)"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "edca",
+    "kind": "term",
+    "name": "EDCA",
+    "aliases": [
+      {
+        "text": "EDCA",
+        "caseSensitive": true
+      },
+      "Enhanced Defense Cooperation Agreement"
+    ],
+    "countryId": "PHL",
+    "obscurity": 3,
+    "short": "The 2014 deal letting US forces use agreed Philippine bases; expanded to nine sites in 2023, several facing Taiwan.",
+    "related": [
+      "mutual-defense-treaty"
+    ],
+    "valid": {
+      "from": "2014-04"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "philippine-senate",
+    "kind": "group",
+    "name": "The Philippine Senate",
+    "aliases": [
+      "Philippine Senate",
+      "Senate impeachment trial"
+    ],
+    "countryId": "PHL",
+    "obscurity": 3,
+    "short": "The 24-member upper house of the Philippines, sitting as the court in Sara Duterte's impeachment; conviction needs two-thirds.",
+    "related": [
+      "sara-duterte"
+    ],
+    "valid": {
+      "from": "2026-07"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "philippine-coast-guard",
+    "kind": "group",
+    "name": "The Philippine Coast Guard",
+    "aliases": [
+      "Philippine Coast Guard"
+    ],
+    "countryId": "PHL",
+    "obscurity": 3,
+    "short": "The Philippines' maritime police, on the front line of standoffs with China's much larger coast guard.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "arbitration-case-2016",
+    "kind": "term",
+    "name": "The 2016 South China Sea arbitration",
+    "aliases": [
+      "arbitration case",
+      "2016 arbitration",
+      "arbitral ruling"
+    ],
+    "countryId": "PHL",
+    "obscurity": 3,
+    "short": "A 2016 tribunal ruling in a case brought by Manila: China's sweeping sea claims have no legal basis. Beijing ignores it.",
+    "related": [
+      "south-china-sea",
+      "the-hague"
+    ],
+    "valid": {
+      "from": "2016-07"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "land-reclamation",
+    "kind": "term",
+    "name": "Land reclamation",
+    "aliases": [
+      "reclamation",
+      "dredgers",
+      "dredging"
+    ],
+    "obscurity": 3,
+    "short": "Pumping sand onto reefs to build artificial islands, as China did in the Spratlys and fears say it plans at Scarborough.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "indus-waters-treaty",
+    "kind": "term",
+    "name": "The Indus Waters Treaty",
+    "aliases": [
+      "Indus Waters Treaty"
+    ],
+    "obscurity": 2,
+    "short": "The 1960 deal sharing the Indus rivers: the eastern three to India, the western three to Pakistan. India suspended it in 2025.",
+    "long": "Brokered by the World Bank, it survived three wars. After the Pahalgam massacre India declared it 'in abeyance' and began changing how it runs dams on the western rivers. Pakistan says cutting its water would be an act of war.",
+    "related": [
+      "indus",
+      "chenab",
+      "world-bank"
+    ],
+    "valid": {
+      "from": "2025-04"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Indus_Waters_Treaty",
+      "https://www.chathamhouse.org/2026/04/india-and-pakistan-still-cannot-agree-restore-indus-waters-treaty-re-engagement-could-help"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "in-abeyance",
+    "kind": "term",
+    "name": "In abeyance",
+    "aliases": [
+      "in abeyance",
+      "abeyance"
+    ],
+    "obscurity": 3,
+    "short": "Suspended for now, not formally cancelled: India's term for its pause of the Indus Waters Treaty.",
+    "related": [
+      "indus-waters-treaty"
+    ],
+    "valid": {
+      "from": "2025-04"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "taliban",
+    "kind": "group",
+    "name": "The Taliban",
+    "aliases": [
+      "Taliban",
+      "Afghan Taliban"
+    ],
+    "countryId": "AFG",
+    "obscurity": 1,
+    "short": "The Islamist movement ruling Afghanistan since 2021, recognised by almost no one; Pakistan has been at open war with it since February 2026.",
+    "related": [
+      "kabul",
+      "ttp",
+      "pakistan-afghanistan-war-2026"
+    ],
+    "valid": {
+      "from": "2026-02"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "ttp",
+    "kind": "group",
+    "name": "The TTP (Pakistani Taliban)",
+    "aliases": [
+      {
+        "text": "TTP",
+        "caseSensitive": true
+      },
+      "Pakistani Taliban",
+      "Tehrik-i-Taliban Pakistan"
+    ],
+    "countryId": "PAK",
+    "obscurity": 3,
+    "short": "The Pakistani Taliban, a militant group fighting Pakistan's state from bases Islamabad says are in Afghanistan.",
+    "related": [
+      "taliban"
+    ],
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "national-command-authority",
+    "kind": "group",
+    "name": "The National Command Authority",
+    "aliases": [
+      "National Command Authority"
+    ],
+    "countryId": "PAK",
+    "obscurity": 3,
+    "short": "The Pakistani body of civilian and military chiefs that controls its nuclear weapons; when it meets, the world notices.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "ispr",
+    "kind": "group",
+    "name": "ISPR",
+    "aliases": [
+      {
+        "text": "ISPR",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "PAK",
+    "obscurity": 3,
+    "short": "Inter-Services Public Relations: the Pakistani military's media wing.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "dgmo",
+    "kind": "term",
+    "name": "DGMO hotline",
+    "aliases": [
+      {
+        "text": "DGMO",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "IND",
+    "obscurity": 3,
+    "short": "The hotline between India's and Pakistan's Directors General of Military Operations, used to arrange ceasefires.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "27th-amendment",
+    "kind": "term",
+    "name": "The 27th Amendment",
+    "aliases": [
+      "27th Amendment"
+    ],
+    "countryId": "PAK",
+    "obscurity": 3,
+    "short": "A November 2025 change to Pakistan's constitution creating the post of Chief of Defence Forces, now held by Asim Munir.",
+    "related": [
+      "asim-munir"
+    ],
+    "valid": {
+      "from": "2025-11"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "chief-of-defence-forces",
+    "kind": "term",
+    "name": "Chief of Defence Forces",
+    "aliases": [
+      "Chief of Defence Forces"
+    ],
+    "countryId": "PAK",
+    "obscurity": 3,
+    "short": "Pakistan's new top military post, over the army, navy and air force, created in 2025 for Field Marshal Munir.",
+    "related": [
+      "asim-munir",
+      "27th-amendment"
+    ],
+    "valid": {
+      "from": "2025-11"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "cpec",
+    "kind": "term",
+    "name": "CPEC",
+    "aliases": [
+      {
+        "text": "CPEC",
+        "caseSensitive": true
+      },
+      "China-Pakistan Economic Corridor"
+    ],
+    "countryId": "PAK",
+    "obscurity": 3,
+    "short": "The China-Pakistan Economic Corridor: tens of billions of dollars of Chinese roads, ports and power plants in Pakistan.",
+    "valid": {
+      "from": "2015-04"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "court-of-arbitration",
+    "kind": "term",
+    "name": "The Court of Arbitration (Indus)",
+    "aliases": [
+      "Court of Arbitration"
+    ],
+    "obscurity": 3,
+    "short": "A tribunal in The Hague hearing Pakistan's complaints about Indian dams under the Indus treaty; India boycotts it.",
+    "related": [
+      "indus-waters-treaty"
+    ],
+    "valid": {
+      "from": "2023-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "chavismo",
+    "kind": "term",
+    "name": "Chavismo",
+    "aliases": [
+      "chavismo",
+      "chavista",
+      "chavistas"
+    ],
+    "countryId": "VEN",
+    "obscurity": 3,
+    "short": "The left-wing movement founded by Hugo Chávez that has ruled Venezuela since 1999, now under Delcy Rodríguez.",
+    "related": [
+      "hugo-chavez"
+    ],
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "pdvsa",
+    "kind": "group",
+    "name": "PDVSA",
+    "aliases": [
+      {
+        "text": "PDVSA",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "VEN",
+    "obscurity": 3,
+    "short": "Venezuela's state oil company; a 2026 law ended its monopoly and let foreign firms operate fields.",
+    "related": [
+      "orinoco-belt"
+    ],
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "black-berets",
+    "kind": "group",
+    "name": "The Black Berets",
+    "aliases": [
+      "Black Berets"
+    ],
+    "countryId": "CUB",
+    "obscurity": 3,
+    "short": "Cuba's special police brigade, deployed against the July 2021 protests.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "communist-party-cuba",
+    "kind": "group",
+    "name": "The Communist Party of Cuba",
+    "aliases": [
+      "Communist Party of Cuba"
+    ],
+    "countryId": "CUB",
+    "obscurity": 2,
+    "short": "Cuba's only legal party, ruling since the 1960s; its first secretary is Miguel Díaz-Canel.",
+    "related": [
+      "miguel-diaz-canel"
+    ],
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "monroe-doctrine",
+    "kind": "term",
+    "name": "The Monroe Doctrine",
+    "aliases": [
+      "Monroe Doctrine"
+    ],
+    "countryId": "USA",
+    "obscurity": 2,
+    "short": "The 1823 US claim that the Americas are Washington's sphere, invoked again by the Trump administration.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "hamas",
+    "kind": "group",
+    "name": "Hamas",
+    "aliases": [
+      "Hamas"
+    ],
+    "countryId": "PSX",
+    "obscurity": 1,
+    "short": "The Palestinian Islamist group that ruled Gaza from 2007 and led the 7 October 2023 attack on Israel; it refuses to disarm.",
+    "related": [
+      "gaza-strip"
+    ],
+    "valid": {
+      "from": "2023-10"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "palestinian-authority",
+    "kind": "group",
+    "name": "The Palestinian Authority",
+    "aliases": [
+      "Palestinian Authority",
+      {
+        "text": "PA",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "PSX",
+    "obscurity": 2,
+    "short": "The Palestinian self-government created by the 1990s Oslo accords, running parts of the West Bank under Mahmoud Abbas.",
+    "related": [
+      "mahmoud-abbas",
+      "west-bank"
+    ],
+    "valid": {
+      "from": "1994-05"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "board-of-peace",
+    "kind": "group",
+    "name": "The Board of Peace",
+    "aliases": [
+      "Board of Peace"
+    ],
+    "obscurity": 3,
+    "short": "The international body chaired by Trump under the 2025 Gaza plan to oversee Gaza's transition and reconstruction.",
+    "related": [
+      "gaza-ceasefire-2025"
+    ],
+    "valid": {
+      "from": "2025-10"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Gaza_peace_plan"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "settlements",
+    "kind": "term",
+    "name": "Settlements",
+    "aliases": [
+      "settlements",
+      "settlers",
+      "settler"
+    ],
+    "countryId": "PSX",
+    "obscurity": 2,
+    "short": "Israeli communities built on land occupied in 1967, illegal under international law in the view of most countries.",
+    "related": [
+      "west-bank"
+    ],
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "stabilization-force",
+    "kind": "term",
+    "name": "International Stabilization Force",
+    "aliases": [
+      "stabilization force",
+      "stabilisation force",
+      "International Stabilization Force"
+    ],
+    "obscurity": 3,
+    "short": "The multinational force planned under the 2025 Gaza deal to secure the strip; few countries have committed troops.",
+    "related": [
+      "gaza-ceasefire-2025"
+    ],
+    "valid": {
+      "from": "2025-11"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "sanctions",
+    "kind": "term",
+    "name": "Sanctions",
+    "aliases": [
+      "sanctions",
+      "sanctioned",
+      "sanction"
+    ],
+    "obscurity": 1,
+    "short": "Penalties one country imposes on another to change its behaviour: trade bans, frozen assets, travel bans.",
+    "long": "They work slowly and leak through third countries. Secondary sanctions go further and punish anyone who trades with the target, such as buyers of its oil.",
+    "related": [
+      "secondary-sanctions"
+    ],
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "secondary-sanctions",
+    "kind": "term",
+    "name": "Secondary sanctions",
+    "aliases": [
+      "secondary sanctions",
+      "secondary tariffs"
+    ],
+    "obscurity": 3,
+    "short": "Penalties on third countries for doing business with a sanctioned state, such as tariffs on buyers of Russian or Iranian oil.",
+    "related": [
+      "sanctions"
+    ],
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "embargo",
+    "kind": "term",
+    "name": "Embargo",
+    "aliases": [
+      "embargo",
+      "embargoes"
+    ],
+    "obscurity": 1,
+    "short": "An official ban on trade with a country, or in one product such as oil or arms.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "blockade",
+    "kind": "term",
+    "name": "Blockade",
+    "aliases": [
+      "blockade",
+      "blockading",
+      "naval blockade"
+    ],
+    "obscurity": 1,
+    "short": "Using warships to stop ships reaching or leaving a country's ports; under international law, an act of war.",
+    "related": [
+      "quarantine",
+      "us-blockade-of-iran"
+    ],
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "ceasefire",
+    "kind": "term",
+    "name": "Ceasefire",
+    "aliases": [
+      "ceasefire",
+      "truce"
+    ],
+    "obscurity": 1,
+    "short": "An agreement to stop fighting, often before any peace deal; it can freeze a front line for years.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "tariffs",
+    "kind": "term",
+    "name": "Tariffs",
+    "aliases": [
+      "tariffs",
+      "tariff"
+    ],
+    "obscurity": 1,
+    "short": "Taxes on imports. In 2026 a 10% US global tariff replaced emergency tariffs the Supreme Court struck down.",
+    "related": [
+      "us-tariff-ruling-2026"
+    ],
+    "valid": {
+      "from": "2026-02"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "demilitarised-zone",
+    "kind": "term",
+    "name": "Demilitarised zone",
+    "aliases": [
+      "demilitarised zone",
+      "demilitarized zone",
+      "demilitarising",
+      "demilitarise"
+    ],
+    "obscurity": 2,
+    "short": "An area where armies agree to keep troops and heavy weapons out, usually watched by monitors.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "proxy",
+    "kind": "term",
+    "name": "Proxy",
+    "aliases": [
+      "proxies",
+      "proxy"
+    ],
+    "obscurity": 2,
+    "short": "An armed group or state that fights with a patron's money and weapons, letting the patron deny involvement.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "deniable",
+    "kind": "term",
+    "name": "Deniable operation",
+    "aliases": [
+      "deniable",
+      "deniably"
+    ],
+    "obscurity": 3,
+    "short": "An action designed so the government behind it can plausibly say it was not involved.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "red-line",
+    "kind": "term",
+    "name": "Red line",
+    "aliases": [
+      "red line",
+      "red lines"
+    ],
+    "obscurity": 2,
+    "short": "A limit a government says it will not let others cross without a forceful response.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "lame-duck",
+    "kind": "term",
+    "name": "Lame duck",
+    "aliases": [
+      "lame duck",
+      "lame-duck"
+    ],
+    "countryId": "USA",
+    "obscurity": 2,
+    "short": "An official or Congress still in office after an election but with its replacement already chosen; in the US, until January.",
+    "related": [
+      "us-congress",
+      "us-midterms-2026"
+    ],
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "impeachment",
+    "kind": "term",
+    "name": "Impeachment",
+    "aliases": [
+      "impeachment",
+      "impeached"
+    ],
+    "obscurity": 2,
+    "short": "Formal charges by a parliament against a top official, followed by a trial that can remove them from office.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "coup",
+    "kind": "term",
+    "name": "Coup",
+    "aliases": [
+      "coup",
+      "coup d'etat"
+    ],
+    "obscurity": 1,
+    "short": "A sudden, illegal seizure of power, usually by the military.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "displacement",
+    "kind": "term",
+    "name": "Displaced people",
+    "aliases": [
+      "displaced",
+      "displacement",
+      "refugees"
+    ],
+    "obscurity": 1,
+    "short": "People forced from their homes by war or disaster; refugees have crossed a border, internally displaced people have not.",
+    "valid": {
+      "from": "1945-01"
+    },
+    "sources": [],
+    "asOf": "2026-11-22"
+  }
+]
