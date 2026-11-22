@@ -1,0 +1,46 @@
+{
+"persona":"priya","variant":"priya-flash","panel_version":"1.2","build":"271e377","iteration":2,"minutes_played":45,
+"scenarios":[
+{"id":"P1","outcome":"achieved","turns":12,"steps":["Picked Ceasefire or Collapse from the title globe, opened What is going on here","Chose I know this on the familiarity question","Played 12 months as Ukraine mostly following cabinet picks, proposed ceasefire to Russia in month 2 (failed at 12%), signed the ceasefire in month 12","Went through the full end sequence: verdict B, 2 stars, 629/1000, achievements, moments, how you were seen, the truth, ranking"],"notes":"The world reacted plausibly (Trump minerals-style deal, Enerhodar plant, mobilisation age, coalition of the willing). Russia reaction text and some quotes felt generic."},
+{"id":"P2","outcome":"achieved","turns":12,"steps":["Used How much? and the Forecast chance to see what choices do before taking them","Read The truth screen comparing my world with the real world as of Nov 2026"],"notes":"Mostly yes: sizes and chances are visible, the real-world comparison at the end is exactly what I wanted. The briefing on the title screen already gave the real timeline."}
+],
+"friction":[
+{"where":"Month 1 crisis desk, cabinet pick vs mission warning","expected":"The pick the game labels Best trade-off to be coherent with the warning","happened":"Card 3 Reject it and strike was labelled Best trade-off while the cabinet pick Only by referendum was flagged as working against the mission, and card 3 itself hurts Washington. Two contradicting labels on one screen.","kind":"misread","screenshot":"shots/priya-flash/006-m1.png"},
+{"where":"Month 2 desk, political capital","expected":"My two seals to be mine to spend","happened":"Staff had pre-added Reform program and National address orders that locked seals; I only noticed in the small text and had to remove them (X) to afford Propose ceasefire.","kind":"hesitation","screenshot":"shots/priya-flash/013-m2.png"},
+{"where":"Month 7 to 10 desk, advisor quote strip","expected":"Readable advisor quote and pick button","happened":"The quote is squeezed into a one-word-wide column and the Cabinet pick button overlaps it (Defense Minister month 7, Finance Minister month 10).","kind":"other","screenshot":"shots/priya-flash/040-m11.png"},
+{"where":"Month 5, 9 staff orders","expected":"Orders that make sense for Ukraine","happened":"Staff repeatedly suggested Court Belarus (and Court UK), which no Ukrainian foreign ministry would do in this war.","kind":"parity","screenshot":"shots/priya-flash/026-m5.png"},
+{"where":"Debrief card month 2","expected":"A negative number labelled as a setback","happened":"United States view of you -9 sat under the label A STEP FORWARD in green.","kind":"misread","screenshot":"shots/priya-flash/011-ex1.png"},
+{"where":"Debrief and newspaper quotes","expected":"Quotes that match speaker and event","happened":"President Donald Trump is credited with a line about the foreign ministry calling it a constructive signal, reused identically in months 3 and 9; Crowds outside the Ukrainian embassy was credited to Trump too.","kind":"other","screenshot":"shots/priya-flash/035-m9.png"},
+{"where":"Month 7 meetings list","expected":"Macron, president of France until spring 2027","happened":"A President Philippe Rousseau appears without any explanation of a French election.","kind":"naming","screenshot":"shots/priya-flash/030-m7.png"},
+{"where":"Title: familiarity prompt and Some help default","expected":"Offer to skip explanations","happened":"I know this was clear, hid the underlines, and I could still open the briefing. The question was fine and not noisy. Terms I did not need explained: Kramatorsk, fortress belt, coalition of the willing (all known to me); I did not need help.","kind":"naming","screenshot":"shots/priya-flash/005-start.png"},
+{"where":"End screen The truth, Russia nuclear program card","expected":"Russia has an arsenal, not a program percentage","happened":"Russia's nuclear program 100% with strikethrough estimate and Russian strength 1221k with no unit.","kind":"naming","screenshot":"shots/priya-flash/053-end-truth.png"},
+{"where":"End sequence How you were seen","expected":"Russian state TV to claim victory","happened":"Russia's State Television says they blinked first, which Russian state media would never say.","kind":"parity","screenshot":"shots/priya-flash/051-end-seen.png"},
+{"where":"Month debriefs","expected":"Debrief to say what the ceasefire terms were","happened":"Month 12 card and newspaper say the guns fall silent but not on what terms, nothing about the annexed fifth.","kind":"other","screenshot":"shots/priya-flash/046-end2.png"}
+],
+"bugs":[
+{"title":"Advisor quote column collapses and overlaps the pick button","steps":["Play to month 7 as Ukraine","Open the desk with a crisis where the advisor quote is long"],"expected":"Quote wraps normally in the row","actual":"One word per line, pick pill drawn over the text","severity":"S3","screenshot":"shots/priya-flash/040-m11.png"},
+{"title":"Negative result labelled A STEP FORWARD","steps":["Month 1 choose Only by referendum, Execute"],"expected":"Setback label for -9","actual":"A step forward in green with -9","severity":"S2","screenshot":"shots/priya-flash/011-ex1.png"},
+{"title":"Recycled and misattributed quotes","steps":["Months 1, 3, 9"],"expected":"Context-matched quotes","actual":"Same Trump foreign-ministry quote on two different decisions","severity":"S3","screenshot":"shots/priya-flash/035-m9.png"},
+{"title":"Share card text clipped","steps":["End screen Ranking, scroll to share card"],"expected":"Full line","actual":"Better than 10% of simulated leaders cut off at the right edge","severity":"S4","screenshot":"shots/priya-flash/054-end-rank.png"},
+{"title":"Percentile contradicts ladder","steps":["End Ranking"],"expected":"A score under the competent median not praised","actual":"Headline Better than 10% of competent leaders while 629 is below median 659 and the ladder says top 10% is 717","severity":"S3","screenshot":"shots/priya-flash/054-end-rank.png"}
+],
+"suggestions":[
+{"what":"Let staff suggestions be fully off by default, or show seats they hold as a plain line next to the capital counter","goal_served":"P1"},
+{"what":"Keep the real-world timeline in What is going on here and the The truth table, and add the actual ceasefire terms to the month 12 debrief","goal_served":"P2"},
+{"what":"Make suggested orders country-aware: no Court Belarus for Ukraine","goal_served":"P1"},
+{"what":"Match the speaker to each quote and do not reuse the same line","goal_served":"P1"}
+],
+"delight":["The Ceasefire or Collapse briefing with Who is who, Why it matters and What really happened timeline up to 11 Nov 2026 (shots/priya-flash/003-about.png)","Orders refused with a reason plus a redirect (Court Russia -> Propose ceasefire instead) and a stated 12% chance (018-pc3.png)","The Enerhodar nuclear plant crisis and the mobilisation age crisis felt like the real debates","The Truth screen comparing the game world with the real world (053-end-truth.png)","The countries picker with relation labels (017-pc2.png)"],
+"scores":{
+"fun":{"value":7,"reason":"Crises are well chosen and I was pulled along; the middle months were mostly Approve and Execute."},
+"clarity":{"value":7,"reason":"Costs, chances and why-not messages are clear; conflicting Best trade-off versus mission warning labels and hidden staff seals hurt."},
+"visual":{"value":8,"reason":"Polished scenes and screens, but the squashed advisor quote layout looks broken."},
+"feels_like_a_game":{"value":7,"reason":"Strong reveal sequence and stamps; the Approve all flow feels like managing a queue."},
+"agency":{"value":8,"reason":"I was never blocked without a reason, and refusals suggest the alternative."},
+"realism":{"value":7,"reason":"Leaders, Enerhodar, Abu Dhabi talks and the minerals-type deal are right; Court Belarus, Russian state TV saying they blinked, a new French president and recycled quotes are wrong."},
+"replay":{"value":7,"reason":"I want to try Russia and the US sides and to see whether refusing the referendum changes the war."},
+"recommend":{"value":8,"reason":"I would send this to the Model UN group for the briefing and the truth screen, with a warning about the quote bugs."}
+},
+"quit_point":null,
+"verbatim":"The truth screen is what I wanted from the start, my world next to what actually happened, but would a Russian paper really say they blinked?"
+}

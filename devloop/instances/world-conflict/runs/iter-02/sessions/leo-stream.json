@@ -1,0 +1,43 @@
+{
+"persona":"leo","variant":"leo-stream","panel_version":"1.2","build":"271e377","iteration":2,"minutes_played":25,
+"scenarios":[
+{"id":"L1","outcome":"achieved","turns":12,"steps":["Picked Hormuz Convoy as the US (Iran text click did not register, took the default side)","Answered familiarity with default Some help","Took the aggressive crisis option most months","Reached month 12, watched the whole reveal: count, verdict, achievements, moments, how you were seen, numbers, truth, ranking, share card, full report"],"notes":"Got a D, Mission Failed, 587/1000. Loved the reveal sequence, wanted a bigger end-card spectacle."},
+{"id":"L2","outcome":"partial","turns":12,"steps":["Opened All orders, picked China as target, saw Declare war blocked with a clear cost reason and Nuclear strike blocked as wartime only","Queued Strike nuclear sites in China with 1 capital, executed","Result: China only denounced, tension +5, approval went UP, no war, no stinger"],"notes":"Refusals were clear. The wild move that was allowed felt underwhelming."}
+],
+"friction":[
+{"where":"Title: side list","expected":"tap Iran to play the chaotic side","happened":"driver text click on Iran failed, I ended up as the US; not clear whether a card tap registers","kind":"retry","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/leo-stream/001-title.png"},
+{"where":"Briefing: who is who","expected":"know the names","happened":"Mojtaba Khamenei, IRGC, Mohamed bin Zayed, Takaichi, Isfahan, Bandar Abbas, Muscat meant nothing to me; the briefing gave a 1-line who-is-who and the i chips, I skipped them","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/leo-stream/002-fam.png"},
+{"where":"Crisis desk month 1","expected":"punchy","happened":"cards have lots of small tags (Hurts: The shooting stops +3 more) I skimmed; the cabinet pick banner pushes the safe option","kind":"dashboard-feel","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/leo-stream/003-m1.png"},
+{"where":"Debrief of nuke strike on China","expected":"big stinger, war, chaos","happened":"NO LOCK overlay text on art, China just denounces, mission approval 44 to 50. Anticlimactic for the most extreme thing I did","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/leo-stream/012-ex1.png"},
+{"where":"Debrief cards","expected":"BACKFIRED in red","happened":"BACKFIRED -12 and -5 numbers are shown in green, reads like a win","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/leo-stream/021-m5x.png"},
+{"where":"Month 4 Next month","expected":"straight to the next desk","happened":"newspaper overlay opened and swallowed my next click, so I lost a step and had to redo it","kind":"backtrack","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/leo-stream/019-m4x.png"},
+{"where":"Month 12 crisis","expected":"new crisis","happened":"General strike crisis came again (it was month 7); quote 'Another decision made for someone else' read like a placeholder","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/leo-stream/037-end1.png"},
+{"where":"Share card","expected":"a card I would post","happened":"text clipped on the card edge (Shadow Operator line truncated, 'simulated leaders' cut off), pretty plain; Share result button gave no visible feedback","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/leo-stream/046-rank.png"},
+{"where":"Verdict","expected":"my strikes and war count","happened":"Moments list put Strike nuclear sites in China under What went badly with only 'Carried out'; no recap of the chaos I caused","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/leo-stream/042-rev-mom.png"}
+],
+"bugs":[
+{"title":"Backfired stat shown in green","steps":["Execute a month where an order backfires","Look at the BACKFIRED big number"],"expected":"red or warning colour","actual":"green number","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/leo-stream/021-m5x.png"},
+{"title":"Share card text clipped","steps":["Finish game","Ranking page, look at share card"],"expected":"all text inside the card","actual":"Better than 4% of simulated leaders cut at right edge, subtitle truncated with ellipsis","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/leo-stream/046-rank.png"},
+{"title":"Newspaper overlay after Next month eats the next click","steps":["Finish month 4 debrief","Press Next month","Click a crisis option"],"expected":"desk ready","actual":"chronicle overlay opened, click lost, month not executed","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/leo-stream/019-m4x.png"},
+{"title":"Nuclear strike on China raised approval and caused no war","steps":["Orders, target China, Strike nuclear sites in China, Execute"],"expected":"dramatic consequence","actual":"China only denounced, approval +6","severity":"S2","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/leo-stream/013-num.png"}
+],
+"suggestions":[
+{"what":"Full-screen stinger and sound for extreme orders (nuke, war, coup) with a visible consequence","goal_served":"L2"},
+{"what":"Make the end card a postable picture with a hero image, the biggest moment and chaos stats (strikes, wars, lives lost), not a text box","goal_served":"L1"},
+{"what":"Show a toast when Share result or Copy text works","goal_served":"L1"},
+{"what":"Let me skip the newspaper and go straight to the next desk, keep the clicks safe","goal_served":"L1"}
+],
+"delight":["Title globe with pinned fires and TODAY badge looked great on stream","YOUR PICK stamp and IT WORKED +6 stinger cards","Clear reasons on blocked orders (needs 2 capital, only in wartime)","Reveal sequence with grade stamp, count-up score, seals, truth vs real world table","Ladder against random and do-nothing staff"],
+"scores":{
+"fun":{"value":6,"reason":"Good flow and some great cards, but my wild moves fizzled and I won the war in month 3 by clicking aggressive options."},
+"clarity":{"value":7,"reason":"Costs and refusals were readable, names were not."},
+"visual":{"value":8,"reason":"Globe, scene art and reveal look good on camera; desk is a bit busy."},
+"feels_like_a_game":{"value":7,"reason":"Months, stingers, grade, seals and replay feel like a game."},
+"agency":{"value":7,"reason":"Every refusal told me why, but allowed extreme moves had little effect."},
+"realism":{"value":6,"reason":"A nuke-site strike on China with no war felt fake; the truth table was cool."},
+"replay":{"value":6,"reason":"Replay same opening and New world are right there, I would try Iran or nukes next time."},
+"recommend":{"value":6,"reason":"Chat would enjoy the end reveal but I need bigger chaos payoffs and a postable card."}
+},
+"quit_point":null,
+"verbatim":"The reveal is the best part, I would clip that. But I nuked a Chinese site and they just tweeted at me. Give me explosions."
+}

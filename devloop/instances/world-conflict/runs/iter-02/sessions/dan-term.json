@@ -1,0 +1,42 @@
+{
+"persona":"dan","variant":"dan-term","panel_version":"1.2","build":"271e377","iteration":2,"minutes_played":40,
+"scenarios":[
+{"id":"D1","outcome":"partial","turns":14,"steps":["Title: One Term, 2026 era, Hard, took office as Ukraine","Chose 'I know this' familiarity","Played 14 of 48 months mostly with Approve staff picks + Execute","Opened All orders, forecasts, Buy weapons; opened score breakdown"],"notes":"Understood most limits (capital seals, 6 orders, budget share), but staff-attended meetings changed state without a clear rule, and I did not reach the election."},
+{"id":"D2","outcome":"partial","turns":14,"steps":["Approve-all every month: score slid 100 to 85, never near the 115 bonus","Tried Buy weapons once: front +3 that month"],"notes":"No evidence of one winning move yet; the passive line loses slowly. Did not get enough months to test a repeated move."}
+],
+"friction":[
+{"where":"Title, era card click","expected":"Selecting the 2026 era card","happened":"Substring click on '2026' matched Today's Crisis and started a Hormuz Flashpoint (driver artifact, but shows two '2026' targets)","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/dan-term/005-now.png"},
+{"where":"Month 1 desk, Sanctions on Iran as Ukraine","expected":"Crisis relevant to a country at war with Russia","happened":"UN vote on Iran sanctions as first Ukraine decision; outcome quote about crowds at the Ukrainian embassy in Iran","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/dan-term/010-m1.png"},
+{"where":"Month debrief, Backfired card","expected":"Bad outcome shown as bad","happened":"BACKFIRED label with -15 in green mint, same colour as good results","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/dan-term/013-ex1.png"},
+{"where":"Desk, Add button on advisor suggestion","expected":"Order added","happened":"My click by label did not register; debrief said 0 orders (possible retry)","kind":"retry","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/dan-term/018-add.png"},
+{"where":"Debrief Home and security, Staff meeting card","expected":"Consistent verdict","happened":"Meeting stamped FAILED yet Mobilization rose 85 to 95 and troops grew; I never ordered mobilization, staff did via Approve","kind":"blocked","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/dan-term/030-hs.png"},
+{"where":"Desk header capital","expected":"Stable capital rules","happened":"Capital showed 2 left, then 4 of 4, then 5 of 6 with 'next month 2 more' then '1 more'; hard to model","kind":"hesitation","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/dan-term/017-m3.png"},
+{"where":"Crisis card Ride it out","expected":"Art matching the option","happened":"Art shows GDP +0.3% for the option that hurts the economy","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/dan-term/025-loop4.png"},
+{"where":"Months 12 and 14","expected":"Fresh crises","happened":"Sanctions on Iran and Grid down repeat from months 1 and 2","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/dan-term/033-g3.png"},
+{"where":"Header, debrief month label","expected":"Same month names","happened":"Debrief 'FEB 2027' while the new desk said Feb 2027 month 4 after Jan month 3; label lags one month","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/dan-term/020-all.png"},
+{"where":"Familiarity and Who is who","expected":"Names I do not know explained","happened":"Mojtaba Khamenei, IRGC, Takaichi, Frederiksen, Kramatorsk shown; 'i' chips and codex offered; I did not need them but they were unobtrusive","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/dan-term/008-brief.png"}
+],
+"bugs":[
+{"title":"Staff-attended meeting stamped FAILED while its effects apply","steps":["Desk, Approve staff picks incl. Defence Minister meeting","Execute, open See everything, Home and security"],"expected":"Result and stamp agree, and I am told I authorised mobilization","actual":"FAILED stamp with +10 mobilization and -2 approval","severity":"S2","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/dan-term/030-hs.png"},
+{"title":"Backfire shown in positive green","steps":["Choose Vote for sanctions in month 1","Read first debrief card"],"expected":"Negative colour for -15","actual":"Green -15 under BACKFIRED","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/dan-term/013-ex1.png"},
+{"title":"Economy growth reads -5 to -9% yet score economy part only gently falls","steps":["Play to month 14 as Ukraine"],"expected":"Large visible effect or explanation","actual":"Header shows economy -9.2%, approval 71%, score changes 1 per month","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/dan-term/036-map.png"}
+],
+"suggestions":[
+{"what":"Show the exact rule when a staff action changes state without my order, and list what Approve will do before I press it","goal_served":"Find out why every number moved"},
+{"what":"Let advisor orders be added by one click and show the preview inline; fix capital refill wording","goal_served":"Understand every rule that limits me"},
+{"what":"Add a month-by-month history table of the four score components with causes","goal_served":"Check whether one strategy dominates"}
+],
+"delight":["Score breakdown modal with per-term numbers and heading targets (devloop/instances/world-conflict/runs/iter-02/shots/dan-term/015-score.png)","How much? chips showing numeric sizes (devloop/instances/world-conflict/runs/iter-02/shots/dan-term/011-how.png)","Defense budget share on orders with Forecast (devloop/instances/world-conflict/runs/iter-02/shots/dan-term/028-bw.png)","1990 era globe truly shows the Soviet Union and Warsaw Pact (devloop/instances/world-conflict/runs/iter-02/shots/dan-term/003-era1990.png)"],
+"scores":{
+"fun":{"value":6,"reason":"Systems are legible but 14 months on Approve-all felt like autopilot."},
+"clarity":{"value":8,"reason":"Score modal and How much? answer why numbers moved; capital and FAILED stamp muddy it."},
+"visual":{"value":8,"reason":"Broadcast scenes and globe are strong, a few art mismatches."},
+"feels_like_a_game":{"value":7,"reason":"Real orders, budgets and forecasts, but the quiet months are thin."},
+"agency":{"value":6,"reason":"Staff auto-picks and meetings act on my behalf with state changes I did not choose."},
+"realism":{"value":6,"reason":"Ukraine opening with Iran sanctions and repeating crises dent it."},
+"replay":{"value":6,"reason":"Want another country and Hard, but repeats show by month 12."},
+"recommend":{"value":6,"reason":"Promising transparency; I need to see depth over a full term before telling Paradox friends."}
+},
+"quit_point":null,
+"verbatim":"The numbers are honest, I will give it that. But let me press Approve and the game plays itself, and I still cannot tell you whether there is a move that always wins."
+}

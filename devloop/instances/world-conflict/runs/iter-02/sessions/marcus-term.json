@@ -1,0 +1,43 @@
+{
+ "persona":"marcus","variant":"marcus-term","panel_version":"1.2","build":"271e377","iteration":2,"minutes_played":40,
+ "scenarios":[
+  {"id":"K1","outcome":"partial","turns":11,"steps":["One Term 2026 as United States, chose Some help","Month 1 crisis Sanctions on Iran: voted for sanctions","Played to month 11 mostly accepting cabinet picks","Started a second Term to replay with the opposite choice: opening crisis was Gaza famine, not Iran sanctions, so no like-for-like replay","Played 5 months of game 2 with different choices"],"notes":"Could not replay the same crisis with an opposite choice; two games diverge from month 1, so differences cannot be attributed to my choice."},
+  {"id":"K2","outcome":"abandoned","turns":0,"steps":["Not played: my variant was the 2026 Term; 1990 Legacy belongs to marcus-legacy"],"notes":"Not played this variant."}
+ ],
+ "friction":[
+  {"where":"Month 1 desk, crisis cards","expected":"Tapping the text 'Vote for sanctions' picks it","happened":"Text tap failed (ok false); page scrolled; had to tap the card by coordinates. Executing without picking silently used the cabinet pick","kind":"retry","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/marcus-term/005-m1b.png"},
+  {"where":"Month debrief, Diplomacy page","expected":"My sanctions vote explained as passed or failed with its effect","happened":"Big FAILED stamp over a UN vote board showing YES 4 NO 12, next to 'You: Vote for sanctions'. Unclear what failed (the vote? Iran's response?). China and Russia 'move against you' also stamped FAILED","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/marcus-term/010-m1f.png"},
+  {"where":"Month 1 debrief headline","expected":"Result of my crisis choice (sanctions)","happened":"Headline card was a staff order, National address, +4 approval; my own vote's effect was buried under Diplomacy","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/marcus-term/007-m1x.png"},
+  {"where":"Month 2 and 3 debrief","expected":"Debrief about what I chose","happened":"Header 'What your choice did: Your forces gain ground against Iran' although I made no choice that month (staff default)","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/marcus-term/012-m2x.png"},
+  {"where":"Title, second Term","expected":"Same situation again so I can compare","happened":"New game opens with a different crisis (Gaza famine); no obvious way to replay my seed or branch from a month","kind":"blocked","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/marcus-term/032-r2b.png"},
+  {"where":"Saved games after restarting the title","expected":"My month-11 game listed to resume","happened":"Only the new month-0 game appeared; first game gone (may be an artefact of the driver clearing browser storage on goto)","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/marcus-term/033-menu.png"},
+  {"where":"Month 1 desk","expected":"Plain names","happened":"Mojtaba Khamenei as Supreme Leader, 'Mokha', IRGC, Abu Dhabi talks: 2025-26 names I did not know; the 'i 2 names' chip and What is going on here helped, but I had to open them","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/marcus-term/004-m1.png"},
+  {"where":"Debrief","expected":"Clear reason for score moves","happened":"'Score 100 to 100. Approval is pulled down; standing lifts it (12 defence pacts). Heading to 98' is dense but did explain cause and effect; I liked it","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/marcus-term/008-m1d.png"},
+  {"where":"Header","expected":"Political capital count to change","happened":"Always '1 left' across months; unclear how it is spent or refilled","kind":"hesitation","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/marcus-term/030-post9.png"},
+  {"where":"Familiarity dialog and tooltips","expected":"No hover or hotkey reliance","happened":"Buttons are titled with shortcuts (M, N, Ctrl+Enter) but all reachable by tap; fine","kind":"other"}
+ ],
+ "bugs":[
+  {"title":"Debrief says 'What your choice did' when player made no choice","steps":["Start Term 2026","Month 1 pick a crisis option and execute","Month 2 press Execute without choosing"],"expected":"Header says staff handled it","actual":"'What your choice did: Your forces gain ground against Iran'","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/marcus-term/012-m2x.png"},
+  {"title":"FAILED stamp on a vote the player cast and on world reactions","steps":["Vote for sanctions month 1","Open Diplomacy page of debrief"],"expected":"Outcome wording matching what happened","actual":"FAILED stamp with YES 4 NO 12 board","severity":"S2","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/marcus-term/010-m1f.png"},
+  {"title":"Earlier game missing from Saved games after returning to title","steps":["Play 11 months","Reload title","Start a new Term","Open Saved games"],"expected":"Both games listed","actual":"Only new game, month 0","severity":"S2","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/marcus-term/033-menu.png"}
+ ],
+ "suggestions":[
+  {"what":"Let me restart the same seed or branch from any past month with a different choice, and show a side by side of the two outcomes","goal_served":"K1"},
+  {"what":"Lead the debrief with the crisis decision I made, with plain cause then effect lines","goal_served":"K1"},
+  {"what":"Explain political capital and show when it is spent","goal_served":"K1"},
+  {"what":"Label the stamp as the order result, not the world's reaction","goal_served":"K2"}
+ ],
+ "delight":["Score explanation sentence in the debrief gave cause and effect","Era picker globe recolouring and the era blurb in the title","Mission bar moving with numbers (-100 to -51) made progress concrete"],
+ "scores":{
+  "fun":{"value":6,"reason":"Months flow quickly and the art is good, but I mostly accepted staff picks so my agency felt small."},
+  "clarity":{"value":6,"reason":"Debrief gives numbers and reasons, but stamps and headers sometimes mislabel what happened."},
+  "visual":{"value":8,"reason":"Polished scenes, readable on 1366x768 without scrolling hunts."},
+  "feels_like_a_game":{"value":7,"reason":"Monthly crisis and execute loop is clear."},
+  "agency":{"value":6,"reason":"Never blocked, but defaults mean decisions happen without me and the header claims I chose."},
+  "realism":{"value":6,"reason":"Plausible cause chains, but a war ending in month 5 in one run versus dragging on in another, from different openings, made it hard to judge."},
+  "replay":{"value":4,"reason":"I could not rerun the same crisis with another choice, which is my main reason to play."},
+  "recommend":{"value":6,"reason":"Good for a casual what-if; not yet a counterfactual tool."}
+ },
+ "quit_point":"Month 1 of the second Term, when the opening crisis differed from my first game and I found no way to replay my seed or branch; I would stop there as a what-if tester.",
+ "verbatim":"It looks great and it explains itself well enough, but I wanted to ask 'what if I had voted the other way' and the game would not let me ask."
+}

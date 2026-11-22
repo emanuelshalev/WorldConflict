@@ -1,0 +1,24 @@
+{
+  "headline": "Players who know the world now love it (Maya and Priya 8, both finished with a full reveal), and realism rose most. Newcomers fell back: the auto-opening briefing at Guide me and too many words before the first choice cost Olivia and Noah (5). Trust is the other drag: status words that contradict outcomes (FAILED on things that happened, a loss called a step forward) and wild moves without real consequences.",
+  "loved": [
+    {"what": "Playing a real crisis to a full reveal with a grade, seals and the truth table", "who": ["maya", "priya", "leo", "sam"]},
+    {"what": "Clear month: one move, cards with sizes, the result card", "who": ["maya", "priya", "dan"]},
+    {"what": "Realistic content: real talks, real leaders, era-correct worlds", "who": ["priya", "ruth", "marcus"]}
+  ],
+  "patterns": [
+    {"id": "F-02-1", "title": "Newcomers drown before the first choice", "detail": "The briefing auto-opens at Guide me and covers half the screen; the month-1 text wall; Noah never learned the one goal he was judged on.", "who": ["olivia", "noah"], "goal": "G4 G8 G12", "tone": "bad", "ceo": true},
+    {"id": "F-02-2", "title": "Words that contradict what happened", "detail": "FAILED stamped on a staff meeting whose effects applied and on a vote the player cast; a -9 labelled A step forward; the result headline repeats a war move as 'your choice'.", "who": ["dan", "marcus", "priya", "maya"], "goal": "G7 G10", "tone": "bad"},
+    {"id": "F-02-3", "title": "Wild moves without consequences", "detail": "A nuclear strike on China drew only a denunciation and raised approval; the share card is a plain clipped text box.", "who": ["leo"], "goal": "G7 G10", "tone": "bad"},
+    {"id": "F-02-4", "title": "Staff spend my capital for me", "detail": "Staff pre-spend political capital; show what each staff pick changes before Approve.", "who": ["priya", "dan"], "goal": "G5", "tone": "bad"},
+    {"id": "F-02-5", "title": "Map and desk still differ", "detail": "Map and desk order cards behave differently; the Desk button did not respond with a map menu open (Sam's quit point).", "who": ["sam"], "goal": "G6", "tone": "bad", "ceo": true},
+    {"id": "F-02-6", "title": "Replay and saves", "detail": "No discoverable way to replay a seed or branch from a month outside the reveal; an earlier game missing from Saved games.", "who": ["marcus"], "goal": "G9 G10", "tone": "bad"},
+    {"id": "F-02-7", "title": "Let me play the war I chose", "detail": "One Term opens on a random crisis; Ruth wanted Ukraine and plain words on what her Ukraine move did.", "who": ["ruth", "marcus"], "goal": "G4 G9", "tone": "wish"},
+    {"id": "F-02-8", "title": "Recycled and misattributed lines", "detail": "Recycled Trump quotes, Russian state TV saying 'they blinked', 'Court Belarus' suggested to Ukraine.", "who": ["priya"], "goal": "G9", "tone": "bad"}
+  ],
+  "surprises": [
+    "The two most knowledgeable casual players rose the most (Maya 7 to 8, Priya 6 to 8).",
+    "A learning aid hurt the very newcomers it was built for, because it opened by itself.",
+    "Marcus reached the floor (5 to 6) thanks to plausible eras, but replay remains his wish."
+  ],
+  "environment": "The build under test had a merge accident (conflict markers in benchmark files): the reveal showed no rarity and no ranking ladder in this round, which affects endings judged by Olivia, Noah, Maya, Leo and Sam. Fixed before push (D-57)."
+}

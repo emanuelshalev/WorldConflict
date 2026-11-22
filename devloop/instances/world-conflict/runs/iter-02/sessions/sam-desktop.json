@@ -1,0 +1,50 @@
+{
+"persona":"sam","variant":"sam-desktop","panel_version":"1.2","build":"271e377","iteration":2,"minutes_played":14,
+"scenarios":[
+{"id":"S1","outcome":"achieved","steps":["Title globe","Hormuz Convoy as USA","familiarity prompt (kept Some help)","played 12 months to the end screen"],"turns":12,"notes":"Verdict: crafted game in the title, desk and debrief; template-y leaks remain (empty cards, overlapping stamps, vocabulary drift)."},
+{"id":"S2","outcome":"partial","steps":["Chose a crisis response on the desk","switched to Map","opened Venezuela menu","compared order cards with desk cards"],"turns":2,"notes":"Same orders, different card layout, labels and states (Add to this month vs Added; cost seals vs free pills). Crisis answer not visible in Map mode."}
+],
+"friction":[
+{"where":"Desk, month 1 order cards","expected":"Cards aligned","happened":"Card 2 sits higher than 1 and 3; the 'Cabinet pick' tag overlaps card 3 top edge and stays on card 3 after I pick card 1","kind":"dashboard-feel","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/sam-desktop/005-pick.png"},
+{"where":"Desk card 1 after picking","expected":"Free pill readable","happened":"YOUR PICK stamp covers the 'free' pill","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/sam-desktop/005-pick.png"},
+{"where":"Debrief step stamp","expected":"Stamp clear of text","happened":"STEP ACHIEVED stamp covers 'Iran's view of you'","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/sam-desktop/028-fin.png"},
+{"where":"See everything, The month page","expected":"Content per card","happened":"China moves against you / Russia moves against you / ORDER National address are bare titles; lower half of page empty","kind":"dashboard-feel","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/sam-desktop/007-every.png"},
+{"where":"Political capital naming","expected":"One name","happened":"HUD 'Political capital 1 left', right rail 'Political capital 1 of 4 left' with 'seals', cards use diamond cost, map menu 'Needs diamond 2, you have 1'","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/sam-desktop/008-m2.png"},
+{"where":"Desk vs Map order cards","expected":"Same card, same states","happened":"Different layout, 'Add to this month' vs 'Added', different cost display, forecast link text differs","kind":"parity","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/sam-desktop/010-venez.png"},
+{"where":"Map mode","expected":"See the open crisis","happened":"Crisis answer is not shown on the map, only staff orders","kind":"parity","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/sam-desktop/009-map.png"},
+{"where":"Top bar Desk button","expected":"Switch to Desk","happened":"First click on Desk with map menu open did nothing; a later click at the toggle worked. Mouse wheel zooms the globe while a menu is open","kind":"retry","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/sam-desktop/012-desk2b.png"},
+{"where":"Desk scroll position","expected":"Crisis scene fully visible","happened":"After each month the page lands scrolled, the scene top is cropped","kind":"hesitation","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/sam-desktop/008-m2.png"},
+{"where":"Cabinet pick warning","expected":"Clear","happened":"'Hurts: approval 56%+' and 'works against your mission' are cryptic; 56%+ looks like a typo","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/sam-desktop/003-desk1.png"},
+{"where":"Debrief verdict","expected":"Consistent verdict","happened":"BACKFIRED +4 tension on a month where the mission goal rose; 'Trump's answer: Send in special forces' reads like generated copy","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/sam-desktop/014-e2.png"},
+{"where":"End screen","expected":"Grade matches","happened":"5 of 6 goals met, 682/1000 but grade D and 0 stars; last month square black ('the fall') though no fall happened","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/sam-desktop/034-end6.png"},
+{"where":"Names: IRGC, Isfahan, Fujairah, Bandar Abbas, Muscat","expected":"Explained","happened":"Mostly explained by the i chips and Who is who strip; Muscat and Fujairah not","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/sam-desktop/002-start.png"},
+{"where":"Title globe","expected":"Clean labels","happened":"Hormuz tooltip covers Myanmar label; country labels collide near the Gulf","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/sam-desktop/001-title.png"},
+{"where":"Month 2 crisis","expected":"Tied to the story","happened":"Hostages in Afghanistan appears while the Iran war is the mission, feels random","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/sam-desktop/008-m2.png"}
+],
+"bugs":[
+{"title":"Cabinet pick tag does not follow the chosen card","steps":["Open month 1","click Hit the IRGC navy now"],"expected":"Tag stays on the cabinet card and your pick is marked clearly","actual":"Tag stays overlapping card 3, YOUR PICK stamp hides the free pill on card 1","severity":"S4","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/sam-desktop/005-pick.png"},
+{"title":"Desk button ignored with map menu open","steps":["Map","open Venezuela menu","click Desk"],"expected":"Desk opens","actual":"Nothing happened first time","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/sam-desktop/012-desk2b.png"},
+{"title":"Last month tile black on a surviving run","steps":["Play 12 months","open record"],"expected":"Tile reflects the month","actual":"Black tile labelled the fall","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/sam-desktop/034-end6.png"},
+{"title":"Grade D for 682/1000 and 5 of 6 goals","steps":["finish Flashpoint"],"expected":"Grade consistent with score","actual":"D, mission failed by 3 relations points","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/sam-desktop/030-end2.png"}
+],
+"suggestions":[
+{"what":"One name and one icon for political capital everywhere, drop 'seals'","goal_served":"S1"},
+{"what":"One order card component used by desk and map, same states and labels","goal_served":"S2"},
+{"what":"Fix stamp collisions (YOUR PICK, STEP ACHIEVED, DONE) with a safe zone","goal_served":"S1"},
+{"what":"Cut or fill the contentless cards in the month page","goal_served":"S1"},
+{"what":"Reset scroll to the crisis scene each month; align the three response cards","goal_served":"S1"}
+],
+"delight":["Title globe with the live crisis pins and the serif/sans type pairing","Debrief modal with the big stamped result number and illustrated scene","The moments timeline on the end screen"],
+"scores":{
+"fun":{"value":6,"reason":"Choices are legible but the cabinet pick plus Approve carried me to 5 of 5 on track by month 5."},
+"clarity":{"value":6,"reason":"Mission bar is clear; costs and Hurts labels are cryptic."},
+"visual":{"value":7,"reason":"Real art direction and hierarchy; spoiled by overlapping stamps and uneven cards."},
+"feels_like_a_game":{"value":7,"reason":"Stamps, scenes and verdict ceremony feel authored."},
+"agency":{"value":5,"reason":"Never blocked, but defaults win; my choices rarely mattered."},
+"realism":{"value":6,"reason":"Plausible headlines; random hostages crisis and Trump's answer wording break it."},
+"replay":{"value":5,"reason":"Other flashpoints tempting, but I saw the loop in 3 months."},
+"recommend":{"value":6,"reason":"Closer to a crafted game than a dashboard, but I would wait for vocabulary and parity fixes."}
+},
+"quit_point":"Month 2, desk after switching to the map: map and desk order cards behave differently and the Desk button did not respond. I would have stopped there and posted my notes.",
+"verbatim":"It looks like someone cared, then I find three names for the same currency and a stamp sitting on top of the text. Fix the small stuff and I would show it to the studio."
+}
