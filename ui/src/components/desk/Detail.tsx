@@ -3,6 +3,7 @@ import { IconArrowLeft, IconArrowRight, IconX } from '@tabler/icons-react';
 import { type PendingAction, approveProposal, countryName, queueOrder, useGameStore } from '../../store/gameStore';
 import { pcCost } from '../../lib/actions';
 import { budgetShare } from '../../lib/budget';
+import { TERMS } from '../../lib/glossary';
 import { primaryId, primaryItem } from '../../lib/month';
 import { ActionIcon } from '../../scenes/icons';
 import { deskItems } from '../../lib/deskItems';
@@ -85,7 +86,9 @@ function SuggestionsDetail() {
   const rows = useAdvisorRows();
   return (
     <article>
-      <h3 className="detail-title">Your advisors suggest</h3>
+      <h3 className="detail-title">
+        {TERMS.orderIdeas.name} ({rows.length})
+      </h3>
       <p className="hint">The staff propose up to two of these at the start of each month, never one with poor odds or a repeat of last month, and always leave you at least ◆ 1. A recommended order spends nothing until you accept it (or press Accept all recommended); add the others here.</p>
       <div className="adv-list">
         {rows.map((r) => (

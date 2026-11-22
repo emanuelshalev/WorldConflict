@@ -85,9 +85,9 @@ export interface CardShellProps {
 }
 
 const TAG_TEXT: Record<CardTag, string> = {
-  cabinet: 'Cabinet pick',
+  cabinet: 'Recommended',
   best: 'Best for your mission',
-  both: 'Cabinet pick · good for your mission',
+  both: 'Recommended · good for your mission',
 };
 
 export function CardShell({

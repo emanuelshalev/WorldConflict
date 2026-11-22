@@ -166,6 +166,15 @@ describe("UI glossary", () => {
     for (const ok of ["Accept all recommended (4)", "Review 4 recommended", "Recommended by Foreign Minister"]) expect(banned.some((re) => re.test(ok)), ok).toBe(false);
   });
 
+  it("bans the iteration 3 leftovers: one word Recommended, one verb Accept (QA3-S3-2, D-72, D-73)", () => {
+    const hit = (text: string) => BANNED.some((b) => b.re.test(text));
+    for (const old of ["Cabinet pick", "Accept cabinet pick", "Cabinet pick · good for your mission", "◆ 1 if approved", "On Approve, staff attend 3", "2 staff proposals to approve", "proposals wait for your approval", "Your advisors suggest", "Approve order"])
+      expect(hit(old), old).toBe(true);
+    for (const ok of ["Recommended: Abstain", "Accept recommended", "◆ 1 if accepted", "Recommended: staff attend 3", "Orders to consider (5)", "2 of them recommended", "Approval about +4", "Accepted: Abstain"])
+      expect(hit(ok), ok).toBe(false);
+    expect(TERMS.orderIdeas.name).toBe("Orders to consider");
+  });
+
   it("catches a banned word in a UI string", () => {
     const out: Hit[] = [];
     check("probe", "Not enough political credit", out);

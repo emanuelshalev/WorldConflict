@@ -99,7 +99,8 @@ export const TERMS = {
     name: 'Recommended by {role}',
     compact: 'Recommended',
     definition: 'What one of your advisers recommends. Accept it or choose yourself.',
-    banned: [/^\s*Suggested\s*$/, /\bStaff suggests\b/i, /^\s*Staff\s*$/, /\bstaff picks?\b/i],
+    // QA3-S3-2: the crisis tag and button said "Cabinet pick" / "Accept cabinet pick"
+    banned: [/^\s*Suggested\s*$/, /\bStaff suggests\b/i, /^\s*Staff\s*$/, /\bstaff picks?\b/i, /\bcabinet(?:'s)? picks?\b/i],
   },
   recommended: {
     id: 'recommended',
@@ -121,7 +122,26 @@ export const TERMS = {
     // One verb, Accept (D-72); the count in brackets
     name: 'Accept all recommended ({n})',
     compact: 'Accept all ({n})',
-    banned: [/^\s*Approve\s+\d*\s*$/, /\bApprove all\b/i, /\bApprove \d+ (staff )?picks?\b/i],
+    // QA3-S3-2: one verb (D-73), so no "if approved", "On Approve" or "to approve" next to Accept
+    banned: [
+      /^\s*Approve\s+\d*\s*$/,
+      /\bApprove all\b/i,
+      /\bApprove \d+ (staff )?picks?\b/i,
+      /\bApprove\b/,
+      /\bif approved\b/i,
+      /\bOn Approve\b/i,
+      /\bto approve\b/i,
+      /\bwaits? for your approval\b/i,
+    ],
+  },
+  orderIdeas: {
+    id: 'orderIdeas',
+    // QA3-S3-2: the advisers' order ideas are not the Recommended group (they hold no count of
+    // their own next to "Review n recommended"); the proposals among them are counted as recommended
+    name: 'Orders to consider',
+    compact: 'Orders to consider ({n})',
+    definition: 'Orders your advisers think fit this month, with a line on why. Add any of them yourself; the ones marked Recommended are also in the Recommended list.',
+    banned: [/\badvis[eo]rs suggest\b/i, /\badvis[eo]rs'? suggestions\b/i],
   },
   inThisMonth: {
     id: 'inThisMonth',

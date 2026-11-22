@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { IconCheck, IconPlus } from '@tabler/icons-react';
 import { capitalLeft, committedActions, orderKey, queueOrder, useGameStore } from '../../store/gameStore';
-import { type AdvisorRowData as Row, useAdvisorRows, whyLine } from '../../lib/advisorRows';
+import { type AdvisorRowData as Row, orderIdeasNote, useAdvisorRows, whyLine } from '../../lib/advisorRows';
 import { pcCost } from '../../lib/actions';
 import { MAX_ORDERS } from '../../lib/budget';
 import { missionTag } from '../../lib/month';
@@ -12,11 +12,12 @@ import { useGoalHighlight } from '../../lib/goals';
 import { bigMove } from '../../lib/ease';
 import { orderFor } from '../../lib/orders';
 import { OrderCard } from '../orders/OrderCard';
+import { TERMS } from '../../lib/glossary';
 import { CoachBubble } from './Coach';
 import '../../styles/month.css';
 
 /**
- * "Your advisors suggest" (design-month.md 3.5): the top suggestions with why this and why now.
+ * "Orders to consider" (design-month.md 3.5; it said "Your advisors suggest" until QA3-S3-2): the top suggestions with why this and why now.
  * Each suggestion is the shared OrderCard (row), so the desk, the full desk's suggestions and the
  * map's command strip show the same card with the same states and words as the map menu and the
  * catalog (F-02-5: Sam saw "Added" here and "Add to this month" on the map). Staff proposals show
@@ -209,11 +210,13 @@ export function AdvisorList({ compact = false, max = 3 }: { compact?: boolean; m
   if (!rows.length) return null;
   const shown = all ? rows : rows.slice(0, max);
   return (
-    <section className={`advisors${compact ? ' compact' : ''}`} aria-label="Your advisors suggest" data-point="advisors">
+    <section className={`advisors${compact ? ' compact' : ''}`} aria-label={TERMS.orderIdeas.name} data-point="advisors">
       {!compact && (
         <h3 className="block-head">
-          Your advisors suggest
-          <span className="num">{rows.length > max && !all ? `${max} of ${rows.length}` : ''}</span>
+          <span>
+            {TERMS.orderIdeas.name} <span className="num">({rows.length})</span>
+          </span>
+          <span className="num">{orderIdeasNote(rows, rows.length > max && !all ? max : rows.length)}</span>
         </h3>
       )}
       {!compact && <CoachBubble step="advisors" place="above" />}

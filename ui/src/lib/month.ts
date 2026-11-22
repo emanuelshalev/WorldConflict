@@ -245,9 +245,9 @@ export type SelectionKind = 'cabinet' | 'approved' | 'yours' | 'waiting' | 'depu
 export interface Selection {
   kind: SelectionKind;
   option?: DecisionOption;
-  /** "Cabinet pick: Back channel via Muscat" */
+  /** "Recommended: Back channel via Muscat" (D-72) */
   text: string;
-  /** "Cabinet pick" (rows and tags where the option name does not fit) */
+  /** "Recommended" (rows and tags where the option name does not fit) */
   word: string;
 }
 
@@ -255,7 +255,7 @@ export interface Selection {
 export function crisisSelection(d: PendingDecision, choices: Record<string, string>, reviewed: Record<string, true>): Selection {
   const cab = cabinetPick(d);
   const chosen = d.options.find((o) => o.id === choices[d.id]) ?? cab;
-  if (!reviewed[d.id]) return { kind: 'cabinet', option: chosen, text: `Cabinet pick: ${chosen.label}`, word: 'Cabinet pick' };
+  if (!reviewed[d.id]) return { kind: 'cabinet', option: chosen, text: `Recommended: ${chosen.label}`, word: 'Recommended' };
   if (chosen.id === cab.id) return { kind: 'approved', option: chosen, text: `Accepted: ${chosen.label}`, word: 'Accepted' };
   return { kind: 'yours', option: chosen, text: `Your pick: ${chosen.label}`, word: 'Your pick' };
 }
@@ -367,15 +367,15 @@ export function planSummary(state: GameState = useGameStore.getState()): PlanLin
   const approved = crises.filter((c) => c.kind === 'approved').length;
   const cabinet = crises.filter((c) => c.kind === 'cabinet').length;
   if (yours) parts.push(`your pick on ${n(yours, 'crisis', 'crises')}`);
-  if (approved) parts.push(`${n(approved, 'cabinet pick')} accepted`);
-  if (cabinet) parts.push(`cabinet pick on ${n(cabinet, 'crisis', 'crises')}`);
+  if (approved) parts.push(`${n(approved, 'recommended answer')} accepted`);
+  if (cabinet) parts.push(`recommended answer on ${n(cabinet, 'crisis', 'crises')}`);
   const committed = committedActions(state.pendingActions);
   const staff = committed.filter((a) => a.origin === 'staff').length;
   const mine = committed.length - staff;
   const waiting = state.pendingActions.length - committed.length;
   if (mine) parts.push(n(mine, 'order of yours', 'orders of yours'));
-  if (staff) parts.push(n(staff, 'staff order'));
-  if (waiting) parts.push(`${n(waiting, 'staff proposal')} not accepted (${waiting === 1 ? 'it will not run' : 'they will not run'})`);
+  if (staff) parts.push(`${n(staff, 'recommended order')} accepted`);
+  if (waiting) parts.push(`${n(waiting, 'recommended order')} not accepted (${waiting === 1 ? 'it will not run' : 'they will not run'})`);
   const agenda = world?.agenda ?? [];
   const attend = agenda.filter((m) => state.decisionChoices[m.id] && state.decisionChoices[m.id] !== m.defaultOptionId).length;
   if (attend) parts.push(`you attend ${n(attend, 'meeting')}`);

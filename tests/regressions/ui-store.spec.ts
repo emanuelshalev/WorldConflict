@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
  * - B-08 / QA repro #2 (Leo): the "Not enough political capital" toast never cleared and a stale
  *   message outlived the next attempt. The toast now clears itself after 6 s and collapses repeats.
  * - QA repro #7: after approving the staff pick the badge read "Your call", which reads like
- *   "still up to you". A crisis is always named Cabinet pick, Accepted or Your pick (one verb, D-72).
+ *   "still up to you". A crisis is always named Recommended, Accepted or Your pick (one verb, D-72).
  */
 
 beforeEach(() => {
@@ -48,7 +48,7 @@ describe("B-08: the toast never outlives its moment", () => {
 });
 
 describe("QA repro #7: a crisis is never labelled 'Your call'", () => {
-  it("names the selection Cabinet pick, Accepted or Your pick", async () => {
+  it("names the selection Recommended, Accepted or Your pick", async () => {
     const { useGameStore } = await import("../../ui/src/store/gameStore.js");
     const { crisisSelection } = await import("../../ui/src/lib/month.js");
     const opt = (id: string, label: string) => ({ id, label, description: "", effects: {}, tensionDelta: 0, actions: [], backedBy: [] });
@@ -70,7 +70,7 @@ describe("QA repro #7: a crisis is never labelled 'Your call'", () => {
       crisisSelection(d, { d1: "abstain" }, { d1: true }),
       crisisSelection(d, { d1: "join" }, { d1: true }),
     ];
-    expect(cases.map((c) => c.text)).toEqual(["Cabinet pick: Abstain", "Accepted: Abstain", "Your pick: Join the sanctions"]);
+    expect(cases.map((c) => c.text)).toEqual(["Recommended: Abstain", "Accepted: Abstain", "Your pick: Join the sanctions"]);
     for (const c of cases) expect(`${c.text} ${c.word}`).not.toMatch(/your call/i);
   });
 });

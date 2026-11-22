@@ -271,7 +271,7 @@ export function DecisionStage({ item, primary = false, onlyLede = false }: { ite
         <SelectionBadge sel={sel} />
         {!meeting && sel.kind === 'cabinet' && cab && (
           <button type="button" className="wc-btn ghost small move-approve" onClick={() => choose(item.id, choices[item.id] ?? cab.id)}>
-            <IconCheck size={14} aria-hidden /> Accept cabinet pick
+            <IconCheck size={14} aria-hidden /> Accept recommended
           </button>
         )}
         {meeting && sel.kind === 'waiting' && cab && !full && (
@@ -327,11 +327,11 @@ export function DecisionStage({ item, primary = false, onlyLede = false }: { ite
   );
 }
 
-/** The tag words for the mission pick: alone, and when it is also the cabinet's pick. */
+/** The tag words for the mission pick: alone, and when it is also the recommended answer. */
 function bestTagText(note: MissionNote): { best: string; both: string } {
   return {
     best: note.text,
-    both: note.kind === 'best' ? 'Cabinet pick · good for your mission' : `Cabinet pick · ${note.text.charAt(0).toLowerCase()}${note.text.slice(1)}`,
+    both: note.kind === 'best' ? 'Recommended · good for your mission' : `Recommended · ${note.text.charAt(0).toLowerCase()}${note.text.slice(1)}`,
   };
 }
 

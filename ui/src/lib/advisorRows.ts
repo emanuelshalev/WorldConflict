@@ -46,3 +46,16 @@ export function useAdvisorRows(): AdvisorRowData[] {
   }, [actions, suggestions]);
 }
 
+
+/**
+ * The heading's side note: how many are shown and how many of them are recommended (the staff
+ * proposals, which the Recommended list counts as orders), so the two counts never disagree on
+ * screen (QA3-S3-2: "Your advisors suggest 5" sat next to "Review 6 recommended").
+ */
+export function orderIdeasNote(rows: readonly Pick<AdvisorRowData, 'action'>[], shown = rows.length): string {
+  const rec = rows.filter((r) => r.action.proposed).length;
+  const parts: string[] = [];
+  if (shown < rows.length) parts.push(`${shown} shown`);
+  if (rec) parts.push(`${rec} of them recommended`);
+  return parts.join(' · ');
+}
