@@ -269,6 +269,12 @@
 .ord-act.act-unaffordable { border-color: var(--ord-amber); color: var(--accent); }
 .ord-act.act-invalid { border-style: dashed; color: var(--text-2); }
 .ord-row.st-invalid > .wc-card { border-left-style: dashed; }
+/* "Approve order" is wider than the other row actions: keep the text clear of it (QA S2-1) */
+.ord-row.is-proposal > .wc-card .wc-card-body { padding-right: 150px; }
+@media (max-width: 480px) {
+  .ord-row.is-proposal > .wc-card .wc-card-body { padding-right: 12px; padding-bottom: 64px; }
+  .ord-row.is-proposal > .ord-act { top: auto; bottom: 10px; }
+}
 
 /* ---------- Slot: the rail tray ---------- */
 .ord-slot > .wc-card { padding-right: 52px; }
