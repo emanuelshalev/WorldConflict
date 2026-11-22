@@ -1,0 +1,67 @@
+{
+ "persona": "sam",
+ "variant": "sam-desktop",
+ "icons": {
+  "1": "riot police / crackdown on protests",
+  "2": "send tanks in / invade",
+  "3": "surveillance or target someone (guess)",
+  "4": "offer peace / ceasefire",
+  "5": "sanctions / embargo",
+  "6": "make a deal / treaty",
+  "7": "airstrike",
+  "8": "grow the economy / development",
+  "9": "mobilize more troops",
+  "10": "wreck their economy / bank collapse (guess)",
+  "11": "boost defense",
+  "12": "fund the nuclear program",
+  "13": "talk to the police chief or military brass (guess)",
+  "14": "buy weapons",
+  "15": "propaganda / disinformation",
+  "16": "claim territory / plant the flag (guess)",
+  "17": "send a spy",
+  "18": "pull troops back",
+  "19": "change the leader / election (guess)",
+  "20": "declare war",
+  "21": "sabotage / bomb something",
+  "22": "public denunciation",
+  "23": "strike their nuclear program",
+  "24": "bug the room / wiretap (guess)",
+  "25": "cut troops / demobilize",
+  "26": "back rebels / stir up a revolt (guess)",
+  "27": "break a treaty or alliance (guess)",
+  "28": "nuclear strike"
+ },
+ "agenda": {
+  "answers": {
+   "T1": "To-do: go through eight items in order, crisis first, then calls and meetings, then orders. Press first on the highlighted current item, the Xi Jinping call. (Seen B first, the top strip of numbered chips reads fine as a stepper.)",
+   "T2": "Eight things, two done. The CNN interview is skipped and a deputy answers with the default line. If I press Execute now, deputies take 3 meetings and 2 staff proposals do not run. I had to read the small print under the button to get that.",
+   "T3": "Orange one is my own answer, I take the call. Middle one is accept what the staff recommends. Dashed one sends a deputy with the default answer, free. Skipping means the deputy handles it and the other side notices I was not there.",
+   "T4": "Court India is not run, the capital stays in the bank, and there is an Undo button right in the banner. I would look at the Skipped list in the right column.",
+   "T5": "3 of 8 handled, current item is PM Takaichi visits. Green button approves 3 staff picks for 2 capital: Takaichi visit, Court India, Intel on China. It is a lot crammed in the bottom bar.",
+   "T6": "Pressable: Execute month, Approve, Guided/Full desk switch, Back/Next, the radio choice cards. Not pressable: status dots, Staff picks heading, budget tiles. Unsure: the Staff pick tag inside the choice card, the three big handle boxes look like cards but only some are buttons, the left list rows vs the 'Open the full desk' link, and the Skipped dashed cards.",
+   "T7": "B is cleaner and puts the stepper where my eye starts, but cuts off 'Your own moves' at the right edge and the strip needs horizontal scrolling. A has more chrome but is complete and readable. As an expert I would use Guided for crises and switch to Full desk for orders; it slows me when I want to compare orders across countries."
+  },
+  "preferred": "B",
+  "points": {
+   "A": 40,
+   "B": 60
+  },
+  "would_turn_off": [
+   "Top stepper in B is clipped on the right ('Your own move' cut off) which looks unfinished",
+   "Fake portrait placeholder and flat red/grey bars in the call hero look like a wireframe, not art direction",
+   "Three-choice box repeats the same words as the cards above (Hold firm, Offer a quiet pause), confusing which is the choice",
+   "Right column Staff picks text-heavy, 'Approve' buttons on every row look like dashboard rows",
+   "Execute month remains tappable with 6 items unhandled, only a grey sentence warns",
+   "Budgets tile cut off by the Execute panel in A skip screen"
+  ],
+  "clickable_confusions": [
+   "Staff pick (Secretary of State) tag in choice card: label or button?",
+   "Three handle boxes: Staff pick box looks as pressable as Skip but Skip is dashed",
+   "Left list rows in A with chevrons vs the static section headings Crisis/Meetings/Orders",
+   "Underlined 'Open the full desk: everything at once' vs 'What does Skip do' link",
+   "Skipped dashed cards: static or button, only Undo is a link",
+   "Bottom bar on the map: 'Agenda 3 of 8' pill with caret vs See them link vs Desk button"
+  ],
+  "verbatim": "B is closer to a game HUD, the numbered chips feel like a quest tracker, I like that. But the right edge clips and the hero art is a grey placeholder person, which is the generic AI-dashboard look I distrust. Words are mostly consistent (staff pick, deputy, handled) but 'Needs you', 'Your pick', 'Staff pick', 'Optional' are four status vocabularies. 'Go through these' is a weak heading. Skip meaning was clear once I read it; Undo in the banner is good. Map bottom bar is overloaded. Nothing animates in a static mock so I cannot judge feel; I would want a sound and motion on each approve."
+ }
+}

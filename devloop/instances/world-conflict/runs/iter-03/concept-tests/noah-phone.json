@@ -1,0 +1,13 @@
+{"persona":"noah","variant":"noah-phone",
+"icons":{"1":"riot police, crack down on protests (guess)","2":"send tanks forward, attack","3":"target someone, assassinate (guess)","4":"peace","5":"ban something, sanctions (guess)","6":"make a deal","7":"airstrike","8":"grow the economy (guess)","9":"more troops","10":"crash a bank or economy (guess)","11":"defense","12":"buy nukes (guess)","13":"talk to the police or army (guess)","14":"buy weapons","15":"fake news, propaganda (guess)","16":"claim land (guess)","17":"spy","18":"retreat","19":"new leader, election (guess)","20":"declare war","21":"bomb, sabotage","22":"make a speech","23":"hit nuclear sites (guess)","24":"no idea","25":"pull troops out","26":"protest, back the rebels (guess)","27":"break up a deal, cut ties (guess)","28":"nuke"},
+"agenda":{"answers":{
+"T1":"Talk to Xi, there are 8 things. I press the big orange Execute thing I guess. Or Next.",
+"T2":"8 things, 2 done. CNN interview, no idea what that is, not on screen. Execute: it skips the stuff I did not touch? Some guy goes for me, the rest does not happen (guess).",
+"T3":"Orange one is my answer, the middle one is what the advisor says, the dashed one sends a deputy so I do not have to. Skip the call: deputy goes and it is free, Xi gets mad.",
+"T4":"Court India got skipped, did not run, I keep my diamond. Undo button, so yes. Later: the Skipped thing in the plan bar probably.",
+"T5":"3 of 8 done, PM Takaichi is next. Green button, approves what the advisor picked, I guess. Too much text on the map.",
+"T6":"Can press: Execute, Next, the cards, Map/Desk, Undo. Cannot: the top bar numbers, the picture, the labels. Not sure about the progress bars and the SS circle."},
+"preferred":"B","points":{"A":45,"B":55},
+"would_turn_off":["Item 2 of 8 with a list to go through feels like homework","Three-choice box with a lot of small gray text under it","Skip explainer table with four kinds of items","Concept note and small text blocks on the map screen"],
+"clickable_confusions":["segmented progress bars under the item header (tap or not?)","SS circle next to the advisor line","'2 of 8 handled, tap for the list' card, looks like a header","the dashed Send a deputy box looks less pressable than the other two","the 'Your plan' bar vs Execute, which one finishes the month"],
+"verbatim":"B-first. Honestly A and B look the same to me. It is a list of stuff and I just want to hit the orange button. Hold firm is a cool move, I like picking the big answer. Words I do not get: deputy, staff pick, handled, attend, hotline, Secretary of State maybe. Too much to read, I would tap Execute and see what happens."}}

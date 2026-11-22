@@ -1,0 +1,62 @@
+{
+ "persona": "dan",
+ "variant": "dan-term",
+ "icons": {
+  "1": "riot police / domestic crackdown (guess)",
+  "2": "advance troops, offensive",
+  "3": "target a leader / assassination (guess)",
+  "4": "offer peace, ceasefire",
+  "5": "embargo / sanctions",
+  "6": "trade deal or treaty",
+  "7": "airstrike",
+  "8": "economic reform / development",
+  "9": "mobilize troops, raise army",
+  "10": "topple a government, coup (guess)",
+  "11": "defense pact or raise defense (guess)",
+  "12": "fund nuclear program",
+  "13": "no idea (police with a speech bubble, military talks? guess)",
+  "14": "buy arms / military spending",
+  "15": "propaganda / disinformation",
+  "16": "claim territory, plant the flag (guess)",
+  "17": "spy / intel operation",
+  "18": "withdraw troops",
+  "19": "regime change or hold election (guess)",
+  "20": "declare war",
+  "21": "sabotage (guess)",
+  "22": "public denunciation / statement",
+  "23": "strike nuclear facilities",
+  "24": "no idea (guess: farming or planting a bug)",
+  "25": "demobilize / cut troops",
+  "26": "arm rebels / back insurgents (guess)",
+  "27": "break a treaty or alliance (guess)",
+  "28": "nuclear strike"
+ },
+ "agenda": {
+  "answers": {
+   "T1": "To-do: 1) PLA warships crisis, 2) staff proposal on Address the nation; two things, go through in order, each ends in decide, accept staff pick, or skip. Press first on the crisis card, one of the three answers (Joint patrol with Japan looks like the pick).",
+   "T2": "8 items, 2 handled (2 of 8, bar shows it). The CNN interview was skipped so a deputy answers with the default line. If I hit Execute now: 6 items not handled, deputies take 3 meetings, the 2 proposals (Court India, Intel on China) do not run. Clear.",
+   "T3": "Your answer: I take the call and pick the line myself, I attend (limited attendance, 1 of 3). Staff pick: I attend with the staff's answer. Skip: send a deputy, default answer, free, but Xi notices I was not there. To not bother: Skip, deputy goes with default, costs nothing, with a diplomatic penalty. Wish I could see what the default answer is before skipping.",
+   "T4": "Court India will not run this month and the 1 capital stays banked. Yes, Undo button is right there. Later look at Skipped in the right column. Good.",
+   "T5": "3 of 8 handled, current item is PM Takaichi visits, shown in the drawer. Green button approves the 3 waiting staff picks (Takaichi visit, Court India, Intel on China) for 2 capital total. Slightly unsure if it approves meeting picks as well as orders.",
+   "T6": "Can press: Execute month, Approve, Skip, item cards in the left list, choice cards, links, Guided/Full desk switch. Cannot: stat panels, status dots, headings, scene art. Unsure: the Staff picks heading box, the HUD capital figure, the budget tiles, the concept-note box on the map, and the Skipped items (is Undo the only click target or the card too)."
+  },
+  "preferred": "A",
+  "points": {
+   "A": 58,
+   "B": 42
+  },
+  "would_turn_off": [
+   "Guided forcing me through items one at a time once I know the game; I would switch to Full desk by month 4",
+   "Approve all of staff picks tempting me to rubber-stamp without seeing numbers",
+   "Skip copy that hides what the default deputy answer actually is and its cost"
+  ],
+  "clickable_confusions": [
+   "Staff picks box header looks like a card",
+   "Budget tiles in right column",
+   "HUD capital stat",
+   "Skipped cards: whole card or only Undo",
+   "Green Approve staff picks button scope on map (orders only or meetings too)"
+  ],
+  "verbatim": "A is better for reading each item with its effects, the left list shows state and is a clear queue. B's top strip is compact and gets me more room for the decision, and I can jump anywhere, but it clips at the right ('Your own moves' cut off) and gives less status text. Guided is fine for the first months; for a long campaign I would go Full desk, since stepping through 8 items every month slows me down. Good that costs and effects are shown per choice. I want to see why numbers move: tension and relations arrows are shown but not by how much on most cards. Skipping a meeting having a hidden penalty ('Xi notices') worries me; show the rule."
+ }
+}
