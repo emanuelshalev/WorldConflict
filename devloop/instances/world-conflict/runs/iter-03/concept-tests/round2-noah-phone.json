@@ -1,0 +1,17 @@
+{"persona":"noah","variant":"noah-phone",
+"icons":{"1":"defense deal with someone (guess)","2":"send tanks to attack (guess)","3":"blow stuff up, sabotage (guess)","4":"talk to my general (guess)","5":"peace","6":"nuke plane bomb (guess)","7":"fake news, trolling (guess)","8":"make a deal","9":"cut army, send troops home (guess)","10":"spy","11":"grow the economy, build factory (guess)","12":"break something, split up (guess)","13":"pull tanks back","14":"send navy / ship (guess)","15":"no idea","16":"declare war","17":"pay for nukes (guess)","18":"kill the leader (guess)","19":"give a speech, shout at them","20":"buy weapons","21":"spy on them (guess)","22":"go on TV (guess)","23":"stop the war, pause","24":"airstrike","25":"protest or riot (guess)","26":"more troops (guess)","27":"nuke","28":"coup or terrorist (guess)"},
+"agenda":{"answers":{
+"R1":"To-do: pick what to do about the warships, then next thing. Press Choose on Joint patrol (the starred one). Pass.",
+"R2":"6 things, 1 done. Execute: my choices happen, I think the other stuff just goes by itself. Does not really read that proposed orders do not run. Partial pass.",
+"R3":"Tap Hold firm (keeps Strait open, my goal). Skip: someone else answers, no cost, a bit worse with China. Did not read the small line at first, saw it cut off by the bar. Pass but barely.",
+"R4":"Xi call got handled by the minister, China -3, I can Undo. It asks me about boring meetings; I would tap Let your ministers take both. Pass.",
+"R5":"Tap List, then the number 5 row. Pass.",
+"R6":"It plays my choices and the world moves. To undo tap Change or Undo on the row. Did not get the diamond carry over math.",
+"R7":"Answer Xi on the card. Middle button is Execute month, I would just press it. I would not guess it opens recommendations; it looks like a go button. Fail on that.",
+"R8":"Can press: Choose, Skip this call, List, Next, Execute. Cannot: the goal text, headings, the 1 of 6 counter. Unsure: the star Recommended box, the map, the numbers in the list (circles).",
+"R9":"n/a, not an expert.",
+"R10":"Recommended, routine meetings, political capital/diamond, Execute month is clear. Tension, relations and Strait fine. Secretary of State vs Defense Secretary confusing."},
+"would_turn_off":["The goal box in month 1 is a block of text at the top","Too many steps before Execute: 6 things is a lot for a quick session","The Execute button on map sits in the middle of the content and looks like it covers cards","Diamond costs and carry-over math feel like homework","Small gray lines under Skip are cut off and unread"],
+"clickable_confusions":["Recommended star box looks like a label, but it is an option","Numbered circles in List: buttons or just status","Map itself: tappable or not","Routine meetings Open vs Choose","Execute bar in map mode hides cards while scrolling"],
+"wording":{"Recommended vs Staff picks":"Recommended reads clearer: staff picks sounds like an office thing, recommended is like a game hint. Even clearer would be just a star and the minister's face."},
+"verbatim":"ok so answer the Taiwan thing, choose joint patrol, next. Wait why is there so many things. Execute is the big orange one, got it. Skip is fine I guess. The map one just looks like a go button, I'd smash it. Pretty clear overall but too much reading under each option."}}
