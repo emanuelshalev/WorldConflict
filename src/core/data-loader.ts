@@ -622,7 +622,10 @@ export class DataLoader {
       style: scenarioLeader?.style ?? "PRAGMATIC",
       origin: scenarioLeader?.origin ?? "ELECTED",
       sinceTurn: 0,
-      sinceDate: `${scenario.startYear}-01`,
+      // The era file's real start date ("President since 2019"), unless the player named a new leader
+      sinceDate:
+        (isPlayer && playerLeaderName ? undefined : scenarioLeader?.sinceDate) ??
+        `${scenario.startYear}-01`,
     } as const;
 
     const nuclearStatus =
