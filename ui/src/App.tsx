@@ -19,6 +19,7 @@ import { EndScreen } from './components/EndScreen'
 import { useGameStore, usePlayerCountry } from './store/gameStore'
 import { GoalLine } from './components/desk/GoalLine'
 import { ScoreWhySheet } from './components/ScoreWhy'
+import { MomentGallery } from './components/MomentGallery'
 import { useScoreWhy } from './lib/scoreWhy'
 
 function Ticker() {
@@ -156,6 +157,7 @@ function App() {
   const gameOver = useGameStore((s) => s.gameOver)
   const showLogin = useGameStore((s) => s.showLogin)
   const isLoading = useGameStore((s) => s.isLoading)
+  if (window.location.hash === '#moments') return <MomentGallery />
 
   return (
     <>

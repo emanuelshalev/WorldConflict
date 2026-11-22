@@ -61,7 +61,7 @@ function AdvisorRow({ r, compact }: { r: Row; compact?: boolean }) {
         {INITIALS[r.who] ?? r.who.slice(0, 2).toUpperCase()}
       </span>
       <div className="adv-body">
-        {queuedBy === 'staff' && <span className="adv-kicker">Added by staff</span>}
+        {queuedBy === 'staff' && !compact && <span className="adv-kicker">Added by staff</span>}
         <b className="adv-label">{r.label}</b>
         {!compact && (
           <p className="adv-why">

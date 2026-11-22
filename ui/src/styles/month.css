@@ -262,3 +262,9 @@
   .bg-now { grid-column: 2; white-space: normal; }
   .briefing-hook { font-size: 17px; }
 }
+
+.advisors.compact .adv-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; max-width: 100%; }
+.advisors.compact .adv-body { justify-items: stretch; }
+.advisors.compact .adv-added-word { min-height: 32px; padding: 2px 8px; font-size: 13px; }
+.advisors.compact .adv-added { grid-auto-flow: column; align-items: center; gap: 8px; }
+.adv-add.is-off { max-width: 210px; }

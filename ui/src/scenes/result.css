@@ -73,3 +73,6 @@
 .db-kicker { font-size: 13px; }
 .db-lines, .db-dense { font-size: 14px; }
 .db-hint { font-size: 13px; }
+
+/* The month debrief overlay shares its class name with the end screen's debrief paragraph (wc.css) */
+.debrief[role='dialog'] { font-family: var(--font-ui); font-size: 15px; line-height: 1.4; color: var(--text-1); border-left: 0; padding-left: 0; }

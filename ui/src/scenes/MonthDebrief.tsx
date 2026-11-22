@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { IconArrowRight, IconChevronRight, IconLayoutList, IconLayoutGrid, IconNews } from '@tabler/icons-react';
-import type { TurnReport, WorldState } from '../store/gameStore';
+import type { ReportFact, TurnReport, WorldState } from '../store/gameStore';
 import { countryName } from '../store/gameStore';
 import { buildPages, type DebriefPage, type OutcomeCardData } from '../lib/debrief';
 import { monthLabel } from '../lib/format';
@@ -67,7 +67,12 @@ function DenseTable({ pages }: { pages: DebriefPage[] }) {
  * security), several outcomes per page, then the paper. Keys: 1-4, arrows, Enter, Esc.
  */
 export function MonthDebrief({ report, world, home, onDone, onNext, onBack, initialPage = 0, nextLabel = 'Next month' }: { report: TurnReport; world: WorldState; home: string; onDone: () => void; onNext?: () => void; onBack?: () => void; initialPage?: number; nextLabel?: string }) {
-  const pages = useMemo(() => buildPages(report, world), [report, world]);
+  // One tension number everywhere (B-11): the month's start and the world's tension now, rounded
+  const pages = useMemo(() => {
+    const now = Math.round(world.globalTension);
+    const fix = (f: ReportFact) => (/tension/i.test(f.label) && report.tension ? { ...f, before: report.tension.before, after: now } : f);
+    return buildPages(report, world).map((p) => ({ ...p, cards: p.cards.map((c) => ({ ...c, facts: c.facts.map(fix) })) }));
+  }, [report, world]);
   const [at, setAt] = useState(() => Math.max(0, Math.min(initialPage, pages.length - 1)));
   const [dense, setDense] = useState(readDense);
   const touched = useRef(dense);
@@ -105,7 +110,7 @@ export function MonthDebrief({ report, world, home, onDone, onNext, onBack, init
   if (!page) return null;
   const deltas = report.deltas;
   const stat = (k: string, label: string, i: number, suffix = '%') =>
-    deltas[k] ? <StatCount key={k} label={label} before={deltas[k].before} after={deltas[k].after} i={i} suffix={suffix} /> : null;
+    deltas[k] ? <StatCount key={k} label={label} before={Math.round(deltas[k].before)} after={Math.round(deltas[k].after)} i={i} suffix={suffix} /> : null;
   const [first, ...rest] = page?.cards ?? [];
   return (
     <div className="debrief" role="dialog" aria-modal="true" aria-label={`${monthLabel(world.date)}: what happened`}>

@@ -287,5 +287,5 @@ export function DecisionStage({ item, primary = false, onlyLede = false }: { ite
 
 /** The month's primary decision, or a quiet month's top advisor move. */
 export function YourMove({ item }: { item: PendingDecision | Meeting }) {
-  return <DecisionStage item={item} primary />;
+  return <DecisionStage item={item} primary onlyLede />;
 }

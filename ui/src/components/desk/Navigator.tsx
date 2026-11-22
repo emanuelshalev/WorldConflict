@@ -103,7 +103,11 @@ export function Navigator({ tabs = false }: { tabs?: boolean }) {
           `${d.title}: ${sel.text}`,
         );
       })}
-      {head(<span>{TERMS.meetings.name} <span className="num">{term('{n} of {m}', attending, 3)}</span></span>)}
+      {head(
+        <>
+          {TERMS.meetings.name} <span className="num">{term('{n} of {m}', attending, 3)}</span>
+        </>,
+      )}
       {agenda.map((m) => {
         const Icon = KIND_ICON[m.kind];
         const sel = meetingSelection(m, choices, reviewed);
@@ -125,7 +129,11 @@ export function Navigator({ tabs = false }: { tabs?: boolean }) {
           `${m.speaker}, ${KIND_WORD[m.kind]}: ${sel.text}`,
         );
       })}
-      {head(<span>{TERMS.orders.name} <span className="num">{term('{n} of {m}', actions.length, 6)}</span></span>)}
+      {head(
+        <>
+          {TERMS.orders.name} <span className="num">{term('{n} of {m}', actions.length, 6)}</span>
+        </>,
+      )}
       {row(
         { kind: 'suggestions' },
         <>
