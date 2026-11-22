@@ -1,0 +1,46 @@
+{
+"persona":"olivia","variant":"olivia-laptop","panel_version":"1.2","build":"5ef3ead","iteration":2,"minutes_played":22,
+"scenarios":[
+{"id":"O1","outcome":"achieved","turns":12,"steps":["Title: used the previous arrow to find Ceasefire or Collapse, took office as Ukraine","Chose Guide me, closed the auto-opened briefing","Picked Accept in principle, saw YOUR PICK stamp, Execute","Then used Approve staff picks + Execute + Next month for 11 months"],"notes":"First satisfying result came about 2 minutes in (stamp plus debrief card), but the briefing panel and dense HUD came before it."},
+{"id":"O2","outcome":"achieved","turns":12,"steps":["Played Ukraine toward A peace that holds","Month 12: The war with Russia is over, Mission Complete grade B"],"notes":"I did not really choose most months; the staff did. The peace happened but I did not feel I made it happen."}
+],
+"friction":[
+{"where":"Title globe, picking a crisis","expected":"tap the Ukraine pin","happened":"globe keeps drifting, taps on pins missed twice; ended up using the small previous arrow","kind":"retry","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/olivia-laptop/005-pick4.png"},
+{"where":"Title globe default","expected":"a clear pick","happened":"default is Hormuz Convoy (Iran, uranium, strait) which means nothing to me","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/olivia-laptop/001-title.png"},
+{"where":"Familiarity screen","expected":"quick start","happened":"extra screen before first month; I picked Guide me, which then opened a long briefing panel with Who is who, Why it matters, What really happened","kind":"dashboard-feel","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/olivia-laptop/009-m1.png"},
+{"where":"Mission panel and HUD","expected":"simple","happened":"Kramatorsk, Donetsk oblast, semi presidential, coalition of the willing, Rada, Pokrovsk axis, Legitimacy, Enerhodar, IAEA, Mission goals with numbers like UK relations 87 needs 93; none understood without the i","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/olivia-laptop/008-start.png"},
+{"where":"Desk top bar","expected":"few things","happened":"about 10 numbers and icons at the top plus a right rail of seals, orders, meetings, budgets; looks like work software","kind":"dashboard-feel","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/olivia-laptop/014-m2.png"},
+{"where":"Month 1 debrief","expected":"Approval -10 shown as bad","happened":"BACKFIRED label but the -10 is in green; unclear if good or bad","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/olivia-laptop/013-m1e.png"},
+{"where":"Staff picks","expected":"I choose","happened":"Approve staff picks made choices for me, such as Burn their refineries, which I never saw; mission bar dropped 60 to 51 under a step forward label","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/olivia-laptop/019-r2.png"},
+{"where":"Next month after the newspaper","expected":"one tap per month","happened":"sometimes a Chronicle newspaper page with a different Next month button appeared, needing extra taps","kind":"backtrack","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/olivia-laptop/029-r7.png"},
+{"where":"End screen ranking","expected":"celebration","happened":"Mission Complete and grade B, then Better than 9% of simulated competent leaders; felt like a put-down","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/olivia-laptop/055-t4.png"},
+{"where":"Verdict and numbers","expected":"plain","happened":"Score 85 shown with red -15, par 102, Presidency score ladder, Statesman; confusing next to Mission Complete","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/olivia-laptop/053-t2.png"},
+{"where":"The truth screen","expected":"short","happened":"a table of real-world text, nuclear program 100%, 1338k; I would skip it","kind":"dashboard-feel","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/olivia-laptop/054-t3.png"},
+{"where":"Ranking, Share result","expected":"a share sheet","happened":"tapped Share result, nothing visible happened except scroll","kind":"hesitation","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/olivia-laptop/056-sh.png"}
+],
+"bugs":[
+{"title":"Share result gives no visible feedback","steps":["Finish game","Ranking","Click Share result"],"expected":"share sheet or copied toast","actual":"page scrolled only","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/olivia-laptop/056-sh.png"},
+{"title":"Backfired impact number shown in green","steps":["Month 1 accept in principle","See debrief"],"expected":"red for a negative approval change","actual":"-10 Approval in green under BACKFIRED","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/olivia-laptop/013-m1e.png"},
+{"title":"Presidency score counts from 0 slowly","steps":["See your verdict"],"expected":"value visible fast","actual":"0 / 1000 and 1 of 3 stars empty for several seconds","severity":"S4","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/olivia-laptop/044-e2.png"}
+],
+"suggestions":[
+{"what":"Open the globe on a friendly default and stop drifting when I hover a pin","goal_served":"O1"},
+{"what":"Skip the familiarity screen and the auto briefing; one small i is enough","goal_served":"O1"},
+{"what":"Show 3 numbers at the top, hide the rest until I tap","goal_served":"O1"},
+{"what":"Tell me what Approve staff picks chose before the month runs","goal_served":"O2"},
+{"what":"End screen: lead with Mission Complete and stars, drop the percentile","goal_served":"O2"}
+],
+"delight":["YOUR PICK stamp on a card, devloop/instances/world-conflict/runs/iter-02/shots/olivia-laptop/012-m1d.png","Debrief card with a big number and illustration, devloop/instances/world-conflict/runs/iter-02/shots/olivia-laptop/019-r2.png","The war with Russia is over scene, devloop/instances/world-conflict/runs/iter-02/shots/olivia-laptop/041-f1.png","Achievement badges and star count-up, devloop/instances/world-conflict/runs/iter-02/shots/olivia-laptop/045-e2b.png"],
+"scores":{
+"fun":{"value":6,"reason":"Cards, stamps and big numbers were nice; the reading load and staff autopilot kept it from being a toy."},
+"clarity":{"value":4,"reason":"Many unknown names, a busy HUD and cryptic goals."},
+"visual":{"value":8,"reason":"Illustrated cards, globe and badges look crafted."},
+"feels_like_a_game":{"value":6,"reason":"Stamps and debriefs feel like a game, the top bar and rails feel like work software."},
+"agency":{"value":5,"reason":"Never blocked, but staff picked for me and I could not see why mission numbers moved."},
+"realism":{"value":6,"reason":"Cannot judge; plausible."},
+"replay":{"value":4,"reason":"I won in one go and the rest felt like repeating buttons."},
+"recommend":{"value":5,"reason":"Pretty, but I would tell a friend it is a lot of reading."}
+},
+"quit_point":"About 90 seconds in, when the auto-opened briefing covered half the screen with Who is who and Why it matters before I had made a choice; I would have closed the tab if the cards behind it were not visible.",
+"verbatim":"It looks great, but who is Kramatorsk and why do I have 'Legitimacy'? I pressed Approve and Execute eleven times and then it said I had won. Nice. Then it told me I beat 9 percent of leaders. Rude."
+}

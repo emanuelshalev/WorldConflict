@@ -1,0 +1,43 @@
+{
+"persona":"ruth","variant":"ruth-tablet","panel_version":"1.2","build":"5ef3ead","iteration":2,"minutes_played":40,
+"scenarios":[
+{"id":"R1","outcome":"partial","turns":12,"steps":["Title: One Term, Ceasefire or Collapse card, Take office as United States (default big button; Lead Russia/Lead Ukraine sat below the fold)","Familiarity: Some help","Month 1 started on Sanctions on Iran, not Ukraine","Month 3 found All orders, Target dropdown, Ukraine, Mediate peace (15% chance)","Debrief said only 'Ukraine answered within the month: court United States'; never learned if talks moved","Played to month 12 of 48 with Approve staff picks and Execute"],"notes":"Ukraine talks never became the story; Iran, Afghanistan hostages, a general strike and Black Monday took the desk. Never saw what really happened next to my game."},
+{"id":"R2","outcome":"partial","turns":12,"steps":["Played at own pace, no timers","Interface mostly clear after month 1"],"notes":"Stopped at month 12 of 48, a full term not completed."}
+],
+"friction":[
+{"where":"Title, situation card on tablet","expected":"Choose my side next to the Take office button","happened":"Button said 'Take office as United States'; Lead Russia and Lead Ukraine were below the fold, needed scroll","kind":"hesitation","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/ruth-tablet/004-ukr2.png"},
+{"where":"Month 1 start","expected":"Begin with the Ukraine war I picked","happened":"Began with a Sanctions on Iran vote, then Afghanistan hostages; no link to my choice","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/ruth-tablet/007-m1.png"},
+{"where":"Debrief month 1","expected":"Result of my abstain vote","happened":"'Your forces gain ground against Iran, +5 Front (your side)' with no explanation why an abstention did that","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/ruth-tablet/010-exec1.png"},
+{"where":"Debrief mission line","expected":"Plain progress","happened":"'-100 to -100, needs -70' negative numbers on a mission bar unexplained","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/ruth-tablet/010-exec1.png"},
+{"where":"Desk top tabs","expected":"See all tabs","happened":"Tab strip cut off at the right edge, tabs scroll sideways","kind":"hesitation","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/ruth-tablet/016-full.png"},
+{"where":"Desk, staff orders","expected":"Only what I chose","happened":"Staff added 'Spy on Iran' and the paper said Trump 'ordered Spy on Iran' that I never picked","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/ruth-tablet/012-paper.png"},
+{"where":"All orders","expected":"Find Ukraine orders fast","happened":"Cards say 'Pick a country' with 0 capital; target dropdown only found by tapping a search box","kind":"hesitation","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/ruth-tablet/023-ao2.png"},
+{"where":"Debrief of Mediate peace for Ukraine","expected":"Did talks advance","happened":"'Ukraine answered within the month: court United States', no word on Russia or the war","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/ruth-tablet/028-e3b.png"},
+{"where":"Debrief","expected":"Month 1 outcome first","happened":"Hostage crisis result buried under 'Counter-intelligence sweep' as the lead","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/ruth-tablet/020-e2b.png"},
+{"where":"Briefing and crisis text","expected":"Terms explained","happened":"Counter-intelligence, Foreign interference, defence pacts, 'Front', 'TGT LOCK', 'CLASSIFIED' labels, 'political capital' used without a plain explanation; 'i 2 names' chips helped for names","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/ruth-tablet/009-picked.png"},
+{"where":"Afghanistan hostages, Mojtaba Khamenei, Lee Jae-myung, Burnham, Merz","expected":"Know who they are","happened":"Newer leaders (Burnham, Merz, Lee) appear in call tabs with no introduction; Mojtaba Khamenei was explained in the Who is who panel","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/ruth-tablet/008-brief.png"}
+],
+"bugs":[
+{"title":"Text-click on card titles reports ok false","steps":["act text 'Negotiate through'"],"expected":"Card selected","actual":"Driver returned ok false though view scrolled","severity":"S4","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/ruth-tablet/014-neg.png"},
+{"title":"Month 8 Execute seemed to show The World Chronicle without Next month flow","steps":["Cycle execute at month 7 to 8"],"expected":"Debrief modal","actual":"Paper opened directly in one cycle","severity":"S4","screenshot":"devloop/instances/world-conflict/runs/iter-02/shots/ruth-tablet/034-c8.png"}
+],
+"suggestions":[
+{"what":"Put the side choice (Lead Russia, Lead Ukraine, Lead US) above the Take office button, and begin the Term on the situation I picked","goal_served":"R1"},
+{"what":"After Mediate peace, say in a sentence what Russia and Ukraine did and whether talks moved; show real events beside my game ('what really happened')","goal_served":"R1"},
+{"what":"Show a one-line plain reason for each result ('you abstained, so Washington was free to...'), and avoid negative numbers on mission bars","goal_served":"R2"},
+{"what":"Explain Political capital and Front once, in words, on the first desk","goal_served":"R2"}
+],
+"delight":["Familiarity question and 'What is going on here?' briefing with Who is who and What really happened timeline (devloop/instances/world-conflict/runs/iter-02/shots/ruth-tablet/008-brief.png)","Plain reasons for unavailable orders, e.g. 'You are not at war with Ukraine.' (devloop/instances/world-conflict/runs/iter-02/shots/ruth-tablet/026-ua2.png)","The newspaper front page (devloop/instances/world-conflict/runs/iter-02/shots/ruth-tablet/012-paper.png)","Court Iran handshake scene and war-with-Iran-is-over stamp (devloop/instances/world-conflict/runs/iter-02/shots/ruth-tablet/033-c7.png)","Large legible text, no timers, tablet touch worked"],
+"scores":{
+"fun":{"value":6,"reason":"Absorbing in places, the paper and briefings; but my Ukraine goal got lost among other crises."},
+"clarity":{"value":6,"reason":"First screens and briefings clear; results and mission numbers sometimes puzzling."},
+"visual":{"value":8,"reason":"Handsome scenes, legible text on the tablet."},
+"feels_like_a_game":{"value":6,"reason":"Approve and Execute gets through months without much thought, which suits me but felt passive."},
+"agency":{"value":6,"reason":"Never blocked without a reason, but my choices rarely visibly changed Ukraine."},
+"realism":{"value":7,"reason":"Real leaders and timeline; but Iran war ending after I did little felt too easy."},
+"replay":{"value":5,"reason":"I would try again if Ukraine were front and centre."},
+"recommend":{"value":6,"reason":"I would mention it to a friend who follows the news, with a warning it needs patience."}
+},
+"quit_point":null,
+"verbatim":"I like the newspaper and the briefings, but I came to see whether I could end the Ukraine war and the game kept sending me to Iran and hostages. I could not tell if my talks did anything."
+}

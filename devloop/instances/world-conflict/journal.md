@@ -44,3 +44,7 @@ Newest entries at the bottom. Each entry names an area for improvement in our pr
 - **Observation.** A usage limit paused the work mid-round. Agents resumed with their context via messages, and the customer round restarted from its brief. **Change.** Keep briefs as files so any stage can restart cold.
 - **Observation.** After merging the full codex, the shared dev server still served the 15 seed entries (per-process cache), so the new "What is going on here?" briefings silently did not render in review. **Change.** Restart the shared dev servers after any data merge and before a customer round; check one API payload as part of the pre-panel checklist (B-21 tracks a dev-mode cache invalidation).
 - **Observation.** The CEO saw the status page stuck on "Plan" while three build packages had already merged: I updated the page at stage starts but not after each merge. **Change.** The status page (stage, now-box, iteration log) is regenerated after every merge, not only at stage boundaries.
+
+## 2026-11-23 · Iteration 2 · Customer round, wave 1
+
+- **Observation.** The concept test showed 6 of 9 customers rejecting an auto-opening briefing. I kept it on for the "Guide me" level as a segment exception (D-53), untested. In wave 1, the two personas who chose "Guide me" (Olivia, Noah) both hit it as their quit point, and their scores fell from 6 to 5, while Maya rose to 8. **Change.** A majority objection in a concept test is not overridden by a segment exception unless that exception is tested with the segment first; when in doubt, ship the opt-in variant.

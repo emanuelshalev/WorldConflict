@@ -1,0 +1,45 @@
+{
+ "persona":"maya","variant":"maya-phone","panel_version":"1.2","build":"5ef3ead","iteration":2,"minutes_played":22,
+ "scenarios":[
+  {"id":"M1","outcome":"achieved","turns":12,"steps":["Took today's crisis Hormuz Convoy as the US","Chose Guide me","Approved cabinet picks most months, opened Mission panel twice, switched a crisis pick in month 3 and 11","Executed 12 months, finished all end screens"],"notes":"Ended A, 3 stars, 688, and I could say why (goals met, ranking, moments)."},
+  {"id":"M2","outcome":"achieved","turns":12,"steps":["Finished the whole Flashpoint without getting stuck","Went through verdict, achievements, moments, approval, numbers, truth, ranking, share card, full report"],"notes":"Never blocked."}
+ ],
+ "friction":[
+  {"where":"Familiarity card on first month","expected":"pick quickly","happened":"Three options; I chose Guide me, which opens a briefing each crisis. Briefing was good but long names list.","kind":"hesitation","screenshot":"shots/maya-phone/002-after-take.png"},
+  {"where":"Month 1 crisis and briefing","expected":"know Muscat, IRGC, Mojtaba Khamenei, Strait of Hormuz","happened":"Muscat appeared in the pick label without explanation; Who is who card helped for Khamenei, IRGC. Muscat/Oman never explained.","kind":"naming","screenshot":"shots/maya-phone/003-m1.png"},
+  {"where":"Mission names later: Isfahan, bunker-buster, Qatari text, Congress, logistics access, UAE","expected":"plain words","happened":"Underlined names with i helped; Isfahan's tunnels and Bunker-busters needed the i.","kind":"naming","screenshot":"shots/maya-phone/027-m8n.png"},
+  {"where":"Top mission chip 'This month: approval 42%, ne...'","expected":"tap to see how to raise approval","happened":"Tapping the chip text did nothing visible; only tapping the 'Open the strait' title opened Mission. Text is truncated.","kind":"misread","screenshot":"shots/maya-phone/010-goal.png"},
+  {"where":"Crisis option list","expected":"tapping an option name selects it","happened":"text tap on option title failed once, tapping the card worked; no visible selection until I scrolled up to see 'Your pick'.","kind":"retry","screenshot":"shots/maya-phone/014-pick.png"},
+  {"where":"Month debrief 'What your choice did'","expected":"result of the North Korea choice I made","happened":"Said 'Your forces gain ground against Iran' two months in a row (Feb, Mar 2027), unrelated to the choice. Felt like a repeated card.","kind":"misread","screenshot":"shots/maya-phone/018-m4d.png"},
+  {"where":"After Next month in some months","expected":"next crisis","happened":"The newspaper opened full screen with a floating Next month button; my Execute tap was swallowed behind it once.","kind":"retry","screenshot":"shots/maya-phone/026-m8d.png"},
+  {"where":"Header with 4+ political capital","expected":"More button visible","happened":"More button clipped to a chevron/cut text on 390px.","kind":"other","screenshot":"shots/maya-phone/017-m4.png"},
+  {"where":"Ending moments page","expected":"things I chose","happened":"Best moment 'Spy on Iran' and 'Mobilize forces' were orders I never knowingly picked (Approve cabinet pick bundles them).","kind":"misread","screenshot":"shots/maya-phone/044-e4.png"},
+  {"where":"Verdict title","expected":"consistent title","happened":"'Master Diplomat' on verdict, 'Statesman' on ranking.","kind":"other","screenshot":"shots/maya-phone/062-e8.png"},
+  {"where":"Achievements","expected":"rarity","happened":"'rarity not measured yet' and everything earned at Month 12 reads like a placeholder.","kind":"other","screenshot":"shots/maya-phone/043-e3.png"},
+  {"where":"Verdict score card","expected":"simple","happened":"Leadership 157/300 average 104 (x1.5), Finish vs par 107: spreadsheet-ish, skimmed.","kind":"dashboard-feel","screenshot":"shots/maya-phone/042-e2b.png"}
+ ],
+ "bugs":[
+  {"title":"Debrief headline repeats and does not match chosen crisis option","steps":["Month 3 choose Condemn publicly (North Korea)","Execute","Read debrief; repeat next month"],"expected":"Headline about my choice","actual":"'Your forces gain ground against Iran' in two consecutive months","severity":"S3","screenshot":"shots/maya-phone/016-m3d.png"},
+  {"title":"Header More button clipped at 4+ capital diamonds","steps":["Reach month 4 with 4 capital"],"expected":"Full More button","actual":"Cut off at right edge","severity":"S4","screenshot":"shots/maya-phone/017-m4.png"},
+  {"title":"Execute month swallowed when newspaper overlay is open","steps":["Execute a month, tap Next month","Newspaper shows; tap Approve and Execute"],"expected":"Execute works or overlay is clearly modal","actual":"Month did not execute; overlay stayed","severity":"S3","screenshot":"shots/maya-phone/026-m8d.png"}
+ ],
+ "suggestions":[
+  {"what":"Show a clear selected state on the crisis option I tapped without scrolling","goal_served":"M2"},
+  {"what":"Say who Oman/Muscat is in the pick label or i","goal_served":"M2"},
+  {"what":"Make the top mission chip tappable and untruncated","goal_served":"M1"},
+  {"what":"Simplify the verdict score breakdown to one line per part","goal_served":"M1"}
+ ],
+ "delight":["Wordle-style month squares and 'The record is sealed' (shots/maya-phone/040-m12x.png)","Mission panel 'Helps now' chips and 'Best for your mission' tag (shots/maya-phone/013-more.png)","Better than 81% of simulated leaders with ladder (shots/maya-phone/062-e8.png)","Share card (shots/maya-phone/066-share.png)","Briefing Who is who (shots/maya-phone/003-m1.png)"],
+ "scores":{
+  "fun":{"value":7,"reason":"Quick loop, each month a clear decision, ended with a win."},
+  "clarity":{"value":8,"reason":"Always knew next step; goal bar and Helps now chips told me what to do."},
+  "visual":{"value":8,"reason":"Scenes, newspaper and cards looked crafted on a phone."},
+  "feels_like_a_game":{"value":7,"reason":"Cards plus verdict and share card feel like a game; approving staff picks felt a bit auto-pilot."},
+  "agency":{"value":7,"reason":"Never blocked; but debrief did not always match my choice and bundled orders were unclear."},
+  "realism":{"value":7,"reason":"Plausible news-like crises; I cannot judge deeply."},
+  "replay":{"value":7,"reason":"Replay same opening and beat 688 hook, plus daily crisis."},
+  "recommend":{"value":8,"reason":"Finished in about 20 minutes, understood why I won, would send to a friend."}
+ },
+ "quit_point":null,
+ "verbatim":"I finished it, got an A and I actually know why. The goal bar told me what helps. Only the repeated 'forces gain ground' headline and the unexplained Muscat made me squint."
+}

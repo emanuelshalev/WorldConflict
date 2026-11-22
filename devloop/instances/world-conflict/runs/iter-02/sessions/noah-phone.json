@@ -1,0 +1,203 @@
+{
+ "persona": "noah",
+ "variant": "noah-phone",
+ "panel_version": "1.2",
+ "build": "5ef3ead",
+ "iteration": 2,
+ "minutes_played": 25,
+ "scenarios": [
+  {
+   "id": "N1",
+   "outcome": "achieved",
+   "steps": [
+    "Title: tapped biggest button Take office as United States",
+    "Picked Guide me in the news question",
+    "Closed the long briefing",
+    "Executed 12 months, mostly with defaults, twice picked the aggressive option"
+   ],
+   "turns": 12,
+   "notes": "Started in under 20 s, first consequence at month 1. Lost the mission (Israel relations) which I never knew mattered."
+  },
+  {
+   "id": "N2",
+   "outcome": "partial",
+   "steps": [
+    "Reached verdict, achievements, moments, numbers, truth, ranking",
+    "Opened Share result, Phone card"
+   ],
+   "turns": 12,
+   "notes": "Share card is small landscape text on a phone; Phone card tap showed no visible change."
+  }
+ ],
+ "friction": [
+  {
+   "where": "Month 1 briefing, What is going on here",
+   "expected": "start playing",
+   "happened": "full-screen wall of text with map and 4 people",
+   "kind": "dashboard-feel",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-02/shots/noah-phone/003-m1.png"
+  },
+  {
+   "where": "Month 1 desk",
+   "expected": "big move buttons visible",
+   "happened": "crisis headline and text fill the screen; the options are below the fold and I had to scroll inside the page",
+   "kind": "hesitation",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-02/shots/noah-phone/004-m1-desk.png"
+  },
+  {
+   "where": "Month 1 desk",
+   "expected": "my tapped pick to be chosen",
+   "happened": "a default (Cabinet pick) was already decided; I executed without choosing the strike",
+   "kind": "misread",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-02/shots/noah-phone/007-m1-pick.png"
+  },
+  {
+   "where": "Header / mission strip",
+   "expected": "know what I must win",
+   "happened": "mission bar changed goal names every month (shooting stops, approval, stability, Israel); never clear which one I fail on",
+   "kind": "misread",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-02/shots/noah-phone/037-end1b.png"
+  },
+  {
+   "where": "Political capital",
+   "expected": "to spend it",
+   "happened": "sat at 4 to 6 unspent for most of the game, nothing told me what to spend it on",
+   "kind": "hesitation",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-02/shots/noah-phone/024-n3.png"
+  },
+  {
+   "where": "Moments page",
+   "expected": "readable timeline",
+   "happened": "two labels overlap (Mobilize forces / Israel stays on side)",
+   "kind": "other",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-02/shots/noah-phone/040-end3.png"
+  },
+  {
+   "where": "End sequence",
+   "expected": "quick result",
+   "happened": "8 pages after the verdict (verdict, achievements, moments, seen, numbers, truth, ranking, share)",
+   "kind": "dashboard-feel",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-02/shots/noah-phone/042-end5.png"
+  },
+  {
+   "where": "Share screen, Phone card",
+   "expected": "a portrait image to post",
+   "happened": "nothing visibly happened; card shown is landscape with tiny text",
+   "kind": "other",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-02/shots/noah-phone/047-phonecard.png"
+  },
+  {
+   "where": "Verdict page",
+   "expected": "grade at once",
+   "happened": "score and grade count up from 0 and show 0 stars, 3 empty stars on a D",
+   "kind": "other",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-02/shots/noah-phone/036-end1.png"
+  },
+  {
+   "where": "Briefing / crisis text",
+   "expected": "to know the words",
+   "happened": "Muscat, IRGC, Congress, minehunters, framework, enrichment, Kramatorsk, sanctions, ceasefire: I did not know them; underlines and i badges helped a bit for names but I did not tap them",
+   "kind": "naming",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-02/shots/noah-phone/003-m1.png"
+  },
+  {
+   "where": "Month 4 debrief",
+   "expected": "why the war ended",
+   "happened": "The war with Iran is over, with no explanation",
+   "kind": "hesitation",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-02/shots/noah-phone/016-m4-exec.png"
+  },
+  {
+   "where": "Familiarity question",
+   "expected": "fast pick",
+   "happened": "clear, Guide me was easy to pick, but it then opened a briefing wall on every crisis",
+   "kind": "other",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-02/shots/noah-phone/002-after-start.png"
+  }
+ ],
+ "bugs": [
+  {
+   "title": "Moments timeline labels overlap",
+   "steps": [
+    "Finish a flashpoint",
+    "Open The moments page"
+   ],
+   "expected": "labels do not collide",
+   "actual": "two labels draw on top of each other",
+   "severity": "S4",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-02/shots/noah-phone/040-end3.png"
+  },
+  {
+   "title": "Phone card button gives no visible result",
+   "steps": [
+    "End screen",
+    "Share result",
+    "Tap Phone card"
+   ],
+   "expected": "portrait card appears or downloads",
+   "actual": "no visible change",
+   "severity": "S3",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-02/shots/noah-phone/047-phonecard.png"
+  }
+ ],
+ "suggestions": [
+  {
+   "what": "Put 2 or 3 big option cards right under the crisis title and skip the full briefing unless tapped",
+   "goal_served": "N1"
+  },
+  {
+   "what": "Say in the month header which single goal I am losing and a button to fix it",
+   "goal_served": "N1"
+  },
+  {
+   "what": "Short verdict with big grade and one share button first; the rest optional",
+   "goal_served": "N2"
+  },
+  {
+   "what": "Portrait share card sized for a phone story",
+   "goal_served": "N2"
+  }
+ ],
+ "delight": [
+  "Month recap scene with big +8 or +12 number and IT WORKED / A STEP BACK stamp",
+  "Animated scene art on each crisis",
+  "STEP ACHIEVED stamp",
+  "Achievements badges at the end"
+ ],
+ "scores": {
+  "fun": {
+   "value": 6,
+   "reason": "Big stamps and numbers were fun; most months were just pressing Execute"
+  },
+  "clarity": {
+   "value": 4,
+   "reason": "Could not tell what the mission was or why I failed it"
+  },
+  "visual": {
+   "value": 8,
+   "reason": "Good art, scene cards and stamps"
+  },
+  "feels_like_a_game": {
+   "value": 6,
+   "reason": "Feels like a game in recaps, like a menu on the desk"
+  },
+  "agency": {
+   "value": 5,
+   "reason": "Scrolling to find options, defaults pre-chosen, failed taps looked like nothing happened"
+  },
+  "realism": {
+   "value": 6,
+   "reason": "Believable headlines, but I cannot judge"
+  },
+  "replay": {
+   "value": 5,
+   "reason": "Replay same opening button is nice; D grade makes me want one retry"
+  },
+  "recommend": {
+   "value": 5,
+   "reason": "Cool look, but too much reading and a long ending for a quick phone game"
+  }
+ },
+ "quit_point": "Would have quit at month 1 briefing wall of text (about 40 s in), and likely stopped after month 5 when nothing new happened by just pressing Execute",
+ "verbatim": "it looks sick but why did I fail, what even is Israel stays on side"
+}
