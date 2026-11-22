@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agenda in Map mode</title>
+<link rel="stylesheet" href="agenda.css">
+<style>
+  .drawer .agenda { padding: 0 10px 8px; gap: 4px; overflow: auto; }
+  .drawer .agenda .ac { min-height: 44px; padding: 6px 8px; }
+  .drawer .agenda .t b { font-size: 13px; }
+  .drawer .agenda .t small { font-size: 12px; }
+  .drawer .compact-item { background: #111a27; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding-top: 10px; }
+  .pin { position: absolute; width: 14px; height: 14px; border-radius: 50%; background: var(--war); box-shadow: 0 0 0 6px rgba(229,56,59,.25); }
+  .maplabel { position: absolute; font-size: 12px; color: #c9d3e0; text-shadow: 0 1px 2px #000; }
+</style>
+</head>
+<body>
+<!-- Concept mock: Map mode. The agenda is a drawer on the left (bottom sheet on phones) with the current item
+     answered in place; the strip keeps the titled Staff picks group (D-64), the budgets and Execute. -->
+<header class="hud">
+  <span class="who">🇺🇸 President</span>
+  <span class="stat"><b class="num">48%</b><span>Approval</span></span>
+  <span class="stat wide-only"><b class="num">71</b><span>Stability</span></span>
+  <span class="stat"><b class="num">◆ 3 of 6</b><span>Political capital</span></span>
+  <span class="grow"></span>
+  <div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="false">Desk</button><button class="on" role="tab" aria-selected="true">Map</button></div>
+</header>
+<div class="goal">
+  <span class="label">Mission</span><b>Keep the Strait open without a war</b>
+  <span class="segs" aria-hidden><i></i><i></i><i class="amber"></i></span>
+  <span class="num wide-only" style="color:var(--text-2);font-size:14px">2 of 3 on track · month 4 of 12</span>
+</div>
+<div class="map">
+  <svg class="world" viewBox="0 0 1440 800" preserveAspectRatio="xMidYMid slice" aria-hidden>
+    <path d="M520 60 C700 40 900 80 1000 160 C1040 240 980 300 900 330 C860 380 820 420 760 430 C700 400 640 360 600 300 C540 250 480 180 520 60Z" fill="#2c3b2f" stroke="#41543f"/>
+    <path d="M1060 200 C1090 230 1100 280 1080 330 C1070 300 1050 250 1060 200Z" fill="#33465a" stroke="#4d6680"/>
+    <path d="M930 420 C945 430 950 460 935 480 C925 465 922 440 930 420Z" fill="#3d5a7a" stroke="#6b93bd" stroke-width="2"/>
+    <path d="M700 470 C760 500 800 560 780 640 C740 620 700 560 700 470Z" fill="#26332a" stroke="#3a4a3c"/>
+    <path d="M860 520 C900 540 960 600 940 690 C900 650 860 600 860 520Z" fill="#2a3a30" stroke="#3a4a3c"/>
+    <path d="M880 400 C900 420 905 450 900 470" stroke="#e5383b" stroke-width="3" stroke-dasharray="6 6" fill="none"/>
+  </svg>
+  <span class="pin" style="left:928px;top:438px"></span>
+  <span class="maplabel" style="left:950px;top:440px">Taiwan · drills</span>
+  <span class="maplabel" style="left:720px;top:220px">China</span>
+  <span class="maplabel" style="left:1100px;top:250px">Japan</span>
+
+  <aside class="drawer" aria-label="This month: go through these">
+    <div class="step-h"><span class="step-n now">1</span><div><h2>This month: go through these</h2><p class="num">3 of 8 handled</p></div><button class="btn small" style="margin-left:auto" aria-label="Close the agenda">✕</button></div>
+    <div class="progress" style="padding-top:0"><div class="bar" aria-hidden><i class="done"></i><i class="done"></i><i class="now"></i><i></i><i class="skip"></i><i></i><i></i><i></i></div></div>
+    <ol class="agenda" style="flex:none">
+      <li><button class="ac done"><span class="no">✓</span><span class="t"><b>PLA drills close the north channel</b><small class="tag mine">Your pick</small></span><span class="cue">›</span></button></li>
+      <li><button class="ac done"><span class="no">✓</span><span class="t"><b>🇨🇳 Xi Jinping calls</b><small class="tag mine">You attend: hold firm</small></span><span class="cue">›</span></button></li>
+      <li><button class="ac on" aria-expanded="true" aria-current="step"><span class="no">3</span><span class="t"><b>🇯🇵 PM Takaichi visits</b><small class="tag needs">Now: needs you</small></span><span class="cue">▾</span></button></li>
+    </ol>
+    <div class="compact-item" aria-label="Item 3 of 8">
+      <h4>PM Takaichi visits Washington</h4>
+      <p>"Tokyo needs to know the patrol is a promise, not a gesture."</p>
+      <div role="radiogroup" aria-label="Your answer" style="display:grid;gap:6px">
+        <button class="ac copt on" role="radio" aria-checked="true"><span style="flex:1"><b>Reaffirm the alliance</b><small>Japan on side ▲ · staff pick</small></span><span class="radio"></span></button>
+        <button class="ac copt" role="radio" aria-checked="false"><span style="flex:1"><b>Ask Japan to pay more</b><small>Budget ▲ · Japan on side ▼</small></span><span class="radio"></span></button>
+      </div>
+      <div class="hrow">
+        <button class="btn primary small">Attend: reaffirm (staff pick)</button>
+        <button class="btn small skip" style="border-style:dashed;background:transparent;box-shadow:none">Skip: deputy goes</button>
+      </div>
+      <p style="font-size:12px">Skip sends a deputy with the default answer (free). Meetings: you attend 1 of 3.</p>
+    </div>
+    <ol class="agenda" start="4" style="padding-top:8px">
+      <li><button class="ac"><span class="no">4</span><span class="t"><b>Staff meeting: readiness</b><small class="tag needs">Needs you</small></span><span class="cue">›</span></button></li>
+      <li><button class="ac skipped"><span class="no">5</span><span class="t"><b>CNN interview</b><small class="tag skip">Skipped: a deputy answers</small></span><span class="cue">›</span></button></li>
+      <li><button class="ac"><span class="no">6</span><span class="t"><b>Staff propose: Court India</b><small class="tag staff">Staff pick waiting · ◆ 1</small></span><span class="cue">›</span></button></li>
+      <li><button class="ac"><span class="no">7</span><span class="t"><b>Staff propose: Intel on China</b><small class="tag staff">Staff pick waiting · ◆ 1</small></span><span class="cue">›</span></button></li>
+      <li><button class="ac"><span class="no">8</span><span class="t"><b>Your own moves</b><small class="tag">Optional · click a country</small></span><span class="cue">›</span></button></li>
+    </ol>
+  </aside>
+
+  <div class="strip" aria-label="This month">
+    <button class="ac agenda-pill" aria-expanded="true" aria-label="Agenda: 3 of 8 handled, now Takaichi visits. Hide the agenda">
+      <span class="step-n now">1</span>
+      <span class="t" style="flex:1"><b>Agenda · 3 of 8 handled</b><small>Now: PM Takaichi visits</small><span class="minibar" aria-hidden><i class="done"></i><i class="done"></i><i class="now"></i><i></i><i class="skip"></i><i></i><i></i><i></i></span></span>
+      <span class="cue">▴</span>
+    </button>
+    <div class="stats">
+      <span class="stat"><b class="num">◆ 3 left</b><span>Political capital</span></span>
+      <span class="stat"><b class="num">1 of 6</b><span>Orders</span></span>
+      <span class="stat"><b class="num">1 of 3</b><span>Meetings</span></span>
+    </div>
+    <span class="grow"></span>
+    <div class="staff-inline" aria-label="Staff picks">
+      <span class="t"><b>Staff picks: 3 waiting</b><span style="color:var(--text-2)">Takaichi visit, Court India, Intel on China</span></span>
+      <button class="lnk" style="font-size:13px">See them</button>
+      <button class="btn good small">Approve 3 staff picks (◆ 2)</button>
+    </div>
+    <button class="btn wide-only">Desk</button>
+    <button class="btn primary">Execute month</button>
+  </div>
+</div>
+<div class="note" style="top:116px;bottom:auto;right:16px"><b>Concept note</b>Same agenda, same order, same three choices as the desk. The drawer opens on the first unhandled item when the player switches to the map; it closes to the pill, never disappears. "See them" opens the Staff picks list in the drawer.</div>
+</body>
+</html>
