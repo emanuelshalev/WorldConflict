@@ -1,0 +1,240 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Learn: setting and codex</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;600&family=Newsreader:ital,wght@0,400;0,500;1,400&family=Instrument+Serif&display=swap" rel="stylesheet">
+<style>/* House tokens, copied from ui/src/styles/wc.css */
+:root {
+  --bg-0: #0b0f17; --ocean: #0e1a2b; --land: #1f2a3a;
+  --surface-1: #141b27; --surface-2: #1c2533; --surface-3: #243042;
+  --line: #2a3546; --line-2: #3a4759;
+  --text-1: #e8ecf2; --text-2: #a3aebf; --text-3: #8693a6;
+  --accent: #f2a93b; --accent-ink: #1b1204;
+  --intel: #4fb3d9; --ally: #3d8bfd; --rival: #f26b3a; --war: #e5383b; --nuke: #f5d547; --good: #56c596;
+  --font-ui: 'Geist', 'Inter', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+  --font-news: 'Instrument Serif', Georgia, serif;
+  --font-serif: 'Newsreader', Georgia, serif;
+  --r-sm: 6px; --r-md: 10px; --r-lg: 16px;
+  --shadow: 0 10px 40px rgba(0,0,0,.45);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  /* New tokens proposed by design-learn.md */
+  --learn: #4fb3d9;                       /* = --intel: knowledge is the intel family */
+  --learn-mark: rgba(79,179,217,.62);     /* underline colour */
+  --learn-mark-known: rgba(79,179,217,.28);
+  --learn-tint: rgba(79,179,217,.13);     /* hover / active background */
+  --real: #c9b48a;                        /* "what really happened" ink, parchment */
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg-0); color: var(--text-1); font-family: var(--font-ui); -webkit-font-smoothing: antialiased; }
+.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+button { font: inherit; color: inherit; }
+
+/* Concept label strip (not part of the game UI) */
+.concept { display: flex; gap: 12px; align-items: baseline; padding: 8px 16px; background: #05070b; border-bottom: 1px solid var(--line); font-size: 12px; color: var(--text-3); }
+.concept b { color: var(--accent); letter-spacing: .12em; text-transform: uppercase; font-size: 11px; }
+.concept span { color: var(--text-2); }
+
+/* HUD */
+.hud { display: flex; align-items: center; gap: 22px; padding: 10px 18px; background: var(--surface-1); border-bottom: 1px solid var(--line); }
+.hud .who { display: flex; gap: 10px; align-items: center; min-width: 0; }
+.hud .who .fl { font-size: 26px; }
+.hud .who b { display: block; font-size: 15px; white-space: nowrap; }
+.hud .who small { color: var(--text-3); font-size: 12px; }
+.hud .stat label { display: block; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--text-3); }
+.hud .stat .v { font-family: var(--font-mono); font-size: 16px; }
+.hud .sp { flex: 1; }
+.chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line-2); background: var(--surface-2); padding: 6px 10px; border-radius: 999px; font-size: 12px; color: var(--text-2); cursor: pointer; min-height: 32px; }
+.chip b { color: var(--text-1); font-weight: 600; }
+.chip.learn { border-color: rgba(79,179,217,.45); }
+.chip.learn svg { color: var(--learn); }
+.icon-btn { width: 40px; height: 40px; border-radius: var(--r-sm); border: 1px solid var(--line); background: var(--surface-2); display: inline-grid; place-items: center; color: var(--text-2); }
+
+/* Desk shell */
+.desk { display: grid; grid-template-columns: 270px minmax(0,1fr) 380px; min-height: calc(100vh - 92px); }
+.nav { border-right: 1px solid var(--line); padding: 14px 12px; }
+.nav h6 { margin: 14px 6px 6px; font-size: 10px; letter-spacing: .14em; color: var(--text-3); font-weight: 600; text-transform: uppercase; }
+.nav .row { display: flex; gap: 8px; align-items: center; padding: 8px; border-radius: var(--r-sm); font-size: 13px; color: var(--text-2); }
+.nav .row.on { background: var(--surface-2); border: 1px solid var(--accent); color: var(--text-1); }
+.main { padding: 18px 28px 40px; min-width: 0; }
+.rail { border-left: 1px solid var(--line); padding: 14px; background: var(--surface-1); }
+.rail h6 { margin: 10px 0 8px; font-size: 10px; letter-spacing: .14em; color: var(--text-3); font-weight: 600; text-transform: uppercase; }
+.rail .line { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-2); padding: 5px 0; }
+.rail .exec { margin-top: 18px; background: var(--accent); color: var(--accent-ink); border: 0; border-radius: var(--r-md); padding: 14px; font-weight: 700; width: 100%; font-size: 16px; }
+
+/* Crisis card */
+.scene { position: relative; height: 170px; border-radius: var(--r-md); overflow: hidden; background: radial-gradient(120% 90% at 70% 10%, #6b2a2a 0%, #2a1416 45%, #120b10 100%); border: 1px solid var(--line); max-width: 640px; }
+.scene .kick { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,.55); font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em; padding: 3px 8px; border-radius: 4px; }
+.scene .kick::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--war); margin-right: 6px; }
+.scene .ttl { position: absolute; left: 16px; bottom: 14px; }
+.scene .urg { display: inline-block; background: var(--war); font-size: 11px; font-weight: 700; letter-spacing: .1em; padding: 3px 8px; border-radius: 4px; margin-bottom: 6px; }
+.scene h2 { margin: 0; font-size: 20px; }
+.scene .lights { position: absolute; right: 40px; bottom: 30px; width: 180px; height: 70px; background: repeating-linear-gradient(90deg, rgba(242,169,59,.35) 0 10px, transparent 10px 22px); filter: blur(1px); opacity: .5; border-radius: 4px; }
+.bar { display: flex; gap: 14px; align-items: center; margin: 12px 0; font-size: 13px; color: var(--text-2); flex-wrap: wrap; }
+.tag { border: 1px solid var(--accent); color: var(--accent); border-radius: 999px; padding: 2px 9px; font-size: 12px; }
+.event { font-family: var(--font-serif); font-size: 16px; line-height: 1.6; color: var(--text-2); margin: 0 0 10px; max-width: 760px; }
+.situation { font-size: 16px; line-height: 1.65; margin: 0 0 14px; max-width: 760px; }
+.options { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; max-width: 860px; }
+.opt { text-align: left; background: var(--surface-2); border: 1px solid var(--line-2); border-radius: var(--r-md); padding: 12px; }
+.opt.chosen { border-color: var(--accent); background: #241d12; }
+.opt b { display: block; font-size: 15px; margin-bottom: 6px; }
+.opt .desc { font-size: 13px; line-height: 1.5; color: var(--text-2); }
+.opt .arr { font-family: var(--font-mono); font-size: 11px; margin-top: 8px; color: var(--good); }
+.opt .arr i { color: var(--war); font-style: normal; }
+
+/* ---------- Learn: inline terms ---------- */
+.t { color: inherit; text-decoration: underline dotted var(--learn-mark); text-decoration-thickness: 1.5px; text-underline-offset: 3px; cursor: help; border-radius: 3px; position: relative; background: none; border: 0; padding: 0; font: inherit; }
+.t::after { content: ""; position: absolute; inset: -6px -2px; } /* bigger hit box without layout change */
+.t.hover, .t:hover { text-decoration-style: solid; text-decoration-color: var(--learn); background: var(--learn-tint); }
+.t.active { text-decoration-style: solid; text-decoration-color: var(--learn); background: var(--learn-tint); box-shadow: 0 0 0 1px rgba(79,179,217,.5); }
+.t.known { text-decoration-color: var(--learn-mark-known); }
+.mark { background: rgba(79,179,217,.22); box-shadow: 0 0 0 2px rgba(79,179,217,.22); border-radius: 3px; }
+
+/* ---------- Learn: explainer (popover and sheet share it) ---------- */
+.xp { background: var(--surface-3); border: 1px solid var(--line-2); border-radius: var(--r-md); box-shadow: var(--shadow); width: 340px; font-size: 14px; color: var(--text-1); }
+.xp .hd { display: flex; gap: 10px; align-items: center; padding: 12px 14px 4px; }
+.xp .glyph { width: 34px; height: 34px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--surface-2); border: 1px solid var(--line-2); font-size: 18px; }
+.xp .kind { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--learn); font-weight: 600; }
+.xp .nm { font-weight: 700; font-size: 15px; }
+.xp .short { padding: 4px 14px 10px; line-height: 1.5; color: var(--text-1); }
+.xp .long { padding: 0 14px 10px; line-height: 1.55; color: var(--text-2); font-size: 13.5px; }
+.xp .long p { margin: 0 0 8px; }
+.xp .game { margin: 0 14px 10px; padding: 8px 10px; border-left: 3px solid var(--accent); background: rgba(242,169,59,.08); font-size: 13px; color: var(--text-2); border-radius: 0 6px 6px 0; }
+.xp .game b { color: var(--accent); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; display: block; margin-bottom: 2px; }
+.xp .ft { display: flex; gap: 4px; align-items: center; padding: 8px 10px; border-top: 1px solid var(--line); font-size: 12px; color: var(--text-3); flex-wrap: wrap; }
+.xp .ft .sp { flex: 1; }
+.lk { background: none; border: 0; color: var(--learn); font-size: 13px; font-weight: 600; padding: 8px 6px; min-height: 36px; cursor: pointer; }
+.lk.quiet { color: var(--text-3); font-weight: 500; }
+.xp .map { margin: 0 14px 10px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); }
+.arrow { position: absolute; width: 12px; height: 12px; background: var(--surface-3); border-left: 1px solid var(--line-2); border-top: 1px solid var(--line-2); transform: rotate(45deg); }
+
+/* bottom sheet (touch) */
+.scrim { position: absolute; inset: 0; background: rgba(5,7,11,.55); }
+.sheet { position: absolute; left: 0; right: 0; bottom: 0; background: var(--surface-3); border-top: 1px solid var(--line-2); border-radius: 16px 16px 0 0; box-shadow: 0 -10px 40px rgba(0,0,0,.5); }
+.sheet .grab { width: 40px; height: 4px; background: var(--line-2); border-radius: 2px; margin: 8px auto 2px; }
+.sheet .xp { width: auto; background: none; border: 0; box-shadow: none; }
+.sheet .btns { display: flex; gap: 8px; padding: 6px 14px 18px; }
+.sheet .btns button { flex: 1; min-height: 44px; border-radius: var(--r-sm); border: 1px solid var(--line-2); background: var(--surface-2); font-weight: 600; font-size: 14px; }
+.sheet .btns button.pri { border-color: rgba(79,179,217,.6); color: var(--learn); }
+
+/* "i" affordance */
+.ib { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid rgba(79,179,217,.6); color: var(--learn); font: 600 12px/1 var(--font-serif); font-style: italic; vertical-align: 2px; margin-left: 6px; background: none; position: relative; cursor: pointer; }
+.ib::after { content: ""; position: absolute; inset: -11px; }
+.ib.on { background: var(--learn); color: var(--bg-0); }
+.wigo { display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(79,179,217,.45); color: var(--learn); background: rgba(79,179,217,.08); border-radius: 999px; padding: 6px 12px 6px 8px; font-size: 13px; font-weight: 600; min-height: 36px; }
+.wigo .ib { margin: 0; width: 20px; height: 20px; vertical-align: 0; }
+
+/* leader disc (who's who) */
+.disc { width: 40px; height: 40px; border-radius: 50%; position: relative; flex: none; display: grid; place-items: center; font-weight: 700; font-size: 14px; color: var(--text-1); background: var(--surface-2); border: 2px solid var(--line-2); }
+.disc .f { position: absolute; right: -4px; bottom: -4px; font-size: 15px; line-height: 1; }
+
+@media (max-width: 600px) {
+  .hud { gap: 10px; padding: 8px 12px; }
+  .hud .stat { display: none; }
+  .hud .who b { font-size: 14px; max-width: 170px; overflow: hidden; text-overflow: ellipsis; }
+  .desk { display: block; }
+  .nav, .rail { display: none; }
+  .main { padding: 12px 16px 120px; }
+  .scene { height: 130px; }
+  .scene h2 { font-size: 18px; }
+  .options { grid-template-columns: 1fr; }
+  .event { font-size: 15px; }
+  .situation { font-size: 15.5px; }
+  .xp { width: auto; }
+}
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+<style>
+.wrap { display: grid; grid-template-columns: 1.15fr 1fr 1.1fr; gap: 20px; padding: 20px; align-items: start; }
+.panel { background: var(--surface-1); border: 1px solid var(--line-2); border-radius: var(--r-lg); padding: 18px; }
+.cap { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--text-3); font-weight: 600; margin-bottom: 10px; }
+h2 { font-family: var(--font-news); font-weight: 400; font-size: 30px; margin: 0 0 4px; }
+.sub { color: var(--text-2); font-size: 14px; margin: 0 0 14px; line-height: 1.5; }
+.lvl { display: block; width: 100%; text-align: left; background: var(--surface-2); border: 1px solid var(--line-2); border-radius: var(--r-md); padding: 12px 14px; margin-bottom: 10px; min-height: 64px; cursor: pointer; }
+.lvl.on { border-color: var(--learn); box-shadow: 0 0 0 1px var(--learn) inset; background: #15222f; }
+.lvl .t1 { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; }
+.lvl .t1 .r { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--line-2); flex: none; }
+.lvl.on .t1 .r { border-color: var(--learn); background: radial-gradient(circle, var(--learn) 0 4px, transparent 5px); }
+.lvl .d { font-size: 13px; color: var(--text-2); margin: 3px 0 8px 26px; }
+.lvl .ex { margin-left: 26px; font-family: var(--font-serif); font-size: 14px; line-height: 1.55; color: var(--text-1); background: var(--bg-0); border-radius: 6px; padding: 8px 10px; }
+.foot { font-size: 12.5px; color: var(--text-3); line-height: 1.5; margin-top: 4px; }
+.kbd { font-family: var(--font-mono); font-size: 11px; border: 1px solid var(--line-2); border-radius: 4px; padding: 1px 5px; color: var(--text-2); }
+.go { margin-top: 12px; width: 100%; background: var(--accent); color: var(--accent-ink); border: 0; border-radius: var(--r-md); padding: 13px; font-weight: 700; font-size: 16px; }
+.seg { display: flex; background: var(--surface-2); border: 1px solid var(--line); border-radius: 999px; padding: 3px; margin-bottom: 14px; }
+.seg button { flex: 1; border: 0; background: none; border-radius: 999px; padding: 9px 6px; font-size: 13px; color: var(--text-2); min-height: 40px; }
+.seg button.on { background: var(--learn); color: var(--bg-0); font-weight: 700; }
+.tog { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-top: 1px solid var(--line); }
+.tog .sw { width: 40px; height: 24px; border-radius: 12px; background: var(--line-2); position: relative; flex: none; margin-top: 2px; }
+.tog .sw::after { content: ""; position: absolute; left: 3px; top: 3px; width: 18px; height: 18px; border-radius: 50%; background: var(--text-2); }
+.tog .sw.on { background: var(--learn); }
+.tog .sw.on::after { left: 19px; background: #fff; }
+.tog b { font-size: 14px; display: block; }
+.tog span { font-size: 12.5px; color: var(--text-3); line-height: 1.45; display: block; }
+.btnrow { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.ghost { border: 1px solid var(--line-2); background: var(--surface-2); border-radius: var(--r-sm); padding: 9px 12px; font-size: 13px; min-height: 40px; }
+.priv { margin-top: 12px; font-size: 12px; color: var(--text-3); display: flex; gap: 8px; }
+.cx-top { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+.cx-top h3 { margin: 0; font-size: 19px; }
+.prog { margin-left: auto; font-family: var(--font-mono); font-size: 12px; color: var(--learn); }
+.bar2 { height: 6px; background: var(--surface-3); border-radius: 3px; overflow: hidden; margin-bottom: 12px; }
+.bar2 i { display: block; height: 100%; width: 58%; background: var(--learn); }
+.search { width: 100%; background: var(--surface-2); border: 1px solid var(--line-2); border-radius: var(--r-sm); padding: 10px 12px; color: var(--text-3); font-size: 13px; margin-bottom: 10px; }
+.cats { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.cats span { font-size: 12px; border: 1px solid var(--line-2); border-radius: 999px; padding: 5px 10px; color: var(--text-2); }
+.cats span.on { border-color: var(--learn); color: var(--learn); }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.ent { background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 9px 10px; display: flex; gap: 10px; align-items: center; min-height: 56px; position: relative; }
+.ent .disc { width: 34px; height: 34px; font-size: 12px; }
+.ent b { font-size: 13px; display: block; }
+.ent small { font-size: 11.5px; color: var(--text-3); }
+.ent .new { position: absolute; top: 6px; right: 8px; font-size: 9px; letter-spacing: .1em; color: var(--learn); font-weight: 700; }
+.ent.locked { opacity: .55; border-style: dashed; }
+.ent.locked .disc { color: var(--text-3); }
+@media (max-width: 600px) { .wrap { grid-template-columns: 1fr; padding: 12px 16px; } h2 { font-size: 26px; } }
+</style>
+</head><body>
+<div class="concept"><b>All variants</b><span>Asked once, changeable any time. The setting, the Settings section, and the codex drawer.</span></div>
+<div class="wrap">
+  <section class="panel" aria-labelledby="q">
+    <div class="cap">Before your first month · asked once</div>
+    <h2 id="q">How well do you follow world news?</h2>
+    <p class="sub">We will explain names and places as you meet them. Pick how much help you want.</p>
+    <button class="lvl"><div class="t1"><span class="r"></span>Guide me</div><div class="d">Explain names, places and terms as I go, and brief me on each new crisis.</div>
+      <div class="ex">US mediators propose a zone in <span class="t">Donetsk oblast</span>, including the <span class="t">fortress belt</span> of <span class="t">Kramatorsk</span>.</div></button>
+    <button class="lvl on" aria-pressed="true"><div class="t1"><span class="r"></span>Some help <small style="color:var(--text-3);font-weight:500">· recommended</small></div><div class="d">Only the less known names. Everything else one tap away.</div>
+      <div class="ex">US mediators propose a zone in Donetsk oblast, including the <span class="t">fortress belt</span> of Kramatorsk.</div></button>
+    <button class="lvl"><div class="t1"><span class="r"></span>I know this</div><div class="d">Keep the text clean. A small "i" and the codex are there if I want them.</div>
+      <div class="ex">US mediators propose a zone in Donetsk oblast, including the fortress belt of Kramatorsk. <span class="ib" style="vertical-align:1px">i</span></div></button>
+    <button class="go">Take office</button>
+    <p class="foot">Change it any time with the <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0"/><path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0"/><path d="M3 6v13"/><path d="M12 6v13"/><path d="M21 6v13"/></svg> button or in Settings. Press <span class="kbd">I</span> to hide or show the marks for this session.</p>
+  </section>
+
+  <section class="panel" aria-labelledby="st">
+    <div class="cap">Settings · Explanations</div>
+    <h3 id="st" style="margin:0 0 10px;font-size:18px">How much help</h3>
+    <div class="seg" role="radiogroup"><button role="radio">Guide me</button><button role="radio" class="on" aria-checked="true">Some help</button><button role="radio">I know this</button></div>
+    <div class="tog"><div class="sw"></div><div><b>Brief me on each new crisis</b><span>Opens "What is going on here?" the first time a crisis appears. On for Guide me.</span></div></div>
+    <div class="tog"><div class="sw on"></div><div><b>Show "In your game" lines</b><span>Each explanation ends with what is true in your game right now.</span></div></div>
+    <div class="tog"><div class="sw on"></div><div><b>Stop marking names I know</b><span>A name you have opened fades, then goes plain after a few meetings.</span></div></div>
+    <div class="tog"><div class="sw"></div><div><b>Larger explanation text</b><span>16 px instead of 14 px.</span></div></div>
+    <div class="btnrow"><button class="ghost">Mark names again (reset learned)</button><button class="ghost">Clear codex progress</button></div>
+    <div class="priv">🔒 <span>What you open stays on this device. Nothing is sent anywhere.</span></div>
+  </section>
+
+  <section class="panel" aria-labelledby="cx">
+    <div class="cx-top"><span style="color:var(--learn)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0"/><path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0"/><path d="M3 6v13"/><path d="M12 6v13"/><path d="M21 6v13"/></svg></span><h3 id="cx">Codex</h3><span class="prog">18 of 31 met</span></div>
+    <div class="bar2"><i></i></div>
+    <div class="search">Search people, places, terms…</div>
+    <div class="cats"><span class="on">All</span><span>People 7</span><span>Places 6</span><span>Groups 3</span><span>Terms 2</span><span>Situations 1</span><span>How the game works</span></div>
+    <div class="grid">
+      <div class="ent"><div class="disc">VZ<span class="f">🇺🇦</span></div><div><b>Volodymyr Zelensky</b><small>President of Ukraine</small></div></div>
+      <div class="ent"><div class="disc">VP<span class="f">🇷🇺</span></div><div><b>Vladimir Putin</b><small>President of Russia</small></div></div>
+      <div class="ent"><span class="new">NEW</span><div class="disc">🛡</div><div><b>The fortress belt</b><small>Place · Ukraine</small></div></div>
+      <div class="ent"><span class="new">NEW</span><div class="disc">🏛</div><div><b>The Rada</b><small>Group · Ukraine</small></div></div>
+      <div class="ent"><span class="new">NEW</span><div class="disc">🗳</div><div><b>The midterms</b><small>Term · United States</small></div></div>
+      <div class="ent"><div class="disc">📍</div><div><b>Oleshky</b><small>Place · Ukraine</small></div></div>
+      <div class="ent locked"><div class="disc">?</div><div><b>A person</b><small>Met later in this crisis</small></div></div>
+      <div class="ent locked"><div class="disc">?</div><div><b>A place</b><small>Met later in this crisis</small></div></div>
+    </div>
+    <p class="foot" style="margin-top:10px">Every entry: one line, the full story, sources and "as of" date. First met: The free economic zone, Nov 2026.</p>
+  </section>
+</div>
+</body></html>

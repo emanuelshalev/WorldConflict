@@ -23,6 +23,7 @@ devloop/
     driver.mjs, act.mjs persistent browser per persona, one command per shell call
     page-check.mjs     loads a page, visits every tab, fails on script errors
     feedback-digest.mjs builds per-iteration customer feedback data for status pages
+    usage-ledger.mjs   token consumption by role, persona, stage, iteration and time from session transcripts
   templates/           starting files for a new instance
   instances/
     world-conflict/    the first instance (a geopolitical strategy game)
@@ -48,3 +49,6 @@ plan -> design -> build -> verify -> use (blind panel) -> triage -> ledger -> re
 
 ## Reporting
 `kit/feedback-digest.mjs <instance> <n> --inject <page.html> FEEDBACK` turns each iteration's session reports, interviews, panel weights and the curated `runs/iter-NN/patterns.json` (written during triage) into the per-iteration feedback browser on the status page. Run `kit/page-check.mjs` afterwards.
+
+## Consumption
+`kit/usage-ledger.mjs <instance>/usage/registry.json --inject <page.html> USAGE` reads the orchestrator and subagent transcripts (Claude Code keeps them under `~/.claude/projects/<project>/`), de-duplicates responses and attributes tokens using the registry: time windows for the orchestrator, description rules for subagents (role, group, persona, stage, iteration). Name every agent with a description that its rule can match (for example `Customer Maya iter-1 session`, `Design: ...`, `Build: ...`). Weighted tokens use standard price ratios (cache read 0.1x, cache write 1.25x/2x, output 5x) so different token types compare in one number. Template: `templates/usage-registry.json`.

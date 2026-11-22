@@ -1,0 +1,236 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Learn A: Underlines</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;600&family=Newsreader:ital,wght@0,400;0,500;1,400&family=Instrument+Serif&display=swap" rel="stylesheet">
+<style>/* House tokens, copied from ui/src/styles/wc.css */
+:root {
+  --bg-0: #0b0f17; --ocean: #0e1a2b; --land: #1f2a3a;
+  --surface-1: #141b27; --surface-2: #1c2533; --surface-3: #243042;
+  --line: #2a3546; --line-2: #3a4759;
+  --text-1: #e8ecf2; --text-2: #a3aebf; --text-3: #8693a6;
+  --accent: #f2a93b; --accent-ink: #1b1204;
+  --intel: #4fb3d9; --ally: #3d8bfd; --rival: #f26b3a; --war: #e5383b; --nuke: #f5d547; --good: #56c596;
+  --font-ui: 'Geist', 'Inter', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+  --font-news: 'Instrument Serif', Georgia, serif;
+  --font-serif: 'Newsreader', Georgia, serif;
+  --r-sm: 6px; --r-md: 10px; --r-lg: 16px;
+  --shadow: 0 10px 40px rgba(0,0,0,.45);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  /* New tokens proposed by design-learn.md */
+  --learn: #4fb3d9;                       /* = --intel: knowledge is the intel family */
+  --learn-mark: rgba(79,179,217,.62);     /* underline colour */
+  --learn-mark-known: rgba(79,179,217,.28);
+  --learn-tint: rgba(79,179,217,.13);     /* hover / active background */
+  --real: #c9b48a;                        /* "what really happened" ink, parchment */
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg-0); color: var(--text-1); font-family: var(--font-ui); -webkit-font-smoothing: antialiased; }
+.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+button { font: inherit; color: inherit; }
+
+/* Concept label strip (not part of the game UI) */
+.concept { display: flex; gap: 12px; align-items: baseline; padding: 8px 16px; background: #05070b; border-bottom: 1px solid var(--line); font-size: 12px; color: var(--text-3); }
+.concept b { color: var(--accent); letter-spacing: .12em; text-transform: uppercase; font-size: 11px; }
+.concept span { color: var(--text-2); }
+
+/* HUD */
+.hud { display: flex; align-items: center; gap: 22px; padding: 10px 18px; background: var(--surface-1); border-bottom: 1px solid var(--line); }
+.hud .who { display: flex; gap: 10px; align-items: center; min-width: 0; }
+.hud .who .fl { font-size: 26px; }
+.hud .who b { display: block; font-size: 15px; white-space: nowrap; }
+.hud .who small { color: var(--text-3); font-size: 12px; }
+.hud .stat label { display: block; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--text-3); }
+.hud .stat .v { font-family: var(--font-mono); font-size: 16px; }
+.hud .sp { flex: 1; }
+.chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line-2); background: var(--surface-2); padding: 6px 10px; border-radius: 999px; font-size: 12px; color: var(--text-2); cursor: pointer; min-height: 32px; }
+.chip b { color: var(--text-1); font-weight: 600; }
+.chip.learn { border-color: rgba(79,179,217,.45); }
+.chip.learn svg { color: var(--learn); }
+.icon-btn { width: 40px; height: 40px; border-radius: var(--r-sm); border: 1px solid var(--line); background: var(--surface-2); display: inline-grid; place-items: center; color: var(--text-2); }
+
+/* Desk shell */
+.desk { display: grid; grid-template-columns: 270px minmax(0,1fr) 380px; min-height: calc(100vh - 92px); }
+.nav { border-right: 1px solid var(--line); padding: 14px 12px; }
+.nav h6 { margin: 14px 6px 6px; font-size: 10px; letter-spacing: .14em; color: var(--text-3); font-weight: 600; text-transform: uppercase; }
+.nav .row { display: flex; gap: 8px; align-items: center; padding: 8px; border-radius: var(--r-sm); font-size: 13px; color: var(--text-2); }
+.nav .row.on { background: var(--surface-2); border: 1px solid var(--accent); color: var(--text-1); }
+.main { padding: 18px 28px 40px; min-width: 0; }
+.rail { border-left: 1px solid var(--line); padding: 14px; background: var(--surface-1); }
+.rail h6 { margin: 10px 0 8px; font-size: 10px; letter-spacing: .14em; color: var(--text-3); font-weight: 600; text-transform: uppercase; }
+.rail .line { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-2); padding: 5px 0; }
+.rail .exec { margin-top: 18px; background: var(--accent); color: var(--accent-ink); border: 0; border-radius: var(--r-md); padding: 14px; font-weight: 700; width: 100%; font-size: 16px; }
+
+/* Crisis card */
+.scene { position: relative; height: 170px; border-radius: var(--r-md); overflow: hidden; background: radial-gradient(120% 90% at 70% 10%, #6b2a2a 0%, #2a1416 45%, #120b10 100%); border: 1px solid var(--line); max-width: 640px; }
+.scene .kick { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,.55); font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em; padding: 3px 8px; border-radius: 4px; }
+.scene .kick::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--war); margin-right: 6px; }
+.scene .ttl { position: absolute; left: 16px; bottom: 14px; }
+.scene .urg { display: inline-block; background: var(--war); font-size: 11px; font-weight: 700; letter-spacing: .1em; padding: 3px 8px; border-radius: 4px; margin-bottom: 6px; }
+.scene h2 { margin: 0; font-size: 20px; }
+.scene .lights { position: absolute; right: 40px; bottom: 30px; width: 180px; height: 70px; background: repeating-linear-gradient(90deg, rgba(242,169,59,.35) 0 10px, transparent 10px 22px); filter: blur(1px); opacity: .5; border-radius: 4px; }
+.bar { display: flex; gap: 14px; align-items: center; margin: 12px 0; font-size: 13px; color: var(--text-2); flex-wrap: wrap; }
+.tag { border: 1px solid var(--accent); color: var(--accent); border-radius: 999px; padding: 2px 9px; font-size: 12px; }
+.event { font-family: var(--font-serif); font-size: 16px; line-height: 1.6; color: var(--text-2); margin: 0 0 10px; max-width: 760px; }
+.situation { font-size: 16px; line-height: 1.65; margin: 0 0 14px; max-width: 760px; }
+.options { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; max-width: 860px; }
+.opt { text-align: left; background: var(--surface-2); border: 1px solid var(--line-2); border-radius: var(--r-md); padding: 12px; }
+.opt.chosen { border-color: var(--accent); background: #241d12; }
+.opt b { display: block; font-size: 15px; margin-bottom: 6px; }
+.opt .desc { font-size: 13px; line-height: 1.5; color: var(--text-2); }
+.opt .arr { font-family: var(--font-mono); font-size: 11px; margin-top: 8px; color: var(--good); }
+.opt .arr i { color: var(--war); font-style: normal; }
+
+/* ---------- Learn: inline terms ---------- */
+.t { color: inherit; text-decoration: underline dotted var(--learn-mark); text-decoration-thickness: 1.5px; text-underline-offset: 3px; cursor: help; border-radius: 3px; position: relative; background: none; border: 0; padding: 0; font: inherit; }
+.t::after { content: ""; position: absolute; inset: -6px -2px; } /* bigger hit box without layout change */
+.t.hover, .t:hover { text-decoration-style: solid; text-decoration-color: var(--learn); background: var(--learn-tint); }
+.t.active { text-decoration-style: solid; text-decoration-color: var(--learn); background: var(--learn-tint); box-shadow: 0 0 0 1px rgba(79,179,217,.5); }
+.t.known { text-decoration-color: var(--learn-mark-known); }
+.mark { background: rgba(79,179,217,.22); box-shadow: 0 0 0 2px rgba(79,179,217,.22); border-radius: 3px; }
+
+/* ---------- Learn: explainer (popover and sheet share it) ---------- */
+.xp { background: var(--surface-3); border: 1px solid var(--line-2); border-radius: var(--r-md); box-shadow: var(--shadow); width: 340px; font-size: 14px; color: var(--text-1); }
+.xp .hd { display: flex; gap: 10px; align-items: center; padding: 12px 14px 4px; }
+.xp .glyph { width: 34px; height: 34px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--surface-2); border: 1px solid var(--line-2); font-size: 18px; }
+.xp .kind { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--learn); font-weight: 600; }
+.xp .nm { font-weight: 700; font-size: 15px; }
+.xp .short { padding: 4px 14px 10px; line-height: 1.5; color: var(--text-1); }
+.xp .long { padding: 0 14px 10px; line-height: 1.55; color: var(--text-2); font-size: 13.5px; }
+.xp .long p { margin: 0 0 8px; }
+.xp .game { margin: 0 14px 10px; padding: 8px 10px; border-left: 3px solid var(--accent); background: rgba(242,169,59,.08); font-size: 13px; color: var(--text-2); border-radius: 0 6px 6px 0; }
+.xp .game b { color: var(--accent); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; display: block; margin-bottom: 2px; }
+.xp .ft { display: flex; gap: 4px; align-items: center; padding: 8px 10px; border-top: 1px solid var(--line); font-size: 12px; color: var(--text-3); flex-wrap: wrap; }
+.xp .ft .sp { flex: 1; }
+.lk { background: none; border: 0; color: var(--learn); font-size: 13px; font-weight: 600; padding: 8px 6px; min-height: 36px; cursor: pointer; }
+.lk.quiet { color: var(--text-3); font-weight: 500; }
+.xp .map { margin: 0 14px 10px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); }
+.arrow { position: absolute; width: 12px; height: 12px; background: var(--surface-3); border-left: 1px solid var(--line-2); border-top: 1px solid var(--line-2); transform: rotate(45deg); }
+
+/* bottom sheet (touch) */
+.scrim { position: absolute; inset: 0; background: rgba(5,7,11,.55); }
+.sheet { position: absolute; left: 0; right: 0; bottom: 0; background: var(--surface-3); border-top: 1px solid var(--line-2); border-radius: 16px 16px 0 0; box-shadow: 0 -10px 40px rgba(0,0,0,.5); }
+.sheet .grab { width: 40px; height: 4px; background: var(--line-2); border-radius: 2px; margin: 8px auto 2px; }
+.sheet .xp { width: auto; background: none; border: 0; box-shadow: none; }
+.sheet .btns { display: flex; gap: 8px; padding: 6px 14px 18px; }
+.sheet .btns button { flex: 1; min-height: 44px; border-radius: var(--r-sm); border: 1px solid var(--line-2); background: var(--surface-2); font-weight: 600; font-size: 14px; }
+.sheet .btns button.pri { border-color: rgba(79,179,217,.6); color: var(--learn); }
+
+/* "i" affordance */
+.ib { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid rgba(79,179,217,.6); color: var(--learn); font: 600 12px/1 var(--font-serif); font-style: italic; vertical-align: 2px; margin-left: 6px; background: none; position: relative; cursor: pointer; }
+.ib::after { content: ""; position: absolute; inset: -11px; }
+.ib.on { background: var(--learn); color: var(--bg-0); }
+.wigo { display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(79,179,217,.45); color: var(--learn); background: rgba(79,179,217,.08); border-radius: 999px; padding: 6px 12px 6px 8px; font-size: 13px; font-weight: 600; min-height: 36px; }
+.wigo .ib { margin: 0; width: 20px; height: 20px; vertical-align: 0; }
+
+/* leader disc (who's who) */
+.disc { width: 40px; height: 40px; border-radius: 50%; position: relative; flex: none; display: grid; place-items: center; font-weight: 700; font-size: 14px; color: var(--text-1); background: var(--surface-2); border: 2px solid var(--line-2); }
+.disc .f { position: absolute; right: -4px; bottom: -4px; font-size: 15px; line-height: 1; }
+
+@media (max-width: 600px) {
+  .hud { gap: 10px; padding: 8px 12px; }
+  .hud .stat { display: none; }
+  .hud .who b { font-size: 14px; max-width: 170px; overflow: hidden; text-overflow: ellipsis; }
+  .desk { display: block; }
+  .nav, .rail { display: none; }
+  .main { padding: 12px 16px 120px; }
+  .scene { height: 130px; }
+  .scene h2 { font-size: 18px; }
+  .options { grid-template-columns: 1fr; }
+  .event { font-size: 15px; }
+  .situation { font-size: 15.5px; }
+  .xp { width: auto; }
+}
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+<style>
+.main { position: relative; }
+.pop { position: absolute; left: 590px; top: 258px; z-index: 5; }
+.pop .arrow { left: 60px; top: -7px; }
+.hovertip { position: absolute; left: 470px; top: 368px; z-index: 4; background: var(--surface-3); border: 1px solid var(--line-2); border-radius: 8px; padding: 8px 10px; font-size: 13px; color: var(--text-1); max-width: 300px; box-shadow: var(--shadow); line-height: 1.45; display: none; }
+.sheet-wrap { display: none; }
+.legend { margin-top: 26px; max-width: 860px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; font-size: 12px; color: var(--text-3); line-height: 1.5; }
+.legend div { border-top: 1px solid var(--line); padding-top: 8px; }
+.legend b { color: var(--text-2); display: block; font-size: 12px; }
+@media (max-width: 600px) {
+  .pop, .legend { display: none; }
+  .sheet-wrap { display: block; position: fixed; inset: 0; z-index: 10; }
+}
+</style>
+</head><body>
+<div class="concept"><b>Concept A</b><span>Underline and peek. Unfamiliar names are softly underlined in the text. Hover or tap for one line, "More" for the story. Level: Some help.</span></div>
+<header class="hud">
+  <div class="who"><span class="fl">🇺🇦</span><div><b>President Volodymyr Zelensky</b><small>Ukraine · Nov 2026 · month 1 of 12</small></div></div>
+  <div class="stat"><label>Approval</label><span class="v">56%</span></div>
+  <div class="stat"><label>Stability</label><span class="v">50%</span></div>
+  <div class="stat"><label>Legitimacy</label><span class="v">70%</span></div>
+  <div class="stat"><label>Political capital</label><span class="v" style="color:var(--accent)">◆◆◇</span></div>
+  <div class="stat"><label>World tension</label><span class="v">74</span></div>
+  <span class="sp"></span>
+  <button class="chip learn" aria-label="Explanations: Some help. Change"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0"/><path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0"/><path d="M3 6v13"/><path d="M12 6v13"/><path d="M21 6v13"/></svg> <b>Some help</b></button>
+</header>
+<div class="desk">
+<aside class="nav">
+  <div class="row" style="color:var(--accent)">◎ Mission <span style="margin-left:auto" class="num">3/4</span></div>
+  <h6>Crises · 1</h6>
+  <div class="row on">🇺🇦 🇷🇺 The free economic zone</div>
+  <h6>Meetings · 0 of 3</h6>
+  <div class="row">📞 🇷🇺 President Vladimir Putin</div>
+  <div class="row">📞 🇫🇷 President Emmanuel Macron</div>
+  <div class="row">👥 Defence Minister</div>
+  <h6>Orders · 2 of 6</h6>
+  <div class="row">☰ Staff suggestions</div>
+</aside>
+<main class="main">
+  <div class="scene"><span class="kick">BREAKING</span><div class="lights"></div><div class="ttl"><span class="urg">URGENT 🇺🇦 🇷🇺 🇺🇸</span><h2>The free economic zone</h2></div></div>
+  <div class="bar"><span class="tag">Staff pick: Only by referendum</span><span>✓ Approve staff pick</span><span>💬 Consult your staff</span></div>
+  <p class="event">US mediators propose demilitarising the unoccupied part of <button class="t" aria-haspopup="dialog">Donetsk oblast</button>, including the <button class="t active" aria-haspopup="dialog" aria-expanded="true">fortress belt</button> of Kramatorsk and Sloviansk, as an internationally run economic zone. Moscow calls it 'a basis'. Your generals call it surrender by spreadsheet.</p>
+  <p class="situation">Washington wants an answer before <button class="t" aria-haspopup="dialog">the midterms</button>. Accepting in principle keeps the Americans close but hands Moscow the fortress belt without a shot. Demanding <button class="t" aria-haspopup="dialog">a referendum</button> first is constitutionally correct and politically safe, and the White House will read it as a no. Rejecting outright and attacking shows the world Ukraine can still fight, at a cost in men you are running short of.</p>
+  <div class="options">
+    <div class="opt"><b>Accept in principle</b><div class="desc">Keep Washington on side. The street, the army and <button class="t known" aria-haspopup="dialog">the Rada</button> will not forgive you quickly.</div><div class="arr"><i>Approval ▼▼▼</i> · United States ▲▲</div></div>
+    <div class="opt chosen"><b>Only by referendum</b><div class="desc">No inch ceded without a national vote. Legally airtight, and a polite way of saying no.</div><div class="arr">Approval ▲▲ · <i>United States ▼▼</i></div></div>
+    <div class="opt"><b>Reject it and strike</b><div class="desc">Launch a limited counteroffensive on the <button class="t" aria-haspopup="dialog">Pokrovsk axis</button> to change the facts before the talks.</div><div class="arr">Mobilization ▲ · <i>Tension ▲▲</i></div></div>
+  </div>
+  <div class="legend">
+    <div><b>Marked</b>First mention per card only, ranked by how little known it is. "Moscow" and "Washington" stay plain at Some help.</div>
+    <div><b>Fading</b>"the Rada" was opened last session, so its underline is fainter. After 3 more meetings it goes plain.</div>
+    <div><b>Never hover-only</b>Hover previews after 300 ms; click, tap or Enter opens the same card. Esc closes.</div>
+  </div>
+
+  <div class="pop">
+    <div class="arrow"></div>
+    <div class="xp" role="dialog" aria-labelledby="xp-a">
+      <div class="hd"><div class="glyph">🛡</div><div><div class="kind">Place · Ukraine</div><div class="nm" id="xp-a">The fortress belt</div></div></div>
+      <div class="short">Four fortified cities in Ukrainian-held Donetsk: Sloviansk, Kramatorsk, Druzhkivka and Kostiantynivka. Ukraine's strongest line in the east.</div>
+      <div class="map"><svg viewBox="250 108 130 60" width="100%" role="img" aria-label="Map: eastern Ukraine, Russian-held area hatched (approximate, late 2026)" style="display:block;background:#0e1a2b"><defs><clipPath id="ua"><path d="M205.7,33.2L213.2,34.4L218.2,27.5L224.3,29.0L245.1,26.1L257.8,43.2L252.8,49.3L254.5,58.7L270.4,60.2L277.6,73.3L277.1,79.2L302.5,89.9L317.9,85.1L330.2,99.2L341.9,98.9L371.4,108.7L371.6,117.6L363.5,133.4L367.9,150.1L364.8,160.1L345.4,162.4L335.1,170.8L334.5,184.2L318.5,186.6L305.2,196.4L286.5,198.0L269.2,209.2L270.3,225.4L267.2,224.5L264.6,218.5L258.2,217.3L244.0,210.9L238.7,218.3L236.0,215.1L204.9,207.4L203.5,196.2L185.0,199.9L177.6,216.5L162.1,238.8L153.0,233.7L143.6,238.5L134.7,233.0L139.7,229.7L143.2,219.3L148.7,209.7L147.3,204.3L151.4,201.9L153.4,206.0L165.2,206.9L170.5,204.7L166.8,201.6L168.2,197.1L161.2,189.4L158.3,176.8L151.0,171.9L152.5,161.6L143.4,153.5L135.2,152.4L120.5,143.0L107.2,146.0L102.4,150.4L93.9,150.4L88.9,157.5L74.2,160.4L67.3,165.0L58.0,157.6L45.2,157.5L32.8,154.2L24.2,160.6L22.8,152.5L11.7,144.3L15.6,132.1L21.2,124.3L25.5,126.0L20.4,112.5L38.5,87.3L48.5,83.8L50.6,75.4L40.5,49.0L50.1,47.8L61.1,39.6L76.6,38.9L96.8,41.3L119.1,48.6L134.8,49.2L142.4,53.5L149.9,48.3L155.1,55.3L173.1,53.9L181.1,56.8L182.4,41.6L188.6,35.0L205.7,33.2Z"/></clipPath><pattern id="hatch" width="2.4" height="2.4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="2.4" height="2.4" fill="rgba(229,56,59,.18)"/><line x1="0" y1="0" x2="0" y2="2.4" stroke="rgba(229,56,59,.55)" stroke-width=".7"/></pattern></defs><path d="M552.0,205.4L542.9,223.4L523.5,228.3L503.6,259.5L521.8,288.2L519.9,308.5L541.7,344.1L529.7,356.3L526.3,364.0L517.5,361.9L503.7,343.6L498.1,342.5L485.5,335.5L479.4,323.1L460.8,316.8L448.6,321.6L445.1,316.0L417.9,301.5L388.4,296.6L371.5,291.4L369.1,295.0L343.6,269.5L320.8,258.1L303.5,240.3L318.1,235.5L334.7,210.2L323.5,198.3L353.0,185.9L352.4,179.3L334.5,184.2L335.1,170.8L345.4,162.4L364.8,160.1L367.9,150.1L363.5,133.4L371.6,117.6L371.4,108.7L341.9,98.9L330.2,99.2L317.9,85.1L302.5,89.9L277.1,79.2L277.6,73.3L270.4,60.2L254.5,58.7L252.8,49.3L257.8,43.2L245.1,26.1L224.3,29.0L218.2,27.5L213.2,34.4L205.7,33.2L200.8,13.8L196.1,3.8L200.0,1.0L216.1,2.0L223.9,-4.6L218.1,-12.6L204.6,-17.9L205.8,-23.4L197.7,-28.9L185.2,-48.7L189.4,-56.8L187.5,-71.0L167.9,-78.2L157.4,-74.6L154.6,-82.1L133.5,-89.7L127.1,-107.5L125.4,-122.2L115.8,-129.1L124.3,-138.7L118.4,-166.9L132.6,-184.3L129.6,-189.6L152.4,-206.3L131.4,-220.6L174.2,-259.2L192.8,-276.6L200.3,-292.0L170.7,-312.7L178.9,-332.4L160.9,-354.9L174.4,-380.8L151.1,-415.2L169.5,-438.0L138.9,-458.1L141.8,-479.2L158.0,-482.0L192.0,-494.2L212.7,-504.7L245.5,-486.4L300.3,-479.2L375.8,-445.0L391.2,-430.7L392.5,-410.6L370.3,-394.7L337.7,-386.7L248.4,-409.6L233.7,-405.8L266.3,-383.7L267.6,-369.6L268.9,-338.8L294.6,-329.6L310.3,-321.7L312.8,-336.4L300.8,-349.3L313.5,-360.8L361.9,-342.0L378.7,-349.3L365.3,-371.5L411.9,-401.1L430.3,-399.3L449.0,-388.8L460.6,-409.5L444.0,-427.5L453.8,-445.6L439.1,-464.3L495.0,-454.6L506.4,-437.7L481.1,-434.0L481.2,-417.2L497.0,-406.8L527.9,-413.4L532.8,-432.7L574.6,-447.0L644.3,-473.0L659.4,-471.5L639.7,-453.2L664.5,-450.0L678.9,-460.3L716.3,-461.2L746.0,-473.7L768.8,-455.5L791.6,-475.5L770.6,-493.0L781.0,-503.0L840.1,-493.8L867.8,-484.4L940.2,-449.9L953.6,-465.7L933.3,-481.7L932.7,-488.1L908.6,-491.0L915.2,-505.3L904.5,-528.9L903.9,-538.6L940.8,-565.9L953.9,-593.4L968.8,-599.3L1021.8,-591.4L1025.9,-574.6L1007.0,-550.1L1019.4,-540.4L1025.8,-519.3L1021.3,-477.9L1043.4,-459.4L1034.8,-439.2L995.6,-396.3L1018.5,-391.9L1026.4,-402.8L1048.4,-410.5L1053.7,-425.5L1071.0,-439.8L1059.4,-457.0L1068.7,-477.0L1046.8,-479.5L1042.0,-496.3L1058.0,-526.6L1032.0,-551.2L1067.8,-571.6L1063.2,-593.1L1073.2,-593.7L1083.7,-577.0L1075.8,-547.8L1097.2,-542.3L1088.1,-564.1L1121.5,-576.0L1163.0,-577.6L1200.0,-560.4L1182.2,-585.5L1180.2,-617.7L1215.0,-623.8L1263.1,-622.5L1306.4,-626.4L1290.2,-642.2L1313.3,-662.1L1336.3,-662.9L1375.2,-677.9L1428.0,-681.9L1434.7,-690.2L1487.2,-693.0L1503.6,-686.2L1548.5,-702.2L1585.2,-701.7L1590.7,-714.8L1609.8,-727.6L1657.0,-740.0L1691.3,-730.3L1664.1,-722.8L1709.4,-718.2L1714.8,-703.2L1733.1,-710.6L1791.5,-710.2L1836.6,-695.5L1852.7,-684.1L1847.7,-668.4L1825.6,-659.5L1773.0,-642.7L1758.0,-633.8L1782.8,-629.5L1812.4,-621.9L1830.4,-627.6L1840.6,-608.2L1849.4,-616.1L1881.4,-620.9L1945.5,-615.9L1950.4,-601.7L2034.0,-597.3L2035.2,-620.3L2077.6,-615.0L2109.5,-615.2L2141.8,-599.3L2151.0,-580.0L2139.2,-567.3L2164.3,-543.5L2195.8,-531.3L2215.1,-563.0L2247.2,-549.4L2281.2,-557.5L2320.0,-548.2L2334.7,-556.7L2367.4,-552.4L2353.0,-580.5L2379.4,-593.6L2560.0,-574.0L2577.0,-556.0L2629.4,-532.9L2710.1,-538.7L2750.0,-533.7L2766.6,-521.2L2764.2,-499.1L2788.8,-490.5L2815.6,-496.7L2851.0,-497.5L2888.8,-491.5L2926.7,-494.9L2961.6,-468.0L2986.3,-477.7L2970.2,-497.0L2979.1,-510.4L3042.9,-502.0L3084.5,-503.8L3142.0,-489.4L3170.0,-476.2L3170.0,-355.8L3144.1,-342.4L3118.2,-344.6L3136.3,-328.5L3148.2,-303.7L3157.4,-295.5L3159.7,-283.0L3154.6,-275.0L3117.3,-281.6L3061.4,-258.9L3043.6,-255.3L3013.0,-234.1L2984.0,-215.6L2976.6,-201.8L2948.0,-222.7L2895.9,-199.0L2886.8,-210.2L2867.5,-197.3L2840.8,-201.5L2834.3,-181.6L2810.3,-152.3L2811.1,-140.1L2833.8,-133.4L2831.2,-89.4L2812.6,-88.3L2804.0,-63.0L2812.3,-50.0L2777.4,-34.6L2770.4,-0.1L2740.6,7.3L2734.6,38.0L2705.8,66.1L2698.4,45.3L2689.8,1.2L2678.7,-65.9L2688.3,-107.8L2705.2,-125.8L2706.2,-139.9L2737.3,-146.7L2773.0,-184.7L2807.4,-215.8L2843.4,-239.9L2859.5,-282.5L2835.2,-279.9L2823.2,-255.0L2772.4,-221.9L2756.0,-259.0L2704.4,-248.7L2654.4,-198.1L2670.9,-179.6L2626.2,-171.7L2595.3,-168.6L2596.8,-190.4L2565.7,-195.0L2540.9,-180.2L2479.7,-185.4L2414.0,-176.4L2349.2,-117.5L2272.5,-46.2L2304.0,-42.4L2313.9,-23.5L2333.3,-16.8L2346.1,-31.9L2368.0,-29.9L2396.9,3.3L2397.6,29.0L2381.9,59.2L2380.3,95.3L2371.2,143.6L2341.1,187.3L2334.4,208.2L2307.2,243.4L2280.3,278.2L2267.4,296.1L2240.7,313.8L2228.1,314.2L2215.6,299.5L2188.7,321.6L2185.6,331.7L2182.8,326.4L2182.7,311.1L2192.9,310.2L2195.8,274.5L2190.5,248.7L2207.7,238.0L2231.9,243.4L2245.4,214.0L2252.2,180.9L2260.0,169.8L2270.5,142.6L2237.5,151.5L2220.1,163.5L2189.7,163.4L2181.6,135.0L2158.0,113.6L2123.1,103.9L2115.7,74.3L2108.8,55.8L2101.3,42.8L2088.9,12.3L2071.4,1.2L2041.4,-7.8L2014.9,-7.0L1990.1,-1.6L1973.5,13.5L1984.5,20.7L1984.8,37.3L1973.6,47.0L1955.6,79.1L1955.8,92.4L1927.6,111.4L1903.6,100.0L1879.7,102.6L1869.2,92.4L1857.2,89.2L1828.0,110.5L1801.6,115.5L1783.2,122.9L1758.0,118.0L1739.5,118.3L1727.4,102.9L1707.8,88.4L1687.7,84.4L1662.4,88.3L1643.5,93.9L1615.1,81.2L1611.3,58.6L1587.8,50.8L1569.6,47.3L1547.2,34.8L1526.5,66.1L1534.6,83.9L1515.2,104.9L1486.3,97.3L1466.3,96.3L1453.0,82.2L1432.1,81.7L1414.7,72.4L1384.3,86.6L1346.1,112.7L1325.0,117.9L1317.2,120.4L1306.6,101.9L1280.8,105.9L1272.3,93.1L1258.3,87.3L1248.7,69.8L1237.7,64.4L1208.9,72.1L1181.4,54.7L1170.7,70.5L1126.0,-6.2L1100.5,-29.5L1107.8,-39.0L1057.7,-10.5L1038.5,-8.8L1040.2,-25.2L1014.5,-35.5L993.6,-28.2L987.3,-59.5L951.4,-66.0L933.4,-53.5L883.3,-42.3L873.6,-34.9L798.7,-24.4L789.6,-14.0L804.0,6.6L784.8,14.5L788.5,22.7L769.4,37.4L801.8,58.2L796.7,72.5L768.7,71.2L762.8,80.2L737.3,64.5L705.6,65.1L684.3,77.9L660.7,65.7L616.6,44.7L585.3,45.5L544.0,78.4L541.6,100.4L521.0,82.9L505.0,116.1L510.9,122.3L499.3,145.2L516.3,165.7L531.1,164.8L543.9,185.0L541.9,200.6L552.0,205.4ZM238.7,218.3L244.0,210.9L258.2,217.3L264.6,218.5L267.2,224.5L270.3,225.4L270.4,228.0L280.2,235.3L300.6,233.5L296.7,244.3L274.8,249.5L247.7,267.0L236.5,260.9L240.9,246.7L219.1,237.8L222.6,232.0L241.8,222.0L238.7,218.3Z" fill="#1f2a3a" stroke="#2f3c50" stroke-width=".6"/><path d="M133.5,-89.7L154.6,-82.1L157.4,-74.6L167.9,-78.2L187.5,-71.0L189.4,-56.8L185.2,-48.7L197.7,-28.9L205.8,-23.4L204.6,-17.9L218.1,-12.6L223.9,-4.6L216.1,2.0L200.0,1.0L196.1,3.8L200.8,13.8L205.7,33.2L188.6,35.0L182.4,41.6L181.1,56.8L173.1,53.9L155.1,55.3L149.9,48.3L142.4,53.5L134.8,49.2L119.1,48.6L96.8,41.3L76.6,38.9L61.1,39.6L50.1,47.8L40.5,49.0L40.2,35.5L34.0,21.5L46.0,15.4L46.1,3.3L40.6,-8.2L39.7,-21.5L59.0,-21.3L80.7,-32.7L85.4,-49.8L101.8,-59.4L99.9,-73.0L112.0,-78.0L133.5,-89.7Z" fill="#1f2a3a" stroke="#2f3c50" stroke-width=".6"/><path d="M39.7,-21.5L40.6,-8.2L46.1,3.3L46.0,15.4L34.0,21.5L40.2,35.5L40.5,49.0L50.6,75.4L48.5,83.8L38.5,87.3L20.4,112.5L25.5,126.0L21.2,124.3L2.2,112.7L-12.2,116.9L-21.7,113.8L-33.5,120.3L-43.6,109.6L-51.8,113.7L-52.9,111.9L-62.1,97.0L-77.0,95.2L-78.9,85.7L-92.6,82.3L-95.6,90.1L-106.5,83.9L-105.2,75.6L-120.2,73.0L-129.7,63.2L-137.9,43.9L-136.3,33.5L-141.2,17.4L-148.5,6.6L-142.9,-1.5L-147.6,-16.8L-133.9,-25.7L-102.7,-39.7L-77.5,-49.9L-57.6,-44.8L-56.1,-37.4L-36.8,-37.0L-12.2,-33.6L24.6,-34.1L34.9,-30.8L39.7,-21.5Z" fill="#1f2a3a" stroke="#2f3c50" stroke-width=".6"/><path d="M11.7,144.3L22.8,152.5L24.2,160.6L12.0,167.0L2.5,187.5L-9.6,208.0L-25.6,213.6L-38.1,212.3L-53.4,220.3L-60.9,224.8L-77.4,219.0L-92.3,206.0L-98.7,202.3L-102.6,192.1L-106.0,191.8L-99.3,172.3L-103.2,165.8L-91.9,165.7L-90.4,153.4L-80.2,161.1L-72.9,164.4L-56.1,160.7L-54.5,154.6L-46.5,153.7L-36.8,149.0L-34.6,151.0L-25.2,147.2L-20.5,140.1L-14.0,138.2L7.4,147.4L11.7,144.3Z" fill="#1f2a3a" stroke="#2f3c50" stroke-width=".6"/><path d="M102.4,150.4L107.2,146.0L120.5,143.0L135.2,152.4L143.4,153.5L152.5,161.6L151.0,171.9L158.3,176.8L161.2,189.4L168.2,197.1L166.8,201.6L170.5,204.7L165.2,206.9L153.4,206.0L151.4,201.9L147.3,204.3L148.7,209.7L143.2,219.3L139.7,229.7L134.7,233.0L131.1,219.2L133.2,206.3L132.6,193.0L121.0,175.1L114.7,162.3L108.5,153.4L102.4,150.4Z" fill="#1f2a3a" stroke="#2f3c50" stroke-width=".6"/><path d="M134.7,233.0L143.6,238.5L153.0,233.7L162.1,238.8L162.5,246.6L152.8,253.1L146.8,250.3L141.2,286.8L129.4,283.6L114.8,272.6L91.3,279.6L81.4,287.3L52.0,285.7L36.6,281.0L28.9,283.2L23.1,270.8L19.5,265.6L24.1,260.5L19.2,256.7L12.9,263.5L1.2,254.7L-0.3,242.2L-12.5,235.1L-14.8,225.5L-25.6,213.6L-9.6,208.0L2.5,187.5L12.0,167.0L24.2,160.6L32.8,154.2L45.2,157.5L58.0,157.6L67.3,165.0L74.2,160.4L88.9,157.5L93.9,150.4L102.4,150.4L108.5,153.4L114.7,162.3L121.0,175.1L132.6,193.0L133.2,206.3L131.1,219.2L134.7,233.0Z" fill="#1f2a3a" stroke="#2f3c50" stroke-width=".6"/><path d="M23.1,270.8L28.9,283.2L36.6,281.0L52.0,285.7L81.4,287.3L91.3,279.6L114.8,272.6L129.4,283.6L141.2,286.8L130.8,299.3L123.5,320.9L129.9,338.1L112.7,334.1L92.3,343.6L92.1,358.6L73.9,361.5L59.9,350.9L43.8,359.2L29.0,358.3L27.6,338.4L17.6,328.7L20.9,324.4L18.7,320.8L22.1,311.2L29.7,301.7L20.0,288.7L18.2,277.7L23.1,270.8Z" fill="#1f2a3a" stroke="#2f3c50" stroke-width=".6"/><path d="M369.1,295.0L371.5,291.4L388.4,296.6L417.9,301.5L445.1,316.0L448.6,321.6L460.8,316.8L479.4,323.1L485.5,335.5L498.1,342.5L492.9,346.7L502.8,363.1L500.0,366.6L489.3,364.8L474.3,356.1L469.4,361.0L441.7,365.8L422.4,350.9L401.1,352.4L404.1,339.5L399.1,318.8L387.5,307.7L376.4,304.2L369.1,295.0Z" fill="#1f2a3a" stroke="#2f3c50" stroke-width=".6"/><path d="M21.2,124.3L15.6,132.1L11.7,144.3L7.4,147.4L-14.0,138.2L-20.5,140.1L-25.2,147.2L-34.6,151.0L-36.8,149.0L-46.5,153.7L-54.5,154.6L-56.1,160.7L-72.9,164.4L-80.2,161.1L-90.4,153.4L-92.4,142.9L-90.8,139.0L-88.0,132.4L-79.1,132.9L-72.3,129.8L-71.7,127.0L-67.9,125.5L-66.6,118.7L-62.0,117.4L-58.9,111.9L-52.9,111.9L-51.8,113.7L-43.6,109.6L-33.5,120.3L-21.7,113.8L-12.2,116.9L2.2,112.7L21.2,124.3Z" fill="#1f2a3a" stroke="#2f3c50" stroke-width=".6"/><path d="M-53.4,220.3L-38.1,212.3L-25.6,213.6L-14.8,225.5L-12.5,235.1L-0.3,242.2L1.2,254.7L12.9,263.5L19.2,256.7L24.1,260.5L19.5,265.6L23.1,270.8L18.2,277.7L20.0,288.7L29.7,301.7L22.1,311.2L18.7,320.8L20.9,324.4L17.6,328.7L8.3,329.2L1.5,330.9L0.9,328.7L3.3,325.1L5.5,317.7L2.7,317.9L-1.2,312.3L-4.5,310.9L-7.1,306.1L-10.9,304.2L-13.7,299.9L-17.3,301.6L-20.1,311.6L-24.8,313.8L-23.2,311.2L-30.8,304.9L-37.4,301.7L-40.3,297.5L-45.6,292.3L-40.9,291.0L-38.0,276.8L-47.6,265.1L-42.6,251.8L-49.9,251.9L-42.2,240.6L-48.5,232.0L-53.4,220.3Z" fill="#1f2a3a" stroke="#2f3c50" stroke-width=".6"/><path d="M-18.2,342.7L-19.5,331.8L-24.3,328.7L-28.6,320.6L-24.8,313.8L-20.1,311.6L-17.3,301.6L-13.7,299.9L-10.9,304.2L-7.1,306.1L-4.5,310.9L-1.2,312.3L2.7,317.9L5.5,317.7L3.3,325.1L0.9,328.7L1.5,330.9L-2.9,332.1L-14.8,336.8L-15.7,343.0L-18.2,342.7Z" fill="#1f2a3a" stroke="#2f3c50" stroke-width=".6"/><path d="M205.7,33.2L213.2,34.4L218.2,27.5L224.3,29.0L245.1,26.1L257.8,43.2L252.8,49.3L254.5,58.7L270.4,60.2L277.6,73.3L277.1,79.2L302.5,89.9L317.9,85.1L330.2,99.2L341.9,98.9L371.4,108.7L371.6,117.6L363.5,133.4L367.9,150.1L364.8,160.1L345.4,162.4L335.1,170.8L334.5,184.2L318.5,186.6L305.2,196.4L286.5,198.0L269.2,209.2L270.3,225.4L267.2,224.5L264.6,218.5L258.2,217.3L244.0,210.9L238.7,218.3L236.0,215.1L204.9,207.4L203.5,196.2L185.0,199.9L177.6,216.5L162.1,238.8L153.0,233.7L143.6,238.5L134.7,233.0L139.7,229.7L143.2,219.3L148.7,209.7L147.3,204.3L151.4,201.9L153.4,206.0L165.2,206.9L170.5,204.7L166.8,201.6L168.2,197.1L161.2,189.4L158.3,176.8L151.0,171.9L152.5,161.6L143.4,153.5L135.2,152.4L120.5,143.0L107.2,146.0L102.4,150.4L93.9,150.4L88.9,157.5L74.2,160.4L67.3,165.0L58.0,157.6L45.2,157.5L32.8,154.2L24.2,160.6L22.8,152.5L11.7,144.3L15.6,132.1L21.2,124.3L25.5,126.0L20.4,112.5L38.5,87.3L48.5,83.8L50.6,75.4L40.5,49.0L50.1,47.8L61.1,39.6L76.6,38.9L96.8,41.3L119.1,48.6L134.8,49.2L142.4,53.5L149.9,48.3L155.1,55.3L173.1,53.9L181.1,56.8L182.4,41.6L188.6,35.0L205.7,33.2Z" fill="#2a3a52" stroke="#f2a93b" stroke-width=".9"/><path d="M202.0,205.4L222.0,198.8L242.0,187.3L258.0,172.8L276.0,173.7L295.4,167.4L306.6,161.6L313.6,148.6L324.0,141.1L332.0,130.8L326.0,127.2L322.0,105.7L309.0,87.9L320.0,66.5L400.0,66.5L400.0,217.5L300.0,250.7L230.0,277.9L210.0,238.6Z" fill="url(#hatch)" clip-path="url(#ua)"/><ellipse cx="321.6" cy="136.4" rx="9" ry="12" fill="rgba(79,179,217,.18)" stroke="#4fb3d9" stroke-width=".9" stroke-dasharray="2 1.5"/><circle cx="322.0" cy="131.4" r="1.3" fill="#e8ecf2"/><text x="332.0" y="130.4" fill="#e8ecf2" font-family="Geist, system-ui" font-size="4.6" text-anchor="start" paint-order="stroke" stroke="#0b0f17" stroke-width="1.4">Sloviansk</text><circle cx="321.2" cy="135.3" r="1.3" fill="#e8ecf2"/><text x="331.2" y="142.3" fill="#e8ecf2" font-family="Geist, system-ui" font-size="4.6" text-anchor="start" paint-order="stroke" stroke="#0b0f17" stroke-width="1.4">Kramatorsk</text><circle cx="313.6" cy="148.6" r="1.3" fill="#e8ecf2"/><text x="309.6" y="152.6" fill="#e8ecf2" font-family="Geist, system-ui" font-size="4.6" text-anchor="end" paint-order="stroke" stroke="#0b0f17" stroke-width="1.4">Pokrovsk</text><circle cx="326.0" cy="157.1" r="1.3" fill="#e8ecf2"/><text x="330.0" y="164.1" fill="#e8ecf2" font-family="Geist, system-ui" font-size="4.6" text-anchor="start" paint-order="stroke" stroke="#0b0f17" stroke-width="1.4">Donetsk</text></svg></div>
+      <div class="long"><p>Fortified since 2014. Russia demands the whole of Donetsk in any deal; giving the belt up without a fight would leave open country between the front and the Dnipro.</p></div>
+      <div class="game"><b>In your game</b>Front line 52 of 100: close to stalemate. You hold the belt.</div>
+      <div class="ft"><span class="num">As of Nov 2026 · 2 src</span><span class="sp"></span><button class="lk quiet">Stop marking</button><button class="lk">Codex ›</button></div>
+    </div>
+  </div>
+</main>
+<aside class="rail">
+  <h6>This month</h6>
+  <div class="line"><span>◆ Political capital</span><span class="num">1 left of 3</span></div>
+  <div class="line"><span>Orders this month</span><span class="num">2 of 6</span></div>
+  <div class="line"><span>Meetings</span><span class="num">0 of 3</span></div>
+  <h6>You will</h6>
+  <div class="line" style="color:var(--text-1)"><span>The free economic zone: <b>Only by referendum</b></span></div>
+  <div class="line"><span>Court United Kingdom</span><span class="num">◆1</span></div>
+  <div class="line"><span>National address</span><span class="num">◆1</span></div>
+  <button class="exec">Execute month</button>
+</aside>
+</div>
+
+<div class="sheet-wrap">
+  <div class="scrim"></div>
+  <div class="sheet" role="dialog" aria-labelledby="xp-r">
+    <div class="grab"></div>
+    <div class="xp">
+      <div class="hd"><div class="glyph">🛡</div><div><div class="kind">Place · Ukraine</div><div class="nm" id="xp-r">The fortress belt</div></div></div>
+      <div class="short">Four fortified cities in Ukrainian-held Donetsk: Sloviansk, Kramatorsk, Druzhkivka and Kostiantynivka. Ukraine's strongest line in the east.</div>
+      <div class="game"><b>In your game</b>Front line 52 of 100: close to stalemate. You hold the belt.</div>
+    </div>
+    <div class="btns"><button class="pri">More</button><button>Codex</button><button aria-label="Close">Close</button></div>
+  </div>
+</div>
+</body></html>

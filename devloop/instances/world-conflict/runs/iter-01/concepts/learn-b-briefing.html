@@ -1,0 +1,235 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Learn B: Briefing panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;600&family=Newsreader:ital,wght@0,400;0,500;1,400&family=Instrument+Serif&display=swap" rel="stylesheet">
+<style>/* House tokens, copied from ui/src/styles/wc.css */
+:root {
+  --bg-0: #0b0f17; --ocean: #0e1a2b; --land: #1f2a3a;
+  --surface-1: #141b27; --surface-2: #1c2533; --surface-3: #243042;
+  --line: #2a3546; --line-2: #3a4759;
+  --text-1: #e8ecf2; --text-2: #a3aebf; --text-3: #8693a6;
+  --accent: #f2a93b; --accent-ink: #1b1204;
+  --intel: #4fb3d9; --ally: #3d8bfd; --rival: #f26b3a; --war: #e5383b; --nuke: #f5d547; --good: #56c596;
+  --font-ui: 'Geist', 'Inter', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+  --font-news: 'Instrument Serif', Georgia, serif;
+  --font-serif: 'Newsreader', Georgia, serif;
+  --r-sm: 6px; --r-md: 10px; --r-lg: 16px;
+  --shadow: 0 10px 40px rgba(0,0,0,.45);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  /* New tokens proposed by design-learn.md */
+  --learn: #4fb3d9;                       /* = --intel: knowledge is the intel family */
+  --learn-mark: rgba(79,179,217,.62);     /* underline colour */
+  --learn-mark-known: rgba(79,179,217,.28);
+  --learn-tint: rgba(79,179,217,.13);     /* hover / active background */
+  --real: #c9b48a;                        /* "what really happened" ink, parchment */
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg-0); color: var(--text-1); font-family: var(--font-ui); -webkit-font-smoothing: antialiased; }
+.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+button { font: inherit; color: inherit; }
+
+/* Concept label strip (not part of the game UI) */
+.concept { display: flex; gap: 12px; align-items: baseline; padding: 8px 16px; background: #05070b; border-bottom: 1px solid var(--line); font-size: 12px; color: var(--text-3); }
+.concept b { color: var(--accent); letter-spacing: .12em; text-transform: uppercase; font-size: 11px; }
+.concept span { color: var(--text-2); }
+
+/* HUD */
+.hud { display: flex; align-items: center; gap: 22px; padding: 10px 18px; background: var(--surface-1); border-bottom: 1px solid var(--line); }
+.hud .who { display: flex; gap: 10px; align-items: center; min-width: 0; }
+.hud .who .fl { font-size: 26px; }
+.hud .who b { display: block; font-size: 15px; white-space: nowrap; }
+.hud .who small { color: var(--text-3); font-size: 12px; }
+.hud .stat label { display: block; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--text-3); }
+.hud .stat .v { font-family: var(--font-mono); font-size: 16px; }
+.hud .sp { flex: 1; }
+.chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line-2); background: var(--surface-2); padding: 6px 10px; border-radius: 999px; font-size: 12px; color: var(--text-2); cursor: pointer; min-height: 32px; }
+.chip b { color: var(--text-1); font-weight: 600; }
+.chip.learn { border-color: rgba(79,179,217,.45); }
+.chip.learn svg { color: var(--learn); }
+.icon-btn { width: 40px; height: 40px; border-radius: var(--r-sm); border: 1px solid var(--line); background: var(--surface-2); display: inline-grid; place-items: center; color: var(--text-2); }
+
+/* Desk shell */
+.desk { display: grid; grid-template-columns: 270px minmax(0,1fr) 380px; min-height: calc(100vh - 92px); }
+.nav { border-right: 1px solid var(--line); padding: 14px 12px; }
+.nav h6 { margin: 14px 6px 6px; font-size: 10px; letter-spacing: .14em; color: var(--text-3); font-weight: 600; text-transform: uppercase; }
+.nav .row { display: flex; gap: 8px; align-items: center; padding: 8px; border-radius: var(--r-sm); font-size: 13px; color: var(--text-2); }
+.nav .row.on { background: var(--surface-2); border: 1px solid var(--accent); color: var(--text-1); }
+.main { padding: 18px 28px 40px; min-width: 0; }
+.rail { border-left: 1px solid var(--line); padding: 14px; background: var(--surface-1); }
+.rail h6 { margin: 10px 0 8px; font-size: 10px; letter-spacing: .14em; color: var(--text-3); font-weight: 600; text-transform: uppercase; }
+.rail .line { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-2); padding: 5px 0; }
+.rail .exec { margin-top: 18px; background: var(--accent); color: var(--accent-ink); border: 0; border-radius: var(--r-md); padding: 14px; font-weight: 700; width: 100%; font-size: 16px; }
+
+/* Crisis card */
+.scene { position: relative; height: 170px; border-radius: var(--r-md); overflow: hidden; background: radial-gradient(120% 90% at 70% 10%, #6b2a2a 0%, #2a1416 45%, #120b10 100%); border: 1px solid var(--line); max-width: 640px; }
+.scene .kick { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,.55); font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em; padding: 3px 8px; border-radius: 4px; }
+.scene .kick::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--war); margin-right: 6px; }
+.scene .ttl { position: absolute; left: 16px; bottom: 14px; }
+.scene .urg { display: inline-block; background: var(--war); font-size: 11px; font-weight: 700; letter-spacing: .1em; padding: 3px 8px; border-radius: 4px; margin-bottom: 6px; }
+.scene h2 { margin: 0; font-size: 20px; }
+.scene .lights { position: absolute; right: 40px; bottom: 30px; width: 180px; height: 70px; background: repeating-linear-gradient(90deg, rgba(242,169,59,.35) 0 10px, transparent 10px 22px); filter: blur(1px); opacity: .5; border-radius: 4px; }
+.bar { display: flex; gap: 14px; align-items: center; margin: 12px 0; font-size: 13px; color: var(--text-2); flex-wrap: wrap; }
+.tag { border: 1px solid var(--accent); color: var(--accent); border-radius: 999px; padding: 2px 9px; font-size: 12px; }
+.event { font-family: var(--font-serif); font-size: 16px; line-height: 1.6; color: var(--text-2); margin: 0 0 10px; max-width: 760px; }
+.situation { font-size: 16px; line-height: 1.65; margin: 0 0 14px; max-width: 760px; }
+.options { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; max-width: 860px; }
+.opt { text-align: left; background: var(--surface-2); border: 1px solid var(--line-2); border-radius: var(--r-md); padding: 12px; }
+.opt.chosen { border-color: var(--accent); background: #241d12; }
+.opt b { display: block; font-size: 15px; margin-bottom: 6px; }
+.opt .desc { font-size: 13px; line-height: 1.5; color: var(--text-2); }
+.opt .arr { font-family: var(--font-mono); font-size: 11px; margin-top: 8px; color: var(--good); }
+.opt .arr i { color: var(--war); font-style: normal; }
+
+/* ---------- Learn: inline terms ---------- */
+.t { color: inherit; text-decoration: underline dotted var(--learn-mark); text-decoration-thickness: 1.5px; text-underline-offset: 3px; cursor: help; border-radius: 3px; position: relative; background: none; border: 0; padding: 0; font: inherit; }
+.t::after { content: ""; position: absolute; inset: -6px -2px; } /* bigger hit box without layout change */
+.t.hover, .t:hover { text-decoration-style: solid; text-decoration-color: var(--learn); background: var(--learn-tint); }
+.t.active { text-decoration-style: solid; text-decoration-color: var(--learn); background: var(--learn-tint); box-shadow: 0 0 0 1px rgba(79,179,217,.5); }
+.t.known { text-decoration-color: var(--learn-mark-known); }
+.mark { background: rgba(79,179,217,.22); box-shadow: 0 0 0 2px rgba(79,179,217,.22); border-radius: 3px; }
+
+/* ---------- Learn: explainer (popover and sheet share it) ---------- */
+.xp { background: var(--surface-3); border: 1px solid var(--line-2); border-radius: var(--r-md); box-shadow: var(--shadow); width: 340px; font-size: 14px; color: var(--text-1); }
+.xp .hd { display: flex; gap: 10px; align-items: center; padding: 12px 14px 4px; }
+.xp .glyph { width: 34px; height: 34px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--surface-2); border: 1px solid var(--line-2); font-size: 18px; }
+.xp .kind { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--learn); font-weight: 600; }
+.xp .nm { font-weight: 700; font-size: 15px; }
+.xp .short { padding: 4px 14px 10px; line-height: 1.5; color: var(--text-1); }
+.xp .long { padding: 0 14px 10px; line-height: 1.55; color: var(--text-2); font-size: 13.5px; }
+.xp .long p { margin: 0 0 8px; }
+.xp .game { margin: 0 14px 10px; padding: 8px 10px; border-left: 3px solid var(--accent); background: rgba(242,169,59,.08); font-size: 13px; color: var(--text-2); border-radius: 0 6px 6px 0; }
+.xp .game b { color: var(--accent); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; display: block; margin-bottom: 2px; }
+.xp .ft { display: flex; gap: 4px; align-items: center; padding: 8px 10px; border-top: 1px solid var(--line); font-size: 12px; color: var(--text-3); flex-wrap: wrap; }
+.xp .ft .sp { flex: 1; }
+.lk { background: none; border: 0; color: var(--learn); font-size: 13px; font-weight: 600; padding: 8px 6px; min-height: 36px; cursor: pointer; }
+.lk.quiet { color: var(--text-3); font-weight: 500; }
+.xp .map { margin: 0 14px 10px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); }
+.arrow { position: absolute; width: 12px; height: 12px; background: var(--surface-3); border-left: 1px solid var(--line-2); border-top: 1px solid var(--line-2); transform: rotate(45deg); }
+
+/* bottom sheet (touch) */
+.scrim { position: absolute; inset: 0; background: rgba(5,7,11,.55); }
+.sheet { position: absolute; left: 0; right: 0; bottom: 0; background: var(--surface-3); border-top: 1px solid var(--line-2); border-radius: 16px 16px 0 0; box-shadow: 0 -10px 40px rgba(0,0,0,.5); }
+.sheet .grab { width: 40px; height: 4px; background: var(--line-2); border-radius: 2px; margin: 8px auto 2px; }
+.sheet .xp { width: auto; background: none; border: 0; box-shadow: none; }
+.sheet .btns { display: flex; gap: 8px; padding: 6px 14px 18px; }
+.sheet .btns button { flex: 1; min-height: 44px; border-radius: var(--r-sm); border: 1px solid var(--line-2); background: var(--surface-2); font-weight: 600; font-size: 14px; }
+.sheet .btns button.pri { border-color: rgba(79,179,217,.6); color: var(--learn); }
+
+/* "i" affordance */
+.ib { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid rgba(79,179,217,.6); color: var(--learn); font: 600 12px/1 var(--font-serif); font-style: italic; vertical-align: 2px; margin-left: 6px; background: none; position: relative; cursor: pointer; }
+.ib::after { content: ""; position: absolute; inset: -11px; }
+.ib.on { background: var(--learn); color: var(--bg-0); }
+.wigo { display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(79,179,217,.45); color: var(--learn); background: rgba(79,179,217,.08); border-radius: 999px; padding: 6px 12px 6px 8px; font-size: 13px; font-weight: 600; min-height: 36px; }
+.wigo .ib { margin: 0; width: 20px; height: 20px; vertical-align: 0; }
+
+/* leader disc (who's who) */
+.disc { width: 40px; height: 40px; border-radius: 50%; position: relative; flex: none; display: grid; place-items: center; font-weight: 700; font-size: 14px; color: var(--text-1); background: var(--surface-2); border: 2px solid var(--line-2); }
+.disc .f { position: absolute; right: -4px; bottom: -4px; font-size: 15px; line-height: 1; }
+
+@media (max-width: 600px) {
+  .hud { gap: 10px; padding: 8px 12px; }
+  .hud .stat { display: none; }
+  .hud .who b { font-size: 14px; max-width: 170px; overflow: hidden; text-overflow: ellipsis; }
+  .desk { display: block; }
+  .nav, .rail { display: none; }
+  .main { padding: 12px 16px 120px; }
+  .scene { height: 130px; }
+  .scene h2 { font-size: 18px; }
+  .options { grid-template-columns: 1fr; }
+  .event { font-size: 15px; }
+  .situation { font-size: 15.5px; }
+  .xp { width: auto; }
+}
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+<style>
+.tabs { display: flex; gap: 4px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 999px; padding: 3px; margin-bottom: 12px; }
+.tabs button { flex: 1; border: 0; background: none; border-radius: 999px; padding: 8px; font-size: 13px; color: var(--text-2); min-height: 36px; }
+.tabs button.on { background: var(--surface-3); color: var(--text-1); font-weight: 600; }
+.tabs .n { font-family: var(--font-mono); color: var(--learn); margin-left: 4px; }
+.sit { border: 1px solid rgba(79,179,217,.35); background: rgba(79,179,217,.06); border-radius: var(--r-md); padding: 10px 12px; margin-bottom: 12px; }
+.sit .k { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--learn); font-weight: 600; }
+.sit p { margin: 4px 0 6px; font-size: 13.5px; line-height: 1.5; }
+.grp { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--text-3); margin: 12px 0 4px; font-weight: 600; }
+.item { display: grid; grid-template-columns: 30px 1fr auto; gap: 10px; align-items: start; padding: 8px; border-radius: var(--r-sm); border: 1px solid transparent; }
+.item.hot { background: var(--learn-tint); border-color: rgba(79,179,217,.4); }
+.item .g { width: 30px; height: 30px; border-radius: 50%; background: var(--surface-2); border: 1px solid var(--line-2); display: grid; place-items: center; font-size: 15px; position: relative; }
+.item .g .f { position: absolute; right: -4px; bottom: -4px; font-size: 12px; }
+.item b { font-size: 13.5px; display: block; }
+.item span { font-size: 12.5px; color: var(--text-2); line-height: 1.45; display: block; }
+.item .chev { color: var(--text-3); font-size: 14px; padding-top: 4px; }
+.item .more { grid-column: 2 / 4; font-size: 12.5px; color: var(--text-2); line-height: 1.5; border-top: 1px solid var(--line); padding-top: 6px; margin-top: 2px; }
+.item .more .lk { padding: 4px 0; min-height: 0; }
+.pill { display: none; }
+.sheet-wrap { display: none; }
+@media (max-width: 600px) {
+  .pill { display: inline-flex; align-items: center; gap: 8px; margin: 2px 0 12px; border: 1px solid rgba(79,179,217,.45); color: var(--learn); background: rgba(79,179,217,.08); border-radius: 999px; padding: 8px 14px; font-size: 14px; font-weight: 600; min-height: 44px; }
+  .sheet-wrap { display: block; position: fixed; inset: 0; z-index: 10; }
+  .sheet .body { padding: 4px 14px 18px; max-height: 64vh; overflow: hidden; }
+}
+</style>
+</head><body>
+<div class="concept"><b>Concept B</b><span>Briefing panel. The text stays clean. A "Briefing" tab lists every name on this screen with one line each; pointing at one lights it up in the text.</span></div>
+<header class="hud">
+  <div class="who"><span class="fl">🇺🇦</span><div><b>President Volodymyr Zelensky</b><small>Ukraine · Nov 2026 · month 1 of 12</small></div></div>
+  <div class="stat"><label>Approval</label><span class="v">56%</span></div>
+  <div class="stat"><label>Stability</label><span class="v">50%</span></div>
+  <div class="stat"><label>Legitimacy</label><span class="v">70%</span></div>
+  <div class="stat"><label>Political capital</label><span class="v" style="color:var(--accent)">◆◆◇</span></div>
+  <div class="stat"><label>World tension</label><span class="v">74</span></div>
+  <span class="sp"></span>
+  <button class="chip learn" aria-label="Briefing panel: shown. Change"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0"/><path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0"/><path d="M3 6v13"/><path d="M12 6v13"/><path d="M21 6v13"/></svg> <b>Briefing on</b></button>
+</header>
+<div class="desk">
+<aside class="nav">
+  <div class="row" style="color:var(--accent)">◎ Mission <span style="margin-left:auto" class="num">3/4</span></div>
+  <h6>Crises · 1</h6>
+  <div class="row on">🇺🇦 🇷🇺 The free economic zone</div>
+  <h6>Meetings · 0 of 3</h6>
+  <div class="row">📞 🇷🇺 President Vladimir Putin</div>
+  <div class="row">📞 🇫🇷 President Emmanuel Macron</div>
+  <div class="row">👥 Defence Minister</div>
+  <h6>Orders · 2 of 6</h6>
+  <div class="row">☰ Staff suggestions</div>
+</aside>
+<main class="main">
+  <div class="scene"><span class="kick">BREAKING</span><div class="lights"></div><div class="ttl"><span class="urg">URGENT 🇺🇦 🇷🇺 🇺🇸</span><h2>The free economic zone</h2></div></div>
+  <div class="bar"><span class="tag">Staff pick: Only by referendum</span><span>✓ Approve staff pick</span><span>💬 Consult your staff</span></div>
+  <button class="pill"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0"/><path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0"/><path d="M3 6v13"/><path d="M12 6v13"/><path d="M21 6v13"/></svg> Briefing · 7 names on this card</button>
+  <p class="event">US mediators propose demilitarising the unoccupied part of Donetsk oblast, including the <span class="mark">fortress belt</span> of Kramatorsk and Sloviansk, as an internationally run economic zone. Moscow calls it 'a basis'. Your generals call it surrender by spreadsheet.</p>
+  <p class="situation">Washington wants an answer before the midterms. Accepting in principle keeps the Americans close but hands Moscow the <span class="mark">fortress belt</span> without a shot. Demanding a referendum first is constitutionally correct and politically safe, and the White House will read it as a no. Rejecting outright and attacking shows the world Ukraine can still fight, at a cost in men you are running short of.</p>
+  <div class="options">
+    <div class="opt"><b>Accept in principle</b><div class="desc">Keep Washington on side. The street, the army and the Rada will not forgive you quickly.</div><div class="arr"><i>Approval ▼▼▼</i> · United States ▲▲</div></div>
+    <div class="opt chosen"><b>Only by referendum</b><div class="desc">No inch ceded without a national vote. Legally airtight, and a polite way of saying no.</div><div class="arr">Approval ▲▲ · <i>United States ▼▼</i></div></div>
+    <div class="opt"><b>Reject it and strike</b><div class="desc">Launch a limited counteroffensive on the Pokrovsk axis to change the facts before the talks.</div><div class="arr">Mobilization ▲ · <i>Tension ▲▲</i></div></div>
+  </div>
+</main>
+<aside class="rail">
+  <div class="tabs" role="tablist"><button role="tab">This month</button><button role="tab" class="on" aria-selected="true">Briefing<span class="n">7</span></button></div>
+  <div class="sit"><div class="k">What is going on here</div><p>Russia invaded in 2022 and holds about a fifth of Ukraine. The front barely moved in 2026; the US is pushing both sides toward a deal.</p><button class="lk" style="padding:0;min-height:0">Full briefing with map ›</button></div>
+  <div class="grp">Places</div>
+  <div class="item"><div class="g">📍</div><div><b>Donetsk oblast</b><span>Eastern Ukrainian province. Russia holds most of it and claims all of it.</span></div><div class="chev">›</div></div>
+  <div class="item hot"><div class="g">🛡</div><div><b>The fortress belt</b><span>Four fortified cities in Ukrainian-held Donetsk. Ukraine's strongest line in the east.</span></div><div class="chev">⌄</div>
+    <div class="more">Fortified since 2014. Giving it up without a fight would leave open country between the front and the Dnipro. <button class="lk">Codex ›</button></div></div>
+  <div class="item"><div class="g">⚔</div><div><b>Pokrovsk axis</b><span>The front around Pokrovsk, a road and rail hub, scene of the heaviest fighting of 2024 and 2025.</span></div><div class="chev">›</div></div>
+  <div class="grp">Politics</div>
+  <div class="item"><div class="g">🗳<span class="f">🇺🇸</span></div><div><b>The midterms</b><span>US elections for the House and a third of the Senate. 2026's were on 3 November.</span></div><div class="chev">›</div></div>
+  <div class="item"><div class="g">🏛<span class="f">🇺🇦</span></div><div><b>The Rada</b><span>Ukraine's parliament. Giving up land needs a national referendum, not just its vote.</span></div><div class="chev">›</div></div>
+  <div class="item"><div class="g">✉</div><div><b>Moscow, Washington</b><span>Shorthand for the Russian and US governments.</span></div><div class="chev">›</div></div>
+</aside>
+</div>
+
+<div class="sheet-wrap">
+  <div class="scrim"></div>
+  <div class="sheet" role="dialog" aria-label="Briefing: names on this card">
+    <div class="grab"></div>
+    <div class="body">
+      <div class="sit"><div class="k">What is going on here</div><p>Russia invaded in 2022 and holds about a fifth of Ukraine. The US is pushing both sides toward a deal.</p><button class="lk" style="padding:0;min-height:32px">Full briefing with map ›</button></div>
+      <div class="item"><div class="g">📍</div><div><b>Donetsk oblast</b><span>Eastern Ukrainian province. Russia holds most of it and claims all of it.</span></div><div class="chev">›</div></div>
+      <div class="item hot"><div class="g">🛡</div><div><b>The fortress belt</b><span>Four fortified cities in Ukrainian-held Donetsk. Ukraine's strongest line in the east.</span></div><div class="chev">›</div></div>
+      <div class="item"><div class="g">🗳<span class="f">🇺🇸</span></div><div><b>The midterms</b><span>US elections for the House and a third of the Senate. 2026's were on 3 November.</span></div><div class="chev">›</div></div>
+      <div class="item"><div class="g">🏛<span class="f">🇺🇦</span></div><div><b>The Rada</b><span>Ukraine's parliament. Giving up land needs a national referendum.</span></div><div class="chev">›</div></div>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -30,3 +30,8 @@ Newest entries at the bottom. Each entry names an area for improvement in our pr
 
 - **Observation.** The kit itself produced false findings: it clicked only `role=button` elements (tabs and list options looked dead), silently dismissed native confirm dialogs (an order "never queued"), and rendered in software GL, which starved the CPU and caused most freezes. 8 of 10 reported bugs were real; 2 were the kit's fault. **Change.** Kit clicks every pressable role, shows dialogs to the persona and logs them, uses GPU rendering by default. QA reproduction stays mandatory before any bug is filed.
 - **Observation.** A glossary rename broke the smoke script's navigation ("Home and security" became "Home front"). **Change.** Smoke follows forward buttons structurally, not by page names, and fails loudly when stuck.
+
+## 2026-11-22 · Iteration 1 · Consumption tracking (CEO request)
+
+- **Observation.** We had no view of where the AI work (tokens) goes. The transcripts already record exact usage per response. **Change.** `kit/usage-ledger.mjs` attributes every response to role, persona, stage, iteration and time via a registry; the status page has a Consumption tab. Agent descriptions now follow naming rules so attribution is automatic, and the orchestrator records stage boundaries in the registry.
+- **First readings.** Since the loop started: 34M weighted tokens, 98% of input served from cache. Engineers are the largest share (build), then orchestration (about 20%), customers and designers. A customer session costs about 0.6M weighted, a design spec about 0.9M, a build package about 2.2M.
