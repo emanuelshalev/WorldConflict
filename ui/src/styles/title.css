@@ -117,9 +117,10 @@
 .tg-pin-badge { inset: 3px; display: grid; place-items: center; border-radius: 50%; background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--pin) 85%, #fff) 0%, var(--pin) 55%, color-mix(in srgb, var(--pin) 60%, #000) 100%); border: 1.5px solid rgba(255, 255, 255, .85); box-shadow: 0 0 14px var(--pin), 0 2px 6px rgba(0, 0, 0, .6); transition: transform .2s; }
 .tg-pin-badge svg { display: block; filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .5)); }
 .tg-pin:hover .tg-pin-badge, .tg-pin.on .tg-pin-badge { transform: scale(1.18); }
-.tg-pin-ring { inset: 0; border-radius: 50%; border: 2px solid var(--pin); opacity: 0; animation: tg-ring 2.4s ease-out infinite; pointer-events: none; }
+.tg-pin-ring { inset: 0; border-radius: 50%; border: 2px solid var(--pin); opacity: 0; animation: tg-ring 2.4s ease-out 3 both; pointer-events: none; }
 .tg-pin-ring.r2 { animation-delay: 1.2s; }
-.tg-pin.on .tg-pin-ring { border-color: #fff; }
+/* Finite pulses (FEEL-7 budget): 3 on arrival, 4 more when picked (a new name restarts them) */
+.tg-pin.on .tg-pin-ring { border-color: #fff; animation-name: tg-ring-on; animation-iteration-count: 4; }
 .tg-pin.gold .tg-pin-badge { border-color: var(--nuke); box-shadow: 0 0 0 3px rgba(245, 213, 71, .35), 0 0 22px rgba(245, 213, 71, .8); }
 .tg-pin.gold .tg-pin-ring { border-color: var(--nuke); }
 .tg-pin-today { display: none; left: 50%; top: -15px; transform: translateX(-50%); font: 800 9px/1 var(--font-mono); letter-spacing: .14em; padding: 2px 5px; border-radius: 3px; background: var(--nuke); color: #1b1204; pointer-events: none; }
@@ -129,6 +130,7 @@
 .tg-pin-card small { font: 11px/1.2 var(--font-ui); color: var(--text-2); }
 .tg-pin:hover .tg-pin-card, .tg-pin.on .tg-pin-card, .tg-pin:focus-visible .tg-pin-card { opacity: 1; }
 @keyframes tg-ring { 0% { transform: scale(.55); opacity: .9; } 100% { transform: scale(2.1); opacity: 0; } }
+@keyframes tg-ring-on { 0% { transform: scale(.55); opacity: .9; } 100% { transform: scale(2.1); opacity: 0; } }
 
 /* Space around the globe: stars, a faint galaxy band, a slow twinkle */
 .tg { background:
@@ -203,3 +205,24 @@
   .tg, .ts2-vignette { height: calc(46vh + 96px); }
   .ts2-left { gap: 6px; padding-bottom: 6px; }
 }
+
+/* =========================================================================
+   World map WP-W1: the globe fits the free screen (lib/globeFit.ts), idle holds still
+   ========================================================================= */
+/* Star twinkle and the ticker hold their frame on an idle page (lib/motion.ts useIdle) */
+.wc-idle .tg::before, .wc-idle .tg::after, .wc-idle .ts2-ticker .track { animation-play-state: paused; }
+/* Phones: the globe has its own band, 160 px from the top (under the brand and the mode dial),
+   as tall as the screen is wide plus 8 px (globeFit.ts PHONE_BAND_TOP, phoneBandHeight) */
+@media (max-width: 900px) {
+  .tg, .ts2-vignette { height: calc(160px + 100vw + 8px); }
+  .ts2 { grid-template-rows: auto auto auto auto; }
+  .ts2-left { justify-content: flex-start; align-self: start; }
+  /* The dial sits above the band; what follows it (today's crisis) goes below the globe */
+  .ts2-dial { margin-bottom: calc(100vw + 2px); }
+  .ts2-daily { margin-top: 0; }
+  .tg-pin-card { white-space: normal; width: max-content; max-width: min(220px, 46vw); }
+}
+/* Pins in the right half open their card to the left, so it never leaves the screen */
+.tg-pin.flip .tg-pin-card { left: auto; right: 38px; text-align: right; }
+/* The picked pin and its card sit above the other pins */
+.tg-pin.on, .tg-pin:hover, .tg-pin:focus-visible { z-index: 2; }
