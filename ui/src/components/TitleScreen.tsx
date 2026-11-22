@@ -6,7 +6,7 @@ import { MapKey } from './MapKey';
 import { CRISIS_KINDS, kindOf } from '../lib/crisisKind';
 import { iconSvg } from '../lib/iconSvg';
 import '../styles/title.css';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   IconBolt,
   IconChevronLeft,
@@ -33,6 +33,12 @@ import {
 } from '../store/gameStore';
 import { flag } from '../lib/format';
 import { YourRecord } from './reveal/YourRecord';
+// World map WP-W5: the era's world on the globe
+import { EraCard } from './globe/EraCard';
+import { EraFires } from './globe/EraFires';
+import { RollingYear } from './globe/RollingYear';
+import { useColourBy, useEraMap, useGlobeDensity } from './globe/useEraWorld';
+import { eraCounts, unplayableIn } from './globe/eraLayers';
 
 interface CountryInfo {
   id: string;
@@ -121,6 +127,16 @@ export function TitleScreen() {
 
   const fp = flashpoints.find((f) => f.id === flashpointId) ?? null;
   const usingFlashpoint = mode === 'FLASHPOINT' && !!fp;
+  // The era's world (One Term, Legacy): payload, the remembered switch and colouring
+  const eraView = mode !== 'FLASHPOINT';
+  const eraIds = useMemo(() => scenarios.map((x) => x.id), [scenarios]);
+  const eraLoaded = useEraMap(scenarioId, eraView, eraIds);
+  const era = eraView ? eraLoaded : null;
+  const [density, setDensity] = useGlobeDensity();
+  const [colourBy, setColourBy] = useColourBy(era);
+  const [situationId, setSituationId] = useState<string | null>(null);
+  const situation = era?.situations.find((x) => x.id === situationId) ?? null;
+  const eraNameOf = useCallback((id: string) => era?.countries.find((c) => c.id === id && c.status === 'STATE')?.name, [era]);
   const nationChoices = useMemo(() => {
     if (usingFlashpoint && fp) {
       return fp.playable.map((p) => ({
@@ -128,17 +144,20 @@ export function TitleScreen() {
         name: countries.find((c) => c.id === p.countryId)?.name ?? p.countryId,
         sub: p.role,
         difficulty: p.difficulty,
+        off: null as string | null,
       }));
     }
     return [...countries]
       .sort((a, b) => DIFF_ORDER[a.difficulty] - DIFF_ORDER[b.difficulty] || a.name.localeCompare(b.name))
-      .map((c) => ({ id: c.id, name: c.name, sub: c.leaderTitle, difficulty: c.difficulty }));
-  }, [usingFlashpoint, fp, countries]);
+      .map((c) => ({ id: c.id, name: eraNameOf(c.id) ?? c.name, sub: c.leaderTitle, difficulty: c.difficulty, off: unplayableIn(era, c.id) }))
+      .sort((a, b) => Number(!!a.off) - Number(!!b.off));
+  }, [usingFlashpoint, fp, countries, era, eraNameOf]);
 
-  // Keep the selection valid when the crisis (and its playable sides) changes
-  const countryId = nationChoices.some((n) => n.id === pickedCountry)
+  // Keep the selection valid when the crisis (and its playable sides) changes, or the era has no
+  // such state (B-17: the Ukrainian SSR cannot be led in 1960)
+  const countryId = nationChoices.some((n) => n.id === pickedCountry && !n.off)
     ? pickedCountry
-    : (nationChoices[0]?.id ?? '');
+    : (nationChoices.find((n) => !n.off)?.id ?? '');
   const setCountryId = setPickedCountry;
 
   const chosen = nationChoices.find((n) => n.id === countryId);
@@ -227,10 +246,30 @@ export function TitleScreen() {
     if (f) setFocus(pinAt(f.playable.map((x) => x.countryId)));
   };
   const pickNation = (id: string) => {
-    if (!nationChoices.some((n) => n.id === id)) return;
+    if (!nationChoices.some((n) => n.id === id && !n.off)) return;
     setCountryId(id);
     setFocus(pinAt([id]));
   };
+  const pickEra = (id: string) => {
+    setScenarioId(id);
+    setSituationId(null);
+    setFocus(null);
+  };
+  const pickSituation = (id: string) => {
+    const sit = era?.situations.find((x) => x.id === id);
+    if (!sit) return;
+    setSituationId(id);
+    setFocus([sit.at[0], sit.at[1]]);
+  };
+  const closeSituation = () => {
+    setSituationId(null);
+    setFocus(null);
+  };
+  const playAsFlashpoint = (id: string) => {
+    setSituationId(null);
+    pickCrisis(id);
+  };
+  const counts = era ? eraCounts(era) : null;
   const fpIndex = flashpoints.findIndex((f) => f.id === flashpointId);
   const scene = usingFlashpoint && fp ? sceneForNews('WAR', `${fp.title} ${fp.tagline}`) : 'war_room';
   const tension = scenarios.find((x) => x.id === '2026')?.globalTension;
@@ -240,17 +279,36 @@ export function TitleScreen() {
 
   return (
     <div className="ts2">
-      <TitleGlobe arcs={arcs} pins={pins} selectedPin={usingFlashpoint ? flashpointId : null} onPin={pickCrisis} tint={tint} selectedCountry={countryId} onCountry={pickNation} focus={focus} padRight={wide ? 440 : 0} />
+      <TitleGlobe arcs={arcs} pins={pins} selectedPin={usingFlashpoint ? flashpointId : null} onPin={pickCrisis} tint={tint} selectedCountry={countryId} onCountry={pickNation} focus={focus} padRight={wide ? 440 : 0} era={era} colourBy={colourBy} density={density} selectedSituation={situationId} onSituation={pickSituation} obstacles=".ts2-left > *, .ts2-dossier, .map-key, .ts2-brand, .ts2-status > *, .ts2-actions" />
       <div className="ts2-vignette" aria-hidden />
 
       <header className="ts2-top">
         <div className="ts2-brand">
           <h1>World Conflict</h1>
-          <small className="num">
-            The world tonight · {new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-            {tension !== undefined ? ` · tension ${tension}` : ''}
-          </small>
+          {era ? (
+            <small className="num ts2-era-line">
+              The world in {new Date(2000, era.month - 1, 1).toLocaleDateString('en-GB', { month: 'long' })} <RollingYear year={era.year} /> · tension {era.tension}
+            </small>
+          ) : (
+            <small className="num">
+              The world tonight · {new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+              {tension !== undefined ? ` · tension ${tension}` : ''}
+            </small>
+          )}
         </div>
+        {era && counts ? (
+          <div className="ts2-status" aria-label="The era at a glance">
+            <span>
+              <b className="num">{counts.situations}</b> situations
+            </span>
+            <span>
+              <b className="num">{counts.wars}</b> {counts.wars === 1 ? 'war' : 'wars'}
+            </span>
+            <span>
+              <b className="num">{counts.blocs}</b> blocs
+            </span>
+          </div>
+        ) : (
         <div className="ts2-status" aria-label="State of the world">
           <span>
             <b className="num">{flashpoints.length}</b> live crises
@@ -267,6 +325,7 @@ export function TitleScreen() {
             </span>
           )}
         </div>
+        )}
         <div className="ts2-actions">
           {resume && (
             <button className="wc-btn primary" onClick={() => loadGame(resume)}>
@@ -296,6 +355,19 @@ export function TitleScreen() {
             </button>
           ))}
         </div>
+        {era && (
+          <div className="ts2-era-phone">
+            <MapKey mode="era" era={era} colourBy={colourBy} onColourBy={setColourBy} compact />
+            <div className="ts2-eras chips" role="radiogroup" aria-label="Era">
+              {scenarios.map((x) => (
+                <button key={x.id} role="radio" aria-checked={scenarioId === x.id} className={scenarioId === x.id ? 'on' : ''} onClick={() => pickEra(x.id)}>
+                  <b className="num">{x.startYear}</b>
+                </button>
+              ))}
+            </div>
+            <EraFires era={era} density={density} onDensity={setDensity} selected={situationId} onSelect={pickSituation} variant="strip" />
+          </div>
+        )}
         <p className="ts2-pitch">{MODES.find((m) => m.id === mode)?.pitch}</p>
         <h2 className="ts2-tag">
           {mode === 'FLASHPOINT' ? (
@@ -358,26 +430,32 @@ export function TitleScreen() {
           </>
         ) : (
           <>
-            <div className="ts2-label">The era</div>
-            <div className="ts2-eras">
+            <div className="ts2-label ts2-era-label">The era: the globe shows that world</div>
+            <div className="ts2-eras" role="radiogroup" aria-label="Era">
               {scenarios.map((x) => (
-                <button key={x.id} className={scenarioId === x.id ? 'on' : ''} onClick={() => setScenarioId(x.id)}>
+                <button key={x.id} role="radio" aria-checked={scenarioId === x.id} className={scenarioId === x.id ? 'on' : ''} onClick={() => pickEra(x.id)}>
                   <b className="num">{x.startYear}</b>
                   <span>{x.name.replace(/^\d{4}:?\s*/, '')}</span>
                 </button>
               ))}
             </div>
-            {scenario && <p className="ts2-hook small">{scenario.description}</p>}
+            {era && situation ? (
+              <EraCard key={situation.id} era={era} situation={situation} variant="docked" picked={countryId} onLead={pickNation} onFlashpoint={playAsFlashpoint} onClose={closeSituation} />
+            ) : (
+              scenario && <p className="ts2-hook small">{scenario.description}</p>
+            )}
+            {era && <EraFires era={era} density={density} onDensity={setDensity} selected={situationId} onSelect={pickSituation} variant="list" compact={!!situation} />}
             <div className="ts2-label">Your nation · click the globe or the list</div>
           </>
         )}
         <div className={`ts2-sides ${usingFlashpoint ? '' : 'many'}`}>
           {nationChoices.map((n) => (
-            <button key={n.id} className={`ts2-side d-${n.difficulty.toLowerCase()} ${countryId === n.id ? 'on' : ''}`} onClick={() => pickNation(n.id)}>
+            <button key={n.id} className={`ts2-side d-${n.difficulty.toLowerCase()} ${countryId === n.id ? 'on' : ''} ${n.off ? 'off' : ''}`} onClick={() => pickNation(n.id)} disabled={!!n.off} title={n.off ? `${n.off}: not playable` : undefined}>
               <span className="ts2-side-flag">{flag(n.id)}</span>
               <span className="ts2-side-body">
                 <b>{n.name}</b>
                 {usingFlashpoint && <small>{n.sub}</small>}
+                {n.off && <small className="ts2-side-off">{n.off}</small>}
               </span>
               <span className="ts2-pips num" title={DIFF_LABEL[n.difficulty]}>
                 {pips(n.difficulty)}
@@ -419,7 +497,7 @@ export function TitleScreen() {
         </div>
       </aside>
 
-      <MapKey mode={usingFlashpoint ? 'crisis' : 'nation'} />
+      <MapKey mode={era ? 'era' : usingFlashpoint ? 'crisis' : 'nation'} era={era} colourBy={colourBy} onColourBy={setColourBy} density={density} />
 
       <div className="ts2-ticker" aria-hidden>
         <span className="tag">LIVE</span>

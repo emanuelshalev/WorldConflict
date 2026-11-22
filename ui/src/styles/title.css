@@ -226,3 +226,204 @@
 .tg-pin.flip .tg-pin-card { left: auto; right: 38px; text-align: right; }
 /* The picked pin and its card sit above the other pins */
 .tg-pin.on, .tg-pin:hover, .tg-pin:focus-visible { z-index: 2; }
+
+/* =========================================================================
+   World map WP-W5: the era's world on the title globe (design-worldmap.md 3.3 to 3.5, D-54)
+   ========================================================================= */
+/* Archive ink over the older eras: a static warm vignette, free at idle */
+.tg-ink { position: absolute; inset: 0; z-index: 2; pointer-events: none; mix-blend-mode: soft-light; background: radial-gradient(75% 70% at 42% 50%, rgba(0, 0, 0, 0) 45%, rgba(176, 120, 52, .55) 100%), linear-gradient(180deg, rgba(196, 150, 84, .25), rgba(120, 76, 30, .3)); transition: opacity .2s linear .6s; }
+/* The year stamp: one composited layer, opacity only (3.4: in from 100 ms, out by 800 ms) */
+.tg-stamp { position: absolute; z-index: 4; inset: 0; display: grid; place-items: center; text-align: center; pointer-events: none; font-family: var(--font-news); font-size: 150px; line-height: 1; color: #f3e6cf; text-shadow: 0 4px 40px rgba(0, 0, 0, .7); opacity: 0; will-change: opacity; }
+.tg-stamp.go { animation: tg-stamp .8s linear both; }
+@keyframes tg-stamp { 0%, 12% { opacity: 0; } 45% { opacity: .82; } 75% { opacity: .82; } 100% { opacity: 0; } }
+
+/* Pins land after the camera settles; the old era's pins fold away. The marker element keeps
+   MapLibre's transform: only its children animate. */
+.tg-pin.drop > .tg-pin-badge, .tg-pin.drop > .tg-pin-num { animation: tg-drop var(--drop-ms, .18s) var(--ease-out) var(--drop-delay, 0ms) backwards; }
+@keyframes tg-drop { from { opacity: 0; transform: scale(.4); } }
+.tg-pin.fold { pointer-events: none; }
+.tg-pin.fold > * { animation: tg-fold .15s ease-in forwards; }
+/* Arrival pulses start when the pin lands */
+.tg-pin.drop .tg-pin-ring { animation-delay: var(--drop-delay, 0ms); }
+.tg-pin.drop .tg-pin-ring.r2 { animation-delay: calc(var(--drop-delay, 0ms) + 1.2s); }
+.tg-pin.on .tg-pin-ring { animation-delay: 0s; }
+.tg-pin.on .tg-pin-ring.r2 { animation-delay: 1.2s; }
+.tg-rims { transition: opacity .18s linear; }
+.tg-travelling .tg-rims { opacity: 0; transition: none; }
+@keyframes tg-fold { to { opacity: 0; transform: scale(.4); } }
+/* The era's five fires carry their number (the dossier list uses the same numbers) */
+.tg-pin-num { right: -7px; top: -7px; min-width: 17px; height: 17px; padding: 0 4px; display: none; border-radius: 9px; background: #f3f5f8; color: #0b0f17; font: 750 11px/17px var(--font-ui); text-align: center; box-shadow: 0 1px 4px rgba(0, 0, 0, .6); pointer-events: none; }
+.tg-pin-num:not(:empty) { display: block; }
+.tg-pin-count { right: -9px; bottom: -6px; padding: 0 4px; border-radius: 8px; background: var(--accent); color: var(--accent-ink); font: 750 10.5px/15px var(--font-ui); pointer-events: none; }
+.tg-pin-count:empty { display: none; }
+/* Phases: brewing is hollow with a dashed ring, frozen is faded */
+.tg-pin.brewing .tg-pin-badge { background: rgba(8, 12, 22, .88); border: 2px dashed var(--pin); box-shadow: 0 0 10px color-mix(in srgb, var(--pin) 50%, transparent); }
+.tg-pin.frozen .tg-pin-badge { opacity: .58; box-shadow: 0 2px 6px rgba(0, 0, 0, .6); }
+.tg-pin.zone { width: 22px; height: 22px; }
+.tg-pin.zone .tg-pin-badge { inset: 2px; }
+.tg-pin.zone .tg-pin-ring { display: none; }
+.tg-pin.clustered { visibility: hidden; pointer-events: none; }
+.tg-pin.fanned { z-index: 3; }
+/* Variant A on desktop: every pin wears its name chip (labels avoid it through the reserve) */
+.tg-pin.chip .tg-pin-card { opacity: 1; padding: 4px 8px; }
+.tg-pin.chip:not(:hover):not(.on):not(:focus-visible) .tg-pin-card small { display: none; }
+.tg-pin.chip.chip-off:not(:hover):not(:focus-visible) .tg-pin-card { opacity: 0; }
+.tg-rim.title-off .tg-rim-title { visibility: hidden; }
+/* Era pins: the picked situation's card docks in the dossier, so no card floats on the globe */
+.tg-pin.era.on:not(.chip):not(:hover):not(:focus-visible) .tg-pin-card { opacity: 0; }
+
+/* Rim markers: a situation on the far side, on the globe's edge, pointing to it (D-54: bigger) */
+.tg-rims { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+.tg-rim { position: absolute; left: 0; top: 0; width: 44px; height: 44px; margin: -22px 0 0 -22px; padding: 0; border: 0; background: none; cursor: pointer; pointer-events: auto; --pin: #ff4d4f; }
+.tg-rim[hidden] { display: none; }
+.tg-rim-ring { position: absolute; inset: 4px; display: grid; place-items: center; border-radius: 50%; background: rgba(8, 12, 22, .9); border: 2.5px solid var(--pin); box-shadow: 0 0 12px color-mix(in srgb, var(--pin) 55%, transparent), 0 2px 8px rgba(0, 0, 0, .6); transition: transform .15s; }
+.tg-rim-icon svg { display: block; width: 15px; height: 15px; }
+.tg-rim-icon svg * { stroke: var(--pin); }
+.tg-rim-num { position: absolute; right: -6px; top: -6px; min-width: 17px; height: 17px; border-radius: 9px; background: #f3f5f8; color: #0b0f17; font: 750 11px/17px var(--font-ui); text-align: center; }
+.tg-rim-num:empty { display: none; }
+/* The chevron sits on the ring's outer side, pointing past the rim to the far side */
+.tg-rim-chev { position: absolute; left: 50%; top: 50%; width: 0; height: 0; border-left: 7px solid var(--pin); border-top: 6px solid transparent; border-bottom: 6px solid transparent; transform-origin: 0 0; transform: rotate(var(--ang, 0rad)) translate(19px, -6px); }
+.tg-rim-title { position: absolute; top: 50%; left: 46px; transform: translateY(-50%); display: none; white-space: nowrap; padding: 4px 8px; border-radius: 7px; background: rgba(8, 12, 22, .9); border: 1px solid color-mix(in srgb, var(--pin) 60%, transparent); font: 600 12.5px/1.1 var(--font-ui); color: #fff; }
+.tg-rim.left .tg-rim-title { left: auto; right: 46px; }
+.tg-rim.titled .tg-rim-title { display: block; }
+.tg-rim:hover .tg-rim-ring, .tg-rim:focus-visible .tg-rim-ring { transform: scale(1.1); }
+.tg-rim:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 50%; }
+
+/* Hover (or long-press) card: era name, leader, stability, camp, rivals */
+.tg-tip { position: absolute; left: 0; top: 0; z-index: 5; display: grid; gap: 2px; max-width: 260px; padding: 8px 11px; border-radius: 10px; background: rgba(8, 12, 22, .94); border: 1px solid var(--line-2); box-shadow: 0 10px 30px rgba(0, 0, 0, .55); pointer-events: none; }
+.tg-tip[hidden] { display: none; }
+.tg-tip b { font: 650 14px/1.25 var(--font-ui); color: var(--text-1); }
+.tg-tip span { font: 12.5px/1.35 var(--font-ui); color: var(--text-2); }
+
+/* Header in an era */
+.ts2-brand small.ts2-era-line { text-transform: none; letter-spacing: 0; font: 650 14.5px/1.3 var(--font-ui); color: var(--accent); }
+.ts2-era-line b { font: inherit; }
+
+/* Dossier: the era's fires, the switch, the docked card. The dossier scrolls: nothing in it
+   shrinks (the nation list kept its height when the fires joined it) */
+.ts2-dossier > * { flex-shrink: 0; }
+.era-fires { display: grid; gap: 6px; }
+.era-fire-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 5px; }
+.era-fire { width: 100%; min-height: 44px; display: grid; grid-template-columns: 18px 24px minmax(0, 1fr); gap: 9px; align-items: center; padding: 6px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-1); color: var(--text-1); cursor: pointer; text-align: left; font: inherit; }
+.era-fire:hover { border-color: var(--line-2); }
+.era-fire.on { border-color: var(--accent); background: rgba(242, 169, 59, .08); }
+.era-fire:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.era-fire-num { font-size: 13px; color: var(--text-3); text-align: center; }
+.era-fire-pin { width: 24px; height: 24px; display: grid; place-items: center; border-radius: 50%; background: var(--pin); border: 1.5px solid rgba(255, 255, 255, .8); }
+.era-fire.ph-brewing .era-fire-pin { background: rgba(8, 12, 22, .9); border: 2px dashed var(--pin); }
+.era-fire.ph-frozen .era-fire-pin { opacity: .6; }
+.era-fire-body { display: grid; gap: 1px; min-width: 0; }
+.era-fire-body b { font-size: 14px; font-weight: 650; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.era-fire-body small { font-size: 12px; line-height: 1.35; color: var(--text-2); display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.era-fires.compact .era-fire { padding: 4px 10px; }
+.era-switch { position: relative; display: flex; align-items: center; gap: 10px; min-height: 44px; font-size: 13px; color: var(--text-2); cursor: pointer; }
+.era-switch input { position: absolute; z-index: 1; left: -4px; opacity: 0; width: 44px; height: 44px; margin: 0; cursor: pointer; }
+.era-switch-track { flex: none; width: 36px; height: 20px; border-radius: 10px; background: var(--surface-3); border: 1px solid var(--line-2); position: relative; transition: background .15s; }
+.era-switch-track::after { content: ''; position: absolute; left: 2px; top: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--text-2); transition: transform .15s var(--ease-out), background .15s; }
+.era-switch input:checked + .era-switch-track { background: rgba(242, 169, 59, .35); border-color: var(--accent); }
+.era-switch input:checked + .era-switch-track::after { transform: translateX(16px); background: var(--accent); }
+.era-switch input:focus-visible + .era-switch-track { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.era-card { display: grid; gap: 8px; padding: 12px; border-radius: 12px; border: 1px solid var(--accent); background: rgba(242, 169, 59, .05); }
+.era-card-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.era-card-kind { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; font-size: 12.5px; color: var(--text-2); }
+.era-card-icon { width: 22px; height: 22px; display: grid; place-items: center; border-radius: 50%; background: var(--pin); }
+.era-phase { padding: 1px 7px; border-radius: 9px; border: 1px dashed var(--pin); color: var(--text-1); font-size: 11.5px; }
+.era-phase.frozen { border-style: solid; opacity: .8; }
+.era-card-since { color: var(--text-3); }
+.era-card-x { flex: none; width: 44px; height: 44px; margin: -12px -10px -12px 0; display: grid; place-items: center; border: 0; background: none; color: var(--text-2); cursor: pointer; border-radius: 10px; }
+.era-card-x:hover { color: var(--text-1); }
+.era-card h3 { margin: 0; font-family: var(--font-serif); font-weight: 500; font-size: 21px; line-height: 1.2; }
+.era-card-blurb { margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--text-2); }
+.era-card-phase-note { margin: 0; font-size: 12px; color: var(--text-3); }
+.era-card-sides { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.era-card-sides li { display: grid; grid-template-columns: 5px minmax(0, 1fr) auto; gap: 9px; align-items: center; }
+.era-sw { width: 5px; align-self: stretch; min-height: 30px; border-radius: 3px; }
+.era-card-who { display: grid; min-width: 0; }
+.era-card-who b { font-size: 14px; }
+.era-card-who small { font-size: 12px; color: var(--text-2); overflow-wrap: anywhere; }
+.era-card-stab { font-size: 12.5px; color: var(--text-2); white-space: nowrap; }
+.era-card-acts { display: flex; flex-wrap: wrap; gap: 6px; }
+.era-card-acts .wc-btn { min-height: 44px; }
+.era-card-acts .wc-btn.on { border-color: var(--accent); color: var(--accent); }
+
+/* B-17: nations that are not states in this era stay listed, disabled, with the reason */
+.ts2-side.off { opacity: .55; cursor: not-allowed; border-left-color: var(--line-2); }
+.ts2-side.off:hover { border-color: var(--line); }
+.ts2-side-body small.ts2-side-off { color: var(--text-3); font-size: 11px; white-space: normal; }
+
+/* The era key: colour-by control, labelled scale or camps, full key on demand */
+.map-key.era { max-width: min(660px, calc(100vw - 500px)); padding: 8px 12px 10px; display: grid; gap: 8px; }
+.map-key.era.open { width: auto; }
+.map-key.era .mk-body { padding: 0; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); max-height: 38vh; }
+.mk-era-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.mk-toggle { width: auto; padding: 6px 4px; min-height: 36px; }
+.mk-colour { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.mk-colour-label { font-size: 12.5px; color: var(--text-2); }
+.mk-colour .seg button { min-height: 32px; padding: 5px 11px; font-size: 12.5px; }
+.mk-scale, .mk-blocs { display: grid; gap: 4px; }
+.mk-scale-title { font-size: 11.5px; color: var(--text-3); }
+.mk-scale-row { display: flex; gap: 3px; }
+.mk-step { display: grid; gap: 3px; justify-items: center; min-width: 54px; }
+.mk-step i { display: block; width: 100%; height: 9px; border-radius: 2px; }
+.mk-step small { font-size: 11.5px; color: var(--text-2); }
+.mk-scale-note { font-size: 11px; color: var(--text-3); }
+.mk-bloc-row { display: flex; flex-wrap: wrap; gap: 5px 12px; }
+.map-key.era .mk-chip .mk-sw { width: 12px; height: 11px; margin-right: 0; }
+.mk-sw.outline { background: transparent; border: 2px solid; }
+.mk-line.front { border-top: 2.6px solid #ff4d4f; box-shadow: 0 0 6px rgba(255, 77, 79, .6); }
+.mk-line.rival { border-top: 2px dotted #f26b3a; }
+.mk-line.blockade { border-top: 2px dotted #36c5f0; }
+.mk-pin.brewing { background: rgba(8, 12, 22, .9); border: 2px dashed var(--pin); box-shadow: none; }
+.mk-pin.frozen { background: var(--pin); opacity: .55; box-shadow: none; }
+.mk-pin.num-pin { background: #f3f5f8; color: #0b0f17; font: 750 11px/1 var(--font-ui); box-shadow: none; border: 0; }
+.mk-rim-sw { width: 22px; height: 22px; border-radius: 50%; border: 2.5px solid #ff4d4f; background: rgba(8, 12, 22, .9); position: relative; }
+.mk-rim-sw::after { content: ''; position: absolute; right: -8px; top: 50%; transform: translateY(-50%); border-left: 6px solid #ff4d4f; border-top: 5px solid transparent; border-bottom: 5px solid transparent; }
+.ts2-era-phone { display: none; }
+/* Narrow desktops (no left inset): in an era the big tagline would sit on the era's pins */
+@media (min-width: 901px) and (max-width: 1279px) {
+  .ts2:has(.tg-era) .ts2-tag { display: none; }
+  /* A narrower copy column leaves more of the era's globe in view */
+  .ts2:has(.tg-era) .ts2-left { max-width: 330px; gap: 10px; }
+  .ts2:has(.tg-era) .ts2-pitch { font-size: 12.5px; }
+  .ts2:has(.tg-era) .ts2-dial-name svg { display: none; }
+  .ts2:has(.tg-era) .ts2-dial-name { font-size: 13px; white-space: nowrap; }
+  .ts2:has(.tg-era) .map-key.era { max-width: 420px; }
+}
+
+@media (max-width: 900px) {
+  .tg-stamp { font-size: 96px; }
+  .ts2-brand small.ts2-era-line { display: block; font-size: 13px; margin-top: 4px; }
+  .ts2-status[aria-label='The era at a glance'] span:nth-child(3) { display: inline-flex; }
+  /* Under the globe band: colour-by, the era chips (4 x 44 px), the fires as horizontal cards */
+  .ts2-era-phone { display: grid; gap: 8px; min-width: 0; }
+  /* The page scrolls: rows take their content's height (the era strip makes the left column tall) */
+  .ts2 { grid-template-rows: repeat(4, max-content); }
+  .ts2-dossier { min-height: max-content; backdrop-filter: none; }
+  .map-key.era.compact { grid-row: auto; grid-column: auto; }
+  .ts2-dossier .ts2-eras, .ts2-dossier .era-fires, .ts2-dossier .ts2-era-label { display: none; }
+  .ts2-eras.chips { grid-template-columns: repeat(4, 1fr); }
+  .ts2-eras.chips button { min-height: 44px; padding: 6px; border-style: solid; background: var(--surface-1); }
+  .map-key.era.compact { position: static; margin: 0; padding: 8px 10px; width: auto; max-width: none; }
+  .map-key.era.compact .mk-colour .seg button { min-height: 40px; }
+  .map-key.era:not(.compact) .mk-era-bar .mk-colour, .map-key.era:not(.compact) > .mk-scale, .map-key.era:not(.compact) > .mk-blocs { display: none; }
+  .map-key.era { max-width: none; }
+  .era-fires.strip { gap: 4px; }
+  .era-fires.strip .era-fire-list { display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 2px; }
+  .era-fires.strip .era-fire-list li { flex: 0 0 min(250px, 72vw); scroll-snap-align: start; }
+  .era-fires.strip .era-fire { height: 100%; }
+  .era-fires.strip .era-fire-body small { -webkit-line-clamp: 1; line-clamp: 1; }
+  /* The card is a bottom sheet over the page (max 60 percent of the screen) */
+  .era-card.docked { position: fixed; z-index: 40; left: 0; right: 0; bottom: 0; max-height: 60vh; overflow-y: auto; border-radius: 16px 16px 0 0; background: rgba(12, 17, 28, .98); box-shadow: 0 -16px 50px rgba(0, 0, 0, .6); padding: 14px 16px calc(16px + env(safe-area-inset-bottom)); animation: era-sheet .22s var(--ease-out); }
+  @keyframes era-sheet { from { transform: translateY(30px); opacity: 0; } }
+  .tg-rim-title { display: none !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tg-ink { transition: opacity .15s linear; }
+  .tg-stamp.go { animation: none; }
+  .era-card.docked { animation: none; }
+  .tg-pin.drop > .tg-pin-badge, .tg-pin.drop > .tg-pin-num { animation-name: tg-fade-in; animation-delay: 0ms; }
+  .tg-pin.fold > * { animation-name: tg-fade-out; }
+}
+@keyframes tg-fade-in { from { opacity: 0; } }
+@keyframes tg-fade-out { to { opacity: 0; } }
