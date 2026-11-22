@@ -1,0 +1,29 @@
+{
+  "stages": [
+    "Plan",
+    "Design",
+    "Build",
+    "Verify",
+    "Use",
+    "Triage",
+    "Report",
+    "Gate"
+  ],
+  "log": "stages.jsonl",
+  "estimates": "estimates.jsonl",
+  "usageRegistry": "../usage/registry.json",
+  "progressCap": 0.95,
+  "blendUnits": 2,
+  "errorFloorMinutes": 5,
+  "plan": {
+    "3": {
+      "Use": {
+        "units": 9,
+        "note": "9 customer sessions in 2 waves"
+      },
+      "Report": {
+        "note": "publish iter-3 to main"
+      }
+    }
+  }
+}

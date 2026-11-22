@@ -3,7 +3,7 @@
 // API responses, and attributes usage to role, persona, development stage and iteration
 // using a registry of rules. Output feeds the status page "Consumption" tab.
 //
-//   node devloop/kit/usage-ledger.mjs <registry.json> [--inject <page.html> USAGE] [--json]
+//   node devloop/kit/usage-ledger.mjs <registry.json> [--inject <page.html> USAGE] [--json] [--bucket <minutes>]
 //
 // Registry (see devloop/templates/usage-registry.json):
 // {
@@ -161,11 +161,13 @@ const inLoop = (it) => it.group !== 'Before the loop';
 const allRecs = items.flatMap((i) => i.records);
 const loopRecs = items.filter(inLoop).flatMap((i) => i.records);
 
-// 15-minute timeline by group (loop only)
+// Timeline by group (loop only), 15-minute buckets by default (--bucket <minutes>, 1 to 60)
+const bx = args.indexOf('--bucket');
+const BUCKET = bx >= 0 ? Math.max(1, Math.min(60, Number(args[bx + 1]) || 15)) : 15;
 const timeline = {};
 for (const it of items.filter(inLoop))
   for (const r of it.records) {
-    const mm = String(Math.floor(Number(r.t.slice(14, 16)) / 15) * 15).padStart(2, '0');
+    const mm = String(Math.floor(Number(r.t.slice(14, 16)) / BUCKET) * BUCKET).padStart(2, '0');
     const h = `${r.t.slice(0, 13)}:${mm}Z`;
     timeline[h] ??= {};
     timeline[h][it.group] = (timeline[h][it.group] ?? 0) + sum([r]).weighted;
@@ -174,6 +176,7 @@ for (const it of items.filter(inLoop))
 const out = {
   generated: new Date().toISOString(),
   weights: WEIGHTS,
+  bucketMinutes: BUCKET,
   total: sum(allRecs),
   loop: sum(loopRecs),
   beforeLoop: sum(items.filter((i) => !inLoop(i)).flatMap((i) => i.records)),
