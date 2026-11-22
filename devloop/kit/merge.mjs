@@ -5,12 +5,17 @@
 // branch, run `npm run verify` there (it records the pass), then run this. After the merge the
 // status refresh is owed (rules matching "after-merge").
 //
-//   node devloop/kit/merge.mjs <branch> [--config <loop config>] [-m "message"] [--dry-run]
+//   node devloop/kit/merge.mjs <branch> [--config <loop config>] [-m "message"] [--dry-run] [--no-refresh]
+//
+// After the merge it owes the status refresh tier of `owes.merge` and runs it (kit/status-refresh.mjs
+// with the config's statusProtocol): generated sections are refreshed and stamped, and the
+// hand-written fields still owed are listed; the owed refresh clears once they are written.
 //
 // Run it in the checkout that has the shared branch checked out. It refuses a dirty tracked file
 // (no autostash, ever) and a conflicting merge (resolve in the work branch, file by file).
 import { pathToFileURL } from 'node:url';
 import * as loop from './loop.mjs';
+import { autoRefresh } from './status-refresh.mjs';
 
 export function merge({ cwd = process.cwd(), config, branch, message, dryRun = false, log = console.log } = {}) {
   if (!branch) throw new Error('usage: merge.mjs <branch> [-m message]');
@@ -47,8 +52,10 @@ export function merge({ cwd = process.cwd(), config, branch, message, dryRun = f
   st.merges.push(entry);
   loop.writeState(ctx, st);
   loop.appendEvent(ctx, { kind: 'merge', ...entry });
-  log(`merged ${branch} at ${commit.slice(0, 9)}; status refresh owed (refresh the status page, then \`loop record status-refresh --result pass --evidence <page>\`)`);
-  return { tree, codeTree: ct, commit };
+  const tier = ctx.cfg.owes?.merge ?? null;
+  if (tier) loop.owe(ctx, tier, `merge of ${branch}`);
+  log(`merged ${branch} at ${commit.slice(0, 9)}${tier ? `; status refresh ${tier} owed` : ''}`);
+  return { tree, codeTree: ct, commit, owes: tier, ctx };
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
@@ -59,7 +66,8 @@ if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
   };
   const branch = argv.find((a, i) => !a.startsWith('-') && !(i > 0 && ['--config', '-m', '--message'].includes(argv[i - 1])));
   try {
-    merge({ branch, config: opt('--config'), message: opt('-m', '--message'), dryRun: argv.includes('--dry-run') });
+    const r = merge({ branch, config: opt('--config'), message: opt('-m', '--message'), dryRun: argv.includes('--dry-run') });
+    if (r.owes && !argv.includes('--no-refresh')) await autoRefresh(r.ctx, r.owes);
   } catch (e) {
     console.error(`merge: ${e.message}`);
     process.exitCode = 1;

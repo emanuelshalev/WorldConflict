@@ -42,6 +42,9 @@ The controller must never block a legitimate owner or Group Manager call. `loop 
 
 An override that recurs is a signal that the rule or the config is wrong: change the config through a ledger entry rather than overriding every iteration.
 
+## Status refreshes owed
+A merge or a publish owes a T1 status refresh, the end of Use or Triage a T2 (config `owes`); the rule `match: "owed"` on `enter:*` blocks every transition until `kit/status-refresh.mjs` records a refresh of that tier or higher, which it does only when the generated sections are refreshed and the hand-written ones are confirmed. Leaving Gate needs a T3 refresh during Gate (`match: "stage"`, `minTier`). See `status-page.md`. `loop block <id>` / `loop unblock <id>` keep the blockers the status page shows.
+
 ## Progress and the status page
 Every transition calls `kit/progress.mjs` (start, skip, end of the old iteration) and, when configured, injects the progress data into the status page, so stage times and ETAs no longer depend on someone remembering. `loop progress --total N` / `--done N --note "..."` passes unit events through the same path.
 

@@ -5,13 +5,15 @@
 // of "fast-forward main and tag iter-N".
 //
 //   node devloop/kit/publish.mjs [--config <loop config>] [--commit <ref>] [--iteration N]
-//                                [--no-push] [--dry-run]
+//                                [--no-push] [--dry-run] [--no-refresh]
 //
 // --commit defaults to the shared branch tip, --iteration to the controller's current iteration.
 // Never touches a working tree: the branch moves with update-ref (refused when the publish branch
-// is checked out in some worktree), so it is safe to run from any checkout.
+// is checked out in some worktree), so it is safe to run from any checkout. Afterwards it owes and
+// runs the status refresh tier of `owes.publish` (see merge.mjs).
 import { pathToFileURL } from 'node:url';
 import * as loop from './loop.mjs';
+import { autoRefresh } from './status-refresh.mjs';
 
 export function publish({ cwd = process.cwd(), config, commit, iteration, push = true, dryRun = false, log = console.log } = {}) {
   const ctx = loop.loadLoop({ cwd, config });
@@ -51,7 +53,9 @@ export function publish({ cwd = process.cwd(), config, commit, iteration, push =
     loop.writeState(ctx, st);
     loop.appendEvent(ctx, { kind: 'publish', ...entry });
   }
-  return { sha, tag, branch, steps };
+  const owes = !dryRun ? (cfg.owes?.publish ?? null) : null;
+  if (owes) loop.owe(ctx, owes, `publish of ${tag}`);
+  return { sha, tag, branch, steps, owes, ctx };
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
@@ -62,7 +66,8 @@ if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
   };
   try {
     const r = publish({ config: opt('config'), commit: opt('commit'), iteration: opt('iteration') == null ? undefined : Number(opt('iteration')), push: !argv.includes('--no-push'), dryRun: argv.includes('--dry-run') });
-    console.log(`published ${r.branch} and ${r.tag} at ${r.sha.slice(0, 9)}`);
+    console.log(`published ${r.branch} and ${r.tag} at ${r.sha.slice(0, 9)}${r.owes ? `; status refresh ${r.owes} owed` : ''}`);
+    if (r.owes && !argv.includes('--no-refresh')) await autoRefresh(r.ctx, r.owes);
   } catch (e) {
     console.error(`publish: ${e.message}`);
     process.exitCode = 1;

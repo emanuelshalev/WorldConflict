@@ -19,6 +19,8 @@
 //   override <rule> --reason "..." [--ttl minutes]
 //                                           let one rule pass for a while (default 60 min); logged as an event
 //                                           and as a draft row in the instance ledger
+//   block <id> --what "..." [--needs "..."] / unblock <id> --resolution "..."
+//                                           track what blocks the loop (the status page shows it)
 //   progress <progress.mjs options>         pass a progress event through (--total N, --done N --note, --pause)
 //   log [--n 20]                            the last events
 //
@@ -32,7 +34,10 @@
 //                                                          // entering the first stage starts a new iteration
 //   "gates": ["verify", "qa", "triage", "status-refresh"],
 //   "rules": { "<id>": { "on": "enter:Use" | ["publish", ...], "gate": "qa",
-//                        "match": "code" | "commit" | "iteration" | "after-merge", "why": "..." } },
+//                        "match": "code" | "commit" | "iteration" | "stage" | "after-merge" | "owed",
+//                        "minTier": "T3", "why": "..." } },          // "on" may end in ":*" (every enter:)
+//   "owes": { "merge": "T1", "publish": "T1", "exit:Use": "T2" },   // status refreshes owed by events
+//   "statusProtocol": "../status-protocol.json",                    // for merge/publish auto refresh
 //   "code": { "include": ["src/**", ...], "exclude": ["**/*.md"] },  // what counts as code for "code" matches
 //   "sharedBranch": "dev/main-loop", "publishBranch": "main", "remote": "origin", "tagPrefix": "iter-",
 //   "sharedState": true,               // state lives in the main worktree, so every worktree records to one place
@@ -44,9 +49,12 @@
 // Matches: "commit" needs the record on that exact commit (a descendant that only changes the
 // controller's own files counts as the same commit); "code" needs it on the same code tree (a hash
 // of the files matched by `code`, so commits to docs or the loop do not invalidate a pass);
-// "iteration" needs a pass in the current iteration; "after-merge" needs a pass recorded after the
-// last merge into the shared branch (none needed when nothing was merged). The latest record wins:
-// a fail after a pass on the same code blocks again.
+// "iteration" needs a pass in the current iteration; "stage" a pass since the current stage started
+// (with "minTier", a status-refresh of that tier or higher); "after-merge" a pass recorded after the
+// last merge into the shared branch (none needed when nothing was merged); "owed" that no status
+// refresh is owed (owed by the events in "owes", cleared by `record status-refresh --tier T` of that
+// tier or higher, which kit/status-refresh.mjs writes). The latest record wins: a fail after a pass
+// on the same code blocks again.
 import { spawnSync } from 'node:child_process';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
@@ -138,13 +146,16 @@ export function loadLoop({ cwd = process.cwd(), config } = {}) {
   const stateRoot = cfg.sharedState === false ? repo : mainWorktree(repo);
   // The config's folder, seen from the checkout that holds the state
   const dir = rel.startsWith('..') ? cfgDir : path.join(stateRoot, rel);
-  const at = (p) => (p ? path.resolve(dir, p) : null);
+  // Before the loop folder reaches the main worktree, the current checkout's state is the state
+  const stateFile = cfg.state ?? 'state.json';
+  const useDir = dir !== cfgDir && !fs.existsSync(path.resolve(dir, stateFile)) && fs.existsSync(path.resolve(cfgDir, stateFile)) ? cfgDir : dir;
+  const at = (p) => (p ? path.resolve(useDir, p) : null);
   return {
     cfg,
     cfgPath,
     repo,
-    stateRoot,
-    dir,
+    stateRoot: useDir === cfgDir ? repo : stateRoot,
+    dir: useDir,
     loopRel: rel.startsWith('..') ? null : rel.split(path.sep).join('/'),
     paths: {
       state: at(cfg.state ?? 'state.json'),
@@ -152,12 +163,13 @@ export function loadLoop({ cwd = process.cwd(), config } = {}) {
       ledger: at(cfg.ledger),
       progress: at(cfg.progress?.config),
       page: at(cfg.progress?.inject?.page),
+      protocol: cfg.statusProtocol ? path.resolve(cfgDir, cfg.statusProtocol) : null,
     },
     now: () => (process.env.DEVLOOP_NOW ? new Date(process.env.DEVLOOP_NOW) : new Date()),
   };
 }
 
-const emptyState = () => ({ version: 1, iteration: null, stage: null, stageSince: null, records: [], merges: [], overrides: [], publishes: [] });
+const emptyState = () => ({ version: 1, iteration: null, stage: null, stageSince: null, records: [], merges: [], overrides: [], publishes: [], owed: [], blocked: [] });
 
 export function readState(ctx) {
   if (!fs.existsSync(ctx.paths.state)) return emptyState();
@@ -199,7 +211,26 @@ export function loopTarget(ctx) {
 
 // ---------------------------------------------------------------- rules
 const asList = (v) => (Array.isArray(v) ? v : v == null ? [] : [v]);
-export const rulesFor = (cfg, action) => Object.entries(cfg.rules ?? {}).filter(([, r]) => asList(r.on).includes(action));
+export const rulesFor = (cfg, action) =>
+  Object.entries(cfg.rules ?? {}).filter(([, r]) => asList(r.on).some((on) => on === action || (on.endsWith(':*') && action.startsWith(on.slice(0, -1)))));
+
+// ---------------------------------------------------------------- status refresh tiers (method/status-page.md)
+const tierNum = (t) => (t == null ? -1 : Number(String(t).replace(/^T/, '')));
+
+/** Mark a status page refresh of `tier` as owed (cleared by a status-refresh pass of that tier or higher). */
+export function owe(ctx, tier, because, state = readState(ctx), { save = true } = {}) {
+  const entry = { tier, because, t: ctx.now().toISOString() };
+  state.owed = [...(state.owed ?? []), entry];
+  if (save) writeState(ctx, state);
+  appendEvent(ctx, { kind: 'owed', ...entry });
+  return entry;
+}
+
+/** The refreshes still owed: entries not cleared by a later status-refresh pass of a high enough tier. */
+export function owedNow(state) {
+  const passes = state.records.filter((r) => r.gate === 'status-refresh' && r.result === 'pass');
+  return (state.owed ?? []).filter((o) => !passes.some((p) => Date.parse(p.t) >= Date.parse(o.t) && tierNum(p.tier) >= tierNum(o.tier)));
+}
 
 /** A descendant of `a` that changes only the controller's own files is the same commit for "commit" matches. */
 function sameCommit(ctx, a, b) {
@@ -232,7 +263,7 @@ export function evaluate(ctx, action, opts = {}, state = readState(ctx)) {
     return ct;
   };
   for (const [id, rule] of rulesFor(ctx.cfg, action)) {
-    const recs = state.records.filter((r) => r.gate === rule.gate);
+    const recs = state.records.filter((r) => r.gate === rule.gate && (rule.minTier == null || tierNum(r.tier) >= tierNum(rule.minTier)));
     let pool;
     let what;
     const match = rule.match ?? 'code';
@@ -245,6 +276,23 @@ export function evaluate(ctx, action, opts = {}, state = readState(ctx)) {
     } else if (match === 'iteration') {
       pool = recs.filter((r) => r.iteration === state.iteration);
       what = `iteration ${state.iteration}`;
+    } else if (match === 'owed') {
+      const owed = owedNow(state);
+      let ok = owed.length === 0;
+      let detail = ok ? 'no status refresh owed' : `status refresh owed: ${owed.map((o) => `${o.tier} (${o.because}, ${o.t})`).join('; ')}`;
+      let overridden = null;
+      if (!ok) {
+        overridden = activeOverride(ctx, state, id);
+        if (overridden) {
+          ok = true;
+          detail += `; overridden until ${overridden.until}: ${overridden.reason}`;
+        }
+      }
+      results.push({ rule: id, ok, why: rule.why, detail, overridden: overridden ? overridden.t : undefined });
+      continue;
+    } else if (match === 'stage') {
+      pool = recs.filter((r) => state.stageSince && Date.parse(r.t) >= Date.parse(state.stageSince));
+      what = `since ${state.stage} started (${state.stageSince})${rule.minTier ? `, tier ${rule.minTier} or higher` : ''}`;
     } else if (match === 'after-merge') {
       const last = state.merges.at(-1);
       if (!last) {
@@ -336,6 +384,9 @@ export function advance(ctx, to) {
   const now = ctx.now().toISOString();
   Object.assign(state, { iteration, stage: dest, stageSince: now });
   writeState(ctx, state);
+  // Leaving some stages owes a status refresh (config "owes": { "exit:Use": "T2", ... })
+  const owes = ctx.cfg.owes?.[`exit:${from}`];
+  if (owes) owe(ctx, owes, `${from} done`, state);
   const ev = appendEvent(ctx, {
     kind: 'transition',
     from,
@@ -374,6 +425,24 @@ export function record(ctx, { gate, result, commit = 'HEAD', evidence, note, cod
   writeState(ctx, state);
   appendEvent(ctx, { kind: 'record', ...rec });
   return rec;
+}
+
+/** Track something that blocks the loop (shown on the status page as a blocker). */
+export function block(ctx, { id, what, needs }) {
+  if (!id || !what) throw new Error('usage: loop block <id> --what "..." [--needs "..."]');
+  const state = readState(ctx);
+  state.blocked = [...(state.blocked ?? []).filter((b) => b.id !== id), { id, what, needs, since: ctx.now().toISOString(), status: 'open' }];
+  writeState(ctx, state);
+  appendEvent(ctx, { kind: 'block', id, what, needs });
+}
+
+export function unblock(ctx, { id, resolution }) {
+  const state = readState(ctx);
+  const b = (state.blocked ?? []).find((x) => x.id === id);
+  if (!b) throw new Error(`no blocker ${id}`);
+  Object.assign(b, { status: 'resolved', resolution, resolved: ctx.now().toISOString() });
+  writeState(ctx, state);
+  appendEvent(ctx, { kind: 'unblock', id, resolution });
 }
 
 const isOverridable = (cfg, rule) => Object.hasOwn(cfg.rules ?? {}, rule) || /^transition:\S+->\S+$/.test(rule) || /^guard:[a-z-]+$/.test(rule);
@@ -429,6 +498,8 @@ function status(ctx) {
     const refreshed = state.records.some((r) => r.gate === 'status-refresh' && r.result === 'pass' && Date.parse(r.t) > Date.parse(last.t));
     lines.push(`Last merge: ${last.branch} at ${last.t}${refreshed ? '' : ' (status refresh owed)'}`);
   }
+  for (const o of owedNow(state)) lines.push(`Status refresh owed: ${o.tier} (${o.because}, since ${o.t})`);
+  for (const b of (state.blocked ?? []).filter((x) => x.status === 'open')) lines.push(`Blocked: ${b.id} ${b.what}${b.needs ? ` (needs ${b.needs})` : ''}`);
   const live = state.overrides.filter((o) => Date.parse(o.until) > ctx.now().getTime());
   for (const o of live) lines.push(`Override active: ${o.rule} until ${o.until} (${o.reason})`);
   if (state.stage) {
@@ -492,7 +563,7 @@ export function main(argv, cwd = process.cwd()) {
       return 0;
     }
     case 'record': {
-      const rec = record(ctx, { gate: pos[1], result: opt.result, commit: opt.commit ?? 'HEAD', evidence: opt.evidence, note: opt.note });
+      const rec = record(ctx, { gate: pos[1], result: opt.result, commit: opt.commit ?? 'HEAD', evidence: opt.evidence, note: opt.note, extra: opt.tier ? { tier: opt.tier } : undefined });
       console.log(`recorded ${rec.gate} ${rec.result} on ${rec.commit.slice(0, 9)} (code tree ${rec.codeTree})`);
       return 0;
     }
@@ -512,12 +583,20 @@ export function main(argv, cwd = process.cwd()) {
       console.log(`override ${o.rule} until ${o.until}${ledgerRow ? '\nledger draft appended; complete it before the next Report' : ''}`);
       return 0;
     }
+    case 'block':
+      block(ctx, { id: pos[1], what: opt.what, needs: opt.needs });
+      console.log(`blocked: ${pos[1]}`);
+      return 0;
+    case 'unblock':
+      unblock(ctx, { id: pos[1], resolution: opt.resolution });
+      console.log(`resolved: ${pos[1]}`);
+      return 0;
     case 'log': {
       for (const e of readEvents(ctx).slice(-Number(opt.n ?? 20))) console.log(JSON.stringify(e));
       return 0;
     }
     default:
-      throw new Error(`unknown command ${pos[0]} (status, init, start, advance, record, check, override, progress, log)`);
+      throw new Error(`unknown command ${pos[0]} (status, init, start, advance, record, check, override, block, unblock, progress, log)`);
   }
 }
 

@@ -1,16 +1,48 @@
 {
-  "stages": ["Plan", "Design", "Build", "Verify", "Use", "Triage", "Report", "Gate"],
+  "stages": [
+    "Plan",
+    "Design",
+    "Build",
+    "Verify",
+    "Use",
+    "Triage",
+    "Report",
+    "Gate"
+  ],
   "transitions": {
-    "Plan": ["Design", "Build"],
-    "Design": ["Build"],
-    "Build": ["Verify"],
-    "Verify": ["Use", "Build"],
-    "Use": ["Triage"],
-    "Triage": ["Report"],
-    "Report": ["Gate"],
-    "Gate": ["Plan"]
+    "Plan": [
+      "Design",
+      "Build"
+    ],
+    "Design": [
+      "Build"
+    ],
+    "Build": [
+      "Verify"
+    ],
+    "Verify": [
+      "Use",
+      "Build"
+    ],
+    "Use": [
+      "Triage"
+    ],
+    "Triage": [
+      "Report"
+    ],
+    "Report": [
+      "Gate"
+    ],
+    "Gate": [
+      "Plan"
+    ]
   },
-  "gates": ["verify", "qa", "triage", "status-refresh"],
+  "gates": [
+    "verify",
+    "qa",
+    "triage",
+    "status-refresh"
+  ],
   "rules": {
     "verify-before-use": {
       "on": "enter:Use",
@@ -30,12 +62,6 @@
       "match": "iteration",
       "why": "The report states triage decisions; record triage when patterns and decisions are committed"
     },
-    "status-refresh-after-merge": {
-      "on": ["enter:Report", "enter:Gate"],
-      "gate": "status-refresh",
-      "match": "after-merge",
-      "why": "The owner follows the loop on the status page; refresh it after every merge (principle 15)"
-    },
     "verify-before-publish": {
       "on": "publish",
       "gate": "verify",
@@ -47,6 +73,18 @@
       "gate": "verify",
       "match": "code",
       "why": "verify must pass before any merge (principle 12); the pass must be on the merge result"
+    },
+    "status-refresh-owed": {
+      "on": "enter:*",
+      "match": "owed",
+      "why": "A merge owes a T1 refresh, Use and Triage done owe T2 (method/status-page.md); the owner follows the loop on the status page (principle 15)"
+    },
+    "t3-before-plan": {
+      "on": "enter:Plan",
+      "gate": "status-refresh",
+      "match": "stage",
+      "minTier": "T3",
+      "why": "The finished iteration is closed on the status page (T3: summary, consumption, goals, journal) before the next Plan"
     }
   },
   "code": {
@@ -85,6 +123,17 @@
   "ledger": "../ledger.md",
   "progress": {
     "config": "../progress/config.json",
-    "inject": { "page": "../../../../dev_plan/project_status.html", "marker": "PROGRESS", "args": [] }
-  }
+    "inject": {
+      "page": "../../../../dev_plan/project_status.html",
+      "marker": "PROGRESS",
+      "args": []
+    }
+  },
+  "owes": {
+    "merge": "T1",
+    "publish": "T1",
+    "exit:Use": "T2",
+    "exit:Triage": "T2"
+  },
+  "statusProtocol": "../status-protocol.json"
 }
