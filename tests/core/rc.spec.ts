@@ -179,7 +179,8 @@ describe("Release review fixes", () => {
   it("rejects a negative order value instead of corrupting the world", () => {
     const w = loader.newGame({ scenarioId: "2026", playerCountryId: "USA", seed: 1, mode: "LEGACY" });
     const next = engine.executeTurn(w, [{ type: "MILITARY_DEPLOY_BORDER", targetCountryId: "VEN", value: -1 }], []).newState;
-    expect(next.turnReport?.orders[0]?.detail).toBe("Invalid order value");
+    expect(next.turnReport?.orders[0]?.ok).toBe(false);
+    expect(next.turnReport?.orders[0]?.code).toBe("INVALID_VALUE");
     for (const d of get(next, "USA").borderDeployments) expect(d.troops).toBeGreaterThanOrEqual(0);
   });
 });

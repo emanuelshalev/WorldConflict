@@ -45,6 +45,9 @@ export const BUDGET_SHARE: Partial<Record<ActionType, number>> = {
 
 export const PC_CAP = 6;
 
+/** Player orders per month (crisis-injected orders don't count). */
+export const MAX_ORDERS = 6;
+
 export function actionCostPC(action: Action): number {
   return PC_COSTS[action.type] ?? 0;
 }

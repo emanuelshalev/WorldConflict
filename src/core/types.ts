@@ -756,6 +756,8 @@ export const PlayerTurnReportSchema = z.object({
         facts: z.array(ReportFactSchema).optional(),
         reaction: ReactionSchema.optional(), // how the target answered (its real move first)
         watch: z.string().optional(),
+        // Why a refused order was refused (availability.ts OrderBlockCode); absent on chance failures
+        code: z.string().optional(),
       }),
     )
     .default([]),

@@ -1,4 +1,6 @@
+import { type OrderBlock, orderRules } from "./availability.js";
 import { actionCostM, actionCostPC } from "./costs.js";
+import { IRREVERSIBLE_TYPES } from "./orders.js";
 import {
   allianceOdds,
   canDeclareWar,
@@ -32,7 +34,9 @@ export interface ActionPreview {
   successChance: number | null; // null = certain
   effects: PreviewEffect[];
   risks: string[];
-  blocked: string | null; // non-null = action invalid, with reason
+  blocked: string | null; // non-null = action invalid, with reason (= block.reason)
+  block: OrderBlock | null; // the rule-layer reason as a code, fix and point target
+  irreversible: boolean; // declare war, nuclear strike: the UI confirms on a separate face
   missionWarning: string | null; // non-null = this order fails (or likely fails) the session objective
 }
 
@@ -60,25 +64,23 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
     effects: [],
     risks: [],
     blocked: null,
+    block: null,
+    irreversible: IRREVERSIBLE_TYPES.has(action.type),
     missionWarning: null,
   };
-  if (!actor) {
-    base.blocked = "Player country not found";
+  // The rule layer (availability.ts) is the one place an order is refused; the engine
+  // applies the same checks at Execute, so the preview and the turn agree
+  const rule = orderRules(world, action);
+  if (rule || !actor) {
+    base.block = rule ?? {
+      code: "GAME_OVER",
+      reason: "The game is over.",
+      fix: null,
+      points: null,
+    };
+    base.blocked = base.block.reason;
     return base;
   }
-
-  if (
-    action.value !== undefined &&
-    (!Number.isFinite(action.value) || action.value < 0) &&
-    action.type !== "ECONOMY_ADJUST_MILITARY_BUDGET"
-  )
-    return blocked(base, "Invalid order value");
-  if (
-    action.type === "DIPLOMACY_IMPROVE_RELATIONS" &&
-    target &&
-    (actor.relations[target.id] ?? 0) >= 95
-  )
-    return blocked(base, "Relations are already as good as they get");
 
   const tname = target?.name ?? "";
   const effects = base.effects;
@@ -86,9 +88,7 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
 
   switch (action.type) {
     case "DIPLOMACY_IMPROVE_RELATIONS": {
-      if (!target) return blocked(base, "Select a target country");
-      if (actor.atWarWith.includes(target.id))
-        return blocked(base, "You are at war, propose a ceasefire instead");
+      if (!target) break;
       base.summary = `Open trade talks, cultural exchange and quiet diplomacy with ${tname}.`;
       effects.push(eff(tname, "Relations", "+5 to +7", "Diminishing returns at high friendship"));
       if ((actor.history.historicalRivals ?? []).includes(target.id)) {
@@ -97,7 +97,7 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
       break;
     }
     case "DIPLOMACY_DENOUNCE": {
-      if (!target) return blocked(base, "Select a target country");
+      if (!target) break;
       base.summary = `Publicly condemn ${tname} before the world.`;
       effects.push(eff(tname, "Relations", "-12 to -15", "They will not forget this"));
       const recent = (world.director.denounceTurns ?? []).filter(
@@ -126,9 +126,8 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
       break;
     }
     case "DIPLOMACY_PROPOSE_ALLIANCE": {
-      if (!target) return blocked(base, "Select a target country");
+      if (!target) break;
       const odds = allianceOdds(actor, target);
-      if (odds.refusal) return blocked(base, odds.refusal);
       base.successChance = Math.round(odds.chance * 100);
       base.summary = `Propose a mutual defense pact with ${tname}.`;
       effects.push(
@@ -138,17 +137,15 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
       break;
     }
     case "DIPLOMACY_BREAK_ALLIANCE": {
-      if (!target) return blocked(base, "Select a target country");
-      if (!actor.alliances.includes(target.id)) return blocked(base, "You are not allied");
+      if (!target) break;
       base.summary = `Abrogate the defense treaty with ${tname}.`;
       effects.push(eff(tname, "Relations", "-35", "Betrayal is remembered"));
       risks.push("Your other allies will trust you less (-8 relations each).");
       break;
     }
     case "DIPLOMACY_DECLARE_WAR": {
-      if (!target) return blocked(base, "Select a target country");
+      if (!target) break;
       const check = canDeclareWar(actor, target);
-      if (!check.allowed) return blocked(base, check.reason);
       const myForce = effectiveForce(actor, true);
       const theirForce = effectiveForce(target, false);
       const ratio = myForce / Math.max(1, theirForce);
@@ -188,13 +185,13 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
       break;
     }
     case "DIPLOMACY_PROPOSE_CEASEFIRE": {
-      if (!target) return blocked(base, "Select a target country");
+      if (!target) break;
       const war = world.wars.find(
         (w) =>
           (w.attackerId === actor.id && w.defenderId === target.id) ||
           (w.attackerId === target.id && w.defenderId === actor.id),
       );
-      if (!war) return blocked(base, `You are not at war with ${tname}`);
+      if (!war) break;
       const advantage = targetAdvantage(war, actor);
       base.successChance = Math.round(ceasefireChance(war, actor, target) * 100);
       effects.push(eff("Both nations", "War", "ends if accepted", "Mobilization winds down"));
@@ -216,14 +213,12 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
       break;
     }
     case "DIPLOMACY_MEDIATE": {
-      if (!target) return blocked(base, "Select a country at war");
+      if (!target) break;
       const war = world.wars.find((w) => w.attackerId === target.id || w.defenderId === target.id);
-      if (!war) return blocked(base, `${tname} is not at war`);
-      if (war.attackerId === actor.id || war.defenderId === actor.id)
-        return blocked(base, "You are a party to this war, propose a ceasefire instead");
+      if (!war) break;
       const otherId = war.attackerId === target.id ? war.defenderId : war.attackerId;
       const other = world.countries.find((c) => c.id === otherId);
-      if (!other) return blocked(base, "No counterpart");
+      if (!other) break;
       base.successChance = Math.round(mediationChance(war, actor, target, other) * 100);
       base.summary = `Host talks between ${tname} and ${other.name}. Trust in you and their exhaustion decide.`;
       effects.push(
@@ -268,7 +263,7 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
       break;
     }
     case "MILITARY_AIRSTRIKE": {
-      if (!target) return blocked(base, "Select a target country");
+      if (!target) break;
       const targetType = (action.params?.targetType as string) ?? "MILITARY";
       const offensive = actor.airpower;
       const defensive = target.airpower * 0.6 + target.intelLevel * 5;
@@ -301,7 +296,7 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
       break;
     }
     case "MILITARY_DEPLOY_BORDER": {
-      if (!target) return blocked(base, "Select a target country");
+      if (!target) break;
       base.summary = `Deploy ${(action.value ?? 50000).toLocaleString()} troops to the ${tname} border.`;
       effects.push(eff(tname, "Relations", "-8 now, -3/month", "Sustained pressure"));
       effects.push(eff("Global", "Tension", "+0.5/month", ""));
@@ -309,14 +304,13 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
       break;
     }
     case "MILITARY_WITHDRAW_BORDER": {
-      if (!target) return blocked(base, "Select a target country");
+      if (!target) break;
       base.summary = `Withdraw border deployments facing ${tname}.`;
       effects.push(eff(tname, "Relations", "+5", "De-escalation noticed"));
       break;
     }
     case "NUCLEAR_FUND_PROGRAM": {
       const status = actor.nuclear.status;
-      if (status === "TESTED") return blocked(base, "Weaponization is already underway");
       base.summary =
         status === "NONE" || status === "LATENT"
           ? `Begin a clandestine nuclear weapons program ($${costM}M this month).`
@@ -338,11 +332,7 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
       break;
     }
     case "NUCLEAR_STRIKE": {
-      if (!target) return blocked(base, "Select a target country");
-      if (actor.nuclear.status !== "ARMED" || actor.nuclear.warheads < 1)
-        return blocked(base, "No deliverable warheads");
-      if (!actor.atWarWith.includes(target.id))
-        return blocked(base, "Nuclear release is only authorized in wartime");
+      if (!target) break;
       base.summary = `AUTHORIZE NUCLEAR STRIKE ON ${tname.toUpperCase()}.`;
       effects.push(eff(tname, "Devastation", "Catastrophic", "Millions of casualties"));
       effects.push(eff("World", "Embargo", "Total arms embargo on you", "Universal revulsion"));
@@ -388,7 +378,7 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
     case "INTEL_PROPAGANDA":
     case "INTEL_ASSASSINATE":
     case "INTEL_COUP": {
-      if (!target) return blocked(base, "Select a target country");
+      if (!target) break;
       const edge = actor.intelLevel - target.counterIntelLevel;
       const baseChances: Record<string, number> = {
         INTEL_GATHER: 0.75,
@@ -415,23 +405,11 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
       };
       base.summary = summaries[action.type];
       if (action.type === "INTEL_ASSASSINATE") {
-        const targetWeak = target.stability < 40 || target.insurgencyLevel !== "NONE";
-        if (!targetWeak)
-          return blocked(
-            base,
-            `${possessive(tname)} leadership is too well protected (needs stability < 40 or active unrest).`,
-          );
         effects.push(
           eff(tname, "Leadership", "eliminated if successful", "Successor may be worse"),
         );
       }
       if (action.type === "INTEL_COUP") {
-        const coupPossible = target.insurgencyLevel === "GUERILLA" || target.stability < 25;
-        if (!coupPossible)
-          return blocked(
-            base,
-            `${tname} is too stable for a coup (needs GUERILLA insurgency or stability < 25).`,
-          );
         effects.push(
           eff(tname, "Government", "friendly puppet regime if successful", "+70 relations"),
         );
@@ -635,9 +613,4 @@ export function missionWarning(world: WorldState, action: Action): string | null
 
 function eff(target: string, metric: string, delta: string, note: string): PreviewEffect {
   return { target, metric, delta, note };
-}
-
-function blocked(preview: ActionPreview, reason: string): ActionPreview {
-  preview.blocked = reason;
-  return preview;
 }

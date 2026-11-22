@@ -1,10 +1,12 @@
-import { actionCostM, actionCostPC, PC_CAP, politicalCapitalIncome } from "./costs.js";
+import { actionRules, orderKey } from "./availability.js";
+import { actionCostM, actionCostPC, MAX_ORDERS, PC_CAP, politicalCapitalIncome } from "./costs.js";
 import { applyEffects, raiseCrisis, runDirector, scheduleFollowUp } from "./crises.js";
 import { EventEngine } from "./events.js";
 import { sharesLandBorder } from "./geography.js";
 import { generateAgenda, MEETING_SLOTS } from "./meetings.js";
 import { generateNewspaper } from "./newspaper.js";
 import { computeOutcome, earlyFailure } from "./objectives.js";
+import { engineOrderFor } from "./orders.js";
 import { failStory, ledgerEntry, orderFacts, orderStory, snapshot } from "./outcomes.js";
 import {
   bandOf,
@@ -179,21 +181,44 @@ export class TurnEngine {
 
       for (const action of intent.actions) {
         // One of each order per target per month, and at most MAX_ORDERS orders: the desk is
-        // a month of a leader's attention, not a macro to spam
-        if (isPlayer && !injected.has(action)) {
-          const key = `${action.type}:${action.targetCountryId ?? ""}:${String(action.params?.targetType ?? action.params?.tactic ?? "")}`;
-          const reason = ordered.has(key)
-            ? "Already ordered this month"
+        // a month of a leader's attention, not a macro to spam. The player's own orders go
+        // through the same availability checks the preview shows (availability.ts), so a
+        // predictable refusal carries the same code the UI displayed.
+        const playerOrder = isPlayer && !injected.has(action);
+        if (playerOrder) {
+          const key = orderKey(action);
+          const limit = ordered.has(key)
+            ? "DUPLICATE"
             : orderCount >= MAX_ORDERS
-              ? `At most ${MAX_ORDERS} orders a month`
+              ? "ORDER_LIMIT"
               : null;
-          if (reason) {
+          if (limit) {
+            const reason =
+              limit === "DUPLICATE"
+                ? "Already ordered this month"
+                : `At most ${MAX_ORDERS} orders a month`;
             push(rejectedActions, actor.id, { action, reason });
-            report.orders.push({ ...orderTag(world, action), ok: false, detail: reason });
+            report.orders.push({
+              ...orderTag(world, action),
+              ok: false,
+              detail: reason,
+              code: limit,
+            });
             continue;
           }
           ordered.add(key);
           orderCount++;
+          const rule = actionRules(world, actor, action);
+          if (rule) {
+            push(rejectedActions, actor.id, { action, reason: rule.reason });
+            report.orders.push({
+              ...orderTag(world, action),
+              ok: false,
+              detail: rule.reason,
+              code: rule.code,
+            });
+            continue;
+          }
         }
         if (
           action.value !== undefined &&
@@ -206,22 +231,33 @@ export class TurnEngine {
               ...orderTag(world, action),
               ok: false,
               detail: "Invalid order value",
+              code: "INVALID_VALUE",
             });
           continue;
         }
         const cost = actionCostM(action, actor);
         // Orders that come from crisis decisions were already paid for by the choice
-        const pc = isPlayer && !injected.has(action) ? actionCostPC(action) : 0;
-        if (isPlayer && !injected.has(action) && cost > budgetLeft) {
+        const pc = playerOrder ? actionCostPC(action) : 0;
+        if (playerOrder && cost > budgetLeft) {
           const reason = `Insufficient defense budget ($${Math.round(budgetLeft)}M left, needs $${cost}M)`;
           push(rejectedActions, actor.id, { action, reason });
-          report.orders.push({ ...orderTag(world, action), ok: false, detail: reason });
+          report.orders.push({
+            ...orderTag(world, action),
+            ok: false,
+            detail: reason,
+            code: "NO_DEFENSE_BUDGET",
+          });
           continue;
         }
         if (pc > world.politicalCapital) {
           const reason = `Not enough political capital (${world.politicalCapital} left, needs ${pc})`;
           push(rejectedActions, actor.id, { action, reason });
-          report.orders.push({ ...orderTag(world, action), ok: false, detail: reason });
+          report.orders.push({
+            ...orderTag(world, action),
+            ok: false,
+            detail: reason,
+            code: "NO_CAPITAL",
+          });
           continue;
         }
         const hitsPlayer =
@@ -1449,53 +1485,25 @@ export class TurnEngine {
 /** Each reform in the last 6 months cuts the next one's effect to this share. */
 const REFORM_DECAY = 0.8;
 
-/** Player orders per month (crisis-injected orders don't count). */
-const MAX_ORDERS = 6;
-
 /** A spy hunt protects the player for this many months… */
 const COUNTER_INTEL_MONTHS = 3;
 /** …and foils this share of the foreign operations aimed at them meanwhile. */
 const COUNTER_INTEL_FOIL = 0.6;
 
+/** Labels for orders outside the player's registry (AI-only order types). */
 const ORDER_VERBS: Partial<Record<Action["type"], string>> = {
-  DIPLOMACY_IMPROVE_RELATIONS: "Court",
-  DIPLOMACY_DENOUNCE: "Denounce",
-  DIPLOMACY_PROPOSE_ALLIANCE: "Offer pact to",
-  DIPLOMACY_BREAK_ALLIANCE: "Break pact with",
-  DIPLOMACY_DECLARE_WAR: "Declare war on",
-  DIPLOMACY_PROPOSE_CEASEFIRE: "Propose ceasefire to",
-  DIPLOMACY_MEDIATE: "Mediate peace for",
-  MILITARY_MOBILIZE: "Mobilize forces",
-  MILITARY_DEMOBILIZE: "Stand down forces",
-  MILITARY_PROCURE: "Buy weapons",
-  MILITARY_AIRSTRIKE: "Airstrike on",
-  MILITARY_DEPLOY_BORDER: "Mass troops facing",
-  MILITARY_WITHDRAW_BORDER: "Withdraw troops facing",
-  NUCLEAR_FUND_PROGRAM: "Fund nuclear program",
-  NUCLEAR_STRIKE: "NUCLEAR STRIKE on",
   ECONOMY_ADJUST_MILITARY_BUDGET: "Set defense budget",
-  INTEL_GATHER: "Spy on",
-  INTEL_SABOTAGE: "Sabotage",
-  INTEL_DESTABILIZE: "Destabilize",
-  INTEL_SUPPORT_REBELS: "Arm rebels in",
-  INTEL_COUNTER_INTEL: "Hunt foreign spies",
-  INTEL_MISINFORMATION: "Feed disinformation to",
   INTEL_PROPAGANDA: "Covert propaganda in",
-  INTEL_ASSASSINATE: "Assassinate leader of",
-  INTEL_COUP: "Back coup in",
-  DOMESTIC_PROPAGANDA: "National address",
-  DOMESTIC_REFORM: "Reform program",
-  DOMESTIC_POLICING: "Change policing",
 };
 
+/** One label everywhere: the order registry's (`orders.ts`, mirrored by the UI), else ORDER_VERBS. */
 export function orderLabel(world: WorldState, action: Action): string {
-  const verb = ORDER_VERBS[action.type] ?? action.type;
+  const def = engineOrderFor(action);
+  const verb = def?.verb ?? ORDER_VERBS[action.type] ?? action.type;
   const target = action.targetCountryId
     ? world.countries.find((c) => c.id === action.targetCountryId)?.name
     : undefined;
-  if (action.type === "DOMESTIC_POLICING") {
-    return `${(action.params?.tactic as string) === "HARD" ? "Hard" : "Soft"} policing`;
-  }
+  if (def && !def.targeted) return def.verb;
   return target ? `${verb} ${target}` : verb;
 }
 

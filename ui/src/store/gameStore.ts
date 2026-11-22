@@ -197,6 +197,8 @@ export interface TurnReport {
     facts?: ReportFact[];
     reaction?: Reaction;
     watch?: string;
+    /** Why a refused order was refused (OrderBlockCode); absent on chance failures. */
+    code?: string;
   }>;
   decisions: Array<{
     title: string;
@@ -365,7 +367,36 @@ export interface ActionPreview {
   effects: PreviewEffect[];
   risks: string[];
   blocked: string | null;
+  /** The rule-layer reason as a code (src/core/availability.ts); blocked === block?.reason. */
+  block?: OrderBlock | null;
+  /** Declare war, nuclear strike: confirm on a separate face. */
+  irreversible?: boolean;
   missionWarning?: string | null;
+}
+
+/** Mirrors src/core/availability.ts (types are duplicated, see CLAUDE.md). */
+export type OrderBlockCode =
+  | 'NO_CAPITAL' | 'NO_DEFENSE_BUDGET' | 'ORDER_LIMIT'
+  | 'DUPLICATE' | 'NEEDS_TARGET'
+  | 'GAME_OVER' | 'SELF_TARGET' | 'TARGET_COLLAPSED' | 'INVALID_VALUE'
+  | 'AT_WAR' | 'NOT_AT_WAR' | 'ALREADY_AT_WAR' | 'TARGET_NOT_AT_WAR' | 'PARTY_TO_WAR'
+  | 'NOT_ALLIED' | 'PACT_REFUSED' | 'RELATIONS_MAXED' | 'NO_WARHEADS' | 'PROGRAM_MAXED'
+  | 'TOO_PROTECTED' | 'TOO_STABLE' | 'NO_TROOPS';
+
+export type PointTarget = 'capital' | 'orders' | 'meetings' | 'defense' | 'tray' | 'target' | 'mission';
+
+export interface OrderBlock {
+  code: OrderBlockCode;
+  reason: string;
+  fix: string | null;
+  points: PointTarget | null;
+  alt?: { type: string; params?: Record<string, unknown> };
+  need?: { have: number; need: number; refill?: number };
+}
+
+export interface OrderAvailability {
+  state: 'available' | 'unaffordable' | 'invalid' | 'queued';
+  block: OrderBlock | null;
 }
 
 export interface PendingAction {
