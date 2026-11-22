@@ -1673,5 +1673,43 @@
       "https://en.wikipedia.org/wiki/Ukrainian_Soviet_Socialist_Republic"
     ],
     "asOf": "2026-11-22"
+  },
+  {
+    "id": "ukraine",
+    "kind": "place",
+    "name": "Ukraine",
+    "aliases": [
+      "Ukraine"
+    ],
+    "countryId": "UKR",
+    "obscurity": 1,
+    "short": "Europe's second-largest country, fighting off Russia's full-scale invasion since February 2022 while talks on a ceasefire go on.",
+    "long": "Ukraine became independent when the Soviet Union broke up in 1991. Russia seized Crimea in 2014 and backed separatists in the east, then launched a full-scale invasion in February 2022. By late 2026 Russia holds about a fifth of the country, mostly in the south and east, and the front has moved slowly for years. President Volodymyr Zelensky leads a government that depends on Western weapons and money, while US-brokered talks test whether a ceasefire can hold.",
+    "related": [],
+    "map": {
+      "countries": [
+        "UKR"
+      ],
+      "points": [
+        {
+          "name": "Kyiv",
+          "lon": 30.52,
+          "lat": 50.45
+        }
+      ]
+    },
+    "valid": {
+      "from": "1991-08"
+    },
+    "eras": {
+      "2025": {
+        "short": "Europe's second-largest country, nearly three years into resisting Russia's full-scale invasion, as Washington pushes for talks."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Ukraine",
+      "https://en.wikipedia.org/wiki/Russian_invasion_of_Ukraine"
+    ],
+    "asOf": "2026-11-21"
   }
 ]
