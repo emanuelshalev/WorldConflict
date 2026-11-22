@@ -4,6 +4,8 @@
 // the HUD and rail meters agree (QA repro #5: one filled what is left, the other what is spent),
 // pressing an unaffordable order points at every capital meter with a callout naming the order and
 // its cost, with no toast; and at 1024 the HUD shows all seven resources in words (QA1 S3-3).
+// Since F-02-4 (D-58) staff picks spend nothing until approved: the guard approves them first so
+// an order is out of reach (month 1 used to open with the staff's seals already spent).
 import { args, bodyText, run, startGame } from './_lib.mjs';
 
 const { out, base } = args('RS-001-2');
@@ -29,6 +31,20 @@ await run('RS-001-2', async (g, track) => {
   // QA repro #5: the HUD and the rail draw the same number of full seals
   const meters = await fullSeals(p);
   g.check(meters.length >= 2 && meters.every((m) => m.full === meters[0].full), `HUD and rail capital meters agree ${JSON.stringify(meters.map((m) => m.full))}`);
+
+  // Staff picks are proposals that spend nothing until approved (F-02-4, D-58), so month 1 opens
+  // with every seal free and no order out of reach. Spend the way a player does: approve the staff
+  // picks, then a 2-seal order is out of reach and the meters must still agree.
+  await s.click(/^Advisors' suggestions/);
+  await p.waitForTimeout(600);
+  for (let k = 0; k < 4; k++) {
+    const approve = p.getByRole('button', { name: /^Approve order: / }).first();
+    if (!(await approve.isVisible().catch(() => false))) break;
+    await approve.click();
+    await p.waitForTimeout(700);
+  }
+  const spent = await fullSeals(p);
+  g.check(spent.length >= 2 && spent.every((m) => m.full === spent[0].full) && spent[0].full < meters[0].full, `after approving the staff picks the meters agree and show the spend ${JSON.stringify(spent.map((m) => m.full))}`);
 
   // Press an order the player cannot afford: every capital meter is pointed at, with a callout
   await s.click(/^All orders/);
