@@ -745,6 +745,7 @@ const LOOP = {
     ["G10", "A", "The reveal: an end of game worth waiting for (achievements, perception, stats, ranking)", "CEO RS-002", "doing"],
     ["G11", "A", "A world map that fits and tells the story of its era (names, stability, wars, alliances)", "CEO RS-003", "doing"],
     ["G12", "A", "Learn as you play: explainers for names, places, terms and situations, adjustable", "CEO RS-003", "doing"],
+    ["G13", "A", "Stability: fixed stays fixed (every addressed finding guarded by an automated regression check)", "CEO", "doing"],
     ["P1", "B", "Reusable method, kept apart from the game", "CEO", "doing"],
     ["P2", "B", "Fast, safe iterations (more change, zero regressions)", "CEO", "doing"],
     ["P3", "B", "Quality by construction (ledger, spec or test, QA on every change)", "Method", "doing"],
@@ -827,7 +828,7 @@ const LOOP = {
     ["Measure consumption", "Every agent is named so its tokens are attributed automatically; the Consumption tab is regenerated with each update."],
     ["Report often", "This page and the journal update at every stage."],
   ],
-  gate: ["Every game goal G1 to G12 verified by QA and confirmed by the panel", "No open S1 or S2 finding", "Weighted would-recommend 7.0 or more, nobody below 6", "Weighted feels-like-a-game and agency 7.0 or more", "Olivia (early quitter) and Ruth (non-gamer) finish a first session without quitting", "Tests, lints, build, balance harness and smoke playtest green"],
+  gate: ["Every game goal G1 to G13 verified by QA and confirmed by the panel", "No open S1 or S2 finding and no regressed finding; every regression guard passes", "Weighted would-recommend 7.0 or more, nobody below 6", "Weighted feels-like-a-game and agency 7.0 or more", "Olivia (early quitter) and Ruth (non-gamer) finish a first session without quitting", "Tests, lints, build, balance harness and smoke playtest green"],
   journal: [
     { date: "2026-11-21", iter: 0, title: "Setup", items: [
       "<b>Found:</b> three earlier persona rounds rated visuals 7/10, yet your playtest found the UI dashboard-like, blocking and unclear. The panel was too patient, read too carefully, and had no skeptic or quitter, which is the bias the research predicts.",

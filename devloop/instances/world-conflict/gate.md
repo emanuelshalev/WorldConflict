@@ -2,7 +2,7 @@
 
 Thresholds on top of the method template (`../../method/triage.md`). Raised by D-39 after RS-001.
 
-- Every game goal G1 to G12 (`goals.md`) verified by QA and confirmed by the panel.
+- Every game goal G1 to G13 (`goals.md`) verified by QA and confirmed by the panel.
 - No open S1 or S2 finding, and no REGRESSED finding; every registry guard passes.
 - Weighted recommend >= 7.0, no persona below 6.
 - Weighted feels-like-a-game >= 7.0 and agency >= 7.0.
