@@ -45,7 +45,7 @@
   "objectives": {
     "USA": {
       "title": "Open the strait",
-      "briefing": "You are the President, it is the week of the midterms, and tankers are burning off Fujairah. End the shooting war with Iran on terms you can sell, keep Tehran from ever testing a bomb, and keep American voters on side. Nobody will thank you for a ground war.",
+      "briefing": "You are the President, the midterms are behind you, the new Congress sits in January, and tankers are burning off Fujairah. End the shooting war with Iran on terms you can sell, keep Tehran from ever testing a bomb, and keep American voters on side. Nobody will thank you for a ground war.",
       "primary": [
         {"kind": "WAR_ENDED", "targetId": "USA", "otherId": "IRN", "label": "The shooting stops: no US–Iran war at the end (Hormuz reopens)"},
         {"kind": "NO_NUCLEAR", "targetId": "IRN", "label": "Iran never tests a bomb"},
@@ -387,17 +387,17 @@
       {
         "turn": 0,
         "templateId": "us_midterm_clock",
-        "headline": "Three days to the midterms: tanker ablaze off Fujairah",
-        "text": "An IRGC fast-attack boat has hit a Greek-flagged tanker with an anti-ship missile outside the strait. Oil is back above $100. You promised no new strikes before Tuesday's vote. Tehran is also, at last, answering the Vice President's letter.",
+        "headline": "Lame-duck weeks: tanker ablaze off Fujairah",
+        "text": "An IRGC fast-attack boat has hit a Greek-flagged tanker with an anti-ship missile outside the strait. Oil is back above $100. You paused strikes for the midterms and have not resumed them; the new Congress sits on 3 January. Tehran is also, at last, answering the Vice President's letter.",
         "decision": {
-          "title": "The midterm clock",
-          "situation": "Striking now shows strength and breaks your own campaign promise days before the vote. Escorting tankers with more destroyers is safe and slow and does nothing about the price at the pump. Or answer Tehran's 'positive step' through Oman and gamble that a quiet channel survives the weekend.",
+          "title": "The January clock",
+          "situation": "Striking now shows strength, ends your own pause and hands the new Congress a fresh war before it is sworn in. Escorting tankers with more destroyers is safe and slow and does nothing about the price at the pump. Or answer Tehran's 'positive step' through Oman and gamble that a quiet channel survives the weekend.",
           "affectedCountries": ["USA", "IRN", "ARE"],
           "urgency": "URGENT",
           "defaultOptionId": "escort",
           "options": [
-            {"id": "strike", "label": "Hit the IRGC navy now", "description": "Retaliatory strikes on Bandar Abbas. Hawks cheer, your promise dies, oil spikes again.", "effects": {"approval": 3, "relations:IRN": -10, "relations:ARE": -4, "growth": -0.2}, "tensionDelta": 8, "actions": [{"type": "MILITARY_AIRSTRIKE", "targetCountryId": "IRN", "params": {"targetType": "MILITARY"}}], "backedBy": ["DEFENSE_MINISTER"]},
-            {"id": "escort", "label": "More escorts, no strikes", "description": "Keep the promise and the convoys. Shipping insurers are not reassured.", "effects": {"approval": -3, "mobilization": 5, "growth": -0.3}, "tensionDelta": 2, "backedBy": ["CHIEF_OF_STAFF"]},
+            {"id": "strike", "label": "Hit the IRGC navy now", "description": "Retaliatory strikes on Bandar Abbas. Hawks cheer, the pause dies, oil spikes again.", "effects": {"approval": 3, "relations:IRN": -10, "relations:ARE": -4, "growth": -0.2}, "tensionDelta": 8, "actions": [{"type": "MILITARY_AIRSTRIKE", "targetCountryId": "IRN", "params": {"targetType": "MILITARY"}}], "backedBy": ["DEFENSE_MINISTER"]},
+            {"id": "escort", "label": "More escorts, no strikes", "description": "Keep the pause and the convoys. Shipping insurers are not reassured.", "effects": {"approval": -3, "mobilization": 5, "growth": -0.3}, "tensionDelta": 2, "backedBy": ["CHIEF_OF_STAFF"]},
             {"id": "oman", "label": "Reply via Muscat", "description": "A quiet answer to Tehran's quiet answer. Hawks will call it appeasement, if they find out.", "effects": {"approval": -5, "relations:IRN": 8, "relations:ISR": -6}, "tensionDelta": -5, "backedBy": ["FOREIGN_MINISTER"]}
           ]
         }

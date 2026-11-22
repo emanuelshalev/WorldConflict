@@ -1,0 +1,1321 @@
+[
+  {
+    "id": "donald-trump",
+    "kind": "person",
+    "name": "Donald Trump",
+    "aliases": [
+      "Donald Trump",
+      "Trump",
+      "President Trump"
+    ],
+    "countryId": "USA",
+    "obscurity": 1,
+    "short": "US president since January 2025, back for a second term after serving from 2017 to 2021.",
+    "long": "A property developer and TV personality turned Republican leader. His second term has brought sweeping tariffs, the January 2026 raid that captured Maduro and an undeclared war with Iran since February 2026. In the November 2026 midterms his party lost control of Congress, which changes hands in January 2027.",
+    "related": [
+      "us-midterms-2026",
+      "jd-vance",
+      "washington"
+    ],
+    "valid": {
+      "from": "2025-01"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Donald_Trump",
+      "https://www.aljazeera.com/news/2026/11/4/democratic-party-gains-us-house-majority-in-2026-midterm-elections"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "jd-vance",
+    "kind": "person",
+    "name": "JD Vance",
+    "aliases": [
+      "JD Vance",
+      "J.D. Vance",
+      "Vance",
+      "Vice President Vance"
+    ],
+    "countryId": "USA",
+    "obscurity": 2,
+    "short": "US vice president since January 2025, a former senator from Ohio and author of the memoir Hillbilly Elegy.",
+    "long": "In late October 2026 he reportedly wrote to Mohsen Rezaei, a veteran Iranian Revolutionary Guards commander, rather than to Iran's government. Tehran called the letter 'a positive step' but planned no meeting.",
+    "related": [
+      "donald-trump",
+      "mohsen-rezaei"
+    ],
+    "valid": {
+      "from": "2025-01"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/JD_Vance",
+      "https://easternherald.com/2026/10/31/rezaei-vance-letter-us-iran-talks/"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "xi-jinping",
+    "kind": "person",
+    "name": "Xi Jinping",
+    "aliases": [
+      "Xi Jinping",
+      {
+        "text": "Xi",
+        "caseSensitive": true
+      },
+      "President Xi"
+    ],
+    "countryId": "CHN",
+    "obscurity": 1,
+    "short": "China's leader: head of the Communist Party since 2012 and president since 2013, now in a third term with no successor named.",
+    "long": "He has concentrated power more than any Chinese leader since Mao, purged rivals through anti-corruption drives and told the army to be ready for a Taiwan operation by 2027. A wave of investigations has hollowed out the top of the military since 2023.",
+    "related": [
+      "central-military-commission",
+      "pla",
+      "beijing"
+    ],
+    "valid": {
+      "from": "2012-11"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Xi_Jinping"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "vladimir-putin",
+    "kind": "person",
+    "name": "Vladimir Putin",
+    "aliases": [
+      "Vladimir Putin",
+      "Putin"
+    ],
+    "countryId": "RUS",
+    "obscurity": 1,
+    "short": "Russia's leader since 2000: president, prime minister from 2008 to 2012, then president again.",
+    "long": "A former KGB officer who rose fast under Boris Yeltsin. He ordered the annexation of Crimea in 2014 and the full-scale invasion of Ukraine in February 2022. Constitutional changes in 2020 let him stay in office until 2036.",
+    "related": [
+      "moscow",
+      "kremlin",
+      "full-scale-invasion-2022"
+    ],
+    "valid": {
+      "from": "2000-05"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Vladimir_Putin"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "volodymyr-zelensky",
+    "kind": "person",
+    "name": "Volodymyr Zelensky",
+    "aliases": [
+      "Volodymyr Zelensky",
+      "Zelensky",
+      "Zelenskyy",
+      "Volodymyr Zelenskyy"
+    ],
+    "countryId": "UKR",
+    "obscurity": 1,
+    "short": "President of Ukraine since May 2019, a former actor who has led the country through Russia's full-scale invasion.",
+    "long": "Elected in a landslide in 2019 on an anti-corruption platform. He stayed in Kyiv when Russia invaded in February 2022 and became the face of Ukraine's resistance. The election due in 2024 has been postponed under martial law, which parliament keeps extending.",
+    "related": [
+      "verkhovna-rada",
+      "martial-law",
+      "kyiv"
+    ],
+    "valid": {
+      "from": "2019-05"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Volodymyr_Zelenskyy"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "dmitry-peskov",
+    "kind": "person",
+    "name": "Dmitry Peskov",
+    "aliases": [
+      "Dmitry Peskov",
+      "Peskov"
+    ],
+    "countryId": "RUS",
+    "obscurity": 2,
+    "short": "The Kremlin's spokesman since 2012: when Moscow comments on talks or attacks, it is usually his voice.",
+    "related": [
+      "kremlin",
+      "vladimir-putin"
+    ],
+    "valid": {
+      "from": "2012-05"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Dmitry_Peskov"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "yevgeny-prigozhin",
+    "kind": "person",
+    "name": "Yevgeny Prigozhin",
+    "aliases": [
+      "Yevgeny Prigozhin",
+      "Prigozhin"
+    ],
+    "countryId": "RUS",
+    "obscurity": 2,
+    "short": "Founder of the Wagner mercenary group, who led a short mutiny in June 2023 and died in a plane crash two months later.",
+    "long": "His fighters seized a military headquarters in Rostov-on-Don and drove toward Moscow before a deal stopped them. His death in August 2023 is widely seen as revenge. In Russia, unpaid soldiers on the move still bring back 'echoes of Prigozhin'.",
+    "related": [
+      "rostov-on-don"
+    ],
+    "valid": {
+      "from": "2023-08"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Yevgeny_Prigozhin",
+      "https://en.wikipedia.org/wiki/Wagner_Group_rebellion"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "friedrich-merz",
+    "kind": "person",
+    "name": "Friedrich Merz",
+    "aliases": [
+      "Friedrich Merz",
+      "Merz",
+      "Chancellor Merz"
+    ],
+    "countryId": "DEU",
+    "obscurity": 2,
+    "short": "Germany's chancellor since May 2025, a Christian Democrat who loosened the debt brake to rearm the country.",
+    "long": "A corporate lawyer and long-time rival of Angela Merkel. He leads a coalition with the Social Democrats and has made Germany one of Ukraine's biggest backers since the US scaled back aid.",
+    "related": [
+      "berlin"
+    ],
+    "valid": {
+      "from": "2025-05"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Friedrich_Merz"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "narendra-modi",
+    "kind": "person",
+    "name": "Narendra Modi",
+    "aliases": [
+      "Narendra Modi",
+      "Modi"
+    ],
+    "countryId": "IND",
+    "obscurity": 1,
+    "short": "India's prime minister since 2014, a Hindu nationalist now in his third term, governing in coalition since 2024.",
+    "long": "He ordered the May 2025 strikes on Pakistan, Operation Sindoor, after the Pahalgam massacre, and put the Indus Waters Treaty 'in abeyance'. He has said 'blood and water cannot flow together'.",
+    "related": [
+      "operation-sindoor",
+      "indus-waters-treaty",
+      "new-delhi"
+    ],
+    "valid": {
+      "from": "2014-05"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Narendra_Modi"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "lula",
+    "kind": "person",
+    "name": "Luiz Inácio Lula da Silva",
+    "aliases": [
+      "Luiz Inácio Lula da Silva",
+      "Lula da Silva",
+      "Lula"
+    ],
+    "countryId": "BRA",
+    "obscurity": 2,
+    "short": "Brazil's president, a former metalworker and union leader who won a fourth term in October 2026.",
+    "long": "He governed from 2003 to 2010, was jailed on corruption charges later annulled, and returned in 2023. He beat Flávio Bolsonaro in the 25 October 2026 runoff with about 52%; the losing camp has asked to annul the result.",
+    "related": [
+      "brazil-election-2026"
+    ],
+    "valid": {
+      "from": "2023-01"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Luiz_In%C3%A1cio_Lula_da_Silva",
+      "https://aljazeera.com/news/2026/10/26/lula-holds-off-far-right-with-victory-in-brazil-presidential-election"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "mark-carney",
+    "kind": "person",
+    "name": "Mark Carney",
+    "aliases": [
+      "Mark Carney",
+      "Carney"
+    ],
+    "countryId": "CAN",
+    "obscurity": 2,
+    "short": "Canada's prime minister since March 2025, a former head of both the Bank of Canada and the Bank of England.",
+    "long": "He took over the Liberal Party as Trump's tariffs and talk of Canada as a '51st state' angered voters, and won the April 2025 election on a promise to stand up to Washington.",
+    "related": [
+      "tariffs"
+    ],
+    "valid": {
+      "from": "2025-03"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Mark_Carney"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "claudia-sheinbaum",
+    "kind": "person",
+    "name": "Claudia Sheinbaum",
+    "aliases": [
+      "Claudia Sheinbaum",
+      "Sheinbaum"
+    ],
+    "countryId": "MEX",
+    "obscurity": 2,
+    "short": "Mexico's first woman president, in office since October 2024; a climate scientist and former mayor of Mexico City.",
+    "long": "She leads the left-wing Morena party founded by her predecessor. She has kept talking to Trump through tariff threats and has argued for sending fuel to Cuba on humanitarian grounds.",
+    "related": [
+      "cuba-oil-blockade"
+    ],
+    "valid": {
+      "from": "2024-10"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Claudia_Sheinbaum"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "emmanuel-macron",
+    "kind": "person",
+    "name": "Emmanuel Macron",
+    "aliases": [
+      "Emmanuel Macron",
+      "Macron"
+    ],
+    "countryId": "FRA",
+    "obscurity": 1,
+    "short": "France's president since 2017, in his second and final term; the next presidential election is due in April 2027.",
+    "long": "A centrist and former investment banker. With Britain he leads the 'coalition of the willing' planning a European force for Ukraine after any ceasefire.",
+    "related": [
+      "coalition-of-the-willing",
+      "paris"
+    ],
+    "valid": {
+      "from": "2017-05"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Emmanuel_Macron"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "andy-burnham",
+    "kind": "person",
+    "name": "Andy Burnham",
+    "aliases": [
+      "Andy Burnham",
+      "Burnham"
+    ],
+    "countryId": "GBR",
+    "obscurity": 2,
+    "short": "UK prime minister since 20 July 2026, the former mayor of Greater Manchester who replaced Keir Starmer.",
+    "long": "He was elected Labour leader unopposed after Starmer resigned, so no general election was needed; Labour keeps its large Commons majority. He has promised to focus on the cost of living and to move power away from London.",
+    "related": [
+      "london",
+      "coalition-of-the-willing"
+    ],
+    "valid": {
+      "from": "2026-07"
+    },
+    "sources": [
+      "https://www.opb.org/article/2026/07/20/andy-burnham-succeeds-keir-starmer-as-the-u-k-s-7th-prime-minister-in-10-years/",
+      "https://aljazeera.com/news/2026/7/20/andy-burnham-to-become-uks-pm-on-monday-what-happens-next"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "donald-tusk",
+    "kind": "person",
+    "name": "Donald Tusk",
+    "aliases": [
+      "Donald Tusk",
+      {
+        "text": "Tusk",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "POL",
+    "obscurity": 2,
+    "short": "Poland's prime minister since December 2023 (also 2007 to 2014), and a former president of the European Council.",
+    "long": "A pro-European liberal. Poland spends more of its economy on defence than any other NATO member, and has twice called NATO consultations after Russian drones crossed its border.",
+    "related": [
+      "warsaw",
+      "nato-article-4"
+    ],
+    "valid": {
+      "from": "2023-12"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Donald_Tusk"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "recep-tayyip-erdogan",
+    "kind": "person",
+    "name": "Recep Tayyip Erdoğan",
+    "aliases": [
+      "Recep Tayyip Erdoğan",
+      "Erdoğan",
+      "Erdogan"
+    ],
+    "countryId": "TUR",
+    "obscurity": 1,
+    "short": "Turkey's leader since 2003, first as prime minister and since 2014 as president.",
+    "long": "He controls the straits into the Black Sea, sells drones to many sides of many wars and keeps talking to both Moscow and Kyiv. His main rival, Istanbul's mayor, was jailed in 2025.",
+    "related": [
+      "ankara",
+      "bayraktar"
+    ],
+    "valid": {
+      "from": "2014-08"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Recep_Tayyip_Erdo%C4%9Fan"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "mohammed-bin-salman",
+    "kind": "person",
+    "name": "Mohammed bin Salman",
+    "aliases": [
+      "Mohammed bin Salman",
+      {
+        "text": "MBS",
+        "caseSensitive": true
+      },
+      "Crown Prince Mohammed"
+    ],
+    "countryId": "SAU",
+    "obscurity": 2,
+    "short": "Saudi Arabia's crown prince since 2017 and prime minister since 2022: the kingdom's day-to-day ruler.",
+    "long": "He launched the Saudi-led war in Yemen in 2015 and the Vision 2030 plan to move the economy beyond oil. In 2026 Houthi missiles reached Riyadh's airport and his coalition partner, the UAE, became a rival.",
+    "related": [
+      "vision-2030",
+      "riyadh",
+      "houthis"
+    ],
+    "valid": {
+      "from": "2017-06"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Mohammed_bin_Salman"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "mojtaba-khamenei",
+    "kind": "person",
+    "name": "Mojtaba Khamenei",
+    "aliases": [
+      "Mojtaba Khamenei",
+      {
+        "text": "Mojtaba",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "IRN",
+    "obscurity": 2,
+    "short": "Iran's Supreme Leader since March 2026, son of Ali Khamenei; reportedly wounded in the war and rarely seen.",
+    "long": "A mid-ranking cleric close to the Revolutionary Guards, chosen by the Assembly of Experts days after US-Israeli strikes killed his father. Critics say the choice turns the Islamic Republic into a family dynasty. State media hinted he was injured; he has made few public appearances.",
+    "related": [
+      "ali-khamenei",
+      "assembly-of-experts",
+      "supreme-leader",
+      "irgc"
+    ],
+    "valid": {
+      "from": "2026-03"
+    },
+    "sources": [
+      "https://www.pbs.org/newshour/world/mojtaba-khamenei-a-son-of-irans-late-supreme-leader-is-chosen-to-replace-his-father",
+      "https://www.aljazeera.com/features/2026/3/4/who-is-mojtaba-khamenei-a-contender-for-irans-leadership-amid-war"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "mohsen-rezaei",
+    "kind": "person",
+    "name": "Mohsen Rezaei",
+    "aliases": [
+      "Mohsen Rezaei",
+      "Rezaei"
+    ],
+    "countryId": "IRN",
+    "obscurity": 3,
+    "short": "A veteran Iranian politician who commanded the Revolutionary Guards from 1981 to 1997, during the Iran-Iraq war.",
+    "long": "A repeated presidential candidate and long-time member of the regime's inner circle. In October 2026 US Vice President Vance reportedly addressed a letter to him, bypassing the elected government.",
+    "related": [
+      "irgc",
+      "jd-vance"
+    ],
+    "valid": {
+      "from": "2026-10"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Mohsen_Rezaee",
+      "https://easternherald.com/2026/10/31/rezaei-vance-letter-us-iran-talks/"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "benjamin-netanyahu",
+    "kind": "person",
+    "name": "Benjamin Netanyahu",
+    "aliases": [
+      "Benjamin Netanyahu",
+      "Netanyahu",
+      "Bibi"
+    ],
+    "countryId": "ISR",
+    "obscurity": 1,
+    "short": "Israel's longest-serving prime minister, now caretaker after the October 2026 election left no majority.",
+    "long": "He has led Israel for most of the time since 2009, through the Gaza war and the 2026 war with Iran, while on trial for corruption. His bloc won 53 of 120 seats on 27 October 2026, short of the 61 needed, and coalition talks continue.",
+    "related": [
+      "israel-election-2026",
+      "jerusalem"
+    ],
+    "valid": {
+      "from": "2022-12"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Benjamin_Netanyahu",
+      "https://www.aljazeera.com/news/2026/10/29/israel-election-result-shows-no-overall-majority-as-vote-count-complete"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "abdel-fattah-el-sisi",
+    "kind": "person",
+    "name": "Abdel Fattah el-Sisi",
+    "aliases": [
+      "Abdel Fattah el-Sisi",
+      "el-Sisi",
+      "Sisi"
+    ],
+    "countryId": "EGY",
+    "obscurity": 2,
+    "short": "Egypt's president since 2014, a former army chief who led the 2013 military takeover.",
+    "long": "He rules a country of about 110 million kept afloat by IMF loans and Gulf investment. Suez Canal income has collapsed with Red Sea attacks, and he backs Sudan's army against the RSF.",
+    "related": [
+      "cairo",
+      "suez-canal",
+      "imf"
+    ],
+    "valid": {
+      "from": "2014-06"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Abdel_Fattah_el-Sisi"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "sanae-takaichi",
+    "kind": "person",
+    "name": "Sanae Takaichi",
+    "aliases": [
+      "Sanae Takaichi",
+      "Takaichi",
+      "Prime Minister Takaichi"
+    ],
+    "countryId": "JPN",
+    "obscurity": 2,
+    "short": "Japan's first woman prime minister, in office since October 2025, a conservative and defence hawk.",
+    "long": "In November 2025 she told parliament that a Chinese attack on Taiwan could be a 'survival-threatening situation' for Japan, the legal trigger for its forces to fight. Beijing answered with travel warnings, seafood bans and curbs on exports to Japan.",
+    "related": [
+      "survival-threatening-situation",
+      "tokyo"
+    ],
+    "valid": {
+      "from": "2025-10"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Sanae_Takaichi",
+      "https://ktvz.com/money/cnn-business-consumer/2026/01/06/china-bans-certain-rare-earths-and-other-exports-to-japan-for-military-purposes-over-takaichis-comments/"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "prabowo-subianto",
+    "kind": "person",
+    "name": "Prabowo Subianto",
+    "aliases": [
+      "Prabowo Subianto",
+      "Prabowo"
+    ],
+    "countryId": "IDN",
+    "obscurity": 2,
+    "short": "Indonesia's president since October 2024, a former general and defence minister.",
+    "long": "He has offered Indonesian troops for a Gaza stabilisation force, which would make Indonesia the largest Muslim-majority contributor.",
+    "related": [
+      "gaza-strip"
+    ],
+    "valid": {
+      "from": "2024-10"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Prabowo_Subianto"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "lee-jae-myung",
+    "kind": "person",
+    "name": "Lee Jae-myung",
+    "aliases": [
+      "Lee Jae-myung",
+      "President Lee"
+    ],
+    "countryId": "KOR",
+    "obscurity": 2,
+    "short": "South Korea's president since June 2025, elected after his predecessor was removed over a failed martial-law decree.",
+    "related": [],
+    "valid": {
+      "from": "2025-06"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Lee_Jae-myung"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "kim-jong-un",
+    "kind": "person",
+    "name": "Kim Jong Un",
+    "aliases": [
+      "Kim Jong Un",
+      "Kim Jong-un"
+    ],
+    "countryId": "PRK",
+    "obscurity": 1,
+    "short": "North Korea's ruler since 2011, the third of his family to lead the country and its nuclear weapons programme.",
+    "long": "He has sent troops and shells to help Russia against Ukraine in exchange for money and technology. Iran's hardliners point to his bomb as proof that only nuclear weapons guarantee survival.",
+    "related": [],
+    "valid": {
+      "from": "2011-12"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Kim_Jong_Un"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "anthony-albanese",
+    "kind": "person",
+    "name": "Anthony Albanese",
+    "aliases": [
+      "Anthony Albanese",
+      {
+        "text": "Albanese",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "AUS",
+    "obscurity": 2,
+    "short": "Australia's Labor prime minister since 2022, re-elected with a large majority in May 2025.",
+    "related": [
+      "canberra"
+    ],
+    "valid": {
+      "from": "2022-05"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Anthony_Albanese"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "shehbaz-sharif",
+    "kind": "person",
+    "name": "Shehbaz Sharif",
+    "aliases": [
+      "Shehbaz Sharif",
+      "Shehbaz"
+    ],
+    "countryId": "PAK",
+    "obscurity": 2,
+    "short": "Pakistan's prime minister since March 2024 (also 2022 to 2023), the younger brother of three-time premier Nawaz Sharif.",
+    "long": "He governs alongside the army, whose chief, Field Marshal Asim Munir, holds most real power over security and foreign policy.",
+    "related": [
+      "asim-munir",
+      "islamabad"
+    ],
+    "valid": {
+      "from": "2024-03"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Shehbaz_Sharif"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "asim-munir",
+    "kind": "person",
+    "name": "Asim Munir",
+    "aliases": [
+      "Field Marshal Asim Munir",
+      "Asim Munir",
+      "Munir",
+      {
+        "text": "Field Marshal",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "PAK",
+    "obscurity": 2,
+    "short": "Pakistan's army chief since 2022, made field marshal after the May 2025 clash with India; the country's most powerful man.",
+    "long": "A constitutional amendment in November 2025 (the 27th) made him Chief of Defence Forces, over all three services and with legal immunity. He signed a mutual defence pact with Saudi Arabia in 2025 and is fighting a border war with the Afghan Taliban.",
+    "related": [
+      "shehbaz-sharif",
+      "rawalpindi",
+      "pakistan-saudi-defence-pact"
+    ],
+    "valid": {
+      "from": "2025-11"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Asim_Munir",
+      "https://tribune.com.pk/story/2612412/"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "bola-tinubu",
+    "kind": "person",
+    "name": "Bola Tinubu",
+    "aliases": [
+      "Bola Tinubu",
+      "Tinubu"
+    ],
+    "countryId": "NGA",
+    "obscurity": 3,
+    "short": "Nigeria's president since May 2023, a former governor of Lagos who ended costly fuel subsidies.",
+    "related": [],
+    "valid": {
+      "from": "2023-05"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Bola_Tinubu"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "cyril-ramaphosa",
+    "kind": "person",
+    "name": "Cyril Ramaphosa",
+    "aliases": [
+      "Cyril Ramaphosa",
+      "Ramaphosa"
+    ],
+    "countryId": "ZAF",
+    "obscurity": 2,
+    "short": "South Africa's president since 2018, leading a coalition since his ANC lost its majority in 2024.",
+    "related": [],
+    "valid": {
+      "from": "2018-02"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Cyril_Ramaphosa"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "giorgia-meloni",
+    "kind": "person",
+    "name": "Giorgia Meloni",
+    "aliases": [
+      "Giorgia Meloni",
+      "Meloni"
+    ],
+    "countryId": "ITA",
+    "obscurity": 2,
+    "short": "Italy's first woman prime minister, in office since 2022, leader of the right-wing Brothers of Italy.",
+    "related": [],
+    "valid": {
+      "from": "2022-10"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Giorgia_Meloni"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "lai-ching-te",
+    "kind": "person",
+    "name": "Lai Ching-te",
+    "aliases": [
+      "Lai Ching-te",
+      "President Lai",
+      {
+        "text": "Lai",
+        "caseSensitive": true
+      },
+      "William Lai"
+    ],
+    "countryId": "TWN",
+    "obscurity": 2,
+    "short": "Taiwan's president since May 2024, from the Democratic Progressive Party, which Beijing calls separatist.",
+    "long": "A former doctor and premier. The opposition controls the legislature and in 2026 cut his special defence budget by about 38%. Beijing refuses to talk to him.",
+    "related": [
+      "legislative-yuan",
+      "taipei",
+      "kmt"
+    ],
+    "valid": {
+      "from": "2024-05"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Lai_Ching-te",
+      "https://breakingdefense.com/2026/05/taiwans-parliament-passes-pared-back-supplementary-defense-budget/"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "alexander-lukashenko",
+    "kind": "person",
+    "name": "Alexander Lukashenko",
+    "aliases": [
+      "Alexander Lukashenko",
+      "Lukashenko"
+    ],
+    "countryId": "BLR",
+    "obscurity": 2,
+    "short": "Belarus's ruler since 1994, Europe's longest-serving leader and Moscow's closest ally; Russian nuclear weapons are based on his soil.",
+    "related": [],
+    "valid": {
+      "from": "1994-07"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Alexander_Lukashenko"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "mette-frederiksen",
+    "kind": "person",
+    "name": "Mette Frederiksen",
+    "aliases": [
+      "Mette Frederiksen",
+      "Frederiksen"
+    ],
+    "countryId": "DNK",
+    "obscurity": 3,
+    "short": "Denmark's Social Democrat prime minister since 2019, who has pushed back against Trump's demands for Greenland.",
+    "related": [
+      "greenland"
+    ],
+    "valid": {
+      "from": "2019-06"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Mette_Frederiksen"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "ahmed-al-sharaa",
+    "kind": "person",
+    "name": "Ahmed al-Sharaa",
+    "aliases": [
+      "Ahmed al-Sharaa",
+      "al-Sharaa",
+      "Sharaa",
+      "al-Jolani"
+    ],
+    "countryId": "SYR",
+    "obscurity": 2,
+    "short": "Syria's interim president since January 2025, the rebel commander whose offensive toppled Bashar al-Assad in December 2024.",
+    "long": "Once known as Abu Mohammad al-Jolani, he led an Islamist group that broke with al-Qaeda. He now courts Western and Gulf governments for sanctions relief and reconstruction money.",
+    "related": [],
+    "valid": {
+      "from": "2025-01"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Ahmed_al-Sharaa"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "ali-al-zaidi",
+    "kind": "person",
+    "name": "Ali al-Zaidi",
+    "aliases": [
+      "Ali al-Zaidi",
+      "al-Zaidi"
+    ],
+    "countryId": "IRQ",
+    "obscurity": 3,
+    "short": "Iraq's prime minister since May 2026, a 40-year-old businessman and banker with no previous government post.",
+    "long": "The governing Shia bloc chose him as a compromise after months of deadlock and US objections to a return of Nouri al-Maliki. He must balance Iraq between Washington and Tehran while Iran-aligned militias operate from Iraqi soil.",
+    "related": [
+      "baghdad"
+    ],
+    "valid": {
+      "from": "2026-05"
+    },
+    "sources": [
+      "https://www.aljazeera.com/news/2026/5/14/iraqs-parliament-approves-new-ali-al-zaidi-government",
+      "https://www.al-monitor.com/originals/2026/04/meet-ali-al-zaidi-businessman-and-iraqs-new-prime-minister-designate"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "mahmoud-abbas",
+    "kind": "person",
+    "name": "Mahmoud Abbas",
+    "aliases": [
+      "Mahmoud Abbas",
+      "President Abbas"
+    ],
+    "countryId": "PSX",
+    "obscurity": 2,
+    "short": "President of the Palestinian Authority since 2005, now in his nineties, with no election held since 2006.",
+    "related": [
+      "palestinian-authority",
+      "west-bank"
+    ],
+    "valid": {
+      "from": "2005-01"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Mahmoud_Abbas"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "joseph-aoun",
+    "kind": "person",
+    "name": "Joseph Aoun",
+    "aliases": [
+      "Joseph Aoun",
+      "President Aoun"
+    ],
+    "countryId": "LBN",
+    "obscurity": 3,
+    "short": "Lebanon's president since January 2025, the former army commander elected after more than two years with no head of state.",
+    "related": [],
+    "valid": {
+      "from": "2025-01"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Joseph_Aoun"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "abdul-malik-al-houthi",
+    "kind": "person",
+    "name": "Abdul-Malik al-Houthi",
+    "aliases": [
+      "Abdul-Malik al-Houthi",
+      "Abdul Malik al-Houthi"
+    ],
+    "countryId": "YEM",
+    "obscurity": 2,
+    "short": "Leader of Yemen's Houthi movement since 2004, rarely seen in public; he speaks to followers through televised sermons.",
+    "long": "He took over after his brother, the founder, was killed by government forces. Under him the movement seized Sanaa in 2014, survived a decade of Saudi-led bombing and from 2023 attacked shipping in the Red Sea.",
+    "related": [
+      "houthis",
+      "sanaa"
+    ],
+    "valid": {
+      "from": "2004-09"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Abdul-Malik_al-Houthi"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "mohamed-bin-zayed",
+    "kind": "person",
+    "name": "Mohamed bin Zayed",
+    "aliases": [
+      "Mohamed bin Zayed",
+      {
+        "text": "MBZ",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "ARE",
+    "obscurity": 2,
+    "short": "President of the UAE since 2022 and its real ruler for years before, who built the Gulf's most capable small military.",
+    "long": "He has backed southern separatists in Yemen and, by many accounts that the UAE denies, the RSF in Sudan. His ties with Israel since the 2020 Abraham Accords have made his country a target for Iran.",
+    "related": [
+      "abu-dhabi",
+      "abraham-accords",
+      "stc"
+    ],
+    "valid": {
+      "from": "2022-05"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Mohamed_bin_Zayed_Al_Nahyan"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "hibatullah-akhundzada",
+    "kind": "person",
+    "name": "Hibatullah Akhundzada",
+    "aliases": [
+      "Hibatullah Akhundzada",
+      "Akhundzada"
+    ],
+    "countryId": "AFG",
+    "obscurity": 3,
+    "short": "Supreme leader of the Taliban since 2016, a reclusive cleric who rules Afghanistan by decree from Kandahar.",
+    "related": [
+      "taliban"
+    ],
+    "valid": {
+      "from": "2016-05"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Hibatullah_Akhundzada"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "ferdinand-marcos-jr",
+    "kind": "person",
+    "name": "Ferdinand Marcos Jr.",
+    "aliases": [
+      "Ferdinand Marcos Jr.",
+      "Marcos Jr.",
+      "Bongbong Marcos",
+      "President Marcos"
+    ],
+    "countryId": "PHL",
+    "obscurity": 2,
+    "short": "President of the Philippines since 2022, son of the dictator ousted in 1986; he has moved Manila closer to Washington.",
+    "long": "He won in alliance with Sara Duterte, his vice president, but the partnership collapsed into open feud. He expanded US base access and publicises Chinese pressure at sea.",
+    "related": [
+      "sara-duterte",
+      "manila",
+      "edca"
+    ],
+    "valid": {
+      "from": "2022-06"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Bongbong_Marcos"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "sara-duterte",
+    "kind": "person",
+    "name": "Sara Duterte",
+    "aliases": [
+      "Sara Duterte",
+      "Vice President Sara Duterte",
+      "Duterte",
+      "Dutertes",
+      "Duterte camp"
+    ],
+    "countryId": "PHL",
+    "obscurity": 2,
+    "short": "Vice President of the Philippines, daughter of Rodrigo Duterte, on trial before the Senate after being impeached.",
+    "long": "A former mayor of Davao and a likely 2028 presidential candidate, she broke with President Marcos. Her Senate impeachment trial opened on 6 July 2026; in October prosecutors dropped three of the four charges, leaving an unexplained-wealth allegation. Her camp favours a softer line on China.",
+    "related": [
+      "rodrigo-duterte",
+      "ferdinand-marcos-jr",
+      "davao",
+      "philippine-senate"
+    ],
+    "valid": {
+      "from": "2022-06"
+    },
+    "sources": [
+      "https://www.aljazeera.com/news/2026/7/6/impeachment-trial-of-philippine-vice-president-sara-duterte-begins",
+      "https://gulfnews.com/world/asia/philippines/philippines-sara-duterte-impeachment-3-charges-dropped-818-million-wealth-allegation-remains-1.500709980"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "rodrigo-duterte",
+    "kind": "person",
+    "name": "Rodrigo Duterte",
+    "aliases": [
+      "Rodrigo Duterte"
+    ],
+    "countryId": "PHL",
+    "obscurity": 2,
+    "short": "President of the Philippines from 2016 to 2022, arrested in 2025 and awaiting trial at the ICC over his drug-war killings.",
+    "related": [
+      "sara-duterte",
+      "icc"
+    ],
+    "valid": {
+      "from": "2025-03"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Rodrigo_Duterte"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "zhang-youxia",
+    "kind": "person",
+    "name": "Zhang Youxia",
+    "aliases": [
+      "Zhang Youxia"
+    ],
+    "countryId": "CHN",
+    "obscurity": 3,
+    "short": "China's most senior general, vice chairman of the Central Military Commission, reported under investigation since January 2026.",
+    "long": "A combat veteran and long seen as close to Xi Jinping. Reports of his investigation, never fully explained by Beijing, deepened doubts about the readiness of a high command already thinned by purges.",
+    "related": [
+      "central-military-commission",
+      "he-weidong"
+    ],
+    "valid": {
+      "from": "2026-01"
+    },
+    "sources": [
+      "https://www.opb.org/article/2026/01/24/china-s-top-general-under-investigation-in-latest-military-purge/"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "he-weidong",
+    "kind": "person",
+    "name": "He Weidong",
+    "aliases": [
+      "He Weidong"
+    ],
+    "countryId": "CHN",
+    "obscurity": 3,
+    "short": "A former vice chairman of China's Central Military Commission, expelled from the Communist Party in October 2025.",
+    "long": "He had commanded the Eastern Theater, which would run any Taiwan operation. His fall was part of the largest purge of China's top brass in decades.",
+    "related": [
+      "central-military-commission",
+      "zhang-youxia",
+      "eastern-theater-command"
+    ],
+    "valid": {
+      "from": "2025-10"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/He_Weidong"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "delcy-rodriguez",
+    "kind": "person",
+    "name": "Delcy Rodríguez",
+    "aliases": [
+      "Delcy Rodríguez",
+      "Delcy Rodriguez",
+      "Acting President Rodríguez",
+      {
+        "text": "Rodríguez",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "VEN",
+    "obscurity": 2,
+    "short": "Venezuela's acting president since January 2026, Maduro's vice president, who now governs with Washington's approval.",
+    "long": "Sworn in two days after US forces seized Maduro. She opened the oil sector to foreign firms, reopened the US embassy in March and won sanctions relief. At the UN in September she promised elections but gave no date.",
+    "related": [
+      "nicolas-maduro",
+      "maduro-capture-2026",
+      "caracas",
+      "miraflores"
+    ],
+    "valid": {
+      "from": "2026-01"
+    },
+    "sources": [
+      "https://www.pbs.org/newshour/world/who-is-delcy-rodriguez-venezuelas-interim-president-after-maduros-ouster",
+      "https://www.aljazeera.com/news/2026/9/24/venezuelas-delcy-rodriguez-promises-elections-at-un-gives-no-date"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "maria-corina-machado",
+    "kind": "person",
+    "name": "María Corina Machado",
+    "aliases": [
+      "María Corina Machado",
+      "Maria Corina Machado",
+      "Machado"
+    ],
+    "countryId": "VEN",
+    "obscurity": 2,
+    "short": "Venezuela's main opposition leader and winner of the 2025 Nobel Peace Prize, barred from running in 2024.",
+    "long": "She won the opposition primary in 2023; when she was banned, her stand-in Edmundo González ran instead, and independent tallies suggest he won. Washington has kept her at arm's length while doing business with Rodríguez.",
+    "related": [
+      "delcy-rodriguez",
+      "nicolas-maduro"
+    ],
+    "valid": {
+      "from": "2025-10"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Mar%C3%ADa_Corina_Machado"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "hugo-chavez",
+    "kind": "person",
+    "name": "Hugo Chávez",
+    "aliases": [
+      "Hugo Chávez",
+      "Chávez",
+      "Chavez"
+    ],
+    "countryId": "VEN",
+    "obscurity": 2,
+    "short": "Venezuela's president from 1999 until his death in 2013, founder of the left-wing movement known as chavismo.",
+    "long": "A former army officer who spent oil money on social programmes and sent cheap oil to Cuba. His followers, the chavistas, still run the Venezuelan state.",
+    "related": [
+      "nicolas-maduro",
+      "chavismo"
+    ],
+    "valid": {
+      "from": "2013-03"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Hugo_Ch%C3%A1vez"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "miguel-diaz-canel",
+    "kind": "person",
+    "name": "Miguel Díaz-Canel",
+    "aliases": [
+      "Miguel Díaz-Canel",
+      "Díaz-Canel",
+      "Diaz-Canel"
+    ],
+    "countryId": "CUB",
+    "obscurity": 2,
+    "short": "Cuba's president since 2018 and Communist Party leader since 2021, the first leader born after the 1959 revolution.",
+    "long": "He governs through blackouts, food shortages and mass emigration. Since January 2026 a US oil blockade has cut fuel to the island; in March he confirmed talks with Washington.",
+    "related": [
+      "raul-castro",
+      "havana",
+      "cuba-oil-blockade"
+    ],
+    "valid": {
+      "from": "2018-04"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Miguel_D%C3%ADaz-Canel",
+      "https://www.aljazeera.com/news/2026/3/13/cuban-president-diaz-canel-says-talks-held-with-us-amid-trump-threats"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "raul-castro",
+    "kind": "person",
+    "name": "Raúl Castro",
+    "aliases": [
+      "Raúl Castro",
+      "Raul Castro",
+      {
+        "text": "Raúl",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "CUB",
+    "obscurity": 2,
+    "short": "Fidel Castro's younger brother, 95, who led Cuba from 2008 to 2018 and is still seen as the power behind the system.",
+    "related": [
+      "miguel-diaz-canel",
+      "havana"
+    ],
+    "valid": {
+      "from": "2021-04"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Ra%C3%BAl_Castro"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "abdel-fattah-al-burhan",
+    "kind": "person",
+    "name": "Abdel Fattah al-Burhan",
+    "aliases": [
+      "Abdel Fattah al-Burhan",
+      "al-Burhan",
+      "Burhan"
+    ],
+    "countryId": "SDN",
+    "obscurity": 2,
+    "short": "Sudan's army chief and de facto head of state since 2019, at war with the RSF since April 2023.",
+    "long": "He and the RSF commander ousted the civilian-led government together in 2021, then turned on each other. He runs the government from Port Sudan, backed by Egypt, and is accused, like the RSF, of serious abuses.",
+    "related": [
+      "saf",
+      "rsf",
+      "port-sudan"
+    ],
+    "valid": {
+      "from": "2019-08"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Abdel_Fattah_al-Burhan"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "abiy-ahmed",
+    "kind": "person",
+    "name": "Abiy Ahmed",
+    "aliases": [
+      "Abiy Ahmed",
+      "Abiy"
+    ],
+    "countryId": "ETH",
+    "obscurity": 2,
+    "short": "Ethiopia's prime minister since 2018, a Nobel Peace Prize winner who later fought a devastating war in Tigray.",
+    "long": "He won the 2019 Nobel for peace with Eritrea; the Tigray war of 2020 to 2022 killed hundreds of thousands. He completed the giant Nile dam, the GERD, and calls the Red Sea Ethiopia's 'natural outlet'. Fighting in Tigray resumed in 2026.",
+    "related": [
+      "gerd",
+      "tigray",
+      "addis-ababa"
+    ],
+    "valid": {
+      "from": "2018-04"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Abiy_Ahmed"
+    ],
+    "asOf": "2026-11-22"
+  }
+]

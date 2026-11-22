@@ -1,0 +1,95 @@
+{
+  "id": "scenario-1990",
+  "title": "The Cold War ends: January 1990",
+  "oneLine": "The Berlin Wall has fallen, Eastern Europe has thrown off communism and Gorbachev's Soviet Union is starting to come apart. Nobody knows what comes next.",
+  "whoIsWho": [
+    {
+      "entryId": "mikhail-gorbachev",
+      "stance": "Wants to save the Soviet Union by reforming it, and will not use tanks abroad."
+    },
+    {
+      "entryId": "george-hw-bush",
+      "stance": "Cautious: backs German unity inside NATO and avoids gloating over Moscow."
+    },
+    {
+      "entryId": "helmut-kohl",
+      "stance": "Pushes to reunite Germany as fast as possible."
+    },
+    {
+      "entryId": "margaret-thatcher",
+      "stance": "Close to Bush, wary of a big united Germany."
+    },
+    {
+      "entryId": "saddam-hussein",
+      "stance": "Deep in war debts and angry at Kuwait and the Gulf states over oil prices."
+    },
+    {
+      "entryId": "fw-de-klerk",
+      "stance": "About to free Mandela and negotiate an end to apartheid."
+    }
+  ],
+  "whyItMatters": "For 40 years the world was split in two. Now the old order is collapsing fast and mostly peacefully, but no one knows what replaces it: a united Germany, a broken-up Soviet Union, and new wars in places the superpowers used to hold down.",
+  "timeline": [
+    {
+      "date": "1985-03",
+      "text": "Mikhail Gorbachev becomes Soviet leader and starts reforms."
+    },
+    {
+      "date": "1987-12",
+      "text": "The first intifada begins in Gaza and the West Bank."
+    },
+    {
+      "date": "1988-08",
+      "text": "A ceasefire ends the eight-year Iran-Iraq War."
+    },
+    {
+      "date": "1989-02",
+      "text": "The last Soviet troops leave Afghanistan."
+    },
+    {
+      "date": "1989-06-04",
+      "text": "China's army crushes the protests in Tiananmen Square."
+    },
+    {
+      "date": "1989-11-09",
+      "text": "The Berlin Wall opens.",
+      "source": "https://en.wikipedia.org/wiki/Fall_of_the_Berlin_Wall"
+    },
+    {
+      "date": "1989-12",
+      "text": "Communist rule collapses in Czechoslovakia and Romania."
+    },
+    {
+      "date": "1989-12-20",
+      "text": "US forces invade Panama to remove Manuel Noriega."
+    }
+  ],
+  "gameStarts": "1990-01",
+  "map": {
+    "countries": [
+      "RUS",
+      "DEU",
+      "USA"
+    ],
+    "points": [
+      {
+        "name": "Berlin",
+        "lon": 13.4,
+        "lat": 52.52
+      }
+    ]
+  },
+  "onThisCard": [
+    "perestroika",
+    "warsaw-pact",
+    "german-reunification",
+    "berlin-wall",
+    "first-intifada"
+  ],
+  "sources": [
+    "https://en.wikipedia.org/wiki/Revolutions_of_1989",
+    "https://en.wikipedia.org/wiki/German_reunification",
+    "https://en.wikipedia.org/wiki/Dissolution_of_the_Soviet_Union"
+  ],
+  "asOf": "2026-11-22"
+}

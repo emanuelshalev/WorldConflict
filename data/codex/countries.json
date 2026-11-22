@@ -1,0 +1,1715 @@
+[
+  {
+    "id": "united-states",
+    "kind": "place",
+    "name": "United States",
+    "aliases": [
+      "United States",
+      {
+        "text": "US",
+        "caseSensitive": true
+      },
+      "U.S.",
+      {
+        "text": "USA",
+        "caseSensitive": true
+      },
+      "America",
+      "United States of America"
+    ],
+    "avoid": [
+      "Latin America",
+      "South America",
+      "North America",
+      "Central America"
+    ],
+    "countryId": "USA",
+    "obscurity": 1,
+    "short": "The world's largest economy and military power, led by President Donald Trump since January 2025.",
+    "long": "A federal republic of about 340 million people with the world's biggest defence budget and alliances across Europe and Asia. In 2026 it is fighting an undeclared air and naval war with Iran, brokering Russia-Ukraine talks, and its tariffs have strained ties with allies. The midterm elections of 3 November decide control of Congress.",
+    "map": {
+      "countries": [
+        "USA"
+      ]
+    },
+    "valid": {
+      "from": "1776-07"
+    },
+    "eras": {
+      "1960": {
+        "short": "One of two superpowers, led by President Dwight Eisenhower, with allies across Western Europe and Asia.",
+        "long": "Rich and confident after the Second World War, the US leads NATO and a ring of alliances meant to contain the Soviet Union. Both sides hold thousands of nuclear weapons. The presidential election, which will pit Senator John F. Kennedy against Vice-President Richard Nixon, is due in November."
+      },
+      "1990": {
+        "short": "The leading Western power under President George H. W. Bush, watching its Cold War rival fall apart.",
+        "long": "The Berlin Wall has fallen and communist governments in Eastern Europe have collapsed. US troops have just removed Panama's ruler Manuel Noriega. With the Soviet Union weakening, the US is close to being the only superpower."
+      },
+      "2025": {
+        "short": "The world's largest economy, where Donald Trump begins a second term as president on 20 January 2025.",
+        "long": "Trump returns promising tariffs, mass deportations and a quick end to the war in Ukraine. The US is the main arms supplier to Ukraine and Israel and sees China as its main rival."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/United_States"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "china",
+    "kind": "place",
+    "name": "China",
+    "aliases": [
+      "China",
+      "People's Republic of China",
+      {
+        "text": "PRC",
+        "caseSensitive": true
+      }
+    ],
+    "avoid": [
+      "South China Sea",
+      "East China Sea"
+    ],
+    "countryId": "CHN",
+    "obscurity": 1,
+    "short": "The world's second-largest economy, a one-party state ruled by the Communist Party under Xi Jinping since 2012.",
+    "long": "China claims Taiwan and most of the South China Sea and has the world's largest navy by number of ships. In December 2025 its forces rehearsed a blockade of Taiwan's main ports. It is the top trading partner of most countries and buys much of the oil Russia and Iran sell.",
+    "related": [
+      "taiwan"
+    ],
+    "map": {
+      "countries": [
+        "CHN"
+      ]
+    },
+    "valid": {
+      "from": "1949-10"
+    },
+    "eras": {
+      "1960": {
+        "short": "A communist state under Mao Zedong, in the middle of the Great Leap Forward, a campaign that is causing mass famine.",
+        "long": "The People's Republic was founded in 1949 after the civil war; the defeated Nationalists fled to Taiwan. Mao's Great Leap Forward (1958 to 1962) forced peasants into communes and led to a famine that killed tens of millions. The alliance with the Soviet Union is cracking. China has no atomic bomb yet."
+      },
+      "1990": {
+        "short": "A communist state under Party leader Jiang Zemin and elder Deng Xiaoping, isolated after the 1989 Tiananmen crackdown.",
+        "long": "Deng's market reforms since 1978 have brought fast growth. In June 1989 the army crushed protests in Beijing, killing hundreds or more, and Western countries imposed sanctions. Jiang was promoted afterwards as Party chief."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/China"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "russia",
+    "kind": "place",
+    "name": "Russia",
+    "aliases": [
+      "Russia",
+      "Russian Federation"
+    ],
+    "countryId": "RUS",
+    "obscurity": 1,
+    "short": "The world's largest country by area, ruled by Vladimir Putin, at war with Ukraine since its full-scale invasion of February 2022.",
+    "long": "Russia has one of the two largest nuclear arsenals. It holds about a fifth of Ukraine but has gained little ground in 2026, and US-brokered talks continue in Abu Dhabi. Western sanctions have pushed it to sell oil to China and India and to buy arms from Iran and North Korea. The New START arms treaty with the US expired in February 2026.",
+    "related": [
+      "belarus"
+    ],
+    "map": {
+      "countries": [
+        "RUS"
+      ]
+    },
+    "valid": {
+      "from": "1922-12"
+    },
+    "eras": {
+      "1960": {
+        "name": "Soviet Union",
+        "aliases": [
+          "Soviet Union",
+          "USSR",
+          "Soviets"
+        ],
+        "short": "The Soviet Union: a communist superpower of 15 republics ruled from Moscow, led by Nikita Khrushchev.",
+        "long": "The USSR leads the Warsaw Pact and controls Eastern Europe. It launched Sputnik, the first satellite, in 1957 and claims a lead in long-range missiles. Khrushchev talks of 'peaceful coexistence' with the West but demands that Western troops leave Berlin."
+      },
+      "1990": {
+        "name": "Soviet Union",
+        "short": "The Soviet Union under Mikhail Gorbachev: a reforming communist superpower whose empire is coming apart.",
+        "long": "Gorbachev's reforms, perestroika (restructuring) and glasnost (openness), have loosened control at home. In 1989 he let Eastern Europe's communist governments fall without sending tanks. Now the Baltic republics and others want independence, and the economy is in crisis. The Union will dissolve in December 1991."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Russia"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "germany",
+    "kind": "place",
+    "name": "Germany",
+    "aliases": [
+      "Germany",
+      "Federal Republic of Germany"
+    ],
+    "avoid": [
+      "East Germany"
+    ],
+    "countryId": "DEU",
+    "obscurity": 1,
+    "short": "Europe's largest economy, led by Chancellor Friedrich Merz since May 2025, now rearming as a pillar of NATO.",
+    "long": "A federal republic of about 84 million people. Russia's invasion of Ukraine ended its reliance on Russian gas and led it to pledge large rises in defence spending. It is one of the largest donors of military aid to Ukraine.",
+    "map": {
+      "countries": [
+        "DEU"
+      ]
+    },
+    "valid": {
+      "from": "1949-05"
+    },
+    "eras": {
+      "1960": {
+        "name": "West Germany",
+        "aliases": [
+          "West Germany"
+        ],
+        "short": "West Germany: the democratic part of a divided Germany, led by Konrad Adenauer and rebuilt by an 'economic miracle'.",
+        "long": "Germany was split after its defeat in 1945. The Federal Republic joined NATO in 1955 and hosts large US and British forces. The communist German Democratic Republic (East Germany) lies to the east, and West Berlin is an island of Western rule inside it."
+      },
+      "1990": {
+        "name": "West Germany",
+        "short": "West Germany under Helmut Kohl, weeks after the Berlin Wall opened, racing toward unity with East Germany.",
+        "long": "The Wall opened on 9 November 1989. East Germany's communist state is collapsing and its people are moving west. Kohl proposes to unite the two states; the four wartime powers must agree. Germany will be reunited on 3 October 1990."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Germany"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "india",
+    "kind": "place",
+    "name": "India",
+    "aliases": [
+      "India"
+    ],
+    "countryId": "IND",
+    "obscurity": 1,
+    "short": "The world's most populous country and largest democracy, led by Prime Minister Narendra Modi since 2014.",
+    "long": "A nuclear power with a fast-growing economy. It has fought several wars with Pakistan, mostly over Kashmir, and has held the Indus Waters Treaty with Pakistan in abeyance since April 2025. It also has a disputed Himalayan border with China. It buys Russian oil and arms while building closer ties with the US.",
+    "related": [
+      "pakistan"
+    ],
+    "map": {
+      "countries": [
+        "IND"
+      ]
+    },
+    "valid": {
+      "from": "1947-08"
+    },
+    "eras": {
+      "1960": {
+        "short": "A young democracy led by Jawaharlal Nehru since independence from Britain in 1947, and a leader of the non-aligned countries.",
+        "long": "India split from Pakistan at independence amid mass violence, and the two fought over Kashmir in 1947 and 1948. Nehru refuses to join either Cold War bloc. Border clashes with China in 1959 have soured a friendship; the two will go to war in 1962."
+      },
+      "1990": {
+        "short": "The world's largest democracy under Prime Minister V. P. Singh, facing an uprising in Kashmir.",
+        "long": "Singh leads a fragile coalition after Rajiv Gandhi's Congress party lost the 1989 election. An insurgency has broken out in the Kashmir valley, and Pakistan is accused of backing it. Both countries are believed to be close to building nuclear weapons. The Soviet Union is India's main arms supplier."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/India"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "brazil",
+    "kind": "place",
+    "name": "Brazil",
+    "aliases": [
+      "Brazil"
+    ],
+    "countryId": "BRA",
+    "obscurity": 1,
+    "short": "Latin America's largest country and economy, led by President Lula da Silva, who narrowly won re-election in October 2026.",
+    "long": "A federal republic of about 210 million people and a major food and oil exporter. Lula, a left-wing former union leader, was president from 2003 to 2010 and returned in 2023. His defeated opponents are contesting the 2026 result. Brazil seeks a role as a mediator between the West and the rest of the world.",
+    "map": {
+      "countries": [
+        "BRA"
+      ]
+    },
+    "valid": {
+      "from": "1889-11"
+    },
+    "eras": {
+      "1960": {
+        "short": "A fast-growing democracy under President Juscelino Kubitschek, who is about to open a new capital, Brasília.",
+        "long": "Kubitschek promised 'fifty years of progress in five', building roads, factories and Brasília, which opens in April 1960. Growth is strong but inflation and debt are rising. Democracy is fragile; the army will seize power in 1964."
+      },
+      "1990": {
+        "short": "A new democracy under President José Sarney, crippled by hyperinflation after 21 years of military rule.",
+        "long": "The military handed power back to civilians in 1985. Prices are rising by over 1,000% a year. Fernando Collor won the first direct presidential election in a generation in December 1989 and takes office in March 1990."
+      },
+      "2025": {
+        "short": "Latin America's largest country and economy, led by President Lula da Silva, back in office since January 2023.",
+        "long": "A federal republic of about 210 million people and a major food and oil exporter. Lula, a left-wing former union leader, was president from 2003 to 2010 and narrowly beat Jair Bolsonaro in 2022. Brazil hosts the COP30 climate summit in November 2025."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Brazil"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "canada",
+    "kind": "place",
+    "name": "Canada",
+    "aliases": [
+      "Canada"
+    ],
+    "countryId": "CAN",
+    "obscurity": 1,
+    "short": "A large, wealthy democracy led by Prime Minister Mark Carney since March 2025, whose ties with the US have been strained by tariffs.",
+    "long": "Canada sends about three-quarters of its exports to the US. President Trump's tariffs and talk of making Canada the '51st state' set off a wave of national feeling. Carney, a former central banker, won the April 2025 election promising to stand up to Washington and find new trade partners.",
+    "map": {
+      "countries": [
+        "CAN"
+      ]
+    },
+    "valid": {
+      "from": "1867-07"
+    },
+    "eras": {
+      "1960": {
+        "short": "A NATO founder and close US ally led by John Diefenbaker, partner in North American air defence.",
+        "long": "Canada and the US run NORAD, a joint air defence command against Soviet bombers, set up in 1958. Diefenbaker's government cancelled the Avro Arrow fighter in 1959 and is divided over whether to accept US nuclear weapons."
+      },
+      "1990": {
+        "short": "A NATO member led by Brian Mulroney, newly tied to the US by a 1989 free-trade deal.",
+        "long": "The Canada-US Free Trade Agreement took effect in January 1989. At home the Meech Lake constitutional deal, meant to win Quebec's support, is failing; it will collapse in June 1990."
+      },
+      "2025": {
+        "short": "A wealthy democracy whose Prime Minister Justin Trudeau has said he will resign, as tariff threats from the new US president loom.",
+        "long": "Trudeau announced on 6 January 2025 that he would step down once his Liberal Party chose a new leader. Donald Trump threatens 25% tariffs and mocks Canada as a possible '51st state'."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Canada"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "mexico",
+    "kind": "place",
+    "name": "Mexico",
+    "aliases": [
+      "Mexico"
+    ],
+    "avoid": [
+      "New Mexico",
+      "Gulf of Mexico"
+    ],
+    "countryId": "MEX",
+    "obscurity": 1,
+    "short": "Latin America's second-largest economy, led by Claudia Sheinbaum, its first woman president, since October 2024.",
+    "long": "Mexico is the largest trading partner of the US. It is under US pressure over migration, fentanyl smuggling and drug cartels, which Washington has labelled terrorist groups. Cartel violence still kills tens of thousands of people a year.",
+    "map": {
+      "countries": [
+        "MEX"
+      ]
+    },
+    "valid": {
+      "from": "1821-09"
+    },
+    "eras": {
+      "1960": {
+        "short": "A stable one-party state under President Adolfo López Mateos of the PRI, which has ruled since 1929.",
+        "long": "The Institutional Revolutionary Party (PRI) wins every election. López Mateos keeps friendly ties with Castro's Cuba despite US pressure, while Mexico's economy grows fast behind high tariffs."
+      },
+      "1990": {
+        "short": "Mexico under President Carlos Salinas, a free-market reformer who wants a trade pact with the US.",
+        "long": "Salinas took office in 1988 after a disputed election. He is selling state companies and will open talks on what becomes NAFTA, the North American Free Trade Agreement, signed in 1992. The PRI still dominates politics."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Mexico"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "france",
+    "kind": "place",
+    "name": "France",
+    "aliases": [
+      "France"
+    ],
+    "countryId": "FRA",
+    "obscurity": 1,
+    "short": "A nuclear power and permanent UN Security Council member, led by President Emmanuel Macron, with weak governments at home.",
+    "long": "France has gone through several prime ministers since Macron's camp lost its majority in 2024, and budget fights keep toppling governments. Macron's second and last term ends in 2027. France pushes for stronger European defence and has offered to discuss what its nuclear deterrent could mean for European allies.",
+    "map": {
+      "countries": [
+        "FRA"
+      ]
+    },
+    "valid": {
+      "from": "1792-09"
+    },
+    "eras": {
+      "1960": {
+        "short": "France under President Charles de Gaulle, fighting a war in Algeria and weeks away from its first atomic test.",
+        "long": "De Gaulle returned to power in 1958 as the Algerian War toppled the old Fourth Republic, and founded the Fifth Republic. About 400,000 troops fight Algeria's independence movement, the FLN. The first French atomic bomb is due to be tested in the Sahara on 13 February 1960. Much of French Africa becomes independent this year."
+      },
+      "1990": {
+        "short": "A nuclear power led by President François Mitterrand, wary of a reunited Germany.",
+        "long": "Mitterrand, a Socialist, is in his second seven-year term. He worries that German unity will upset the balance of Europe and pushes to bind Germany into a closer European Community with a single currency."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/France"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "united-kingdom",
+    "kind": "place",
+    "name": "United Kingdom",
+    "aliases": [
+      "United Kingdom",
+      {
+        "text": "UK",
+        "caseSensitive": true
+      },
+      "Britain",
+      "Great Britain"
+    ],
+    "countryId": "GBR",
+    "obscurity": 1,
+    "short": "A nuclear power and permanent UN Security Council member, led by Prime Minister Andy Burnham since July 2026.",
+    "long": "Burnham, a former mayor of Greater Manchester, took over the Labour Party unopposed after Keir Starmer resigned following heavy local election losses in May 2026. He is the seventh prime minister since the 2016 Brexit vote. The UK is one of Ukraine's main backers in Europe.",
+    "map": {
+      "countries": [
+        "GBR"
+      ]
+    },
+    "valid": {
+      "from": "1801-01"
+    },
+    "eras": {
+      "1960": {
+        "short": "Britain under Harold Macmillan, a nuclear power giving up its empire as colonies win independence.",
+        "long": "Britain tested its first atomic bomb in 1952 and keeps a 'special relationship' with the US. In February 1960 Macmillan will warn South Africa's parliament of a 'wind of change' sweeping Africa. Nigeria becomes independent in October."
+      },
+      "1990": {
+        "short": "Britain under Margaret Thatcher, in power since 1979, a firm US ally wary of German reunification.",
+        "long": "Thatcher is known as the 'Iron Lady' for her free-market reforms and hard line against the Soviet Union. A revolt over the poll tax and splits over Europe are weakening her; her party will replace her in November 1990."
+      },
+      "2025": {
+        "short": "The UK under Prime Minister Keir Starmer, whose Labour Party won a landslide in July 2024.",
+        "long": "Starmer promised economic growth and repaired public services, but growth is slow and his government's popularity is falling. Britain is a leading European backer of Ukraine."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/United_Kingdom"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "poland",
+    "kind": "place",
+    "name": "Poland",
+    "aliases": [
+      "Poland"
+    ],
+    "countryId": "POL",
+    "obscurity": 1,
+    "short": "A fast-rearming NATO member on the borders of Russia and Belarus, governed by Prime Minister Donald Tusk since December 2023.",
+    "long": "Poland spends a larger share of its economy on defence than any other NATO member, over 4%, and is the main route for aid to Ukraine. Tusk's pro-European government shares power uneasily with the nationalist President Karol Nawrocki, elected in 2025.",
+    "map": {
+      "countries": [
+        "POL"
+      ]
+    },
+    "valid": {
+      "from": "1918-11"
+    },
+    "eras": {
+      "1960": {
+        "short": "A communist state in the Soviet bloc, led by Party chief Władysław Gomułka, and a member of the Warsaw Pact.",
+        "long": "Gomułka came back to power in 1956 after worker protests, promising a 'Polish road to socialism'. He let farmers keep their land and eased pressure on the Catholic Church, but Poland stays firmly under Moscow's influence."
+      },
+      "1990": {
+        "short": "Poland under Tadeusz Mazowiecki, the first non-communist prime minister in the Soviet bloc since the 1940s.",
+        "long": "Talks between the communist government and the Solidarity movement led to partly free elections in June 1989, which Solidarity swept. Mazowiecki's government has launched 'shock therapy', a fast switch to a market economy. The communist general Wojciech Jaruzelski is still president."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Poland"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "turkey",
+    "kind": "place",
+    "name": "Turkey",
+    "aliases": [
+      "Turkey",
+      "Türkiye",
+      "Turkiye"
+    ],
+    "countryId": "TUR",
+    "obscurity": 1,
+    "short": "A NATO member bridging Europe and Asia, led by Recep Tayyip Erdoğan since 2003, first as prime minister and now as president.",
+    "long": "Turkey controls the straits between the Black Sea and the Mediterranean and has NATO's second-largest army. Erdoğan balances ties with Russia, Ukraine and the West and backs Syria's new government. His main rival, Istanbul mayor Ekrem İmamoğlu, has been in jail since March 2025.",
+    "map": {
+      "countries": [
+        "TUR"
+      ]
+    },
+    "valid": {
+      "from": "1923-10"
+    },
+    "eras": {
+      "1960": {
+        "short": "Turkey under Prime Minister Adnan Menderes, a NATO member on the Soviet border, with a restless army.",
+        "long": "Menderes has ruled since 1950 and grown more authoritarian, curbing the press and the opposition. Turkey hosts US bases and joined NATO in 1952. In May 1960 the army will overthrow him."
+      },
+      "1990": {
+        "short": "Turkey under President Turgut Özal, a NATO member that wants to join the European Community.",
+        "long": "Özal opened up the economy in the 1980s. Turkey applied to join the European Community in 1987. The army is fighting a Kurdish insurgency led by the PKK in the south-east."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Turkey"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "saudi-arabia",
+    "kind": "place",
+    "name": "Saudi Arabia",
+    "aliases": [
+      "Saudi Arabia",
+      "Saudi"
+    ],
+    "countryId": "SAU",
+    "obscurity": 1,
+    "short": "The world's top oil exporter, an absolute monarchy run day to day by Crown Prince Mohammed bin Salman.",
+    "long": "King Salman is about 90; his son, known as MBS, is prime minister and the real ruler. The kingdom backs the government side in Yemen's war, and a Houthi strike on Riyadh's airport in 2026 set off a new Saudi-backed offensive. It is home to Islam's holiest cities, Mecca and Medina.",
+    "map": {
+      "countries": [
+        "SAU"
+      ]
+    },
+    "valid": {
+      "from": "1932-09"
+    },
+    "eras": {
+      "1960": {
+        "short": "A desert monarchy under King Saud, growing rich on oil and wary of Egypt's Nasser.",
+        "long": "Oil money flows through the US-run Aramco company, but King Saud's spending has nearly bankrupted the state, and his brother Faisal is gaining power. Nasser's Arab nationalism threatens the Gulf monarchies."
+      },
+      "1990": {
+        "short": "The world's top oil exporter under King Fahd, a close US partner that funded Iraq's war against Iran.",
+        "long": "The kingdom lent Iraq billions during its 1980 to 1988 war with Iran. Iraq now wants those debts forgiven and accuses Gulf states of keeping oil prices low. In August 1990 Iraq will invade Kuwait, and US troops will deploy to Saudi Arabia."
+      },
+      "2025": {
+        "long": "King Salman is elderly; his son, known as MBS, is prime minister and the real ruler. The kingdom has kept a truce with the Houthis in Yemen since 2022 and was in US-brokered talks on recognising Israel before the Gaza war froze them."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Saudi_Arabia"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "iran",
+    "kind": "place",
+    "name": "Iran",
+    "aliases": [
+      "Iran",
+      "Islamic Republic of Iran"
+    ],
+    "countryId": "IRN",
+    "obscurity": 1,
+    "short": "An Islamic republic ruled by Supreme Leader Mojtaba Khamenei, at war with the US and Israel since strikes in February 2026.",
+    "long": "Iran's clerical system has run the country since the 1979 revolution. US-Israeli strikes on 28 February 2026 killed Supreme Leader Ali Khamenei; his son Mojtaba was chosen to succeed him but is rarely seen. An undeclared war and a US naval blockade continue around the Strait of Hormuz, and over 200 kg of highly enriched uranium is believed to be hidden.",
+    "related": [
+      "ali-khamenei"
+    ],
+    "map": {
+      "countries": [
+        "IRN"
+      ]
+    },
+    "valid": {
+      "from": "1979-04"
+    },
+    "eras": {
+      "1960": {
+        "short": "A monarchy under Shah Mohammad Reza Pahlavi, a US ally against the Soviet Union and rich in oil.",
+        "long": "The Shah regained full power in 1953 when a coup backed by the US and Britain removed Prime Minister Mohammad Mosaddegh, who had nationalised the oil industry. Iran belongs to the Western-backed CENTO alliance. The Shah's rule is growing harsher and his secret police, SAVAK, is feared."
+      },
+      "1990": {
+        "short": "The Islamic Republic of Iran, led by Supreme Leader Ali Khamenei and President Rafsanjani after an eight-year war with Iraq.",
+        "long": "The 1979 revolution overthrew the Shah. Iraq invaded in 1980 and the war killed hundreds of thousands before a 1988 ceasefire. Ayatollah Khomeini died in June 1989 and Ali Khamenei succeeded him. The country is rebuilding and hostile to the US."
+      },
+      "2025": {
+        "short": "An Islamic republic led by Supreme Leader Ali Khamenei, enriching uranium close to weapons grade.",
+        "long": "Iran's network of allied groups was badly hurt in 2024: Hezbollah was battered and Assad fell in Syria. Israel and Iran traded direct missile strikes in April and October 2024. Iran holds a growing stock of uranium enriched to 60%, a short step from weapons grade."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Iran"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "israel",
+    "kind": "place",
+    "name": "Israel",
+    "aliases": [
+      "Israel"
+    ],
+    "countryId": "ISR",
+    "obscurity": 1,
+    "short": "A Jewish-majority state on the Mediterranean, led by Benjamin Netanyahu as caretaker prime minister while coalition talks go on.",
+    "long": "Israel is widely believed to have nuclear weapons. After Hamas's attack of 7 October 2023 it fought a long war in Gaza, where a ceasefire now holds with violations. Since 28 February 2026 it has fought alongside the US against Iran. Netanyahu, the country's longest-serving leader, is also on trial for corruption.",
+    "related": [
+      "gaza-strip",
+      "west-bank"
+    ],
+    "map": {
+      "countries": [
+        "ISR"
+      ]
+    },
+    "valid": {
+      "from": "1948-05"
+    },
+    "eras": {
+      "1960": {
+        "short": "A young state led by its founding prime minister, David Ben-Gurion, surrounded by hostile Arab neighbours.",
+        "long": "Israel declared independence in 1948 and fought off Arab armies; hundreds of thousands of Palestinians fled or were driven out. It joined Britain and France in the 1956 Suez war. It is secretly building a nuclear reactor at Dimona with French help."
+      },
+      "1990": {
+        "short": "Israel under Prime Minister Yitzhak Shamir, facing the first intifada in the territories it occupied in 1967.",
+        "long": "Israel has held the West Bank and Gaza since the 1967 war. A Palestinian uprising, the intifada, began in December 1987. Shamir's right-wing Likud party opposes giving up land. Soviet Jews are arriving in large numbers as emigration opens up."
+      },
+      "2025": {
+        "short": "Israel under Prime Minister Benjamin Netanyahu, after 15 months of war in Gaza and fighting with Hezbollah and Iran.",
+        "long": "Hamas's attack on 7 October 2023 killed about 1,200 people in Israel and led to a war that devastated Gaza. A ceasefire and hostage exchange take effect on 19 January 2025. Israel weakened Hezbollah in Lebanon in 2024 and struck Iran directly."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Israel"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "egypt",
+    "kind": "place",
+    "name": "Egypt",
+    "aliases": [
+      "Egypt"
+    ],
+    "countryId": "EGY",
+    "obscurity": 1,
+    "short": "The most populous Arab country, ruled by President Abdel Fattah el-Sisi, a former army chief, since 2014.",
+    "long": "Egypt controls the Suez Canal, whose income has fallen sharply since Houthi attacks drove ships from the Red Sea. It borders Gaza and mediates between Israel and Hamas. It depends on the Nile and fears Ethiopia's giant dam upstream.",
+    "map": {
+      "countries": [
+        "EGY"
+      ]
+    },
+    "valid": {
+      "from": "1922-02"
+    },
+    "eras": {
+      "1960": {
+        "short": "Egypt under Gamal Abdel Nasser, hero of Arab nationalism, joined with Syria as the United Arab Republic.",
+        "long": "Nasser rose in the 1952 officers' coup that ended the monarchy. He nationalised the Suez Canal in 1956 and survived an attack by Britain, France and Israel. Egypt and Syria merged in 1958; the union will break up in 1961. The Soviet Union is funding the Aswan High Dam."
+      },
+      "1990": {
+        "short": "Egypt under President Hosni Mubarak, the first Arab state at peace with Israel and a major recipient of US aid.",
+        "long": "Egypt signed peace with Israel in 1979 and got back the Sinai. Mubarak took over after Anwar Sadat's assassination in 1981. Egypt rejoined the Arab League in 1989."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Egypt"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "japan",
+    "kind": "place",
+    "name": "Japan",
+    "aliases": [
+      "Japan"
+    ],
+    "avoid": [
+      "Sea of Japan"
+    ],
+    "countryId": "JPN",
+    "obscurity": 1,
+    "short": "One of the world's largest economies and a key US ally, led by Sanae Takaichi, its first woman prime minister, since October 2025.",
+    "long": "Japan's constitution renounces war, but it is raising defence spending in response to China and North Korea. Takaichi, a conservative, angered Beijing in November 2025 by saying a Chinese attack on Taiwan could justify Japanese military action. Japan hosts about 55,000 US troops.",
+    "map": {
+      "countries": [
+        "JPN"
+      ]
+    },
+    "valid": {
+      "from": "1947-05"
+    },
+    "eras": {
+      "1960": {
+        "short": "Japan under Prime Minister Nobusuke Kishi, rebuilding fast and about to sign a new security treaty with the US.",
+        "long": "Defeated in 1945, Japan has grown quickly under US protection. The revised US-Japan Security Treaty is signed on 19 January 1960. Huge street protests against it will force Kishi to resign in July."
+      },
+      "1990": {
+        "short": "An economic superpower under Prime Minister Toshiki Kaifu, at the peak of a stock and property bubble.",
+        "long": "Japan is the world's second-largest economy. Its stock market peaked at the end of 1989; the bubble bursts in 1990, starting a 'lost decade' of slow growth. Kaifu leads the long-ruling Liberal Democratic Party."
+      },
+      "2025": {
+        "short": "A major economy and key US ally led by Prime Minister Shigeru Ishiba, whose party lost its majority in 2024.",
+        "long": "Ishiba took office in October 2024 and lost his lower-house majority in an election weeks later. Japan is raising defence spending to 2% of GDP by 2027 in response to China and North Korea."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Japan"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "indonesia",
+    "kind": "place",
+    "name": "Indonesia",
+    "aliases": [
+      "Indonesia"
+    ],
+    "countryId": "IDN",
+    "obscurity": 1,
+    "short": "The world's largest Muslim-majority country and Southeast Asia's biggest economy, led by President Prabowo Subianto since 2024.",
+    "long": "An archipelago of over 17,000 islands and about 280 million people. Prabowo, a former general, follows an independent foreign policy and joined the BRICS group in January 2025. Protests over lawmakers' perks turned deadly in August 2025.",
+    "map": {
+      "countries": [
+        "IDN"
+      ]
+    },
+    "valid": {
+      "from": "1945-08"
+    },
+    "eras": {
+      "1960": {
+        "short": "Indonesia under Sukarno, its founding president, who rules by 'Guided Democracy' and is a leader of the non-aligned world.",
+        "long": "Indonesia won independence from the Netherlands in 1949. Sukarno hosted the 1955 Bandung Conference of Asian and African states. In 1959 he took sweeping powers and now balances the army against a large Communist party. He wants West New Guinea from the Dutch."
+      },
+      "1990": {
+        "short": "Indonesia under President Suharto, a general who has ruled since the bloody anti-communist purge of 1965 and 1966.",
+        "long": "Suharto's 'New Order' regime brought steady growth and close ties with the West. Its seizure of East Timor in 1975 led to a long, brutal occupation."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Indonesia"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "south-korea",
+    "kind": "place",
+    "name": "South Korea",
+    "aliases": [
+      "South Korea",
+      "Republic of Korea",
+      {
+        "text": "ROK",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "KOR",
+    "obscurity": 1,
+    "short": "A wealthy democracy and US ally, led by President Lee Jae-myung, elected in June 2025 after his predecessor was removed.",
+    "long": "South Korea is a technology and shipbuilding power with about 28,500 US troops. President Yoon Suk Yeol declared martial law in December 2024; he was impeached and removed, and Lee won the snap election. There has been no peace treaty with North Korea since the 1953 armistice.",
+    "related": [
+      "north-korea"
+    ],
+    "map": {
+      "countries": [
+        "KOR"
+      ]
+    },
+    "valid": {
+      "from": "1948-08"
+    },
+    "eras": {
+      "1960": {
+        "short": "South Korea under President Syngman Rhee, poor and dependent on US aid seven years after the Korean War.",
+        "long": "Rhee has ruled since 1948 and grown authoritarian. US troops guard the armistice line. A rigged election in March 1960 will set off the April Revolution, and Rhee will resign and leave for Hawaii."
+      },
+      "1990": {
+        "short": "A new democracy under President Roh Tae-woo, booming and reaching out to communist countries.",
+        "long": "Mass protests in 1987 forced direct elections, won by Roh, a former general. Seoul hosted the 1988 Olympics. His 'Nordpolitik' policy opened ties with Eastern Europe; the Soviet Union will recognise South Korea in September 1990."
+      },
+      "2025": {
+        "short": "A democracy in crisis: President Yoon was impeached after declaring martial law, and an acting president governs.",
+        "long": "Yoon Suk Yeol briefly declared martial law on 3 December 2024; parliament voted it down within hours and later impeached him. Prime Minister Han Duck-soo was impeached too, so Finance Minister Choi Sang-mok is acting president. Yoon is arrested in January 2025."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/South_Korea"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "north-korea",
+    "kind": "place",
+    "name": "North Korea",
+    "aliases": [
+      "North Korea",
+      {
+        "text": "DPRK",
+        "caseSensitive": true
+      }
+    ],
+    "countryId": "PRK",
+    "obscurity": 1,
+    "short": "A closed, nuclear-armed dictatorship ruled by Kim Jong Un, the third of his family to lead it.",
+    "long": "North Korea has tested nuclear weapons six times and builds missiles that can reach the US. It signed a mutual defence treaty with Russia in 2024 and sent thousands of troops to help Russia fight Ukraine. Its people face harsh repression and frequent food shortages.",
+    "related": [
+      "south-korea",
+      "kim-il-sung"
+    ],
+    "map": {
+      "countries": [
+        "PRK"
+      ]
+    },
+    "valid": {
+      "from": "1948-09"
+    },
+    "eras": {
+      "1960": {
+        "short": "A communist state under Kim Il Sung, rebuilding after the Korean War with Soviet and Chinese aid.",
+        "long": "Kim's invasion of the South in 1950 started the Korean War, which ended in a 1953 armistice. Chinese troops left in 1958. Kim is building a personality cult and playing Moscow and Beijing against each other."
+      },
+      "1990": {
+        "short": "A closed communist state under Kim Il Sung, losing its Soviet patron and suspected of building a bomb.",
+        "long": "As the Soviet bloc collapses, North Korea's aid and trade dry up. Its reactor at Yongbyon could produce plutonium, and the West suspects a secret weapons program. Kim's son Kim Jong Il is being groomed to succeed him."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/North_Korea"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "australia",
+    "kind": "place",
+    "name": "Australia",
+    "aliases": [
+      "Australia"
+    ],
+    "countryId": "AUS",
+    "obscurity": 1,
+    "short": "A wealthy democracy and US ally in the Pacific, led by Prime Minister Anthony Albanese since 2022.",
+    "long": "China is Australia's biggest trading partner, but its security rests on the US alliance. Under the AUKUS pact with the US and Britain it plans to acquire nuclear-powered submarines. Albanese's Labor Party won a large majority in the May 2025 election.",
+    "map": {
+      "countries": [
+        "AUS"
+      ]
+    },
+    "valid": {
+      "from": "1901-01"
+    },
+    "eras": {
+      "1960": {
+        "short": "A loyal Western ally under Prime Minister Robert Menzies, member of the SEATO and ANZUS pacts.",
+        "long": "Menzies has led since 1949. Australia keeps the 'White Australia' immigration policy and fears communist expansion in Asia."
+      },
+      "1990": {
+        "short": "Australia under Prime Minister Bob Hawke, opening its economy and building ties with Asia.",
+        "long": "Hawke's Labor government floated the currency and cut tariffs. Australia helped found APEC, an Asia-Pacific trade forum, in 1989."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Australia"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "pakistan",
+    "kind": "place",
+    "name": "Pakistan",
+    "aliases": [
+      "Pakistan"
+    ],
+    "countryId": "PAK",
+    "obscurity": 1,
+    "short": "A nuclear-armed country of about 250 million, with an elected government under Shehbaz Sharif and a powerful army.",
+    "long": "The army, led by Field Marshal Asim Munir, has the final say on security. Pakistan fought a brief air war with India in May 2025 and says India's suspension of the Indus Waters Treaty threatens its water. Since February 2026 it has been in open conflict with Afghanistan's Taliban government over militant attacks.",
+    "related": [
+      "india",
+      "afghanistan"
+    ],
+    "map": {
+      "countries": [
+        "PAK"
+      ]
+    },
+    "valid": {
+      "from": "1947-08"
+    },
+    "eras": {
+      "1960": {
+        "short": "Pakistan under General Ayub Khan, who seized power in 1958; split into West and East Pakistan, 1,600 km apart.",
+        "long": "Pakistan was carved out of British India in 1947 as a homeland for Muslims. Ayub ties the country to the US through the SEATO and CENTO pacts and lets US spy planes fly from Peshawar. East Pakistan will become Bangladesh in 1971."
+      },
+      "1990": {
+        "short": "Pakistan under Benazir Bhutto, the first woman to lead a Muslim-majority country, with the army still powerful.",
+        "long": "Bhutto was elected in 1988 after the military ruler Zia ul-Haq died in a plane crash. Pakistan channelled US aid to Afghan fighters against the Soviet Union. It is close to building a nuclear bomb and backs the uprising in Indian Kashmir. Bhutto will be dismissed in August 1990."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Pakistan"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "nigeria",
+    "kind": "place",
+    "name": "Nigeria",
+    "aliases": [
+      "Nigeria"
+    ],
+    "countryId": "NGA",
+    "obscurity": 1,
+    "short": "Africa's most populous country and a major oil producer, led by President Bola Tinubu since 2023.",
+    "long": "Nigeria has about 230 million people. It faces jihadist insurgencies in the north-east, kidnapping gangs in the north-west and deadly clashes between farmers and herders. Reforms such as ending fuel subsidies have driven up prices.",
+    "map": {
+      "countries": [
+        "NGA"
+      ]
+    },
+    "valid": {
+      "from": "1914-01"
+    },
+    "eras": {
+      "1960": {
+        "short": "A British colony months from independence (1 October 1960), with Abubakar Tafawa Balewa as prime minister.",
+        "long": "Nigeria is a federation of three regions dominated by different peoples: the Hausa-Fulani north, the Yoruba west and the Igbo east. Rivalries between them will lead to coups in 1966 and the Biafran civil war of 1967 to 1970."
+      },
+      "1990": {
+        "short": "Nigeria under military ruler Ibrahim Babangida, who promises a return to civilian rule.",
+        "long": "The army has ruled for most of the time since 1966. Babangida seized power in 1985. Oil income has fallen and an austerity program has caused unrest. A coup attempt against him will fail in April 1990."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Nigeria"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "south-africa",
+    "kind": "place",
+    "name": "South Africa",
+    "aliases": [
+      "South Africa"
+    ],
+    "countryId": "ZAF",
+    "obscurity": 1,
+    "short": "Africa's most industrialised economy, a democracy since 1994, led by President Cyril Ramaphosa in a coalition government.",
+    "long": "The ANC lost its majority for the first time in 2024 and now governs with the Democratic Alliance and others. South Africa struggles with high unemployment, power cuts and crime. It took Israel to the International Court of Justice over Gaza and has clashed with the Trump administration.",
+    "map": {
+      "countries": [
+        "ZAF"
+      ]
+    },
+    "valid": {
+      "from": "1910-05"
+    },
+    "eras": {
+      "1960": {
+        "short": "South Africa under Hendrik Verwoerd, the architect of apartheid, the system of white minority rule.",
+        "long": "Apartheid separates people by race and denies black South Africans the vote. In March 1960 police at Sharpeville will kill 69 protesters, and the ANC will be banned. A whites-only referendum in October will make the country a republic."
+      },
+      "1990": {
+        "short": "South Africa under President F. W. de Klerk, who is about to free Nelson Mandela and begin dismantling apartheid.",
+        "long": "Under sanctions and with the economy weak, de Klerk will unban the ANC on 2 February 1990 and free Mandela on 11 February. South Africa secretly built six nuclear bombs, which it will dismantle before the first all-race elections in 1994."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/South_Africa"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "italy",
+    "kind": "place",
+    "name": "Italy",
+    "aliases": [
+      "Italy"
+    ],
+    "countryId": "ITA",
+    "obscurity": 1,
+    "short": "A founding member of the EU and NATO, led by Giorgia Meloni since 2022, one of Western Europe's most stable governments.",
+    "long": "Meloni leads the right-wing Brothers of Italy. She backs Ukraine and keeps good relations with the Trump administration while taking a hard line on migration across the Mediterranean. Italy has one of the highest public debts in Europe.",
+    "map": {
+      "countries": [
+        "ITA"
+      ]
+    },
+    "valid": {
+      "from": "1861-03"
+    },
+    "eras": {
+      "1960": {
+        "short": "Italy under Prime Minister Antonio Segni, enjoying an economic boom, with the largest Communist party in the West.",
+        "long": "Christian Democrats lead every government, while the Communists win about a fifth of the vote. Italy is about to host US Jupiter nuclear missiles."
+      },
+      "1990": {
+        "short": "Italy under Giulio Andreotti, a veteran Christian Democrat, on the eve of huge corruption scandals.",
+        "long": "Andreotti has led many governments since the 1970s. Investigations from 1992 will expose bribery across the parties and destroy the party system that has ruled since 1945."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Italy"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "taiwan",
+    "kind": "place",
+    "name": "Taiwan",
+    "aliases": [
+      "Taiwan"
+    ],
+    "countryId": "TWN",
+    "obscurity": 1,
+    "short": "A self-governing island democracy that China claims as its own, led by President Lai Ching-te since May 2024.",
+    "long": "Taiwan makes most of the world's most advanced computer chips. Beijing has staged drills simulating a blockade, most recently in December 2025, and vows to bring the island under its control, by force if needed. The opposition-run legislature cut Lai's special defence budget. The US sells Taiwan arms but does not formally recognise it.",
+    "related": [
+      "china"
+    ],
+    "map": {
+      "countries": [
+        "TWN"
+      ]
+    },
+    "valid": {
+      "from": "1949-12"
+    },
+    "eras": {
+      "1960": {
+        "aliases": [
+          "Nationalist China",
+          "Formosa"
+        ],
+        "short": "The Republic of China on Taiwan under Chiang Kai-shek, whose Nationalists fled there after losing China's civil war.",
+        "long": "Chiang still claims to be the rightful government of all China and holds China's seat on the UN Security Council. Martial law has been in force since 1949. A 1954 treaty commits the US to defend the island, and Chinese guns still shell the offshore island of Kinmen."
+      },
+      "1990": {
+        "short": "Taiwan under President Lee Teng-hui, booming and moving from one-party rule toward democracy.",
+        "long": "Martial law ended in 1987 after 38 years. Lee, the first Taiwan-born president, is pushing reforms that will lead to full elections. Taiwan lost its UN seat to Beijing in 1971 and is recognised by few countries."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Taiwan"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "belarus",
+    "kind": "place",
+    "name": "Belarus",
+    "aliases": [
+      "Belarus"
+    ],
+    "countryId": "BLR",
+    "obscurity": 1,
+    "short": "A dictatorship ruled by Alexander Lukashenko since 1994, Russia's closest ally, with Russian nuclear weapons on its soil.",
+    "long": "Belarus let Russian forces invade Ukraine from its territory in 2022 and hosts Russian tactical nuclear weapons. Lukashenko crushed mass protests after a disputed election in 2020. It is joined with Russia in a 'Union State' and depends on it economically.",
+    "related": [
+      "russia"
+    ],
+    "map": {
+      "countries": [
+        "BLR"
+      ]
+    },
+    "valid": {
+      "from": "1919-01"
+    },
+    "eras": {
+      "1960": {
+        "name": "Byelorussian SSR",
+        "aliases": [
+          "Byelorussian SSR",
+          "Byelorussia",
+          "Belorussia"
+        ],
+        "short": "The Byelorussian SSR: a republic of the Soviet Union, governed from Moscow, still rebuilding after the Second World War.",
+        "long": "About a quarter of its people died in the war. It has its own seat at the United Nations, a Soviet arrangement from 1945, but no real independence."
+      },
+      "1990": {
+        "name": "Byelorussian SSR",
+        "short": "The Byelorussian SSR: a Soviet republic hit hard by fallout from the 1986 Chernobyl disaster, stirring toward independence.",
+        "long": "Most of Chernobyl's fallout landed on Belarus. A national movement is growing; Belarus will declare sovereignty in July 1990 and independence in August 1991."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Belarus"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "denmark",
+    "kind": "place",
+    "name": "Denmark",
+    "aliases": [
+      "Denmark"
+    ],
+    "countryId": "DNK",
+    "obscurity": 1,
+    "short": "A small, wealthy NATO and EU member led by Prime Minister Mette Frederiksen, under US pressure over Greenland.",
+    "long": "Greenland, a self-governing part of the Danish realm, holds strategic Arctic bases and minerals. President Trump has repeatedly said the US should take control of it, straining ties with Copenhagen. Denmark is one of Ukraine's most generous backers for its size.",
+    "map": {
+      "countries": [
+        "DNK"
+      ]
+    },
+    "valid": {
+      "from": "1849-06"
+    },
+    "eras": {
+      "1960": {
+        "short": "A NATO founder under Prime Minister H. C. Hansen, a Scandinavian welfare state that also rules Greenland.",
+        "long": "Denmark lets the US run Thule air base in Greenland. It was later revealed that Hansen had quietly allowed US nuclear weapons there despite Denmark's public ban."
+      },
+      "1990": {
+        "short": "A NATO and European Community member under Conservative Prime Minister Poul Schlüter.",
+        "long": "Schlüter has led coalition governments since 1982. Danes are cautious about closer European integration; they will reject the Maastricht Treaty in 1992."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Denmark"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "syria",
+    "kind": "place",
+    "name": "Syria",
+    "aliases": [
+      "Syria"
+    ],
+    "countryId": "SYR",
+    "obscurity": 1,
+    "short": "A country rebuilding after 13 years of civil war, led by President Ahmed al-Sharaa since the fall of Bashar al-Assad in December 2024.",
+    "long": "Al-Sharaa once led the Islamist rebel group Hayat Tahrir al-Sham. His government has won relief from Western sanctions but faces violence against Alawite and Druze minorities, Israeli troops in the south and the task of uniting the north-east, long held by Kurdish-led forces.",
+    "related": [
+      "bashar-al-assad"
+    ],
+    "map": {
+      "countries": [
+        "SYR"
+      ]
+    },
+    "valid": {
+      "from": "1946-04"
+    },
+    "eras": {
+      "1960": {
+        "short": "Part of the United Arab Republic: Syria merged with Egypt under Nasser in 1958 and is ruled from Cairo.",
+        "long": "Syrian leaders sought the union to block a communist takeover, but Egyptian dominance is resented. Army officers will break away in September 1961."
+      },
+      "1990": {
+        "short": "Syria under Hafez al-Assad, a Soviet-backed dictatorship whose army occupies most of Lebanon.",
+        "long": "Assad seized power in 1970 and crushed an Islamist uprising at Hama in 1982, killing thousands. Syria backed Iran in the Iran-Iraq War. With Soviet support fading, Assad will join the US-led coalition against Iraq later in 1990."
+      },
+      "2025": {
+        "short": "Syria weeks after the fall of Bashar al-Assad, run by Ahmed al-Sharaa's transitional government.",
+        "long": "Rebels led by Hayat Tahrir al-Sham swept into Damascus on 8 December 2024 and Assad fled to Moscow. The country is shattered by 13 years of war. Israel has moved troops into the buffer zone below the Golan Heights, and Turkey backs factions in the north."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Syria"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "iraq",
+    "kind": "place",
+    "name": "Iraq",
+    "aliases": [
+      "Iraq"
+    ],
+    "countryId": "IRQ",
+    "obscurity": 1,
+    "short": "An oil-rich federal state led by Prime Minister Ali al-Zaidi since May 2026, balancing between the US and Iran.",
+    "long": "A compromise candidate, al-Zaidi took office after the US rejected Nouri al-Maliki. Iraq hosts US troops, while Iran-backed militias are part of its security forces, and Washington presses Baghdad to disarm them. The Kurdistan region in the north governs itself.",
+    "map": {
+      "countries": [
+        "IRQ"
+      ]
+    },
+    "valid": {
+      "from": "1932-10"
+    },
+    "eras": {
+      "1960": {
+        "short": "Iraq under Abd al-Karim Qasim, the general who overthrew the monarchy in a bloody coup in July 1958.",
+        "long": "Qasim pulled Iraq out of the Western Baghdad Pact, leans on the Communists and quarrels with Nasser. He will be killed in a Baath party coup in 1963."
+      },
+      "1990": {
+        "short": "Iraq under Saddam Hussein, deep in debt after an eight-year war with Iran and eyeing Kuwait.",
+        "long": "Saddam has ruled since 1979. The Iran-Iraq War ended in a 1988 ceasefire. His forces used chemical weapons against Iranian troops and Kurdish civilians. On 2 August 1990 he will invade Kuwait, leading to the 1991 Gulf War."
+      },
+      "2025": {
+        "short": "Iraq under Prime Minister Mohammed Shia al-Sudani, trying to stay out of the region's wars.",
+        "long": "Al-Sudani leads a government backed by Shia parties close to Iran. Iran-backed militias attacked US forces during the Gaza war. Baghdad has agreed with Washington that the US-led coalition will wind down its mission by 2026."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Iraq"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "lebanon",
+    "kind": "place",
+    "name": "Lebanon",
+    "aliases": [
+      "Lebanon"
+    ],
+    "countryId": "LBN",
+    "obscurity": 1,
+    "short": "A small, divided Mediterranean country led by President Joseph Aoun, trying to disarm Hezbollah after its 2024 war with Israel.",
+    "long": "Power in Lebanon is shared among religious communities. A 2024 war badly weakened Hezbollah, the Iran-backed armed group, and a ceasefire took effect in November 2024, though Israeli strikes continue. Aoun, a former army chief, and his government want the state to hold all weapons. The economy has been in ruins since 2019.",
+    "map": {
+      "countries": [
+        "LBN"
+      ]
+    },
+    "valid": {
+      "from": "1943-11"
+    },
+    "eras": {
+      "1960": {
+        "short": "Lebanon under President Fuad Chehab, a former army chief restoring calm after a brief civil war in 1958.",
+        "long": "Power is shared between Christians and Muslims under a 1943 pact. In 1958 US Marines landed in Beirut at the president's request. Beirut is the Middle East's banking centre."
+      },
+      "1990": {
+        "short": "Lebanon in the 15th year of civil war, with rival governments, Syrian troops and an Israeli-occupied south.",
+        "long": "President Elias Hrawi was elected under the 1989 Taif Agreement, but General Michel Aoun rejects it and holds the presidential palace. Syria will drive him out in October 1990, ending the war."
+      },
+      "2025": {
+        "short": "Lebanon, which has just elected army chief Joseph Aoun president after a two-year vacancy and a war between Israel and Hezbollah.",
+        "long": "Israel's 2024 campaign killed Hezbollah's leader Hassan Nasrallah. A ceasefire took effect in November 2024. Aoun was elected on 9 January 2025."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Lebanon"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "yemen",
+    "kind": "place",
+    "name": "Yemen",
+    "aliases": [
+      "Yemen"
+    ],
+    "avoid": [
+      "South Yemen"
+    ],
+    "countryId": "YEM",
+    "obscurity": 1,
+    "short": "A country split by civil war since 2014: the Houthis hold the capital and north, a Saudi-backed council governs the south.",
+    "long": "The Iran-aligned Houthi movement, led by Abdul-Malik al-Houthi, has attacked ships in the Red Sea since 2023. In September 2026 it seized the coastal town of Mokha; a Saudi-backed counteroffensive began in October. Yemen suffers one of the world's worst humanitarian crises.",
+    "map": {
+      "countries": [
+        "YEM"
+      ]
+    },
+    "valid": {
+      "from": "1918-11"
+    },
+    "eras": {
+      "1960": {
+        "short": "The Kingdom of Yemen, an isolated monarchy ruled by Imam Ahmad, while Britain holds Aden to the south.",
+        "long": "The imam rules by religious authority and keeps the country closed. Yemen joined a loose federation with the United Arab Republic in 1958. After Ahmad's death in 1962 a revolution will start an eight-year civil war."
+      },
+      "1990": {
+        "name": "North Yemen",
+        "aliases": [
+          "North Yemen",
+          "Yemen Arab Republic"
+        ],
+        "short": "North Yemen, the Yemen Arab Republic, under President Ali Abdullah Saleh, months from unity with South Yemen.",
+        "long": "Saleh has ruled since 1978. North Yemen and communist South Yemen will merge on 22 May 1990, with Saleh as president. Oil was found in 1984."
+      },
+      "2025": {
+        "short": "A country split by war: the Houthis hold the capital and attack Red Sea shipping, a Saudi-backed government holds the south.",
+        "long": "Since late 2023 Houthi missiles and drones have driven most container ships from the Red Sea in what they call support for Gaza. The US and Israel have struck back. The attacks pause with the Gaza ceasefire in January 2025."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Yemen"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "united-arab-emirates",
+    "kind": "place",
+    "name": "United Arab Emirates",
+    "aliases": [
+      "United Arab Emirates",
+      {
+        "text": "UAE",
+        "caseSensitive": true
+      },
+      "the Emirates"
+    ],
+    "countryId": "ARE",
+    "obscurity": 1,
+    "short": "A federation of seven oil-rich emirates, led by President Mohamed bin Zayed, a regional power and trading hub.",
+    "long": "The UAE has used its wealth and armed forces across the region, in Yemen, Libya and Sudan, where it is accused of backing the RSF, which it denies. It normalised relations with Israel in 2020. Dubai is a global hub for trade, flights and finance.",
+    "map": {
+      "countries": [
+        "ARE"
+      ]
+    },
+    "valid": {
+      "from": "1960-01"
+    },
+    "eras": {
+      "1960": {
+        "name": "Trucial States",
+        "aliases": [
+          "Trucial States"
+        ],
+        "short": "The Trucial States: seven sheikhdoms on the Gulf coast under British protection, where oil has just been found.",
+        "long": "Britain handles their defence and foreign affairs under 19th-century truces. Abu Dhabi's first offshore oil discovery was made in 1958. The sheikhdoms will form the United Arab Emirates in December 1971."
+      },
+      "1990": {
+        "short": "The United Arab Emirates under its founding president Sheikh Zayed, a wealthy oil state facing threats from Iraq.",
+        "long": "Founded in 1971, the UAE is rich from oil. Iraq accuses it and Kuwait of overproducing oil and driving down prices, a dispute that leads to the invasion of Kuwait in August 1990."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/United_Arab_Emirates"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "afghanistan",
+    "kind": "place",
+    "name": "Afghanistan",
+    "aliases": [
+      "Afghanistan"
+    ],
+    "countryId": "AFG",
+    "obscurity": 1,
+    "short": "Ruled by the Taliban since August 2021 under Supreme Leader Hibatullah Akhundzada, and recognised by very few countries.",
+    "long": "The Taliban took power when US-led forces withdrew. They bar girls from school beyond sixth grade and women from most jobs. Pakistan accuses them of sheltering militants who attack it, and declared 'open war' on them in February 2026. Most Afghans need humanitarian aid.",
+    "related": [
+      "pakistan"
+    ],
+    "map": {
+      "countries": [
+        "AFG"
+      ]
+    },
+    "valid": {
+      "from": "1919-08"
+    },
+    "eras": {
+      "1960": {
+        "short": "A monarchy under King Zahir Shah, run by his cousin, Prime Minister Mohammed Daoud Khan.",
+        "long": "Neutral in the Cold War, Afghanistan takes aid from both the US and the Soviet Union. Daoud presses claims on Pashtun lands in Pakistan, souring relations."
+      },
+      "1990": {
+        "short": "Afghanistan under President Mohammad Najibullah, a Soviet-backed ruler fighting the mujahideen after Soviet troops left.",
+        "long": "The Soviet army invaded in 1979 and withdrew in February 1989 after a war that killed over a million Afghans. Najibullah holds the cities with Soviet aid; mujahideen fighters supplied through Pakistan hold much of the countryside. His government will fall in 1992."
+      },
+      "2025": {
+        "long": "The Taliban took power in August 2021 when US-led forces withdrew. They bar girls from school beyond sixth grade and women from most jobs. Clashes with Pakistan along the border are growing."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Afghanistan"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "philippines",
+    "kind": "place",
+    "name": "Philippines",
+    "aliases": [
+      "Philippines"
+    ],
+    "countryId": "PHL",
+    "obscurity": 1,
+    "short": "A US ally in Southeast Asia, led by President Ferdinand Marcos Jr., facing China at sea over Scarborough Shoal.",
+    "long": "The Philippines and China both claim reefs and shoals in the South China Sea, and their ships have clashed repeatedly, including at Scarborough Shoal in 2026. Marcos has opened more bases to US forces under the 1951 defence treaty. He is feuding with Vice-President Sara Duterte, whose father, ex-president Rodrigo Duterte, is held by the International Criminal Court.",
+    "map": {
+      "countries": [
+        "PHL"
+      ]
+    },
+    "valid": {
+      "from": "1946-07"
+    },
+    "eras": {
+      "1960": {
+        "short": "The Philippines under President Carlos P. Garcia, a former US colony and close ally with large American bases.",
+        "long": "Independent since 1946, the Philippines hosts Clark Air Base and Subic Bay naval base and belongs to SEATO. Garcia promotes a 'Filipino First' economic policy."
+      },
+      "1990": {
+        "short": "The Philippines under President Corazon Aquino, who came to power when the 1986 People Power revolt ousted Ferdinand Marcos.",
+        "long": "Aquino has survived several coup attempts, the most serious in December 1989. Communist and Muslim insurgencies continue, and the future of the US bases is in dispute."
+      },
+      "2025": {
+        "long": "The Philippines and China both claim reefs and shoals in the South China Sea, and their ships have clashed repeatedly. Marcos has opened more bases to US forces under the 1951 defence treaty. His alliance with Vice-President Sara Duterte has collapsed into open feuding."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Philippines"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "venezuela",
+    "kind": "place",
+    "name": "Venezuela",
+    "aliases": [
+      "Venezuela"
+    ],
+    "countryId": "VEN",
+    "obscurity": 1,
+    "short": "An oil-rich country run by acting president Delcy Rodríguez since US forces captured Nicolás Maduro in January 2026.",
+    "long": "Venezuela has the world's largest proven oil reserves, but years of crisis drove about 8 million people abroad. Maduro's capture in a US raid left his former vice-president in charge, with no election date set. US pressure on its oil exports also squeezes Cuba, which relied on Venezuelan oil.",
+    "related": [
+      "nicolas-maduro",
+      "cuba"
+    ],
+    "map": {
+      "countries": [
+        "VEN"
+      ]
+    },
+    "valid": {
+      "from": "1830-01"
+    },
+    "eras": {
+      "1960": {
+        "short": "Venezuela under President Rómulo Betancourt, a young democracy and a top oil exporter after a dictator's fall.",
+        "long": "The dictator Marcos Pérez Jiménez was overthrown in 1958. Betancourt faces plots from the right and guerrillas inspired by Cuba. Venezuela will help found OPEC in September 1960."
+      },
+      "1990": {
+        "short": "Venezuela under President Carlos Andrés Pérez, shaken by deadly riots over austerity in 1989.",
+        "long": "Pérez's price rises set off the Caracazo riots of February 1989, in which hundreds were killed. Officers led by Hugo Chávez will try to overthrow him in 1992."
+      },
+      "2025": {
+        "short": "Venezuela under Nicolás Maduro, who claims a third term after an election the opposition and many countries say he lost.",
+        "long": "The opposition published tallies showing its candidate Edmundo González won the July 2024 vote. Maduro is sworn in again on 10 January 2025. Millions have fled the economic collapse."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Venezuela"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "cuba",
+    "kind": "place",
+    "name": "Cuba",
+    "aliases": [
+      "Cuba"
+    ],
+    "countryId": "CUB",
+    "obscurity": 1,
+    "short": "A one-party communist state led by Miguel Díaz-Canel, in deep economic crisis with blackouts and food shortages.",
+    "long": "Cuba has been under a US trade embargo since the early 1960s. It depended on cheap Venezuelan oil, and US pressure on Venezuela since 2026 has worsened fuel shortages. Hundreds of thousands of Cubans have emigrated in recent years.",
+    "related": [
+      "fidel-castro",
+      "venezuela"
+    ],
+    "map": {
+      "countries": [
+        "CUB"
+      ]
+    },
+    "valid": {
+      "from": "1902-05"
+    },
+    "eras": {
+      "1960": {
+        "short": "Cuba a year after Fidel Castro's revolution, seizing US-owned property and turning toward Moscow.",
+        "long": "Castro's rebels toppled the dictator Fulgencio Batista in January 1959. Land reform has taken US-owned estates, and Havana is opening trade talks with the Soviet Union. Washington is weighing covert action."
+      },
+      "1990": {
+        "short": "Communist Cuba under Fidel Castro, losing the Soviet aid that has kept its economy afloat.",
+        "long": "Cuba relies on Soviet oil and on selling sugar to the Soviet bloc at high prices. As that support vanishes, Cuba enters the 'Special Period' of severe shortages. Cuban troops are leaving Angola."
+      },
+      "2025": {
+        "long": "Cuba has been under a US trade embargo since the early 1960s. Its economy is in its worst crisis in decades, with island-wide blackouts and food shortages, and hundreds of thousands of Cubans have emigrated in recent years."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Cuba"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "sudan",
+    "kind": "place",
+    "name": "Sudan",
+    "aliases": [
+      "Sudan"
+    ],
+    "avoid": [
+      "South Sudan"
+    ],
+    "countryId": "SDN",
+    "obscurity": 1,
+    "short": "A country torn by civil war since April 2023 between the army of Abdel Fattah al-Burhan and the RSF paramilitary.",
+    "long": "The war has caused the world's largest displacement crisis and famine in several areas. The Rapid Support Forces took El Fasher, the army's last stronghold in Darfur, in October 2025, amid reports of mass killings, and run a rival government from Nyala. The army holds Khartoum and the east.",
+    "map": {
+      "countries": [
+        "SDN"
+      ]
+    },
+    "valid": {
+      "from": "1956-01"
+    },
+    "eras": {
+      "1960": {
+        "short": "Sudan under General Ibrahim Abboud, who seized power in 1958, two years after independence from Britain and Egypt.",
+        "long": "A civil war between the government and rebels in the mainly non-Muslim south began in 1955. Abboud's regime will be toppled by a popular uprising in 1964."
+      },
+      "1990": {
+        "short": "Sudan under Omar al-Bashir, who seized power in an Islamist-backed coup in June 1989, at war with the south.",
+        "long": "Bashir's regime is allied with Hassan al-Turabi's National Islamic Front. The second civil war with the south, begun in 1983, has caused famine. South Sudan will become independent in 2011."
+      },
+      "2025": {
+        "long": "The army and the Rapid Support Forces have fought since April 2023, displacing over 12 million people. Famine was confirmed in parts of Darfur in 2024. The army is pushing to retake Khartoum."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Sudan"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "ethiopia",
+    "kind": "place",
+    "name": "Ethiopia",
+    "aliases": [
+      "Ethiopia"
+    ],
+    "countryId": "ETH",
+    "obscurity": 1,
+    "short": "Africa's second most populous country, led by Prime Minister Abiy Ahmed, with a giant new Nile dam and unrest in several regions.",
+    "long": "Abiy won the 2019 Nobel Peace Prize for making peace with Eritrea, then fought a devastating war in Tigray from 2020 to 2022. The Grand Ethiopian Renaissance Dam on the Blue Nile, inaugurated in 2025, alarms Egypt. Abiy wants access to the sea, which raises fears of war with Eritrea.",
+    "map": {
+      "countries": [
+        "ETH"
+      ]
+    },
+    "valid": {
+      "from": "1855-02"
+    },
+    "eras": {
+      "1960": {
+        "short": "The Ethiopian Empire under Emperor Haile Selassie, one of Africa's oldest independent states.",
+        "long": "Haile Selassie has reigned since 1930 and returned from exile after Italy's occupation of 1936 to 1941. Eritrea has been federated with Ethiopia since 1952. In December 1960 his guard will attempt a coup while he is abroad."
+      },
+      "1990": {
+        "short": "Ethiopia under Mengistu Haile Mariam, a Marxist military dictator losing a civil war to rebels in Tigray and Eritrea.",
+        "long": "The Derg military junta overthrew the emperor in 1974. Its 'Red Terror' killed tens of thousands, and the famine of 1983 to 1985 killed many more. Soviet support is ending; rebels will take Addis Ababa in May 1991 and Eritrea will become independent."
+      },
+      "2025": {
+        "long": "Abiy won the 2019 Nobel Peace Prize for making peace with Eritrea, then fought a devastating war in Tigray from 2020 to 2022. The Grand Ethiopian Renaissance Dam on the Blue Nile is nearly finished, alarming Egypt. Abiy wants access to the sea."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Ethiopia"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "west-bank",
+    "kind": "place",
+    "name": "West Bank",
+    "aliases": [
+      "West Bank"
+    ],
+    "countryId": "PSX",
+    "obscurity": 1,
+    "short": "Palestinian land west of the Jordan River, occupied by Israel since 1967; the Palestinian Authority runs parts of it.",
+    "long": "About 3 million Palestinians live there alongside some 500,000 Israeli settlers, not counting East Jerusalem. The Palestinian Authority, led by Mahmoud Abbas, governs the main cities under Israeli security control. Settler violence and Israeli raids have grown since the Gaza war, and most UN members recognise a State of Palestine.",
+    "related": [
+      "gaza-strip",
+      "israel"
+    ],
+    "map": {
+      "countries": [
+        "PSX"
+      ]
+    },
+    "valid": {
+      "from": "1948-05"
+    },
+    "eras": {
+      "1960": {
+        "name": "West Bank (Jordan)",
+        "short": "The West Bank: land west of the Jordan River held by Jordan since 1948 and annexed in 1950.",
+        "long": "Jordan's army held this part of former British Palestine at the end of the 1948 war, including East Jerusalem's Old City. Many residents are refugees from what became Israel. Israel will capture it in the 1967 war."
+      },
+      "1990": {
+        "short": "The West Bank, occupied by Israel since 1967 and in the third year of the Palestinian uprising, the intifada.",
+        "long": "Israel has built settlements across the territory. The intifada began in December 1987 with strikes, boycotts and stone-throwing. The PLO declared a State of Palestine in November 1988, and Jordan gave up its claim that year."
+      },
+      "2025": {
+        "short": "The West Bank: occupied by Israel, partly run by the Palestinian Authority, with violence rising since the Gaza war.",
+        "long": "Israeli raids, settler attacks and Palestinian militant attacks have all increased since October 2023. The Palestinian Authority under Mahmoud Abbas is weak and unpopular."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/West_Bank"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "gaza-strip",
+    "kind": "place",
+    "name": "Gaza Strip",
+    "aliases": [
+      "Gaza Strip",
+      "Gaza"
+    ],
+    "obscurity": 1,
+    "short": "A narrow coastal strip of about 2 million Palestinians, devastated by war since October 2023 and now under a fragile ceasefire.",
+    "long": "Hamas ruled Gaza from 2007. Its attack on Israel on 7 October 2023 led to a war that killed tens of thousands of Palestinians and destroyed most buildings. A US-brokered ceasefire took effect in October 2025; Israeli forces still hold much of the territory, violations continue and aid remains far below need.",
+    "related": [
+      "west-bank",
+      "israel",
+      "egypt"
+    ],
+    "map": {
+      "countries": [
+        "GAZ"
+      ],
+      "points": [
+        {
+          "name": "Gaza City",
+          "lon": 34.47,
+          "lat": 31.52
+        }
+      ]
+    },
+    "valid": {
+      "from": "1948-05"
+    },
+    "eras": {
+      "1960": {
+        "short": "The Gaza Strip, under Egyptian military rule since 1948 and crowded with Palestinian refugees.",
+        "long": "Egypt held this coastal strip at the end of the 1948 war; most of its people are refugees who fled or were driven out of what became Israel. Israel occupied it briefly in 1956 and will take it in the 1967 war."
+      },
+      "1990": {
+        "short": "The Gaza Strip, occupied by Israel since 1967, where the first intifada began in December 1987.",
+        "long": "Crowded refugee camps and Israeli settlements sit side by side. Hamas was founded here at the start of the uprising and rivals the PLO."
+      },
+      "2025": {
+        "short": "The Gaza Strip after 15 months of war between Israel and Hamas; a ceasefire and hostage exchange begin on 19 January 2025.",
+        "long": "Hamas's attack of 7 October 2023 killed about 1,200 people in Israel. Israel's offensive has killed over 45,000 Palestinians, according to Gaza's health ministry, and forced nearly everyone from their homes. Famine conditions have been reported."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Gaza_Strip"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "ukrainian-ssr",
+    "kind": "place",
+    "name": "Ukrainian SSR",
+    "aliases": [
+      "Ukrainian SSR",
+      "Ukraine",
+      "Soviet Ukraine"
+    ],
+    "countryId": "UKR",
+    "obscurity": 1,
+    "short": "The Ukrainian SSR: one of the 15 republics of the Soviet Union, governed from Moscow, and its main grain and industrial region.",
+    "long": "Ukraine was a founding republic of the Soviet Union in 1922. It suffered a man-made famine in 1932 and 1933 and huge losses in the Second World War. It had its own UN seat but no real independence, and became independent in August 1991.",
+    "related": [
+      "russia"
+    ],
+    "map": {
+      "countries": [
+        "UKR"
+      ]
+    },
+    "valid": {
+      "from": "1922-12",
+      "to": "1991-07"
+    },
+    "eras": {
+      "1960": {
+        "long": "Ukraine suffered a man-made famine in 1932 and 1933 and huge losses in the Second World War. Khrushchev rose through its Communist party, and in 1954 Crimea was transferred to it. It has its own UN seat but no real independence."
+      },
+      "1990": {
+        "short": "The Ukrainian SSR: a Soviet republic stirring toward independence after the 1986 Chernobyl disaster on its soil.",
+        "long": "The Rukh national movement was founded in 1989. Ukraine will declare sovereignty in July 1990 and independence in August 1991."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Ukrainian_Soviet_Socialist_Republic"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "ukraine",
+    "kind": "place",
+    "name": "Ukraine",
+    "aliases": [
+      "Ukraine"
+    ],
+    "countryId": "UKR",
+    "obscurity": 1,
+    "short": "Europe's second-largest country, fighting off Russia's full-scale invasion since February 2022 while talks on a ceasefire go on.",
+    "long": "Ukraine became independent when the Soviet Union broke up in 1991. Russia seized Crimea in 2014 and backed separatists in the east, then launched a full-scale invasion in February 2022. By late 2026 Russia holds about a fifth of the country, mostly in the south and east, and the front has moved slowly for years. President Volodymyr Zelensky leads a government that depends on Western weapons and money, while US-brokered talks test whether a ceasefire can hold.",
+    "related": [],
+    "map": {
+      "countries": [
+        "UKR"
+      ],
+      "points": [
+        {
+          "name": "Kyiv",
+          "lon": 30.52,
+          "lat": 50.45
+        }
+      ]
+    },
+    "valid": {
+      "from": "1991-08"
+    },
+    "eras": {
+      "2025": {
+        "short": "Europe's second-largest country, nearly three years into resisting Russia's full-scale invasion, as Washington pushes for talks."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Ukraine",
+      "https://en.wikipedia.org/wiki/Russian_invasion_of_Ukraine"
+    ],
+    "asOf": "2026-11-21"
+  }
+]

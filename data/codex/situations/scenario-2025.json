@@ -1,0 +1,91 @@
+{
+  "id": "scenario-2025",
+  "title": "A world on edge: January 2025",
+  "oneLine": "Donald Trump returns to the White House as war grinds on in Ukraine, a ceasefire begins in Gaza, Iran nears the bomb and China presses Taiwan.",
+  "whoIsWho": [
+    {
+      "entryId": "united-states",
+      "stance": "Trump returns promising tariffs and a fast deal to end the war in Ukraine."
+    },
+    {
+      "entryId": "russia",
+      "stance": "Advancing slowly in Donetsk, with North Korean troops helping in Kursk."
+    },
+    {
+      "entryId": "israel",
+      "stance": "Accepts a Gaza ceasefire after 15 months of war; sees Iran as the main threat."
+    },
+    {
+      "entryId": "iran",
+      "stance": "Its allies battered in 2024, it keeps enriching uranium close to weapons grade."
+    },
+    {
+      "entryId": "china",
+      "stance": "Presses Taiwan with drills and braces for US tariffs."
+    },
+    {
+      "entryId": "syria",
+      "stance": "A new government in Damascus weeks after Assad fled to Moscow."
+    }
+  ],
+  "whyItMatters": "Several wars are running at once and the great powers sit on opposite sides of most of them. A new US president who questions old alliances could end some conflicts quickly, or unsettle the countries that rely on American protection.",
+  "timeline": [
+    {
+      "date": "2022-02-24",
+      "text": "Russia launches its full-scale invasion of Ukraine."
+    },
+    {
+      "date": "2023-10-07",
+      "text": "Hamas attacks Israel; a devastating war in Gaza follows."
+    },
+    {
+      "date": "2023-11",
+      "text": "Houthi attacks begin to drive shipping away from the Red Sea."
+    },
+    {
+      "date": "2024-04",
+      "text": "Iran and Israel trade direct strikes for the first time; again in October."
+    },
+    {
+      "date": "2024-12-03",
+      "text": "South Korea's president declares martial law and is impeached days later."
+    },
+    {
+      "date": "2024-12-08",
+      "text": "Assad's government falls in Syria; he flees to Moscow."
+    },
+    {
+      "date": "2025-01-19",
+      "text": "A ceasefire and hostage exchange begin in Gaza.",
+      "source": "https://en.wikipedia.org/wiki/2025_Gaza_war_ceasefire"
+    },
+    {
+      "date": "2025-01-20",
+      "text": "Donald Trump is sworn in for a second term."
+    }
+  ],
+  "gameStarts": "2025-01",
+  "map": {
+    "countries": [
+      "USA",
+      "RUS",
+      "UKR",
+      "ISR",
+      "IRN",
+      "CHN",
+      "TWN"
+    ]
+  },
+  "onThisCard": [
+    "gaza-strip",
+    "bashar-al-assad",
+    "martial-law-crisis-2024"
+  ],
+  "sources": [
+    "https://en.wikipedia.org/wiki/Russian_invasion_of_Ukraine",
+    "https://en.wikipedia.org/wiki/Gaza_war",
+    "https://en.wikipedia.org/wiki/Fall_of_the_Assad_regime",
+    "https://en.wikipedia.org/wiki/Second_inauguration_of_Donald_Trump"
+  ],
+  "asOf": "2026-11-22"
+}

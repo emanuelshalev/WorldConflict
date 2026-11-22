@@ -1,0 +1,699 @@
+[
+  {
+    "id": "full-scale-invasion-2022",
+    "kind": "event",
+    "name": "Russia's full-scale invasion of Ukraine",
+    "aliases": [
+      "full-scale invasion",
+      "February 2022 invasion"
+    ],
+    "countryId": "UKR",
+    "obscurity": 1,
+    "short": "Russia's attack on Ukraine from three sides on 24 February 2022, the largest war in Europe since 1945.",
+    "long": "Russia failed to take Kyiv and lost ground in late 2022, then ground forward in the east at enormous cost. Russia occupies about a fifth of Ukraine; in 2026 it gained almost nothing.",
+    "related": [
+      "vladimir-putin",
+      "volodymyr-zelensky"
+    ],
+    "valid": {
+      "from": "2022-02"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Russian_invasion_of_Ukraine"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "alaska-summit-2025",
+    "kind": "event",
+    "name": "The Alaska summit",
+    "aliases": [
+      "Alaska summit",
+      "Anchorage summit"
+    ],
+    "countryId": "USA",
+    "obscurity": 2,
+    "short": "Trump and Putin's meeting in Anchorage on 15 August 2025, the first US-Russia summit since the invasion; no deal followed.",
+    "related": [
+      "alaska",
+      "donald-trump",
+      "vladimir-putin"
+    ],
+    "valid": {
+      "from": "2025-08"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/2025_Russia%E2%80%93United_States_summit"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "oleshky-ceasefire",
+    "kind": "event",
+    "name": "The Oleshky ceasefire",
+    "aliases": [
+      "Oleshky ceasefire",
+      "local ceasefire"
+    ],
+    "countryId": "UKR",
+    "obscurity": 3,
+    "short": "A local truce around occupied Oleshky from 27 October 2026, planned to run to 1 November: the only pause in the war that autumn.",
+    "related": [
+      "oleshky"
+    ],
+    "valid": {
+      "from": "2026-10"
+    },
+    "sources": [
+      "https://www.khaleejtimes.com/europe/russia-ukraine-hold-peace-talks-nov-2026-ceasefire-oleshky"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "abu-dhabi-talks",
+    "kind": "event",
+    "name": "The Abu Dhabi talks",
+    "aliases": [
+      "Abu Dhabi talks",
+      "Abu Dhabi and Geneva"
+    ],
+    "countryId": "ARE",
+    "obscurity": 2,
+    "short": "US-brokered Russia-Ukraine talks in the UAE capital; the November 2026 round agreed a large prisoner swap but nothing on land.",
+    "long": "Rounds in early 2026 produced prisoner exchanges. After nine months without talks, a new round on 10 and 11 November 2026 again ended with a swap deal and no breakthrough on territory, security guarantees or NATO.",
+    "related": [
+      "abu-dhabi",
+      "free-economic-zone"
+    ],
+    "valid": {
+      "from": "2026-01"
+    },
+    "sources": [
+      "https://aljazeera.com/news/2026/11/11/russia-ukraine-talks-in-abu-dhabi-end-with-prisoner-exchange-agreement",
+      "https://www.al-monitor.com/originals/2026/11/us-attempts-new-peace-push-first-russia-ukraine-talks-nine-months"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "new-start-expiry",
+    "kind": "event",
+    "name": "The end of New START",
+    "aliases": [
+      "New START expired",
+      "New START expiry"
+    ],
+    "obscurity": 3,
+    "short": "On 5 February 2026 the last US-Russian nuclear arms treaty expired: no limits on the two largest arsenals for the first time since 1972.",
+    "related": [
+      "new-start"
+    ],
+    "valid": {
+      "from": "2026-02"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/New_START"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "us-tariff-ruling-2026",
+    "kind": "event",
+    "name": "The Supreme Court tariff ruling",
+    "aliases": [
+      "emergency tariffs",
+      "10% global tariff"
+    ],
+    "countryId": "USA",
+    "obscurity": 2,
+    "short": "In February 2026 the US Supreme Court struck down Trump's emergency tariffs; a 10% global tariff replaced them.",
+    "related": [
+      "tariffs",
+      "us-supreme-court"
+    ],
+    "valid": {
+      "from": "2026-02"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Tariffs_in_the_second_Trump_administration"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "us-midterms-2026",
+    "kind": "event",
+    "name": "The 2026 US midterms",
+    "aliases": [
+      "the midterms",
+      "midterms",
+      "midterm elections",
+      "midterm"
+    ],
+    "avoid": [
+      "midterm exams"
+    ],
+    "countryId": "USA",
+    "obscurity": 2,
+    "short": "US elections on 3 November 2026 for every House seat and a third of the Senate; Democrats won control of both chambers.",
+    "long": "Voters punished the president's party over prices, gas and the Iran war. The new Congress is sworn in on 3 January 2027; until then the outgoing 'lame-duck' Congress sits, and after it the White House faces a hostile House and Senate.",
+    "related": [
+      "us-congress",
+      "lame-duck",
+      "donald-trump"
+    ],
+    "valid": {
+      "from": "2026-11"
+    },
+    "sources": [
+      "https://www.aljazeera.com/news/2026/11/4/democratic-party-gains-us-house-majority-in-2026-midterm-elections",
+      "https://en.wikipedia.org/wiki/2026_United_States_elections"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "israel-election-2026",
+    "kind": "event",
+    "name": "Israel's 2026 election",
+    "aliases": [
+      "Israeli election",
+      "hung Knesset",
+      "hung-Knesset"
+    ],
+    "countryId": "ISR",
+    "obscurity": 2,
+    "short": "Israel's 27 October 2026 election left no majority: Netanyahu's bloc won 53 seats of 120, and Arab parties hold the balance.",
+    "related": [
+      "benjamin-netanyahu"
+    ],
+    "valid": {
+      "from": "2026-10"
+    },
+    "sources": [
+      "https://www.aljazeera.com/news/2026/10/29/israel-election-result-shows-no-overall-majority-as-vote-count-complete"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "brazil-election-2026",
+    "kind": "event",
+    "name": "Brazil's 2026 election",
+    "aliases": [
+      "Brazilian election",
+      "Lula's re-election"
+    ],
+    "countryId": "BRA",
+    "obscurity": 3,
+    "short": "Lula won a fourth term in the 25 October 2026 runoff against Flávio Bolsonaro, whose camp is trying to annul the result.",
+    "related": [
+      "lula"
+    ],
+    "valid": {
+      "from": "2026-10"
+    },
+    "sources": [
+      "https://aljazeera.com/news/2026/10/26/lula-holds-off-far-right-with-victory-in-brazil-presidential-election"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "twelve-day-war-2025",
+    "kind": "event",
+    "name": "The June 2025 war with Iran",
+    "aliases": [
+      "Twelve-Day War",
+      "June 2025 strikes"
+    ],
+    "countryId": "IRN",
+    "obscurity": 2,
+    "short": "Twelve days of Israeli strikes on Iran in June 2025, joined by US bombers on Fordow, Natanz and Isfahan, ended by a ceasefire.",
+    "related": [
+      "fordow",
+      "iran-war-2026"
+    ],
+    "valid": {
+      "from": "2025-06"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Iran%E2%80%93Israel_war"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "iran-war-2026",
+    "kind": "event",
+    "name": "The 2026 Iran war",
+    "aliases": [
+      "Iran war",
+      "February strikes",
+      "war with Iran"
+    ],
+    "countryId": "IRN",
+    "obscurity": 1,
+    "short": "The undeclared US-Israeli war with Iran that began with strikes on 28 February 2026 killing Supreme Leader Ali Khamenei.",
+    "long": "Air and naval fighting, not a ground war. Iran answered with missiles on Israel and Gulf bases and attacks on shipping. The US blockaded Iranian ports from April; a framework agreed in Islamabad collapsed, and the blockade was reimposed in July. Talks through Oman and Pakistan have come and gone.",
+    "related": [
+      "ali-khamenei",
+      "us-blockade-of-iran",
+      "strait-of-hormuz"
+    ],
+    "valid": {
+      "from": "2026-02"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/2026_Iran_war",
+      "https://en.wikipedia.org/wiki/2026_Iran_war_ceasefire"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "us-blockade-of-iran",
+    "kind": "event",
+    "name": "The US blockade of Iran",
+    "aliases": [
+      "US blockade",
+      "blockade of Iran",
+      "blockade of Iranian ports"
+    ],
+    "countryId": "IRN",
+    "obscurity": 2,
+    "short": "The US Navy's blockade of Iranian ports from 13 April 2026, briefly lifted and reimposed on 8 July after a framework collapsed.",
+    "related": [
+      "iran-war-2026",
+      "blockade",
+      "islamabad-framework"
+    ],
+    "valid": {
+      "from": "2026-04"
+    },
+    "sources": [
+      "https://www.cfr.org/article/united-states-blockades-strait-of-hormuz-after-u-s-iran-talks",
+      "https://en.wikipedia.org/wiki/2026_Iran_war"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "islamabad-framework",
+    "kind": "event",
+    "name": "The Islamabad framework",
+    "aliases": [
+      "Islamabad framework"
+    ],
+    "countryId": "PAK",
+    "obscurity": 3,
+    "short": "A short-lived 2026 US-Iran understanding brokered in Pakistan's capital; it collapsed and the US blockade returned in July.",
+    "related": [
+      "us-blockade-of-iran",
+      "islamabad"
+    ],
+    "valid": {
+      "from": "2026-07"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/2026_Iran_war_ceasefire"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "houthi-red-sea-offensive-2026",
+    "kind": "event",
+    "name": "The Houthi Red Sea offensive",
+    "aliases": [
+      "Houthi offensive",
+      "took Mokha"
+    ],
+    "countryId": "YEM",
+    "obscurity": 3,
+    "short": "In September 2026 the Houthis broke out down Yemen's Red Sea coast, taking Mokha and reportedly Perim at the mouth of the strait.",
+    "long": "A Saudi-backed government counteroffensive began on 4 October and retook Dhubab. On 10 October a Houthi missile killed 13 at Riyadh's airport. On 15 November government forces pulled back from the strait to defend Aden.",
+    "related": [
+      "mokha",
+      "perim",
+      "bab-al-mandab",
+      "houthis"
+    ],
+    "valid": {
+      "from": "2026-09"
+    },
+    "sources": [
+      "https://euronews.com/2026/09/10/houthis-seize-red-sea-port-city-in-push-to-seize-bab-el-mandeb",
+      "https://www.aljazeera.com/news/2026/11/15/yemeni-government-forces-redeploy-from-bab-al-mandeb-to-defend-aden"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "sudan-war",
+    "kind": "event",
+    "name": "Sudan's civil war",
+    "aliases": [
+      "Sudan's war",
+      "war in Sudan"
+    ],
+    "countryId": "SDN",
+    "obscurity": 2,
+    "short": "The war between Sudan's army and the RSF since April 2023: the world's largest displacement and hunger crisis.",
+    "long": "Tens of thousands have been killed and more than 12 million driven from their homes. Famine is confirmed in Darfur and Kordofan. Truce plans by the US, Saudi Arabia, Egypt and the UAE have never held.",
+    "related": [
+      "rsf",
+      "saf",
+      "quad"
+    ],
+    "valid": {
+      "from": "2023-04"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Sudanese_civil_war_(2023%E2%80%93present)",
+      "https://en.wikipedia.org/wiki/2026_in_Sudan"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "fall-of-el-fasher",
+    "kind": "event",
+    "name": "The fall of El Fasher",
+    "aliases": [
+      "fall of El Fasher"
+    ],
+    "countryId": "SDN",
+    "obscurity": 3,
+    "short": "The RSF's capture of El Fasher on 26 October 2025 after an 18-month siege, followed by mass killings documented by the UN.",
+    "related": [
+      "el-fasher",
+      "rsf"
+    ],
+    "valid": {
+      "from": "2025-10"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Fall_of_El_Fasher"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "siege-of-el-obeid",
+    "kind": "event",
+    "name": "The siege of El Obeid",
+    "aliases": [
+      "siege of El Obeid"
+    ],
+    "countryId": "SDN",
+    "obscurity": 3,
+    "short": "The RSF siege of El Obeid from July 2026, which the army reportedly broke in November.",
+    "related": [
+      "el-obeid"
+    ],
+    "valid": {
+      "from": "2026-07"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Siege_of_El_Obeid",
+      "https://www.aljazeera.com/news/2026/11/14/how-saf-successes-in-sudans-kordofan-could-turn-tide-against-the-rsf"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "tigray-war-2026",
+    "kind": "event",
+    "name": "The renewed Tigray war",
+    "aliases": [
+      "Tigray war"
+    ],
+    "countryId": "ETH",
+    "obscurity": 3,
+    "short": "Fighting between Ethiopia's government and Tigrayan forces resumed in September 2026, with Eritrean troops reported in Tigray.",
+    "related": [
+      "tigray",
+      "eritrea",
+      "abiy-ahmed"
+    ],
+    "valid": {
+      "from": "2026-09"
+    },
+    "sources": [
+      "https://www.thestar.com.my/news/world/2026/09/23/tigrayan-leaders-say-new-war-with-ethiopian-government-has-begun-as-fighting-erupts",
+      "https://tribune.com.pk/story/2633644/eritrean-troops-deployed-in-ethiopias-tigray-region"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "maduro-capture-2026",
+    "kind": "event",
+    "name": "The capture of Maduro",
+    "aliases": [
+      "capture of Maduro",
+      "Maduro raid",
+      "decapitation raid"
+    ],
+    "countryId": "VEN",
+    "obscurity": 1,
+    "short": "On 3 January 2026 US forces raided Caracas and seized Nicolás Maduro, who now faces trial in New York.",
+    "long": "Vice President Delcy Rodríguez was sworn in two days later and has since worked with Washington on oil, deportation flights and sanctions relief, while promising elections with no date.",
+    "related": [
+      "nicolas-maduro",
+      "delcy-rodriguez",
+      "fuerte-tiuna"
+    ],
+    "valid": {
+      "from": "2026-01"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/2026_in_Venezuela"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "cuba-oil-blockade",
+    "kind": "event",
+    "name": "The US oil blockade of Cuba",
+    "aliases": [
+      "oil blockade",
+      "US oil blockade"
+    ],
+    "countryId": "CUB",
+    "obscurity": 2,
+    "short": "Since January 2026 the US has stopped Venezuelan oil reaching Cuba and threatens tariffs on anyone who sells it fuel.",
+    "long": "Cuba's old oil-fired power stations need imported fuel. Without it the grid has collapsed repeatedly, leaving the whole island in the dark and setting off protests.",
+    "related": [
+      "guiteras-plant",
+      "miguel-diaz-canel"
+    ],
+    "valid": {
+      "from": "2026-01"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/2026_in_Cuba",
+      "https://www.npr.org/2026/03/16/nx-s1-5749457/cuba-blackout-sanctions-oil"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "cuba-protests-2021",
+    "kind": "event",
+    "name": "The July 2021 protests in Cuba",
+    "aliases": [
+      "July 2021",
+      "11 July protests"
+    ],
+    "countryId": "CUB",
+    "obscurity": 3,
+    "short": "The largest protests in Cuba in decades, on 11 July 2021, over blackouts and shortages; hundreds were jailed.",
+    "related": [
+      "black-berets"
+    ],
+    "valid": {
+      "from": "2021-07"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/2021_Cuban_protests"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "beijing-summit-2026",
+    "kind": "event",
+    "name": "The Beijing summit",
+    "aliases": [
+      "Beijing summit",
+      "trade truce"
+    ],
+    "countryId": "CHN",
+    "obscurity": 2,
+    "short": "Trump's May 2026 summit with Xi in Beijing, which extended a trade truce; afterwards Trump warned Taipei against independence.",
+    "related": [
+      "xi-jinping",
+      "donald-trump"
+    ],
+    "valid": {
+      "from": "2026-05"
+    },
+    "sources": [
+      "https://theonlinecitizen.com/2026/05/16/trump-warns-taiwan-against-independence-after-beijing-summit-with-xi-jinping"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "taiwan-defence-budget-2026",
+    "kind": "event",
+    "name": "Taiwan's defence budget cut",
+    "aliases": [
+      "special defence budget",
+      "special defense budget"
+    ],
+    "countryId": "TWN",
+    "obscurity": 3,
+    "short": "In 2026 Taiwan's opposition-run legislature cut President Lai's NT$1.25 trillion special defence budget by about 38%.",
+    "related": [
+      "legislative-yuan",
+      "lai-ching-te"
+    ],
+    "valid": {
+      "from": "2026-05"
+    },
+    "sources": [
+      "https://breakingdefense.com/2026/05/taiwans-parliament-passes-pared-back-supplementary-defense-budget/"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "scarborough-standoffs-2026",
+    "kind": "event",
+    "name": "The 2026 Scarborough standoffs",
+    "aliases": [
+      "Scarborough standoff"
+    ],
+    "countryId": "PHL",
+    "obscurity": 3,
+    "short": "Chinese and Philippine warships faced off at Scarborough Shoal in June 2026; in July China's coast guard used water cannon there.",
+    "related": [
+      "scarborough-shoal"
+    ],
+    "valid": {
+      "from": "2026-06"
+    },
+    "sources": [
+      "https://www.thejakartapost.com/world/2026/07/23/china-fires-water-cannon-on-philippine-ship-at-scarborough-shoal-manila-says",
+      "https://news.usni.org/2026/10/09/philippine-and-chinese-incidents-spike-in-south-china-sea-luzon-strait"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "pahalgam-attack",
+    "kind": "event",
+    "name": "The Pahalgam massacre",
+    "aliases": [
+      "Pahalgam massacre",
+      "Pahalgam attack"
+    ],
+    "countryId": "IND",
+    "obscurity": 2,
+    "short": "The killing of 26 people, mostly Hindu tourists, by gunmen in Kashmir on 22 April 2025; India blamed Pakistan.",
+    "related": [
+      "pahalgam",
+      "operation-sindoor",
+      "indus-waters-treaty"
+    ],
+    "valid": {
+      "from": "2025-04"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/2025_Pahalgam_attack"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "operation-sindoor",
+    "kind": "event",
+    "name": "Operation Sindoor",
+    "aliases": [
+      "Operation Sindoor",
+      "Sindoor"
+    ],
+    "countryId": "IND",
+    "obscurity": 2,
+    "short": "India's May 2025 missile and drone strikes on Pakistan after Pahalgam: four days of fighting between nuclear powers.",
+    "long": "Both sides used drones and missiles on each other's bases; a ceasefire on 10 May followed US and Gulf diplomacy. Each claims it won, and neither thinks the next round will stop as quickly.",
+    "related": [
+      "pahalgam-attack",
+      "narendra-modi",
+      "asim-munir"
+    ],
+    "valid": {
+      "from": "2025-05"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/2025_India%E2%80%93Pakistan_conflict"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "pakistan-saudi-defence-pact",
+    "kind": "event",
+    "name": "The Pakistan-Saudi defence pact",
+    "aliases": [
+      "Saudi defence pact",
+      "Saudi defense pact"
+    ],
+    "countryId": "PAK",
+    "obscurity": 3,
+    "short": "A September 2025 pact in which Saudi Arabia and Pakistan promised to treat an attack on one as an attack on both.",
+    "related": [
+      "asim-munir",
+      "mohammed-bin-salman"
+    ],
+    "valid": {
+      "from": "2025-09"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Pakistan%E2%80%93Saudi_Arabia_Strategic_Mutual_Defence_Agreement"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "pakistan-afghanistan-war-2026",
+    "kind": "event",
+    "name": "The Pakistan-Afghanistan war",
+    "aliases": [
+      "open war"
+    ],
+    "countryId": "PAK",
+    "obscurity": 3,
+    "short": "Pakistan declared 'open war' on Afghanistan's Taliban government in February 2026 and bombed Kabul and Kandahar; clashes continue.",
+    "related": [
+      "taliban",
+      "ttp"
+    ],
+    "valid": {
+      "from": "2026-02"
+    },
+    "sources": [
+      "https://www.arabnews.pk/node/2622517",
+      "https://365.military.com/feature/2026/02/27/pakistan-declares-open-war-afghan-taliban-airstrikes-hammer-kabul-and-kandahar.html"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "gaza-ceasefire-2025",
+    "kind": "event",
+    "name": "The Gaza ceasefire",
+    "aliases": [
+      "Gaza ceasefire",
+      "Gaza peace plan",
+      "Gaza plan"
+    ],
+    "countryId": "PSX",
+    "obscurity": 2,
+    "short": "The US-brokered ceasefire of October 2025 that paused the Gaza war; it holds with violations, and aid stays far below need.",
+    "long": "Hostages were exchanged for prisoners and Israeli troops pulled back to a line inside the strip. Later stages, Hamas disarming, an international force and reconstruction under a 'Board of Peace', have barely begun.",
+    "related": [
+      "gaza-strip",
+      "hamas",
+      "board-of-peace"
+    ],
+    "valid": {
+      "from": "2025-10"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Gaza_peace_plan",
+      "https://en.wikipedia.org/wiki/Gaza_war"
+    ],
+    "asOf": "2026-11-22"
+  }
+]

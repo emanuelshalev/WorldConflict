@@ -1,0 +1,3550 @@
+[
+  {
+    "id": "dwight-eisenhower",
+    "kind": "person",
+    "name": "Dwight D. Eisenhower",
+    "aliases": [
+      "Dwight D. Eisenhower",
+      "Dwight Eisenhower",
+      "Eisenhower",
+      "Ike"
+    ],
+    "countryId": "USA",
+    "obscurity": 1,
+    "short": "US president from 1953 to 1961, a former general who commanded the Allied invasion of Europe in 1944.",
+    "related": [
+      "united-states"
+    ],
+    "valid": {
+      "from": "1953-01"
+    },
+    "eras": {
+      "1960": {
+        "short": "US president since 1953, a former general who led the Allied invasion of Europe in 1944. His second term ends in January 1961."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Dwight_D._Eisenhower"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "mao-zedong",
+    "kind": "person",
+    "name": "Mao Zedong",
+    "aliases": [
+      "Mao Zedong",
+      "Mao Tse-tung",
+      "Chairman Mao",
+      "Mao"
+    ],
+    "countryId": "CHN",
+    "obscurity": 1,
+    "short": "Founder of the People's Republic of China, which he ruled from 1949 until his death in 1976.",
+    "related": [
+      "china",
+      "great-leap-forward"
+    ],
+    "valid": {
+      "from": "1949-10"
+    },
+    "eras": {
+      "1960": {
+        "short": "Chairman of China's Communist Party, who founded the People's Republic in 1949 and launched the Great Leap Forward."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Mao_Zedong"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "nikita-khrushchev",
+    "kind": "person",
+    "name": "Nikita Khrushchev",
+    "aliases": [
+      "Nikita Khrushchev",
+      "Khrushchev"
+    ],
+    "countryId": "RUS",
+    "obscurity": 1,
+    "short": "Soviet leader from 1953 to 1964, who denounced Stalin's crimes and took the world to the brink in the 1962 Cuban Missile Crisis.",
+    "related": [
+      "russia"
+    ],
+    "valid": {
+      "from": "1953-09"
+    },
+    "eras": {
+      "1960": {
+        "short": "Leader of the Soviet Union, who denounced Stalin in 1956 and now boasts of Soviet rockets while seeking 'peaceful coexistence'."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Nikita_Khrushchev"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "konrad-adenauer",
+    "kind": "person",
+    "name": "Konrad Adenauer",
+    "aliases": [
+      "Konrad Adenauer",
+      "Adenauer"
+    ],
+    "countryId": "DEU",
+    "obscurity": 2,
+    "short": "West Germany's first chancellor (1949 to 1963), who anchored the country in NATO and in European integration.",
+    "related": [
+      "germany"
+    ],
+    "valid": {
+      "from": "1949-09"
+    },
+    "eras": {
+      "1960": {
+        "short": "West Germany's first chancellor, in office since 1949 and now aged 84, a firm anchor of the Western alliance."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Konrad_Adenauer"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "jawaharlal-nehru",
+    "kind": "person",
+    "name": "Jawaharlal Nehru",
+    "aliases": [
+      "Jawaharlal Nehru",
+      "Nehru",
+      "Pandit Nehru"
+    ],
+    "countryId": "IND",
+    "obscurity": 1,
+    "short": "India's first prime minister, from independence in 1947 until his death in 1964, and a founder of the Non-Aligned Movement.",
+    "related": [
+      "india",
+      "non-aligned-movement"
+    ],
+    "valid": {
+      "from": "1947-08"
+    },
+    "eras": {
+      "1960": {
+        "short": "India's prime minister since independence in 1947, a champion of staying out of both Cold War blocs."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Jawaharlal_Nehru"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "juscelino-kubitschek",
+    "kind": "person",
+    "name": "Juscelino Kubitschek",
+    "aliases": [
+      "Juscelino Kubitschek",
+      "Kubitschek"
+    ],
+    "countryId": "BRA",
+    "obscurity": 3,
+    "short": "President of Brazil from 1956 to 1961, who built the new capital, Brasília.",
+    "related": [
+      "brazil"
+    ],
+    "valid": {
+      "from": "1956-01"
+    },
+    "eras": {
+      "1960": {
+        "short": "President of Brazil since 1956, who promised 'fifty years of progress in five' and is building Brasília."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Juscelino_Kubitschek"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "john-diefenbaker",
+    "kind": "person",
+    "name": "John Diefenbaker",
+    "aliases": [
+      "John Diefenbaker",
+      "Diefenbaker"
+    ],
+    "countryId": "CAN",
+    "obscurity": 3,
+    "short": "Canada's Progressive Conservative prime minister from 1957 to 1963.",
+    "related": [
+      "canada"
+    ],
+    "valid": {
+      "from": "1957-06"
+    },
+    "eras": {
+      "1960": {
+        "short": "Canada's prime minister since 1957, a Progressive Conservative from the prairies who won a record landslide in 1958."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/John_Diefenbaker"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "adolfo-lopez-mateos",
+    "kind": "person",
+    "name": "Adolfo López Mateos",
+    "aliases": [
+      "Adolfo López Mateos",
+      "López Mateos",
+      "Lopez Mateos"
+    ],
+    "countryId": "MEX",
+    "obscurity": 3,
+    "short": "President of Mexico from 1958 to 1964, of the long-ruling PRI.",
+    "related": [
+      "mexico"
+    ],
+    "valid": {
+      "from": "1958-12"
+    },
+    "eras": {
+      "1960": {
+        "short": "President of Mexico since December 1958, of the ruling PRI, who keeps friendly ties with both the US and Castro's Cuba."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Adolfo_L%C3%B3pez_Mateos"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "charles-de-gaulle",
+    "kind": "person",
+    "name": "Charles de Gaulle",
+    "aliases": [
+      "Charles de Gaulle",
+      "de Gaulle",
+      "General de Gaulle"
+    ],
+    "countryId": "FRA",
+    "obscurity": 1,
+    "short": "Leader of the Free French in the Second World War and president of France from 1959 to 1969.",
+    "related": [
+      "france",
+      "algerian-war"
+    ],
+    "valid": {
+      "from": "1958-06"
+    },
+    "eras": {
+      "1960": {
+        "short": "France's president, wartime leader of the Free French, who returned to power in 1958 amid the crisis over Algeria."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Charles_de_Gaulle"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "harold-macmillan",
+    "kind": "person",
+    "name": "Harold Macmillan",
+    "aliases": [
+      "Harold Macmillan",
+      "Macmillan"
+    ],
+    "countryId": "GBR",
+    "obscurity": 2,
+    "short": "British Conservative prime minister from 1957 to 1963, who oversaw rapid decolonisation.",
+    "related": [
+      "united-kingdom"
+    ],
+    "valid": {
+      "from": "1957-01"
+    },
+    "eras": {
+      "1960": {
+        "short": "Britain's Conservative prime minister since 1957, who won a big re-election victory in October 1959 on a booming economy."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Harold_Macmillan"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "wladyslaw-gomulka",
+    "kind": "person",
+    "name": "Władysław Gomułka",
+    "aliases": [
+      "Władysław Gomułka",
+      "Wladyslaw Gomulka",
+      "Gomułka",
+      "Gomulka"
+    ],
+    "countryId": "POL",
+    "obscurity": 3,
+    "short": "Leader of communist Poland from 1956 to 1970.",
+    "related": [
+      "poland"
+    ],
+    "valid": {
+      "from": "1956-10"
+    },
+    "eras": {
+      "1960": {
+        "short": "Head of Poland's Communist party since 1956, who won some freedom from Moscow but keeps Poland in the Soviet bloc."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/W%C5%82adys%C5%82aw_Gomu%C5%82ka"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "adnan-menderes",
+    "kind": "person",
+    "name": "Adnan Menderes",
+    "aliases": [
+      "Adnan Menderes",
+      "Menderes"
+    ],
+    "countryId": "TUR",
+    "obscurity": 3,
+    "short": "Turkish prime minister from 1950 until a military coup in May 1960; he was hanged in 1961.",
+    "related": [
+      "turkey"
+    ],
+    "valid": {
+      "from": "1950-05"
+    },
+    "eras": {
+      "1960": {
+        "short": "Turkey's prime minister since 1950, a pro-Western leader growing authoritarian, with tension rising with the army."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Adnan_Menderes"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "king-saud",
+    "kind": "person",
+    "name": "King Saud",
+    "aliases": [
+      "King Saud",
+      "Saud bin Abdulaziz"
+    ],
+    "countryId": "SAU",
+    "obscurity": 3,
+    "short": "King of Saudi Arabia from 1953 until his brothers deposed him in 1964.",
+    "related": [
+      "saudi-arabia"
+    ],
+    "valid": {
+      "from": "1953-11"
+    },
+    "eras": {
+      "1960": {
+        "short": "King of Saudi Arabia since 1953, eldest surviving son of the founder, whose lavish spending has strained the state."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Saud_of_Saudi_Arabia"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "mohammad-reza-pahlavi",
+    "kind": "person",
+    "name": "Mohammad Reza Pahlavi",
+    "aliases": [
+      "Mohammad Reza Pahlavi",
+      "Mohammad Reza Shah",
+      "Shah of Iran",
+      "the Shah"
+    ],
+    "countryId": "IRN",
+    "obscurity": 2,
+    "short": "The last Shah of Iran, who ruled from 1941 until the 1979 revolution.",
+    "related": [
+      "iran"
+    ],
+    "valid": {
+      "from": "1941-09"
+    },
+    "eras": {
+      "1960": {
+        "short": "Shah of Iran since 1941, a US ally who regained full power after the 1953 coup against Prime Minister Mosaddegh."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Mohammad_Reza_Pahlavi"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "david-ben-gurion",
+    "kind": "person",
+    "name": "David Ben-Gurion",
+    "aliases": [
+      "David Ben-Gurion",
+      "Ben-Gurion"
+    ],
+    "countryId": "ISR",
+    "obscurity": 2,
+    "short": "Israel's founding father and first prime minister (1948 to 1954 and 1955 to 1963).",
+    "related": [
+      "israel"
+    ],
+    "valid": {
+      "from": "1948-05"
+    },
+    "eras": {
+      "1960": {
+        "short": "Israel's founding prime minister, who declared independence in 1948 and leads a state still at odds with its Arab neighbours."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/David_Ben-Gurion"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "gamal-abdel-nasser",
+    "kind": "person",
+    "name": "Gamal Abdel Nasser",
+    "aliases": [
+      "Gamal Abdel Nasser",
+      "Abdel Nasser",
+      "Nasser"
+    ],
+    "countryId": "EGY",
+    "obscurity": 2,
+    "short": "Egypt's leader from 1954 until his death in 1970, champion of Arab nationalism, who nationalised the Suez Canal.",
+    "related": [
+      "egypt",
+      "united-arab-republic"
+    ],
+    "valid": {
+      "from": "1954-11"
+    },
+    "eras": {
+      "1960": {
+        "short": "President of Egypt and of the United Arab Republic, hero of Arab nationalism since he nationalised the Suez Canal in 1956."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Gamal_Abdel_Nasser"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "nobusuke-kishi",
+    "kind": "person",
+    "name": "Nobusuke Kishi",
+    "aliases": [
+      "Nobusuke Kishi",
+      "Kishi"
+    ],
+    "countryId": "JPN",
+    "obscurity": 3,
+    "short": "Japanese prime minister from 1957 to 1960 and grandfather of Shinzo Abe.",
+    "related": [
+      "japan"
+    ],
+    "valid": {
+      "from": "1957-02"
+    },
+    "eras": {
+      "1960": {
+        "short": "Japan's prime minister since 1957, pushing through a revised security treaty with the US despite mass protests."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Nobusuke_Kishi"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "sukarno",
+    "kind": "person",
+    "name": "Sukarno",
+    "aliases": [
+      "Sukarno",
+      "Soekarno"
+    ],
+    "countryId": "IDN",
+    "obscurity": 2,
+    "short": "Indonesia's founding president (1945 to 1967) and host of the 1955 Bandung Conference.",
+    "related": [
+      "indonesia",
+      "bandung-conference"
+    ],
+    "valid": {
+      "from": "1945-08"
+    },
+    "eras": {
+      "1960": {
+        "short": "Indonesia's founding president, a fiery nationalist who rules through 'Guided Democracy' and leads the non-aligned world."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Sukarno"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "syngman-rhee",
+    "kind": "person",
+    "name": "Syngman Rhee",
+    "aliases": [
+      "Syngman Rhee",
+      "Rhee"
+    ],
+    "countryId": "KOR",
+    "obscurity": 3,
+    "short": "South Korea's first president, from 1948 until a student-led uprising forced him out in April 1960.",
+    "related": [
+      "south-korea"
+    ],
+    "valid": {
+      "from": "1948-07"
+    },
+    "eras": {
+      "1960": {
+        "short": "South Korea's president since 1948, an anti-communist strongman now in his mid-80s."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Syngman_Rhee"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "kim-il-sung",
+    "kind": "person",
+    "name": "Kim Il Sung",
+    "aliases": [
+      "Kim Il Sung",
+      "Kim Il-sung"
+    ],
+    "countryId": "PRK",
+    "obscurity": 2,
+    "short": "Founder of North Korea, which he ruled from 1948 until his death in 1994; his son and grandson succeeded him.",
+    "related": [
+      "north-korea"
+    ],
+    "valid": {
+      "from": "1948-09"
+    },
+    "eras": {
+      "1960": {
+        "short": "North Korea's founding leader, who launched the Korean War in 1950 and is building a cult around himself."
+      },
+      "1990": {
+        "short": "North Korea's ruler since 1948, now in his late 70s, grooming his son Kim Jong Il to succeed him."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Kim_Il_Sung"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "robert-menzies",
+    "kind": "person",
+    "name": "Robert Menzies",
+    "aliases": [
+      "Robert Menzies",
+      "Menzies"
+    ],
+    "countryId": "AUS",
+    "obscurity": 3,
+    "short": "Australia's longest-serving prime minister (1939 to 1941 and 1949 to 1966).",
+    "related": [
+      "australia"
+    ],
+    "valid": {
+      "from": "1949-12"
+    },
+    "eras": {
+      "1960": {
+        "short": "Australia's prime minister since 1949, a staunch ally of Britain and the US."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Robert_Menzies"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "ayub-khan",
+    "kind": "person",
+    "name": "Ayub Khan",
+    "aliases": [
+      "Ayub Khan",
+      "Muhammad Ayub Khan"
+    ],
+    "countryId": "PAK",
+    "obscurity": 3,
+    "short": "Pakistan's first military ruler, from 1958 to 1969.",
+    "related": [
+      "pakistan"
+    ],
+    "valid": {
+      "from": "1958-10"
+    },
+    "eras": {
+      "1960": {
+        "short": "Pakistan's president, the army chief who seized power in October 1958 and ties the country to the US."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Ayub_Khan"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "abubakar-tafawa-balewa",
+    "kind": "person",
+    "name": "Abubakar Tafawa Balewa",
+    "aliases": [
+      "Abubakar Tafawa Balewa",
+      "Tafawa Balewa",
+      "Balewa"
+    ],
+    "countryId": "NGA",
+    "obscurity": 3,
+    "short": "Nigeria's first prime minister (1957 to 1966), killed in the country's first military coup.",
+    "related": [
+      "nigeria"
+    ],
+    "valid": {
+      "from": "1957-08"
+    },
+    "eras": {
+      "1960": {
+        "short": "Prime minister of the Nigerian federation, a soft-spoken northern leader taking the country to independence."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Abubakar_Tafawa_Balewa"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "hendrik-verwoerd",
+    "kind": "person",
+    "name": "Hendrik Verwoerd",
+    "aliases": [
+      "Hendrik Verwoerd",
+      "Verwoerd"
+    ],
+    "countryId": "ZAF",
+    "obscurity": 2,
+    "short": "South African prime minister from 1958 until his assassination in 1966, the chief architect of apartheid.",
+    "related": [
+      "south-africa",
+      "apartheid"
+    ],
+    "valid": {
+      "from": "1958-09"
+    },
+    "eras": {
+      "1960": {
+        "short": "South Africa's prime minister since 1958, the chief architect of apartheid, the system of racial segregation."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Hendrik_Verwoerd"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "antonio-segni",
+    "kind": "person",
+    "name": "Antonio Segni",
+    "aliases": [
+      "Antonio Segni",
+      "Segni"
+    ],
+    "countryId": "ITA",
+    "obscurity": 3,
+    "short": "Italian Christian Democrat, twice prime minister and president of Italy from 1962 to 1964.",
+    "related": [
+      "italy"
+    ],
+    "valid": {
+      "from": "1959-02"
+    },
+    "eras": {
+      "1960": {
+        "short": "Italy's Christian Democrat prime minister, leading a fragile government since February 1959."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Antonio_Segni"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "mohammed-daoud-khan",
+    "kind": "person",
+    "name": "Mohammed Daoud Khan",
+    "aliases": [
+      "Mohammed Daoud Khan",
+      "Daoud Khan"
+    ],
+    "countryId": "AFG",
+    "obscurity": 3,
+    "short": "Afghan prime minister (1953 to 1963) who later overthrew the king and was killed in a 1978 communist coup.",
+    "related": [
+      "afghanistan"
+    ],
+    "valid": {
+      "from": "1953-09"
+    },
+    "eras": {
+      "1960": {
+        "short": "Afghanistan's prime minister and the king's cousin, who modernises the army with Soviet help and presses claims on Pakistan."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Mohammed_Daoud_Khan"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "fidel-castro",
+    "kind": "person",
+    "name": "Fidel Castro",
+    "aliases": [
+      "Fidel Castro",
+      "Castro"
+    ],
+    "countryId": "CUB",
+    "obscurity": 1,
+    "short": "Leader of Cuba's revolution, who ruled the country from 1959 to 2008 and died in 2016.",
+    "related": [
+      "cuba",
+      "cuban-revolution"
+    ],
+    "valid": {
+      "from": "1959-02"
+    },
+    "eras": {
+      "1960": {
+        "short": "Cuba's revolutionary leader, prime minister since February 1959, seizing land and leaning toward Moscow."
+      },
+      "1990": {
+        "short": "Cuba's communist leader for over 30 years, defiant as the Soviet aid his country depends on dries up."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Fidel_Castro"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "h-c-hansen",
+    "kind": "person",
+    "name": "H. C. Hansen",
+    "aliases": [
+      "H. C. Hansen",
+      "Hans Christian Hansen"
+    ],
+    "countryId": "DNK",
+    "obscurity": 3,
+    "short": "Danish Social Democratic prime minister from 1955 until his death in February 1960.",
+    "related": [
+      "denmark"
+    ],
+    "valid": {
+      "from": "1955-02"
+    },
+    "eras": {
+      "1960": {
+        "short": "Denmark's Social Democratic prime minister since 1955, a NATO loyalist who leads a three-party coalition."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/H._C._Hansen"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "haile-selassie",
+    "kind": "person",
+    "name": "Haile Selassie",
+    "aliases": [
+      "Haile Selassie",
+      "Emperor Haile Selassie"
+    ],
+    "countryId": "ETH",
+    "obscurity": 2,
+    "short": "Emperor of Ethiopia from 1930 until the army deposed him in 1974.",
+    "related": [
+      "ethiopia"
+    ],
+    "valid": {
+      "from": "1930-04"
+    },
+    "eras": {
+      "1960": {
+        "short": "Emperor of Ethiopia since 1930, a symbol of African independence who resisted Italy's invasion."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Haile_Selassie"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "abd-al-karim-qasim",
+    "kind": "person",
+    "name": "Abd al-Karim Qasim",
+    "aliases": [
+      "Abd al-Karim Qasim",
+      "Abdul Karim Qasim",
+      "Qasim"
+    ],
+    "countryId": "IRQ",
+    "obscurity": 3,
+    "short": "Iraqi general who overthrew the monarchy in 1958 and ruled until he was killed in a 1963 coup.",
+    "related": [
+      "iraq"
+    ],
+    "valid": {
+      "from": "1958-07"
+    },
+    "eras": {
+      "1960": {
+        "short": "Iraq's prime minister and military strongman since the July 1958 revolution that killed the royal family."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Abd_al-Karim_Qasim"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "fuad-chehab",
+    "kind": "person",
+    "name": "Fuad Chehab",
+    "aliases": [
+      "Fuad Chehab",
+      "Fouad Chehab",
+      "Chehab"
+    ],
+    "countryId": "LBN",
+    "obscurity": 3,
+    "short": "Lebanese army commander and president from 1958 to 1964, who built up the state's institutions.",
+    "related": [
+      "lebanon"
+    ],
+    "valid": {
+      "from": "1958-09"
+    },
+    "eras": {
+      "1960": {
+        "short": "Lebanon's president since September 1958, the former army chief who kept the army neutral in that year's civil strife."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Fuad_Chehab"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "carlos-p-garcia",
+    "kind": "person",
+    "name": "Carlos P. Garcia",
+    "aliases": [
+      "Carlos P. Garcia",
+      "Carlos Garcia"
+    ],
+    "countryId": "PHL",
+    "obscurity": 3,
+    "short": "President of the Philippines from 1957 to 1961, known for his 'Filipino First' policy.",
+    "related": [
+      "philippines"
+    ],
+    "valid": {
+      "from": "1957-03"
+    },
+    "eras": {
+      "1960": {
+        "short": "President of the Philippines since 1957, promoting 'Filipino First' economic nationalism."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Carlos_P._Garcia"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "ibrahim-abboud",
+    "kind": "person",
+    "name": "Ibrahim Abboud",
+    "aliases": [
+      "Ibrahim Abboud",
+      "Abboud"
+    ],
+    "countryId": "SDN",
+    "obscurity": 3,
+    "short": "Sudanese general who ruled after a 1958 coup until a popular uprising in 1964.",
+    "related": [
+      "sudan"
+    ],
+    "valid": {
+      "from": "1958-11"
+    },
+    "eras": {
+      "1960": {
+        "short": "Sudan's military ruler since a bloodless coup in November 1958."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Ibrahim_Abboud"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "chiang-kai-shek",
+    "kind": "person",
+    "name": "Chiang Kai-shek",
+    "aliases": [
+      "Chiang Kai-shek",
+      "Generalissimo Chiang"
+    ],
+    "countryId": "TWN",
+    "obscurity": 2,
+    "short": "Leader of China's Nationalists, who lost the civil war in 1949 and ruled Taiwan until his death in 1975.",
+    "related": [
+      "taiwan"
+    ],
+    "valid": {
+      "from": "1950-03"
+    },
+    "eras": {
+      "1960": {
+        "short": "President of the Republic of China on Taiwan, who still vows to retake the mainland from the Communists."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Chiang_Kai-shek"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "romulo-betancourt",
+    "kind": "person",
+    "name": "Rómulo Betancourt",
+    "aliases": [
+      "Rómulo Betancourt",
+      "Romulo Betancourt",
+      "Betancourt"
+    ],
+    "countryId": "VEN",
+    "obscurity": 3,
+    "short": "Venezuelan president (1945 to 1948 and 1959 to 1964), seen as the father of the country's democracy.",
+    "related": [
+      "venezuela"
+    ],
+    "valid": {
+      "from": "1959-02"
+    },
+    "eras": {
+      "1960": {
+        "short": "Venezuela's elected president since February 1959, a reformer facing plots from both right and left."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/R%C3%B3mulo_Betancourt"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "ahmad-bin-yahya",
+    "kind": "person",
+    "name": "Ahmad bin Yahya",
+    "aliases": [
+      "Ahmad bin Yahya",
+      "Imam Ahmad"
+    ],
+    "countryId": "YEM",
+    "obscurity": 3,
+    "short": "Imam and King of Yemen from 1948 until his death in 1962.",
+    "related": [
+      "yemen"
+    ],
+    "valid": {
+      "from": "1948-03"
+    },
+    "eras": {
+      "1960": {
+        "short": "Imam and King of Yemen since 1948, an absolute ruler who keeps his country closed to the outside world."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Ahmad_bin_Yahya"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "george-hw-bush",
+    "kind": "person",
+    "name": "George H. W. Bush",
+    "aliases": [
+      "George H. W. Bush",
+      "George Bush",
+      "Bush"
+    ],
+    "countryId": "USA",
+    "obscurity": 1,
+    "short": "US president from 1989 to 1993, who led the coalition that drove Iraq out of Kuwait in 1991.",
+    "related": [
+      "united-states"
+    ],
+    "valid": {
+      "from": "1989-01"
+    },
+    "eras": {
+      "1990": {
+        "short": "US president since January 1989, a former CIA director and vice-president steering the end of the Cold War."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/George_H._W._Bush"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "jiang-zemin",
+    "kind": "person",
+    "name": "Jiang Zemin",
+    "aliases": [
+      "Jiang Zemin"
+    ],
+    "countryId": "CHN",
+    "obscurity": 2,
+    "short": "Leader of China's Communist Party from 1989 to 2002, who oversaw its economic boom.",
+    "related": [
+      "china",
+      "tiananmen"
+    ],
+    "valid": {
+      "from": "1989-06"
+    },
+    "eras": {
+      "1990": {
+        "short": "General Secretary of China's Communist Party since June 1989, promoted after the Tiananmen crackdown."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Jiang_Zemin"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "mikhail-gorbachev",
+    "kind": "person",
+    "name": "Mikhail Gorbachev",
+    "aliases": [
+      "Mikhail Gorbachev",
+      "Gorbachev"
+    ],
+    "countryId": "RUS",
+    "obscurity": 1,
+    "short": "Last leader of the Soviet Union (1985 to 1991), whose reforms ended the Cold War; he died in 2022.",
+    "related": [
+      "russia",
+      "perestroika",
+      "glasnost"
+    ],
+    "valid": {
+      "from": "1985-03"
+    },
+    "eras": {
+      "1990": {
+        "short": "Soviet leader since 1985, whose reforms, perestroika and glasnost, have loosened the communist system and freed Eastern Europe."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Mikhail_Gorbachev"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "helmut-kohl",
+    "kind": "person",
+    "name": "Helmut Kohl",
+    "aliases": [
+      "Helmut Kohl",
+      "Kohl"
+    ],
+    "countryId": "DEU",
+    "obscurity": 2,
+    "short": "German chancellor from 1982 to 1998, who led the reunification of Germany in 1990.",
+    "related": [
+      "germany",
+      "german-reunification"
+    ],
+    "valid": {
+      "from": "1982-10"
+    },
+    "eras": {
+      "1990": {
+        "short": "West Germany's chancellor since 1982, pushing for rapid reunification with East Germany."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Helmut_Kohl"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "v-p-singh",
+    "kind": "person",
+    "name": "V. P. Singh",
+    "aliases": [
+      "V. P. Singh",
+      "VP Singh",
+      "Vishwanath Pratap Singh"
+    ],
+    "countryId": "IND",
+    "obscurity": 3,
+    "short": "Indian prime minister from December 1989 to November 1990.",
+    "related": [
+      "india"
+    ],
+    "valid": {
+      "from": "1989-12"
+    },
+    "eras": {
+      "1990": {
+        "short": "India's new prime minister, heading a shaky coalition since December 1989."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/V._P._Singh"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "jose-sarney",
+    "kind": "person",
+    "name": "José Sarney",
+    "aliases": [
+      "José Sarney",
+      "Jose Sarney",
+      "Sarney"
+    ],
+    "countryId": "BRA",
+    "obscurity": 3,
+    "short": "Brazil's first civilian president after military rule, from 1985 to 1990.",
+    "related": [
+      "brazil"
+    ],
+    "valid": {
+      "from": "1985-04"
+    },
+    "eras": {
+      "1990": {
+        "short": "Brazil's president since 1985, the first civilian after military rule, ending his term amid hyperinflation."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Jos%C3%A9_Sarney"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "brian-mulroney",
+    "kind": "person",
+    "name": "Brian Mulroney",
+    "aliases": [
+      "Brian Mulroney",
+      "Mulroney"
+    ],
+    "countryId": "CAN",
+    "obscurity": 3,
+    "short": "Canadian prime minister from 1984 to 1993, who signed free-trade deals with the US.",
+    "related": [
+      "canada"
+    ],
+    "valid": {
+      "from": "1984-09"
+    },
+    "eras": {
+      "1990": {
+        "short": "Canada's Progressive Conservative prime minister since 1984, who signed a free-trade deal with the US."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Brian_Mulroney"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "carlos-salinas",
+    "kind": "person",
+    "name": "Carlos Salinas de Gortari",
+    "aliases": [
+      "Carlos Salinas de Gortari",
+      "Carlos Salinas",
+      "Salinas"
+    ],
+    "countryId": "MEX",
+    "obscurity": 3,
+    "short": "President of Mexico from 1988 to 1994, who negotiated the NAFTA trade pact.",
+    "related": [
+      "mexico"
+    ],
+    "valid": {
+      "from": "1988-12"
+    },
+    "eras": {
+      "1990": {
+        "short": "Mexico's president since December 1988, a US-educated economist selling off state companies."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Carlos_Salinas_de_Gortari"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "francois-mitterrand",
+    "kind": "person",
+    "name": "François Mitterrand",
+    "aliases": [
+      "François Mitterrand",
+      "Francois Mitterrand",
+      "Mitterrand"
+    ],
+    "countryId": "FRA",
+    "obscurity": 2,
+    "short": "Socialist president of France from 1981 to 1995.",
+    "related": [
+      "france"
+    ],
+    "valid": {
+      "from": "1981-05"
+    },
+    "eras": {
+      "1990": {
+        "short": "France's Socialist president since 1981, now in his second seven-year term."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Fran%C3%A7ois_Mitterrand"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "margaret-thatcher",
+    "kind": "person",
+    "name": "Margaret Thatcher",
+    "aliases": [
+      "Margaret Thatcher",
+      "Thatcher",
+      "Mrs Thatcher"
+    ],
+    "countryId": "GBR",
+    "obscurity": 1,
+    "short": "Britain's first woman prime minister, from 1979 to 1990, known as the 'Iron Lady'.",
+    "related": [
+      "united-kingdom"
+    ],
+    "valid": {
+      "from": "1979-05"
+    },
+    "eras": {
+      "1990": {
+        "short": "Britain's prime minister since 1979, the 'Iron Lady', a close ally of the US and wary of a united Germany."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Margaret_Thatcher"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "tadeusz-mazowiecki",
+    "kind": "person",
+    "name": "Tadeusz Mazowiecki",
+    "aliases": [
+      "Tadeusz Mazowiecki",
+      "Mazowiecki"
+    ],
+    "countryId": "POL",
+    "obscurity": 3,
+    "short": "Poland's first non-communist prime minister after four decades of communist rule, from 1989 to 1991.",
+    "related": [
+      "poland",
+      "solidarity"
+    ],
+    "valid": {
+      "from": "1989-08"
+    },
+    "eras": {
+      "1990": {
+        "short": "Poland's prime minister since August 1989, a Catholic journalist from Solidarity and the first non-communist one in decades."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Tadeusz_Mazowiecki"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "turgut-ozal",
+    "kind": "person",
+    "name": "Turgut Özal",
+    "aliases": [
+      "Turgut Özal",
+      "Turgut Ozal",
+      "Özal",
+      "Ozal"
+    ],
+    "countryId": "TUR",
+    "obscurity": 3,
+    "short": "Turkish prime minister (1983 to 1989) and president (1989 to 1993) who opened up the economy.",
+    "related": [
+      "turkey"
+    ],
+    "valid": {
+      "from": "1983-12"
+    },
+    "eras": {
+      "1990": {
+        "short": "Turkey's president since November 1989, an economic reformer who was prime minister through the 1980s."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Turgut_%C3%96zal"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "king-fahd",
+    "kind": "person",
+    "name": "King Fahd",
+    "aliases": [
+      "King Fahd",
+      "Fahd bin Abdulaziz"
+    ],
+    "countryId": "SAU",
+    "obscurity": 2,
+    "short": "King of Saudi Arabia from 1982 until his death in 2005.",
+    "related": [
+      "saudi-arabia"
+    ],
+    "valid": {
+      "from": "1982-06"
+    },
+    "eras": {
+      "1990": {
+        "short": "King of Saudi Arabia since 1982, a close partner of the US and guardian of Islam's two holiest mosques."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Fahd_of_Saudi_Arabia"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "ali-khamenei",
+    "kind": "person",
+    "name": "Ali Khamenei",
+    "aliases": [
+      "Ali Khamenei",
+      "Ayatollah Ali Khamenei"
+    ],
+    "countryId": "IRN",
+    "obscurity": 1,
+    "short": "Iran's Supreme Leader from 1989 until US-Israeli strikes killed him on 28 February 2026; his son Mojtaba succeeded him.",
+    "long": "A cleric who was president in the 1980s, he became Supreme Leader on Khomeini's death and ruled for over 35 years, building up the Revolutionary Guards and allied militias across the region. He was killed in his office on the first day of the 2026 US-Israeli strikes.",
+    "related": [
+      "iran"
+    ],
+    "valid": {
+      "from": "1989-06"
+    },
+    "eras": {
+      "1990": {
+        "short": "Iran's Supreme Leader since Ayatollah Khomeini's death in June 1989, seen at first as a weak successor."
+      },
+      "2025": {
+        "short": "Iran's Supreme Leader since 1989, with the final say on its nuclear program and its network of allied armed groups."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Ali_Khamenei",
+      "https://aljazeera.com/news/2026/2/28/irans-supreme-leader-ali-khamenei-killed-in-us-israeli-attacks-reports"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "yitzhak-shamir",
+    "kind": "person",
+    "name": "Yitzhak Shamir",
+    "aliases": [
+      "Yitzhak Shamir",
+      "Shamir"
+    ],
+    "countryId": "ISR",
+    "obscurity": 3,
+    "short": "Israeli Likud prime minister (1983 to 1984 and 1986 to 1992).",
+    "related": [
+      "israel"
+    ],
+    "valid": {
+      "from": "1986-10"
+    },
+    "eras": {
+      "1990": {
+        "short": "Israel's prime minister, a hardliner of the Likud party who opposes trading occupied land for peace."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Yitzhak_Shamir"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "hosni-mubarak",
+    "kind": "person",
+    "name": "Hosni Mubarak",
+    "aliases": [
+      "Hosni Mubarak",
+      "Mubarak"
+    ],
+    "countryId": "EGY",
+    "obscurity": 2,
+    "short": "President of Egypt from 1981 until the 2011 uprising forced him out; he died in 2020.",
+    "related": [
+      "egypt"
+    ],
+    "valid": {
+      "from": "1981-10"
+    },
+    "eras": {
+      "1990": {
+        "short": "Egypt's president since Anwar Sadat's assassination in 1981, keeping peace with Israel and close ties with the US."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Hosni_Mubarak"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "toshiki-kaifu",
+    "kind": "person",
+    "name": "Toshiki Kaifu",
+    "aliases": [
+      "Toshiki Kaifu",
+      "Kaifu"
+    ],
+    "countryId": "JPN",
+    "obscurity": 3,
+    "short": "Japanese prime minister from 1989 to 1991.",
+    "related": [
+      "japan"
+    ],
+    "valid": {
+      "from": "1989-08"
+    },
+    "eras": {
+      "1990": {
+        "short": "Japan's prime minister since August 1989, picked for his clean image after scandals rocked the ruling party."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Toshiki_Kaifu"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "suharto",
+    "kind": "person",
+    "name": "Suharto",
+    "aliases": [
+      "Suharto",
+      "Soeharto"
+    ],
+    "countryId": "IDN",
+    "obscurity": 2,
+    "short": "Indonesia's military ruler from 1967 until mass protests forced him out in 1998.",
+    "related": [
+      "indonesia"
+    ],
+    "valid": {
+      "from": "1967-03"
+    },
+    "eras": {
+      "1990": {
+        "short": "Indonesia's president since 1967, a general whose 'New Order' brought growth with harsh repression."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Suharto"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "roh-tae-woo",
+    "kind": "person",
+    "name": "Roh Tae-woo",
+    "aliases": [
+      "Roh Tae-woo",
+      "Roh Tae Woo"
+    ],
+    "countryId": "KOR",
+    "obscurity": 3,
+    "short": "South Korean president from 1988 to 1993, the first elected under the democratic 1987 constitution.",
+    "related": [
+      "south-korea",
+      "nordpolitik"
+    ],
+    "valid": {
+      "from": "1988-02"
+    },
+    "eras": {
+      "1990": {
+        "short": "South Korea's president since 1988, a former general elected under a new democratic constitution."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Roh_Tae-woo"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "bob-hawke",
+    "kind": "person",
+    "name": "Bob Hawke",
+    "aliases": [
+      "Bob Hawke",
+      "Hawke"
+    ],
+    "countryId": "AUS",
+    "obscurity": 3,
+    "short": "Australian Labor prime minister from 1983 to 1991.",
+    "related": [
+      "australia"
+    ],
+    "valid": {
+      "from": "1983-03"
+    },
+    "eras": {
+      "1990": {
+        "short": "Australia's Labor prime minister since 1983, opening up the economy."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Bob_Hawke"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "benazir-bhutto",
+    "kind": "person",
+    "name": "Benazir Bhutto",
+    "aliases": [
+      "Benazir Bhutto",
+      "Benazir"
+    ],
+    "countryId": "PAK",
+    "obscurity": 2,
+    "short": "Pakistan's prime minister (1988 to 1990 and 1993 to 1996), assassinated in 2007.",
+    "related": [
+      "pakistan"
+    ],
+    "valid": {
+      "from": "1988-12"
+    },
+    "eras": {
+      "1990": {
+        "short": "Pakistan's prime minister since December 1988, the first woman to lead a Muslim-majority country."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Benazir_Bhutto"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "ibrahim-babangida",
+    "kind": "person",
+    "name": "Ibrahim Babangida",
+    "aliases": [
+      "Ibrahim Babangida",
+      "Babangida"
+    ],
+    "countryId": "NGA",
+    "obscurity": 3,
+    "short": "Nigerian military ruler from 1985 to 1993.",
+    "related": [
+      "nigeria"
+    ],
+    "valid": {
+      "from": "1985-08"
+    },
+    "eras": {
+      "1990": {
+        "short": "Nigeria's military president since a 1985 coup, promising an eventual return to civilian rule."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Ibrahim_Babangida"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "fw-de-klerk",
+    "kind": "person",
+    "name": "F. W. de Klerk",
+    "aliases": [
+      "F. W. de Klerk",
+      "FW de Klerk",
+      "de Klerk"
+    ],
+    "countryId": "ZAF",
+    "obscurity": 2,
+    "short": "South Africa's last apartheid-era president (1989 to 1994), who freed Mandela and shared the 1993 Nobel Peace Prize.",
+    "related": [
+      "south-africa",
+      "apartheid",
+      "nelson-mandela"
+    ],
+    "valid": {
+      "from": "1989-09"
+    },
+    "eras": {
+      "1990": {
+        "short": "South Africa's president since September 1989, preparing to free Nelson Mandela and lift the ban on the ANC."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/F._W._de_Klerk"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "giulio-andreotti",
+    "kind": "person",
+    "name": "Giulio Andreotti",
+    "aliases": [
+      "Giulio Andreotti",
+      "Andreotti"
+    ],
+    "countryId": "ITA",
+    "obscurity": 3,
+    "short": "Seven-time Italian prime minister and Christian Democrat power broker.",
+    "related": [
+      "italy"
+    ],
+    "valid": {
+      "from": "1989-07"
+    },
+    "eras": {
+      "1990": {
+        "short": "Italy's prime minister again since July 1989, the great survivor of Christian Democrat politics."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Giulio_Andreotti"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "saddam-hussein",
+    "kind": "person",
+    "name": "Saddam Hussein",
+    "aliases": [
+      "Saddam Hussein",
+      "Saddam"
+    ],
+    "countryId": "IRQ",
+    "obscurity": 1,
+    "short": "Iraq's dictator from 1979 until a US-led invasion toppled him in 2003; he was executed in 2006.",
+    "related": [
+      "iraq",
+      "iran-iraq-war"
+    ],
+    "valid": {
+      "from": "1979-07"
+    },
+    "eras": {
+      "1990": {
+        "short": "Iraq's president since 1979, a ruthless dictator who came out of an eight-year war with Iran with a huge army and huge debts."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Saddam_Hussein"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "mohammad-najibullah",
+    "kind": "person",
+    "name": "Mohammad Najibullah",
+    "aliases": [
+      "Mohammad Najibullah",
+      "Najibullah"
+    ],
+    "countryId": "AFG",
+    "obscurity": 3,
+    "short": "Afghanistan's last communist leader (1986 to 1992), killed by the Taliban in 1996.",
+    "related": [
+      "afghanistan",
+      "mujahideen"
+    ],
+    "valid": {
+      "from": "1986-05"
+    },
+    "eras": {
+      "1990": {
+        "short": "Afghanistan's president, a former secret police chief holding on against the mujahideen after the Soviet withdrawal."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Mohammad_Najibullah"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "sheikh-zayed",
+    "kind": "person",
+    "name": "Zayed bin Sultan Al Nahyan",
+    "aliases": [
+      "Zayed bin Sultan Al Nahyan",
+      "Sheikh Zayed"
+    ],
+    "countryId": "ARE",
+    "obscurity": 3,
+    "short": "Ruler of Abu Dhabi and founding president of the United Arab Emirates (1971 to 2004).",
+    "related": [
+      "united-arab-emirates"
+    ],
+    "valid": {
+      "from": "1966-08"
+    },
+    "eras": {
+      "1990": {
+        "short": "Founding president of the UAE and ruler of Abu Dhabi, respected for uniting the seven emirates."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Zayed_bin_Sultan_Al_Nahyan"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "poul-schluter",
+    "kind": "person",
+    "name": "Poul Schlüter",
+    "aliases": [
+      "Poul Schlüter",
+      "Poul Schluter",
+      "Schlüter",
+      "Schluter"
+    ],
+    "countryId": "DNK",
+    "obscurity": 3,
+    "short": "Denmark's first Conservative prime minister of the 20th century, in office from 1982 to 1993.",
+    "related": [
+      "denmark"
+    ],
+    "valid": {
+      "from": "1982-09"
+    },
+    "eras": {
+      "1990": {
+        "short": "Denmark's Conservative prime minister since 1982."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Poul_Schl%C3%BCter"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "mengistu-haile-mariam",
+    "kind": "person",
+    "name": "Mengistu Haile Mariam",
+    "aliases": [
+      "Mengistu Haile Mariam",
+      "Mengistu"
+    ],
+    "countryId": "ETH",
+    "obscurity": 3,
+    "short": "Ethiopia's Marxist dictator from 1977 until rebels drove him into exile in 1991.",
+    "related": [
+      "ethiopia",
+      "derg"
+    ],
+    "valid": {
+      "from": "1977-02"
+    },
+    "eras": {
+      "1990": {
+        "short": "Ethiopia's military dictator, head of the Derg junta, losing a long war to rebels in Eritrea and Tigray."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Mengistu_Haile_Mariam"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "elias-hrawi",
+    "kind": "person",
+    "name": "Elias Hrawi",
+    "aliases": [
+      "Elias Hrawi",
+      "Hrawi"
+    ],
+    "countryId": "LBN",
+    "obscurity": 3,
+    "short": "President of Lebanon from 1989 to 1998, who presided over the end of the civil war.",
+    "related": [
+      "lebanon",
+      "taif-agreement"
+    ],
+    "valid": {
+      "from": "1989-11"
+    },
+    "eras": {
+      "1990": {
+        "short": "Lebanon's president since November 1989, elected under the Taif peace deal but defied by General Michel Aoun."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Elias_Hrawi"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "corazon-aquino",
+    "kind": "person",
+    "name": "Corazon Aquino",
+    "aliases": [
+      "Corazon Aquino",
+      "Cory Aquino"
+    ],
+    "countryId": "PHL",
+    "obscurity": 2,
+    "short": "President of the Philippines from 1986 to 1992, swept to power by the People Power revolt.",
+    "related": [
+      "philippines"
+    ],
+    "valid": {
+      "from": "1986-02"
+    },
+    "eras": {
+      "1990": {
+        "short": "President of the Philippines since the 1986 People Power revolt, surviving repeated coup attempts."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Corazon_Aquino"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "yasser-arafat",
+    "kind": "person",
+    "name": "Yasser Arafat",
+    "aliases": [
+      "Yasser Arafat",
+      "Arafat"
+    ],
+    "countryId": "PSX",
+    "obscurity": 1,
+    "short": "Leader of the Palestine Liberation Organization from 1969 until his death in 2004; he shared the 1994 Nobel Peace Prize.",
+    "related": [
+      "plo",
+      "west-bank"
+    ],
+    "valid": {
+      "from": "1969-02"
+    },
+    "eras": {
+      "1990": {
+        "short": "Chairman of the PLO, which in 1988 declared a Palestinian state and accepted Israel's right to exist."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Yasser_Arafat"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "omar-al-bashir",
+    "kind": "person",
+    "name": "Omar al-Bashir",
+    "aliases": [
+      "Omar al-Bashir",
+      "al-Bashir"
+    ],
+    "countryId": "SDN",
+    "obscurity": 2,
+    "short": "Sudan's ruler from 1989 until his overthrow in 2019, wanted by the International Criminal Court over Darfur.",
+    "related": [
+      "sudan"
+    ],
+    "valid": {
+      "from": "1989-06"
+    },
+    "eras": {
+      "1990": {
+        "short": "Sudan's military ruler since an Islamist-backed coup in June 1989."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Omar_al-Bashir"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "hafez-al-assad",
+    "kind": "person",
+    "name": "Hafez al-Assad",
+    "aliases": [
+      "Hafez al-Assad",
+      "Hafez Assad",
+      "Assad"
+    ],
+    "countryId": "SYR",
+    "obscurity": 2,
+    "short": "Syria's president from 1971 until his death in 2000, father of Bashar al-Assad.",
+    "related": [
+      "syria"
+    ],
+    "valid": {
+      "from": "1971-03",
+      "to": "2000-06"
+    },
+    "eras": {
+      "1990": {
+        "short": "Syria's president since 1971, a Soviet-backed strongman whose army controls most of Lebanon."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Hafez_al-Assad"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "lee-teng-hui",
+    "kind": "person",
+    "name": "Lee Teng-hui",
+    "aliases": [
+      "Lee Teng-hui"
+    ],
+    "countryId": "TWN",
+    "obscurity": 3,
+    "short": "Taiwan's president from 1988 to 2000, who led its move to full democracy.",
+    "related": [
+      "taiwan"
+    ],
+    "valid": {
+      "from": "1988-01"
+    },
+    "eras": {
+      "1990": {
+        "short": "Taiwan's first island-born president, in office since 1988 and pushing democratic reforms."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Lee_Teng-hui"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "carlos-andres-perez",
+    "kind": "person",
+    "name": "Carlos Andrés Pérez",
+    "aliases": [
+      "Carlos Andrés Pérez",
+      "Carlos Andres Perez"
+    ],
+    "countryId": "VEN",
+    "obscurity": 3,
+    "short": "Venezuelan president (1974 to 1979 and 1989 to 1993), impeached for corruption.",
+    "related": [
+      "venezuela"
+    ],
+    "valid": {
+      "from": "1989-02"
+    },
+    "eras": {
+      "1990": {
+        "short": "Venezuela's president since February 1989, whose austerity plan set off the deadly Caracazo riots."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Carlos_Andr%C3%A9s_P%C3%A9rez"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "ali-abdullah-saleh",
+    "kind": "person",
+    "name": "Ali Abdullah Saleh",
+    "aliases": [
+      "Ali Abdullah Saleh"
+    ],
+    "countryId": "YEM",
+    "obscurity": 2,
+    "short": "Ruled North Yemen from 1978 and united Yemen from 1990 to 2012; he was killed by the Houthis in 2017.",
+    "related": [
+      "yemen",
+      "south-yemen"
+    ],
+    "valid": {
+      "from": "1978-07"
+    },
+    "eras": {
+      "1990": {
+        "short": "President of North Yemen since 1978, negotiating unity with South Yemen."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Ali_Abdullah_Saleh"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "olaf-scholz",
+    "kind": "person",
+    "name": "Olaf Scholz",
+    "aliases": [
+      "Olaf Scholz",
+      "Scholz"
+    ],
+    "countryId": "DEU",
+    "obscurity": 2,
+    "short": "German chancellor from December 2021 to May 2025, a Social Democrat whose three-party coalition collapsed in 2024.",
+    "related": [
+      "germany"
+    ],
+    "valid": {
+      "from": "2021-12"
+    },
+    "eras": {
+      "2025": {
+        "short": "Germany's chancellor, a Social Democrat leading a minority government until the election on 23 February 2025."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Olaf_Scholz"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "justin-trudeau",
+    "kind": "person",
+    "name": "Justin Trudeau",
+    "aliases": [
+      "Justin Trudeau",
+      "Trudeau"
+    ],
+    "countryId": "CAN",
+    "obscurity": 1,
+    "short": "Canada's Liberal prime minister from 2015 to March 2025.",
+    "related": [
+      "canada"
+    ],
+    "valid": {
+      "from": "2015-11"
+    },
+    "eras": {
+      "2025": {
+        "short": "Canada's prime minister since 2015, who said on 6 January 2025 that he will resign once his party picks a successor."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Justin_Trudeau"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "keir-starmer",
+    "kind": "person",
+    "name": "Keir Starmer",
+    "aliases": [
+      "Keir Starmer",
+      "Starmer"
+    ],
+    "countryId": "GBR",
+    "obscurity": 2,
+    "short": "Labour prime minister of the UK from July 2024 until he resigned in July 2026 after heavy local election losses.",
+    "related": [
+      "united-kingdom"
+    ],
+    "valid": {
+      "from": "2024-07"
+    },
+    "eras": {
+      "2025": {
+        "short": "The UK's Labour prime minister since winning a landslide election in July 2024."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Keir_Starmer",
+      "https://www.opb.org/article/2026/07/20/andy-burnham-succeeds-keir-starmer-as-the-u-k-s-7th-prime-minister-in-10-years/"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "shigeru-ishiba",
+    "kind": "person",
+    "name": "Shigeru Ishiba",
+    "aliases": [
+      "Shigeru Ishiba",
+      "Ishiba"
+    ],
+    "countryId": "JPN",
+    "obscurity": 3,
+    "short": "Japanese prime minister from October 2024 to October 2025.",
+    "related": [
+      "japan"
+    ],
+    "valid": {
+      "from": "2024-10"
+    },
+    "eras": {
+      "2025": {
+        "short": "Japan's prime minister since October 2024, leading a minority government after his party lost its majority."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Shigeru_Ishiba"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "choi-sang-mok",
+    "kind": "person",
+    "name": "Choi Sang-mok",
+    "aliases": [
+      "Choi Sang-mok"
+    ],
+    "countryId": "KOR",
+    "obscurity": 3,
+    "short": "South Korea's finance minister, who was acting president from December 2024 to March 2025.",
+    "related": [
+      "south-korea",
+      "martial-law-crisis-2024"
+    ],
+    "valid": {
+      "from": "2024-12"
+    },
+    "eras": {
+      "2025": {
+        "short": "South Korea's finance minister and acting president since 27 December 2024, after Yoon and then Han Duck-soo were impeached."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Choi_Sang-mok"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "mohammed-shia-al-sudani",
+    "kind": "person",
+    "name": "Mohammed Shia al-Sudani",
+    "aliases": [
+      "Mohammed Shia al-Sudani",
+      "al-Sudani",
+      "Sudani"
+    ],
+    "countryId": "IRQ",
+    "obscurity": 3,
+    "short": "Iraqi prime minister from October 2022 to May 2026.",
+    "related": [
+      "iraq"
+    ],
+    "valid": {
+      "from": "2022-10"
+    },
+    "eras": {
+      "2025": {
+        "short": "Iraq's prime minister since October 2022, backed by Shia parties close to Iran but courting the US and Gulf states."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Mohammed_Shia_al-Sudani",
+      "https://www.aljazeera.com/news/2026/5/14/iraqs-parliament-approves-new-ali-al-zaidi-government"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "nicolas-maduro",
+    "kind": "person",
+    "name": "Nicolás Maduro",
+    "aliases": [
+      "Nicolás Maduro",
+      "Nicolas Maduro",
+      "Maduro"
+    ],
+    "countryId": "VEN",
+    "obscurity": 1,
+    "short": "Venezuela's president from 2013 until US forces captured him in January 2026; he faces drug-trafficking charges in New York.",
+    "long": "Hugo Chávez's chosen successor, he presided over an economic collapse that drove millions abroad and over elections widely seen as rigged. A US raid seized him on 3 January 2026 and flew him to New York for trial; his vice-president, Delcy Rodríguez, became acting president.",
+    "related": [
+      "venezuela"
+    ],
+    "valid": {
+      "from": "2013-04"
+    },
+    "eras": {
+      "2025": {
+        "short": "Venezuela's president since 2013, who claims a third term after a July 2024 election the opposition says it won."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Nicol%C3%A1s_Maduro"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "john-f-kennedy",
+    "kind": "person",
+    "name": "John F. Kennedy",
+    "aliases": [
+      "John F. Kennedy",
+      "Kennedy",
+      "JFK",
+      "Senator Kennedy"
+    ],
+    "countryId": "USA",
+    "obscurity": 1,
+    "short": "A 42-year-old Democratic senator from Massachusetts who declares his run for president on 2 January 1960.",
+    "related": [
+      "dwight-eisenhower"
+    ],
+    "valid": {
+      "from": "1953-01",
+      "to": "1963-11"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/John_F._Kennedy"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "zhou-enlai",
+    "kind": "person",
+    "name": "Zhou Enlai",
+    "aliases": [
+      "Zhou Enlai",
+      "Chou En-lai"
+    ],
+    "countryId": "CHN",
+    "obscurity": 2,
+    "short": "China's premier since 1949 and the polished diplomat of Mao's government.",
+    "related": [
+      "mao-zedong"
+    ],
+    "valid": {
+      "from": "1949-10",
+      "to": "1976-01"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Zhou_Enlai"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "nelson-mandela",
+    "kind": "person",
+    "name": "Nelson Mandela",
+    "aliases": [
+      "Nelson Mandela",
+      "Mandela"
+    ],
+    "countryId": "ZAF",
+    "obscurity": 1,
+    "short": "South Africa's anti-apartheid leader, jailed for 27 years and president from 1994 to 1999; he died in 2013.",
+    "related": [
+      "anc",
+      "apartheid"
+    ],
+    "valid": {
+      "from": "1944-04"
+    },
+    "eras": {
+      "1990": {
+        "short": "The jailed leader of the ANC, in prison since 1962 and the world's most famous political prisoner."
+      },
+      "1960": {
+        "short": "A lawyer and leader of the ANC, on trial with 155 others for treason since 1956."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Nelson_Mandela"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "manuel-noriega",
+    "kind": "person",
+    "name": "Manuel Noriega",
+    "aliases": [
+      "Manuel Noriega",
+      "Noriega"
+    ],
+    "countryId": "PAN",
+    "obscurity": 3,
+    "short": "Panama's military ruler, removed by a US invasion in December 1989 and taken to Miami to face drug charges.",
+    "related": [
+      "panama-invasion"
+    ],
+    "valid": {
+      "from": "1983-08",
+      "to": "2017-05"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Manuel_Noriega"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "michel-aoun",
+    "kind": "person",
+    "name": "Michel Aoun",
+    "aliases": [
+      "Michel Aoun",
+      "General Aoun"
+    ],
+    "countryId": "LBN",
+    "obscurity": 3,
+    "short": "Lebanese army general who led a rival government from 1988 to 1990 and was president from 2016 to 2022.",
+    "related": [
+      "lebanon",
+      "taif-agreement"
+    ],
+    "valid": {
+      "from": "1988-09",
+      "to": "2022-10"
+    },
+    "eras": {
+      "1990": {
+        "short": "Lebanon's army commander, heading a rival military government and fighting to drive out Syrian forces."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Michel_Aoun"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "bashar-al-assad",
+    "kind": "person",
+    "name": "Bashar al-Assad",
+    "aliases": [
+      "Bashar al-Assad",
+      "Assad"
+    ],
+    "countryId": "SYR",
+    "obscurity": 1,
+    "short": "Syria's president from 2000 until rebels toppled him in December 2024; he fled to Moscow.",
+    "long": "He inherited power from his father Hafez. His crackdown on protests in 2011 led to a civil war that killed hundreds of thousands, and he survived with Russian and Iranian help until a rebel offensive took Damascus on 8 December 2024.",
+    "related": [
+      "syria",
+      "hafez-al-assad"
+    ],
+    "valid": {
+      "from": "2000-07"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Bashar_al-Assad"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "warsaw-pact",
+    "kind": "group",
+    "name": "Warsaw Pact",
+    "aliases": [
+      "Warsaw Pact"
+    ],
+    "obscurity": 1,
+    "short": "The Soviet-led military alliance of communist Europe, set up in 1955 as an answer to NATO.",
+    "long": "Members were the Soviet Union, Poland, East Germany, Czechoslovakia, Hungary, Romania, Bulgaria and, until 1968, Albania. Its troops crushed reform in Czechoslovakia in 1968. It was dissolved in July 1991.",
+    "related": [
+      "russia",
+      "comecon"
+    ],
+    "valid": {
+      "from": "1955-05",
+      "to": "1991-07"
+    },
+    "eras": {
+      "1990": {
+        "short": "The Soviet-led military alliance of Eastern Europe, still in place on paper after communist governments fell in 1989."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Warsaw_Pact"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "non-aligned-movement",
+    "kind": "group",
+    "name": "Non-Aligned Movement",
+    "aliases": [
+      "Non-Aligned Movement",
+      "non-aligned",
+      "nonaligned"
+    ],
+    "obscurity": 2,
+    "short": "Countries that refuse to join either Cold War bloc, led at first by India, Egypt, Indonesia and Yugoslavia.",
+    "long": "The idea grew out of the 1955 Bandung Conference, and the movement was founded formally in Belgrade in 1961. Several members leaned toward one superpower in practice. It still exists, with about 120 members.",
+    "related": [
+      "bandung-conference",
+      "jawaharlal-nehru"
+    ],
+    "valid": {
+      "from": "1955-04"
+    },
+    "eras": {
+      "1960": {
+        "short": "Countries that refuse to join either Cold War bloc, led by Nehru, Nasser, Sukarno and Yugoslavia's Tito; formally founded in 1961."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Non-Aligned_Movement"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "cento",
+    "kind": "group",
+    "name": "CENTO",
+    "aliases": [
+      {
+        "text": "CENTO",
+        "caseSensitive": true
+      },
+      "Central Treaty Organization",
+      "Baghdad Pact"
+    ],
+    "obscurity": 3,
+    "short": "The Central Treaty Organization: a Western-backed pact of Britain, Turkey, Iran and Pakistan against Soviet expansion.",
+    "long": "Founded in 1955 as the Baghdad Pact, it took the CENTO name after Iraq's revolutionary government left in 1959. The US backed it without joining in full. It was weak in practice and dissolved in 1979.",
+    "valid": {
+      "from": "1955-02",
+      "to": "1979-09"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Central_Treaty_Organization"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "seato",
+    "kind": "group",
+    "name": "SEATO",
+    "aliases": [
+      {
+        "text": "SEATO",
+        "caseSensitive": true
+      },
+      "Southeast Asia Treaty Organization"
+    ],
+    "obscurity": 3,
+    "short": "The Southeast Asia Treaty Organization: a 1954 Western pact to stop communism spreading in Asia.",
+    "long": "Members were the US, Britain, France, Australia, New Zealand, Pakistan, the Philippines and Thailand; only the last two were in Southeast Asia. It never acted as a unit and was dissolved in 1977.",
+    "valid": {
+      "from": "1954-09",
+      "to": "1977-06"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Southeast_Asia_Treaty_Organization"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "comecon",
+    "kind": "group",
+    "name": "Comecon",
+    "aliases": [
+      "Comecon",
+      "CMEA",
+      "Council for Mutual Economic Assistance"
+    ],
+    "obscurity": 3,
+    "short": "The Soviet bloc's economic club, which tied the communist economies of Eastern Europe to the Soviet Union.",
+    "long": "Founded in 1949 as an answer to the US Marshall Plan. Members traded at fixed prices, and the Soviet Union sold its allies cheap oil. Mongolia, Cuba and Vietnam joined later. It was dissolved in 1991.",
+    "related": [
+      "warsaw-pact"
+    ],
+    "valid": {
+      "from": "1949-01",
+      "to": "1991-06"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Comecon"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "cold-war",
+    "kind": "term",
+    "name": "Cold War",
+    "aliases": [
+      "Cold War"
+    ],
+    "obscurity": 1,
+    "short": "The 1947 to 1991 rivalry between the US-led West and the Soviet-led communist bloc, fought by arms races and proxy wars.",
+    "long": "The two sides never fought each other directly, but built huge nuclear arsenals, competed for allies and backed opposite sides in wars from Korea to Afghanistan. It ended with the fall of communism in Eastern Europe in 1989 and the breakup of the Soviet Union in 1991.",
+    "related": [
+      "warsaw-pact"
+    ],
+    "valid": {
+      "from": "1947-03"
+    },
+    "eras": {
+      "1960": {
+        "short": "The rivalry between the US-led West and the Soviet-led communist bloc, fought through arms races, spying and proxy wars."
+      },
+      "1990": {
+        "short": "The 40-year rivalry between the US-led West and the Soviet bloc, now ending as communism collapses in Eastern Europe."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Cold_War"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "perestroika",
+    "kind": "term",
+    "name": "Perestroika",
+    "aliases": [
+      "perestroika"
+    ],
+    "obscurity": 2,
+    "short": "Russian for 'restructuring': Gorbachev's reforms of the Soviet economy and political system, launched in 1986.",
+    "long": "Perestroika allowed some private business and contested elections, but loosened central control without fixing the economy. Together with glasnost it helped bring about the end of the Soviet Union in 1991.",
+    "related": [
+      "glasnost",
+      "mikhail-gorbachev"
+    ],
+    "valid": {
+      "from": "1986-02",
+      "to": "1991-12"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Perestroika"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "glasnost",
+    "kind": "term",
+    "name": "Glasnost",
+    "aliases": [
+      "glasnost"
+    ],
+    "obscurity": 2,
+    "short": "Russian for 'openness': Gorbachev's policy of allowing freer speech and admitting the state's past crimes and failures.",
+    "related": [
+      "perestroika",
+      "mikhail-gorbachev"
+    ],
+    "valid": {
+      "from": "1986-02",
+      "to": "1991-12"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Glasnost"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "first-intifada",
+    "kind": "event",
+    "name": "First intifada",
+    "aliases": [
+      "intifada",
+      "first intifada"
+    ],
+    "obscurity": 2,
+    "short": "The Palestinian uprising against Israeli occupation in Gaza and the West Bank that began in December 1987.",
+    "long": "It began with strikes, boycotts and stone-throwing youths, and Israel responded with mass arrests and force. More than a thousand Palestinians and over a hundred Israelis died. It helped lead to the Oslo Accords of 1993. 'Intifada' is Arabic for 'shaking off'.",
+    "related": [
+      "west-bank",
+      "gaza-strip",
+      "plo"
+    ],
+    "valid": {
+      "from": "1987-12",
+      "to": "1993-09"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/First_Intifada"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "berlin-wall",
+    "kind": "place",
+    "name": "Berlin Wall",
+    "aliases": [
+      "Berlin Wall"
+    ],
+    "obscurity": 1,
+    "short": "The fortified wall that divided Berlin from 1961 until it opened on 9 November 1989, a symbol of the Cold War.",
+    "long": "East Germany built it to stop its people fleeing west. At least 140 people died trying to cross. Its fall led to German reunification within a year.",
+    "related": [
+      "east-germany",
+      "german-reunification"
+    ],
+    "map": {
+      "countries": [
+        "DEU"
+      ],
+      "points": [
+        {
+          "name": "Berlin",
+          "lon": 13.4,
+          "lat": 52.52
+        }
+      ]
+    },
+    "valid": {
+      "from": "1961-08"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Berlin_Wall"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "bandung-conference",
+    "kind": "event",
+    "name": "Bandung Conference",
+    "aliases": [
+      "Bandung Conference"
+    ],
+    "obscurity": 3,
+    "short": "A 1955 meeting in Indonesia of 29 Asian and African states that called for an end to colonialism and for neutrality in the Cold War.",
+    "related": [
+      "non-aligned-movement",
+      "sukarno"
+    ],
+    "valid": {
+      "from": "1955-04"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Bandung_Conference"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "sino-soviet-split",
+    "kind": "event",
+    "name": "Sino-Soviet split",
+    "aliases": [
+      "Sino-Soviet split",
+      "Sino-Soviet alliance"
+    ],
+    "obscurity": 2,
+    "short": "The 1950 alliance between Mao's China and the Soviet Union, which broke apart from the late 1950s over ideology and power.",
+    "long": "Mao saw Khrushchev's denunciation of Stalin and talk of coexistence with the West as betrayal. Moscow withdrew its advisers from China in 1960, and the two clashed on their border in 1969.",
+    "related": [
+      "mao-zedong",
+      "nikita-khrushchev"
+    ],
+    "valid": {
+      "from": "1950-02"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Sino-Soviet_split"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "great-leap-forward",
+    "kind": "event",
+    "name": "Great Leap Forward",
+    "aliases": [
+      "Great Leap Forward"
+    ],
+    "obscurity": 2,
+    "short": "Mao's 1958 to 1962 campaign to industrialise China at speed, which caused a famine that killed tens of millions.",
+    "related": [
+      "mao-zedong"
+    ],
+    "valid": {
+      "from": "1958-05"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Great_Leap_Forward"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "algerian-war",
+    "kind": "event",
+    "name": "Algerian War",
+    "aliases": [
+      "Algerian War",
+      "Algerian War of Independence",
+      "war in Algeria"
+    ],
+    "obscurity": 2,
+    "short": "Algeria's 1954 to 1962 war of independence from France, which killed hundreds of thousands and brought down a French republic.",
+    "related": [
+      "fln",
+      "french-algeria",
+      "charles-de-gaulle"
+    ],
+    "valid": {
+      "from": "1954-11"
+    },
+    "eras": {
+      "1960": {
+        "short": "Algeria's war of independence from France, fought since 1954; about 400,000 French troops face the FLN."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Algerian_War"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "fln",
+    "kind": "group",
+    "name": "FLN",
+    "aliases": [
+      {
+        "text": "FLN",
+        "caseSensitive": true
+      }
+    ],
+    "obscurity": 3,
+    "short": "Algeria's National Liberation Front, which fought France for independence from 1954 and has ruled Algeria since 1962.",
+    "related": [
+      "algerian-war"
+    ],
+    "valid": {
+      "from": "1954-11"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/National_Liberation_Front_(Algeria)"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "french-algeria",
+    "kind": "place",
+    "name": "French Algeria",
+    "aliases": [
+      "French Algeria"
+    ],
+    "obscurity": 2,
+    "short": "Algeria under French rule since 1830, legally part of France and home to about a million European settlers.",
+    "related": [
+      "algerian-war"
+    ],
+    "map": {
+      "countries": [
+        "DZA"
+      ]
+    },
+    "valid": {
+      "from": "1830-07",
+      "to": "1962-07"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/French_Algeria"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "gerboise-bleue",
+    "kind": "event",
+    "name": "Gerboise Bleue",
+    "aliases": [
+      "Gerboise Bleue",
+      "Reggane"
+    ],
+    "obscurity": 3,
+    "short": "France's first atomic bomb test, near Reggane in the Algerian Sahara on 13 February 1960, making it the fourth nuclear power.",
+    "related": [
+      "france"
+    ],
+    "map": {
+      "countries": [
+        "DZA"
+      ],
+      "points": [
+        {
+          "name": "Reggane",
+          "lon": 0.06,
+          "lat": 26.3
+        }
+      ]
+    },
+    "valid": {
+      "from": "1960-01"
+    },
+    "eras": {
+      "1960": {
+        "short": "France's first atomic bomb test, planned for 13 February 1960 near Reggane in the Algerian Sahara."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Gerboise_Bleue"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "cuban-revolution",
+    "kind": "event",
+    "name": "Cuban Revolution",
+    "aliases": [
+      "Cuban Revolution"
+    ],
+    "obscurity": 2,
+    "short": "The armed uprising led by Fidel Castro that overthrew the dictator Fulgencio Batista on 1 January 1959.",
+    "related": [
+      "fidel-castro",
+      "cuba"
+    ],
+    "valid": {
+      "from": "1959-01"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Cuban_Revolution"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "korean-armistice",
+    "kind": "event",
+    "name": "Korean Armistice",
+    "aliases": [
+      "Korean Armistice",
+      "1953 armistice"
+    ],
+    "obscurity": 2,
+    "short": "The July 1953 ceasefire that stopped the Korean War. No peace treaty followed, so the two Koreas are still technically at war.",
+    "related": [
+      "south-korea",
+      "north-korea"
+    ],
+    "valid": {
+      "from": "1953-07"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Korean_Armistice_Agreement"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "pathet-lao",
+    "kind": "group",
+    "name": "Pathet Lao",
+    "aliases": [
+      "Pathet Lao"
+    ],
+    "obscurity": 3,
+    "short": "Laos's communist movement, backed by North Vietnam, fighting the royal government; it took power in 1975.",
+    "related": [
+      "cold-war"
+    ],
+    "valid": {
+      "from": "1950-08",
+      "to": "1975-12"
+    },
+    "eras": {
+      "1960": {
+        "short": "Laos's communist guerrilla movement, backed by North Vietnam, fighting the royal army."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Pathet_Lao"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "belgian-congo",
+    "kind": "place",
+    "name": "Belgian Congo",
+    "aliases": [
+      "Belgian Congo"
+    ],
+    "obscurity": 2,
+    "short": "Belgium's huge colony in central Africa, due to become independent on 30 June 1960 with very little preparation.",
+    "related": [
+      "zaire",
+      "year-of-africa"
+    ],
+    "map": {
+      "countries": [
+        "COD"
+      ]
+    },
+    "valid": {
+      "from": "1908-11",
+      "to": "1960-06"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Belgian_Congo"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "year-of-africa",
+    "kind": "event",
+    "name": "Year of Africa",
+    "aliases": [
+      "Year of Africa"
+    ],
+    "obscurity": 3,
+    "short": "1960, when 17 African countries won independence, most of them from France.",
+    "related": [
+      "decolonization"
+    ],
+    "valid": {
+      "from": "1960-01"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Year_of_Africa"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "decolonization",
+    "kind": "term",
+    "name": "Decolonization",
+    "aliases": [
+      "decolonization",
+      "decolonisation"
+    ],
+    "obscurity": 2,
+    "short": "The end of the European colonial empires after 1945, as dozens of countries in Asia and Africa won independence.",
+    "related": [
+      "year-of-africa"
+    ],
+    "valid": {
+      "from": "1945-08"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Decolonization"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "czechoslovakia",
+    "kind": "place",
+    "name": "Czechoslovakia",
+    "aliases": [
+      "Czechoslovakia"
+    ],
+    "obscurity": 1,
+    "short": "A Central European state founded in 1918 that split peacefully into the Czech Republic and Slovakia on 1 January 1993.",
+    "related": [
+      "warsaw-pact"
+    ],
+    "map": {
+      "countries": [
+        "CZE",
+        "SVK"
+      ]
+    },
+    "valid": {
+      "from": "1918-10",
+      "to": "1992-12"
+    },
+    "eras": {
+      "1960": {
+        "short": "A communist state in the Soviet bloc and one of Eastern Europe's most industrial countries."
+      },
+      "1990": {
+        "short": "Czechoslovakia weeks after its peaceful 'Velvet Revolution', with the dissident playwright Václav Havel as president."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Czechoslovakia"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "yugoslavia",
+    "kind": "place",
+    "name": "Yugoslavia",
+    "aliases": [
+      "Yugoslavia"
+    ],
+    "obscurity": 1,
+    "short": "A Balkan federation of South Slav peoples that broke apart in wars from 1991; the name lasted until 2003.",
+    "related": [
+      "non-aligned-movement"
+    ],
+    "map": {
+      "countries": [
+        "SRB",
+        "HRV",
+        "BIH",
+        "SVN",
+        "MKD",
+        "MNE",
+        "KOS"
+      ]
+    },
+    "valid": {
+      "from": "1918-12",
+      "to": "2003-02"
+    },
+    "eras": {
+      "1960": {
+        "short": "A communist federation under Josip Broz Tito that broke with Stalin in 1948 and leads the non-aligned countries."
+      },
+      "1990": {
+        "short": "A communist federation of six republics, straining apart as Slovenia and Croatia push for more freedom from Belgrade."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Yugoslavia"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "east-germany",
+    "kind": "place",
+    "name": "East Germany",
+    "aliases": [
+      "East Germany",
+      "German Democratic Republic",
+      {
+        "text": "GDR",
+        "caseSensitive": true
+      }
+    ],
+    "obscurity": 1,
+    "short": "The communist German Democratic Republic (1949 to 1990), a Soviet ally that joined West Germany in October 1990.",
+    "related": [
+      "germany",
+      "berlin-wall",
+      "warsaw-pact"
+    ],
+    "map": {
+      "points": [
+        {
+          "name": "East Berlin",
+          "lon": 13.4,
+          "lat": 52.52
+        }
+      ]
+    },
+    "valid": {
+      "from": "1949-10",
+      "to": "1990-10"
+    },
+    "eras": {
+      "1960": {
+        "short": "The German Democratic Republic: the Soviet-backed communist state in eastern Germany, losing thousands of people a month to the West."
+      },
+      "1990": {
+        "short": "The German Democratic Republic, whose communist rulers lost control when the Berlin Wall opened in November 1989."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/East_Germany"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "south-yemen",
+    "kind": "place",
+    "name": "South Yemen",
+    "aliases": [
+      "South Yemen",
+      "People's Democratic Republic of Yemen"
+    ],
+    "obscurity": 3,
+    "short": "The People's Democratic Republic of Yemen, the Arab world's only Marxist state, about to merge with North Yemen in May 1990.",
+    "related": [
+      "yemen"
+    ],
+    "map": {
+      "points": [
+        {
+          "name": "Aden",
+          "lon": 45.03,
+          "lat": 12.79
+        }
+      ]
+    },
+    "valid": {
+      "from": "1967-11",
+      "to": "1990-05"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/South_Yemen"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "zaire",
+    "kind": "place",
+    "name": "Zaire",
+    "aliases": [
+      "Zaire"
+    ],
+    "obscurity": 2,
+    "short": "The former Belgian Congo, renamed Zaire by Mobutu Sese Seko, a dictator who has ruled since 1965 with Western support.",
+    "related": [
+      "belgian-congo"
+    ],
+    "map": {
+      "countries": [
+        "COD"
+      ]
+    },
+    "valid": {
+      "from": "1971-10",
+      "to": "1997-05"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Zaire"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "united-arab-republic",
+    "kind": "place",
+    "name": "United Arab Republic",
+    "aliases": [
+      "United Arab Republic",
+      {
+        "text": "UAR",
+        "caseSensitive": true
+      }
+    ],
+    "obscurity": 2,
+    "short": "The union of Egypt and Syria under Gamal Abdel Nasser, formed in February 1958 as a first step to Arab unity.",
+    "long": "Syria's leaders asked for the merger, but Egypt dominated it. Syrian officers broke away in September 1961, though Egypt kept the name until 1971.",
+    "related": [
+      "egypt",
+      "syria",
+      "gamal-abdel-nasser"
+    ],
+    "map": {
+      "countries": [
+        "EGY",
+        "SYR"
+      ]
+    },
+    "valid": {
+      "from": "1958-02",
+      "to": "1961-09"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/United_Arab_Republic"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "apartheid",
+    "kind": "term",
+    "name": "Apartheid",
+    "aliases": [
+      "apartheid"
+    ],
+    "obscurity": 1,
+    "short": "South Africa's system of racial segregation and white minority rule, from 1948 until the early 1990s.",
+    "long": "Afrikaans for 'separateness'. Laws decided where people of each race could live, work and go to school, and denied black South Africans the vote. It was dismantled from 1990, and the first all-race election took place in 1994.",
+    "related": [
+      "south-africa",
+      "anc"
+    ],
+    "valid": {
+      "from": "1948-05"
+    },
+    "eras": {
+      "1960": {
+        "short": "South Africa's system of racial segregation and white minority rule, in force since 1948."
+      },
+      "1990": {
+        "short": "South Africa's system of racial segregation and white minority rule since 1948, now under heavy pressure at home and abroad."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Apartheid"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "anc",
+    "kind": "group",
+    "name": "African National Congress",
+    "aliases": [
+      {
+        "text": "ANC",
+        "caseSensitive": true
+      },
+      "African National Congress"
+    ],
+    "obscurity": 2,
+    "short": "South Africa's main liberation movement, banned from 1960 to 1990, and the leading party in government since 1994.",
+    "related": [
+      "nelson-mandela",
+      "apartheid"
+    ],
+    "valid": {
+      "from": "1912-01"
+    },
+    "eras": {
+      "1960": {
+        "short": "South Africa's main movement against apartheid, led by Albert Luthuli, campaigning for equal rights."
+      },
+      "1990": {
+        "short": "South Africa's banned liberation movement, whose leader Nelson Mandela has been in jail since 1962."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/African_National_Congress"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "plo",
+    "kind": "group",
+    "name": "Palestine Liberation Organization",
+    "aliases": [
+      {
+        "text": "PLO",
+        "caseSensitive": true
+      },
+      "Palestine Liberation Organization"
+    ],
+    "obscurity": 2,
+    "short": "The umbrella body of Palestinian nationalist groups, led by Fatah; it recognised Israel in 1993 and Mahmoud Abbas chairs it.",
+    "related": [
+      "yasser-arafat",
+      "west-bank"
+    ],
+    "valid": {
+      "from": "1964-05"
+    },
+    "eras": {
+      "1990": {
+        "short": "The umbrella of Palestinian armed and political groups, led by Yasser Arafat from exile in Tunis."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Palestine_Liberation_Organization"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "solidarity",
+    "kind": "group",
+    "name": "Solidarity",
+    "aliases": [
+      "Solidarność",
+      "Solidarnosc",
+      "Solidarity movement",
+      "Solidarity trade union"
+    ],
+    "obscurity": 2,
+    "short": "The Polish trade union and protest movement led by Lech Wałęsa, which forced the communists to share power in 1989.",
+    "related": [
+      "poland",
+      "tadeusz-mazowiecki"
+    ],
+    "valid": {
+      "from": "1980-08"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Solidarity"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "mujahideen",
+    "kind": "group",
+    "name": "Mujahideen",
+    "aliases": [
+      "mujahideen",
+      "mujahedin"
+    ],
+    "obscurity": 2,
+    "short": "Afghan Islamist guerrilla groups that fought the Soviet army and the communist government, armed by the US, Pakistan and Saudi Arabia.",
+    "related": [
+      "afghanistan",
+      "mohammad-najibullah"
+    ],
+    "valid": {
+      "from": "1979-12",
+      "to": "1992-04"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Afghan_mujahideen"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "taif-agreement",
+    "kind": "event",
+    "name": "Taif Agreement",
+    "aliases": [
+      "Taif Agreement",
+      "Taif"
+    ],
+    "obscurity": 3,
+    "short": "The 1989 deal, signed in Saudi Arabia, to end Lebanon's civil war by rebalancing power between Christians and Muslims.",
+    "related": [
+      "lebanon"
+    ],
+    "valid": {
+      "from": "1989-10"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Taif_Agreement"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "iran-iraq-war",
+    "kind": "event",
+    "name": "Iran-Iraq War",
+    "aliases": [
+      "Iran-Iraq War",
+      "Iran-Iraq ceasefire"
+    ],
+    "obscurity": 2,
+    "short": "The 1980 to 1988 war started by Iraq's invasion of Iran, which killed hundreds of thousands and ended in stalemate.",
+    "related": [
+      "iran",
+      "iraq",
+      "saddam-hussein"
+    ],
+    "valid": {
+      "from": "1980-09"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Iran-Iraq_War"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "german-reunification",
+    "kind": "event",
+    "name": "German reunification",
+    "aliases": [
+      "German reunification",
+      "German unity"
+    ],
+    "obscurity": 1,
+    "short": "The merger of East and West Germany on 3 October 1990, less than a year after the Berlin Wall opened.",
+    "related": [
+      "germany",
+      "east-germany",
+      "helmut-kohl"
+    ],
+    "valid": {
+      "from": "1989-11"
+    },
+    "eras": {
+      "1990": {
+        "short": "The push to merge East and West Germany after the Wall opened; the big question is whether a united Germany stays in NATO."
+      }
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/German_reunification"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "panama-invasion",
+    "kind": "event",
+    "name": "US invasion of Panama",
+    "aliases": [
+      "invasion of Panama",
+      "US invasion of Panama"
+    ],
+    "obscurity": 3,
+    "short": "The US invasion of Panama on 20 December 1989 to remove its military ruler, Manuel Noriega.",
+    "related": [
+      "manuel-noriega"
+    ],
+    "valid": {
+      "from": "1989-12"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/United_States_invasion_of_Panama"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "black-january",
+    "kind": "event",
+    "name": "Black January",
+    "aliases": [
+      "Black January"
+    ],
+    "obscurity": 3,
+    "short": "The Soviet army's storming of Baku, Azerbaijan, on 20 January 1990, which killed over 130 civilians.",
+    "related": [
+      "russia"
+    ],
+    "valid": {
+      "from": "1990-01"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Black_January"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "unipolar-moment",
+    "kind": "term",
+    "name": "Unipolar moment",
+    "aliases": [
+      "unipolar moment"
+    ],
+    "obscurity": 3,
+    "short": "A phrase for the years after the Cold War when the US was the only superpower, with no rival of similar strength.",
+    "related": [
+      "united-states"
+    ],
+    "valid": {
+      "from": "1990-01"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Unipolarity"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "tiananmen",
+    "kind": "event",
+    "name": "Tiananmen Square crackdown",
+    "aliases": [
+      "Tiananmen Square",
+      "Tiananmen"
+    ],
+    "obscurity": 1,
+    "short": "The June 1989 crackdown in which China's army crushed pro-democracy protests in Beijing, killing hundreds or possibly thousands.",
+    "related": [
+      "china",
+      "jiang-zemin"
+    ],
+    "valid": {
+      "from": "1989-06"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/1989_Tiananmen_Square_protests_and_massacre"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "derg",
+    "kind": "group",
+    "name": "Derg",
+    "aliases": [
+      "Derg"
+    ],
+    "obscurity": 3,
+    "short": "The military junta that overthrew Ethiopia's emperor in 1974 and ruled as a Marxist regime until 1991.",
+    "related": [
+      "ethiopia",
+      "mengistu-haile-mariam"
+    ],
+    "valid": {
+      "from": "1974-06"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Derg"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "nordpolitik",
+    "kind": "term",
+    "name": "Nordpolitik",
+    "aliases": [
+      "Nordpolitik"
+    ],
+    "obscurity": 3,
+    "short": "South Korea's policy from 1988 of opening ties with the Soviet Union, China and Eastern Europe to isolate the North.",
+    "related": [
+      "roh-tae-woo"
+    ],
+    "valid": {
+      "from": "1988-07"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Nordpolitik"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "kongka-pass",
+    "kind": "event",
+    "name": "Kongka Pass incident",
+    "aliases": [
+      "Kongka Pass",
+      "Longju"
+    ],
+    "obscurity": 3,
+    "short": "Deadly 1959 clashes on the disputed China-India border, at Longju in August and the Kongka Pass in October.",
+    "long": "Indian border police were killed in both clashes, ending the friendship between Nehru's India and Mao's China. The dispute led to a short war in 1962, which China won.",
+    "related": [
+      "india",
+      "china"
+    ],
+    "valid": {
+      "from": "1959-08"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/Kongka_Pass_incident"
+    ],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "martial-law-crisis-2024",
+    "kind": "event",
+    "name": "South Korea's martial law crisis",
+    "aliases": [
+      "martial law crisis"
+    ],
+    "obscurity": 2,
+    "short": "President Yoon Suk Yeol's brief declaration of martial law on 3 December 2024, which led to his impeachment and removal.",
+    "long": "Parliament voted the decree down within hours as crowds gathered outside. Yoon was impeached on 14 December, arrested in January 2025 and removed from office by the Constitutional Court in April 2025.",
+    "related": [
+      "south-korea",
+      "choi-sang-mok"
+    ],
+    "valid": {
+      "from": "2024-12"
+    },
+    "sources": [
+      "https://en.wikipedia.org/wiki/2024_South_Korean_martial_law_crisis"
+    ],
+    "asOf": "2026-11-22"
+  }
+]
