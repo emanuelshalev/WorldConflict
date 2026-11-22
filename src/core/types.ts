@@ -854,6 +854,87 @@ export const HotspotSchema = z.object({
 export type Hotspot = z.infer<typeof HotspotSchema>;
 
 // ============================================================================
+// The chronicle: a player-centric record of the session, month by month, for
+// the end-of-game reveal (see chronicle.ts and reveal.ts). Optional so saves
+// made before it existed still load; the reveal then degrades to scoreHistory.
+// ============================================================================
+
+export const ChronicleMomentKindSchema = z.enum([
+  "CRISIS",
+  "ORDER",
+  "WAR_START",
+  "WAR_END",
+  "PACT",
+  "ELECTION",
+  "CLOSE_CALL",
+  "COMEBACK",
+  "OBJECTIVE_MET",
+  "OBJECTIVE_LOST",
+  "NUCLEAR",
+  "COVERT_EXPOSED",
+  "RECORD",
+]);
+
+export const ChronicleSampleSchema = z.object({
+  turn: z.number(),
+  approval: z.number(),
+  stability: z.number(),
+  legitimacy: z.number(),
+  realGrowth: z.number(),
+  gdp: z.number(),
+  tension: z.number(),
+  score: z.number(),
+  parts: z.tuple([z.number(), z.number(), z.number(), z.number()]), // econ, sec, approval, prestige
+  objectives: z.array(z.boolean()), // per primary+bonus condition, met this month
+  relations: z.record(z.string(), z.number()), // tracked ids only (chronicle.start.tracked)
+  playerWars: z.number(),
+  capital: z.number(),
+  orders: z.number(),
+});
+export type ChronicleSample = z.infer<typeof ChronicleSampleSchema>;
+
+export const ChronicleMomentSchema = z.object({
+  turn: z.number(),
+  kind: ChronicleMomentKindSchema,
+  title: z.string(),
+  detail: z.string().default(""),
+  tone: z.enum(["good", "bad", "neutral"]),
+  weight: z.number(), // signed, from the month's measured deltas
+  choice: z.string().optional(),
+  staffPick: z.boolean().optional(), // crises: did the player follow the staff pick?
+  with: z.string().optional(),
+});
+export type ChronicleMoment = z.infer<typeof ChronicleMomentSchema>;
+
+export const ChronicleSchema = z.object({
+  series: z.array(ChronicleSampleSchema).default([]),
+  moments: z.array(ChronicleMomentSchema).default([]),
+  // Milestones: "cond:2" -> first month of the final unbroken run where condition 2 held,
+  // "war:<attacker>-<defender>:start|end", "ceasefire:<id>", "nuke:used", "pariah", "covert:exposed"
+  firsts: z.record(z.string(), z.number()).default({}),
+  casualties: z.number().default(0), // the player's side, in the wars it fought
+  deals: z.number().default(0),
+  covert: z.object({ ok: z.number(), exposed: z.number() }).default({ ok: 0, exposed: 0 }),
+  start: z
+    .object({
+      tension: z.number(),
+      worstRival: z.string(),
+      // Ground truth (rivals' programs): stripped from the client until the game is over
+      nuclear: z.record(z.string(), z.string()),
+      tracked: z.array(z.string()).default([]), // relations recorded every month
+      relations: z.record(z.string(), z.number()).default({}), // tracked relations at the start
+      hostile: z.array(z.string()).default([]), // already at -60 or worse with the player
+      approval: z.number().optional(),
+      score: z.number().optional(),
+    })
+    .optional(),
+  // Foreign covert operations against the player, by actor (ground truth: post-game only)
+  plots: z.record(z.string(), z.number()).default({}),
+  aiTiersUsed: z.array(z.string()).default([]), // set by the route, not the engine
+});
+export type Chronicle = z.infer<typeof ChronicleSchema>;
+
+// ============================================================================
 // WorldState Schema
 // ============================================================================
 
@@ -918,6 +999,7 @@ export const WorldStateSchema = z.object({
     })
     .nullable()
     .default(null),
+  chronicle: ChronicleSchema.optional(), // the session's record for the end reveal (chronicle.ts)
 });
 export type WorldState = z.infer<typeof WorldStateSchema>;
 
