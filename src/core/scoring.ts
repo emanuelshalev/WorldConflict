@@ -1,71 +1,157 @@
 import { effectiveGrowth } from "./systems/economy.js";
-import type { CountryState, Score, WorldState } from "./types.js";
+import type { CountryState, ScoreMove, WorldState } from "./types.js";
 
 /**
  * Leadership evaluated on a 0-200 scale: four components of 0-50 each
  * (economic, security, internal approval, world prestige). Scores move
  * incrementally each turn toward the level the current situation deserves.
+ *
+ * Every target is built as a list of named terms (scoreBreakdown), and updateScore moves the
+ * score with the same list, so the "why your score moved" sheet can never disagree with the maths.
  */
 
-function targetEconomic(player: CountryState): number {
-  let target = 20;
+export interface ScoreTerm {
+  label: string;
+  points: number;
+}
+export type ScoreComponent = "economic" | "security" | "approval" | "prestige";
+export const SCORE_COMPONENTS: ScoreComponent[] = ["economic", "security", "approval", "prestige"];
+
+/** Each part drifts this share of the way to its heading every month. */
+export const SCORE_DRIFT = 0.15;
+/** A situation earns 90% of its raw target: the heading. */
+export const SCORE_HEADING = 0.9;
+
+export interface ScorePartBreakdown {
+  value: number; // the part now
+  raw: number; // the raw target (0-50)
+  target: number; // where it is heading: raw x 0.9
+  terms: ScoreTerm[]; // in heading points; they sum to target
+}
+export type ScoreBreakdown = Record<ScoreComponent, ScorePartBreakdown>;
+
+const pct = (v: number) => `${(v * 100).toFixed(1)}%`;
+
+function termsEconomic(player: CountryState): ScoreTerm[] {
+  const t: ScoreTerm[] = [{ label: "Base", points: 20 }];
   // Real growth (after war, instability and embargo drags) against the country's own trend:
   // matching your structural trend is par, beating it scores
   const trend = player.trendGrowth ?? player.economyProfile?.growthRate ?? 0.02;
   const real = player.realGrowth ?? effectiveGrowth(player);
   // Growing at your trend scores what it always did (+3% -> +13.5); beating or missing it moves you
-  target += trend * 450 + Math.max(-0.08, Math.min(0.06, real - trend)) * 120;
-  target -= Math.max(0, (player.debtGdpRatio - 100) / 10);
-  if (player.underGlobalEmbargo) target -= 10;
-  return clamp50(target);
+  t.push({ label: `Trend growth ${pct(trend)} a year`, points: trend * 450 });
+  const gap = Math.max(-0.08, Math.min(0.06, real - trend));
+  if (gap !== 0)
+    t.push({
+      label: `Growth ${pct(real)}, ${gap > 0 ? "above" : "below"} trend`,
+      points: gap * 120,
+    });
+  const debt = Math.max(0, (player.debtGdpRatio - 100) / 10);
+  if (debt > 0)
+    t.push({ label: `Debt at ${Math.round(player.debtGdpRatio)}% of GDP`, points: -debt });
+  if (player.underGlobalEmbargo) t.push({ label: "Global embargo", points: -10 });
+  return t;
 }
 
-function targetSecurity(world: WorldState, player: CountryState): number {
-  let target = 26;
+function termsSecurity(world: WorldState, player: CountryState): ScoreTerm[] {
+  const t: ScoreTerm[] = [{ label: "Base", points: 26 }];
+  const name = (id: string) => world.countries.find((c) => c.id === id)?.name ?? id;
   for (const war of world.wars) {
-    if (war.attackerId === player.id) target -= war.frontline > 60 ? 2 : 10;
-    if (war.defenderId === player.id) target -= war.frontline < 40 ? 4 : 12;
+    if (war.attackerId === player.id)
+      t.push({
+        label: `At war with ${name(war.defenderId)}`,
+        points: war.frontline > 60 ? -2 : -10,
+      });
+    if (war.defenderId === player.id)
+      t.push({
+        label: `At war with ${name(war.attackerId)}`,
+        points: war.frontline < 40 ? -4 : -12,
+      });
   }
-  if (player.insurgencyLevel === "REBELLION") target -= 6;
-  if (player.insurgencyLevel === "GUERILLA") target -= 12;
-  target += player.stability > 65 ? 8 : 0;
-  if (player.atWarWith.length === 0 && player.stability > 50) target += 6;
-  return clamp50(target);
+  if (player.insurgencyLevel === "REBELLION") t.push({ label: "Armed rebellion", points: -6 });
+  if (player.insurgencyLevel === "GUERILLA")
+    t.push({ label: "Guerrilla war at home", points: -12 });
+  if (player.stability > 65) t.push({ label: "Stability above 65", points: 8 });
+  if (player.atWarWith.length === 0 && player.stability > 50)
+    t.push({ label: "At peace, stability above 50", points: 6 });
+  return t;
 }
 
-function targetApproval(player: CountryState): number {
-  return clamp50(player.approval / 2);
+function termsApproval(player: CountryState): ScoreTerm[] {
+  return [{ label: `Approval ${Math.round(player.approval)}%`, points: player.approval / 2 }];
 }
 
-function targetPrestige(world: WorldState, player: CountryState): number {
-  let target = 0;
+function termsPrestige(world: WorldState, player: CountryState): ScoreTerm[] {
+  const t: ScoreTerm[] = [{ label: "Base", points: 20 }];
   // Standing with the great powers and the world at large
   const others = world.countries.filter((c) => c.id !== player.id);
   const avgRelation =
     others.reduce((sum, c) => sum + (c.relations[player.id] ?? 0), 0) / Math.max(1, others.length);
-  target += 20 + avgRelation / 4;
+  t.push({
+    label: `The world's view of you (average ${Math.round(avgRelation)})`,
+    points: avgRelation / 4,
+  });
   const pacts = player.alliances.length;
-  target += Math.min(8, pacts * 2);
-  if (player.underGlobalEmbargo) target -= 20;
-  if (player.nuclear.status === "ARMED" || player.nuclear.status === "TESTED") target += 3; // a seat at the table
-  return clamp50(target);
+  if (pacts > 0)
+    t.push({
+      label: `${pacts} defence pact${pacts > 1 ? "s" : ""}`,
+      points: Math.min(8, pacts * 2),
+    });
+  if (player.underGlobalEmbargo) t.push({ label: "Global embargo", points: -20 });
+  if (player.nuclear.status === "ARMED" || player.nuclear.status === "TESTED")
+    t.push({ label: "A seat at the nuclear table", points: 3 });
+  return t;
 }
 
 function clamp50(v: number): number {
   return Math.max(0, Math.min(50, v));
 }
 
-export function updateScore(world: WorldState): void {
+function part(value: number, raw: ScoreTerm[]): ScorePartBreakdown {
+  // Summed in authored order, exactly as the score has always been computed
+  const sum = raw.reduce((s, x) => s + x.points, 0);
+  const clamped = clamp50(sum);
+  const target = clamped * SCORE_HEADING;
+  const terms = raw
+    .filter((x) => x.points !== 0)
+    .map((x) => ({ label: x.label, points: x.points * SCORE_HEADING }));
+  if (clamped !== sum)
+    terms.push({
+      label: clamped > sum ? "Floor: a part never goes below 0" : "Ceiling: a part tops out at 50",
+      points: (clamped - sum) * SCORE_HEADING,
+    });
+  return { value, raw: clamped, target, terms };
+}
+
+/** What each score part is heading to, and the named terms that make up that heading. */
+export function scoreBreakdown(world: WorldState): ScoreBreakdown | null {
   const player = world.countries.find((c) => c.id === world.playerCountryId);
-  if (!player) return;
+  if (!player) return null;
+  const s = world.score;
+  return {
+    economic: part(s.economic, termsEconomic(player)),
+    security: part(s.security, termsSecurity(world, player)),
+    approval: part(s.approval, termsApproval(player)),
+    prestige: part(s.prestige, termsPrestige(world, player)),
+  };
+}
+
+/** The total the score settles at if nothing changes. */
+export function scoreHeading(b: ScoreBreakdown): number {
+  return Math.round(SCORE_COMPONENTS.reduce((sum, k) => sum + b[k].target, 0));
+}
+
+/** Moves the score one month toward its targets and returns why (before, after, heading, terms). */
+export function updateScore(world: WorldState): ScoreMove | undefined {
+  const player = world.countries.find((c) => c.id === world.playerCountryId);
+  const b = scoreBreakdown(world);
+  if (!player || !b) return undefined;
 
   const score = world.score;
+  const before = { ...score };
   // Each component drifts 15% toward its target each month: sustained
   // performance matters more than single good months.
-  score.economic += (targetEconomic(player) * 0.9 - score.economic) * 0.15;
-  score.security += (targetSecurity(world, player) * 0.9 - score.security) * 0.15;
-  score.approval += (targetApproval(player) * 0.9 - score.approval) * 0.15;
-  score.prestige += (targetPrestige(world, player) * 0.9 - score.prestige) * 0.15;
+  for (const k of SCORE_COMPONENTS) score[k] += (b[k].target - score[k]) * SCORE_DRIFT;
   score.total = Math.round(score.economic + score.security + score.approval + score.prestige);
 
   world.scoreHistory.push({
@@ -76,6 +162,25 @@ export function updateScore(world: WorldState): void {
     globalTension: world.globalTension,
     score: score.total,
   });
+
+  const round1 = (v: number) => Math.round(v * 10) / 10;
+  const comp = (k: ScoreComponent) => ({
+    before: round1(before[k]),
+    after: round1(score[k]),
+    target: round1(b[k].target),
+    terms: b[k].terms.map((x) => ({ label: x.label, points: round1(x.points) })),
+  });
+  return {
+    before: before.total,
+    after: score.total,
+    heading: scoreHeading(b),
+    components: {
+      economic: comp("economic"),
+      security: comp("security"),
+      approval: comp("approval"),
+      prestige: comp("prestige"),
+    },
+  };
 }
 
 export interface LeadershipAssessment {

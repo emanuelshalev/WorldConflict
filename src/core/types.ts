@@ -662,6 +662,7 @@ export const ObjectiveConditionSchema = z.object({
   min: z.number().optional(),
   maxStatus: z.enum(["LATENT", "DEVELOPING", "TESTED", "ARMED"]).optional(),
   label: z.string(),
+  short: z.string().optional(), // a short goal-chip label ("Keep the kingdom calm")
 });
 export type ObjectiveCondition = z.infer<typeof ObjectiveConditionSchema>;
 
@@ -685,6 +686,8 @@ export const ScheduledCrisisSchema = z.object({
   text: z.string().optional(),
   // Authored crises that assume a war: skipped once that war is over
   requiresWar: z.tuple([z.string(), z.string()]).optional(),
+  // Follow-ups: the title of the decision that set it up ("Remember the hostages?")
+  from: z.string().optional(),
 });
 export type ScheduledCrisis = z.infer<typeof ScheduledCrisisSchema>;
 
@@ -724,6 +727,16 @@ export const DirectorStateSchema = z.object({
       z.array(z.object({ turn: z.number(), value: z.number(), target: z.string().optional() })),
     )
     .default({}),
+  // Reaction lines used lately (template hash, speaker, turn): never the same line twice in a
+  // month, nor for the same speaker within six months (reactions.ts freshLines)
+  recentLines: z.array(z.object({ h: z.number(), who: z.string(), turn: z.number() })).default([]),
+  // Each leader's last call: when, the front from our side and their view of us (meetings.ts)
+  calls: z
+    .record(
+      z.string(),
+      z.object({ turn: z.number(), front: z.number().optional(), rel: z.number() }),
+    )
+    .default({}),
 });
 export type DirectorState = z.infer<typeof DirectorStateSchema>;
 
@@ -742,6 +755,26 @@ const ReactionSchema = z.object({
   tone: z.enum(["warm", "cold", "angry", "neutral"]),
 });
 
+const ScoreTermSchema = z.object({ label: z.string(), points: z.number() });
+const ScorePartSchema = z.object({
+  before: z.number(),
+  after: z.number(),
+  target: z.number(), // where this part is heading (target x 0.9)
+  terms: z.array(ScoreTermSchema), // sum to target
+});
+export const ScoreMoveSchema = z.object({
+  before: z.number(),
+  after: z.number(),
+  heading: z.number(), // the total if nothing changes
+  components: z.object({
+    economic: ScorePartSchema,
+    security: ScorePartSchema,
+    approval: ScorePartSchema,
+    prestige: ScorePartSchema,
+  }),
+});
+export type ScoreMove = z.infer<typeof ScoreMoveSchema>;
+
 export const PlayerTurnReportSchema = z.object({
   turn: z.number(),
   orders: z
@@ -758,6 +791,8 @@ export const PlayerTurnReportSchema = z.object({
         watch: z.string().optional(),
         // Why a refused order was refused (availability.ts OrderBlockCode); absent on chance failures
         code: z.string().optional(),
+        again: z.number().optional(), // times this order was carried out in the last 6 months
+        repeat: z.boolean().optional(), // same order and same result as last month
       }),
     )
     .default([]),
@@ -777,6 +812,7 @@ export const PlayerTurnReportSchema = z.object({
         facts: z.array(ReportFactSchema).optional(),
         reaction: ReactionSchema.optional(),
         watch: z.string().optional(),
+        repeat: z.boolean().optional(), // same item, same answer as last month
       }),
     )
     .default([]),
@@ -821,6 +857,23 @@ export const PlayerTurnReportSchema = z.object({
   deltas: z.record(z.string(), StatDeltaSchema).default({}),
   causes: z.array(z.string()).default([]), // plain-language explanations of what moved
   moments: z.array(z.string()).default([]), // milestone stamps: "RALLY", "CLOSE CALL", "FIRST ALLIANCE"…
+  // Why the score moved (scoring.ts scoreBreakdown): each part, where it is heading, and why
+  score: ScoreMoveSchema.optional(),
+  // The month's movement not caused by the player's own choices, per stat (delta minus choice facts)
+  drift: z.record(z.string(), z.number()).optional(),
+  // Delayed outcomes set up this month, and the ones that came due this month
+  followUps: z
+    .array(z.object({ title: z.string(), due: z.number(), templateId: z.string().optional() }))
+    .optional(),
+  followUpsResolved: z
+    .array(z.object({ title: z.string(), headline: z.string(), templateId: z.string() }))
+    .optional(),
+  // Index (in objectiveStatus order) of the month's step objective, and every objective's
+  // now value at the start of the month (null when it has no number)
+  stepObjective: z.number().optional(),
+  missionBefore: z.array(z.number().nullable()).optional(),
+  momentum: z.boolean().optional(),
+  causesRepeated: z.array(z.string()).optional(), // causes that also moved last month
 });
 export type PlayerTurnReport = z.infer<typeof PlayerTurnReportSchema>;
 
@@ -910,6 +963,8 @@ export const WorldStateSchema = z.object({
     record: {},
     shocks: [],
     ledger: {},
+    recentLines: [],
+    calls: {},
   }),
   turnReport: PlayerTurnReportSchema.nullable().default(null),
   outcome: z

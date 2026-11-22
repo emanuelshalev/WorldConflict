@@ -11,6 +11,13 @@ function errorStatus(error: unknown): number {
 
 import { AIConfigSchema, planTurn } from "../../agents/strategist.js";
 import { addUsage } from "../../agents/usage.js";
+import {
+  type Advice,
+  buildAdvice,
+  deskImpact,
+  missionStatus,
+  suggestionImpact,
+} from "../../core/advisors.js";
 import { createDataLoader } from "../../core/data-loader.js";
 import { objectiveStatus } from "../../core/objectives.js";
 import { previewAction } from "../../core/preview.js";
@@ -103,11 +110,41 @@ export function publicWorldState(world: WorldState): WorldState {
   };
 }
 
+/**
+ * The month's advice (design-month 6.3): the staff's suggestions, cabinet and mission picks,
+ * meeting picks and staff orders, plus the mission impact of every option on the desk and of
+ * each suggested order. Computed from the player's own picture (beliefs), never ground truth.
+ */
+export function monthAdvice(world: WorldState) {
+  if (world.gameOver) {
+    return {
+      advice: {
+        suggestions: [],
+        cabinetPicks: {},
+        missionPicks: {},
+        meetingPicks: {},
+        deputies: [],
+        staffOrders: [],
+      } as Advice,
+      missionImpact: {},
+      orderImpact: {},
+      objectiveStatus: objectiveStatus(world),
+    };
+  }
+  const advice = buildAdvice(world);
+  return {
+    advice,
+    missionImpact: deskImpact(world),
+    orderImpact: suggestionImpact(world, advice.suggestions),
+    objectiveStatus: missionStatus(world, advice.suggestions),
+  };
+}
+
 function turnPayload(worldState: WorldState) {
   return {
     worldState: publicWorldState(worldState),
     playerView: buildPlayerView(worldState),
-    objectiveStatus: objectiveStatus(worldState),
+    ...monthAdvice(worldState),
     pendingDecisions: worldState.pendingDecisions,
     score: worldState.score,
     gameOver: worldState.gameOver,

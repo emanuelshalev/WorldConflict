@@ -2,6 +2,7 @@ import { actionRules, orderKey } from "./availability.js";
 import { actionCostM, actionCostPC, MAX_ORDERS, PC_CAP, politicalCapitalIncome } from "./costs.js";
 import { applyEffects, raiseCrisis, runDirector, scheduleFollowUp } from "./crises.js";
 import { EventEngine } from "./events.js";
+import { beginMonth, explainMonth, type MonthStart } from "./explain.js";
 import { sharesLandBorder } from "./geography.js";
 import { generateAgenda, MEETING_SLOTS } from "./meetings.js";
 import { generateNewspaper } from "./newspaper.js";
@@ -10,8 +11,10 @@ import { engineOrderFor } from "./orders.js";
 import { failStory, ledgerEntry, orderFacts, orderStory, snapshot } from "./outcomes.js";
 import {
   bandOf,
+  crisisLede,
   crisisReaction,
   findCountry,
+  freshLines,
   hashParts,
   meetingReaction,
   orderReaction,
@@ -138,6 +141,7 @@ export class TurnEngine {
         }
       : null;
     this.report = report;
+    this.month = beginMonth(currentState);
 
     // ------------------------------------------------------------------
     // Phase 0: resolve the player's pending crisis decisions
@@ -151,6 +155,7 @@ export class TurnEngine {
     const directed = runDirector(world, rng);
     events.push(...directed.events);
     world.pendingDecisions = directed.decisions;
+    if (directed.resolvedFollowUps?.length) report.followUpsResolved = directed.resolvedFollowUps;
 
     // ------------------------------------------------------------------
     // Phase 2: intelligence picture updates (asymmetric information)
@@ -471,7 +476,8 @@ export class TurnEngine {
 
     // Phase 8: scoring & timeline
     // ------------------------------------------------------------------
-    updateScore(world);
+    const scoreMove = updateScore(world);
+    if (scoreMove) report.score = scoreMove;
     this.recordTimeline(world, events, warSummaries, governmentChanges);
 
     // ------------------------------------------------------------------
@@ -539,6 +545,7 @@ export class TurnEngine {
 
   // --------------------------------------------------------------------
   private report: PlayerTurnReport | null = null;
+  private month: MonthStart | null = null;
   private start: {
     rel: Map<string, number>;
     front: Map<string, number>;
@@ -570,7 +577,7 @@ export class TurnEngine {
       world.globalTension = clamp01(world.globalTension + option.tensionDelta);
       injected.push(...option.actions);
       if (option.followUp)
-        scheduleFollowUp(world, option.followUp.templateId, option.followUp.delay);
+        scheduleFollowUp(world, option.followUp.templateId, option.followUp.delay, pending.title);
       const relKey = Object.keys(option.effects).find((k) => k.startsWith("relations:"));
       const otherId =
         relKey?.split(":")[1] ?? pending.affectedCountries.find((id) => id !== player.id);
@@ -674,6 +681,7 @@ export class TurnEngine {
           bandAfter: bandOf(player, them),
           country: them?.name,
           deputyCaller: !attendedIt && meeting.kind === "CALL" ? meeting.speaker : undefined,
+          deputyAtWar: !!them && player.atWarWith.includes(them.id),
           staffHold: meeting.kind === "STAFF" && /^(hold|deputy|course|wait)$/.test(option.id),
         }),
       });
@@ -1226,6 +1234,9 @@ export class TurnEngine {
       );
       if (newPact) report.moments.push("NEW ALLIANCE");
     }
+    // Choice versus drift, follow-ups, the step objective, repeats; then no line twice
+    explainMonth(world, report, this.month);
+    freshLines(world, report);
   }
 
   /**
@@ -1639,7 +1650,7 @@ function playerLead(
   if (h.ref === "decision") {
     const d = report.decisions[h.index];
     headline = d.headline ?? d.title;
-    lede = `On ${d.title.replace(/[.?:]$/, "").replace(/^./, (c) => c.toLowerCase())}, ${who} decided: ${d.choice.replace(/\.$/, "").replace(/ \(no decision taken\)$/, " (by default)")}.${d.facts?.[0] ? ` ${fmt(d.facts[0])}.` : ""}`;
+    lede = `${crisisLede(who, d.title, d.choice)}${d.facts?.[0] ? ` ${fmt(d.facts[0])}.` : ""}`;
     if (d.reaction)
       quote = `${d.reaction.who}: "${d.reaction.line.replace(/^'|'$/g, "").replace(/"/g, "'")}"`;
     next = d.watch ?? "";

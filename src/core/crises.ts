@@ -2600,6 +2600,67 @@ export function raiseCrisis(
 export interface DirectorOutput {
   events: GameEvent[];
   decisions: PendingDecision[];
+  /** Delayed outcomes that came due this month: the decision that set them up, and the news. */
+  resolvedFollowUps?: Array<{ title: string; headline: string; templateId: string }>;
+}
+
+/**
+ * The broadcast scene each crisis template is staged in (mirrors CRISIS_SCENES in
+ * ui/src/scenes/kinds.ts). The director never stages two months running in the same scene
+ * unless the second crisis is a follow-up (design-month R1).
+ */
+export const CRISIS_SCENE: Record<string, string> = {
+  military_incident: "war_room",
+  standoff_escalates: "war_room",
+  corruption_scandal: "tv_interview",
+  scandal_second_leak: "press",
+  ouster_vote: "parliament",
+  coup_plot: "cabinet",
+  streets_boiling: "streets",
+  crackdown_aftermath: "streets",
+  rival_ultimatum: "war_room",
+  ultimatum_expires: "war_room",
+  ally_plea: "cabinet",
+  nuclear_threshold: "nuclear",
+  refugee_wave: "field_visit",
+  energy_shock: "econ_tv",
+  hostage_crisis: "cabinet",
+  rescue_outcome: "war_room",
+  hostage_talks: "ceasefire",
+  gaza_flare: "airstrike",
+  gaza_world_reacts: "un_vote",
+  gaza_crossings: "disaster",
+  gaza_isf: "deployment",
+  gaza_isf_casualties: "war_room",
+  gaza_disarm: "cabinet",
+  gaza_reconstruction: "summit",
+  gaza_un_vote: "un_vote",
+  westbank_settlers: "streets",
+  westbank_annexation: "parliament",
+  westbank_raid: "deployment",
+  pa_gaza_role: "signing",
+  sanctions_vote: "un_vote",
+  assassination_attempt: "assassination",
+  general_strike: "streets",
+  pact_offer: "signing",
+  trade_offer: "summit",
+  deal_strings: "summit",
+  cyberattack: "covert",
+  foreign_interference: "covert",
+  shock_market_crash: "econ_tv",
+  shock_pandemic: "disaster",
+  shock_second_wave: "disaster",
+  shock_terror: "disaster",
+  shock_disaster: "disaster",
+  election_campaign: "election",
+};
+
+/** The scenes of last month's crises (templates whose last use was the previous turn). */
+function lastMonthScenes(world: WorldState): Set<string> {
+  const out = new Set<string>();
+  for (const [id, turn] of Object.entries(world.director.lastUsed))
+    if (turn === world.turn - 1 && CRISIS_SCENE[id]) out.add(CRISIS_SCENE[id]);
+  return out;
 }
 
 /**
@@ -2635,6 +2696,7 @@ export function runDirector(world: WorldState, rng: SeededRandom): DirectorOutpu
   };
 
   // 1. Due follow-ups and authored (flashpoint) crises
+  const staleScenes = lastMonthScenes(world);
   const due = director.scheduled.filter((s) => s.turn <= world.turn);
   director.scheduled = director.scheduled.filter((s) => s.turn > world.turn);
   for (const item of due) {
@@ -2669,7 +2731,17 @@ export function runDirector(world: WorldState, rng: SeededRandom): DirectorOutpu
     }
     const template = TEMPLATES.find((t) => t.id === item.templateId);
     const draft = template?.build(ctx, item);
-    if (draft) emit(item.templateId, draft);
+    if (draft) {
+      emit(item.templateId, draft);
+      if (item.from) {
+        out.resolvedFollowUps ??= [];
+        out.resolvedFollowUps.push({
+          title: item.from,
+          headline: draft.headline,
+          templateId: item.templateId,
+        });
+      }
+    }
   }
 
   // 2. Shocks: a comfortable leader gets tested. Term: roughly every 16 months;
@@ -2719,6 +2791,8 @@ export function runDirector(world: WorldState, rng: SeededRandom): DirectorOutpu
     const weighted = TEMPLATES.map((t) => {
       const last = director.lastUsed[t.id];
       if (last !== undefined && world.turn - last < COOLDOWN) return { t, w: 0 };
+      // Never the same scene two months running (follow-ups above are exempt)
+      if (CRISIS_SCENE[t.id] && staleScenes.has(CRISIS_SCENE[t.id])) return { t, w: 0 };
       let w = t.weight(ctx);
       // Mid-flashpoint: lean on whatever is currently the player's strength
       if (["corruption_scandal", "general_strike", "rival_ultimatum"].includes(t.id)) {
@@ -2745,8 +2819,17 @@ export function runDirector(world: WorldState, rng: SeededRandom): DirectorOutpu
 }
 
 /** Schedule a follow-up chosen through a decision option. */
-export function scheduleFollowUp(world: WorldState, templateId: string, delay: number): void {
-  world.director.scheduled.push({ templateId, turn: world.turn + delay });
+export function scheduleFollowUp(
+  world: WorldState,
+  templateId: string,
+  delay: number,
+  from?: string,
+): void {
+  world.director.scheduled.push({
+    templateId,
+    turn: world.turn + delay,
+    ...(from ? { from } : {}),
+  });
 }
 
 export const CRISIS_TEMPLATE_IDS = TEMPLATES.map((t) => t.id);
