@@ -39,7 +39,7 @@
       "primary": [
         {"kind": "NO_WAR_WITH", "targetId": "PAK", "label": "No full-scale war with Pakistan"},
         {"kind": "RELATION_MIN", "targetId": "USA", "min": 30, "label": "Washington sees it India's way (relations 30+)"},
-        {"kind": "SCORE_PAR", "min": 117, "label": "Leadership score of 117+: deterrence restored"}
+        {"kind": "SCORE_PAR", "min": 117, "label": "Score of 117+: deterrence restored"}
       ],
       "bonus": [
         {"kind": "STAT_MIN", "stat": "approval", "min": 70, "label": "A nation rallied behind you (approval 70%+)"},
@@ -54,7 +54,7 @@
       "primary": [
         {"kind": "NO_WAR_WITH", "targetId": "IND", "label": "No full-scale war with India"},
         {"kind": "RELATION_MIN", "targetId": "SAU", "min": 74, "label": "Riyadh stays in your corner (relations 74+)"},
-        {"kind": "SCORE_PAR", "min": 82, "label": "Leadership score of 82+: the state holds together"},
+        {"kind": "SCORE_PAR", "min": 82, "label": "Score of 82+: the state holds together"},
         {"kind": "RELATION_MIN", "targetId": "USA", "min": 40, "label": "Washington leans your way (relations 40+)"}
       ],
       "bonus": [

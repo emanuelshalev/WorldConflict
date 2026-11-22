@@ -293,7 +293,7 @@ export class DataLoader {
           briefing: `A year of crises lies ahead for ${player.name}. Stay in power and leave the country stronger than you found it.`,
           primary: [],
           bonus: [
-            { kind: "SCORE_PAR", min: 110, label: "Leadership score of 110+" },
+            { kind: "SCORE_PAR", min: 110, label: "Score of 110+" },
             { kind: "STAT_MIN", stat: "stability", min: 55, label: "Stability of 55%+ at the end" },
           ],
           par: 110,
@@ -321,10 +321,10 @@ export class DataLoader {
                 min: 35,
                 label: "Stability of 35%+ at the review",
               },
-              { kind: "SCORE_PAR", min: 100, label: "Leadership score of 100+ at the review" },
+              { kind: "SCORE_PAR", min: 100, label: "Score of 100+ at the review" },
             ],
         bonus: [
-          { kind: "SCORE_PAR", min: 115, label: "Leadership score of 115+" },
+          { kind: "SCORE_PAR", min: 115, label: "Score of 115+" },
           foreignPolicyGoal(world, player),
         ],
         par: 115,

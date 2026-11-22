@@ -49,7 +49,7 @@
         {"kind": "RELATION_MIN", "targetId": "ISR", "min": 61, "label": "Israel stays on side (relations 61+)"}
       ],
       "bonus": [
-        {"kind": "SCORE_PAR", "min": 111, "label": "Leadership score of 111+"},
+        {"kind": "SCORE_PAR", "min": 111, "label": "Score of 111+"},
         {"kind": "STAT_MIN", "stat": "stability", "min": 60, "label": "Stability of 60%+"}
       ],
       "par": 107,
@@ -61,7 +61,7 @@
       "primary": [
         {"kind": "WAR_RESULT", "targetId": "USA", "min": 38, "label": "Outlast the Americans (a ceasefire, or the front no worse than 38)"},
         {"kind": "STAT_MIN", "stat": "legitimacy", "min": 25, "label": "The system still commands obedience (legitimacy 25%+)"},
-        {"kind": "SCORE_PAR", "min": 57, "label": "Leadership score of 57+: a state, not a ruin"}
+        {"kind": "SCORE_PAR", "min": 57, "label": "Score of 57+: a state, not a ruin"}
       ],
       "bonus": [
         {"kind": "INSURGENCY_MAX", "level": "UNREST", "label": "The streets stay quiet (no rebellion)"},
@@ -77,7 +77,7 @@
         {"kind": "WAR_ENDED", "targetId": "IRN", "otherId": "ARE", "label": "No open war with Iran at the end"},
         {"kind": "RELATION_MIN", "targetId": "IRN", "min": -90, "label": "A door left open in Tehran (Iran relations -90+)"},
         {"kind": "RELATION_MIN", "targetId": "USA", "min": 60, "label": "Still Washington's partner (US relations 60+)"},
-        {"kind": "SCORE_PAR", "min": 119, "label": "Leadership score of 119+: business as usual"},
+        {"kind": "SCORE_PAR", "min": 119, "label": "Score of 119+: business as usual"},
         {"kind": "STAT_MIN", "stat": "approval", "min": 80, "label": "Confidence at home (approval 80%+)"}
       ],
       "bonus": [

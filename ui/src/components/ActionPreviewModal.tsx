@@ -55,7 +55,7 @@ export function ActionPreviewModal() {
               <>
                 <div className="preview-costs">
                   <span>
-                    Capital <b className="num">{pc > 0 ? `◆${pc}` : 'free'}</b>
+                    Political capital <b className="num">{pc > 0 ? `◆${pc}` : 'free'}</b>
                   </span>
                   {preview.costM > 0 && (
                     <span>

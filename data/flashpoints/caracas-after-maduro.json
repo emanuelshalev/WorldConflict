@@ -38,7 +38,7 @@
       "primary": [
         {"kind": "RELATION_MIN", "targetId": "USA", "min": 15, "label": "Sanctions relief holds (US relations 15+)"},
         {"kind": "STAT_MIN", "stat": "legitimacy", "min": 35, "label": "A transition people believe in (legitimacy 35%+)"},
-        {"kind": "SCORE_PAR", "min": 96, "label": "Leadership score of 96+"}
+        {"kind": "SCORE_PAR", "min": 96, "label": "Score of 96+"}
       ],
       "bonus": [
         {"kind": "STAT_MIN", "stat": "legitimacy", "min": 50, "label": "Ready to win a real vote (legitimacy 50%+)"},
@@ -74,7 +74,7 @@
       ],
       "bonus": [
         {"kind": "RELATION_MIN", "targetId": "MEX", "min": 50, "label": "Mexico still on side (relations 50+)"},
-        {"kind": "SCORE_PAR", "min": 109, "label": "Leadership score of 109+"}
+        {"kind": "SCORE_PAR", "min": 109, "label": "Score of 109+"}
       ],
       "par": 107,
       "debrief": "What really happened: the January 2026 raid removed Maduro but Washington chose oil and order over a democratic handover, lifting sanctions on Rodríguez and sidelining Machado, while an oil blockade pushed Cuba into blackouts and talks. What experts fear: that 'decapitation without regime change' becomes the template, leaving a dependent autocracy in Caracas, a humanitarian collapse in Havana and a hemisphere newly convinced that sovereignty is negotiable."

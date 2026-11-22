@@ -28,20 +28,21 @@ The game has two modes, switched in the HUD or with **M**:
 - **Map**: the full globe with its layers, dossiers and legend, to investigate the world. A strip along the bottom keeps your budgets, what is still waiting and **Execute** in view, so you can finish a month from here too.
 
 ```
-+ HUD: leader | approval | stability | legitimacy | economy | capital | tension | score | [Map|Desk] +
++ HUD: leader | approval | stability | legitimacy | economy | political capital | world tension | score | [Map|Desk] +
 | NAVIGATOR             | THE ITEM IN FOCUS                     | 2D MAP OF THE SUBJECT       |
-|  Mission              |  a crisis, a meeting, the staff's      | BUDGETS (capital, defense,  |
-|  Crises               |  suggested orders, or all orders       |   orders 0-6, in person 0-3)|
-|  Meetings             |  (previous / next: K / J)              | THIS MONTH YOU WILL ...     |
-|  Staff orders         |                                        | BEFORE YOU EXECUTE          |
-|  All orders           |                                        | [Approve all] [Execute]     |
+|  Mission              |  a crisis, a meeting, the staff        | BUDGETS (political capital, |
+|  Crises               |  picks, or all orders                  |   defense budget, orders    |
+|  Meetings             |  (previous / next: K / J)              |   0 of 6, meetings 0 of 3)  |
+|  Staff orders         |                                        | THIS MONTH YOU WILL ...     |
+|  All orders           |                                        | BEFORE YOU EXECUTE          |
+|                       |                                        | [Approve all] [Execute]     |
 + NEWS TICKER (hide with N) ---------------------------------------------------------------------+
 ```
 
 Your staff fill the desk in before you arrive, so you only change what you disagree with:
 
 1. **Crises** start on the **staff pick** (the option most ministers back that does not endanger your mission). Pick another option, or approve the pick. Arrows show the **direction and rough size** of consequences (Approval ▲▲, Tension ▼...), not exact numbers.
-2. **Orders**: the staff queue up to two safe orders, never a long shot or a repeat of last month, and always leave you at least 1 ◆ (turn this off in Settings). Remove any with its x, add others from **Staff suggestions** or **All orders** (search with **/**, e.g. "spy iran"). Clicking a country on the big map makes it the order target.
+2. **Orders**: the staff queue up to two safe orders, never a long shot or a repeat of last month, and always leave you at least 1 ◆ (turn this off in Settings). Remove any with its x, add others from the **staff picks** or **All orders** (search with **/**, e.g. "spy iran"). Clicking a country on the big map makes it the order target.
 3. **Meetings** show a suggested answer but wait for you: approve it, pick another, or send a deputy. **Approve all** (Shift+A) confirms the crisis picks, attends the three best meetings and sends deputies to the rest.
 4. **Execute month** (Ctrl+Enter). The right column always shows what you are proceeding with, what each budget has left, and what still needs you. Going over a budget disables Execute and says why. The world then moves: each order and answer plays as a news scene with what it changed, and the **World Chronicle** leads with *your* decision.
 
@@ -57,7 +58,7 @@ Every month also brings 3 to 5 meetings on the desk's calendar:
 - **A staff meeting:** the most pressing problem your ministers can see (the front, the polls, the economy, unrest, a spy, a back channel, a leak).
 - **A state visit** or **a prime-time interview**, alternating.
 
-Each meeting is a short scene with a statement and 2 or 3 answers with their effects shown. You can attend **3 in person**; the rest go to a deputy. That is free, but a leader whose call you skipped notices. Some answers cost political capital (a state visit, a hotline).
+Each meeting is a short scene with a statement and 2 or 3 answers with their effects shown. You attend up to **3 meetings** a month; a deputy handles the rest with the default answer. That is free, but a leader whose call you skipped notices. Some answers cost political capital (a state visit, a hotline).
 
 **Consult your staff** from any crisis card or meeting: the right minister opens with your question already asked. With an AI key in Settings, it is a free-form chat; without one, tap a suggested question (the crisis, your biggest risk, who to meet, the economy, stability, allies) and the minister answers from the game state.
 
@@ -74,7 +75,9 @@ Era by era: the 2026 world opens on the fragile October 2025 ceasefire, 2025 ope
 
 ### Political capital ◆
 
-Diplomatic, domestic and covert orders cost **political capital**. You get 2 ◆ a month (3 in a Flashpoint, +1 on Story difficulty) and can bank up to 6. It's meant to be scarce: a reform (2 ◆) is a month's budget, so every month is a choice. Popularity doesn't pay extra capital, and trouble doesn't take it away. You can give at most 6 orders a month, and each order only once per target. Military hardware and nuclear work cost money as a share of your defense budget instead.
+Diplomatic, domestic and covert orders cost **political capital**. You get 2 ◆ a month (3 in a Flashpoint, +1 on Story difficulty) and can bank up to 6. It's meant to be scarce: a reform (2 ◆) is a month's budget, so every month is a choice. Popularity doesn't pay extra capital, and trouble doesn't take it away. You can give at most 6 orders a month (**orders this month**), and each order only once per target. Military hardware and nuclear work cost money as a share of your **defense budget** instead.
+
+Every order shows whether you can give it before you pick it. An order you can't afford says what it needs and what you have ("Needs ◆ 2, you have ◆ 1."), with a fix (remove an order, or wait for next month's refill). An order the situation rules out says why ("Only in wartime. You are not at war with India.") and offers a valid order instead when there is one. Declaring war and nuclear strikes have **no undo**, so they ask for a second, deliberate confirmation.
 
 | Order | ◆ | Order | ◆ |
 |---|---|---|---|
@@ -85,6 +88,23 @@ Diplomatic, domestic and covert orders cost **political capital**. You get 2 ◆
 | Declare war | 2 | Assassination / back a coup | 3 |
 
 Denouncing is free, but it only rallies voters against an adversary (a historical rival or a country you are at odds with), only the first denunciation each month counts, and it counts less with each month you repeat it within six months. Condemning a partner costs approval, and repeated grandstanding against bystanders starts to cost it too.
+
+### Words the game uses
+
+One name per idea, everywhere in the game:
+
+| Name | Short form | Meaning |
+|---|---|---|
+| **Political capital** | ◆ 1 left | What your orders cost. You get +2 each month (+3 in a Flashpoint), up to ◆ 6. Unspent capital carries over. |
+| **Orders this month** | Orders 2 of 6 | You can give up to 6 orders a month, one of each kind per country. |
+| **Meetings** | Meetings 0 of 3 | You attend up to 3 meetings a month. A deputy handles the rest with the default answer. |
+| **Defense budget** | 8% defense | Military orders use a share of this month's defense budget. |
+| **Score** | Score | Your standing out of 200: approval, stability, economy and security, moving 15% a month toward how things really are. |
+| **Approval, Stability, Legitimacy, Economy, World tension** | the same words | Always written out, never abbreviated. |
+| **Staff pick** | Staff pick | What your staff would do. Approve it or choose yourself. |
+| **In this month** | In this month | An order you have added to the month and can still remove. |
+| **Chance** | 53% chance | How likely an uncertain order is to work. |
+| **No undo** | No undo | Declare war and nuclear strike: they can't be taken back. |
 
 ---
 

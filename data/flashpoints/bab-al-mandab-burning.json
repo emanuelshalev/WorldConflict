@@ -44,7 +44,7 @@
         {"kind": "WAR_RESULT", "targetId": "YEM", "min": 58, "label": "The Houthis pushed off the coast (front 58+ your way, or a ceasefire)"},
         {"kind": "NO_WAR_WITH", "targetId": "ARE", "label": "No open war with the Emirates"},
         {"kind": "STAT_MIN", "stat": "stability", "min": 78, "label": "The kingdom holds its nerve (stability 78%+)"},
-        {"kind": "SCORE_PAR", "min": 114, "label": "Leadership score of 114+: Vision 2030 survives the war"}
+        {"kind": "SCORE_PAR", "min": 114, "label": "Score of 114+: Vision 2030 survives the war"}
       ],
       "bonus": [
         {"kind": "WAR_ENDED", "targetId": "YEM", "otherId": "SAU", "label": "A signed settlement: the Houthi war is over"},
@@ -60,10 +60,10 @@
         {"kind": "WAR_RESULT", "targetId": "SAU", "min": 22, "label": "Sanaa and Hodeidah never fall (front no worse than 22, or a settlement)"},
         {"kind": "STAT_MIN", "stat": "legitimacy", "min": 30, "label": "Sanaa still obeys (legitimacy 30%+)"},
         {"kind": "RELATION_MIN", "targetId": "IRN", "min": 76, "label": "The Axis keeps faith with you (Iran relations 76+)"},
-        {"kind": "SCORE_PAR", "min": 59, "label": "Leadership score of 59+: a state, not a ruin"}
+        {"kind": "SCORE_PAR", "min": 59, "label": "Score of 59+: a state, not a ruin"}
       ],
       "bonus": [
-        {"kind": "SCORE_PAR", "min": 83, "label": "Leadership score of 83+"},
+        {"kind": "SCORE_PAR", "min": 83, "label": "Score of 83+"},
         {"kind": "STAT_MIN", "stat": "stability", "min": 35, "label": "No bread riots in Sanaa (stability 35%+)"}
       ],
       "par": 97,
@@ -76,7 +76,7 @@
         {"kind": "NO_WAR_WITH", "targetId": "SAU", "label": "No open war with Saudi Arabia"},
         {"kind": "NO_WAR_WITH", "targetId": "YEM", "label": "No open war with the Houthis"},
         {"kind": "RELATION_MIN", "targetId": "SAU", "min": 15, "label": "Riyadh still calls you an ally (Saudi relations 15+)"},
-        {"kind": "SCORE_PAR", "min": 113, "label": "Leadership score of 113+: business as usual"}
+        {"kind": "SCORE_PAR", "min": 113, "label": "Score of 113+: business as usual"}
       ],
       "bonus": [
         {"kind": "RELATION_MIN", "targetId": "USA", "min": 90, "label": "Washington's indispensable partner (US relations 90+)"},

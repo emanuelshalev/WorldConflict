@@ -41,7 +41,7 @@
       "primary": [
         {"kind": "NO_WAR_WITH", "targetId": "CHN", "label": "Never fire the first shot: no war with China"},
         {"kind": "RELATION_MIN", "targetId": "USA", "min": 56, "label": "Washington firmly in your corner (relations 56+)"},
-        {"kind": "SCORE_PAR", "min": 89, "label": "Leadership score of 89+: the island still works"}
+        {"kind": "SCORE_PAR", "min": 89, "label": "Score of 89+: the island still works"}
       ],
       "bonus": [
         {"kind": "RELATION_MIN", "targetId": "JPN", "min": 95, "label": "Tokyo stands with you (relations 95+)"},
@@ -57,11 +57,11 @@
         {"kind": "NO_WAR_WITH", "targetId": "USA", "label": "No war with the United States"},
         {"kind": "NO_WAR_WITH", "targetId": "TWN", "label": "No shooting war across the Strait"},
         {"kind": "RELATION_MIN", "targetId": "USA", "min": -88, "label": "Washington still talking, not decoupling (relations -88+)"},
-        {"kind": "SCORE_PAR", "min": 120, "label": "Leadership score of 120+: the Party sees a win"}
+        {"kind": "SCORE_PAR", "min": 120, "label": "Score of 120+: the Party sees a win"}
       ],
       "bonus": [
         {"kind": "STAT_MIN", "stat": "stability", "min": 88, "label": "Iron discipline at home (stability 88%+)"},
-        {"kind": "SCORE_PAR", "min": 122, "label": "Leadership score of 122+"}
+        {"kind": "SCORE_PAR", "min": 122, "label": "Score of 122+"}
       ],
       "par": 115,
       "debrief": "What really happened (to 2026): Beijing rehearsed a blockade of Taiwan's two great ports in December 2025, punished Japan's prime minister for calling a Taiwan contingency 'survival-threatening' with seafood bans and a dual-use export ban, and extracted a public US warning to Taipei at the May 2026 summit. Meanwhile the Central Military Commission was reportedly hollowed out by purges, including Zhang Youxia in January 2026. What experts fear: that a quarantine designed to stay below the threshold of war meets a jittery commander, an untested chain of command and an ally that decides to escort."
@@ -77,7 +77,7 @@
       ],
       "bonus": [
         {"kind": "RELATION_MIN", "targetId": "JPN", "min": 75, "label": "Alliance with Japan rock-solid (relations 75+)"},
-        {"kind": "SCORE_PAR", "min": 112, "label": "Leadership score of 112+"}
+        {"kind": "SCORE_PAR", "min": 112, "label": "Score of 112+"}
       ],
       "par": 107,
       "debrief": "What really happened (to 2026): Washington approved a record US$11.1bn arms package for Taiwan in December 2025, then struck a trade truce with Beijing at Busan and extended it at the May 2026 Beijing summit, after which the President warned Taipei against independence. The Taiwan Relations Act still promises arms, not rescue. What experts fear: a quarantine that forces a binary choice the policy of ambiguity was built to avoid, escort and risk war or stand aside and watch every ally in Asia recalculate."

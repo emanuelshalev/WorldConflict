@@ -156,7 +156,7 @@ export function MapGuide({ onClose }: { onClose: () => void }) {
       </div>
       <div style={row}>
         <span style={{ width: 18, borderTop: '2px dashed #4c8dff', flexShrink: 0 }} />
-        Dashed arrow with an icon: an order you queued this month (orders at home sit above your country)
+        Dashed arrow with an icon: an order in this month (orders at home sit above your country)
       </div>
       <div style={row}>
         <span style={{ width: 18, height: 3, background: '#7fb2ff', opacity: 0.5, flexShrink: 0 }} />
@@ -196,14 +196,14 @@ export function MapGuide({ onClose }: { onClose: () => void }) {
       <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12, color: '#aab', lineHeight: 1.7 }}>
         <li><b style={{ color: '#ccd' }}>Hover</b> a country for a quick intelligence snapshot, leader, relations, GDP and stability (as ranges when uncertain).</li>
         <li><b style={{ color: '#ccd' }}>Click</b> a foreign country for an order menu: the most relevant orders with their ◆ cost (greyed out when you can't afford them or already gave them), plus <i>Dossier</i> for government, history and military estimates. Click your own country for your dossier.</li>
-        <li><b style={{ color: '#ccd' }}>Orders from the map</b> go on your desk exactly like orders given there, with the same forecast and warnings.</li>
+        <li><b style={{ color: '#ccd' }}>Orders from the map</b> join this month exactly like orders given at the desk, with the same forecast and warnings.</li>
         <li><b style={{ color: '#ccd' }}>Lines</b> show the selected country's pacts and wars; with nothing selected, they show yours.</li>
         <li><b style={{ color: '#ccd' }}>Zoom/pan</b> with the mouse or the +/− controls at the top left.</li>
       </ul>
 
       <div style={{ fontSize: 11, color: '#667', marginTop: 12, borderTop: '1px solid #2a2e3a', paddingTop: 8 }}>
         Tip: before an action is committed you will always see a consequence forecast, effects, costs,
-        success odds and risks. There is no undo in geopolitics.
+        chance of success and risks. There is no undo in geopolitics.
       </div>
     </div>
   );
