@@ -396,7 +396,7 @@
         "text": "US mediators propose demilitarising the unoccupied part of Donetsk oblast, including the fortress belt of Kramatorsk and Sloviansk, as an internationally run economic zone. Moscow calls it 'a basis'. Your generals call it surrender by spreadsheet.",
         "decision": {
           "title": "The free economic zone",
-          "situation": "Washington wants an answer before the midterms. Accepting in principle keeps the Americans close but hands Moscow the fortress belt without a shot. Demanding a referendum first is constitutionally correct and politically safe, and the White House will read it as a no. Rejecting outright and attacking shows the world Ukraine can still fight, at a cost in men you are running short of.",
+          "situation": "Washington wants an answer before the new Congress sits in January. Accepting in principle keeps the Americans close but hands Moscow the fortress belt without a shot. Demanding a referendum first is constitutionally correct and politically safe, and the White House will read it as a no. Rejecting outright and attacking shows the world Ukraine can still fight, at a cost in men you are running short of.",
           "affectedCountries": ["UKR", "RUS", "USA"],
           "urgency": "URGENT",
           "defaultOptionId": "referendum",

@@ -1,0 +1,352 @@
+{
+  "scenarioId": "2026",
+  "mapFocus": [
+    45,
+    28
+  ],
+  "blocs": [
+    {
+      "id": "NATO",
+      "name": "NATO",
+      "side": "WEST",
+      "members": [
+        "USA",
+        "CAN",
+        "GBR",
+        "FRA",
+        "DEU",
+        "ITA",
+        "TUR",
+        "NLD",
+        "BEL",
+        "LUX",
+        "NOR",
+        "DNK",
+        "ISL",
+        "PRT",
+        "GRC",
+        "ESP",
+        "POL",
+        "CZE",
+        "SVK",
+        "HUN",
+        "ROU",
+        "BGR",
+        "HRV",
+        "SVN",
+        "ALB",
+        "MNE",
+        "MKD",
+        "EST",
+        "LVA",
+        "LTU",
+        "FIN",
+        "SWE"
+      ]
+    },
+    {
+      "id": "USPAC",
+      "name": "US treaty allies (Pacific)",
+      "side": "WEST2",
+      "members": [
+        "JPN",
+        "KOR",
+        "AUS",
+        "PHL",
+        "THA"
+      ]
+    },
+    {
+      "id": "RUSBLR",
+      "name": "Russia and Belarus",
+      "side": "EAST",
+      "members": [
+        "RUS",
+        "BLR"
+      ],
+      "note": "A Union State; Russia is also bound to North Korea by a 2024 defence treaty."
+    },
+    {
+      "id": "CHNPRK",
+      "name": "China and North Korea",
+      "side": "EAST2",
+      "members": [
+        "CHN",
+        "PRK"
+      ],
+      "note": "Allied by treaty since 1961."
+    },
+    {
+      "id": "SAUPAK",
+      "name": "Saudi-Pakistani defence pact",
+      "side": "OTHER",
+      "members": [
+        "SAU",
+        "PAK"
+      ],
+      "note": "Strategic Mutual Defence Agreement signed in September 2025."
+    }
+  ],
+  "eraStatus": {
+    "PSX": {
+      "status": "NOT_INDEPENDENT",
+      "label": "West Bank",
+      "note": "Under Israeli occupation; the Palestinian Authority administers parts of it. Most UN members recognise a State of Palestine."
+    }
+  },
+  "merged": {},
+  "mapLabels": [],
+  "situations": [
+    {
+      "id": "ukraine",
+      "title": "Ceasefire or Collapse",
+      "kind": "WAR",
+      "phase": "ACTIVE",
+      "at": [
+        37.5,
+        47.8
+      ],
+      "countries": [
+        "RUS",
+        "UKR",
+        "USA"
+      ],
+      "weight": 5,
+      "line": {
+        "from": "RUS",
+        "to": "UKR",
+        "style": "front"
+      },
+      "since": "2022-02",
+      "flashpointId": "ceasefire-or-collapse",
+      "blurb": "Russia holds about a fifth of Ukraine but has gained almost nothing in 2026. US-brokered talks in Abu Dhabi are the only diplomacy in play.",
+      "sources": [
+        "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-october-16-2026",
+        "https://en.wikipedia.org/wiki/Peace_negotiations_in_the_Russian_invasion_of_Ukraine"
+      ]
+    },
+    {
+      "id": "hormuz",
+      "title": "Hormuz Convoy",
+      "kind": "WAR",
+      "phase": "ACTIVE",
+      "at": [
+        56.3,
+        26.6
+      ],
+      "countries": [
+        "USA",
+        "IRN",
+        "ISR"
+      ],
+      "weight": 5,
+      "line": {
+        "from": "USA",
+        "to": "IRN",
+        "style": "front"
+      },
+      "since": "2026-02",
+      "flashpointId": "hormuz-convoy",
+      "blurb": "Since the February strikes killed Ali Khamenei, a US naval blockade and IRGC attacks on shipping have kept an undeclared war going around Hormuz.",
+      "sources": [
+        "https://en.wikipedia.org/wiki/2026_Iran_war",
+        "https://en.wikipedia.org/wiki/2026_Iran_war_ceasefire"
+      ]
+    },
+    {
+      "id": "redsea",
+      "title": "Bab al-Mandab Burning",
+      "kind": "WAR",
+      "phase": "ACTIVE",
+      "at": [
+        43.3,
+        12.9
+      ],
+      "countries": [
+        "YEM",
+        "SAU"
+      ],
+      "weight": 4,
+      "line": {
+        "from": "YEM",
+        "to": "SAU",
+        "style": "front"
+      },
+      "since": "2026-09",
+      "flashpointId": "bab-al-mandab-burning",
+      "blurb": "The Houthis took Mokha in September. A Saudi-backed counteroffensive began in October after a Houthi strike on Riyadh's airport.",
+      "sources": [
+        "https://euronews.com/2026/09/10/houthis-seize-red-sea-port-city-in-push-to-seize-bab-el-mandeb",
+        "https://en.wikipedia.org/wiki/2026_Iran_war"
+      ]
+    },
+    {
+      "id": "taiwan",
+      "title": "Quarantine",
+      "kind": "SEA",
+      "phase": "ACTIVE",
+      "at": [
+        120.6,
+        24.2
+      ],
+      "countries": [
+        "CHN",
+        "TWN",
+        "USA"
+      ],
+      "weight": 4,
+      "line": {
+        "from": "CHN",
+        "to": "TWN",
+        "style": "blockade"
+      },
+      "since": "2025-12",
+      "flashpointId": "quarantine",
+      "blurb": "PLA drills in December 2025 rehearsed sealing off Keelung and Kaohsiung. Taipei's legislature has since cut the special defence budget.",
+      "sources": [
+        "https://focustaiwan.tw/politics/202512300008",
+        "https://focustaiwan.tw/politics/202604280021"
+      ]
+    },
+    {
+      "id": "water",
+      "title": "Water War",
+      "kind": "NUCLEAR",
+      "phase": "ACTIVE",
+      "at": [
+        74.5,
+        32.6
+      ],
+      "countries": [
+        "IND",
+        "PAK"
+      ],
+      "weight": 4,
+      "line": {
+        "from": "IND",
+        "to": "PAK",
+        "style": "rival"
+      },
+      "since": "2025-04",
+      "flashpointId": "water-war",
+      "blurb": "India has held the Indus Waters Treaty in abeyance since April 2025. Pakistan says diverting the western rivers would be an act of war.",
+      "sources": [
+        "https://www.isas.nus.edu.sg/papers/the-indus-waters-treaty-india-pakistan-tensions-persist/",
+        "https://en.wikipedia.org/wiki/2025_India%E2%80%93Pakistan_conflict"
+      ]
+    },
+    {
+      "id": "nile",
+      "title": "Fire on the Nile",
+      "kind": "REGIME",
+      "phase": "ACTIVE",
+      "at": [
+        32.5,
+        15.6
+      ],
+      "countries": [
+        "SDN",
+        "EGY"
+      ],
+      "weight": 3,
+      "since": "2023-04",
+      "flashpointId": "fire-on-the-nile",
+      "blurb": "Sudan's army and the RSF have fought since April 2023. The RSF took El Fasher in October 2025 and runs a parallel government from Nyala.",
+      "sources": [
+        "https://en.wikipedia.org/wiki/2026_in_Sudan",
+        "https://www.aljazeera.com/news/2026/7/6/el-obeid-under-siege-by-rsf-could-this-be-sudans-next-el-fasher"
+      ]
+    },
+    {
+      "id": "caracas",
+      "title": "Caracas After Maduro",
+      "kind": "REGIME",
+      "phase": "ACTIVE",
+      "at": [
+        -66.9,
+        10.5
+      ],
+      "countries": [
+        "VEN",
+        "CUB",
+        "USA"
+      ],
+      "weight": 3,
+      "since": "2026-01",
+      "flashpointId": "caracas-after-maduro",
+      "blurb": "A US raid captured Maduro in January; Delcy Rodríguez governs as acting president with no election date. A US oil blockade squeezes Cuba.",
+      "sources": [
+        "https://en.wikipedia.org/wiki/2026_in_Venezuela",
+        "https://en.wikipedia.org/wiki/2026_in_Cuba"
+      ]
+    },
+    {
+      "id": "pakafg",
+      "title": "Pakistan-Afghanistan war",
+      "kind": "WAR",
+      "phase": "ACTIVE",
+      "at": [
+        69.6,
+        33.6
+      ],
+      "countries": [
+        "PAK",
+        "AFG"
+      ],
+      "weight": 2,
+      "line": {
+        "from": "PAK",
+        "to": "AFG",
+        "style": "front"
+      },
+      "since": "2026-02",
+      "blurb": "Pakistan declared 'open war' on the Taliban government in February. Border clashes continue and the ceasefire is uncertain.",
+      "sources": [
+        "https://www.arabnews.pk/node/2622517"
+      ]
+    },
+    {
+      "id": "scarborough",
+      "title": "Scarborough Line",
+      "kind": "SEA",
+      "phase": "ACTIVE",
+      "at": [
+        117.8,
+        15.2
+      ],
+      "countries": [
+        "PHL",
+        "CHN"
+      ],
+      "weight": 2,
+      "since": "2012-04",
+      "flashpointId": "scarborough-line",
+      "blurb": "Chinese and Philippine ships faced off at the shoal in June and July 2026. Washington says the 1951 defence treaty covers Philippine forces there.",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Scarborough_Shoal",
+        "https://www.thejakartapost.com/world/2026/07/23/china-fires-water-cannon-on-philippine-ship-at-scarborough-shoal-manila-says"
+      ]
+    },
+    {
+      "id": "gaza",
+      "title": "Gaza ceasefire",
+      "kind": "WAR",
+      "phase": "FROZEN",
+      "at": [
+        34.4,
+        31.4
+      ],
+      "countries": [
+        "ISR",
+        "PSX"
+      ],
+      "weight": 2,
+      "since": "2025-10",
+      "blurb": "A ceasefire holds, with violations, and aid deliveries remain far below need.",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Gaza_war",
+        "https://en.wikipedia.org/wiki/Gaza_peace_plan"
+      ]
+    }
+  ]
+}
