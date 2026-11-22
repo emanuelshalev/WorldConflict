@@ -16,3 +16,4 @@ Lessons that would apply to any product using this loop. Newest at the bottom. P
 - **Make reaching the end a requirement**: personas that quit early never test the ending, which is what real users remember.
 - **Hold-out checks work**: keeping one real complaint secret and seeing whether the recalibrated panel finds it is a cheap fidelity measure.
 - **Shared brief files** keep parallel agent prompts short and consistent; per-agent prompts only add identity, port and topic.
+- **Check reports like code.** A status page edited by script shipped with a syntax error; `kit/page-check.mjs` now loads every tab and fails on script errors before any report is committed.

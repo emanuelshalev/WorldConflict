@@ -11,8 +11,9 @@ Version 1.2, 2026-11-22. Changed only through journal entries (`instances/*/jour
 6. **Parallel by default, isolated when touching shared files**: independent workstreams run as parallel agents with narrow briefs; overlapping edits use separate worktrees or are sequenced.
 7. **Verify before the panel sees it**: tests, lints, build, domain harnesses, smoke playtest through the real UI.
 8. **Isolate agents and respect capacity**: each agent has its own port, scratch and output folder; at most about 1 browser persona per 5 CPU cores at once.
-9. **Reach the end**: each usage round, at least 3 personas reach an end screen.
-10. **Report often**: the status page and journal are updated at each stage so the owner can follow without asking.
+9. **Check reports like code**: run `kit/page-check.mjs` on any status page before committing it.
+10. **Reach the end**: each usage round, at least 3 personas reach an end screen.
+11. **Report often**: the status page and journal are updated at each stage so the owner can follow without asking.
 
 ## Iteration
 | Stage | Who | Output |

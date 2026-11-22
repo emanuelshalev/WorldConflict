@@ -20,6 +20,8 @@ devloop/
     metrics.md         what the loop measures each iteration
   kit/
     kit.mjs            Playwright kit: act by visible label, screenshots, control dumps, frame bursts
+    driver.mjs, act.mjs persistent browser per persona, one command per shell call
+    page-check.mjs     loads a page, visits every tab, fails on script errors
   templates/           starting files for a new instance
   instances/
     world-conflict/    the first instance (a geopolitical strategy game)
