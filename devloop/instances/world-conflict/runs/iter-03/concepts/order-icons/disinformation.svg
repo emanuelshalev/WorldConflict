@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" fill="currentColor" role="img" aria-label="Feed disinformation" data-order-id="disinformation" data-family="intel">
+  <title>Feed disinformation</title>
+  <mask id="oi-disinformation" maskUnits="userSpaceOnUse" x="0" y="0" width="48" height="48"><rect width="48" height="48" fill="#fff"/><path d="M9 17C13 12 20 13 24 16.5C28 13 35 12 39 17C41 22 37 28 32 28C28 28 26 25 24 24C22 25 20 28 16 28C11 28 7 22 9 17Z" fill="#000"/><ellipse cx="16.5" cy="20.5" rx="3.6" ry="2.5" fill="#fff"/><ellipse cx="31.5" cy="20.5" rx="3.6" ry="2.5" fill="#fff"/></mask><g mask="url(#oi-disinformation)"><rect x="4" y="6" width="40" height="29" rx="9"/><path d="M12 33L9 43L21.5 34Z"/></g>
+</svg>

@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" fill="currentColor" role="img" aria-label="Hard crackdown" data-order-id="policing-hard" data-family="home">
+  <title>Hard crackdown</title>
+  <mask id="oi-policing-hard" maskUnits="userSpaceOnUse" x="0" y="0" width="48" height="48"><rect width="48" height="48" fill="#fff"/><rect x="10.5" y="8.5" width="17" height="7.5" rx="2" fill="#000"/><rect x="10.5" y="21" width="17" height="2.4" rx="1" fill="#000"/><path d="M28.5 45L44 13" fill="none" stroke="#000" stroke-width="9.5" stroke-linecap="round"/></mask><g mask="url(#oi-policing-hard)"><rect x="6.5" y="4.5" width="25" height="39" rx="5"/></g><path d="M28.5 45L44 13" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M31.2 36.6L38.6 40.2" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
