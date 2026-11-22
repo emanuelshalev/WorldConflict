@@ -2,14 +2,15 @@
   "id": "fire-on-the-nile",
   "title": "Fire on the Nile",
   "tagline": "Two generals, one country, and every neighbour holding a match.",
-  "hook": "Sudan's war between the army (SAF) and the Rapid Support Forces has run since April 2023 and become the world's largest displacement and hunger crisis. The RSF took El Fasher on 26 October 2025 amid mass atrocities, set up a parallel 'Tasis' government in Nyala and its own central bank (May 2026), and has besieged El Obeid, the gateway to Kordofan and the Nile valley, since July 2026. The Quad truce (US, Saudi Arabia, Egypt, UAE) has never held, and in September 2026 Ethiopia's Tigray war reignited next door, with Eritrean troops reported in Tigray.",
+  "hook": "Sudan's war between the army (SAF) and the Rapid Support Forces has run since April 2023 and become the world's largest displacement and hunger crisis. The RSF took El Fasher on 26 October 2025 amid mass atrocities, set up a parallel 'Tasis' government in Nyala and its own central bank (May 2026), and besieged El Obeid, the gateway to Kordofan and the Nile valley, from July 2026 until the army reportedly broke the siege in November. The Quad truce (US, Saudi Arabia, Egypt, UAE) has never held, and in September 2026 Ethiopia's Tigray war reignited next door, with Eritrean troops reported in Tigray.",
   "sources": [
     "https://www.aljazeera.com/news/2026/7/6/el-obeid-under-siege-by-rsf-could-this-be-sudans-next-el-fasher",
     "https://en.wikipedia.org/wiki/2026_in_Sudan",
     "https://tribune.com.pk/story/2633644/eritrean-troops-deployed-in-ethiopias-tigray-region",
     "https://www.thestar.com.my/news/world/2026/09/23/tigrayan-leaders-say-new-war-with-ethiopian-government-has-begun-as-fighting-erupts",
     "https://www.aljazeera.com/news/2026/11/14/how-saf-successes-in-sudans-kordofan-could-turn-tide-against-the-rsf",
-    "https://www.aljazeera.com/news/2026/9/29/ethiopia-blames-regional-rivals-as-risk-of-conflict-spillover-rises"
+    "https://www.aljazeera.com/news/2026/9/29/ethiopia-blames-regional-rivals-as-risk-of-conflict-spillover-rises",
+    "https://en.wikipedia.org/wiki/Siege_of_El_Obeid"
   ],
   "scenarioId": "2026",
   "date": "2026-11",
@@ -243,7 +244,7 @@
   "objectives": {
     "SDN": {
       "title": "Hold the centre",
-      "briefing": "You command what remains of the Sudanese state from Port Sudan, with El Obeid under siege, famine spreading and a rival government in Nyala asking the world for recognition. Keep the army standing, keep your patrons in Cairo engaged and keep the country from splitting in two. There are no clean options; there are only fewer dead.",
+      "briefing": "You command what remains of the Sudanese state from Port Sudan, with the siege of El Obeid only just reportedly broken, famine spreading and a rival government in Nyala asking the world for recognition. Keep the army standing, keep your patrons in Cairo engaged and keep the country from splitting in two. There are no clean options; there are only fewer dead.",
       "primary": [
         {"kind": "INSURGENCY_MAX", "level": "REBELLION", "label": "Contain the RSF: insurgency pushed back to rebellion or less (El Obeid holds)"},
         {"kind": "RELATION_MIN", "targetId": "EGY", "min": 37, "label": "Cairo still in your corner (relations 37+)"},
@@ -255,7 +256,7 @@
         {"kind": "SCORE_PAR", "min": 71, "label": "Score of 71+"}
       ],
       "par": 97,
-      "debrief": "What really happened: a power struggle between two generals who had seized power together in 2021 became, from April 2023, the world's largest displacement and hunger crisis. The army retook Khartoum in March 2025, but the RSF took El Fasher in October 2025 with mass atrocities, built a parallel government in Nyala and besieged El Obeid in 2026, while gold, Gulf money and drones kept both sides fighting and the Quad truce never held. What experts fear: a Libya-style permanent east-west partition, famine on a historic scale, and spillover into a Horn of Africa war involving Ethiopia, Eritrea and Egypt.",
+      "debrief": "What really happened: a power struggle between two generals who had seized power together in 2021 became, from April 2023, the world's largest displacement and hunger crisis. The army retook Khartoum in March 2025, but the RSF took El Fasher in October 2025 with mass atrocities, built a parallel government in Nyala and besieged El Obeid in 2026 (the army reportedly broke the siege in November), while gold, Gulf money and drones kept both sides fighting and the Quad truce never held. What experts fear: a Libya-style permanent east-west partition, famine on a historic scale, and spillover into a Horn of Africa war involving Ethiopia, Eritrea and Egypt.",
       "reality": {
         "asOf": "2026-11",
         "rows": [

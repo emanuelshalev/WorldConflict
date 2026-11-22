@@ -87,6 +87,8 @@ Every order shows whether you can give it before you pick it. An order you can't
 | Propose ceasefire | 1 | Sabotage / destabilize / arm rebels | 2 |
 | Declare war | 2 | Assassination / back a coup | 3 |
 
+An assassination or coup against a target that is still too protected is refused before it runs, and no capital is spent: an assassination needs the target's stability under 40 or active unrest, a coup needs an armed insurgency or stability under 25. The order card says so and suggests weakening the target first (Destabilize or Arm rebels).
+
 Denouncing is free, but it only rallies voters against an adversary (a historical rival or a country you are at odds with), only the first denunciation each month counts, and it counts less with each month you repeat it within six months. Condemning a partner costs approval, and repeated grandstanding against bystanders starts to cost it too.
 
 ### Words the game uses

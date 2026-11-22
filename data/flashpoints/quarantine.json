@@ -2,13 +2,15 @@
   "id": "quarantine",
   "title": "Quarantine",
   "tagline": "No blockade, no war, no gas: just very thorough customs officers.",
-  "hook": "In December 2025 the PLA's Justice Mission-2025 drills rehearsed sealing off Keelung and Kaohsiung, days after a record US$11.1bn US arms package. In 2026 Taiwan's opposition-run legislature cut President Lai's NT$1.25 trillion special defence budget roughly in half, and after the May 2026 Beijing summit Trump publicly warned Taipei against independence. Taiwan imports about 97% of its energy and reportedly holds only around 11 days of LNG.",
+  "hook": "In December 2025 the PLA's Justice Mission-2025 drills rehearsed sealing off Keelung and Kaohsiung, days after a record US$11.1bn US arms package. In 2026 Taiwan's opposition-run legislature cut President Lai's NT$1.25 trillion special defence budget by about 38%, to NT$780 billion, and after the May 2026 Beijing summit Trump publicly warned Taipei against independence. Taiwan imports about 97% of its energy and reportedly holds only around 11 days of LNG.",
   "sources": [
     "https://focustaiwan.tw/politics/202512300008",
     "https://focustaiwan.tw/politics/202604280021",
     "https://theonlinecitizen.com/2026/05/16/trump-warns-taiwan-against-independence-after-beijing-summit-with-xi-jinping",
     "https://ktvz.com/money/cnn-business-consumer/2026/01/06/china-bans-certain-rare-earths-and-other-exports-to-japan-for-military-purposes-over-takaichis-comments/",
-    "https://www.opb.org/article/2026/01/24/china-s-top-general-under-investigation-in-latest-military-purge/"
+    "https://www.opb.org/article/2026/01/24/china-s-top-general-under-investigation-in-latest-military-purge/",
+    "https://breakingdefense.com/2026/05/taiwans-parliament-passes-pared-back-supplementary-defense-budget/",
+    "https://focustaiwan.tw/politics/202605080022"
   ],
   "scenarioId": "2026",
   "date": "2026-12",

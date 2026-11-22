@@ -2,7 +2,7 @@
   "id": "hormuz-convoy",
   "title": "Hormuz Convoy",
   "tagline": "A fifth of the world's oil, one narrow strait, and nobody willing to blink first.",
-  "hook": "Since the US–Israeli strikes of 28 February 2026 killed Ali Khamenei, Iran and the United States have fought an undeclared war: a US naval blockade of Iranian ports (from 13 April, reimposed 8 July after a brief Islamabad framework collapsed) against IRGC attacks on more than 24 ships near Hormuz in October alone. President Trump pledged no new strikes before the 3 November midterms; on 31 October Iran's foreign minister called a letter from Vice President Vance a 'positive step'. The IAEA believes more than 200 kg of 60% enriched uranium is likely intact in the Isfahan tunnels, unseen by inspectors since February.",
+  "hook": "Since the US–Israeli strikes of 28 February 2026 killed Ali Khamenei, Iran and the United States have fought an undeclared war: a US naval blockade of Iranian ports (from 13 April, reimposed 8 July after a brief Islamabad framework collapsed) against IRGC attacks on more than 24 ships near Hormuz in October alone. President Trump pledged no new strikes before the 3 November midterms; on 31 October Tehran called a letter from Vice President Vance a 'positive step', though no meeting was planned. The IAEA believes more than 200 kg of 60% enriched uranium is likely intact in the Isfahan tunnels, unseen by inspectors since February.",
   "sources": [
     "https://en.wikipedia.org/wiki/2026_Iran_war",
     "https://en.wikipedia.org/wiki/2026_Iran_war_ceasefire",
@@ -12,7 +12,9 @@
     "https://www.energyconnects.com/news/gas-lng/2026/may/uae-is-said-to-have-hit-iran-earlier-in-war-as-israel-ties-grow/",
     "https://www.aljazeera.com/news/2026/11/2/iran-pushing-accelerated-plan-for-ceasefire-talks-with-us",
     "https://euronews.com/2026/11/21/iran-attacks-us-bases-in-bahrain-as-its-tankers-get-ready-to-break-the-us-blockade",
-    "https://www.al-monitor.com/originals/2026/09/us-and-iran-discuss-phased-deal-reopen-hormuz-and-end-us-blockade-sources-say"
+    "https://www.al-monitor.com/originals/2026/09/us-and-iran-discuss-phased-deal-reopen-hormuz-and-end-us-blockade-sources-say",
+    "https://easternherald.com/2026/10/31/rezaei-vance-letter-us-iran-talks/",
+    "https://www.egypttoday.com/Article/1/150341/Iran's-top-security-official-says-US-tone-has-changed-completely"
   ],
   "scenarioId": "2026",
   "date": "2026-11",
@@ -478,7 +480,7 @@
         "turn": 0,
         "templateId": "ir_vance_letter",
         "headline": "The Vance letter: Washington writes to Mohsen Rezaei",
-        "text": "The American vice president has written to a veteran IRGC commander rather than to the government, a calculated snub and a calculated opening. The foreign minister calls it 'a positive step'. The Guards' naval commanders want to answer with another tanker.",
+        "text": "The American vice president has written to a veteran IRGC commander rather than to the government, a calculated snub and a calculated opening. Tehran calls it 'a positive step' and plans no meeting. The Guards' naval commanders want to answer with another tanker.",
         "decision": {
           "title": "Answering Washington",
           "situation": "Engaging through Oman could lift the blockade and will be read by the hardliners as fear. Answering with fire in the strait reminds the world what Hormuz costs and invites the next American salvo. Saying nothing while hitting shipping through deniable proxies keeps everyone guessing, including your own people.",

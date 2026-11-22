@@ -2,7 +2,7 @@
   "id": "bab-al-mandab-burning",
   "title": "Bab al-Mandab Burning",
   "tagline": "Two chokepoints, one war, and the Gulf's last sea exit in Houthi rifle range.",
-  "hook": "In September 2026 the Houthis broke out of their Red Sea enclave and took the port of Mokha (10 Sep), with reports, not independently confirmed, that they also seized Perim island and Dhubab at the mouth of the strait. A Saudi-backed counteroffensive by the recognised government began on 4 October; on 10 October a Houthi strike on Riyadh's airport killed 13. The southern separatist STC 'dissolved' itself in January after its leader fled to Abu Dhabi, a move few believe, and the Saudi–Emirati rift over Yemen and Sudan has never been wider. Egypt watches its Suez revenue vanish.",
+  "hook": "In September 2026 the Houthis broke out of their Red Sea enclave and took the port of Mokha (10 Sep), with reports, not independently confirmed, that they also seized Perim island and Dhubab at the mouth of the strait. A Saudi-backed counteroffensive by the recognised government began on 4 October and retook Dhubab; on 10 October a Houthi strike on Riyadh's airport killed 13, and on 15 November government forces withdrew from the strait area to defend Aden. The southern separatist STC 'dissolved' itself in January after its leader fled to Abu Dhabi, a move few believe, and the Saudi–Emirati rift over Yemen and Sudan has never been wider. Egypt watches its Suez revenue vanish.",
   "sources": [
     "https://euronews.com/2026/09/10/houthis-seize-red-sea-port-city-in-push-to-seize-bab-el-mandeb",
     "https://wtop.com/world/2026/01/yemens-southern-transitional-council-to-dismantle-a-day-after-its-leader-fled-to-the-uae/",
@@ -11,7 +11,8 @@
     "https://www.aljazeera.com/news/2026/11/15/yemeni-government-forces-redeploy-from-bab-al-mandeb-to-defend-aden",
     "https://www.thenationalnews.com/news/mena/2026/11/15/southern-yemeni-forces-withdraw-from-area-near-bab-al-mandab/",
     "https://npr.org/2026/09/18/nx-s1-5973810/houthi-attacks-saudi-oil-world-markets",
-    "https://www.aljazeera.com/news/2026/10/6/yemen-war-whats-the-latest-on-the-battlefield"
+    "https://www.aljazeera.com/news/2026/10/6/yemen-war-whats-the-latest-on-the-battlefield",
+    "https://cyprus-mail.com/2026/11/15/yemen-government-forces-withdraw-from-area-near-bab-al-mandab-strait-houthis-in-control"
   ],
   "scenarioId": "2026",
   "date": "2026-11",
@@ -55,7 +56,7 @@
         {"kind": "RELATION_MIN", "targetId": "USA", "min": 70, "label": "Washington firmly behind you (US relations 70+)"}
       ],
       "par": 117,
-      "debrief": "What really happened: the Iran war turned the Houthis from a shipping nuisance into a force contesting the strait itself; by October 2026 they held Mokha, reportedly Perim, and could hit Riyadh, while the Saudi-backed counteroffensive ground forward slowly. What experts fear: a permanent closure of Bab al-Mandab that, together with Hormuz, cuts both of the Gulf's sea exits, and a Saudi–Emirati rift that hands the south of Yemen to whoever has the most guns.",
+      "debrief": "What really happened: the Iran war turned the Houthis from a shipping nuisance into a force contesting the strait itself; by October 2026 they held Mokha, reportedly Perim, and could hit Riyadh, while a Saudi-backed counteroffensive retook Dhubab in October and then withdrew from the strait area on 15 November. What experts fear: a permanent closure of Bab al-Mandab that, together with Hormuz, cuts both of the Gulf's sea exits, and a Saudi–Emirati rift that hands the south of Yemen to whoever has the most guns.",
       "reality": {
         "asOf": "2026-11",
         "rows": [
@@ -168,7 +169,7 @@
         {"kind": "STAT_MIN", "stat": "stability", "min": 35, "label": "No bread riots in Sanaa (stability 35%+)"}
       ],
       "par": 97,
-      "debrief": "What really happened: after the 2022 truce the Houthis built a missile and drone arsenal, used the Gaza war and then the 2026 Iran war to attack shipping and Israel, and in September 2026 seized Mokha in a push on Bab al-Mandab. A Saudi-backed counteroffensive followed in October. What experts fear: a movement that controls the strait and the hunger of millions, which can hold world trade hostage for salaries and recognition, and finds that it works.",
+      "debrief": "What really happened: after the 2022 truce the Houthis built a missile and drone arsenal, used the Gaza war and then the 2026 Iran war to attack shipping and Israel, and in September 2026 seized Mokha in a push on Bab al-Mandab. A Saudi-backed counteroffensive followed in October, and government forces withdrew from the strait area on 15 November. What experts fear: a movement that controls the strait and the hunger of millions, which can hold world trade hostage for salaries and recognition, and finds that it works.",
       "reality": {
         "asOf": "2026-11",
         "rows": [
