@@ -17,7 +17,7 @@ export default defineConfig({
     // The store calls a relative `/api` (VITE_API_BASE overrides it in production);
     // in dev, forward those calls to the Fastify backend.
     proxy: {
-      '/api': 'http://localhost:8080',
+      '/api': process.env.VITE_API_PROXY ?? 'http://localhost:8080',
     },
   },
 })

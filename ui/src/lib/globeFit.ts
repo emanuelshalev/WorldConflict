@@ -36,6 +36,28 @@ export function titleInsets(width: number, height: number, dossier: number): Ins
   return { top: 112, right: dossier > 0 ? dossier + 12 : 0, bottom: 20, left: width >= 1280 ? 230 : 0 };
 }
 
+/**
+ * Insets of the in-game map (3.1): the canvas runs under the glass HUD and the command strip, so
+ * the free box is measured from the page: top = the HUD's bottom, bottom = the command strip and
+ * ticker (when they cover the canvas), right = an open drawer or dossier. `el` is the map container.
+ */
+export function gameInsets(el: HTMLElement): Insets {
+  const c = el.getBoundingClientRect();
+  const out: Insets = { top: 0, right: 0, bottom: 0, left: 0 };
+  const over = (r: DOMRect) => r.width > 0 && r.height > 0 && r.left < c.right && r.right > c.left && r.top < c.bottom && r.bottom > c.top;
+  const hud = document.querySelector('.hud')?.getBoundingClientRect();
+  if (hud && over(hud)) out.top = Math.max(0, hud.bottom - c.top);
+  for (const sel of ['.cmd-strip', '.ticker']) {
+    const r = document.querySelector(sel)?.getBoundingClientRect();
+    if (r && over(r) && r.top > c.top + c.height / 2) out.bottom = Math.max(out.bottom, c.bottom - r.top);
+  }
+  for (const sel of ['.drawer', '.dossier']) {
+    const r = document.querySelector(sel)?.getBoundingClientRect();
+    if (r && over(r) && r.left > c.left + c.width / 3 && r.height > c.height / 3) out.right = Math.max(out.right, c.right - r.left);
+  }
+  return out;
+}
+
 export interface FreeBox extends Insets {
   width: number;
   height: number;
@@ -91,6 +113,10 @@ export function fitGlobe(map: maplibregl.Map, box: FreeBox): number {
 export interface GlobeFitState {
   /** The current fit zoom (NaN until the first fit). */
   fit: number;
+  /** The latitude of the centre when the fit was measured (the fit zoom depends on it). */
+  fitLat: number;
+  /** The target diameter of the last fit, px. */
+  diameter: number;
   /** True once the player zoomed by hand: a resize then keeps their offset from the fit. */
   userZoomed: boolean;
 }
@@ -100,6 +126,25 @@ export interface GlobeFitHandle {
   fit: () => number;
   /** After a framed pick or "Whole world": resizes re-fit again instead of keeping a hand zoom. */
   resetUserZoom: () => void;
+  /**
+   * The fit zoom for a camera centred at `lat`. MapLibre's globe draws a bigger disc at the same
+   * zoom further from the equator (it keeps the scale of the centre latitude), so the fit zoom
+   * depends on where the camera looks. Measured, not modelled: the camera jumps there and back
+   * inside one task (no frame is drawn in between).
+   */
+  fitAt: (lat: number) => number;
+}
+
+/** The zoom at which the globe centred at (lng, lat) has `diameter` px; the camera is restored. */
+export function zoomForDiameterAt(map: maplibregl.Map, lng: number, lat: number, diameter: number, start: number): number {
+  const saved = { center: map.getCenter(), zoom: map.getZoom() };
+  let z = start;
+  for (let i = 0; i < 3; i++) {
+    map.jumpTo({ center: [lng, lat], zoom: z });
+    z = zoomForDiameter(z, measureDiameter(map), diameter, map.getMinZoom(), map.getMaxZoom());
+  }
+  map.jumpTo(saved);
+  return z;
 }
 
 /**
@@ -112,7 +157,11 @@ export function useGlobeFit(
   getInsets: (width: number, height: number) => Insets,
   onFit?: (fit: number, state: GlobeFitState) => void,
 ): GlobeFitHandle {
-  const state = useRef<GlobeFitState>({ fit: Number.NaN, userZoomed: false });
+  const state = useRef<GlobeFitState>({ fit: Number.NaN, fitLat: 0, diameter: 0, userZoomed: false });
+  const mapRef = useRef(map);
+  useEffect(() => {
+    mapRef.current = map;
+  });
   const insetsRef = useRef(getInsets);
   const onFitRef = useRef(onFit);
   useEffect(() => {
@@ -134,6 +183,8 @@ export function useGlobeFit(
       const oldFit = s.fit;
       const fit = fitGlobe(map, box);
       s.fit = fit;
+      s.fitLat = map.getCenter().lat;
+      s.diameter = box.diameter;
       if (s.userZoomed && Number.isFinite(oldFit)) {
         map.jumpTo({ zoom: Math.min(map.getMaxZoom(), Math.max(map.getMinZoom(), fit + (before - oldFit))) });
       }
@@ -162,6 +213,12 @@ export function useGlobeFit(
       fit: () => state.current.fit,
       resetUserZoom: () => {
         state.current.userZoomed = false;
+      },
+      fitAt: (lat: number) => {
+        const s = state.current;
+        const m = mapRef.current;
+        if (!m || !Number.isFinite(s.fit) || !(s.diameter > 0) || Math.abs(lat - s.fitLat) < 0.5) return s.fit;
+        return zoomForDiameterAt(m, m.getCenter().lng, lat, s.diameter, s.fit);
       },
     }),
     [],

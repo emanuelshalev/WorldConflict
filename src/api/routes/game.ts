@@ -6,7 +6,7 @@ const turnsInFlight = new Set<string>();
 
 /** Malformed requests are the client's fault (400), not the server's (500). */
 function errorStatus(error: unknown): number {
-  return error instanceof z.ZodError ? 400 : 500;
+  return error instanceof z.ZodError || error instanceof UnplayableNationError ? 400 : 500;
 }
 
 import { AIConfigSchema, planTurn } from "../../agents/strategist.js";
@@ -19,7 +19,11 @@ import {
   suggestionImpact,
 } from "../../core/advisors.js";
 import { BUDGET_SHARE, PC_CAP, politicalCapitalIncome } from "../../core/costs.js";
-import { createDataLoader, type DataLoader } from "../../core/data-loader.js";
+import {
+  createDataLoader,
+  type DataLoader,
+  UnplayableNationError,
+} from "../../core/data-loader.js";
 import { buildEraMap } from "../../core/era-map.js";
 import { objectiveStatus } from "../../core/objectives.js";
 import { ENGINE_ORDERS } from "../../core/orders.js";

@@ -128,6 +128,22 @@ export const EraStatusSchema = z.object({
 });
 export type EraStatus = z.infer<typeof EraStatusSchema>;
 
+/**
+ * Why a nation cannot be led in this era (B-17): it is part of another state or not independent
+ * ("Ukrainian SSR", "Trucial States"). Null when it is a state and playable.
+ */
+export function unplayableReason(scenario: ScenarioData, countryId: string): string | null {
+  const era = scenario.eraStatus[countryId];
+  if (!era) return null;
+  const what = era.status === "PART_OF" ? "is not a state" : "is not independent";
+  return `${era.label} ${what} in ${scenario.startYear}.${era.note ? ` ${era.note}` : ""}`;
+}
+
+/** A request to lead a nation that does not exist as a state in the chosen era (HTTP 400). */
+export class UnplayableNationError extends Error {
+  readonly status = 400;
+}
+
 export const MapLabelSchema = z.object({
   at: LngLatSchema,
   name: z.string(),
@@ -429,6 +445,8 @@ export class DataLoader {
       world.difficulty = difficulty;
       return world;
     }
+    const reason = unplayableReason(this.loadScenario(options.scenarioId), playerCountryId);
+    if (reason) throw new UnplayableNationError(reason);
     const world = this.initializeWorldState(options.scenarioId, playerCountryId, seed, leaderName);
     const mode = options.mode ?? "TERM";
     world.mode = mode;

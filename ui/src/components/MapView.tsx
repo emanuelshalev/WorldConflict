@@ -11,6 +11,7 @@ import {
   IconShield,
   IconCoin,
   IconMapPin,
+  IconWorld,
   type Icon,
 } from '@tabler/icons-react';
 import { useGameStore } from '../store/gameStore';
@@ -27,6 +28,9 @@ import { HotspotCard } from './HotspotCard';
 import { heat, hotspotLine } from '../lib/hotspots';
 import { FAMILY_COLOR, actionFamily } from '../scenes/actionIcons';
 import { frontPoint, loadWorld } from '../scenes/worldGeo';
+import { PHONE_MAX, gameInsets, useGlobeFit } from '../lib/globeFit';
+import { FONT_SEMIBOLD, GLYPHS_URL, LABEL_MIN_PX, labelFeatures, labelFilter } from '../lib/mapLabels';
+import { iconSvg } from '../lib/iconSvg';
 
 /** Lat/long grid every 20 degrees: the ops-display look under the land. */
 function graticule(): GeoJSON.FeatureCollection {
@@ -192,6 +196,7 @@ export function MapView() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const [mapReady, setMapReady] = useState(false);
+  const [fitTarget, setFitTarget] = useState<{ map: maplibregl.Map; el: HTMLElement } | null>(null);
   const [showGuide, setShowGuide] = useState(false);
   // G toggles the legend in Map mode
   useEffect(() => {
@@ -240,7 +245,8 @@ export function MapView() {
       // Keyless style: stylized ocean + Natural Earth land polygons (no tile provider)
       style: {
         version: 8,
-        glyphs: 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf',
+        // Self-hosted Latin glyphs (ui/public/glyphs, shared with the title globe)
+        glyphs: `${window.location.origin}${import.meta.env.BASE_URL ?? '/'}${GLYPHS_URL.replace(/^\//, '')}`,
         sources: {},
         layers: [{ id: 'ocean', type: 'background', paint: { 'background-color': '#0b1a30' } }],
         // A real globe with an atmosphere halo, flattening to Mercator as you zoom in
@@ -571,13 +577,19 @@ export function MapView() {
         filter: ['==', ['get', 'kind'], 'label'],
         layout: {
           'text-field': ['get', 'name'],
-          'text-size': ['interpolate', ['linear'], ['zoom'], 1.2, 10, 4, 13],
+          // Tiers (design-worldmap.md 3.2): 15 px for the big and the picked, never under 13 px;
+          // the filter shows tiers by zoom relative to the fit (useGlobeFit below)
+          'text-size': ['coalesce', ['get', 'size'], LABEL_MIN_PX],
+          'text-font': ['literal', FONT_SEMIBOLD],
+          'symbol-sort-key': ['coalesce', ['get', 'sort'], 9999],
           'text-allow-overlap': false,
           // Pins reserve their space (pin-reserve below): the name moves to a free side or drops
           'text-variable-anchor': ['top', 'bottom', 'left', 'right'],
           'text-radial-offset': 1.2,
+          'text-padding': 3,
+          'text-max-width': 7,
         },
-        paint: { 'text-color': '#e8ecf2', 'text-halo-color': '#0b0f17', 'text-halo-width': 1.4 },
+        paint: { 'text-color': '#e8ecf2', 'text-halo-color': '#05080f', 'text-halo-width': 1.6, 'text-halo-blur': 0.4 },
       });
       // Invisible footprints of the DOM pins, above the labels so they are placed first and labels
       // collide with them (design-feel 8.3; reserveFeatures in mapMarkers.ts)
@@ -856,6 +868,7 @@ export function MapView() {
       map.on('zoom', onZoom);
 
       setMapReady(true);
+      setFitTarget({ map, el: map.getContainer() });
       setAsleep(covered(useGameStore.getState()));
     });
 
@@ -872,7 +885,50 @@ export function MapView() {
     };
   }, []);
 
-  // Open on the player's own country
+  // Fit (design-worldmap.md 3.1): the whole globe fills the free part of the stage, on load and on
+  // every resize; names by tier relative to the fit (3.2)
+  const fitter = useGlobeFit(fitTarget?.map ?? null, fitTarget?.el ?? null, () => (mapRef.current ? gameInsets(mapRef.current.getContainer()) : { top: 64, right: 0, bottom: 0, left: 0 }), (fit) => {
+    const map = mapRef.current;
+    if (map?.getLayer('country-labels')) map.setFilter('country-labels', ['all', ['==', ['get', 'kind'], 'label'], labelFilter(map.getZoom(), fit, window.innerWidth <= PHONE_MAX)] as unknown as maplibregl.FilterSpecification);
+  });
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapReady) return;
+    const tiers = () => {
+      const fit = fitter.fit();
+      if (Number.isFinite(fit) && map.getLayer('country-labels')) map.setFilter('country-labels', ['all', ['==', ['get', 'kind'], 'label'], labelFilter(map.getZoom(), fit, window.innerWidth <= PHONE_MAX)] as unknown as maplibregl.FilterSpecification);
+    };
+    map.on('zoomend', tiers);
+    // "Whole world" (Tabler IconWorld, 44 px) next to the zoom buttons: back to the fit
+    const ctrl: maplibregl.IControl = {
+      onAdd: () => {
+        const box = document.createElement('div');
+        box.className = 'maplibregl-ctrl maplibregl-ctrl-group wcm-world';
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.title = 'Whole world';
+        b.setAttribute('aria-label', 'Whole world: show the whole globe');
+        b.innerHTML = iconSvg(IconWorld, '#e8ecf2');
+        b.addEventListener('click', () => {
+          fitter.resetUserZoom();
+          const lat = Math.max(-35, Math.min(35, map.getCenter().lat));
+          const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+          map.easeTo({ center: [map.getCenter().lng, lat], zoom: fitter.fitAt(lat), duration: reduced ? 0 : 600 });
+        });
+        box.append(b);
+        return box;
+      },
+      onRemove: () => undefined,
+    };
+    map.addControl(ctrl, 'bottom-left');
+    return () => {
+      map.off('zoomend', tiers);
+      map.removeControl(ctrl);
+    };
+  }, [mapReady, fitter]);
+
+  // Open on the player's own country: the whole globe at the fit, turned to the capital's
+  // longitude (latitude held within 35 degrees so the globe stays whole)
   const playerCountryId = worldState?.playerCountryId;
   useEffect(() => {
     const map = mapRef.current;
@@ -881,9 +937,11 @@ export function MapView() {
       useGameStore.getState().worldState?.countries.find((c) => c.id === playerCountryId)?.capital ??
       COUNTRY_CENTERS[playerCountryId];
     if (capital) {
-      map.flyTo({ center: capital, zoom: window.innerWidth < 700 ? 1.9 : 2.4, speed: 0.8 });
+      const lat = Math.max(-35, Math.min(35, capital[1]));
+      const fit = fitter.fit();
+      map.jumpTo({ center: [capital[0], lat], ...(Number.isFinite(fit) ? { zoom: fitter.fitAt(lat) } : {}) });
     }
-  }, [playerCountryId, mapReady]);
+  }, [playerCountryId, mapReady, fitter]);
 
   // ------------------------------------------------------------------
   // Data -> map sync, split so each source is uploaded only when its data changes
@@ -993,8 +1051,12 @@ export function MapView() {
     const map = mapRef.current;
     if (!map || !mapReady || !selectedCountryId) return;
     const center = COUNTRY_CENTERS[selectedCountryId];
-    if (center) map.flyTo({ center, zoom: Math.max(map.getZoom(), 2.6), speed: 1.1, curve: 1.3 });
-  }, [selectedCountryId, mapReady]);
+    if (!center) return;
+    // Frame the pick a little closer than the fit, within [fit, fit + 2]; a deeper hand zoom stays
+    const fit = fitter.fitAt(center[1]);
+    const zoom = Number.isFinite(fit) ? Math.min(fit + 2, Math.max(fit + 0.8, map.getZoom())) : Math.max(map.getZoom(), 2.6);
+    map.flyTo({ center, zoom, speed: 1.1, curve: 1.3 });
+  }, [selectedCountryId, mapReady, fitter]);
 
   // 4. The state of the world as map elements: wars, news, pacts, troops, capitals, status icons
   useEffect(() => {
@@ -1089,16 +1151,21 @@ export function MapView() {
     // Capitals as small dots; labels, nuclear and insurgency badges at the anchors
     const capitals: GeoJSON.Feature[] = [];
     const icons: GeoJSON.Feature[] = [];
+    // Label tiers by area, the player's own country first (lib/mapLabels.ts, shared with the title)
+    const tierOf = new Map(
+      labelFeatures(geo, { roster: playerView.map((v) => v.id), restrict: true, labelAllow: [], player: me }).map((f) => [f.properties.id, f.properties]),
+    );
     for (const view of playerView) {
       const cap = capitalOf(view.id);
       if (cap) capitals.push(point(cap, { mine: view.id === me }));
       const center = COUNTRY_CENTERS[view.id];
       if (!center) continue;
-      icons.push(point(center, { kind: 'label', name: view.name }));
+      const t = tierOf.get(view.id);
+      icons.push(point(center, { kind: 'label', name: view.name, tier: t?.tier ?? 2, size: t?.size ?? LABEL_MIN_PX, sort: t?.sort ?? 9999 }));
     }
     // Hot zones with an outline of their own (Gaza) get a name on the map too
     for (const h of worldState.hotspots ?? []) {
-      if (!playerView.some((v) => v.id === h.mapId)) icons.push(point([h.center[0] - 0.35, h.center[1] - 0.1], { kind: 'label', name: h.name.replace(' Strip', '') }));
+      if (!playerView.some((v) => v.id === h.mapId)) icons.push(point([h.center[0] - 0.35, h.center[1] - 0.1], { kind: 'label', name: h.name.replace(' Strip', ''), tier: 2, size: LABEL_MIN_PX, sort: 5000 }));
     }
     // Status badges, strike sites, war fronts and refugees as animated HTML markers
     const sig = deriveSignals(worldState, playerView);
@@ -1263,6 +1330,10 @@ export function MapView() {
         .maplibregl-ctrl-bottom-left .maplibregl-ctrl-attrib a:hover {
           color: rgba(220, 228, 240, 0.85);
         }
+        .wcm-world.maplibregl-ctrl-group { background: rgba(12, 17, 28, 0.9); border: 1px solid #3a4759; }
+        .wcm-world button { width: 44px !important; height: 44px !important; display: grid !important; place-items: center; }
+        .wcm-world button svg { width: 20px; height: 20px; }
+        .wcm-world button:hover { background: rgba(255, 255, 255, 0.08) !important; }
       `}</style>
     </div>
   );
