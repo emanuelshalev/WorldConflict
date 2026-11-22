@@ -45,7 +45,7 @@
 .rc-chip { display: inline-flex; align-items: center; gap: 4px; min-height: 36px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--surface-2); color: var(--text-1); font: inherit; font-size: 13px; cursor: pointer; text-align: left; }
 .rc-chip.v-good { border-color: rgba(86, 197, 150, .5); }
 .rc-chip.v-bad { border-color: rgba(229, 56, 59, .5); }
-.rc-foot { display: flex; align-items: center; gap: 12px; margin-top: 4px; padding-top: 12px; border-top: 1px solid var(--line); flex-wrap: wrap; }
+.rc-foot { display: flex; align-items: center; gap: 12px; margin-top: 4px; padding: 12px 0 2px; border-top: 1px solid var(--line); flex-wrap: wrap; position: sticky; bottom: -18px; background: var(--surface-1); z-index: 2; }
 .rc-secondary { min-height: 48px; }
 .rc-read { display: inline-flex; align-items: center; gap: 5px; min-height: 44px; font-size: 14px; color: var(--text-2); }
 .rc-next { margin-left: auto; min-height: 52px; padding: 0 22px; font-size: 17px; font-weight: 800; }

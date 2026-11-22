@@ -53,7 +53,7 @@ export function GoalLine() {
         <span className="goal-sum num">{summary}</span>
       </button>
       {stepText && stepC && (
-        <button type="button" className="goal-step" onClick={() => point(step)} title="Show what moves it this month">
+        <button type="button" className="goal-step" onClick={() => point(step)} title={`This month: ${stepText}. Press to see what moves it.`}>
           <span className="goal-step-k">This month:</span> <b>{stepText}</b>
         </button>
       )}
