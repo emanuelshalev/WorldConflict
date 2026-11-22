@@ -1,0 +1,25 @@
+{
+  "headline": "A real step up: the month now reads as one move with a goal, and the game is no longer blocking people. Nobody quit except Ruth (on the country picker). What holds scores at 6 is trust: the end screens and numbers sometimes contradict what the player did, the desk is still a lot to take in at once, and unfamiliar names are not yet explained.",
+  "loved": [
+    {"what": "One clear move per month with illustrated cards and Helps/Hurts tags", "who": ["maya", "olivia", "noah", "leo", "sam"]},
+    {"what": "The end-of-game reveal: stamp, seals, the truth table, the ranking ladder", "who": ["maya", "leo", "priya", "noah"]},
+    {"what": "Never blocked: reasons and fixes on the order cards, the seal meter that explains itself", "who": ["dan", "sam", "priya", "maya"]},
+    {"what": "The goal line and the result card saying what my choice did", "who": ["maya", "olivia", "ruth", "dan"]}
+  ],
+  "patterns": [
+    {"id": "F-01-2", "title": "The ending contradicts what I did", "detail": "Never Fired a Shot after ordering strikes; the truth table says no peace after Sign the ceasefire; a verdict that contradicts itself; Master Diplomat on a failed mission.", "who": ["maya", "ruth", "noah"], "goal": "G10", "tone": "bad"},
+    {"id": "F-01-1", "title": "The country picker is a work form", "detail": "Pick a country opens a native dropdown of 41 names with unexplained numbers; hard on touch, impossible to type into. Ruth's quit point.", "who": ["ruth", "leo", "dan", "marcus"], "goal": "G1 G6 G8", "tone": "bad", "ceo": true},
+    {"id": "F-01-3", "title": "Numbers that disagree", "detail": "The same figure with different values in one debrief, tension credited to the wrong order, a forecast that contradicts the result, a green bar next to a red chip.", "who": ["marcus", "dan", "sam"], "goal": "G7", "tone": "bad"},
+    {"id": "F-01-4", "title": "Still a lot at once", "detail": "Month 1 shows mission, crisis, three cards, cabinet pick, advisors, seals, budgets and a coach together; the briefing lists 7 goals with numbers; the result card is dense and looks the same every month.", "who": ["ruth", "noah", "olivia", "leo"], "goal": "G4 G7 G8", "tone": "bad", "ceo": true},
+    {"id": "F-01-5", "title": "Names I do not know", "detail": "21 unknown-term flags (IRGC, Bandar Abbas, Rada, Pokrovsk axis...) while the learning aids are still being built.", "who": ["olivia", "noah", "ruth", "maya", "leo"], "goal": "G12", "tone": "wish", "ceo": true},
+    {"id": "F-01-6", "title": "What do I spend this on? How much does it do?", "detail": "Unspent political capital with no obvious big move (Olivia); cards show direction but not size (Dan wants plus or minus N before committing).", "who": ["olivia", "dan", "noah"], "goal": "G5", "tone": "bad"},
+    {"id": "F-01-7", "title": "History has to stay plausible", "detail": "Anachronistic 1990 world events (Ukraine signing a pact with Denmark); midterms dated wrongly; Priya wants the middle months about the real Ukraine talks.", "who": ["marcus", "priya"], "goal": "G9 G11", "tone": "bad"},
+    {"id": "F-01-8", "title": "Late months go flat", "detail": "The last months become Execute on defaults; the result card art repeats; Leo wants more big moments mid-game, Marcus a branch from any month.", "who": ["noah", "leo", "marcus"], "goal": "G7 G10", "tone": "wish"}
+  ],
+  "surprises": [
+    "Olivia, the early quitter, finished her session (recommend 3 to 6).",
+    "Noah lost his mission by one point and still wanted to share the card, if it had not called him Master Diplomat.",
+    "The four personas who reached or chose the end liked the reveal most; Priya said she kept playing to see the debrief."
+  ],
+  "environment": "Clean run: GPU rendering, 4 to 5 browsers at a time, no freezes. Several 'retry' frictions were label taps on card titles that the driver could not resolve (coordinate taps worked); logged as a harness item."
+}

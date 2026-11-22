@@ -1,0 +1,49 @@
+{
+"persona":"marcus","variant":"marcus-legacy","panel_version":"1.2","build":"e0e42bc","iteration":1,"minutes_played":45,
+"scenarios":[
+{"id":"K2","outcome":"partial","turns":14,"steps":["Legacy, 1990 era, United States (Bush)","Month 1 North Korea incident, called quietly","Played 13 months with Approve and Execute, a few hand-picked orders (Court Cuba, Renegotiate Soviet offer)","Read the Chronicle for Nov 1990 to check plausibility"],"notes":"World looks right on the surface (Bush, Thatcher, Kohl, Kaifu, Mitterrand, Hawke, Jiang, Ozal, Kim Il Sung) but events drift from history: no Iraq-Kuwait crisis by month 11, Ukraine as a sovereign state signing pacts, cyber attacks, an outbreak, a Pakistani nuclear test in June 1990."},
+{"id":"K1","outcome":"abandoned","turns":0,"steps":["Looked in Menu and Saved games for a way to replay a crisis with the opposite choice"],"notes":"No visible way to branch or replay from a past month; not tested further."}
+],
+"friction":[
+{"where":"Title, era picker","expected":"Header date and tension to follow the chosen era","happened":"Header still says 22 Nov 2026, Tension 74 after choosing 1990","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/marcus-legacy/003-era1990.png"},
+{"where":"Title, Russia dossier in 1990","expected":"Soviet Union text","happened":"Blurb describes modern Russia (hybrid warfare, post-Cold War settlement); Ukraine drawn as separate country","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/marcus-legacy/003-era1990.png"},
+{"where":"Desk, month 1 onward","expected":"Mission worth 120 months","happened":"Mission is only 'Stay in power / survive to the end of your term'; no goals for a decade","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/marcus-legacy/005-start.png"},
+{"where":"Result card and What happened","expected":"One consistent set of numbers","happened":"Approval 70% vs 71.1 vs 71, change -4 vs -3; score 103 vs 104 on sibling pages; table shows tension 42.6 while HUD shows 47","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/marcus-legacy/009-all.png"},
+{"where":"Result card, Feb 1990","expected":"Reason approval fell after a conciliatory call","happened":"Says 'your choices -3, everything else 0' but a quiet call with Kim was the only choice; the Why? link did not open anything for me","kind":"hesitation","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/marcus-legacy/007-m1.png"},
+{"where":"Result card, Jun 1990","expected":"Tension +14 explained","happened":"Tension jump 33 to 47 shown under Court North Korea; real cause (a Pakistani nuclear test in the ticker) not tied to it","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/marcus-legacy/027-d6.png"},
+{"where":"Staff suggestions","expected":"Fresh advice","happened":"Foreign Minister re-suggests Court North Korea every month; relation snaps back to -99 and the same -99 to -94 card repeats (Jun, Aug)","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/marcus-legacy/032-res7.png"},
+{"where":"Orders menu, target picker","expected":"Pick a country in the list","happened":"Target is a plain dropdown; typing into it did nothing; I got orders only via the map","kind":"parity","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/marcus-legacy/017-orders.png"},
+{"where":"Desk, Foreign Minister quote","expected":"Readable quote","happened":"Quote squeezed into a one-word-per-line column next to the Chronicle drawer and in Full desk","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/marcus-legacy/037-chron.png"},
+{"where":"Map, Cuba","expected":"Plain relation word","happened":"Cuba shown as 'Lamentable -81'","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/marcus-legacy/025-court.png"},
+{"where":"Debrief, Gaza Strip","expected":"Meaning of FAILED stamp","happened":"'Gaza Strip: worse this month, FAILED, Hunger 45 to 51' with no explanation of what failed; 'Hot zone' and 'Uprising' unexplained","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/marcus-legacy/011-home.png"},
+{"where":"Crisis cards: Hack back, Grid down, Outbreak, Lock the country down","expected":"1990 events","happened":"Cyber-attack and pandemic crises in 1990","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/marcus-legacy/033-res8.png"},
+{"where":"Result card after Execute","expected":"Immediate result","happened":"Desk for next month shows for a second or two before the result card appears; I almost clicked Execute twice","kind":"hesitation","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/marcus-legacy/026-r5.png"},
+{"where":"Global ticker and Chronicle","expected":"Concepts I know","happened":"Unknown to Marcus: Hot zone, Hunger meter, Legitimacy, cabinet seals; Africa/SE Asia names (Omar al-Bashir era Sudan, North Yemen) I only half knew; the game explained none in place","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/marcus-legacy/037-chron.png"}
+],
+"bugs":[
+{"title":"Same figure shown with different values within one debrief","steps":["Play month 1 as US 1990","Execute, open See everything, compare cards"],"expected":"Approval and score identical everywhere","actual":"Approval 70 / 71.1 / 71, delta -4.0 vs -3, score 103 vs 104","severity":"S2","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/marcus-legacy/009-all.png"},
+{"title":"Tension rise credited to the wrong order","steps":["Month 5 court Cuba, execute"],"expected":"Tension rise explained by its cause","actual":"+14 appears under Court North Korea; table says 42.6 while HUD says 47","severity":"S2","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/marcus-legacy/027-d6.png"},
+{"title":"Anachronistic world events in 1990","steps":["Play 1990 Legacy 11 months, read Chronicle"],"expected":"Events plausible for the era","actual":"Ukraine-Denmark pact, Pakistan nuclear test, Salinas re-elected, cyber and pandemic crises, no Gulf crisis","severity":"S2","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/marcus-legacy/037-chron.png"},
+{"title":"Header shows 2026 date and tension on era select","steps":["Title, Legacy, pick 1990"],"expected":"1990 context","actual":"22 Nov 2026, Tension 74","severity":"S4","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/marcus-legacy/003-era1990.png"}
+],
+"suggestions":[
+{"what":"Add a causes list to every month: each stat change with its named cause (order, event, drift), same numbers on every page","goal_served":"K1 and K2: follow cause and effect"},
+{"what":"A branch/replay button: restart from any past month with a different choice and compare the two timelines side by side","goal_served":"K1"},
+{"what":"Era filter on events and crises so 1990 gets 1990 problems (Gulf, German unification, Soviet breakup)","goal_served":"K2"},
+{"what":"Searchable country list instead of a native dropdown in the orders menu","goal_served":"K2"},
+{"what":"Stop the staff re-adding an order that did nothing lasting; say why it is suggested again","goal_served":"K2"}
+],
+"delight":["Globe map with 1990 names (West Germany) and relation arcs (devloop/instances/world-conflict/runs/iter-01/shots/marcus-legacy/023-map2.png)","Era-accurate leaders in the title card (devloop/instances/world-conflict/runs/iter-01/shots/marcus-legacy/005-start.png)","Orders show a forecast and a chance before commitment (devloop/instances/world-conflict/runs/iter-01/shots/marcus-legacy/025-court.png)","Result card writes a plain sentence of what the choice did, with before and after numbers (devloop/instances/world-conflict/runs/iter-01/shots/marcus-legacy/007-m1.png)"],
+"scores":{
+"fun":{"value":6,"reason":"Handsome and the monthly rhythm is clean, but I kept pressing Approve because nothing pushed back."},
+"clarity":{"value":6,"reason":"Result card is clear; conflicting numbers and misattributed tension undercut it."},
+"visual":{"value":8,"reason":"Map and illustrated scenes are strong on a laptop."},
+"feels_like_a_game":{"value":7,"reason":"Reads as a crafted product, closer to a board game turn than a dashboard."},
+"agency":{"value":6,"reason":"Never blocked, but orders by dropdown failed and staff defaults made choices for me."},
+"realism":{"value":4,"reason":"Right leaders, wrong history: events anachronistic, Gulf crisis absent, Soviet Union shown as modern Russia."},
+"replay":{"value":4,"reason":"No visible way to rerun a month with a different choice."},
+"recommend":{"value":5,"reason":"Nice, but I could not yet trust it as a what-if tool."}
+},
+"quit_point":null,
+"verbatim":"The leaders are right, so why is Ukraine signing a pact with Denmark in 1990? I want to test counterfactuals, and I cannot trust a counterfactual on a world that has already left the real one."
+}

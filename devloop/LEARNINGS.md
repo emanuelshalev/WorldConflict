@@ -20,3 +20,5 @@ Lessons that would apply to any product using this loop. Newest at the bottom. P
 - **Audit the harness before trusting the panel.** Our first kit made controls look dead (role filter), hid dialogs, and starved the CPU (software rendering). Reproducing each bug with a human-like tap separated product bugs from harness bugs; 2 of 10 were the harness.
 - **Navigate by structure, not by copy.** Test scripts that click by page names break when designers rename things.
 - **Track consumption from day one, from the transcripts.** Exact usage is already logged per response; attributing it needs only consistent agent descriptions and stage boundaries. Weighted tokens (price ratios) make cache-heavy agent work comparable.
+- **Parallel writers need a combine-and-check step.** When two agents write to one shared store, merge their branches in a scratch worktree and run the consistency checks before touching the main branch; name a single owner for shared entities in the briefs.
+- **Briefs as files make work restartable.** A usage pause mid-round cost little because every stage had a brief file and agents could resume with their context.

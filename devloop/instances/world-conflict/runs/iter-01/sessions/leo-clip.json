@@ -1,0 +1,199 @@
+{
+ "persona": "leo",
+ "variant": "leo-clip",
+ "panel_version": "1.2",
+ "build": "e0e42bc",
+ "iteration": 1,
+ "minutes_played": 35,
+ "scenarios": [
+  {
+   "id": "L1",
+   "outcome": "achieved",
+   "turns": 12,
+   "steps": [
+    "Picked Hormuz Convoy (open war) on the globe, Take office as United States",
+    "Hit the IRGC navy now (the loudest option) month 1",
+    "Emergency security powers month 2",
+    "Played to month 12, See your verdict, achievements, moments, ranking, share card"
+   ],
+   "notes": "Got a stamped 'Mission failed' D grade, 'Reckless Adventurer' and a share card. Good, but the middle months were same-template result cards."
+  },
+  {
+   "id": "L2",
+   "outcome": "achieved",
+   "turns": 12,
+   "steps": [
+    "Full desk > All orders > Declare war on Australia (confirm face, WAR DECLARED stinger, UK joined)",
+    "Checked nuclear strike on Australia: disabled with a clear reason 'Only in wartime'",
+    "Month 11 queued war and sabotage again, no visible dispatch"
+   ],
+   "notes": "War worked and was showy. Nukes refused with a readable reason. Could not reach a nuke or coup cleanly."
+  }
+ ],
+ "friction": [
+  {
+   "where": "Start screen, Focus desk",
+   "expected": "tap a card to choose",
+   "happened": "text click failed and tapping the card scrolled; only the button label 'Hit the IRGC navy now' worked, no clear pick affordance until YOUR PICK stamp appeared",
+   "kind": "retry",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-01/shots/leo-clip/007-pick2.png"
+  },
+  {
+   "where": "Full desk > All orders",
+   "expected": "type 'nuke' in search",
+   "happened": "typing went to hotkeys (staged orders, ticker), search box not focused",
+   "kind": "misread",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-01/shots/leo-clip/016-nuke.png"
+  },
+  {
+   "where": "All orders target picker",
+   "expected": "tap country list",
+   "happened": "native select, 'Pick a country' buttons do nothing; needed select focus plus arrow keys. On a phone this is slow for chaos moves",
+   "kind": "blocked",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-01/shots/leo-clip/020-o5.png"
+  },
+  {
+   "where": "Month result after declaring war on Australia",
+   "expected": "headline about my war",
+   "happened": "headline 'The war with Iran is over' and front 67 to 67 0, my war only in newspaper",
+   "kind": "misread",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-01/shots/leo-clip/028-war.png"
+  },
+  {
+   "where": "Months 4 to 10 result card",
+   "expected": "new stinger or scene",
+   "happened": "same room image and same bar layout every month, looks dead on camera",
+   "kind": "dashboard-feel",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-01/shots/leo-clip/042-res9.png"
+  },
+  {
+   "where": "Month 11 orders",
+   "expected": "war and sabotage show in What happened",
+   "happened": "diplomacy list shows only Spy on Iran and the crisis, my queued orders not visible",
+   "kind": "other",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-01/shots/leo-clip/059-dip.png"
+  },
+  {
+   "where": "Achievements",
+   "expected": "achievements match my run",
+   "happened": "Peacemaker and Landslide on a Mission failed war run",
+   "kind": "misread",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-01/shots/leo-clip/066-v2.png"
+  },
+  {
+   "where": "Share screen, Phone card and Save card",
+   "expected": "visible result",
+   "happened": "no feedback, no preview, nothing changed on screen",
+   "kind": "hesitation",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-01/shots/leo-clip/074-phonecard.png"
+  },
+  {
+   "where": "Title and crisis text",
+   "expected": "know the names",
+   "happened": "IRGC, Muscat, Isfahan's tunnels, Mojtaba Khamenei, Bandar Abbas, minehunters, midterms mechanics not explained; the cabinet pick quote helped a little",
+   "kind": "naming",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-01/shots/leo-clip/003-desk.png"
+  },
+  {
+   "where": "Political capital",
+   "expected": "spend it on chaos",
+   "happened": "capital piled up to 6 unused by month 12 because staff defaults were boring and wild orders hide in All orders",
+   "kind": "other",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-01/shots/leo-clip/062-end1.png"
+  }
+ ],
+ "bugs": [
+  {
+   "title": "Typing on All orders triggers hotkeys",
+   "steps": [
+    "Full desk",
+    "All orders",
+    "Type nuke"
+   ],
+   "expected": "search filter",
+   "actual": "hotkeys fire (K, J, N)",
+   "severity": "S3",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-01/shots/leo-clip/016-nuke.png"
+  },
+  {
+   "title": "Pick a country buttons inert",
+   "steps": [
+    "All orders",
+    "tap Pick a country"
+   ],
+   "expected": "opens target picker",
+   "actual": "nothing happens",
+   "severity": "S3",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-01/shots/leo-clip/022-o7.png"
+  },
+  {
+   "title": "Month 11 war and sabotage orders not in debrief",
+   "steps": [
+    "Queue Declare war and Sabotage",
+    "Execute"
+   ],
+   "expected": "dispatch cards",
+   "actual": "not listed in Diplomacy items",
+   "severity": "S3",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-01/shots/leo-clip/059-dip.png"
+  }
+ ],
+ "suggestions": [
+  {
+   "what": "Tap-to-pick country list with search on phone, and a visible Wild moves shelf (war, strike, nuke) on the focus desk",
+   "goal_served": "L2 try crazy moves quickly"
+  },
+  {
+   "what": "Full-screen stinger for every big result (victory, collapse), not only WAR DECLARED",
+   "goal_served": "L1 clip-able moments"
+  },
+  {
+   "what": "Show the share card full-size with a visible Saved or Copied confirmation",
+   "goal_served": "L1 end screen worth posting"
+  }
+ ],
+ "delight": [
+  "WAR DECLARED live-address stinger (burst-027-war/000.png)",
+  "Confirm face 'There is no undo' with allies listed (025-o10.png)",
+  "Newspaper front page after the war (030-m4b.png)",
+  "MISSION FAILED stamp, D grade and 'Reckless Adventurer' (064-v1.png)",
+  "Share card with seed and best moment 'Declare war on Australia' (073-share.png)",
+  "The fog lifts: estimate vs actual (070-v6.png)"
+ ],
+ "scores": {
+  "fun": {
+   "value": 7,
+   "reason": "War and stingers popped; mid months flat."
+  },
+  "clarity": {
+   "value": 6,
+   "reason": "Goal line clear; names and order picker confusing."
+  },
+  "visual": {
+   "value": 7,
+   "reason": "Stinger, paper, verdict look great; result cards repeat."
+  },
+  "feels_like_a_game": {
+   "value": 7,
+   "reason": "Stamps, grades, ladder feel like a game."
+  },
+  "agency": {
+   "value": 6,
+   "reason": "War worked, nukes refused clearly, but wild moves are buried and the picker is clunky."
+  },
+  "realism": {
+   "value": 6,
+   "reason": "Peacemaker on a war run, Iran war ended headline after my Australia war."
+  },
+  "replay": {
+   "value": 7,
+   "reason": "Replay same opening and seed sharing invite another try."
+  },
+  "recommend": {
+   "value": 7,
+   "reason": "The ending sequence is clip-worthy; I would stream it once I could do chaos faster."
+  }
+ },
+ "quit_point": null,
+ "verbatim": "Chat is gonna love 'Reckless Adventurer'. But why did I have to arrow-key a dropdown to start a war?"
+}

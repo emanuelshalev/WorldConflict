@@ -1,0 +1,32 @@
+{
+"persona":"olivia","variant":"olivia-phone","panel_version":"1.2","build":"e0e42bc","iteration":1,"minutes_played":9,
+"scenarios":[
+{"id":"O1","outcome":"achieved","turns":6,"steps":["Opened title, saw globe with pins","Tapped Take office as United States (Hormuz Convoy)","Skimmed mission briefing, tapped Take office","Picked a card, Execute month, read result, Next month"],"notes":"First choice made in about 40 seconds, result card with numbers moving in about 60 seconds."},
+{"id":"O2","outcome":"partial","turns":6,"steps":["War with Iran ended after month 1 choice (escorts)","Never found a way to make peace myself beyond the cards offered; left 4 political capital unspent"],"notes":"The cards gave me big-feeling choices but I did not see an 'I stopped a war' moment I caused on purpose."}],
+"friction":[
+{"where":"Briefing screen, mission list","expected":"Start playing","happened":"Wall of 7 goals with numbers (approval 44%, needs 56%, UAE relations 75, needs 66) before first action","kind":"dashboard-feel","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/olivia-phone/002-start.png"},
+{"where":"Briefing and first crisis","expected":"Understand the situation","happened":"IRGC, midterm clock, Muscat, Bandar Abbas, Qatari text: names and acronyms I do not know, no help on screen","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/olivia-phone/003-desk.png"},
+{"where":"Cards: Hurts line","expected":"Plain reason","happened":"'Hurts: Approval of 56%+ after the midterms' is long goal-speak; tags 'Gaza order', 'contributors', 'Mobilization' unclear","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/olivia-phone/010-m3.png"},
+{"where":"Bottom bar","expected":"Know what '1 left · 2 decided' means","happened":"Counter and coin icons with no explanation; I did not know what to spend the coins on","kind":"hesitation","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/olivia-phone/005-pick.png"},
+{"where":"Month 3 card tap via text label","expected":"Card selects","happened":"Driver text tap failed (harness); coordinate tap worked","kind":"retry","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/olivia-phone/005-pick.png"},
+{"where":"Crisis text","expected":"Quick read","happened":"Body paragraph cut with a small More link; fine, but crisis headings like 'Cabinet pick: Reply via Muscat' were opaque","kind":"hesitation","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/olivia-phone/003-desk.png"},
+{"where":"Month 7 coins","expected":"Spend them for something big","happened":"4 coins banked, nothing told me what big move they buy","kind":"hesitation","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/olivia-phone/021-m7.png"}],
+"bugs":[
+{"title":"Gaza civil order falls and Egypt view falls but card is stamped STEP ACHIEVED","steps":["Month 3 pick Let the region sort it out","Execute"],"expected":"Stamp matches clear gain","actual":"Stamp shown while Egypt's view dropped and a mission goal still off track","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/olivia-phone/014-e3.png"}],
+"suggestions":[
+{"what":"Collapse the briefing to one sentence and 2 or 3 goals with icons; skip numbers until asked","goal_served":"O1"},
+{"what":"Gloss unknown names inline in a few words (IRGC = Iran's navy and army)","goal_served":"O1"},
+{"what":"Explain coins once on screen and offer one obvious big action (make peace) to spend them on","goal_served":"O2"}],
+"delight":["Globe title with pins feels like a game (devloop/instances/world-conflict/runs/iter-01/shots/olivia-phone/001-title.png)","Your Pick stamp on the card (devloop/instances/world-conflict/runs/iter-01/shots/olivia-phone/006-pick2.png)","Month result card with bars moving and newspaper line (devloop/instances/world-conflict/runs/iter-01/shots/olivia-phone/009-e2.png)","The war with Iran is over after my first choice (devloop/instances/world-conflict/runs/iter-01/shots/olivia-phone/010-m3.png)","Step achieved stamp (devloop/instances/world-conflict/runs/iter-01/shots/olivia-phone/014-e3.png)","Best for your mission tag told me what to pick"],
+"scores":{
+"fun":{"value":7,"reason":"Choice then visible result within a minute, nice art and stamps; the choices stayed abstract."},
+"clarity":{"value":5,"reason":"Cards are clear; names, goal-speak and coins are not."},
+"visual":{"value":8,"reason":"Painted scenes and globe look like a real game, not work software."},
+"feels_like_a_game":{"value":7,"reason":"Stamps, results and tags feel game-like; briefing list does not."},
+"agency":{"value":6,"reason":"Never blocked, but pre-selected cabinet picks and unspent coins made me feel steered."},
+"realism":{"value":6,"reason":"I cannot judge; war ending in one month felt too easy."},
+"replay":{"value":5,"reason":"Would try another place if a friend asked, not on my own."},
+"recommend":{"value":6,"reason":"I would send it to a friend who likes politics, not to my nurse friends."}},
+"quit_point":null,
+"verbatim":"Oh, the stamp is cute. But who is the IRGC and what is a Muscat? I just pick the one the game says is best."
+}

@@ -1,0 +1,46 @@
+{
+"persona":"maya","variant":"maya-laptop","panel_version":"1.2","build":"e0e42bc","iteration":1,"minutes_played":25,
+"scenarios":[
+{"id":"M1","outcome":"achieved","turns":12,"steps":["Title globe, picked Ceasefire or Collapse","Chose Ukraine side","Read mission screen, took office","Chose the tagged option each month and used Approve staff picks + Execute","Month 12 signing table, sign ceasefire","Went through all 8 end pages"],"notes":"Knew at the end I won (Mission complete, B, 2 stars) but not clearly why only 2 stars."},
+{"id":"M2","outcome":"achieved","turns":12,"steps":["Played all 12 months with no block","Used Approve staff picks every month"],"notes":"Never stuck. Some outcome pages repeated the same card layout."}
+],
+"friction":[
+{"where":"Title, side picker","expected":"Button names the side highlighted","happened":"After switching flashpoint to Ukraine the highlighted card was Ukraine but the button still said Take office as United States; had to tap the card again","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/maya-laptop/003-pick2.png"},
+{"where":"Title, flashpoint cards","expected":"Tap name to pick","happened":"Text tap on Ukraine card did nothing, needed a point tap","kind":"retry","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/maya-laptop/004-side.png"},
+{"where":"Month debrief card at 1366x768","expected":"See Next month button","happened":"Card footer (Next month, See everything) cut off at the bottom on month 1","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/maya-laptop/009-ex1.png"},
+{"where":"Crisis cards month 1","expected":"Green Best for your mission tag to match the hurts line","happened":"Reject it and strike is tagged Best for your mission while showing Hurts: Keep Washington engaged; contradictory","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/maya-laptop/007-m1.png"},
+{"where":"Desk, newspaper","expected":"Execute moves on","happened":"Newspaper opened by accident and covered the desk; had to find Next month in the corner","kind":"backtrack","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/maya-laptop/024-cur.png"},
+{"where":"Crisis text","expected":"Know the terms","happened":"Pokrovsk axis, Rada, Mojtaba Khamenei, ISW, Abu Dhabi talks: no explanation","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/maya-laptop/007-m1.png"},
+{"where":"Sanctions on Iran month 2","expected":"A card about my war","happened":"Vote on Iran sanctions as Ukraine, felt unrelated; Iran/Hormuz context never explained","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/maya-laptop/009-ex1.png"},
+{"where":"End count","expected":"Why an election result","happened":"377 seats Majority won in a Ukraine ceasefire game; confusing","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/maya-laptop/031-fin1.png"},
+{"where":"Achievements","expected":"Matches my play","happened":"Never Fired a Shot earned after I chose strike, special forces, burn refineries","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/maya-laptop/034-fin3.png"},
+{"where":"The truth page","expected":"Ceasefire I signed shows","happened":"No peace by the end, and A Peace That Holds achievement locked after I picked Sign the ceasefire","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/maya-laptop/038-fin7.png"},
+{"where":"Ranking vs share card","expected":"One consistent standing","happened":"Better than 22% of leaders on screen, Top 78% on card, yet Mission complete and B","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/maya-laptop/041-share.png"}
+],
+"bugs":[
+{"title":"Side picker button label stale","steps":["Title","Pick a different flashpoint via the dropdown/pin"],"expected":"Button names the highlighted side","actual":"Still names the previous flashpoint's side (United States)","severity":"S2","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/maya-laptop/003-pick2.png"},
+{"title":"Debrief card footer clipped at 768 high","steps":["Play month 1 as Ukraine","Execute"],"expected":"Next month visible","actual":"Footer buttons cut off","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/maya-laptop/009-ex1.png"},
+{"title":"Never Fired a Shot achievement after strikes","steps":["Choose Reject it and strike, Send in special forces","Finish"],"expected":"Achievement withheld","actual":"Awarded","severity":"S2","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/maya-laptop/034-fin3.png"},
+{"title":"Truth page says no peace after Sign the ceasefire","steps":["Month 12 choose Sign the ceasefire","Reach The truth page"],"expected":"Peace recorded","actual":"No peace by the end; peace achievement locked","severity":"S2","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/maya-laptop/038-fin7.png"},
+{"title":"Newspaper blurb contradicts numbers","steps":["Reach How you were seen"],"expected":"Approval 63 to 67 reads as fine","actual":"The public stopped listening, under a steady hand headline","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/maya-laptop/036-fin5.png"}
+],
+"suggestions":[
+{"what":"Make the side button follow the highlighted card","goal_served":"M2"},
+{"what":"Tell the player in one line why they got 2 stars and what the third needs, on the verdict page","goal_served":"M1"},
+{"what":"One standing line (percentile) used everywhere","goal_served":"M1"},
+{"what":"Gloss unfamiliar names inline on the crisis card","goal_served":"M2"}
+],
+"delight":["Mission screen with four goals and a bar at the top; I always knew what to do (devloop/instances/world-conflict/runs/iter-01/shots/maya-laptop/006-start.png)","Cabinet pick plus Approve staff picks and Execute: a month in under 20 seconds (devloop/instances/world-conflict/runs/iter-01/shots/maya-laptop/007-m1.png)","The Reveal sequence and share card felt like a real finish (devloop/instances/world-conflict/runs/iter-01/shots/maya-laptop/033-fin2.png, devloop/instances/world-conflict/runs/iter-01/shots/maya-laptop/041-share.png)"],
+"scores":{
+"fun":{"value":7,"reason":"Quick loop and strong finale; middle months felt samey because I just approved picks."},
+"clarity":{"value":8,"reason":"Goal bar and this-month chip told me what to do; a few contradictions in tags and end pages."},
+"visual":{"value":8,"reason":"Broadcast scenes and globe look crafted; debrief card clips on a small laptop."},
+"feels_like_a_game":{"value":8,"reason":"Has a goal, pacing, finale, grade and share card."},
+"agency":{"value":7,"reason":"Never blocked, but Approve-all made it feel like the cabinet played for me."},
+"realism":{"value":5,"reason":"Achievement and truth page contradicted my choices; unrelated Iran cards."},
+"replay":{"value":7,"reason":"Seed, replay and other flashpoints are tempting."},
+"recommend":{"value":7,"reason":"Would tell a friend, with the end screen inconsistencies as the main caveat."}
+},
+"quit_point":null,
+"verbatim":"I won, got a B, and I think I know why. But it said no peace after I signed the ceasefire, and I never fired a shot after striking three times. Which is it?"
+}

@@ -1,0 +1,47 @@
+{
+ "persona": "dan", "variant": "dan-legacy", "panel_version": "1.2", "build": "e0e42bc", "iteration": 1, "minutes_played": 35,
+ "scenarios": [
+  {"id":"D1","outcome":"partial","turns":12,"steps":["Chose Legacy, 2026 era, Russia, Hard","Read the mission (only 'survive')","Read the score explainer and the Why? link","Probed the All orders menu, the target dropdown, a Call meeting, the map order panel with chances and Forecast","Approved staff picks and executed 12 months, read the Table view each month"],"notes":"Only 12 of 120 months played, so I can state some rules (score drift, capital, order effects) but not the long game."},
+  {"id":"D2","outcome":"partial","turns":12,"steps":["Looked for a dominant move","Found the staff re-adding 'Mobilize forces' every month at 100% mobilization, costing stability for nothing","Could not run controlled tests with the country picker"],"notes":"I saw one repeated move that is bad, not one that wins. Not enough months to say whether a dominant strategy exists."}
+ ],
+ "friction": [
+  {"where":"Title screen, Legacy side list","expected":"Know what the dots next to nations mean","happened":"Dots (one to three) next to each nation have no label; I guessed difficulty. Tough nations are the three-dot ones, but not said","kind":"naming","screenshot":"shots/dan-legacy/003-pick.png"},
+  {"where":"Mission screen in Legacy","expected":"Something to optimise over 120 months","happened":"The only goal is 'Survive to the end of your term'. My round-1 complaint (nothing to optimise) is still there on day one","kind":"other","screenshot":"shots/dan-legacy/005-brief.png"},
+  {"where":"Desk month 1, Political capital","expected":"Choose where my capital goes","happened":"Staff had pre-spent 2 of my 3 seals on Mobilize forces and Court Poland before I touched anything; I had to find the small X to get them back","kind":"hesitation","screenshot":"shots/dan-legacy/006-desk.png"},
+  {"where":"All orders, Pick a country and the Target dropdown","expected":"Choose Ukraine and order a ceasefire","happened":"The Target control is a plain native dropdown with bracketed numbers (relations score, unexplained). Typing 'Ukr' + Enter did not select it. Two blocks, so I dropped to the Call meeting route","kind":"blocked","screenshot":"shots/dan-legacy/013-iran.png"},
+  {"where":"Call meeting, Zelensky","expected":"Readable cabinet-pick row","happened":"'Staff would answer: Offer talks on a ceasefire' pill overlaps the Foreign Minister text and a 'Send a deputy' button is cut off at the right edge","kind":"other","screenshot":"shots/dan-legacy/015-call.png"},
+  {"where":"Order cards","expected":"Sizes of effects","happened":"Cards show direction only (Approval up, Economy down, +1 more) with no magnitudes before I commit. The numbers only appear after Execute","kind":"dashboard-feel","screenshot":"shots/dan-legacy/016-dem.png"},
+  {"where":"Month 1 result, Demand a full withdrawal","expected":"Zelensky reacts to a demand","happened":"'President Zelensky listens, and promises nothing' with Tension 74 to 73 (the card said Tension would go up). The card forecast and the result disagree and I got no reason","kind":"misread","screenshot":"shots/dan-legacy/021-tbl.png"},
+  {"where":"Month 1 table, Court Poland","expected":"Poland warmer","happened":"Poland's view of you fell -80 to -92 while mine rose -80 to -73; the order was labelled Court. Fine if intended but no rule shown","kind":"misread","screenshot":"shots/dan-legacy/021-tbl.png"},
+  {"where":"Result card, the 'Why?' link and chips","expected":"Tap to open the explanation","happened":"Click by label on Why? and on the chips did not register; tapping the chip by coordinates worked (maybe a driver issue)","kind":"retry","screenshot":"shots/dan-legacy/019-why.png"},
+  {"where":"Staff re-adding Mobilize forces monthly","expected":"A useful suggestion","happened":"Mobilization already 100 to 100 and each order cost stability (57 to 55) and capital; 'It is your 6th order of this kind' and still suggested. Looks like fake depth in the advisor","kind":"other","screenshot":"shots/dan-legacy/041-chip.png"},
+  {"where":"Map order panel (Poland)","expected":"Read the whole forecast","happened":"Forecast text runs under the bottom bar and the card is cut off","kind":"other","screenshot":"shots/dan-legacy/033-fc.png"},
+  {"where":"Names and concepts","expected":"Be told who they are","happened":"Camille Girard (President of France) I did not know; Tusk and Díaz-Canel I did. 'Seals', 'exhaustion 51%', 'Front 55/100', 'Intelligence on Turkey 73.8 to 95' and 'Reassure: no threat intended' are not defined; the bracket numbers in the dropdown not either. Tusk as Poland PM I knew","kind":"naming","screenshot":"shots/dan-legacy/041-chip.png"}
+ ],
+ "bugs": [
+  {"title":"Native Target dropdown does not accept typing in the All orders panel","steps":["Desk, Full desk, All orders","Focus Target: pick a country","Type Ukr, press Enter"],"expected":"Ukraine selected and order buttons enabled","actual":"Still 'Target: pick a country'","severity":"S3","screenshot":"shots/dan-legacy/014-ukr.png"},
+  {"title":"Cabinet pick pill overlaps text on a Call meeting","steps":["Open a Call from Meetings"],"expected":"Clean layout","actual":"Pill and Foreign Minister quote overlap, button cut off","severity":"S4","screenshot":"shots/dan-legacy/015-call.png"},
+  {"title":"Forecast contradicts result for Demand full withdrawal","steps":["Call Zelensky","Pick Demand a full withdrawal","Execute"],"expected":"Tension up, Ukraine view down, as forecast","actual":"Result 'listens and promises nothing', tension 74 to 73","severity":"S2","screenshot":"shots/dan-legacy/021-tbl.png"},
+  {"title":"Staff re-suggests Mobilize forces at 100% mobilization and it costs stability","steps":["Approve all staff picks for 6 months"],"expected":"No suggestion with no effect","actual":"Mobilization 100 to 100, stability 57 to 55, capital spent","severity":"S2","screenshot":"shots/dan-legacy/041-chip.png"}
+ ],
+ "suggestions": [
+  {"what":"Show effect sizes (plus or minus N) on every order card, with the rule on tap","goal_served":"D1"},
+  {"what":"Replace the Target dropdown with a searchable country list that shows what the numbers mean","goal_served":"D2"},
+  {"what":"Give Legacy real goals beyond surviving (era targets, a ledger over 120 months)","goal_served":"D2"},
+  {"what":"Stop staff suggesting orders that cannot move anything, or say why they are still worth it","goal_served":"D2"},
+  {"what":"A rules page listing capital, caps (6 orders, one per target), and refusals in one place","goal_served":"D1"}
+ ],
+ "delight": ["The month table with Reply and Numbers columns, every number with from and to (shots/dan-legacy/021-tbl.png)","Score tooltip and 'Why your score moved' with the 15 percent drift rule (shots/dan-legacy/009-score.png)","Map order panel with success chances and a plain reason when an order is refused (shots/dan-legacy/032-pol.png)","World drawer with fronts, exhaustion and alliance strengths (shots/dan-legacy/042-world.png)","Why-card line 'your choices +0, everything else -2' on approval (shots/dan-legacy/018-m1.png)"],
+ "scores": {
+  "fun": {"value":6,"reason":"Reading why every number moved is satisfying, but 12 months of approve-and-execute was passive."},
+  "clarity": {"value":8,"reason":"The month table and score explainer answer why numbers moved, which is my top need."},
+  "visual": {"value":8,"reason":"Handsome map and cards; a few overlaps and clipped panels."},
+  "feels_like_a_game": {"value":6,"reason":"Staff auto-play means I could finish a month without a decision; the systems are there but not yet pulling me in."},
+  "agency": {"value":5,"reason":"Orders are explained but pre-filled by staff, the country picker blocked me, and the front moved against me after an order I could not see coming."},
+  "realism": {"value":7,"reason":"Real leaders, relations numbers, front and exhaustion feel plausible; Poland worsening after being courted looked odd."},
+  "replay": {"value":6,"reason":"I would try other eras if the 120 months had goals; today Legacy offers only survival."},
+  "recommend": {"value":6,"reason":"Best transparency I have seen in a game this accessible, but I cannot yet tell if depth is real or if one move wins."}
+ },
+ "quit_point": null,
+ "verbatim": "Finally a game that shows from-and-to numbers, but give me the sizes before I click and a goal bigger than survive."
+}

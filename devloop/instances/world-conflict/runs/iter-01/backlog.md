@@ -20,3 +20,4 @@
 | B-16 | Remaining "before the midterms" premises conflict with a late-November start: Ceasefire or Collapse USA briefing ("two days before the midterms") and crisis us_midterm_peace; Hormuz Convoy briefing and crisis us_midterm_clock ("Three days to the midterms") | Era content agent | Content | Open |
 | B-17 | Nations that did not exist in an era (1960 UKR, BLR, SYR, ARE, PSX; 1990 UKR, BLR) are still playable with generated leaders; eraStatus now marks them; make them non-playable in newGame and the title UI | Era content agent, concept test (Marcus) | Worldmap W5 / engine | Open |
 | B-18 | 1990 Soviet Union Term: smart play wins about 31% (band 65%+), pre-existing | Era content agent sim | Engine balance | Open |
+| B-19 | data/scenarios/2026.json briefing and description still say "This week: US midterms (3 Nov)" while the game opens later in November | Codex 2026 agent | Content | Open |

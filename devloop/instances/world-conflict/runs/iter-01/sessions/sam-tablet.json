@@ -1,0 +1,46 @@
+{
+"persona":"sam","variant":"sam-tablet","panel_version":"1.2","build":"e0e42bc","iteration":1,"minutes_played":25,
+"scenarios":[
+{"id":"S1","outcome":"achieved","turns":12,"steps":["Title screen","Take office as US in Hormuz Convoy","Played 12 months with Approve and Execute","Read reveal sequence"],"notes":"Looks crafted, not an AI dashboard, with several layout defects at 1024x768."},
+{"id":"S2","outcome":"partial","turns":2,"steps":["Picked a crisis response card on the desk","Switched to Map, tapped Mexico, opened order menu"],"notes":"Order cards look the same on both surfaces; the map bottom strip is broken at tablet width. My Add tap on the map did not register on first try and the order was not queued."}
+],
+"friction":[
+{"where":"Title screen, left panel","expected":"Tagline and mode text clear of the globe","happened":"Pick a fire headline, description and Today card sit on top of map labels and pins (Russia, Iran); Play this seed box overlaps Africa","kind":"dashboard-feel","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/sam-tablet/001-title.png"},
+{"where":"Desk, first-run tooltip","expected":"Coach mark points at the thing it describes","happened":"Step 1 tooltip covers the crisis headline; step 2 covers card 3 and its arrow points at nothing","kind":"hesitation","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/sam-tablet/005-card.png"},
+{"where":"Desk, option cards","expected":"Three equal cards, free badge visible","happened":"Card 3 sits lower than 1 and 2 and its Cabinet pick tag hides the free badge; YOUR PICK stamp covers the Hurts banner text","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/sam-tablet/005-card.png"},
+{"where":"Desk right rail, This month you will","expected":"Full order names","happened":"Names truncated (Reply via Mu..., National addr...) and the list is clipped behind the Approve button","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/sam-tablet/003-desk.png"},
+{"where":"Map mode bottom strip","expected":"Staff chips and Approve/Execute aligned","happened":"Added/Remove text from a staff card renders on top of the Approve button; overlapping text","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/sam-tablet/006-map.png"},
+{"where":"Map vs desk vocabulary","expected":"One name for the currency","happened":"Political capital on desk and HUD, diamond 1 left on map strip and menus; Orders vs order slot","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/sam-tablet/007-mexico.png"},
+{"where":"Month result card","expected":"Colour means good or bad consistently","happened":"UAE view of you 75 to 71 shows green bar and green number next to a red chip; the buttons sit below the fold at 768px and need a scroll","kind":"parity","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/sam-tablet/009-exec.png"},
+{"where":"Newspaper","expected":"Picture matches headline; month matches header","happened":"North Korea missiles headline shows the US situation room; masthead says month 1 of 12 while HUD says month 2","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/sam-tablet/011-paper.png"},
+{"where":"Order menu on Mexico","expected":"Reason makes sense","happened":"Mexico won't sign a defence treaty in the middle of a war, though Mexico is not at war","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/sam-tablet/007-mexico.png"},
+{"where":"End screen verdict","expected":"Verdict tone consistent","happened":"MISSION FAILED stamp, grade D, 0 stars, yet title Master Diplomat and achievement Strait Open, Bomb Never; score counter starts at 0 and grade is blank for a few seconds","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/sam-tablet/026-end2b.png"},
+{"where":"How you were seen","expected":"Same start approval as briefing","happened":"Chart says start 50, briefing said 44; x axis ends at O after 11 labels","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/sam-tablet/030-e4.png"},
+{"where":"Mission screen","expected":"Terms explained","happened":"IRGC, Muscat, midterms, defence pacts, Mojtaba Khamenei appear without in-place explanation (IRGC and Muscat tooltips absent)","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/sam-tablet/002-intro.png"}
+],
+"bugs":[
+{"title":"Map strip text overlap","steps":["Desk, queue staff picks","Switch to Map at 1024x768"],"expected":"Aligned chips","actual":"Added/Remove text overlaps Approve button","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/sam-tablet/006-map.png"},
+{"title":"Add to this month on map menu not registering first time","steps":["Map, tap Mexico","Click Court Mexico Add to this month"],"expected":"Order queued","actual":"Driver reported failure and Court Mexico was not in the debrief","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/sam-tablet/008-added.png"},
+{"title":"Result card actions below fold on tablet","steps":["Execute month at 1024x768"],"expected":"Next month visible","actual":"Buttons cut off, scroll needed","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/sam-tablet/009-exec.png"},
+{"title":"Approval start mismatch","steps":["Finish game, open How you were seen"],"expected":"Start 44","actual":"Start 50","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/sam-tablet/030-e4.png"}
+],
+"suggestions":[
+{"what":"Fix tablet layout: map bottom strip, rail truncation, card alignment, result card fold","goal_served":"S1"},
+{"what":"One currency name everywhere","goal_served":"S2"},
+{"what":"Match newspaper art to story","goal_served":"S1"},
+{"what":"Make coach marks point at their target and not cover content","goal_served":"S1"}
+],
+"delight":["Wide serif headlines, grain and lit-room scene art on the desk and newspaper: real art direction (devloop/instances/world-conflict/runs/iter-01/shots/sam-tablet/011-paper.png)","YOUR PICK stamp when choosing a card (devloop/instances/world-conflict/runs/iter-01/shots/sam-tablet/005-card.png)","Achievement badges with rarity (devloop/instances/world-conflict/runs/iter-01/shots/sam-tablet/028-ach.png)","Count-up verdict screen with stamp (devloop/instances/world-conflict/runs/iter-01/shots/sam-tablet/027-verdict2.png)"],
+"scores":{
+"fun":{"value":6,"reason":"Choices read well and results show cause and effect, but I auto-approved most months."},
+"clarity":{"value":6,"reason":"Mission bar and Hurts tags are clear; jargon and duplicated vocabulary hurt."},
+"visual":{"value":7,"reason":"Real art direction and typography; layout collisions at tablet size cost points."},
+"feels_like_a_game":{"value":7,"reason":"Stamps, scenes, newspaper and reveal feel authored, not a dashboard."},
+"agency":{"value":6,"reason":"Never fully blocked, but a failed Add tap and disabled options with odd reasons."},
+"realism":{"value":5,"reason":"Mexico war reason, news art mismatch and approval start mismatch break trust."},
+"replay":{"value":6,"reason":"Eight flashpoints and a daily seed invite another go."},
+"recommend":{"value":6,"reason":"I would show it to friends with caveats about polish at smaller sizes."}
+},
+"quit_point":null,
+"verbatim":"It is not a dashboard, someone cared about the art. But the overlaps on my tablet and two names for the same currency are the kind of thing I would fix before telling anyone."
+}

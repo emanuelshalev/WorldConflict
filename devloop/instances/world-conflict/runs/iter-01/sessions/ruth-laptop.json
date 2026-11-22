@@ -1,0 +1,50 @@
+{
+ "persona": "ruth", "variant": "ruth-laptop", "panel_version": "1.2", "build": "e0e42bc", "iteration": 1, "minutes_played": 45,
+ "scenarios": [
+  {"id":"R1","outcome":"partial","turns":12,"steps":["Picked Ceasefire or Collapse on the title globe, side United States","Read the mission screen, took office","Chose a crisis response each month, used Approve and Execute","Tried to order a ceasefire with Russia myself: stuck at the country dropdown, then the globe","Reached the end sequence and the 'what really happened' table"],"notes":"I got the real-world comparison I wanted, but the game kept talking about Iran and Gaza, so I could not tell whether my choices would have ended the Ukraine war."},
+  {"id":"R2","outcome":"abandoned","turns":12,"steps":["Wanted a whole Term at my own pace","Only played a 12 month Flashpoint this session"],"notes":"Not attempted; Term not played."}
+ ],
+ "friction": [
+  {"where":"Title screen, left column","expected":"Read the tagline and the Flashpoint blurb","happened":"The globe drawn over the text; 'One clear goal' and 'Put it out, or don't' are cut across by the map edge","kind":"other","screenshot":"shots/ruth-laptop/004-pick3.png"},
+  {"where":"Title screen, side cards","expected":"Know what the dots next to each country mean","happened":"Small orange/green dots with no label (difficulty? I guessed)","kind":"naming","screenshot":"shots/ruth-laptop/004-pick3.png"},
+  {"where":"Title screen, 'Hormuz Convoy' marked TODAY","expected":"Understand 'Today's crisis', 'seed', 'Play this seed', 'Flashpoint', 'Legacy'","happened":"Seed code and 'Play this seed' are meaningless to me; Flashpoint is explained, seed is not","kind":"naming","screenshot":"shots/ruth-laptop/001-title.png"},
+  {"where":"Desk, month 1","expected":"One clear next step","happened":"Mission, crisis, three cards, cabinet pick, advisors, seals, budget, meetings, orders: a lot at once. 'Seals', 'Defense budget untouched', 'Meetings' and the small caps labels were not explained","kind":"dashboard-feel","screenshot":"shots/ruth-laptop/008-desk.png"},
+  {"where":"Desk, month 2","expected":"Only the things I chose","happened":"The staff had already added 'Reform program' and 'Court Germany' using up my political capital, so I had 0 left and could not do what I wanted until I found the small X","kind":"hesitation","screenshot":"shots/ruth-laptop/016-slot.png"},
+  {"where":"All orders, 'Pick a country'","expected":"Tap Russia","happened":"The button only focuses a plain dropdown of 41 countries with unexplained numbers in brackets (relations score). Hard to use; I gave up and used the advisor suggestion instead","kind":"blocked","screenshot":"shots/ruth-laptop/020-sel2.png"},
+  {"where":"Map mode","expected":"See Russia and Ukraine to tap them","happened":"Globe opens on the US; Russia is off the edge, zoom out makes it tiny, and I do not drag. That was my second 'what do I press' moment","kind":"hesitation","screenshot":"shots/ruth-laptop/024-mapz.png"},
+  {"where":"Result card, months 1 to 3","expected":"Ukraine news after my Ukraine-focused move","happened":"Headlines were 'Your forces gain ground against Iran' and 'The war with Iran is over'. I am brokering Ukraine; I did not know America was fighting Iran in my game","kind":"misread","screenshot":"shots/ruth-laptop/026-r2.png"},
+  {"where":"Result card art","expected":"Picture matching the story","happened":"Candlelit protest art under 'Sell them via Germany'; handshake with Xi under 'Grant access' with no explanation of what access","kind":"other","screenshot":"shots/ruth-laptop/052-e1.png"},
+  {"where":"Result card, month 1 headline","expected":"A sentence of what happened","happened":"'Trump chooses: Squeeze Moscow's oil buyers' repeats my own click","kind":"other","screenshot":"shots/ruth-laptop/012-after.png"},
+  {"where":"Red 'FAILED' stamp on 'West Bank: worse this month'","expected":"Know what failed","happened":"Looked like my order failed; it is just the situation getting worse","kind":"misread","screenshot":"shots/ruth-laptop/013-iran.png"},
+  {"where":"Moments page","expected":"Know which war ended","happened":"'The war ended in month 3' is the Iran war, while 'The truth' page says I brokered the end of the war in month 4. Which war? Also labels truncated on the timeline","kind":"misread","screenshot":"shots/ruth-laptop/053-e2.png"},
+  {"where":"End: verdict card","expected":"Know if I won","happened":"'MISSION FAILED', grade D, zero stars next to 'Master Diplomat' and 4 of 5 goals met; headline says better than 34% while card says top 66%. Score 570 of 1000 versus 115 on the desk","kind":"misread","screenshot":"shots/ruth-laptop/058-e7.png"},
+  {"where":"Names and concepts","expected":"Be told who they are","happened":"Sanae Takaichi (Japan PM) and Ferdinand Marcos Jr. appear as unexplained call targets; 'Iran nuclear program 15% developing', 'defence pacts', 'Pariah', 'hot zone', 'front (your side) 50 = stalemate', 'staff policy', 'simulated competent leaders' unexplained. Takaichi shown as Japan's PM with no introduction","kind":"naming","screenshot":"shots/ruth-laptop/016-slot.png"},
+  {"where":"Browser zoom 125%","expected":"Everything readable","happened":"Kit cannot zoom. At 100% the chips and small caps labels (Cabinet pick, STEP 1 of 3, seals) are already small; at 125% would be borderline fine, but some content (dashboards of arrows) would crowd and scroll more","kind":"other","screenshot":"shots/ruth-laptop/008-desk.png"}
+ ],
+ "bugs": [
+  {"title":"Add button on advisor card did not register on click by label","steps":["Open Desk month 2","click Add on Mediate peace for Russia"],"expected":"Order added","actual":"First attempt found no match and I executed without it (may be a driver issue)","severity":"S3"},
+  {"title":"Verdict contradicts itself","steps":["Finish the Flashpoint with 4 of 5 mission goals"],"expected":"Result consistent with goals","actual":"MISSION FAILED, grade D, 0 stars, while achievements Master Diplomat, Quick Peace and 'Better than 34%' vs 'Top 66%'","severity":"S2","screenshot":"shots/ruth-laptop/058-e7.png"},
+  {"title":"Context mini-map says 'United States at war with Iran' during a Ukraine mission","steps":["Open desk with a corruption crisis"],"expected":"Map subject matches crisis","actual":"Caption shows war with Iran","severity":"S3","screenshot":"shots/ruth-laptop/016-slot.png"}
+ ],
+ "suggestions": [
+  {"what":"Let me tap a country name or flag on the desk to pick a target, instead of a 41 country dropdown with raw numbers","goal_served":"R1"},
+  {"what":"Keep the news about the conflict I chose; show the Iran or Gaza side stories in a smaller 'elsewhere' line","goal_served":"R1"},
+  {"what":"Do not let staff pre-spend my political capital without asking; or say in plain words at the top what they did","goal_served":"R2"},
+  {"what":"One sentence on the end screen: Did you succeed, and why, matching the stars and grade","goal_served":"R1"},
+  {"what":"Open the map centred on the countries of my mission, with a big 'Zoom to Ukraine' button","goal_served":"R1"},
+  {"what":"Add a short plain glossary tap on terms like seal, front, hot zone, seed","goal_served":"R2"}
+ ],
+ "delight": ["The mission screen: plain goals, on track or off track (shots/ruth-laptop/006-start.png)","Order cards with 'Hurts' and 'Helps' reasons in plain words (shots/ruth-laptop/008-desk.png)","The Article 4 Poland crisis felt like the news (shots/ruth-laptop/037-d8.png)","'The truth' table: my world next to the real world with sources (shots/ruth-laptop/056-e5.png)","The World Chronicle front page (shots/ruth-laptop/014-paper.png)"],
+ "scores": {
+  "fun": {"value":6,"reason":"Crisis choices were absorbing and I read every one; the middle months blurred because Approve did the work."},
+  "clarity": {"value":5,"reason":"Mission screen and card reasons clear, desk crowded, and my Ukraine goal was buried under Iran and Gaza news."},
+  "visual": {"value":8,"reason":"Handsome illustrations and newspaper; globe overlapping title text on the first screen."},
+  "feels_like_a_game": {"value":6,"reason":"A story with choices; not much of a game I could try things in."},
+  "agency": {"value":4,"reason":"Staff pre-filled my orders, the country picker blocked me, and the verdict told me I failed with no plain reason."},
+  "realism": {"value":6,"reason":"Real leaders and the Poland and Hormuz details felt true; a US war with Iran and a month 3 ceasefire felt odd."},
+  "replay": {"value":6,"reason":"I would try Ukraine as Kyiv or a Term to see another outcome."},
+  "recommend": {"value":6,"reason":"I would tell a friend who reads the news, with a warning that the first screen and the orders menu need help."}
+ },
+ "quit_point": "Month 2 in the All orders panel: Pick a country opened a long unexplained dropdown and I could not choose Russia; combined with the globe I would have stopped after my third what do I press moment.",
+ "verbatim": "I loved reading what really happened next to my game, but why am I fighting Iran, and did I win or not?"
+}

@@ -1,0 +1,49 @@
+{
+"persona":"priya","variant":"priya-tablet","panel_version":"1.2","build":"e0e42bc","iteration":1,"minutes_played":35,
+"scenarios":[
+{"id":"P1","outcome":"partial","turns":12,"steps":["Title globe, tapped Ceasefire or Collapse, chose Ukraine","Played all 12 months, mostly approving the cabinet pick","Reached verdict, moments, truth and ranking screens"],"notes":"Right leaders and a real-world comparison, but the ceasefire arc was replaced by generic template crises (strike, cyberattack, scandal) and the war simply ended in month 6 with no terms or negotiation."},
+{"id":"P2","outcome":"achieved","turns":12,"steps":["Read the Hurts/Helps tags and staff reasons each month","Read The truth screen with sources"],"notes":"Cards say what each choice is meant to achieve. The truth table was the best part."}
+],
+"friction":[
+{"where":"Title dossier, tablet portrait","expected":"Clean sheet under the map","happened":"A ghost panel overlaps the top of the dossier cards after tapping a flashpoint","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/priya-tablet/004-happening.png"},
+{"where":"Dossier text for US seat","expected":"Midterms already held on 3 Nov 2026","happened":"'two days before the midterms' on 22 Nov 2026","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/priya-tablet/004-happening.png"},
+{"where":"Month 1 result card","expected":"A real reaction","happened":"Quote 'Crowds gather outside the embassy of Ukraine in the United States' attributed to Trump, a generic template line; repeats for Putin","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/priya-tablet/010-m1.png"},
+{"where":"Crises months 2-9","expected":"Ceasefire talks, Donbas, security guarantees, coalition of the willing","happened":"Generic Ukraine crises: grid cyberattack, general strike, energy shock, corruption scandal, streets boiling","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/priya-tablet/015-m3.png"},
+{"where":"Newspaper","expected":"Explanation of how the war ended","happened":"'The war with Russia is over' with text 'Zelensky answered Energy price shock with Subsidize fuel'; no cause","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/priya-tablet/024-res7.png"},
+{"where":"Mission HUD","expected":"One scale","happened":"Score 'needs 82' while mission and verdict use 1000 scale; 'Keep Washington engaged: 45 needs 33' unclear","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/priya-tablet/006-start.png"},
+{"where":"Month 1 result","expected":"Falling US view shown as bad","happened":"US view 45 to 36 drawn as a green bar","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/priya-tablet/010-m1.png"},
+{"where":"Month 2 desk","expected":"Cyber crisis not hidden under an old scroll","happened":"Desk opens scrolled mid page after Next month; had to scroll up to read the crisis","kind":"hesitation","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/priya-tablet/011-m2.png"},
+{"where":"Month 7 onward","expected":"Next month works from chronicle","happened":"Newspaper overlay appears on some months and needs a second Next month press","kind":"retry","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/priya-tablet/029-mm9.png"},
+{"where":"Verdict","expected":"Fair grade","happened":"Ceasefire achieved, 4 of 5 goals, but MISSION FAILED, grade D, better than 0% of competent leaders","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/priya-tablet/049-rank.png"},
+{"where":"Moments screen","expected":"Readable timeline and consistent verdict","happened":"Timeline labels overlap; 'went badly' lists approval 67 to 73","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/priya-tablet/044-moments.png"},
+{"where":"Desk and dossier","expected":"Known","happened":"Prime Minister Andy Burnham: cannot verify as of Nov 2026, flagged for checking","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/priya-tablet/010-m1.png"},
+{"where":"Desk","expected":"Known terms","happened":"Coalition of the willing, Counter-intel, Mobilization, Legitimacy are fine for me; 'Consequences later' and 'Pol. capital' are game terms I had to infer","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/priya-tablet/013-picked.png"},
+{"where":"Truth screen","expected":"Known","happened":"ISW, Abu Dhabi talks, 28/19/20 point plans all familiar; the table explained real context well","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/priya-tablet/047-truth.png"}
+],
+"bugs":[
+{"title":"Verdict contradicts moments screen","steps":["Finish Ukraine Flashpoint","Open The moments"],"expected":"Month 12 listed as bad only if worse","actual":"Approval 67 to 73 listed under what went badly; timeline labels overlap","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/priya-tablet/044-moments.png"},
+{"title":"Falling metric shown green","steps":["Execute month 1 Only by referendum"],"expected":"Red for a drop","actual":"US view 45 to 36 green bar","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/priya-tablet/010-m1.png"},
+{"title":"Dossier overlap on tablet","steps":["Tap a flashpoint on globe","Scroll to dossier"],"expected":"No stray panel","actual":"Ghost panel overlaps card top","severity":"S4","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/priya-tablet/004-happening.png"},
+{"title":"Factual: midterms timing","steps":["Open US seat in Ceasefire or Collapse"],"expected":"Midterms on 3 Nov 2026 already past","actual":"Says two days before the midterms","severity":"S2","screenshot":"devloop/instances/world-conflict/runs/iter-01/shots/priya-tablet/004-happening.png"}
+],
+"suggestions":[
+{"what":"Make the Ukraine flashpoint crises about the talks: territory, security guarantees, coalition of the willing, sanctions, with a visible negotiation track","goal_served":"P1"},
+{"what":"When a war ends, say why in the paper and result card","goal_served":"P1"},
+{"what":"Reaction quotes should name the real actor and issue, not a template","goal_served":"P1"},
+{"what":"Make the verdict grade follow progress (ceasefire counts), and fix the Better than 0% line","goal_served":"P2"},
+{"what":"Bring The truth comparison forward, even as an optional hint during play","goal_served":"P2"}
+],
+"delight":["The truth screen with ISW and Abu Dhabi context and sources (devloop/instances/world-conflict/runs/iter-01/shots/priya-tablet/047-truth.png)","Staff reasons and Hurts/Helps tags on each card (devloop/instances/world-conflict/runs/iter-01/shots/priya-tablet/007-desk.png)","Approved stamp (devloop/instances/world-conflict/runs/iter-01/shots/priya-tablet/013-picked.png)","Share card and seed (devloop/instances/world-conflict/runs/iter-01/shots/priya-tablet/049-rank.png)"],
+"scores":{
+"fun":{"value":6,"reason":"Smooth and handsome, but after month 2 I was approving picks."},
+"clarity":{"value":7,"reason":"Cards explain intent well; score scales and green drops confuse."},
+"visual":{"value":8,"reason":"Scenes, stamps and paper look crafted on tablet."},
+"feels_like_a_game":{"value":6,"reason":"Choices are real but the world felt scripted by templates."},
+"agency":{"value":7,"reason":"Never blocked; but the war ended without my doing."},
+"realism":{"value":5,"reason":"Leaders right, but crises generic, a midterm error, a template quote."},
+"replay":{"value":5,"reason":"I would try Russia or the US seat for the truth screen."},
+"recommend":{"value":6,"reason":"I would recommend it to a Model UN friend for the debrief, with caveats about the middle."}
+},
+"quit_point":null,
+"verbatim":"The end screen taught me something. The middle months felt like any country's generic crises, not Ukraine in November 2026."
+}

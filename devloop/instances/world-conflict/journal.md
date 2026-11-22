@@ -35,3 +35,10 @@ Newest entries at the bottom. Each entry names an area for improvement in our pr
 
 - **Observation.** We had no view of where the AI work (tokens) goes. The transcripts already record exact usage per response. **Change.** `kit/usage-ledger.mjs` attributes every response to role, persona, stage, iteration and time via a registry; the status page has a Consumption tab. Agent descriptions now follow naming rules so attribution is automatic, and the orchestrator records stage boundaries in the registry.
 - **First readings.** Since the loop started: 34M weighted tokens, 98% of input served from cache. Engineers are the largest share (build), then orchestration (about 20%), customers and designers. A customer session costs about 0.6M weighted, a design spec about 0.9M, a build package about 2.2M.
+
+## 2026-11-22 · Iteration 1 · Customer round and triage
+
+- **Result.** Weighted recommend 4.9 to 6.2; quits 7 of 9 to 1 of 9; "blocked" frictions nearly gone. The CEO's blocking, vocabulary and parity points are confirmed fixed by the panel; trust (contradicting numbers and endings) and density are the new bottlenecks.
+- **Observation.** Running customers in two waves of 4 to 5 browsers with GPU rendering produced clean sessions with no freezes. **Kept.**
+- **Observation.** Two content agents writing to one codex in parallel duplicated three entries, claimed one alias twice and each left Ukraine to the other. Combining their branches in a scratch worktree and running the consistency check before merging caught all of it. **Change.** Parallel content work always gets a combine-and-check step before merge; briefs name shared entities and their single owner.
+- **Observation.** A usage limit paused the work mid-round. Agents resumed with their context via messages, and the customer round restarted from its brief. **Change.** Keep briefs as files so any stage can restart cold.

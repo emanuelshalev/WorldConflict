@@ -1,0 +1,48 @@
+{
+"persona":"noah","variant":"noah-tablet","panel_version":"1.2","build":"e0e42bc","iteration":1,"minutes_played":25,
+"scenarios":[
+{"id":"N1","outcome":"achieved","turns":12,"steps":["Title globe, tapped Hormuz Convoy pin","Scrolled down to dossier, Take office as United States","Mission card, Take office","Picked Hit the IRGC navy now (YOUR PICK stamp), Execute","Mostly accepted cabinet picks and pressed Execute for 12 months","Reached verdict, achievements, moments, how seen, numbers, truth, ranking, share card"],"notes":"Started within about 30 s and the first big moment came at the first Execute. After that I mostly pressed Execute on defaults, so the huge moves faded."},
+{"id":"N2","outcome":"partial","turns":12,"steps":["Reached Ranking and the share card preview","Tapped Share result"],"notes":"Share card preview is good looking, but it says MISSION FAILED, D and 0 stars, not something I would post. Share result tap showed no visible reaction in the driver."}
+],
+"friction":[
+{"where":"Title screen, after tapping a pin","expected":"A dossier or start panel right there","happened":"The globe zoomed but the dossier was far below the fold, I had to scroll past the seed box; the dossier panel overlaps the seed box in the scroll","kind":"hesitation","screenshot":"shots/noah-tablet/003-dossier2.png"},
+{"where":"Title screen","expected":"Know what Hormuz, Bab al-Mandab, Quarantine, Scarborough are","happened":"Names of flashpoints and Play this seed with a code are unexplained","kind":"naming","screenshot":"shots/noah-tablet/001-title.png"},
+{"where":"Mission card","expected":"Simple goal","happened":"IRGC, midterms, Isfahan, uranium, approval 56%+, UAE relations, Muscat are unexplained; I read none of it","kind":"naming","screenshot":"shots/noah-tablet/004-start.png"},
+{"where":"Desk month 1","expected":"One big button","happened":"Three cards, plus advisor suggestions, plus coachmarks (Step 1 of 3); a lot to read, though cards with images and Hurts labels helped","kind":"dashboard-feel","screenshot":"shots/noah-tablet/005-desk1.png"},
+{"where":"Desk, tapping a card by text","expected":"text tap selects it","happened":"act text on the card title returned ok false; had to tap by coordinates","kind":"retry","screenshot":"shots/noah-tablet/006-pick.png"},
+{"where":"Month result card","expected":"Quick punch","happened":"Dense: tension, relations, approval bars, mission, score paragraph, chronicle strip, chips. Mostly text.","kind":"dashboard-feel","screenshot":"shots/noah-tablet/008-exec1.png"},
+{"where":"Month 7 desk","expected":"Concepts like sanctions, embargo explained","happened":"Coordinate sanctions and talks, ceasefire framework, enrichment: no help in place","kind":"naming","screenshot":"shots/noah-tablet/022-m8.png"},
+{"where":"Chronicle newspaper month 6","expected":"Consistent month number","happened":"Newspaper says Month 6 of 12 while HUD says month 7","kind":"other","screenshot":"shots/noah-tablet/021-m7r.png"},
+{"where":"Whole 12 months","expected":"My picks matter","happened":"Advisors pre-add orders (spy, sabotage) that I never chose, one of which failed and showed up as a 'went badly' moment; Execute on default is so easy I stopped choosing","kind":"other","screenshot":"shots/noah-tablet/038-r3.png"},
+{"where":"Verdict","expected":"Win or lose clear","happened":"MISSION FAILED, D, 0 stars, but title Master Diplomat and 663/1000 and text 'You made your nation respected'. Failed by 1 point (Israel 60 vs 61), felt unfair.","kind":"misread","screenshot":"shots/noah-tablet/036-verdict2.png"},
+{"where":"The numbers","expected":"Accurate counts","happened":"Deals signed 0 though I signed India's offer; Covert ops text overflows 0 ok, 2 caught","kind":"other","screenshot":"shots/noah-tablet/040-r5.png"},
+{"where":"Ranking, record table","expected":"Whole table visible","happened":"Table clipped at right edge (SEA column cut)","kind":"other","screenshot":"shots/noah-tablet/042-r7.png"},
+{"where":"Month 12 report","expected":"-","happened":"Final month square is black, legend says black is the fall, but I did not fall","kind":"misread","screenshot":"shots/noah-tablet/044-full.png"}
+],
+"bugs":[
+{"title":"Month number mismatch between newspaper and HUD","steps":["Play to month 7","Open newspaper after month 6 result"],"expected":"Same month number","actual":"Newspaper Month 6 of 12, HUD month 7","severity":"S4","screenshot":"shots/noah-tablet/021-m7r.png"},
+{"title":"Deals signed counter 0 after signing India's offer","steps":["Month 10 Sign it","See The numbers"],"expected":"Deals signed 1","actual":"0","severity":"S3","screenshot":"shots/noah-tablet/040-r5.png"},
+{"title":"Verdict contradicts itself","steps":["Fail mission by one point","See verdict"],"expected":"Consistent tone","actual":"Mission failed D 0 stars with Master Diplomat praise text","severity":"S3","screenshot":"shots/noah-tablet/036-verdict2.png"},
+{"title":"Ranking record table clipped on tablet","steps":["Open Ranking at 820 wide"],"expected":"All columns visible","actual":"Right column cut off","severity":"S4","screenshot":"shots/noah-tablet/042-r7.png"},
+{"title":"Lowercase 'trump' in headline chip","steps":["Month 5 result card"],"expected":"Trump","actual":"Sabotage Iran failed; trump decides: Abstain","severity":"S4","screenshot":"shots/noah-tablet/017-m5r.png"}
+],
+"suggestions":[
+{"what":"Open the dossier as a bottom sheet right on the globe after tapping a pin, with one big Play button","goal_served":"N1"},
+{"what":"Do not pre-add advisor orders; make the one big move the default and ask for a second","goal_served":"N1"},
+{"what":"Share card should celebrate something (best moment, biggest swing) even when mission failed, and show a clear Share action feedback","goal_served":"N2"},
+{"what":"Tap-to-explain on terms like IRGC, sanctions, enrichment","goal_served":"N1"}
+],
+"delight":["Jet strike scene after Send in special forces (shots/noah-tablet/011-m2r.png)","YOUR PICK stamp on a card","Achievements badges screen (shots/noah-tablet/037-r2.png)","The fog lifts: your estimate crossed out vs actual (shots/noah-tablet/041-r6.png)","Approval graph Doubted in December, thanked by October"],
+"scores":{
+"fun":{"value":6,"reason":"Cool art and the first strike felt big, but later months were just Execute."},
+"clarity":{"value":5,"reason":"Cards are clear, jargon and dense result cards are not."},
+"visual":{"value":8,"reason":"Scenes, globe, badges look like a real game."},
+"feels_like_a_game":{"value":7,"reason":"Stamps, badges, grade, share card; but month loop is slow and text heavy."},
+"agency":{"value":6,"reason":"Never blocked, but defaults did the choosing and a 1 point miss felt unexplained."},
+"realism":{"value":7,"reason":"Real names, real world comparison at the end was a nice learn."},
+"replay":{"value":6,"reason":"Replay same opening and seed code are good; failing by 1 makes me want to retry."},
+"recommend":{"value":6,"reason":"I would show friends the globe and badges, not the result card of a failed D."}
+},
+"quit_point":null,
+"verbatim":"The globe and the jet scene are sick. But why did it say Master Diplomat and also Failed? And I only lost by one point. I would send the badges, not the D."
+}
