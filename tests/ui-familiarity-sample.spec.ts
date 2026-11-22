@@ -37,11 +37,11 @@ describe("familiarity sample sentence (QA3-S3-1)", () => {
     expect(new Set(texts).size).toBe(4);
   });
 
-  it("each line marks at least one name for Guide me and has no em dash", () => {
+  it("each line marks at least one name for Guide me and has no long dash", () => {
     for (const d of ["1960-01", "1990-01", "2025-01", "2026-11"]) {
       const s = familiaritySample(d);
       expect(sampleMarks(s), d).toBeGreaterThanOrEqual(1);
-      expect(sampleText(s)).not.toContain("—");
+      expect(sampleText(s)).not.toContain(String.fromCharCode(0x2014));
     }
   });
 
