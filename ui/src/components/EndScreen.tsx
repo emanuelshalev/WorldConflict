@@ -1,10 +1,23 @@
 import { SceneFrame } from '../scenes/SceneFrame';
-import type { SceneKind } from '../scenes/kinds';
 import { useEffect, useMemo, useState } from 'react';
 import { IconCopy, IconDownload, IconRefresh, IconShare } from '@tabler/icons-react';
-import { fetchEndReport, recordDailyResult, startGame, useGameStore, usePlayerCountry } from '../store/gameStore';
+import {
+  fetchEndReport,
+  fetchRemoteRuns,
+  fetchReveal,
+  postRun,
+  recordDailyResult,
+  startGame,
+  useGameStore,
+  usePlayerCountry,
+  type RevealPayload,
+} from '../store/gameStore';
 import { flag } from '../lib/format';
 import { useModalFocus } from '../lib/useModalFocus';
+import { mergeRemoteRuns } from '../lib/runs';
+import { cellsToEmoji, drawClassicCard, monthCells, publicSite } from '../lib/shareCard';
+import { RevealSequence } from './reveal/RevealSequence';
+import { END_SCENE } from './reveal/model';
 
 const REASON_TEXT: Record<string, string> = {
   TERM_COMPLETED: 'MISSION COMPLETE',
@@ -18,117 +31,6 @@ const REASON_TEXT: Record<string, string> = {
   NUCLEAR_HOLOCAUST: 'NUCLEAR HOLOCAUST',
 };
 
-/** One emoji per month: how close to the edge you were. */
-function monthGrid(
-  history: Array<{ approval: number; stability: number }>,
-  lost: boolean,
-): string {
-  const cells: string[] = history.map((h) => {
-    const low = Math.min(h.approval, h.stability);
-    return low >= 50 ? '🟩' : low >= 30 ? '🟨' : '🟥';
-  });
-  if (lost && cells.length) cells[cells.length - 1] = '⬛';
-  return cells.join('');
-}
-
-function drawCard(opts: {
-  title: string;
-  country: string;
-  flagEmoji: string;
-  verdict: string;
-  grade: string;
-  stars: number;
-  archetype: string;
-  grid: string;
-  victory: boolean;
-  score: number;
-  month: string;
-  headline: string;
-  daily: string | null;
-  conditions: Array<{ met: boolean; bonus: boolean }>;
-  site: string;
-  leader: string;
-}): string {
-  const c = document.createElement('canvas');
-  c.width = 1200;
-  c.height = 630;
-  const g = c.getContext('2d');
-  if (!g) return '';
-  const bg = g.createLinearGradient(0, 0, 1200, 630);
-  bg.addColorStop(0, '#0b0f17');
-  bg.addColorStop(1, '#1c2533');
-  g.fillStyle = bg;
-  g.fillRect(0, 0, 1200, 630);
-  // The strip is the mission: one segment per objective, green met, red missed (bonus: gold / grey)
-  const segs = opts.conditions.length ? opts.conditions : [{ met: opts.victory, bonus: false }];
-  const segW = 1200 / segs.length;
-  segs.forEach((cond, i) => {
-    g.fillStyle = cond.bonus ? (cond.met ? '#f2a93b' : '#3a4558') : cond.met ? '#3fb68b' : '#e5383b';
-    g.fillRect(i * segW, 0, segW - (i < segs.length - 1 ? 4 : 0), 12);
-  });
-  g.fillStyle = '#a3aebf';
-  g.font = '600 26px "Geist", sans-serif';
-  g.fillText(`WORLD CONFLICT${opts.daily ? ` · DAILY ${opts.daily}` : ''}`, 60, 70);
-  g.fillStyle = opts.victory ? '#f2a93b' : '#ff8486';
-  g.font = '600 24px "Geist Mono", monospace';
-  g.fillText(`${opts.verdict} · ${opts.month}`, 60, 120);
-  g.fillStyle = '#e8ecf2';
-  g.font = '700 64px "Geist", sans-serif';
-  g.fillText(`${opts.flagEmoji} ${opts.country}`.toUpperCase(), 60, 195);
-  g.font = '500 32px Inter, sans-serif';
-  g.fillStyle = '#a3aebf';
-  g.fillText(opts.leader ? `${opts.title} · ${opts.leader}` : opts.title, 60, 245);
-  g.fillText(opts.archetype, 60, 290);
-  if (opts.headline) {
-    g.font = 'italic 500 26px Georgia, serif';
-    g.fillStyle = '#e8ecf2';
-    g.fillText(fit(g, `“${opts.headline}”`, 840), 60, 340);
-  }
-  // Every month gets a cell: long games use smaller cells and more per row
-  const cells = [...opts.grid];
-  const perLine = cells.length > 96 ? 30 : 24;
-  const rows = Math.ceil(cells.length / perLine);
-  const size = rows > 4 ? 26 : 34;
-  const rowH = rows > 4 ? 30 : rows > 3 ? 38 : 46;
-  g.font = `${size}px sans-serif`;
-  for (let i = 0; i < cells.length; i += perLine) {
-    g.fillText(cells.slice(i, i + perLine).join(''), 60, 400 + (i / perLine) * rowH);
-  }
-  g.strokeStyle = '#f2a93b';
-  g.lineWidth = 4;
-  g.strokeRect(940, 70, 200, 200);
-  g.fillStyle = '#f2a93b';
-  g.font = '700 130px "Geist", sans-serif';
-  g.textAlign = 'center';
-  g.fillText(opts.grade, 1040, 220);
-  g.font = '44px sans-serif';
-  g.fillText('★'.repeat(opts.stars) + '☆'.repeat(3 - opts.stars), 1040, 330);
-  g.fillStyle = '#a3aebf';
-  g.font = '500 22px "Geist Mono", monospace';
-  g.fillText('SCORE', 1040, 390);
-  g.fillStyle = '#e8ecf2';
-  g.font = '700 56px "Geist Mono", monospace';
-  g.fillText(String(opts.score), 1040, 450);
-  g.textAlign = 'left';
-  // Legends, so strangers can read the card
-  g.fillStyle = '#8693a6';
-  g.font = '500 18px "Geist Mono", monospace';
-  g.fillText('Each square is a month: 🟩 steady  🟨 strained  🟥 on the edge  ⬛ fell', 60, 535);
-  g.fillText('Top bar: one segment per objective (green met, red missed, gold bonus)', 60, 560);
-  g.fillStyle = '#a3aebf';
-  g.font = '500 22px "Geist Mono", monospace';
-  g.fillText(`Can you do better? ${opts.site}`, 60, 600);
-  return c.toDataURL('image/png');
-}
-
-/** Truncate text with an ellipsis to fit a canvas width. */
-function fit(g: CanvasRenderingContext2D, text: string, width: number): string {
-  if (g.measureText(text).width <= width) return text;
-  let t = text;
-  while (t.length > 4 && g.measureText(`${t}…`).width > width) t = t.slice(0, -1);
-  return `${t}…`;
-}
-
 /** The story of the session in one line: the latest world headline that isn't the player's own order. */
 function storyHeadline(news: Array<{ headline: string }>, playerName: string): string {
   const pick =
@@ -136,27 +38,6 @@ function storyHeadline(news: Array<{ headline: string }>, playerName: string): s
     news[0];
   return (pick?.headline ?? '').replace(/["“”]/g, '');
 }
-
-/** Public URL for share text and card: configurable, never "localhost". */
-function publicSite(): string {
-  const env = (import.meta.env.VITE_PUBLIC_URL as string | undefined)?.replace(/^https?:\/\//, '');
-  if (env) return env;
-  const host = typeof window !== 'undefined' ? window.location.host : '';
-  return host && !/localhost|127\.0\.0\.1/.test(host) ? host : 'worldconflict.game';
-}
-
-/** The closing shot: how this story ends on the evening news. */
-const END_SCENE: Record<string, SceneKind> = {
-  DEPOSED_COUP: 'war_room',
-  LOST_ELECTION: 'election',
-  ASSASSINATED: 'disaster',
-  IMPEACHED: 'parliament',
-  REVOLUTION: 'streets',
-  NUCLEAR_HOLOCAUST: 'nuclear',
-  COUNTRY_COLLAPSED: 'streets',
-  TERM_COMPLETED: 'election',
-  OBJECTIVE_FAILED: 'cabinet',
-};
 
 export function EndScreen() {
   const activeModal = useGameStore((s) => s.activeModal);
@@ -169,10 +50,29 @@ export function EndScreen() {
   const [copied, setCopied] = useState(false);
   const isDaily = useGameStore((s) => s.isDaily);
   const [streak, setStreak] = useState<{ streak: number; best: number } | null>(null);
+  const saveId = useGameStore((s) => s.saveId);
+  // The reveal for this save: loading, ready, or failed (then the classic end screen shows)
+  const [reveal, setReveal] = useState<{ saveId: string; payload: RevealPayload | null } | null>(null);
 
   useEffect(() => {
     if (gameOver && !report) fetchEndReport();
   }, [gameOver, report]);
+
+  useEffect(() => {
+    if (!gameOver || !saveId || reveal?.saveId === saveId) return;
+    let live = true;
+    (async () => {
+      const payload = await fetchReveal(saveId);
+      // Runs the server knows (another browser) join local history before the reveal reads it
+      if (payload) mergeRemoteRuns(await fetchRemoteRuns(payload.seat.seatKey));
+      if (!live) return;
+      setReveal({ saveId, payload });
+      if (payload) void postRun(saveId);
+    })();
+    return () => {
+      live = false;
+    };
+  }, [gameOver, saveId, reveal?.saveId]);
 
   const outcomeStars = world?.outcome?.stars ?? 0;
   useEffect(() => {
@@ -185,10 +85,12 @@ export function EndScreen() {
   const outcome = world?.outcome ?? report?.outcome ?? null;
   const lost = !outcome?.victory;
   const grid = useMemo(
-    () => monthGrid((report?.scoreHistory ?? world?.scoreHistory ?? []).slice(0, world?.maxTurns ?? 999), lost),
+    () => cellsToEmoji(monthCells((report?.scoreHistory ?? world?.scoreHistory ?? []).slice(0, world?.maxTurns ?? 999), lost)),
     [report, world, lost],
   );
-  const ref = useModalFocus<HTMLDivElement>(!!(open && gameOver && world && me));
+  const pending = !!saveId && reveal?.saveId !== saveId;
+  const payload = reveal?.saveId === saveId ? reveal.payload : null;
+  const ref = useModalFocus<HTMLDivElement>(!!(open && gameOver && world && me && !payload && !pending));
   if (!open || !gameOver || !world || !me) return null;
 
   const stars = outcome?.stars ?? 0;
@@ -210,7 +112,7 @@ export function EndScreen() {
     }
   };
   const download = () => {
-    const url = drawCard({
+    const url = drawClassicCard({
       title,
       country: me.name,
       flagEmoji: flag(me.id),
@@ -241,6 +143,80 @@ export function EndScreen() {
       scenarioId: world.flashpointId ? undefined : world.scenarioId,
       difficulty: world.difficulty,
     });
+  const newGame = () => {
+    closeModal();
+    useGameStore.getState().reset();
+  };
+  const closeCalls = report?.closeCalls ?? world.director?.closeCalls ?? 0;
+  const comebacks = report?.comebacks ?? 0;
+
+  // Sealing the record: the reveal arrives in well under a second
+  if (pending) {
+    return (
+      <div className="overlay" role="status" aria-live="polite" aria-label="Sealing the record">
+        <div className="loading-spinner" />
+      </div>
+    );
+  }
+
+  if (payload) {
+    const replay = payload.replay;
+    return (
+      <RevealSequence
+        r={payload}
+        saveId={saveId ?? 'save'}
+        daily={isDaily ? new Date().toISOString().slice(0, 10) : null}
+        actions={{
+          onReplay: () =>
+            startGame({
+              mode: replay.mode,
+              playerCountryId: replay.countryId,
+              flashpointId: replay.flashpointId ?? undefined,
+              scenarioId: replay.flashpointId ? undefined : replay.scenarioId,
+              difficulty: replay.difficulty,
+              seed: replay.seed,
+            }),
+          onNewWorld: rematch,
+          onNewGame: newGame,
+        }}
+        extras={
+          <div className="rv-classic">
+            <div className="rv-caps">Your goals</div>
+            <ul className="rv-conds">
+              {(outcome?.conditions ?? payload.verdict.conditions).map((c) => (
+                <li key={c.label} className={c.met ? 'met' : 'missed'}>
+                  {c.met ? '✓' : '✗'} {c.label} {c.bonus ? <span className="chip">bonus ★</span> : null}
+                </li>
+              ))}
+            </ul>
+            <p className="rv-hint">
+              Your {Math.min(world.turn, world.maxTurns)} months · score {world.score?.total ?? '-'} · {closeCalls} close call{closeCalls === 1 ? '' : 's'} · {comebacks} comeback{comebacks === 1 ? '' : 's'}
+            </p>
+            <div className="month-grid" aria-label="One square per month">{grid}</div>
+            {streak && (
+              <div className="list-item" style={{ borderColor: 'rgba(229,56,59,0.4)', marginTop: 12 }}>
+                <h5>🔥 Daily streak: {streak.streak} day{streak.streak === 1 ? '' : 's'}</h5>
+                <p>Best streak {streak.best}. A new crisis drops tomorrow, same world for everyone.</p>
+              </div>
+            )}
+            {report?.timeline && report.timeline.length > 0 && (
+              <>
+                <div className="rv-caps rv-sub">World timeline</div>
+                <ul className="rv-timeline">
+                  {report.timeline.map((e, i) => (
+                    <li key={`${e.turn}-${i}`}>
+                      <span className="num">{e.date}</span>
+                      <span>{e.description}</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </div>
+        }
+      />
+    );
+  }
 
   return (
     <div ref={ref} className="overlay" role="dialog" aria-modal="true" aria-label="Result">

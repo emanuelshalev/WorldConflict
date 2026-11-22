@@ -1091,6 +1091,10 @@ export interface NewGameRequest {
   difficulty?: Difficulty;
   leaderName?: string;
   daily?: boolean;
+  /** Replay same opening: the finished run's seed (same seat, same first crisis). */
+  seed?: number;
+  /** Play this seed: a seed code ("HC-USA-3PX") names the seat and the seed; the server parses it. */
+  seedCode?: string;
 }
 
 export async function startGame(req: NewGameRequest): Promise<boolean> {
@@ -1347,4 +1351,283 @@ export function useViewCountry(id: string | null): PlayerViewCountry | null {
   const playerView = useGameStore((s) => s.playerView);
   if (!id) return null;
   return playerView.find((c) => c.id === id) ?? null;
+}
+
+// ============================================================================
+// The reveal (design-reveal.md): payload types mirrored from src/core/reveal.ts, fetchReveal and
+// postRun. Owned by the reveal UI (ui/src/components/reveal/*); keep in sync with the backend.
+// ============================================================================
+
+export type RarityTier = 'COMMON' | 'UNCOMMON' | 'RARE' | 'LEGENDARY';
+export type TruthVerdict = 'BETTER' | 'SAME' | 'WORSE' | 'CONTEXT' | 'OPEN';
+
+export interface BenchmarkStats {
+  p10: number;
+  p50: number;
+  p90: number;
+  max: number;
+  n: number;
+  q: number[];
+}
+
+export interface PresidencyPart {
+  id: 'mission' | 'timing' | 'leadership' | 'finish';
+  label: string;
+  value: number;
+  max: number;
+  detail: string;
+}
+
+export interface PresidencyScore {
+  total: number;
+  raw: number;
+  parts: PresidencyPart[];
+  modifier: { kind: 'NONE' | 'DEPOSED' | 'NUCLEAR'; factor: number; label: string };
+  career: { factor: number; total: number; label: string };
+}
+
+export interface AchievementView {
+  id: string;
+  name: string;
+  rule: string;
+  hint: string;
+  infamy: boolean;
+  signature: boolean;
+  tier: RarityTier;
+  rate: number | null;
+  turn: number | null;
+  month: number | null;
+}
+
+export type MomentKind =
+  | 'CRISIS'
+  | 'ORDER'
+  | 'WAR_START'
+  | 'WAR_END'
+  | 'PACT'
+  | 'ELECTION'
+  | 'CLOSE_CALL'
+  | 'COMEBACK'
+  | 'OBJECTIVE_MET'
+  | 'OBJECTIVE_LOST'
+  | 'NUCLEAR'
+  | 'COVERT_EXPOSED'
+  | 'RECORD';
+
+export interface MomentView {
+  turn: number;
+  month: number;
+  kind: MomentKind;
+  title: string;
+  consequence: string;
+  text: string;
+  tone: 'good' | 'bad' | 'neutral';
+  weight: number;
+  with?: string;
+}
+
+export interface SeriesView {
+  id: 'approval' | 'realGrowth' | 'stability' | 'tension' | 'score' | 'gdp';
+  label: string;
+  unit: string;
+  higherIsBetter: boolean;
+  months: number[];
+  values: number[];
+  start: number;
+  end: number;
+  min: number;
+  max: number;
+  best: number;
+  worst: number;
+}
+
+export interface RelationRow {
+  id: string;
+  name: string;
+  before: number;
+  after: number;
+  label: 'Closer' | 'Cooler' | 'Thaw' | 'Rupture' | 'Steady';
+  objective: boolean;
+}
+
+export interface DeclassifiedCard {
+  id: 'nuclear' | 'military' | 'plots';
+  label: string;
+  subject: string;
+  believed: number | null;
+  actual: number;
+  unit: string;
+  note: string;
+}
+
+export interface TruthRow {
+  topic: string;
+  yours: string;
+  real: string;
+  verdict: TruthVerdict;
+  met: boolean | null;
+}
+
+export interface PressQuote {
+  role: 'home' | 'ally' | 'rival';
+  outlet: string;
+  quote: string;
+  tone: 'good' | 'bad' | 'neutral';
+}
+
+export interface RunRecord {
+  seatKey: string;
+  seed: number;
+  seedCode: string;
+  difficulty: Difficulty;
+  mode: GameMode;
+  scenarioId: string;
+  flashpointId: string | null;
+  countryId: string;
+  presidencyScore: number;
+  parts: [number, number, number, number];
+  grade: string;
+  stars: number;
+  verdict: string;
+  victory: boolean;
+  achievements: string[];
+  series: { approval: number[]; score: number[] };
+  choices: Array<{ turn: number; title: string; choice: string }>;
+  aiTier: string;
+  saveId?: string;
+  date?: string;
+}
+
+export interface RevealPayload {
+  version: 1;
+  reduced: boolean;
+  seat: {
+    seatKey: string;
+    mode: GameMode;
+    scenarioId: string;
+    flashpointId: string | null;
+    countryId: string;
+    countryName: string;
+    leader: string;
+    difficulty: Difficulty;
+    seatDifficulty: 'STEADY' | 'TOUGH' | 'BRUTAL' | null;
+    title: string;
+    months: number;
+    maxTurns: number;
+    finalDate: string;
+  };
+  verdict: {
+    victory: boolean;
+    stars: number;
+    grade: string;
+    reason: string | null;
+    label: string;
+    description: string;
+    classification: string;
+    justification: string;
+    conditions: Array<{ label: string; met: boolean; bonus: boolean }>;
+    score: number;
+    par: number;
+  };
+  presidency: PresidencyScore;
+  achievements: { earned: AchievementView[]; locked: AchievementView[]; catalogue: number };
+  moments: {
+    months: number;
+    best: MomentView | null;
+    worst: MomentView | null;
+    turningPoint: { turn: number; month: number; from: number; to: number; delta: number } | null;
+    well: MomentView[];
+    bad: MomentView[];
+    timing: Array<{ month: number; text: string }>;
+  };
+  perception: {
+    approval: SeriesView;
+    elections: Array<{ turn: number; month: number; won: boolean }>;
+    caption: string;
+    relations: RelationRow[];
+    press: PressQuote[];
+    judgement: string;
+  };
+  numbers: {
+    series: SeriesView[];
+    counts: {
+      wars: number;
+      deals: number;
+      orders: number;
+      crises: number;
+      livesLost: number;
+      covertOk: number;
+      covertExposed: number;
+    };
+  };
+  declassified: DeclassifiedCard[];
+  truth: {
+    asOf: string;
+    rows: TruthRow[];
+    fear: string | null;
+    sources: string[];
+    debrief: string;
+  } | null;
+  replay: {
+    seed: number;
+    seedCode: string;
+    seatKey: string;
+    mode: GameMode;
+    scenarioId: string;
+    flashpointId: string | null;
+    countryId: string;
+    difficulty: Difficulty;
+    deterministic: boolean;
+    aiTiersUsed: string[];
+  };
+  ranking: {
+    seatKey: string;
+    benchmarks: Partial<Record<'none' | 'random' | 'smart', BenchmarkStats>> | null;
+    ticks: Array<{ id: string; label: string; score: number }>;
+    percentile: number | null;
+    percentileLabel: string | null;
+    personalBest: number | null;
+  };
+  beatNext: string;
+  run: RunRecord;
+}
+
+/** The end-of-session reveal for a finished save (null when the API cannot build one). */
+export async function fetchReveal(saveId: string): Promise<RevealPayload | null> {
+  try {
+    const response = await fetch(
+      `${API_BASE}/reveal/${encodeURIComponent(saveId)}?playerId=${encodeURIComponent(ownerId())}`,
+    );
+    const data = await response.json();
+    return data.success ? (data.reveal as RevealPayload) : null;
+  } catch {
+    return null;
+  }
+}
+
+/** POST /api/runs: record a finished run server-side (the server derives it from the save). */
+export async function postRun(saveId: string): Promise<{ position: number; of: number } | null> {
+  try {
+    const response = await fetch(`${API_BASE}/runs`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ saveId, playerId: ownerId() }),
+    });
+    const data = await response.json();
+    return data.success ? (data.rank as { position: number; of: number }) : null;
+  } catch {
+    return null;
+  }
+}
+
+/** GET /api/runs: this player's runs (optionally on one seat), newest first. */
+export async function fetchRemoteRuns(seat?: string): Promise<Array<Record<string, unknown>>> {
+  try {
+    const q = `?playerId=${encodeURIComponent(ownerId())}${seat ? `&seat=${encodeURIComponent(seat)}` : ''}`;
+    const response = await fetch(`${API_BASE}/runs${q}`);
+    const data = await response.json();
+    return data.success ? (data.runs as Array<Record<string, unknown>>) : [];
+  } catch {
+    return [];
+  }
 }

@@ -1,0 +1,982 @@
+{
+ "version": 1,
+ "reduced": false,
+ "seat": {
+  "seatKey": "hormuz-convoy:USA",
+  "mode": "FLASHPOINT",
+  "scenarioId": "2026",
+  "flashpointId": "hormuz-convoy",
+  "countryId": "USA",
+  "countryName": "United States",
+  "leader": "President Donald Trump",
+  "difficulty": "STATESMAN",
+  "seatDifficulty": "TOUGH",
+  "title": "Open the strait",
+  "months": 12,
+  "maxTurns": 12,
+  "finalDate": "2027-11"
+ },
+ "verdict": {
+  "victory": true,
+  "stars": 3,
+  "grade": "A",
+  "reason": "TERM_COMPLETED",
+  "label": "MISSION COMPLETE",
+  "description": "Through the crisis",
+  "classification": "Cautious Caretaker",
+  "justification": "You kept the ship of state afloat without redirecting its course.",
+  "conditions": [
+   {
+    "label": "Stay in power",
+    "met": true,
+    "bonus": false
+   },
+   {
+    "label": "The shooting stops: no US–Iran war at the end (Hormuz reopens)",
+    "met": true,
+    "bonus": false
+   },
+   {
+    "label": "Iran never tests a bomb",
+    "met": true,
+    "bonus": false
+   },
+   {
+    "label": "Approval of 56%+ after the midterms",
+    "met": true,
+    "bonus": false
+   },
+   {
+    "label": "The Gulf still trusts you (UAE relations 66+)",
+    "met": true,
+    "bonus": false
+   },
+   {
+    "label": "Israel stays on side (relations 61+)",
+    "met": true,
+    "bonus": false
+   },
+   {
+    "label": "Score of 111+",
+    "met": true,
+    "bonus": true
+   },
+   {
+    "label": "Stability of 60%+",
+    "met": true,
+    "bonus": true
+   }
+  ],
+  "score": 119,
+  "par": 107
+ },
+ "presidency": {
+  "total": 724,
+  "raw": 724,
+  "modifier": {
+   "kind": "NONE",
+   "factor": 1,
+   "label": ""
+  },
+  "career": {
+   "factor": 1,
+   "total": 724,
+   "label": "Career points (difficulty x1)"
+  },
+  "parts": [
+   {
+    "id": "mission",
+    "label": "Mission",
+    "value": 400,
+    "max": 400,
+    "detail": "6 of 6 goals met, 2 bonus"
+   },
+   {
+    "id": "timing",
+    "label": "Timing",
+    "value": 50,
+    "max": 100,
+    "detail": "All goals met in 6 of 12 months"
+   },
+   {
+    "id": "leadership",
+    "label": "Leadership",
+    "value": 163,
+    "max": 300,
+    "detail": "Average leadership score 109 (x1.5)"
+   },
+   {
+    "id": "finish",
+    "label": "Finish",
+    "value": 111,
+    "max": 200,
+    "detail": "Final score 119 against par 107"
+   }
+  ]
+ },
+ "achievements": {
+  "earned": [
+   {
+    "id": "staff_knows_best",
+    "name": "By the Book",
+    "rule": "Follow the staff recommendation in every crisis",
+    "hint": "Take the staff pick in every crisis",
+    "infamy": false,
+    "signature": false,
+    "tier": "COMMON",
+    "rate": null,
+    "turn": 11,
+    "month": 12
+   },
+   {
+    "id": "sworn_in",
+    "name": "Sworn In",
+    "rule": "Complete your first month",
+    "hint": "Finish one month in office",
+    "infamy": false,
+    "signature": false,
+    "tier": "COMMON",
+    "rate": 1,
+    "turn": 0,
+    "month": 1
+   },
+   {
+    "id": "full_term",
+    "name": "Full Term",
+    "rule": "Reach the final month in office",
+    "hint": "Stay in office to the last month",
+    "infamy": false,
+    "signature": false,
+    "tier": "COMMON",
+    "rate": 0.96,
+    "turn": 11,
+    "month": 12
+   },
+   {
+    "id": "no_shot_fired",
+    "name": "Never Fired a Shot",
+    "rule": "No airstrike, invasion or attack order all session",
+    "hint": "Get through a whole session without an attack order",
+    "infamy": false,
+    "signature": false,
+    "tier": "COMMON",
+    "rate": 0.91,
+    "turn": 11,
+    "month": 12
+   },
+   {
+    "id": "cooler_heads",
+    "name": "Cooler Heads",
+    "rule": "World tension 20+ points lower than at the start",
+    "hint": "Finish with world tension 20 points below where it started",
+    "infamy": false,
+    "signature": false,
+    "tier": "COMMON",
+    "rate": 0.6,
+    "turn": 11,
+    "month": 12
+   },
+   {
+    "id": "no_recession",
+    "name": "Bulletproof",
+    "rule": "Real growth never negative",
+    "hint": "Keep real growth above zero every month",
+    "infamy": false,
+    "signature": false,
+    "tier": "COMMON",
+    "rate": 0.6,
+    "turn": 11,
+    "month": 12
+   },
+   {
+    "id": "iron_approval",
+    "name": "Iron Approval",
+    "rule": "Approval never below 40%",
+    "hint": "Keep approval at 40% or more every month",
+    "infamy": false,
+    "signature": false,
+    "tier": "COMMON",
+    "rate": 0.466,
+    "turn": 11,
+    "month": 12
+   },
+   {
+    "id": "history_rewritten",
+    "name": "History Rewritten",
+    "rule": "Better than reality on every row of the truth table",
+    "hint": "Beat reality on every row of the truth table",
+    "infamy": false,
+    "signature": false,
+    "tier": "RARE",
+    "rate": null,
+    "turn": 11,
+    "month": 12
+   },
+   {
+    "id": "steady_state",
+    "name": "Steady State",
+    "rule": "Stability never below 50%",
+    "hint": "Keep stability at 50% or more every month",
+    "infamy": false,
+    "signature": false,
+    "tier": "UNCOMMON",
+    "rate": 0.385,
+    "turn": 11,
+    "month": 12
+   },
+   {
+    "id": "peacemaker",
+    "name": "Peacemaker",
+    "rule": "A war you were fighting ends in a ceasefire",
+    "hint": "Bring one of your wars to a ceasefire",
+    "infamy": false,
+    "signature": false,
+    "tier": "UNCOMMON",
+    "rate": 0.335,
+    "turn": 5,
+    "month": 6
+   },
+   {
+    "id": "clean_sheet",
+    "name": "Clean Sheet",
+    "rule": "Every primary and bonus objective met (3 stars)",
+    "hint": "Meet every objective, bonuses included",
+    "infamy": false,
+    "signature": false,
+    "tier": "UNCOMMON",
+    "rate": 0.173,
+    "turn": 11,
+    "month": 12
+   },
+   {
+    "id": "defused",
+    "name": "Defused",
+    "rule": "3 stars on a TOUGH or BRUTAL flashpoint seat",
+    "hint": "Take three stars on a tough or brutal seat",
+    "infamy": false,
+    "signature": false,
+    "tier": "RARE",
+    "rate": 0.138,
+    "turn": 11,
+    "month": 12
+   }
+  ],
+  "locked": [
+   {
+    "id": "hormuz_usa_strait_open",
+    "name": "Strait Open, Bomb Never",
+    "rule": "End both the US and the Israeli wars with Iran, and Iran never passes DEVELOPING.",
+    "hint": "End both the US and the Israeli wars with Iran, and Iran never passes DEVELOPING.",
+    "infamy": false,
+    "signature": true,
+    "tier": "RARE",
+    "rate": null,
+    "turn": null,
+    "month": null
+   },
+   {
+    "id": "full_desk",
+    "name": "Full Desk",
+    "rule": "Issue the maximum 6 orders in one month",
+    "hint": "Issue six orders in a single month",
+    "infamy": false,
+    "signature": false,
+    "tier": "COMMON",
+    "rate": null,
+    "turn": null,
+    "month": null
+   }
+  ],
+  "catalogue": 34
+ },
+ "moments": {
+  "months": 12,
+  "best": {
+   "turn": 5,
+   "month": 6,
+   "kind": "WAR_END",
+   "title": "The shooting stops with Iran",
+   "consequence": "Ceasefire, approval 48% to 50%",
+   "text": "Month 6 · The shooting stops with Iran · Ceasefire, approval 48% to 50%",
+   "tone": "good",
+   "weight": 15,
+   "with": "IRN"
+  },
+  "worst": {
+   "turn": 7,
+   "month": 8,
+   "kind": "CRISIS",
+   "title": "Isfahan's tunnels",
+   "consequence": "Bunker-busters on Isfahan, approval 53% to 55%",
+   "text": "Month 8 · Isfahan's tunnels · Bunker-busters on Isfahan, approval 53% to 55%",
+   "tone": "bad",
+   "weight": -13
+  },
+  "turningPoint": {
+   "turn": 11,
+   "month": 12,
+   "from": 112,
+   "to": 119,
+   "delta": 7
+  },
+  "well": [
+   {
+    "turn": 5,
+    "month": 6,
+    "kind": "WAR_END",
+    "title": "The shooting stops with Iran",
+    "consequence": "Ceasefire, approval 48% to 50%",
+    "text": "Month 6 · The shooting stops with Iran · Ceasefire, approval 48% to 50%",
+    "tone": "good",
+    "weight": 15,
+    "with": "IRN"
+   },
+   {
+    "turn": 3,
+    "month": 4,
+    "kind": "CRISIS",
+    "title": "Tanker hit",
+    "consequence": "Full convoy operation, approval 47% to 45%",
+    "text": "Month 4 · Tanker hit · Full convoy operation, approval 47% to 45%",
+    "tone": "good",
+    "weight": 9
+   }
+  ],
+  "bad": [
+   {
+    "turn": 7,
+    "month": 8,
+    "kind": "CRISIS",
+    "title": "Isfahan's tunnels",
+    "consequence": "Bunker-busters on Isfahan, approval 53% to 55%",
+    "text": "Month 8 · Isfahan's tunnels · Bunker-busters on Isfahan, approval 53% to 55%",
+    "tone": "bad",
+    "weight": -13
+   },
+   {
+    "turn": 1,
+    "month": 2,
+    "kind": "CRISIS",
+    "title": "The midterm clock",
+    "consequence": "Hit the IRGC navy now, approval 44% to 46%",
+    "text": "Month 2 · The midterm clock · Hit the IRGC navy now, approval 44% to 46%",
+    "tone": "bad",
+    "weight": -5
+   }
+  ],
+  "timing": [
+   {
+    "month": 1,
+    "text": "Iran never tests a bomb: all 12 months"
+   },
+   {
+    "month": 6,
+    "text": "The shooting stops: no US–Iran war at the end (Hormuz reopens): from month 6"
+   },
+   {
+    "month": 6,
+    "text": "Ended the war with Iran in month 6 of 12"
+   }
+  ]
+ },
+ "perception": {
+  "approval": {
+   "id": "approval",
+   "label": "Approval",
+   "unit": "%",
+   "higherIsBetter": true,
+   "months": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "values": [
+    44,
+    46,
+    47,
+    45,
+    48,
+    50,
+    53,
+    55,
+    57,
+    58,
+    60,
+    61
+   ],
+   "start": 44,
+   "end": 61,
+   "min": 44,
+   "max": 61,
+   "best": 61,
+   "worst": 44
+  },
+  "elections": [],
+  "caption": "Started at 44%, low 44%, high 61%, ended at 61%",
+  "relations": [
+   {
+    "id": "IRN",
+    "name": "Iran",
+    "before": -100,
+    "after": -56,
+    "label": "Thaw",
+    "objective": true
+   },
+   {
+    "id": "ARE",
+    "name": "United Arab Emirates",
+    "before": 75,
+    "after": 70,
+    "label": "Steady",
+    "objective": true
+   },
+   {
+    "id": "ISR",
+    "name": "Israel",
+    "before": 85,
+    "after": 80,
+    "label": "Steady",
+    "objective": true
+   }
+  ],
+  "press": [
+   {
+    "role": "home",
+    "outlet": "The capital's paper",
+    "tone": "good",
+    "quote": "Approval from 44% to 61%, growth at 2.1%: the country liked what it saw."
+   },
+   {
+    "role": "ally",
+    "outlet": "United Arab Emirates' business daily",
+    "tone": "bad",
+    "quote": "A partner that stopped consulting us. Relations cooled from 75 to 70."
+   },
+   {
+    "role": "rival",
+    "outlet": "Iran's state television",
+    "tone": "good",
+    "quote": "Even the enemy can count: the guns are quiet, and they blinked first."
+   }
+  ],
+  "judgement": "A president who kept the ship afloat without turning the wheel, and was proved right by the end, remembered for \"History Rewritten\"."
+ },
+ "numbers": {
+  "series": [
+   {
+    "id": "approval",
+    "label": "Approval",
+    "unit": "%",
+    "higherIsBetter": true,
+    "months": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "values": [
+     44,
+     46,
+     47,
+     45,
+     48,
+     50,
+     53,
+     55,
+     57,
+     58,
+     60,
+     61
+    ],
+    "start": 44,
+    "end": 61,
+    "min": 44,
+    "max": 61,
+    "best": 61,
+    "worst": 44
+   },
+   {
+    "id": "realGrowth",
+    "label": "Real growth",
+    "unit": "%",
+    "higherIsBetter": true,
+    "months": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "values": [
+     2.1,
+     2.1,
+     2.1,
+     2.1,
+     2.1,
+     2.1,
+     2.1,
+     2.1,
+     2.1,
+     2.1,
+     2.1,
+     2.1
+    ],
+    "start": 2.1,
+    "end": 2.1,
+    "min": 2.1,
+    "max": 2.1,
+    "best": 2.1,
+    "worst": 2.1
+   },
+   {
+    "id": "stability",
+    "label": "Stability",
+    "unit": "%",
+    "higherIsBetter": true,
+    "months": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "values": [
+     62,
+     62,
+     62,
+     62,
+     62,
+     62,
+     62,
+     62,
+     62,
+     62,
+     62,
+     62
+    ],
+    "start": 62,
+    "end": 62,
+    "min": 62,
+    "max": 62,
+    "best": 62,
+    "worst": 62
+   },
+   {
+    "id": "tension",
+    "label": "World tension",
+    "unit": "",
+    "higherIsBetter": false,
+    "months": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "values": [
+     72,
+     70,
+     68,
+     66,
+     64,
+     62,
+     60,
+     58,
+     56,
+     54,
+     52,
+     50
+    ],
+    "start": 72,
+    "end": 50,
+    "min": 50,
+    "max": 72,
+    "best": 50,
+    "worst": 72
+   },
+   {
+    "id": "score",
+    "label": "Leadership score",
+    "unit": "",
+    "higherIsBetter": true,
+    "months": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "values": [
+     100,
+     101,
+     103,
+     105,
+     106,
+     108,
+     109,
+     111,
+     112,
+     114,
+     116,
+     119
+    ],
+    "start": 100,
+    "end": 119,
+    "min": 100,
+    "max": 119,
+    "best": 119,
+    "worst": 100
+   }
+  ],
+  "counts": {
+   "wars": 1,
+   "deals": 1,
+   "orders": 36,
+   "crises": 3,
+   "livesLost": 230,
+   "covertOk": 0,
+   "covertExposed": 0
+  }
+ },
+ "declassified": [
+  {
+   "id": "nuclear",
+   "label": "Iran's nuclear program",
+   "subject": "IRN",
+   "believed": 49,
+   "actual": 55,
+   "unit": "%",
+   "note": "Status at the end: developing"
+  },
+  {
+   "id": "military",
+   "label": "Iran's real military strength",
+   "subject": "IRN",
+   "believed": 352817,
+   "actual": 424983,
+   "unit": "",
+   "note": "Your estimate was 69% confident"
+  },
+  {
+   "id": "plots",
+   "label": "Covert operations against you",
+   "subject": "IRN",
+   "believed": null,
+   "actual": 3,
+   "unit": "",
+   "note": "Iran ran 3 operations against you"
+  }
+ ],
+ "truth": {
+  "asOf": "2026-11",
+  "rows": [
+   {
+    "topic": "The strait",
+    "yours": "Reopened: the US-Iran war ended in month 6.",
+    "real": "Still largely shut in late November: a US blockade of Iranian ports against IRGC attacks on shipping.",
+    "verdict": "BETTER",
+    "met": true
+   },
+   {
+    "topic": "The uranium",
+    "yours": "Iran never got beyond a developing programme.",
+    "real": "No test, but over 200 kg of 60% uranium is reportedly intact at Isfahan, unseen by inspectors since February.",
+    "verdict": "BETTER",
+    "met": true
+   },
+   {
+    "topic": "The Gulf partners",
+    "yours": "The UAE stayed close to Washington to the end.",
+    "real": "Gulf hosts absorbed Iranian missiles and drones; US bases in Bahrain were reportedly hit again on 21 November.",
+    "verdict": "BETTER",
+    "met": true
+   },
+   {
+    "topic": "The home front",
+    "yours": "Your approval finished at 56% or better.",
+    "real": "About $47bn and 23 American dead, reportedly; the President paused new strikes before the 3 November midterms.",
+    "verdict": "BETTER",
+    "met": true
+   }
+  ],
+  "fear": "A surviving hardline regime with a hidden 60% stockpile and every reason to race for a bomb, or a Gulf energy shock that tips the world into recession.",
+  "sources": [
+   "https://en.wikipedia.org/wiki/2026_Iran_war",
+   "https://en.wikipedia.org/wiki/2026_Iran_war_ceasefire",
+   "https://www.thenationalnews.com/news/europe/2026/03/10/irans-uranium-stockpile-likely-intact-in-isfahan-iaeas-grossi-says",
+   "https://www.aljazeera.com/news/2026/11/2/iran-pushing-accelerated-plan-for-ceasefire-talks-with-us",
+   "https://euronews.com/2026/11/21/iran-attacks-us-bases-in-bahrain-as-its-tankers-get-ready-to-break-the-us-blockade"
+  ],
+  "debrief": "What really happened: the 2026 Iran war killed a Supreme Leader but did not topple the regime. Hormuz was closed and reopened several times, a two-week ceasefire and the Islamabad framework both collapsed, and by November the conflict had settled into blockade versus harassment, at a cost of about $47bn and 23 American dead. What experts fear: a surviving hardline regime sitting on 200-plus kilograms of 60% uranium with every incentive for a crash bomb programme, or a Gulf energy shock that tips a 3%-growth world into recession."
+ },
+ "replay": {
+  "seed": 4821,
+  "seedCode": "HC-USA-3PX",
+  "seatKey": "hormuz-convoy:USA",
+  "mode": "FLASHPOINT",
+  "scenarioId": "2026",
+  "flashpointId": "hormuz-convoy",
+  "countryId": "USA",
+  "difficulty": "STATESMAN",
+  "deterministic": true,
+  "aiTiersUsed": [
+   "ALGORITHMIC"
+  ]
+ },
+ "ranking": {
+  "seatKey": "hormuz-convoy:USA",
+  "benchmarks": {
+   "smart": {
+    "p10": 606,
+    "p50": 667,
+    "p90": 735,
+    "max": 748,
+    "n": 36,
+    "q": [
+     548,
+     592,
+     606,
+     607,
+     630,
+     640,
+     643,
+     650,
+     653,
+     655,
+     667,
+     668,
+     672,
+     677,
+     681,
+     718,
+     730,
+     731,
+     735,
+     740,
+     748
+    ]
+   },
+   "random": {
+    "p10": 387,
+    "p50": 443,
+    "p90": 511,
+    "max": 557,
+    "n": 36,
+    "q": [
+     232,
+     381,
+     387,
+     387,
+     403,
+     432,
+     435,
+     439,
+     440,
+     440,
+     443,
+     444,
+     448,
+     450,
+     455,
+     489,
+     494,
+     497,
+     511,
+     528,
+     557
+    ]
+   },
+   "none": {
+    "p10": 424,
+    "p50": 430,
+    "p90": 439,
+    "max": 442,
+    "n": 36,
+    "q": [
+     230,
+     421,
+     424,
+     426,
+     427,
+     428,
+     428,
+     428,
+     428,
+     429,
+     430,
+     430,
+     431,
+     432,
+     433,
+     433,
+     435,
+     436,
+     439,
+     439,
+     442
+    ]
+   }
+  },
+  "ticks": [
+   {
+    "id": "none",
+    "label": "Do-nothing staff",
+    "score": 430
+   },
+   {
+    "id": "random",
+    "label": "Random staff",
+    "score": 443
+   },
+   {
+    "id": "smart_p50",
+    "label": "Competent staff",
+    "score": 667
+   },
+   {
+    "id": "smart_p90",
+    "label": "Competent staff, top 10%",
+    "score": 735
+   },
+   {
+    "id": "best",
+    "label": "Best known",
+    "score": 748
+   }
+  ],
+  "percentile": 78,
+  "percentileLabel": "better than 78% of simulated competent leaders",
+  "personalBest": 611
+ },
+ "beatNext": "Meet all goals 2 months earlier for about +17",
+ "run": {
+  "seatKey": "hormuz-convoy:USA",
+  "seed": 4821,
+  "seedCode": "HC-USA-3PX",
+  "difficulty": "STATESMAN",
+  "mode": "FLASHPOINT",
+  "scenarioId": "2026",
+  "flashpointId": "hormuz-convoy",
+  "countryId": "USA",
+  "presidencyScore": 724,
+  "parts": [
+   400,
+   50,
+   163,
+   111
+  ],
+  "grade": "A",
+  "stars": 3,
+  "verdict": "MISSION COMPLETE",
+  "victory": true,
+  "achievements": [
+   "staff_knows_best",
+   "sworn_in",
+   "full_term",
+   "no_shot_fired",
+   "cooler_heads",
+   "no_recession",
+   "iron_approval",
+   "history_rewritten",
+   "steady_state",
+   "peacemaker",
+   "clean_sheet",
+   "defused"
+  ],
+  "series": {
+   "approval": [
+    44,
+    46,
+    47,
+    45,
+    48,
+    50,
+    53,
+    55,
+    57,
+    58,
+    60,
+    61
+   ],
+   "score": [
+    100,
+    101,
+    103,
+    105,
+    106,
+    108,
+    109,
+    111,
+    112,
+    114,
+    116,
+    119
+   ]
+  },
+  "choices": [
+   {
+    "turn": 1,
+    "title": "The midterm clock",
+    "choice": "Hit the IRGC navy now"
+   },
+   {
+    "turn": 3,
+    "title": "Tanker hit",
+    "choice": "Full convoy operation"
+   },
+   {
+    "turn": 7,
+    "title": "Isfahan's tunnels",
+    "choice": "Bunker-busters on Isfahan"
+   }
+  ],
+  "aiTier": "ALGORITHMIC",
+  "saveId": "demo",
+  "date": "2026-11-21T12:00:00.000Z"
+ }
+}

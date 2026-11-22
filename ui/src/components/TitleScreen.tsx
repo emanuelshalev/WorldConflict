@@ -32,6 +32,7 @@ import {
   useGameStore,
 } from '../store/gameStore';
 import { flag } from '../lib/format';
+import { YourRecord } from './reveal/YourRecord';
 
 interface CountryInfo {
   id: string;
@@ -318,6 +319,8 @@ export function TitleScreen() {
             <IconFlame size={18} />
           </button>
         )}
+        {/* Reveal agent block (WP7): your record and "Play this seed" */}
+        <YourRecord />
       </section>
 
       <aside className="ts2-dossier" aria-label="Dossier">
