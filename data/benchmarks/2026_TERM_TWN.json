@@ -1,10 +1,6 @@
 {
   "seatKey": "2026:TERM:TWN",
-<<<<<<< HEAD
-  "fingerprint": "24783889c47dcf98",
-=======
   "fingerprint": "4ab6d4d644e5fcf5",
->>>>>>> cleanup-2
   "generatedAt": "2026-11-22",
   "games": 36,
   "difficulty": "STATESMAN",

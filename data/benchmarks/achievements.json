@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
-  "fingerprint": "24783889c47dcf98",
-=======
   "fingerprint": "4ab6d4d644e5fcf5",
->>>>>>> cleanup-2
   "generatedAt": "2026-11-22",
   "games": {
     "FLASHPOINT": 2268,
@@ -62,33 +58,6 @@
       "world_at_peace": 0.006
     },
     "TERM": {
-<<<<<<< HEAD
-      "against_advice": 0.396,
-      "ahead_of_schedule": 0.07,
-      "boom_times": 0.177,
-      "bridge_builder": 0.155,
-      "clean_sheet": 0.164,
-      "coalition": 0.263,
-      "comeback_kid": 0.089,
-      "cooler_heads": 0.904,
-      "dealmaker": 0.064,
-      "deposed": 0.558,
-      "exposed": 0.319,
-      "first_strike_rival_nuke": 0.015,
-      "full_desk": 0,
-      "full_term": 0.442,
-      "iron_approval": 0.372,
-      "lame_duck": 0.465,
-      "landslide": 0.221,
-      "nerves_of_steel": 0,
-      "no_recession": 0.286,
-      "no_shot_fired": 0.197,
-      "pariah": 0.364,
-      "peacemaker": 0.104,
-      "photo_finish": 0.006,
-      "quick_peace": 0.177,
-      "re_elected": 0.299,
-=======
       "against_advice": 0.406,
       "ahead_of_schedule": 0.072,
       "boom_times": 0.182,
@@ -114,16 +83,11 @@
       "photo_finish": 0.006,
       "quick_peace": 0.181,
       "re_elected": 0.306,
->>>>>>> cleanup-2
       "spymaster": 0.006,
       "statecraft": 0.243,
       "steady_state": 0.395,
       "sworn_in": 1,
-<<<<<<< HEAD
-      "world_at_peace": 0.834
-=======
       "world_at_peace": 0.845
->>>>>>> cleanup-2
     }
   }
 }
