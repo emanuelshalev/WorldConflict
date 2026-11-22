@@ -1,0 +1,620 @@
+# Findings regression registry (format and checker: devloop/kit/regressions.mjs; decision D-60).
+# Every finding a fix addressed, with the code it guards (covers) and at least one automated guard.
+# Ids: RS-00N-k = CEO real signal N, point k (in the order of the verbatim); F-0N-k = triage
+# cluster of iteration N; QA0-n = iteration 0 QA repro item n; QA1-/QA2-Sx-n = QA verify of
+# iteration 1/2, severity and number; B-nn = iteration 1 backlog row.
+# UI scenario guards live in scenarios-qa/regressions/ (shared helpers in _lib.mjs; they pin the
+# seat to Hormuz Convoy as the United States with a fixed seed unless the repro needs another).
+backlog:
+  - file: runs/iter-01/backlog.md
+findings:
+  # ------------------------------------------------------------------------------------------
+  # CEO real signals
+  # ------------------------------------------------------------------------------------------
+  - id: RS-001-1
+    title: Never blocked without a reason; no repeated, unexplained refusal message
+    source: RS-001 (CEO playtest of v0.9.0); D-45
+    covers: [src/core/availability.ts, src/core/preview.ts, ui/src/lib/availability.ts, ui/src/components/orders/**, ui/src/store/gameStore.ts]
+    guards:
+      - vitest: tests/core/availability.spec.ts
+        name: "Availability: preview and Execute agree"
+      - vitest: tests/ui-availability.spec.ts
+        name: availabilityOf precedence
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-00-1.mjs
+  - id: RS-001-2
+    title: Political capital is named one way everywhere and the warning points at its meter
+    source: RS-001 (CEO, "political credit" vs the small bar); D-45; QA0-5
+    covers: [ui/src/components/Hud.tsx, ui/src/components/desk/CommandRail.tsx, ui/src/lib/pointAt.ts, ui/src/lib/glossary.ts, ui/src/components/orders/OrderCard.tsx, ui/src/components/game/CapitalSeal.tsx]
+    guards:
+      - vitest: tests/ui-glossary.spec.ts
+        name: finds no banned synonym
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-001-2.mjs
+  - id: RS-001-3
+    title: Desk and map offer the same orders with the same cost, chance and reason
+    source: RS-001 (CEO, no parity); D-45
+    covers: [ui/src/lib/orders.ts, ui/src/lib/actions.ts, ui/src/components/MapActionMenu.tsx, ui/src/components/orders/**, src/api/routes/**]
+    guards:
+      - vitest: tests/ui-orders-parity.spec.ts
+      - vitest: tests/api/orders-menu.spec.ts
+  - id: RS-001-4
+    title: It is clear what is expected (goal line with real mission progress, one Your move)
+    source: RS-001 (CEO, unclear what is expected); D-46
+    covers: [src/core/missionImpact.ts, ui/src/lib/goals.ts, ui/src/lib/month.ts, ui/src/components/desk/**, ui/src/components/Desk.tsx]
+    guards:
+      - vitest: tests/core/mission-impact.spec.ts
+        name: mission status (goal line)
+      - vitest: tests/ui-month.spec.ts
+        name: reads the goal line
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-01-4.mjs
+  - id: RS-001-5
+    title: Suggestions are visible, with a why line, on the desk and the map
+    source: RS-001 (CEO, "where are the suggestions?"); D-46
+    covers: [src/core/advisors.ts, ui/src/components/desk/AdvisorList.tsx, ui/src/components/desk/CommandRail.tsx, ui/src/lib/advisorRows.ts]
+    guards:
+      - vitest: tests/core/advisors.spec.ts
+        name: suggests orders with a why line
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/QA1-S2-1.mjs
+  - id: RS-002-1
+    title: "The reveal: staged end with achievements, what went badly, perception and measured numbers"
+    source: RS-002 (CEO, end of game); G10; D-43, D-47
+    covers: [src/core/reveal.ts, src/core/achievements.ts, src/core/chronicle.ts, ui/src/components/reveal/**]
+    guards:
+      - vitest: tests/core/reveal.spec.ts
+        name: buildReveal
+      - vitest: tests/core/achievements.spec.ts
+      - vitest: tests/core/chronicle.spec.ts
+  - id: RS-002-2
+    title: Presidencies are ranked against benchmarks (percentile, ladder, comparable score)
+    source: RS-002 (CEO, "we need ranking"); D-47
+    covers: [src/core/reveal.ts, src/infra/benchmarks.ts, data/benchmarks/**, ui/src/lib/shareCard.ts, ui/src/components/reveal/**]
+    guards:
+      - vitest: tests/core/reveal.spec.ts
+        name: ranks against benchmark ticks
+      - vitest: tests/core/benchmarks.spec.ts
+      - vitest: tests/ui-numbers.spec.ts
+        name: reveal ranking and share card
+  - id: RS-002-3
+    title: Replay the same opening to beat a previous run (seed codes, same seed same score)
+    source: RS-002 (CEO, play again for a better outcome); D-47; F-00-11
+    covers: [src/api/routes/**, src/core/reveal.ts, src/core/seed.ts, ui/src/lib/runs.ts]
+    guards:
+      - vitest: tests/api/reveal.spec.ts
+        name: replay and seed codes
+      - vitest: tests/core/reveal.spec.ts
+        name: same seed, same orders and choices
+  - id: RS-003-1
+    title: The world map fits the screen
+    source: RS-003 (CEO, map should zoom to the screen); G11; D-54
+    covers: [ui/src/lib/globeFit.ts, ui/src/components/MapView.tsx, ui/src/components/TitleGlobe.tsx]
+    guards:
+      - vitest: tests/ui/mapLabels.spec.ts
+        name: globeFit
+  - id: RS-003-2
+    title: Country names on the globe, tiered, never under 13 px, era names applied
+    source: RS-003 (CEO, country names on the globe); G11
+    covers: [ui/src/lib/mapLabels.ts, ui/src/components/MapView.tsx, ui/src/components/TitleGlobe.tsx]
+    guards:
+      - vitest: tests/ui/mapLabels.spec.ts
+        name: mapLabels
+  - id: RS-003-3
+    title: Changing era changes the map (stability or blocs, situations, fronts)
+    source: RS-003 (CEO, map stays the same across eras); G11; D-54
+    covers: [ui/src/components/globe/**, src/core/era-map.ts, data/scenarios/**, ui/src/components/TitleGlobe.tsx]
+    guards:
+      - vitest: tests/ui/eraLayers.spec.ts
+      - vitest: tests/core/era-map.spec.ts
+  - id: RS-003-4
+    title: Names and situations are explained in place (peek, situation briefing, codex)
+    source: RS-003 (CEO, a learning tool); G12; D-50, D-53
+    covers: [ui/src/lib/codexMatch.ts, ui/src/lib/learn.ts, ui/src/components/learn/**, src/core/codex.ts, data/codex/**, src/api/routes/**]
+    guards:
+      - vitest: tests/ui-learn-aids.spec.ts
+      - vitest: tests/ui-codex-match.spec.ts
+      - vitest: tests/codex/schema.spec.ts
+      - vitest: tests/api/codex.spec.ts
+        name: GET /api/codex
+  - id: RS-003-5
+    title: Learning aids can be turned down or off for players who know the material
+    source: RS-003 (CEO, do not bother experts); D-53
+    covers: [ui/src/lib/learn.ts, ui/src/lib/codexMatch.ts, ui/src/components/learn/**]
+    guards:
+      - vitest: tests/ui-learn.spec.ts
+        name: defaults and settings
+      - vitest: tests/ui-codex-match.spec.ts
+        name: levels (D-53)
+
+  # ------------------------------------------------------------------------------------------
+  # Iteration 0 triage clusters
+  # ------------------------------------------------------------------------------------------
+  - id: F-00-1
+    title: Refused orders always show a reason (and a fix) on the card, before any tap
+    source: iter-00 triage F-00-1; QA repro #4; D-45
+    covers: [src/core/availability.ts, ui/src/lib/availability.ts, ui/src/components/orders/**, ui/src/components/desk/Detail.tsx, ui/src/components/MapActionMenu.tsx]
+    guards:
+      - vitest: tests/core/availability.spec.ts
+        name: "Availability: rule layer"
+      - vitest: tests/ui-availability.spec.ts
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-00-1.mjs
+  - id: F-00-2
+    title: The goal is clear (no dead Mission 2/4 pill; which move helps; why the score moved)
+    source: iter-00 triage F-00-2; D-46
+    covers: [src/core/missionImpact.ts, src/core/advisors.ts, src/core/scoring.ts, ui/src/lib/goals.ts, ui/src/lib/scoreWhy.ts, ui/src/lib/month.ts]
+    guards:
+      - vitest: tests/core/mission-impact.spec.ts
+      - vitest: tests/core/advisors.spec.ts
+        name: the goal line lists what helps each goal
+      - vitest: tests/ui-month.spec.ts
+        name: explains the score in one line
+  - id: F-00-3
+    title: No walls of text, duplicated briefing or unexplained abbreviations
+    source: iter-00 triage F-00-3; D-46
+    covers: [ui/src/lib/ease.ts, ui/src/lib/month.ts, ui/src/lib/glossary.ts, ui/src/components/**]
+    guards:
+      - vitest: tests/ui-ease.spec.ts
+        name: the briefing shows at most three goals
+      - vitest: tests/ui-month.spec.ts
+        name: never arrows or abbreviations
+      - vitest: tests/ui-glossary.spec.ts
+  - id: F-00-4
+    title: A game, not a dashboard (illustrated option cards, titles never cut off)
+    source: iter-00 triage F-00-4; design-feel; RS-001 dashboard point (partly, see open list)
+    covers: [ui/src/components/game/**, ui/src/components/desk/YourMove.tsx, ui/src/scenes/**, ui/src/styles/**]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-01-4.mjs
+      - vitest: tests/ui/kinds.spec.ts
+        name: "R7: no repeat backdrop"
+  - id: F-00-5
+    title: No contradictions (art vs outcome, check mark over a failed order, deltas, Your call)
+    source: iter-00 triage F-00-5; QA repro #6, #7
+    covers: [ui/src/scenes/kinds.ts, ui/src/lib/debrief.ts, ui/src/lib/numbers.ts, ui/src/lib/month.ts, src/core/reactions.ts, src/core/turn.ts]
+    guards:
+      - vitest: tests/ui/kinds.spec.ts
+        name: "R2 and R3: mood and scene follow the verdict"
+      - vitest: tests/core/report.spec.ts
+        name: never pairs a warm reply with a colder relationship
+      - vitest: tests/ui-numbers.spec.ts
+        name: one source for the month
+      - vitest: tests/regressions/ui-store.spec.ts
+        name: never labelled 'Your call'
+  - id: F-00-6
+    title: Generated prose reads naturally and leaders do not repeat each other's replies
+    source: iter-00 triage F-00-6; QA repro #8a, #8c
+    covers: [src/core/reactions.ts, src/core/turn.ts, src/core/outcomes.ts, src/core/text.ts]
+    guards:
+      - vitest: tests/core/headlines.spec.ts
+      - vitest: tests/core/repetition.spec.ts
+        name: no reaction line appears twice in one month
+  - id: F-00-7
+    title: No repetition (same crisis or caller every month, same scene twice running)
+    source: iter-00 triage F-00-7; QA repro #10
+    covers: [src/core/meetings.ts, src/core/crises.ts, src/core/advisors.ts, ui/src/scenes/kinds.ts]
+    guards:
+      - vitest: tests/core/repetition.spec.ts
+  - id: F-00-8
+    title: "Approve all is not a winning autopilot: the cabinet pick can hurt the mission, and says so"
+    source: iter-00 triage F-00-8; D-46 (rework), D-49 (staff band accepted at 78% for now)
+    covers: [src/core/advisors.ts, src/core/missionImpact.ts, ui/src/lib/staff.ts, ui/src/lib/month.ts]
+    guards:
+      - vitest: tests/core/advisors.spec.ts
+        name: the mission pick scores at least as well as the cabinet pick
+      - vitest: tests/core/mission-advice.spec.ts
+        name: mission notes on every flashpoint seat
+    note: the staff autopilot win rate (D-49) is a balance band, not guarded here
+  - id: F-00-9
+    title: A month takes two screens (result card, then the next desk); the paper closes on Escape
+    source: iter-00 triage F-00-9; D-46
+    covers: [ui/src/scenes/ResultCard.tsx, ui/src/scenes/MonthDebrief.tsx, ui/src/components/Chronicle.tsx, ui/src/lib/afterMonth.ts, ui/src/App.tsx]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-00-9.mjs
+      - vitest: tests/ui-ease.spec.ts
+        name: the result card keeps Next month in view
+  - id: F-00-10
+    title: Real-world context at the end (declassified truth and real-history table)
+    source: iter-00 triage F-00-10 (covered by the reveal); D-47
+    covers: [src/core/reveal.ts, data/flashpoints/**]
+    guards:
+      - vitest: tests/core/reveal.spec.ts
+        name: builds truth rows
+      - vitest: tests/core/consistency.spec.ts
+        name: truth-table verdicts agree with the objective status
+  - id: F-00-11
+    title: Same-seed replay and side-by-side runs
+    source: iter-00 triage F-00-11; RS-002; D-47
+    covers: [src/api/routes/**, src/core/reveal.ts, src/core/seed.ts, ui/src/lib/runs.ts]
+    guards:
+      - vitest: tests/api/reveal.spec.ts
+      - vitest: tests/core/reveal.spec.ts
+        name: Seats, seed codes and replay
+  - id: F-00-12
+    title: No freezes from the hidden map or endless idle animations
+    source: iter-00 triage F-00-12; QA repro #1; B-07
+    covers: [ui/src/components/MapView.tsx, ui/src/App.tsx, ui/src/styles/**, ui/src/scenes/**]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/B-07.mjs
+  - id: F-00-13
+    title: Enter in the order search never queues an irreversible order (confirm face instead)
+    source: iter-00 triage F-00-13; QA repro #3 (Dan); B-09; D-45
+    covers: [ui/src/components/orders/OrderCatalog.tsx, ui/src/components/orders/OrderCard.tsx, ui/src/components/orders/ConfirmFace.tsx, ui/src/components/desk/Detail.tsx, src/core/availability.ts]
+    guards:
+      - vitest: tests/core/availability.spec.ts
+        name: marks war and nuclear use irreversible
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-00-13.mjs
+  - id: F-00-14
+    title: The map menu shows the same orders, chance and preview as the desk
+    source: iter-00 triage F-00-14; RS-001; D-45
+    covers: [ui/src/components/MapActionMenu.tsx, ui/src/lib/orders.ts, src/api/routes/**]
+    guards:
+      - vitest: tests/ui-orders-parity.spec.ts
+        name: offers the same orders on the map
+      - vitest: tests/api/orders-menu.spec.ts
+
+  # ------------------------------------------------------------------------------------------
+  # Iteration 0 QA repro items not covered by a backlog row
+  # ------------------------------------------------------------------------------------------
+  - id: QA0-5
+    title: HUD and rail capital meters show the same number of seals
+    source: iter-00 qa-repro #5 (HUD filled what is left, rail what is spent)
+    covers: [ui/src/components/Hud.tsx, ui/src/components/desk/CommandRail.tsx, ui/src/components/game/CapitalSeal.tsx]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-001-2.mjs
+  - id: QA0-7
+    title: An approved staff pick never reads "Your call"
+    source: iter-00 qa-repro #7
+    covers: [ui/src/lib/month.ts, ui/src/components/desk/Navigator.tsx, ui/src/components/desk/Detail.tsx, ui/src/components/desk/YourMove.tsx]
+    guards:
+      - vitest: tests/regressions/ui-store.spec.ts
+        name: never labelled 'Your call'
+  - id: QA0-8c
+    title: Different leaders do not get the same reply line in one month
+    source: iter-00 qa-repro #8c
+    covers: [src/core/reactions.ts, src/core/turn.ts]
+    guards:
+      - vitest: tests/core/repetition.spec.ts
+        name: no reaction line appears twice in one month
+  - id: QA0-10
+    title: The war enemy does not call every month despite the three-month rule
+    source: iter-00 qa-repro #10
+    covers: [src/core/meetings.ts, src/core/advisors.ts]
+    guards:
+      - vitest: tests/core/repetition.spec.ts
+        name: the same leader does not call twice within three months
+
+  # ------------------------------------------------------------------------------------------
+  # Iteration 1 triage clusters
+  # ------------------------------------------------------------------------------------------
+  - id: F-01-1
+    title: The country picker is not a native select; it works by typing and by map pick
+    source: iter-01 triage F-01-1; D-55; QA2 verified
+    covers: [ui/src/components/orders/CountryPicker.tsx, ui/src/components/orders/OrderCatalog.tsx, ui/src/components/MapView.tsx, ui/src/components/CountryDetailPanel.tsx, ui/src/lib/ease.ts]
+    guards:
+      - vitest: tests/ui-ease.spec.ts
+        name: F-01-1 country picker
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-01-1.mjs
+  - id: F-01-2
+    title: The ending never contradicts play (seals, truth table, verdict text)
+    source: iter-01 triage F-01-2; D-55; QA2 verified
+    covers: [src/core/reveal.ts, src/core/achievements.ts, src/core/chronicle.ts, src/core/objectives.ts, ui/src/components/reveal/**]
+    guards:
+      - vitest: tests/core/consistency.spec.ts
+  - id: F-01-3
+    title: Numbers agree across HUD, result card, debrief and paper (single source)
+    source: iter-01 triage F-01-3 (numbers part; attribution is QA2-S2-1, open); B-11
+    covers: [ui/src/lib/numbers.ts, ui/src/lib/debrief.ts, ui/src/scenes/ResultCard.tsx, ui/src/scenes/MonthDebrief.tsx, src/core/turn.ts]
+    guards:
+      - vitest: tests/ui-numbers.spec.ts
+        name: one source for the month
+      - vitest: tests/core/consistency.spec.ts
+        name: start values come from the take-office snapshot
+  - id: F-01-4
+    title: Month 1 shows only the crisis, its cards and Execute; the rest behind Show the whole desk
+    source: iter-01 triage F-01-4; D-55; QA2 verified
+    covers: [ui/src/components/Desk.tsx, ui/src/components/desk/**, ui/src/lib/month.ts, ui/src/lib/ease.ts, ui/src/lib/monthArt.ts]
+    guards:
+      - vitest: tests/ui-ease.spec.ts
+        name: F-01-4 less at once
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-01-4.mjs
+  - id: F-01-5
+    title: Unknown names get explanations (learning aids, codex)
+    source: iter-01 triage F-01-5; D-53; QA2 verified
+    covers: [ui/src/lib/codexMatch.ts, ui/src/lib/learn.ts, ui/src/components/learn/**, src/core/codex.ts, data/codex/**]
+    guards:
+      - vitest: tests/ui-learn.spec.ts
+      - vitest: tests/ui-learn-aids.spec.ts
+      - vitest: tests/codex/schema.spec.ts
+  - id: F-01-6
+    title: Effect sizes on cards and a Big move suggestion with 3+ unspent seals
+    source: iter-01 triage F-01-6; D-55
+    covers: [ui/src/lib/ease.ts, ui/src/components/orders/**, ui/src/components/desk/**]
+    guards:
+      - vitest: tests/ui-ease.spec.ts
+        name: F-01-6 how much does it do
+  - id: F-01-7
+    title: Historical plausibility (era filter for events, AI orders and pacts; non-states refused with a reason)
+    source: iter-01 triage F-01-7; B-17; QA2 verified (its over-reach on the West Bank was QA2-S1-2, now restored)
+    covers: [src/core/era.ts, src/core/data-loader.ts, src/core/events.ts, src/agents/fallback.ts, data/scenarios/**]
+    guards:
+      - vitest: tests/core/era-filter.spec.ts
+      - vitest: tests/api/era-playable.spec.ts
+  - id: F-01-S2-mobilize
+    title: Staff never re-suggest Mobilize at full mobilization; it is refused before Execute
+    source: iter-01 triage "other S2" (Dan); QA2 verified
+    covers: [src/core/advisors.ts, src/core/availability.ts]
+    guards:
+      - vitest: tests/core/mission-advice.spec.ts
+        name: staff and full mobilization
+  - id: F-01-S2-side
+    title: The title side picker label follows the selected crisis and side
+    source: iter-01 triage "other S2" (Maya); QA2 verified
+    covers: [ui/src/components/TitleScreen.tsx, ui/src/lib/sides.ts]
+    guards:
+      - vitest: tests/ui-numbers.spec.ts
+        name: title screen side (Maya)
+
+  # ------------------------------------------------------------------------------------------
+  # Iteration 1 QA verify findings (fixed in iteration 2, verified by QA2)
+  # ------------------------------------------------------------------------------------------
+  - id: QA1-S2-1
+    title: Advisors are readable in Map mode at 1024 and 1440 (no squashed, overlapping rows)
+    source: iter-01 qa-verify S2-1; QA2 FIXED
+    covers: [ui/src/components/desk/CommandRail.tsx, ui/src/components/desk/AdvisorList.tsx, ui/src/styles/ease.css, ui/src/styles/**]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/QA1-S2-1.mjs
+  - id: QA1-S2-2
+    title: No "Best for your mission" next to a Hurts on a primary goal; the switch never hurts the goal it cites
+    source: iter-01 qa-verify S2-2; QA2 FIXED
+    covers: [src/core/advisors.ts, src/core/missionImpact.ts, ui/src/lib/month.ts, ui/src/components/desk/YourMove.tsx]
+    guards:
+      - vitest: tests/core/mission-advice.spec.ts
+        name: mission notes on every flashpoint seat
+      - vitest: tests/core/advisors.spec.ts
+        name: ANALYST keeps the safety net
+  - id: QA1-S3-1
+    title: Option art follows the choice ("no strikes" is not an airstrike); card and paper agree
+    source: iter-01 qa-verify S3-1; QA2 FIXED
+    covers: [ui/src/scenes/kinds.ts, ui/src/lib/monthArt.ts]
+    guards:
+      - vitest: tests/ui-ease.spec.ts
+        name: QA S3-1 art follows the choice
+      - vitest: tests/ui/kinds.spec.ts
+        name: "R1: the picture follows the choice"
+  - id: QA1-S3-3
+    title: The 1024 HUD shows all seven resources in words
+    source: iter-01 qa-verify S3-3 (orders AC17); QA2 FIXED
+    covers: [ui/src/components/Hud.tsx, ui/src/styles/**]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-001-2.mjs
+  - id: QA1-S3-5
+    title: The result card keeps Next month in view at 1024x768
+    source: iter-01 qa-verify S3-5; QA2 FIXED
+    covers: [ui/src/scenes/ResultCard.tsx, ui/src/styles/**]
+    guards:
+      - vitest: tests/ui-ease.spec.ts
+        name: (QA S3-5)
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-00-9.mjs
+  - id: QA1-S3-6
+    title: '"Leadership score" no longer appears in the reveal or the game'
+    source: iter-01 qa-verify S3-6 (B-15 UI side); QA2 FIXED
+    covers: [ui/src/components/reveal/**, ui/src/lib/glossary.ts, ui/src/lib/advisorRows.ts]
+    guards:
+      - vitest: tests/ui-glossary.spec.ts
+        name: finds no banned synonym
+      - vitest: tests/ui-month.spec.ts
+        name: keeps advisor lines in glossary words
+  - id: QA1-S4-share
+    title: The share card never says "Top 100%" next to "Better than 0%"
+    source: iter-01 qa-verify S4; QA2 FIXED
+    covers: [ui/src/lib/shareCard.ts, ui/src/components/reveal/**]
+    guards:
+      - vitest: tests/ui-numbers.spec.ts
+        name: reveal ranking and share card
+
+  # ------------------------------------------------------------------------------------------
+  # Iteration 2 QA verify findings
+  # ------------------------------------------------------------------------------------------
+  - id: QA2-S1-1
+    title: No committed merge-conflict markers; reveal benchmarks parse again
+    source: iter-02 qa-verify S1-1; D-57
+    covers: [data/benchmarks/**, src/infra/benchmarks.ts, devloop/**]
+    guards:
+      - vitest: tests/repo-style.spec.ts
+        name: contains no unresolved merge conflict markers
+      - vitest: tests/core/benchmarks.spec.ts
+  - id: QA2-S1-2
+    title: Every v0.9.0 seat is playable (West Bank in 2025 and 2026; era non-states through What if)
+    source: iter-02 qa-verify S1-2; D-56; seats-and-replay merge (iteration 3)
+    covers: [src/core/data-loader.ts, src/core/era.ts, src/api/routes/**, data/scenarios/**, ui/src/components/TitleScreen.tsx, ui/src/components/globe/**]
+    guards:
+      - vitest: tests/api/seats-replay.spec.ts
+        name: seats restored (QA S1-2, D-56)
+      - vitest: tests/core/era-filter.spec.ts
+        name: the 2025 and 2026 worlds mark nobody
+
+  # ------------------------------------------------------------------------------------------
+  # Iteration 2 triage clusters (fixed in iteration 3)
+  # ------------------------------------------------------------------------------------------
+  - id: F-02-6
+    title: Replay and branch are discoverable from Saved games and the title; guest saves are not lost
+    source: iter-02 triage F-02-6 (Marcus); D-58; seats-and-replay merge (iteration 3)
+    covers: [src/api/routes/**, src/infra/db.ts, ui/src/lib/runs.ts, ui/src/lib/guest.ts, ui/src/components/SaveLoadModal.tsx, ui/src/components/TitleScreen.tsx]
+    guards:
+      - vitest: tests/api/seats-replay.spec.ts
+        name: replay, branch and Saved games (F-02-6)
+      - vitest: tests/ui-replay.spec.ts
+  - id: F-02-7
+    title: One Term can open on a chosen situation (default opening unchanged)
+    source: iter-02 triage F-02-7; D-58; seats-and-replay merge (iteration 3)
+    covers: [src/core/data-loader.ts, src/core/crises.ts, src/api/routes/**, data/scenarios/**, ui/src/components/TitleScreen.tsx]
+    guards:
+      - vitest: tests/api/seats-replay.spec.ts
+        name: "Start with: the opening situation (F-02-7)"
+
+  # ------------------------------------------------------------------------------------------
+  # Iteration 1 backlog (every Done / Mostly done row)
+  # ------------------------------------------------------------------------------------------
+  - id: B-01
+    title: Hormuz hook no longer credits the foreign minister with "a positive step"
+    source: iter-01 backlog B-01 (content consultant)
+    covers: [data/flashpoints/hormuz-convoy.json]
+    guards:
+      - vitest: tests/regressions/flashpoint-facts.spec.ts
+        name: "B-01:"
+  - id: B-02
+    title: Taiwan's defence budget cut stated as about 38%, not roughly in half
+    source: iter-01 backlog B-02
+    covers: [data/flashpoints/quarantine.json]
+    guards:
+      - vitest: tests/regressions/flashpoint-facts.spec.ts
+        name: "B-02:"
+  - id: B-03
+    title: Bab al-Mandab tells the 15 November withdrawal, not a counteroffensive that "ground forward"
+    source: iter-01 backlog B-03
+    covers: [data/flashpoints/bab-al-mandab-burning.json]
+    guards:
+      - vitest: tests/regressions/flashpoint-facts.spec.ts
+        name: "B-03:"
+  - id: B-04
+    title: El Obeid is no longer presented as besieged (siege reportedly broken in November)
+    source: iter-01 backlog B-04
+    covers: [data/flashpoints/fire-on-the-nile.json]
+    guards:
+      - vitest: tests/regressions/flashpoint-facts.spec.ts
+        name: "B-04:"
+  - id: B-05
+    title: No glossary PENDING strings left in the UI
+    source: iter-01 backlog B-05 (WP3)
+    covers: [ui/src/**, ui/src/lib/glossary.ts]
+    guards:
+      - vitest: tests/ui-glossary.spec.ts
+  - id: B-06
+    title: An assassination or coup against a protected target is refused before it runs
+    source: iter-01 backlog B-06 (WP1)
+    covers: [src/core/availability.ts, src/core/preview.ts, src/core/turn.ts]
+    guards:
+      - vitest: tests/core/availability.spec.ts
+        name: states the protection requirement
+  - id: B-07
+    title: The hidden map stops drawing behind the desk and the desk goes still at idle
+    source: iter-01 backlog B-07 (QA repro #1; Mostly done)
+    covers: [ui/src/components/MapView.tsx, ui/src/App.tsx, ui/src/styles/**, ui/src/scenes/**]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/B-07.mjs
+    note: guards stillness after 25 s; the strict 10 s bound (Feel AC24, QA1 S3-2) is still open
+  - id: B-08
+    title: The toast clears itself and collapses repeats; no stale capital toast
+    source: iter-01 backlog B-08 (QA repro #2)
+    covers: [ui/src/store/gameStore.ts, ui/src/App.tsx]
+    guards:
+      - vitest: tests/regressions/ui-store.spec.ts
+        name: "B-08:"
+  - id: B-09
+    title: Enter on the first search hit never queues "Strike nuclear sites" without confirmation
+    source: iter-01 backlog B-09 (QA repro #3)
+    covers: [ui/src/components/orders/OrderCatalog.tsx, ui/src/components/desk/Detail.tsx, ui/src/components/orders/ConfirmFace.tsx]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-00-13.mjs
+  - id: B-10
+    title: "Generated headlines read naturally (no 'Salman on After the...')"
+    source: iter-01 backlog B-10 (QA repro 8a)
+    covers: [src/core/reactions.ts, src/core/turn.ts]
+    guards:
+      - vitest: tests/core/headlines.spec.ts
+  - id: B-11
+    title: One tension number per month across tile, card and paper
+    source: iter-01 backlog B-11 (QA repro #6)
+    covers: [ui/src/lib/numbers.ts, ui/src/lib/debrief.ts, ui/src/scenes/ResultCard.tsx, src/core/turn.ts]
+    guards:
+      - vitest: tests/ui-numbers.spec.ts
+        name: one source for the month
+  - id: B-12
+    title: The title preselects today's crisis and its side
+    source: iter-01 backlog B-12 (QA repro #8d)
+    covers: [ui/src/components/TitleScreen.tsx, ui/src/lib/sides.ts]
+    guards:
+      - vitest: tests/ui-numbers.spec.ts
+        name: "today's crisis selects today's side"
+  - id: B-13
+    title: Escape closes the newspaper opened after the debrief
+    source: iter-01 backlog B-13 (QA repro)
+    covers: [ui/src/components/Chronicle.tsx, ui/src/lib/useModalFocus.ts, ui/src/App.tsx]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-00-9.mjs
+  - id: B-16
+    title: No "before the midterms" premises in a game that opens in late November
+    source: iter-01 backlog B-16 (era content agent)
+    covers: [data/flashpoints/**]
+    guards:
+      - vitest: tests/regressions/flashpoint-facts.spec.ts
+        name: "B-16:"
+      - vitest: tests/core/era-content.spec.ts
+        name: no flashpoint goal label in a game that opens after 3 November 2026 mentions the midterms
+  - id: B-18
+    title: The 1990 Soviet Union Term review judges holding the Union together
+    source: iter-01 backlog B-18 (fixed in 0300b55; the backlog row still reads Open, QA2)
+    covers: [src/core/objectives.ts, data/scenarios/1990.json]
+    guards:
+      - vitest: tests/core/history-fixes.spec.ts
+        name: "B-18: the 1990 Soviet review"
+    note: the balance band (smart about 31%) is checked by the balance harness, not here
+  - id: B-19
+    title: The 2026 briefing tells the 3 November midterms as done
+    source: iter-01 backlog B-19 (fixed in 0300b55; the backlog row still reads Open, QA2)
+    covers: [data/scenarios/2026.json]
+    guards:
+      - vitest: tests/core/history-fixes.spec.ts
+        name: "B-19: scenario briefings match the opening date"
+  - id: B-20
+    title: Hormuz USA objective reads "Voters stay on side", not "after the midterms"
+    source: iter-01 backlog B-20
+    covers: [data/flashpoints/hormuz-convoy.json]
+    guards:
+      - vitest: tests/core/era-content.spec.ts
+        name: "B-20:"
+  - id: B-21
+    title: The codex API re-reads changed data in development
+    source: iter-01 backlog B-21
+    covers: [src/api/routes/**, src/core/codex.ts]
+    guards:
+      - vitest: tests/api/codex.spec.ts
+        name: GET /api/codex after a data file changes
+  - id: B-22
+    title: Main UI bundle stays split (heavy surfaces lazy-loaded)
+    source: iter-01 backlog B-22
+    covers: [ui/vite.config.ts, ui/src/App.tsx]
+    guards:
+      - vitest: tests/ui/bundle-split.spec.ts
+  - id: B-24
+    title: East Germany and South Yemen are drawn in their eras
+    source: iter-01 backlog B-24
+    covers: [ui/public/era/shapes.geojson, data/scenarios/**]
+    guards:
+      - vitest: tests/core/era-content.spec.ts
+        name: "B-24:"
+  - id: B-25
+    title: An era label is never shadowed by a modern name (French Algeria in 1960)
+    source: iter-01 backlog B-25
+    covers: [data/scenarios/**, ui/src/lib/mapLabels.ts]
+    guards:
+      - vitest: tests/core/era-content.spec.ts
+        name: "B-25:"
+  - id: B-26
+    title: Era situations open the codex ("What is going on here?" from the title globe)
+    source: iter-01 backlog B-26
+    covers: [data/scenarios/**, data/codex/**, ui/src/components/TitleGlobe.tsx]
+    guards:
+      - vitest: tests/core/era-content.spec.ts
+        name: "B-26:"
+      - vitest: tests/ui-learn-aids.spec.ts
+        name: era situation codex link
+
+# ------------------------------------------------------------------------------------------
+# Not listed (still open or not a code fix); add them here when a fix lands with its guard:
+#   RS-001-6  dashboard feel, "serious visual design": the ledger keeps it not done (D-37 check)
+#   F-00-15   end of game not reached by the panel: process (D-44), the verify gate's reveal step covers the flow
+#   F-01-8    late months go flat (next)
+#   F-02-1..F-02-5, F-02-8, QA2 AC3 (globe fit at 1920): iteration 3 fixes in flight (F-02-6, F-02-7 are listed above)
+#   QA2-S2-1  wrong attribution on the result card and in The moments (F-01-3 attribution part)
+#   QA1-S3-2 / B-07 strict 10 s idle, QA1-S3-4 coach step 2, QA1-S3-7 reveal series start,
+#   QA1-S3-8 text under 13 px and targets under 44 px, QA1-S3-10 delta colours, QA1 S4 items
+#   B-14, B-15 (engine label), B-17 (superseded by D-56), B-23. B-18 and B-19 are listed above
+#   (fixed in 0300b55) although the backlog rows still read Open.
+# ------------------------------------------------------------------------------------------

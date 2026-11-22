@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config';
+import { configDefaults, defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
@@ -7,6 +7,8 @@ export default defineConfig({
     // Several tests simulate 24-48 turns; give them room on a busy machine
     testTimeout: 20_000,
     include: ['tests/**/*.spec.ts', 'tests/**/*.test.ts'],
+    // Opt-in suite: balance bands (vitest.balance.config.ts, npm run verify -- --balance)
+    exclude: [...configDefaults.exclude, 'tests/balance/**'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],

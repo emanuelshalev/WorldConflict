@@ -30,6 +30,12 @@ npm run lint:fix     # biome with auto-fix
 cd ui && npm run lint  # eslint for the frontend (separate toolchain)
 
 npm run build        # tsc (backend → dist/) + vite build (frontend)
+
+npm run verify                    # merge gate: tests, lints, build, balance bands, own servers, smoke, reveal, visual, finding guards
+npm run verify -- --quick         # tests, lints, build and the regression registry check only
+npm run verify -- --full          # adds the orders / world map acceptance scripts
+npm run verify -- --changed       # suites and finding guards covering files changed since the branch base
+npm run verify -- --update-visual # rewrite tests/visual/__screenshots__ after an intended UI change
 ```
 
 Backend env vars go in `.env` at the root (loaded via dotenv): `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY` / `GEMINI_API_KEY_PERSONAL`, `LLM_PROVIDER`, `PORT`, `DATABASE_URL`, `CORS_ORIGINS`. Players normally bring their own LLM key via the in-game Settings.

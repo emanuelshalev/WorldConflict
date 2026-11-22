@@ -22,7 +22,8 @@
     "world:scan": "tsx scripts/world-scan.ts",
     "world:apply": "tsx scripts/world-apply.ts",
     "setup": "node scripts/setup.mjs",
-    "playtest:smoke": "node devloop/instances/world-conflict/smoke.mjs"
+    "playtest:smoke": "node devloop/instances/world-conflict/smoke.mjs",
+    "verify": "node devloop/kit/verify-runner.mjs devloop/instances/world-conflict/verify.config.mjs"
   },
   "repository": {
     "type": "git",

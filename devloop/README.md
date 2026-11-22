@@ -22,6 +22,8 @@ devloop/
     kit.mjs            Playwright kit: act by visible label, screenshots, control dumps, frame bursts
     driver.mjs, act.mjs persistent browser per persona, one command per shell call
     page-check.mjs     loads a page, visits every tab, fails on script errors
+    verify-runner.mjs  the verify gate: one command for every merge check (config per instance)
+    regressions.mjs    findings regression registry: checker, guard runner, changed-file selection
     feedback-digest.mjs builds per-iteration customer feedback data for status pages
     usage-ledger.mjs   token consumption by role, persona, stage, iteration and time from session transcripts
   templates/           starting files for a new instance
@@ -52,3 +54,14 @@ plan -> design -> build -> verify -> use (blind panel) -> triage -> ledger -> re
 
 ## Consumption
 `kit/usage-ledger.mjs <instance>/usage/registry.json --inject <page.html> USAGE` reads the orchestrator and subagent transcripts (Claude Code keeps them under `~/.claude/projects/<project>/`), de-duplicates responses and attributes tokens using the registry: time windows for the orchestrator, description rules for subagents (role, group, persona, stage, iteration). Name every agent with a description that its rule can match (for example `Customer Maya iter-1 session`, `Design: ...`, `Build: ...`). Weighted tokens use standard price ratios (cache read 0.1x, cache write 1.25x/2x, output 5x) so different token types compare in one number. Template: `templates/usage-registry.json`.
+
+## The verify gate
+No merge should depend on someone remembering which checks to run. `kit/verify-runner.mjs <config.mjs> [flags]` is a product-agnostic runner: the instance config (`instances/<product>/verify.config.mjs`) lists steps (a command, its cwd and env, which servers it needs, a log summariser) and modes (flag to step ids). The runner picks free ports, starts the servers the selected steps need, waits until they answer, runs the steps in order (keeps going after a failure unless `--bail`), writes one log per step plus `summary.json` to a run folder that is wiped each time (`--out` to run several in parallel), stops the servers, prints a summary table and exits non-zero on any failure. `--list` shows the modes and steps, `--only a,b` / `--skip a,b` pick steps by id, `--serve` only starts the servers for manual work. A good gate has a quick mode (tests, lints, build: seconds to a minute), a default mode for every merge (plus browser smoke, an end-to-end fast-forward, visual regression, the finding guards) and a full mode (plus domain harnesses and long acceptance scripts).
+
+Visual regression belongs in the gate only for surfaces that are deterministic: fixture galleries, and real screens started from a fixed seed with a fixed clock, reduced motion, CSS animations disabled, time stopped before the capture and masks over anything live (maps, tickers, dates). Baselines are committed next to the specs, with a documented update flag, and thresholds loose enough for font antialiasing.
+
+Domain harnesses with targets (balance bands, performance budgets) get an opt-in test kept out of the default unit run, with known gaps in a JSON exemption file that says why: an exempt check is still measured and printed, so a gap is visible instead of hidden.
+
+## The findings regression registry
+`instances/<product>/regressions.yaml` lists every finding a fix addressed (real signals, triage clusters, QA items, backlog items marked Done), each with at least one guard: a unit test (file plus test name substring) or a short UI scenario that replays the customer's repro (`node <script> <outDir> <baseUrl> <apiUrl>`, exit code is the verdict). `kit/regressions.mjs <registry> check` is the meta-check (no guard, a missing guard file or test name, a Done backlog row not listed); `run` runs every guard and prints a per-finding table; `changed --base <ref>` maps the files changed since a base to the unit suites that import them and the findings whose `covers:` globs match, and runs those first. Wire `check` into the quick mode and `run` into the default mode of the verify gate, and make the triage step "every fix adds a registry entry with its guard" (`method/triage.md`).
+
