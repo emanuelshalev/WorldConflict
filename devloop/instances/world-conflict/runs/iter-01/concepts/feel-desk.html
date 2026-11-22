@@ -43,7 +43,7 @@ button { font: inherit; color: inherit; }
 .who small { color: var(--text-2); font-size: 13px; }
 .stats { display: flex; gap: 22px; margin-left: auto; align-items: center; }
 .stat { display: grid; gap: 2px; }
-.stat .lbl { font-size: 12px; color: var(--text-2); font-weight: 600; }
+.stat .lbl { font-size: 13px; color: var(--text-2); font-weight: 600; }
 .stat .val { font-size: 18px; font-weight: 650; }
 .stat .val small { font-size: 13px; color: var(--good); font-weight: 600; margin-left: 4px; }
 .tension-bar { width: 96px; height: 6px; border-radius: 3px; background: linear-gradient(90deg, #56c596, #f2a93b 55%, #e5383b); position: relative; margin-top: 7px; }
@@ -114,8 +114,9 @@ button { font: inherit; color: inherit; }
 .card h3 { margin: 0; font-size: var(--fs-card); line-height: 1.15; font-weight: 680; letter-spacing: -.01em; }
 .card .desc { font-size: var(--fs-body); line-height: 1.4; color: var(--text-2); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .fx { display: flex; flex-wrap: wrap; gap: 6px; }
-.fx span { display: inline-flex; gap: 5px; align-items: center; font-size: 13px; font-weight: 600; padding: 3px 8px; border-radius: 6px; white-space: nowrap; }
+.fx span { display: inline-flex; gap: 5px; align-items: center; font-size: 13px; font-weight: 600; padding: 3px 8px; border-radius: 6px; white-space: normal; max-width: 100%; }
 .fx .up { background: rgba(86,197,150,.12); color: #7fdcb2; }
+.fx .more { color: var(--text-2); border: 1px dashed var(--line-2); }
 .fx .dn { background: rgba(229,56,59,.13); color: #ff8e8f; }
 .fx .tri { font-size: 10px; letter-spacing: -1px; }
 .card .by { font-size: var(--fs-meta); color: var(--text-3); display: flex; gap: 6px; align-items: center; }
@@ -310,7 +311,7 @@ button { font: inherit; color: inherit; }
     <nav class="nav" aria-label="This month">
       <button class="tab"><span class="ti">◎</span><span class="tl"><b>Mission</b><span>1 of 4 goals · 12 months</span></span></button>
       <h6>Needs you <span class="num">1</span></h6>
-      <button class="tab on"><span class="ti">⚠</span><span class="tl"><b>After the Riyadh airport strike</b><span>Crisis · staff pick ready</span></span><span class="state staff"></span></button>
+      <button class="tab on"><span class="ti">⚠</span><span class="tl"><b>After the Riyadh airport strike</b><span>Cabinet pick: Back channel</span></span><span class="state staff"></span></button>
       <h6>Meetings <span class="num">0 of 3 in person</span></h6>
       <button class="tab"><span class="ti">☎</span><span class="tl"><b>Abdul-Malik al-Houthi</b><span>Call · Yemen</span></span><span class="state wait"></span></button>
       <button class="tab"><span class="ti">☎</span><span class="tl"><b>Prime Minister Sharif</b><span>Call · Pakistan</span></span><span class="state wait"></span></button>
@@ -370,11 +371,11 @@ button { font: inherit; color: inherit; }
         </svg>
         <span class="bug"><i></i>BREAKING</span>
         <aside class="coach desktop-only" role="note">
-          <b>Your desk.</b> Everything that needs you is on the left. Pick a card to answer, then press <b>Execute the month</b>.
-          <div class="row"><span>Tip 1 of 3</span><button>Got it</button></div>
+          <b>This is your move this month.</b> Pick one card. Your cabinet already marked its pick.
+          <div class="row"><span>Step 1 of 3</span><button>Got it</button></div>
         </aside>
         <figcaption class="lower">
-          <span class="kicker">URGENT · SAUDI ARABIA, YEMEN, UNITED STATES</span>
+          <span class="kicker">YOUR MOVE · URGENT CRISIS</span>
           <h1>After the Riyadh airport strike</h1>
           <p>A Houthi missile hit the main terminal at dawn. The public wants an answer, Oman is offering a quiet line, and Washington is offering its jets.</p>
         </figcaption>
@@ -405,13 +406,13 @@ button { font: inherit; color: inherit; }
           <div class="body">
             <h3>Bomb Sanaa</h3>
             <div class="desc">The full air force. Revenge, ruins and familiar headlines from 2015.</div>
-            <div class="fx"><span class="up"><span class="tri">▲▲</span> Approval</span><span class="dn"><span class="tri">▼▼</span> Legitimacy</span><span class="dn"><span class="tri">▲▲</span> Tension</span><span class="dn"><span class="tri">▼▼</span> United States</span></div>
+            <div class="fx"><span class="up">Approval up a lot</span><span class="dn">Legitimacy down a lot</span><span class="more">+2 more</span></div>
             <div class="by"><span class="avatar">DM</span> Backed by the Defence Minister</div>
           </div>
         </button>
 
         <button class="card is-chosen" role="radio" aria-checked="true">
-          <span class="tagclip">Staff pick</span>
+          <span class="tagclip">Cabinet pick</span>
           <div class="pic">
             <svg viewBox="0 0 320 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
               <defs><radialGradient id="c2l" cx="62%" cy="40%" r="60%"><stop offset="0" stop-color="#ffcf7a" stop-opacity=".55" /><stop offset="1" stop-color="#ffcf7a" stop-opacity="0" /></radialGradient></defs>
@@ -428,11 +429,11 @@ button { font: inherit; color: inherit; }
             <span class="key">2</span>
             <span class="cost free">free</span>
           </div>
-          <span class="stamp">YOUR CALL</span>
+          <span class="stamp">YOUR PICK</span>
           <div class="body">
             <h3>Back channel via Muscat</h3>
             <div class="desc">Talk to the men who just bombed your airport. Quietly, and hope it stays quiet.</div>
-            <div class="fx"><span class="dn"><span class="tri">▼▼</span> Approval</span><span class="up"><span class="tri">▲▲</span> Yemen</span><span class="up"><span class="tri">▼▼</span> Tension</span><span class="up"><span class="tri">▲</span> Stability</span></div>
+            <div class="fx"><span class="dn">Approval down a lot</span><span class="up">Yemen's view of you up a lot</span><span class="more">+2 more</span></div>
             <div class="by"><span class="avatar">FM</span> Backed by the Foreign Minister</div>
           </div>
         </button>
@@ -456,7 +457,7 @@ button { font: inherit; color: inherit; }
           <div class="body">
             <h3>Invite American and Israeli strikes</h3>
             <div class="desc">Let the superpowers hit the launchers. Effective, and a political earthquake at home.</div>
-            <div class="fx"><span class="dn"><span class="tri">▼▼</span> Approval</span><span class="up"><span class="tri">▲▲</span> United States</span><span class="dn"><span class="tri">▼▼</span> Iran</span><span class="dn"><span class="tri">▲▲</span> Tension</span></div>
+            <div class="fx"><span class="dn">Approval down a lot</span><span class="up">United States' view of you up a lot</span><span class="more">+2 more</span></div>
             <div class="by"><span class="avatar">IC</span> Backed by the Intelligence Chief</div>
           </div>
         </button>
@@ -499,7 +500,7 @@ button { font: inherit; color: inherit; }
         <div class="slot">
           <span class="mini"><svg viewBox="0 0 54 38"><rect width="54" height="38" fill="#1d1712" /><circle cx="34" cy="14" r="14" fill="#ffcf7a" opacity=".35" /><rect x="14" y="26" width="28" height="4" fill="#4a3220" /></svg></span>
           <span><b>Back channel via Muscat</b><small>Crisis answer</small></span>
-          <span class="minstamp">YOUR CALL</span>
+          <span class="minstamp">YOUR PICK</span>
         </div>
         <div class="slot">
           <span class="mini"><svg viewBox="0 0 54 38"><rect width="54" height="38" fill="#2a2216" /><rect x="10" y="10" width="34" height="22" fill="#e8e1d0" /><path d="M14 16h24M14 21h20M14 26h14" stroke="#7a6a50" /></svg></span>

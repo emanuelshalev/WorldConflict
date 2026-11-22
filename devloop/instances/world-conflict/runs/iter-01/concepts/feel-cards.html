@@ -41,8 +41,9 @@ button { font: inherit; color: inherit; }
 .card h3 { margin: 0; font-size: 19px; line-height: 1.15; font-weight: 680; letter-spacing: -.01em; }
 .desc { font-size: 15px; line-height: 1.4; color: var(--text-2); }
 .fx { display: flex; flex-wrap: wrap; gap: 6px; }
-.fx span { display: inline-flex; gap: 5px; align-items: center; font-size: 13px; font-weight: 600; padding: 3px 8px; border-radius: 6px; white-space: nowrap; }
+.fx span { display: inline-flex; gap: 5px; align-items: center; font-size: 13px; font-weight: 600; padding: 3px 8px; border-radius: 6px; white-space: normal; max-width: 100%; }
 .fx .up { background: rgba(86,197,150,.12); color: #7fdcb2; }
+.fx .more { color: var(--text-2); border: 1px dashed var(--line-2); }
 .fx .dn { background: rgba(229,56,59,.13); color: #ff8e8f; }
 .tri { font-size: 10px; letter-spacing: -1px; }
 .odds { font-size: 13px; color: var(--text-2); display: flex; gap: 6px; align-items: center; }
@@ -156,7 +157,7 @@ button { font: inherit; color: inherit; }
     <div class="label">1. Rest <span>no motion</span></div>
     <button class="card"><div class="pic"><svg><use href="#art-summit" /></svg><span class="key">1</span><span class="cost"><svg class="seal"><use href="#seal" /></svg></span></div>
       <div class="body"><h3>Court Pakistan</h3><div class="desc">A call and a state visit offer. Warm words, a trade mission.</div>
-      <div class="fx"><span class="up"><span class="tri">▲▲</span> Pakistan</span><span class="up"><span class="tri">▲</span> Approval</span></div>
+      <div class="fx"><span class="up">Pakistan's view of you up a lot</span><span class="up">Approval up</span></div>
       <div class="odds">Chance it works: <b>high (80 out of 100)</b></div></div></button>
     <div class="note">Paper surface gradient, 1px edge, 4px "thickness" shadow below. Illustration slightly dimmed so the chosen card can brighten.</div>
   </div>
@@ -164,7 +165,7 @@ button { font: inherit; color: inherit; }
     <div class="label">2. Hover or focus <span>140 ms ease-out</span></div>
     <button class="card is-hover"><div class="pic"><svg><use href="#art-summit" /></svg><span class="key">1</span><span class="cost"><svg class="seal"><use href="#seal" /></svg></span></div>
       <div class="body"><h3>Court Pakistan</h3><div class="desc">A call and a state visit offer. Warm words, a trade mission.</div>
-      <div class="fx"><span class="up"><span class="tri">▲▲</span> Pakistan</span><span class="up"><span class="tri">▲</span> Approval</span></div>
+      <div class="fx"><span class="up">Pakistan's view of you up a lot</span><span class="up">Approval up</span></div>
       <div class="odds">Chance it works: <b>high (80 out of 100)</b></div></div></button>
     <div class="note">Lifts 4px, shadow grows, illustration to full colour. Keyboard focus looks the same plus the 2px focus ring. No sound on hover.</div>
   </div>
@@ -172,42 +173,42 @@ button { font: inherit; color: inherit; }
     <div class="label">3. Pressed <span>80 ms, "tap"</span></div>
     <button class="card is-pressed"><div class="pic"><svg><use href="#art-summit" /></svg><span class="key">1</span><span class="cost"><svg class="seal"><use href="#seal" /></svg></span></div>
       <div class="body"><h3>Court Pakistan</h3><div class="desc">A call and a state visit offer. Warm words, a trade mission.</div>
-      <div class="fx"><span class="up"><span class="tri">▲▲</span> Pakistan</span><span class="up"><span class="tri">▲</span> Approval</span></div>
+      <div class="fx"><span class="up">Pakistan's view of you up a lot</span><span class="up">Approval up</span></div>
       <div class="odds">Chance it works: <b>high (80 out of 100)</b></div></div></button>
     <div class="note">Sinks 2px and to 98.5%, thickness collapses to 1px. Starts on pointerdown, so feedback is under 50 ms even if the server preview is slow.</div>
   </div>
   <div class="cell">
-    <div class="label">4. Chosen: "Your call" <span>280 ms overshoot, "stamp"</span></div>
-    <button class="card is-chosen"><span class="tagclip">Staff pick</span><div class="pic"><svg><use href="#art-covert" /></svg><span class="key">2</span><span class="cost free">free</span></div><span class="stamp">YOUR CALL</span>
+    <div class="label">4. Chosen: "Your pick" <span>280 ms overshoot, "stamp"</span></div>
+    <button class="card is-chosen"><span class="tagclip">Cabinet pick</span><div class="pic"><svg><use href="#art-covert" /></svg><span class="key">2</span><span class="cost free">free</span></div><span class="stamp">YOUR PICK</span>
       <div class="body"><h3>Back channel via Muscat</h3><div class="desc">Talk to the men who just bombed your airport. Quietly.</div>
-      <div class="fx"><span class="dn"><span class="tri">▼▼</span> Approval</span><span class="up"><span class="tri">▲▲</span> Yemen</span><span class="up"><span class="tri">▼▼</span> Tension</span></div></div></button>
+      <div class="fx"><span class="dn">Approval down a lot</span><span class="up">Yemen's view of you up a lot</span><span class="more">+1 more</span></div></div></button>
     <div class="note">Stamp lands from 180% and -16 degrees. Accent border 2px, warm glow. Sibling cards drop to 78% opacity (never lower: they stay readable).</div>
   </div>
   <div class="cell">
     <div class="label">5. Staff pick approved <span>same stamp, steel ink</span></div>
-    <button class="card is-approved"><span class="tagclip">Staff pick</span><div class="pic"><svg><use href="#art-covert" /></svg><span class="key">2</span><span class="cost free">free</span></div><span class="stamp steel">APPROVED</span>
+    <button class="card is-approved"><span class="tagclip">Cabinet pick</span><div class="pic"><svg><use href="#art-covert" /></svg><span class="key">2</span><span class="cost free">free</span></div><span class="stamp steel">APPROVED</span>
       <div class="body"><h3>Back channel via Muscat</h3><div class="desc">Talk to the men who just bombed your airport. Quietly.</div>
-      <div class="fx"><span class="dn"><span class="tri">▼▼</span> Approval</span><span class="up"><span class="tri">▲▲</span> Yemen</span><span class="up"><span class="tri">▼▼</span> Tension</span></div></div></button>
-    <div class="note">"Approve staff picks" stamps every pre-filled card in sequence, 90 ms apart, one stamp sound per card (max 4 sounds, then silent).</div>
+      <div class="fx"><span class="dn">Approval down a lot</span><span class="up">Yemen's view of you up a lot</span><span class="more">+1 more</span></div></div></button>
+    <div class="note">"Approve cabinet picks" stamps every pre-filled card in sequence, 90 ms apart, one stamp sound per card (max 4 sounds, then silent).</div>
   </div>
   <div class="cell">
     <div class="label">6. Cannot be played <span>reason on the card</span></div>
     <button class="card is-off" aria-disabled="true"><div class="pic"><svg><use href="#art-address" /></svg><span class="key">4</span><span class="cost"><svg class="seal"><use href="#seal" /></svg><span class="slot-hole"></span></span></div>
-      <div class="body"><h3>Declare war on India</h3><div class="fx"><span class="dn"><span class="tri">▲▲</span> Tension</span><span class="dn"><span class="tri">▼▼</span> India</span></div></div>
+      <div class="body"><h3>Declare war on India</h3><div class="fx"><span class="dn">World tension up a lot</span><span class="dn">India's view of you down a lot</span></div></div>
       <div class="reason"><span><b>Needs 2 seals, you have 1.</b> Remove Reform program to free 2.</span><a href="#bank">Show me the seals →</a></div></button>
     <div class="note">Never only a tooltip. The empty seal hole in the cost shows what is missing. "Show me" pulses the bank (and on the map menu, the same words).</div>
   </div>
   <div class="cell">
     <div class="label">7. Refused on press <span>260 ms shake, "refuse"</span></div>
     <button class="card is-off is-refused"><div class="pic"><svg><use href="#art-strike" /></svg><span class="key">5</span><span class="cost"><svg class="seal"><use href="#seal-short" /></svg><svg class="seal"><use href="#seal-short" /></svg></span></div>
-      <div class="body"><h3>Strike military targets in Iran</h3><div class="fx"><span class="dn"><span class="tri">▲▲</span> Tension</span><span class="dn"><span class="tri">▼▼</span> Iran</span></div></div>
+      <div class="body"><h3>Strike military targets in Iran</h3><div class="fx"><span class="dn">World tension up a lot</span><span class="dn">Iran's view of you down a lot</span></div></div>
       <div class="reason"><span><b>Needs 2 seals, you have 0.</b> Next month you get 2.</span><a href="#bank">Show me the seals →</a></div></button>
     <div class="note">Pressing anyway: the card shakes, the bank shakes in sync and its missing seals flash red twice. No toast that outlives the moment.</div>
   </div>
   <div class="cell">
     <div class="label">8. Queued order <span>420 ms flight to the plan</span></div>
     <button class="card is-queued"><div class="pic"><svg><use href="#art-summit" /></svg><span class="cost"><span class="slot-hole"></span></span></div>
-      <div class="body"><h3>Court Pakistan</h3><div class="fx"><span class="up"><span class="tri">▲▲</span> Pakistan</span></div></div>
+      <div class="body"><h3>Court Pakistan</h3><div class="fx"><span class="up">Pakistan's view of you up a lot</span></div></div>
       <div class="queued-cap"><span>In this month's plan</span><span class="undo" role="button" tabindex="0">Undo</span></div></button>
     <div class="note">The card's mini flies to the plan (FLIP); its seal flies from the bank onto it. A dashed ghost stays here with Undo, so the layout never jumps.</div>
   </div>
@@ -218,11 +219,11 @@ button { font: inherit; color: inherit; }
 <div class="demo">
   <div class="row" id="row">
     <button class="card" data-cost="1" data-name="Court Pakistan"><div class="pic"><svg><use href="#art-summit" /></svg><span class="key">1</span><span class="cost"><svg class="seal"><use href="#seal" /></svg></span></div><span class="stamp">ORDERED</span>
-      <div class="body"><h3>Court Pakistan</h3><div class="fx"><span class="up"><span class="tri">▲▲</span> Pakistan</span><span class="up"><span class="tri">▲</span> Approval</span></div><div class="odds">Chance it works: <b>high</b></div></div></button>
+      <div class="body"><h3>Court Pakistan</h3><div class="fx"><span class="up">Pakistan's view of you up a lot</span><span class="up">Approval up</span></div><div class="odds">Chance it works: <b>high</b></div></div></button>
     <button class="card" data-cost="1" data-name="Spy on Iran"><div class="pic"><svg><use href="#art-covert" /></svg><span class="key">2</span><span class="cost"><svg class="seal"><use href="#seal" /></svg></span></div><span class="stamp">ORDERED</span>
-      <div class="body"><h3>Spy on Iran</h3><div class="fx"><span class="up"><span class="tri">▲▲</span> What you know</span><span class="dn"><span class="tri">▼</span> Iran</span></div><div class="odds">Chance it works: <b>fair</b></div></div></button>
+      <div class="body"><h3>Spy on Iran</h3><div class="fx"><span class="up">What you know up a lot</span><span class="dn">Iran's view of you down</span></div><div class="odds">Chance it works: <b>fair</b></div></div></button>
     <button class="card" data-cost="2" data-name="Declare war on India"><div class="pic"><svg><use href="#art-address" /></svg><span class="key">3</span><span class="cost"><svg class="seal"><use href="#seal" /></svg><svg class="seal"><use href="#seal" /></svg></span></div><span class="stamp">ORDERED</span>
-      <div class="body"><h3>Declare war on India</h3><div class="fx"><span class="dn"><span class="tri">▲▲</span> Tension</span><span class="dn"><span class="tri">▼▼</span> India</span></div><div class="odds">Chance it works: <b>low</b></div></div></button>
+      <div class="body"><h3>Declare war on India</h3><div class="fx"><span class="dn">World tension up a lot</span><span class="dn">India's view of you down a lot</span></div><div class="odds">Chance it works: <b>low</b></div></div></button>
   </div>
   <div class="tray">
     <div class="bank" id="bankBox"><div class="bank-head">Political capital <span id="left">3 of 3 left</span></div><div class="bank-seals" id="seals"></div></div>

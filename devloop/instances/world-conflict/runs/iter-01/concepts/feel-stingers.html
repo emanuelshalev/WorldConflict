@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Big Moment Stingers</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..800&family=Geist+Mono:wght@400..700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+<!-- Concept: big-moment stingers storyboard and live stage (design-feel.md section 4.4). -->
+<style>
+:root {
+  --bg-0: #0b0f17; --surface-1: #141b27; --surface-2: #1c2533; --line: #2a3546; --line-2: #3a4759;
+  --text-1: #e8ecf2; --text-2: #a3aebf; --text-3: #8693a6; --accent: #f2a93b; --war: #e5383b; --nuke: #f5d547; --good: #56c596; --intel: #4fb3d9;
+  --font-display: 'Geist', system-ui, sans-serif; --font-mono: 'Geist Mono', ui-monospace, monospace; --font-news: 'Instrument Serif', Georgia, serif;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); --ease-stamp: cubic-bezier(.2, 1.6, .4, 1);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: radial-gradient(120% 70% at 50% 0%, #101a2c, var(--bg-0) 60%); color: var(--text-1); font-family: var(--font-display); -webkit-font-smoothing: antialiased; padding: 28px 32px 48px; }
+h1 { font-family: var(--font-news); font-weight: 400; font-size: 40px; margin: 0 0 4px; }
+.lede { color: var(--text-2); font-size: 16px; margin: 0 0 18px; max-width: 90ch; line-height: 1.45; }
+h2 { font-size: 15px; color: var(--text-2); font-weight: 650; margin: 28px 0 12px; }
+.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+button { font: inherit; color: inherit; }
+
+/* Storyboard */
+.row { display: grid; grid-template-columns: 170px repeat(4, minmax(0, 1fr)) 250px; gap: 10px; align-items: start; padding: 14px 0; border-top: 1px solid var(--line); }
+.row > .name b { display: block; font-size: 17px; margin-bottom: 4px; }
+.row > .name span { font-size: 13px; color: var(--text-2); line-height: 1.4; display: block; }
+.row > .name button { margin-top: 10px; min-height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--line-2); background: var(--surface-2); font-weight: 650; cursor: pointer; }
+.fr { display: grid; gap: 6px; }
+.fr small { font: 600 12px var(--font-mono); color: var(--text-3); }
+.fr p { margin: 0; font-size: 13px; color: var(--text-2); line-height: 1.35; }
+.scr { position: relative; aspect-ratio: 16 / 9; border-radius: 8px; overflow: hidden; border: 1px solid var(--line-2); background: #0a0e16; container-type: inline-size; }
+.scr svg.art, .stage svg.art { position: absolute; inset: 0; width: 100%; height: 100%; }
+.ui { position: absolute; inset: 0; background: repeating-linear-gradient(90deg, #151d2a 0 22%, #0f1520 22% 23%, #151d2a 23% 74%, #0f1520 74% 75%, #121a26 75%); }
+.ui::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 9%; background: #182131; }
+.ui::after { content: ''; position: absolute; left: 26%; width: 46%; top: 16%; height: 40%; border-radius: 4px; background: #232c3d; }
+.dim { position: absolute; inset: 0; background: rgba(0,0,0,.6); }
+.wash { position: absolute; inset: 0; mix-blend-mode: screen; }
+.band { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); padding: 3.2cqw 4cqw; text-align: center; }
+.band b { display: block; font-family: var(--font-display); font-weight: 800; letter-spacing: .06em; font-size: 7.2cqw; line-height: 1; text-transform: uppercase; }
+.band i { display: block; font-style: normal; font: 600 2.8cqw var(--font-mono); letter-spacing: .14em; margin-top: 1.6cqw; opacity: .9; }
+.band.slam { transform: translateY(-50%) scaleY(.25); opacity: .6; }
+.sub { position: absolute; left: 4cqw; bottom: 4cqw; right: 4cqw; display: flex; justify-content: space-between; font-size: 3.2cqw; font-weight: 650; text-shadow: 0 1px 4px #000; }
+.sub .num { font-size: 3.6cqw; }
+.skip { position: absolute; right: 3cqw; top: 3cqw; font: 600 2.6cqw var(--font-mono); color: rgba(255,255,255,.75); }
+.card-to { position: absolute; left: 20%; right: 20%; top: 14%; bottom: 14%; border-radius: 6px; overflow: hidden; border: 2px solid var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,.6); }
+.card-to svg { width: 100%; height: 62%; display: block; }
+.card-to div { padding: 2cqw 3cqw; background: #141b27; font-family: var(--font-news); font-size: 4.6cqw; line-height: 1.05; height: 38%; }
+.spec { font-size: 13px; color: var(--text-2); line-height: 1.5; }
+.spec b { color: var(--text-1); font-weight: 650; }
+.swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -1px; margin-right: 4px; }
+
+/* Live stage */
+.live { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 20px; align-items: start; }
+.stage { position: relative; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden; border: 1px solid var(--line-2); background: #0a0e16; container-type: inline-size; cursor: pointer; }
+.stage .ui, .stage .dim, .stage .wash, .stage svg.art, .stage .band, .stage .sub, .stage .skip { opacity: 0; }
+.stage .ui { opacity: 1; }
+.stage.run .dim { animation: st-dim 2400ms both; }
+.stage.run svg.art { animation: st-art 2400ms var(--ease-out) both; }
+.stage.run .wash { animation: st-wash 600ms ease-out both; }
+.stage.run .band { animation: st-band 2400ms var(--ease-stamp) both; }
+.stage.run .sub { animation: st-sub 2400ms both; }
+.stage.run .skip { opacity: 1; }
+.stage.run.shake { animation: st-shake 320ms 120ms; }
+@keyframes st-dim { 0% { opacity: 0; } 6%, 85% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes st-art { 0% { opacity: 0; transform: scale(1.12); } 12% { opacity: 1; } 85% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(.6) translateY(-10%); } }
+@keyframes st-wash { 0% { opacity: 0; } 8% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes st-band { 0%, 5% { opacity: 0; transform: translateY(-50%) scaleY(.2); } 16% { opacity: 1; transform: translateY(-50%) scaleY(1); } 85% { opacity: 1; transform: translateY(-50%); } 100% { opacity: 0; transform: translateY(-80%) scale(.7); } }
+@keyframes st-sub { 0%, 25% { opacity: 0; transform: translateY(8px); } 35%, 85% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+@keyframes st-shake { 20% { transform: translate(-6px, 2px); } 40% { transform: translate(5px, -2px); } 60% { transform: translate(-3px, 1px); } 80% { transform: translate(2px, 0); } }
+@media (prefers-reduced-motion: reduce) {
+  .stage.run .band, .stage.run svg.art { animation: st-fade 2400ms both; }
+  .stage.run .wash { animation: none; }
+  .stage.run.shake { animation: none; }
+}
+@keyframes st-fade { 0% { opacity: 0; } 8%, 85% { opacity: 1; } 100% { opacity: 0; } }
+.pick { display: grid; gap: 8px; }
+.pick button { min-height: 48px; border-radius: 12px; border: 1px solid var(--line-2); background: var(--surface-2); font-weight: 650; font-size: 15px; cursor: pointer; text-align: left; padding: 0 14px; display: flex; justify-content: space-between; align-items: center; }
+.pick button span { font: 500 12px var(--font-mono); color: var(--text-3); }
+.pick label { display: flex; gap: 8px; align-items: center; font-size: 14px; color: var(--text-2); margin-top: 6px; }
+@media (max-width: 1200px) { .row { grid-template-columns: 1fr 1fr; } .row > .name, .row > .spec { grid-column: 1 / -1; } .live { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- WAR: address to the nation, red key light, flags of both sides -->
+    <symbol id="art-war" viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice">
+      <rect width="640" height="360" fill="#1a0a0e" /><radialGradient id="w-key" cx="50%" cy="20%" r="70%"><stop offset="0" stop-color="#ff5a4a" stop-opacity=".6" /><stop offset="1" stop-color="#ff5a4a" stop-opacity="0" /></radialGradient>
+      <rect width="640" height="360" fill="url(#w-key)" />
+      <g><rect x="70" y="40" width="10" height="230" fill="#2a1a1a" /><path d="M80 44h90v58H80z" fill="#006c35" /><rect x="94" y="84" width="60" height="4" fill="#fff" opacity=".8" /></g>
+      <g><rect x="560" y="40" width="10" height="230" fill="#2a1a1a" /><path d="M470 44h90v20h-90z" fill="#ce1126" /><path d="M470 64h90v19h-90z" fill="#fff" /><path d="M470 83h90v19h-90z" fill="#111" /></g>
+      <rect x="250" y="210" width="140" height="150" fill="#2a1418" /><rect x="250" y="210" width="140" height="6" fill="#ff8a6a" opacity=".6" />
+      <g fill="#0a0507"><rect x="282" y="120" width="76" height="100" rx="22" /><circle cx="320" cy="98" r="24" /></g>
+      <path d="M282 130v80" stroke="#ff8a6a" stroke-width="2" opacity=".7" />
+      <g fill="#ffd2c0" opacity=".9"><circle cx="300" cy="206" r="3" /><circle cx="340" cy="206" r="3" /></g>
+    </symbol>
+    <!-- NUCLEAR: horizon, rising cloud, white core -->
+    <symbol id="art-nuke" viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice">
+      <linearGradient id="n-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a1408" /><stop offset=".7" stop-color="#7a4a10" /><stop offset="1" stop-color="#f5d547" /></linearGradient>
+      <rect width="640" height="360" fill="url(#n-sky)" />
+      <radialGradient id="n-core" cx="50%" cy="70%" r="40%"><stop offset="0" stop-color="#fffbe6" /><stop offset=".3" stop-color="#ffd27a" stop-opacity=".8" /><stop offset="1" stop-color="#ff7a2e" stop-opacity="0" /></radialGradient>
+      <ellipse cx="320" cy="270" rx="300" ry="160" fill="url(#n-core)" />
+      <path d="M300 300c0-40 10-80 4-120h32c-6 40 4 80 4 120z" fill="#3a2410" opacity=".9" />
+      <path d="M200 170c0-60 50-100 120-100s120 40 120 100c0 30-30 40-60 34-20 20-100 20-120 0-30 6-60-4-60-34z" fill="#4a2c12" />
+      <path d="M220 160c10-40 50-66 100-66s90 26 100 66" fill="none" stroke="#ffd27a" stroke-width="3" opacity=".6" />
+      <rect y="300" width="640" height="60" fill="#120c06" />
+      <g fill="#0a0704"><rect x="40" y="280" width="30" height="20" /><rect x="80" y="270" width="20" height="30" /><rect x="540" y="276" width="40" height="24" /><rect x="590" y="266" width="18" height="34" /></g>
+    </symbol>
+    <!-- COUP: palace gates at night, armour silhouette, searchlights -->
+    <symbol id="art-coup" viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice">
+      <rect width="640" height="360" fill="#070b14" />
+      <path d="M120 0L250 300h30L170 0zM520 0L380 300h-30L470 0z" fill="#4fb3d9" opacity=".12" />
+      <path d="M160 300V170h320v130z" fill="#141a26" /><path d="M150 170l170-60 170 60z" fill="#1a2130" />
+      <g fill="#0b0f18"><rect x="190" y="200" width="20" height="60" /><rect x="240" y="200" width="20" height="60" /><rect x="380" y="200" width="20" height="60" /><rect x="430" y="200" width="20" height="60" /></g>
+      <rect x="300" y="210" width="40" height="90" fill="#f2a93b" opacity=".3" />
+      <rect y="300" width="640" height="60" fill="#05070c" />
+      <g fill="#020306"><rect x="60" y="268" width="140" height="34" rx="6" /><rect x="100" y="250" width="60" height="22" rx="4" /><rect x="156" y="256" width="80" height="6" /><circle cx="80" cy="304" r="10" /><circle cx="130" cy="304" r="10" /><circle cx="180" cy="304" r="10" /></g>
+      <g fill="#020306"><rect x="430" y="270" width="8" height="30" rx="3" /><circle cx="434" cy="264" r="5" /><rect x="450" y="270" width="8" height="30" rx="3" /><circle cx="454" cy="264" r="5" /><rect x="470" y="270" width="8" height="30" rx="3" /><circle cx="474" cy="264" r="5" /></g>
+    </symbol>
+    <!-- PEACE: signing table, warm gold light, both flags -->
+    <symbol id="art-peace" viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice">
+      <rect width="640" height="360" fill="#1e160e" /><radialGradient id="p-key" cx="50%" cy="10%" r="80%"><stop offset="0" stop-color="#ffd88a" stop-opacity=".55" /><stop offset="1" stop-color="#ffd88a" stop-opacity="0" /></radialGradient>
+      <rect width="640" height="360" fill="url(#p-key)" />
+      <g><rect x="230" y="50" width="8" height="150" fill="#3a2a1a" /><path d="M238 54h70v44h-70z" fill="#006c35" /></g>
+      <g><rect x="402" y="50" width="8" height="150" fill="#3a2a1a" /><path d="M332 54h70v15h-70z" fill="#ce1126" /><path d="M332 69h70v14h-70z" fill="#fff" /><path d="M332 83h70v15h-70z" fill="#111" /></g>
+      <rect x="120" y="230" width="400" height="20" rx="4" fill="#5a3a20" /><rect x="120" y="250" width="400" height="110" fill="#3a2414" />
+      <rect x="290" y="222" width="60" height="10" fill="#f4ecd8" />
+      <g fill="#0d0a08"><rect x="180" y="150" width="60" height="90" rx="18" /><circle cx="210" cy="130" r="20" /><rect x="400" y="150" width="60" height="90" rx="18" /><circle cx="430" cy="130" r="20" /></g>
+      <path d="M240 200q40 10 50 24M400 200q-40 10-50 24" stroke="#0d0a08" stroke-width="12" fill="none" stroke-linecap="round" />
+    </symbol>
+    <!-- MISSION COMPLETE: home flag, laurel, gold rays -->
+    <symbol id="art-mission" viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice">
+      <rect width="640" height="360" fill="#0e1424" />
+      <g fill="#f2a93b" opacity=".14"><path d="M320 180L0 0h120z" /><path d="M320 180L260 0h120z" /><path d="M320 180L520 0h120z" /><path d="M320 180L640 160v80z" /><path d="M320 180L0 160v80z" /></g>
+      <rect x="250" y="70" width="140" height="94" fill="#006c35" /><rect x="272" y="140" width="96" height="6" fill="#fff" opacity=".85" />
+      <path d="M200 200c0 60 50 100 120 100s120-40 120-100" fill="none" stroke="#f2a93b" stroke-width="5" />
+      <g fill="#f2a93b"><ellipse cx="214" cy="236" rx="12" ry="6" transform="rotate(-50 214 236)" /><ellipse cx="236" cy="266" rx="12" ry="6" transform="rotate(-30 236 266)" /><ellipse cx="266" cy="288" rx="12" ry="6" transform="rotate(-12 266 288)" /><ellipse cx="426" cy="236" rx="12" ry="6" transform="rotate(50 426 236)" /><ellipse cx="404" cy="266" rx="12" ry="6" transform="rotate(30 404 266)" /><ellipse cx="374" cy="288" rx="12" ry="6" transform="rotate(12 374 288)" /></g>
+      <g fill="#ffd88a"><path d="M320 196l6 13 14 1-11 9 4 14-13-8-13 8 4-14-11-9 14-1z" /></g>
+    </symbol>
+  </defs>
+</svg>
+
+<h1>Big moments</h1>
+<p class="lede">Five moments get a full-screen stinger: war declared, nuclear use, coup, peace, mission complete. Each runs 2.4 seconds, is skippable with any tap or key from the first frame, plays at most once per month (highest priority wins, the others become the debrief highlight), and ends by shrinking into the card that tells the story, so it never strands the player. Built from the house scenes, the existing stamp and slam motions, and the synthesized sound kit.</p>
+
+<h2>Live stage (sound on by default after the first click; toggle with the box)</h2>
+<div class="live">
+  <div class="stage" id="stage">
+    <div class="ui"></div>
+    <svg class="art" id="stArt"><use href="#art-war" /></svg>
+    <div class="dim" style="background: rgba(0,0,0,.35)"></div>
+    <div class="wash" id="stWash"></div>
+    <div class="band" id="stBand"><b id="stTitle">War declared</b><i id="stLine">SAUDI ARABIA AGAINST YEMEN · MONTH 4</i></div>
+    <div class="sub" id="stSub"><span id="stSubL">World tension</span><span class="num" id="stSubR">54 → 78</span></div>
+    <div class="skip">Tap to continue</div>
+  </div>
+  <div class="pick">
+    <button data-k="war">War declared <span>priority 2</span></button>
+    <button data-k="nuclear">Nuclear <span>priority 1</span></button>
+    <button data-k="coup">Coup <span>priority 3</span></button>
+    <button data-k="peace">Peace <span>priority 4</span></button>
+    <button data-k="mission">Mission complete <span>priority 5</span></button>
+    <label><input type="checkbox" id="snd" checked /> Sound</label>
+  </div>
+</div>
+
+<h2>Storyboard (frames at 0, 120, 600 and 2000 ms)</h2>
+
+<div class="row">
+  <div class="name"><b>War declared</b><span>You declare, or a country declares on you, or you are dragged in by a pact.</span></div>
+  <div class="fr"><small>0 ms hit</small><div class="scr"><div class="ui"></div><div class="dim"></div><div class="wash" style="background: rgba(229,56,59,.55)"></div></div><p>UI dims to 60%, red wash, low drum.</p></div>
+  <div class="fr"><small>120 ms slam</small><div class="scr"><svg class="art"><use href="#art-war" /></svg><div class="band slam" style="background: var(--war)"><b>War declared</b></div></div><p>Scene "address" full bleed; red band slams from 25% height; screen shake 6px.</p></div>
+  <div class="fr"><small>600 ms reveal</small><div class="scr"><svg class="art"><use href="#art-war" /></svg><div class="band" style="background: var(--war)"><b>War declared</b><i>SAUDI ARABIA AGAINST YEMEN · MONTH 4</i></div><div class="sub"><span>World tension</span><span class="num">54 → 78</span></div><span class="skip">Tap to continue</span></div><p>Who against whom, the month; one number ticks (tension).</p></div>
+  <div class="fr"><small>2000 ms settle</small><div class="scr"><div class="ui"></div><div class="dim"></div><div class="card-to"><svg viewBox="0 0 640 240" preserveAspectRatio="xMidYMid slice"><use href="#art-war" /></svg><div>Saudi Arabia goes to war with Yemen</div></div></div><p>Shrinks into the debrief highlight card (FLIP, 400 ms).</p></div>
+  <div class="spec"><span class="swatch" style="background: var(--war)"></span><b>Colour</b> --war. <b>Scene</b> address (declarer), deployment (defender). <b>Sound</b> "war": drum hit + low brass drone (saw 73 and 110 Hz, low-pass opening 260 to 1400 Hz) + second hit at 0.9 s. <b>Haptic</b> 40, 60, 80 ms. <b>Trigger</b> new war involving the player this month.</div>
+</div>
+
+<div class="row">
+  <div class="name"><b>Nuclear</b><span>Any nuclear strike, by anyone, and the player's own first test.</span></div>
+  <div class="fr"><small>0 ms hit</small><div class="scr"><div class="ui"></div><div class="wash" style="background: #fffbe6"></div></div><p>White flash 100%, then a 300 ms burn-out to amber. No shake yet.</p></div>
+  <div class="fr"><small>120 ms slam</small><div class="scr"><svg class="art"><use href="#art-nuke" /></svg><div class="wash" style="background: rgba(255,251,230,.5)"></div><div class="band slam" style="background: #1a1408; color: var(--nuke)"><b>Nuclear strike</b></div></div><p>Scene "nuclear" exterior; the sound arrives late (sub boom), like distance.</p></div>
+  <div class="fr"><small>600 ms reveal</small><div class="scr"><svg class="art"><use href="#art-nuke" /></svg><div class="band" style="background: #1a1408; color: var(--nuke)"><b>Nuclear strike</b><i>PAKISTAN ON INDIA · MONTH 7</i></div><div class="sub"><span>Global embargo begins</span><span class="num">Tension 100</span></div><span class="skip">Tap to continue</span></div><p>The consequence line (embargo, retaliation risk).</p></div>
+  <div class="fr"><small>2000 ms settle</small><div class="scr"><div class="ui"></div><div class="dim"></div><div class="card-to" style="border-color: var(--nuke)"><svg viewBox="0 0 640 240" preserveAspectRatio="xMidYMid slice"><use href="#art-nuke" /></svg><div>The first nuclear weapon since 1945</div></div></div><p>Holds 400 ms longer than the others (2.8 s total).</p></div>
+  <div class="spec"><span class="swatch" style="background: var(--nuke)"></span><b>Colour</b> --nuke on near black. <b>Scene</b> nuclear. <b>Sound</b> "nuclear": 46 to 28 Hz sub boom 2.6 s, falling noise rumble, two faint high sirens. <b>Haptic</b> 200 ms. <b>Trigger</b> NUCLEAR_STRIKE resolved, or a new TESTED status. Photosensitivity: the flash is one frame band at 60% max luminance change, never repeated.</div>
+</div>
+
+<div class="row">
+  <div class="name"><b>Coup</b><span>A coup you backed succeeds, or one against you ends your rule.</span></div>
+  <div class="fr"><small>0 ms hit</small><div class="scr"><div class="ui"></div><div class="dim" style="background: rgba(0,0,0,.8)"></div></div><p>Lights out: UI to 20%, snare roll accelerates.</p></div>
+  <div class="fr"><small>120 ms slam</small><div class="scr"><svg class="art"><use href="#art-coup" /></svg><div class="band slam" style="background: var(--intel); color: #04121a"><b>Coup</b></div></div><p>Scene "covert" or palace gates; searchlights cross.</p></div>
+  <div class="fr"><small>600 ms reveal</small><div class="scr"><svg class="art"><use href="#art-coup" /></svg><div class="band" style="background: var(--intel); color: #04121a"><b>Regime change</b><i>IRAN · THE GENERALS TAKE THE CAPITAL</i></div><div class="sub"><span>New leader</span><span>General staff</span></div><span class="skip">Tap to continue</span></div><p>Old leader out, new one in (name if known).</p></div>
+  <div class="fr"><small>2000 ms settle</small><div class="scr"><div class="ui"></div><div class="dim"></div><div class="card-to" style="border-color: var(--intel)"><svg viewBox="0 0 640 240" preserveAspectRatio="xMidYMid slice"><use href="#art-coup" /></svg><div>The generals take Tehran</div></div></div><p>If the player is deposed, settles into the end screen instead.</p></div>
+  <div class="spec"><span class="swatch" style="background: var(--intel)"></span><b>Colour</b> --intel (cold). <b>Scene</b> covert (backed abroad), cabinet or streets (at home). <b>Sound</b> "coup": 14 accelerating snare taps, then a single low hit at 1.35 s. <b>Trigger</b> report moment REGIME CHANGE, or game over by coup.</div>
+</div>
+
+<div class="row">
+  <div class="name"><b>Peace</b><span>A war you are in ends by ceasefire or by your mediation.</span></div>
+  <div class="fr"><small>0 ms hit</small><div class="scr"><div class="ui"></div><div class="wash" style="background: rgba(255,216,138,.35)"></div></div><p>Warm gold wash, no dim; the chord starts soft.</p></div>
+  <div class="fr"><small>120 ms rise</small><div class="scr"><svg class="art"><use href="#art-peace" /></svg><div class="band slam" style="background: rgba(20,15,8,.85); color: #ffd88a"><b>Ceasefire</b></div></div><p>No slam: the band rises and fades in (600 ms ease-out). No shake.</p></div>
+  <div class="fr"><small>600 ms reveal</small><div class="scr"><svg class="art"><use href="#art-peace" /></svg><div class="band" style="background: rgba(20,15,8,.85); color: #ffd88a"><b>Ceasefire</b><i>SAUDI ARABIA AND YEMEN · MONTH 2</i></div><div class="sub"><span>Yemen's view of you</span><span class="num">-86 → -40</span></div><span class="skip">Tap to continue</span></div><p>Relation number ticks up.</p></div>
+  <div class="fr"><small>2000 ms settle</small><div class="scr"><div class="ui"></div><div class="dim"></div><div class="card-to" style="border-color: var(--good)"><svg viewBox="0 0 640 240" preserveAspectRatio="xMidYMid slice"><use href="#art-peace" /></svg><div>The guns fall silent in Yemen</div></div></div><p>Into the highlight; the map front line fades on the next map view.</p></div>
+  <div class="spec"><span class="swatch" style="background: #ffd88a"></span><b>Colour</b> gold key light, --good accent. <b>Scene</b> signing or ceasefire. <b>Sound</b> "peace": C major triad swell (attack 250 ms) + bell at 1046 Hz. <b>Trigger</b> report moment PEACEMAKER, or a player war with ended = true.</div>
+</div>
+
+<div class="row">
+  <div class="name"><b>Mission complete</b><span>The Flashpoint objective is met, a Term survives its finale, or a star is earned.</span></div>
+  <div class="fr"><small>0 ms hit</small><div class="scr"><div class="ui"></div><div class="dim"></div><div class="wash" style="background: rgba(242,169,59,.3)"></div></div><p>Dim, accent wash, arpeggio begins.</p></div>
+  <div class="fr"><small>120 ms stamp</small><div class="scr"><svg class="art"><use href="#art-mission" /></svg><div class="band slam" style="background: transparent"><b style="display:inline-block; border: .8cqw solid var(--accent); color: var(--accent); padding: 1.4cqw 3cqw; transform: rotate(-6deg)">Mission complete</b></div></div><p>The turn stamp motion, scaled up: "MISSION COMPLETE" stamped in accent.</p></div>
+  <div class="fr"><small>600 ms reveal</small><div class="scr"><svg class="art"><use href="#art-mission" /></svg><div class="band"><b style="display:inline-block; border: .8cqw solid var(--accent); color: var(--accent); padding: 1.4cqw 3cqw; transform: rotate(-6deg)">Mission complete</b><i>END THE YEMEN WAR · 4 MONTHS EARLY</i></div><div class="sub"><span>Stars</span><span>★ ★ ☆</span></div><span class="skip">Tap to continue</span></div><p>Stars fill one by one (150 ms apart, a tick each).</p></div>
+  <div class="fr"><small>2000 ms settle</small><div class="scr"><div class="ui"></div><div class="dim"></div><div class="card-to"><svg viewBox="0 0 640 240" preserveAspectRatio="xMidYMid slice"><use href="#art-mission" /></svg><div>Hand-off to the end-of-game reveal</div></div></div><p>Leads into the reveal (G10), not the debrief.</p></div>
+  <div class="spec"><span class="swatch" style="background: var(--accent)"></span><b>Colour</b> --accent. <b>Scene</b> flag (home colours). <b>Sound</b> "mission": four-note rising arpeggio, bell, stamp thump. <b>Trigger</b> gameOver with a win, or objective status flips to met.</div>
+</div>
+
+<script src="feel-sound.js"></script>
+<script>
+const S = window.WCSound;
+const K = {
+  war: { art: 'art-war', title: 'War declared', line: 'SAUDI ARABIA AGAINST YEMEN · MONTH 4', l: 'World tension', r: '54 → 78', band: 'var(--war)', ink: '#fff', wash: 'rgba(229,56,59,.6)', shake: true },
+  nuclear: { art: 'art-nuke', title: 'Nuclear strike', line: 'PAKISTAN ON INDIA · MONTH 7', l: 'Global embargo begins', r: 'Tension 100', band: '#1a1408', ink: 'var(--nuke)', wash: 'rgba(255,251,230,.95)', shake: true },
+  coup: { art: 'art-coup', title: 'Regime change', line: 'IRAN · THE GENERALS TAKE THE CAPITAL', l: 'New leader', r: 'General staff', band: 'var(--intel)', ink: '#04121a', wash: 'rgba(0,0,0,.6)', shake: true },
+  peace: { art: 'art-peace', title: 'Ceasefire', line: 'SAUDI ARABIA AND YEMEN · MONTH 2', l: "Yemen's view of you", r: '-86 → -40', band: 'rgba(20,15,8,.85)', ink: '#ffd88a', wash: 'rgba(255,216,138,.4)', shake: false },
+  mission: { art: 'art-mission', title: 'Mission complete', line: 'END THE YEMEN WAR · 4 MONTHS EARLY', l: 'Stars', r: '★ ★ ☆', band: 'transparent', ink: 'var(--accent)', wash: 'rgba(242,169,59,.35)', shake: false },
+};
+const st = document.getElementById('stage');
+function play(k) {
+  const c = K[k];
+  document.querySelector('#stArt use').setAttribute('href', '#' + c.art);
+  document.getElementById('stTitle').textContent = c.title;
+  document.getElementById('stLine').textContent = c.line;
+  document.getElementById('stSubL').textContent = c.l;
+  document.getElementById('stSubR').textContent = c.r;
+  const band = document.getElementById('stBand');
+  band.style.background = c.band; band.style.color = c.ink;
+  document.getElementById('stWash').style.background = c.wash;
+  st.classList.remove('run', 'shake'); void st.offsetWidth;
+  st.classList.add('run'); if (c.shake) st.classList.add('shake');
+  if (document.getElementById('snd').checked) S.play(k);
+}
+document.querySelectorAll('.pick button, .row .name button').forEach((b) => b.addEventListener('click', () => play(b.dataset.k)));
+st.addEventListener('click', () => st.classList.remove('run', 'shake'));
+document.getElementById('snd').addEventListener('change', (e) => S.setMuted(!e.target.checked));
+document.getElementById('snd').checked = !S.muted;
+</script>
+</body>
+</html>
