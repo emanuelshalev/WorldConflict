@@ -46,7 +46,8 @@ Under the HUD, on both views, the **goal line** shows your mission: how many goa
 |  Meetings             |  (previous / next: K / J)              |   0 of 6, meetings 0 of 3)  |
 |  Staff orders         |                                        | THIS MONTH YOU WILL ...     |
 |  All orders           |                                        | BEFORE YOU EXECUTE          |
-|                       |                                        | [Approve picks] [Execute]   |
+|                       |                                        | STAFF PICKS + [Approve n]   |
+|                       |                                        | [Execute month]             |
 + NEWS TICKER (hide with N) ---------------------------------------------------------------------+
 ```
 
@@ -55,6 +56,8 @@ Each month comes down to three things:
 1. **Your move.** The month's main decision (a crisis, or a meeting when nothing is burning) as one card. Each option shows its two biggest effects as arrows; **How much?** shows rough sizes ("Approval about -3"). Ribbons say which goal an option **Helps**, **Hurts** or **Breaks**. Your cabinet's pick is marked; when it hurts your mission the card says so and offers the option that does not ("Your cabinet backs X, but it hurts Y... Switch to Z"). On Story difficulty the cabinet never picks against your mission. **Ask your staff** opens the right minister with the question already asked.
 2. **Your advisors suggest** a few orders, each with one line on why now, on the same order card as everywhere else. Press **Add**, or **Remove** to take it back. When you have ◆ 3 or more unspent, a **Big move** suggests up to three orders that help the mission together ("Do it"). Your staff also **propose** up to two safe orders each month (marked "Proposed by staff"; never a long shot or a repeat of last month, always leaving ◆ 1). A proposal shows what it will change ("Will change: Approval about +4") and spends no political capital until you approve it: **Approve order** on its card or in the plan, or **Approve all**. Until then the political capital meter shows its seals as proposed (ringed), not spent, and an unapproved proposal does not run. Remove any of them, or turn proposals off in Settings ("Staff propose orders").
 3. **Execute month** (Ctrl+Enter). The rail always shows what you are proceeding with, what each budget has left and what still needs you. **Approve staff picks** (Shift+A) confirms the crisis picks, approves the proposed orders that fit your political capital and answers the meetings in one press.
+
+**Staff picks.** Your cabinet's suggestions for this month: the cabinet's answer to each crisis ("Cabinet pick: ..."), the orders your staff propose, the meetings they would attend and the ones a deputy will take. Staff orders and meetings happen only if you approve; crisis answers stand unless you change them. They are always listed in a group titled **Staff picks**, right next to the button that approves them: above Execute on the desk rail, in the plan sheet on a phone, and in the command strip in Map mode. Each pick says what it is, what it answers, what it will change ("Will change: Approval down · Iran's view of you up") and which goal it helps or hurts, with its own **Approve** and **Change** (Change opens it on the desk). The main button says what it does and how many: **Approve 4 staff picks**, with what it covers underneath ("1 crisis answer, 2 orders, 1 meeting") and how many work against your mission. When nothing waits it is greyed out and says why ("Nothing to approve: every staff pick is decided"). In Map mode on a phone, a tablet or a short screen the list starts folded so the globe keeps its room: the button then reads **Show 4 staff picks** and only unfolds the list (Escape or **Hide list** folds it again), so nothing is ever approved unseen. **What are these?** next to the title shows the one-line explanation again; it is open the first time.
 
 Month 1 is quieter: Focus view shows only your move, and the advisors and the rest of the desk wait behind **Show the whole desk**. A three-step guide points at your move, your advisors and Execute the first time (Settings: **Show me around again**).
 
@@ -128,6 +131,7 @@ One name per idea, everywhere in the game:
 | **Score** | Score | Your standing out of 200: approval, stability, economy and security, moving 15% a month toward how things really are. |
 | **Approval, Stability, Legitimacy, Economy, World tension** | the same words | Always written out, never abbreviated. |
 | **Staff pick** | Staff pick | What your staff would do. Approve it or choose yourself. |
+| **Staff picks** | Staff picks | Your cabinet's suggestions for this month. Staff orders and meetings happen only if you approve; crisis answers stand unless you change them. |
 | **In this month** | In this month | An order you have added to the month and can still remove. |
 | **Chance** | 53% chance | How likely an uncertain order is to work. |
 | **No undo** | No undo | Declare war and nuclear strike: they can't be taken back. |

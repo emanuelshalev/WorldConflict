@@ -654,6 +654,15 @@ findings:
     covers: [ui/src/components/reveal/**, ui/src/components/EndScreen.tsx]
     guards:
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-004.mjs
+  - id: RS-005
+    title: Staff picks are listed, titled, next to every Approve control; the button names its count and never approves unseen
+    source: real-signals/RS-005-ceo-staff-picks-unclear-2026-11-23.md (CEO playtest); D-64
+    covers: [ui/src/components/desk/StaffPicks.tsx, ui/src/components/desk/CommandRail.tsx, ui/src/lib/useStaffPicks.ts, ui/src/lib/month.ts, ui/src/styles/staff-picks.css, ui/src/lib/glossary.ts]
+    guards:
+      - vitest: tests/ui-staff-picks.spec.ts
+      - vitest: tests/ui-glossary.spec.ts
+        name: names the Staff picks group
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-005.mjs
   - id: F-02-2
     title: One outcome vocabulary; status words never contradict outcomes
     source: dan-term 030-hs (staff meeting FAILED while mobilization 85 to 95 applied); marcus-term 010-m1f (FAILED on a vote cast and on China/Russia moves); priya-flash 011-ex1 (-9 labelled A step forward); maya-phone 018-m4d (front move as "what your choice did"); QA S2-1 (Hormuz USA month 1)
