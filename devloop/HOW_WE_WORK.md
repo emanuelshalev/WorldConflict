@@ -15,8 +15,9 @@ Version 1.4, 2026-11-23. Changed only through journal entries (`instances/*/jour
 10. **Reach the end**: each usage round, at least 3 personas reach an end screen.
 11. **Measure consumption**: every agent gets a description its usage rule can match; the orchestrator logs stage boundaries in the usage registry; consumption is regenerated with each status update.
 12. **Fixed stays fixed.** Every addressed finding gets an automated guard in the regression registry before it is marked fixed. One command (`verify`) runs all tests, lints, build, UI smoke, visual regression, balance bands and every guard; it must pass before any merge and any panel round. New feedback is checked against the registry first; a regressed finding is at least S2 and is fixed before new work.
-13. **Compare like with like.** Each persona replays a fixed control scenario every iteration plus one rotating scenario; single-score moves of one point are noise unless behaviour backs them.
-14. **Report often**: the status page and journal are updated at each stage and after every merge, so the owner can follow without asking.
+13. **Docs follow the code.** A work package is done only when the docs it changes (player guide, API, architecture, agent guidance) say what the code now does.
+14. **Compare like with like.** Each persona replays a fixed control scenario every iteration plus one rotating scenario; single-score moves of one point are noise unless behaviour backs them.
+15. **Report often**: the status page and journal are updated at each stage and after every merge, so the owner can follow without asking.
 
 ## Iteration
 | Stage | Who | Output |
