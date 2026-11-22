@@ -3,59 +3,58 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Agenda round 2, review</title>
+<title>Agenda, check</title>
 <link rel="stylesheet" href="agenda2.css">
 </head>
 <body>
-<!-- Round 2 concept mock (D-70). Step 2 as its own page when everything is gone through: what happens, in words, with Execute in the main area. -->
+<!-- Concept mock (D-70 layout, D-72 fixes). Check what will happen: in words, Execute in the main area. -->
 <div class="lap">
 <header class="hud">
   <span class="who">🇺🇸 President of the United States</span>
   <span class="s">Approval <b class="num">48%</b></span>
   <span class="s wide">Stability <b class="num">71</b></span>
-  <span class="s">Political capital <b class="num">◆ 3 of 6</b></span><button class="btn info" aria-label="What is political capital?">?</button>
+  <span class="s">Political capital<span class="wide"> (what orders cost)</span> <b class="num">◆ 3 of 6</b></span><button class="btn small hudx">Explain</button>
   <span class="s wide">World tension <b class="num">62</b></span>
   <span class="grow"></span>
-  <div class="seg" role="tablist" aria-label="View"><button class="on" role="tab" aria-selected="true">Desk</button><button role="tab" aria-selected="false">Map</button></div>
+  <div class="seg" role="tablist" aria-label="View"><button class="on" role="tab">Desk</button><button class="" role="tab">Map</button></div>
 </header><div class="goal">
-  <span class="st">Mission</span><b>Keep the Strait open without a war</b><span class="st">2 of 3 goals on track · month 4 of 12</span>
-  <button class="btn small">Mission details <span class="chev">›</span></button>
+  <button class="btn goalbtn"><span>Mission: <b>Keep the Strait open without a war</b> · <span class="muted">2 of 3 goals on track · month 4 of 12</span></span><span class="chev">Open ›</span></button>
   <span class="grow"></span>
-  <div class="seg" role="tablist" aria-label="How to go through the month"><button class="on" role="tab">Guided</button><button class="" role="tab">Full desk</button></div>
-</div><nav class="stepbar" aria-label="This month">
-  <div class="lead"><b>Step 2: review</b>6 of 6 done</div>
-  <div class="chips"><button class="chip done" aria-label="6 done, open the list"><span class="n">✓</span><span class="t">6 done</span></button></div>
-  <div class="ends"><button class="btn">All 6 <span class="chev">▾</span></button><button class="btn">Review and execute <span class="chev">›</span></button></div>
-</nav><main><section class="review" aria-label="Review your month">
+  <span class="st showlbl">Show:</span><div class="seg" role="tablist" aria-label="Show one thing at a time or everything"><button class="on" role="tab">One at a time</button><button class="" role="tab">Everything</button></div>
+</div><nav class="bar2" aria-label="This month">
+  <span class="t"><b>Check what will happen</b>6 of 6 gone through</span>
+  <span class="grow"></span>
+  <button class="btn">‹ Back</button><button class="btn">See all 6 <span class="chev">▾</span></button>
+</nav><main><section class="review" aria-label="Check your month">
   <h1>Your month, before you execute</h1>
   <p class="intro">All 6 gone through. This is exactly what will happen.</p>
-  <section><h2 class="sec">You chose (3)</h2>
-    <div class="row"><span class="state done">✓</span><span class="t">Joint patrol with Japan<small>PLA drills close the north channel</small></span><button class="btn small">Change</button></div>
-    <div class="row"><span class="state done">✓</span><span class="t">Hold firm with Xi: the patrol stays<small>You take the call</small></span><button class="btn small">Change</button></div>
-    <div class="row"><span class="state done">✓</span><span class="t">Reaffirm the alliance with Japan<small>You meet PM Takaichi</small></span><button class="btn small">Change</button></div></section>
-  <section><h2 class="sec">You accepted (2)</h2>
-    <div class="row"><span class="state rec">★</span><span class="t">Court India · ◆ 1<small>India relations +6, approval +2</small></span><button class="btn small">Change</button></div>
-    <div class="row"><span class="state rec">★</span><span class="t">Ministers take the 2 routine meetings<small>No effect</small></span><button class="btn small">Change</button></div></section>
-  <section><h2 class="sec">You skipped (1)</h2>
-    <div class="row"><span class="state skip">↷</span><span class="t">Intelligence on China<small>Does not run. ◆ 1 stays</small></span><button class="btn small">Undo</button></div></section>
-  <div class="final"><h2>Execute month 4</h2><ul><li>Your 5 decisions happen.</li><li>You spend ◆ 1 of 3; ◆ 2 carry over (next month ◆ 5).</li><li>The world moves: 12 other governments act.</li></ul><button class="btn primary big">Execute month</button></div>
+  <section><h3 class="sec">Decided by you (3)</h3>
+    <div class="row"><span class="t">Joint patrol with Japan<small>PLA drills close the north channel</small></span><button class="btn small">Change</button></div>
+    <div class="row"><span class="t">Propose a hotline to Xi · ◆ 1<small>Recommended by your Secretary of State</small></span><button class="btn small">Change</button></div>
+    <div class="row"><span class="t">Reaffirm the alliance with Japan<small>You meet PM Takaichi</small></span><button class="btn small">Change</button></div></section>
+  <section><h3 class="sec">Recommended, accepted (2)</h3>
+    <div class="row"><span class="t">Court India · ◆ 1<small>India relations +6, approval +2</small></span><button class="btn small">Change</button></div>
+    <div class="row"><span class="t">Your ministers take the 2 small meetings<small>No effect</small></span><button class="btn small">Change</button></div></section>
+  <section><h3 class="sec">Skipped (1)</h3>
+    <div class="row"><span class="t">Intelligence on China<small>Does not run. ◆ 1 stays</small></span><button class="btn small">Undo</button></div></section>
+  <div class="final"><p style="margin:0 0 6px;font-size:17px"><b>If you execute now:</b></p><ul><li>Your 5 decisions happen.</li><li>You spend ◆ 2 of your 3 political capital. ◆ 1 is left, and next month you get 3 more (◆ 4).</li><li>The world moves: 12 other governments act.</li></ul><button class="btn primary big">Execute month 4 <span class="exsub">ends the month</span></button></div>
 </section></main>
 </div>
 <div class="ph">
-<div class="ph-top"><button class="btn small" aria-label="Back">‹</button><span class="t"><b>Review your month</b>6 of 6 done</span><button class="btn small">List</button></div>
-<div class="ph-body"><section class="review" style="padding:0" aria-label="Review your month">
+<div class="ph-top"><button class="btn small">‹ Back</button><span class="t"><b>Check what will happen</b>6 of 6 gone through</span><button class="btn small">See all</button></div>
+<div class="ph-body"><section class="review" style="padding:0" aria-label="Check your month">
   <h1>Your month, before you execute</h1>
   <p class="intro">All 6 gone through. This is exactly what will happen.</p>
-  <section><h2 class="sec">You chose (3)</h2>
-    <div class="row"><span class="state done">✓</span><span class="t">Joint patrol with Japan<small>PLA drills close the north channel</small></span><button class="btn small">Change</button></div>
-    <div class="row"><span class="state done">✓</span><span class="t">Hold firm with Xi: the patrol stays<small>You take the call</small></span><button class="btn small">Change</button></div>
-    <div class="row"><span class="state done">✓</span><span class="t">Reaffirm the alliance with Japan<small>You meet PM Takaichi</small></span><button class="btn small">Change</button></div></section>
-  <section><h2 class="sec">You accepted (2)</h2>
-    <div class="row"><span class="state rec">★</span><span class="t">Court India · ◆ 1<small>India relations +6, approval +2</small></span><button class="btn small">Change</button></div>
-    <div class="row"><span class="state rec">★</span><span class="t">Ministers take the 2 routine meetings<small>No effect</small></span><button class="btn small">Change</button></div></section>
-  <section><h2 class="sec">You skipped (1)</h2>
-    <div class="row"><span class="state skip">↷</span><span class="t">Intelligence on China<small>Does not run. ◆ 1 stays</small></span><button class="btn small">Undo</button></div></section>
-  <div class="final"><h2>Execute month 4</h2><ul><li>Your 5 decisions happen.</li><li>You spend ◆ 1 of 3; ◆ 2 carry over (next month ◆ 5).</li><li>The world moves: 12 other governments act.</li></ul><button class="btn primary big">Execute month</button></div>
+  <section><h3 class="sec">Decided by you (3)</h3>
+    <div class="row"><span class="t">Joint patrol with Japan<small>PLA drills close the north channel</small></span><button class="btn small">Change</button></div>
+    <div class="row"><span class="t">Propose a hotline to Xi · ◆ 1<small>Recommended by your Secretary of State</small></span><button class="btn small">Change</button></div>
+    <div class="row"><span class="t">Reaffirm the alliance with Japan<small>You meet PM Takaichi</small></span><button class="btn small">Change</button></div></section>
+  <section><h3 class="sec">Recommended, accepted (2)</h3>
+    <div class="row"><span class="t">Court India · ◆ 1<small>India relations +6, approval +2</small></span><button class="btn small">Change</button></div>
+    <div class="row"><span class="t">Your ministers take the 2 small meetings<small>No effect</small></span><button class="btn small">Change</button></div></section>
+  <section><h3 class="sec">Skipped (1)</h3>
+    <div class="row"><span class="t">Intelligence on China<small>Does not run. ◆ 1 stays</small></span><button class="btn small">Undo</button></div></section>
+  <div class="final"><p style="margin:0 0 6px;font-size:17px"><b>If you execute now:</b></p><ul><li>Your 5 decisions happen.</li><li>You spend ◆ 2 of your 3 political capital. ◆ 1 is left, and next month you get 3 more (◆ 4).</li><li>The world moves: 12 other governments act.</li></ul><button class="btn primary big">Execute month 4 <span class="exsub">ends the month</span></button></div>
 </section></div>
 </div>
 </body>

@@ -3,54 +3,46 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Agenda round 2, skip</title>
+<title>Agenda, skip</title>
 <link rel="stylesheet" href="agenda2.css">
 </head>
 <body>
-<!-- Round 2 concept mock (D-70). After Skip on Xi: the status line names the default answer and its cost; routine meetings grouped into one item. -->
+<!-- Concept mock (D-70 layout, D-72 fixes). After a skip: status line with the default answer, the cost and Undo; small meetings grouped. -->
 <div class="lap">
 <header class="hud">
   <span class="who">🇺🇸 President of the United States</span>
   <span class="s">Approval <b class="num">48%</b></span>
   <span class="s wide">Stability <b class="num">71</b></span>
-  <span class="s">Political capital <b class="num">◆ 3 of 6</b></span><button class="btn info" aria-label="What is political capital?">?</button>
+  <span class="s">Political capital<span class="wide"> (what orders cost)</span> <b class="num">◆ 3 of 6</b></span><button class="btn small hudx">Explain</button>
   <span class="s wide">World tension <b class="num">62</b></span>
   <span class="grow"></span>
-  <div class="seg" role="tablist" aria-label="View"><button class="on" role="tab" aria-selected="true">Desk</button><button role="tab" aria-selected="false">Map</button></div>
+  <div class="seg" role="tablist" aria-label="View"><button class="on" role="tab">Desk</button><button class="" role="tab">Map</button></div>
 </header><div class="goal">
-  <span class="st">Mission</span><b>Keep the Strait open without a war</b><span class="st">2 of 3 goals on track · month 4 of 12</span>
-  <button class="btn small">Mission details <span class="chev">›</span></button>
+  <button class="btn goalbtn"><span>Mission: <b>Keep the Strait open without a war</b> · <span class="muted">2 of 3 goals on track · month 4 of 12</span></span><span class="chev">Open ›</span></button>
   <span class="grow"></span>
-  <div class="seg" role="tablist" aria-label="How to go through the month"><button class="on" role="tab">Guided</button><button class="" role="tab">Full desk</button></div>
-</div><nav class="stepbar" aria-label="This month">
-  <div class="lead"><b>Step 1: go through this month</b>3 of 6 done</div>
-  <div class="chips"><button class="chip done" aria-label="3 done, open the list"><span class="n">✓</span><span class="t">3 done</span></button><button class="chip now" aria-current="step"><span class="n">4</span><span class="t">Now: Routine meetings (2)</span></button><button class="chip"><span class="n">5</span><span class="t">Proposed orders (2)</span></button><button class="chip r2"><span class="n">6</span><span class="t">Your own orders</span></button><button class="chip more narrow">+1 more</button></div>
-  <div class="ends"><button class="btn">All 6 <span class="chev">▾</span></button><button class="btn">Review and execute <span class="chev">›</span></button></div>
-</nav><main class="desk"><section class="item" aria-label="4 of 6: routine meetings">
-  <div class="status" role="status"><span><b>Skipped: Xi Jinping's call.</b> Your Foreign Minister takes it ("We note your concern"). China relations -3.</span><button class="btn small">Undo</button></div>
-  <div class="where"><button class="btn small">‹ Back</button><span>4 of 6 · two routine meetings, grouped</span><span class="grow"></span><button class="btn small">Next: proposed orders ›</button></div>
-  <p class="ask" style="font-size:24px;margin-bottom:6px">Routine meetings this month</p>
-  <p style="margin:0 0 14px;font-size:17px;color:var(--text-2)">Nothing in them touches your goals. Most leaders let their ministers take them.</p>
-  <div class="opts">
-    <button class="opt"><span class="rec">★ Recommended</span><span class="name">Let your ministers take both <span class="chev">Choose ›</span></span><span class="fx">Defense Secretary: readiness briefing (no effect). Press office: CNN interview, "no comment on the Strait" (no effect). Free.</span></button>
-    <button class="opt"><span class="name">Open them one by one <span class="chev">Open ›</span></span><span class="fx">Take the readiness briefing or the CNN interview yourself (each uses 1 of your 3 meetings).</span></button>
-  </div>
-</section><aside class="rail" aria-label="What will happen">
-  <div class="top"><h2>Step 2: what will happen</h2><p>Your plan, updated as you go</p></div>
+  <span class="st showlbl">Show:</span><div class="seg" role="tablist" aria-label="Show one thing at a time or everything"><button class="on" role="tab">One at a time</button><button class="" role="tab">Everything</button></div>
+</div><nav class="bar2" aria-label="This month">
+  <span class="t"><b>4 of 6: Small meetings (2)</b>3 done, 3 to go</span>
+  <span class="grow"></span>
+  <button class="btn">‹ Back</button><button class="btn">Next<span class="wide">: Recommended orders</span> <span class="chev">›</span></button><button class="btn">See all 6 <span class="chev">▾</span></button><button class="btn">Check and execute <span class="chev">›</span></button>
+</nav><main class="desk"><section class="item"><div class="status" role="status"><span><b>Skipped: Xi Jinping's call.</b> Your Foreign Minister answers "We note your concern." China relations -3.</span><button class="btn small">Undo</button></div>
+  <p class="ask" style="font-size:24px;margin-bottom:4px">Two small meetings this month</p>
+  <p style="margin:0 0 14px;font-size:17px;color:var(--text-2)">They need no decision from you: nothing in them touches your goals.</p>
+  <div class="opts"><button class="opt"><span class="body"><span class="rec">★ Recommended by your Chief of Staff: "Neither touches your goals."</span><span class="name">Let your ministers take both</span><span class="fx">Readiness briefing: your Defense Secretary goes (no effect). CNN interview: your press office says "no comment on the Strait" (no effect). Free.</span></span><span class="face">Choose</span></button><button class="opt"><span class="body"><span class="name">Take them yourself, one by one</span><span class="fx">Each one uses 1 of your 3 meetings.</span></span><span class="face">Choose</span></button></div></section><aside class="rail" aria-label="What will happen">
   <div class="list">
-    <section><h2 class="sec">You chose</h2><div class="row"><span class="state done">✓</span><span class="t">Joint patrol with Japan<small>PLA drills</small></span><button class="btn small">Change</button></div><div class="row"><span class="state done">✓</span><span class="t">Takaichi visit: reaffirm the alliance<small>You meet her</small></span><button class="btn small">Change</button></div></section>
-    <section><h2 class="sec">Your advisors recommend (2)</h2><p class="st" style="margin:2px 0 4px">Nothing here happens unless you accept it.</p><div class="row"><span class="t">Court India · ◆ 1<small>India relations +6, approval +2</small></span><button class="btn small">Accept</button></div><div class="row"><span class="t">Intelligence on China · ◆ 1<small>Sharper estimates for 3 months</small></span><button class="btn small">Accept</button></div><button class="btn" style="width:100%;justify-content:center;margin-top:6px">Accept all 2 recommendations</button></section>
-    <section><h2 class="sec">Skipped</h2><div class="row"><span class="state skip">↷</span><span class="t">Xi Jinping calls<small>Your Foreign Minister answers. China -3</small></span><button class="btn small">Undo</button></div></section>
-    <section style="border-bottom:0"><h2 class="sec">Budgets</h2><div class="budget"><span>Political capital</span><b class="num">◆ 3 of 6 left</b><span>Orders this month</span><b class="num">0 of 6</b><span>Meetings you take</span><b class="num">0 of 3</b><span>Defense budget</span><b class="num">12% used</b></div></section>
+    <h2 class="railh">What will happen</h2>
+    <section><h3 class="sec">Decided</h3><div class="row"><span class="t">You chose: Joint patrol with Japan<small>PLA drills</small></span><button class="btn small">Change</button></div><div class="row"><span class="t">You chose: Reaffirm the alliance<small>PM Takaichi visits</small></span><button class="btn small">Change</button></div></section>
+    <section><h3 class="sec">Recommended (1), still to do</h3><div class="row"><span class="t">Recommended orders: Court India, Intelligence on China<small>◆ 2 in all</small></span><button class="btn small">Open ›</button></div><button class="btn" style="width:100%;justify-content:center;margin-top:6px">Accept all recommended</button><p class="st" style="margin:4px 0 0">Chooses the recommended answer for every thing still to do.</p></section>
+    <section><h3 class="sec">Skipped</h3><div class="row"><span class="t">Skipped: Xi Jinping calls<small>Your Foreign Minister answers. China -3</small></span><button class="btn small">Undo</button></div></section>
+    <section style="border-bottom:0"><h3 class="sec">Budgets</h3><div class="budget"><span>Political capital (◆)</span><b class="num">3 of 6 left</b><span>Orders this month</span><b class="num">0 of 6</b><span>Meetings you take</span><b class="num">0 of 3</b><span>Defense budget</span><b class="num">12% used</b></div></section>
   </div>
-  <div class="exec"><h2>Step 3: execute</h2><p style="margin:0 0 4px;font-size:16px"><b>If you execute now:</b></p><ul><li>Your 2 choices happen.</li><li>Your ministers take 3 meetings for you. <span class="bad">China -3.</span></li><li>2 proposed orders do not run (◆ 2 stay).</li></ul><button class="btn primary big">Execute month</button></div>
+  <div class="exec"><p style="margin:0 0 4px;font-size:16px"><b>If you execute now:</b></p><ul><li>Your 2 decisions happen.</li><li>Your ministers take 3 meetings for you. <span class="bad">China -3.</span></li><li>The 2 recommended orders do not run (◆ 2 stay).</li></ul><button class="btn primary big">Execute month 4 <span class="exsub">ends the month</span></button></div>
 </aside></main>
 </div>
 <div class="ph">
-<div class="ph-top"><button class="btn small" aria-label="Back">‹</button><span class="t"><b>4 of 6 · routine meetings</b>3 of 6 done</span><button class="btn small">List</button></div>
-<div class="ph-body"><div class="status" role="status" style="display:grid;gap:8px"><span><b>Skipped: Xi's call.</b> Your Foreign Minister takes it. China relations -3.</span><button class="btn small">Undo</button></div>
-<h1>Routine meetings</h1><p class="ph-quote">Nothing in them touches your goals.</p><div class="opts"><button class="opt"><span class="rec">★ Recommended</span><span class="name">Let your ministers take both <span class="chev">Choose ›</span></span><span class="fx">Readiness briefing and CNN interview: no effect, free.</span></button><button class="opt"><span class="name">Open them one by one <span class="chev">Open ›</span></span><span class="fx">Each uses 1 of your 3 meetings.</span></button></div></div>
-<div class="ph-bottom"><button class="btn big">Next: proposed orders <span class="chev">›</span></button></div>
+<div class="ph-top"><button class="btn small" aria-label="Back">‹ Back</button><span class="t"><b>4 of 6</b>3 done, 3 to go</span><button class="btn small">See all</button></div>
+<div class="ph-body"><div class="status" style="display:grid;gap:8px" role="status"><span><b>Skipped: Xi Jinping's call.</b> Your Foreign Minister answers "We note your concern." China relations -3.</span><button class="btn small">Undo</button></div><h1>Two small meetings</h1><p class="ph-quote">They need no decision from you.</p><div class="opts"><button class="opt"><span class="body"><span class="rec">★ Recommended by your Chief of Staff: "Neither touches your goals."</span><span class="name">Let your ministers take both</span><span class="fx">Readiness briefing: your Defense Secretary goes (no effect). CNN interview: your press office says "no comment on the Strait" (no effect). Free.</span></span><span class="face">Choose</span></button><button class="opt"><span class="body"><span class="name">Take them yourself, one by one</span><span class="fx">Each one uses 1 of your 3 meetings.</span></span><span class="face">Choose</span></button></div></div>
+<div class="ph-bottom"><button class="btn big">Next: Recommended orders <span class="chev">›</span></button></div>
 </div>
 </body>
 </html>

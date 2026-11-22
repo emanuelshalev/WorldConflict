@@ -58,3 +58,5 @@
 {"t": "2026-11-22T12:51:00Z", "iteration": 3, "stage": "Verify", "kind": "unit-total", "note": "backfilled; units: gate-fixes, staff-picks fix (RS-005), QA verification", "units": 3}
 {"t": "2026-11-22T13:12:57Z", "kind": "pause", "note": "backfilled"}
 {"t": "2026-11-22T20:11:59Z", "kind": "resume", "note": "backfilled"}
+{"t":"2026-11-22T20:40:01.116Z","iteration":3,"stage":"Verify","kind":"unit-done","units":1,"note":"gate-fixes merged: full verify green (733a0f9)"}
+{"t":"2026-11-22T12:56:00.000Z","iteration":4,"stage":"Design","kind":"start","note":"iteration 4 designs (agenda, order cards) running in parallel with iteration 3"}
