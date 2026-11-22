@@ -70,7 +70,7 @@ async function fullDesk(s, on) {
   await s.page.waitForTimeout(700);
   if (on) {
     // The Full desk shows the suggestions in its detail pane: open them from the navigator
-    const open = s.page.locator('nav.navigator').getByRole('button', { name: /Orders to consider|suggest/i }).first();
+    const open = s.page.locator('nav.navigator').getByRole('option', { name: /Orders to consider|suggest/i }).first();
     if (await open.isVisible().catch(() => false)) {
       await open.click();
       await s.page.waitForTimeout(600);
