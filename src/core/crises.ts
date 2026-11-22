@@ -1,3 +1,4 @@
+import { opposingCamps, worldYear } from "./era.js";
 import { isLandlocked, sharesLandBorder, TYPHOON_COUNTRIES } from "./geography.js";
 import type { SeededRandom } from "./seed.js";
 import { applyHotspotEffect } from "./systems/hotspots.js";
@@ -75,7 +76,9 @@ function opt(
   };
 }
 
-const alive = (c: CountryState | undefined): c is CountryState => !!c && !c.collapsed;
+// A living sovereign state: era.ts keeps the Ukrainian SSR (1990) out of every crisis
+const alive = (c: CountryState | undefined): c is CountryState =>
+  !!c && !c.collapsed && !c.eraStatus;
 
 function find(world: WorldState, id: string | undefined): CountryState | undefined {
   return id ? world.countries.find((c) => c.id === id) : undefined;
@@ -1033,7 +1036,7 @@ const TEMPLATES: CrisisTemplate[] = [
         ? `Your border units exchanged fire with ${possessive(r.name)} forces`
         : encounterAtSea(ctx.player, r)
           ? `A warship from ${r.name} and one of your patrol aircraft came within meters of collision in international waters`
-          : `A military drone from ${r.name} was intercepted at the edge of your airspace, and your jets nearly fired`;
+          : `A ${worldYear(ctx.world) >= 2000 ? "military drone" : "spy plane"} from ${r.name} was intercepted at the edge of your airspace, and your jets nearly fired`;
       return {
         headline: border
           ? `Firefight on the ${ctx.player.name}–${r.name} frontier`
@@ -1558,7 +1561,7 @@ const TEMPLATES: CrisisTemplate[] = [
             opt(
               "sabotage",
               "Covert sabotage",
-              "Cyberweapons and 'accidents' at their facilities. Deniable, if it works.",
+              `${worldYear(ctx.world) >= 2000 ? "Cyberweapons" : "Agents, bribed suppliers"} and 'accidents' at their facilities. Deniable, if it works.`,
               { pc: -1 },
               {
                 actions: [{ type: "INTEL_SABOTAGE", targetCountryId: r.id }],
@@ -2024,7 +2027,8 @@ const TEMPLATES: CrisisTemplate[] = [
     id: "cyberattack",
     weight: (ctx) => {
       const r = worstRival(ctx, -40);
-      return r && r.intelLevel > 55 ? 1.5 : 0;
+      // No grid to hack before the networked 2000s (era.ts)
+      return r && r.intelLevel > 55 && worldYear(ctx.world) >= 2000 ? 1.5 : 0;
     },
     build: (ctx) => {
       const r = worstRival(ctx, -40);
@@ -2392,6 +2396,7 @@ function refugeeSource(ctx: Ctx): CountryState | undefined {
   return ctx.world.countries.find(
     (c) =>
       c.id !== ctx.player.id &&
+      !c.eraStatus &&
       (c.atWarWith.length > 0 || c.stability < 22 || c.collapsed) &&
       !c.atWarWith.includes(ctx.player.id) &&
       areNeighbors(c, ctx.player),
@@ -2444,7 +2449,8 @@ function pactSuitor(ctx: Ctx): CountryState | undefined {
     c.atWarWith.length === 0 &&
     c.alliances.length < 4 &&
     c.id !== "TWN" &&
-    ctx.player.id !== "TWN";
+    ctx.player.id !== "TWN" &&
+    !opposingCamps(ctx.world, c.id, ctx.player.id);
   const proposer = find(ctx.world, ctx.world.director.pactSuitor ?? "");
   if (proposer && eligible(proposer) && !ctx.player.alliances.includes(proposer.id))
     return proposer;

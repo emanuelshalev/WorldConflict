@@ -276,7 +276,7 @@ export function runGovernmentDynamics(world: WorldState, rng: SeededRandom): Gov
   const events: GameEvent[] = [];
 
   for (const country of world.countries) {
-    if (country.collapsed) continue;
+    if (country.collapsed || country.eraStatus) continue; // era.ts: no elections or coups in a non-state
     const isPlayer = country.id === world.playerCountryId;
 
     // --- Elections ---

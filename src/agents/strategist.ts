@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isPresent } from "../core/era.js";
 import {
   type Action,
   ActionSchema,
@@ -304,7 +305,7 @@ export function parseDecision(
     if (!(a.type in ACTION_GUIDE)) continue;
     if (a.targetCountryId) {
       if (a.targetCountryId === country.id) continue;
-      if (!world.countries.some((c) => c.id === a.targetCountryId && !c.collapsed)) continue;
+      if (!world.countries.some((c) => c.id === a.targetCountryId && isPresent(c))) continue;
     }
     actions.push(a);
     if (actions.length === 3) break;

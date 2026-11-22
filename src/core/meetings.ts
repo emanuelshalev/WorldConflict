@@ -6,6 +6,7 @@
  * of the simulation's randomness.
  */
 
+import { isPresent } from "./era.js";
 import { sharesLandBorder } from "./geography.js";
 import { combineSeed, SeededRandom } from "./seed.js";
 import { hotspotSummary } from "./systems/hotspots.js";
@@ -36,14 +37,14 @@ const opt = (
 const pct = (v: number) => `${Math.round(v)}%`;
 const strongest = (world: WorldState, exclude: string[]) =>
   world.countries
-    .filter((c) => GREAT_POWERS.has(c.id) && !exclude.includes(c.id) && !c.collapsed)
+    .filter((c) => GREAT_POWERS.has(c.id) && !exclude.includes(c.id) && isPresent(c))
     .sort((a, b) => b.gdp - a.gdp)[0];
 const leaderOf = (c: CountryState) => `${c.leader.title} ${c.leader.name}`;
 
 /** Who calls this month: the most salient governments for the player, varied by the stream. */
 function callers(world: WorldState, player: CountryState, rng: SeededRandom): CountryState[] {
   const scored = world.countries
-    .filter((c) => c.id !== player.id && !c.collapsed)
+    .filter((c) => c.id !== player.id && isPresent(c))
     .map((c) => {
       const rel = player.relations[c.id] ?? 0;
       const war = player.atWarWith.includes(c.id) ? 100 : 0;
@@ -685,6 +686,7 @@ export function generateAgenda(world: WorldState): Meeting[] {
         (c) =>
           c.id !== player.id &&
           !who.includes(c) &&
+          !c.eraStatus &&
           !player.atWarWith.includes(c.id) &&
           (player.relations[c.id] ?? 0) > 0,
       )
@@ -830,7 +832,7 @@ function emergencyMeetings(world: WorldState, player: CountryState): Meeting[] {
             c.id !== other.id &&
             !player.alliances.includes(c.id) &&
             !player.atWarWith.includes(c.id) &&
-            !c.collapsed,
+            isPresent(c),
         )
         .sort((a, b) => (player.relations[b.id] ?? 0) - (player.relations[a.id] ?? 0))[0];
       out.push({

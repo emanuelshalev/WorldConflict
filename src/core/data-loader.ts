@@ -120,6 +120,11 @@ export const EraStatusSchema = z.object({
   partOf: z.string().optional(), // required in practice for PART_OF (checked in tests)
   label: z.string(), // era name: "Ukrainian SSR", "Trucial States"
   note: z.string().default(""),
+  // The month (YYYY-MM) it becomes a sovereign state, when that falls inside a session
+  until: z
+    .string()
+    .regex(/^\d{4}-\d{2}$/)
+    .optional(),
 });
 export type EraStatus = z.infer<typeof EraStatusSchema>;
 
@@ -184,6 +189,18 @@ export const ScenarioSchema = z.object({
   briefing: z.array(z.string()).default([]),
   // Hot zones that are not states (Gaza, the West Bank): see systems/hotspots.ts
   hotspots: z.array(HotspotSchema).default([]),
+  // Term mode, non-electoral seats: the era's own review (the 1990 Politburo judges Gorbachev
+  // on holding the Union together, not on a peacetime score), keyed by country
+  termReview: z
+    .record(
+      z.string(),
+      z.object({
+        title: z.string(),
+        briefing: z.string(),
+        scorePar: z.number().min(50).max(130),
+      }),
+    )
+    .default({}),
   ...EraMapFieldsSchema.shape,
 });
 export type ScenarioData = z.infer<typeof ScenarioSchema>;
@@ -438,11 +455,18 @@ export class DataLoader {
         };
         return world;
       }
+      const review = electoral
+        ? undefined
+        : this.loadScenario(options.scenarioId).termReview[playerCountryId];
+      const reviewPar = review?.scorePar ?? 100;
       world.objective = {
-        title: electoral ? "Win the coming election" : "Survive the inner circle's review",
+        title: electoral
+          ? "Win the coming election"
+          : (review?.title ?? "Survive the inner circle's review"),
         briefing: electoral
           ? `Govern ${player.name} through four turbulent years, then face the voters. Lose them and you lose everything.`
-          : `No ballot box can remove you, but the ${player.politicalSystem.type === "ONE_PARTY_STATE" ? "Party" : "inner circle"} reviews your record at the end of four years. Deliver order, legitimacy and results.`,
+          : (review?.briefing ??
+            `No ballot box can remove you, but the ${player.politicalSystem.type === "ONE_PARTY_STATE" ? "Party" : "inner circle"} reviews your record at the end of four years. Deliver order, legitimacy and results.`),
         primary: electoral
           ? []
           : [
@@ -458,7 +482,11 @@ export class DataLoader {
                 min: 35,
                 label: "Stability of 35%+ at the review",
               },
-              { kind: "SCORE_PAR", min: 100, label: "Score of 100+ at the review" },
+              {
+                kind: "SCORE_PAR",
+                min: reviewPar,
+                label: `Score of ${reviewPar}+ at the review`,
+              },
             ],
         bonus: [
           { kind: "SCORE_PAR", min: 115, label: "Score of 115+" },
@@ -731,6 +759,7 @@ export class DataLoader {
 
     this.applyScenarioRelations(countries, scenario);
     this.applyScenarioAlliances(countries, scenario);
+    applyEraStatus(countries, scenario, playerCountryId);
 
     const date = `${scenario.startYear}-${String(scenario.startMonth).padStart(2, "0")}`;
 
@@ -752,6 +781,7 @@ export class DataLoader {
       scoreHistory: [],
       gameOver: null,
       playerBackstory: "",
+      blocs: scenario.blocs.map((b) => ({ id: b.id, side: b.side, members: [...b.members] })),
     });
 
     // Starting wars from the scenario
@@ -892,6 +922,31 @@ export class DataLoader {
     this.codexCache = null;
     this.countriesCache.clear();
     this.scenariosCache.clear();
+  }
+}
+
+/**
+ * Marks the countries that are not sovereign states at the scenario date (era.ts) and drops
+ * their pacts. The player's own country is never marked: playability is decided elsewhere.
+ */
+function applyEraStatus(
+  countries: CountryState[],
+  scenario: ScenarioData,
+  playerCountryId: string,
+): void {
+  const start = `${scenario.startYear}-${String(scenario.startMonth).padStart(2, "0")}`;
+  const absent = new Set<string>();
+  for (const c of countries) {
+    const era = scenario.eraStatus[c.id];
+    if (!era || c.id === playerCountryId) continue;
+    if (era.until && era.until <= start) continue;
+    c.eraStatus = era.status;
+    if (era.until) c.eraUntil = era.until;
+    absent.add(c.id);
+  }
+  for (const c of countries) {
+    if (absent.has(c.id)) c.alliances = [];
+    else c.alliances = c.alliances.filter((id) => !absent.has(id));
   }
 }
 

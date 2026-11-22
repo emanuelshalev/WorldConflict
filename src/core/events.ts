@@ -1,4 +1,5 @@
 import { areNeighbors, encounterAtSea } from "./crises.js";
+import { isPresent, presentCountries, worldYear } from "./era.js";
 import { TYPHOON_COUNTRIES } from "./geography.js";
 import type { SeededRandom } from "./seed.js";
 import { getRelation } from "./systems/diplomacy.js";
@@ -28,7 +29,7 @@ function eid(world: WorldState, key: string): string {
 }
 
 function pickUnstable(ctx: EventContext, threshold: number): CountryState[] | null {
-  const candidates = ctx.world.countries.filter((c) => !c.collapsed && c.stability < threshold);
+  const candidates = ctx.world.countries.filter((c) => isPresent(c) && c.stability < threshold);
   if (candidates.length === 0) return null;
   return [ctx.rng.pick(candidates)];
 }
@@ -36,10 +37,10 @@ function pickUnstable(ctx: EventContext, threshold: number): CountryState[] | nu
 function rivals(ctx: EventContext): [CountryState, CountryState] | null {
   const pairs: [CountryState, CountryState][] = [];
   for (const a of ctx.world.countries) {
-    if (a.collapsed || a.id === ctx.world.playerCountryId) continue;
+    if (!isPresent(a) || a.id === ctx.world.playerCountryId) continue;
     for (const rid of a.history.historicalRivals ?? []) {
       if (rid === ctx.world.playerCountryId) continue;
-      const b = ctx.world.countries.find((c) => c.id === rid && !c.collapsed);
+      const b = ctx.world.countries.find((c) => c.id === rid && isPresent(c));
       if (b && getRelation(a, b.id) < -30 && !a.atWarWith.includes(b.id)) {
         pairs.push([a, b]);
       }
@@ -73,7 +74,7 @@ const TEMPLATES: EventTemplate[] = [
           ? `Patrols exchanged fire along the contested frontier between ${a.name} and ${b.name}. Casualties are reported on both sides; state media in both capitals are demanding retribution.`
           : encounterAtSea(a, b)
             ? `Warships and aircraft from ${a.name} and ${b.name} came dangerously close in international waters. Both sides accuse the other of reckless provocation.`
-            : `Military aircraft and drones from ${a.name} and ${b.name} came dangerously close over contested airspace. Both sides accuse the other of reckless provocation.`,
+            : `Military ${worldYear(ctx.world) >= 2000 ? "aircraft and drones" : "aircraft"} from ${a.name} and ${b.name} came dangerously close over contested airspace. Both sides accuse the other of reckless provocation.`,
         affectedCountries: [a.id, b.id],
         turn: ctx.world.turn,
         severity: "MAJOR",
@@ -91,7 +92,7 @@ const TEMPLATES: EventTemplate[] = [
         ctx.world.wars.some(
           (w) => (w.attackerId === id || w.defenderId === id) && ctx.world.turn - w.startTurn <= 6,
         );
-      const exporterAtWar = ctx.world.countries.filter(
+      const exporterAtWar = presentCountries(ctx.world).filter(
         (c) =>
           (c.economyProfile?.keyResources ?? []).includes("oil") &&
           newWar(c.id) &&
@@ -113,7 +114,7 @@ const TEMPLATES: EventTemplate[] = [
         type: "ECONOMY",
         title: "OIL SHOCK: Crude prices spiral",
         description: `Turmoil in ${exporter.name} has sent oil markets into panic. Prices at the pump are soaring worldwide; importing nations face inflation and angry motorists, while petrostates enjoy a windfall.`,
-        affectedCountries: ctx.world.countries.map((c) => c.id),
+        affectedCountries: presentCountries(ctx.world).map((c) => c.id),
         turn: ctx.world.turn,
         severity: "MAJOR",
       };
@@ -126,7 +127,7 @@ const TEMPLATES: EventTemplate[] = [
     baseChance: 0.06,
     trigger: (ctx) => {
       const candidates = ctx.world.countries.filter(
-        (c) => !c.collapsed && c.legitimacy > 25 && c.id !== ctx.world.playerCountryId,
+        (c) => isPresent(c) && c.legitimacy > 25 && c.id !== ctx.world.playerCountryId,
       );
       if (candidates.length === 0) return null;
       return [ctx.rng.pick(candidates)];
@@ -155,7 +156,7 @@ const TEMPLATES: EventTemplate[] = [
   {
     id: "natural_disaster",
     baseChance: 0.07,
-    trigger: (ctx) => [ctx.rng.pick(ctx.world.countries.filter((c) => !c.collapsed))],
+    trigger: (ctx) => [ctx.rng.pick(ctx.world.countries.filter(isPresent))],
     build: (ctx, [country]) => {
       const kinds = [
         "an earthquake",
@@ -205,7 +206,7 @@ const TEMPLATES: EventTemplate[] = [
   {
     id: "intel_leak",
     baseChance: 0.05,
-    trigger: (ctx) => [ctx.rng.pick(ctx.world.countries.filter((c) => !c.collapsed))],
+    trigger: (ctx) => [ctx.rng.pick(ctx.world.countries.filter(isPresent))],
     build: (ctx, [country]) => {
       // The world learns the truth about this country
       for (const observer of ctx.world.countries) {
@@ -238,7 +239,7 @@ const TEMPLATES: EventTemplate[] = [
     id: "terror_attack",
     baseChance: 0.25,
     trigger: (ctx) => {
-      const sources = ctx.world.countries.filter(
+      const sources = presentCountries(ctx.world).filter(
         (c) => c.insurgencyLevel === "REBELLION" || c.insurgencyLevel === "GUERILLA",
       );
       return sources.length ? [ctx.rng.pick(sources)] : null;
@@ -264,7 +265,7 @@ const TEMPLATES: EventTemplate[] = [
     baseChance: 0.06,
     trigger: (ctx) => {
       if (ctx.world.globalTension < 50) return null;
-      const greatPowers = ctx.world.countries.filter(
+      const greatPowers = presentCountries(ctx.world).filter(
         (c) => c.gdp > 3e12 && (c.history.sphereOfInfluence ?? []).length > 0,
       );
       if (greatPowers.length < 2) return null;
@@ -293,7 +294,9 @@ const TEMPLATES: EventTemplate[] = [
     id: "financial_crisis",
     baseChance: 0.02,
     trigger: (ctx) => {
-      const vulnerable = ctx.world.countries.filter((c) => c.debtGdpRatio > 110 && c.gdp > 1e12);
+      const vulnerable = presentCountries(ctx.world).filter(
+        (c) => c.debtGdpRatio > 110 && c.gdp > 1e12,
+      );
       return vulnerable.length ? [ctx.rng.pick(vulnerable)] : null;
     },
     build: (ctx, [epicenter]) => {
@@ -305,8 +308,8 @@ const TEMPLATES: EventTemplate[] = [
         id: eid(ctx.world, "fincrisis"),
         type: "ECONOMY",
         title: `Financial crisis erupts in ${epicenter.name}`,
-        description: `A banking collapse in ${epicenter.name} is cascading through global markets. Credit is freezing worldwide; every finance ministry is in emergency session. Economists whisper comparisons to 2008.`,
-        affectedCountries: ctx.world.countries.map((c) => c.id),
+        description: `A banking collapse in ${epicenter.name} is cascading through global markets. Credit is freezing worldwide; every finance ministry is in emergency session. Economists whisper comparisons to ${worldYear(ctx.world) > 2008 ? "2008" : "1929"}.`,
+        affectedCountries: presentCountries(ctx.world).map((c) => c.id),
         turn: ctx.world.turn,
         severity: "CRITICAL",
       };
@@ -318,7 +321,7 @@ const TEMPLATES: EventTemplate[] = [
     id: "missile_test",
     baseChance: 0.18,
     trigger: (ctx) => {
-      const provocateurs = ctx.world.countries.filter(
+      const provocateurs = presentCountries(ctx.world).filter(
         (c) =>
           // The player's own launches are the player's call, never a scripted event
           c.id !== ctx.world.playerCountryId &&
@@ -332,7 +335,7 @@ const TEMPLATES: EventTemplate[] = [
       ctx.world.globalTension = Math.min(100, ctx.world.globalTension + 4);
       const neighbors = (country.history.historicalRivals ?? [])
         .map((id) => ctx.world.countries.find((c) => c.id === id))
-        .filter((c): c is CountryState => !!c);
+        .filter(isPresent);
       for (const n of neighbors) {
         n.relations[country.id] = Math.max(-100, (n.relations[country.id] ?? 0) - 4);
       }
@@ -384,7 +387,7 @@ function julySummit(world: WorldState, _rng: SeededRandom): GameEvent | null {
       liftedEmbargoes.length > 0
         ? `World leaders gathered for the annual Global Summit. After heated debate, the arms embargo on ${liftedEmbargoes.join(", ")} was lifted. Communiqués preach restraint; corridors buzz with deal-making.`
         : `World leaders gathered for the annual Global Summit. Much was said about peace and stability; tensions ease, at least on paper.`,
-    affectedCountries: world.countries.map((c) => c.id),
+    affectedCountries: presentCountries(world).map((c) => c.id),
     turn: world.turn,
     severity: "NOTABLE",
   };
