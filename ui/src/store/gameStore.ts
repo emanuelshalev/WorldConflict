@@ -167,6 +167,8 @@ export interface ObjectiveCondition {
   stat?: 'approval' | 'stability' | 'legitimacy';
   min?: number;
   maxStatus?: 'LATENT' | 'DEVELOPING' | 'TESTED' | 'ARMED';
+  /** Short goal-chip label (authored, optional). */
+  short?: string;
 }
 
 export interface Objective {
@@ -178,11 +180,85 @@ export interface Objective {
   debrief: string;
 }
 
+/** Mirrors src/core/objectives.ts: the goal line fields come with every payload. */
+export type ObjectiveState = 'on_track' | 'close' | 'off_track' | 'failed';
+export type ObjectiveUnit = '%' | 'front' | 'score' | 'view';
+
+export interface ObjectiveHelp {
+  kind: 'crisis' | 'meeting' | 'order';
+  id?: string;
+  optionId?: string;
+  label: string;
+  action?: { type: string; targetCountryId?: string; value?: number; params?: Record<string, unknown> };
+}
+
 export interface ConditionStatus {
   label: string;
   met: boolean;
   failed: boolean;
   bonus: boolean;
+  short?: string;
+  now?: number;
+  need?: number;
+  unit?: ObjectiveUnit;
+  /** Change over last month. */
+  trend?: number;
+  state?: ObjectiveState;
+  helps?: ObjectiveHelp[];
+  /** This month's step objective. */
+  step?: boolean;
+}
+
+/** Mirrors src/core/missionImpact.ts Impact: which objectives an option or order moves. */
+export interface Impact {
+  helps: string[];
+  hurts: string[];
+  breaks: string[];
+  bonusHelps: string[];
+  bonusHurts: string[];
+  score: number;
+  links: Array<{ index: number; effect: 'helps' | 'hurts' | 'breaks'; bonus: boolean }>;
+}
+
+/** Mirrors src/core/advisors.ts Suggestion / Advice. */
+export interface AdviceSuggestion {
+  who: string;
+  label: string;
+  why: string;
+  action: { type: string; label: string; targetCountryId?: string; value?: number; params?: Record<string, unknown> };
+}
+
+export interface Advice {
+  suggestions: AdviceSuggestion[];
+  /** decisionId → optionId: the cabinet's consensus (may hurt the mission on STATESMAN/STRONGMAN). */
+  cabinetPicks: Record<string, string>;
+  /** decisionId → optionId: the best option for the mission. */
+  missionPicks: Record<string, string>;
+  /** meetingId → optionId: what the staff answer in person (within the slots). */
+  meetingPicks: Record<string, string>;
+  /** Meetings that go to a deputy on Approve all. */
+  deputies: string[];
+  /** The orders the staff queue on their own (variety rules applied, safe, affordable). */
+  staffOrders: Array<AdviceSuggestion & { successChance: number | null }>;
+}
+
+export interface ScoreTerm {
+  label: string;
+  points: number;
+}
+export interface ScorePart {
+  before: number;
+  after: number;
+  /** Where this part is heading (target x 0.9); the terms sum to it. */
+  target: number;
+  terms: ScoreTerm[];
+}
+export interface ScoreMove {
+  before: number;
+  after: number;
+  /** The total if nothing changes. */
+  heading: number;
+  components: Record<'economic' | 'security' | 'approval' | 'prestige', ScorePart>;
 }
 
 export interface TurnReport {
@@ -197,6 +273,10 @@ export interface TurnReport {
     facts?: ReportFact[];
     reaction?: Reaction;
     watch?: string;
+    /** Times this order ran in the last 6 months (when more than once). */
+    again?: number;
+    /** Same order, same result as last month. */
+    repeat?: boolean;
   }>;
   decisions: Array<{
     title: string;
@@ -211,6 +291,7 @@ export interface TurnReport {
     facts?: ReportFact[];
     reaction?: Reaction;
     watch?: string;
+    repeat?: boolean;
   }>;
   deltas: Record<string, { before: number; after: number }>;
   causes: string[];
@@ -221,6 +302,21 @@ export interface TurnReport {
   hot?: Array<{ id: string; name: string; metric: string; before: number; after: number; phase: string }>;
   tension?: { before: number; after: number };
   highlight?: { ref: 'decision' | 'order' | 'war'; index: number };
+  /** Why the score moved (scoring.ts scoreBreakdown). */
+  score?: ScoreMove;
+  /** Movement not caused by the month's choices, per stat (approval, stability, legitimacy). */
+  drift?: Record<string, number>;
+  /** Delayed outcomes set up this month (due = turn number). */
+  followUps?: Array<{ title: string; due: number; templateId?: string }>;
+  /** Delayed outcomes that came due this month: the decision that set them up and the news. */
+  followUpsResolved?: Array<{ title: string; headline: string; templateId: string }>;
+  /** Index into objectiveStatus of the step objective of the month just played. */
+  stepObjective?: number;
+  /** Each objective's value at the start of the month (null: no number). */
+  missionBefore?: Array<number | null>;
+  momentum?: boolean;
+  /** Causes that also moved last month ("Still: ..."). */
+  causesRepeated?: string[];
 }
 
 export interface ReportFact {
@@ -443,6 +539,15 @@ export interface GameState {
   setScreen: (screen: Screen) => void;
   guestId: string;
   objectiveStatus: ConditionStatus[];
+  /** The month's advice from the server (advisors.ts); null before the first payload. */
+  advice: Advice | null;
+  /** Mission impact of every option on the desk: decision or meeting id → option id → impact. */
+  missionImpact: Record<string, Record<string, Impact>>;
+  /** Mission impact of each suggested order, by suggestion label. */
+  orderImpact: Record<string, Impact>;
+  /** The desk layout: Focus view or the full desk (remembered per browser). */
+  deskView: 'focus' | 'full';
+  setDeskView: (view: 'focus' | 'full') => void;
   aiTotalUsage: UsageTotals | null;
   aiTurnUsage: UsageTotals | null;
   aiNotice: string | null;
@@ -689,6 +794,24 @@ export const useGameStore = create<GameState>((set) => ({
   setScreen: (screen) => set({ screen }),
   guestId: loadGuestId(),
   objectiveStatus: [],
+  advice: null,
+  missionImpact: {},
+  orderImpact: {},
+  deskView: (() => {
+    try {
+      return localStorage.getItem('worldconflict.deskView') === 'full' ? 'full' : 'focus';
+    } catch {
+      return 'focus';
+    }
+  })(),
+  setDeskView: (view) => {
+    try {
+      localStorage.setItem('worldconflict.deskView', view);
+    } catch {
+      /* storage unavailable */
+    }
+    set({ deskView: view });
+  },
   aiTotalUsage: null,
   aiTurnUsage: null,
   aiNotice: null,
@@ -782,6 +905,9 @@ export const useGameStore = create<GameState>((set) => ({
   applyServerPayload: (data, saveId) =>
     set({
       objectiveStatus: (data.objectiveStatus as ConditionStatus[]) ?? [],
+      advice: (data.advice as Advice) ?? null,
+      missionImpact: (data.missionImpact as Record<string, Record<string, Impact>>) ?? {},
+      orderImpact: (data.orderImpact as Record<string, Impact>) ?? {},
       worldState: data.worldState as WorldState,
       playerView: (data.playerView as PlayerViewCountry[]) ?? [],
       pendingDecisions: (data.pendingDecisions as PendingDecision[]) ?? [],
@@ -825,6 +951,9 @@ export const useGameStore = create<GameState>((set) => ({
       screen: 'title',
       showChronicle: false,
       objectiveStatus: [],
+      advice: null,
+      missionImpact: {},
+      orderImpact: {},
       aiTotalUsage: null,
       aiTurnUsage: null,
       aiNotice: null,

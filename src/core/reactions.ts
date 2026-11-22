@@ -110,7 +110,10 @@ const STAFF: Record<Tone, string[]> = {
   ],
   cold: ["Your staff carry it out, but the grumbling reaches the press by evening."],
   angry: ["Two ministers threaten to resign over the decision."],
-  neutral: ["Noted and filed. The machinery of government turns."],
+  neutral: [
+    "The cabinet secretary circulates the decision; departments report back next month.",
+    "Your ministers take the decision without a fight. Nobody expects it to make news.",
+  ],
 };
 
 /** Crisis voices, by the dominant measured effect. */
@@ -331,19 +334,7 @@ export function outcomeHeadline(
     ? `${ctx.them.leader.title} ${surnameOf(ctx.them.leader.name)}`
     : (ctx.speaker ?? "");
   const me = surnameOf(ctx.player.leader.name);
-  if (kind === "CALL") {
-    const verbs: Record<Tone, string[]> = {
-      warm: [
-        "takes the call, and keeps the door ajar",
-        "ends the call on warmer terms",
-        "agrees to keep talking",
-      ],
-      cold: ["gives nothing away on the phone", "ends a cold call quickly"],
-      angry: ["is left holding a dead line", "slams the phone down"],
-      neutral: ["listens, and promises nothing"],
-    };
-    return `${L} ${pick(verbs[tone], seed)}`;
-  }
+  if (kind === "CALL") return `${L} ${pick(CALL_VERBS[tone], seed)}`;
   if (kind === "VISIT")
     return tone === "warm"
       ? `${L}'s visit ends with a joint statement`
@@ -357,14 +348,123 @@ export function outcomeHeadline(
         ? `${me} gets through the interview`
         : `${me} stumbles on prime time`;
   if (kind === "STAFF") return `${ctx.speaker ?? "Cabinet"}: ${ctx.choice.replace(/\.$/, "")}`;
-  // Option labels are not always verb phrases ("Only by referendum"): quote the choice
-  return `${me} on ${ctx.title.replace(/[?:.]$/, "")}: ${ctx.choice.replace(/\.$/, "")}`;
+  // Crisis titles are not noun phrases ("After the Riyadh airport strike", "How tight a
+  // squeeze?") and option labels are not always verb phrases ("Only by referendum"), so the
+  // headline never splices the title into a sentence: the leader's answer, then the choice
+  const lead = pick([`${possessive(me)} answer`, `${me} chooses`, `${me} decides`], seed >>> 3);
+  return `${lead}: ${ctx.choice.replace(/\.$/, "")}`;
+}
+
+/**
+ * The front-page lede for a crisis decision. The title is quoted as the crisis's name, so any
+ * title (a noun, a question, a sentence) reads naturally: In the crisis "After the Riyadh airport
+ * strike", the crown prince decided: Back channel via Muscat.
+ */
+export function crisisLede(who: string, title: string, choice: string): string {
+  const name = title.trim().replace(/[.:;,]+$/, "");
+  return `In the crisis "${name}", ${who} decided: ${choice.replace(/\.$/, "").replace(/ \(no decision taken\)$/, " (by default)")}.`;
+}
+
+// ----------------------------------------------------------------------------
+// Anti-repetition (design-month R3): no two cards in one month share a reaction line or a call
+// headline, and the same speaker does not get the same line within six months. Variants are
+// swapped within the same table and tone, so the tone still follows the measured change.
+// ----------------------------------------------------------------------------
+
+const CALL_VERBS: Record<Tone, string[]> = {
+  warm: [
+    "takes the call, and keeps the door ajar",
+    "ends the call on warmer terms",
+    "agrees to keep talking",
+  ],
+  cold: ["gives nothing away on the phone", "ends a cold call quickly"],
+  angry: ["is left holding a dead line", "slams the phone down"],
+  neutral: ["listens, and promises nothing"],
+};
+
+const LINE_TABLES: string[][] = [
+  ...[CALL, VISIT, PRESS, STAFF, ORDER].flatMap((t) => Object.values(t)),
+  ...Object.values(VOICE).flatMap((v) => Object.values(v.lines)),
+];
+const RECENT_LINES = 40;
+const SPEAKER_WINDOW = 6;
+
+type Card = {
+  reaction?: Reaction;
+  headline?: string;
+  kind?: string;
+  withCountry?: string;
+  target?: string;
+};
+
+/** Swaps repeated reaction lines and call headlines for unused variants, and remembers them. */
+export function freshLines(
+  world: WorldState,
+  report: {
+    decisions: Card[];
+    orders: Card[];
+  },
+): void {
+  const player = world.countries.find((c) => c.id === world.playerCountryId);
+  if (!player) return;
+  const d = world.director;
+  d.recentLines ??= [];
+  const month = new Set<number>();
+  const headlines = new Set<string>();
+  const stale = (h: number, who: string) =>
+    month.has(h) ||
+    d.recentLines.some((r) => r.h === h && r.who === who && world.turn - r.turn <= SPEAKER_WINDOW);
+  for (const card of [...report.decisions, ...report.orders]) {
+    const r = card.reaction;
+    const id = card.withCountry ?? card.target;
+    const ctx: LineCtx = { player, them: id ? findCountry(world, id) : undefined };
+    if (r) {
+      let found: { list: string[]; i: number } | undefined;
+      for (const list of LINE_TABLES) {
+        const i = list.findIndex((t) => fill(t, ctx) === r.line);
+        if (i >= 0) {
+          found = { list, i };
+          break;
+        }
+      }
+      if (found) {
+        const { list, i } = found;
+        let chosen = i;
+        for (let k = 0; k < list.length; k++) {
+          const j = (i + k) % list.length;
+          if (!stale(hashParts(list[j]), r.who)) {
+            chosen = j;
+            break;
+          }
+        }
+        if (chosen !== i) r.line = fill(list[chosen], ctx);
+        const h = hashParts(list[chosen]);
+        month.add(h);
+        d.recentLines.push({ h, who: r.who, turn: world.turn });
+      }
+    }
+    // Call headlines: "<leader> <verb>": never the same verb twice in a month
+    if (card.kind === "CALL" && card.headline) {
+      for (const verbs of Object.values(CALL_VERBS)) {
+        const v = verbs.find((x) => card.headline?.endsWith(` ${x}`));
+        if (!v) continue;
+        const lead = card.headline.slice(0, -v.length - 1);
+        const free = [v, ...verbs.filter((x) => x !== v)].find((x) => !headlines.has(x)) ?? v;
+        headlines.add(free);
+        card.headline = `${lead} ${free}`;
+        break;
+      }
+    }
+  }
+  if (d.recentLines.length > RECENT_LINES)
+    d.recentLines.splice(0, d.recentLines.length - RECENT_LINES);
 }
 
 /** Only what the engine knows will happen next. */
 export function watchLine(opts: {
   followUpDelay?: number;
   deputyCaller?: string;
+  deputyAtWar?: boolean; // the caller is at war with us: a big swing can bring them back sooner
   bandBefore?: Band;
   bandAfter?: Band;
   country?: string;
@@ -381,7 +481,10 @@ export function watchLine(opts: {
     };
     return `${opts.country} now counts as ${word[opts.bandAfter]}.`;
   }
-  if (opts.deputyCaller) return `${opts.deputyCaller} may not call again for three months.`;
+  if (opts.deputyCaller)
+    return opts.deputyAtWar
+      ? `${opts.deputyCaller} may not call again for three months, unless the front or their view of you moves sharply.`
+      : `${opts.deputyCaller} may not call again for three months.`;
   if (opts.staffHold)
     return "The issue is not settled: your staff may raise it again in two months.";
   return undefined;

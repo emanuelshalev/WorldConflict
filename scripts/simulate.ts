@@ -14,7 +14,14 @@
  *   loop: the "reform / address every month" loop playtesters found, best crisis options
  *   hawk: mobilizes then attacks the main rival
  *   ai: the player's country is driven by PersonalityAI
+ *   staff: autopilot ("Approve all" + Execute): cabinet picks on crises, the staff's meeting
+ *     answers within the slots, the staff's own queued orders (src/core/advisors.ts)
+ *   staffswitch: staff, but every cabinet pick that differs from the mission pick is switched
+ *     (a player who reads the red mission tags)
+ *
+ *   --difficulty ANALYST|STATESMAN|STRONGMAN (default STATESMAN)
  */
+import { buildAdvice } from "../src/core/advisors.js";
 import { generateDeterministicIntents, PersonalityAI } from "../src/agents/fallback.js";
 import { actionCostPC } from "../src/core/costs.js";
 import { createDataLoader } from "../src/core/data-loader.js";
@@ -24,6 +31,7 @@ import type {
   Action,
   CountryState,
   DecisionOption,
+  Difficulty,
   GameMode,
   PendingDecision,
   WorldState,
@@ -42,6 +50,21 @@ const policies = (args.get("policy") ?? "smart").split(",");
 const verbose = args.get("verbose") === "1";
 const json = args.get("json") === "1";
 const why = args.get("why") === "1"; // count which objective conditions fail
+const difficulty = (args.get("difficulty") ?? "STATESMAN") as Difficulty;
+
+/** The staff autopilot's month: crisis picks, meeting answers and orders (design-month 5.4). */
+function staffMonth(world: WorldState, switchToMission: boolean) {
+  const advice = buildAdvice(world);
+  const decisions = [
+    ...world.pendingDecisions.map((d) => ({
+      decisionId: d.id,
+      optionId: switchToMission ? advice.missionPicks[d.id] : advice.cabinetPicks[d.id],
+    })),
+    ...Object.entries(advice.meetingPicks).map(([decisionId, optionId]) => ({ decisionId, optionId })),
+  ];
+  const orders: Action[] = advice.staffOrders.map(({ action: { label: _l, ...a } }) => a);
+  return { decisions, orders };
+}
 
 // ----------------------------------------------------------------------------
 // Player policies
@@ -261,6 +284,7 @@ for (const policy of policies) {
         seed,
         mode,
         flashpointId,
+        difficulty,
       });
       const engine = new TurnEngine();
       const m: GameMetrics = {
@@ -281,11 +305,12 @@ for (const policy of policies) {
       let lastWarning = -99;
       for (let t = 0; t < 130 && !world.gameOver; t++) {
         // Players who answer crises also take their meetings (the engine caps them at MEETING_SLOTS)
-        const decisions = decide(policy, [...world.pendingDecisions, ...(process.env.NO_MEET ? [] : world.agenda.filter((m) => !process.env.MEET_KIND || m.kind === process.env.MEET_KIND).slice(0, 3))], rng, world);
+        const staff = policy.startsWith("staff") ? staffMonth(world, policy === "staffswitch") : null;
+        const decisions = staff?.decisions ?? decide(policy, [...world.pendingDecisions, ...(process.env.NO_MEET ? [] : world.agenda.filter((m) => !process.env.MEET_KIND || m.kind === process.env.MEET_KIND).slice(0, 3))], rng, world);
         if (process.env.MEET_LOG) for (const d of decisions) { const m = world.agenda.find((x) => x.id === d.decisionId); if (m) console.error(`T${world.turn} ${m.title} -> ${m.options.find((o) => o.id === d.optionId)?.label} ${JSON.stringify(m.options.find((o) => o.id === d.optionId)?.effects)}`); }
         const result = engine.executeTurn(
           world,
-          playerOrders(policy, world, rng),
+          staff?.orders ?? playerOrders(policy, world, rng),
           generateDeterministicIntents(world),
           decisions,
         );

@@ -49,10 +49,11 @@ function callers(world: WorldState, player: CountryState, rng: SeededRandom): Co
       const war = player.atWarWith.includes(c.id) ? 100 : 0;
       const ally = player.alliances.includes(c.id) ? 25 : 0;
       const big = GREAT_POWERS.has(c.id) ? 18 : 0;
-      // Nobody calls every month: a leader who called in the last three months waits
+      // Nobody calls every month: a leader who called in the last three months waits, even an
+      // enemy at war, unless the war or their view of us has moved a lot since that call
       const recent =
         world.turn - (world.director.lastUsed[`meet:call:${c.id}`] ?? -99) <= 3
-          ? war
+          ? war && callNews(world, player, c)
             ? 60
             : 200
           : 0;
@@ -64,6 +65,39 @@ function callers(world: WorldState, player: CountryState, rng: SeededRandom): Co
   return picked;
 }
 
+/** Our front against them, from our side (undefined when not at war). */
+function frontWith(
+  world: WorldState,
+  player: CountryState,
+  other: CountryState,
+): number | undefined {
+  const war = world.wars.find(
+    (w) =>
+      (w.attackerId === player.id && w.defenderId === other.id) ||
+      (w.defenderId === player.id && w.attackerId === other.id),
+  );
+  if (!war) return undefined;
+  return war.attackerId === player.id ? war.frontline : 100 - war.frontline;
+}
+
+/**
+ * What changed since this leader last called: the front moved 8+ or their view of us 15+
+ * (design-month R2). Undefined when they have not called before or nothing big moved.
+ */
+function callNews(
+  world: WorldState,
+  player: CountryState,
+  other: CountryState,
+): "front" | "view" | undefined {
+  const last = world.director.calls?.[other.id];
+  if (!last) return undefined;
+  const front = frontWith(world, player, other);
+  if (front !== undefined && last.front !== undefined && Math.abs(front - last.front) >= 8)
+    return "front";
+  if (Math.abs((other.relations[player.id] ?? 0) - last.rel) >= 15) return "view";
+  return undefined;
+}
+
 function callMeeting(
   world: WorldState,
   player: CountryState,
@@ -71,6 +105,16 @@ function callMeeting(
   n: number,
   rng: SeededRandom,
 ): Meeting {
+  const recentCall =
+    world.turn - (world.director.calls?.[other.id]?.turn ?? -99) <= 3
+      ? callNews(world, player, other)
+      : undefined;
+  world.director.calls ??= {};
+  world.director.calls[other.id] = {
+    turn: world.turn,
+    front: frontWith(world, player, other),
+    rel: other.relations[player.id] ?? 0,
+  };
   const rel = player.relations[other.id] ?? 0;
   const who = leaderOf(other);
   const id = `mtg_${world.turn}_${n}`;
@@ -96,6 +140,41 @@ function callMeeting(
     speaker: who,
   };
 
+  if (atWar && recentCall) {
+    // A second call within three months: it opens on what has changed since the first
+    const front = frontWith(world, player, other) ?? 50;
+    const winning = front >= 50;
+    return {
+      ...base,
+      title: `Secure line again: ${who}`,
+      situation:
+        recentCall === "front"
+          ? winning
+            ? `"Your offer of talks still stands? The front has moved since, and not our way. Let us talk terms while there is something to talk about."`
+            : `"The front has moved since we last spoke. You are in no position to refuse a conversation now."`
+          : `"A lot has been said about us in your capital since our last call. Before the guns decide, let us see if that changes anything."`,
+      options: [
+        opt(
+          "talks",
+          "Renew the offer of talks",
+          winning
+            ? "Talk while you hold the advantage. Hawks will say you should press on."
+            : "Talk before the front moves further. Hawks will call it weakness.",
+          { [r]: 4, approval: -0.5 },
+          -2,
+        ),
+        opt(
+          "firm",
+          winning ? "Press the advantage: withdrawal first" : "No talks under fire",
+          "Talks only on your terms.",
+          { [r]: -4, approval: 0.5 },
+          1,
+        ),
+        opt("hangup", "Hang up", "Let the guns do the talking.", { [r]: -6, approval: 0.5 }, 1),
+        deputy,
+      ],
+    };
+  }
   if (atWar) {
     return {
       ...base,
