@@ -59,6 +59,23 @@ export interface Advice {
   deputies: string[];
   /** The orders the staff queue on their own this month, in order. */
   staffOrders: StaffOrder[];
+  /**
+   * What the desk may say about the mission pick per crisis: a clean "Best for your mission", an
+   * honest "Best trade-off: helps X, costs Y" or "Least harm", and whether to offer a switch away
+   * from the cabinet pick. Absent when no option is better for the mission than another.
+   */
+  missionNotes: Record<string, MissionNote>;
+}
+
+export interface MissionNote {
+  optionId: string;
+  kind: "best" | "tradeoff" | "least";
+  /** The tag on the card: "Best for your mission", "Best trade-off: helps Front, costs Approval". */
+  text: string;
+  helps: string[];
+  costs: string[];
+  /** Offer "Switch to <option>" only when the cabinet pick hurts a goal the mission pick does not. */
+  switchFrom: { cabinetId: string; goal: string; breaks: boolean } | null;
 }
 
 const STAT_NAMES: Record<string, string> = {
@@ -67,6 +84,8 @@ const STAT_NAMES: Record<string, string> = {
   legitimacy: "Legitimacy",
 };
 const INSURGENCY_ORDER = ["NONE", "UNREST", "REBELLION", "GUERILLA"];
+/** At this mobilization the staff stop suggesting another call-up (it caps at 100 and costs stability). */
+const MOBILIZE_CAP = 85;
 
 /** Orders the staff never queue on their own. */
 export const DANGEROUS = new Set([
@@ -321,6 +340,8 @@ export function computeSuggestions(world: WorldState, limit = 5): Suggestion[] {
         [w.attackerId, w.defenderId].includes(player.id),
     );
     const mine = war ? (war.attackerId === player.id ? war.frontline : 100 - war.frontline) : 50;
+    // Already (nearly) fully mobilized: another call-up adds nothing and still costs stability
+    if (mine >= 50 && player.mobilizationLevel >= MOBILIZE_CAP) continue;
     out.push(
       mine < 50
         ? {
@@ -532,7 +553,20 @@ export function cabinetPick(
   )[0];
 }
 
-/** The mission pick: the affordable option with the best mission score; ties by net effect. */
+/** Net effect on the primary goals only: +3 per goal helped, -4 per goal hurt, -20 per goal broken. */
+export function primaryScore(impact: Impact): number {
+  return 3 * impact.helps.length - 4 * impact.hurts.length - 20 * impact.breaks.length;
+}
+
+/** Net effect on the bonus goals (the tie-break after the primary goals). */
+function bonusScore(impact: Impact): number {
+  return impact.score - primaryScore(impact);
+}
+
+/**
+ * The mission pick: the affordable option with the best net effect on the primary goals, then on
+ * the bonus goals; ties by net effect, then the cabinet's own pick.
+ */
 export function missionPick(
   world: WorldState,
   d: PendingDecision,
@@ -541,13 +575,59 @@ export function missionPick(
 ): DecisionOption {
   const pool = affordablePool(d, pcAvailable);
   const cabinet = cabinetPick(world, d, pcAvailable, ctx);
-  const score = new Map(pool.map((o) => [o.id, optionImpact(world, o, ctx).score]));
+  const impact = new Map(pool.map((o) => [o.id, optionImpact(world, o, ctx)]));
+  const p = (o: DecisionOption) => primaryScore(impact.get(o.id) as Impact);
+  const b = (o: DecisionOption) => bonusScore(impact.get(o.id) as Impact);
   return [...pool].sort(
-    (a, b) =>
-      (score.get(b.id) ?? 0) - (score.get(a.id) ?? 0) ||
-      netScore(b) - netScore(a) ||
-      Number(b.id === cabinet.id) - Number(a.id === cabinet.id),
+    (x, y) =>
+      p(y) - p(x) ||
+      b(y) - b(x) ||
+      netScore(y) - netScore(x) ||
+      Number(y.id === cabinet.id) - Number(x.id === cabinet.id),
   )[0];
+}
+
+const listWords = (xs: string[]) =>
+  xs.length <= 1 ? (xs[0] ?? "") : `${xs.slice(0, -1).join(", ")} and ${xs.at(-1)}`;
+
+/**
+ * What the desk may honestly say about the mission pick. "Best for your mission" only when the
+ * pick hurts no primary goal; a pick that helps one goal and costs another is a named trade-off;
+ * one that only costs less than the rest is the least harm. No note when every option is equal on
+ * the mission. The switch offer names a goal the cabinet pick hurts and the mission pick does not.
+ */
+export function missionNote(
+  world: WorldState,
+  d: PendingDecision,
+  pcAvailable = 99,
+  ctx: ImpactContext | null = impactContext(world),
+  cabinet: DecisionOption = cabinetPick(world, d, pcAvailable, ctx),
+): MissionNote | null {
+  const pool = affordablePool(d, pcAvailable);
+  const pick = missionPick(world, d, pcAvailable, ctx);
+  const impactOf = (o: DecisionOption) => optionImpact(world, o, ctx);
+  const mine = impactOf(pick);
+  const scores = pool.map((o) => primaryScore(impactOf(o)) * 100 + bonusScore(impactOf(o)));
+  const best = primaryScore(mine) * 100 + bonusScore(mine);
+  if (scores.every((s) => s === best)) return null; // nothing to choose between on the mission
+  const costs = [...mine.breaks, ...mine.hurts];
+  const helps = mine.helps.length ? mine.helps : mine.bonusHelps;
+  const kind: MissionNote["kind"] = costs.length ? (helps.length ? "tradeoff" : "least") : "best";
+  const text =
+    kind === "best"
+      ? "Best for your mission"
+      : kind === "tradeoff"
+        ? `Best trade-off: helps ${listWords(helps)}, costs ${listWords(costs)}`
+        : `Least harm to your mission (costs ${listWords(costs)})`;
+  let switchFrom: MissionNote["switchFrom"] = null;
+  if (cabinet.id !== pick.id) {
+    const cab = impactOf(cabinet);
+    const pickHarms = new Set(costs);
+    const goal = [...cab.breaks, ...cab.hurts].find((g) => !pickHarms.has(g));
+    if (goal && primaryScore(mine) > primaryScore(cab))
+      switchFrom = { cabinetId: cabinet.id, goal, breaks: cab.breaks.includes(goal) };
+  }
+  return { optionId: pick.id, kind, text, helps, costs, switchFrom };
 }
 
 // ----------------------------------------------------------------------------
@@ -683,11 +763,14 @@ export function buildAdvice(world: WorldState): Advice {
   const suggestions = computeSuggestions(world);
   const cabinetPicks: Record<string, string> = {};
   const missionPicks: Record<string, string> = {};
+  const missionNotes: Record<string, MissionNote> = {};
   let pc = world.politicalCapital;
   let pcMission = pc;
   for (const d of world.pendingDecisions) {
     const c = cabinetPick(world, d, pc, ctx);
     cabinetPicks[d.id] = c.id;
+    const note = missionNote(world, d, pcMission, ctx, c);
+    if (note) missionNotes[d.id] = note;
     pc += c.effects.pc ?? 0;
     const m = missionPick(world, d, pcMission, ctx);
     missionPicks[d.id] = m.id;
@@ -703,6 +786,7 @@ export function buildAdvice(world: WorldState): Advice {
     meetingPicks: meetings.picks,
     deputies: meetings.deputies,
     staffOrders: orders,
+    missionNotes,
   };
 }
 

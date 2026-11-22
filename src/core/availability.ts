@@ -39,6 +39,7 @@ export type OrderBlockCode =
   | "RELATIONS_MAXED"
   | "NO_WARHEADS"
   | "PROGRAM_MAXED"
+  | "FULLY_MOBILIZED"
   | "TOO_PROTECTED"
   | "TOO_STABLE"
   | "NO_TROOPS";
@@ -239,6 +240,11 @@ export function actionRules(
         );
       break;
     }
+    case "MILITARY_MOBILIZE":
+      // Mobilization caps at 100: another call-up would only cost stability
+      if (actor.mobilizationLevel >= 100)
+        return block("FULLY_MOBILIZED", "Your forces are already fully mobilized.");
+      break;
     case "NUCLEAR_FUND_PROGRAM":
       if (actor.nuclear.status === "TESTED")
         return block("PROGRAM_MAXED", "Your nuclear program can't go further.");

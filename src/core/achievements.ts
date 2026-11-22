@@ -47,12 +47,23 @@ export const DEPOSED_REASONS = [
   "COUNTRY_COLLAPSED",
 ];
 const NUCLEAR_ORDER = ["NONE", "LATENT", "DEVELOPING", "TESTED", "ARMED"];
-const SHOTS = [
+/** Orders that fire a shot or blow something up, ordered or carried out through a crisis answer. */
+export const SHOTS = [
   "MILITARY_AIRSTRIKE",
   "DIPLOMACY_DECLARE_WAR",
   "DIPLOMACY_DECLARE_WAR:ally",
   "NUCLEAR_STRIKE",
+  "INTEL_SABOTAGE",
+  "INTEL_ASSASSINATE",
+  "INTEL_SUPPORT_REBELS",
+  "INTEL_COUP",
 ];
+/** A crisis or meeting answer that reads as an attack ("Reject it and strike", "Burn their refineries"). */
+export const ATTACK_CHOICE =
+  /\b(strikes?|attack|bomb|invade|raid|shell|burn|hit|sink|fire on|special forces|commandos?)\b/i;
+/** Answers that name an attack only to rule it out ("More escorts, no strikes"). */
+const NO_ATTACK_CHOICE =
+  /\b(no|not|without|hold off|refuse to)\s+(\w+\s+)?(strikes?|attack|bomb|invade|raid)/i;
 
 // ---------------------------------------------------------------------------------------
 // Helpers
@@ -77,6 +88,17 @@ const endedNormally = (c: AchievementContext) => inOffice(c) && lastTurn(c) >= c
 const playerWarEnds = (c: AchievementContext) =>
   c.chronicle.moments.filter((m) => m.kind === "WAR_END").sort((a, b) => a.turn - b.turn);
 const crises = (c: AchievementContext) => c.chronicle.moments.filter((m) => m.kind === "CRISIS");
+
+/** Did the player fire a shot this session: an attack order, a war, or an attacking answer? */
+export function firedAShot(c: AchievementContext): boolean {
+  if (SHOTS.some((k) => record(c, `${k}:tried`) > 0 || record(c, k) > 0)) return true;
+  // Fighting a war (even one you did not start) means your forces were firing
+  if (series(c).some((s) => s.playerWars > 0)) return true;
+  if (c.chronicle.moments.some((m) => m.kind === "WAR_START" || m.kind === "WAR_END")) return true;
+  return crises(c).some(
+    (m) => !!m.choice && ATTACK_CHOICE.test(m.choice) && !NO_ATTACK_CHOICE.test(m.choice),
+  );
+}
 
 /** Start of the final unbroken run of samples where `ok` holds, if it holds at the end. */
 function heldSince(rows: ChronicleSample[], ok: (s: ChronicleSample) => boolean): number | null {
@@ -253,15 +275,12 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   {
     id: "no_shot_fired",
     name: "Never Fired a Shot",
-    rule: "No airstrike, invasion or attack order all session",
-    hint: "Get through a whole session without an attack order",
+    rule: "No war, strike, sabotage or attacking crisis answer all session",
+    hint: "Get through a whole session without a war, a strike or a sabotage",
     infamy: false,
     modes: ALL,
     expected: "UNCOMMON",
-    check: (c) =>
-      longEnough(c) && SHOTS.every((k) => record(c, `${k}:tried`) === 0 && record(c, k) === 0)
-        ? lastTurn(c)
-        : null,
+    check: (c) => (longEnough(c) && !firedAShot(c) ? lastTurn(c) : null),
   },
   {
     id: "comeback_kid",

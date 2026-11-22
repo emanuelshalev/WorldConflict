@@ -1,6 +1,6 @@
 {
   "seatKey": "2026:TERM:DEU",
-  "fingerprint": "88250297595b339d",
+  "fingerprint": "d9b7249aac2514d7",
   "generatedAt": "2026-11-22",
   "games": 36,
   "difficulty": "STATESMAN",
@@ -42,7 +42,7 @@
       "max": 629,
       "n": 36,
       "q": [
-        125,
+        128,
         153,
         154,
         155,
@@ -53,7 +53,7 @@
         161,
         163,
         561,
-        562,
+        564,
         565,
         566,
         569,

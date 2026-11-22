@@ -10,7 +10,7 @@ import {
 } from "./achievements.js";
 import { emptyChronicle } from "./chronicle.js";
 import type { RealityData, SignatureData } from "./data-loader.js";
-import { stayedInPower } from "./objectives.js";
+import { conditionMeasure, evaluateCondition, shortLabel, stayedInPower } from "./objectives.js";
 import { judgementLine, type PressQuote, pressQuotes, verdictLabel } from "./reveal-text.js";
 import { classifyLeadership } from "./scoring.js";
 import { militaryStrength } from "./systems/military.js";
@@ -135,6 +135,15 @@ export interface DeclassifiedCard {
   note: string;
 }
 
+export interface MissedGoal {
+  label: string;
+  short: string;
+  now: number | null;
+  need: number | null;
+  gap: number | null; // need - now, in the goal's own units (positive)
+  unit: string | null;
+}
+
 export interface TruthRow {
   topic: string;
   yours: string;
@@ -194,7 +203,11 @@ export interface RevealPayload {
     classification: string;
     justification: string;
     conditions: Array<{ label: string; met: boolean; bonus: boolean }>;
-    score: number; // final 0-200 leadership score
+    /** Primary goals missed at the end, with the gap when the goal has a number. */
+    missed: MissedGoal[];
+    /** "You missed Israel relations 61+ by 1 (60 of 61)." on a failed session; null on a win. */
+    missedLine: string | null;
+    score: number; // final 0-200 score
     par: number;
   };
   presidency: PresidencyScore;
@@ -427,7 +440,7 @@ export function presidencyScore(world: WorldState, chronicle: Chronicle): Presid
         label: "Leadership",
         value: leadership,
         max: 300,
-        detail: `Average leadership score ${Math.round(meanScore)} (x1.5)`,
+        detail: `Average score ${Math.round(meanScore)} (x1.5)`,
       },
       {
         id: "finish",
@@ -481,6 +494,7 @@ function seriesView(
   unit: string,
   higherIsBetter: boolean,
   read: (s: ChronicleSample) => number,
+  start?: number,
 ): SeriesView {
   const values = rows.map(read);
   const min = values.length ? Math.min(...values) : 0;
@@ -492,7 +506,9 @@ function seriesView(
     higherIsBetter,
     months: rows.map((s) => s.turn + 1),
     values,
-    start: values[0] ?? 0,
+    // The take-office value when the session recorded it, so the chart, the caption and the press
+    // all start where the briefing did (not after month 1)
+    start: start ?? values[0] ?? 0,
     end: values.at(-1) ?? 0,
     min,
     max,
@@ -512,7 +528,7 @@ function consequence(rows: ChronicleSample[], turn: number, fallback: string): s
     { label: "approval", a: prev.approval, b: now.approval, unit: "%" },
     { label: "stability", a: prev.stability, b: now.stability, unit: "%" },
     { label: "tension", a: prev.tension, b: now.tension, unit: "" },
-    { label: "leadership score", a: prev.score, b: now.score, unit: "" },
+    { label: "score", a: prev.score, b: now.score, unit: "" },
   ].sort((x, y) => Math.abs(y.b - y.a) - Math.abs(x.b - x.a));
   const top = moves[0];
   if (Math.abs(top.b - top.a) < 1) return fallback;
@@ -574,6 +590,79 @@ function percentileOf(score: number, q: number[]): number | null {
   return 0;
 }
 
+/** A number as the goal line shows it: whole when it is whole, else one decimal. */
+function goalNum(v: number): string {
+  const r = Math.round(v * 10) / 10;
+  return Number.isInteger(r) ? String(r) : r.toFixed(1);
+}
+
+/** Primary goals missed at the end, in objective order, with the gap for numeric ones. */
+export function missedGoals(world: WorldState): MissedGoal[] {
+  return (world.objective?.primary ?? [])
+    .filter((c) => !evaluateCondition(world, c, false).met)
+    .map((c) => {
+      const m = conditionMeasure(world, c);
+      const now = m ? Math.round(m.now * 10) / 10 : null;
+      return {
+        label: c.label,
+        short: shortLabel(c),
+        now,
+        need: m ? m.need : null,
+        gap: m && now !== null ? Math.max(0.1, Math.round((m.need - now) * 10) / 10) : null,
+        unit: m ? m.unit : null,
+      };
+    });
+}
+
+/** "You missed Israel relations 61+ by 1 (60 of 61)." The one line a failed run must answer. */
+export function missedSentence(
+  missed: MissedGoal[],
+  deposed: boolean,
+  description?: string,
+): string | null {
+  if (deposed) return description ? `Removed from office: ${description}` : "Removed from office.";
+  if (!missed.length) return null;
+  const one = (g: MissedGoal) =>
+    g.gap !== null && g.now !== null && g.need !== null
+      ? `${g.short} by ${goalNum(g.gap)}${g.unit === "%" ? " points" : ""} (${goalNum(g.now)} of ${goalNum(g.need)})`
+      : g.short;
+  const [first, ...rest] = missed;
+  return rest.length === 0
+    ? `You missed ${one(first)}.`
+    : `You missed ${one(first)}, and ${rest.length === 1 ? one(rest[0]) : `${rest.length} more goals`}.`;
+}
+
+/**
+ * The truth table's "No peace by the end" must not contradict a ceasefire the player chose: when
+ * the war went on after you offered or signed one, say so (who did not sign, or that it broke).
+ */
+function missedWarEnd(
+  world: WorldState,
+  chronicle: Chronicle,
+  cond: { kind: string; targetId?: string; otherId?: string },
+): string | null {
+  if (cond.kind !== "WAR_ENDED") return null;
+  const me = world.playerCountryId;
+  const sides = [cond.targetId, cond.otherId];
+  if (!sides.includes(me)) return null;
+  const enemy = sides.find((x) => x && x !== me) ?? "";
+  const enemyName = nameOf(world, enemy);
+  const ended =
+    chronicle.firsts[`war:${me}-${enemy}:end`] ?? chronicle.firsts[`war:${enemy}-${me}:end`];
+  if (ended !== undefined)
+    return `A ceasefire in month ${ended + 1} did not hold: the war with ${enemyName} was back on by the end.`;
+  const offer = chronicle.moments
+    .filter((m) => m.kind === "CRISIS" && !!m.choice && /ceasefire|truce|armistice/i.test(m.choice))
+    .sort((a, b) => a.turn - b.turn)
+    .at(-1);
+  const tried = world.director.record?.["DIPLOMACY_PROPOSE_CEASEFIRE:tried"] ?? 0;
+  if (offer)
+    return `You chose "${offer.choice}" in month ${offer.turn + 1}, but ${enemyName} did not sign: no peace by the end.`;
+  if (tried > 0)
+    return `You offered a ceasefire${tried > 1 ? ` ${tried} times` : ""}, but ${enemyName} did not sign: no peace by the end.`;
+  return null;
+}
+
 // ---------------------------------------------------------------------------------------
 // The reveal
 // ---------------------------------------------------------------------------------------
@@ -624,9 +713,10 @@ export function buildReveal(world: WorldState, ctx: RevealContext = {}): RevealP
           : row.yoursText.missed
         : `${h.met ? "Met" : "Missed"}: ${row.yours.label}`;
       const firstMet = (h.firstHeld ?? rows.at(-1)?.turn ?? 0) + 1;
+      const honest = h.met ? null : missedWarEnd(world, chronicle, row.yours);
       return {
         topic: row.topic,
-        yours: template
+        yours: (honest ?? template)
           .replace(/\{firstMet\}/g, String(firstMet))
           .replace(/\{lastMonth\}/g, String(world.maxTurns)),
         real: row.real,
@@ -771,14 +861,22 @@ export function buildReveal(world: WorldState, ctx: RevealContext = {}): RevealP
   timing.sort((a, b) => a.month - b.month);
 
   // ---- Perception ------------------------------------------------------------------
-  const approval = seriesView(rows, "approval", "Approval", "%", true, (s) =>
-    Math.round(s.approval),
+  const start = chronicle.start;
+  const rnd = (v: number | undefined) => (v === undefined ? undefined : Math.round(v));
+  const approval = seriesView(
+    rows,
+    "approval",
+    "Approval",
+    "%",
+    true,
+    (s) => Math.round(s.approval),
+    rnd(start?.approval),
   );
   const elections = moments
     .filter((m) => m.kind === "ELECTION")
     .map((m) => ({ turn: m.turn, month: m.turn + 1, won: m.tone === "good" }));
   const caption = rows.length
-    ? `Started at ${Math.round(chronicle.start?.approval ?? approval.start)}%, low ${approval.min}%, high ${approval.max}%, ended at ${approval.end}%`
+    ? `Started at ${approval.start}%, low ${Math.min(approval.min, approval.start)}%, high ${Math.max(approval.max, approval.start)}%, ended at ${approval.end}%`
     : "";
   const tracked = chronicle.start?.tracked ?? Object.keys(rows[0]?.relations ?? {});
   const objectiveIds = new Set(
@@ -817,7 +915,7 @@ export function buildReveal(world: WorldState, ctx: RevealContext = {}): RevealP
     : 0;
   const press = pressQuotes(world, {
     country: me?.name ?? world.playerCountryId,
-    approvalStart: chronicle.start?.approval ?? approval.start,
+    approvalStart: approval.start,
     approvalEnd: approval.end,
     growthEnd: rows.at(-1)?.realGrowth ?? 0,
     ally: allyRow
@@ -840,7 +938,7 @@ export function buildReveal(world: WorldState, ctx: RevealContext = {}): RevealP
   const judgement = judgementLine(world, {
     victory,
     deposed,
-    classification: assessment.classification,
+    classification: assessment.style,
     bestAchievement: bestSeal?.name,
   });
 
@@ -862,10 +960,27 @@ export function buildReveal(world: WorldState, ctx: RevealContext = {}): RevealP
         "%",
         true,
         (s) => Math.round(s.realGrowth * 1000) / 10,
+        start?.realGrowth === undefined ? undefined : Math.round(start.realGrowth * 1000) / 10,
       ),
-      seriesView(rows, "stability", "Stability", "%", true, (s) => Math.round(s.stability)),
-      seriesView(rows, "tension", "World tension", "", false, (s) => Math.round(s.tension)),
-      seriesView(rows, "score", "Leadership score", "", true, (s) => s.score),
+      seriesView(
+        rows,
+        "stability",
+        "Stability",
+        "%",
+        true,
+        (s) => Math.round(s.stability),
+        rnd(start?.stability),
+      ),
+      seriesView(
+        rows,
+        "tension",
+        "World tension",
+        "",
+        false,
+        (s) => Math.round(s.tension),
+        rnd(start?.tension),
+      ),
+      seriesView(rows, "score", "Score", "", true, (s) => s.score, start?.score),
     ],
     counts: {
       wars: enemies.size,
@@ -959,6 +1074,8 @@ export function buildReveal(world: WorldState, ctx: RevealContext = {}): RevealP
       : "ALGORITHMIC";
   const parts = presidency.parts.map((p) => p.value) as [number, number, number, number];
   const label = verdictLabel(world, victory, reason);
+  const missed = victory ? [] : missedGoals(world);
+  const missedLine = victory ? null : missedSentence(missed, deposed, world.gameOver?.description);
 
   return {
     version: 1,
@@ -988,6 +1105,8 @@ export function buildReveal(world: WorldState, ctx: RevealContext = {}): RevealP
       classification: assessment.classification,
       justification: assessment.justification,
       conditions: statuses,
+      missed,
+      missedLine,
       score: world.score.total,
       par: world.objective?.par ?? 100,
     },

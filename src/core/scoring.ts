@@ -1,3 +1,4 @@
+import { conditionMeasure, evaluateCondition } from "./objectives.js";
 import { effectiveGrowth } from "./systems/economy.js";
 import type { CountryState, ScoreMove, WorldState } from "./types.js";
 
@@ -184,9 +185,83 @@ export function updateScore(world: WorldState): ScoreMove | undefined {
 }
 
 export interface LeadershipAssessment {
+  /** The title on the end screen and the share card: always fits the outcome. */
   classification: string;
   justification: string;
   grade: string;
+  /** The leadership style behind it (the pre-outcome archetype), for history's judgement. */
+  style: string;
+}
+
+/**
+ * Styles that read as praise. A failed or deposed session never wears them: it gets an honest
+ * title in the same voice ("Diplomat Without a Deal"), still something you would share.
+ */
+const FAILED_TITLE: Record<string, { title: string; line: string }> = {
+  "Master Diplomat": {
+    title: "Diplomat Without a Deal",
+    line: "Foreign capitals took your calls, but standing abroad did not deliver the mission.",
+  },
+  Peacemaker: {
+    title: "Peace Left Unfinished",
+    line: "You spent your capital on other people's wars, and ran out before your own goals were met.",
+  },
+  "Pragmatic Stabilizer": {
+    title: "Steady, Short of the Goal",
+    line: "The economy and the public held, but steadiness alone did not meet the mission.",
+  },
+  "The Reformer": {
+    title: "Reforms Too Late",
+    line: "You rebuilt institutions month after month; the payoff came too slowly to save the mission.",
+  },
+  "The Showman": {
+    title: "All Podium, No Prize",
+    line: "Speeches and rallies filled the evening news, but they did not meet the mission.",
+  },
+  "Steady Hand": {
+    title: "Steady Hand, Short Reach",
+    line: "Busy and measured, you managed the crises, but the mission slipped away.",
+  },
+  "Risk-Taking Expansionist": {
+    title: "Overreached",
+    line: "You treated war as policy by other means, and this time it did not pay.",
+  },
+  "Loyal Ally": {
+    title: "Loyal, and Lost",
+    line: "You went to war beside a friend; the mission did not survive the entanglement.",
+  },
+};
+
+/** Within this much of a numeric goal counts as a near miss ("So Close"). */
+const NEAR_MISS = 3;
+
+/** A failed session that missed exactly one primary goal, a numeric one, by a hair. */
+export function nearMiss(world: WorldState): boolean {
+  if (!world.outcome || world.outcome.victory || !world.objective) return false;
+  if (world.gameOver && DEPOSED.includes(world.gameOver.reason)) return false;
+  const missed = world.objective.primary.filter((c) => !evaluateCondition(world, c, false).met);
+  if (missed.length !== 1) return false;
+  const m = conditionMeasure(world, missed[0]);
+  return !!m && m.need - m.now > 0 && m.need - m.now <= NEAR_MISS;
+}
+
+/** Fit the title to the outcome: praise styles never stand on a failed or deposed session. */
+function fitToOutcome(
+  world: WorldState,
+  a: Omit<LeadershipAssessment, "style">,
+): LeadershipAssessment {
+  const style = a.classification;
+  const failed = !!world.gameOver && !!world.outcome && !world.outcome.victory;
+  if (!failed) return { ...a, style };
+  if (nearMiss(world))
+    return {
+      ...a,
+      style,
+      classification: "So Close",
+      justification: `${a.justification} One goal stayed just out of reach.`,
+    };
+  const f = FAILED_TITLE[style];
+  return f ? { ...a, style, classification: f.title, justification: f.line } : { ...a, style };
 }
 
 const COVERT_HARD = ["INTEL_ASSASSINATE", "INTEL_COUP"];
@@ -280,7 +355,7 @@ export function classifyLeadership(world: WorldState): LeadershipAssessment {
   const player = world.countries.find((c) => c.id === world.playerCountryId);
   const score = world.score;
   if (!player) {
-    return { classification: "Unknown", justification: "", grade: "F" };
+    return { classification: "Unknown", justification: "", grade: "F", style: "Unknown" };
   }
 
   const r = playerRecord(world, player);
@@ -353,5 +428,5 @@ export function classifyLeadership(world: WorldState): LeadershipAssessment {
     justification = "Busy, measured and rarely dramatic: you managed crises rather than made them.";
   }
 
-  return { classification, justification, grade: gradeFor(world) };
+  return fitToOutcome(world, { classification, justification, grade: gradeFor(world) });
 }

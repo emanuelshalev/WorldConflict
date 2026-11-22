@@ -1,6 +1,6 @@
 {
   "seatKey": "bab-al-mandab-burning:YEM",
-  "fingerprint": "88250297595b339d",
+  "fingerprint": "d9b7249aac2514d7",
   "generatedAt": "2026-11-22",
   "games": 36,
   "difficulty": "STATESMAN",
@@ -36,17 +36,17 @@
       ]
     },
     "random": {
-      "p10": 237,
+      "p10": 241,
       "p50": 425,
       "p90": 551,
       "max": 647,
       "n": 36,
       "q": [
-        124,
-        197,
-        237,
+        158,
+        199,
         241,
-        277,
+        241,
+        330,
         341,
         353,
         353,

@@ -468,7 +468,7 @@
           "urgency": "EXISTENTIAL",
           "defaultOptionId": "reject",
           "options": [
-            {"id": "deal", "label": "Take the bargain", "description": "Peace, cheaper oil, fewer bases. The Gulf states wonder who protects them now.", "effects": {"relations:IRN": 15, "relations:ISR": -12, "relations:ARE": -6, "approval": 4, "growth": 0.5}, "tensionDelta": -12, "actions": [{"type": "DIPLOMACY_PROPOSE_CEASEFIRE", "targetCountryId": "IRN"}], "backedBy": ["FINANCE_MINISTER", "FOREIGN_MINISTER"]},
+            {"id": "deal", "label": "Take the bargain", "description": "Peace, cheaper oil, fewer bases. The Gulf states wonder who protects them now.", "effects": {"relations:IRN": 15, "relations:ISR": -12, "relations:ARE": -6, "approval": 4, "growth": 0.5, "ceasefire:IRN": 1}, "tensionDelta": -12, "backedBy": ["FINANCE_MINISTER", "FOREIGN_MINISTER"]},
             {"id": "half", "label": "Stockpile yes, bases no", "description": "Take the uranium, keep the bases. Tehran may walk; it may not.", "effects": {"relations:IRN": 4, "relations:PAK": 5, "approval": 2}, "tensionDelta": -4, "backedBy": ["DEFENSE_MINISTER"]},
             {"id": "reject", "label": "Maximum pressure", "description": "No deal with the regime that killed American sailors. The blockade stays; so does the war.", "effects": {"approval": -6, "growth": -0.4, "relations:ISR": 6}, "tensionDelta": 6, "backedBy": ["CHIEF_OF_STAFF"]}
           ]

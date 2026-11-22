@@ -1,6 +1,6 @@
 {
   "seatKey": "bab-al-mandab-burning:SAU",
-  "fingerprint": "88250297595b339d",
+  "fingerprint": "d9b7249aac2514d7",
   "generatedAt": "2026-11-22",
   "games": 36,
   "difficulty": "STATESMAN",
@@ -12,8 +12,8 @@
       "max": 736,
       "n": 36,
       "q": [
-        529,
-        534,
+        530,
+        585,
         673,
         673,
         685,
