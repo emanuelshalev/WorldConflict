@@ -19,6 +19,7 @@ import { CoachBubble } from './Coach';
 import { sound } from '../../lib/sound';
 import { pointTo } from '../../lib/pointer';
 import { AdvisorList } from './AdvisorList';
+import { useAdvisorRows } from '../../lib/advisorRows';
 import { scoreLine, useScoreWhy } from '../../lib/scoreWhy';
 import '../../styles/desk-stage.css';
 
@@ -423,6 +424,9 @@ export function CommandStrip() {
   // The advisors get their own full-width row (QA S2-1), collapsed by default so the globe keeps
   // its room (QA AC3); the toggle opens it
   const [tray, setTray] = useState(false);
+  // Collapsed, the toggle still says how many suggestions wait behind it (QA S2-1 with AC3)
+  const advice = useAdvisorRows();
+  const staffN = advice.filter((r) => r.staff).length;
   if (!world || !b) return null;
   const cabinet = decisions.filter((d) => !reviewed[d.id]).length;
   return (
@@ -435,9 +439,22 @@ export function CommandStrip() {
         <span className="num chip-b" data-point="meetings">{term(TERMS.meetings.compact, b.inPerson.used)}</span>
         {b.defense.share > 0 && <span className="num chip-b" data-point="defense">{term(TERMS.defense.compact, Math.round(b.defense.share * 100))}</span>}
         {cabinet > 0 && <span className="strip-note">{cabinet} crisis on the cabinet pick</span>}
-        <button type="button" className="strip-tray-btn" aria-expanded={tray} aria-controls="strip-advisors" onClick={() => setTray((v) => !v)}>
-          {tray ? <IconChevronDown size={15} aria-hidden /> : <IconChevronUp size={15} aria-hidden />} Your advisors suggest
-        </button>
+        {advice.length > 0 && (
+          <button
+            type="button"
+            className="strip-tray-btn"
+            aria-expanded={tray}
+            aria-controls="strip-advisors"
+            aria-label={`Your advisors suggest ${advice.length} ${advice.length === 1 ? 'order' : 'orders'}${staffN ? `, ${staffN} proposed by staff` : ''}`}
+            onClick={() => setTray((v) => !v)}
+            data-advice-count={advice.length}
+          >
+            {tray ? <IconChevronDown size={15} aria-hidden /> : <IconChevronUp size={15} aria-hidden />} Your advisors suggest
+            <span className="strip-tray-n num" aria-hidden>
+              {advice.length}
+            </span>
+          </button>
+        )}
       </div>
       {tray && (
         <div className="strip-advisors" id="strip-advisors">
