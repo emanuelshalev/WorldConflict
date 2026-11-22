@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent, type ReactNode } from 'react';
-import { IconArrowsDiff, IconPlayerPlay } from '@tabler/icons-react';
+import { IconArrowsDiff, IconHome, IconPlayerPlay, IconRefresh, IconWorld } from '@tabler/icons-react';
 import type { RevealPayload } from '../../store/gameStore';
 import { useReducedMotion } from '../../lib/motion';
 import { sound } from '../../lib/sound';
@@ -246,6 +246,12 @@ export function RevealSequence({ r, saveId, actions, daily = null, extras, recor
             ))}
           </nav>
           <div className="rv-rail-foot">
+            <button type="button" className="rv-btn primary rv-exit" onClick={actions.onNewWorld}>
+              <IconWorld size={16} aria-hidden /> Play again
+            </button>
+            <button type="button" className="rv-btn rv-exit" onClick={actions.onNewGame}>
+              <IconHome size={16} aria-hidden /> Main menu
+            </button>
             <SoundToggle />
           </div>
         </aside>
@@ -253,6 +259,9 @@ export function RevealSequence({ r, saveId, actions, daily = null, extras, recor
       <main ref={mainRef} className="rv-main" tabIndex={-1} aria-label={mode === 'reveal' ? `Stage ${stage} of 7: ${STAGES[stage]}` : 'The full report'} onClick={onTap}>
         {mode === 'reveal' ? (
           <>
+            <button type="button" className="rv-btn ghost rv-menu-exit" onClick={(e) => { e.stopPropagation(); actions.onNewGame(); }} aria-label="Main menu">
+              <IconHome size={16} aria-hidden /> Main menu
+            </button>
             <StageDots stages={STAGES} current={stage} seen={seen} onSkip={toReport} />
             <div className="rv-content" key={stage}>
               {stageEl(stage)}
@@ -289,8 +298,17 @@ export function RevealSequence({ r, saveId, actions, daily = null, extras, recor
                 <div className="rv-caps rv-kicker">The report · {card.title} · {r.seat.countryName}</div>
                 <h1 className="rv-h1">Your record, kept.</h1>
               </div>
-              <div className="rv-report-actions">
-                <button type="button" className="rv-btn" onClick={() => { setSeen(new Set()); setStage(0); setMode('reveal'); }}>
+              <div className="rv-report-actions" data-testid="report-exits">
+                <button type="button" className="rv-btn primary" onClick={actions.onNewWorld}>
+                  <IconWorld size={18} aria-hidden /> Play again
+                </button>
+                <button type="button" className="rv-btn" onClick={actions.onReplay}>
+                  <IconRefresh size={18} aria-hidden /> Replay same opening
+                </button>
+                <button type="button" className="rv-btn" onClick={actions.onNewGame}>
+                  <IconHome size={18} aria-hidden /> Main menu
+                </button>
+                <button type="button" className="rv-btn ghost" onClick={() => { setSeen(new Set()); setStage(0); setMode('reveal'); }}>
                   <IconPlayerPlay size={18} aria-hidden /> Replay the reveal
                 </button>
                 {history.length > 1 && (

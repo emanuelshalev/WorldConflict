@@ -1908,3 +1908,11 @@ a.rv-st:hover {
 .save-row-note { display: block; color: var(--text-3); font-size: 13px; margin-top: 6px; }
 .save-seed { border-top: 1px solid var(--line); margin-top: 12px; padding-top: 12px; }
 .save-list, .save-seed { min-width: 0; }
+
+/* RS-004: a clear way back is always on screen */
+.rv-menu-exit { position: absolute; top: 12px; right: 16px; z-index: 5; min-height: 44px; }
+.rv-main { position: relative; }
+.rv-rail-foot { display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
+.rv-rail-foot .rv-exit { justify-content: center; min-height: 44px; }
+.rv-report-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+@media (max-width: 700px) { .rv-menu-exit { top: 8px; right: 8px; } }

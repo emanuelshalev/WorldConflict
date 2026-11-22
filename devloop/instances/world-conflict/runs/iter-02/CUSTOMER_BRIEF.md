@@ -34,7 +34,7 @@ Play your scenarios as your persona would, for roughly the time your persona has
 
 ## Extra rules this round
 - **Knowledge:** your persona file has a `knowledge` attribute. Whenever the game shows a name, place, organisation or concept your persona would not know, record it in `friction` with kind `naming` (where it appeared, what you did not understand, whether the game helped you understand it).
-- **Reach the end if your brief says so:** if your agent prompt says REACH THE END, you must play your Flashpoint to the end screen (month 12) and go through the whole end-of-game sequence, judging it as your persona. Play quickly (follow your instinct, use Approve and Execute when your persona would), but still record friction.
+- **Reach the end if your brief says so:** if your agent prompt says REACH THE END, you must play your Flashpoint to the end screen (month 12), go through the whole end-of-game sequence judging it as your persona, and then start a second game from the end screen (report whether the way back was clear). Play quickly (follow your instinct, use Approve and Execute when your persona would), but still record friction.
 - **Own scratch space:** use only your own driver port and your own scratch folder `/tmp/claude-1000/-home-emanuel-git-WorldConflict/560a71e3-7113-4ffa-aea8-74191a508a8c/scratchpad/<variant>/`.
 - The driver now presses tabs and list items too, shows native dialogs to you (in `look` output as `dialogs`), and renders on the GPU. Screenshot pixels equal tap coordinates.
 

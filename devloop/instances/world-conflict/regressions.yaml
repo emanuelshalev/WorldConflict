@@ -37,3 +37,9 @@
     - unit: tests/ui-newcomers.spec.ts "QA AC3: the in-game globe fit"
     - ui: scenarios-qa/globe-fit.mjs (D at least 900 at 1920; disc top clear of the goal line at 1920, 1440, 1024, 390)
     - ui: scenarios-qa/worldmap.mjs AC3
+  - id: RS-004
+    description: After the reveal there is always a clear way back to play again (Main menu during the reveal; Play again, Replay same opening and Main menu in the report)
+    source: CEO playtest 2026-11-23 (real-signals/RS-004)
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-004.mjs
+    covers: [ui/src/components/reveal/**, ui/src/components/EndScreen.tsx]
