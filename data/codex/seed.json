@@ -1,0 +1,222 @@
+[
+  {
+    "id": "volodymyr-zelensky",
+    "kind": "person",
+    "name": "Volodymyr Zelensky",
+    "aliases": ["Volodymyr Zelensky", "Zelensky", "Zelenskyy", "Volodymyr Zelenskyy"],
+    "countryId": "UKR",
+    "obscurity": 1,
+    "short": "President of Ukraine since May 2019, a former actor who has led the country through Russia's full-scale invasion.",
+    "long": "Elected in a landslide in 2019 on an anti-corruption platform. He stayed in Kyiv when Russia invaded in February 2022 and became the face of Ukraine's resistance. The election due in 2024 has been postponed under martial law.",
+    "related": ["ukraine", "verkhovna-rada"],
+    "valid": { "from": "2019-05" },
+    "sources": ["https://en.wikipedia.org/wiki/Volodymyr_Zelenskyy"],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "vladimir-putin",
+    "kind": "person",
+    "name": "Vladimir Putin",
+    "aliases": ["Vladimir Putin", "Putin"],
+    "countryId": "RUS",
+    "obscurity": 1,
+    "short": "Russia's leader since 2000: president, prime minister from 2008 to 2012, then president again.",
+    "long": "A former KGB officer who rose fast under Boris Yeltsin. He ordered the annexation of Crimea in 2014 and the full-scale invasion of Ukraine in February 2022. Constitutional changes in 2020 let him stay in office until 2036.",
+    "related": ["moscow"],
+    "valid": { "from": "2000-05" },
+    "sources": ["https://en.wikipedia.org/wiki/Vladimir_Putin"],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "ukraine",
+    "kind": "place",
+    "name": "Ukraine",
+    "aliases": ["Ukraine"],
+    "countryId": "UKR",
+    "obscurity": 1,
+    "short": "Europe's second-largest country by area, independent since 1991 and fighting a Russian invasion since 2022.",
+    "long": "A country on the Black Sea and a major grain and steel exporter. Russia seized Crimea in 2014 and, after the full-scale invasion of February 2022, occupies about a fifth of the country.",
+    "related": ["donetsk-oblast"],
+    "map": { "countries": ["UKR"], "points": [{ "name": "Kyiv", "lon": 30.52, "lat": 50.45 }] },
+    "valid": { "from": "1991-08" },
+    "sources": ["https://en.wikipedia.org/wiki/Ukraine"],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "donetsk-oblast",
+    "kind": "place",
+    "name": "Donetsk oblast",
+    "aliases": ["Donetsk oblast", "Donetsk region", "Donetsk"],
+    "countryId": "UKR",
+    "obscurity": 2,
+    "short": "A region of eastern Ukraine, part of the industrial Donbas. Russia holds most of it and claims all of it.",
+    "long": "Russian-backed separatists seized its capital, the city of Donetsk, in 2014. Russia claimed to annex the whole oblast in September 2022. Ukraine still holds the north-west, including the fortress belt.",
+    "related": ["fortress-belt", "kramatorsk", "sloviansk", "pokrovsk"],
+    "map": { "countries": ["UKR", "RUS"], "points": [{ "name": "Donetsk", "lon": 37.8, "lat": 48.0 }] },
+    "valid": { "from": "2022-09" },
+    "sources": ["https://en.wikipedia.org/wiki/Donetsk_Oblast"],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "fortress-belt",
+    "kind": "place",
+    "name": "The fortress belt",
+    "aliases": ["fortress belt"],
+    "countryId": "UKR",
+    "obscurity": 3,
+    "short": "Four fortified cities in Ukrainian-held Donetsk: Sloviansk, Kramatorsk, Druzhkivka and Kostiantynivka. Ukraine's strongest line in the east.",
+    "long": "Fortified since 2014. Russia demands the whole of Donetsk in any deal; giving the belt up without a fight would leave open country between the front and the Dnipro.",
+    "related": ["kramatorsk", "sloviansk", "donetsk-oblast"],
+    "map": {
+      "countries": ["UKR"],
+      "points": [
+        { "name": "Sloviansk", "lon": 37.62, "lat": 48.85 },
+        { "name": "Kramatorsk", "lon": 37.56, "lat": 48.72 },
+        { "name": "Druzhkivka", "lon": 37.53, "lat": 48.62 },
+        { "name": "Kostiantynivka", "lon": 37.71, "lat": 48.53 }
+      ]
+    },
+    "valid": { "from": "2022-09" },
+    "sources": ["https://www.understandingwar.org/"],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "kramatorsk",
+    "kind": "place",
+    "name": "Kramatorsk",
+    "aliases": ["Kramatorsk"],
+    "countryId": "UKR",
+    "obscurity": 3,
+    "short": "An industrial city in Donetsk oblast, seat of Ukraine's regional government since 2014 and part of the fortress belt.",
+    "related": ["fortress-belt", "sloviansk"],
+    "map": { "countries": ["UKR"], "points": [{ "name": "Kramatorsk", "lon": 37.56, "lat": 48.72 }] },
+    "valid": { "from": "2014-10" },
+    "sources": ["https://en.wikipedia.org/wiki/Kramatorsk"],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "sloviansk",
+    "kind": "place",
+    "name": "Sloviansk",
+    "aliases": ["Sloviansk", "Slovyansk"],
+    "countryId": "UKR",
+    "obscurity": 3,
+    "short": "A city in northern Donetsk oblast, held by Russian-backed fighters in 2014 until Ukraine retook it; anchor of the fortress belt.",
+    "related": ["fortress-belt", "kramatorsk"],
+    "map": { "countries": ["UKR"], "points": [{ "name": "Sloviansk", "lon": 37.62, "lat": 48.85 }] },
+    "valid": { "from": "2014-07" },
+    "sources": ["https://en.wikipedia.org/wiki/Sloviansk"],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "pokrovsk",
+    "kind": "place",
+    "name": "Pokrovsk",
+    "aliases": ["Pokrovsk axis", "Pokrovsk"],
+    "countryId": "UKR",
+    "obscurity": 3,
+    "short": "A mining town and road hub in western Donetsk, focus of Russia's main offensive from 2024 and ruined by the fighting.",
+    "related": ["donetsk-oblast"],
+    "map": { "countries": ["UKR"], "points": [{ "name": "Pokrovsk", "lon": 37.18, "lat": 48.28 }] },
+    "valid": { "from": "2024-02" },
+    "sources": ["https://en.wikipedia.org/wiki/Pokrovsk_offensive"],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "nato",
+    "kind": "group",
+    "name": "NATO",
+    "aliases": [{ "text": "NATO", "caseSensitive": true }, "North Atlantic Treaty Organization", "the Atlantic alliance"],
+    "obscurity": 1,
+    "short": "The North Atlantic Treaty Organization: a military alliance of 32 countries in which an attack on one is an attack on all.",
+    "long": "Founded in 1949 to deter the Soviet Union. Article 5 commits members to help an attacked ally. Finland (2023) and Sweden (2024) joined after Russia's full-scale invasion of Ukraine. Ukraine is not a member.",
+    "valid": { "from": "1949-04" },
+    "eras": {
+      "1960": {
+        "short": "The North Atlantic Treaty Organization: 15 Western countries pledged to defend each other against the Soviet bloc.",
+        "long": "Founded in 1949. West Germany joined in 1955, and the Soviet Union answered with the Warsaw Pact the same year. Article 5 commits members to help an attacked ally."
+      },
+      "1990": {
+        "short": "The North Atlantic Treaty Organization: 16 Western countries pledged to defend each other, now facing a collapsing Soviet bloc."
+      }
+    },
+    "sources": ["https://en.wikipedia.org/wiki/NATO"],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "verkhovna-rada",
+    "kind": "group",
+    "name": "The Verkhovna Rada",
+    "aliases": ["Verkhovna Rada", { "text": "Rada", "caseSensitive": true }],
+    "countryId": "UKR",
+    "obscurity": 2,
+    "short": "Ukraine's parliament: 450 seats in Kyiv. It must approve laws, budgets and each extension of martial law.",
+    "valid": { "from": "1991-08" },
+    "sources": ["https://en.wikipedia.org/wiki/Verkhovna_Rada"],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "us-midterms-2026",
+    "kind": "event",
+    "name": "The 2026 US midterms",
+    "aliases": ["the midterms", "midterms", "midterm elections", "midterm"],
+    "avoid": ["midterm exams"],
+    "countryId": "USA",
+    "obscurity": 2,
+    "short": "US elections on 3 November 2026, halfway through the presidential term: every House seat and about a third of the Senate.",
+    "long": "Midterms usually go against the president's party. Control of Congress decides whether the White House can pass laws and budgets for the rest of the term; the new Congress sits from January 2027.",
+    "related": ["washington"],
+    "valid": { "from": "2026-01" },
+    "sources": ["https://en.wikipedia.org/wiki/2026_United_States_elections"],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "sanctions",
+    "kind": "term",
+    "name": "Sanctions",
+    "aliases": ["sanctions", "sanctioned", "sanction"],
+    "obscurity": 1,
+    "short": "Penalties one country imposes on another to change its behaviour: trade bans, frozen assets, travel bans.",
+    "long": "They work slowly and leak through third countries. Secondary sanctions go further and punish anyone who trades with the target, such as buyers of its oil.",
+    "valid": { "from": "1945-01" },
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "referendum",
+    "kind": "term",
+    "name": "Referendum",
+    "aliases": ["referendum", "national vote"],
+    "obscurity": 2,
+    "short": "A vote of the whole electorate on one question. Ukraine's constitution says only one can approve a change to its territory.",
+    "long": "Article 73 of Ukraine's constitution reserves changes to the country's territory for an all-Ukrainian referendum, so a president cannot simply sign land away. A vote cannot be held under martial law.",
+    "valid": { "from": "1945-01" },
+    "sources": ["https://en.wikipedia.org/wiki/Constitution_of_Ukraine"],
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "moscow",
+    "kind": "place",
+    "name": "Moscow",
+    "aliases": [{ "text": "Moscow", "caseSensitive": true }],
+    "countryId": "RUS",
+    "obscurity": 1,
+    "short": "Russia's capital. In the news, shorthand for the Russian government.",
+    "map": { "countries": ["RUS"], "points": [{ "name": "Moscow", "lon": 37.62, "lat": 55.76 }] },
+    "valid": { "from": "1945-01" },
+    "eras": { "1960": { "short": "Capital of the Soviet Union. In the news, shorthand for the Soviet government." } },
+    "asOf": "2026-11-22"
+  },
+  {
+    "id": "washington",
+    "kind": "place",
+    "name": "Washington",
+    "aliases": [{ "text": "Washington", "caseSensitive": true }],
+    "avoid": ["Washington State", "Washington state", "George Washington", "Washington Post"],
+    "countryId": "USA",
+    "obscurity": 1,
+    "short": "The US capital, Washington, D.C. In the news, shorthand for the American government.",
+    "map": { "countries": ["USA"], "points": [{ "name": "Washington", "lon": -77.04, "lat": 38.9 }] },
+    "valid": { "from": "1945-01" },
+    "asOf": "2026-11-22"
+  }
+]
