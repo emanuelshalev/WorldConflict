@@ -155,6 +155,17 @@ describe("UI glossary", () => {
     expect(TERMS.capital.definition).toContain("◆ 6");
   });
 
+  it("names the Staff picks group and explains it in one line (RS-005)", () => {
+    expect(TERMS.staffPicks.name).toBe("Staff picks");
+    const line = TERMS.staffPicks.definition;
+    expect(line).toMatch(/^Your cabinet's suggestions for this month\./);
+    // Truthful: an unreviewed crisis still runs on the cabinet's answer
+    expect(line).toMatch(/only if you approve/);
+    expect(line).toMatch(/crisis answers stand unless you change them/);
+    expect(line.length).toBeLessThanOrEqual(150);
+    expect(TERMS.approveAll.name).toBe("Approve {n} staff picks");
+  });
+
   it("catches a banned word in a UI string", () => {
     const out: Hit[] = [];
     check("probe", "Not enough political credit", out);
