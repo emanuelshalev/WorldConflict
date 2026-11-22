@@ -98,9 +98,7 @@
     {"id":"RUSBLR","name":"Russia and Belarus","side":"EAST","members":["RUS","BLR"],"note":"A Union State; Russia also signed a mutual defence treaty with North Korea in June 2024."},
     {"id":"CHNPRK","name":"China and North Korea","side":"EAST2","members":["CHN","PRK"],"note":"Allied by treaty since 1961."}
   ],
-  "eraStatus": {
-    "PSX": {"status":"NOT_INDEPENDENT","label":"West Bank","note":"Under Israeli occupation; the Palestinian Authority administers parts of it. Most UN members recognise a State of Palestine."}
-  },
+  "eraStatus": {},
   "merged": {},
   "mapLabels": [],
   "situations": [

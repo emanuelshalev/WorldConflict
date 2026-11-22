@@ -4,6 +4,7 @@ import { type CodexPayload, type LearnLevel, LEVEL_RULES } from '../lib/codexMat
 import * as learnLib from '../lib/learn';
 import { type MonthView, availabilityOf, defenseCostM, needsTarget, orderKeyOf } from '../lib/availability';
 import { pointAt } from '../lib/pointAt';
+import { browserGuestStores, resolveGuestId } from '../lib/guest';
 
 export type TurnPhase = 'news' | 'briefing' | 'diplomacy' | 'military' | 'domestic' | 'confirm';
 
@@ -441,6 +442,20 @@ export interface WorldState {
   turn: number;
   date: string;
   scenarioId: string;
+  /** How the session started (replay and branch); absent on older saves. Mirrors SessionOriginSchema. */
+  origin?: {
+    scenarioId: string;
+    playerCountryId: string;
+    seed: number;
+    mode: GameMode;
+    difficulty: Difficulty;
+    flashpointId: string | null;
+    leaderName?: string;
+    whatIf?: boolean;
+    opening?: string;
+  };
+  /** The player's inputs per resolved month (MonthInputSchema). */
+  inputs?: Array<{ actions: unknown[]; decisions: Array<{ decisionId: string; optionId: string }>; tier?: string }>;
   mode: GameMode;
   difficulty: Difficulty;
   maxTurns: number;
@@ -800,16 +815,9 @@ export const PHASE_LABELS: Record<TurnPhase, string> = {
   confirm: 'Confirm',
 };
 
+/** The guest id survives cleared storage through its cookie mirror (lib/guest.ts, F-02-6). */
 function loadGuestId(): string {
-  try {
-    const existing = localStorage.getItem('worldconflict.guest');
-    if (existing) return existing;
-    const id = `guest-${crypto.randomUUID?.() ?? Math.random().toString(36).slice(2)}`;
-    localStorage.setItem('worldconflict.guest', id);
-    return id;
-  } catch {
-    return `guest-${Math.random().toString(36).slice(2)}`;
-  }
+  return resolveGuestId(browserGuestStores());
 }
 
 export function lastSaveId(): string | null {
@@ -1192,6 +1200,10 @@ export interface NewGameRequest {
   seed?: number;
   /** Play this seed: a seed code ("HC-USA-3PX") names the seat and the seed; the server parses it. */
   seedCode?: string;
+  /** D-56: lead a nation that is not a state in the era, as alternate history. */
+  whatIf?: boolean;
+  /** One Term "Start with": the era situation the opening crisis is about. */
+  opening?: string;
 }
 
 export async function startGame(req: NewGameRequest): Promise<boolean> {
@@ -1486,14 +1498,76 @@ export async function loadGame(saveId: string): Promise<void> {
   }
 }
 
-export async function fetchSaves(): Promise<
-  Array<{ id: string; name: string; turn: number; playerCountry: string; leaderName?: string }>
-> {
-  const query = `?playerId=${encodeURIComponent(ownerId())}`;
+/** A row of Saved games (GET /api/saves): what Resume, Replay and Branch need. */
+export interface SaveRecord {
+  id: string;
+  name: string;
+  turn: number;
+  playerCountry: string;
+  leaderName?: string | null;
+  updatedAt?: string;
+  seed: number;
+  mode?: GameMode;
+  scenarioId?: string;
+  flashpointId?: string | null;
+  difficulty?: Difficulty;
+  maxTurns?: number;
+  gameOver?: boolean;
+  /** False for saves made before the replay record existed. */
+  branchable: boolean;
+  whatIf?: boolean;
+  opening?: string;
+}
+
+/** Saves of the signed-in account and of this browser's guest id together. */
+export async function fetchSaves(): Promise<SaveRecord[]> {
+  const { player, guestId } = useGameStore.getState();
+  const query = `?guestId=${encodeURIComponent(guestId)}${player ? `&playerId=${encodeURIComponent(player.id)}` : ''}`;
   const response = await fetch(`${API_BASE}/saves${query}`);
   const data = await response.json();
   if (!data.success) throw new Error(data.error || 'Failed to fetch saves');
   return data.saves;
+}
+
+/** "Replay same opening" for a saved game: the same seat, seed and opening, from month 0. */
+export function replaySave(s: SaveRecord): Promise<boolean> {
+  return startGame({
+    mode: s.mode ?? 'TERM',
+    playerCountryId: s.playerCountry,
+    flashpointId: s.flashpointId ?? undefined,
+    scenarioId: s.flashpointId ? undefined : s.scenarioId,
+    difficulty: s.difficulty,
+    seed: s.seed,
+    ...(s.whatIf ? { whatIf: true } : {}),
+    ...(s.opening ? { opening: s.opening } : {}),
+  });
+}
+
+/** "Branch from this month": a new save rebuilt from the same seed up to that month. */
+export async function branchGame(saveId: string, month: number): Promise<boolean> {
+  const store = useGameStore.getState();
+  store.setLoading(true);
+  store.setError(null);
+  try {
+    const response = await fetch(`${API_BASE}/branch`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ saveId, month, playerId: ownerId() }),
+    });
+    const data = await response.json();
+    if (!data.success) throw new Error(data.error || 'Could not branch this game');
+    store.reset();
+    store.applyServerPayload(data, data.saveId);
+    rememberSave(data.saveId);
+    useGameStore.setState({ currentPhase: 'briefing', endReport: null, screen: 'game', orderTarget: '', lastEvents: [] });
+    store.closeModal();
+    return true;
+  } catch (error) {
+    store.setError(error instanceof Error ? error.message : 'Could not branch this game');
+    return false;
+  } finally {
+    store.setLoading(false);
+  }
 }
 
 /** Resolve a country id to its display name from the current world state. */

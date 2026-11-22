@@ -23,8 +23,10 @@ describe("JSON save store (no native SQLite needed)", () => {
       seed: 1,
       turn: 0,
     });
-    expect((await store.listSaves("p1")).map((s) => s.id)).toEqual([id]);
-    expect(await store.listSaves("someone-else")).toEqual([]);
+    expect((await store.listSaves(["p1"])).map((s) => s.id)).toEqual([id]);
+    // An account and a guest id together (a guest who signs in keeps the earlier games)
+    expect((await store.listSaves(["guest-x", "p1"])).map((s) => s.id)).toEqual([id]);
+    expect(await store.listSaves(["someone-else"])).toEqual([]);
     await store.addTurnLog(id, 0, "[]", "[]");
     await store.updateSave(id, { turn: 1 });
     const back = await store.getSave(id);

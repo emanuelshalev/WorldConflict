@@ -91,9 +91,9 @@ describe("Era filter (F-01-7)", () => {
     expect(marked).toEqual(expect.arrayContaining(["UKR", "BLR", "SYR", "ARE", "PSX", "NGA"]));
     expect(w60.countries.find((c) => c.id === "NGA")?.eraUntil).toBe("1960-10");
     const w90 = loader.initializeWorldState("1990", "USA", 1);
+    // D-56: the PLO's State of Palestine (declared 1988, led by Arafat) is a polity in 1990
     expect(w90.countries.filter((c) => c.eraStatus).map((c) => c.id).sort()).toEqual([
       "BLR",
-      "PSX",
       "UKR",
     ]);
     for (const c of w90.countries) if (c.eraStatus) expect(c.alliances).toEqual([]);
@@ -113,9 +113,18 @@ describe("Era filter (F-01-7)", () => {
     expect(res.newState.turnReport?.orders[0]).toMatchObject({ ok: false, code: "NOT_A_STATE" });
   });
 
-  it("the 2026 world marks only the West Bank", () => {
-    const w = loader.initializeWorldState("2026", "USA", 1);
-    expect(w.countries.filter((c) => c.eraStatus).map((c) => c.id)).toEqual(["PSX"]);
+  it("the 2025 and 2026 worlds mark nobody: the West Bank is a polity that acts (D-56, QA S1-2)", () => {
+    for (const scenario of ["2025", "2026"]) {
+      const w = loader.initializeWorldState(scenario, "USA", 1);
+      expect(w.countries.filter((c) => c.eraStatus).map((c) => c.id)).toEqual([]);
+      // As in v0.9.0: the West Bank has an AI of its own and can be a target
+      expect(generateDeterministicIntents(w).some((i) => i.countryId === "PSX")).toBe(true);
+      const usa = w.countries.find((c) => c.id === "USA");
+      if (!usa) throw new Error("no USA");
+      expect(
+        actionRules(w, usa, { type: "DIPLOMACY_IMPROVE_RELATIONS", targetCountryId: "PSX" })?.code,
+      ).not.toBe("NOT_A_STATE");
+    }
   });
 
   it("Nigeria becomes a state in October 1960", () => {

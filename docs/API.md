@@ -75,7 +75,7 @@ Notable `worldState` fields: `mode` (`FLASHPOINT|TERM|LEGACY`), `maxTurns`, `dif
 }
 ```
 
-Only `playerCountryId` is required. A country that is not a sovereign state in the chosen scenario (its `eraStatus`, for example Ukraine in 1990) is refused with a 400. Without `flashpointId`, `mode` + `scenarioId` start a Term/Legacy (or generic 12-month) game. `daily: true` seeds the world from today's date. Omit `seed` for a fresh world each time. The same `seed` on the same seat gives the same starting world and opening crisis ("Replay same opening").
+Only `playerCountryId` is required. A country that is not a sovereign state in the chosen scenario (its `eraStatus`, for example Ukraine in 1990) is refused with a 400 unless the body has `"whatIf": true` (alternate history: the seat is led as a state, the save name ends in "(what if)" and `worldState.origin.whatIf` is set; the flag changes nothing for a seat that is a state). `opening` (Term/Legacy only) names an active situation of the scenario (`/scenarios/:id/map` `situations` with phase `ACTIVE`, e.g. `"ukraine"`): the opening crisis is about it (`templateId` `opening_war|sea|regime|nuclear|truce`); an unknown or inactive id is a 400. Every new world carries `origin` (scenario, seat, seed, mode, difficulty, flashpoint, leaderName, whatIf, opening) and `inputs` (the player's actions and decisions per resolved month), which replay and branch use. Without `flashpointId`, `mode` + `scenarioId` start a Term/Legacy (or generic 12-month) game. `daily: true` seeds the world from today's date. Omit `seed` for a fresh world each time. The same `seed` on the same seat gives the same starting world and opening crisis ("Replay same opening").
 
 `seedCode` ("Play this seed") replaces `playerCountryId` + `seed` + seat: `HC-USA-3AF` is flashpoint seat (two-letter flashpoint prefix: initials of its id, e.g. `hormuz-convoy` = HC), country and base-36 seed; `T2026-USA-3AF` / `L2026-…` are Term / Legacy on a scenario. An unknown code is a 400.
 
@@ -225,3 +225,15 @@ Roles: `FOREIGN_MINISTER`, `DEFENSE_MINISTER`, `FINANCE_MINISTER`, `INTELLIGENCE
 ## Rate limits
 
 Turn: 1 req/s · chat: 5 req/s · default: 10 req/s per IP (`src/api/middleware/rateLimit.ts`).
+
+### `POST /api/branch`
+
+```json
+{ "saveId": "uuid", "month": 4, "playerId": "guest-..." }
+```
+
+Branch from this month: rebuilds the save's world at the start of `month` (0 = the opening desk) from `worldState.origin` and the first `month` entries of `worldState.inputs`, with the rivals' intents from the save's turn log (exact even when LLMs drove them) or PersonalityAI, and stores it as a new save named "<name> (branch from month N)". Returns the same payload as `/load` plus `branchedFrom`. 400 for a month outside 0..turn (0..turn-1 for a finished game) or a save made before the replay record existed; 404 for an unknown save.
+
+### `GET /api/saves?playerId=&guestId=`
+
+Saved games of the account and/or the guest id together, newest first (all saves without either). Each row: `id`, `name`, `turn`, `playerCountry`, `leaderName`, `seed`, `createdAt`, `updatedAt`, `mode`, `scenarioId`, `flashpointId`, `difficulty`, `maxTurns`, `gameOver`, `branchable`, `whatIf`, `opening`.

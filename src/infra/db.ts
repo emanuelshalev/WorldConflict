@@ -83,7 +83,8 @@ interface Store {
     data: Partial<Pick<StoredSave, "worldState" | "turn" | "llmUsage">>,
   ): Promise<void>;
   deleteSave(id: string): Promise<void>;
-  listSaves(playerId?: string): Promise<StoredSave[]>;
+  /** Saves owned by any of `owners` (account or guest ids), newest first; all saves without. */
+  listSaves(owners?: string[]): Promise<StoredSave[]>;
   addTurnLog(saveId: string, turn: number, events: string, actions: string): Promise<void>;
   turnLogs(saveId: string): Promise<Array<{ turn: number; events: string; actions: string }>>;
   findPlayer(name: string): Promise<PlayerRecord | null>;
@@ -148,12 +149,13 @@ export class JsonStore implements Store {
   async deleteSave(id: string) {
     rmSync(this.file(id), { force: true });
   }
-  async listSaves(playerId?: string) {
+  async listSaves(owners?: string[]) {
     const out: StoredSave[] = [];
     for (const f of readdirSync(this.dir)) {
       if (!f.endsWith(".json") || f === "players.json" || f === "runs.json") continue;
       const raw = this.read<StoredSave>(join(this.dir, f));
-      if (raw?.id && (!playerId || raw.playerId === playerId)) out.push(this.revive(raw));
+      if (raw?.id && (!owners || (raw.playerId && owners.includes(raw.playerId))))
+        out.push(this.revive(raw));
     }
     return out.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
   }
@@ -263,9 +265,9 @@ class SqliteStore implements Store {
     await this.prisma.turnLog.deleteMany({ where: { saveGameId: id } });
     await this.prisma.saveGame.delete({ where: { id } });
   }
-  async listSaves(playerId?: string) {
+  async listSaves(owners?: string[]) {
     return this.prisma.saveGame.findMany({
-      where: playerId ? { playerId } : undefined,
+      where: owners ? { playerId: { in: owners } } : undefined,
       orderBy: { updatedAt: "desc" },
     });
   }
@@ -341,6 +343,41 @@ const record = (s: StoredSave): SaveGameRecord => ({
   updatedAt: s.updatedAt,
 });
 
+/** A row of Saved games: the record plus what Replay and Branch need from its world. */
+export interface SaveListing extends SaveGameRecord {
+  mode?: string;
+  scenarioId?: string;
+  flashpointId?: string | null;
+  difficulty?: string;
+  maxTurns?: number;
+  gameOver?: boolean;
+  /** False for saves made before the replay record existed (no Branch). */
+  branchable: boolean;
+  whatIf?: boolean;
+  opening?: string;
+}
+
+function listing(s: StoredSave): SaveListing {
+  const base = record(s);
+  try {
+    const w = JSON.parse(s.worldState) as Partial<WorldState>;
+    return {
+      ...base,
+      mode: w.mode,
+      scenarioId: w.scenarioId,
+      flashpointId: w.flashpointId ?? null,
+      difficulty: w.difficulty,
+      maxTurns: w.maxTurns,
+      gameOver: !!w.gameOver,
+      branchable: !!w.origin,
+      ...(w.origin?.whatIf ? { whatIf: true } : {}),
+      ...(w.origin?.opening ? { opening: w.origin.opening } : {}),
+    };
+  } catch {
+    return { ...base, branchable: false };
+  }
+}
+
 export class GameDatabase {
   async saveGame(
     name: string,
@@ -403,8 +440,10 @@ export class GameDatabase {
     await (await store()).deleteSave(saveId);
   }
 
-  async listSaves(playerId?: string): Promise<SaveGameRecord[]> {
-    return (await (await store()).listSaves(playerId)).map(record);
+  /** Saves of one owner or several (an account and this browser's guest id), newest first. */
+  async listSaves(owners?: string | string[]): Promise<SaveListing[]> {
+    const ids = owners === undefined ? undefined : Array.isArray(owners) ? owners : [owners];
+    return (await (await store()).listSaves(ids)).map(listing);
   }
 
   /** The account that owns a save (null for guest saves). */

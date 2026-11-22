@@ -997,6 +997,35 @@ export const ChronicleSchema = z.object({
 export type Chronicle = z.infer<typeof ChronicleSchema>;
 
 // ============================================================================
+// Session origin and month inputs (replay and "Branch from this month")
+// ============================================================================
+
+/** How a session was started: enough to rebuild its opening exactly (data-loader newGame). */
+export const SessionOriginSchema = z.object({
+  scenarioId: z.string(),
+  playerCountryId: z.string(),
+  seed: z.number(),
+  mode: GameModeSchema,
+  difficulty: DifficultySchema,
+  flashpointId: z.string().nullable().default(null),
+  leaderName: z.string().optional(),
+  // Alternate history: the player leads a nation that is not a state in this era (D-56)
+  whatIf: z.boolean().optional(),
+  // One Term "Start with": the era situation the opening crisis is about (opening.ts)
+  opening: z.string().optional(),
+});
+export type SessionOrigin = z.infer<typeof SessionOriginSchema>;
+
+/** What the player sent for one month: replaying these from the origin rebuilds the save. */
+export const MonthInputSchema = z.object({
+  actions: z.array(ActionSchema).default([]),
+  decisions: z.array(z.object({ decisionId: z.string(), optionId: z.string() })).default([]),
+  // The AI tier that drove the rivals that month, when it was not ALGORITHMIC
+  tier: z.string().optional(),
+});
+export type MonthInput = z.infer<typeof MonthInputSchema>;
+
+// ============================================================================
 // WorldState Schema
 // ============================================================================
 
@@ -1068,6 +1097,9 @@ export const WorldStateSchema = z.object({
   blocs: z
     .array(z.object({ id: z.string(), side: z.string(), members: z.array(z.string()) }))
     .default([]),
+  // Replay record: absent on saves made before it existed (they cannot be branched)
+  origin: SessionOriginSchema.optional(),
+  inputs: z.array(MonthInputSchema).default([]),
 });
 export type WorldState = z.infer<typeof WorldStateSchema>;
 

@@ -132,8 +132,7 @@
   ],
   "eraStatus": {
     "UKR": {"status":"PART_OF","partOf":"RUS","label":"Ukrainian SSR","note":"A republic of the Soviet Union until August 1991."},
-    "BLR": {"status":"PART_OF","partOf":"RUS","label":"Byelorussian SSR","note":"A republic of the Soviet Union until August 1991."},
-    "PSX": {"status":"NOT_INDEPENDENT","label":"West Bank (occupied)","note":"Under Israeli occupation since 1967; the PLO declared a State of Palestine in November 1988."}
+    "BLR": {"status":"PART_OF","partOf":"RUS","label":"Byelorussian SSR","note":"A republic of the Soviet Union until August 1991."}
   },
   "merged": {
     "RUS": ["UKR","BLR","EST","LVA","LTU","MDA","GEO","ARM","AZE","KAZ","UZB","TKM","KGZ","TJK"]
