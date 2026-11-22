@@ -108,7 +108,7 @@ function States() {
           <EffectChips effects={[{ text: 'World tension up a lot', tone: 'down' }, { text: "Iran's view of you down a lot", tone: 'down' }]} />
         </CardShell>
       </Cell>
-      <Cell label="8. Queued order" spec="ghost with Undo" note="The card's seal flies to the plan; a dashed ghost keeps its place, so nothing reflows.">
+      <Cell label="8. Order in this month" spec="ghost with Undo" note="The card's seal flies to the plan; a dashed ghost keeps its place, so nothing reflows.">
         <CardShell {...court} home="IND" cost={<CardCost seals={1} />} state="queued" onUndo={() => {}}>
           <EffectChips effects={[{ text: "Pakistan's view of you up a lot", tone: 'up' }]} />
         </CardShell>
