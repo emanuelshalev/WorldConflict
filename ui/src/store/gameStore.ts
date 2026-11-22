@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 import { pcCost } from '../lib/actions';
+import { type CodexPayload, type LearnLevel, LEVEL_RULES } from '../lib/codexMatch';
+import * as learnLib from '../lib/learn';
 
 export type TurnPhase = 'news' | 'briefing' | 'diplomacy' | 'military' | 'domestic' | 'confirm';
 
@@ -565,7 +567,7 @@ function writeFlag(key: string, on: boolean): void {
   }
 }
 
-export interface GameState {
+export interface GameState extends CodexSlice {
   screen: Screen;
   setScreen: (screen: Screen) => void;
   guestId: string;
@@ -821,6 +823,7 @@ function loadPlayer(): PlayerAccount | null {
 }
 
 export const useGameStore = create<GameState>((set) => ({
+  ...createCodexSlice(set),
   screen: 'title',
   setScreen: (screen) => set({ screen }),
   guestId: loadGuestId(),
@@ -1348,3 +1351,122 @@ export function useViewCountry(id: string | null): PlayerViewCountry | null {
   if (!id) return null;
   return playerView.find((c) => c.id === id) ?? null;
 }
+
+// ============================================================================
+// Codex and learn store (design-learn.md §7-8, D-53): codex payload per game,
+// familiarity level and local learn progress. Learn data stays in localStorage.
+// ============================================================================
+
+export type { CodexEntry, CodexPayload, LearnLevel, Situation } from '../lib/codexMatch';
+export type { LearnPrefs, LearnState, NudgeKey } from '../lib/learn';
+
+export interface CodexSlice {
+  /** `GET /api/codex` for the current game; null before it loads or if it failed. */
+  codex: CodexPayload | null;
+  codexStatus: 'idle' | 'loading' | 'ready' | 'error';
+  learn: learnLib.LearnState;
+  /** Entries no longer marked (learned or faded): pass to `match({ known, knownVersion })`. */
+  codexKnown: Set<string>;
+  codexKnownVersion: number;
+  /** `I` key: marks hidden for this page session only (the saved level is unchanged). */
+  codexMarksHidden: boolean;
+  setLearnLevel: (level: LearnLevel) => void;
+  /** The familiarity question was answered or skipped ("Take office" keeps the preselection). */
+  markFamiliarityAsked: () => void;
+  setLearnPref: <K extends keyof learnLib.LearnPrefs>(key: K, value: learnLib.LearnPrefs[K]) => void;
+  toggleCodexMarks: (hidden?: boolean) => void;
+  /** Entries rendered on a screen; returns the ids met for the first time. */
+  noteCodexSeen: (ids: Iterable<string>, where: { title: string; date: string }) => string[];
+  noteCodexOpened: (id: string, layer?: 1 | 2) => void;
+  markCodexLearned: (id: string) => void;
+  resetCodexLearned: () => void;
+  clearCodexProgress: () => void;
+  noteLearnNudge: (key: learnLib.NudgeKey) => void;
+}
+
+type SetState = (partial: Partial<GameState> | ((s: GameState) => Partial<GameState>)) => void;
+
+function createCodexSlice(set: SetState): CodexSlice {
+  const initial = learnLib.noteSession(learnLib.loadLearn());
+  learnLib.saveLearn(initial);
+  /** Apply a learn update, persist it, and bump the known version when the known set changed. */
+  const update = (fn: (l: learnLib.LearnState) => learnLib.LearnState) =>
+    set((s) => {
+      const learn = fn(s.learn);
+      learnLib.saveLearn(learn);
+      const known = learnLib.knownIds(learn);
+      const same = known.size === s.codexKnown.size && [...known].every((id) => s.codexKnown.has(id));
+      return same ? { learn } : { learn, codexKnown: known, codexKnownVersion: s.codexKnownVersion + 1 };
+    });
+  return {
+    codex: null,
+    codexStatus: 'idle',
+    learn: initial,
+    codexKnown: learnLib.knownIds(initial),
+    codexKnownVersion: 0,
+    codexMarksHidden: false,
+    setLearnLevel: (level) => update((l) => learnLib.setLevel(l, level)),
+    markFamiliarityAsked: () => update(learnLib.markAsked),
+    setLearnPref: (key, value) => update((l) => learnLib.setPref(l, key, value)),
+    toggleCodexMarks: (hidden) => set((s) => ({ codexMarksHidden: hidden ?? !s.codexMarksHidden })),
+    noteCodexSeen: (ids, where) => {
+      let met: string[] = [];
+      update((l) => {
+        const r = learnLib.noteSeen(l, ids, where);
+        met = r.newlyMet;
+        return r.state;
+      });
+      return met;
+    },
+    noteCodexOpened: (id, layer = 1) => update((l) => learnLib.noteOpened(l, id, layer)),
+    markCodexLearned: (id) => update((l) => learnLib.markLearned(l, id)),
+    resetCodexLearned: () => update(learnLib.resetLearned),
+    clearCodexProgress: () => update(learnLib.clearProgress),
+    noteLearnNudge: (key) => update((l) => learnLib.noteNudge(l, key)),
+  };
+}
+
+/** Whether text gets underlines right now: Guide me, and not hidden with `I` (D-53). */
+export function codexMarksOn(s: Pick<GameState, 'learn' | 'codexMarksHidden'>): boolean {
+  return !s.codexMarksHidden && LEVEL_RULES[s.learn.level].marks;
+}
+
+let codexInFlight: string | null = null;
+
+/**
+ * Load the codex for a game once (new game, load). Failures leave `codex` null and the game
+ * fully playable. The request carries only the scenario and flashpoint ids.
+ */
+export async function fetchCodex(scenarioId: string, flashpointId: string | null): Promise<void> {
+  const current = useGameStore.getState().codex;
+  const key = `${scenarioId}|${flashpointId ?? ''}`;
+  if (current && `${current.scenarioId}|${current.flashpointId ?? ''}` === key) return;
+  if (codexInFlight === key) return;
+  codexInFlight = key;
+  useGameStore.setState({ codexStatus: 'loading' });
+  try {
+    const params = new URLSearchParams();
+    if (scenarioId) params.set('scenario', scenarioId);
+    if (flashpointId) params.set('flashpoint', flashpointId);
+    const response = await fetch(`${API_BASE}/codex?${params.toString()}`);
+    const data = await response.json();
+    if (!response.ok || !data.success) throw new Error(data.error || 'Codex unavailable');
+    if (codexInFlight !== key) return; // a newer game asked for another codex meanwhile
+    const payload = { ...(data as CodexPayload & { success?: true }) };
+    delete payload.success;
+    useGameStore.setState({ codex: payload, codexStatus: 'ready' });
+  } catch {
+    if (codexInFlight === key) useGameStore.setState({ codexStatus: 'error' });
+  } finally {
+    if (codexInFlight === key) codexInFlight = null;
+  }
+}
+
+// Fetch the codex whenever a different game (scenario or flashpoint) is in the store
+useGameStore.subscribe((s, prev) => {
+  const w = s.worldState;
+  if (!w) return;
+  const p = prev.worldState;
+  if (p && p.scenarioId === w.scenarioId && p.flashpointId === w.flashpointId && s.codex) return;
+  void fetchCodex(w.scenarioId ?? '', w.flashpointId ?? null);
+});

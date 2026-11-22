@@ -116,7 +116,7 @@ describe("codex data files", () => {
   it("every short line is at most 140 characters and has no em dash", () => {
     for (const e of loader.loadCodex().entries) {
       expect(e.short.length).toBeLessThanOrEqual(140);
-      expect(JSON.stringify(e)).not.toContain("—");
+      expect(JSON.stringify(e)).not.toContain(String.fromCharCode(0x2014));
     }
   });
 });
