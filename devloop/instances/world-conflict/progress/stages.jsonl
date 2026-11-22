@@ -68,3 +68,9 @@
 {"t":"2026-11-22T22:14:40.705Z","iteration":3,"stage":"Use","kind":"unit-done","units":10,"note":"QA + 9 sessions done"}
 {"t":"2026-11-22T22:14:46.109Z","iteration":3,"stage":"Use","kind":"end"}
 {"t":"2026-11-22T22:14:46.109Z","iteration":3,"stage":"Triage","kind":"start"}
+{"t":"2026-11-22T23:32:43.375Z","iteration":3,"stage":"Triage","kind":"end"}
+{"t":"2026-11-22T23:32:43.375Z","iteration":3,"stage":"Report","kind":"start"}
+{"t":"2026-11-22T23:32:48.582Z","iteration":3,"stage":"Report","kind":"end"}
+{"t":"2026-11-22T23:32:48.582Z","iteration":3,"stage":"Gate","kind":"start"}
+{"t":"2026-11-22T23:32:53.855Z","iteration":4,"stage":"Design","kind":"end"}
+{"t":"2026-11-22T23:32:53.855Z","iteration":4,"stage":"Plan","kind":"start"}
