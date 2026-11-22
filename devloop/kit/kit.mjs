@@ -112,6 +112,11 @@ export async function launch({ variant = 'qa', device = variant, out = `/tmp/pla
           break;
         }
       }
+      // Disclosure toggles (<summary>) have no button role in Playwright: a person can still press them.
+      if (!loc) {
+        const sum = page.locator('summary').filter({ hasText: name });
+        if ((await sum.count()) > nth) loc = sum.nth(nth);
+      }
       if (!loc) loc = page.getByRole('button', { name }).nth(nth);
       try {
         await loc.click({ timeout });
