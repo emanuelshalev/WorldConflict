@@ -69,6 +69,77 @@ const CountryOverrideSchema = z
   .partial();
 export type CountryOverride = z.infer<typeof CountryOverrideSchema>;
 
+// ============================================================================
+// Era map (display only: the title globe; the engine ignores every field here)
+// See src/core/era-map.ts and design-worldmap.md 4.2. All optional, so older
+// scenario files keep loading.
+// ============================================================================
+
+const LngLatSchema = z.tuple([
+  z.number().min(-180).max(180), // longitude
+  z.number().min(-85).max(85), // latitude
+]);
+
+export const SituationSchema = z.object({
+  id: z.string().regex(/^[a-z0-9-]+$/), // unique within the scenario
+  title: z.string().min(1).max(40),
+  kind: z.enum(["WAR", "SEA", "REGIME", "NUCLEAR", "TRUCE"]),
+  phase: z.enum(["ACTIVE", "BREWING", "FROZEN"]).default("ACTIVE"),
+  at: LngLatSchema, // [lng, lat] of the pin
+  countries: z.array(z.string()).default([]), // roster ids: the sides shown on the card
+  line: z
+    .object({ from: z.string(), to: z.string(), style: z.enum(["front", "rival", "blockade"]) })
+    .optional(),
+  weight: z.number().int().min(1).max(5), // the calm view shows the top 5
+  blurb: z.string().min(1).max(160),
+  since: z
+    .string()
+    .regex(/^\d{4}(-\d{2})?$/)
+    .optional(), // "1958" or "1958-11"
+  flashpointId: z.string().optional(), // "Play it as a Flashpoint"
+  codexId: z.string().optional(), // G12 situation briefing
+  sources: z.array(z.string()).default([]),
+});
+export type Situation = z.infer<typeof SituationSchema>;
+
+export const BlocSideSchema = z.enum(["WEST", "WEST2", "EAST", "EAST2", "NONALIGNED", "OTHER"]);
+export const BlocSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  side: BlocSideSchema,
+  members: z.array(z.string()), // ADM0_A3 codes, roster or not (CZE, HUN, DDR...)
+  note: z.string().optional(),
+});
+export type Bloc = z.infer<typeof BlocSchema>;
+
+export const EraStatusSchema = z.object({
+  status: z.enum(["PART_OF", "NOT_INDEPENDENT"]),
+  partOf: z.string().optional(), // required in practice for PART_OF (checked in tests)
+  label: z.string(), // era name: "Ukrainian SSR", "Trucial States"
+  note: z.string().default(""),
+});
+export type EraStatus = z.infer<typeof EraStatusSchema>;
+
+export const MapLabelSchema = z.object({
+  at: LngLatSchema,
+  name: z.string(),
+  rank: z.number().int().min(2).max(3),
+});
+export type MapLabel = z.infer<typeof MapLabelSchema>;
+
+const EraMapFieldsSchema = z.object({
+  blocs: z.array(BlocSchema).default([]),
+  situations: z.array(SituationSchema).max(12).default([]),
+  // Keys: roster ids (or any ADM0_A3 code) that are not states in this era
+  eraStatus: z.record(z.string(), EraStatusSchema).default({}),
+  // Extra ADM0_A3 polygons painted as part of a parent, keyed by parent:
+  // { "RUS": ["UKR", "BLR", "EST", ...] } (the Soviet republics)
+  merged: z.record(z.string(), z.array(z.string())).default({}),
+  mapFocus: LngLatSchema.optional(), // where the globe turns on this era
+  mapLabels: z.array(MapLabelSchema).default([]), // era-only names: Czechoslovakia...
+  labelAllow: z.array(z.string()).optional(), // pre-1992: non-roster ADM0 names allowed
+});
+
 export const ScenarioSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -110,8 +181,18 @@ export const ScenarioSchema = z.object({
   briefing: z.array(z.string()).default([]),
   // Hot zones that are not states (Gaza, the West Bank): see systems/hotspots.ts
   hotspots: z.array(HotspotSchema).default([]),
+  ...EraMapFieldsSchema.shape,
 });
 export type ScenarioData = z.infer<typeof ScenarioSchema>;
+
+/** Starting stability: shared by the game (createCountryState) and the era map. */
+export function initialStability(
+  profile: CountryProfile,
+  override: { stability?: number },
+  multipliers: { stability: number },
+): number {
+  return Math.min(100, (override.stability ?? profile.stability) * multipliers.stability);
+}
 
 // ============================================================================
 // Flashpoints: short authored sessions on top of a base scenario
@@ -545,10 +626,7 @@ export class DataLoader {
       (override.nuclearStatus as NuclearStatus) ?? profile.military.nuclearStatus;
 
     const legitimacy = override.legitimacy ?? profile.legitimacy;
-    const stability = Math.min(
-      100,
-      (override.stability ?? profile.stability) * multipliers.stability,
-    );
+    const stability = initialStability(profile, override, multipliers);
 
     return CountryStateSchema.parse({
       id: profile.id,
