@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "iteration": 4,
+  "stage": "Plan",
+  "stageSince": "2026-11-22T23:32:53.855Z",
+  "records": [
+    {
+      "gate": "verify",
+      "result": "pass",
+      "commit": "06f937bc896e487fb5bef856d8ad95611da04640",
+      "codeTree": "45fe970100f866aa",
+      "evidence": "devloop/instances/world-conflict/journal.md",
+      "note": "backfilled: full gate green at the iteration 3 merge (603 tests, 89/89 guarded findings, 22 visual baselines), journal 'Published iter-3 to main'",
+      "t": "2026-11-22T23:32:43.375Z",
+      "iteration": 3,
+      "stage": "Triage"
+    }
+  ],
+  "merges": [],
+  "overrides": [],
+  "publishes": [
+    { "t": "2026-11-22T23:32:48.582Z", "iteration": 3, "commit": "06f937bc896e487fb5bef856d8ad95611da04640", "tag": "iter-3", "branch": "main", "pushed": true, "note": "backfilled, published by hand before the controller" }
+  ]
+}

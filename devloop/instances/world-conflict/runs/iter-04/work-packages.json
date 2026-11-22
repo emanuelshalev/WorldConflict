@@ -1,0 +1,10 @@
+[
+  { "id": "WP4-1", "title": "Loop controller", "detail": "Deterministic controller (kit/loop.mjs): stages, gates, overrides; merge.mjs, publish.mjs, pre-push hook, bash guard (D-77).", "goal": "P10", "priority": "P0", "status": "doing" },
+  { "id": "WP4-2", "title": "Status page protocol", "detail": "status-refresh.mjs by tier, generated sections, as-of stamps, page-check --freshness; refresh owed by loop events (method/status-page.md).", "goal": "P10", "priority": "P0", "status": "doing" },
+  { "id": "WP4-3", "title": "Quality scorecard", "detail": "Quality evaluation as a platform capability (D-78).", "goal": "P13", "priority": "P1", "status": "planned" },
+  { "id": "WP4-4", "title": "Stability package", "detail": "F-02-8 and the 16 guard gaps with the guards proposed in runs/iter-03/qa-repro.md (D-76).", "goal": "G13", "priority": "P0", "status": "planned" },
+  { "id": "WP4-5", "title": "Iteration 3 repro: the six NEW items", "detail": "Map mode lost every month and hidden on phones, one ceasefire order ends the Ukraine war in month 3, island tap tolerance, UN board 18 votes, score shows 0 before counting.", "goal": "G13", "priority": "P1", "status": "planned" },
+  { "id": "WP4-6", "title": "Guided agenda", "detail": "A month that asks for decisions (RS-006, design-agenda.md).", "goal": "G4", "priority": "P1", "status": "planned" },
+  { "id": "WP4-7", "title": "Order cards", "detail": "Order cards on desk and map (RS-007, design-order-cards.md).", "goal": "G7", "priority": "P1", "status": "planned" },
+  { "id": "WP4-8", "title": "Accept all is not the winning strategy", "detail": "Balance call for the Game Designer before a harness band is set (control seeds: 5/7, 7/7 with mission picks).", "goal": "G5", "priority": "P1", "status": "planned" }
+]

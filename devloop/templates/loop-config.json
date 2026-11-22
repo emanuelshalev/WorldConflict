@@ -1,0 +1,123 @@
+{
+  "stages": [
+    "Plan",
+    "Design",
+    "Build",
+    "Verify",
+    "Use",
+    "Triage",
+    "Report",
+    "Gate"
+  ],
+  "transitions": {
+    "Plan": [
+      "Design",
+      "Build"
+    ],
+    "Design": [
+      "Build"
+    ],
+    "Build": [
+      "Verify"
+    ],
+    "Verify": [
+      "Use",
+      "Build"
+    ],
+    "Use": [
+      "Triage"
+    ],
+    "Triage": [
+      "Report"
+    ],
+    "Report": [
+      "Gate"
+    ],
+    "Gate": [
+      "Plan"
+    ]
+  },
+  "gates": [
+    "verify",
+    "qa",
+    "triage",
+    "status-refresh"
+  ],
+  "rules": {
+    "verify-before-use": {
+      "on": "enter:Use",
+      "gate": "verify",
+      "match": "code",
+      "why": "The panel only sees a build that passed the verify gate"
+    },
+    "qa-before-use": {
+      "on": "enter:Use",
+      "gate": "qa",
+      "match": "code",
+      "why": "QA verifies the build before the customer round, not alongside it"
+    },
+    "triage-before-report": {
+      "on": "enter:Report",
+      "gate": "triage",
+      "match": "iteration",
+      "why": "The report states triage decisions"
+    },
+    "verify-before-publish": {
+      "on": "publish",
+      "gate": "verify",
+      "match": "commit",
+      "why": "Only an exact verified commit is published"
+    },
+    "verify-before-merge": {
+      "on": "merge",
+      "gate": "verify",
+      "match": "code",
+      "why": "Verify passes on the merge result before any merge"
+    },
+    "status-refresh-owed": {
+      "on": "enter:*",
+      "match": "owed",
+      "why": "Refresh the status page after merges and customer rounds"
+    },
+    "t3-before-plan": {
+      "on": "enter:Plan",
+      "gate": "status-refresh",
+      "match": "stage",
+      "minTier": "T3",
+      "why": "Close the iteration on the status page before the next Plan"
+    }
+  },
+  "code": {
+    "include": [
+      "src/**",
+      "tests/**",
+      "package.json",
+      "package-lock.json",
+      "devloop/kit/**"
+    ],
+    "exclude": []
+  },
+  "sharedBranch": "dev/main-loop",
+  "publishBranch": "main",
+  "remote": "origin",
+  "tagPrefix": "iter-",
+  "sharedState": true,
+  "state": "state.json",
+  "events": "events.jsonl",
+  "ledger": "../ledger.md",
+  "progress": {
+    "config": "../progress/config.json",
+    "inject": {
+      "page": "../status.html",
+      "marker": "PROGRESS",
+      "args": []
+    }
+  },
+  "owes": {
+    "merge": "T1",
+    "publish": "T1",
+    "exit:Use": "T2",
+    "exit:Triage": "T2"
+  },
+  "statusProtocol": "../status-protocol.json"
+}

@@ -1,0 +1,139 @@
+{
+  "stages": [
+    "Plan",
+    "Design",
+    "Build",
+    "Verify",
+    "Use",
+    "Triage",
+    "Report",
+    "Gate"
+  ],
+  "transitions": {
+    "Plan": [
+      "Design",
+      "Build"
+    ],
+    "Design": [
+      "Build"
+    ],
+    "Build": [
+      "Verify"
+    ],
+    "Verify": [
+      "Use",
+      "Build"
+    ],
+    "Use": [
+      "Triage"
+    ],
+    "Triage": [
+      "Report"
+    ],
+    "Report": [
+      "Gate"
+    ],
+    "Gate": [
+      "Plan"
+    ]
+  },
+  "gates": [
+    "verify",
+    "qa",
+    "triage",
+    "status-refresh"
+  ],
+  "rules": {
+    "verify-before-use": {
+      "on": "enter:Use",
+      "gate": "verify",
+      "match": "code",
+      "why": "The panel only sees a build that passed the full verify gate (principle 7)"
+    },
+    "qa-before-use": {
+      "on": "enter:Use",
+      "gate": "qa",
+      "match": "code",
+      "why": "QA verifies the build before the customer round, not alongside it (iteration 3 ran them together)"
+    },
+    "triage-before-report": {
+      "on": "enter:Report",
+      "gate": "triage",
+      "match": "iteration",
+      "why": "The report states triage decisions; record triage when patterns and decisions are committed"
+    },
+    "verify-before-publish": {
+      "on": "publish",
+      "gate": "verify",
+      "match": "commit",
+      "why": "main is what the owner playtests: only an exact commit with a green verify gate is published (D-62)"
+    },
+    "verify-before-merge": {
+      "on": "merge",
+      "gate": "verify",
+      "match": "code",
+      "why": "verify must pass before any merge (principle 12); the pass must be on the merge result"
+    },
+    "status-refresh-owed": {
+      "on": "enter:*",
+      "match": "owed",
+      "why": "A merge owes a T1 refresh, Use and Triage done owe T2 (method/status-page.md); the owner follows the loop on the status page (principle 15)"
+    },
+    "t3-before-plan": {
+      "on": "enter:Plan",
+      "gate": "status-refresh",
+      "match": "stage",
+      "minTier": "T3",
+      "why": "The finished iteration is closed on the status page (T3: summary, consumption, goals, journal) before the next Plan"
+    }
+  },
+  "code": {
+    "include": [
+      "src/**",
+      "ui/**",
+      "data/**",
+      "tests/**",
+      "scripts/**",
+      "prisma/**",
+      "package.json",
+      "package-lock.json",
+      "tsconfig.json",
+      "vitest.config.ts",
+      "vitest.balance.config.ts",
+      "prisma.config.ts",
+      "biome.json",
+      ".eslintrc.json",
+      "docs/GAMEPLAY.md",
+      "devloop/kit/**",
+      "devloop/instances/world-conflict/verify.config.mjs",
+      "devloop/instances/world-conflict/regressions.yaml",
+      "devloop/instances/world-conflict/smoke.mjs",
+      "devloop/instances/world-conflict/glossary.md",
+      "devloop/instances/world-conflict/scenarios-qa/**"
+    ],
+    "exclude": []
+  },
+  "sharedBranch": "dev/rc1-synthetic-loop",
+  "publishBranch": "main",
+  "remote": "origin",
+  "tagPrefix": "iter-",
+  "sharedState": true,
+  "state": "state.json",
+  "events": "events.jsonl",
+  "ledger": "../ledger.md",
+  "progress": {
+    "config": "../progress/config.json",
+    "inject": {
+      "page": "../../../../dev_plan/project_status.html",
+      "marker": "PROGRESS",
+      "args": []
+    }
+  },
+  "owes": {
+    "merge": "T1",
+    "publish": "T1",
+    "exit:Use": "T2",
+    "exit:Triage": "T2"
+  },
+  "statusProtocol": "../status-protocol.json"
+}

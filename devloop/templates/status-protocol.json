@@ -1,0 +1,238 @@
+{
+  "page": "status.html",
+  "tabSelector": "#tabs button",
+  "loopConfig": "loop/config.json",
+  "tierEvents": {
+    "T0": [
+      {
+        "loop": [
+          "init",
+          "transition",
+          "progress"
+        ]
+      }
+    ],
+    "T1": [
+      {
+        "loop": [
+          "merge",
+          "publish",
+          "block",
+          "unblock"
+        ]
+      },
+      {
+        "gitMerges": true
+      }
+    ],
+    "T2": [
+      {
+        "loopTransitionFrom": [
+          "Use",
+          "Triage"
+        ]
+      },
+      {
+        "gitPaths": [
+          "real-signals"
+        ]
+      }
+    ],
+    "T3": [
+      {
+        "loopTransitionFrom": [
+          "Gate"
+        ]
+      }
+    ],
+    "T4": []
+  },
+  "sections": [
+    {
+      "id": "progress",
+      "tier": "T0",
+      "source": "generated",
+      "el": "progressbox",
+      "run": [
+        "node",
+        "devloop/kit/progress.mjs",
+        "devloop/instances/<product>/progress/config.json",
+        "--inject",
+        "{page}",
+        "PROGRESS"
+      ]
+    },
+    {
+      "id": "loop-state",
+      "tier": "T0",
+      "source": "generated",
+      "el": "stage",
+      "gen": {
+        "kind": "loop"
+      }
+    },
+    {
+      "id": "now",
+      "tier": "T1",
+      "source": "hand",
+      "el": "nowbox",
+      "fields": [
+        "LOOP.now"
+      ]
+    },
+    {
+      "id": "decisions",
+      "tier": "T1",
+      "source": "generated",
+      "el": "decisions",
+      "gen": {
+        "kind": "ledger",
+        "from": "ledger.md"
+      }
+    },
+    {
+      "id": "tasks",
+      "tier": "T1",
+      "source": "generated",
+      "el": "tasks",
+      "gen": {
+        "kind": "tasks",
+        "from": "runs/iter-{NN}/work-packages.json"
+      }
+    },
+    {
+      "id": "blockers",
+      "tier": "T1",
+      "source": "generated",
+      "el": "blockers",
+      "gen": {
+        "kind": "blockers"
+      }
+    },
+    {
+      "id": "stability",
+      "tier": "T1",
+      "source": "generated",
+      "el": "kpis",
+      "gen": {
+        "kind": "stability",
+        "registry": "regressions.yaml",
+        "summary": ".verify/summary.json"
+      }
+    },
+    {
+      "id": "kpis",
+      "tier": "T1",
+      "source": "generated",
+      "el": "kpis",
+      "gen": {
+        "kind": "kpis",
+        "items": [
+          {
+            "label": "Iteration",
+            "kind": "iteration"
+          },
+          {
+            "label": "Recommend",
+            "kind": "feedback",
+            "field": "recommend"
+          },
+          {
+            "label": "Decisions",
+            "kind": "ledger-last",
+            "from": "ledger.md"
+          },
+          {
+            "label": "Guarded findings",
+            "kind": "stability"
+          }
+        ]
+      }
+    },
+    {
+      "id": "feedback",
+      "tier": "T2",
+      "source": "generated",
+      "el": "feedback",
+      "run": [
+        "node",
+        "devloop/kit/feedback-digest.mjs",
+        "devloop/instances/<product>",
+        "0",
+        "--inject",
+        "{page}",
+        "FEEDBACK"
+      ]
+    },
+    {
+      "id": "gate",
+      "tier": "T2",
+      "source": "generated",
+      "el": "gate",
+      "gen": {
+        "kind": "bullets",
+        "from": "gate.md"
+      }
+    },
+    {
+      "id": "iter-summary",
+      "tier": "T2",
+      "source": "hand",
+      "el": "iterations",
+      "fields": [
+        "LOOP.iterations[current].summary"
+      ]
+    },
+    {
+      "id": "usage",
+      "tier": "T3",
+      "source": "generated",
+      "el": "usage",
+      "run": [
+        "node",
+        "devloop/kit/usage-ledger.mjs",
+        "devloop/instances/<product>/usage/registry.json",
+        "--inject",
+        "{page}",
+        "USAGE"
+      ]
+    },
+    {
+      "id": "goals",
+      "tier": "T3",
+      "source": "generated",
+      "el": "goals",
+      "gen": {
+        "kind": "goals",
+        "from": "goals.md"
+      }
+    },
+    {
+      "id": "journal",
+      "tier": "T3",
+      "source": "generated",
+      "el": "journal",
+      "gen": {
+        "kind": "journal",
+        "from": "journal.md"
+      }
+    },
+    {
+      "id": "how",
+      "tier": "T4",
+      "source": "generated",
+      "el": "principles",
+      "gen": {
+        "kind": "how",
+        "from": "../../HOW_WE_WORK.md"
+      },
+      "events": [
+        {
+          "gitPaths": [
+            "../../HOW_WE_WORK.md"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -28,6 +28,15 @@ A higher tier includes the lower ones: a T2 refresh also runs T1 and T0.
 - **Highlights and lowlights:** at most 5 each, facts with numbers, written at T1 and finalised at T3.
 - **Owner decisions:** each one says the question, the options, the recommendation and since when it waits.
 
+## Implementation (kit)
+
+- **Protocol file.** `<instance>/status-protocol.json`: `page` (from the repository root), `tabSelector`, `loopConfig`, `tierEvents` (per tier, the events that make it due: controller event kinds, transitions out of named stages, merges on the shared branch, commits touching paths) and `sections`. A section has `id`, `tier`, `source`, `el` (the page element its stamp line goes under) and one way to produce it: `run` (an external injector such as `progress.mjs`, `{page}` is replaced by the page path), `gen` (a built-in generator: `ledger`, `goals`, `journal`, `stability`, `tasks`, `blockers`, `loop`, `bullets`, `how`, `kpis`), or `derivedFrom` (the page builds it from another section's data). A section may name its own `events` (T4 sections follow the commits of their source). A "generated" section without any of these counts as hand-kept until it gets an injector.
+- **Page blocks.** Generated data goes into `/*GEN:START*/ const GEN = {...}; /*GEN:END*/`, keyed by section id, and the page's renderers read it instead of hand copies; stamps go into `/*STAMPS:START*/ const STAMPS = {...}; /*STAMPS:END*/` as `{ id: { t, commit, tier, source, el } }`, and the page shows one discreet "as of" line under each section (hover lists every section's stamp).
+- **Hand fields.** The Group Manager writes them in the page, then confirms with `status-refresh.mjs <protocol> --tier T --hand now,iter-current`, which stamps them. A refresh lists every hand section of its tiers whose stamp is older than its tier's last event as owed, and records `status-refresh` (with its tier) with the controller only when nothing is owed, no injector failed and the page check passed.
+- **Freshness.** `page-check.mjs <page> --freshness <protocol>` (or `status-refresh.mjs <protocol> --freshness`) fails on a stale stamp; a hand section that was never stamped is listed as owed without failing, so adopting the protocol does not require inventing stamps.
+- **Controller.** The loop config's `owes` (`merge` and `publish`: T1, `exit:Use` and `exit:Triage`: T2) marks a refresh owed; the rule `match: "owed"` on `enter:*` blocks the next transition until a refresh of that tier or higher is recorded; `enter:Plan` needs a T3 refresh recorded during Gate (`match: "stage", minTier: "T3"`). `merge.mjs` and `publish.mjs` run the owed tier themselves (generated sections need no one) and print the hand fields still owed.
+- **Work packages and blockers.** Tasks come from `runs/iter-NN/work-packages.json` (`[{ id, title, detail, goal, priority, status }]`), blockers from `loop block <id> --what ... --needs ...` / `loop unblock` and from open S1/S2 patterns with a `severity` in the latest `patterns.json`.
+
 ## Checks
 
 - `page-check` (script errors on every tab) runs on every refresh.

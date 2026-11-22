@@ -1,6 +1,6 @@
 # How we work (current state)
 
-Version 1.4, 2026-11-23. Changed only through journal entries (`instances/*/journal.md`) and mirrored on the instance status page.
+Version 1.5, 2026-11-23. Changed only through journal entries (`instances/*/journal.md`) and mirrored on the instance status page.
 
 ## Principles
 1. **Customers decide, builders build.** Synthetic customers run in fresh sessions, blind to design intent and the goal list, on a different model from the builders where possible.
@@ -18,7 +18,8 @@ Version 1.4, 2026-11-23. Changed only through journal entries (`instances/*/jour
 13. **Docs follow the code.** A work package is done only when the docs it changes (player guide, API, architecture, agent guidance) say what the code now does.
 14. **Compare like with like.** Each persona replays a fixed control scenario every iteration plus one rotating scenario; single-score moves of one point are noise unless behaviour backs them.
 15. **Report often**: the status page and journal are updated at each stage and after every merge, so the owner can follow without asking.
-16. **Estimate and learn**: record every stage transition (and units of work done) with `kit/progress.mjs`, so the status page shows progress and ETAs from our own history; review estimate accuracy at each Report stage and adjust the method when a stage stays off.
+16. **Orchestration is code, judgment is ours.** A deterministic controller (`kit/loop.mjs`, `method/controller.md`) owns stage transitions, mandatory gates (verify on the exact commit before merge and publish, QA before the customer round, status refresh after a merge) and the record of every transition; the Group Manager owns priorities, severity, trade-offs and what feedback means. Merges and publishes go through `kit/merge.mjs` and `kit/publish.mjs`, hooks block the dangerous git commands in the shared checkout, and a rule is skipped only with `loop override <rule> --reason`, which drafts a ledger row.
+17. **Estimate and learn**: record every stage transition (and units of work done) with `kit/progress.mjs` (the controller does it on every `loop advance`), so the status page shows progress and ETAs from our own history; review estimate accuracy at each Report stage and adjust the method when a stage stays off.
 
 ## Iteration
 | Stage | Who | Output |
