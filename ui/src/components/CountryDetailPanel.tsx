@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { countryNames, queueOrder, useGameStore, useViewCountry } from '../store/gameStore';
+import { countryNames, useGameStore, useViewCountry } from '../store/gameStore';
 import type { UncertainRange } from '../store/gameStore';
-import { actionLabel, pcCost } from '../lib/actions';
+import { ordersFor } from '../lib/orders';
+import { OrderCard } from './orders/OrderCard';
 
 function fmtMoney(n: number): string {
   if (n >= 1e12) return `$${(n / 1e12).toFixed(1)}T`;
@@ -23,7 +24,7 @@ const S = {
     position: 'absolute' as const,
     top: 64,
     right: 12,
-    width: 'min(340px, calc(100vw - 24px))',
+    width: 'min(380px, calc(100vw - 24px))',
     maxHeight: 'calc(100% - 100px)',
     overflowY: 'auto' as const,
     background: 'rgba(20,27,39,0.96)',
@@ -70,35 +71,17 @@ const LEVEL_COLORS: Record<string, string> = {
   WAR: '#ff4040',
 };
 
-// Same names as the desk's "All orders" list (ui/src/lib/actions.ts)
-type DossierOrder = { type: string; icon: string; label?: string; params?: Record<string, unknown>; danger?: boolean };
-const DOSSIER_ORDERS: DossierOrder[] = [
-  { type: 'DIPLOMACY_IMPROVE_RELATIONS', icon: '🤝' },
-  { type: 'DIPLOMACY_DENOUNCE', icon: '📢' },
-  { type: 'DIPLOMACY_PROPOSE_ALLIANCE', icon: '🛡' },
-  { type: 'INTEL_GATHER', icon: '🕵' },
-  { type: 'INTEL_DESTABILIZE', icon: '💣' },
-  { type: 'MILITARY_DEPLOY_BORDER', icon: '🪖', danger: true },
-  { type: 'MILITARY_AIRSTRIKE', icon: '✈️', label: 'Strike military targets in', params: { targetType: 'MILITARY' }, danger: true },
-  { type: 'DIPLOMACY_DECLARE_WAR', icon: '⚔️', danger: true },
-];
-const DOSSIER_ORDERS_AT_WAR: DossierOrder[] = [{ type: 'DIPLOMACY_PROPOSE_CEASEFIRE', icon: '🕊' }];
-
 export function CountryDetailPanel() {
   const selectedCountryId = useGameStore((s) => s.selectedCountryId);
   const selectCountry = useGameStore((s) => s.selectCountry);
-  const openModal = useGameStore((s) => s.openModal);
+  const setFocus = useGameStore((s) => s.setFocus);
   const gameOver = useGameStore((s) => s.gameOver);
+  const me = useGameStore((s) => s.worldState?.countries.find((c) => c.id === s.worldState?.playerCountryId));
   const view = useViewCountry(selectedCountryId);
   const [showHistory, setShowHistory] = useState(false);
+  const [allOrders, setAllOrders] = useState(false);
 
   if (!view) return null;
-
-  const queueAction = async (type: string, label: string, params?: Record<string, unknown>) => {
-    // Same checks as the desk and the map menu; only preview what was actually queued
-    const ok = await queueOrder({ type, label, targetCountryId: view.isPlayer ? undefined : view.id, params });
-    if (ok) openModal('actionPreview');
-  };
 
   const sys = view.politicalSystem;
   const election =
@@ -210,25 +193,27 @@ export function CountryDetailPanel() {
         </div>
       )}
 
-      {!view.isPlayer && !gameOver && (
+      {!view.isPlayer && !gameOver && me && (
         <div style={S.section}>
-          <div style={S.sectionTitle}>Actions</div>
-          {(!view.atWarWith.includes(useGameStore.getState().worldState?.playerCountryId ?? '')
-            ? DOSSIER_ORDERS
-            : DOSSIER_ORDERS_AT_WAR
-          ).map((o) => {
-            const label = o.label ? `${o.label} ${view.name}` : actionLabel(o.type, view.name);
-            const pc = pcCost(o.type);
+          <div style={S.sectionTitle}>Orders for {view.name}</div>
+          {(() => {
+            // The same registry, cards and ordering as the map menu; "All" is the desk's list
+            const all = ordersFor(me, view, { expanded: true });
+            const short = ordersFor(me, view);
+            const list = allOrders || short.length === 0 ? all : short;
             return (
-              <button
-                key={label}
-                style={o.danger ? { ...S.actionBtn, borderColor: '#7a2a2a', color: '#ff9090' } : S.actionBtn}
-                onClick={() => queueAction(o.type, label, o.params)}
-              >
-                {o.icon} {label} <span style={{ color: '#F2A93B' }}>{pc ? `◆${pc}` : 'free'}</span>
-              </button>
+              <div className="ord-list dossier-orders">
+                {list.map((def) => (
+                  <OrderCard key={def.id} def={def} targetId={view.id} variant="row" compact onOpen={(i) => setFocus({ kind: 'order', id: String(i) })} />
+                ))}
+                {all.length > short.length && short.length > 0 && (
+                  <button className="ord-more" onClick={() => setAllOrders((v) => !v)} aria-expanded={allOrders}>
+                    {allOrders ? 'Fewer orders' : `All ${all.length} orders for ${view.name}`}
+                  </button>
+                )}
+              </div>
             );
-          })}
+          })()}
         </div>
       )}
     </div>

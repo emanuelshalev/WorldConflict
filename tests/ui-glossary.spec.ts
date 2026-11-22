@@ -44,14 +44,11 @@ const PENDING: ReadonlySet<string> = new Set<string>([
   "ui/src/components/desk/CommandRail.tsx :: Approve",
   "ui/src/components/desk/CommandRail.tsx :: /6 · In person",
   "ui/src/lib/budget.ts :: meetings in person",
-  // WP4 (orders design): queueOrder() stops raising duplicate errors
-  "ui/src/store/gameStore.ts :: \" is already on your desk this month",
   // WP6 (orders design): desk catalog, staff picks, map menu
   "ui/src/components/desk/Detail.tsx :: % def",
   "ui/src/components/desk/Detail.tsx :: Your calendar is full (3 in person). Send a deputy to another meeting to take this one.",
   "ui/src/components/desk/Detail.tsx :: Staff suggests",
   "ui/src/components/desk/Detail.tsx :: months left · leadership score",
-  "ui/src/components/MapActionMenu.tsx :: Already on your desk",
   // Month design WP-D (Navigator) and WP-B (staff.ts)
   "ui/src/components/desk/Navigator.tsx :: /3 in person",
   "ui/src/components/desk/Navigator.tsx :: Suggested",

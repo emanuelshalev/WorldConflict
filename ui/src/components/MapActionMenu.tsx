@@ -1,95 +1,11 @@
-import { useEffect, useLayoutEffect, useRef } from 'react';
-import { IconFileText, IconX } from '@tabler/icons-react';
-import {
-  type CountryFull,
-  type PendingAction,
-  type PlayerViewCountry,
-  capitalLeft,
-  orderKey,
-  queueOrder,
-  useGameStore,
-} from '../store/gameStore';
-import { pcCost } from '../lib/actions';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { IconChevronDown, IconChevronUp, IconFileText, IconX } from '@tabler/icons-react';
+import { useGameStore } from '../store/gameStore';
 import { flag } from '../lib/format';
-import { ActionIcon } from '../scenes/icons';
-import { actionFamily } from '../scenes/actionIcons';
-
-/** One order the map offers for a country: short button text plus the desk's full label. */
-interface MapOrder {
-  type: string;
-  short: string;
-  label: string;
-  params?: Record<string, unknown>;
-  danger?: boolean;
-}
-
-/**
- * The orders that make sense against this country right now, most relevant first. Labels match
- * the desk catalog ("Strike military targets in Iran"), so the tray and the report read the same.
- */
-function mapOrdersFor(me: CountryFull, view: PlayerViewCountry): MapOrder[] {
-  const id = view.id;
-  const name = view.name;
-  const atWar = me.atWarWith.includes(id);
-  const allied = me.alliances.includes(id);
-  const deployed = me.borderDeployments.some((d) => d.targetCountryId === id);
-  const theirProgram = view.nuclearStatus === 'DEVELOPING';
-  const myBomb = me.nuclear.status === 'ARMED' || me.nuclear.status === 'TESTED';
-  const otherWar = view.atWarWith.some((x) => x !== me.id);
-  const troops: MapOrder = deployed
-    ? { type: 'MILITARY_WITHDRAW_BORDER', short: 'Withdraw troops', label: `Withdraw troops facing ${name}` }
-    : { type: 'MILITARY_DEPLOY_BORDER', short: 'Mass troops', label: `Mass troops facing ${name}`, danger: true };
-  const strike: MapOrder = {
-    type: 'MILITARY_AIRSTRIKE',
-    short: 'Airstrike',
-    label: `Strike military targets in ${name}`,
-    params: { targetType: 'MILITARY' },
-    danger: true,
-  };
-  const nukeSites: MapOrder = {
-    type: 'MILITARY_AIRSTRIKE',
-    short: 'Hit nuclear sites',
-    label: `Strike nuclear sites in ${name}`,
-    params: { targetType: 'NUCLEAR' },
-    danger: true,
-  };
-  const spy: MapOrder = { type: 'INTEL_GATHER', short: 'Spy on', label: `Spy on ${name}` };
-  const sabotage: MapOrder = { type: 'INTEL_SABOTAGE', short: 'Sabotage', label: `Sabotage ${name}` };
-  const destabilize: MapOrder = { type: 'INTEL_DESTABILIZE', short: 'Destabilize', label: `Destabilize ${name}` };
-
-  if (atWar) {
-    const out: MapOrder[] = [
-      { type: 'DIPLOMACY_PROPOSE_CEASEFIRE', short: 'Ceasefire', label: `Propose ceasefire to ${name}` },
-      strike,
-      troops,
-    ];
-    if (theirProgram) out.push(nukeSites);
-    out.push(spy, theirProgram ? sabotage : destabilize);
-    if (myBomb) out.push({ type: 'NUCLEAR_STRIKE', short: 'Nuclear strike', label: `☢ Nuclear strike ${name}`, danger: true });
-    return out;
-  }
-  const out: MapOrder[] = [
-    { type: 'DIPLOMACY_IMPROVE_RELATIONS', short: 'Court', label: `Court ${name}` },
-    { type: 'DIPLOMACY_DENOUNCE', short: 'Denounce', label: `Denounce ${name}` },
-    spy,
-    allied
-      ? { type: 'DIPLOMACY_BREAK_ALLIANCE', short: 'Break pact', label: `Break pact with ${name}`, danger: true }
-      : { type: 'DIPLOMACY_PROPOSE_ALLIANCE', short: 'Offer pact', label: `Offer defense pact to ${name}` },
-  ];
-  if (otherWar) out.push({ type: 'DIPLOMACY_MEDIATE', short: 'Mediate peace', label: `Mediate peace for ${name}` });
-  out.push(troops, theirProgram ? sabotage : destabilize, strike);
-  if (!allied) out.push({ type: 'DIPLOMACY_DECLARE_WAR', short: 'Declare war', label: `Declare war on ${name}`, danger: true });
-  return out;
-}
-
-/** Why an order can't be given right now, or null when it can. */
-function disabledReason(o: MapOrder, targetId: string, pcLeft: number, queued: PendingAction[]): string | null {
-  const key = orderKey({ type: o.type, targetCountryId: targetId, params: o.params });
-  if (queued.some((a) => orderKey(a) === key)) return 'Already on your desk';
-  if (queued.length >= 6) return 'At most 6 orders a month';
-  if (pcCost(o.type) > pcLeft) return `Needs ◆${pcCost(o.type)}, you have ◆${Math.max(0, pcLeft)}`;
-  return null;
-}
+import { ordersFor } from '../lib/orders';
+import { TERMS, term } from '../lib/glossary';
+import { OrderCard } from './orders/OrderCard';
+import { useMonthView } from './orders/useOrders';
 
 interface Props {
   countryId: string;
@@ -99,50 +15,64 @@ interface Props {
   /** The visible part of the map (not under the HUD or desk), relative to the container. */
   bounds: { top: number; bottom: number; left: number; right: number };
   onClose: () => void;
+  /** Dev gallery: never dock as a phone sheet. */
+  inline?: boolean;
 }
 
-/** A compact order menu at the click point: the map's shortcut to the desk. */
-export function MapActionMenu({ countryId, x, y, bounds, onClose }: Props) {
+/** Phones get the bottom sheet of rows; wider screens the 380 px popover of tiles. */
+const narrow = () => typeof window !== 'undefined' && window.innerWidth < 700;
+
+/**
+ * The order menu at the click point (design-orders.md §4.5): the six most relevant orders for this
+ * country as `OrderCard` tiles (rows in the phone sheet), then "All {n} orders for {T}", which
+ * expands in place to the exact list the desk catalog shows for that target (`ordersFor`, the
+ * parity rule). It stays open after an order is added: the card stamps and the ◆ ticks down.
+ */
+export function MapActionMenu({ countryId, x, y, bounds, onClose, inline = false }: Props) {
   const world = useGameStore((s) => s.worldState);
   const view = useGameStore((s) => s.playerView.find((v) => v.id === countryId));
-  const pending = useGameStore((s) => s.pendingActions);
-  // Re-render when crisis answers change the capital left
-  useGameStore((s) => s.decisionChoices);
   const selectCountry = useGameStore((s) => s.selectCountry);
+  const setFocus = useGameStore((s) => s.setFocus);
+  const month = useMonthView();
   const ref = useRef<HTMLDivElement>(null);
+  const [expanded, setExpanded] = useState(false);
+  const [rows] = useState(narrow);
 
   // Place beside the click, flipped and clamped to stay inside the visible map
   useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
     const w = el.offsetWidth;
-    const h = el.offsetHeight;
+    const h = Math.min(el.scrollHeight, el.offsetHeight);
     const pad = 8;
     // Too little map showing (phones): dock as a sheet at the bottom of the screen instead
-    if (h > bounds.bottom - bounds.top - pad * 2 || w > bounds.right - bounds.left - pad * 2) {
+    if (!inline && (rows || w > bounds.right - bounds.left - pad * 2)) {
       el.classList.add('sheet');
       el.style.left = '';
       el.style.top = '';
       el.style.visibility = '';
       return;
     }
+    const room = bounds.bottom - bounds.top - pad * 2;
+    el.style.maxHeight = `${room}px`;
     let left = x + 14;
     if (left + w > bounds.right - pad) left = x - 14 - w;
     left = Math.max(bounds.left + pad, Math.min(left, bounds.right - w - pad));
     let top = y - 28;
-    if (top + h > bounds.bottom - pad) top = bounds.bottom - pad - h;
+    if (top + Math.min(h, room) > bounds.bottom - pad) top = bounds.bottom - pad - Math.min(h, room);
     top = Math.max(bounds.top + pad, top);
     // Measured placement is applied straight to the element (no second render)
     el.classList.remove('sheet');
     el.style.left = `${left}px`;
     el.style.top = `${top}px`;
     el.style.visibility = '';
-  }, [x, y, bounds.top, bounds.bottom, bounds.left, bounds.right, countryId]);
+  }, [x, y, bounds.top, bounds.bottom, bounds.left, bounds.right, countryId, expanded, rows, inline]);
 
-  // Escape closes the menu first (before the dossier or a drawer)
+  // Escape closes the menu first (before the dossier or a drawer); a confirm face handles its own
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return;
+      if (ref.current?.querySelector('[data-confirm]')) return;
       e.stopImmediatePropagation();
       onClose();
     };
@@ -151,67 +81,71 @@ export function MapActionMenu({ countryId, x, y, bounds, onClose }: Props) {
   }, [onClose]);
 
   useEffect(() => {
-    ref.current?.querySelector<HTMLButtonElement>('button.mam-item:not(:disabled)')?.focus({ preventScroll: true });
+    ref.current?.querySelector<HTMLButtonElement>('.ord-wrap .wc-card-hit')?.focus({ preventScroll: true });
   }, [countryId]);
 
   const me = world?.countries.find((c) => c.id === world.playerCountryId);
   if (!world || !me || !view) return null;
-  const pcLeft = capitalLeft();
-  const orders = mapOrdersFor(me, view);
+  const all = ordersFor(me, view, { expanded: true });
+  const short = ordersFor(me, view);
+  const orders = expanded ? all : short.length ? short : all.slice(0, 6);
   const atWar = me.atWarWith.includes(countryId);
   const rel = Math.round(view.relationWithPlayer);
-  const over = !!world.gameOver;
-
-  const give = (o: MapOrder) => {
-    onClose();
-    void queueOrder({ type: o.type, label: o.label, targetCountryId: countryId, params: o.params });
-  };
+  const left = Math.max(0, month.pcLeft);
 
   return (
     <div
       ref={ref}
-      className="map-action-menu"
-      role="menu"
+      className={`map-action-menu ord-menu${rows ? ' ord-menu-rows' : ''}`}
+      role="dialog"
       aria-label={`Orders for ${view.name}`}
       style={{ left: x, top: y, visibility: 'hidden' }}
       onPointerDown={(e) => e.stopPropagation()}
     >
       <div className="mam-head">
-        <span className="mam-flag" aria-hidden>{flag(countryId)}</span>
+        <span className="mam-flag" aria-hidden>
+          {flag(countryId)}
+        </span>
         <div className="mam-title">
           <b>{view.name}</b>
           <span className={`mam-rel ${atWar ? 'war' : rel >= 20 ? 'warm' : rel <= -20 ? 'cold' : ''}`}>
             {atWar ? 'At war with you' : `${view.diplomaticLevel.replace(/_/g, ' ').toLowerCase()} · ${rel > 0 ? '+' : ''}${rel}`}
           </span>
         </div>
-        <span className="mam-pc num" title="Political capital left this month">◆{Math.max(0, pcLeft)}</span>
+        <span className="mam-pc num" data-point="capital" aria-label={`${TERMS.capital.name}: ${left} left`}>
+          {term(TERMS.capital.compact, left)}
+        </span>
         <button className="mam-close" onClick={onClose} aria-label="Close order menu">
-          <IconX size={14} />
+          <IconX size={18} />
         </button>
       </div>
-      <div className="mam-grid">
-        {orders.map((o) => {
-          const why = over ? 'The game is over' : disabledReason(o, countryId, pcLeft, pending);
-          const cost = pcCost(o.type);
-          return (
-            <button
-              key={`${o.type}:${String(o.params?.targetType ?? '')}`}
-              role="menuitem"
-              className={`mam-item fam-${actionFamily(o.type)} ${o.danger ? 'danger' : ''}`}
-              disabled={!!why}
-              title={why ?? o.label}
-              onClick={() => give(o)}
-            >
-              <ActionIcon type={o.type} size={16} />
-              <span className="mam-label">{o.short}</span>
-              <span className="mam-cost num">{cost ? `◆${cost}` : 'free'}</span>
-            </button>
-          );
-        })}
+      <div className={rows ? 'ord-list mam-list' : 'ord-mam-grid'}>
+        {orders.map((def) => (
+          <OrderCard
+            key={def.id}
+            def={def}
+            targetId={countryId}
+            variant={rows ? 'row' : 'tile'}
+            compact
+            onOpen={(i) => setFocus({ kind: 'order', id: String(i) })}
+          />
+        ))}
       </div>
+      {(all.length > orders.length || expanded) && (
+        <button className="ord-more mam-more" onClick={() => setExpanded((v) => !v)} aria-expanded={expanded}>
+          {expanded ? (
+            <>
+              <IconChevronUp size={15} aria-hidden /> Fewer orders
+            </>
+          ) : (
+            <>
+              <IconChevronDown size={15} aria-hidden /> All {all.length} orders for {view.name} <span>· same list as the desk</span>
+            </>
+          )}
+        </button>
+      )}
       <button
         className="mam-dossier"
-        role="menuitem"
         onClick={() => {
           onClose();
           selectCountry(countryId);

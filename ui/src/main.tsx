@@ -5,13 +5,19 @@ import './styles/feel.css'
 import App from './App.tsx'
 
 const Gallery = lazy(() => import('./scenes/Gallery'))
+const OrdersGallery = lazy(() => import('./components/orders/OrdersGallery'))
 const gallery = /^#(scenes|clip|mapfx)/.test(window.location.hash)
+const ordersGallery = /^#orders/.test(window.location.hash)
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     {gallery ? (
       <Suspense fallback={null}>
         <Gallery />
+      </Suspense>
+    ) : ordersGallery ? (
+      <Suspense fallback={null}>
+        <OrdersGallery />
       </Suspense>
     ) : (
       <App />
