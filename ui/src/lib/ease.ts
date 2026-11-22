@@ -305,3 +305,17 @@ export function resultScene(base: SceneKind | undefined, s: OutcomeSignals, prev
   if (previous && k === previous && alternate) k = alternate(k);
   return k;
 }
+
+// ---------------------------------------------------------------------------
+// Map menu and the Map/Desk switch (F-02-5)
+// ---------------------------------------------------------------------------
+
+/**
+ * Whether the map's order menu is on screen: only in Map mode, for this month, before the end.
+ * Sam pressed Desk with a menu open and nothing seemed to happen (F-02-5): the menu now closes
+ * whenever the desk takes over, so the switch always answers.
+ */
+export function mapMenuShown(menu: { turn: number } | null, world: { turn: number; gameOver?: unknown } | null, deskMode: 'map' | 'desk'): boolean {
+  return !!menu && !!world && deskMode === 'map' && menu.turn === world.turn && !world.gameOver;
+}
+

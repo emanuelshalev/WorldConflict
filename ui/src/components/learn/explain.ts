@@ -336,7 +336,7 @@ export function placePopover(anchor: Rect, size: { w: number; h: number }, view:
 }
 
 export const LEVELS: Array<{ id: LearnLevel; name: string; blurb: string; short: string }> = [
-  { id: 'guide', name: 'Guide me', short: 'Guide me', blurb: 'Underline names I may not know, and open the briefing on each new crisis.' },
+  { id: 'guide', name: 'Guide me', short: 'Guide me', blurb: 'Underline names I may not know, and keep each crisis short.' },
   { id: 'some', name: 'Some help', short: 'Some help', blurb: 'Clean text. An "i" after each paragraph and "What is going on here?" on every crisis.' },
   { id: 'know', name: 'I know this', short: 'I know this', blurb: 'Clean text with a faint "i". The codex is there if I want it.' },
 ];

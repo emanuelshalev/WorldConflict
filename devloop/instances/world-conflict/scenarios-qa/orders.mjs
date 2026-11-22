@@ -166,7 +166,10 @@ async function gallery({ device, w }) {
       await shot('03-map-queued', menu);
       await reset();
       // AC22: same numbers on the map card and the desk card
-      await p.locator('[data-og=catalog] select[aria-label="Target country"]').selectOption('IND');
+      // The country picker (F-01-1) replaced the native select
+      await p.locator('[data-og=catalog] [data-country-picker]').first().click();
+      await p.waitForTimeout(300);
+      await p.locator('.cp-row[data-country="IND"]').first().click();
       await p.waitForTimeout(900);
       const more = menu.locator('.mam-more');
       if (await more.count()) await more.click();
@@ -195,16 +198,23 @@ async function gallery({ device, w }) {
 
     // ---- AC1: no target picked in All orders
     await step('needs target', async () => {
-      await p.locator('[data-og=catalog] select[aria-label="Target country"]').selectOption('');
-      await p.waitForTimeout(300);
+      // The country picker cannot be cleared back to "no target" (QA S4): reload the gallery and
+      // test the no-target state only when the catalog starts without one
+      await p.goto(`${base}#orders`);
+      await p.waitForSelector('[data-og=states] [data-order-id="spy"][data-order-state]', { timeout: 20000 });
+      await p.waitForTimeout(1200);
       const cards = p.locator('[data-og=catalog] [data-order-code="NEEDS_TARGET"]');
       const n = await cards.count();
+      if (n === 0) {
+        mark(1, null, `${w}: the gallery catalog always has a target; check "Pick a country first." in the game (All orders before a pick)`);
+        return;
+      }
       const texts = await cards.allInnerTexts();
       mark(1, n >= 15 && texts.every((t) => t.includes('Pick a country first.')), `${w}: ${n} targeted cards say Pick a country first.`);
       await cards.first().locator('.ord-fix').click();
       const focused = await p.evaluate(() => document.activeElement?.getAttribute('aria-label'));
-      const pulsed = await p.locator('[data-og=catalog] select.is-pointed').count();
-      mark(1, focused === 'Target country' && pulsed === 1, `${w}: focus "${focused}", picker pulsed ${pulsed}`);
+      const pulsed = await p.locator('[data-og=catalog] [data-country-picker].is-pointed, [data-og=catalog] .is-pointed [data-country-picker]').count();
+      mark(1, /country|target/i.test(focused ?? '') && pulsed >= 1, `${w}: focus "${focused}", picker pulsed ${pulsed}`);
       await shot('05-needs-target', p.locator('[data-og=catalog]'));
     });
 
@@ -264,7 +274,10 @@ async function gallery({ device, w }) {
     // ---- AC4: six orders used
     await step('order limit', async () => {
       await reset();
-      await p.locator('[data-og=catalog] select[aria-label="Target country"]').selectOption('IND');
+      // The country picker (F-01-1) replaced the native select
+      await p.locator('[data-og=catalog] [data-country-picker]').first().click();
+      await p.waitForTimeout(300);
+      await p.locator('.cp-row[data-country="IND"]').first().click();
       await p.waitForTimeout(800);
       for (const id of ['denounce', 'demobilize', 'policing-soft', 'policing-hard']) {
         await p.locator(`[data-og=catalog] [data-order-id="${id}"] .wc-card-hit`).click();

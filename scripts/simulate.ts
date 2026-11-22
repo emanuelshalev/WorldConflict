@@ -15,7 +15,8 @@
  *   hawk: mobilizes then attacks the main rival
  *   ai: the player's country is driven by PersonalityAI
  *   staff: autopilot ("Approve all" + Execute): cabinet picks on crises, the staff's meeting
- *     answers within the slots, the staff's own queued orders (src/core/advisors.ts)
+ *     answers within the slots, the staff's proposed orders, all approved (src/core/advisors.ts;
+ *     on the desk a proposal holds no political capital until approved, F-02-4)
  *   staffswitch: staff, but every cabinet pick that differs from the mission pick is switched
  *     (a player who reads the red mission tags)
  *

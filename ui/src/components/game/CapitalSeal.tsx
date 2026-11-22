@@ -50,6 +50,11 @@ export interface CapitalSealsProps {
   left: number;
   /** Imprints: seals already placed on orders or answers this month. */
   held?: number;
+  /**
+   * Of the `left` seals, how many staff proposals would take if approved (F-02-4). They stay full
+   * (still yours) with a dashed ring, never imprints: nothing is spent until the player approves.
+   */
+  proposed?: number;
   /** Red "missing" seals, shown while a card that needs more is hovered or refused. */
   short?: number;
   /** Faint dotted outlines for next month's refill (CapitalMeter's third state). */
@@ -72,9 +77,10 @@ export interface CapitalSealsProps {
  * A bank of seals in one fixed order: full, new, imprint, broken, short, next. The number of
  * `[data-seal="full"]` plus `[data-seal="new"]` elements always equals `left`.
  */
-export function CapitalSeals({ left, held = 0, short = 0, nextRefill = 0, minted = 0, broken = 0, size = 24, gap, className = '', text, label }: CapitalSealsProps) {
+export function CapitalSeals({ left, held = 0, proposed = 0, short = 0, nextRefill = 0, minted = 0, broken = 0, size = 24, gap, className = '', text, label }: CapitalSealsProps) {
   const n = (x: number) => Math.max(0, Math.floor(x));
   const fresh = Math.min(n(minted), n(left));
+  const marked = Math.min(n(proposed), n(left) - fresh);
   const items: SealVariant[] = [
     ...Array<SealVariant>(n(left) - fresh).fill('full'),
     ...Array<SealVariant>(fresh).fill('new'),
@@ -85,11 +91,16 @@ export function CapitalSeals({ left, held = 0, short = 0, nextRefill = 0, minted
   ];
   const summary =
     label ??
-    `Political capital: ${n(left)} left${n(held) ? `, ${n(held)} placed this month` : ''}${n(short) ? `, ${n(short)} missing` : ''}${n(nextRefill) ? `, ${n(nextRefill)} more next month` : ''}`;
+    `Political capital: ${n(left)} left${marked ? ` (${marked} proposed by staff, not spent)` : ''}${n(held) ? `, ${n(held)} placed this month` : ''}${n(short) ? `, ${n(short)} missing` : ''}${n(nextRefill) ? `, ${n(nextRefill)} more next month` : ''}`;
   return (
     <span className={`wc-seals ${className}`.trim()} role="img" aria-label={summary} style={{ gap: gap ?? Math.round(Number(size) / 4) }}>
       {items.map((v, i) => (
-        <CapitalSeal key={`${v}-${i}`} variant={v} size={size} className={v === 'new' ? 'wc-seal-mint' : v === 'short' ? 'wc-seal-flash' : ''} />
+        <CapitalSeal
+          key={`${v}-${i}`}
+          variant={v}
+          size={size}
+          className={v === 'new' ? 'wc-seal-mint' : v === 'short' ? 'wc-seal-flash' : v === 'full' && i >= n(left) - fresh - marked ? 'wc-seal-proposed' : ''}
+        />
       ))}
       {text && <span className="wc-seals-text num">{text}</span>}
     </span>

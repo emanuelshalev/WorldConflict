@@ -100,6 +100,13 @@ export const TERMS = {
     definition: 'What your staff would do. Approve it or choose yourself.',
     banned: [/^\s*Suggested\s*$/, /\bStaff suggests\b/i, /^\s*Staff\s*$/],
   },
+  proposed: {
+    id: 'proposed',
+    name: 'Proposed by staff',
+    compact: 'Proposed',
+    definition: 'A staff pick for an order. It spends no political capital until you approve it, and it does not run unless you do.',
+    banned: [/\bpre-?queued\b/i],
+  },
   approveAll: {
     id: 'approveAll',
     name: 'Approve {n} staff picks',

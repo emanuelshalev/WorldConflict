@@ -15,7 +15,7 @@ import {
   type Icon,
 } from '@tabler/icons-react';
 import { useGameStore } from '../store/gameStore';
-import { pushRecentTarget } from '../lib/ease';
+import { pushRecentTarget, mapMenuShown } from '../lib/ease';
 import '../styles/picker.css';
 import type { Hotspot, PlayerViewCountry, War, WorldState } from '../store/gameStore';
 import { CountryDetailPanel } from './CountryDetailPanel';
@@ -231,6 +231,15 @@ export function MapView() {
   const saveId = useGameStore((s) => s.saveId);
   const setMapLayer = useGameStore((s) => s.setMapLayer);
   const closeMenu = useCallback(() => setMenu(null), []);
+  const deskMode = useGameStore((s) => s.deskMode);
+  // The desk takes over: put the map menu away, so the Desk switch always answers (F-02-5)
+  useEffect(
+    () =>
+      useGameStore.subscribe((st, prev) => {
+        if (st.deskMode === 'desk' && prev.deskMode !== 'desk') setMenu(null);
+      }),
+    [],
+  );
 
   // ------------------------------------------------------------------
   // Map bootstrap
@@ -1224,7 +1233,7 @@ export function MapView() {
     animRef.current.orders = features.some((f) => f.geometry.type === 'LineString');
   }, [pendingActions, playerCountryId, mapReady]);
 
-  const menuOpen = menu && worldState && menu.turn === worldState.turn && !worldState.gameOver;
+  const menuOpen = menu && mapMenuShown(menu, worldState, deskMode);
 
   return (
     <div className="map-container" style={{ position: 'relative', flex: 1 }}>

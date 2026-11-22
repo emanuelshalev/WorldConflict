@@ -59,7 +59,7 @@ export function SituationButton({ blocks, cardTitle, className = '', situationId
 
 /**
  * Host: renders the open briefing, and opens it once per situation on its first crisis when the
- * player asked for that (off by default; on at Guide me unless turned off, D-53).
+ * player turned that on in Settings (opt-in at every level, F-02-1).
  */
 export function SituationBriefing(): JSX.Element | null {
   const req = useExplain((s) => s.briefing);

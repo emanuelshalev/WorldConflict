@@ -8,7 +8,7 @@ import { readFileSync } from "node:fs";
 import { buildPages } from "../ui/src/lib/debrief.js";
 import { factTone, fmtValue, isMonthStat, shareFacts, shownDelta, splitMonth } from "../ui/src/lib/numbers.js";
 import { defaultSide } from "../ui/src/lib/sides.js";
-import { cardData, rankLines } from "../ui/src/components/reveal/model.js";
+import { cardData, kindRank, rankHeadline, rankLines } from "../ui/src/components/reveal/model.js";
 import type { RevealPayload, TurnReport, WorldState } from "../ui/src/store/gameStore.js";
 
 /**
@@ -115,9 +115,9 @@ describe("title screen side (Maya)", () => {
 describe("reveal ranking and share card (Ruth, Noah)", () => {
   const payload = JSON.parse(readFileSync("tests/fixtures/reveal/payload-hormuz-usa.json", "utf-8")) as RevealPayload;
   it("one phrasing for the percentile: never 'better than 34%' beside 'top 66%'", () => {
-    const r = { ...payload, ranking: { ...payload.ranking, percentile: 34 } };
+    const r = { ...payload, ranking: { ...payload.ranking, percentile: 64 } };
     const lines = rankLines(r, []);
-    expect(lines[0]).toBe("Better than 34% of simulated leaders");
+    expect(lines).toContain("Better than 64% of simulated leaders");
     expect(lines.join(" ")).not.toMatch(/top \d+%/i);
   });
   it("a failed run's card says what it missed", () => {
@@ -127,3 +127,33 @@ describe("reveal ranking and share card (Ruth, Noah)", () => {
     expect(card.subtitle).toContain("missed Israel stays on side by 1");
   });
 });
+
+describe("reveal leads with the outcome, the percentile is kind (F-02-1, Olivia)", () => {
+  const payload = JSON.parse(readFileSync("tests/fixtures/reveal/payload-hormuz-usa.json", "utf-8")) as RevealPayload;
+  const bench = { smart: { n: 30 }, random: { n: 30 }, none: { n: 30 } } as unknown as RevealPayload["ranking"]["benchmarks"];
+  // Olivia's ending: Mission Complete, then "Better than 9% of simulated competent leaders" as the headline
+  const won: RevealPayload = {
+    ...payload,
+    verdict: { ...payload.verdict, victory: true, label: "MISSION COMPLETE" },
+    ranking: { ...payload.ranking, percentile: 9, percentileLabel: "better than 9% of simulated competent leaders", benchmarks: bench },
+  };
+  it("the ranking headline of a win leads with the outcome and achievements, never the percentile", () => {
+    const h = rankHeadline(won, []);
+    expect(h.startsWith("Mission complete")).toBe(true);
+    expect(h).not.toMatch(/\d+%/);
+    expect(h).toContain("Your first run: a ladder of 90 runs to climb");
+  });
+  it("a first run reads as a ladder to climb; a low percentile stays off the share card", () => {
+    expect(kindRank(won, [])).toBe("Your first run: a ladder of 90 runs to climb");
+    const lines = rankLines(won, []);
+    expect(lines[0]).toBe("Your first run: a ladder of 90 runs to climb");
+    expect(lines.join(" ")).not.toMatch(/9%/);
+    expect(cardData(won, [], null).rankLines[0]).toBe("Your first run: a ladder of 90 runs to climb");
+  });
+  it("later runs name the place among your own runs", () => {
+    const run = (saveId: string, presidencyScore: number) => ({ ...won.run, saveId, presidencyScore });
+    expect(kindRank(won, [run("a", 999), run("b", 1)])).toBe("#2 of your 3 runs on this seat");
+    expect(kindRank(won, [run("a", 1)])).toBe("Your best of 2 runs on this seat");
+  });
+});
+

@@ -4,6 +4,7 @@ import type { RevealPayload } from '../../store/gameStore';
 import { firstSplit, shortDate, type StoredRun } from '../../lib/runs';
 import type { RevealCardData } from '../../lib/shareCard';
 import { RankLadder, type LadderTick } from './RankLadder';
+import { percentileLine, rankHeadline } from './model';
 import { RunHistory } from './RunHistory';
 import { ShareBar } from './ShareBar';
 
@@ -45,9 +46,9 @@ export function RankStage({ r, animate, history, ghost, names, rank, card, share
   if (best !== null) ticks.push({ id: 'mine', label: 'Your best before', score: best, kind: 'mine' });
   const previous = history.find((h) => h.saveId !== r.run.saveId) ?? null;
   const split = previous ? firstSplit(r.run, previous) : null;
-  const headline = r.ranking.percentileLabel
-    ? `${r.ranking.percentileLabel[0].toUpperCase()}${r.ranking.percentileLabel.slice(1)}.`
-    : `Presidency Score ${r.presidency.total}.`;
+  // The outcome and achievements lead; the percentile is a quiet line under the ladder (F-02-1)
+  const headline = rankHeadline(r, history);
+  const pct = percentileLine(r);
   const firstCrisis = r.run.choices[0];
   const others = history.filter((h) => h.saveId !== r.run.saveId);
   const copySeed = async () => {
@@ -73,6 +74,11 @@ export function RankStage({ r, animate, history, ghost, names, rank, card, share
             <RankLadder you={r.presidency.total} ticks={ticks} animate={animate} />
           ) : (
             <p className="rv-hint">No benchmark runs for this seat yet.</p>
+          )}
+          {pct && (
+            <p className="rv-hint" data-percentile="">
+              Presidency Score {r.presidency.total}. {pct.replace('simulated leaders', 'simulated competent leaders')}: every run you add climbs the ladder.
+            </p>
           )}
           {r.ranking.benchmarks?.smart && (
             <p className="rv-hint small">

@@ -482,3 +482,9 @@
 .ord-add-line,
 .ord-reason { min-width: 0; }
 .ord-queued-line .ord-remove { flex: none; }
+
+/* A staff proposal on the order card (F-02-4): what it changes, then Approve or Remove */
+.ord-chip.ord-proposed { border-style: dashed; color: var(--accent); }
+.ord-proposal-fx { margin: 4px 0; font-size: 13px; color: var(--text-1); }
+.ord-meta-proposed { color: var(--accent); }
+.ord-dismiss { font-size: 13px; min-height: 0; padding: 0 2px; }

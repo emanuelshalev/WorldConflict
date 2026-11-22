@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { IconCheck, IconChevronDown, IconChevronUp, IconMessageCircle, IconUserShare } from '@tabler/icons-react';
 import { type DecisionOption, type Meeting, MEETING_SLOTS, type MissionNote, type PendingDecision, countryName, useGameStore, usePlayerCountry } from '../../store/gameStore';
 import { ADVISOR_NAMES, arrowText, effectArrows, flag } from '../../lib/format';
-import { cabinetPick, crisisSelection, splitLede, effectWords, meetingPick, meetingSelection, missionPick, missionTag, type Selection } from '../../lib/month';
+import { cabinetPick, crisisSelection, guideLede, splitLede, effectWords, meetingPick, meetingSelection, missionPick, missionTag, type Selection } from '../../lib/month';
 import { SceneFrame } from '../../scenes/SceneFrame';
 import { type SceneKind, avoidRepeat, crisisMood, sceneForCrisis, sceneForDecision } from '../../scenes/kinds';
 import { CardCost, CardShell, EffectChips, type CardTag } from '../game/CardShell';
@@ -76,7 +76,10 @@ function OptionCard({
   onMore,
   highlight,
   card,
+  brief = false,
 }: {
+  /** Guide me before More: no description on the card, just the label and its effects (F-02-1). */
+  brief?: boolean;
   /** Text blocks of the whole crisis card (learning aids: density rules span the card). */
   card?: readonly string[];
   item: PendingDecision | Meeting;
@@ -108,7 +111,7 @@ function OptionCard({
     <CardShell
       id={`${item.id}-${o.id}`}
       title={o.label}
-      description={<ExplainText text={o.description} card={card} block={card ? card.indexOf(o.description) : 0} where={item.title} />}
+      description={brief ? undefined : <ExplainText text={o.description} card={card} block={card ? card.indexOf(o.description) : 0} where={item.title} />}
       art={art}
       home={home}
       other={other}
@@ -209,7 +212,14 @@ export function DecisionStage({ item, primary = false, onlyLede = false }: { ite
   const kindWord = meeting ? KIND_WORD[meeting.kind] : 'Crisis';
   const kicker = `${primary ? 'Your move · ' : ''}${urgency ? `${urgency} ` : ''}${urgency ? kindWord.toLowerCase() : kindWord}`;
   const scene = meeting ? KIND_SCENE[meeting.kind] : avoidRepeat(sceneForCrisis(item.templateId, item.title, item.situation), previousScene());
-  const [lede, rest] = splitLede(item.situation);
+  const [fullLede, fullRest] = splitLede(item.situation);
+  // Guide me shows fewer words before the first choice (F-02-1): a short lede, no option
+  // descriptions and a short staff line; More brings back every word, still underlined
+  const guide = useGameStore((s) => s.learn.level === 'guide');
+  const g = guide ? guideLede(fullLede) : { short: fullLede, trimmed: false };
+  const lede = g.short;
+  const rest = g.trimmed ? [fullLede, fullRest].filter(Boolean).join(' ') : fullRest;
+  const brief = guide && !more;
   // One card for the learning aids: lede, rest and option texts share the density rules
   const card = [lede, rest ?? '', ...options.map((o) => o.description)];
   const attended = meeting ? agenda.filter((x) => x.id !== meeting.id && choices[x.id] && choices[x.id] !== x.defaultOptionId).length : 0;
@@ -220,7 +230,7 @@ export function DecisionStage({ item, primary = false, onlyLede = false }: { ite
   // The highlighted objective (goal line step): which options move it
   const helpsHighlighted = (o: DecisionOption) => hl !== null && !!useGameStore.getState().missionImpact[item.id]?.[o.id]?.links?.some((l) => l.index === hl && l.effect === 'helps');
   const lead = cab?.backedBy[0] ?? (meeting ? advisorFor(meeting) : 'CHIEF_OF_STAFF');
-  const quote = cab ? splitLede(cab.description)[0] : '';
+  const quote = cab ? (guide ? guideLede(splitLede(cab.description)[0], 12).short : splitLede(cab.description)[0]) : '';
   const consult = () => useGameStore.getState().consult(lead, `${item.title}: what do you advise, and what are the risks of each option?`);
   return (
     <article className={`stage${primary ? ' is-primary' : ''}${item.urgency === 'EXISTENTIAL' ? ' existential' : item.urgency === 'URGENT' ? ' urgent' : ''}`} aria-label={`${primary ? 'Your move: ' : ''}${item.title}`} data-point={primary ? 'move' : undefined}>
@@ -306,6 +316,7 @@ export function DecisionStage({ item, primary = false, onlyLede = false }: { ite
             onMore={() => setMore(true)}
             highlight={helpsHighlighted(o)}
             card={card}
+            brief={brief}
           />
         ))}
       </div>

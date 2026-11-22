@@ -9,7 +9,9 @@ import {
   type PendingAction,
   type PendingDecision,
   type WorldState,
+  approveProposal,
   capitalLeft,
+  committedActions,
   countryName,
   fetchPreview,
   orderKey,
@@ -17,12 +19,14 @@ import {
 } from '../store/gameStore';
 import { DANGEROUS, computeSuggestions, crisisStaffPick, meetingPriority, meetingSuggestion } from './staff';
 import { pcCost } from './actions';
+import { MAX_ORDERS } from './budget';
 import { effectArrows } from './format';
 
 /**
- * The month's starting position on the desk: every crisis on the staff pick, up to three staff
- * orders queued within the capital, meetings suggested but waiting for approval. Applied once per
- * save and month, client side (the server only ever sees the final choices). The player's edits are
+ * The month's starting position on the desk: every crisis on the staff pick, up to two staff
+ * orders proposed within the capital (F-02-4: proposals spend nothing until approved, and Execute
+ * leaves unapproved ones out), meetings suggested but waiting for approval. Applied once per save
+ * and month, client side (the server only ever sees the final choices). The player's edits are
  * saved per save and month, so a reload comes back to the same desk.
  */
 
@@ -34,11 +38,12 @@ interface Stored {
 }
 
 const storeKey = (key: string) => `worldconflict.pending.${key}`;
-const STAFF_ORDERS = 2;
+/** Mirrors src/core/advisors.ts STAFF_ORDERS, RESERVE_PC and MIN_ODDS (tests compare them). */
+export const STAFF_ORDERS = 2;
 /** The staff always leave this much political capital for the player's own orders. */
-const RESERVE_PC = 1;
+export const RESERVE_PC = 1;
 /** Orders with worse odds than this are left for the player to decide. */
-const MIN_ODDS = 0.35;
+export const MIN_ODDS = 0.35;
 
 function readStored(key: string): Stored | null {
   try {
@@ -95,7 +100,9 @@ export async function setupMonth(): Promise<void> {
     }
     useGameStore.setState({ decisionChoices: choices, reviewed: {}, dismissedStaff: [], monthKey: key, deskMode: 'desk' });
     useGameStore.setState({ focus: firstFocus() });
-    // 2. Orders: up to three safe staff suggestions within the capital
+    // 2. Orders: up to two safe staff proposals within the capital (the engine's staffOrders rule:
+    //    affordable after the crisis picks, leaving RESERVE_PC). Proposals hold nothing, so the
+    //    running total of proposed costs stands in for the capital they would take.
     if (!useGameStore.getState().staffOrders) return;
     const me = world.countries.find((c) => c.id === world.playerCountryId);
     // The engine's staff queue first (variety rules: no order type two months running, at most
@@ -104,6 +111,7 @@ export async function setupMonth(): Promise<void> {
     // Last month's orders: the staff do not repeat one on their own
     const lastMonth = new Set((world.turnReport?.orders ?? []).map((o) => o.label));
     let queued = 0;
+    let proposedPc = 0;
     for (const sug of suggestions) {
       if (queued >= STAFF_ORDERS) break;
       const now = useGameStore.getState();
@@ -111,13 +119,14 @@ export async function setupMonth(): Promise<void> {
       if (DANGEROUS.has(sug.action.type)) continue;
       if (now.pendingActions.some((a) => orderKey(a) === orderKey(sug.action))) continue;
       if (lastMonth.has(sug.action.label)) continue;
-      if (pcCost(sug.action.type) > capitalLeft(now) - RESERVE_PC) continue;
+      if (pcCost(sug.action.type) > capitalLeft(now) - proposedPc - RESERVE_PC) continue;
       const preview = await fetchPreview(sug.action);
       if (!preview || preview.blocked || preview.missionWarning) continue;
       const odds = preview.successChance == null ? 1 : preview.successChance > 1 ? preview.successChance / 100 : preview.successChance;
       if (odds < MIN_ODDS) continue;
       if (useGameStore.getState().monthKey !== key) return;
-      useGameStore.getState().addPendingAction({ ...sug.action, preview, origin: 'staff', why: `${sug.who}: ${sug.why}` });
+      useGameStore.getState().addPendingAction({ ...sug.action, preview, origin: 'staff', why: `${sug.who}: ${sug.why}`, proposed: true });
+      proposedPc += pcCost(sug.action.type);
       queued++;
     }
   } finally {
@@ -125,16 +134,30 @@ export async function setupMonth(): Promise<void> {
   }
 }
 
-/** Every staff suggestion not yet approved: crisis picks to confirm and meetings to attend. */
-export function pendingApprovals(): { crises: string[]; meetings: Array<{ id: string; optionId: string }>; deputies: string[] } {
+/**
+ * Every staff suggestion not yet approved, in the engine's order (advisors.ts buildAdvice): crisis
+ * picks to confirm, then staff proposals that fit the capital and order slots, then meetings to
+ * attend with what is left.
+ */
+export function pendingApprovals(): { crises: string[]; orders: number[]; meetings: Array<{ id: string; optionId: string }>; deputies: string[] } {
   const s = useGameStore.getState();
   const world = s.worldState;
-  if (!world) return { crises: [], meetings: [], deputies: [] };
+  if (!world) return { crises: [], orders: [], meetings: [], deputies: [] };
   const crises = s.pendingDecisions.filter((d) => !s.reviewed[d.id]).map((d) => d.id);
+  let pc = Math.max(0, capitalLeft(s));
+  let slots = MAX_ORDERS - committedActions(s.pendingActions).length;
+  const orders: number[] = [];
+  s.pendingActions.forEach((a, i) => {
+    if (!a.proposed) return;
+    const cost = pcCost(a.type);
+    if (cost > pc || slots <= 0) return;
+    pc -= cost;
+    slots--;
+    orders.push(i);
+  });
   const agenda = world.agenda ?? [];
   const attending = agenda.filter((m) => s.decisionChoices[m.id] && s.decisionChoices[m.id] !== m.defaultOptionId).length;
   let free = MEETING_SLOTS - attending;
-  let pc = Math.max(0, capitalLeft(s));
   const meetings: Array<{ id: string; optionId: string }> = [];
   for (const m of meetingPriority(agenda, world.objective)) {
     if (free <= 0) break;
@@ -150,12 +173,17 @@ export function pendingApprovals(): { crises: string[]; meetings: Array<{ id: st
   // Every other open meeting goes to a deputy, so the calendar is settled
   const taken = new Set(meetings.map((m) => m.id));
   const deputies = agenda.filter((m) => !s.decisionChoices[m.id] && !taken.has(m.id) && m.defaultOptionId).map((m) => m.id);
-  return { crises, meetings, deputies };
+  return { crises, orders, meetings, deputies };
 }
 
-/** Approve all: confirm the crisis picks and attend the suggested meetings (the rest go to deputies). */
+/**
+ * Approve all: confirm the crisis picks, approve the staff proposals that fit and attend the
+ * suggested meetings (the rest go to deputies). This is what the balance harness's staff policy
+ * plays (scripts/simulate.ts).
+ */
 export function approveAll(): void {
-  const { crises, meetings, deputies } = pendingApprovals();
+  const { crises, orders, meetings, deputies } = pendingApprovals();
+  for (const i of orders) approveProposal(i);
   const s = useGameStore.getState();
   const reviewed = { ...s.reviewed };
   const choices = { ...s.decisionChoices };
@@ -340,10 +368,13 @@ export function planSummary(state: GameState = useGameStore.getState()): PlanLin
   if (yours) parts.push(`your pick on ${n(yours, 'crisis', 'crises')}`);
   if (approved) parts.push(`${n(approved, 'cabinet pick')} approved`);
   if (cabinet) parts.push(`cabinet pick on ${n(cabinet, 'crisis', 'crises')}`);
-  const staff = state.pendingActions.filter((a) => a.origin === 'staff').length;
-  const mine = state.pendingActions.length - staff;
+  const committed = committedActions(state.pendingActions);
+  const staff = committed.filter((a) => a.origin === 'staff').length;
+  const mine = committed.length - staff;
+  const waiting = state.pendingActions.length - committed.length;
   if (mine) parts.push(n(mine, 'order of yours', 'orders of yours'));
   if (staff) parts.push(n(staff, 'staff order'));
+  if (waiting) parts.push(`${n(waiting, 'staff proposal')} not approved (${waiting === 1 ? 'it will not run' : 'they will not run'})`);
   const agenda = world?.agenda ?? [];
   const attend = agenda.filter((m) => state.decisionChoices[m.id] && state.decisionChoices[m.id] !== m.defaultOptionId).length;
   if (attend) parts.push(`you attend ${n(attend, 'meeting')}`);
@@ -374,4 +405,53 @@ export function splitLede(text: string): [string, string] {
   const m = /^(.+?[.!?])(\s+)(?=[A-Z"'“])/.exec(text);
   if (!m) return [text, ''];
   return [m[1], text.slice(m[0].length)];
+}
+
+/** Words the Guide me lede keeps before More (F-02-1: newcomers get fewer words, not more). */
+export const GUIDE_LEDE_WORDS = 16;
+
+/**
+ * The Guide me lede: at most `max` words, cut at a clause break (comma, colon, semicolon) when one
+ * falls in the second half, else at a word, with an ellipsis. `trimmed` says whether More has
+ * anything to add from this sentence. Other levels show the authored lede untouched.
+ */
+export function guideLede(text: string, max = GUIDE_LEDE_WORDS): { short: string; trimmed: boolean } {
+  const words = text.trim().split(/\s+/).filter(Boolean);
+  if (words.length <= max) return { short: text.trim(), trimmed: false };
+  const head = words.slice(0, max);
+  let cut = -1;
+  for (let i = head.length - 1; i >= Math.ceil(max / 2) - 1; i--) {
+    if (/[,;:]$/.test(head[i])) {
+      cut = i;
+      break;
+    }
+  }
+  const kept = cut >= 0 ? head.slice(0, cut + 1) : head;
+  return { short: `${kept.join(' ').replace(/[,;:]$/, '')}…`, trimmed: true };
+}
+
+/** "Approval about +2 · Iran: relations about -4": the top predicted effects of a proposal (F-02-4). */
+export function proposalEffects(a: Pick<PendingAction, 'preview'>, max = 2): string {
+  return (a.preview?.effects ?? [])
+    .slice(0, max)
+    .map((e) => `${e.target && e.target !== 'Global' ? `${e.target}: ` : ''}${e.metric} ${/^[+-]?\d+(\.\d+)?%?$/.test(e.delta.trim()) ? `about ${e.delta}` : e.delta}`)
+    .join(' · ');
+}
+
+export const MISSION_SENTENCE_ID = 'mission-sentence';
+
+/** The goal line's month-1 link: back to the desk, scroll to the sentence, focus it and flash it. */
+export function showMissionSentence(): void {
+  const s = useGameStore.getState();
+  if (s.deskMode !== 'desk') s.setDeskMode('desk');
+  // Two frames: the desk may mount first when the link is pressed in Map mode
+  window.requestAnimationFrame(() => window.requestAnimationFrame(() => {
+    const el = document.getElementById(MISSION_SENTENCE_ID);
+    if (!el) return;
+    el.scrollIntoView({ block: 'center', behavior: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    el.focus({ preventScroll: true });
+    el.classList.remove('is-flash');
+    void el.offsetWidth;
+    el.classList.add('is-flash');
+  }));
 }

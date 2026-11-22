@@ -1,7 +1,8 @@
 import { type ReactNode, type Ref, useCallback, useEffect, useId, useImperativeHandle, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { IconCheck, IconInfoCircle, IconLock, IconPlus, IconX } from '@tabler/icons-react';
-import { type ConfirmNeed, type PendingAction, queueOrder, useGameStore } from '../../store/gameStore';
+import { type ConfirmNeed, type PendingAction, orderKey, queueOrder, useGameStore } from '../../store/gameStore';
+import { proposalEffects } from '../../lib/month';
 import { CardCost, CardShell } from '../game/CardShell';
 import { spendSeals } from '../game/SealFlight';
 import { type OrderDef, orderAction, orderBlurb, orderFor, orderLabel } from '../../lib/orders';
@@ -114,6 +115,12 @@ export function OrderCard({
   const pc = entry?.costPC ?? pcCost(def.type);
   const share = entry && entry.budgetM > 0 && entry.costM > 0 ? entry.costM / entry.budgetM : defenseShareOf(def.type);
   const isQueued = avail.state === 'queued';
+  // A staff proposal for this very order (F-02-4): the card offers Approve, and shows what it changes
+  const myKey = orderKey(orderAction(def, st.targetId, st.targetName));
+  const proposalIndex = useGameStore((s) => s.pendingActions.findIndex((a) => a.proposed && orderKey(a) === myKey));
+  const proposal = useGameStore((s) => (proposalIndex >= 0 ? s.pendingActions[proposalIndex] : undefined));
+  const isProposal = !!proposal && !isQueued;
+  const proposalFx = proposal ? proposalEffects(proposal) : '';
   const off = avail.state === 'unaffordable' || avail.state === 'invalid';
   const fam = actionFamily(def.type);
 
@@ -142,7 +149,7 @@ export function OrderCard({
 
   const give = async (confirmed = false) => {
     if (busy) return;
-    if (!confirmed && (def.irreversible || entry?.irreversible || entry?.missionWarning)) {
+    if (!confirmed && !isProposal && (def.irreversible || entry?.irreversible || entry?.missionWarning)) {
       setConfirm({ irreversible: !!(def.irreversible || entry?.irreversible), missionWarning: entry?.missionWarning ?? null, preview: null });
       return;
     }
@@ -214,6 +221,7 @@ export function OrderCard({
   const chips: ReactNode[] = [];
   if (def.irreversible) chips.push(<span key="undo" className="ord-chip ord-noundo">{TERMS.noUndo.name}</span>);
   if (isQueued && pc > 0) chips.push(<span key="held" className="ord-chip ord-held num">◆ {pc} held</span>);
+  if (isProposal) chips.push(<span key="prop" className="ord-chip ord-proposed">{TERMS.proposed.name}</span>);
   if (share > 0) chips.push(<span key="def" className="ord-chip ord-def num">{term(TERMS.defense.compact, Math.round(share * 100))}</span>);
   // The resting card names the odds only; the effect sizes ("Approval about +3") open on Forecast,
   // hover or focus (F-01-6), so the tile stays quiet
@@ -310,7 +318,23 @@ export function OrderCard({
     </div>
   );
 
-  const addLine = avail.state === 'available' && (
+  const proposalLine = isProposal && (
+    <div className="ord-proposal" data-proposal="">
+      {proposalFx && <p className="ord-proposal-fx">Will change: {proposalFx}</p>}
+      <div className="ord-add-line">
+        {avail.state === 'available' && (
+          <span className="ord-add">
+            <IconCheck size={14} aria-hidden /> Approve order{pc ? ` (spends ◆ ${pc})` : ''}
+          </span>
+        )}
+        <button type="button" className="ord-remove" onClick={() => remove(proposalIndex)} data-fix="">
+          Remove
+        </button>
+      </div>
+    </div>
+  );
+
+  const addLine = avail.state === 'available' && !isProposal && (
     <div className="ord-add-line">
       <span className="ord-add">
         <IconPlus size={14} aria-hidden /> Add to this month
@@ -325,7 +349,7 @@ export function OrderCard({
     </button>
   );
 
-  const ariaLabel = off && block ? `${label}, unavailable: ${block.reason}` : isQueued ? `${label}, ${TERMS.inThisMonth.name.toLowerCase()}` : `${label}, ${pc ? `costs ◆ ${pc}` : 'free'}${entry?.chance != null ? `, ${entry.chance}% chance` : ''}`;
+  const ariaLabel = off && block ? `${label}, unavailable: ${block.reason}` : isQueued ? `${label}, ${TERMS.inThisMonth.name.toLowerCase()}` : isProposal ? `${label}, ${TERMS.proposed.name.toLowerCase()}: approve${pc ? `, spends ◆ ${pc}` : ''}${proposalFx ? `. Will change: ${proposalFx}` : ''}` : `${label}, ${pc ? `costs ◆ ${pc}` : 'free'}${entry?.chance != null ? `, ${entry.chance}% chance` : ''}`;
   const stateCls = `ord-${variant} st-${avail.state} fam-${fam}${compact ? ' ord-compact' : ''}${busy ? ' is-busy' : ''}${selected ? ' is-selected' : ''}`;
   const desc = blurb ?? (compact ? undefined : orderBlurb(def, st.targetName));
 
@@ -333,7 +357,7 @@ export function OrderCard({
   if (variant === 'row') {
     const slot = block?.code === 'NO_CAPITAL' ? block.slots?.[0] : undefined;
     const actKind = avail.state === 'available' ? 'add' : isQueued ? 'remove' : slot !== undefined ? 'free' : block?.code === 'NEEDS_TARGET' ? 'pick' : 'why';
-    const actText = { add: 'Add', remove: 'Remove', free: `Free ◆ ${slot !== undefined ? month.queuedCosts[slot] : 0}`, pick: 'Pick', why: 'Why' }[actKind];
+    const actText = { add: isProposal ? 'Approve order' : 'Add', remove: 'Remove', free: `Free ◆ ${slot !== undefined ? month.queuedCosts[slot] : 0}`, pick: 'Pick', why: 'Why' }[actKind];
     const onAct = () => {
       if (actKind === 'add') void give(false);
       else if (actKind === 'remove') remove(st.queuedIndex);
@@ -370,6 +394,14 @@ export function OrderCard({
                 {pc ? ` · ◆ ${pc} held` : ''}
                 {staff ? ` · ${TERMS.staffPick.name}: ${staff}` : ''}
               </span>
+            ) : isProposal ? (
+              <span className="ord-meta-line ord-meta-proposed">
+                {TERMS.proposed.name}
+                {staff ? ` (${staff})` : ''} · {pc ? `◆ ${pc} if approved` : 'free'}{' '}
+                <button type="button" className="link ord-dismiss" onClick={() => remove(proposalIndex)}>
+                  Remove
+                </button>
+              </span>
             ) : (
               avail.state !== 'invalid' && (
                 <span className="ord-meta-line">
@@ -386,6 +418,7 @@ export function OrderCard({
                 {block.code === 'NO_CAPITAL' && block.refill?.startsWith('+') ? ` ${block.refill}.` : ''}
               </span>
             )}
+            {isProposal && proposalFx && <span className="ord-proposal-fx">Will change: {proposalFx}</span>}
             {desc && avail.state === 'available' && <span className="ord-meta-blurb">{desc}</span>}
             {selected && avail.state === 'available' && <kbd className="ord-kbd">Enter</kbd>}
           </div>
@@ -433,6 +466,7 @@ export function OrderCard({
         {chips.length > 0 && <div className="ord-chips">{chips}</div>}
         {reasonLine}
         {queuedLine}
+        {proposalLine}
         {addLine}
         {info && (
           <div className="ord-expand" id={`ord-${uid}-pv`}>

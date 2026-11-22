@@ -214,3 +214,12 @@
   .sugg-row > .scene { display: none; }
   .mode-seg { display: none; }
 }
+
+/* A staff proposal in the plan (F-02-4): dashed until approved, effects shown before Approve */
+.slot-card.proposed { border-style: dashed; border-color: rgba(242, 169, 59, 0.6); background: rgba(242, 169, 59, 0.05); }
+.slot-card.proposed .slot-fx { color: var(--text-1); }
+.slot-card.proposed { flex-wrap: wrap; row-gap: 0; }
+.slot-card.proposed .slot-main { flex: 1 1 calc(100% - 60px); min-width: 0; }
+.slot-card.proposed .slot-x { order: 1; }
+.slot-card.proposed .slot-approve { order: 2; flex: none; min-height: 36px; margin: 0 8px 8px auto; }
+.bank-proposed { color: var(--accent); }

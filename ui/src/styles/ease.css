@@ -94,3 +94,16 @@
 .rv-seed-details > summary::-webkit-details-marker { display: none; }
 .rv-seed-details[open] > summary { margin-bottom: 8px; color: var(--text-1); }
 .ts2-daily small { font-size: 13px; letter-spacing: 0.08em; }
+
+/* QA AC3: with the advisors collapsed the strip is one row (no empty second row and its gap), and
+   on desktop the chrome above and below the globe is a little tighter, so the disc gets the room */
+@media (min-width: 900px) {
+  .cmd-strip:not(.tray-open) { grid-template-areas: 'chips act'; row-gap: 0; }
+}
+@media (min-width: 1280px) {
+  .cmd-strip { padding-top: 6px; padding-bottom: 6px; }
+  .goal-line { padding-top: 2px; padding-bottom: 2px; }
+  .game .ticker { height: 24px; }
+}
+/* An opened advisor row never takes the whole map: it scrolls past 40% of the screen */
+.cmd-strip .strip-advisors { max-height: 40vh; overflow-y: auto; overscroll-behavior: contain; }

@@ -505,3 +505,6 @@
   }
   .wc-seal-mint { animation: wc-fade-in 120ms linear both; animation-duration: 120ms !important; }
 }
+
+/* A full seal a staff proposal would take if approved (F-02-4): still yours, ringed, not spent */
+.wc-seal.wc-seal-proposed { opacity: 0.62; border-radius: 50%; outline: 1.5px dashed var(--accent, #f2a93b); outline-offset: 1px; }

@@ -77,7 +77,7 @@ export interface RevealCardData {
   grade: string;
   stars: number;
   score: number;
-  rankLines: string[]; // ["Top 22% of simulated leaders", "#1 of your 3 runs"]
+  rankLines: string[]; // ["Your first run: a ladder of 90 runs to climb", "Better than 62% of simulated leaders"]
   seals: CardSeal[];
   cells: MonthCell[];
   conditions: Array<{ met: boolean; bonus: boolean }>;

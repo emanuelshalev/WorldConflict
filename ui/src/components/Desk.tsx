@@ -19,6 +19,7 @@ import { AdvisorList } from './desk/AdvisorList';
 import { useAdvisorRows, whyLine } from '../lib/advisorRows';
 import { goalName } from '../lib/month';
 import { useExecute } from '../lib/useExecute';
+import { MissionLine } from './desk/GoalLine';
 
 /**
  * The desk (design-month.md 3, design-feel.md 5). Focus view: the goal line above, one Your move
@@ -133,7 +134,9 @@ function AlsoOnDesk() {
   const waiting = agenda.filter((m) => !choices[m.id]);
   const willAttend = waiting.filter((m) => meetingPick(m)).length;
   const b = budgetStatus();
-  const staff = actions.filter((a) => a.origin === 'staff').length;
+  const committed = actions.filter((a) => !a.proposed);
+  const staff = committed.filter((a) => a.origin === 'staff').length;
+  const toApprove = actions.length - committed.length;
   return (
     <section className="also" aria-label="Also on your desk">
       <h3 className="block-head">Also on your desk</h3>
@@ -183,7 +186,8 @@ function AlsoOnDesk() {
         <IconListCheck size={17} aria-hidden />
         <span>
           <b>
-            {actions.length} order{actions.length === 1 ? '' : 's'} in this month{staff ? ` (${staff} by staff)` : ''}
+            {committed.length} order{committed.length === 1 ? '' : 's'} in this month{staff ? ` (${staff} by staff)` : ''}
+            {toApprove ? `, ${toApprove} staff proposal${toApprove === 1 ? '' : 's'} to approve` : ''}
           </b>
           <small>{b ? `◆ ${b.pc.orders} of ◆ ${Math.max(0, b.pc.bank + b.pc.crisis + b.pc.meetings)} political capital on orders` : ''}</small>
         </span>
@@ -205,14 +209,16 @@ function AlsoOnDesk() {
 export function ShowDesk({ className = '' }: { className?: string }) {
   const showDesk = useGameStore((s) => s.showDesk);
   const agenda = useGameStore((s) => s.worldState?.agenda?.length ?? 0);
-  const actions = useGameStore((s) => s.pendingActions.length);
+  const proposals = useGameStore((s) => s.pendingActions.filter((a) => a.proposed).length);
+  const actions = useGameStore((s) => s.pendingActions.filter((a) => !a.proposed).length);
   return (
     <button type="button" className={`show-desk ${className}`.trim()} onClick={showDesk} data-show-desk="">
       <IconLayoutList size={17} aria-hidden />
       <span>
         <b>Show the whole desk</b>
         <small>
-          Advisors, {actions} order{actions === 1 ? '' : 's'} and {agenda} meeting{agenda === 1 ? '' : 's'}: your staff handle them this month
+          Advisors, {actions} order{actions === 1 ? '' : 's'}
+          {proposals ? `, ${proposals} staff proposal${proposals === 1 ? '' : 's'}` : ''} and {agenda} meeting{agenda === 1 ? '' : 's'}: deputies take the meetings, proposals wait for your approval
         </small>
       </span>
       <IconChevronRight size={16} aria-hidden />
@@ -290,6 +296,7 @@ export function Desk() {
       rail={phone ? undefined : <CommandRail catalogTarget={target} simple={simple} />}
       bar={phone ? <CommandBar catalogTarget={target} simple={simple} /> : undefined}
     >
+      <MissionLine />
       {full ? <Detail target={target} setTarget={setTarget} /> : <FocusView />}
     </DeskStage>
   );

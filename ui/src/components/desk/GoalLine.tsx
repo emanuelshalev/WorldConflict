@@ -1,6 +1,7 @@
 import { IconLayoutColumns, IconLayoutList, IconTarget } from '@tabler/icons-react';
 import { type ConditionStatus, useGameStore } from '../../store/gameStore';
-import { nowNeed, stateOf, stepObjective, useGoalHighlight } from '../../lib/goals';
+import { missionSentence, nowNeed, stateOf, stepObjective, useGoalHighlight } from '../../lib/goals';
+import { MISSION_SENTENCE_ID, showMissionSentence } from '../../lib/month';
 import '../../styles/month.css';
 
 /**
@@ -13,10 +14,11 @@ import '../../styles/month.css';
 export function Segments({ status, size = 'md' }: { status: ConditionStatus[]; size?: 'md' | 'lg' }) {
   const primary = status.filter((c) => !c.bonus);
   const bonus = status.filter((c) => c.bonus);
+  const hl = useGoalHighlight((s) => s.index);
   return (
     <span className={`goal-segs seg-${size}`} aria-hidden>
-      {primary.map((c) => (
-        <i key={c.label} className={`gseg s-${stateOf(c)}`} />
+      {primary.map((c, i) => (
+        <i key={c.label} className={`gseg s-${stateOf(c)}${hl === i ? ' is-pointed' : ''}`} />
       ))}
       {bonus.length > 0 && <span className="gseg-gap" />}
       {bonus.map((c) => (
@@ -44,6 +46,8 @@ export function GoalLine() {
   const stepC = step >= 0 ? status[step] : undefined;
   const stepText = stepC ? nowNeed(stepC) ?? stepC.short ?? stepC.label : null;
   const summary = primary.length ? `${onTrack} of ${primary.length} on track · month ${month} of ${world.maxTurns}` : `Month ${month} of ${world.maxTurns}`;
+  // Month 1: the goal line links to the one-sentence goal above the crisis instead of a step
+  const first = world.turn === 0;
   return (
     <div className="goal-line" data-point="mission">
       <button type="button" className="goal-main" onClick={() => setDrawer('objective')} aria-label={`Mission: ${title}. ${summary}. Open the mission sheet`}>
@@ -52,7 +56,12 @@ export function GoalLine() {
         {primary.length > 0 && <Segments status={status} />}
         <span className="goal-sum num">{summary}</span>
       </button>
-      {stepText && stepC && (
+      {first && (
+        <button type="button" className="goal-step goal-link" onClick={showMissionSentence} data-goal-link="">
+          <span className="goal-step-k">How you win:</span> <b>read your goal</b>
+        </button>
+      )}
+      {!first && stepText && stepC && (
         <button type="button" className="goal-step" onClick={() => point(step)} title={`This month: ${stepText}. Press to see what moves it.`}>
           <span className="goal-step-k">This month:</span> <b>{stepText}</b>
         </button>
@@ -70,3 +79,33 @@ export function GoalLine() {
     </div>
   );
 }
+
+/**
+ * Month 1: the one goal the player is judged on, in one plain sentence above the crisis (F-02-1).
+ * Each goal name points at its goal-line segment and at the options that move it.
+ */
+export function MissionLine() {
+  const world = useGameStore((s) => s.worldState);
+  const point = useGoalHighlight((s) => s.point);
+  if (!world || world.turn !== 0) return null;
+  const m = missionSentence({ objective: world.objective, maxTurns: world.maxTurns });
+  return (
+    <p className="mission-line" id={MISSION_SENTENCE_ID} tabIndex={-1} data-mission-sentence="">
+      <IconTarget size={18} className="goal-icon" aria-hidden />
+      <span>
+        <b className="mission-line-k">Your goal. </b>
+        {m.lead}
+        {m.goals.map((g, i) => (
+          <span key={g.index}>
+            {i > 0 && (i === m.goals.length - 1 ? ' and ' : ', ')}
+            <button type="button" className="mission-goal" onClick={() => point(g.index)} title="Show it in the goal line and what moves it">
+              {g.text}
+            </button>
+          </span>
+        ))}
+        {m.goals.length > 0 && '.'}
+      </span>
+    </p>
+  );
+}
+

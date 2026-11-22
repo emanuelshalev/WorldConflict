@@ -1,4 +1,4 @@
-import { MEETING_SLOTS, type GameState, useGameStore } from '../store/gameStore';
+import { MEETING_SLOTS, type GameState, committedActions, useGameStore } from '../store/gameStore';
 import { pcCost } from './actions';
 
 /** Share of the monthly defense budget each order uses. Mirrors src/core/costs.ts BUDGET_SHARE. */
@@ -14,6 +14,8 @@ export const budgetShare = (type: string) => BUDGET_SHARE[type] ?? 0;
 
 export interface BudgetStatus {
   pc: { bank: number; crisis: number; meetings: number; orders: number; left: number; cap: number };
+  /** Staff proposals waiting for approval (F-02-4): what they would cost, held by nothing yet. */
+  proposed: { count: number; pc: number; labels: string[] };
   defense: { budgetM: number; share: number; users: string[] };
   orders: { used: number; max: number };
   inPerson: { used: number; max: number };
@@ -34,13 +36,16 @@ export function budgetStatus(state: GameState = useGameStore.getState()): Budget
     const o = m.options.find((x) => x.id === state.decisionChoices[m.id]);
     return sum + (o?.effects.pc ?? 0);
   }, 0);
-  const orders = state.pendingActions.reduce((s, a) => s + pcCost(a.type), 0);
+  // Staff proposals spend nothing until approved (F-02-4)
+  const committed = committedActions(state.pendingActions);
+  const waiting = state.pendingActions.filter((a) => a.proposed);
+  const orders = committed.reduce((s, a) => s + pcCost(a.type), 0);
   // Same rule as capitalLeft(): the bank plus crisis and meeting answers can't go below zero
   const left = Math.max(0, world.politicalCapital + crisis + meetings) - orders;
-  const share = state.pendingActions.reduce((s, a) => s + budgetShare(a.type), 0);
-  const users = state.pendingActions.filter((a) => budgetShare(a.type) > 0).map((a) => a.label);
+  const share = committed.reduce((s, a) => s + budgetShare(a.type), 0);
+  const users = committed.filter((a) => budgetShare(a.type) > 0).map((a) => a.label);
   const budgetM = me ? (me.gdp * (me.militaryBudgetPercent / 100)) / 12 / 1e6 : 0;
-  const used = state.pendingActions.length;
+  const used = committed.length;
   const attended = (world.agenda ?? []).filter((m) => state.decisionChoices[m.id] && state.decisionChoices[m.id] !== m.defaultOptionId).length;
   const blocked =
     left < 0
@@ -54,6 +59,7 @@ export function budgetStatus(state: GameState = useGameStore.getState()): Budget
             : null;
   return {
     pc: { bank: world.politicalCapital, crisis, meetings, orders, left, cap: 6 },
+    proposed: { count: waiting.length, pc: waiting.reduce((s, a) => s + pcCost(a.type), 0), labels: waiting.map((a) => a.label) },
     defense: { budgetM, share, users },
     orders: { used, max: MAX_ORDERS },
     inPerson: { used: attended, max: MEETING_SLOTS },

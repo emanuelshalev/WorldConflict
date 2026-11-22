@@ -117,14 +117,49 @@ export function rarestSeals(r: RevealPayload) {
     .slice(0, 3);
 }
 
+/** Benchmark runs on the seat's ladder (every staff policy), 0 without benchmarks. */
+export function ladderRuns(r: RevealPayload): number {
+  const p = r.ranking.benchmarks;
+  return p ? Object.values(p).reduce((n, b) => n + (b?.n ?? 0), 0) : 0;
+}
+
+/**
+ * The ranking said kindly (F-02-1, Olivia: "Better than 9% of simulated competent leaders" right
+ * after Mission Complete read as rude). First run on a seat: a ladder to climb. Later runs: your
+ * place among your own runs. The percentile is never the first line.
+ */
+export function kindRank(r: RevealPayload, history: StoredRun[]): string {
+  const others = history.filter((h) => h.saveId !== r.run.saveId);
+  if (others.length === 0) {
+    const n = ladderRuns(r);
+    return n > 0 ? `Your first run: a ladder of ${n} runs to climb` : 'Your first run on this seat';
+  }
+  const all = others.length + 1;
+  const pos = 1 + others.filter((h) => h.presidencyScore > r.presidency.total).length;
+  return pos === 1 ? `Your best of ${all} runs on this seat` : `#${pos} of your ${all} runs on this seat`;
+}
+
+/** The percentile in words, as a secondary line ("better than 34%", never a flipped "top 66%"). */
+export function percentileLine(r: RevealPayload): string | null {
+  return r.ranking.percentile === null ? null : `Better than ${r.ranking.percentile}% of simulated leaders`;
+}
+
+/**
+ * The ranking stage headline: the outcome and achievements lead, the ladder follows. A win is
+ * never headlined by a percentile.
+ */
+export function rankHeadline(r: RevealPayload, history: StoredRun[]): string {
+  const earned = r.achievements.earned.filter((a) => !a.infamy).length;
+  const seals = earned > 0 ? `, ${earned} achievement${earned === 1 ? '' : 's'}` : '';
+  const label = r.verdict.label === r.verdict.label.toUpperCase() ? r.verdict.label.charAt(0) + r.verdict.label.slice(1).toLowerCase() : r.verdict.label;
+  return `${label}${seals}. ${kindRank(r, history)}.`;
+}
+
+/** The share card's rank lines: the kind line first; the percentile only when it flatters. */
 export function rankLines(r: RevealPayload, history: StoredRun[]): string[] {
-  const out: string[] = [];
-  // The same phrasing as the ranking headline ("better than 34%"), never a flipped "top 66%"
-  if (r.ranking.percentile !== null) out.push(`Better than ${r.ranking.percentile}% of simulated leaders`);
-  if (history.length > 1) {
-    const pos = 1 + history.filter((h) => h.presidencyScore > r.presidency.total).length;
-    out.push(`#${pos} of your ${history.length} runs`);
-  } else out.push('Your first run on this seat');
+  const out = [kindRank(r, history)];
+  const p = percentileLine(r);
+  if (p && (r.ranking.percentile ?? 0) >= 50) out.push(p);
   return out;
 }
 
