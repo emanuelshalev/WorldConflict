@@ -12,11 +12,13 @@ Sits between the panel and the backlog. Output: `<instance>/runs/iter-NN/triage.
    - **Rework** when completion is acceptable but one archetype's time or retries are far worse.
    - **Never remove** a feature (instance rule, if the owner sets it). Low-use features are surfaced better or made optional instead.
 6. **Ledger.** Every decision that changes the product gets an entry in `<instance>/ledger.md`.
+7. **Regression registry.** Every finding marked fixed gets an entry in `<instance>/regressions.yaml` with at least one automated guard (a unit test, or a UI scenario that replays the customer's reproduction steps). The verify gate runs all guards before every merge and every panel round; a finding without a guard cannot be marked fixed.
+8. **Regression check on new feedback.** Before clustering a new round, compare its friction and bugs with the registry. A previously fixed finding that reappears is marked REGRESSED, treated as at least S2, and fixed before new work; the guard that missed it is strengthened.
 
 ## Release gate (template)
 Each instance defines concrete thresholds in `<instance>/gate.md`. The template:
 - Every goal in `<instance>/goals.md` verified by QA and confirmed by the panel.
-- No open S1 or S2 finding.
+- No open S1 or S2 finding, and no REGRESSED finding; every registry guard passes.
 - Weighted recommend >= the instance threshold, no persona below its floor.
 - The early-quitter persona completes a first session without quitting.
 - The instance's own quality checks (tests, lints, build, domain harnesses) are green.
