@@ -5,6 +5,7 @@ import { startSnapshot } from "./chronicle.js";
 import { type Codex, CodexFileSchema, SituationSchema as CodexSituationSchema } from "./codex.js";
 import { runDirector } from "./crises.js";
 import { generateAgenda } from "./meetings.js";
+import { openingChoices, situationOpening } from "./opening.js";
 import { combineSeed, createSeed, SeededRandom } from "./seed.js";
 import { generateLeaderName, generatePlayerBackstory } from "./systems/government.js";
 import { updateBeliefs } from "./systems/intelligence.js";
@@ -360,6 +361,10 @@ export interface NewGameOptions {
   mode?: GameMode;
   difficulty?: Difficulty;
   flashpointId?: string;
+  /** Alternate history (D-56): lead a nation that is not a state in this era. */
+  whatIf?: boolean;
+  /** One Term "Start with": an active era situation id the opening crisis is about (opening.ts). */
+  opening?: string;
 }
 
 export class DataLoader {
@@ -423,13 +428,51 @@ export class DataLoader {
     // scenarios, or one game's events would leak into the next (the harness reuses a loader)
     const world = structuredClone(this.buildSession(options));
     // Cold open: the first crisis is on the desk the moment you take office
-    const opening = runDirector(world, new SeededRandom(combineSeed(world.seed, 31337)));
-    world.pendingDecisions = opening.decisions;
-    world.eventQueue = opening.events;
+    const rng = new SeededRandom(combineSeed(world.seed, 31337));
+    const picked = options.opening ? this.openingSituation(world, options.opening) : null;
+    const chosen = picked ? situationOpening(world, picked, rng) : null;
+    if (chosen) {
+      world.pendingDecisions = [chosen.decision];
+      world.eventQueue = [chosen.event];
+      world.director.lastUsed[chosen.decision.templateId] = world.turn;
+      world.director.dramaDebt = 0;
+    } else {
+      const opening = runDirector(world, rng);
+      world.pendingDecisions = opening.decisions;
+      world.eventQueue = opening.events;
+    }
     world.agenda = generateAgenda(world);
     // The opening picture the end reveal measures against (chronicle.ts)
     world.chronicle = startSnapshot(world);
+    // What a replay or a branch needs to rebuild this opening (POST /branch)
+    world.origin = {
+      scenarioId: world.scenarioId,
+      playerCountryId: world.playerCountryId,
+      seed: world.seed,
+      mode: world.mode,
+      difficulty: world.difficulty,
+      flashpointId: world.flashpointId,
+      ...(options.leaderName ? { leaderName: options.leaderName } : {}),
+      // Only a seat that needed it is alternate history (a real state ignores the flag)
+      ...(options.whatIf &&
+      !options.flashpointId &&
+      unplayableReason(this.loadScenario(world.scenarioId), world.playerCountryId)
+        ? { whatIf: true }
+        : {}),
+      ...(chosen && picked ? { opening: picked.id } : {}),
+    };
+    world.inputs = [];
     return world;
+  }
+
+  /** The active situation a One Term opens on; throws on an unknown or inactive one. */
+  private openingSituation(world: WorldState, id: string): EraSituation | null {
+    if (world.mode === "FLASHPOINT") return null; // a flashpoint scripts its own opening
+    const s = openingChoices(this.loadScenario(world.scenarioId).situations).find(
+      (x) => x.id === id,
+    );
+    if (!s) throw new UnplayableNationError(`No active situation "${id}" in ${world.scenarioId}`);
+    return s;
   }
 
   private buildSession(options: NewGameOptions): WorldState {
@@ -445,9 +488,19 @@ export class DataLoader {
       world.difficulty = difficulty;
       return world;
     }
-    const reason = unplayableReason(this.loadScenario(options.scenarioId), playerCountryId);
-    if (reason) throw new UnplayableNationError(reason);
+    const eraScenario = this.loadScenario(options.scenarioId);
+    const reason = unplayableReason(eraScenario, playerCountryId);
+    // D-56: a nation that is not a state in the era is led only as alternate history ("What if")
+    if (reason && !options.whatIf)
+      throw new UnplayableNationError(
+        `${reason} Turn on "What if" to lead it as alternate history.`,
+      );
     const world = this.initializeWorldState(options.scenarioId, playerCountryId, seed, leaderName);
+    if (reason) {
+      const era = eraScenario.eraStatus[playerCountryId];
+      const name = world.countries.find((c) => c.id === playerCountryId)?.name ?? playerCountryId;
+      world.playerBackstory = `What if: in this alternate history, ${name} is a sovereign state in ${eraScenario.startYear} (in real history: ${era?.label ?? name}). ${world.playerBackstory}`;
+    }
     const mode = options.mode ?? "TERM";
     world.mode = mode;
     world.difficulty = difficulty;

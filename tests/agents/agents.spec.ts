@@ -10,10 +10,11 @@ describe("PersonalityAI", () => {
   it("produces valid intents for every AI country", () => {
     const world = loader.initializeWorldState("2025", "USA", 42);
     const intents = generateDeterministicIntents(world);
-    // Everyone but the player and the non-states (era.ts: the West Bank is not a state)
-    const nonStates = world.countries.filter((c) => c.eraStatus).length;
-    expect(nonStates).toBe(1);
-    expect(intents.length).toBe(TIER1_COUNTRIES.length - 1 - nonStates);
+    // Everyone but the player: in 2025 every roster nation acts, the West Bank included (D-56,
+    // as in v0.9.0)
+    expect(world.countries.filter((c) => c.eraStatus)).toEqual([]);
+    expect(intents.length).toBe(TIER1_COUNTRIES.length - 1);
+    expect(intents.some((i) => i.countryId === "PSX")).toBe(true);
     for (const intent of intents) {
       expect(intent.actions.length).toBeLessThanOrEqual(3);
       for (const action of intent.actions) {

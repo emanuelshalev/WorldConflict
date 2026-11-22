@@ -9,6 +9,7 @@ function errorStatus(error: unknown): number {
   return error instanceof z.ZodError || error instanceof UnplayableNationError ? 400 : 500;
 }
 
+import { generateDeterministicIntents } from "../../agents/fallback.js";
 import { AIConfigSchema, planTurn } from "../../agents/strategist.js";
 import { addUsage } from "../../agents/usage.js";
 import {
@@ -28,6 +29,7 @@ import { buildEraMap } from "../../core/era-map.js";
 import { objectiveStatus } from "../../core/objectives.js";
 import { ENGINE_ORDERS } from "../../core/orders.js";
 import { previewAction } from "../../core/preview.js";
+import { branchRefusal, monthInput, recordMonth, replayTo } from "../../core/replay.js";
 import { buildReveal, parseSeedCode, type RevealPayload, seatKeyOf } from "../../core/reveal.js";
 import { classifyLeadership } from "../../core/scoring.js";
 import { createSeed } from "../../core/seed.js";
@@ -54,6 +56,16 @@ const NewGameSchema = z.object({
   difficulty: DifficultySchema.default("STATESMAN"),
   flashpointId: z.string().optional(),
   daily: z.boolean().optional(), // date-seeded daily challenge
+  // D-56: lead a nation that is not a state in the era, as alternate history (off by default)
+  whatIf: z.boolean().optional(),
+  // One Term "Start with": an active era situation the opening crisis is about (opening.ts)
+  opening: z.string().max(40).optional(),
+});
+
+const BranchRequestSchema = z.object({
+  saveId: z.string(),
+  month: z.number().int().min(0),
+  playerId: z.string().max(80).optional(),
 });
 
 const TurnRequestSchema = z.object({
@@ -414,6 +426,8 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
           mode: body.mode,
           difficulty: body.difficulty,
           flashpointId: body.flashpointId,
+          whatIf: body.whatIf === true,
+          opening: body.opening,
         });
 
         const label = body.flashpointId
@@ -421,7 +435,7 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
           : `${body.mode.toLowerCase()} ${scenarioId}`;
         const name =
           saveName ??
-          `${worldState.countries.find((c) => c.id === playerCountryId)?.name ?? playerCountryId}, ${label}`;
+          `${worldState.countries.find((c) => c.id === playerCountryId)?.name ?? playerCountryId}, ${label}${worldState.origin?.whatIf ? " (what if)" : ""}`;
         const saveId = await gameDb.saveGame(name, worldState, [], playerId, leaderName);
 
         return reply.send({ success: true, saveId, ...turnPayload(worldState) });
@@ -469,13 +483,14 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
           // AI intents come from the chosen tier; the engine stays deterministic given intents
           const plan = await planTurn(worldState, ai, { sessionSpentUsd: llmUsage.costUsd ?? 0 });
           const aiIntents = plan.intents;
+          // The month's inputs, copied before the engine sees them (replay and branch)
+          const input = monthInput(playerActions, decisions);
           const result = engine.executeTurn(worldState, playerActions, aiIntents, decisions);
           const totalUsage = addUsage(llmUsage, plan.usage);
           // Which AI tier drove the rivals (route-level: the engine never sees it). A replay is
           // only exact when every month ran ALGORITHMIC.
-          const chronicle = result.newState.chronicle;
           const tier = plan.llmCountries?.length ? (ai?.tier ?? "ALGORITHMIC") : "ALGORITHMIC";
-          if (chronicle && !chronicle.aiTiersUsed.includes(tier)) chronicle.aiTiersUsed.push(tier);
+          recordMonth(result.newState, input, tier);
 
           await gameDb.updateSave(saveId, result.newState, totalUsage);
           await gameDb.addTurnLog(saveId, {
@@ -794,14 +809,72 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
   );
 
   // ------------------------------------------------------------------
-  fastify.get(
-    "/saves",
+  // "Branch from this month": a new save that starts from an earlier month of this one, rebuilt
+  // from the same seed and the recorded inputs (core/replay.ts)
+  fastify.post(
+    "/branch",
     async (
-      request: FastifyRequest<{ Querystring: { playerId?: string } }>,
+      request: FastifyRequest<{ Body: z.infer<typeof BranchRequestSchema> }>,
       reply: FastifyReply,
     ) => {
       try {
-        const saves = await gameDb.listSaves(request.query.playerId);
+        const body = BranchRequestSchema.parse(request.body);
+        const saveData = await gameDb.loadGame(body.saveId);
+        if (!saveData) {
+          return reply.status(404).send({ success: false, error: "Save game not found" });
+        }
+        const source = saveData.worldState;
+        const refusal = branchRefusal(source, body.month);
+        if (refusal) return reply.status(400).send({ success: false, error: refusal });
+        // The rivals' intents as they were (exact even when LLMs drove them), else PersonalityAI
+        const logged = new Map(saveData.turnLogs.map((t) => [t.number, t.intents]));
+        const world = replayTo(
+          createDataLoader(),
+          source,
+          body.month,
+          (i, w) => logged.get(i + 1) ?? generateDeterministicIntents(w),
+        );
+        const meta = await gameDb.getSaveById(body.saveId);
+        const base = (meta?.name ?? "Game").replace(BRANCH_SUFFIX, "");
+        const owner = body.playerId ?? (await gameDb.getSaveOwner(body.saveId)) ?? undefined;
+        const saveId = await gameDb.saveGame(
+          `${base} (branch from month ${body.month})`,
+          world,
+          [],
+          owner,
+          meta?.leaderName ?? undefined,
+        );
+        return reply.send({
+          success: true,
+          saveId,
+          branchedFrom: { saveId: body.saveId, month: body.month },
+          ...turnPayload(world),
+          newspaper: world.newspaper,
+        });
+      } catch (error) {
+        fastify.log.error(error);
+        return reply.status(errorStatus(error)).send({
+          success: false,
+          error: error instanceof Error ? error.message : "Failed to branch the game",
+        });
+      }
+    },
+  );
+
+  // ------------------------------------------------------------------
+  // Saved games: the account's and this browser's guest saves together (a guest who signs in
+  // keeps seeing the games played before signing in)
+  fastify.get(
+    "/saves",
+    async (
+      request: FastifyRequest<{ Querystring: { playerId?: string; guestId?: string } }>,
+      reply: FastifyReply,
+    ) => {
+      try {
+        const owners = [request.query.playerId, request.query.guestId].filter(
+          (x): x is string => !!x,
+        );
+        const saves = await gameDb.listSaves(owners.length ? owners : undefined);
         return reply.send({ success: true, saves });
       } catch (error) {
         fastify.log.error(error);
@@ -830,6 +903,8 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
     },
   );
 }
+
+const BRANCH_SUFFIX = / \(branch from month \d+\)$/;
 
 const RunRequestSchema = z.object({
   saveId: z.string(),
