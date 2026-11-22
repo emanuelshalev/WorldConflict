@@ -10,15 +10,55 @@ import { pointTo } from '../../lib/pointer';
 import { sound } from '../../lib/sound';
 import { useGoalHighlight } from '../../lib/goals';
 import { bigMove } from '../../lib/ease';
+import { orderFor } from '../../lib/orders';
+import { OrderCard } from '../orders/OrderCard';
 import { CoachBubble } from './Coach';
 import '../../styles/month.css';
 
 /**
- * "Your advisors suggest" (design-month.md 3.5): the top suggestions with why this and why now,
- * one-tap Add (Added, Undo for 5 s), the reason on the button when it cannot be added, and the
- * staff's own orders shown as already added, with the same why line. One component for the desk
- * and the map's command strip, so both modes see the same advice.
+ * "Your advisors suggest" (design-month.md 3.5): the top suggestions with why this and why now.
+ * Each suggestion is the shared OrderCard (row), so the desk, the full desk's suggestions and the
+ * map's command strip show the same card with the same states and words as the map menu and the
+ * catalog (F-02-5: Sam saw "Added" here and "Add to this month" on the map). Staff proposals show
+ * what they change and Approve (F-02-4). One component for the desk and the map's command strip.
  */
+
+/** The advisor row: avatar and why line around the shared OrderCard (F-02-5). */
+export function AdvisorCardRow({ r, compact }: { r: Row; compact?: boolean }) {
+  const impact = useGameStore((s) => s.orderImpact[r.label]);
+  const status = useGameStore((s) => s.objectiveStatus);
+  const hl = useGoalHighlight((s) => s.index);
+  const def = orderFor(r.action);
+  if (!def) return <AdvisorRow r={r} compact={compact} />;
+  const mt = missionTag(impact, status);
+  const pointed = hl !== null && !!impact?.links?.some((l) => l.index === hl && l.effect === 'helps');
+  const why = whyLine(r.why);
+  return (
+    <div className={`adv-row adv-card${pointed ? ' is-pointed' : ''}${compact ? ' compact' : ''}`} data-advice={r.label}>
+      <span className="adv-avatar" aria-hidden title={r.who}>
+        {INITIALS[r.who] ?? r.who.slice(0, 2).toUpperCase()}
+      </span>
+      <div className="adv-body">
+        <OrderCard
+          def={def}
+          targetId={r.action.targetCountryId}
+          variant="row"
+          staff={r.who}
+          hoverPreview={false}
+          blurb={
+            compact ? undefined : (
+              <>
+                <span className="adv-who">{r.who}:</span> {why}
+                {mt && <span className={`adv-tag tag-${mt.tone}`}> {mt.text}</span>}
+              </>
+            )
+          }
+          extra={{ origin: 'player', why: `${r.who}: ${r.why}`, ...(r.action.value !== undefined ? { value: r.action.value } : {}) }}
+        />
+      </div>
+    </div>
+  );
+}
 
 const INITIALS: Record<string, string> = {
   'Foreign Minister': 'FM',
@@ -180,7 +220,7 @@ export function AdvisorList({ compact = false, max = 3 }: { compact?: boolean; m
       {!compact && <BigMove rows={rows} />}
       <div className="adv-list">
         {shown.map((r) => (
-          <AdvisorRow key={r.key} r={r} compact={compact} />
+          <AdvisorCardRow key={r.key} r={r} compact={compact} />
         ))}
       </div>
       {rows.length > max && (

@@ -525,6 +525,17 @@ export interface PendingAction {
   origin?: 'staff' | 'player';
   /** The advisor's one-line reason, for staff orders. */
   why?: string;
+  /**
+   * A staff proposal (F-02-4): it holds no political capital, defense money or order slot until
+   * the player approves it (on the card, in the tray or with Approve all), and Execute leaves an
+   * unapproved proposal out. The balance harness's staff policy is Approve all.
+   */
+  proposed?: boolean;
+}
+
+/** The orders that will run: everything in the month except unapproved staff proposals. */
+export function committedActions<T extends Pick<PendingAction, 'proposed'>>(actions: readonly T[]): T[] {
+  return actions.filter((a) => !a.proposed);
 }
 
 /** What the desk's detail pane shows. */
@@ -701,6 +712,8 @@ export interface GameState extends CodexSlice {
   chooseDecision: (decisionId: string, optionId: string) => void;
   addPendingAction: (action: PendingAction) => void;
   removePendingAction: (index: number) => void;
+  /** Turn a staff proposal into an order of this month (no checks: use approveProposal()). */
+  approvePendingAction: (index: number) => void;
   clearPendingActions: () => void;
 
   setLLMPermission: (granted: boolean) => void;
@@ -1075,7 +1088,8 @@ export const useGameStore = create<GameState>((set) => ({
   addPendingAction: (action) =>
     set((state) => {
       if (state.pendingActions.some((a) => orderKey(a) === orderKey(action))) return state;
-      if (state.pendingActions.length >= 6) return state;
+      // Proposals use no order slot until approved (F-02-4)
+      if (!action.proposed && committedActions(state.pendingActions).length >= 6) return state;
       return { pendingActions: [...state.pendingActions, action], error: null, errorBase: null, errorCount: 0 };
     }),
   removePendingAction: (index) =>
@@ -1087,6 +1101,14 @@ export const useGameStore = create<GameState>((set) => ({
       };
     }),
   clearPendingActions: () => set({ pendingActions: [] }),
+  approvePendingAction: (index) =>
+    set((state) => {
+      const a = state.pendingActions[index];
+      if (!a?.proposed) return state;
+      const pendingActions = state.pendingActions.slice();
+      pendingActions[index] = { ...a, proposed: false };
+      return { pendingActions };
+    }),
 
   setLLMPermission: (granted) => set({ llmPermissionGranted: granted }),
   setLLMProvider: (provider) => set({ llmProvider: provider }),
@@ -1230,7 +1252,8 @@ export async function executeTurn(): Promise<void> {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         saveId,
-        playerActions: pendingActions.map((a) => ({
+        // Unapproved staff proposals never run (F-02-4)
+        playerActions: committedActions(pendingActions).map((a) => ({
           type: a.type,
           targetCountryId: a.targetCountryId,
           value: a.value,
@@ -1321,7 +1344,8 @@ export function capitalLeft(state: GameState = useGameStore.getState()): number 
     const option = m.options.find((o) => o.id === state.decisionChoices[m.id]);
     return sum + (option?.effects.pc ?? 0);
   }, 0);
-  return Math.max(0, world.politicalCapital + crisisPc + meetingPc) - state.pendingActions.reduce((s, a) => s + pcCost(a.type), 0);
+  // Staff proposals hold nothing until approved (F-02-4)
+  return Math.max(0, world.politicalCapital + crisisPc + meetingPc) - committedActions(state.pendingActions).reduce((s, a) => s + pcCost(a.type), 0);
 }
 
 /** The key the engine uses for "one of each order per target" (turn.ts). */
@@ -1338,7 +1362,8 @@ export function monthView(state: GameState = useGameStore.getState()): MonthView
   const world = state.worldState;
   const me = world?.countries.find((c) => c.id === world.playerCountryId);
   const budgetM = me ? (me.gdp * (me.militaryBudgetPercent / 100)) / 12 / 1e6 : 0;
-  const queued = state.pendingActions;
+  // Staff proposals are not in the month until approved (F-02-4)
+  const queued = committedActions(state.pendingActions);
   return {
     pcLeft: capitalLeft(state),
     bank: world?.politicalCapital ?? 0,
@@ -1387,6 +1412,9 @@ export async function queueOrder(a: PendingAction, opts: { confirmed?: boolean }
     if (block.points) pointAt(block.points, { slots, detail: block.code === 'NO_CAPITAL' ? `${a.label} needs ◆ ${pcCost(a.type)}` : undefined });
     return { ok: false, block };
   };
+  // The same order as a staff proposal: giving it approves the proposal (F-02-4)
+  const proposal = useGameStore.getState().pendingActions.findIndex((x) => x.proposed && orderKey(x) === orderKey(a));
+  if (proposal >= 0) return approveProposal(proposal);
   const first = availabilityOf({ ...a, targeted: needsTarget(a.type) }, monthView());
   if (first.block && first.state !== 'available') return refuse(first.block, first.block.slots);
   const preview = await fetchPreview({ type: a.type, targetCountryId: a.targetCountryId, value: a.value, params: a.params });
@@ -1402,6 +1430,25 @@ export async function queueOrder(a: PendingAction, opts: { confirmed?: boolean }
   useGameStore.getState().addPendingAction({ ...a, preview: preview ?? undefined });
   const index = useGameStore.getState().pendingActions.findIndex((x) => orderKey(x) === orderKey(a));
   if (index < 0) return refuse({ code: 'ORDER_LIMIT', reason: 'All 6 orders this month are used.', fix: 'Remove an order', points: 'orders' });
+  return { ok: true, index };
+}
+
+/**
+ * Approve one staff proposal (F-02-4): the same month checks as any order (capital, order slots,
+ * defense budget); a refusal points at the meter it names, like queueOrder().
+ */
+export function approveProposal(index: number): QueueResult {
+  const a = useGameStore.getState().pendingActions[index];
+  if (!a) return { ok: false, block: { code: 'DUPLICATE', reason: 'This proposal is gone.', fix: null, points: null } };
+  if (!a.proposed) return { ok: true, index };
+  const m = monthView();
+  const check = availabilityOf({ ...a, targeted: needsTarget(a.type) }, m);
+  if (check.block && check.state !== 'available') {
+    const block = check.block;
+    if (block.points) pointAt(block.points, { slots: block.slots, detail: block.code === 'NO_CAPITAL' ? `${a.label} needs ◆ ${pcCost(a.type)}` : undefined });
+    return { ok: false, block };
+  }
+  useGameStore.getState().approvePendingAction(index);
   return { ok: true, index };
 }
 

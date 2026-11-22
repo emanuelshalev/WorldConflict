@@ -68,3 +68,60 @@ export function stepObjective(status: ConditionStatus[]): number {
   return best;
 }
 
+// ---------------------------------------------------------------------------
+// The one goal in one sentence (F-02-1)
+
+/** What a mission sentence needs from the world (a subset, so tests can pass plain objects). */
+export interface MissionSentenceInput {
+  objective: { title: string; primary: Array<{ label: string; short?: string }> } | null;
+  maxTurns: number;
+}
+
+export interface MissionSentence {
+  /** "You win if all five hold at the end of month 12: " */
+  lead: string;
+  /** Each primary goal in plain words, with its objectiveStatus index (primary goals come first). */
+  goals: Array<{ text: string; index: number }>;
+  /** The whole sentence as text. */
+  text: string;
+}
+
+const NUMBER_WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+/** First words that are not names, so they read lower case inside the sentence. */
+const COMMON_FIRST = /^(The|A|An|No|Voters|Your|Keep|Stay|Hold|End|Win|Score|Stability|Legitimacy|Approval|Make|Mend|Front|Never|Peace|Survive|Our|At|Get|Stop|Protect|Defend|Avoid|Reach|Bring)\b/;
+
+/** One goal in plain words: the short label, plus the number it is judged on when the label has one. */
+export function goalPhrase(c: { label: string; short?: string }): string {
+  const cut = (c.short ?? c.label.split(/[(:]/)[0]).trim() || c.label;
+  const base = cut.replace(/\s+(at the review|at the end|by the end)$/i, '');
+  const inner = /\(([^)]*\d[^)]*)\)/.exec(c.label)?.[1]?.replace(/\s*→\s*/, ' to ');
+  const text = inner && !base.includes(inner) ? `${base} (${inner})` : base;
+  return COMMON_FIRST.test(text) ? text.charAt(0).toLowerCase() + text.slice(1) : text;
+}
+
+/**
+ * The one goal the player is judged on, as one plain sentence above month 1's crisis (F-02-1:
+ * Noah failed on "Israel stays on side" and never knew it was the thing). Every primary goal must
+ * hold at the end, so the sentence names them all, in the goal line's order.
+ */
+export function missionSentence(w: MissionSentenceInput): MissionSentence {
+  const end = w.maxTurns;
+  const primary = w.objective?.primary ?? [];
+  if (!w.objective) {
+    const text = `There is no set mission: stay in power for ${end} months and build the strongest country you can.`;
+    return { lead: text, goals: [], text };
+  }
+  if (primary.length === 0) {
+    const text = /election/i.test(w.objective.title)
+      ? `You win if you are still in office after the election in month ${end}.`
+      : `You win if you are still in office at the end of month ${end}.`;
+    return { lead: text, goals: [], text };
+  }
+  const review = primary.some((c) => /at the review/i.test(c.label));
+  const when = review ? `at the review in month ${end}` : `at the end of month ${end}`;
+  const goals = primary.map((c, index) => ({ text: goalPhrase(c), index }));
+  const lead = goals.length === 1 ? `You win if this holds ${when}: ` : `You win if all ${NUMBER_WORDS[goals.length] ?? goals.length} hold ${when}: `;
+  const list = goals.length === 1 ? goals[0].text : `${goals.slice(0, -1).map((g) => g.text).join(', ')} and ${goals[goals.length - 1].text}`;
+  return { lead, goals, text: `${lead}${list}.` };
+}
+

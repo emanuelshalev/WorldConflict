@@ -56,8 +56,15 @@ for (const device of devices) {
           await page.waitForTimeout(1200);
           await s.look('map-pick');
           check(device, await page.locator('.map-pick-banner').isVisible(), 'Pick on the map: the map asks for a tap');
-          // Tap Mexico (fresh camera on the United States at 1440x900): back on the desk, aimed at Mexico
-          await s.clickAt(513, 585);
+          // Tap Mexico: back on the desk, aimed at Mexico. The point comes from the live camera
+          // (__wcMap.project), not a fixed pixel, which turned into ocean when the camera changed
+          const mx = await page.evaluate(() => {
+            const m = window.__wcMap;
+            const q = m.project([-102, 23.5]);
+            const r = m.getContainer().getBoundingClientRect();
+            return { x: Math.round(r.left + q.x), y: Math.round(r.top + q.y) };
+          });
+          await s.clickAt(mx.x, mx.y);
           await page.waitForTimeout(1200);
           await s.look('map-picked');
           const aimed = (await page.locator('[data-country-picker]').first().innerText().catch(() => '')).replace(/\s+/g, ' ');

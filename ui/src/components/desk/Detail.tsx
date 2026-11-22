@@ -1,19 +1,15 @@
 import { type ComponentType, useMemo, useRef, useState } from 'react';
-import { IconArrowLeft, IconArrowRight, IconPlus, IconX } from '@tabler/icons-react';
-import { type PendingAction, countryName, orderKey, queueOrder, useGameStore, usePlayerCountry } from '../../store/gameStore';
+import { IconArrowLeft, IconArrowRight, IconX } from '@tabler/icons-react';
+import { type PendingAction, approveProposal, countryName, queueOrder, useGameStore } from '../../store/gameStore';
 import { pcCost } from '../../lib/actions';
 import { budgetShare } from '../../lib/budget';
-import { computeSuggestions } from '../../lib/staff';
 import { primaryId, primaryItem } from '../../lib/month';
-import { SceneFrame } from '../../scenes/SceneFrame';
-import { sceneForAction } from '../../scenes/kinds';
 import { ActionIcon } from '../../scenes/icons';
-import { actionFamily } from '../../scenes/actionIcons';
 import { deskItems } from '../../lib/deskItems';
 import { DecisionStage } from './YourMove';
 import { CountryPicker } from '../orders/CountryPicker';
-import { AdvisorList } from './AdvisorList';
-import { whyLine } from '../../lib/advisorRows';
+import { AdvisorCardRow, AdvisorList } from './AdvisorList';
+import { useAdvisorRows } from '../../lib/advisorRows';
 import { STATE_WORD, nowNeed, stateOf } from '../../lib/goals';
 import { ExplainText } from '../learn/ExplainText';
 import { SituationButton } from '../learn/SituationBriefing';
@@ -85,44 +81,16 @@ function Cost({ type }: { type: string }) {
 }
 
 function SuggestionsDetail() {
-  const world = useGameStore((s) => s.worldState);
-  const view = useGameStore((s) => s.playerView);
-  const actions = useGameStore((s) => s.pendingActions);
-  const remove = useGameStore((s) => s.removePendingAction);
-  const me = usePlayerCountry();
-  const home = world?.playerCountryId;
-  const suggestions = useMemo(() => computeSuggestions(world, view, me), [world, view, me]);
+  // The same shared order card as the map strip and the Focus view (F-02-5)
+  const rows = useAdvisorRows();
   return (
     <article>
       <h3 className="detail-title">Your advisors suggest</h3>
-      <p className="hint">The staff add up to two of these at the start of each month, never one with poor odds or a repeat of last month, and always leave you at least ◆ 1. Remove what you do not want; add the others here.</p>
-      <div className="sugg-list">
-        {suggestions.map((s) => {
-          const i = actions.findIndex((a) => orderKey(a) === orderKey(s.action));
-          return (
-            <div key={s.label} className={`sugg-row fam-${actionFamily(s.action.type)} ${i >= 0 ? 'queued' : ''}`}>
-              <SceneFrame kind={sceneForAction(s.action.type)} home={home} other={s.action.targetCountryId} size="thumb" />
-              <div className="sugg-body">
-                <div className="who">
-                  <ActionIcon type={s.action.type} size={14} /> {s.who}
-                </div>
-                <b>
-                  {s.label} <Cost type={s.action.type} />
-                </b>
-                <div className="why">{whyLine(s.why)}</div>
-              </div>
-              {i >= 0 ? (
-                <button className="wc-btn small" onClick={() => remove(i)}>
-                  <IconX size={14} /> Remove
-                </button>
-              ) : (
-                <button className="wc-btn primary small" onClick={() => void queueOrder({ ...s.action, origin: 'player', why: `${s.who}: ${s.why}` })}>
-                  <IconPlus size={14} /> Add
-                </button>
-              )}
-            </div>
-          );
-        })}
+      <p className="hint">The staff propose up to two of these at the start of each month, never one with poor odds or a repeat of last month, and always leave you at least ◆ 1. A proposal spends nothing until you approve it (or press Approve all); add the others here.</p>
+      <div className="adv-list">
+        {rows.map((r) => (
+          <AdvisorCardRow key={r.key} r={r} />
+        ))}
       </div>
     </article>
   );
@@ -221,6 +189,14 @@ function OrderDetail({ a, index }: { a: PendingAction; index: number }) {
         <ActionIcon type={a.type} size={18} /> {a.label} <Cost type={a.type} />
       </h3>
       {a.why && <p className="hint">{a.why}</p>}
+      {a.proposed && (
+        <p className="hint" data-proposal="">
+          Proposed by staff: nothing is spent until you approve it, and it does not run unless you do.{' '}
+          <button type="button" className="wc-btn small primary" onClick={() => approveProposal(index)}>
+            Approve order{pcCost(a.type) ? ` (spends ◆ ${pcCost(a.type)})` : ''}
+          </button>
+        </p>
+      )}
       {p && (
         <>
           <p className="situation">{p.summary}</p>

@@ -27,7 +27,7 @@ export interface LearnEntry {
 }
 
 export interface LearnPrefs {
-  /** Open the situation briefing on a flashpoint's first crisis. null follows the level (on at Guide me only, D-53). */
+  /** Open the situation briefing on a flashpoint's first crisis. Opt-in only (F-02-1): null or false is off at every level. */
   autoBrief: boolean | null;
   liveLines: boolean;
   fadeKnown: boolean;
@@ -140,9 +140,13 @@ export function setPref<K extends keyof LearnPrefs>(s: LearnState, key: K, value
   return { ...s, prefs: { ...s.prefs, [key]: value } };
 }
 
-/** Whether the situation briefing opens by itself (off by default; on at Guide me unless turned off). */
+/**
+ * Whether the situation briefing opens by itself. Opt-in only, at every familiarity level
+ * (F-02-1: at Guide me it covered half the screen before the first choice and newcomers left).
+ * Only the Settings toggle turns it on; "What is going on here?" opens it on demand.
+ */
 export function autoBriefOn(s: LearnState): boolean {
-  return s.prefs.autoBrief ?? s.level === 'guide';
+  return s.prefs.autoBrief === true;
 }
 
 export function noteSession(s: LearnState): LearnState {

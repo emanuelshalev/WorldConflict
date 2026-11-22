@@ -38,15 +38,19 @@ export function titleInsets(width: number, height: number, dossier: number): Ins
 
 /**
  * Insets of the in-game map (3.1): the canvas runs under the glass HUD and the command strip, so
- * the free box is measured from the page: top = the HUD's bottom, bottom = the command strip and
+ * the free box is measured from the page: top = the goal line's (or HUD's) bottom, bottom = the command strip and
  * ticker (when they cover the canvas), right = an open drawer or dossier. `el` is the map container.
  */
 export function gameInsets(el: HTMLElement): Insets {
   const c = el.getBoundingClientRect();
   const out: Insets = { top: 0, right: 0, bottom: 0, left: 0 };
   const over = (r: DOMRect) => r.width > 0 && r.height > 0 && r.left < c.right && r.right > c.left && r.top < c.bottom && r.bottom > c.top;
-  const hud = document.querySelector('.hud')?.getBoundingClientRect();
-  if (hud && over(hud)) out.top = Math.max(0, hud.bottom - c.top);
+  // The HUD and the goal line under it both cover the top of the canvas (QA AC3: the disc's top
+  // was drawn under the goal line)
+  for (const sel of ['.hud', '.goal-line']) {
+    const r = document.querySelector(sel)?.getBoundingClientRect();
+    if (r && over(r) && r.top < c.top + c.height / 2) out.top = Math.max(out.top, r.bottom - c.top);
+  }
   for (const sel of ['.cmd-strip', '.ticker']) {
     const r = document.querySelector(sel)?.getBoundingClientRect();
     if (r && over(r) && r.top > c.top + c.height / 2) out.bottom = Math.max(out.bottom, c.bottom - r.top);

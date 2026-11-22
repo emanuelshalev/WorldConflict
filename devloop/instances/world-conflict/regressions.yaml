@@ -1,0 +1,39 @@
+# Regression registry (devloop/method/triage.md rule 7, D-60): every fixed finding and its guards.
+# The verify gate runs every guard; a finding without a passing guard is not fixed.
+# guard kinds: unit (vitest file and test name), ui (a script that replays the customer's steps).
+
+- id: F-02-1
+  title: Newcomers drown before the first choice (auto-open briefing, text wall, unknown goal, unkind ranking)
+  evidence: runs/iter-02/sessions/olivia-laptop.md, runs/iter-02/sessions/noah-phone.md
+  fixed_in: fix-newcomers (iteration 3)
+  guards:
+    - unit: tests/ui-learn.spec.ts "never auto-opens the briefing at any level unless the player turns it on"
+    - unit: tests/ui-newcomers.spec.ts "F-02-1: month 1 states the one goal in one plain sentence (Noah)"
+    - unit: tests/ui-newcomers.spec.ts "F-02-1: Guide me shows fewer words before the first choice (Olivia, Noah)"
+    - unit: tests/ui-numbers.spec.ts "reveal leads with the outcome, the percentile is kind (F-02-1, Olivia)"
+    - ui: runs/iter-03/fix-newcomers-shots.mjs (no briefing at Guide me, goal sentence above the crisis, lede at most 16 words, no option descriptions before More, goal line link)
+
+- id: F-02-4
+  title: Staff pre-spend political capital; staff effects unclear before Approve
+  evidence: runs/iter-02/sessions/priya-flash.md, runs/iter-02/sessions/dan-term.md
+  fixed_in: fix-newcomers (iteration 3)
+  guards:
+    - unit: tests/ui-newcomers.spec.ts "F-02-4: staff propose, the player spends (Priya, Dan)"
+    - ui: runs/iter-03/fix-newcomers-shots.mjs (staff orders arrive as proposals; Approve order turns one into an order)
+
+- id: F-02-5
+  title: Map and desk order cards differ; Desk switch dead with a map menu open
+  evidence: runs/iter-02/sessions/sam-desktop.md (012-desk2b.png, log.jsonl click "/Desk/i" hit "same list as the desk")
+  fixed_in: fix-newcomers (iteration 3)
+  guards:
+    - unit: tests/ui-newcomers.spec.ts "F-02-5: map and desk show one order card; the Desk switch always answers (Sam)"
+    - ui: runs/iter-03/fix-newcomers-shots.mjs "Desk switch answers with a map menu open"
+
+- id: QA-AC3-iter02
+  title: In-game globe 876 px at 1920 (target 900) and its top under the goal line
+  evidence: runs/iter-02/qa-verify.md (world map AC3)
+  fixed_in: fix-newcomers (iteration 3)
+  guards:
+    - unit: tests/ui-newcomers.spec.ts "QA AC3: the in-game globe fit"
+    - ui: scenarios-qa/globe-fit.mjs (D at least 900 at 1920; disc top clear of the goal line at 1920, 1440, 1024, 390)
+    - ui: scenarios-qa/worldmap.mjs AC3

@@ -55,12 +55,17 @@ describe("defaults and settings", () => {
     expect(autoBriefOn(s)).toBe(false);
   });
 
-  it("auto-opens the briefing at Guide me unless the player turned it off", () => {
+  it("never auto-opens the briefing at any level unless the player turns it on (F-02-1, Olivia, Noah)", () => {
     const guide = setLevel(defaultLearn(), "guide");
     expect(guide.asked).toBe(true);
-    expect(autoBriefOn(guide)).toBe(true);
+    // Olivia and Noah picked Guide me and a briefing panel covered half the screen before the first choice
+    for (const level of ["guide", "some", "know"] as const) {
+      expect(autoBriefOn(setLevel(defaultLearn(), level))).toBe(false);
+      expect(autoBriefOn(setPref(setLevel(defaultLearn(), level), "autoBrief", true))).toBe(true);
+    }
     expect(autoBriefOn(setPref(guide, "autoBrief", false))).toBe(false);
-    expect(autoBriefOn(setPref(defaultLearn(), "autoBrief", true))).toBe(true);
+    // An old saved state with no explicit choice stays off
+    expect(autoBriefOn(sanitizeLearn({ level: "guide", prefs: {} }))).toBe(false);
   });
 
   it("markAsked keeps the preselected level", () => {

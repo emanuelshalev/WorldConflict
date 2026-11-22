@@ -147,7 +147,7 @@ export function MapActionMenu({ countryId, x, y, bounds, onClose, onChangeCountr
             </>
           ) : (
             <>
-              <IconChevronDown size={15} aria-hidden /> All {all.length} orders for {view.name} <span>· same list as the desk</span>
+              <IconChevronDown size={15} aria-hidden /> All {all.length} orders for {view.name} <span aria-hidden>· the full list</span>
             </>
           )}
         </button>

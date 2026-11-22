@@ -20,7 +20,9 @@ try {
   await s.click(/Take office|Begin|Start/i);
   let month = 0;
   for (; month < 130 && !(await revealUp()); month++) {
-    await s.click(/Approve( \d+)?( suggestion)?/i, { timeout: 1500 });
+    // Approve all ("Approve 4 staff picks"): crisis picks, staff proposals and meetings. A bare
+    // "Approve" is a single staff proposal on its card (F-02-4), not the month
+    await s.click(/^Approve \d+ (staff )?picks?/i, { timeout: 1500 });
     if (!(await s.click(/Execute month/i, { timeout: 12000 }))) {
       if (await revealUp()) break;
       await s.look(`m${month + 1}-blocked`);

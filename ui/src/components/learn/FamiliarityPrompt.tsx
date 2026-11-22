@@ -8,8 +8,8 @@ import { useGameStore } from '../../store/gameStore';
  * The familiarity setting (design-learn.md §5, D-53): asked once before the first month
  * (inside the briefing, "Take office" keeps the preselected Some help), changeable in Settings
  * and from the HUD book button. What each level does:
- * - Guide me: names you may not know are underlined, and the situation briefing opens by itself
- *   on each new crisis;
+ * - Guide me: names you may not know are underlined and the crisis text is shorter (the rest
+ *   behind More). The situation briefing never opens by itself (F-02-1): Settings can turn it on;
  * - Some help: clean text, a labelled "i" per paragraph and "What is going on here?" per crisis;
  * - I know this: the same, with the "i" kept faint.
  */
@@ -112,7 +112,7 @@ export function ExplanationsSettings(): JSX.Element {
       <p className="lx-settings-sub">How much help with real names, places and events.</p>
       <LevelSegment />
       <p className="lx-settings-sub">{LEVELS.find((l) => l.id === learn.level)?.blurb}</p>
-      {row(autoBriefOn(learn), (v) => setPref('autoBrief', v), 'Brief me on each new crisis', 'Opens "What is going on here?" the first time a crisis appears. On for Guide me, off otherwise.')}
+      {row(autoBriefOn(learn), (v) => setPref('autoBrief', v), 'Brief me on each new crisis', 'Opens "What is going on here?" by itself the first time a crisis appears. Off unless you turn it on.')}
       {row(learn.prefs.liveLines, (v) => setPref('liveLines', v), 'Show "In your game" lines', 'Each explanation ends with what is true in your game right now.')}
       {row(learn.prefs.fadeKnown, (v) => setPref('fadeKnown', v), 'Stop marking names I know', 'A name you have opened fades, then goes plain after a few screens.')}
       {row(learn.prefs.largeText, (v) => setPref('largeText', v), 'Larger explanation text', '16 px instead of 14 px.')}

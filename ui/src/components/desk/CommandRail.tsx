@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useExecute } from '../../lib/useExecute';
-import { IconAlertTriangle, IconChecks, IconChevronDown, IconChevronUp, IconLayoutDashboard, IconPlus, IconSend, IconX } from '@tabler/icons-react';
-import { MEETING_SLOTS, useGameStore } from '../../store/gameStore';
+import { IconAlertTriangle, IconCheck, IconChecks, IconChevronDown, IconChevronUp, IconLayoutDashboard, IconPlus, IconSend, IconX } from '@tabler/icons-react';
+import { MEETING_SLOTS, type PendingAction, useGameStore } from '../../store/gameStore';
 import { flag } from '../../lib/format';
 import { pcCost } from '../../lib/actions';
 import { budgetShare, budgetStatus, money } from '../../lib/budget';
-import { approveAll, crisisSelection, pcIncome, pendingApprovals, planSummary } from '../../lib/month';
+import { approveAll, crisisSelection, pcIncome, pendingApprovals, planSummary, proposalEffects } from '../../lib/month';
+import { approveProposal } from '../../store/gameStore';
 import { TERMS, term } from '../../lib/glossary';
 import { ActionIcon } from '../../scenes/icons';
 import { ContextMap } from '../../scenes/ContextMap';
@@ -38,7 +39,8 @@ export function SealBank({ size = 38, sentence = true }: { size?: number; senten
   const total = Math.max(0, b.pc.bank + b.pc.crisis + b.pc.meetings);
   const left = Math.max(0, b.pc.left);
   const held = Math.min(total, b.pc.orders);
-  const on = actions.filter((a) => pcCost(a.type) > 0);
+  const on = actions.filter((a) => !a.proposed && pcCost(a.type) > 0);
+  const proposed = Math.min(left, b.proposed.pc);
   const income = pcIncome(world);
   const room = Math.max(0, Math.min(income, b.pc.cap - left));
   return (
@@ -49,7 +51,7 @@ export function SealBank({ size = 38, sentence = true }: { size?: number; senten
           <b>{b.pc.left}</b> of {total} left
         </span>
       </div>
-      <CapitalSeals left={left} held={held} short={b.pc.left < 0 ? -b.pc.left : 0} size={size} />
+      <CapitalSeals left={left} held={held} proposed={proposed} short={b.pc.left < 0 ? -b.pc.left : 0} size={size} />
       {sentence && (
         <p className="bank-say">
           {on.length > 0 && (
@@ -58,6 +60,15 @@ export function SealBank({ size = 38, sentence = true }: { size?: number; senten
                 {held} {held === 1 ? 'seal is' : 'seals are'} on {on.map((a) => a.label).join(' and ')}.
               </b>{' '}
               Remove {on.length === 1 ? 'it' : 'one'} to get {held === 1 ? 'it' : 'them'} back.{' '}
+            </>
+          )}
+          {b.proposed.count > 0 && (
+            <>
+              <b className="bank-proposed">
+                Staff propose {b.proposed.labels.join(' and ')}
+                {b.proposed.pc ? ` (◆ ${b.proposed.pc})` : ''}.
+              </b>{' '}
+              Nothing is spent until you approve.{' '}
             </>
           )}
           {left >= b.pc.cap ? `Political capital is full: you can't hold more than ◆ ${b.pc.cap}.` : `Next month you get ${room} more (up to ${b.pc.cap}).`}
@@ -108,8 +119,9 @@ export function Tray() {
   const attending = agenda.filter((m) => choices[m.id] && choices[m.id] !== m.defaultOptionId);
   const b = budgetStatus();
   // The order the engine would refuse first when over capital: the last one that costs political capital
-  const refused = b && b.pc.left < 0 ? actions.map((a, i) => ({ a, i })).filter((x) => pcCost(x.a.type) > 0).pop()?.i : undefined;
-  const decided = decisions.filter((d) => reviewed[d.id]).length + actions.length + attending.length;
+  const refused = b && b.pc.left < 0 ? actions.map((a, i) => ({ a, i })).filter((x) => !x.a.proposed && pcCost(x.a.type) > 0).pop()?.i : undefined;
+  const committedN = actions.filter((a) => !a.proposed).length;
+  const decided = decisions.filter((d) => reviewed[d.id]).length + committedN + attending.length;
   const open = (f: Parameters<typeof setFocus>[0]) => {
     setFocus(f);
     if (f.kind !== 'crisis') setDeskView('full');
@@ -140,7 +152,7 @@ export function Tray() {
           </button>
         );
       })}
-      {actions.map((a, i) => (
+      {actions.map((a, i) => (a.proposed ? <ProposalSlot key={`${a.label}-${i}`} a={a} i={i} home={world.playerCountryId} onOpen={() => open({ kind: 'order', id: String(i) })} onRemove={() => remove(i)} /> : (
         <div key={`${a.label}-${i}`} className={`slot-card order${i === refused ? ' refused' : ''}${focus.kind === 'order' && focus.id === String(i) ? ' on' : ''}`}>
           <button type="button" className="slot-main" onClick={() => open({ kind: 'order', id: String(i) })} title={a.why ?? a.preview?.summary}>
             <span className="slot-thumb" aria-hidden>
@@ -163,10 +175,10 @@ export function Tray() {
             <IconX size={15} />
           </button>
         </div>
-      ))}
-      {actions.length < 6 && (
+      )))}
+      {committedN < 6 && (
         <button type="button" className="slot-card empty" onClick={() => open({ kind: 'catalog' })}>
-          <IconPlus size={15} aria-hidden /> Empty order slot ({6 - actions.length} more this month)
+          <IconPlus size={15} aria-hidden /> Empty order slot ({6 - committedN} more this month)
         </button>
       )}
       {agenda.length > 0 && (
@@ -177,6 +189,36 @@ export function Tray() {
           {attending.length < MEETING_SLOTS && attending.length > 0 ? ` (${MEETING_SLOTS - attending.length} free)` : ''}
         </button>
       )}
+    </div>
+  );
+}
+
+/** A staff proposal in the plan: what it changes, what it would cost, Approve or Remove. */
+function ProposalSlot({ a, i, home, onOpen, onRemove }: { a: PendingAction; i: number; home: string; onOpen: () => void; onRemove: () => void }) {
+  const pc = pcCost(a.type);
+  const fx = proposalEffects(a);
+  return (
+    <div className="slot-card order proposed" data-proposal="">
+      <button type="button" className="slot-main" onClick={onOpen} title={a.why ?? a.preview?.summary}>
+        <span className="slot-thumb" aria-hidden>
+          <SceneFrame kind={sceneForAction(a.type)} home={home} other={a.targetCountryId} size="thumb" />
+        </span>
+        <span className="slot-text">
+          <b>
+            <ActionIcon type={a.type} size={13} /> {a.label}
+          </b>
+          <small>
+            Proposed by staff{a.why ? ` (${a.why.split(':')[0]})` : ''} · {pc ? `◆ ${pc} if approved` : 'free'}
+          </small>
+          {fx && <small className="slot-fx">{fx}</small>}
+        </span>
+      </button>
+      <button type="button" className="wc-btn small slot-approve" onClick={() => { if (approveProposal(i).ok) sound.play('stamp'); }} aria-label={`Approve order: ${a.label}${pc ? `, spends ◆ ${pc}` : ''}`}>
+        <IconCheck size={14} aria-hidden /> Approve order
+      </button>
+      <button type="button" className="slot-x" onClick={onRemove} aria-label={`Remove ${a.label}`}>
+        <IconX size={15} />
+      </button>
     </div>
   );
 }
@@ -220,13 +262,14 @@ export function Readiness() {
 export function ApproveButton({ compact = false }: { compact?: boolean }) {
   useGameStore((s) => s.decisionChoices);
   useGameStore((s) => s.reviewed);
-  const { crises, meetings, deputies } = pendingApprovals();
-  const n = crises.length + meetings.length + (deputies.length && !meetings.length && !crises.length ? deputies.length : 0);
+  useGameStore((s) => s.pendingActions);
+  const { crises, orders, meetings, deputies } = pendingApprovals();
+  const n = crises.length + orders.length + meetings.length + (deputies.length && !meetings.length && !crises.length && !orders.length ? deputies.length : 0);
   if (n === 0) return null;
   const against = planSummary().against.filter((x) => x.kind === 'crisis').length;
   const label = compact ? term(TERMS.approveAll.compact, n) : term(TERMS.approveAll.name, n);
   return (
-    <button type="button" className="wc-btn approve" onClick={approveAll} title="Confirm the cabinet's crisis picks and attend the suggested meetings (Shift+A)">
+    <button type="button" className="wc-btn approve" onClick={approveAll} title="Confirm the cabinet's crisis picks, approve the staff's proposed orders (this spends their political capital) and attend the suggested meetings (Shift+A)">
       <IconChecks size={16} aria-hidden /> {label}
       {against > 0 && <span className="approve-against"> ({against} against your mission)</span>}
       {!compact && <kbd>Shift+A</kbd>}
@@ -283,7 +326,7 @@ export function CommandRail({ catalogTarget, simple = false }: { catalogTarget: 
       <div className="rail-body">
         {simple ? (
           <>
-            <p className="rail-simple">Answer the crisis, then run the month. Your staff handle the rest this month.</p>
+            <p className="rail-simple">Answer the crisis, then run the month.</p>
             <Readiness />
             <button type="button" className="link rail-show" onClick={showDesk}>
               Show budgets, orders and meetings
@@ -326,7 +369,7 @@ export function CommandBar({ catalogTarget, simple = false }: { catalogTarget: s
   const b = budgetStatus();
   if (!world || !b) return null;
   const attending = (world.agenda ?? []).filter((m) => choices[m.id] && choices[m.id] !== m.defaultOptionId).length;
-  const decided = Object.keys(reviewed).filter((id) => world.pendingDecisions.some((d) => d.id === id)).length + actions.length + attending;
+  const decided = Object.keys(reviewed).filter((id) => world.pendingDecisions.some((d) => d.id === id)).length + actions.filter((a) => !a.proposed).length + attending;
   return (
     <>
       {sheet && <div className="bar-backdrop" onClick={() => setSheet(false)} aria-hidden />}
@@ -352,7 +395,7 @@ export function CommandBar({ catalogTarget, simple = false }: { catalogTarget: s
         )}
         <div className="bar-row">
           <button type="button" className="bar-plan" onClick={() => setSheet((v) => !v)} aria-expanded={sheet} data-point="tray">
-            <CapitalSeals left={Math.max(0, b.pc.left)} held={Math.min(b.pc.orders, Math.max(0, b.pc.bank + b.pc.crisis + b.pc.meetings))} size={22} />
+            <CapitalSeals left={Math.max(0, b.pc.left)} held={Math.min(b.pc.orders, Math.max(0, b.pc.bank + b.pc.crisis + b.pc.meetings))} proposed={b.proposed.pc} size={22} />
             <span className="num">
               {Math.max(0, b.pc.left)} left · {decided} decided {sheet ? <IconChevronDown size={14} aria-hidden /> : <IconChevronUp size={14} aria-hidden />}
             </span>
@@ -377,15 +420,16 @@ export function CommandStrip() {
   useGameStore((s) => s.decisionChoices);
   const ex = useExecute();
   const b = budgetStatus();
-  // The advisors get their own full-width row (QA S2-1): open by default where it fits
-  const [tray, setTray] = useState(() => typeof window === 'undefined' || window.innerWidth >= 1280);
+  // The advisors get their own full-width row (QA S2-1), collapsed by default so the globe keeps
+  // its room (QA AC3); the toggle opens it
+  const [tray, setTray] = useState(false);
   if (!world || !b) return null;
   const cabinet = decisions.filter((d) => !reviewed[d.id]).length;
   return (
     <div className={`cmd-strip${tray ? ' tray-open' : ''}`}>
       <div className="strip-chips">
         <span className={`chip-b seals${b.pc.left < 0 ? ' over' : ''}`} data-point="capital">
-          <CapitalSeals left={Math.max(0, b.pc.left)} held={Math.min(b.pc.orders, Math.max(0, b.pc.bank + b.pc.crisis + b.pc.meetings))} size={18} text={term(TERMS.capital.compact, b.pc.left)} />
+          <CapitalSeals left={Math.max(0, b.pc.left)} held={Math.min(b.pc.orders, Math.max(0, b.pc.bank + b.pc.crisis + b.pc.meetings))} proposed={b.proposed.pc} size={18} text={term(TERMS.capital.compact, b.pc.left)} />
         </span>
         <span className="num chip-b" data-point="orders">{term(TERMS.orders.compact, b.orders.used)}</span>
         <span className="num chip-b" data-point="meetings">{term(TERMS.meetings.compact, b.inPerson.used)}</span>
@@ -401,7 +445,7 @@ export function CommandStrip() {
         </div>
       )}
       <div className="strip-act">
-        <button type="button" className="wc-btn" onClick={() => setDeskMode('desk')} title="Back to the desk (M)">
+        <button type="button" className="wc-btn" onClick={() => setDeskMode('desk')} title="Back to the desk (M)" data-desk-switch="">
           <IconLayoutDashboard size={16} aria-hidden /> Desk
         </button>
         <ApproveButton compact />

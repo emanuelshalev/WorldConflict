@@ -57,7 +57,11 @@ export interface Advice {
   meetingPicks: Record<string, string>;
   /** Meetings that go to a deputy when the player approves all. */
   deputies: string[];
-  /** The orders the staff queue on their own this month, in order. */
+  /**
+   * The orders the staff propose this month, in order. The desk shows them as proposals that hold
+   * no political capital until the player approves them (one by one or with Approve all, F-02-4);
+   * the balance harness's staff policy plays Approve all, so it runs every one of them.
+   */
   staffOrders: StaffOrder[];
   /**
    * What the desk may say about the mission pick per crisis: a clean "Best for your mission", an
@@ -99,7 +103,7 @@ export const DANGEROUS = new Set([
   "INTEL_ASSASSINATE",
   "INTEL_COUP",
 ]);
-/** Staff queue at most this many orders a month... */
+/** Staff propose at most this many orders a month... */
 export const STAFF_ORDERS = 2;
 /** ...and always leave this much political capital for the player's own orders. */
 export const RESERVE_PC = 1;
@@ -720,8 +724,9 @@ export function recentUses(world: WorldState, type: string): number {
 }
 
 /**
- * The orders the staff queue on their own: the top suggestions that are safe (not dangerous, no
- * mission warning, decent odds), varied, affordable after the crisis picks and leaving RESERVE_PC.
+ * The orders the staff propose: the top suggestions that are safe (not dangerous, no mission
+ * warning, decent odds), varied, affordable after the crisis picks and leaving RESERVE_PC. They
+ * run only once approved (Approve all approves every one that still fits, as the harness does).
  */
 export function staffOrders(
   world: WorldState,
