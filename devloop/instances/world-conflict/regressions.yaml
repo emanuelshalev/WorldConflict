@@ -636,6 +636,10 @@ findings:
       - vitest: tests/ui-newcomers.spec.ts
         name: "F-02-4: staff propose, the player spends (Priya, Dan)"
       - script: devloop/instances/world-conflict/runs/iter-03/fix-newcomers-shots.mjs
+      - vitest: tests/ui-staff-picks.spec.ts
+        name: "F-02-4 counts"
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-005.mjs
+    note: QA iter-03 (fix-staff-picks) - the Full desk navigator counted unapproved proposals (Orders 2 of 6) while the rail said 0 of 6; RS-005.mjs compares the two on screen.
   - id: F-02-5
     title: Map and desk order cards differ; Desk switch dead with a map menu open
     source: runs/iter-02/sessions/sam-desktop.md (012-desk2b.png, log.jsonl click "/Desk/i" hit "same list as the desk")
@@ -664,7 +668,7 @@ findings:
   - id: RS-005
     title: Staff picks are listed, titled, next to every Approve control; the button names its count and never approves unseen
     source: real-signals/RS-005-ceo-staff-picks-unclear-2026-11-23.md (CEO playtest); D-64
-    covers: [ui/src/components/desk/StaffPicks.tsx, ui/src/components/desk/CommandRail.tsx, ui/src/lib/useStaffPicks.ts, ui/src/lib/month.ts, ui/src/styles/staff-picks.css, ui/src/lib/glossary.ts]
+    covers: [ui/src/components/desk/StaffPicks.tsx, ui/src/components/desk/CommandRail.tsx, ui/src/components/desk/Navigator.tsx, ui/src/lib/useStaffPicks.ts, ui/src/lib/month.ts, ui/src/styles/staff-picks.css, ui/src/lib/glossary.ts]
     guards:
       - vitest: tests/ui-staff-picks.spec.ts
       - vitest: tests/ui-glossary.spec.ts

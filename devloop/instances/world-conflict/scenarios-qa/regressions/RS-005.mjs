@@ -76,6 +76,20 @@ await run('RS-005', async (g, track) => {
     const why = await p.locator('.sp-why').first().innerText().catch(() => '');
     g.check(/suggestions for this month/i.test(why), `${device} desk: first use explains what staff picks are`);
     await s.look(`${device}-desk`);
+    if (device === 'laptop') {
+      // F-02-4 (QA): the Full desk navigator counted unapproved proposals ("Orders this month 2 of 6",
+      // "2 added by staff") while the rail said 0 of 6. Both count approved orders only.
+      await p.getByRole('tab', { name: 'Full desk' }).first().click();
+      await p.waitForTimeout(600);
+      const navText = (await p.locator('nav.navigator').innerText().catch(() => '')).replace(/\s+/g, ' ');
+      const railText = (await p.locator('.budget-tiles').innerText().catch(() => '')).replace(/\s+/g, ' ');
+      const navN = /Orders this month (\d+) of 6/.exec(navText)?.[1];
+      const railN = /Orders this month (\d+) of 6/.exec(railText)?.[1];
+      g.check(navN !== undefined && navN === railN, `${device} full desk: navigator and rail count the same orders (${navN} / ${railN})`);
+      g.check(!/added by staff/.test(navText) && /proposed by staff, not approved/.test(navText), `${device} full desk: proposals are named as proposals, not as added orders`);
+      await p.getByRole('tab', { name: 'Focus' }).first().click().catch(() => {});
+      await p.waitForTimeout(400);
+    }
     if (device === 'phone') {
       await p.locator('.bar-plan').click();
       await p.waitForTimeout(400);

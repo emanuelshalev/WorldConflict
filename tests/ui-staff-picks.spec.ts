@@ -110,6 +110,18 @@ describe("RS-005: staff picks are listed next to their Approve button", () => {
     for (const o of off) expect(o.reason).toMatch(/Needs ◆ \d, you have ◆ 0/);
   });
 
+  it("F-02-4 counts: the navigator and the advisors count approved orders only, like the rail", () => {
+    const nav = ui("components/desk/Navigator.tsx");
+    // QA: the Full desk said "Orders this month 2 of 6 / 2 added by staff" while the rail said 0 of 6
+    expect(nav).toContain("const committed = committedActions(actions);");
+    expect(nav).toContain("term('{n} of {m}', committed.length, 6)");
+    expect(nav).not.toMatch(/added by staff/);
+    expect(nav).toContain("proposed by staff, not approved");
+    const adv = ui("components/desk/AdvisorList.tsx");
+    expect(adv).not.toMatch(/\bactions\.length\b/);
+    expect(ui("lib/budget.ts")).toContain("Staff proposals spend nothing until approved");
+  });
+
   it("every Approve control sits inside the Staff picks group (desk rail, phone sheet, map strip)", () => {
     const rail = ui("components/desk/CommandRail.tsx");
     expect(rail).toContain('<StaffPicks variant="rail" />');

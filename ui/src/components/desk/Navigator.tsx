@@ -1,5 +1,5 @@
 import { IconAlertTriangle, IconBuildingCommunity, IconListCheck, IconMicrophone, IconPhoneCall, IconSearch, IconUsers } from '@tabler/icons-react';
-import { type DeskFocus, type Meeting, useGameStore } from '../../store/gameStore';
+import { type DeskFocus, type Meeting, committedActions, useGameStore } from '../../store/gameStore';
 import { flag } from '../../lib/format';
 import { crisisSelection, meetingSelection } from '../../lib/month';
 import { TERMS, term } from '../../lib/glossary';
@@ -36,6 +36,11 @@ export function Navigator({ tabs = false }: { tabs?: boolean }) {
   const focus = useGameStore((s) => s.focus);
   const setFocus = useGameStore((s) => s.setFocus);
   const actions = useGameStore((s) => s.pendingActions);
+  // F-02-4: only approved orders count; a staff proposal is named as one until it is approved
+  const committed = committedActions(actions);
+  const proposedN = actions.length - committed.length;
+  const staffIn = committed.filter((a) => a.origin === 'staff').length;
+  const staffLine = [proposedN ? `${proposedN} proposed by staff, not approved` : '', staffIn ? `${staffIn} staff ${staffIn === 1 ? 'order' : 'orders'} approved` : ''].filter(Boolean).join(' · ') || 'Top picks for this month';
   const status = useGameStore((s) => s.objectiveStatus);
   const setDrawer = useGameStore((s) => s.setDrawer);
   if (!world) return null;
@@ -131,7 +136,7 @@ export function Navigator({ tabs = false }: { tabs?: boolean }) {
       })}
       {head(
         <>
-          {TERMS.orders.name} <span className="num">{term('{n} of {m}', actions.length, 6)}</span>
+          {TERMS.orders.name} <span className="num">{term('{n} of {m}', committed.length, 6)}</span>
         </>,
       )}
       {row(
@@ -140,7 +145,7 @@ export function Navigator({ tabs = false }: { tabs?: boolean }) {
           <IconListCheck size={15} aria-hidden />
           <span className="nav-label">
             {tabs ? 'Advisors' : "Advisors' suggestions"}
-            {!tabs && <small className="nav-sub">{actions.filter((a) => a.origin === 'staff').length} added by staff</small>}
+            {!tabs && <small className="nav-sub">{staffLine}</small>}
           </span>
         </>,
       )}

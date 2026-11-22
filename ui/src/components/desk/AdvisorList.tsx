@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { IconCheck, IconPlus } from '@tabler/icons-react';
-import { capitalLeft, orderKey, queueOrder, useGameStore } from '../../store/gameStore';
+import { capitalLeft, committedActions, orderKey, queueOrder, useGameStore } from '../../store/gameStore';
 import { type AdvisorRowData as Row, useAdvisorRows, whyLine } from '../../lib/advisorRows';
 import { pcCost } from '../../lib/actions';
 import { MAX_ORDERS } from '../../lib/budget';
@@ -87,7 +87,7 @@ function AdvisorRow({ r, compact }: { r: Row; compact?: boolean }) {
   const queued = at >= 0;
   const cost = pcCost(r.action.type);
   const left = capitalLeft();
-  const blocked = queued ? null : actions.length >= MAX_ORDERS ? `All ${MAX_ORDERS} orders this month are used.` : cost > left ? `Needs ◆ ${cost}, you have ◆ ${Math.max(0, left)}.` : null;
+  const blocked = queued ? null : committedActions(actions).length >= MAX_ORDERS ? `All ${MAX_ORDERS} orders this month are used.` : cost > left ? `Needs ◆ ${cost}, you have ◆ ${Math.max(0, left)}.` : null;
   const mt = missionTag(impact, status);
   const pointed = hl !== null && !!impact?.links?.some((l) => l.index === hl && l.effect === 'helps');
   const add = async () => {
@@ -177,7 +177,7 @@ export function BigMove({ rows }: { rows: Row[] }) {
       };
     }),
     left,
-    MAX_ORDERS - actions.length,
+    MAX_ORDERS - committedActions(actions).length,
   );
   if (!move) return null;
   const go = async () => {
