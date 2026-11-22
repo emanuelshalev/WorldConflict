@@ -208,13 +208,23 @@ describe("reported cases (iteration 1 panel)", () => {
   });
 
   it("Maya: Never Fired a Shot is not earned at war or after an attacking crisis answer", () => {
-    const g = games.find((x) => x.key.startsWith("ceasefire-or-collapse:USA:none")) as Played;
-    const world = structuredClone(g.world);
+    // Any finished game that earns the seal once every trace of war and attack is removed
+    // (the seal also needs a long enough session, so a fixed seat would be brittle).
+    const strip = (src: Played["world"]) => {
+      const w = structuredClone(src);
+      const c = w.chronicle as Chronicle;
+      c.moments = c.moments.filter((m) => m.kind !== "WAR_START" && m.kind !== "WAR_END" && !(m.kind === "CRISIS" && m.choice));
+      for (const s of c.series) s.playerWars = 0;
+      w.director.record = {};
+      return w;
+    };
+    const earns = (w: Played["world"]) => buildReveal(w, {}).achievements.earned.some((a) => a.id === "no_shot_fired");
+    const g = games.find((x) => earns(strip(x.world)));
+    expect(g).toBeDefined();
+    if (!g) return;
+    const world = strip(g.world);
     const ch = world.chronicle as Chronicle;
-    ch.moments = ch.moments.filter((m) => m.kind !== "WAR_START" && m.kind !== "WAR_END");
-    for (const s of ch.series) s.playerWars = 0;
-    world.director.record = {};
-    expect(buildReveal(world, {}).achievements.earned.some((a) => a.id === "no_shot_fired")).toBe(true);
+    expect(earns(world)).toBe(true);
     ch.moments.push({ turn: 2, kind: "CRISIS", title: "Blackout winter", detail: "", tone: "neutral", weight: 0, choice: "Burn their refineries" });
     expect(buildReveal(world, {}).achievements.earned.some((a) => a.id === "no_shot_fired")).toBe(false);
     ch.moments.pop();
