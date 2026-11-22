@@ -111,11 +111,21 @@ for (const sid of reg.sessions) {
   }
   const subDir = path.join(projectDir, sid, 'subagents');
   if (!fs.existsSync(subDir)) continue;
-  for (const f of fs.readdirSync(subDir).filter((x) => x.endsWith('.jsonl'))) {
-    const metaFile = path.join(subDir, f.replace(/\.jsonl$/, '.meta.json'));
+  // Subagent transcripts, including those launched by workflows (subagents/workflows/<run>/).
+  const files = [];
+  const walk = (dir) => {
+    for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (e.isDirectory()) walk(path.join(dir, e.name));
+      else if (e.name.endsWith('.jsonl')) files.push(path.join(dir, e.name));
+    }
+  };
+  walk(subDir);
+  for (const full of files) {
+    const f = path.basename(full);
+    const metaFile = full.replace(/\.jsonl$/, '.meta.json');
     const meta = fs.existsSync(metaFile) ? JSON.parse(fs.readFileSync(metaFile, 'utf8')) : {};
     const desc = meta.description ?? f;
-    const t = readTranscript(path.join(subDir, f));
+    const t = readTranscript(full);
     let cls = { role: 'Before the loop', group: 'Before the loop', stage: 'Before the loop', iteration: null };
     if (t.first && t.first >= reg.loopStart) {
       cls = { role: 'Unclassified', group: 'Unclassified', stage: 'Unclassified', iteration: null };
