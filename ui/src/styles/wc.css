@@ -39,6 +39,13 @@
   --r-lg: 16px;
   --shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Reveal: achievement rarity rings and infamy (never colour-only: seals carry the tier word) */
+  --rarity-common: #8693a6;
+  --rarity-uncommon: #56c596;
+  --rarity-rare: #4fb3d9;
+  --rarity-legendary: #f2a93b;
+  --infamy: #e5383b;
 }
 
 html,
