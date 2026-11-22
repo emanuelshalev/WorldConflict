@@ -10,8 +10,10 @@ One name per concept (goal G3, `runs/iter-01/design-orders.md` §8). The source 
 | Defense money | Defense budget | n% defense | Military orders use a share of this month's defense budget. | "def", "Defense" alone as a meter label |
 | The 4x50 total | Score | Score | Your standing out of 200: approval, stability, economy and security, moving 15% a month toward how things really are. | "Leadership score", "Leader score" |
 | Stats | Approval, Stability, Legitimacy, Economy, World tension | the same full words | per stat | "APPR", "Appr", "STAB", "Stab", "LEGIT", "Legit", "TENS", "Tens", "GDP" as the stat label |
-| Advisor recommendation | Staff pick | Staff pick | What your staff would do. Approve it or choose yourself. | "Suggested" as a tag, "Staff suggests", "Staff" alone |
-| Bulk approve | Approve n staff picks | Approve n picks | | bare "Approve n" |
+| Advisor recommendation (D-72) | Recommended by (adviser) | Recommended | What one of your advisers recommends. Accept it or choose yourself. | "Suggested" as a tag, "Staff suggests", "Staff" alone, "staff pick", "Cabinet pick" (QA3-S3-2) |
+| The group of recommendations | Recommended | Recommended (n) | Your advisers recommend these for this month. Orders and meetings wait for you to accept; a crisis goes ahead on its recommended answer unless you change it. | |
+| Bulk accept (one verb, D-73) | Accept all recommended (n) | Accept all (n) | | bare "Approve n", "Approve all", "Approve" as a verb, "if approved", "On Approve", "to approve", "wait for your approval" (QA3-S3-2) |
+| The advisers' order ideas | Orders to consider | Orders to consider (n) | Orders your advisers think fit this month, with a line on why. Add any of them yourself; the ones marked Recommended are also in the Recommended list. | "Your advisors suggest" (QA3-S3-2: its count sat next to "Review n recommended") |
 | An order in the tray | In this month | In this month | | "queued", "Already on your desk", "on your desk this month" |
 | Chance | n% chance | n% (in a chip labelled by context) | | "success rate", "success odds", "odds" as a chip |
 | Irreversible | No undo | | | |

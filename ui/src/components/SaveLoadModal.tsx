@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { IconCopy, IconDeviceFloppy, IconGitBranch, IconHome, IconRefresh, IconTrash, IconX } from '@tabler/icons-react';
 import { type SaveRecord, branchGame, fetchSaves, loadGame, replaySave, useGameStore } from '../store/gameStore';
 import { flag } from '../lib/format';
-import { branchMonths, seedCodeFor } from '../lib/runs';
+import { branchLabel, branchMonths, saveMonth, seedCodeFor } from '../lib/runs';
 import { useModalFocus } from '../lib/useModalFocus';
 import { SeedForm } from './reveal/SeedForm';
 import '../styles/reveal.css';
@@ -38,7 +38,7 @@ function SaveRow({ s, current, onDelete }: { s: SaveRecord; current: boolean; on
         <div style={{ flex: 1, minWidth: 0 }}>
           <h5 style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.name}</h5>
           <p className="num">
-            month {s.turn}
+            month {saveMonth(s)}
             {s.maxTurns ? ` of ${s.maxTurns}` : ''}
             {s.gameOver ? ' · finished' : ''}
             {s.leaderName ? ` · ${s.leaderName}` : ''}
@@ -62,11 +62,11 @@ function SaveRow({ s, current, onDelete }: { s: SaveRecord; current: boolean; on
           </button>
           {s.branchable ? (
             <span className="save-row-branch">
-              <label htmlFor={`branch-${s.id}`}>Branch from month</label>
+              <label htmlFor={`branch-${s.id}`}>Branch from the start of</label>
               <select id={`branch-${s.id}`} className="leader-input" value={branchAt} onChange={(e) => setBranchAt(Number(e.target.value))}>
                 {months.map((m) => (
                   <option key={m} value={m}>
-                    {m === 0 ? '0 (the opening)' : m}
+                    {branchLabel(m, s)}
                   </option>
                 ))}
               </select>
@@ -84,7 +84,7 @@ function SaveRow({ s, current, onDelete }: { s: SaveRecord; current: boolean; on
             </button>
           </span>
         </div>
-        <small className="save-row-note">Replay starts this seat again from month 0 with the same opening. A branch keeps this game and starts a new save from the month you pick, with every choice you made before it.</small>
+        <small className="save-row-note">Replay starts this seat again from month 1 with the same opening. A branch keeps this game and starts a new save from the month you pick, with every choice you made before it.</small>
       </details>
     </div>
   );

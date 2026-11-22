@@ -397,7 +397,7 @@ export function OrderCard({
             ) : isProposal ? (
               <span className="ord-meta-line ord-meta-proposed">
                 {TERMS.proposed.name}
-                {staff ? ` (${staff})` : ''} · {pc ? `◆ ${pc} if approved` : 'free'}{' '}
+                {staff ? ` (${staff})` : ''} · {pc ? `◆ ${pc} if accepted` : 'free'}{' '}
                 <button type="button" className="link ord-dismiss" onClick={() => remove(proposalIndex)}>
                   Remove
                 </button>

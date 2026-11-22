@@ -156,4 +156,34 @@ test.describe('desk', () => {
       await expect(page).toHaveScreenshot(`desk-m1-${width}.png`, { mask: liveMasks(page) });
     });
   }
+
+  // QA3-S2-1: the month 2 desk shows "Orders to consider" (the month 1 desk hides it), where the
+  // shared order card was crushed to one letter per line. Month 1 is resolved with no orders and
+  // the default answers, so month 2 is the same every run.
+  for (const [width, view] of [[1440, 'full'], [390, 'focus']] as const) {
+    test(`month 2 desk ${view} ${width}`, async ({ page, request }) => {
+      const guest = `guest-visual-m2-${width}`;
+      const res = await request.post(`${API}/new-game`, {
+        data: { playerCountryId: 'USA', flashpointId: 'hormuz-convoy', mode: 'FLASHPOINT', seed: 4242, playerId: guest, saveName: 'Visual regression' },
+      });
+      const data = await res.json();
+      expect(data.success, JSON.stringify(data).slice(0, 300)).toBe(true);
+      const turn = await (await request.post(`${API}/turn`, { data: { saveId: data.saveId, playerActions: [], decisions: [] } })).json();
+      expect(turn.success, JSON.stringify(turn).slice(0, 300)).toBe(true);
+      await prepare(page, width, { 'worldconflict.guest': guest, 'worldconflict.lastSave': data.saveId });
+      await pinDaily(page);
+      await page.goto('/');
+      await page.getByRole('button', { name: /^Continue/i }).first().click({ timeout: 30_000 });
+      await page.getByRole('button', { name: /Execute month/i }).first().waitFor({ timeout: 30_000 });
+      if (view === 'full') {
+        await page.getByRole('tab', { name: 'Full desk' }).first().click();
+        await page.locator('nav.navigator').getByRole('option', { name: /^Orders to consider/ }).first().click();
+        await page.locator('.detail .adv-list').first().waitFor({ timeout: 10_000 });
+      } else {
+        await page.locator('section.advisors').first().scrollIntoViewIfNeeded();
+      }
+      await settle(page, 2500);
+      await expect(page).toHaveScreenshot(`desk-m2-${view}-${width}.png`, { mask: liveMasks(page) });
+    });
+  }
 });

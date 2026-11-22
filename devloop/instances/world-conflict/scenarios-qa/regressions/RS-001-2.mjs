@@ -35,7 +35,8 @@ await run('RS-001-2', async (g, track) => {
   // Staff picks are proposals that spend nothing until approved (F-02-4, D-58), so month 1 opens
   // with every seal free and no order out of reach. Spend the way a player does: approve the staff
   // picks, then a 2-seal order is out of reach and the meters must still agree.
-  await s.click(/^Advisors' suggestions/);
+  // The navigator row was "Advisors' suggestions" until QA3-S3-2 (one word, D-72)
+  await s.click(/^(Orders to consider|Advisors' suggestions)/);
   await p.waitForTimeout(600);
   for (let k = 0; k < 4; k++) {
     const approve = p.getByRole('button', { name: /^Accept order: / }).first();

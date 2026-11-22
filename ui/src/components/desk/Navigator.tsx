@@ -24,7 +24,7 @@ type RowState = 'needs' | 'staff' | 'done' | 'deputy';
 const sameFocus = (a: DeskFocus, b: DeskFocus) => a.kind === b.kind && (a.id ?? '') === (b.id ?? '');
 
 function Dot({ state }: { state: RowState }) {
-  const word = state === 'needs' ? 'Needs you' : state === 'staff' ? 'Cabinet pick' : state === 'deputy' ? 'Deputy' : 'Decided';
+  const word = state === 'needs' ? 'Needs you' : state === 'staff' ? 'Recommended' : state === 'deputy' ? 'Deputy' : 'Decided';
   return <i className={`nav-dot ${state}`} aria-label={word} title={word} />;
 }
 
@@ -144,7 +144,7 @@ export function Navigator({ tabs = false }: { tabs?: boolean }) {
         <>
           <IconListCheck size={15} aria-hidden />
           <span className="nav-label">
-            {tabs ? 'Advisors' : "Advisors' suggestions"}
+            {tabs ? 'To consider' : TERMS.orderIdeas.name}
             {!tabs && <small className="nav-sub">{staffLine}</small>}
           </span>
         </>,

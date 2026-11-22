@@ -50,12 +50,13 @@ findings:
   - id: RS-001-5
     title: Suggestions are visible, with a why line, on the desk and the map
     source: RS-001 (CEO, "where are the suggestions?"); D-46
-    covers: [src/core/advisors.ts, ui/src/components/desk/AdvisorList.tsx, ui/src/components/desk/CommandRail.tsx, ui/src/lib/advisorRows.ts]
-    changed: "2026-11-23 verify gate fixes: shared guard QA1-S2-1.mjs, see QA1-S2-1"
+    covers: [src/core/advisors.ts, ui/src/components/desk/AdvisorList.tsx, ui/src/components/desk/CommandRail.tsx, ui/src/lib/advisorRows.ts, ui/src/styles/month.css]
+    changed: "2026-11-23 verify gate fixes: shared guard QA1-S2-1.mjs, see QA1-S2-1. 2026-11-22 iteration 3 QA: REGRESSED on the desk (QA3-S2-1, cards one letter per line; QA1-S2-1 checked the Map strip only); fixed in month.css, and QA3-S2-1.mjs now checks the desk list at 390, 1440 and 1920, Focus and Full desk, months 1 and 2"
     guards:
       - vitest: tests/core/advisors.spec.ts
         name: suggests orders with a why line
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/QA1-S2-1.mjs
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/QA3-S2-1.mjs
   - id: RS-002-1
     title: "The reveal: staged end with achievements, what went badly, perception and measured numbers"
     source: RS-002 (CEO, end of game); G10; D-43, D-47
@@ -643,11 +644,13 @@ findings:
   - id: F-02-5
     title: Map and desk order cards differ; Desk switch dead with a map menu open
     source: runs/iter-02/sessions/sam-desktop.md (012-desk2b.png, log.jsonl click "/Desk/i" hit "same list as the desk")
-    covers: [ui/src/components/MapView.tsx, ui/src/components/MapActionMenu.tsx, ui/src/components/orders/**, ui/src/lib/ease.ts]
+    covers: [ui/src/components/MapView.tsx, ui/src/components/MapActionMenu.tsx, ui/src/components/orders/**, ui/src/lib/ease.ts, ui/src/components/desk/AdvisorList.tsx, ui/src/styles/month.css]
+    changed: "2026-11-22 iteration 3 QA: REGRESSED on the desk (QA3-S2-1): the shared card in the desk list shrank to min-content; QA3-S2-1.mjs guards the desk list"
     guards:
       - vitest: tests/ui-newcomers.spec.ts
         name: "F-02-5: map and desk show one order card; the Desk switch always answers (Sam)"
       - script: devloop/instances/world-conflict/runs/iter-03/fix-newcomers-shots.mjs
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/QA3-S2-1.mjs
   - id: QA2-AC3
     title: In-game globe 876 px at 1920 (target 900) and its top under the goal line
     source: runs/iter-02/qa-verify.md (world map AC3)
@@ -714,6 +717,54 @@ findings:
       - vitest: tests/core/aftermath.spec.ts
       - vitest: tests/ui-outcomes.spec.ts
         name: "the share card (F-02-3, Leo: clipped lines)"
+  # ------------------------------------------------------------------------------------------
+  # Iteration 3 QA verify findings (runs/iter-03/qa-verify.md), fixed on fix-iter3-qa
+  # ------------------------------------------------------------------------------------------
+  - id: QA3-S2-1
+    title: Desk order suggestions are readable at every width, Focus and Full desk, months 1 and 2 (no one-letter-per-line cards)
+    source: runs/iter-03/qa-verify.md S2-1 (REGRESSED RS-001-5, F-02-5)
+    covers: [ui/src/components/desk/AdvisorList.tsx, ui/src/components/desk/Detail.tsx, ui/src/components/orders/OrderCard.tsx, ui/src/components/game/CardShell.tsx, ui/src/lib/advisorRows.ts, ui/src/styles/month.css, ui/src/styles/wc.css]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/QA3-S2-1.mjs
+    note: month 2 desk visual baselines desk-m2-full-1440.png and desk-m2-focus-390.png (tests/visual/surfaces.visual.ts) show the list too
+  - id: QA3-S2-2
+    title: On narrow screens the reveal's Main menu never covers the sound button or Skip
+    source: runs/iter-03/qa-verify.md S2-2 (side effect of the RS-004 fix)
+    covers: [ui/src/components/reveal/**, ui/src/styles/reveal.css]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-004.mjs
+  - id: QA3-S3-1
+    title: The familiarity question's sample sentence is from the era being played (1960, 1990, 2025, 2026)
+    source: runs/iter-03/qa-verify.md S3-1
+    covers: [ui/src/components/learn/FamiliarityPrompt.tsx, ui/src/lib/familiaritySample.ts]
+    guards:
+      - vitest: tests/ui-familiarity-sample.spec.ts
+  - id: QA3-S3-2
+    title: "One word Recommended, one verb Accept (D-72, D-73): no Cabinet pick, if approved, On Approve; the order ideas are Orders to consider, never a second count next to Review n recommended"
+    source: runs/iter-03/qa-verify.md S3-2; ledger D-72, D-73
+    covers: [ui/src/lib/glossary.ts, ui/src/lib/month.ts, ui/src/components/desk/**, ui/src/components/game/CardShell.tsx, ui/src/components/orders/OrderCard.tsx, ui/src/components/Desk.tsx, docs/GAMEPLAY.md]
+    guards:
+      - vitest: tests/ui-glossary.spec.ts
+        name: bans the iteration 3 leftovers
+      - vitest: tests/ui-glossary.spec.ts
+        name: finds no banned synonym
+      - vitest: tests/regressions/ui-store.spec.ts
+        name: names the selection Recommended, Accepted or Your pick
+  - id: QA3-S3-3
+    title: At 1440 x 900 the desk rail keeps Execute, Accept all and whole seals in view; the Recommended list scrolls inside it, every item reachable
+    source: runs/iter-03/qa-verify.md S3-3
+    covers: [ui/src/styles/staff-picks.css, ui/src/styles/desk-stage.css, ui/src/components/desk/CommandRail.tsx, ui/src/components/desk/StaffPicks.tsx]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-005.mjs
+  - id: QA3-S3-4
+    title: Saved games, the branch picker and branch names count months like the HUD and the reveal
+    source: runs/iter-03/qa-verify.md S3-4
+    covers: [ui/src/components/SaveLoadModal.tsx, ui/src/lib/runs.ts, src/infra/db.ts, src/api/routes/game.ts]
+    guards:
+      - vitest: tests/ui-replay.spec.ts
+        name: counts months like the HUD
+      - vitest: tests/api/seats-replay.spec.ts
+        name: a branch from month N
 # ------------------------------------------------------------------------------------------
 # Not listed (still open or not a code fix); add them here when a fix lands with its guard:
 #   RS-001-6  dashboard feel, "serious visual design": the ledger keeps it not done (D-37 check)

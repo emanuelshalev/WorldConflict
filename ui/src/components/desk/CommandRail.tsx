@@ -150,7 +150,7 @@ export function Tray() {
             {sel.kind === 'yours' || sel.kind === 'approved' ? (
               <Stamp word={sel.kind === 'yours' ? 'YOUR PICK' : 'ACCEPTED'} size="sm" animate={false} tilt={-4} />
             ) : (
-              <span className="sel-mini">Cabinet pick</span>
+              <span className="sel-mini">Recommended</span>
             )}
           </button>
         );
@@ -240,7 +240,7 @@ export function Readiness() {
       <p className="plan-line">{plan.text}.</p>
       {a && (
         <p className="plan-against" role="note">
-          <IconAlertTriangle size={14} aria-hidden /> {plan.against.length} {a.kind === 'crisis' ? 'cabinet pick' : 'staff order'}
+          <IconAlertTriangle size={14} aria-hidden /> {plan.against.length} {a.kind === 'crisis' ? 'recommended answer' : 'recommended order'}
           {plan.against.length > 1 ? 's work' : ' works'} against your mission: <b>{a.label}</b>.{' '}
           <button
             type="button"
@@ -412,7 +412,7 @@ export function CommandStrip() {
   const recOpen = useRecommendedOpen((s) => s.open);
   // Collapsed, the toggle still says how many suggestions wait behind it (QA S2-1 with AC3)
   const advice = useAdvisorRows();
-  const staffN = advice.filter((r) => r.staff).length;
+  const staffN = advice.filter((r) => r.action.proposed).length;
   if (!world || !b) return null;
   const cabinet = decisions.filter((d) => !reviewed[d.id]).length;
   // RS-005: open, the Recommended list has its own row; folded (the default) or empty, only its
@@ -427,18 +427,18 @@ export function CommandStrip() {
         <span className="num chip-b" data-point="orders">{term(TERMS.orders.compact, b.orders.used)}</span>
         <span className="num chip-b" data-point="meetings">{term(TERMS.meetings.compact, b.inPerson.used)}</span>
         {b.defense.share > 0 && <span className="num chip-b" data-point="defense">{term(TERMS.defense.compact, Math.round(b.defense.share * 100))}</span>}
-        {cabinet > 0 && <span className="strip-note">{cabinet} crisis on the cabinet pick</span>}
+        {cabinet > 0 && <span className="strip-note">{cabinet === 1 ? '1 crisis on its recommended answer' : `${cabinet} crises on their recommended answers`}</span>}
         {advice.length > 0 && (
           <button
             type="button"
             className="strip-tray-btn"
             aria-expanded={tray}
             aria-controls="strip-advisors"
-            aria-label={`Your advisors suggest ${advice.length} ${advice.length === 1 ? 'order' : 'orders'}${staffN ? `, ${staffN} proposed by staff` : ''}`}
+            aria-label={`${TERMS.orderIdeas.name}: ${advice.length} ${advice.length === 1 ? 'order' : 'orders'}${staffN ? `, ${staffN} of them recommended` : ''}`}
             onClick={() => setTray((v) => !v)}
             data-advice-count={advice.length}
           >
-            {tray ? <IconChevronDown size={15} aria-hidden /> : <IconChevronUp size={15} aria-hidden />} Your advisors suggest
+            {tray ? <IconChevronDown size={15} aria-hidden /> : <IconChevronUp size={15} aria-hidden />} {TERMS.orderIdeas.name}
             <span className="strip-tray-n num" aria-hidden>
               {advice.length}
             </span>

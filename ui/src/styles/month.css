@@ -148,6 +148,19 @@
 .adv-row.is-pointed { box-shadow: 0 0 0 3px var(--good); }
 .adv-avatar { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font: 700 13px/1 var(--font-ui); background: var(--surface-3); border: 1px solid var(--line-2); }
 .adv-body { display: grid; gap: 4px; min-width: 0; justify-items: start; }
+/* The shared order card fills the row on the desk too, not only in the Map strip (QA3-S2-1:
+   justify-items: start shrank it to min-content, one letter per line) */
+.adv-card .adv-body { justify-items: stretch; }
+.adv-card .adv-body > * { min-width: 0; max-width: 100%; }
+/* The row card (art, title, action) needs about 460 px to keep its title on one or two lines: the
+   desk list goes to one column before the cards get narrower than that (the Map strip keeps its own
+   two-up grid, ease.css). On phones the avatar gives its width to the card (the card names the adviser). */
+.advisors:not(.compact) .adv-list, .detail .adv-list { grid-template-columns: repeat(auto-fill, minmax(min(100%, 460px), 1fr)); }
+@media (max-width: 599px) {
+  .adv-row.adv-card:not(.compact) { grid-template-columns: minmax(0, 1fr); padding: 10px; }
+  .adv-row.adv-card:not(.compact) > .adv-avatar { display: none; }
+  .advisors:not(.compact) .block-head { flex-wrap: wrap; gap: 2px 10px; }
+}
 .adv-kicker { font-size: 13px; color: var(--good); font-weight: 600; }
 .adv-label { font-size: 16px; font-weight: 700; }
 .adv-why { margin: 0; font-size: 14px; line-height: 1.4; color: var(--text-2); }

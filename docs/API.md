@@ -232,7 +232,7 @@ Turn: 1 req/s · chat: 5 req/s · default: 10 req/s per IP (`src/api/middleware/
 { "saveId": "uuid", "month": 4, "playerId": "guest-..." }
 ```
 
-Branch from this month: rebuilds the save's world at the start of `month` (0 = the opening desk) from `worldState.origin` and the first `month` entries of `worldState.inputs`, with the rivals' intents from the save's turn log (exact even when LLMs drove them) or PersonalityAI, and stores it as a new save named "<name> (branch from month N)". Returns the same payload as `/load` plus `branchedFrom`. 400 for a month outside 0..turn (0..turn-1 for a finished game) or a save made before the replay record existed; 404 for an unknown save.
+Branch from this month: rebuilds the save's world at the start of `month` (0 = the opening desk) from `worldState.origin` and the first `month` entries of `worldState.inputs`, with the rivals' intents from the save's turn log (exact even when LLMs drove them) or PersonalityAI, and stores it as a new save named "<name> (branch from month N+1)" (the month the branch opens on, counted like the HUD). Returns the same payload as `/load` plus `branchedFrom`. 400 for a month outside 0..turn (0..turn-1 for a finished game) or a save made before the replay record existed; 404 for an unknown save.
 
 ### `GET /api/saves?playerId=&guestId=`
 

@@ -178,7 +178,7 @@ function AlsoOnDesk() {
               {agenda.length} call{agenda.length > 1 ? 's' : ''} and meeting{agenda.length > 1 ? 's' : ''}
             </b>
             <small>
-              {attend ? `You attend ${attend}` : `On Approve, staff attend ${Math.min(3, willAttend)}`}
+              {attend ? `You attend ${attend}` : `Recommended: staff attend ${Math.min(3, willAttend)}`}
               {agenda.length - Math.max(attend, Math.min(3, willAttend)) > 0 ? `, a deputy takes ${agenda.length - Math.max(attend, Math.min(3, willAttend))}` : ''}
             </small>
           </span>
@@ -190,7 +190,7 @@ function AlsoOnDesk() {
         <span>
           <b>
             {committed.length} order{committed.length === 1 ? '' : 's'} in this month{staff ? ` (${staff} by staff)` : ''}
-            {toApprove ? `, ${toApprove} staff proposal${toApprove === 1 ? '' : 's'} to approve` : ''}
+            {toApprove ? `, ${toApprove} recommended order${toApprove === 1 ? '' : 's'} to accept` : ''}
           </b>
           <small>{b ? `◆ ${b.pc.orders} of ◆ ${Math.max(0, b.pc.bank + b.pc.crisis + b.pc.meetings)} political capital on orders` : ''}</small>
         </span>
@@ -221,7 +221,7 @@ export function ShowDesk({ className = '' }: { className?: string }) {
         <b>Show the whole desk</b>
         <small>
           Advisors, {actions} order{actions === 1 ? '' : 's'}
-          {proposals ? `, ${proposals} staff proposal${proposals === 1 ? '' : 's'}` : ''} and {agenda} meeting{agenda === 1 ? '' : 's'}: deputies take the meetings, proposals wait for your approval
+          {proposals ? `, ${proposals} recommended order${proposals === 1 ? '' : 's'}` : ''} and {agenda} meeting{agenda === 1 ? '' : 's'}: deputies take the meetings, recommended orders wait for you to accept them
         </small>
       </span>
       <IconChevronRight size={16} aria-hidden />

@@ -355,6 +355,8 @@ export interface SaveListing extends SaveGameRecord {
   branchable: boolean;
   whatIf?: boolean;
   opening?: string;
+  /** The world's current date (YYYY-MM), for the branch picker's month names. */
+  date?: string;
 }
 
 function listing(s: StoredSave): SaveListing {
@@ -369,6 +371,7 @@ function listing(s: StoredSave): SaveListing {
       difficulty: w.difficulty,
       maxTurns: w.maxTurns,
       gameOver: !!w.gameOver,
+      ...(typeof w.date === "string" ? { date: w.date } : {}),
       branchable: !!w.origin,
       ...(w.origin?.whatIf ? { whatIf: true } : {}),
       ...(w.origin?.opening ? { opening: w.origin.opening } : {}),

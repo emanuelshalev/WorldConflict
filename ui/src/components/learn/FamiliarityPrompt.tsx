@@ -3,6 +3,7 @@ import type { LearnLevel } from '../../lib/codexMatch';
 import { LEVELS } from './explain';
 import { autoBriefOn } from '../../lib/learn';
 import { useGameStore } from '../../store/gameStore';
+import { familiaritySample, sampleMarks } from '../../lib/familiaritySample';
 
 /**
  * The familiarity setting (design-learn.md §5, D-53): asked once before the first month
@@ -14,16 +15,33 @@ import { useGameStore } from '../../store/gameStore';
  * - I know this: the same, with the "i" kept faint.
  */
 
-/** The sample sentence as each level shows it (decoration only: the real marks are buttons). */
+/**
+ * The sample sentence as each level shows it (decoration only: the real marks are buttons). The line
+ * is from the era being played (lib/familiaritySample, QA3-S3-1), not the 2026 one in every era.
+ */
 function Sample({ level }: { level: LearnLevel }) {
-  const m = (t: string) => (level === 'guide' ? <span className="lx-mark sample">{t}</span> : t);
+  const date = useGameStore((s) => s.worldState?.date);
+  const sample = familiaritySample(date);
+  const n = sampleMarks(sample);
   return (
-    <p className="lx-sample" aria-hidden>
-      US mediators propose a zone in {m('Donetsk oblast')}, including the {m('fortress belt')} of Kramatorsk.
+    <p className="lx-sample" aria-hidden data-era={sample.era}>
+      {sample.parts.map((p, i) =>
+        typeof p === 'string' ? (
+          p
+        ) : level === 'guide' ? (
+          <span key={i} className="lx-mark sample">
+            {p.mark}
+          </span>
+        ) : (
+          p.mark
+        ),
+      )}
       {level !== 'guide' && (
         <span className={`lx-info sample${level === 'know' ? ' quiet' : ''}`}>
           <span className="lx-info-i">i</span>
-          <span className="lx-info-n">2 names</span>
+          <span className="lx-info-n">
+            {n} {n === 1 ? 'name' : 'names'}
+          </span>
         </span>
       )}
     </p>

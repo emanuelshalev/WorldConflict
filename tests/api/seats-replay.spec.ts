@@ -234,8 +234,9 @@ describe("replay, branch and Saved games (F-02-6)", () => {
       mode: string;
     }>;
     expect(list.some((s) => s.id === saveId && s.branchable && s.seed === 4321 && s.mode === "TERM")).toBe(true);
-    expect(list.some((s) => / \(branch from month 4\)$/.test(s.name))).toBe(true);
-    expect(list.some((s) => /\(branch from month 2\) \(branch/.test(s.name))).toBe(false);
+    // HUD months (QA3-S3-4): a branch at 4 months done opens month 5
+    expect(list.some((s) => / \(branch from month 5\)$/.test(s.name))).toBe(true);
+    expect(list.some((s) => /\(branch from month 3\) \(branch/.test(s.name))).toBe(false);
   });
 
   it("refuses months outside the game and saves without a replay record", async () => {

@@ -214,3 +214,34 @@ export function branchMonths(s: { turn: number; gameOver?: boolean }): number[] 
   const last = s.gameOver ? s.turn - 1 : s.turn;
   return Array.from({ length: Math.max(0, last + 1) }, (_, i) => i);
 }
+
+/** "YYYY-MM" moved by `delta` months. */
+function shiftMonth(date: string, delta: number): string {
+  const [y, m] = date.split('-').map(Number);
+  const i = y * 12 + (m - 1) + delta;
+  return `${Math.floor(i / 12)}-${String((i % 12) + 1).padStart(2, '0')}`;
+}
+
+function shortMonth(date: string): string {
+  const [y, m] = date.split('-').map(Number);
+  return new Date(Date.UTC(y, (m ?? 1) - 1, 1)).toLocaleString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
+}
+
+/**
+ * The month a save row names, counted like the HUD and the reveal (QA3-S3-4: the row counted months
+ * done, "month 0 of 48" for a new game): the month on the desk, or the last month played when over.
+ */
+export function saveMonth(s: { turn: number; maxTurns?: number; gameOver?: boolean }): number {
+  if (s.gameOver) return Math.max(1, s.turn);
+  return s.maxTurns ? Math.min(s.turn + 1, s.maxTurns) : s.turn + 1;
+}
+
+/**
+ * A branch picker option in HUD months (QA3-S3-4): branching at `m` months done opens the desk of
+ * month m + 1 before its choices ("Month 10, Aug 2027: before your choices"). `date` is the save's
+ * current world date (YYYY-MM), so the option can name the calendar month too.
+ */
+export function branchLabel(m: number, s: { turn: number; date?: string }): string {
+  const when = s.date ? `, ${shortMonth(shiftMonth(s.date, m - s.turn))}` : '';
+  return `Month ${m + 1}${when}: before your choices${m === 0 ? ' (the opening)' : ''}`;
+}

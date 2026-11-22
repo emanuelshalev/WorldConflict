@@ -837,8 +837,9 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
         const meta = await gameDb.getSaveById(body.saveId);
         const base = (meta?.name ?? "Game").replace(BRANCH_SUFFIX, "");
         const owner = body.playerId ?? (await gameDb.getSaveOwner(body.saveId)) ?? undefined;
+        // Named in HUD months (QA3-S3-4): a branch at N months done opens month N + 1
         const saveId = await gameDb.saveGame(
-          `${base} (branch from month ${body.month})`,
+          `${base} (branch from month ${body.month + 1})`,
           world,
           [],
           owner,

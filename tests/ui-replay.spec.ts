@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { seedCodeOf } from "../src/core/reveal.js";
 import { type GuestStores, resolveGuestId } from "../ui/src/lib/guest.js";
-import { branchMonths, replayRequestOf, seedCodeFor } from "../ui/src/lib/runs.js";
+import { branchLabel, branchMonths, replayRequestOf, saveMonth, seedCodeFor } from "../ui/src/lib/runs.js";
 
 /** A browser stand-in: localStorage and a cookie jar that clear independently. */
 function browser() {
@@ -75,6 +75,21 @@ describe("Saved games: seed codes, replay and branch months", () => {
     expect(branchMonths({ turn: 3 })).toEqual([0, 1, 2, 3]);
     expect(branchMonths({ turn: 12, gameOver: true })).toHaveLength(12);
     expect(branchMonths({ turn: 0 })).toEqual([0]);
+  });
+
+  it("counts months like the HUD and the reveal in Saved games and the branch picker (QA3-S3-4)", () => {
+    // A new game sits on the desk of month 1 (HUD "Month 1 of 48"), not "month 0"
+    expect(saveMonth({ turn: 0, maxTurns: 48 })).toBe(1);
+    expect(saveMonth({ turn: 9, maxTurns: 12 })).toBe(10);
+    expect(saveMonth({ turn: 12, maxTurns: 12, gameOver: true })).toBe(12);
+    // Deposed after month 7: the reveal's last month is 7
+    expect(saveMonth({ turn: 7, maxTurns: 48, gameOver: true })).toBe(7);
+    // Branching at 10 months done opens HUD "Month 11 of 12": the option says Month 11 and its date
+    const save = { turn: 12, date: "2027-11", gameOver: true };
+    expect(branchLabel(10, save)).toBe("Month 11, Sep 2027: before your choices");
+    expect(branchLabel(0, save)).toBe("Month 1, Nov 2026: before your choices (the opening)");
+    expect(branchMonths(save).map((m) => branchLabel(m, save).match(/^Month (\d+)/)?.[1])).toEqual(Array.from({ length: 12 }, (_, i) => String(i + 1)));
+    expect(branchLabel(3, { turn: 3 })).toBe("Month 4: before your choices");
   });
 
   it("Replay from Your record starts the same seat with the same seed", () => {
