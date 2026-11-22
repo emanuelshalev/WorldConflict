@@ -39,12 +39,24 @@ export async function launch({ variant = 'qa', device = variant, out = `/tmp/pla
   const profile = path.join(out, '.profile');
   const context = await chromium.launchPersistentContext(profile, {
     ...deviceFor(device),
+    // Hardware rendering: software GL starves the CPU and produces fake freezes (iteration 0).
+    args: process.env.DEVLOOP_SOFTWARE_GL ? [] : ['--enable-gpu', '--ignore-gpu-blocklist', '--use-gl=angle', '--use-angle=gl'],
     ...(video ? { recordVideo: { dir: path.join(out, 'video') } } : {}),
   });
   const browser = { close: async () => {} };
   const page = context.pages()[0] ?? (await context.newPage());
   const errors = [];
   page.on('pageerror', (e) => errors.push(e.message));
+  // Native dialogs (confirm/alert/prompt): a person would see and answer them, so record the text
+  // for the next look() and accept by default (set s.dialogAnswer = false to dismiss instead).
+  const dialogs = [];
+  page.on('dialog', async (d) => {
+    dialogs.push(`${d.type()}: ${d.message()}`);
+    try {
+      if (s.dialogAnswer === false) await d.dismiss();
+      else await d.accept();
+    } catch {}
+  });
   page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
   let n = fs.readdirSync(out).reduce((m, f) => Math.max(m, Number.parseInt(f, 10) || 0, Number.parseInt(f.replace(/^burst-/, ''), 10) || 0), 0);
   const logFile = path.join(out, 'log.jsonl');
@@ -76,7 +88,7 @@ export async function launch({ variant = 'qa', device = variant, out = `/tmp/pla
           return r.width > 0 && r.height > 0 && st.visibility !== 'hidden' && st.display !== 'none' && r.bottom > 0 && r.top < innerHeight;
         };
         const txt = (el) => (el.innerText || el.getAttribute('aria-label') || '').trim().replace(/\s+/g, ' ').slice(0, 90);
-        const controls = [...document.querySelectorAll('button, a[href], [role="button"], select, input')]
+        const controls = [...document.querySelectorAll('button, a[href], [role="button"], [role="tab"], [role="option"], [role="menuitem"], [role="switch"], select, input')]
           .filter(vis)
           .map((el) => ({ label: txt(el), disabled: el.disabled || el.getAttribute('aria-disabled') === 'true', title: el.title || undefined }))
           .filter((c) => c.label);
@@ -84,12 +96,23 @@ export async function launch({ variant = 'qa', device = variant, out = `/tmp/pla
         const alerts = [...document.querySelectorAll('[role="alert"], .toast, .error-toast')].filter(vis).map(txt).filter(Boolean);
         return { headings, alerts, controls: controls.slice(0, 80) };
       });
-      log({ act: 'look', name, file, alerts: view.alerts });
-      return { file, ...view };
+      const seenDialogs = dialogs.splice(0);
+      log({ act: 'look', name, file, alerts: view.alerts, dialogs: seenDialogs });
+      return { file, ...(seenDialogs.length ? { dialogs: seenDialogs } : {}), ...view };
     },
     /** Click the first visible control whose accessible name matches (string or RegExp). */
     async click(name, { nth = 0, timeout = 4000 } = {}) {
-      const loc = page.getByRole('button', { name }).nth(nth);
+      // Anything a player can press: buttons, tabs, options, links, menu items, switches, checkboxes.
+      const roles = ['button', 'tab', 'option', 'link', 'menuitem', 'switch', 'checkbox', 'radio'];
+      let loc = null;
+      for (const role of roles) {
+        const cand = page.getByRole(role, { name });
+        if ((await cand.count()) > nth) {
+          loc = cand.nth(nth);
+          break;
+        }
+      }
+      if (!loc) loc = page.getByRole('button', { name }).nth(nth);
       try {
         await loc.click({ timeout });
         log({ act: 'click', name: String(name), ok: true });

@@ -17,3 +17,5 @@ Lessons that would apply to any product using this loop. Newest at the bottom. P
 - **Hold-out checks work**: keeping one real complaint secret and seeing whether the recalibrated panel finds it is a cheap fidelity measure.
 - **Shared brief files** keep parallel agent prompts short and consistent; per-agent prompts only add identity, port and topic.
 - **Check reports like code.** A status page edited by script shipped with a syntax error; `kit/page-check.mjs` now loads every tab and fails on script errors before any report is committed.
+- **Audit the harness before trusting the panel.** Our first kit made controls look dead (role filter), hid dialogs, and starved the CPU (software rendering). Reproducing each bug with a human-like tap separated product bugs from harness bugs; 2 of 10 were the harness.
+- **Navigate by structure, not by copy.** Test scripts that click by page names break when designers rename things.

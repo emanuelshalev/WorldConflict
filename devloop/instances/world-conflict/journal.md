@@ -25,3 +25,8 @@ Newest entries at the bottom. Each entry names an area for improvement in our pr
 - **Observation.** Nobody reached the end of a game, and the CEO's next signal (RS-002) was about exactly that. **Change.** Every iteration at least 3 personas must reach an end screen, and the end has its own scenario.
 - **Observation.** The recalibrated panel predicted 6 of 7 RS-001 statements without being told (fidelity 6/7). Calibration worked.
 - **Observation.** Design started while QA reproduced bugs, in parallel: four design workstreams (orders, month, feel, reveal) from one shared brief. Writing a shared brief file kept each agent prompt short and consistent.
+
+## 2026-11-22 · Iteration 1 · QA reproduction
+
+- **Observation.** The kit itself produced false findings: it clicked only `role=button` elements (tabs and list options looked dead), silently dismissed native confirm dialogs (an order "never queued"), and rendered in software GL, which starved the CPU and caused most freezes. 8 of 10 reported bugs were real; 2 were the kit's fault. **Change.** Kit clicks every pressable role, shows dialogs to the persona and logs them, uses GPU rendering by default. QA reproduction stays mandatory before any bug is filed.
+- **Observation.** A glossary rename broke the smoke script's navigation ("Home and security" became "Home front"). **Change.** Smoke follows forward buttons structurally, not by page names, and fails loudly when stuck.

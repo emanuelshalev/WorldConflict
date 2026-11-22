@@ -36,8 +36,16 @@ try {
         .click({ trial: true, timeout: 800 })
         .then(() => true, () => false);
       if (reachable) break;
-      const moved = await s.click(/To your desk|Diplomacy|Home and security|The paper|Continue|Next|Done|See your verdict/i, { timeout: 1500 });
+      // Forward buttons, not the tab strip: prefer the bottom-right primary button of each step.
+      const moved =
+        (await s.click(/To your desk|Next month|See your verdict|Continue|Done/i, { timeout: 800 })) ||
+        (await s.page
+          .locator('button.primary, .wc-btn.primary, button:has(svg):right-of(:text("Top story"))')
+          .last()
+          .click({ timeout: 1200 })
+          .then(() => true, () => false));
       if (!moved) await s.key('Escape');
+      if (i === 9) fail(`month ${month}: stuck after Execute (debrief/paper did not lead back to the desk)`);
     }
   }
   if (s.errors.length) fail(`page errors: ${s.errors.slice(0, 3).join(' | ')}`);
