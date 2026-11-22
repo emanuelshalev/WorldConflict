@@ -1915,4 +1915,8 @@ a.rv-st:hover {
 .rv-rail-foot { display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
 .rv-rail-foot .rv-exit { justify-content: center; min-height: 44px; }
 .rv-report-actions { display: flex; flex-wrap: wrap; gap: 8px; }
-@media (max-width: 700px) { .rv-menu-exit { top: 8px; right: 8px; } }
+/* Narrow screens (QA3-S2-2): the phone top bar holds the stage dots, sound and Skip, so Main menu
+   leaves the absolute corner (where it lay over sound and Skip) and takes its own row in the flow */
+@media (max-width: 700px) {
+  .rv-menu-exit { position: static; z-index: auto; align-self: flex-end; flex: none; margin: 8px 16px 0; padding: 0 14px; min-height: 44px; }
+}
