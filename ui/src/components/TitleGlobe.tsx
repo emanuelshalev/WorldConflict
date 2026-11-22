@@ -386,7 +386,7 @@ export function TitleGlobe({ pins, selectedPin, onPin, tint, selectedCountry, on
     const map = mapRef.current;
     if (!map || !ready) return;
     const place = () => {
-      const edge = map.getContainer().clientWidth - map.getPadding().right - 8;
+      const edge = map.getContainer().clientWidth - (map.getPadding().right ?? 0) - 8;
       for (const { m, el } of markers.current.values()) {
         const card = el.querySelector<HTMLElement>('.tg-pin-card');
         const w = card?.offsetWidth || 220;
