@@ -1,19 +1,20 @@
 [
   {
     "n": 1,
-    "id": "policing-hard",
-    "label": "Hard crackdown",
+    "id": "offer-pact",
+    "label": "Offer defence pact",
     "accept": [
-      "crackdown",
-      "hard crackdown",
-      "riot police",
-      "repression",
-      "force",
-      "martial law",
-      "suppress",
-      "riot control",
-      "hard policing",
-      "police"
+      "defence pact",
+      "defense pact",
+      "alliance",
+      "ally",
+      "mutual defence",
+      "defence agreement",
+      "security pact",
+      "military alliance",
+      "treaty",
+      "join forces",
+      "protect each other"
     ]
   },
   {
@@ -34,23 +35,38 @@
   },
   {
     "n": 3,
-    "id": "assassinate",
-    "label": "Assassinate leader",
+    "id": "sabotage",
+    "label": "Sabotage",
     "accept": [
-      "assassinate",
-      "assassination",
-      "kill leader",
-      "kill",
-      "target leader",
-      "sniper",
-      "eliminate",
-      "murder",
-      "hit",
-      "take out the leader"
+      "sabotage",
+      "dynamite",
+      "blow up",
+      "explosives",
+      "bomb",
+      "destroy infrastructure",
+      "tnt",
+      "demolish",
+      "attack infrastructure"
     ]
   },
   {
     "n": 4,
+    "id": "policing-soft",
+    "label": "Soft policing",
+    "accept": [
+      "soft policing",
+      "community policing",
+      "police talks",
+      "negotiate",
+      "police dialogue",
+      "calm policing",
+      "police",
+      "dialogue",
+      "mediation police"
+    ]
+  },
+  {
+    "n": 5,
     "id": "mediate",
     "label": "Mediate peace",
     "accept": [
@@ -66,23 +82,42 @@
     ]
   },
   {
-    "n": 5,
-    "id": "counter-intel",
-    "label": "Hunt foreign spies",
+    "n": 6,
+    "id": "airstrike-nuclear",
+    "label": "Strike nuclear sites",
     "accept": [
-      "counter intelligence",
-      "counter-intel",
-      "counterintelligence",
-      "hunt spies",
-      "catch spies",
-      "no spies",
-      "stop spies",
-      "anti spy",
-      "security"
+      "strike nuclear sites",
+      "bomb nuclear sites",
+      "bomb nuclear facility",
+      "airstrike on nuclear",
+      "air strike nuclear",
+      "target nuclear program",
+      "hit nuclear facility",
+      "attack reactor",
+      "destroy nuclear program",
+      "bomb their nuclear program"
     ]
   },
   {
-    "n": 6,
+    "n": 7,
+    "id": "disinformation",
+    "label": "Feed disinformation",
+    "accept": [
+      "disinformation",
+      "misinformation",
+      "fake news",
+      "deception",
+      "deceive",
+      "lie",
+      "lies",
+      "propaganda",
+      "false information",
+      "mislead",
+      "disguise"
+    ]
+  },
+  {
+    "n": 8,
     "id": "court",
     "label": "Court",
     "accept": [
@@ -98,23 +133,40 @@
     ]
   },
   {
-    "n": 7,
-    "id": "airstrike-military",
-    "label": "Strike military targets",
+    "n": 9,
+    "id": "demobilize",
+    "label": "Stand down forces",
     "accept": [
-      "airstrike",
-      "air strike",
-      "bomb",
-      "bombing",
-      "air raid",
-      "strike",
-      "jet attack",
-      "attack from the air",
-      "military strike"
+      "demobilize",
+      "demobilise",
+      "stand down",
+      "send troops home",
+      "disband",
+      "fewer troops",
+      "reduce army",
+      "troops down",
+      "de-escalate"
     ]
   },
   {
-    "n": 8,
+    "n": 10,
+    "id": "spy",
+    "label": "Spy on",
+    "accept": [
+      "spy",
+      "spy on",
+      "espionage",
+      "intelligence",
+      "gather intel",
+      "surveillance",
+      "agent",
+      "secret agent",
+      "investigate",
+      "watch"
+    ]
+  },
+  {
+    "n": 11,
     "id": "reform",
     "label": "Reform program",
     "accept": [
@@ -133,157 +185,23 @@
     ]
   },
   {
-    "n": 9,
-    "id": "mobilize",
-    "label": "Mobilize forces",
-    "accept": [
-      "mobilize",
-      "mobilise",
-      "call up",
-      "reserves",
-      "raise army",
-      "recruit",
-      "more troops",
-      "build army",
-      "draft",
-      "troops up"
-    ]
-  },
-  {
-    "n": 10,
-    "id": "destabilize",
-    "label": "Destabilize",
-    "accept": [
-      "destabilize",
-      "destabilise",
-      "undermine",
-      "unrest",
-      "weaken government",
-      "topple",
-      "chaos",
-      "crack",
-      "collapse",
-      "subvert",
-      "unstable government"
-    ]
-  },
-  {
-    "n": 11,
-    "id": "offer-pact",
-    "label": "Offer defence pact",
-    "accept": [
-      "defence pact",
-      "defense pact",
-      "alliance",
-      "ally",
-      "mutual defence",
-      "protect",
-      "join forces",
-      "treaty",
-      "security pact"
-    ]
-  },
-  {
     "n": 12,
-    "id": "fund-nuclear",
-    "label": "Fund nuclear program",
+    "id": "break-pact",
+    "label": "Break pact",
     "accept": [
-      "fund nuclear",
-      "nuclear program",
-      "build nuclear",
-      "nuclear research",
-      "invest nuclear",
-      "develop the bomb",
-      "nuclear funding",
-      "atom",
-      "nuclear"
+      "break pact",
+      "break alliance",
+      "betray",
+      "end alliance",
+      "leave alliance",
+      "broken alliance",
+      "cancel treaty",
+      "split",
+      "broken protection"
     ]
   },
   {
     "n": 13,
-    "id": "policing-soft",
-    "label": "Soft policing",
-    "accept": [
-      "soft policing",
-      "community policing",
-      "police talks",
-      "negotiate",
-      "police dialogue",
-      "calm policing",
-      "police",
-      "dialogue",
-      "mediation police"
-    ]
-  },
-  {
-    "n": 14,
-    "id": "procure",
-    "label": "Buy weapons",
-    "accept": [
-      "buy weapons",
-      "procure",
-      "arms purchase",
-      "buy arms",
-      "ammunition",
-      "weapons",
-      "arms deal",
-      "military spending",
-      "buy ammo"
-    ]
-  },
-  {
-    "n": 15,
-    "id": "disinformation",
-    "label": "Feed disinformation",
-    "accept": [
-      "disinformation",
-      "misinformation",
-      "fake news",
-      "deception",
-      "deceive",
-      "lie",
-      "lies",
-      "propaganda",
-      "false information",
-      "mislead",
-      "disguise"
-    ]
-  },
-  {
-    "n": 16,
-    "id": "ceasefire",
-    "label": "Propose ceasefire",
-    "accept": [
-      "ceasefire",
-      "truce",
-      "white flag",
-      "surrender",
-      "stop fighting",
-      "armistice",
-      "peace offer",
-      "end war",
-      "stop the war"
-    ]
-  },
-  {
-    "n": 17,
-    "id": "spy",
-    "label": "Spy on",
-    "accept": [
-      "spy",
-      "spy on",
-      "espionage",
-      "intelligence",
-      "gather intel",
-      "surveillance",
-      "agent",
-      "secret agent",
-      "investigate",
-      "watch"
-    ]
-  },
-  {
-    "n": 18,
     "id": "withdraw-border",
     "label": "Withdraw troops",
     "accept": [
@@ -298,23 +216,48 @@
     ]
   },
   {
-    "n": 19,
-    "id": "coup",
-    "label": "Back a coup",
+    "n": 14,
+    "id": "destabilize",
+    "label": "Destabilize",
     "accept": [
-      "coup",
-      "regime change",
-      "overthrow",
-      "replace leader",
-      "seize power",
-      "take over",
-      "change government",
-      "topple leader",
-      "new ruler"
+      "destabilize",
+      "destabilise",
+      "undermine",
+      "unrest",
+      "weaken government",
+      "topple government",
+      "topple",
+      "government crisis",
+      "collapse the government",
+      "chaos",
+      "subvert",
+      "unstable government",
+      "break the government"
     ]
   },
   {
-    "n": 20,
+    "n": 15,
+    "id": "policing-hard",
+    "label": "Hard crackdown",
+    "accept": [
+      "crackdown",
+      "hard crackdown",
+      "riot police",
+      "riot control",
+      "repression",
+      "police force",
+      "police violence",
+      "force",
+      "martial law",
+      "suppress protests",
+      "hard policing",
+      "police",
+      "police brutality",
+      "clamp down"
+    ]
+  },
+  {
+    "n": 16,
     "id": "declare-war",
     "label": "Declare war",
     "accept": [
@@ -331,23 +274,43 @@
     ]
   },
   {
-    "n": 21,
-    "id": "sabotage",
-    "label": "Sabotage",
+    "n": 17,
+    "id": "fund-nuclear",
+    "label": "Fund nuclear program",
     "accept": [
-      "sabotage",
-      "dynamite",
-      "blow up",
-      "explosives",
-      "bomb",
-      "destroy infrastructure",
-      "tnt",
-      "demolish",
-      "attack infrastructure"
+      "fund nuclear",
+      "nuclear program",
+      "build nuclear",
+      "nuclear research",
+      "invest nuclear",
+      "develop the bomb",
+      "nuclear funding",
+      "atom",
+      "nuclear"
     ]
   },
   {
-    "n": 22,
+    "n": 18,
+    "id": "assassinate",
+    "label": "Assassinate leader",
+    "accept": [
+      "assassinate",
+      "assassination",
+      "kill leader",
+      "kill the leader",
+      "kill the king",
+      "kill the ruler",
+      "target leader",
+      "target the leader",
+      "shoot the leader",
+      "eliminate the leader",
+      "murder the leader",
+      "take out the leader",
+      "regicide"
+    ]
+  },
+  {
+    "n": 19,
     "id": "denounce",
     "label": "Denounce",
     "accept": [
@@ -364,54 +327,99 @@
     ]
   },
   {
-    "n": 23,
-    "id": "airstrike-nuclear",
-    "label": "Strike nuclear sites",
+    "n": 20,
+    "id": "procure",
+    "label": "Buy weapons",
     "accept": [
-      "strike nuclear sites",
-      "bomb nuclear",
-      "target nuclear program",
-      "hit nuclear facility",
-      "attack reactor",
-      "destroy nuclear program",
-      "nuclear target"
+      "buy weapons",
+      "procure",
+      "arms purchase",
+      "buy arms",
+      "ammunition",
+      "weapons",
+      "arms deal",
+      "military spending",
+      "buy ammo"
     ]
   },
   {
-    "n": 24,
+    "n": 21,
+    "id": "counter-intel",
+    "label": "Hunt foreign spies",
+    "accept": [
+      "counter intelligence",
+      "counter-intel",
+      "counterintelligence",
+      "hunt spies",
+      "catch spies",
+      "find spies",
+      "find the spy",
+      "spot spies",
+      "spy hunt",
+      "search for spies",
+      "expose spies",
+      "root out spies"
+    ]
+  },
+  {
+    "n": 22,
     "id": "address",
     "label": "National address",
     "accept": [
       "national address",
-      "speech",
       "address the nation",
-      "rally",
-      "press conference",
-      "speak",
-      "announcement",
-      "podium",
+      "speech",
+      "televised speech",
+      "tv address",
+      "speech on tv",
       "broadcast",
+      "announcement",
+      "press conference",
+      "speak to the nation",
+      "address",
+      "rally the nation",
       "propaganda"
     ]
   },
   {
-    "n": 25,
-    "id": "demobilize",
-    "label": "Stand down forces",
+    "n": 23,
+    "id": "ceasefire",
+    "label": "Propose ceasefire",
     "accept": [
-      "demobilize",
-      "demobilise",
-      "stand down",
-      "send troops home",
-      "disband",
-      "fewer troops",
-      "reduce army",
-      "troops down",
-      "de-escalate"
+      "ceasefire",
+      "truce",
+      "pause the war",
+      "pause fighting",
+      "stop fighting",
+      "stop the war",
+      "no war",
+      "end war",
+      "end the war",
+      "armistice",
+      "halt fighting",
+      "peace",
+      "stop the fighting",
+      "cease fire"
     ]
   },
   {
-    "n": 26,
+    "n": 24,
+    "id": "airstrike-military",
+    "label": "Strike military targets",
+    "accept": [
+      "airstrike",
+      "air strike",
+      "bomb",
+      "bombing",
+      "air raid",
+      "strike",
+      "jet attack",
+      "attack from the air",
+      "military strike"
+    ]
+  },
+  {
+    "n": 25,
     "id": "arm-rebels",
     "label": "Arm rebels",
     "accept": [
@@ -428,23 +436,24 @@
     ]
   },
   {
-    "n": 27,
-    "id": "break-pact",
-    "label": "Break pact",
+    "n": 26,
+    "id": "mobilize",
+    "label": "Mobilize forces",
     "accept": [
-      "break pact",
-      "break alliance",
-      "betray",
-      "end alliance",
-      "leave alliance",
-      "broken alliance",
-      "cancel treaty",
-      "split",
-      "broken protection"
+      "mobilize",
+      "mobilise",
+      "call up",
+      "reserves",
+      "raise army",
+      "recruit",
+      "more troops",
+      "build army",
+      "draft",
+      "troops up"
     ]
   },
   {
-    "n": 28,
+    "n": 27,
     "id": "nuclear-strike",
     "label": "Nuclear strike",
     "accept": [
@@ -456,6 +465,26 @@
       "launch nukes",
       "mushroom cloud",
       "nuclear bomb"
+    ]
+  },
+  {
+    "n": 28,
+    "id": "coup",
+    "label": "Back a coup",
+    "accept": [
+      "coup",
+      "military coup",
+      "overthrow",
+      "overthrow the leader",
+      "military takeover",
+      "army takes over",
+      "seize power",
+      "topple leader",
+      "topple the king",
+      "regime change",
+      "junta",
+      "take over the government",
+      "depose"
     ]
   }
 ]

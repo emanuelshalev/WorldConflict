@@ -23,6 +23,7 @@ const knock = (id, main, cut) =>
 const BADGE = {
   up: st('M37 42V32.5M33 36.5L37 32.5L41 36.5', 2.6, K),
   down: st('M37 32V41.5M33 37.5L37 41.5L41 37.5', 2.6, K),
+  pause: `<rect x="32.6" y="32" width="3.4" height="10" rx="1" fill="${K}"/><rect x="38" y="32" width="3.4" height="10" rx="1" fill="${K}"/>`,
   coin: st('M40 33.6C39 32.4 34.6 32.2 34.4 34.6C34.2 37 39.9 36.6 39.8 39.3C39.6 41.8 35 41.8 34 40.4M37 30.8V43.2', 2.2, K),
 };
 /** Main art, cut ring and badge with its glyph knocked out. */
@@ -102,6 +103,20 @@ function arcArrow(cx, cy, r, a0, a1, w = 3.4) {
   return st(`M${f(x0)} ${f(y0)}A${r} ${r} 0 ${large} 1 ${f(x1)} ${f(y1)}`, w) + fl(`M${f(tip[0])} ${f(tip[1])}L${f(b1[0])} ${f(b1[1])}L${f(b2[0])} ${f(b2[1])}Z`);
 }
 
+
+// Shared parts for the round-2 redraws (D-70)
+const JET = 'M24 3L27.2 13.5V20L42.5 30V34.5L27.2 29.5V37L32 41V43.5L24 41.5L16 43.5V41L20.8 37V29.5L5.5 34.5V30L20.8 20V13.5Z';
+/** Handshake silhouette in colour `c` with finger lines in `g` (for knockouts: c black, g white). */
+const handshake = (c, g) =>
+  fl('M0.5 25L8.5 18.5L15 27L7 33.5Z', c) + fl('M47.5 25L39.5 18.5L33 27L41 33.5Z', c) + fl('M12 23.5L19.5 15.5H28.5L36.5 23.5L28.5 33.5Q24 37.5 19.5 33.5Z', c) +
+  `<path d="M18.4 28.6L23.4 23.6M21.6 31.8L26.6 26.8M25.4 33.6L29.6 29.4M19 20.5L27 20.5L33 26" fill="none" stroke="${g}" stroke-width="2.4" stroke-linecap="round"/>`;
+/** The crossed swords of Declare war (9/9), reusable. */
+const swords = (id) => {
+  const sword = (c = '') => fl('M5.5 5.5L11.2 7.2L33.2 29.6L29.6 33.2L7.2 11.2Z', c) + st('M25.6 38.6L38.6 25.6', 4.6, c || 'currentColor') + st('M33.5 33.5L40 40', 4.4, c || 'currentColor') + circ(42.2, 42.2, 3.6, c);
+  const mirror = (x) => `<g transform="translate(48 0) scale(-1 1)">${x}</g>`;
+  return knock(id, sword(), mirror(`<path d="M5.5 5.5L11.2 7.2L33.2 29.6L29.6 33.2L7.2 11.2Z" fill="${K}" stroke="${K}" stroke-width="4.5" stroke-linejoin="round"/>`)) + mirror(sword());
+};
+
 /**
  * The catalogue. `id` is the registry id (ui/src/lib/orders.ts), `family` the proposed family,
  * `idea` the one idea, `accept` the answers counted as correct in the recognition test.
@@ -126,11 +141,9 @@ export const ICONS = [
       st('M37 15L43.5 11M38 24H45.5M37 33L43.5 37', 3.6),
   },
   {
-    id: 'offer-pact', family: 'diplo', label: 'Offer defence pact', idea: 'Two shields side by side',
-    accept: ['defence pact', 'defense pact', 'alliance', 'ally', 'mutual defence', 'protect', 'join forces', 'treaty', 'security pact'],
-    svg: (id) =>
-      knock(id, fl(shieldD(3.5, 9, 23, 31)), `<path d="${shieldD(21.5, 7, 23, 31)}" fill="${K}" stroke="${K}" stroke-width="5"/>`) +
-      knock(`${id}-r`, fl(shieldD(21.5, 7, 23, 31)), st('M33 14V31M26.5 21.5H39.5', 3.6, K)),
+    id: 'offer-pact', family: 'diplo', label: 'Offer defence pact', idea: 'Handshake inside a shield', rev: 2, was: 'Two shields side by side (read as own defence spending)',
+    accept: ['defence pact', 'defense pact', 'alliance', 'ally', 'mutual defence', 'defence agreement', 'security pact', 'military alliance', 'treaty', 'join forces', 'protect each other'],
+    svg: (id) => knock(id, fl(shieldD(6, 4, 36, 41)), `<g transform="translate(24 25.5) scale(0.6) translate(-24 -26)">${handshake(K, W)}</g>`),
   },
   {
     id: 'break-pact', family: 'diplo', label: 'Break pact', idea: 'A shield split in two',
@@ -141,11 +154,9 @@ export const ICONS = [
       `<g transform="translate(2.6 -0.6) rotate(7 28 44)"><path clip-path="url(#${id}-r)" d="${shieldD(9, 5, 30, 38)}"/></g>`,
   },
   {
-    id: 'ceasefire', family: 'diplo', label: 'Propose ceasefire', idea: 'White flag',
-    accept: ['ceasefire', 'truce', 'white flag', 'surrender', 'stop fighting', 'armistice', 'peace offer', 'end war', 'stop the war'],
-    svg: () =>
-      rect(9, 8, 4, 37, 2) + circ(11, 6, 3) +
-      st('M15.5 10C21 7 26 13 31.5 10.2C35.5 8.2 39.5 8 42.5 9V26.5C39.5 25.5 35.5 25.8 31.5 27.8C26 30.6 21 24.5 15.5 27.5Z', 3.6),
+    id: 'ceasefire', family: 'diplo', label: 'Propose ceasefire', idea: 'The war swords with a pause badge', rev: 2, was: 'White flag (read as claim territory, plant a flag)',
+    accept: ['ceasefire', 'truce', 'pause the war', 'pause fighting', 'stop fighting', 'stop the war', 'no war', 'end war', 'end the war', 'armistice', 'halt fighting', 'peace', 'stop the fighting', 'cease fire'],
+    svg: (id) => badged(id, `<g transform="translate(22 22) scale(0.9) translate(-24 -24)">${swords(`${id}-s`)}</g>`, 'pause'),
   },
   {
     id: 'mediate', family: 'diplo', label: 'Mediate peace', idea: 'Dove with an olive branch',
@@ -210,9 +221,11 @@ export const ICONS = [
       fl(star(13.5, 35, 10.5, 4.6, 8)) + `<ellipse cx="22.5" cy="25.5" rx="3.2" ry="1.7" transform="rotate(-45 22.5 25.5)"/>`,
   },
   {
-    id: 'airstrike-nuclear', family: 'mil', label: 'Strike nuclear sites', idea: 'Crosshair on an atom',
-    accept: ['strike nuclear sites', 'bomb nuclear', 'target nuclear program', 'hit nuclear facility', 'attack reactor', 'destroy nuclear program', 'nuclear target'],
-    svg: () => atom(24, 24, 15, 5.8, 3.6) + `<circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="3.2"/>` + st('M24 0.5V7.5M24 40.5V47.5M0.5 24H7.5M40.5 24H47.5', 3.6),
+    id: 'airstrike-nuclear', family: 'mil', label: 'Strike nuclear sites', idea: 'Jet diving onto an atom', rev: 2, was: 'Crosshair on an atom (read as nuclear strike)',
+    accept: ['strike nuclear sites', 'bomb nuclear sites', 'bomb nuclear facility', 'airstrike on nuclear', 'air strike nuclear', 'target nuclear program', 'hit nuclear facility', 'attack reactor', 'destroy nuclear program', 'bomb their nuclear program'],
+    svg: () =>
+      `<g transform="translate(33 14) rotate(-135) scale(0.64) translate(-24 -24)">${fl(JET)}</g>` +
+      atom(14.5, 33.5, 11.5, 4.4, 3) + st('M24.5 21.5L27 24M20 19.5L21.5 22.5M27.5 26.5L30.5 28', 2.6),
   },
   // ---------------- Nuclear (military, hazard) ----------------
   {
@@ -237,11 +250,12 @@ export const ICONS = [
     svg: (id) => knock(id, spyHead(), spyCut()),
   },
   {
-    id: 'counter-intel', family: 'intel', label: 'Hunt foreign spies', idea: 'Spy with a no sign',
-    accept: ['counter intelligence', 'counter-intel', 'counterintelligence', 'hunt spies', 'catch spies', 'no spies', 'stop spies', 'anti spy', 'security'],
+    id: 'counter-intel', family: 'intel', label: 'Hunt foreign spies', idea: 'Magnifying glass finding a spy', rev: 2, was: 'Spy with a no sign (read as ban, sanctions, embargo)',
+    accept: ['counter intelligence', 'counter-intel', 'counterintelligence', 'hunt spies', 'catch spies', 'find spies', 'find the spy', 'spot spies', 'spy hunt', 'search for spies', 'expose spies', 'root out spies'],
     svg: (id) =>
-      knock(id, `<g transform="translate(24 25) scale(0.6) translate(-24 -26)">${knock(`${id}-s`, spyHead(), spyCut())}</g>`, crossedLine('M10 10L38 38', 9)) +
-      `<circle cx="24" cy="24" r="19.5" fill="none" stroke="currentColor" stroke-width="4.4"/>` + st('M10.4 10.4L37.6 37.6', 4.4),
+      `<clipPath id="${id}-c"><circle cx="19.5" cy="19.5" r="12.4"/></clipPath>` +
+      `<g clip-path="url(#${id}-c)"><g transform="translate(19.5 21.5) scale(0.56) translate(-24 -26.5)">${knock(`${id}-s`, spyHead(), spyCut())}</g></g>` +
+      `<circle cx="19.5" cy="19.5" r="15" fill="none" stroke="currentColor" stroke-width="4.4"/>` + st('M30.5 30.5L43 43', 7.5),
   },
   {
     id: 'sabotage', family: 'intel', label: 'Sabotage', idea: 'Dynamite with a lit fuse',
@@ -249,13 +263,15 @@ export const ICONS = [
     svg: (id) => knock(id, rect(7, 22, 8, 22, 2) + rect(16.5, 22, 8, 22, 2) + rect(26, 22, 8, 22, 2), rect(6, 29, 30, 1.6, 0, K) + rect(6, 35.4, 30, 1.6, 0, K)) + st('M20.5 22C20.5 15.5 26 13.6 30.5 11.6', 2.8) + fl(star(35, 9, 7, 2.8, 8)),
   },
   {
-    id: 'destabilize', family: 'intel', label: 'Destabilize', idea: 'A government building cracking and tilting',
-    accept: ['destabilize', 'destabilise', 'undermine', 'unrest', 'weaken government', 'topple', 'chaos', 'crack', 'collapse', 'subvert', 'unstable government'],
-    svg: (id) =>
-      `<g transform="rotate(-9 24 44)">${knock(id,
-        fl('M5 17L24 6L43 17Z') + rect(6, 18.6, 36, 3.6, 0.8) + rect(9, 23.6, 5, 14) + rect(17, 23.6, 5, 14) + rect(26, 23.6, 5, 14) + rect(34, 23.6, 5, 14) + rect(4, 39, 40, 5, 1),
-        `<path d="M27.5 4L22 17.5L28.5 26L21 35.5L25 46" fill="none" stroke="${K}" stroke-width="2.8" stroke-linejoin="miter"/>`)}</g>` +
-      st('M44 5.5Q47 9 45.5 13M40 3Q42.5 4 43 6', 2.4),
+    id: 'destabilize', family: 'intel', label: 'Destabilize', idea: 'A domed capitol with its flag, split and toppling', rev: 2, was: 'Columned building cracking (read as bank or economic collapse)',
+    accept: ['destabilize', 'destabilise', 'undermine', 'unrest', 'weaken government', 'topple government', 'topple', 'government crisis', 'collapse the government', 'chaos', 'subvert', 'unstable government', 'break the government'],
+    svg: (id) => {
+      const capitol = fl('M15 21C15 10.5 33 10.5 33 21Z') + rect(14, 21.6, 20, 4, 1) + rect(8, 27, 32, 10, 1) + rect(4, 38.4, 40, 5.4, 1.2) + rect(22.6, 8, 2.8, 3.6, 0.6) + st('M24 9V1.8', 2) + fl('M24.8 1.6H31.5L29.6 3.8L31.5 6H24.8Z');
+      const cut = `<path d="M12.5 30h3.5v4h-3.5zM19 30h3.5v4H19zM25.5 30h3.5v4h-3.5zM32 30h3.5v4H32z" fill="${K}"/>`;
+      const body = knock(`${id}-w`, capitol, cut);
+      const crack = `<path d="M25.5 10L21.5 20L27 27.5L21 35L24.5 45" fill="none" stroke="${K}" stroke-width="2.6" stroke-linejoin="miter"/>`;
+      return `<g transform="rotate(-11 24 44)">${knock(`${id}-c`, body, crack)}</g>` + st('M41 14Q45 18 43.5 23M44 8Q47.5 10 47 14', 2.4) + rect(41, 39, 4, 4, 0.8) + rect(36.5, 43, 3, 3, 0.6);
+    },
   },
   {
     id: 'arm-rebels', family: 'intel', label: 'Arm rebels', idea: 'Raised fist and a rifle',
@@ -276,19 +292,23 @@ export const ICONS = [
         `<ellipse cx="16.5" cy="20.5" rx="3.6" ry="2.5" fill="${W}"/><ellipse cx="31.5" cy="20.5" rx="3.6" ry="2.5" fill="${W}"/>`),
   },
   {
-    id: 'assassinate', family: 'intel', label: 'Assassinate leader', idea: 'Crosshair on a person',
-    accept: ['assassinate', 'assassination', 'kill leader', 'kill', 'target leader', 'sniper', 'eliminate', 'murder', 'hit', 'take out the leader'],
+    id: 'assassinate', family: 'intel', label: 'Assassinate leader', idea: 'Crosshair on a crowned head', rev: 2, was: 'Crosshair on a person (read as target or aim at someone)',
+    accept: ['assassinate', 'assassination', 'kill leader', 'kill the leader', 'kill the king', 'kill the ruler', 'target leader', 'target the leader', 'shoot the leader', 'eliminate the leader', 'murder the leader', 'take out the leader', 'regicide'],
     svg: (id) => {
-      const ret = `<circle cx="24" cy="24" r="19" fill="none" stroke="X" stroke-width="W"/><path d="M24 1.5V13M24 35V46.5M1.5 24H13M35 24H46.5" fill="none" stroke="X" stroke-width="W" stroke-linecap="round"/>`;
-      return knock(id, circ(24, 18.5, 7) + fl('M10.5 43C10.5 33.5 16.5 29 24 29C31.5 29 37.5 33.5 37.5 43Z'), ret.replace(/X/g, K).replace(/W/g, '7.4')) + ret.replace(/X/g, 'currentColor').replace(/W/g, '3.2');
+      const ret = `<circle cx="24" cy="24" r="19.5" fill="none" stroke="X" stroke-width="W"/><path d="M24 1V6.5M24 38V47M1 24H11M37 24H47" fill="none" stroke="X" stroke-width="W" stroke-linecap="round"/>`;
+      const king = fl('M16.5 14.5L15 6.5L19.8 10L24 4.5L28.2 10L33 6.5L31.5 14.5Z') + circ(24, 21.5, 6.2) + fl('M11.5 43C11.5 34 17 30 24 30C31 30 36.5 34 36.5 43Z');
+      return knock(id, king, ret.replace(/X/g, K).replace(/W/g, '7') + rect(15, 15.2, 18, 1.6, 0, K)) + ret.replace(/X/g, 'currentColor').replace(/W/g, '3.2');
     },
   },
   {
-    id: 'coup', family: 'intel', label: 'Back a coup', idea: 'A crown with arrows swapping it',
-    accept: ['coup', 'regime change', 'overthrow', 'replace leader', 'seize power', 'take over', 'change government', 'topple leader', 'new ruler'],
-    svg: () =>
-      `<g transform="translate(24 24.5) scale(0.7) translate(-24 -24)">${fl('M12 31L9.5 13.5L17.5 21.5L24 10L30.5 21.5L38.5 13.5L36 31Z') + rect(12, 33, 24, 5, 1.5)}</g>` +
-      arcArrow(24, 24, 20.5, 200, 330) + arcArrow(24, 24, 20.5, 20, 150),
+    id: 'coup', family: 'intel', label: 'Back a coup', idea: 'A soldier helmet knocking the crown off', rev: 2, was: 'Crown with swap arrows (read as election or reshuffle)',
+    accept: ['coup', 'military coup', 'overthrow', 'overthrow the leader', 'military takeover', 'army takes over', 'seize power', 'topple leader', 'topple the king', 'regime change', 'junta', 'take over the government', 'depose'],
+    svg: (id) =>
+      knock(id,
+        fl('M10 22C10 4 38 4 38 22Z') + rect(5.5, 22.6, 37, 4.6, 2.3) + st('M15 27.5Q24 36 33 27.5', 2.6),
+        `<g transform="translate(3 -5) rotate(-28 15 38)"><path d="M6 43L4.6 33L9.6 37L14.5 30.5L19.4 37L24.4 33L23 43Z" fill="${K}" stroke="${K}" stroke-width="5" stroke-linejoin="round"/></g>`) +
+      `<g transform="translate(3 -5) rotate(-28 15 38)">${fl('M6 43L4.6 33L9.6 37L14.5 30.5L19.4 37L24.4 33L23 43Z')}${rect(6, 44.4, 17, 3, 1)}</g>` +
+      st('M32 33L38 35.5M31 39L36.5 42.5M34 28L40 28.5', 2.6),
   },
   // ---------------- Economy ----------------
   {
@@ -300,12 +320,13 @@ export const ICONS = [
   },
   // ---------------- Home ----------------
   {
-    id: 'address', family: 'home', label: 'National address', idea: 'Microphone on a podium',
-    accept: ['national address', 'speech', 'address the nation', 'rally', 'press conference', 'speak', 'announcement', 'podium', 'broadcast', 'propaganda'],
+    id: 'address', family: 'home', label: 'National address', idea: 'Leader speaking at a lectern on a TV screen', rev: 2, was: 'Microphone on a podium (read as a plant pot, farming, a bug)',
+    accept: ['national address', 'address the nation', 'speech', 'televised speech', 'tv address', 'speech on tv', 'broadcast', 'announcement', 'press conference', 'speak to the nation', 'address', 'rally the nation', 'propaganda'],
     svg: (id) =>
-      knock(id, rect(9, 25, 30, 3.6, 1.5) + fl('M11.5 29.4H36.5L33.6 45H14.4Z'), circ(24, 36.5, 3.6, K)) +
-      st('M24 25V18', 2.6) + rect(20.4, 4.5, 7.2, 13.5, 3.6) +
-      st('M15.5 7Q12.5 11.5 15.5 16M10.5 4Q5.5 11.5 10.5 19M32.5 7Q35.5 11.5 32.5 16M37.5 4Q42.5 11.5 37.5 19', 2.8),
+      knock(id, rect(2.5, 5, 43, 31, 4.5), rect(6.5, 9, 35, 23, 2, K)) +
+      knock(`${id}-p`, circ(24, 15.6, 3.8) + fl('M15 32C15 24.5 19 21.4 24 21.4C29 21.4 33 24.5 33 32Z'), rect(16.5, 25.6, 15, 8, 1, K)) +
+      fl('M18 26.6H30L29 32H19Z') + st('M33.5 12V20', 1.8) + fl('M34 12H38.5L37.2 13.6L38.5 15.2H34Z') +
+      fl('M19 36H29L31 42.5H17Z') + rect(13, 42, 22, 3.2, 1.6),
   },
   {
     id: 'policing-soft', family: 'home', label: 'Soft policing', idea: 'Police cap and a speech bubble',
@@ -315,11 +336,14 @@ export const ICONS = [
         knock(`${id}-c`, fl('M3 14.5C3 9 13.5 6.5 24 6.5C34.5 6.5 45 9 45 14.5L38.5 22H9.5Z') + rect(10, 23.4, 28, 5, 1) + fl('M10 30H38C36.5 34.6 31 36.4 24 36.4C17 36.4 11.5 34.6 10 30Z'), fl(star(24, 14.4, 5, 2.1, 5), K))),
   },
   {
-    id: 'policing-hard', family: 'home', label: 'Hard crackdown', idea: 'Riot shield and baton',
-    accept: ['crackdown', 'hard crackdown', 'riot police', 'repression', 'force', 'martial law', 'suppress', 'riot control', 'hard policing', 'police'],
+    id: 'policing-hard', family: 'home', label: 'Hard crackdown', idea: 'Riot officer: visored helmet, shield, raised baton', rev: 2, was: 'Riot shield and baton (read as sign a law, a document and a pen)',
+    accept: ['crackdown', 'hard crackdown', 'riot police', 'riot control', 'repression', 'police force', 'police violence', 'force', 'martial law', 'suppress protests', 'hard policing', 'police', 'police brutality', 'clamp down'],
     svg: (id) =>
-      knock(id, rect(6.5, 4.5, 25, 39, 5), rect(10.5, 8.5, 17, 7.5, 2, K) + rect(10.5, 21, 17, 2.4, 1, K) + crossedLine('M28.5 45L44 13', 9.5)) +
-      st('M28.5 45L44 13', 5) + st('M31.2 36.6L38.6 40.2', 3.6),
+      knock(id,
+        fl('M14 17C14 5.5 34 5.5 34 17Z') + rect(12.5, 17.6, 23, 3.4, 1.4) + circ(24, 24.5, 4.8) + fl('M9.5 46C9.5 35.5 15.5 31 24 31C32.5 31 38.5 35.5 38.5 46Z'),
+        rect(16, 19.6, 16, 1.4, 0, K) + `<path d="M2 25.5H21.5V39C21.5 44 17 47.5 11.75 47.5C6.5 47.5 2 44 2 39Z" fill="${K}" stroke="${K}" stroke-width="5"/>` + crossedLine('M33 33L45 4.5', 9.5)) +
+      fl('M2 25.5H21.5V39C21.5 44 17 47.5 11.75 47.5C6.5 47.5 2 44 2 39Z').replace('/>', '/>') +
+      st('M33 33L45 4.5', 4.8) + st('M37.2 23.5L42.6 25.8', 3.2),
   },
 ];
 
@@ -365,7 +389,7 @@ fs.writeFileSync(
 );
 
 // Recognition sheet: a fixed shuffle (no family grouping, no colour, no labels)
-const order = ICONS.map((i, n) => ({ i, k: (n * 17 + 5) % 29 })).sort((a, b) => a.k - b.k).map((x) => x.i);
+const order = ICONS.map((i, n) => ({ i, k: (n * 11 + 7) % 29 })).sort((a, b) => a.k - b.k).map((x) => x.i);
 fs.writeFileSync(path.join(here, 'recognition-key.json'), JSON.stringify(order.map((i, n) => ({ n: n + 1, id: i.id, label: i.label, accept: i.accept })), null, 2));
 const cell = (i, n) =>
   `<figure><span class="n">${n + 1}</span><div class="big"><svg viewBox="0 0 48 48"><use href="#oi-${i.id}"/></svg></div><div class="small"><svg viewBox="0 0 48 48"><use href="#oi-${i.id}"/></svg><svg viewBox="0 0 48 48" class="inv"><use href="#oi-${i.id}"/></svg></div><div class="line"></div></figure>`;

@@ -20,7 +20,7 @@ Personas this must serve (RS-007 mapping): Noah and Olivia follow icons and colo
 1. **A pictogram per order type**, 28 icons (one per registry id in `ui/src/lib/orders.ts`), drawn for this game on one grid, bold filled silhouettes, one idea each, monochrome (colour never carries the meaning). Plus 3 reserve icons (sanctions, aid, trade deal) for the Economy orders the registry does not have yet.
 2. **Six visual families**: the five D-66 families (Diplomacy, Military, Covert, Economy, Home) plus Nuclear as a hazard variant of Military (yellow plate with hazard stripes). Each family is always shown four ways at once: pictogram, family word, plate colour, edge. Never colour alone.
 3. **The card leads with a pictogram plate** (52 px tile, 42 px compact, 46 px row): a solid light family-coloured token with the dark pictogram, overlapping the bottom of a **taller, full-colour scene band** (104 px tile, up from 62). The body paper is lighter and tinted by the family at the top.
-4. **Recognition is the acceptance bar**: the panel names the unlabeled icons; 80% pooled before ship (`icon-recognition-test.md`).
+4. **Recognition is the acceptance bar**: the panel names the unlabeled icons; 80% pooled before ship (`icon-recognition-test.md`). Round 1 scored 74%; nine icons were redrawn for round 2 (section 3.4).
 
 ## 3. Icon system
 
@@ -47,10 +47,12 @@ Source of truth: `concepts/order-icons/build.mjs` (generates every SVG, the spri
 | Badge with down arrow | less of it | stand down |
 | Badge with coin ($) | spend money on it | buy weapons, fund nuclear (reserve: sanctions puts the $ in the lock) |
 | Speech-bubble badge | by talking | soft policing |
-| Slash in a circle | stop it | hunt foreign spies |
+| Badge with pause bars | halt it | propose ceasefire (round 2) |
+| Crown | the leader | assassinate, back a coup (round 2) |
 | Arrow towards a dashed border | go there | mass troops at border |
 | Arrow away from the border, tank turned around | pull back | withdraw troops |
-| Crosshair | target it | strike nuclear sites, assassinate |
+| Crosshair | target it | assassinate |
+| Jet diving | strike from the air | strike military targets, strike nuclear sites |
 | Split or crack | break it | break pact, destabilize |
 
 ### 3.3 Catalogue (28 registry orders)
@@ -59,9 +61,9 @@ Source of truth: `concepts/order-icons/build.mjs` (generates every SVG, the spri
 |---|---|---|---|---|
 | `court` | Court | Diplomacy | Handshake with two sleeves | The universal sign for friendly relations and deals; nothing else in the set uses hands meeting |
 | `denounce` | Denounce | Diplomacy | Megaphone with shout lines | Public, loud condemnation; distinct from the calm podium of National address |
-| `offer-pact` | Offer defense pact | Diplomacy | Two shields, the front one with a plus | Two shields = mutual protection; the plus says "add an ally" |
+| `offer-pact` | Offer defense pact | Diplomacy | Handshake inside a shield (round 2) | An agreement (handshake, 9/9 for Court) that is about defence (shield); two parties, so it cannot read as "my own defence" |
 | `break-pact` | Break pact | Diplomacy | One shield split in two, halves pushed apart | Same shield vocabulary as the pact, broken; learnt as a pair |
-| `ceasefire` | Propose ceasefire | Diplomacy | White flag (outline, so it reads white on every plate) | The oldest sign for "stop fighting"; drawn as outline so it never reads as a black flag |
+| `ceasefire` | Propose ceasefire | Diplomacy | The Declare war swords with a pause badge (round 2) | The swords are read as war by 9 of 9; the pause badge says "halt the war". No flag anywhere: a flag read as claiming territory |
 | `mediate` | Mediate peace | Diplomacy | Dove with an olive branch | Peace brokered for others; dove is not a flag, so it is not confused with ceasefire |
 | `declare-war` | Declare war | Military | Crossed swords | Read as "war" in every culture and game; strongest silhouette in the set, fit for an irreversible order |
 | `mobilize` | Mobilize forces | Military | Three helmets, up badge | Helmets = troops; up = more of them |
@@ -70,29 +72,47 @@ Source of truth: `concepts/order-icons/build.mjs` (generates every SVG, the spri
 | `deploy-border` | Mass troops at border | Military | Tank facing a dashed border line, arrow towards it | The border line is the subject; the barrel and arrow point at it |
 | `withdraw-border` | Withdraw troops | Military | Same tank turned away, arrow back | Mirror of deploy, with the line kept on the same side so the direction is the only difference |
 | `airstrike-military` | Strike military targets | Military | Jet diving onto a blast | Air attack in one look; the blast says "strike", not "fly" |
-| `airstrike-nuclear` | Strike nuclear sites | Military | Atom inside a crosshair | The atom is the nuclear program (same atom as Fund nuclear), the crosshair says "hit it" |
+| `airstrike-nuclear` | Strike nuclear sites | Military | Jet diving onto an atom (round 2) | The Strike military jet (9/9) plus the program atom (9/9 for Fund nuclear): an air raid on the program, with no cloud and no crosshair, so it cannot read as a nuclear strike |
 | `fund-nuclear` | Fund nuclear program | Nuclear | Atom with a coin badge | Money into the program; atom is the program in all three nuclear icons |
 | `nuclear-strike` | Nuclear strike | Nuclear | Mushroom cloud | Unmistakable; must never be confused with anything (danger order) |
 | `spy` | Spy on | Covert | Agent in a fedora and dark glasses, collar up | The pop-culture spy; recognised by children and casual players (Noah, Olivia) |
-| `counter-intel` | Hunt foreign spies | Covert | The same agent under a no sign | "No spies here": built from the spy icon plus the stop modifier |
+| `counter-intel` | Hunt foreign spies | Covert | Magnifying glass finding the spy (round 2) | The spy (9/9) seen through a search lens = finding spies; the no sign is gone because it read as a ban or sanctions |
 | `sabotage` | Sabotage | Covert | Dynamite bundle with a lit fuse | Covert destruction, hand-placed; distinct from the airstrike blast |
-| `destabilize` | Destabilize | Covert | Classical government building, cracked and tilting | The state shaken from within: crack plus tilt |
+| `destabilize` | Destabilize | Covert | Domed capitol with its flag, cracked and toppling (round 2) | A dome and a national flag say "government", not "bank"; no columns, no coins; the crack and the tilt say "shaken" |
 | `arm-rebels` | Arm rebels | Covert | Raised fist with a rifle | Fist = rebellion, rifle = arms |
 | `disinformation` | Feed disinformation | Covert | Speech bubble wearing a masquerade mask | A message in disguise: words that lie |
-| `assassinate` | Assassinate leader | Covert | Crosshair on a head and shoulders | A person in the sights; the only icon with a person as target |
-| `coup` | Back a coup | Covert | Crown with two arrows swapping it | Regime change: the crown changes hands |
+| `assassinate` | Assassinate leader | Covert | Crosshair on a crowned head (round 2) | The crown makes the target the leader; "target the leader" is the order |
+| `coup` | Back a coup | Covert | A soldier helmet knocking the crown off (round 2) | The army (helmet, 9/9 as troops in Mobilize) removes the ruler by force; no arrows or swaps, which read as an election or reshuffle |
 | `reform` | Reform program | Economy | Sprout growing out of a gear | Fixing the machine so it grows; "reform", "growth" and "modernise" all count |
-| `address` | National address | Home | Microphone on a podium with sound waves | A speech to the nation; calm and official, unlike the megaphone |
+| `address` | National address | Home | The leader at a lectern on a TV screen, with a flag (round 2) | A televised speech to the nation; the microphone and podium read as a plant pot |
 | `policing-soft` | Soft policing | Home | Police cap with a speech-bubble badge | Police, by talking |
-| `policing-hard` | Hard crackdown | Home | Riot shield and baton | Force; the shield and baton cannot be read as "talk" |
+| `policing-hard` | Hard crackdown | Home | Riot officer: visored helmet, shield, raised baton (round 2) | A person in riot gear is force; the bare shield and baton read as a document and a pen ("sign a law") |
 
 Reserve (not in the registry yet, same grammar, family Economy): `reserve-sanctions` padlock with a $ (frozen money), `reserve-aid` care package with a heart, `reserve-trade` container ship with two-way arrows. They are drawn so a future sanctions, aid or trade order lands in the system without a new style; they are not part of the recognition test.
 
 Note on the brief: the brief listed sanctions, aid and trade deal as order types; the registry (`ui/src/lib/orders.ts`, engine `src/core/orders.ts`) has no such orders today (it has 28: the 6 diplomacy, declare war, 7 military, 2 nuclear, 8 covert, 4 domestic). The set follows the registry.
 
-### 3.4 Legibility check
+### 3.4 Round 2 redraws (D-70, after the panel test)
 
-Verified on the contact sheet at 96, 48, 34 (plate) and 24 px, plate and bare. Strong at 24 px: swords, flag, megaphone, mushroom, spy, dynamite, podium, crosshair person, building, shields, mask bubble. Acceptable at 24 px, best at 34 px plate: mobilize and stand down (the helmets merge, the badge carries the difference), strike nuclear sites (atom detail), arm rebels (the rifle is partly hidden by the fist). Rule: on cards the icon is never smaller than 28 px; the 24 px size is for the tray slot and inline text only.
+Round 1: 74% weighted, 75% unweighted (bar 80%), `concept-tests/RESULTS.md`. Rule for the redraws: an icon must not show what people misread it as, and it should borrow from icons that scored 9/9 (swords, jet, atom, spy, helmet, handshake) so the set gets more consistent, not less. The 13 icons at 9/9 are unchanged (2, 4, 6, 7, 8, 9, 12, 14, 17, 18, 20, 21, 28 in round 1 numbering). Soft policing (67%) is also unchanged, as it was not on the redraw list.
+
+| Order (round 1 score) | What people read (round 1) | Was | Now | Why it should not say the misreading |
+|---|---|---|---|---|
+| Hunt foreign spies (0%) | sanctions, embargo, ban trade (9 of 9) | Spy under a no sign | Magnifying glass with the spy in the lens | The no sign was read as "ban", so it is gone. Nothing in the picture is a ban or money; a search lens on the 9/9 spy says "find the spy" |
+| Propose ceasefire (0%) | claim territory, plant a flag (9 of 9) | White flag on a pole | The war swords (9/9) with a pause badge | No flag, no pole, so nothing to plant. The swords set the topic as war, the pause badge says halt. New risk: confusion with Declare war, added as a watched pair (the badge must carry it) |
+| National address (0%) | no idea; plant in a pot, farming; a bug, wiretap | Microphone on a podium with sound waves | The leader behind a lectern on a TV screen, small flag, TV stand | The microphone on a stalk was the "plant" and the "bug", so there is no microphone now. A person on a screen is a broadcast speech; the flag makes it a national one |
+| Destabilize (22%) | bank or economy collapse (7 of 9) | Columned classical building, cracked and tilted | Domed capitol with a flag on top, crack and tilt, falling debris | Columns and a pediment are the bank icon everyone knows, so no columns. A dome with a flag reads as a seat of government |
+| Back a coup (44%, danger) | election, new leader, reshuffle | Crown with two swap arrows | A soldier helmet knocking the crown off | Swap arrows are the language of exchange and votes, so they are gone. The helmet (read as troops) and a falling crown say "the army removes the ruler" |
+| Assassinate (56%, danger) | target someone, aim at someone, surveillance | Crosshair on a head and shoulders | Crosshair on a crowned head | The crosshair was right but the target was anyone; the crown makes it the leader. Crown = the leader is shared with the coup icon |
+| Strike nuclear sites (78%, danger) | nuclear target, nuclear strike | Atom in a crosshair | The Strike military jet diving onto the program atom, impact strokes | A crosshair on an atom reads as nuclear targeting in general, close to a nuclear strike. Jet plus atom is "air raid on the program", built from two 9/9 icons, and has no mushroom or crosshair |
+| Hard crackdown (56%, watch) | sign a law, a decree (4 of 9) | Rectangular riot shield and diagonal baton | A riot officer: visored helmet, body, rounded shield, raised baton | The tall rectangle with a window and stripe was a sheet of paper and the baton a pen; now it is a person in riot gear, and the shield is rounded |
+| Offer defence pact (56%, watch) | boost own defence, defence spending | Two shields side by side, plus sign | A handshake inside one shield | Two shields with a plus read as "more defence". The handshake (Court, 9/9) adds the second party: a defence agreement |
+
+The new sheet uses a different shuffle (`(n * 11 + 7) % 29`, in `build.mjs`), so nobody can repeat round 1 answers from memory; `recognition-key.json` and the test file follow it.
+
+### 3.5 Legibility check
+
+Verified on the contact sheet at 96, 48, 34 (plate) and 24 px, plate and bare. Strong at 24 px: swords, megaphone, mushroom, spy, dynamite, crosshair, magnifier, TV, shields, mask bubble. Acceptable at 24 px, best at 34 px plate: mobilize and stand down (the helmets merge, the badge carries the difference), strike nuclear sites and destabilize (fine detail), arm rebels (the rifle is partly hidden by the fist). Rule: on cards the icon is never smaller than 28 px; the 24 px size is for the tray slot and inline text only.
 
 ## 4. Family colours
 
@@ -220,4 +240,4 @@ Order: WP-2, WP-1, WP-3, WP-5, WP-4, WP-6. WP-1 and WP-2 can run in parallel. Be
 
 - The registry has no Economy orders besides Reform; the Economy family is set up for the reserve sanctions, aid and trade orders if the game adds them (product decision, not art).
 - Crisis option cards keep the current paper in this pass; once the order cards ship, the same lighter paper should be tried on crisis cards for consistency (separate concept, Sam to judge).
-- If recognition misses on the watch list, the planned redraws are: soft policing, an officer bust with open palms; strike nuclear sites, a jet over a reactor dome with the trefoil; mobilize and stand down, a column of marching soldiers with the arrow badge; arm rebels, a rifle handed into a raised fist, rifle fully visible. Redraw in `build.mjs`, rerun the test, then build.
+- If round 2 misses: ceasefire falls back to two soldiers lowering rifles; destabilize to a capitol on a cracked foundation with a lit fuse; soft policing to an officer bust with open palms; arm rebels to a rifle fully visible beside the fist. Redraw in `build.mjs`, rerun the test, then build.
