@@ -23,3 +23,4 @@
 | B-19 | data/scenarios/2026.json briefing and description still say "This week: US midterms (3 Nov)" while the game opens later in November | Codex 2026 agent | Content | Open |
 | B-20 | Hormuz Convoy USA objective label still "Approval of 56%+ after the midterms" (shown on option tags and the goal line) | Group Manager review | Content | Open |
 | B-21 | Codex API caches per process: a running server serves stale codex after data merges (hid the briefings in review); invalidate on file change in dev or restart servers after data merges | Group Manager review | Engine / process | Open |
+| B-22 | Main UI bundle above the 1,100 kB warning after iteration 2 merges; lazy-load heavy surfaces (reveal, codex drawer, galleries, maplibre) | Build warning | Frontend | Open |

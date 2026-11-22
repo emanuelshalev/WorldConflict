@@ -11,6 +11,7 @@ import { CoachBubble } from './Coach';
 import { useNarrow } from '../../lib/useNarrow';
 import { ExplainText } from '../learn/ExplainText';
 import { SituationButton } from '../learn/SituationBriefing';
+import { optionSizes } from '../../lib/ease';
 import '../../styles/month.css';
 
 /**
@@ -99,6 +100,8 @@ function OptionCard({
   const art = sceneForDecision({ kind: isMeeting(item) ? item.kind : undefined, templateId: item.templateId, title: item.title, label: o.label });
   const backers = o.backedBy.map((b) => ADVISOR_NAMES[b] ?? b);
   const phone = useNarrow(600);
+  const [showSizes, setShowSizes] = useState(false);
+  const sizes = optionSizes(o, countryName);
   return (
     <CardShell
       id={`${item.id}-${o.id}`}
@@ -123,6 +126,20 @@ function OptionCard({
       byline={backers.length ? `Backed by the ${backers.join(' and the ')}` : undefined}
     >
       <EffectChips effects={words.map((w) => ({ text: w.text, tone: w.tone }))} max={2} onMore={onMore} />
+      {sizes.length > 0 && (
+        <button type="button" className="fx-size-btn" aria-expanded={showSizes} onClick={() => setShowSizes((v) => !v)} data-effect-sizes="">
+          {showSizes ? 'Hide sizes' : 'How much?'}
+        </button>
+      )}
+      {showSizes && (
+        <ul className="fx-sizes" aria-label={`${o.label}: effect sizes`}>
+          {sizes.slice(0, 5).map((s) => (
+            <li key={s.text} className={`fx-${s.tone}`}>
+              {s.text}
+            </li>
+          ))}
+        </ul>
+      )}
     </CardShell>
   );
 }

@@ -33,7 +33,7 @@ export function OrderPreview({ preview, compact = false, id }: { preview: Previe
                 {e.metric}
                 {e.note && !compact ? <span className="ord-pv-note"> ({e.note})</span> : null}
               </span>
-              <b className={`num fx-${tone(e.delta)}`}>{e.delta}</b>
+              <b className={`num fx-${tone(e.delta)}`}>{/^[+-]?\d+(\.\d+)?%?$/.test(e.delta.trim()) ? `about ${e.delta}` : e.delta}</b>
             </li>
           ))}
         </ul>

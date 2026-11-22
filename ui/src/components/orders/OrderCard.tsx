@@ -215,13 +215,9 @@ export function OrderCard({
   if (def.irreversible) chips.push(<span key="undo" className="ord-chip ord-noundo">{TERMS.noUndo.name}</span>);
   if (isQueued && pc > 0) chips.push(<span key="held" className="ord-chip ord-held num">◆ {pc} held</span>);
   if (share > 0) chips.push(<span key="def" className="ord-chip ord-def num">{term(TERMS.defense.compact, Math.round(share * 100))}</span>);
+  // The resting card names the odds only; the effect sizes ("Approval about +3") open on Forecast,
+  // hover or focus (F-01-6), so the tile stays quiet
   if (entry && entry.chance !== null && avail.state !== 'invalid') chips.push(<span key="ch" className="ord-chip ord-chance num">{term(TERMS.chance.name, entry.chance)}</span>);
-  else if (entry && entry.effects[0] && avail.state !== 'invalid' && !compact)
-    chips.push(
-      <span key="fx" className="ord-chip num">
-        {entry.effects[0].metric} {entry.effects[0].delta}
-      </span>,
-    );
 
   // ---------- the state line and its fix ----------
   const fix = renderFix();
@@ -325,7 +321,7 @@ export function OrderCard({
 
   const infoBtn = entry && (
     <button type="button" className="ord-info" aria-expanded={info} aria-controls={`ord-${uid}-pv`} onClick={() => setInfo((v) => !v)}>
-      {info ? 'Hide forecast' : 'Forecast'}
+      {info ? 'Hide forecast' : 'How much? Forecast'}
     </button>
   );
 

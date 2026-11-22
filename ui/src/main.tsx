@@ -4,6 +4,8 @@ import './index.css'
 import './styles/feel.css'
 import './styles/learn.css'
 import App from './App.tsx'
+// After App: the iteration 2 layout fixes win over the older rules (same specificity)
+import './styles/ease.css'
 
 const Gallery = lazy(() => import('./scenes/Gallery'))
 const OrdersGallery = lazy(() => import('./components/orders/OrdersGallery'))

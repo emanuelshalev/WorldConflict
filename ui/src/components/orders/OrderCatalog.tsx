@@ -1,9 +1,9 @@
 import { useMemo, useRef, useState } from 'react';
 import { useGameStore } from '../../store/gameStore';
 import { CATEGORIES, ORDERS, ORDERS_BY_CATEGORY, type OrderDef, orderLabel } from '../../lib/orders';
-import { flag } from '../../lib/format';
 import { usePointTarget } from '../../lib/pointAt';
 import { OrderCard, type OrderCardHandle } from './OrderCard';
+import { CountryPicker, type CountryPickerHandle } from './CountryPicker';
 
 export interface OrderCatalogProps {
   /** The picked target country id ('' for none). */
@@ -41,9 +41,9 @@ export function OrderCatalog({ target, setTarget, onOpenOrder, title = 'All orde
   const setFocus = useGameStore((s) => s.setFocus);
   const [q, setQ] = useState('');
   const [sel, setSel] = useState(0);
-  const picker = useRef<HTMLSelectElement>(null);
+  const picker = useRef<CountryPickerHandle>(null);
   const handles = useRef<Array<OrderCardHandle | null>>([]);
-  const pickerPoint = usePointTarget('target', 'leader-input ord-target');
+  const pickerPoint = usePointTarget('target', 'ord-target');
   const others = useMemo(() => [...view].filter((v) => !v.isPlayer).sort((a, b) => a.name.localeCompare(b.name)), [view]);
   const targetName = others.find((v) => v.id === target)?.name;
   const query = q.trim().toLowerCase();
@@ -72,9 +72,10 @@ export function OrderCatalog({ target, setTarget, onOpenOrder, title = 'All orde
 
   const at = Math.min(sel, Math.max(0, hits.length - 1));
   const openOrder = onOpenOrder ?? ((i: number) => setFocus({ kind: 'order', id: String(i) }));
+  // "Pick a country" on a card opens the picker itself, not a native dropdown
   const pickTarget = () => {
     picker.current?.focus();
-    picker.current?.scrollIntoView({ block: 'nearest' });
+    picker.current?.open();
   };
 
   return (
@@ -110,20 +111,15 @@ export function OrderCatalog({ target, setTarget, onOpenOrder, title = 'All orde
           }}
           aria-label="Search orders (Up and Down to choose, Enter to act on the highlighted order)"
         />
-        <select
-          ref={picker}
-          {...pickerPoint}
+        <CountryPicker
+          handle={picker}
           value={target}
-          onChange={(e) => setTarget(e.target.value)}
-          aria-label="Target country"
-        >
-          <option value="">Target: pick a country</option>
-          {others.map((v) => (
-            <option key={v.id} value={v.id}>
-              {flag(v.id)} {v.name} ({Math.round(v.relationWithPlayer)})
-            </option>
-          ))}
-        </select>
+          onChange={setTarget}
+          mapPick
+          placeholder="Target: choose a country"
+          className={pickerPoint.className}
+          triggerProps={{ 'data-point': pickerPoint['data-point'] }}
+        />
       </div>
       {query ? (
         <div className="ord-hits" id="ord-hits" role="listbox" aria-label="Matching orders">

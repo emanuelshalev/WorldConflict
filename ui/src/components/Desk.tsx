@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { flushSync } from 'react-dom';
-import { IconAlertTriangle, IconChevronRight, IconListCheck, IconPhoneCall, IconSearch } from '@tabler/icons-react';
+import { IconAlertTriangle, IconChevronRight, IconLayoutList, IconListCheck, IconPhoneCall, IconSearch } from '@tabler/icons-react';
+import { simpleMonth } from '../lib/ease';
+import { useCoach } from '../lib/coach';
 import { crisisStaffPick } from '../lib/staff';
 import { useGameStore, usePlayerCountry } from '../store/gameStore';
 import { approveAll, crisisSelection, defaultDeskView, meetingPick, meetingSelection, primaryId, primaryItem, setupMonth } from '../lib/month';
@@ -199,17 +201,51 @@ function AlsoOnDesk() {
   );
 }
 
+/** Month 1: one line instead of the advisors, orders and meetings, which open on demand. */
+export function ShowDesk({ className = '' }: { className?: string }) {
+  const showDesk = useGameStore((s) => s.showDesk);
+  const agenda = useGameStore((s) => s.worldState?.agenda?.length ?? 0);
+  const actions = useGameStore((s) => s.pendingActions.length);
+  return (
+    <button type="button" className={`show-desk ${className}`.trim()} onClick={showDesk} data-show-desk="">
+      <IconLayoutList size={17} aria-hidden />
+      <span>
+        <b>Show the whole desk</b>
+        <small>
+          Advisors, {actions} order{actions === 1 ? '' : 's'} and {agenda} meeting{agenda === 1 ? '' : 's'}: your staff handle them this month
+        </small>
+      </span>
+      <IconChevronRight size={16} aria-hidden />
+    </button>
+  );
+}
+
 function FocusView() {
   useGameStore((s) => s.missionImpact);
   useGameStore((s) => s.pendingDecisions);
+  const simple = useSimpleMonth();
   const p = primaryItem();
   return (
-    <div className="focus-view">
+    <div className={`focus-view${simple ? ' is-simple' : ''}`}>
       {p?.kind === 'crisis' ? <YourMove item={p.decision} /> : p?.kind === 'meeting' ? <YourMove item={p.meeting} /> : <QuietMove />}
-      <AdvisorList />
-      <AlsoOnDesk />
+      {simple ? (
+        <ShowDesk />
+      ) : (
+        <>
+          <AdvisorList />
+          <AlsoOnDesk />
+        </>
+      )}
     </div>
   );
+}
+
+/** Month 1 in Focus view, until the player asks for the rest (lib/ease simpleMonth). */
+function useSimpleMonth(): boolean {
+  const turn = useGameStore((s) => s.worldState?.turn);
+  const view = useGameStore((s) => s.deskView);
+  const shown = useGameStore((s) => s.deskShown);
+  return simpleMonth(turn, view, shown);
 }
 
 export function Desk() {
@@ -220,7 +256,8 @@ export function Desk() {
   const deskView = useGameStore((s) => s.deskView);
   const selected = useGameStore((s) => s.selectedCountryId);
   const me = usePlayerCountry();
-  const [picked, setTarget] = useState('');
+  const picked = useGameStore((s) => s.orderTarget);
+  const setTarget = useGameStore((s) => s.setOrderTarget);
   const narrowNav = useNarrow(1280);
   const phone = useNarrow(900);
   // A country picked on the big map becomes the order target until the player picks another
@@ -237,6 +274,12 @@ export function Desk() {
     if (defaultDeskView(s.worldState, s.deskView) === 'focus' && s.deskView !== 'focus') useGameStore.setState({ deskView: 'focus' });
   }, [turn]);
   useDeskKeys(deskMode === 'desk' && !gameOver);
+  const simple = useSimpleMonth();
+  const coachStep = useCoach((s) => s.step);
+  // Month 1 hides the advisors, so the coach skips its advisors step (it would point at nothing)
+  useEffect(() => {
+    if (simple && coachStep === 'advisors') useCoach.getState().advance('advisors');
+  }, [simple, coachStep]);
   if (!world || !me || gameOver || deskMode !== 'desk') return null;
   const full = deskView === 'full';
   return (
@@ -244,8 +287,8 @@ export function Desk() {
       view={deskView}
       nav={full && !narrowNav ? <Navigator /> : undefined}
       tabs={full && narrowNav ? <Navigator tabs /> : undefined}
-      rail={phone ? undefined : <CommandRail catalogTarget={target} />}
-      bar={phone ? <CommandBar catalogTarget={target} /> : undefined}
+      rail={phone ? undefined : <CommandRail catalogTarget={target} simple={simple} />}
+      bar={phone ? <CommandBar catalogTarget={target} simple={simple} /> : undefined}
     >
       {full ? <Detail target={target} setTarget={setTarget} /> : <FocusView />}
     </DeskStage>

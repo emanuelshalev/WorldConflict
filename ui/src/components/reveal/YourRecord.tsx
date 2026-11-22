@@ -57,6 +57,11 @@ export function YourRecord() {
           </ul>
         </details>
       ) : null}
+      {/* Folded until wanted, so the title's left column stays clear of the globe (tablet, Sam) */}
+      <details className="rv-seed-details" open={bad || !!code || undefined}>
+        <summary>
+          <IconPlayerPlay size={15} aria-hidden /> Play a friend's seed
+        </summary>
       <form className="rv-seedform" onSubmit={play}>
         <label htmlFor="rv-seed">Play this seed</label>
         <div className="rv-seedrow">
@@ -83,6 +88,7 @@ export function YourRecord() {
           {bad ? 'That is not a seed code: it looks like HC-USA-3PX.' : 'A seed code from a friend\'s result: same seat, same opening.'}
         </small>
       </form>
+      </details>
     </div>
   );
 }

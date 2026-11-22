@@ -1,0 +1,96 @@
+/* =========================================================================
+   Iteration 2, ease of play (F-01-4, F-01-6, Sam's tablet collisions, QA S2-1, S3-3, S3-4)
+   ========================================================================= */
+
+/* Month 1: the rest of the desk on demand */
+.show-desk { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; padding: 8px 14px; border: 1px dashed var(--line-2); border-radius: 12px; background: transparent; color: var(--text-1); font: inherit; text-align: left; cursor: pointer; }
+.show-desk:hover, .show-desk:focus-visible { border-color: var(--accent); outline: none; }
+.show-desk > span { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.show-desk b { font-size: 15px; font-weight: 650; }
+.show-desk small { font-size: 13px; color: var(--text-2); }
+.show-desk > svg { color: var(--text-2); flex: none; }
+.rail-simple { margin: 0; font-size: 15px; line-height: 1.45; color: var(--text-1); }
+.rail-show { align-self: flex-start; min-height: 44px; font-size: 14px; }
+
+/* Effect sizes on the crisis cards: "How much?" opens the numbers */
+.fx-size-btn { position: relative; z-index: 3; justify-self: start; min-height: 36px; padding: 2px 10px; border-radius: 999px; border: 1px solid var(--line-2); background: none; color: var(--intel); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+.fx-size-btn:hover, .fx-size-btn:focus-visible { border-color: var(--intel); outline: none; }
+.fx-sizes { position: relative; z-index: 3; list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: 14px; font-variant-numeric: tabular-nums; }
+.fx-sizes li { padding: 3px 8px; border-radius: 6px; }
+.fx-sizes .fx-up { background: var(--chip-up-bg); color: var(--chip-up-ink); }
+.fx-sizes .fx-down { background: var(--chip-down-bg); color: var(--chip-down-ink); }
+
+/* Big move: one labelled suggestion that spends 3+ unspent seals on the mission */
+.big-move { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; margin: 0 0 10px; padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(242, 169, 59, 0.55); background: linear-gradient(90deg, rgba(242, 169, 59, 0.14), rgba(242, 169, 59, 0.04)); }
+.big-move-tag { padding: 4px 10px; border-radius: 6px; background: var(--accent); color: var(--accent-ink); font: 800 13px/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; }
+.big-move-text { margin: 0; font-size: 15px; line-height: 1.4; }
+.big-move-go { min-height: 44px; white-space: nowrap; }
+@media (max-width: 600px) { .big-move { grid-template-columns: minmax(0, 1fr); } .big-move-tag { justify-self: start; } }
+
+/* Coach step 2 sits in the advisors block, under its heading, never over a crisis card (QA S3-4) */
+.advisors { position: relative; }
+.advisors .coach-bubble.place-above { position: relative; top: auto; bottom: auto; right: auto; transform: none; width: auto; max-width: 520px; margin: 0 0 10px; }
+.advisors .coach-bubble.place-above::after { right: auto; left: 28px; bottom: auto; top: auto; display: none; }
+
+/* Crisis cards line up: the tag rides above the card, not inside it (Sam: card 3 lower, tag over "free") */
+@media (min-width: 600px) {
+  .move-cards { padding-top: 30px; }
+  .move-cards .wc-card-tile.has-tag { margin-top: 0; }
+  .move-cards .wc-card-tile .wc-card-tag { top: auto; bottom: calc(100% - 8px); left: 12px; max-width: calc(100% - 24px); white-space: normal; }
+  /* the stamp lands on the picture, above the mission ribbon, not over the "Hurts" text */
+  .move-card .wc-card-stamp { top: 30px; }
+}
+
+/* The rail names each plan item in full (Sam: "Reply via Mu...") */
+.slot-text b { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.25; }
+
+/* Map mode: the command strip on two rows; the advisors get a full-width tray (QA S2-1) */
+.cmd-strip { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: 'chips act' 'adv adv'; row-gap: 8px; }
+.cmd-strip .strip-chips { grid-area: chips; min-width: 0; }
+.cmd-strip .strip-act { grid-area: act; }
+.cmd-strip .strip-advisors { grid-area: adv; min-width: 0; }
+.cmd-strip .strip-advisors .advisors.compact { display: block; }
+.cmd-strip .strip-advisors .adv-list { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.cmd-strip .strip-advisors .adv-row { min-width: 0; }
+.cmd-strip .strip-advisors .adv-label { white-space: normal; overflow: visible; }
+.cmd-strip .strip-advisors .adv-add { min-height: 44px; }
+.strip-tray-btn { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line-2); background: none; color: var(--text-1); font: inherit; font-size: 13px; cursor: pointer; }
+.strip-tray-btn[aria-expanded='true'] { border-color: var(--intel); color: #9fdcf4; }
+.cmd-strip .chip-b { min-height: 44px; }
+@media (max-width: 899px) {
+  .cmd-strip { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'chips' 'adv' 'act'; }
+  .cmd-strip .strip-advisors .adv-list { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* 1024 HUD: all seven indicators in full words, compact (QA S3-3, orders AC17) */
+@media (min-width: 901px) and (max-width: 1279px) {
+  .game-top .stat.minor { display: flex; flex-direction: column; }
+  .game-top .hud-more { display: none; }
+  .game-top .hud { gap: 10px; padding: 6px 12px; }
+  .game-top .hud-flag { display: none; }
+  .game-top .hud-who { max-width: 150px; }
+  .game-top .hud-who b { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+  .game-top .hud-stats { gap: 10px !important; }
+  .game-top .stat .val { font-size: 16px; }
+  .game-top .stat .val small { display: none; }
+  .game-top .stat.tension { width: auto; }
+  .game-top .stat.tension .bar { display: none; }
+  .game-top .stat.capital .wc-seal { width: 18px; height: 18px; }
+  .game-top .pc-left { font-size: 14px; }
+  .mode-seg button { min-height: 44px; }
+  .mode-seg span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
+
+/* Title at tablet width: the left column stays off the globe's labels and pins (Sam) */
+@media (min-width: 901px) and (max-width: 1279px) {
+  /* a clear zone: the column sits on its own scrim, so no label or pin shows through its text */
+  .ts2-left { max-width: 300px; gap: 10px; padding-top: 14px; padding-bottom: 24px; align-self: stretch; background: linear-gradient(90deg, rgba(5, 8, 14, 0.94) 0%, rgba(5, 8, 14, 0.86) 78%, rgba(5, 8, 14, 0) 100%); padding-right: 36px; }
+  .ts2-pitch { display: none; }
+  .ts2-tag { font-size: 28px; }
+  .ts2-daily small { font-size: 13px; }
+  .map-key { z-index: 4; }
+}
+.rv-seed-details > summary { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line-2); background: rgba(10, 15, 26, 0.82); color: var(--text-2); font-size: 13px; cursor: pointer; list-style: none; }
+.rv-seed-details > summary::-webkit-details-marker { display: none; }
+.rv-seed-details[open] > summary { margin-bottom: 8px; color: var(--text-1); }
+.ts2-daily small { font-size: 13px; letter-spacing: 0.08em; }

@@ -8,6 +8,7 @@ import { ExplainText } from './learn/ExplainText';
 import { FamiliarityPrompt } from './learn/FamiliarityPrompt';
 import { WhoRow } from './learn/WhoIsWho';
 import { useSituation } from './learn/explain';
+import { PLAIN_STATE, briefingGoals } from '../lib/ease';
 import '../styles/month.css';
 
 /**
@@ -36,6 +37,7 @@ export function BackstoryModal() {
   const [full, setFull] = useState(false);
   const situation = useSituation();
   const markAsked = useGameStore((s) => s.markFamiliarityAsked);
+  const [allGoals, setAllGoals] = useState(false);
 
   const ref = useModalFocus<HTMLDivElement>(!!(showBackstory && player && worldState));
   if (!showBackstory || !player || !worldState) return null;
@@ -53,6 +55,8 @@ export function BackstoryModal() {
   const storyRest = once(story);
   const primary = status.filter((c) => !c.bonus);
   const bonus = status.filter((c) => c.bonus);
+  // The mission in one line and at most three goals in plain words; numbers behind "All goals"
+  const top = briefingGoals(status, 3, stateOf);
 
   return (
     <div ref={ref} className="overlay briefing-overlay" role="dialog" aria-modal="true" aria-label="Briefing">
@@ -73,7 +77,33 @@ export function BackstoryModal() {
           <h2>
             Your mission: <span>{objective?.title ?? 'Stay in power'}</span>
           </h2>
-          <ul className="briefing-goals">
+          {!allGoals && (
+            <ul className="briefing-goals briefing-goals-short" data-briefing-goals="short">
+              {top.shown.map((c) => {
+                const s = stateOf(c);
+                return (
+                  <li key={c.label}>
+                    <i className={`gseg s-${s}`} aria-hidden />
+                    <span className="bg-label">{c.short ?? c.label.replace(/\s*[(:].*$/, '')}</span>
+                    <span className={`bg-now st-${s}`}>{PLAIN_STATE[s]}</span>
+                  </li>
+                );
+              })}
+              {status.length === 0 && (
+                <li>
+                  <i className="gseg s-on_track" aria-hidden />
+                  <span className="bg-label">Survive to the end of your term</span>
+                </li>
+              )}
+            </ul>
+          )}
+          {top.hidden > 0 && (
+            <button type="button" className="link briefing-all" onClick={() => setAllGoals((v) => !v)} aria-expanded={allGoals}>
+              {allGoals ? 'Fewer goals' : `All goals (${status.length})`} {allGoals ? <IconChevronUp size={14} aria-hidden /> : <IconChevronDown size={14} aria-hidden />}
+            </button>
+          )}
+          {allGoals && (
+          <ul className="briefing-goals" data-briefing-goals="all">
             {primary.map((c) => {
               const s = stateOf(c);
               const nn = nowNeed(c);
@@ -99,6 +129,7 @@ export function BackstoryModal() {
               </li>
             )}
           </ul>
+          )}
         </section>
         <div className="briefing-facts num">
           Approval {Math.round(player.approval)}% · Stability {Math.round(player.stability)}% · {player.politicalSystem.type.replace(/_/g, ' ').toLowerCase()}

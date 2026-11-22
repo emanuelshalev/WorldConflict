@@ -218,8 +218,8 @@ export const OPTION_KEYWORDS: ReadonlyArray<{ re: RegExp; scene: SceneKind; fami
   { re: /break the strike|crackdown|police|curfew|clear the squares|\barrest|ringleaders|lock the country down/i, scene: 'streets', family: 'domestic' },
   { re: /visit the victims|mourn|relief|airlift|humanitarian|\baid\b|open the borders|open the crossings|open rafah|let them in/i, scene: 'field_visit', family: 'domestic' },
   { re: /\bcall\b(?! (it|for)\b)|\bvisit\b|summit|\bcourt\b|rally your allies|lean on|press washington|counter-offer|restrain/i, scene: 'summit', family: 'diplomacy' },
-  { re: /air ?strikes?|\bstrikes?\b|\bbomb|\bair\b|missile|\bdrones?\b|\bshell|hit their|special forces/i, scene: 'airstrike', family: 'military' },
-  { re: /troops|deploy|mobili[sz]|\bborder|reinforce|battalion|offensive|finish the job|join the war|send weapons|\bstorm\b|garrison|convoy|hold the line/i, scene: 'deployment', family: 'military' },
+  { re: /air ?strikes?|\bstrikes?\b|\bbomb|\bair\b|missile|\bdrones?\b|\bshell|hit their|\bhit the\b|\bsink\b|special forces/i, scene: 'airstrike', family: 'military' },
+  { re: /troops|deploy|mobili[sz]|\bborder|reinforce|battalion|offensive|finish the job|join the war|send weapons|\bstorm\b|garrison|convoys?|escorts?|hold the line/i, scene: 'deployment', family: 'military' },
   { re: /address|speech|rally the nation|televised|national unity|apolog|concede|announce/i, scene: 'address', family: 'domestic' },
   { re: /sanction|\bun\b|united nations|resolution|vote (yes|no|for|against)|abstain/i, scene: 'un_vote', family: 'diplomacy' },
   { re: /\bwhip\b|\bvotes?\b|pass it|inquiry|commission|legali[sz]e|shelve/i, scene: 'parliament', family: 'domestic' },
@@ -238,7 +238,8 @@ export const cleanChoice = (label: string) => label.replace(/\s*\((no decision t
 
 /** The keyword entry an option label matches, if any. */
 export function optionKeyword(label: string): (typeof OPTION_KEYWORDS)[number] | undefined {
-  const l = cleanChoice(label);
+  // A negated phrase names what you will not do: "More escorts, no strikes" is not an air strike
+  const l = cleanChoice(label).replace(/\b(no|not|never|without|nor)\s+(more\s+)?\w+/gi, ' ');
   return OPTION_KEYWORDS.find((k) => k.re.test(l));
 }
 
@@ -322,6 +323,9 @@ const ALTERNATE: Record<SceneKind, SceneKind> = {
 };
 
 /** R7: no repeat backdrop month to month, unless the crisis is a follow-up of the last one. */
+/** The alternate backdrop of a scene (same family, different room). */
+export const alternateScene = (kind: SceneKind): SceneKind => ALTERNATE[kind];
+
 export function avoidRepeat(kind: SceneKind, previous: SceneKind | undefined, followUp = false): SceneKind {
   return !followUp && previous === kind ? ALTERNATE[kind] : kind;
 }

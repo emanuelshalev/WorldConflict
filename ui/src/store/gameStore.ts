@@ -621,6 +621,15 @@ export interface GameState extends CodexSlice {
   monthKey: string | null;
   deskMode: 'map' | 'desk';
   setDeskMode: (mode: 'map' | 'desk') => void;
+  /** The country the desk catalog aims its orders at ('' for none): CountryPicker or a map tap. */
+  orderTarget: string;
+  setOrderTarget: (id: string) => void;
+  /** "Pick on the map": the next tap on a foreign country sets the target and returns to the desk. */
+  mapPick: boolean;
+  setMapPick: (on: boolean) => void;
+  /** Month 1: the player asked for the whole desk (advisors, budgets, meetings) before month 2. */
+  deskShown: boolean;
+  showDesk: () => void;
   focus: DeskFocus;
   setFocus: (focus: DeskFocus) => void;
   /** Settings: the staff pre-queue up to 3 orders each month. */
@@ -895,6 +904,12 @@ export const useGameStore = create<GameState>((set) => ({
   monthKey: null,
   deskMode: 'desk',
   setDeskMode: (mode) => set({ deskMode: mode }),
+  orderTarget: '',
+  setOrderTarget: (id) => set({ orderTarget: id }),
+  mapPick: false,
+  setMapPick: (on) => set(on ? { mapPick: true, deskMode: 'map', selectedCountryId: null } : { mapPick: false }),
+  deskShown: false,
+  showDesk: () => set({ deskShown: true }),
   focus: { kind: 'mission' },
   setFocus: (focus) => set({ focus, deskMode: 'desk' }),
   staffOrders: readFlag('worldconflict.staffOrders', true),
@@ -1002,6 +1017,9 @@ export const useGameStore = create<GameState>((set) => ({
       gameOver: null,
       endReport: null,
       selectedCountryId: null,
+      orderTarget: '',
+      mapPick: false,
+      deskShown: false,
       activeModal: null,
       activeAdvisorRole: null,
       currentPhase: 'news',
@@ -1157,6 +1175,8 @@ export async function startGame(req: NewGameRequest): Promise<boolean> {
     useGameStore.setState({
       screen: 'game',
       showBackstory: true,
+      deskShown: false,
+      orderTarget: '',
       endReport: null,
       lastEvents: [],
       isDaily: !!req.daily,
@@ -1231,6 +1251,7 @@ export async function executeTurn(): Promise<void> {
       currentPhase: 'news',
       showChronicle: true,
       selectedCountryId: null,
+      mapPick: false,
       lastEvents: data.events ?? [],
       aiTurnUsage: data.ai?.turnUsage ?? null,
       aiTotalUsage: data.ai?.totalUsage ?? store.aiTotalUsage,

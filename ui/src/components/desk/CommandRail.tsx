@@ -271,23 +271,36 @@ function ScoreNote() {
 }
 
 /** The right column of the desk. */
-export function CommandRail({ catalogTarget }: { catalogTarget: string }) {
+export function CommandRail({ catalogTarget, simple = false }: { catalogTarget: string; simple?: boolean }) {
   const world = useGameStore((s) => s.worldState);
+  const showDesk = useGameStore((s) => s.showDesk);
   const ex = useExecute();
   const b = budgetStatus();
   if (!world || !b) return null;
   return (
-    <aside className="rail" aria-label="Command rail">
+    <aside className={`rail${simple ? ' is-simple' : ''}`} aria-label="Command rail">
       <ContextMap catalogTarget={catalogTarget} />
       <div className="rail-body">
-        <SealBank />
-        <Budgets />
-        <Tray />
-        <Readiness />
-        <ScoreNote />
+        {simple ? (
+          <>
+            <p className="rail-simple">Answer the crisis, then run the month. Your staff handle the rest this month.</p>
+            <Readiness />
+            <button type="button" className="link rail-show" onClick={showDesk}>
+              Show budgets, orders and meetings
+            </button>
+          </>
+        ) : (
+          <>
+            <SealBank />
+            <Budgets />
+            <Tray />
+            <Readiness />
+            <ScoreNote />
+          </>
+        )}
       </div>
       <div className="rail-foot">
-        <ApproveButton />
+        {!simple && <ApproveButton />}
         {ex.reason && (
           <button type="button" className="hint over" role="alert" onClick={() => pointTo(reasonTarget(ex.reason ?? ''))}>
             <IconAlertTriangle size={13} aria-hidden /> {ex.reason}
@@ -303,7 +316,7 @@ export function CommandRail({ catalogTarget }: { catalogTarget: string }) {
 }
 
 /** Phones: a fixed command bar (seals, "This month: n decided", Execute) over a plan sheet. */
-export function CommandBar({ catalogTarget }: { catalogTarget: string }) {
+export function CommandBar({ catalogTarget, simple = false }: { catalogTarget: string; simple?: boolean }) {
   const world = useGameStore((s) => s.worldState);
   const reviewed = useGameStore((s) => s.reviewed);
   const actions = useGameStore((s) => s.pendingActions);
@@ -321,9 +334,13 @@ export function CommandBar({ catalogTarget }: { catalogTarget: string }) {
         {sheet && (
           <div className="bar-sheet">
             <ContextMap catalogTarget={catalogTarget} />
-            <SealBank />
-            <Budgets />
-            <Tray />
+            {!simple && (
+              <>
+                <SealBank />
+                <Budgets />
+                <Tray />
+              </>
+            )}
             <Readiness />
             <ApproveButton />
           </div>
@@ -360,10 +377,12 @@ export function CommandStrip() {
   useGameStore((s) => s.decisionChoices);
   const ex = useExecute();
   const b = budgetStatus();
+  // The advisors get their own full-width row (QA S2-1): open by default where it fits
+  const [tray, setTray] = useState(() => typeof window === 'undefined' || window.innerWidth >= 1280);
   if (!world || !b) return null;
   const cabinet = decisions.filter((d) => !reviewed[d.id]).length;
   return (
-    <div className="cmd-strip">
+    <div className={`cmd-strip${tray ? ' tray-open' : ''}`}>
       <div className="strip-chips">
         <span className={`chip-b seals${b.pc.left < 0 ? ' over' : ''}`} data-point="capital">
           <CapitalSeals left={Math.max(0, b.pc.left)} held={Math.min(b.pc.orders, Math.max(0, b.pc.bank + b.pc.crisis + b.pc.meetings))} size={18} text={term(TERMS.capital.compact, b.pc.left)} />
@@ -372,8 +391,15 @@ export function CommandStrip() {
         <span className="num chip-b" data-point="meetings">{term(TERMS.meetings.compact, b.inPerson.used)}</span>
         {b.defense.share > 0 && <span className="num chip-b" data-point="defense">{term(TERMS.defense.compact, Math.round(b.defense.share * 100))}</span>}
         {cabinet > 0 && <span className="strip-note">{cabinet} crisis on the cabinet pick</span>}
+        <button type="button" className="strip-tray-btn" aria-expanded={tray} aria-controls="strip-advisors" onClick={() => setTray((v) => !v)}>
+          {tray ? <IconChevronDown size={15} aria-hidden /> : <IconChevronUp size={15} aria-hidden />} Your advisors suggest
+        </button>
       </div>
-      <AdvisorList compact max={2} />
+      {tray && (
+        <div className="strip-advisors" id="strip-advisors">
+          <AdvisorList compact max={2} />
+        </div>
+      )}
       <div className="strip-act">
         <button type="button" className="wc-btn" onClick={() => setDeskMode('desk')} title="Back to the desk (M)">
           <IconLayoutDashboard size={16} aria-hidden /> Desk
