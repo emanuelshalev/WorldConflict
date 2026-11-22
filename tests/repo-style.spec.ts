@@ -20,4 +20,20 @@ describe("Repository style", () => {
     });
     expect(offenders).toEqual([]);
   });
+
+  it("contains no unresolved merge conflict markers", () => {
+    // Built from parts so this file never matches itself
+    const marker = new RegExp(`^(${"<".repeat(7)} |${">".repeat(7)} |${"=".repeat(7)}$)`, "m");
+    const files = execSync("git ls-files -z", { encoding: "utf8" })
+      .split("\0")
+      .filter((f) => f && !/\.(png|jpe?g|webp|gif|mp4|webm|ico|woff2?|db|lock|pbf)$/i.test(f));
+    const offenders = files.filter((f) => {
+      try {
+        return marker.test(readFileSync(f, "utf8"));
+      } catch {
+        return false;
+      }
+    });
+    expect(offenders).toEqual([]);
+  });
 });
