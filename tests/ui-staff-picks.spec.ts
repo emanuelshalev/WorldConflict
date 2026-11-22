@@ -71,9 +71,13 @@ describe("RS-005: staff picks are listed next to their Approve button", () => {
     expect(kinds[0]).toBe("crisis");
     expect(kinds.filter((k) => k === "order")).toHaveLength(2);
     expect(kinds.some((k) => k === "meeting" || k === "deputy")).toBe(true);
-    for (const it of items) expect(it.title).toMatch(/^(Cabinet pick|Order|Meeting|Deputy takes): /);
-    expect(items[0].what).toMatch(/^Crisis: /);
-    expect(items.find((x) => x.kind === "order")?.what).toMatch(/^Proposed by Chief of Staff/);
+    for (const it of items) expect(it.title).toMatch(/^(Crisis answer|Order|Meeting|Deputy takes): /);
+    // Every recommendation names its adviser (D-72: "Recommended by <role>", never bare)
+    for (const it of items) expect(it.by).toMatch(/^(Foreign|Defense|Finance|Interior) Minister$|^Intelligence Chief$|^Chief of Staff$/);
+    expect(items.find((x) => x.kind === "order")?.by).toBe("Chief of Staff");
+    // Truthful next to "Nothing happens until you accept": a crisis answer goes ahead
+    expect(items[0].what).toMatch(/^Crisis: .* · goes ahead unless you change it$/);
+    expect(items.find((x) => x.kind === "order")?.what).toMatch(/^(Spends ◆ \d if accepted|Free)$/);
     // The count matches what Approve all does
     const a = month.pendingApprovals();
     const counted = items.filter((x) => x.fits).length;
@@ -82,8 +86,8 @@ describe("RS-005: staff picks are listed next to their Approve button", () => {
 
   it("names the button with its count and a breakdown, singular when one", async () => {
     const { month } = await setup();
-    expect(month.approveLabel(4)).toBe("Approve 4 staff picks");
-    expect(month.approveLabel(1)).toBe("Approve 1 staff pick");
+    expect(month.approveLabel(4)).toBe("Accept all recommended (4)");
+    expect(month.approveLabel(1)).toBe("Accept all recommended (1)");
     const line = month.staffPicksBreakdown(month.staffPickItems());
     expect(line).toMatch(/^1 crisis answer, 2 orders, /);
   });
@@ -116,7 +120,7 @@ describe("RS-005: staff picks are listed next to their Approve button", () => {
     expect(nav).toContain("const committed = committedActions(actions);");
     expect(nav).toContain("term('{n} of {m}', committed.length, 6)");
     expect(nav).not.toMatch(/added by staff/);
-    expect(nav).toContain("proposed by staff, not approved");
+    expect(nav).toContain("recommended, not accepted");
     const adv = ui("components/desk/AdvisorList.tsx");
     expect(adv).not.toMatch(/\bactions\.length\b/);
     expect(ui("lib/budget.ts")).toContain("Staff proposals spend nothing until approved");
@@ -131,7 +135,10 @@ describe("RS-005: staff picks are listed next to their Approve button", () => {
     const group = ui("components/desk/StaffPicks.tsx");
     // Folded in Map mode, the main button only unfolds the list
     expect(group).toMatch(/aria-expanded=\{false\} aria-controls=\{listId\}/);
-    expect(group).toContain("Nothing to approve: every staff pick is decided");
-    expect(group).toContain("TERMS.staffPicks.definition");
+    expect(group).toContain("Nothing to accept: every recommendation is decided");
+    expect(group).toContain("TERMS.recommended.definition");
+    // Map mode: folded behind "Review n recommended" by default
+    expect(group).toContain("Review {n} recommended");
+    expect(group).toContain("useState(() => readKey(OPEN_KEY) === '1')");
   });
 });

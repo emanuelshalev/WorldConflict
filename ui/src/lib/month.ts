@@ -20,7 +20,7 @@ import {
 import { DANGEROUS, computeSuggestions, crisisStaffPick, meetingPriority, meetingSuggestion } from './staff';
 import { pcCost } from './actions';
 import { MAX_ORDERS } from './budget';
-import { effectArrows } from './format';
+import { ADVISOR_NAMES, effectArrows } from './format';
 import { TERMS } from './glossary';
 
 /**
@@ -256,7 +256,7 @@ export function crisisSelection(d: PendingDecision, choices: Record<string, stri
   const cab = cabinetPick(d);
   const chosen = d.options.find((o) => o.id === choices[d.id]) ?? cab;
   if (!reviewed[d.id]) return { kind: 'cabinet', option: chosen, text: `Cabinet pick: ${chosen.label}`, word: 'Cabinet pick' };
-  if (chosen.id === cab.id) return { kind: 'approved', option: chosen, text: `Approved: ${chosen.label}`, word: 'Approved' };
+  if (chosen.id === cab.id) return { kind: 'approved', option: chosen, text: `Accepted: ${chosen.label}`, word: 'Accepted' };
   return { kind: 'yours', option: chosen, text: `Your pick: ${chosen.label}`, word: 'Your pick' };
 }
 
@@ -268,7 +268,7 @@ export function meetingSelection(m: Meeting, choices: Record<string, string>, re
   if (pick === m.defaultOptionId) return { kind: 'deputy', text: 'A deputy goes', word: 'Deputy' };
   const o = m.options.find((x) => x.id === pick);
   if (o && sugg && o.id === sugg.id && !reviewed[m.id]) return { kind: 'cabinet', option: o, text: `Staff attend: ${o.label}`, word: 'Staff attend' };
-  if (o && sugg && o.id === sugg.id) return { kind: 'approved', option: o, text: `Approved: ${o.label}`, word: 'Approved' };
+  if (o && sugg && o.id === sugg.id) return { kind: 'approved', option: o, text: `Accepted: ${o.label}`, word: 'Accepted' };
   return { kind: 'yours', option: o, text: `Your pick: ${o?.label ?? ''}`, word: 'Your pick' };
 }
 
@@ -367,7 +367,7 @@ export function planSummary(state: GameState = useGameStore.getState()): PlanLin
   const approved = crises.filter((c) => c.kind === 'approved').length;
   const cabinet = crises.filter((c) => c.kind === 'cabinet').length;
   if (yours) parts.push(`your pick on ${n(yours, 'crisis', 'crises')}`);
-  if (approved) parts.push(`${n(approved, 'cabinet pick')} approved`);
+  if (approved) parts.push(`${n(approved, 'cabinet pick')} accepted`);
   if (cabinet) parts.push(`cabinet pick on ${n(cabinet, 'crisis', 'crises')}`);
   const committed = committedActions(state.pendingActions);
   const staff = committed.filter((a) => a.origin === 'staff').length;
@@ -375,7 +375,7 @@ export function planSummary(state: GameState = useGameStore.getState()): PlanLin
   const waiting = state.pendingActions.length - committed.length;
   if (mine) parts.push(n(mine, 'order of yours', 'orders of yours'));
   if (staff) parts.push(n(staff, 'staff order'));
-  if (waiting) parts.push(`${n(waiting, 'staff proposal')} not approved (${waiting === 1 ? 'it will not run' : 'they will not run'})`);
+  if (waiting) parts.push(`${n(waiting, 'staff proposal')} not accepted (${waiting === 1 ? 'it will not run' : 'they will not run'})`);
   const agenda = world?.agenda ?? [];
   const attend = agenda.filter((m) => state.decisionChoices[m.id] && state.decisionChoices[m.id] !== m.defaultOptionId).length;
   if (attend) parts.push(`you attend ${n(attend, 'meeting')}`);
@@ -468,15 +468,17 @@ export interface StaffPickItem {
   kind: StaffPickKind;
   /** The crisis or meeting id, or the proposal's index in pendingActions. */
   id: string;
-  /** "Cabinet pick: Reply via Muscat", "Order: Sanctions on Iran", "Meeting: ...", "Deputy takes: ..." */
+  /** "Crisis answer: Reply via Muscat", "Order: Sanctions on Iran", "Meeting: ...", "Deputy takes: ..." */
   title: string;
+  /** The adviser who recommends it ("Foreign Minister"): shown as "Recommended by Foreign Minister". */
+  by: string;
   /** What it answers or who proposes it: "Crisis: The January clock". */
   what: string;
   /** What it changes, in words: "Will change: Approval down · Iran's view of you up" (may be empty). */
   change: string;
   /** At most one mission tag (Helps / Hurts / Breaks). */
   tag: MissionTag | null;
-  /** Political capital it spends when approved. */
+  /** Political capital it spends when accepted. */
   cost: number;
   /** False for a proposal that no longer fits the capital or order slots: Approve all leaves it out. */
   fits: boolean;
@@ -508,8 +510,10 @@ export function staffPickItems(state: GameState = useGameStore.getState()): Staf
       key: `crisis:${id}`,
       kind: 'crisis',
       id,
-      title: `Cabinet pick: ${o.label}`,
-      what: `Crisis: ${d.title}`,
+      title: `Crisis answer: ${o.label}`,
+      by: ADVISOR_NAMES[o.backedBy?.[0] ?? ''] ?? 'Chief of Staff',
+      // Truthful (the first-use line says nothing happens until you accept): a crisis answer stands
+      what: `Crisis: ${d.title} · goes ahead unless you change it`,
       change: changeLine(effectWords(o).slice(0, 2).map((w) => w.text)),
       tag: missionTag(state.missionImpact[id]?.[o.id], state.objectiveStatus),
       cost: Math.max(0, -(o.effects.pc ?? 0)),
@@ -530,7 +534,8 @@ export function staffPickItems(state: GameState = useGameStore.getState()): Staf
       kind: 'order',
       id: String(i),
       title: `Order: ${a.label}`,
-      what: `Proposed by ${who || 'staff'} · ${cost ? `◆ ${cost} if approved` : 'free'}`,
+      by: who || 'Chief of Staff',
+      what: cost ? `Spends ◆ ${cost} if accepted` : 'Free',
       change: fx ? `Will change: ${fx}` : '',
       tag: warn ? { tone: 'risk', text: warn, more: 0 } : missionTag(state.orderImpact[a.label], state.objectiveStatus),
       cost,
@@ -550,6 +555,7 @@ export function staffPickItems(state: GameState = useGameStore.getState()): Staf
       kind: 'meeting',
       id: m.id,
       title: `Meeting: ${o.label}`,
+      by: ADVISOR_NAMES[meetingAdviser(m)] ?? 'Chief of Staff',
       what: `You attend: ${m.title}${cost ? ` · ◆ ${cost}` : ''}`,
       change: changeLine(effectWords(o).slice(0, 2).map((w) => w.text)),
       tag: missionTag(state.missionImpact[m.id]?.[o.id], state.objectiveStatus),
@@ -567,6 +573,7 @@ export function staffPickItems(state: GameState = useGameStore.getState()): Staf
       kind: 'deputy',
       id: m.id,
       title: `Deputy takes: ${m.title}`,
+      by: 'Chief of Staff',
       what: o ? `Default answer: ${o.label}` : 'Default answer',
       change: o ? changeLine(effectWords(o).slice(0, 2).map((w) => w.text)) : '',
       tag: o ? missionTag(state.missionImpact[m.id]?.[o.id], state.objectiveStatus) : null,
@@ -595,10 +602,20 @@ export function staffPicksBreakdown(items: readonly StaffPickItem[]): string {
   return parts.join(', ');
 }
 
-/** "Approve 4 staff picks" / "Approve 1 staff pick" (glossary approveAll). */
+/** "Accept all recommended (4)" (glossary approveAll, D-72). */
 export function approveLabel(n: number): string {
-  const label = TERMS.approveAll.name.split('{n}').join(String(n));
-  return n === 1 ? label.replace(/picks$/, 'pick') : label;
+  return TERMS.approveAll.name.split('{n}').join(String(n));
+}
+
+/** The adviser who speaks for a meeting (the desk's "Ask your staff" uses the same rule). */
+export function meetingAdviser(m: Pick<Meeting, 'kind' | 'title'>): string {
+  if (m.kind === 'CALL' || m.kind === 'VISIT') return 'FOREIGN_MINISTER';
+  if (m.kind === 'PRESS') return 'CHIEF_OF_STAFF';
+  if (/front|troops/i.test(m.title)) return 'DEFENSE_MINISTER';
+  if (/economy/i.test(m.title)) return 'FINANCE_MINISTER';
+  if (/unrest/i.test(m.title)) return 'DOMESTIC_ADVISOR';
+  if (/intelligence/i.test(m.title)) return 'INTELLIGENCE_CHIEF';
+  return 'CHIEF_OF_STAFF';
 }
 
 /** Approve one staff pick: the same effect Approve all has on that item. */

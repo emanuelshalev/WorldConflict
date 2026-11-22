@@ -666,13 +666,13 @@ findings:
     guards:
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-004.mjs
   - id: RS-005
-    title: Staff picks are listed, titled, next to every Approve control; the button names its count and never approves unseen
-    source: real-signals/RS-005-ceo-staff-picks-unclear-2026-11-23.md (CEO playtest); D-64
+    title: "Recommendations are listed under \"Recommended\" next to every Accept control; the button names its count and never accepts unseen (wording D-72)"
+    source: real-signals/RS-005-ceo-staff-picks-unclear-2026-11-23.md (CEO playtest); D-64; words D-71, D-72
     covers: [ui/src/components/desk/StaffPicks.tsx, ui/src/components/desk/CommandRail.tsx, ui/src/components/desk/Navigator.tsx, ui/src/lib/useStaffPicks.ts, ui/src/lib/month.ts, ui/src/styles/staff-picks.css, ui/src/lib/glossary.ts]
     guards:
       - vitest: tests/ui-staff-picks.spec.ts
       - vitest: tests/ui-glossary.spec.ts
-        name: names the Staff picks group
+        name: names the Recommended group
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-005.mjs
   - id: F-02-2
     title: One outcome vocabulary; status words never contradict outcomes

@@ -71,7 +71,7 @@ export function SealBank({ size = 38, sentence = true }: { size?: number; senten
                 Staff propose {b.proposed.labels.join(' and ')}
                 {b.proposed.pc ? ` (◆ ${b.proposed.pc})` : ''}.
               </b>{' '}
-              Nothing is spent until you approve.{' '}
+              Nothing is spent until you accept.{' '}
             </>
           )}
           {left >= b.pc.cap ? `Political capital is full: you can't hold more than ◆ ${b.pc.cap}.` : `Next month you get ${room} more (up to ${b.pc.cap}).`}
@@ -148,7 +148,7 @@ export function Tray() {
               <small>{d.title}</small>
             </span>
             {sel.kind === 'yours' || sel.kind === 'approved' ? (
-              <Stamp word={sel.kind === 'yours' ? 'YOUR PICK' : 'APPROVED'} size="sm" animate={false} tilt={-4} />
+              <Stamp word={sel.kind === 'yours' ? 'YOUR PICK' : 'ACCEPTED'} size="sm" animate={false} tilt={-4} />
             ) : (
               <span className="sel-mini">Cabinet pick</span>
             )}
@@ -211,13 +211,13 @@ function ProposalSlot({ a, i, home, onOpen, onRemove }: { a: PendingAction; i: n
             <ActionIcon type={a.type} size={13} /> {a.label}
           </b>
           <small>
-            Proposed by staff{a.why ? ` (${a.why.split(':')[0]})` : ''} · {pc ? `◆ ${pc} if approved` : 'free'}
+            Recommended by {a.why ? a.why.split(':')[0] : 'Chief of Staff'} · {pc ? `◆ ${pc} if accepted` : 'free'}
           </small>
           {fx && <small className="slot-fx">{fx}</small>}
         </span>
       </button>
-      <button type="button" className="wc-btn small slot-approve" onClick={() => { if (approveProposal(i).ok) sound.play('stamp'); }} aria-label={`Approve order: ${a.label}${pc ? `, spends ◆ ${pc}` : ''}`}>
-        <IconCheck size={14} aria-hidden /> Approve order
+      <button type="button" className="wc-btn small slot-approve" onClick={() => { if (approveProposal(i).ok) sound.play('stamp'); }} aria-label={`Accept order: ${a.label}${pc ? `, spends ◆ ${pc}` : ''}`}>
+        <IconCheck size={14} aria-hidden /> Accept order
       </button>
       <button type="button" className="slot-x" onClick={onRemove} aria-label={`Remove ${a.label}`}>
         <IconX size={15} />

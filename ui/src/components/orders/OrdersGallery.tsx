@@ -172,7 +172,7 @@ export default function OrdersGallery() {
         Last confirm face result: <output data-og-result={result}>{result}</output>
       </p>
 
-      <H2>3. Rows (phone sheet, search hits, staff picks, dossier)</H2>
+      <H2>3. Rows (phone sheet, search hits, recommended, dossier)</H2>
       <div className="og-phone" data-og="rows">
         <OrderCard def={def('spy')} targetId={TARGET} variant="row" />
         <OrderCard def={def('court')} targetId={TARGET} variant="row" />

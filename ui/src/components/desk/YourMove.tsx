@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { IconCheck, IconChevronDown, IconChevronUp, IconMessageCircle, IconUserShare } from '@tabler/icons-react';
 import { type DecisionOption, type Meeting, MEETING_SLOTS, type MissionNote, type PendingDecision, countryName, useGameStore, usePlayerCountry } from '../../store/gameStore';
 import { ADVISOR_NAMES, arrowText, effectArrows, flag } from '../../lib/format';
-import { cabinetPick, crisisSelection, guideLede, splitLede, effectWords, meetingPick, meetingSelection, missionPick, missionTag, type Selection } from '../../lib/month';
+import { cabinetPick, crisisSelection, guideLede, splitLede, effectWords, meetingAdviser, meetingPick, meetingSelection, missionPick, missionTag, type Selection } from '../../lib/month';
 import { SceneFrame } from '../../scenes/SceneFrame';
 import { type SceneKind, avoidRepeat, crisisMood, sceneForCrisis, sceneForDecision } from '../../scenes/kinds';
 import { CardCost, CardShell, EffectChips, type CardTag } from '../game/CardShell';
@@ -36,15 +36,7 @@ const KIND_WORD: Record<Meeting['kind'], string> = { CALL: 'Call', STAFF: 'Staff
 
 const isMeeting = (x: PendingDecision | Meeting): x is Meeting => 'kind' in x && 'speaker' in x;
 
-function advisorFor(m: Meeting): string {
-  if (m.kind === 'CALL' || m.kind === 'VISIT') return 'FOREIGN_MINISTER';
-  if (m.kind === 'PRESS') return 'CHIEF_OF_STAFF';
-  if (/front|troops/i.test(m.title)) return 'DEFENSE_MINISTER';
-  if (/economy/i.test(m.title)) return 'FINANCE_MINISTER';
-  if (/unrest/i.test(m.title)) return 'DOMESTIC_ADVISOR';
-  if (/intelligence/i.test(m.title)) return 'INTELLIGENCE_CHIEF';
-  return 'CHIEF_OF_STAFF';
-}
+const advisorFor = (m: Meeting): string => meetingAdviser(m);
 
 /** The previous month's crisis scene, so the backdrop does not repeat (R7). */
 function previousScene(): SceneKind | undefined {
@@ -123,7 +115,7 @@ function OptionCard({
       ribbon={mt ? { tone: mt.tone === 'risk' ? 'risk' : 'help', text: `${mt.text}${mt.more > 0 ? ` +${mt.more} more` : ''}` } : undefined}
       layout={phone ? 'row' : 'tile'}
       state={disabledReason ? 'unavailable' : chosen ? (sel.kind === 'approved' ? 'approved' : 'chosen') : 'rest'}
-      stamp={chosen ? (sel.kind === 'approved' ? 'APPROVED' : 'YOUR PICK') : undefined}
+      stamp={chosen ? (sel.kind === 'approved' ? 'ACCEPTED' : 'YOUR PICK') : undefined}
       dimmed={!!chosenId && chosenId !== o.id && (sel.kind === 'yours' || sel.kind === 'approved')}
       reason={disabledReason ? { title: disabledReason } : undefined}
       onPress={onPick}
@@ -279,7 +271,7 @@ export function DecisionStage({ item, primary = false, onlyLede = false }: { ite
         <SelectionBadge sel={sel} />
         {!meeting && sel.kind === 'cabinet' && cab && (
           <button type="button" className="wc-btn ghost small move-approve" onClick={() => choose(item.id, choices[item.id] ?? cab.id)}>
-            <IconCheck size={14} aria-hidden /> Approve cabinet pick
+            <IconCheck size={14} aria-hidden /> Accept cabinet pick
           </button>
         )}
         {meeting && sel.kind === 'waiting' && cab && !full && (

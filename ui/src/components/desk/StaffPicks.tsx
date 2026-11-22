@@ -1,5 +1,5 @@
 import { useId, useRef, useState } from 'react';
-import { IconCheck, IconChecks, IconChevronDown, IconChevronUp, IconInfoCircle, IconPencil } from '@tabler/icons-react';
+import { IconCheck, IconChecks, IconChevronDown, IconInfoCircle, IconListDetails, IconPencil } from '@tabler/icons-react';
 import { type StaffPickItem, approveAll, approveLabel, approveStaffPick, openStaffPick } from '../../lib/month';
 import { useStaffPicks } from '../../lib/useStaffPicks';
 import { TERMS } from '../../lib/glossary';
@@ -8,16 +8,16 @@ import '../../styles/month.css';
 import '../../styles/staff-picks.css';
 
 /**
- * "Staff picks" (RS-005, D-64): the CEO pressed "Approve 6 picks" in Map mode without seeing what
- * it would approve. Every Approve control now sits inside this titled group: each pending pick
- * (cabinet picks on crises, staff orders, meetings the staff would attend, meetings a deputy takes)
- * with what it does, what it changes and its mission tag, its own Approve and Change, and the main
- * button that names its count. In Map mode the list can fold away, and then the main button only
- * unfolds it (a disclosure): nothing is ever approved unseen.
+ * "Recommended" (RS-005, D-64; wording D-71/D-72): the CEO pressed "Approve 6 picks" in Map mode
+ * without seeing what it would approve. Every Accept all control now sits inside this titled group:
+ * each pending recommendation (crisis answers, recommended orders, meetings to attend, meetings a
+ * deputy takes) with who recommends it, what it does, what it changes and its mission tag, its own
+ * Accept and Change, and the main button "Accept all recommended (n)". In Map mode the list starts
+ * folded behind "Review n recommended", which only unfolds it: nothing is ever accepted unseen.
  */
 
-const SEEN_KEY = 'worldconflict.staffPicksSeen';
-const OPEN_KEY = 'worldconflict.staffPicksOpen';
+const SEEN_KEY = 'worldconflict.recommendedSeen';
+const OPEN_KEY = 'worldconflict.recommendedOpen';
 
 function readKey(k: string): string | null {
   try {
@@ -36,10 +36,10 @@ function writeKey(k: string, v: string): void {
 
 type Variant = 'rail' | 'sheet' | 'strip';
 
-/** A pick's own Approve names what it approves (a bare "Approve" is banned by the glossary). */
-const APPROVE_WORD: Record<StaffPickItem['kind'], string> = { crisis: 'Approve pick', order: 'Approve order', meeting: 'Approve meeting', deputy: 'Approve deputy' };
+/** One verb, Accept (D-72); each pick's own button names what it accepts. */
+const ACCEPT_WORD: Record<StaffPickItem['kind'], string> = { crisis: 'Accept answer', order: 'Accept order', meeting: 'Accept meeting', deputy: 'Accept deputy' };
 
-/** One pick: what it is, what it answers, what it changes, Approve and Change. */
+/** One recommendation: who recommends it, what it is, what it answers, what it changes, Accept and Change. */
 function PickRow({ item, onDone, onNavigate }: { item: StaffPickItem; onDone: () => void; onNavigate?: () => void }) {
   const approve = () => {
     if (approveStaffPick(item).ok) {
@@ -50,6 +50,7 @@ function PickRow({ item, onDone, onNavigate }: { item: StaffPickItem; onDone: ()
   return (
     <li className={`sp-item kind-${item.kind}${item.fits ? '' : ' is-off'}`} data-staff-pick={item.kind}>
       <div className="sp-text">
+        <span className="sp-by">{TERMS.staffPick.name.replace('{role}', item.by)}</span>
         <b className="sp-name">{item.title}</b>
         <span className="sp-what">{item.what}</span>
         {item.change && <span className="sp-change">{item.change}</span>}
@@ -62,11 +63,11 @@ function PickRow({ item, onDone, onNavigate }: { item: StaffPickItem; onDone: ()
             {item.tag.more ? ` +${item.tag.more} more` : ''}
           </span>
         )}
-        {!item.fits && <span className="sp-reason">{item.reason}: not in Approve all</span>}
+        {!item.fits && <span className="sp-reason">{item.reason}: not in Accept all</span>}
       </span>
       <div className="sp-act">
-        <button type="button" className="wc-btn small sp-approve" onClick={approve} aria-label={`${APPROVE_WORD[item.kind]}: ${item.title}${item.cost ? `, spends ◆ ${item.cost}` : ''}`}>
-          <IconCheck size={15} aria-hidden /> {APPROVE_WORD[item.kind]}
+        <button type="button" className="wc-btn small sp-approve" onClick={approve} aria-label={`${ACCEPT_WORD[item.kind]}: ${item.title}${item.cost ? `, spends ◆ ${item.cost}` : ''}`}>
+          <IconCheck size={15} aria-hidden /> {ACCEPT_WORD[item.kind]}
         </button>
         <button
           type="button"
@@ -85,16 +86,16 @@ function PickRow({ item, onDone, onNavigate }: { item: StaffPickItem; onDone: ()
   );
 }
 
-/** The main button: "Approve 4 staff picks" with what it covers; disabled with a reason at zero. */
+/** The main button: "Accept all recommended (4)" with what it covers; disabled with a reason at zero. */
 function MainButton({ n, breakdown, against, folded, onUnfold, onApprove, kbd, listId, id }: { n: number; breakdown: string; against: number; folded: boolean; onUnfold: () => void; onApprove: () => void; kbd: boolean; listId: string; id?: string }) {
   if (n === 0)
     return (
       <button type="button" id={id} className="wc-btn sp-main" disabled aria-describedby={`${listId}-none`}>
         <span className="sp-main-label">
-          <IconChecks size={16} aria-hidden /> {TERMS.approveAll.name.replace('{n} ', '')}
+          <IconChecks size={16} aria-hidden /> {TERMS.approveAll.name.replace(' ({n})', '')}
         </span>
         <small className="sp-main-sub" id={`${listId}-none`}>
-          Nothing to approve: every staff pick is decided
+          Nothing to accept: every recommendation is decided
         </small>
       </button>
     );
@@ -102,13 +103,13 @@ function MainButton({ n, breakdown, against, folded, onUnfold, onApprove, kbd, l
     return (
       <button type="button" id={id} className="wc-btn sp-main is-folded" onClick={onUnfold} aria-expanded={false} aria-controls={listId}>
         <span className="sp-main-label">
-          <IconChevronUp size={16} aria-hidden /> Show {n} {n === 1 ? 'staff pick' : 'staff picks'}
+          <IconListDetails size={16} aria-hidden /> Review {n} recommended
         </span>
-        <small className="sp-main-sub">{breakdown}: see them before you approve</small>
+        <small className="sp-main-sub">{breakdown}: opens the list, accepts nothing</small>
       </button>
     );
   return (
-    <button type="button" id={id} className="wc-btn sp-main" onClick={onApprove} title="Confirm the cabinet's crisis picks, approve the staff's proposed orders (this spends their political capital), attend the suggested meetings and send deputies to the rest (Shift+A)">
+    <button type="button" id={id} className="wc-btn sp-main" onClick={onApprove} title="Accept every recommendation listed here: the crisis answers, the recommended orders (this spends their political capital), the meetings to attend and the deputies for the rest (Shift+A)">
       <span className="sp-main-label">
         <IconChecks size={16} aria-hidden /> {approveLabel(n)}
         {kbd && <kbd>Shift+A</kbd>}
@@ -128,13 +129,11 @@ export function StaffPicks({ variant, onNavigate }: { variant: Variant; onNaviga
   const whyId = `${uid}-why`;
   const listId = `${uid}-list`;
   const [why, setWhy] = useState(() => readKey(SEEN_KEY) !== '1');
-  // Map mode: open on large screens; on phones, tablets and short screens the list unfolds as a
-  // sheet over the globe when asked (staff-picks.css uses the same 1280 x 820 line)
-  const [open, setOpen] = useState(() => {
-    const kept = readKey(OPEN_KEY);
-    return kept !== null ? kept === '1' : typeof window === 'undefined' || (window.innerWidth >= 1280 && window.innerHeight > 820);
-  });
-  // A double press on "Show n staff picks" must not land on the Approve that replaces it
+  // Map mode starts folded behind "Review n recommended" (D-72; the globe keeps its room): on large
+  // screens the list opens in the strip, on phones, tablets and short screens as a sheet over the
+  // globe (staff-picks.css, 1280 x 820). The player's choice is remembered.
+  const [open, setOpen] = useState(() => readKey(OPEN_KEY) === '1');
+  // A double press on "Review n recommended" must not land on the Accept that replaces it
   const unfoldedAt = useRef(0);
   const folded = variant === 'strip' && !open;
   const mainId = `${uid}-main`;
@@ -163,7 +162,7 @@ export function StaffPicks({ variant, onNavigate }: { variant: Variant; onNaviga
     <section
       className={`staff-picks v-${variant}${folded ? ' is-folded' : ''}`}
       aria-labelledby={folded ? undefined : headId}
-      aria-label={folded ? TERMS.staffPicks.name : undefined}
+      aria-label={folded ? TERMS.recommended.name : undefined}
       data-staff-picks=""
       onKeyDown={(e) => {
         // On phones the open list is a sheet over the globe: Escape folds it
@@ -173,13 +172,13 @@ export function StaffPicks({ variant, onNavigate }: { variant: Variant; onNaviga
       {!folded && (
         <div className="sp-head">
           <h3 className="sp-heading" id={headId} tabIndex={-1}>
-            {TERMS.staffPicks.name}
+            {TERMS.recommended.name}
             <span className="sp-count num" aria-label={`${n} waiting`}>
               {n}
             </span>
           </h3>
           <button type="button" className="sp-why-btn" aria-expanded={why} aria-controls={whyId} onClick={() => setWhy((v) => !v)}>
-            <IconInfoCircle size={15} aria-hidden /> What are these?
+            <IconInfoCircle size={15} aria-hidden /> What is this?
           </button>
           {variant === 'strip' && (
             <button type="button" className="sp-fold" aria-expanded aria-controls={listId} onClick={() => setOpenKept(false)}>
@@ -190,11 +189,11 @@ export function StaffPicks({ variant, onNavigate }: { variant: Variant; onNaviga
       )}
       {why && !folded && (
         <p className="sp-why" id={whyId}>
-          {TERMS.staffPicks.definition}
+          {TERMS.recommended.definition}
         </p>
       )}
       {!folded && items.length > 0 && (
-        <ul className="sp-list" id={listId} aria-label={`${TERMS.staffPicks.name} waiting for approval`}>
+        <ul className="sp-list" id={listId} aria-label={`${TERMS.recommended.name}, waiting for you to accept`}>
           {items.map((it) => (
             <PickRow key={it.key} item={it} onDone={seen} onNavigate={onNavigate} />
           ))}

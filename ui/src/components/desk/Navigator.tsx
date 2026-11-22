@@ -40,7 +40,7 @@ export function Navigator({ tabs = false }: { tabs?: boolean }) {
   const committed = committedActions(actions);
   const proposedN = actions.length - committed.length;
   const staffIn = committed.filter((a) => a.origin === 'staff').length;
-  const staffLine = [proposedN ? `${proposedN} proposed by staff, not approved` : '', staffIn ? `${staffIn} staff ${staffIn === 1 ? 'order' : 'orders'} approved` : ''].filter(Boolean).join(' · ') || 'Top picks for this month';
+  const staffLine = [proposedN ? `${proposedN} recommended, not accepted` : '', staffIn ? `${staffIn} recommended ${staffIn === 1 ? 'order' : 'orders'} accepted` : ''].filter(Boolean).join(' · ') || 'Top picks for this month';
   const status = useGameStore((s) => s.objectiveStatus);
   const setDrawer = useGameStore((s) => s.setDrawer);
   if (!world) return null;
