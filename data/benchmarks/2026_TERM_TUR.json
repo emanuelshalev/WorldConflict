@@ -1,6 +1,6 @@
 {
   "seatKey": "2026:TERM:TUR",
-  "fingerprint": "933d884edee2ae13",
+  "fingerprint": "24783889c47dcf98",
   "generatedAt": "2026-11-22",
   "games": 36,
   "difficulty": "STATESMAN",
@@ -37,7 +37,7 @@
     },
     "random": {
       "p10": 148,
-      "p50": 620,
+      "p50": 570,
       "p90": 630,
       "max": 638,
       "n": 36,
@@ -50,9 +50,9 @@
         155,
         160,
         162,
-        558,
+        561,
         565,
-        620,
+        570,
         621,
         622,
         624,

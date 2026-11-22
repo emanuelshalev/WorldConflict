@@ -24,3 +24,7 @@
 | B-20 | Hormuz Convoy USA objective label still "Approval of 56%+ after the midterms" (shown on option tags and the goal line) | Group Manager review | Content | Open |
 | B-21 | Codex API caches per process: a running server serves stale codex after data merges (hid the briefings in review); invalidate on file change in dev or restart servers after data merges | Group Manager review | Engine / process | Open |
 | B-22 | Main UI bundle above the 1,100 kB warning after iteration 2 merges; lazy-load heavy surfaces (reveal, codex drawer, galleries, maplibre) | Build warning | Frontend | Open |
+| B-23 | GBR 1960 Term below the 65% seat floor (about 49% smart) | fix-history harness | Engine balance | Open |
+| B-24 | ui/public/era/shapes.geojson missing: East Germany paints as West Germany, South Yemen not drawn | worldmap-eras | Content (W4 shapes) | Open |
+| B-25 | 1960 data lists Algeria in labelAllow and also a "French Algeria" era label (code lets the era label win) | worldmap-eras | Content | Open |
+| B-26 | Era situation cards have no codexId, so no "What is going on here?" link from the title globe | worldmap-eras | Content + UI | Open |

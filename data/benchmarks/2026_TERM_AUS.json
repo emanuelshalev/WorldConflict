@@ -1,6 +1,6 @@
 {
   "seatKey": "2026:TERM:AUS",
-  "fingerprint": "933d884edee2ae13",
+  "fingerprint": "24783889c47dcf98",
   "generatedAt": "2026-11-22",
   "games": 36,
   "difficulty": "STATESMAN",
@@ -61,7 +61,7 @@
         569,
         570,
         571,
-        572,
+        623,
         628
       ]
     },
