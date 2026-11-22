@@ -1,4 +1,5 @@
-import { useId, type ReactNode } from 'react';
+import { useEffect, useId, useState, type ReactNode } from 'react';
+import { useIdle } from '../lib/motion';
 import { SceneUid } from './art/uid';
 import { SCENE_META, type SceneKind } from './kinds';
 import { SCENE_ART } from './art';
@@ -27,6 +28,12 @@ interface Props {
   size?: 'thumb' | 'card' | 'full';
   /** Slow push-in on the art (the reel uses it; static cards do not). */
   live?: boolean;
+  /**
+   * Whether the art's loops may run. Default: card and full scenes play while at least 30% on
+   * screen and the tab is visible; thumbnails hold a still frame. `false` always holds; `true`
+   * lets a thumbnail play too (still only while on screen). Idle (15 s, no input) holds all.
+   */
+  play?: boolean;
   children?: ReactNode;
 }
 
@@ -57,6 +64,30 @@ export function VerdictGlyph({ verdict }: { verdict: Verdict }) {
   );
 }
 
+/**
+ * Play only what can be seen (design-feel 8.2): an IntersectionObserver (30% visible) and the
+ * page's visibility gate the `is-playing` class; scenes.css holds every loop of a scene without it.
+ */
+function useScenePlaying(wanted: boolean) {
+  const [el, setEl] = useState<HTMLElement | null>(null);
+  const [visible, setVisible] = useState(false);
+  const [shown, setShown] = useState(() => typeof document === 'undefined' || document.visibilityState !== 'hidden');
+  const canObserve = typeof IntersectionObserver !== 'undefined';
+  useIdle();
+  useEffect(() => {
+    if (!wanted || !el || !canObserve) return;
+    const io = new IntersectionObserver((entries) => setVisible(entries.some((e) => e.isIntersecting && e.intersectionRatio >= 0.3)), { threshold: [0, 0.3, 0.6] });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [wanted, el, canObserve]);
+  useEffect(() => {
+    const on = () => setShown(document.visibilityState !== 'hidden');
+    document.addEventListener('visibilitychange', on);
+    return () => document.removeEventListener('visibilitychange', on);
+  }, []);
+  return [setEl, wanted && (canObserve ? visible : true) && shown] as const;
+}
+
 export function SceneFrame({
   kind,
   home,
@@ -70,14 +101,17 @@ export function SceneFrame({
   verdict,
   size = 'card',
   live = false,
+  play,
   children,
 }: Props) {
+  const [frameRef, playing] = useScenePlaying(play ?? size !== 'thumb');
   const Art = SCENE_ART[kind];
   const uid = useId().replace(/[^a-zA-Z0-9]/g, '');
   const meta = SCENE_META[kind];
   return (
     <figure
-      className={`scene scene-${size} tone-${meta.tone} mood-${mood}${live ? ' is-live' : ''}${verdict ? ` v-${verdict}` : ''}`}
+      ref={frameRef}
+      className={`scene scene-${size} tone-${meta.tone} mood-${mood}${live ? ' is-live' : ''}${playing ? ' is-playing' : ''}${verdict ? ` v-${verdict}` : ''}`}
       data-kind={kind}
     >
       <div className="scene-art">
