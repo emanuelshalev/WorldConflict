@@ -132,7 +132,7 @@ function Inner({ onClose }: { onClose: () => void }) {
           <label className="setting-row">
             <input type="checkbox" checked={staffOrders} onChange={(e) => setStaffOrders(e.target.checked)} />
             <span>
-              <b>Staff propose orders</b> Each month your staff propose up to two safe orders, always leaving at least ◆ 1 for you. A proposal spends nothing until you approve it (one by one or with Approve all) and does not run unless you do. Turning this off applies from next month.
+              <b>Staff propose orders</b> Each month your staff propose up to two safe orders, always leaving at least ◆ 1 for you. A recommended order spends nothing until you accept it (one by one or with Accept all recommended) and does not run unless you do. Turning this off applies from next month.
             </span>
           </label>
           <label className="setting-row">

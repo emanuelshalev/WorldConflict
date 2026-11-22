@@ -95,23 +95,33 @@ export const TERMS = {
   },
   staffPick: {
     id: 'staffPick',
-    name: 'Staff pick',
-    compact: 'Staff pick',
-    definition: 'What your staff would do. Approve it or choose yourself.',
-    banned: [/^\s*Suggested\s*$/, /\bStaff suggests\b/i, /^\s*Staff\s*$/],
+    // D-71/D-72: the panel chose "Recommended"; each one names its adviser ("Recommended by Foreign Minister")
+    name: 'Recommended by {role}',
+    compact: 'Recommended',
+    definition: 'What one of your advisers recommends. Accept it or choose yourself.',
+    banned: [/^\s*Suggested\s*$/, /\bStaff suggests\b/i, /^\s*Staff\s*$/, /\bstaff picks?\b/i],
+  },
+  recommended: {
+    id: 'recommended',
+    name: 'Recommended',
+    compact: 'Recommended ({n})',
+    // The first-use line next to every Accept control (RS-005, D-72 wording)
+    definition: 'Your advisers recommend these for this month. Nothing happens until you accept.',
+    banned: [],
   },
   proposed: {
     id: 'proposed',
     name: 'Proposed by staff',
     compact: 'Proposed',
-    definition: 'A staff pick for an order. It spends no political capital until you approve it, and it does not run unless you do.',
+    definition: 'An order your advisers recommend. It spends no political capital until you accept it, and it does not run unless you do.',
     banned: [/\bpre-?queued\b/i],
   },
   approveAll: {
     id: 'approveAll',
-    name: 'Approve {n} staff picks',
-    compact: 'Approve {n} picks',
-    banned: [/^\s*Approve\s+\d*\s*$/],
+    // One verb, Accept (D-72); the count in brackets
+    name: 'Accept all recommended ({n})',
+    compact: 'Accept all ({n})',
+    banned: [/^\s*Approve\s+\d*\s*$/, /\bApprove all\b/i, /\bApprove \d+ (staff )?picks?\b/i],
   },
   inThisMonth: {
     id: 'inThisMonth',

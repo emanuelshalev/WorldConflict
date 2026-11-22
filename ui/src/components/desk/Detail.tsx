@@ -86,7 +86,7 @@ function SuggestionsDetail() {
   return (
     <article>
       <h3 className="detail-title">Your advisors suggest</h3>
-      <p className="hint">The staff propose up to two of these at the start of each month, never one with poor odds or a repeat of last month, and always leave you at least ◆ 1. A proposal spends nothing until you approve it (or press Approve all); add the others here.</p>
+      <p className="hint">The staff propose up to two of these at the start of each month, never one with poor odds or a repeat of last month, and always leave you at least ◆ 1. A recommended order spends nothing until you accept it (or press Accept all recommended); add the others here.</p>
       <div className="adv-list">
         {rows.map((r) => (
           <AdvisorCardRow key={r.key} r={r} />
@@ -191,9 +191,9 @@ function OrderDetail({ a, index }: { a: PendingAction; index: number }) {
       {a.why && <p className="hint">{a.why}</p>}
       {a.proposed && (
         <p className="hint" data-proposal="">
-          Proposed by staff: nothing is spent until you approve it, and it does not run unless you do.{' '}
+          Proposed by staff: nothing is spent until you accept it, and it does not run unless you do.{' '}
           <button type="button" className="wc-btn small primary" onClick={() => approveProposal(index)}>
-            Approve order{pcCost(a.type) ? ` (spends ◆ ${pcCost(a.type)})` : ''}
+            Accept order{pcCost(a.type) ? ` (spends ◆ ${pcCost(a.type)})` : ''}
           </button>
         </p>
       )}

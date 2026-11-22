@@ -8,11 +8,12 @@ import '../../styles/game.css';
  * FAILED) and the month result. It lands once, from 180% and -16 degrees, when it mounts.
  */
 export type StampInk = 'accent' | 'steel' | 'good' | 'amber' | 'red';
-export type StampWord = 'YOUR PICK' | 'APPROVED' | 'ORDERED' | 'DONE' | 'MIXED' | 'FAILED' | 'PARTLY' | 'REFUSED' | 'NO EFFECT';
+export type StampWord = 'YOUR PICK' | 'APPROVED' | 'ACCEPTED' | 'ORDERED' | 'DONE' | 'MIXED' | 'FAILED' | 'PARTLY' | 'REFUSED' | 'NO EFFECT';
 
 const STAMP_INK: Record<StampWord, StampInk> = {
   'YOUR PICK': 'accent',
   APPROVED: 'steel',
+  ACCEPTED: 'steel',
   ORDERED: 'accent',
   DONE: 'good',
   MIXED: 'amber',

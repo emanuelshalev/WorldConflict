@@ -63,7 +63,7 @@ for (const device of devices) {
       return st.pendingActions.filter((a) => a.proposed).length;
     });
     check(device, 'staff orders arrive as proposals', before.proposals > 0, `${before.proposals} proposals`);
-    const approve = p.locator('.slot-approve, .ord-act.act-available').filter({ hasText: /Approve order/ });
+    const approve = p.locator('.slot-approve, .ord-act.act-available').filter({ hasText: /Accept order/ });
     if (before.proposals > 0 && (await approve.count())) {
       await approve.first().click().catch(() => undefined);
       await p.waitForTimeout(800);

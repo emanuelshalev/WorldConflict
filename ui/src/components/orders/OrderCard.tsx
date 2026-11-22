@@ -324,7 +324,7 @@ export function OrderCard({
       <div className="ord-add-line">
         {avail.state === 'available' && (
           <span className="ord-add">
-            <IconCheck size={14} aria-hidden /> Approve order{pc ? ` (spends ◆ ${pc})` : ''}
+            <IconCheck size={14} aria-hidden /> Accept order{pc ? ` (spends ◆ ${pc})` : ''}
           </span>
         )}
         <button type="button" className="ord-remove" onClick={() => remove(proposalIndex)} data-fix="">
@@ -349,7 +349,7 @@ export function OrderCard({
     </button>
   );
 
-  const ariaLabel = off && block ? `${label}, unavailable: ${block.reason}` : isQueued ? `${label}, ${TERMS.inThisMonth.name.toLowerCase()}` : isProposal ? `${label}, ${TERMS.proposed.name.toLowerCase()}: approve${pc ? `, spends ◆ ${pc}` : ''}${proposalFx ? `. Will change: ${proposalFx}` : ''}` : `${label}, ${pc ? `costs ◆ ${pc}` : 'free'}${entry?.chance != null ? `, ${entry.chance}% chance` : ''}`;
+  const ariaLabel = off && block ? `${label}, unavailable: ${block.reason}` : isQueued ? `${label}, ${TERMS.inThisMonth.name.toLowerCase()}` : isProposal ? `${label}, ${TERMS.proposed.name.toLowerCase()}: accept${pc ? `, spends ◆ ${pc}` : ''}${proposalFx ? `. Will change: ${proposalFx}` : ''}` : `${label}, ${pc ? `costs ◆ ${pc}` : 'free'}${entry?.chance != null ? `, ${entry.chance}% chance` : ''}`;
   const stateCls = `ord-${variant} st-${avail.state} fam-${fam}${compact ? ' ord-compact' : ''}${busy ? ' is-busy' : ''}${selected ? ' is-selected' : ''}${isProposal ? ' is-proposal' : ''}`;
   const desc = blurb ?? (compact ? undefined : orderBlurb(def, st.targetName));
 
@@ -357,7 +357,7 @@ export function OrderCard({
   if (variant === 'row') {
     const slot = block?.code === 'NO_CAPITAL' ? block.slots?.[0] : undefined;
     const actKind = avail.state === 'available' ? 'add' : isQueued ? 'remove' : slot !== undefined ? 'free' : block?.code === 'NEEDS_TARGET' ? 'pick' : 'why';
-    const actText = { add: isProposal ? 'Approve order' : 'Add', remove: 'Remove', free: `Free ◆ ${slot !== undefined ? month.queuedCosts[slot] : 0}`, pick: 'Pick', why: 'Why' }[actKind];
+    const actText = { add: isProposal ? 'Accept order' : 'Add', remove: 'Remove', free: `Free ◆ ${slot !== undefined ? month.queuedCosts[slot] : 0}`, pick: 'Pick', why: 'Why' }[actKind];
     const onAct = () => {
       if (actKind === 'add') void give(false);
       else if (actKind === 'remove') remove(st.queuedIndex);
@@ -392,7 +392,7 @@ export function OrderCard({
               <span className="ord-meta-in">
                 {TERMS.inThisMonth.name}
                 {pc ? ` · ◆ ${pc} held` : ''}
-                {staff ? ` · ${TERMS.staffPick.name}: ${staff}` : ''}
+                {staff ? ` · ${TERMS.staffPick.name.replace('{role}', staff)}` : ''}
               </span>
             ) : isProposal ? (
               <span className="ord-meta-line ord-meta-proposed">
@@ -458,7 +458,7 @@ export function OrderCard({
         cost={<CardCost seals={pc} missing={block?.code === 'NO_CAPITAL' ? Math.max(0, pc - (block.need?.have ?? 0)) : 0} alarm={alarm} size={compact ? 18 : 22} />}
         state={off ? 'unavailable' : 'rest'}
         stamp={isQueued ? 'ORDERED' : undefined}
-        byline={isQueued && staff ? `${TERMS.staffPick.name}: ${staff}` : undefined}
+        byline={isQueued && staff ? TERMS.staffPick.name.replace('{role}', staff) : undefined}
         onPress={activate}
         onRefuse={refused}
         ariaLabel={ariaLabel}
@@ -547,11 +547,11 @@ export function OrderSlot({ action, index, onOpen }: { action: PendingAction; in
         home={home}
         other={action.targetCountryId}
         cost={pc > 0 ? <span className="ord-chip ord-held num">◆ {pc}</span> : <span className="ord-chip num">free</span>}
-        description={action.origin === 'staff' ? TERMS.staffPick.name : undefined}
+        description={action.origin === 'staff' ? TERMS.staffPick.compact : undefined}
         onPress={() => onOpen?.(index)}
         ariaLabel={`${action.label}, ${TERMS.inThisMonth.name.toLowerCase()}`}
       >
-        {action.origin === 'staff' && <span className="ord-slot-tag">{TERMS.staffPick.name}</span>}
+        {action.origin === 'staff' && <span className="ord-slot-tag">{TERMS.staffPick.compact}</span>}
       </CardShell>
       <button type="button" className="ord-slot-remove" onClick={() => remove(index)} aria-label={`Remove ${action.label}`}>
         <IconX size={16} aria-hidden />

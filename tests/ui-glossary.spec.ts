@@ -155,6 +155,17 @@ describe("UI glossary", () => {
     expect(TERMS.capital.definition).toContain("◆ 6");
   });
 
+  it("names the Recommended group, one verb Accept, and explains it in one line (RS-005, D-72)", () => {
+    expect(TERMS.recommended.name).toBe("Recommended");
+    expect(TERMS.recommended.definition).toBe("Your advisers recommend these for this month. Nothing happens until you accept.");
+    expect(TERMS.staffPick.name).toBe("Recommended by {role}");
+    expect(TERMS.approveAll.name).toBe("Accept all recommended ({n})");
+    // The old phrasing is banned in UI strings and the gameplay guide
+    const banned = BANNED.filter((b) => b.term === "staffPick" || b.term === "approveAll").map((b) => b.re);
+    for (const old of ["Approve 4 staff picks", "Staff picks", "Approve all"]) expect(banned.some((re) => re.test(old)), old).toBe(true);
+    for (const ok of ["Accept all recommended (4)", "Review 4 recommended", "Recommended by Foreign Minister"]) expect(banned.some((re) => re.test(ok)), ok).toBe(false);
+  });
+
   it("catches a banned word in a UI string", () => {
     const out: Hit[] = [];
     check("probe", "Not enough political credit", out);

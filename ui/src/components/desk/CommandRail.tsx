@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useExecute } from '../../lib/useExecute';
-import { IconAlertTriangle, IconCheck, IconChecks, IconChevronDown, IconChevronUp, IconLayoutDashboard, IconPlus, IconSend, IconX } from '@tabler/icons-react';
+import { IconAlertTriangle, IconCheck, IconChevronDown, IconChevronUp, IconLayoutDashboard, IconPlus, IconSend, IconX } from '@tabler/icons-react';
 import { MEETING_SLOTS, type PendingAction, useGameStore } from '../../store/gameStore';
 import { flag } from '../../lib/format';
 import { pcCost } from '../../lib/actions';
 import { budgetShare, budgetStatus, money } from '../../lib/budget';
-import { approveAll, crisisSelection, pcIncome, pendingApprovals, planSummary, proposalEffects } from '../../lib/month';
+import { crisisSelection, pcIncome, planSummary, proposalEffects } from '../../lib/month';
+import { StaffPicks } from './StaffPicks';
+import { useRecommendedOpen, useStaffPicks } from '../../lib/useStaffPicks';
 import { approveProposal } from '../../store/gameStore';
 import { TERMS, term } from '../../lib/glossary';
 import { ActionIcon } from '../../scenes/icons';
@@ -69,7 +71,7 @@ export function SealBank({ size = 38, sentence = true }: { size?: number; senten
                 Staff propose {b.proposed.labels.join(' and ')}
                 {b.proposed.pc ? ` (◆ ${b.proposed.pc})` : ''}.
               </b>{' '}
-              Nothing is spent until you approve.{' '}
+              Nothing is spent until you accept.{' '}
             </>
           )}
           {left >= b.pc.cap ? `Political capital is full: you can't hold more than ◆ ${b.pc.cap}.` : `Next month you get ${room} more (up to ${b.pc.cap}).`}
@@ -146,7 +148,7 @@ export function Tray() {
               <small>{d.title}</small>
             </span>
             {sel.kind === 'yours' || sel.kind === 'approved' ? (
-              <Stamp word={sel.kind === 'yours' ? 'YOUR PICK' : 'APPROVED'} size="sm" animate={false} tilt={-4} />
+              <Stamp word={sel.kind === 'yours' ? 'YOUR PICK' : 'ACCEPTED'} size="sm" animate={false} tilt={-4} />
             ) : (
               <span className="sel-mini">Cabinet pick</span>
             )}
@@ -209,13 +211,13 @@ function ProposalSlot({ a, i, home, onOpen, onRemove }: { a: PendingAction; i: n
             <ActionIcon type={a.type} size={13} /> {a.label}
           </b>
           <small>
-            Proposed by staff{a.why ? ` (${a.why.split(':')[0]})` : ''} · {pc ? `◆ ${pc} if approved` : 'free'}
+            Recommended by {a.why ? a.why.split(':')[0] : 'Chief of Staff'} · {pc ? `◆ ${pc} if accepted` : 'free'}
           </small>
           {fx && <small className="slot-fx">{fx}</small>}
         </span>
       </button>
-      <button type="button" className="wc-btn small slot-approve" onClick={() => { if (approveProposal(i).ok) sound.play('stamp'); }} aria-label={`Approve order: ${a.label}${pc ? `, spends ◆ ${pc}` : ''}`}>
-        <IconCheck size={14} aria-hidden /> Approve order
+      <button type="button" className="wc-btn small slot-approve" onClick={() => { if (approveProposal(i).ok) sound.play('stamp'); }} aria-label={`Accept order: ${a.label}${pc ? `, spends ◆ ${pc}` : ''}`}>
+        <IconCheck size={14} aria-hidden /> Accept order
       </button>
       <button type="button" className="slot-x" onClick={onRemove} aria-label={`Remove ${a.label}`}>
         <IconX size={15} />
@@ -257,24 +259,6 @@ export function Readiness() {
         </p>
       )}
     </div>
-  );
-}
-
-export function ApproveButton({ compact = false }: { compact?: boolean }) {
-  useGameStore((s) => s.decisionChoices);
-  useGameStore((s) => s.reviewed);
-  useGameStore((s) => s.pendingActions);
-  const { crises, orders, meetings, deputies } = pendingApprovals();
-  const n = crises.length + orders.length + meetings.length + (deputies.length && !meetings.length && !crises.length && !orders.length ? deputies.length : 0);
-  if (n === 0) return null;
-  const against = planSummary().against.filter((x) => x.kind === 'crisis').length;
-  const label = compact ? term(TERMS.approveAll.compact, n) : term(TERMS.approveAll.name, n);
-  return (
-    <button type="button" className="wc-btn approve" onClick={approveAll} title="Confirm the cabinet's crisis picks, approve the staff's proposed orders (this spends their political capital) and attend the suggested meetings (Shift+A)">
-      <IconChecks size={16} aria-hidden /> {label}
-      {against > 0 && <span className="approve-against"> ({against} against your mission)</span>}
-      {!compact && <kbd>Shift+A</kbd>}
-    </button>
   );
 }
 
@@ -344,7 +328,7 @@ export function CommandRail({ catalogTarget, simple = false }: { catalogTarget: 
         )}
       </div>
       <div className="rail-foot">
-        {!simple && <ApproveButton />}
+        {!simple && <StaffPicks variant="rail" />}
         {ex.reason && (
           <button type="button" className="hint over" role="alert" onClick={() => pointTo(reasonTarget(ex.reason ?? ''))}>
             <IconAlertTriangle size={13} aria-hidden /> {ex.reason}
@@ -386,7 +370,7 @@ export function CommandBar({ catalogTarget, simple = false }: { catalogTarget: s
               </>
             )}
             <Readiness />
-            <ApproveButton />
+            <StaffPicks variant="sheet" onNavigate={() => setSheet(false)} />
           </div>
         )}
         {ex.reason && (
@@ -424,13 +408,18 @@ export function CommandStrip() {
   // The advisors get their own full-width row (QA S2-1), collapsed by default so the globe keeps
   // its room (QA AC3); the toggle opens it
   const [tray, setTray] = useState(false);
+  const picks = useStaffPicks();
+  const recOpen = useRecommendedOpen((s) => s.open);
   // Collapsed, the toggle still says how many suggestions wait behind it (QA S2-1 with AC3)
   const advice = useAdvisorRows();
   const staffN = advice.filter((r) => r.staff).length;
   if (!world || !b) return null;
   const cabinet = decisions.filter((d) => !reviewed[d.id]).length;
+  // RS-005: open, the Recommended list has its own row; folded (the default) or empty, only its
+  // button sits in the act row, so the globe keeps its height (QA AC3)
+  const hasPicks = picks.items.length > 0 && recOpen;
   return (
-    <div className={`cmd-strip${tray ? ' tray-open' : ''}`}>
+    <div className={`cmd-strip${tray ? ' tray-open' : ''}${hasPicks ? ' has-picks' : ''}`}>
       <div className="strip-chips">
         <span className={`chip-b seals${b.pc.left < 0 ? ' over' : ''}`} data-point="capital">
           <CapitalSeals left={Math.max(0, b.pc.left)} held={Math.min(b.pc.orders, Math.max(0, b.pc.bank + b.pc.crisis + b.pc.meetings))} proposed={b.proposed.pc} size={18} text={term(TERMS.capital.compact, b.pc.left)} />
@@ -456,6 +445,7 @@ export function CommandStrip() {
           </button>
         )}
       </div>
+      {hasPicks && <StaffPicks variant="strip" />}
       {tray && (
         <div className="strip-advisors" id="strip-advisors">
           <AdvisorList compact max={2} />
@@ -465,7 +455,7 @@ export function CommandStrip() {
         <button type="button" className="wc-btn" onClick={() => setDeskMode('desk')} title="Back to the desk (M)" data-desk-switch="">
           <IconLayoutDashboard size={16} aria-hidden /> Desk
         </button>
-        <ApproveButton compact />
+        {!hasPicks && <StaffPicks variant="strip" />}
         {ex.reason && (
           <span className="strip-over">
             <IconAlertTriangle size={13} aria-hidden /> {ex.reason}

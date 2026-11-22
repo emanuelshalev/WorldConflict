@@ -20,7 +20,8 @@ import {
 import { DANGEROUS, computeSuggestions, crisisStaffPick, meetingPriority, meetingSuggestion } from './staff';
 import { pcCost } from './actions';
 import { MAX_ORDERS } from './budget';
-import { effectArrows } from './format';
+import { ADVISOR_NAMES, effectArrows } from './format';
+import { TERMS } from './glossary';
 
 /**
  * The month's starting position on the desk: every crisis on the staff pick, up to two staff
@@ -255,7 +256,7 @@ export function crisisSelection(d: PendingDecision, choices: Record<string, stri
   const cab = cabinetPick(d);
   const chosen = d.options.find((o) => o.id === choices[d.id]) ?? cab;
   if (!reviewed[d.id]) return { kind: 'cabinet', option: chosen, text: `Cabinet pick: ${chosen.label}`, word: 'Cabinet pick' };
-  if (chosen.id === cab.id) return { kind: 'approved', option: chosen, text: `Approved: ${chosen.label}`, word: 'Approved' };
+  if (chosen.id === cab.id) return { kind: 'approved', option: chosen, text: `Accepted: ${chosen.label}`, word: 'Accepted' };
   return { kind: 'yours', option: chosen, text: `Your pick: ${chosen.label}`, word: 'Your pick' };
 }
 
@@ -267,7 +268,7 @@ export function meetingSelection(m: Meeting, choices: Record<string, string>, re
   if (pick === m.defaultOptionId) return { kind: 'deputy', text: 'A deputy goes', word: 'Deputy' };
   const o = m.options.find((x) => x.id === pick);
   if (o && sugg && o.id === sugg.id && !reviewed[m.id]) return { kind: 'cabinet', option: o, text: `Staff attend: ${o.label}`, word: 'Staff attend' };
-  if (o && sugg && o.id === sugg.id) return { kind: 'approved', option: o, text: `Approved: ${o.label}`, word: 'Approved' };
+  if (o && sugg && o.id === sugg.id) return { kind: 'approved', option: o, text: `Accepted: ${o.label}`, word: 'Accepted' };
   return { kind: 'yours', option: o, text: `Your pick: ${o?.label ?? ''}`, word: 'Your pick' };
 }
 
@@ -366,7 +367,7 @@ export function planSummary(state: GameState = useGameStore.getState()): PlanLin
   const approved = crises.filter((c) => c.kind === 'approved').length;
   const cabinet = crises.filter((c) => c.kind === 'cabinet').length;
   if (yours) parts.push(`your pick on ${n(yours, 'crisis', 'crises')}`);
-  if (approved) parts.push(`${n(approved, 'cabinet pick')} approved`);
+  if (approved) parts.push(`${n(approved, 'cabinet pick')} accepted`);
   if (cabinet) parts.push(`cabinet pick on ${n(cabinet, 'crisis', 'crises')}`);
   const committed = committedActions(state.pendingActions);
   const staff = committed.filter((a) => a.origin === 'staff').length;
@@ -374,7 +375,7 @@ export function planSummary(state: GameState = useGameStore.getState()): PlanLin
   const waiting = state.pendingActions.length - committed.length;
   if (mine) parts.push(n(mine, 'order of yours', 'orders of yours'));
   if (staff) parts.push(n(staff, 'staff order'));
-  if (waiting) parts.push(`${n(waiting, 'staff proposal')} not approved (${waiting === 1 ? 'it will not run' : 'they will not run'})`);
+  if (waiting) parts.push(`${n(waiting, 'staff proposal')} not accepted (${waiting === 1 ? 'it will not run' : 'they will not run'})`);
   const agenda = world?.agenda ?? [];
   const attend = agenda.filter((m) => state.decisionChoices[m.id] && state.decisionChoices[m.id] !== m.defaultOptionId).length;
   if (attend) parts.push(`you attend ${n(attend, 'meeting')}`);
@@ -454,4 +455,191 @@ export function showMissionSentence(): void {
     void el.offsetWidth;
     el.classList.add('is-flash');
   }));
+}
+
+// ============================================================================
+// Staff picks (RS-005): what Approve all approves, listed next to the button
+// ============================================================================
+
+export type StaffPickKind = 'crisis' | 'order' | 'meeting' | 'deputy';
+
+export interface StaffPickItem {
+  key: string;
+  kind: StaffPickKind;
+  /** The crisis or meeting id, or the proposal's index in pendingActions. */
+  id: string;
+  /** "Crisis answer: Reply via Muscat", "Order: Sanctions on Iran", "Meeting: ...", "Deputy takes: ..." */
+  title: string;
+  /** The adviser who recommends it ("Foreign Minister"): shown as "Recommended by Foreign Minister". */
+  by: string;
+  /** What it answers or who proposes it: "Crisis: The January clock". */
+  what: string;
+  /** What it changes, in words: "Will change: Approval down · Iran's view of you up" (may be empty). */
+  change: string;
+  /** At most one mission tag (Helps / Hurts / Breaks). */
+  tag: MissionTag | null;
+  /** Political capital it spends when accepted. */
+  cost: number;
+  /** False for a proposal that no longer fits the capital or order slots: Approve all leaves it out. */
+  fits: boolean;
+  /** Why it does not fit (only when fits is false). */
+  reason?: string;
+  /** The option it picks (crises and meetings). */
+  optionId?: string;
+}
+
+const changeLine = (words: string[]) => (words.length ? `Will change: ${words.join(' · ')}` : '');
+
+/**
+ * Every staff pick waiting for approval, in the order Approve all takes them (pendingApprovals):
+ * cabinet picks on crises, staff orders, meetings the staff would attend, meetings a deputy takes,
+ * and last any proposal that no longer fits (shown, not counted). Each says what it does and what
+ * it changes, so nothing is approved unseen (RS-005).
+ */
+export function staffPickItems(state: GameState = useGameStore.getState()): StaffPickItem[] {
+  const world = state.worldState;
+  if (!world) return [];
+  const { crises, orders, meetings, deputies } = pendingApprovals();
+  const items: StaffPickItem[] = [];
+  for (const id of crises) {
+    const d = state.pendingDecisions.find((x) => x.id === id);
+    if (!d) continue;
+    const o = crisisSelection(d, state.decisionChoices, state.reviewed).option;
+    if (!o) continue;
+    items.push({
+      key: `crisis:${id}`,
+      kind: 'crisis',
+      id,
+      title: `Crisis answer: ${o.label}`,
+      by: ADVISOR_NAMES[o.backedBy?.[0] ?? ''] ?? 'Chief of Staff',
+      // Truthful (the first-use line says nothing happens until you accept): a crisis answer stands
+      what: `Crisis: ${d.title} · goes ahead unless you change it`,
+      change: changeLine(effectWords(o).slice(0, 2).map((w) => w.text)),
+      tag: missionTag(state.missionImpact[id]?.[o.id], state.objectiveStatus),
+      cost: Math.max(0, -(o.effects.pc ?? 0)),
+      fits: true,
+      optionId: o.id,
+    });
+  }
+  const order = (i: number, fits: boolean) => {
+    const a = state.pendingActions[i];
+    if (!a) return;
+    const cost = pcCost(a.type);
+    const who = a.why?.split(':')[0];
+    const fx = proposalEffects(a);
+    const warn = a.preview?.missionWarning;
+    const left = Math.max(0, capitalLeft(state));
+    items.push({
+      key: `order:${orderKey(a)}`,
+      kind: 'order',
+      id: String(i),
+      title: `Order: ${a.label}`,
+      by: who || 'Chief of Staff',
+      what: cost ? `Spends ◆ ${cost} if accepted` : 'Free',
+      change: fx ? `Will change: ${fx}` : '',
+      tag: warn ? { tone: 'risk', text: warn, more: 0 } : missionTag(state.orderImpact[a.label], state.objectiveStatus),
+      cost,
+      fits,
+      ...(fits ? {} : { reason: cost > left ? `Needs ◆ ${cost}, you have ◆ ${left}` : `All ${MAX_ORDERS} orders this month are used` }),
+    });
+  };
+  for (const i of orders) order(i, true);
+  const agenda = world.agenda ?? [];
+  for (const p of meetings) {
+    const m = agenda.find((x) => x.id === p.id);
+    const o = m?.options.find((x) => x.id === p.optionId);
+    if (!m || !o) continue;
+    const cost = Math.max(0, -(o.effects.pc ?? 0));
+    items.push({
+      key: `meeting:${m.id}`,
+      kind: 'meeting',
+      id: m.id,
+      title: `Meeting: ${o.label}`,
+      by: ADVISOR_NAMES[meetingAdviser(m)] ?? 'Chief of Staff',
+      what: `You attend: ${m.title}${cost ? ` · ◆ ${cost}` : ''}`,
+      change: changeLine(effectWords(o).slice(0, 2).map((w) => w.text)),
+      tag: missionTag(state.missionImpact[m.id]?.[o.id], state.objectiveStatus),
+      cost,
+      fits: true,
+      optionId: o.id,
+    });
+  }
+  for (const id of deputies) {
+    const m = agenda.find((x) => x.id === id);
+    if (!m) continue;
+    const o = m.options.find((x) => x.id === m.defaultOptionId);
+    items.push({
+      key: `deputy:${m.id}`,
+      kind: 'deputy',
+      id: m.id,
+      title: `Deputy takes: ${m.title}`,
+      by: 'Chief of Staff',
+      what: o ? `Default answer: ${o.label}` : 'Default answer',
+      change: o ? changeLine(effectWords(o).slice(0, 2).map((w) => w.text)) : '',
+      tag: o ? missionTag(state.missionImpact[m.id]?.[o.id], state.objectiveStatus) : null,
+      cost: 0,
+      fits: true,
+      ...(m.defaultOptionId ? { optionId: m.defaultOptionId } : {}),
+    });
+  }
+  // Proposals Approve all would leave out: still shown, so the list matches the plan
+  const counted = new Set(orders);
+  state.pendingActions.forEach((a, i) => {
+    if (a.proposed && !counted.has(i)) order(i, false);
+  });
+  return items;
+}
+
+/** "1 crisis answer, 2 orders, 1 meeting": what the Approve button covers (fitting picks only). */
+export function staffPicksBreakdown(items: readonly StaffPickItem[]): string {
+  const c = (k: StaffPickKind) => items.filter((x) => x.fits && x.kind === k).length;
+  const n = (k: number, one: string, many: string) => `${k} ${k === 1 ? one : many}`;
+  const parts: string[] = [];
+  if (c('crisis')) parts.push(n(c('crisis'), 'crisis answer', 'crisis answers'));
+  if (c('order')) parts.push(n(c('order'), 'order', 'orders'));
+  if (c('meeting')) parts.push(n(c('meeting'), 'meeting', 'meetings'));
+  if (c('deputy')) parts.push(n(c('deputy'), 'meeting for a deputy', 'meetings for a deputy'));
+  return parts.join(', ');
+}
+
+/** "Accept all recommended (4)" (glossary approveAll, D-72). */
+export function approveLabel(n: number): string {
+  return TERMS.approveAll.name.split('{n}').join(String(n));
+}
+
+/** The adviser who speaks for a meeting (the desk's "Ask your staff" uses the same rule). */
+export function meetingAdviser(m: Pick<Meeting, 'kind' | 'title'>): string {
+  if (m.kind === 'CALL' || m.kind === 'VISIT') return 'FOREIGN_MINISTER';
+  if (m.kind === 'PRESS') return 'CHIEF_OF_STAFF';
+  if (/front|troops/i.test(m.title)) return 'DEFENSE_MINISTER';
+  if (/economy/i.test(m.title)) return 'FINANCE_MINISTER';
+  if (/unrest/i.test(m.title)) return 'DOMESTIC_ADVISOR';
+  if (/intelligence/i.test(m.title)) return 'INTELLIGENCE_CHIEF';
+  return 'CHIEF_OF_STAFF';
+}
+
+/** Approve one staff pick: the same effect Approve all has on that item. */
+export function approveStaffPick(item: Pick<StaffPickItem, 'kind' | 'id' | 'optionId'>): { ok: boolean } {
+  if (item.kind === 'order') return approveProposal(Number(item.id));
+  const s = useGameStore.getState();
+  if (item.kind === 'crisis') {
+    useGameStore.setState({ reviewed: { ...s.reviewed, [item.id]: true } });
+    return { ok: true };
+  }
+  if (!item.optionId) return { ok: false };
+  const choices = { ...s.decisionChoices, [item.id]: item.optionId };
+  if (item.kind === 'meeting') useGameStore.setState({ decisionChoices: choices, reviewed: { ...s.reviewed, [item.id]: true } });
+  else useGameStore.setState({ decisionChoices: choices });
+  return { ok: true };
+}
+
+/** Change: open the pick on the desk (the crisis card, the order, the meeting). */
+export function openStaffPick(item: Pick<StaffPickItem, 'kind' | 'id'>): void {
+  const s = useGameStore.getState();
+  if (item.kind === 'crisis') {
+    s.setFocus({ kind: 'crisis', id: item.id });
+    return;
+  }
+  s.setDeskView('full');
+  s.setFocus(item.kind === 'order' ? { kind: 'order', id: item.id } : { kind: 'meeting', id: item.id });
 }

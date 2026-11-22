@@ -38,7 +38,7 @@ await run('RS-001-2', async (g, track) => {
   await s.click(/^Advisors' suggestions/);
   await p.waitForTimeout(600);
   for (let k = 0; k < 4; k++) {
-    const approve = p.getByRole('button', { name: /^Approve order: / }).first();
+    const approve = p.getByRole('button', { name: /^Accept order: / }).first();
     if (!(await approve.isVisible().catch(() => false))) break;
     await approve.click();
     await p.waitForTimeout(700);

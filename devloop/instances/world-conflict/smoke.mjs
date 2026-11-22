@@ -19,7 +19,7 @@ try {
   await s.click(/Take office|Begin|Start/i);
   for (let month = 1; month <= 3; month++) {
     await s.look(`m${month}-desk`);
-    await s.click(/^Approve \d+ (staff )?picks?/i);
+    await s.click(/^Accept all recommended/i);
     if (!(await s.click(/Execute month/i, { timeout: 12000 }))) {
       const v = await s.look(`m${month}-execute-blocked`);
       const ex = v.controls.find((c) => /Execute month/i.test(c.label));
