@@ -294,7 +294,7 @@ export function orderRules(world: WorldState, action: Action): OrderBlock | null
 /** The refill line: the real monthly income, or the cap when the bank is full. */
 function refillLine(world: WorldState, me: CountryState): string {
   if (world.politicalCapital >= PC_CAP)
-    return `Capital is full: you can't save more than ◆ ${PC_CAP}`;
+    return `Political capital is full: you can't save more than ◆ ${PC_CAP}`;
   return `+${politicalCapitalIncome(world, me)} next month`;
 }
 

@@ -18,9 +18,11 @@ import {
   missionStatus,
   suggestionImpact,
 } from "../../core/advisors.js";
+import { BUDGET_SHARE, PC_CAP, politicalCapitalIncome } from "../../core/costs.js";
 import { createDataLoader, type DataLoader } from "../../core/data-loader.js";
 import { buildEraMap } from "../../core/era-map.js";
 import { objectiveStatus } from "../../core/objectives.js";
+import { ENGINE_ORDERS } from "../../core/orders.js";
 import { previewAction } from "../../core/preview.js";
 import { buildReveal, parseSeedCode, type RevealPayload, seatKeyOf } from "../../core/reveal.js";
 import { classifyLeadership } from "../../core/scoring.js";
@@ -55,6 +57,11 @@ const TurnRequestSchema = z.object({
   playerActions: z.array(ActionSchema),
   decisions: z.array(z.object({ decisionId: z.string(), optionId: z.string() })).default([]),
   ai: AIConfigSchema.optional(),
+});
+
+const OrdersMenuRequestSchema = z.object({
+  saveId: z.string(),
+  targetCountryId: z.string().nullable().default(null),
 });
 
 const PreviewRequestSchema = z.object({
@@ -150,9 +157,54 @@ export function monthAdvice(world: WorldState) {
   };
 }
 
+/** This month's capital refill and the bank's cap, for the "+2 next month" line (design-orders §3.3). */
+function capitalTerms(world: WorldState) {
+  const me = world.countries.find((c) => c.id === world.playerCountryId);
+  return { pcIncome: me ? politicalCapitalIncome(world, me) : 0, pcCap: PC_CAP };
+}
+
+/**
+ * The order menu for one target (design-orders.md §6): one entry per engine order that acts on
+ * that country, or every untargeted order when `targetId` is null. Each entry carries the rule
+ * layer (`block`, from `orderRules` via the preview), cost, chance and the preview text, so a
+ * menu or catalog opens with one request. The month layer (capital left, order slots, defense
+ * budget left, duplicates) is applied on the client from the unsent month.
+ */
+export function orderMenu(world: WorldState, targetId: string | null) {
+  const target = targetId ? world.countries.find((c) => c.id === targetId) : undefined;
+  if (targetId && !target) throw new Error(`Unknown country ${targetId}`);
+  return ENGINE_ORDERS.filter((o) => o.targeted === !!target).map((o) => {
+    const action = {
+      type: o.type,
+      ...(o.params ? { params: o.params } : {}),
+      ...(target ? { targetCountryId: target.id } : {}),
+    };
+    const p = previewAction(world, action);
+    return {
+      id: o.id,
+      type: o.type,
+      params: o.params ?? null,
+      label: target ? `${o.verb} ${target.name}` : o.verb,
+      targeted: o.targeted,
+      costPC: p.costPC,
+      costM: p.costM,
+      budgetM: p.budgetM,
+      defenseShare: BUDGET_SHARE[o.type] ?? 0,
+      chance: p.successChance,
+      block: p.block,
+      irreversible: p.irreversible,
+      missionWarning: p.missionWarning,
+      summary: p.summary,
+      effects: p.effects,
+      risks: p.risks,
+    };
+  });
+}
+
 function turnPayload(worldState: WorldState) {
   return {
     worldState: publicWorldState(worldState),
+    ...capitalTerms(worldState),
     playerView: buildPlayerView(worldState),
     ...monthAdvice(worldState),
     pendingDecisions: worldState.pendingDecisions,
@@ -457,6 +509,43 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
         return reply.status(errorStatus(error)).send({
           success: false,
           error: error instanceof Error ? error.message : "Failed to process turn",
+        });
+      }
+    },
+  );
+
+  // ------------------------------------------------------------------
+  // Every order for one target at once, with its rule-layer availability (design-orders §6)
+  fastify.post(
+    "/orders/menu",
+    async (
+      request: FastifyRequest<{ Body: z.infer<typeof OrdersMenuRequestSchema> }>,
+      reply: FastifyReply,
+    ) => {
+      try {
+        const body = OrdersMenuRequestSchema.parse(request.body);
+        const saveData = await gameDb.loadGame(body.saveId);
+        if (!saveData) {
+          return reply.status(404).send({ success: false, error: "Save game not found" });
+        }
+        const world = saveData.worldState;
+        if (body.targetCountryId && !world.countries.some((c) => c.id === body.targetCountryId)) {
+          return reply
+            .status(400)
+            .send({ success: false, error: `Unknown country ${body.targetCountryId}` });
+        }
+        return reply.send({
+          success: true,
+          turn: world.turn,
+          targetCountryId: body.targetCountryId,
+          ...capitalTerms(world),
+          orders: orderMenu(world, body.targetCountryId),
+        });
+      } catch (error) {
+        fastify.log.error(error);
+        return reply.status(errorStatus(error)).send({
+          success: false,
+          error: error instanceof Error ? error.message : "Failed to build the order menu",
         });
       }
     },

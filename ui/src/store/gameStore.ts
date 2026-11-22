@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { pcCost } from '../lib/actions';
 import { type CodexPayload, type LearnLevel, LEVEL_RULES } from '../lib/codexMatch';
 import * as learnLib from '../lib/learn';
+import { type MonthView, availabilityOf, defenseCostM, needsTarget, orderKeyOf } from '../lib/availability';
+import { pointAt } from '../lib/pointAt';
 
 export type TurnPhase = 'news' | 'briefing' | 'diplomacy' | 'military' | 'domestic' | 'confirm';
 
@@ -596,7 +598,14 @@ export interface GameState extends CodexSlice {
   drawer: 'cabinet' | 'world' | 'chronicle' | 'objective' | null;
   setDrawer: (drawer: GameState['drawer']) => void;
   isLoading: boolean;
+  /** The global toast: network and server problems only (predictable refusals live on the order card). */
   error: string | null;
+  /** The toast's message without its "×n" count, and how many times it repeated (deduped). */
+  errorBase: string | null;
+  errorCount: number;
+  /** This month's political capital refill and the bank's cap (payload `pcIncome`, `pcCap`). */
+  pcIncome: number;
+  pcCap: number;
   player: PlayerAccount | null;
   setPlayer: (player: PlayerAccount | null) => void;
   saveId: string | null;
@@ -675,7 +684,7 @@ export interface GameState extends CodexSlice {
   addAdvisorMessage: (advisorId: string, message: { role: 'user' | 'advisor'; content: string }) => void;
 }
 
-const API_BASE = (import.meta.env.VITE_API_BASE ?? '/api').replace(/\/$/, '');
+export const API_BASE = (import.meta.env.VITE_API_BASE ?? '/api').replace(/\/$/, '');
 
 // ============================================================================
 // LLM settings (BYO model): persisted in localStorage
@@ -822,6 +831,9 @@ function loadPlayer(): PlayerAccount | null {
   return null;
 }
 
+/** When the toast last showed a message (setError dedupes repeats within 10 s). */
+let lastErrorAt = 0;
+
 export const useGameStore = create<GameState>((set) => ({
   ...createCodexSlice(set),
   screen: 'title',
@@ -859,6 +871,10 @@ export const useGameStore = create<GameState>((set) => ({
   setDrawer: (drawer) => set({ drawer }),
   isLoading: false,
   error: null,
+  errorBase: null,
+  errorCount: 0,
+  pcIncome: 2,
+  pcCap: 6,
   player: loadPlayer(),
   setPlayer: (player) => {
     try {
@@ -935,9 +951,20 @@ export const useGameStore = create<GameState>((set) => ({
   advisorChatHistory: {},
 
   setLoading: (loading) => set({ isLoading: loading }),
-  setError: (error) => set({ error }),
+  // Identical messages within 10 s collapse into one toast with a count ("Connection failed ×3"),
+  // even when a retry cleared the toast in between
+  setError: (error) =>
+    set((s) => {
+      if (!error) return { error: null };
+      const repeat = s.errorBase === error && Date.now() - lastErrorAt < 10_000;
+      lastErrorAt = Date.now();
+      const count = repeat ? s.errorCount + 1 : 1;
+      return { error: count > 1 ? `${error} ×${count}` : error, errorBase: error, errorCount: count };
+    }),
   applyServerPayload: (data, saveId) =>
     set({
+      pcIncome: typeof data.pcIncome === 'number' ? data.pcIncome : 2,
+      pcCap: typeof data.pcCap === 'number' ? data.pcCap : 6,
       objectiveStatus: (data.objectiveStatus as ConditionStatus[]) ?? [],
       advice: (data.advice as Advice) ?? null,
       missionImpact: (data.missionImpact as Record<string, Record<string, Impact>>) ?? {},
@@ -954,6 +981,8 @@ export const useGameStore = create<GameState>((set) => ({
       dismissedStaff: [],
       monthKey: null,
       error: null,
+      errorBase: null,
+      errorCount: 0,
     }),
   selectCountry: (countryId) => set({ selectedCountryId: countryId }),
   openModal: (modal) => set({ activeModal: modal }),
@@ -1008,13 +1037,13 @@ export const useGameStore = create<GameState>((set) => ({
       decisionChoices: { ...state.decisionChoices, [decisionId]: optionId },
       reviewed: { ...state.reviewed, [decisionId]: true },
     })),
-  // Same rules as the engine (turn.ts): one of each order per target, at most 6 a month
+  // Same rules as the engine (turn.ts): one of each order per target, at most 6 a month. A
+  // refusal here is silent (the order card shows why before any tap); a success clears the toast.
   addPendingAction: (action) =>
     set((state) => {
-      if (state.pendingActions.some((a) => orderKey(a) === orderKey(action)))
-        return { error: `"${action.label}" is already on your desk this month` };
-      if (state.pendingActions.length >= 6) return { error: 'At most 6 orders a month' };
-      return { pendingActions: [...state.pendingActions, action] };
+      if (state.pendingActions.some((a) => orderKey(a) === orderKey(action))) return state;
+      if (state.pendingActions.length >= 6) return state;
+      return { pendingActions: [...state.pendingActions, action], error: null, errorBase: null, errorCount: 0 };
     }),
   removePendingAction: (index) =>
     set((state) => {
@@ -1039,6 +1068,16 @@ export const useGameStore = create<GameState>((set) => ({
       },
     })),
 }));
+
+// The toast clears itself after 6 s (and on success or a new month: see addPendingAction and
+// applyServerPayload), so a stale message never outlives its moment (backlog B-08)
+export const TOAST_MS = 6000;
+let toastTimer: ReturnType<typeof setTimeout> | null = null;
+useGameStore.subscribe((s, prev) => {
+  if (s.error === prev.error) return;
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = s.error ? setTimeout(() => useGameStore.getState().setError(null), TOAST_MS) : null;
+});
 
 // ============================================================================
 // API calls
@@ -1255,37 +1294,79 @@ export function orderKey(a: Pick<PendingAction, 'type' | 'targetCountryId' | 'pa
 }
 
 /**
- * Queue an order exactly as the desk does: confirm a nuclear strike, check political capital,
- * fetch the server preview, refuse a blocked order, confirm a mission warning, then add it
- * (the store still refuses duplicates and a 7th order). Resolves true when the order was queued.
- * Used by the desk and by the map's action menu so both paths behave identically.
+ * The unsent month as the order cards' month layer sees it (lib/availability.ts): capital left,
+ * orders this month, defense budget used, what is already queued. Same capital rule as
+ * capitalLeft() and the rail.
  */
-export async function queueOrder(a: PendingAction): Promise<boolean> {
-  const store = useGameStore.getState();
-  if (
-    a.type === 'NUCLEAR_STRIKE' &&
-    !window.confirm(
-      `${a.label}?\n\nThis cannot be undone. Hundreds of thousands will die, the world will embargo you, and retaliation may end everything.`,
-    )
-  )
-    return false;
-  if (store.pendingActions.some((x) => orderKey(x) === orderKey(a))) {
-    store.setError(`"${a.label}" is already on your desk this month`);
-    return false;
-  }
-  if (pcCost(a.type) > capitalLeft(store)) {
-    store.setError(`Not enough political capital for "${a.label}" (${pcCost(a.type)} needed)`);
-    return false;
-  }
+export function monthView(state: GameState = useGameStore.getState()): MonthView {
+  const world = state.worldState;
+  const me = world?.countries.find((c) => c.id === world.playerCountryId);
+  const budgetM = me ? (me.gdp * (me.militaryBudgetPercent / 100)) / 12 / 1e6 : 0;
+  const queued = state.pendingActions;
+  return {
+    pcLeft: capitalLeft(state),
+    bank: world?.politicalCapital ?? 0,
+    pcIncome: state.pcIncome,
+    pcCap: state.pcCap,
+    ordersUsed: queued.length,
+    queuedKeys: queued.map(orderKeyOf),
+    queuedCosts: queued.map((a) => pcCost(a.type)),
+    queuedLabels: queued.map((a) => a.label),
+    queuedStaff: queued.map((a) => a.origin === 'staff'),
+    defenseUsedM: queued.reduce((sum, a) => sum + defenseCostM(a, budgetM), 0),
+    budgetM,
+    gameOver: !!(world?.gameOver ?? state.gameOver),
+  };
+}
+
+/** Why an order needs a second, explicit action before it is queued (the card's confirm face). */
+export interface ConfirmNeed {
+  /** Declare war, nuclear strike: there is no undo. */
+  irreversible: boolean;
+  /** The order fails or endangers the session objective (amber, shown once on the face). */
+  missionWarning: string | null;
+  preview: ActionPreview | null;
+}
+
+/**
+ * What queueOrder() did. `block`: refused for a predictable reason (the card renders it and the
+ * meter it names is pointed at; never a toast). `confirm`: the order needs the confirm face, call
+ * again with `{ confirmed: true }` after the player's explicit second action.
+ */
+export type QueueResult =
+  | { ok: true; index: number }
+  | { ok: false; block: OrderBlock; confirm?: undefined }
+  | { ok: false; confirm: ConfirmNeed; block?: undefined };
+
+/**
+ * Queue an order the same way from every surface (desk catalog and search, staff picks, map menu,
+ * dossier): month layer and rule layer first (lib/availability.ts), then the server preview, then
+ * the confirm step for irreversible orders and mission warnings, then add it. Never opens a native
+ * dialog and never raises a toast for a refusal: refusals come back as `block` and point at the
+ * resource they name. Only network trouble reaches the toast (fetchPreview stays quiet and the
+ * order is queued without a forecast, as before).
+ */
+export async function queueOrder(a: PendingAction, opts: { confirmed?: boolean } = {}): Promise<QueueResult> {
+  const refuse = (block: OrderBlock, slots?: number[]): QueueResult => {
+    if (block.points) pointAt(block.points, { slots, detail: block.code === 'NO_CAPITAL' ? `${a.label} needs ◆ ${pcCost(a.type)}` : undefined });
+    return { ok: false, block };
+  };
+  const first = availabilityOf({ ...a, targeted: needsTarget(a.type) }, monthView());
+  if (first.block && first.state !== 'available') return refuse(first.block, first.block.slots);
   const preview = await fetchPreview({ type: a.type, targetCountryId: a.targetCountryId, value: a.value, params: a.params });
-  if (preview?.blocked) {
-    useGameStore.getState().setError(preview.blocked);
-    return false;
-  }
-  if (preview?.missionWarning && !window.confirm(`${preview.missionWarning}\n\nGive the order "${a.label}" anyway?`)) return false;
-  const before = useGameStore.getState().pendingActions.length;
+  if (preview?.block) return refuse(preview.block);
+  if (preview?.blocked) return refuse({ code: 'INVALID_VALUE', reason: preview.blocked, fix: null, points: null });
+  const irreversible = !!preview?.irreversible || a.type === 'DIPLOMACY_DECLARE_WAR' || a.type === 'NUCLEAR_STRIKE';
+  const missionWarning = preview?.missionWarning ?? null;
+  if ((irreversible || missionWarning) && !opts.confirmed)
+    return { ok: false, confirm: { irreversible, missionWarning, preview: preview ?? null } };
+  // The month may have changed while the preview was in flight
+  const again = availabilityOf({ ...a, targeted: needsTarget(a.type) }, monthView());
+  if (again.block && again.state !== 'available') return refuse(again.block, again.block.slots);
   useGameStore.getState().addPendingAction({ ...a, preview: preview ?? undefined });
-  return useGameStore.getState().pendingActions.length > before;
+  const index = useGameStore.getState().pendingActions.findIndex((x) => orderKey(x) === orderKey(a));
+  if (index < 0) return refuse({ code: 'ORDER_LIMIT', reason: 'All 6 orders this month are used.', fix: 'Remove an order', points: 'orders' });
+  return { ok: true, index };
 }
 
 export async function fetchEndReport(): Promise<void> {

@@ -28,10 +28,6 @@ interface Hit {
  * longer matches, so the list can't rot.
  */
 const PENDING: ReadonlySet<string> = new Set<string>([
-  // WP4 (orders design): queueOrder() stops raising duplicate errors
-  "ui/src/store/gameStore.ts :: \" is already on your desk this month",
-  // WP6 (orders design): desk catalog, staff picks, map menu
-  "ui/src/components/MapActionMenu.tsx :: Already on your desk",
   // Month design WP-B (staff.ts)
   "ui/src/lib/staff.ts :: Mission: leadership score",
   // Reveal design (EndGameReport moves into the report view)
