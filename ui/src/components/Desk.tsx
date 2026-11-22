@@ -41,6 +41,8 @@ function useDeskKeys(enabled: boolean) {
         return;
       }
       if (e.ctrlKey || e.metaKey || e.altKey) return;
+      // Enter on a focused button or link presses that control (an explainer mark, Approve...), not the card shortcut
+      if (e.key === 'Enter' && t?.closest('button, a[href], [role="button"]')) return;
       const items = deskItems();
       const at = items.findIndex((x) => x.kind === s.focus.kind && (x.id ?? '') === (s.focus.id ?? ''));
       // In Focus view the keys act on the Your move card
