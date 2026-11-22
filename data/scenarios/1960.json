@@ -26,12 +26,23 @@
     "JPN": { "name": "Nobusuke Kishi", "title": "Prime Minister", "style": "PRAGMATIC", "origin": "ELECTED" },
     "IDN": { "name": "Sukarno", "title": "President", "style": "HARDLINER", "origin": "FOUNDING" },
     "KOR": { "name": "Syngman Rhee", "title": "President", "style": "HARDLINER", "origin": "FOUNDING" },
-    "PRK": { "name": "Kim Il Sung", "title": "Supreme Leader", "style": "HARDLINER", "origin": "FOUNDING" },
+    "PRK": { "name": "Kim Il Sung", "title": "Premier", "style": "HARDLINER", "origin": "FOUNDING" },
     "AUS": { "name": "Robert Menzies", "title": "Prime Minister", "style": "PRAGMATIC", "origin": "ELECTED" },
     "PAK": { "name": "Ayub Khan", "title": "President", "style": "HARDLINER", "origin": "COUP" },
     "NGA": { "name": "Abubakar Tafawa Balewa", "title": "Prime Minister", "style": "PRAGMATIC", "origin": "ELECTED" },
     "ZAF": { "name": "Hendrik Verwoerd", "title": "Prime Minister", "style": "HARDLINER", "origin": "ELECTED" },
-    "ITA": { "name": "Antonio Segni", "title": "Prime Minister", "style": "PRAGMATIC", "origin": "ELECTED" }
+    "ITA": { "name": "Antonio Segni", "title": "Prime Minister", "style": "PRAGMATIC", "origin": "ELECTED" },
+    "AFG": { "name": "Mohammed Daoud Khan", "title": "Prime Minister", "style": "HAWKISH", "origin": "APPOINTED", "sinceDate": "1953-09" },
+    "CUB": { "name": "Fidel Castro", "title": "Prime Minister", "style": "HARDLINER", "origin": "REVOLUTION", "sinceDate": "1959-02" },
+    "DNK": { "name": "H. C. Hansen", "title": "Prime Minister", "style": "PRAGMATIC", "origin": "ELECTED", "sinceDate": "1955-02" },
+    "ETH": { "name": "Haile Selassie", "title": "Emperor", "style": "PRAGMATIC", "origin": "SUCCESSION", "sinceDate": "1930-04" },
+    "IRQ": { "name": "Abd al-Karim Qasim", "title": "Prime Minister", "style": "HARDLINER", "origin": "COUP", "sinceDate": "1958-07" },
+    "LBN": { "name": "Fuad Chehab", "title": "President", "style": "PRAGMATIC", "origin": "ELECTED", "sinceDate": "1958-09" },
+    "PHL": { "name": "Carlos P. Garcia", "title": "President", "style": "PRAGMATIC", "origin": "SUCCESSION", "sinceDate": "1957-03" },
+    "SDN": { "name": "Ibrahim Abboud", "title": "President of the Supreme Council", "style": "HARDLINER", "origin": "COUP", "sinceDate": "1958-11" },
+    "TWN": { "name": "Chiang Kai-shek", "title": "President", "style": "HARDLINER", "origin": "FOUNDING", "sinceDate": "1950-03" },
+    "VEN": { "name": "Rómulo Betancourt", "title": "President", "style": "REFORMIST", "origin": "ELECTED", "sinceDate": "1959-02" },
+    "YEM": { "name": "Ahmad bin Yahya", "title": "Imam and King", "style": "HARDLINER", "origin": "SUCCESSION", "sinceDate": "1948-03" }
   },
   "countryOverrides": {
     "USA": { "gdp": 543000000000, "growthRate": 0.025, "population": 180000000, "manpower": 2480000, "airpower": 18000, "militaryBudgetPct": 9, "nuclearStatus": "ARMED", "warheads": 18000, "stability": 80, "legitimacy": 80 },
@@ -58,7 +69,15 @@
     "AUS": { "gdp": 16000000000, "growthRate": 0.04, "population": 10000000, "manpower": 50000, "airpower": 300, "nuclearStatus": "NONE" },
     "PAK": { "regimeType": "MILITARY_JUNTA", "politicalSystemType": "MILITARY_JUNTA", "leaderTitle": "President", "electionCycleMonths": 0, "gdp": 3500000000, "growthRate": 0.05, "population": 45000000, "manpower": 230000, "airpower": 200, "stability": 55, "legitimacy": 45, "nuclearStatus": "NONE", "insurgencyLevel": "NONE" },
     "NGA": { "gdp": 4000000000, "growthRate": 0.04, "population": 45000000, "manpower": 10000, "airpower": 20, "stability": 55, "legitimacy": 60, "nuclearStatus": "NONE", "insurgencyLevel": "NONE" },
-    "ZAF": { "regimeType": "AUTOCRACY", "politicalSystemType": "PERSONALIST_AUTOCRACY", "electionCycleMonths": 0, "gdp": 7000000000, "growthRate": 0.05, "population": 17000000, "manpower": 80000, "airpower": 200, "stability": 50, "legitimacy": 25, "nuclearStatus": "NONE", "insurgencyLevel": "UNREST" }
+    "ZAF": { "regimeType": "AUTOCRACY", "politicalSystemType": "PERSONALIST_AUTOCRACY", "electionCycleMonths": 0, "gdp": 7000000000, "growthRate": 0.05, "population": 17000000, "manpower": 80000, "airpower": 200, "stability": 50, "legitimacy": 25, "nuclearStatus": "NONE", "insurgencyLevel": "UNREST" },
+    "AFG": { "regimeType": "MONARCHY", "politicalSystemType": "ABSOLUTE_MONARCHY", "leaderTitle": "Prime Minister", "electionCycleMonths": 0 },
+    "CUB": { "regimeType": "AUTOCRACY", "politicalSystemType": "PERSONALIST_AUTOCRACY", "leaderTitle": "Prime Minister", "electionCycleMonths": 0 },
+    "ETH": { "regimeType": "MONARCHY", "politicalSystemType": "ABSOLUTE_MONARCHY", "leaderTitle": "Emperor", "electionCycleMonths": 0 },
+    "IRQ": { "regimeType": "MILITARY_JUNTA", "politicalSystemType": "MILITARY_JUNTA", "leaderTitle": "Prime Minister", "electionCycleMonths": 0 },
+    "PHL": { "electionCycleMonths": 48, "nextElection": "1961-11" },
+    "TWN": { "regimeType": "AUTOCRACY", "politicalSystemType": "ONE_PARTY_STATE", "electionCycleMonths": 0 },
+    "VEN": { "regimeType": "DEMOCRACY", "politicalSystemType": "PRESIDENTIAL_DEMOCRACY", "leaderTitle": "President", "electionCycleMonths": 60, "nextElection": "1963-12" },
+    "YEM": { "regimeType": "MONARCHY", "politicalSystemType": "ABSOLUTE_MONARCHY", "leaderTitle": "Imam and King", "electionCycleMonths": 0 }
   },
   "initialRelations": {
     "USA": { "RUS": -80, "CHN": -70, "GBR": 85, "DEU": 75, "FRA": 60, "JPN": 70, "KOR": 70, "AUS": 75, "CAN": 90, "ISR": 50, "POL": -50, "ITA": 70, "TUR": 65, "SAU": 50, "IND": 20, "BRA": 50, "MEX": 50, "EGY": -20, "PAK": 60, "IDN": -10, "NGA": 30, "ZAF": 20, "IRN": 70, "PRK": -85 },
@@ -92,5 +111,44 @@
     ["RUS", "PRK"],
     ["CHN", "PRK"]
   ],
-  "startingWars": []
+  "startingWars": [],
+  "mapFocus": [22,36],
+  "blocs": [
+    {"id":"NATO","name":"NATO","side":"WEST","members":["USA","CAN","GBR","FRA","DEU","ITA","TUR","NLD","BEL","LUX","NOR","DNK","ISL","PRT","GRC"]},
+    {"id":"USPAC","name":"US treaty allies (SEATO, CENTO, bilateral)","side":"WEST2","members":["JPN","KOR","AUS","NZL","PHL","PAK","IRN","THA","TWN"],"note":"Japan and the US sign a revised security treaty on 19 January 1960."},
+    {"id":"WARSAW","name":"Warsaw Pact","side":"EAST","members":["RUS","POL","CZE","SVK","HUN","ROU","BGR","ALB","DDR","UKR","BLR","EST","LVA","LTU","MDA","GEO","ARM","AZE","KAZ","UZB","TKM","KGZ","TJK"]},
+    {"id":"SINO","name":"Sino-Soviet alliance (cracking)","side":"EAST2","members":["CHN","PRK","MNG"],"note":"China's 1950 treaty with Moscow still stands, but the ideological split is widening."},
+    {"id":"NAM","name":"Non-aligned","side":"NONALIGNED","members":["IND","IDN","EGY","SYR","GHA","MMR","AFG","ETH","IRQ","CUB","SRB","HRV","BIH","SVN","MKD","MNE","KOS"],"note":"Leaders who met at Bandung in 1955; the movement is founded formally in Belgrade in 1961."}
+  ],
+  "eraStatus": {
+    "UKR": {"status":"PART_OF","partOf":"RUS","label":"Ukrainian SSR","note":"A republic of the Soviet Union, governed from Moscow."},
+    "BLR": {"status":"PART_OF","partOf":"RUS","label":"Byelorussian SSR","note":"A republic of the Soviet Union, governed from Moscow."},
+    "SYR": {"status":"PART_OF","partOf":"EGY","label":"United Arab Republic (Syria)","note":"Merged with Egypt as the United Arab Republic from February 1958 to September 1961."},
+    "PSX": {"status":"NOT_INDEPENDENT","label":"West Bank (Jordan)","note":"Annexed by Jordan in 1950; Gaza is under Egyptian administration."},
+    "ARE": {"status":"NOT_INDEPENDENT","label":"Trucial States","note":"Sheikhdoms under British protection; the UAE is founded in December 1971."},
+    "NGA": {"status":"NOT_INDEPENDENT","label":"Nigeria (British)","note":"A self-governing British federation; independent on 1 October 1960."}
+  },
+  "merged": {
+    "RUS": ["UKR","BLR","EST","LVA","LTU","MDA","GEO","ARM","AZE","KAZ","UZB","TKM","KGZ","TJK"],
+    "EGY": ["SYR"]
+  },
+  "mapLabels": [
+    {"at":[17.2,49.5],"name":"Czechoslovakia","rank":2},
+    {"at":[18.6,44.3],"name":"Yugoslavia","rank":2},
+    {"at":[12.4,52.4],"name":"East Germany","rank":3},
+    {"at":[23.5,-2.5],"name":"Belgian Congo","rank":2},
+    {"at":[2.6,28.5],"name":"French Algeria","rank":2}
+  ],
+  "labelAllow": ["NLD","BEL","LUX","NOR","ISL","PRT","GRC","ESP","SWE","FIN","CHE","AUT","IRL","HUN","ROU","BGR","ALB","MNG","THA","NZL","NPL","KHM","LAO","JOR","LBY","MAR","TUN","GHA","GIN","LBR","ARG","CHL","PER","COL","BOL","ECU","URY","PRY","HTI","DOM","GTM","HND","SLV","NIC","CRI","PAN","DZA"],
+  "situations": [
+    {"id":"berlin","title":"Divided Berlin","kind":"TRUCE","phase":"ACTIVE","at":[13.4,52.52],"countries":["USA","RUS","DEU"],"weight":5,"line":{"from":"USA","to":"RUS","style":"rival"},"since":"1958-11","blurb":"Khrushchev's 1958 demand still stands: Western troops out of Berlin, or a separate Soviet treaty with East Germany. Refugees keep crossing west.","sources":["https://history.state.gov/milestones/1961-1968/berlin-crises","https://en.wikipedia.org/wiki/Berlin_Crisis_of_1961"]},
+    {"id":"algeria","title":"Algerian War","kind":"WAR","phase":"ACTIVE","at":[3,35.6],"countries":["FRA"],"weight":4,"since":"1954-11","blurb":"About 400,000 French troops fight the FLN. De Gaulle has offered self-determination; settlers raise barricades in Algiers on 24 January.","sources":["https://en.wikipedia.org/wiki/Algerian_War","https://en.wikipedia.org/wiki/Barricades_Week"]},
+    {"id":"cuba","title":"Castro's Cuba","kind":"REGIME","phase":"ACTIVE","at":[-79,21.8],"countries":["CUB","USA"],"weight":4,"line":{"from":"CUB","to":"USA","style":"rival"},"since":"1959-01","blurb":"A year after the revolution, land reform seizes US-owned estates and Havana opens trade talks with Moscow. Washington weighs covert action.","sources":["https://en.wikipedia.org/wiki/Cuban_Revolution","https://en.wikipedia.org/wiki/Cuba%E2%80%93United_States_relations","https://history.state.gov/milestones/1961-1968/bay-of-pigs"]},
+    {"id":"korea","title":"Korean armistice line","kind":"TRUCE","phase":"FROZEN","at":[127,38.1],"countries":["KOR","PRK"],"weight":3,"since":"1953-07","blurb":"No peace treaty since the 1953 armistice. Two armies face each other across the DMZ, and Rhee's rule in Seoul is growing brittle.","sources":["https://en.wikipedia.org/wiki/Korean_Armistice_Agreement","https://en.wikipedia.org/wiki/April_Revolution"]},
+    {"id":"taiwan","title":"Taiwan Strait standoff","kind":"SEA","phase":"FROZEN","at":[118.4,24.45],"countries":["CHN","TWN","USA"],"weight":3,"line":{"from":"CHN","to":"TWN","style":"rival"},"since":"1958-08","blurb":"The 1958 crisis is over, but Chinese batteries still shell Kinmen on odd-numbered days, often with leaflets. The US Seventh Fleet patrols the strait.","sources":["https://en.wikipedia.org/wiki/Second_Taiwan_Strait_Crisis","https://en.wikipedia.org/wiki/Sino-American_Mutual_Defense_Treaty"]},
+    {"id":"reggane","title":"A fourth atomic power","kind":"NUCLEAR","phase":"BREWING","at":[0.06,26.3],"countries":["FRA"],"weight":3,"since":"1960-02","blurb":"France's first atomic test, Gerboise Bleue, is set for 13 February near Reggane in the Algerian Sahara.","sources":["https://en.wikipedia.org/wiki/Gerboise_Bleue","https://en.wikipedia.org/wiki/France_and_weapons_of_mass_destruction"]},
+    {"id":"himalaya","title":"China-India border","kind":"WAR","phase":"BREWING","at":[79,34.3],"countries":["IND","CHN"],"weight":2,"since":"1959-08","blurb":"Clashes at Longju and the Kongka Pass in 1959 killed Indian police. Nehru and Zhou Enlai meet in April; neither will yield ground.","sources":["https://en.wikipedia.org/wiki/Kongka_Pass_incident","https://en.wikipedia.org/wiki/Sino-Indian_War"]},
+    {"id":"laos","title":"Laos and Vietnam insurgency","kind":"REGIME","phase":"ACTIVE","at":[104.5,17.5],"countries":[],"weight":2,"since":"1959","blurb":"Pathet Lao guerrillas fight the royal army in Laos and the communist insurgency in South Vietnam is reviving. US advisers number in the hundreds.","sources":["https://en.wikipedia.org/wiki/Laotian_Civil_War","https://en.wikipedia.org/wiki/Vietnam_War"]},
+    {"id":"congo","title":"Congo independence","kind":"REGIME","phase":"BREWING","at":[23.5,-2.5],"countries":[],"weight":2,"since":"1960-01","blurb":"Belgium agrees in January to grant independence on 30 June, with little preparation. Seventeen African states become independent in 1960.","sources":["https://en.wikipedia.org/wiki/Belgo-Congolese_Round_Table_Conference","https://en.wikipedia.org/wiki/Year_of_Africa"]}
+  ]
 }
