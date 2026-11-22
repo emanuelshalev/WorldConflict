@@ -20,7 +20,7 @@ Personas this must serve (RS-007 mapping): Noah and Olivia follow icons and colo
 1. **A pictogram per order type**, 28 icons (one per registry id in `ui/src/lib/orders.ts`), drawn for this game on one grid, bold filled silhouettes, one idea each, monochrome (colour never carries the meaning). Plus 3 reserve icons (sanctions, aid, trade deal) for the Economy orders the registry does not have yet.
 2. **Six visual families**: the five D-66 families (Diplomacy, Military, Covert, Economy, Home) plus Nuclear as a hazard variant of Military (yellow plate with hazard stripes). Each family is always shown four ways at once: pictogram, family word, plate colour, edge. Never colour alone.
 3. **The card leads with a pictogram plate** (52 px tile, 42 px compact, 46 px row): a solid light family-coloured token with the dark pictogram, overlapping the bottom of a **taller, full-colour scene band** (104 px tile, up from 62). The body paper is lighter and tinted by the family at the top.
-4. **Recognition is the acceptance bar**: the panel names the unlabeled icons; 80% pooled before ship (`icon-recognition-test.md`). Round 1 scored 74%, round 2 82%; nine icons were redrawn for round 2 and six for round 3 (section 3.4).
+4. **Recognition is the acceptance bar**: the panel names the unlabeled icons; 80% pooled before ship (`icon-recognition-test.md`). Round 1 scored 74%, round 2 82%, round 3 84%; nine icons were redrawn for round 2, six for round 3 and three for the final replicated run (section 3.4, D-74).
 
 ## 3. Icon system
 
@@ -53,7 +53,9 @@ Source of truth: `concepts/order-icons/build.mjs` (generates every SVG, the spri
 | Arrow away from the border, tank turned around | pull back | withdraw troops |
 | Crosshair | target it | assassinate |
 | Jet diving | strike from the air | strike military targets |
-| Tank | the army on the ground | mass troops at border, withdraw troops, back a coup (round 3) |
+| Tank | the army on the ground | mass troops at border, withdraw troops |
+| Helmet | soldiers, the army | mobilize, stand down, back a coup (final) |
+| Radiation sign | a nuclear site | strike nuclear sites (final) |
 | Split or crack | break it | break pact, destabilize |
 
 ### 3.3 Catalogue (28 registry orders)
@@ -73,17 +75,17 @@ Source of truth: `concepts/order-icons/build.mjs` (generates every SVG, the spri
 | `deploy-border` | Mass troops at border | Military | Tank facing a dashed border line, arrow towards it | The border line is the subject; the barrel and arrow point at it |
 | `withdraw-border` | Withdraw troops | Military | Same tank turned away, arrow back | Mirror of deploy, with the line kept on the same side so the direction is the only difference |
 | `airstrike-military` | Strike military targets | Military | Jet diving onto a blast | Air attack in one look; the blast says "strike", not "fly" |
-| `airstrike-nuclear` | Strike nuclear sites | Military | A conventional finned bomb falling on a steaming cooling tower that carries an atom sign (round 3) | The target is a place (a power plant), and the weapon is an ordinary bomb; no jet, no mushroom, no crosshair |
+| `airstrike-nuclear` | Strike nuclear sites | Military | A finned bomb falling on a reactor dome marked with a large radiation sign (final) | The radiation trefoil is the one sign that says "nuclear" on a place; a dome, not a chimney or cooling tower, so it is not a factory or power plant; no jet, no mushroom |
 | `fund-nuclear` | Fund nuclear program | Nuclear | Atom with a coin badge | Money into the program; atom is the program in all three nuclear icons |
 | `nuclear-strike` | Nuclear strike | Nuclear | Mushroom cloud | Unmistakable; must never be confused with anything (danger order) |
 | `spy` | Spy on | Covert | Agent in a fedora and dark glasses, collar up | The pop-culture spy; recognised by children and casual players (Noah, Olivia) |
-| `counter-intel` | Hunt foreign spies | Covert | The spy (9/9) above a pair of handcuffs (round 3) | Caught, not watched: handcuffs mean arrest; spaced apart with a visible chain so they cannot read as binoculars |
+| `counter-intel` | Hunt foreign spies | Covert | The spy (top left) with a pair of open handcuffs, angled, with lock blocks (final) | Arrest, shown as an object next to the spy; the cuffs are angled and offset with their lock blocks, so they cannot read as wheels (car) or binoculars |
 | `sabotage` | Sabotage | Covert | Dynamite bundle with a lit fuse | Covert destruction, hand-placed; distinct from the airstrike blast |
 | `destabilize` | Destabilize | Covert | A leaning tower of blocks with a flag on top, one block pushed out (round 3) | The stacking-tower game everyone knows as "about to fall"; the flag makes it a country; no building, no hull shape |
 | `arm-rebels` | Arm rebels | Covert | A raised fist holding a whole rifle aloft (round 3) | The rifle is fully visible across the top, so the fist reads as an armed revolt, not a protest |
 | `disinformation` | Feed disinformation | Covert | Speech bubble wearing a masquerade mask | A message in disguise: words that lie |
 | `assassinate` | Assassinate leader | Covert | Crosshair on a crowned head (round 2) | The crown makes the target the leader; "target the leader" is the order |
-| `coup` | Back a coup | Covert | A tank knocking the crown off (round 3) | The army (tank, 9/9 in deploy and withdraw) removes the ruler (crown, as in assassinate) by force |
+| `coup` | Back a coup | Covert | A soldier helmet sitting on the empty throne, crown carved in the backrest (final) | The army takes the seat of power; no vehicle, so it cannot read as a tank attack or invasion, and no face, so not an agent |
 | `reform` | Reform program | Economy | Sprout growing out of a gear | Fixing the machine so it grows; "reform", "growth" and "modernise" all count |
 | `address` | National address | Home | The leader at a lectern on a TV screen, with a flag (round 2) | A televised speech to the nation; the microphone and podium read as a plant pot |
 | `policing-soft` | Soft policing | Home | A police badge (star shield) with a speech-bubble badge (round 3) | The badge is the police sign in every country; no cap, because after round 2 any headgear read as army |
@@ -127,6 +129,52 @@ Round 2 fixed the pact, ceasefire, national address and assassinate (all 100%), 
 Unchanged but watched: Feed disinformation (89% to 67% with the same art; "spy mask, secret talk" grew once covert icons multiplied) and Hard crackdown (56% twice; read as a soldier digging in). They are left as they are this round, as D-72 asks; if round 3 confirms them, they are next.
 
 Round 3 uses another shuffle (`(n * 13 + 2) % 29`); results are compared across rounds by order id, not cell number.
+
+#### Final redraw and replicated run (D-74, after round 3: 84.5% pooled)
+
+Round 3 passed the pool, but icons whose drawing never changed swung by up to 67 points (disinformation 89, 67, 0), so one round is not enough to judge a single icon. Method from D-74: score every icon by order id across rounds, average only the rounds that showed its current drawing, redraw only icons that failed consistently, then run a replicated final test (two sheets per persona, `icon-recognition-test.md`).
+
+| Order id | Order | R1 % | R2 % | R3 % | Rounds with the current drawing | Average over those rounds | Rounds counted | Status |
+|---|---|---|---|---|---|---|---|---|
+| `court` | Court | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
+| `denounce` | Denounce | 78 | 89 | 89 | 1,2,3 | 85% | 3 | ok |
+| `offer-pact` | Offer defence pact | 56 | 100 | 89 | 2,3 | 94% | 2 | ok |
+| `break-pact` | Break pact | 78 | 78 | 67 | 1,2,3 | 74% | 3 | watch |
+| `ceasefire` | Propose ceasefire | 0 | 100 | 100 | 2,3 | 100% | 2 | ok |
+| `mediate` | Mediate peace | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
+| `declare-war` | Declare war | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
+| `mobilize` | Mobilize forces | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
+| `demobilize` | Stand down forces | 89 | 100 | 100 | 1,2,3 | 96% | 3 | ok |
+| `procure` | Buy weapons | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
+| `deploy-border` | Mass troops at border | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
+| `withdraw-border` | Withdraw troops | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
+| `airstrike-military` | Strike military targets | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
+| `airstrike-nuclear` | Strike nuclear sites | 78 | 56 | 44 | none (redrawn for the final run) | untested | 0 | final redraw |
+| `fund-nuclear` | Fund nuclear program | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
+| `nuclear-strike` | Nuclear strike | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
+| `spy` | Spy on | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
+| `counter-intel` | Hunt foreign spies | 0 | 67 | 44 | none (redrawn for the final run) | untested | 0 | final redraw |
+| `sabotage` | Sabotage | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
+| `destabilize` | Destabilize | 22 | 0 | 89 | 3 | 89% | 1 | ok (one round only) |
+| `arm-rebels` | Arm rebels | 89 | 44 | 67 | 3 | 67% | 1 | watch (one round only) |
+| `disinformation` | Feed disinformation | 89 | 67 | 0 | 1,2,3 | 52% | 3 | watch (unchanged per D-74; replicate decides) |
+| `assassinate` | Assassinate leader | 56 | 100 | 100 | 2,3 | 100% | 2 | ok |
+| `coup` | Back a coup | 44 | 33 | 44 | none (redrawn for the final run) | untested | 0 | final redraw |
+| `reform` | Reform program | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
+| `address` | National address | 0 | 100 | 100 | 2,3 | 100% | 2 | ok |
+| `policing-soft` | Soft policing | 67 | 11 | 100 | 3 | 100% | 1 | ok (one round only) |
+| `policing-hard` | Hard crackdown | 56 | 56 | 33 | 2,3 | 44% | 2 | watch (unchanged per D-74; replicate decides) |
+
+Average of the 25 tested current drawings: 92.1%
+
+Three icons failed in every round and are redrawn; every other icon is byte-identical to round 3 (git diff), including disinformation and crackdown.
+
+| Order (R1, R2, R3) | Most common wrong readings, all rounds | Final drawing | Why it should not say the misreading |
+|---|---|---|---|
+| Back a coup (44, 33, 44) | R1 election, reshuffle; R2 masked agent, cyberattack; R3 tank attack, invasion (confused with mass troops at border by 4) | A soldier helmet sitting on the empty throne, crown carved in the high backrest | No vehicle, so no attack or invasion; no arrows, so no election; no face, so no agent. The throne is the seat of power, the helmet (read as soldiers in mobilize and stand down) has taken it: the army seizes power |
+| Strike nuclear sites (78, 56, 44) | R1 and R2 nuclear strike or bomber; R3 factory or power plant strike | A finned bomb falling onto a reactor dome that carries a large radiation sign, impact strokes | The radiation trefoil is the strongest "nuclear" sign and sits on the building, so the place is nuclear; a dome is not a chimney or cooling tower, so not a factory or power plant; the weapon is an ordinary bomb and there is no jet or mushroom, so not a nuclear strike |
+| Hunt foreign spies (0, 67, 44) | R1 sanctions, ban; R2 investigate, spy on; R3 "spy in a car" (the level cuffs read as wheels; confused with spy by 4) | The spy figure small at top left, a pair of open handcuffs angled at bottom right with lock blocks and a short chain | No slash, no lens, no level pair of rings: the cuffs are offset and tilted with their lock blocks, which wheels and binoculars do not have; the spy is the object, the cuffs are the action (arrest) |
+
 
 ### 3.5 Legibility check
 

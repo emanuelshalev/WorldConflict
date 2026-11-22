@@ -1,6 +1,6 @@
 // Order pictograms (D-66, RS-007): one source for the SVG files, the sprite used by the mocks,
 // the contact sheet and the unlabeled recognition sheet.
-// Run: node build.mjs   (writes into this folder and ../order-icons-recognition-sheet.html)
+// Run: node build.mjs   (writes into this folder and ../order-icons-recognition-sheet-A.html, -B.html)
 //
 // Grid: 48 x 48 viewBox, live area 3..45, primary stroke 4 (2 px at 24 px), detail stroke >= 2.5,
 // knockout gaps >= 2.5 units, filled silhouettes in currentColor, one idea per icon.
@@ -221,14 +221,14 @@ export const ICONS = [
       fl(star(13.5, 35, 10.5, 4.6, 8)) + `<ellipse cx="22.5" cy="25.5" rx="3.2" ry="1.7" transform="rotate(-45 22.5 25.5)"/>`,
   },
   {
-    id: 'airstrike-nuclear', family: 'mil', label: 'Strike nuclear sites', idea: 'A bomb falling on a cooling tower with an atom sign', rev: 3, was: 'r1 atom in a crosshair (read as nuclear strike); r2 jet onto an atom (read as nuclear bomber)',
-    accept: ['strike nuclear sites', 'bomb nuclear sites', 'bomb nuclear plant', 'bomb a reactor', 'bomb nuclear facility', 'attack nuclear plant', 'airstrike on nuclear', 'hit nuclear facility', 'attack reactor', 'destroy nuclear program', 'bomb their nuclear program', 'strike the reactor'],
-    svg: (id) =>
-      knock(id, fl('M12 46C14.5 37 14.5 27 11.5 17H32.5C29.5 27 29.5 37 32 46Z') + rect(10, 14, 24, 3.6, 1.2), circ(22, 31.5, 6.6, K)) +
-      circ(22, 31.5, 1.8) + [0, 120, 240].map((a) => `<ellipse cx="22" cy="31.5" rx="5.6" ry="2" transform="rotate(${a} 22 31.5)" fill="none" stroke="currentColor" stroke-width="1.4"/>`).join('') +
-      st('M16 10.5C15 8 17.5 6.5 16.5 3.5M22 10.5C21 8 23.5 6.5 22.5 3.5', 2.2) +
-      `<g transform="rotate(35 40 12)">${fl('M37 4.5C37 2.5 43 2.5 43 4.5V15C43 17.8 41.5 19.5 40 20C38.5 19.5 37 17.8 37 15Z') + fl('M35.5 3L37.5 6H42.5L44.5 3Z')}</g>` +
-      fl(star(37.5, 22.5, 6.5, 2.6, 8)),
+    id: 'airstrike-nuclear', family: 'mil', label: 'Strike nuclear sites', idea: 'A bomb falling on a reactor dome marked with the radiation sign', rev: 4, was: 'r1 atom in a crosshair (nuclear strike); r2 jet onto an atom (nuclear bomber); r3 bomb on a cooling tower (factory, power plant)',
+    accept: ['strike nuclear sites', 'bomb nuclear sites', 'bomb a reactor', 'bomb nuclear facility', 'bomb nuclear plant', 'attack nuclear plant', 'airstrike on nuclear', 'hit nuclear facility', 'attack reactor', 'destroy nuclear program', 'bomb their nuclear program', 'strike the reactor', 'bomb radioactive site'],
+    svg: (id) => {
+      const tre = [0, 120, 240].map((a) => `<path d="M24 32.5L${(24 + 11 * Math.cos(((a - 120) * Math.PI) / 180)).toFixed(2)} ${(32.5 + 11 * Math.sin(((a - 120) * Math.PI) / 180)).toFixed(2)}A11 11 0 0 1 ${(24 + 11 * Math.cos(((a - 60) * Math.PI) / 180)).toFixed(2)} ${(32.5 + 11 * Math.sin(((a - 60) * Math.PI) / 180)).toFixed(2)}Z" fill="${K}"/>`).join('');
+      return knock(id, fl('M2 46V33C2 19 46 19 46 33V46Z'), tre + circ(24, 32.5, 4.6, W) + circ(24, 32.5, 2.6, K)) +
+        `<g transform="translate(-4 5) rotate(28 30 9)">${fl('M27 1.5C27 -0.5 33 -0.5 33 1.5V11C33 13.6 31.5 15.3 30 15.8C28.5 15.3 27 13.6 27 11Z') + fl('M25.5 0L27.5 3H32.5L34.5 0Z')}</g>` +
+        st('M17 16L14.5 13M33 13.5L36.5 11M33.5 19.5L37.5 18.5', 2.4);
+    },
   },
   // ---------------- Nuclear (military, hazard) ----------------
   {
@@ -253,13 +253,14 @@ export const ICONS = [
     svg: (id) => knock(id, spyHead(), spyCut()),
   },
   {
-    id: 'counter-intel', family: 'intel', label: 'Hunt foreign spies', idea: 'A spy above a pair of handcuffs', rev: 3, was: 'r1 spy under a no sign (read as sanctions); r2 magnifier on a spy (read as investigate, spy on)',
-    accept: ['counter intelligence', 'counter-intel', 'counterintelligence', 'hunt spies', 'catch spies', 'arrest spies', 'jail spies', 'spy caught', 'handcuff spies', 'captured spy', 'lock up spies', 'expose spies', 'root out spies', 'find spies', 'stop spies'],
-    svg: (id) =>
-      knock(id, `<g transform="translate(24 19) scale(0.78) translate(-24 -26.5)">${knock(`${id}-s`, spyHead(), spyCut())}</g>`, `<rect x="0" y="30.5" width="48" height="18" fill="${K}"/>`) +
-      `<circle cx="9" cy="40.5" r="5.6" fill="none" stroke="currentColor" stroke-width="3.4"/><circle cx="39" cy="40.5" r="5.6" fill="none" stroke="currentColor" stroke-width="3.4"/>` +
-      rect(11.5, 32.5, 6, 4.6, 1.2) + rect(30.5, 32.5, 6, 4.6, 1.2) +
-      [19.5, 24, 28.5].map((x) => `<ellipse cx="${x}" cy="35" rx="2.5" ry="1.6" fill="none" stroke="currentColor" stroke-width="1.8"/>`).join(''),
+    id: 'counter-intel', family: 'intel', label: 'Hunt foreign spies', idea: 'A spy and a pair of handcuffs closing on him', rev: 4, was: 'r1 spy under a no sign (sanctions); r2 magnifier on a spy (investigate); r3 spy above level handcuffs (read as a spy in a car)',
+    accept: ['counter intelligence', 'counter-intel', 'counterintelligence', 'hunt spies', 'catch spies', 'arrest spies', 'arrest the spy', 'jail spies', 'spy caught', 'captured spy', 'handcuff spies', 'lock up spies', 'expose spies', 'root out spies', 'find spies', 'stop spies'],
+    svg: (id) => {
+      const cuff = (cx, cy, a) => `<g transform="rotate(${a} ${cx} ${cy})"><circle cx="${cx}" cy="${cy}" r="5.6" fill="none" stroke="currentColor" stroke-width="3.6"/>${rect(cx - 3, cy - 11, 6, 5, 1.2)}</g>`;
+      return `<g transform="translate(17 15) scale(0.68) translate(-24 -20)">${knock(`${id}-s`, spyHead(), spyCut() + rect(0, 34, 48, 14, 0, K))}</g>` +
+        cuff(24, 40.5, -50) + cuff(39.5, 26.5, 15) +
+        [[30.6, 36], [33.6, 32.4]].map(([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="2.4" ry="1.6" transform="rotate(-50 ${x} ${y})" fill="none" stroke="currentColor" stroke-width="1.8"/>`).join('');
+    },
   },
   {
     id: 'sabotage', family: 'intel', label: 'Sabotage', idea: 'Dynamite with a lit fuse',
@@ -300,12 +301,14 @@ export const ICONS = [
     },
   },
   {
-    id: 'coup', family: 'intel', label: 'Back a coup', idea: 'A tank knocking the crown off', rev: 3, was: 'r1 crown with swap arrows (read as election); r2 helmet over a crown (read as a masked agent, cyberattack)',
-    accept: ['coup', 'military coup', 'overthrow', 'overthrow the leader', 'overthrow the king', 'military takeover', 'army takes over', 'seize power', 'topple leader', 'topple the king', 'regime change', 'junta', 'take over the government', 'depose', 'tanks topple the king'],
+    id: 'coup', family: 'intel', label: 'Back a coup', idea: 'A soldier helmet on the empty throne', rev: 4, was: 'r1 crown with swap arrows (election); r2 helmet over a crown (masked agent); r3 tank knocking a crown off (tank attack, invasion)',
+    accept: ['coup', 'military coup', 'overthrow', 'overthrow the leader', 'military takeover', 'army takes over', 'army takes power', 'seize power', 'seize the throne', 'take the throne', 'topple leader', 'regime change', 'junta', 'military rule', 'take over the government', 'depose', 'usurp'],
     svg: (id) =>
-      `<g transform="translate(-1 6)">${knock(`${id}-t`, tank(), tankCut())}</g>` +
-      `<g transform="translate(34 13) rotate(24) scale(0.78) translate(-38 -14.5)">${fl('M29 19L27.5 8.5L33 12.5L38 5.5L43 12.5L48.5 8.5L47 19Z') + rect(29, 20.5, 18, 3.4, 1)}</g>` +
-      st('M30 27.5L33.5 25M24.5 22L26 18.5', 2.4),
+      knock(id,
+        fl('M10 30V8.5C10 4.5 14 3 17 5.5C19 2 29 2 31 5.5C34 3 38 4.5 38 8.5V30Z') + rect(6, 30.5, 36, 5.5, 1.5) + rect(8.5, 36, 4.5, 10, 1) + rect(35, 36, 4.5, 10, 1) + rect(3.5, 22, 5, 8, 1.5) + rect(39.5, 22, 5, 8, 1.5),
+        fl('M17.5 18.5L16.5 10.5L20.5 13.5L24 8.5L27.5 13.5L31.5 10.5L30.5 18.5Z', K) +
+        `<path d="M12 31.5C12 17.5 36 17.5 36 31.5Z" fill="${K}" stroke="${K}" stroke-width="5"/>`) +
+      fl('M12.5 30C12.5 18.5 35.5 18.5 35.5 30Z') + rect(9.5, 28.8, 29, 3.6, 1.8),
   },
   // ---------------- Economy ----------------
   {
@@ -385,14 +388,16 @@ fs.writeFileSync(
   `// Generated by build.mjs: the order pictograms as an inline SVG sprite, plus their metadata.\n(function () {\n  var d = document.createElement('div');\n  d.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden';\n  d.setAttribute('aria-hidden', 'true');\n  d.innerHTML = ${JSON.stringify(`<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0">${symbols}</svg>`)};\n  (document.body || document.documentElement).appendChild(d);\n  window.ORDER_ICONS = ${JSON.stringify(meta)};\n  window.ORDER_FAMILIES = ${JSON.stringify(FAMILIES)};\n})();\n`,
 );
 
-// Recognition sheet: a fixed shuffle (no family grouping, no colour, no labels)
-const order = ICONS.map((i, n) => ({ i, k: (n * 13 + 2) % 29 })).sort((a, b) => a.k - b.k).map((x) => x.i);
-fs.writeFileSync(path.join(here, 'recognition-key.json'), JSON.stringify(order.map((i, n) => ({ n: n + 1, id: i.id, label: i.label, accept: i.accept })), null, 2));
+// Recognition sheets A and B (D-74 replicate run): two fixed shuffles, no family grouping, no colour, no labels
 const cell = (i, n) =>
   `<figure><span class="n">${n + 1}</span><div class="big"><svg viewBox="0 0 48 48"><use href="#oi-${i.id}"/></svg></div><div class="small"><svg viewBox="0 0 48 48"><use href="#oi-${i.id}"/></svg><svg viewBox="0 0 48 48" class="inv"><use href="#oi-${i.id}"/></svg></div><div class="line"></div></figure>`;
-fs.writeFileSync(
-  path.join(here, '..', 'order-icons-recognition-sheet.html'),
-  `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Order icon test</title>
+const SHEETS = { A: [5, 3], B: [19, 11] };
+for (const [name, [m, c]] of Object.entries(SHEETS)) {
+  const order = ICONS.map((i, n) => ({ i, k: (n * m + c) % 29 })).sort((x, y) => x.k - y.k).map((x) => x.i);
+  fs.writeFileSync(path.join(here, `recognition-key-${name}.json`), JSON.stringify(order.map((i, n) => ({ n: n + 1, id: i.id, label: i.label, accept: i.accept })), null, 2));
+  fs.writeFileSync(
+    path.join(here, '..', `order-icons-recognition-sheet-${name}.html`),
+    `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Order icon test ${name}</title>
 <style>
 body{margin:0;background:#0b0f17;color:#e8ecf2;font:15px/1.4 Geist,Inter,system-ui,sans-serif;padding:28px}
 h1{font-size:22px;margin:0 0 4px}p{margin:0 0 20px;color:#a3aebf;max-width:880px}
@@ -405,10 +410,11 @@ figure{margin:0;position:relative;background:#1d2738;border:1px solid #3a4759;bo
 .small svg.inv{color:#e8ecf2;background:none;padding:0}
 .line{width:100%;border-bottom:1px dashed #56657c;height:18px}
 </style></head><body><script src="order-icons/sprite.js"></script>
-<h1>Order icons: what does each one do?</h1>
+<h1>Order icons, sheet ${name}: what does each one do?</h1>
 <p>Each picture is one order you can give as a head of government. For each number, write the order in a few words (for example "build a school"). Do not look anything up. Shown at 48 px on a plate, and at 24 px on a plate and bare.</p>
 <div class="grid">${order.map(cell).join('')}</div></body></html>\n`,
-);
+  );
+}
 
 // Contact sheet: every icon by family, at 96, 48 and 24 px, plate and bare, with the 48 grid
 const famOrder = ['diplo', 'mil', 'nuke', 'intel', 'econ', 'home'];

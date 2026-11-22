@@ -1,99 +1,173 @@
-# Icon recognition test (D-66, RS-007)
+# Icon recognition test: final replicated run (D-66, D-74)
 
-**Round 3 (D-72).** Round 1: 74% weighted (`concept-tests/RESULTS.md`); round 2: 81.4% weighted, 82.1% unweighted (`concept-tests/RESULTS-round2.md`), with four icons under the floor and two danger orders under 90%. Round 3 redraws six icons (`design-order-cards.md` section 3.4): Destabilize, Back a coup, Strike nuclear sites, Soft policing, Arm rebels, and Hunt foreign spies (for the spy / hunt spies confusion). Every other icon is byte-identical to round 2. The sheet has a **new shuffled order** (`(n * 13 + 2) % 29` in `build.mjs`).
+The acceptance bar for the order pictograms: players tell what an order does from its picture alone. **Pass: 80% or more correct, pooled across the panel and across both sheets.**
 
-**Compare rounds by order id, never by cell number.** Cell numbers change every round; the registry id (`court`, `coup`, ...) is the stable key. `recognition-key.json` maps this round's numbers to ids; score per id and put the round 1 and round 2 rates for the same id beside it. Everything below uses round 3 numbering.
+Design and full history: `design-order-cards.md` section 3.4. Icon source: `concepts/order-icons/build.mjs`.
 
-The acceptance bar for the order pictograms: players must tell what an order does from its picture alone. The panel names each of the 28 order icons with every label hidden. **Pass: 80% or more correct, pooled across the panel.**
+## Why this run is different (D-74)
 
-Design: `design-order-cards.md`. Icon source: `concepts/order-icons/build.mjs`.
+Rounds 1 to 3 showed that one round is noisy: icons whose drawing did not change moved by up to 67 points between rounds (disinformation 89, 67, 0; crackdown 56, 56, 33; arm rebels 89, 44 before it was redrawn). So:
+
+1. Icons are judged by their **average over the rounds that showed their current drawing**, keyed by **order id**, never by cell number (cell numbers change every sheet).
+2. The final run is **replicated**: every persona answers **two sheets, A and B**, with different shuffles. The per-icon score is the mean of A and B; the difference between A and B measures the noise.
+3. Only three icons were redrawn for this run (Back a coup, Strike nuclear sites, Hunt foreign spies), because they failed in every round. Every other icon is byte-identical to round 3, including Feed disinformation and Hard crackdown, whose drops are treated as noise until this replicate says otherwise.
+4. In the game every order card also carries its title, family word and, for danger orders, a confirm face, so the icon is a glance aid, not the only cue. The test still hides all of that on purpose.
+
+## Score history by order id
+
+R1, R2 and R3 are the unweighted main-call rates from `concept-tests/RESULTS.md`, `RESULTS-round2.md` and `RESULTS-round3.md`. "Rounds with the current drawing" lists the rounds that showed the drawing being shipped; the average uses only those rounds.
+
+| Order id | Order | R1 % | R2 % | R3 % | Rounds with the current drawing | Average over those rounds | Rounds counted | Status |
+|---|---|---|---|---|---|---|---|---|
+| `court` | Court | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
+| `denounce` | Denounce | 78 | 89 | 89 | 1,2,3 | 85% | 3 | ok |
+| `offer-pact` | Offer defence pact | 56 | 100 | 89 | 2,3 | 94% | 2 | ok |
+| `break-pact` | Break pact | 78 | 78 | 67 | 1,2,3 | 74% | 3 | watch |
+| `ceasefire` | Propose ceasefire | 0 | 100 | 100 | 2,3 | 100% | 2 | ok |
+| `mediate` | Mediate peace | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
+| `declare-war` | Declare war | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
+| `mobilize` | Mobilize forces | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
+| `demobilize` | Stand down forces | 89 | 100 | 100 | 1,2,3 | 96% | 3 | ok |
+| `procure` | Buy weapons | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
+| `deploy-border` | Mass troops at border | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
+| `withdraw-border` | Withdraw troops | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
+| `airstrike-military` | Strike military targets | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
+| `airstrike-nuclear` | Strike nuclear sites | 78 | 56 | 44 | none (redrawn for the final run) | untested | 0 | final redraw |
+| `fund-nuclear` | Fund nuclear program | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
+| `nuclear-strike` | Nuclear strike | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
+| `spy` | Spy on | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
+| `counter-intel` | Hunt foreign spies | 0 | 67 | 44 | none (redrawn for the final run) | untested | 0 | final redraw |
+| `sabotage` | Sabotage | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
+| `destabilize` | Destabilize | 22 | 0 | 89 | 3 | 89% | 1 | ok (one round only) |
+| `arm-rebels` | Arm rebels | 89 | 44 | 67 | 3 | 67% | 1 | watch (one round only) |
+| `disinformation` | Feed disinformation | 89 | 67 | 0 | 1,2,3 | 52% | 3 | watch (unchanged per D-74; replicate decides) |
+| `assassinate` | Assassinate leader | 56 | 100 | 100 | 2,3 | 100% | 2 | ok |
+| `coup` | Back a coup | 44 | 33 | 44 | none (redrawn for the final run) | untested | 0 | final redraw |
+| `reform` | Reform program | 100 | 100 | 100 | 1,2,3 | 100% | 3 | ok |
+| `address` | National address | 0 | 100 | 100 | 2,3 | 100% | 2 | ok |
+| `policing-soft` | Soft policing | 67 | 11 | 100 | 3 | 100% | 1 | ok (one round only) |
+| `policing-hard` | Hard crackdown | 56 | 56 | 33 | 2,3 | 44% | 2 | watch (unchanged per D-74; replicate decides) |
+
+Average of the 25 tested current drawings: **92.1%**. Single-round averages (destabilize, arm rebels, soft policing) rest on 9 answers and are the least certain; the replicate settles them. Consistent failures (every round under 50% or under 90% for a danger order): coup, strike nuclear sites and hunt foreign spies, which is why only these three were redrawn. Disinformation (average 52%) and crackdown (44%) are watched: if both sheets of the replicate put them under 50%, they are redrawn next.
 
 ## What the persona sees
 
-- **Sheet (the only thing shown):** `concepts/order-icons-recognition-sheet.png` (HTML source: `concepts/order-icons-recognition-sheet.html`).
-- 28 numbered cells in a fixed shuffled order (not grouped by family). Each cell shows the icon at 48 px on a neutral light plate, then at 24 px on a plate and 24 px bare. **No labels, no family colour, no family word**, so the test measures the pictogram alone. In the game the icon also gets its family colour and word, so the real-world score should be higher than the test score.
-- Do **not** give the persona the contact sheet, the mocks, `recognition-key.json` or this file's answer key.
+- **Sheet A:** `concepts/order-icons-recognition-sheet-A.png` (HTML: `-A.html`), key `concepts/order-icons/recognition-key-A.json`.
+- **Sheet B:** `concepts/order-icons-recognition-sheet-B.png` (HTML: `-B.html`), key `concepts/order-icons/recognition-key-B.json`.
+- 28 numbered cells per sheet, in two different fixed shuffles (A: `(n * 5 + 3) % 29`, B: `(n * 19 + 11) % 29`). Each cell shows the icon at 48 px on a neutral plate, then 24 px on a plate and 24 px bare. **No labels, no family colour, no family word.**
+- Do **not** show the persona the contact sheet, the mocks, the keys or this file's answer tables.
 
-## Instructions to read to each persona (verbatim)
+## Procedure
+
+1. Each persona answers sheet A, then does something else (the agenda tasks or another test), then answers sheet B in a **separate session or prompt**, without seeing its sheet A answers. Half the panel (maya, ruth, priya, sam, marcus) does A first; the other half (olivia, noah, dan, leo) does B first, to cancel order effects.
+2. Read the same instructions before each sheet (verbatim):
 
 > You are about to see 28 small pictures. Each one is an order you can give as the head of a country in a strategy game (diplomacy, war, spying, the economy, things at home). For each number, write what you think the order is, in a few words. Answer quickly, the way you would react while playing: about 3 seconds per picture. Do not skip; if unsure, write your best guess and add "(guess)". Do not go back and change earlier answers.
 
-Answer format, one line per icon:
-
-```
-1: <answer>
-2: <answer>
-...
-28: <answer>
-```
-
-Each persona answers in character (reading patience and attention from `panel/<name>.yaml`); Noah, Olivia and Ruth must answer at their real speed, not at a careful reader's speed.
+3. Answer format, one line per icon: `1: <answer>` to `28: <answer>`, with the sheet letter at the top.
+4. Each persona answers in character (reading patience and attention from `panel/<name>.yaml`); Noah, Olivia and Ruth answer at their real speed.
 
 ## Scoring
 
-1. An answer is **correct** when it names the order's concept: it matches one of the accepted answers below, or a clear synonym of the label (the scorer decides, and logs the call). "(guess)" answers count the same as others.
-2. **Partial** answers count as wrong but are logged, because they tell us what to fix: the right family but the wrong order (for example "nuclear" for 26, Strike nuclear sites; "police" is accepted for 6 and 21, since the family is the main signal and the plate word "Home" plus the card title settles which one).
-3. Per persona: correct out of 28. Pooled: all correct answers / (28 x personas).
-4. Record per icon: percent correct and the wrong answers, verbatim.
+1. Map every answer to its **order id** with the sheet's key, then score by id. An answer is correct when it names the order's concept (accepted answers below or a clear synonym; the scorer logs each judgement call). "(guess)" counts the same.
+2. Partial answers are wrong but logged (right family, wrong order; the picture named instead of the order).
+3. Per icon: correct on A /9, correct on B /9, **mean %** = (A + B) / 18. **A/B gap** = number of personas who got it right on one sheet and wrong on the other.
+4. Pooled: all correct answers on both sheets / (28 x 9 x 2). Report unweighted and weighted (panel weights), and strict / main / lenient bounds as in round 3.
+5. Noise: report the per-icon A/B gap; an icon with a gap of 3 or more personas is "noisy" and its number is not trusted on its own.
 
 ### Acceptance
 
-| Bar | Threshold | If missed |
+| Bar | Threshold (on the A+B mean) | If missed |
 |---|---|---|
-| Pooled recognition | **80% or more** (D-66) | Redesign the weakest icons and rerun before ship |
-| Per icon floor | 50% or more on every icon | That icon is redesigned even if the pool passes |
-| Danger orders | 90% or more on 12, 22, 23, 26, 27 (back a coup, declare war, nuclear strike, strike nuclear sites, assassinate) | Redesign: an irreversible order must never be mistaken |
-| Confusion pairs | No pair confused by more than 2 personas: 26/23 (strike nuclear sites, nuclear strike; neighbours on this sheet, which makes the test harder, not easier), 8/20 (spy, hunt spies), 6/21 (hard, soft policing), 12/27 (coup, assassinate), 12/18 (coup, destabilize), 12/17 (coup, mass troops at border: both show a tank), 22/25 (declare war, ceasefire), 10/25 (mediate, ceasefire), 7/19 (mobilize, stand down), 17/1 (deploy, withdraw), 28/13 (pact, break pact), 28/3 (pact, court), 14/26 (airstrike, strike nuclear sites) | Strengthen the modifier (badge, arrow, slash) of the pair |
+| Pooled recognition | **80% or more** | Not shipped as the only cue; redraw the lowest icons |
+| Per icon floor | 50% or more on every icon | Redraw that icon (unless it is noisy and its history average is 80% or more) |
+| Danger orders | 90% or more on coup, declare war, nuclear strike, strike nuclear sites, assassinate (sheet A: 3 Back a coup, 5 Declare war, 21 Nuclear strike, 11 Strike nuclear sites, 27 Assassinate leader; sheet B: 14 Back a coup, 10 Declare war, 7 Nuclear strike, 26 Strike nuclear sites, 23 Assassinate leader) | Redraw; the confirm face in the game is the safety net, the icon must still not mislead |
+| Confusion pairs | No pair confused by more than 2 personas on either sheet | Strengthen the modifier of the pair |
 
-Round 3 watch list: 18 Destabilize (must not read as a ship or a building), 12 Back a coup (danger; must not read as plain deploy, the crown must carry it), 26 Strike nuclear sites (danger; must not read as a nuclear strike), 21 Soft policing (must not read as military), 2 Arm rebels (must not read as a protest), 20 Hunt foreign spies (must not read as spy on, and the cuffs must not read as binoculars), 15 Feed disinformation (67% in round 2, unchanged), 6 Hard crackdown (56%, unchanged).
+Confusion pairs to count, sheet A numbers: 11/21 (airstrike-nuclear, nuclear-strike), 26/2 (spy, counter-intel), 3/25 (coup, deploy-border), 3/27 (coup, assassinate), 3/12 (coup, destabilize), 23/18 (policing-hard, policing-soft), 5/24 (declare-war, ceasefire), 28/24 (mediate, ceasefire), 10/15 (mobilize, demobilize), 25/1 (deploy-border, withdraw-border), 14/19 (offer-pact, break-pact), 14/4 (offer-pact, court), 6/11 (airstrike-military, airstrike-nuclear).
 
-## Answer key (scorer only)
+Sheet B numbers: 26/7 (airstrike-nuclear, nuclear-strike), 25/16 (spy, counter-intel), 14/27 (coup, deploy-border), 14/23 (coup, assassinate), 14/24 (coup, destabilize), 3/13 (policing-hard, policing-soft), 10/1 (declare-war, ceasefire), 20/1 (mediate, ceasefire), 28/19 (mobilize, demobilize), 27/18 (deploy-border, withdraw-border), 21/11 (offer-pact, break-pact), 21/12 (offer-pact, court), 8/26 (airstrike-military, airstrike-nuclear).
+
+What the three redrawn icons must not read as (from rounds 1 to 3): Back a coup must not read as a tank attack, an invasion, an election or a covert agent; Strike nuclear sites must not read as a factory or power plant, or as a nuclear strike or bomber; Hunt foreign spies must not read as spy on, investigate, or a spy in a car.
+
+## Answer key, sheet A (scorer only)
 
 | # | Order | Registry id | Accepted answers |
 |---|---|---|---|
 | 1 | Withdraw troops | `withdraw-border` | withdraw, withdraw troops, pull back, retreat, leave border, de-escalate, bring troops back, pull out |
-| 2 | Arm rebels | `arm-rebels` | arm rebels, support rebels, rebels, insurgents, revolution, armed uprising, uprising, guerrilla, arm the opposition, rebellion, militia, give guns to rebels, armed revolt |
-| 3 | Court | `court` | court, improve relations, friendship, handshake, deal, agreement, make friends, cooperation, diplomacy |
-| 4 | Buy weapons | `procure` | buy weapons, procure, arms purchase, buy arms, ammunition, weapons, arms deal, military spending, buy ammo |
-| 5 | Sabotage | `sabotage` | sabotage, dynamite, blow up, explosives, bomb, destroy infrastructure, tnt, demolish, attack infrastructure |
-| 6 | Hard crackdown | `policing-hard` | crackdown, hard crackdown, riot police, riot control, repression, police force, police violence, force, martial law, suppress protests, hard policing, police, police brutality, clamp down |
-| 7 | Mobilize forces | `mobilize` | mobilize, mobilise, call up, reserves, raise army, recruit, more troops, build army, draft, troops up |
-| 8 | Spy on | `spy` | spy, spy on, espionage, intelligence, gather intel, surveillance, agent, secret agent, investigate, watch |
-| 9 | National address | `address` | national address, address the nation, speech, televised speech, tv address, speech on tv, broadcast, announcement, press conference, speak to the nation, address, rally the nation, propaganda |
-| 10 | Mediate peace | `mediate` | mediate, mediation, peace, peace talks, broker peace, dove, negotiate, peacemaker, make peace |
-| 11 | Fund nuclear program | `fund-nuclear` | fund nuclear, nuclear program, build nuclear, nuclear research, invest nuclear, develop the bomb, nuclear funding, atom, nuclear |
-| 12 | Back a coup | `coup` | coup, military coup, overthrow, overthrow the leader, overthrow the king, military takeover, army takes over, seize power, topple leader, topple the king, regime change, junta, take over the government, depose, tanks topple the king |
-| 13 | Break pact | `break-pact` | break pact, break alliance, betray, end alliance, leave alliance, broken alliance, cancel treaty, split, broken protection |
-| 14 | Strike military targets | `airstrike-military` | airstrike, air strike, bomb, bombing, air raid, strike, jet attack, attack from the air, military strike |
-| 15 | Feed disinformation | `disinformation` | disinformation, misinformation, fake news, deception, deceive, lie, lies, propaganda, false information, mislead, disguise |
-| 16 | Denounce | `denounce` | denounce, condemn, criticise, criticize, protest, shout, megaphone, call out, public statement, accuse |
-| 17 | Mass troops at border | `deploy-border` | deploy troops, mass troops, troops to border, border, deploy, advance, move tanks, threaten, border pressure |
-| 18 | Destabilize | `destabilize` | destabilize, destabilise, undermine, unstable, make unstable, weaken, weaken government, topple, collapse, about to collapse, chaos, subvert, shake the country, jenga |
-| 19 | Stand down forces | `demobilize` | demobilize, demobilise, stand down, send troops home, disband, fewer troops, reduce army, troops down, de-escalate |
-| 20 | Hunt foreign spies | `counter-intel` | counter intelligence, counter-intel, counterintelligence, hunt spies, catch spies, arrest spies, jail spies, spy caught, handcuff spies, captured spy, lock up spies, expose spies, root out spies, find spies, stop spies |
-| 21 | Soft policing | `policing-soft` | soft policing, community policing, police talks, police dialogue, police negotiate, calm policing, police, police talk to people, dialogue, gentle policing, police outreach, peaceful policing |
-| 22 | Declare war | `declare-war` | declare war, war, go to war, attack, invade, invasion, fight, battle, swords, combat |
-| 23 | Nuclear strike | `nuclear-strike` | nuclear strike, nuke, nuclear attack, atomic bomb, nuclear war, launch nukes, mushroom cloud, nuclear bomb |
-| 24 | Reform program | `reform` | reform, reforms, economic reform, growth, modernise, modernize, develop, invest, improve economy, industry, progress, build |
-| 25 | Propose ceasefire | `ceasefire` | ceasefire, truce, pause the war, pause fighting, stop fighting, stop the war, no war, end war, end the war, armistice, halt fighting, peace, stop the fighting, cease fire |
-| 26 | Strike nuclear sites | `airstrike-nuclear` | strike nuclear sites, bomb nuclear sites, bomb nuclear plant, bomb a reactor, bomb nuclear facility, attack nuclear plant, airstrike on nuclear, hit nuclear facility, attack reactor, destroy nuclear program, bomb their nuclear program, strike the reactor |
+| 2 | Hunt foreign spies | `counter-intel` | counter intelligence, counter-intel, counterintelligence, hunt spies, catch spies, arrest spies, arrest the spy, jail spies, spy caught, captured spy, handcuff spies, lock up spies, expose spies, root out spies, find spies, stop spies |
+| 3 | Back a coup | `coup` | coup, military coup, overthrow, overthrow the leader, military takeover, army takes over, army takes power, seize power, seize the throne, take the throne, topple leader, regime change, junta, military rule, take over the government, depose, usurp |
+| 4 | Court | `court` | court, improve relations, friendship, handshake, deal, agreement, make friends, cooperation, diplomacy |
+| 5 | Declare war | `declare-war` | declare war, war, go to war, attack, invade, invasion, fight, battle, swords, combat |
+| 6 | Strike military targets | `airstrike-military` | airstrike, air strike, bomb, bombing, air raid, strike, jet attack, attack from the air, military strike |
+| 7 | Sabotage | `sabotage` | sabotage, dynamite, blow up, explosives, bomb, destroy infrastructure, tnt, demolish, attack infrastructure |
+| 8 | Reform program | `reform` | reform, reforms, economic reform, growth, modernise, modernize, develop, invest, improve economy, industry, progress, build |
+| 9 | Denounce | `denounce` | denounce, condemn, criticise, criticize, protest, shout, megaphone, call out, public statement, accuse |
+| 10 | Mobilize forces | `mobilize` | mobilize, mobilise, call up, reserves, raise army, recruit, more troops, build army, draft, troops up |
+| 11 | Strike nuclear sites | `airstrike-nuclear` | strike nuclear sites, bomb nuclear sites, bomb a reactor, bomb nuclear facility, bomb nuclear plant, attack nuclear plant, airstrike on nuclear, hit nuclear facility, attack reactor, destroy nuclear program, bomb their nuclear program, strike the reactor, bomb radioactive site |
+| 12 | Destabilize | `destabilize` | destabilize, destabilise, undermine, unstable, make unstable, weaken, weaken government, topple, collapse, about to collapse, chaos, subvert, shake the country, jenga |
+| 13 | National address | `address` | national address, address the nation, speech, televised speech, tv address, speech on tv, broadcast, announcement, press conference, speak to the nation, address, rally the nation, propaganda |
+| 14 | Offer defence pact | `offer-pact` | defence pact, defense pact, alliance, ally, mutual defence, defence agreement, security pact, military alliance, treaty, join forces, protect each other |
+| 15 | Stand down forces | `demobilize` | demobilize, demobilise, stand down, send troops home, disband, fewer troops, reduce army, troops down, de-escalate |
+| 16 | Fund nuclear program | `fund-nuclear` | fund nuclear, nuclear program, build nuclear, nuclear research, invest nuclear, develop the bomb, nuclear funding, atom, nuclear |
+| 17 | Arm rebels | `arm-rebels` | arm rebels, support rebels, rebels, insurgents, revolution, armed uprising, uprising, guerrilla, arm the opposition, rebellion, militia, give guns to rebels, armed revolt |
+| 18 | Soft policing | `policing-soft` | soft policing, community policing, police talks, police dialogue, police negotiate, calm policing, police, police talk to people, dialogue, gentle policing, police outreach, peaceful policing |
+| 19 | Break pact | `break-pact` | break pact, break alliance, betray, end alliance, leave alliance, broken alliance, cancel treaty, split, broken protection |
+| 20 | Buy weapons | `procure` | buy weapons, procure, arms purchase, buy arms, ammunition, weapons, arms deal, military spending, buy ammo |
+| 21 | Nuclear strike | `nuclear-strike` | nuclear strike, nuke, nuclear attack, atomic bomb, nuclear war, launch nukes, mushroom cloud, nuclear bomb |
+| 22 | Feed disinformation | `disinformation` | disinformation, misinformation, fake news, deception, deceive, lie, lies, propaganda, false information, mislead, disguise |
+| 23 | Hard crackdown | `policing-hard` | crackdown, hard crackdown, riot police, riot control, repression, police force, police violence, force, martial law, suppress protests, hard policing, police, police brutality, clamp down |
+| 24 | Propose ceasefire | `ceasefire` | ceasefire, truce, pause the war, pause fighting, stop fighting, stop the war, no war, end war, end the war, armistice, halt fighting, peace, stop the fighting, cease fire |
+| 25 | Mass troops at border | `deploy-border` | deploy troops, mass troops, troops to border, border, deploy, advance, move tanks, threaten, border pressure |
+| 26 | Spy on | `spy` | spy, spy on, espionage, intelligence, gather intel, surveillance, agent, secret agent, investigate, watch |
 | 27 | Assassinate leader | `assassinate` | assassinate, assassination, kill leader, kill the leader, kill the king, kill the ruler, target leader, target the leader, shoot the leader, eliminate the leader, murder the leader, take out the leader, regicide |
-| 28 | Offer defence pact | `offer-pact` | defence pact, defense pact, alliance, ally, mutual defence, defence agreement, security pact, military alliance, treaty, join forces, protect each other |
+| 28 | Mediate peace | `mediate` | mediate, mediation, peace, peace talks, broker peace, dove, negotiate, peacemaker, make peace |
 
-Notes on single words: "bomb" is accepted for 5 and 14, "propaganda" for 15 and 9, "negotiate" for 10, "de-escalate" for 1 and 19, "peace" for 10 and 25, "police" for 6 and 21. Partials (wrong, logged): "nuclear strike", "nuclear bomber" or "nuclear air strike" for 26 (the answer must name a site, plant or reactor), "investigate" or "spy on" for 20, "talk to the military" or "general" for 21, "protest" or "riot" without rebels or arms for 2, "tanks", "attack" or "invade" without the ruler for 12, "ship", "navy" or "building" for 18, "crown" or "king" alone for 12 or 27, "target someone" without the leader for 27, "defence spending" for 28, "pause" alone for 25. "nuclear" alone is accepted for 11 only.
+## Answer key, sheet B (scorer only)
 
-The machine-readable key is `concepts/order-icons/recognition-key.json` (generated with the sheet, so the numbering always matches).
+Accepted answers are the same per order id as on sheet A.
+
+| # | Order | Registry id | Same order on sheet A |
+|---|---|---|---|
+| 1 | Propose ceasefire | `ceasefire` | 24 |
+| 2 | Denounce | `denounce` | 9 |
+| 3 | Hard crackdown | `policing-hard` | 23 |
+| 4 | Reform program | `reform` | 8 |
+| 5 | Feed disinformation | `disinformation` | 22 |
+| 6 | Sabotage | `sabotage` | 7 |
+| 7 | Nuclear strike | `nuclear-strike` | 21 |
+| 8 | Strike military targets | `airstrike-military` | 6 |
+| 9 | Buy weapons | `procure` | 20 |
+| 10 | Declare war | `declare-war` | 5 |
+| 11 | Break pact | `break-pact` | 19 |
+| 12 | Court | `court` | 4 |
+| 13 | Soft policing | `policing-soft` | 18 |
+| 14 | Back a coup | `coup` | 3 |
+| 15 | Arm rebels | `arm-rebels` | 17 |
+| 16 | Hunt foreign spies | `counter-intel` | 2 |
+| 17 | Fund nuclear program | `fund-nuclear` | 16 |
+| 18 | Withdraw troops | `withdraw-border` | 1 |
+| 19 | Stand down forces | `demobilize` | 15 |
+| 20 | Mediate peace | `mediate` | 28 |
+| 21 | Offer defence pact | `offer-pact` | 14 |
+| 22 | National address | `address` | 13 |
+| 23 | Assassinate leader | `assassinate` | 27 |
+| 24 | Destabilize | `destabilize` | 12 |
+| 25 | Spy on | `spy` | 26 |
+| 26 | Strike nuclear sites | `airstrike-nuclear` | 11 |
+| 27 | Mass troops at border | `deploy-border` | 25 |
+| 28 | Mobilize forces | `mobilize` | 10 |
+
+Single-word rules (by order id): "bomb" is accepted for `sabotage` and `airstrike-military`; "propaganda" for `disinformation` and `address`; "negotiate" for `mediate`; "de-escalate" for `withdraw-border` and `demobilize`; "peace" for `mediate` and `ceasefire`; "police" for `policing-soft` and `policing-hard`; "nuclear" alone for `fund-nuclear` only. Partials (wrong, logged): "power plant", "factory", "nuclear strike" or "nuclear bomber" for `airstrike-nuclear` unless it names a nuclear site or reactor; "spy", "spy on" or "investigate" for `counter-intel`; "tank attack", "invade" or "throne" alone for `coup`; "crown" or "king" alone for `coup` or `assassinate`; "target someone" without the leader for `assassinate`; "defence spending" for `offer-pact`; "pause" alone for `ceasefire`.
 
 ## Results template
 
 ```
-| Persona | Correct /28 | % | Wrong (number: answer) |
-|---|---|---|---|
+| Order id | A /9 | B /9 | Mean % | A/B gap | R3 % | History avg (current drawing) | Status |
+|---|---|---|---|---|---|---|---|
 | ... |
-Pooled: x / (28 x n) = y%   Pass (>= 80%): yes/no
-Per icon below 50%: ...
-Danger orders below 90%: ...
-Confused pairs (> 2 personas): ...
+Pooled: x / 504 = y% (weighted z%)   Pass (>= 80%): yes/no
+Per icon below 50%: ...   Danger below 90%: ...   Pairs over 2: ...   Noisy icons (gap >= 3): ...
 ```
 
-Rerun after any icon change: `node concepts/order-icons/build.mjs` then `node concepts/shoot-order-cards.mjs recognition` (the sheet order is fixed by the generator).
+Regenerate after any icon change: `node concepts/order-icons/build.mjs`, then `node concepts/shoot-order-cards.mjs recognition` (both sheets; their order is fixed by the generator).

@@ -4,7 +4,8 @@ import path from 'node:path';
 const here = path.dirname(new URL(import.meta.url).pathname);
 const jobs = [
   ['order-icons/contact-sheet.html', 'order-icons/contact-sheet.png', 1440],
-  ['order-icons-recognition-sheet.html', 'order-icons-recognition-sheet.png', 1300],
+  ['order-icons-recognition-sheet-A.html', 'order-icons-recognition-sheet-A.png', 1300],
+  ['order-icons-recognition-sheet-B.html', 'order-icons-recognition-sheet-B.png', 1300],
   ['order-cards-catalog.html', 'order-cards-catalog-1440.png', 1440],
   ['order-cards-catalog.html', 'order-cards-catalog-390.png', 390],
   ['order-cards-map-menu.html', 'order-cards-map-menu-1440.png', 1440],
