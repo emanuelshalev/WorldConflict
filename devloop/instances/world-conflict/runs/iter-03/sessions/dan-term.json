@@ -1,0 +1,246 @@
+{
+  "persona": "dan",
+  "variant": "dan-term",
+  "panel_version": "1.2",
+  "build": "d70608a",
+  "iteration": 3,
+  "minutes_played": 55,
+  "scenarios": [
+    {
+      "id": "D1",
+      "outcome": "partial",
+      "turns": 12,
+      "steps": [
+        "Entered seed T2026-RUS-DAN01 under Play a seed",
+        "Answered familiarity prompt with I know this",
+        "Played 12 months as Putin, mixed Desk and Map (months 2 and 4 in Map)",
+        "Checked score breakdown, mission sheet, forecasts, debriefs"
+      ],
+      "notes": "Rules that limit me are mostly visible (forecast, mission warnings, score breakdown). 12 of 48 months only; no election reached."
+    },
+    {
+      "id": "D2",
+      "outcome": "partial",
+      "turns": 12,
+      "steps": [
+        "Probed Destabilize Ukraine (2 cap, -8 Ukraine stability) and free Mass troops",
+        "Compared repeated Reassure call",
+        "Tried to find a lever for the score 115 bonus"
+      ],
+      "notes": "No dominant move found in 12 months, but I could not find any path to the 115 bonus: score drifts 100 to 87 and 'heading to 86'. Reassure calls give the same stock reply every time."
+    }
+  ],
+  "friction": [
+    {
+      "where": "Title, Play a seed button",
+      "expected": "Click by label opens the seed box",
+      "happened": "Driver click returned not ok on the first try; a second tap on the text opened it. The seed field only shows a placeholder HC-USA-3PX, nothing says the code can be typed with or without dashes",
+      "kind": "affordance",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/dan-term/002-seed.png"
+    },
+    {
+      "where": "Month 1 desk, Execute tooltip 'When you are ready, run the month'",
+      "expected": "Tooltip beside the button",
+      "happened": "The coach bubble covers the Recommended list under it (Court Poland card), I could not read the second card until it went",
+      "kind": "affordance",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/dan-term/010-orders.png"
+    },
+    {
+      "where": "Header Stability, Legitimacy, Approval, Economy",
+      "expected": "Tap to see why it moved (Score does this)",
+      "happened": "Stability fell 53 to 44 in one month and the figure is not tappable; I only found the cause list by luck in the Score popup, which does not list stability at all",
+      "kind": "affordance",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/dan-term/031-stab.png"
+    },
+    {
+      "where": "Full desk, Your advisors suggest cards (month 2)",
+      "expected": "Three readable cards",
+      "happened": "Cards are squeezed to a few pixels wide, titles run one letter per line",
+      "kind": "other",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/dan-term/015-m2full.png"
+    },
+    {
+      "where": "Month 2 Gaza reconstruction crisis, as Russia",
+      "expected": "Decision about my own wars",
+      "happened": "I was asked to pledge money to Gaza as Russia, and Staff keep recommending Court Poland at relations -99 for +5, feels like filler. Not a naming problem but the advice looks mechanical",
+      "kind": "dashboard-feel",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/dan-term/015-m2full.png"
+    },
+    {
+      "where": "Map order menu (Ukraine)",
+      "expected": "Whole menu visible",
+      "happened": "The bottom action bar covers the last cards of the order menu and the forecast text; the forecast column is very narrow. Tension +8 is coloured green though it is bad",
+      "kind": "other",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/dan-term/018-fc.png"
+    },
+    {
+      "where": "Debrief, Mass troops facing Ukraine",
+      "expected": "A number for what the free order did",
+      "happened": "Only the order title is listed, no before/after, unlike Mobilize forces which showed 70 to 90 and stability -2",
+      "kind": "misread",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/dan-term/027-r4.png"
+    },
+    {
+      "where": "Month 7 General strike result card",
+      "expected": "Strike scene and a fresh quote",
+      "happened": "Peace-table art with a Ukrainian-style flag and the same quote 'Finally, someone in charge who listens' as month 3",
+      "kind": "other",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/dan-term/036-r7.png"
+    },
+    {
+      "where": "Months 4, 11, 12 reassure calls",
+      "expected": "Different reactions from Poland, Germany, Japan, UK",
+      "happened": "Near identical reply lines ('That was a better conversation than either of us expected. My ministers will follow up.') across countries",
+      "kind": "dashboard-feel",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/dan-term/023-r3d.png"
+    },
+    {
+      "where": "Mission sheet",
+      "expected": "Count of goals on track",
+      "happened": "Header says '0 of 0 on track' while two bonus goals are listed off track",
+      "kind": "misread",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/dan-term/039-mis.png"
+    },
+    {
+      "where": "Paper, 'Your month in Russia'",
+      "expected": "Score change",
+      "happened": "SCORE 0.0 while the score had dropped; also an order I never placed (Spy on Turkey) shows FAILED",
+      "kind": "misread",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/dan-term/045-paper.png"
+    },
+    {
+      "where": "Month 2 political capital",
+      "expected": "Banked capital helps later",
+      "happened": "I skipped orders once and hit the cap of 6, so the next gain is lost; the cap line on the right explains it but only after the fact",
+      "kind": "hesitation",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/dan-term/020-m3.png"
+    },
+    {
+      "where": "Title/month 1: Mojtaba Khamenei as Supreme Leader, Andy Burnham as UK PM, Sanae Takaichi as Japan PM, Donald Tusk, D\u00edaz-Canel",
+      "expected": "Know the current office holders",
+      "happened": "I did not know Burnham or Takaichi were in office; the game just states them. The who-is-who strip and the i chips helped for Khamenei, nothing marked Burnham or Takaichi as new",
+      "kind": "naming",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/dan-term/024-m4.png"
+    },
+    {
+      "where": "Month 1 crisis 'Sanctions on Iran' text: clandestine nuclear program, Fujairah, Kramatorsk in the briefing sample",
+      "expected": "Plain names for regional bits",
+      "happened": "Kramatorsk, Mojtaba Khamenei's title and Rafah or Kerem Shalom (ticker) are names a strategy veteran may not place; I chose I know this so the underline was off and I did not tap them",
+      "kind": "naming",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/dan-term/004-seed3.png"
+    }
+  ],
+  "bugs": [
+    {
+      "title": "Advisor suggestion cards collapse to one letter per line in Full desk",
+      "steps": [
+        "Seed T2026-RUS-DAN01, execute month 1",
+        "On month 2 click Full desk",
+        "Scroll to Your advisors suggest"
+      ],
+      "expected": "Three readable cards at 1920x1080",
+      "actual": "Cards render as vertical strips with text broken letter by letter",
+      "severity": "S2",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/dan-term/015-m2full.png"
+    },
+    {
+      "title": "Your month in Russia shows SCORE 0.0 and an unordered FAILED Spy on Turkey",
+      "steps": [
+        "Play to month 12",
+        "Open Read the paper after Execute"
+      ],
+      "expected": "Score delta consistent with header, only my orders listed",
+      "actual": "Score 0.0 and a FAILED line for an order I did not place (maybe an accepted staff proposal, not clearly shown)",
+      "severity": "S3",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/dan-term/045-paper.png"
+    },
+    {
+      "title": "Mission sheet header 0 of 0 on track",
+      "steps": [
+        "Open Mission from the goal bar in month 9"
+      ],
+      "expected": "0 of 2 bonus goals",
+      "actual": "0 of 0",
+      "severity": "S4",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/dan-term/039-mis.png"
+    },
+    {
+      "title": "Order menu covered by action bar and tension +8 shown green",
+      "steps": [
+        "Map mode, tap Ukraine, tap How much? Forecast on Strike military targets"
+      ],
+      "expected": "Full forecast, bad outcomes red",
+      "actual": "Forecast clipped at bottom; Tension about +8 in green",
+      "severity": "S3",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/dan-term/018-fc.png"
+    }
+  ],
+  "suggestions": [
+    {
+      "what": "Make every header meter tappable with the same why-list the Score popup has, including stability and legitimacy",
+      "goal_served": "Can find out why every number moved"
+    },
+    {
+      "what": "Show a path to the 115 score bonus (what raises security at war) or lower the bar for a Tough seat",
+      "goal_served": "No fake depth, tough nation with understandable limits"
+    },
+    {
+      "what": "Vary call replies by country and by relation, and show the relation numbers inside the call card",
+      "goal_served": "Depth, no repeated move wins"
+    },
+    {
+      "what": "Show a number for every free order in the debrief (Mass troops)",
+      "goal_served": "Transparency"
+    },
+    {
+      "what": "Warn before political capital caps out, and let me bank by spending half",
+      "goal_served": "Trade-offs that matter"
+    },
+    {
+      "what": "Let staff stop recommending a move that cannot help (Court Poland at -99)",
+      "goal_served": "AI that plays fair, advice that makes sense"
+    }
+  ],
+  "delight": [
+    "Forecast on the order menu says '73% chance', relations -30, and warns that the strike costs the Make peace bonus star (018-fc.png)",
+    "Score popup with base plus named terms (032-sc.png)",
+    "Debrief shows 70 to 90 mobilization with the stability cost and why numbers moved (013-mob.png)",
+    "Seed code dropped me into the exact Russia game"
+  ],
+  "scores": {
+    "fun": {
+      "value": 6,
+      "reason": "Real decisions and honest numbers, but months 4, 5, 11 felt like answering the same phone call."
+    },
+    "clarity": {
+      "value": 7,
+      "reason": "Previews, score breakdown, mission impact are strong; header meters unexplained and one broken layout."
+    },
+    "visual": {
+      "value": 7,
+      "reason": "Broadcast scenes look crafted; some art does not match the crisis and Full desk cards break."
+    },
+    "feels_like_a_game": {
+      "value": 7,
+      "reason": "Orders, forecasts, capital cap read as a game, though the same crisis types cycle."
+    },
+    "agency": {
+      "value": 7,
+      "reason": "Always saw why something was blocked or costly; the 115 bonus path and Poland advice left me guessing."
+    },
+    "realism": {
+      "value": 6,
+      "reason": "Gaza conference for Russia and boilerplate leader replies break it; leaders and war framing are right."
+    },
+    "replay": {
+      "value": 6,
+      "reason": "I would try Hunt spies and the ceasefire chain again, and a different seat; one repeated reply set limits it."
+    },
+    "recommend": {
+      "value": 6,
+      "reason": "Worth a strategy friend's evening, not yet a Paradox replacement; transparency is the selling point."
+    }
+  },
+  "quit_point": null,
+  "verbatim": "The numbers are honest and I can usually see why, which is rare, but I want to tap Stability and get the same answer the Score gives me, and I do not want the same phone call three times."
+}

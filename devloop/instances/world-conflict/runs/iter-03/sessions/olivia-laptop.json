@@ -1,0 +1,210 @@
+{
+  "persona": "olivia",
+  "variant": "olivia-laptop",
+  "panel_version": "1.2",
+  "build": "d70608a",
+  "iteration": 3,
+  "minutes_played": 25,
+  "scenarios": [
+    {
+      "id": "O1",
+      "outcome": "achieved",
+      "turns": 12,
+      "steps": [
+        "Title: Play a seed, typed CA-USA-OLIV1, landed straight in Caracas After Maduro as the US",
+        "Picked Guide me",
+        "Accepted the cabinet pick and pressed Execute in month 1 (about 90 seconds to first result)",
+        "Months 2-12 mostly Accept all recommended then Execute",
+        "Reached the reveal, mission complete, grade A, then New game back to title"
+      ],
+      "notes": "Score 746, grade A, 3 stars. Every month felt the same after month 4."
+    },
+    {
+      "id": "O2",
+      "outcome": "partial",
+      "turns": 12,
+      "steps": [
+        "Wanted to do something big like make peace; the Iran war ended in month 3 on its own through staff picks, I did not feel I caused it"
+      ],
+      "notes": "Big moment lands on a war I never chose to touch."
+    }
+  ],
+  "friction": [
+    {
+      "where": "Title, Play a seed button",
+      "expected": "tap the visible button by label",
+      "happened": "first click by label missed, had to tap by position; box then sits over the globe with a faint placeholder",
+      "kind": "affordance",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/olivia-laptop/003-seed2.png"
+    },
+    {
+      "where": "Title/seed box",
+      "expected": "name of the seed code and what it does",
+      "happened": "\"A seed code from a result or a saved game\" means nothing to a casual player",
+      "kind": "naming",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/olivia-laptop/003-seed2.png"
+    },
+    {
+      "where": "Mission panel and crisis names",
+      "expected": "know who Machado, Rodriguez, Maduro, Caracas, snapback are",
+      "happened": "names appear with a dotted underline and \"1 name\" chip; Guide me helps but \"regime change, without the change\" and \"snapback\" stay opaque",
+      "kind": "naming",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/olivia-laptop/004-seed3.png"
+    },
+    {
+      "where": "Month 1 desk",
+      "expected": "know what I must press",
+      "happened": "Cabinet pick plus three cards plus Ask your staff plus Show budgets; the note \"2 staff proposals not accepted (they will not run)\" confused me",
+      "kind": "hesitation",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/olivia-laptop/005-m1.png"
+    },
+    {
+      "where": "Month 1 desk, Your goal text",
+      "expected": "read the goal in one glance",
+      "happened": "a paragraph of underlined phrases above the crisis, I ignored it",
+      "kind": "hesitation",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/olivia-laptop/005-m1.png"
+    },
+    {
+      "where": "Map mode month 2, order menu",
+      "expected": "tap Add to this month by label",
+      "happened": "label click failed once (ok false), I never saw whether Court Venezuela was queued; Execute ran with 0 orders",
+      "kind": "retry",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/olivia-laptop/009-map2b.png"
+    },
+    {
+      "where": "Map mode month 3",
+      "expected": "stay in Map mode",
+      "happened": "the game dropped me back into Desk mode on its own after Next month",
+      "kind": "backtrack",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/olivia-laptop/013-map3b.png"
+    },
+    {
+      "where": "Result card then newspaper then Next month",
+      "expected": "one Next month per month",
+      "happened": "Next month appears twice (result card then the paper), I pressed it twice every month",
+      "kind": "hesitation",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/olivia-laptop/015-m4.png"
+    },
+    {
+      "where": "Recommended panel, Mission and score terms",
+      "expected": "understand Hurts: Approval, Needs work, relations -10+",
+      "happened": "small mono text and jargon (legitimacy, relations, tension) read like work software",
+      "kind": "dashboard-feel",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/olivia-laptop/007-s7.png"
+    },
+    {
+      "where": "Reveal sidebar stages",
+      "expected": "jump to any stage",
+      "happened": "later stages are locked until seen, clicking The truth did nothing",
+      "kind": "affordance",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/olivia-laptop/037-truth.png"
+    },
+    {
+      "where": "Reveal moments screen",
+      "expected": "simple story",
+      "happened": "\"The war ended in month 3\" and Spy on Iran best moment in a Venezuela game, I never knew about Iran",
+      "kind": "naming",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/olivia-laptop/035-mo.png"
+    },
+    {
+      "where": "Reveal verdict",
+      "expected": "see my score",
+      "happened": "Presidency score reads 0 / 1000 while the others show numbers, count-up in progress when I looked",
+      "kind": "other",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/olivia-laptop/028-end.png"
+    },
+    {
+      "where": "End of reveal",
+      "expected": "know how to play again",
+      "happened": "Replay same opening, New world, New game, Compare runs (greyed): four buttons, clear enough",
+      "kind": "other",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/olivia-laptop/043-f3.png"
+    }
+  ],
+  "bugs": [
+    {
+      "title": "Presidency Score shows 0 at the verdict stage",
+      "steps": [
+        "Finish a Flashpoint",
+        "Reveal: The verdict"
+      ],
+      "expected": "Score visible or counting up quickly",
+      "actual": "big 0 / 1000 beside filled sub-scores (may be animation)",
+      "severity": "S4",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/olivia-laptop/028-end.png"
+    },
+    {
+      "title": "Map mode order add not confirmed after label click",
+      "steps": [
+        "Map mode",
+        "Tap Venezuela",
+        "Click Add to this month"
+      ],
+      "expected": "Order queued, Orders 1 of 6",
+      "actual": "click reported failure, no visible queue; Execute ran with 0 orders",
+      "severity": "S3",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/olivia-laptop/009-map2b.png"
+    }
+  ],
+  "suggestions": [
+    {
+      "what": "One Next month per month: skip the second one or merge result and paper",
+      "goal_served": "O1"
+    },
+    {
+      "what": "Let me pick a big goal on the title in plain words (\"stop a war\") instead of seed codes and flashpoint jargon",
+      "goal_served": "O2"
+    },
+    {
+      "what": "Keep Map mode when I chose it",
+      "goal_served": "O1"
+    },
+    {
+      "what": "Vary months 5-12 so Accept all does not make it autopilot",
+      "goal_served": "O1"
+    }
+  ],
+  "delight": [
+    "Seed code worked first try and opened right on a crisis",
+    "Month 1 Accept cabinet pick then Execute then the big -10 result card with a quote: satisfying within 2 minutes (devloop/instances/world-conflict/runs/iter-03/shots/olivia-laptop/007-r1.png)",
+    "Mission bar going green",
+    "Reveal badges and the ladder (devloop/instances/world-conflict/runs/iter-03/shots/olivia-laptop/043-f3.png)"
+  ],
+  "scores": {
+    "fun": {
+      "value": 6,
+      "reason": "Quick wins and the big result cards are fun, but from month 4 it was Accept all, Execute, Next, Next."
+    },
+    "clarity": {
+      "value": 6,
+      "reason": "I always knew the next button; I did not understand most names or why numbers moved."
+    },
+    "visual": {
+      "value": 8,
+      "reason": "Globe, illustrated scenes and cards look like a real game, not a form."
+    },
+    "feels_like_a_game": {
+      "value": 7,
+      "reason": "Cards and stamps feel gamey; the small grey jargon text and drawers feel like work."
+    },
+    "agency": {
+      "value": 5,
+      "reason": "Never blocked, but the staff did most choices so I did not feel clever."
+    },
+    "realism": {
+      "value": 6,
+      "reason": "Cannot judge; the Iran war ending by itself felt odd."
+    },
+    "replay": {
+      "value": 5,
+      "reason": "Maybe one more with a different country, not the same."
+    },
+    "recommend": {
+      "value": 6,
+      "reason": "I would send it to a friend who likes news; not to one who plays Candy Crush."
+    }
+  },
+  "quit_point": null,
+  "verbatim": "Okay that first month was actually fun. Then I pressed the same two buttons nine times and a war I never touched ended by itself."
+}

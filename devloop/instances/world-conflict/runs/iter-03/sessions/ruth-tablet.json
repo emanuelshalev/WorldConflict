@@ -1,0 +1,48 @@
+{
+"persona":"ruth","variant":"ruth-tablet","panel_version":"1.2","build":"e260170","iteration":3,"minutes_played":45,
+"scenarios":[
+{"id":"R1","outcome":"achieved","turns":12,"steps":["Typed CO-UKR-RUTH1 under Play a seed","Chose Some help","Played 12 months, 2 in Map mode","Read the declassified table of what really happened","Started a new game from the end screen"],"notes":"Played months 3 onward mostly by Accept all recommended then Execute, so I did not read most crises. Reached the sealed record, 620, B, 2 stars."},
+{"id":"R2","outcome":"partial","turns":12,"steps":["Played the Flashpoint only, not a full term"],"notes":"Did not play a term."}
+],
+"friction":[
+{"where":"Title, Play a seed","expected":"One tap opens the code box","happened":"First tap on the button did nothing visible; second tap opened a small box below. Box is easy to miss","kind":"affordance","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/ruth-tablet/003-seed2.png"},
+{"where":"Month 1, crisis, answer cards","expected":"Tapping a card is obviously choosing it","happened":"No clear selected state after tapping Only by referendum; side panel still said cabinet pick not accepted. I just pressed Execute and hoped","kind":"affordance","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/ruth-tablet/008-m1d.png"},
+{"where":"Month 1, floating label over card 3 (Best trade-off)","expected":"Readable label","happened":"Green label overlapped and was cut off by the crisis card above","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/ruth-tablet/006-m1b.png"},
+{"where":"Month 1, right rail","expected":"Plain text","happened":"Warning that my cabinet pick works against my mission, and the mission tip box covering the headline","kind":"hesitation","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/ruth-tablet/005-m1.png"},
+{"where":"Month 2 desk, right rail","expected":"Recommended panel clear of the political capital header","happened":"Panel overlaps the Political capital heading, content clipped","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/ruth-tablet/011-m2.png"},
+{"where":"Mission bar header on tablet","expected":"Full text","happened":"Month 6 of 12 and the this-month hint are truncated (month 6 o...)","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/ruth-tablet/022-m6pre.png"},
+{"where":"Map mode","expected":"Read the crisis before accepting its recommended answer","happened":"The Review recommended list shows only a one-line crisis name (Hostages in Belarus, Send in special forces); I accepted without seeing the story. It then failed badly (stability 51 to 35)","kind":"hesitation","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/ruth-tablet/015-m3map2.png"},
+{"where":"Map mode, map icons","expected":"Know what the many round symbols mean","happened":"Dozens of unlabeled icons on the map; I did not know which were pressable or what they meant","kind":"affordance","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/ruth-tablet/014-m3map.png"},
+{"where":"Month 1 crisis text","expected":"Know the terms","happened":"Fortress belt, oblast, Kramatorsk, Belarus hostage story: I know Ukraine well, so fine, but the names badge (2 names) was helpful and I would use it for Belarus","kind":"naming"},
+{"where":"Header and goals","expected":"Plain words","happened":"Coalition of the willing locked in (UK relations 93+), Presidency Score, seal, Statesman: score vocabulary and numbers like 93+ were not explained as a game concept","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/ruth-tablet/005-m1.png"},
+{"where":"Reveal, The moments","expected":"Consistent verdicts","happened":"Month 9 shows The comeback in went well and Coalition of the willing, Accept it publicly in went badly; labels like Accept it publicly were unclear","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/ruth-tablet/043-rv2.png"},
+{"where":"Reveal, sidebar","expected":"Tapping The verdict shows the verdict","happened":"My tap on The verdict showed How you were seen instead; I never properly saw the verdict screen. It may have auto-passed","kind":"backtrack","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/ruth-tablet/045-verdict.png"},
+{"where":"Reveal, Ranking buttons","expected":"Clear way to play again","happened":"Four options: Replay same opening, New world, Compare runs (greyed), New game. New world and New game sound the same","kind":"hesitation","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/ruth-tablet/050-rank.png"},
+{"where":"Reveal, Truth","expected":"Real facts","happened":"Excellent, but Russia 1182k estimate vs 880k and 100% nuclear program are military jargon I would not know","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/ruth-tablet/047-truth.png"}
+],
+"bugs":[
+{"title":"Recommended panel overlaps Political capital heading in desk right rail","steps":["Start game, execute month 1","On month 2 look at right rail at 1024x768"],"expected":"No overlap","actual":"Panel overlaps and clips the capital block","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/ruth-tablet/011-m2.png"},
+{"title":"Floating Best trade-off label clipped by crisis card","steps":["Month 1, scroll to answer cards"],"expected":"Full label","actual":"Label cut off","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/ruth-tablet/006-m1b.png"},
+{"title":"Reveal sidebar The verdict tap lands on a different stage","steps":["At end The count, step through, tap The verdict in sidebar from the Ranking stage"],"expected":"Verdict screen","actual":"How you were seen shown","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/ruth-tablet/045-verdict.png"},
+{"title":"Header truncates month and goal hint on tablet","steps":["Play at 1024x768 desk mode"],"expected":"Month 6 of 12 visible","actual":"Truncated with ellipsis","severity":"S4","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/ruth-tablet/022-m6pre.png"}
+],
+"suggestions":[
+{"what":"Show the crisis text and a one-line why next to Accept answer in the recommended list and in Map mode","goal_served":"R1 understand what I am deciding"},
+{"what":"Plain selected state (tick, thick border) on a tapped answer card","goal_served":"R2 no game puzzles"},
+{"what":"One end-screen button called Play again, with Replay same opening as a smaller option","goal_served":"R2"},
+{"what":"Label the map icons or give a legend on tap","goal_served":"R1"}
+],
+"delight":["Seed code worked first time and the Some help question suited me","What really happened table with sources next to my game (devloop/instances/world-conflict/runs/iter-03/shots/ruth-tablet/048-truth2.png)","Result cards with a quote from the street and Step achieved stamp (devloop/instances/world-conflict/runs/iter-03/shots/ruth-tablet/013-m2c.png)","The newspaper page (devloop/instances/world-conflict/runs/iter-03/shots/ruth-tablet/010-paper.png)"],
+"scores":{
+"fun":{"value":7,"reason":"Absorbing when I read; rewarding ending. Accept all made later months feel automatic."},
+"clarity":{"value":6,"reason":"Month loop clear after month 2, but selecting an answer and the right rail were unclear."},
+"visual":{"value":8,"reason":"Handsome art and paper; some overlaps on tablet."},
+"feels_like_a_game":{"value":6,"reason":"Feels like a briefing exercise; I never felt a game for non-gamers risk."},
+"agency":{"value":6,"reason":"Never blocked, but accepted Belarus rescue unseen and it failed."},
+"realism":{"value":8,"reason":"Real names and leaders, real-world comparison at the end; war ending in month 8 felt too neat."},
+"replay":{"value":6,"reason":"Would try Middle East; ending buttons are a bit confusing."},
+"recommend":{"value":7,"reason":"I would tell a friend who follows the news; the truth table is the best part."}
+},
+"quit_point":null,
+"verbatim":"I liked reading what really happened next to my game. I did not like pressing Execute without knowing whether my choice had been taken."
+}

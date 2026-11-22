@@ -1,0 +1,54 @@
+{
+"persona":"sam","variant":"sam-desktop","panel_version":"1.2","build":"d70608a","iteration":3,"minutes_played":25,
+"scenarios":[
+{"id":"S1","outcome":"achieved","turns":12,"steps":["Title globe, Play a seed, entered SL-CHN-SAM01, worked first try","Familiarity: kept Some help","Months 1-2 by hand (crisis answers, one Court Philippines order from the map dossier)","Months 3-12 with Accept all recommended then Execute","Reached the reveal: Mission complete, B, 652, 2 of 3 stars"],"notes":"Judged as crafted game: yes at the moments (title, stamps, dispatch card, reveal), no at the layout seams (advisor cards collapse, rail overlap, reused crisis art)."},
+{"id":"S2","outcome":"partial","turns":2,"steps":["Month 2 in Map mode: tapped Philippines, dossier opened with Court Philippines proposed, pressed Accept order, stamp ORDERED, executed from the map strip","Compared with desk: same order, different verbs (Accept order / Add / Remove vs Accept)"],"notes":"Only two months in Map mode and one order tested. Same result, different words."}
+],
+"friction":[
+{"where":"Title, Play a seed","expected":"seed box open","happened":"first press by label failed (ok false) while globe turned; second press worked","kind":"affordance","screenshot":"sessions/sam-desktop/002-seed.png"},
+{"where":"Month 1 desk, crisis cards","expected":"three options in one aligned row","happened":"middle card sits 4px higher than its neighbours, the three images are the same scene, Cabinet pick tag with a pin icon pokes out of card 3","kind":"dashboard-feel","screenshot":"sessions/sam-desktop/005-m1.png"},
+{"where":"Month 1 crisis card","expected":"pressing the card title selects it","happened":"press by text label failed; pressing the card body worked. Unsure which part is the control","kind":"affordance","screenshot":"sessions/sam-desktop/007-m1b.png"},
+{"where":"Month 2 desk, Your advisors suggest","expected":"three readable suggestion cards","happened":"cards collapse: title wraps one letter per line, Accept order and Why buttons float over a sliver of art","kind":"dashboard-feel","screenshot":"sessions/sam-desktop/011-m2b.png"},
+{"where":"Month 2+ right rail","expected":"Recommended list with its button below","happened":"Accept all recommended box sits on top of the second recommendation, cutting its buttons; Orders/Meetings tiles clipped by the Recommended panel","kind":"dashboard-feel","screenshot":"sessions/sam-desktop/010-m2.png"},
+{"where":"New month on desk","expected":"page starts at top of the new crisis","happened":"scroll offset kept from last month; hero art cut off at the top","kind":"hesitation","screenshot":"sessions/sam-desktop/010-m2.png"},
+{"where":"Dispatch card headline","expected":"Xi's answer","happened":"Jinping's answer / Jinping decides: first name used as if it were the surname, three different verbs for the same card","kind":"naming","screenshot":"sessions/sam-desktop/009-e1.png"},
+{"where":"Dispatch card Feb 2027","expected":"-65 with a unit","happened":"Economy -65 with no unit (text says -64.9); STEP ACHIEVED stamp covers the word Economy","kind":"dashboard-feel","screenshot":"sessions/sam-desktop/020-exec3.png"},
+{"where":"Map mode, tapping Taiwan and the Philippines coast","expected":"dossier opens","happened":"three taps did nothing (camera still moving, small targets); tapping the marker worked","kind":"affordance","screenshot":"sessions/sam-desktop/013-map2b.png"},
+{"where":"Map dossier Philippines","expected":"one word for relations","happened":"Hostile, lamentable and LAMENTABLE (-56) in three places; dossier covers the layer switcher","kind":"naming","screenshot":"sessions/sam-desktop/015-map2d.png"},
+{"where":"Desk vs map order rows","expected":"same verbs","happened":"desk Accept / Accept answer, map Accept order / Add / Remove, strip Review 7 recommended","kind":"parity","screenshot":"sessions/sam-desktop/016-map2e.png"},
+{"where":"Title and month 1 briefing, names","expected":"names explained once","happened":"Duterte, Scarborough Shoal, Mutual Defense Treaty, Kramatorsk: the little i chips (3 names, 5 names) helped and stayed out of the way; the Who is who strip on the briefing was good. Not tapped, so I cannot say how good the text is","kind":"naming","screenshot":"sessions/sam-desktop/004-seed3.png"},
+{"where":"Months 3, 4, 5 crises","expected":"crises about my Scarborough goal","happened":"Afghan refugees, UN vote on Iran sanctions and Gaza vote on a China flashpoint; months felt like filler and I did not need to think","kind":"other","screenshot":"sessions/sam-desktop/018-m3.png"},
+{"where":"Political capital","expected":"a reason to spend","happened":"6 of 6 full from month 3 to 12; I spent one point in the whole game","kind":"other","screenshot":"sessions/sam-desktop/018-m3.png"},
+{"where":"Month 11 art","expected":"German flag","happened":"flag drawn as red and gold vertical stripes","kind":"other","screenshot":"sessions/sam-desktop/035-n10.png"},
+{"where":"Reveal, The count","expected":"true count","happened":"13 orders when I issued one (meetings and accepted items counted); seat projection 377 SEATS MAJORITY WON for a one-party state","kind":"misread","screenshot":"sessions/sam-desktop/038-x12.png"},
+{"where":"Reveal verdict","expected":"4 goals","happened":"5 of 5 goals met while the desk said all four","kind":"misread","screenshot":"sessions/sam-desktop/045-verdict.png"},
+{"where":"Reveal, first press of next","expected":"verdict then achievements","happened":"I landed on Achievements with Verdict ticked and had to go back through the side list to see it","kind":"backtrack","screenshot":"sessions/sam-desktop/039-r1.png"}
+],
+"bugs":[
+{"title":"Advisor suggestion cards collapse to a sliver","steps":["Start SL-CHN-SAM01","Finish month 1, open month 2 desk","Scroll to Your advisors suggest"],"expected":"Three readable cards","actual":"Card text one letter per line, buttons overlap art","severity":"S2","screenshot":"sessions/sam-desktop/011-m2b.png"},
+{"title":"Right rail Accept all box overlaps Recommended list","steps":["Month 2 desk, scroll rail"],"expected":"List scrolls above a fixed button","actual":"Button covers the second item and its actions","severity":"S3","screenshot":"sessions/sam-desktop/010-m2.png"},
+{"title":"Reveal counts 13 orders for a game with 1 order","steps":["Play 12 months accepting recommended","Open The count"],"expected":"1 order","actual":"13 orders","severity":"S3","screenshot":"sessions/sam-desktop/038-x12.png"},
+{"title":"Verdict says 5 of 5 goals, desk says 4","steps":["Finish the game","Open The verdict"],"expected":"matching count","actual":"5 of 5","severity":"S3","screenshot":"sessions/sam-desktop/045-verdict.png"},
+{"title":"Dispatch uses first name as surname","steps":["Execute month 1"],"expected":"Xi","actual":"Jinping's answer","severity":"S3","screenshot":"sessions/sam-desktop/009-e1.png"}
+],
+"suggestions":[
+{"what":"Give each crisis option its own small illustration or at least a distinct crop; stop reusing one scene three times","goal_served":"S1"},
+{"what":"One verb set for orders on desk, map and dossier","goal_served":"S2"},
+{"what":"Fix the advisor card layout and the right rail stacking, then check every breakpoint","goal_served":"S1"},
+{"what":"Make political capital matter: cap lower or give the staff orders a visible payoff","goal_served":"S1"},
+{"what":"Pick crises by seat so a Scarborough game is mostly about Scarborough","goal_served":"S1"}
+],
+"delight":["Title globe with the live-world strip and TODAY marker looked like a game at once (sessions/sam-desktop/001-title.png)","ACCEPTED and ORDERED rubber stamps on cards (008-m1c.png, 016-map2e.png)","Dispatch card with illustration, big number and a mission bar (009-e1.png)","Verdict stamp and Reality-versus-your-world table, with real sources (045-verdict.png, 043-r5.png)","Map mode with the globe, layers and strip; a real second way to play (012-map2.png)"],
+"scores":{
+"fun":{"value":6,"reason":"The first two months had decisions I cared about; after that Accept all carried me and I was reading, not playing."},
+"clarity":{"value":7,"reason":"Goal line, step hints and Recommended list told me what to do each month; the count mismatches and the rail overlap cost a point."},
+"visual":{"value":7,"reason":"Title, dispatch, stamps and reveal are crafted; collapsed advisor cards, reused crisis art, misaligned card rows and a wrong flag are exactly what I look for."},
+"feels_like_a_game":{"value":7,"reason":"Stamps, sound, art and a verdict feel authored; Accept all recommended x10 feels like a dashboard autopilot."},
+"agency":{"value":7,"reason":"Never blocked; but with six points always full I was rarely asked to choose."},
+"realism":{"value":6,"reason":"The reveal comparison to the real shoal is good; months 3 to 5 were unrelated crises and a seat projection for a one-party state."},
+"replay":{"value":5,"reason":"Replay same opening is clear, but I saw no reason to try other choices since Accept all won."},
+"recommend":{"value":6,"reason":"I would show it to a friend for the title screen and the reveal, with a warning about the middle."}
+},
+"quit_point":null,
+"verbatim":"It looks like someone cared, until the advisor cards fall apart and I notice I won by pressing the same button ten times."
+}

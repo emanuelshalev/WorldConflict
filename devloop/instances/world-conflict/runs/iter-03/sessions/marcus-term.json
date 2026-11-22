@@ -1,0 +1,227 @@
+{
+ "persona": "marcus",
+ "variant": "marcus-term",
+ "panel_version": "1.2",
+ "build": "d70608a",
+ "iteration": 3,
+ "minutes_played": 35,
+ "scenarios": [
+  {
+   "id": "control-T1990-USA-MARC1",
+   "outcome": "partial",
+   "turns": 12,
+   "steps": [
+    "Entered T1990-USA-MARC1 under Play a seed",
+    "Chose I know this",
+    "Month 1 Call them quietly",
+    "Month 2 Renegotiate",
+    "Month 3 and 4 in Map mode with Accept all recommended",
+    "Months 5-12 mostly Accept all recommended, hand-picked Vote for sanctions on Iraq",
+    "Did not replay a crisis with the opposite choice"
+   ],
+   "notes": "Reached Jan 1991 (12 months executed). Score 100 to 120, approval 74 to 65. Did not do K1 replay."
+  }
+ ],
+ "friction": [
+  {
+   "where": "Title: Play a seed button",
+   "expected": "Click by label opens the code box",
+   "happened": "Label click reported failure while globe was moving; a coordinate tap worked. Box appears below the button and is easy to miss",
+   "kind": "affordance",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/marcus-term/003-seed2.png"
+  },
+  {
+   "where": "Month 1 crisis card titles",
+   "expected": "Tapping the option title selects it",
+   "happened": "Tapping the heading did nothing; only tapping the picture or the Accept cabinet pick button selected. Unsure the card is a control",
+   "kind": "affordance",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/marcus-term/006-m1b.png"
+  },
+  {
+   "where": "Month 1 cost labels",
+   "expected": "Free option has no cost",
+   "happened": "Call them quietly says free but the result says at a cost: Approval -3; the cost sat under +1 more",
+   "kind": "misread",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/marcus-term/009-m1d.png"
+  },
+  {
+   "where": "Map mode month 3",
+   "expected": "See the crisis (Corruption scandal) on the map screen",
+   "happened": "Only a line 1 crisis on the cabinet pick and a terse Crisis answer card; I could not read what the scandal was without going back to the desk",
+   "kind": "hesitation",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/marcus-term/013-m3map2.png"
+  },
+  {
+   "where": "Map mode globe size",
+   "expected": "Map stays usable",
+   "happened": "Opening the Recommended list shrinks the globe to a small ball",
+   "kind": "other",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/marcus-term/013-m3map2.png"
+  },
+  {
+   "where": "Mission line month 4 versus report",
+   "expected": "Same Iran number",
+   "happened": "Report said Iran view warmed to -69; mission strip said now -89 (and -75 to -89 in the debrief after a Court Iran order). I do not know which is right and that is a deal-breaker for cause and effect",
+   "kind": "misread",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/marcus-term/014-m3r.png"
+  },
+  {
+   "where": "Month 4 and 5 quiet-month desk, advisors suggest",
+   "expected": "Readable suggestion cards",
+   "happened": "Cards collapsed into 1-character-wide columns with vertical letters; Full desk view is fine",
+   "kind": "dashboard-feel",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/marcus-term/019-m5.png"
+  },
+  {
+   "where": "Month 6 world tension",
+   "expected": "Reason for jump",
+   "happened": "Tension 34 to 48 in one month with the Iraq sanctions crisis; no explanation where I looked",
+   "kind": "misread",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/marcus-term/023-m6.png"
+  },
+  {
+   "where": "Phone-call results",
+   "expected": "Leaders sound different",
+   "happened": "Mulroney, Roh Tae-woo and Andreotti all say We heard you. Let us keep this line open; repeated Court Iran / Promise full support every month, I felt I was on rails",
+   "kind": "other",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/marcus-term/030-cur.png"
+  },
+  {
+   "where": "Call result art",
+   "expected": "Phone call picture",
+   "happened": "Calls with Italy and Turkey show an election projection (377 seats majority won)",
+   "kind": "other",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/marcus-term/039-cur.png"
+  },
+  {
+   "where": "Familiarity prompt example",
+   "expected": "Example fits my era",
+   "happened": "Sample sentence is about Donetsk and Kramatorsk in a 1990 game; names unknown to a 1990 persona",
+   "kind": "naming",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/marcus-term/004-seed3.png"
+  },
+  {
+   "where": "Month 12 crisis",
+   "expected": "Era-plausible events",
+   "happened": "An Outbreak with a vaccine effort option in 1990 and a US-Iraq nuclear threshold crisis; Iraq nuclear program is a stretch",
+   "kind": "other",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/marcus-term/039-cur.png"
+  },
+  {
+   "where": "Accept all recommended habit",
+   "expected": "Think per decision",
+   "happened": "The group accept button is so easy I stopped reading advice; General strike and Outbreak were answered by the cabinet pick without my reading them",
+   "kind": "hesitation"
+  }
+ ],
+ "bugs": [
+  {
+   "title": "Advisor suggestion cards render as vertical letter columns",
+   "steps": [
+    "Play to a quiet month (no crisis)",
+    "Stay in Focus desk",
+    "Look at Your advisors suggest"
+   ],
+   "expected": "Readable cards",
+   "actual": "Text one letter per line, cards 60px wide",
+   "severity": "S2",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/marcus-term/019-m5.png"
+  },
+  {
+   "title": "Mission strip Iran number disagrees with the report",
+   "steps": [
+    "Accept Court Iran in month 3",
+    "Open the debrief"
+   ],
+   "expected": "Iran relation consistent (-69)",
+   "actual": "Mission strip shows Iran -75 to -89 while detail shows -74 to -69",
+   "severity": "S2",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/marcus-term/014-m3r.png"
+  },
+  {
+   "title": "UN vote board shows 16 votes",
+   "steps": [
+    "Vote for sanctions on Iraq in month 6",
+    "Open See everything"
+   ],
+   "expected": "15 Security Council votes",
+   "actual": "YES 14 NO 2",
+   "severity": "S3",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/marcus-term/025-m6e.png"
+  },
+  {
+   "title": "Wrong picture for phone calls",
+   "steps": [
+    "Accept a call from Italy or Turkey",
+    "See everything"
+   ],
+   "expected": "Call art",
+   "actual": "Election projection art",
+   "severity": "S4",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/marcus-term/039-cur.png"
+  }
+ ],
+ "suggestions": [
+  {
+   "what": "Show the numbers of the mission goal the same everywhere and say which rival it is",
+   "goal_served": "K2 plausibility"
+  },
+  {
+   "what": "Add a Replay this month with another choice button after a debrief",
+   "goal_served": "K1 replay a crisis with the opposite choice"
+  },
+  {
+   "what": "Show the crisis text in Map mode, not only its answer",
+   "goal_served": "clarity in Map mode"
+  },
+  {
+   "what": "Give each leader own phrasing for the same call",
+   "goal_served": "K2 world behaves like it plausibly could"
+  },
+  {
+   "what": "Explain tension jumps in one line in the debrief",
+   "goal_served": "cause and effect"
+  }
+ ],
+ "delight": [
+  "Debrief cards show before and after numbers with the leader quote (Kim Il Sung, Gorbachev, Saddam); the era names are right (Kaifu, Roh Tae-woo, Mitterrand, Ozal)",
+  "Seed code reproduced the exact 1990 Bush opening",
+  "See everything: Diplomacy page explains cause and effect well"
+ ],
+ "scores": {
+  "fun": {
+   "value": 6,
+   "reason": "Good first month, but accept-all months repeated Court Iran and calls."
+  },
+  "clarity": {
+   "value": 6,
+   "reason": "Debrief is clear; mission numbers contradict, Map mode hides crisis text."
+  },
+  "visual": {
+   "value": 7,
+   "reason": "Handsome scenes and paper; vertical-letter bug and wrong call art."
+  },
+  "feels_like_a_game": {
+   "value": 6,
+   "reason": "Reads like a briefing sim, which suits me, but I clicked accept most months."
+  },
+  "agency": {
+   "value": 6,
+   "reason": "Never blocked, but my choices mattered little in quiet months and pending orders often unspent at cap 6."
+  },
+  "realism": {
+   "value": 5,
+   "reason": "Names and leaders right, but Iraq nuclear program, outbreak and 16-vote UN board broke it."
+  },
+  "replay": {
+   "value": 5,
+   "reason": "Seed codes are good; no way to compare a replayed crisis inside the session."
+  },
+  "recommend": {
+   "value": 6,
+   "reason": "I would recommend it to a history friend with caveats on plausibility."
+  }
+ },
+ "quit_point": null,
+ "verbatim": "I like the debriefs. I do not like not knowing whether Iran is at -69 or -89. A sanctions vote in 1990 with a clandestine Iraqi nuclear program is a stretch, and an outbreak with a vaccine in 1990 is silly."
+}

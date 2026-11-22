@@ -1,0 +1,220 @@
+{
+ "persona": "leo",
+ "variant": "leo-stream",
+ "panel_version": "1.2",
+ "build": "d70608a",
+ "iteration": 3,
+ "minutes_played": 35,
+ "scenarios": [
+  {
+   "id": "L2",
+   "outcome": "achieved",
+   "turns": 2,
+   "steps": [
+    "Entered seed QU-CHN-LEO01 under Play a seed",
+    "Picked Guide me",
+    "Month 1: chose Inspect every energy cargo (the loud option)",
+    "Month 2: Full desk, All orders, Declare war on Japan, confirmed the No undo warning",
+    "Chain reaction: US declared war on China, mission failed at month 2, F grade, Warmonger title"
+   ],
+   "notes": "Wild move worked and the refusal-style warning named the mission it would break. Great for stream."
+  },
+  {
+   "id": "L1",
+   "outcome": "achieved",
+   "turns": 12,
+   "steps": [
+    "Replay same opening",
+    "Played months 1-12 mostly on cabinet picks, Map mode months 2-3",
+    "Reached the reveal at month 12, went through all 8 stages",
+    "Pressed New game from the ranking stage, back at the title, started another game"
+   ],
+   "notes": "Missed the goal by 3 points (117 of 120) and got a D with 562/1000."
+  }
+ ],
+ "friction": [
+  {
+   "where": "Title, Play a seed",
+   "expected": "Pressing the button label opens the seed box",
+   "happened": "Clicking by label failed twice; only a text tap worked. The code box has no visible focus cue and I had to tap into the field before typing.",
+   "kind": "affordance",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/leo-stream/003-seed2.png"
+  },
+  {
+   "where": "Month 1 desk, crisis option cards",
+   "expected": "Tap the card to choose",
+   "happened": "Tapping the title text did nothing, tapping the card image worked. Unsure if the card or the small Accept cabinet pick link was the control.",
+   "kind": "affordance",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/leo-stream/005-m1.png"
+  },
+  {
+   "where": "Familiarity prompt",
+   "expected": "Examples about my crisis",
+   "happened": "The Some help example is about Donetsk and Kramatorsk, nothing to do with China. I picked Guide me because I do not know regional names.",
+   "kind": "naming",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/leo-stream/004-started.png"
+  },
+  {
+   "where": "Reveal, The truth",
+   "expected": "Plain explanation",
+   "happened": "Busan trade truce, Zhang Youxia, Central Military Commission: names I do not know, no tap-to-explain there.",
+   "kind": "naming",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/leo-stream/027-e6.png"
+  },
+  {
+   "where": "Reveal, The truth",
+   "expected": "Facts about my game",
+   "happened": "Says Australia ran 2 covert operations against me, nonsense in a China game I played for 2 months.",
+   "kind": "misread",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/leo-stream/027-e6.png"
+  },
+  {
+   "where": "Map mode, Execute",
+   "expected": "See the crisis I am deciding",
+   "happened": "In Map mode the crisis answer went through on the cabinet pick without me ever reading the crisis; the paper then showed a 'Summit' handshake picture for a spy order. Felt blind.",
+   "kind": "hesitation",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/leo-stream/034-map2c.png"
+  },
+  {
+   "where": "Month 12 result card",
+   "expected": "A clear last-month recap",
+   "happened": "'Remember Germany's offer? United States asks for a naval base in China' read as nonsense.",
+   "kind": "misread",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/leo-stream/044-loop10.png"
+  },
+  {
+   "where": "Reveal, verdict",
+   "expected": "Score number counts up on its own",
+   "happened": "Presidency Score sits at 0 for a couple of seconds then jumps; on a quick screenshot it looks broken.",
+   "kind": "other",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/leo-stream/021-e1.png"
+  },
+  {
+   "where": "Reveal, verdict and ranking",
+   "expected": "Consistent score story",
+   "happened": "Verdict says missed 120 by 3 (117) yet finish says par 115; ranking says better than 0% of simulated leaders at 562 while random staff scores 523.",
+   "kind": "misread",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/leo-stream/048-h7.png"
+  },
+  {
+   "where": "Reveal, The moments",
+   "expected": "Declare war on Japan is a bad moment",
+   "happened": "It is listed under 'What went well' (approval rose) while the inspect order is under 'went badly'.",
+   "kind": "misread",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/leo-stream/024-e3.png"
+  },
+  {
+   "where": "Reveal on desktop, all stages",
+   "expected": "Fills the screen like a stinger",
+   "happened": "Content sits in the left two thirds, right third and lower half empty; static cards, looks like a dashboard on camera.",
+   "kind": "dashboard-feel",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/leo-stream/023-e2.png"
+  },
+  {
+   "where": "Ranking stage, share buttons",
+   "expected": "Share and Save card visible",
+   "happened": "Buttons sit under the footer bar and need a scroll; the footer has its own Share card button.",
+   "kind": "affordance",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/leo-stream/029-e7.png"
+  }
+ ],
+ "bugs": [
+  {
+   "title": "Verdict and ranking numbers contradict each other",
+   "steps": [
+    "Finish the seed game with score 117",
+    "Open The verdict then Ranking"
+   ],
+   "expected": "One consistent target and percentile",
+   "actual": "Missed 120 by 3 but par shown 115; 562 shown as better than 0% while above the random-staff marker 523",
+   "severity": "S3",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/leo-stream/048-h7.png"
+  },
+  {
+   "title": "Australia covert operations against a China player",
+   "steps": [
+    "Declare war on Japan month 2",
+    "Skip to The truth"
+   ],
+   "expected": "Covert ops that make sense or none",
+   "actual": "Australia ran 2 operations against you, shown in the declassified card",
+   "severity": "S4",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/leo-stream/027-e6.png"
+  },
+  {
+   "title": "Presidency score shows 0 before counting up",
+   "steps": [
+    "Reach The verdict"
+   ],
+   "expected": "Count-up starts visibly",
+   "actual": "Stays 0 for about 2 seconds with filled component bars below",
+   "severity": "S4",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/leo-stream/021-e1.png"
+  }
+ ],
+ "suggestions": [
+  {
+   "what": "Make the end stages fill a 1920 wide stream layout and animate (big grade slam, seal drop-in) instead of static cards",
+   "goal_served": "L1"
+  },
+  {
+   "what": "After a war on a rival, show a short full-screen war stinger before the result card (the war map art exists)",
+   "goal_served": "L2"
+  },
+  {
+   "what": "In Map mode, show the crisis as a banner with the three answers instead of auto-taking the cabinet pick",
+   "goal_served": "L1"
+  },
+  {
+   "what": "Put a Post to chat button first on the ranking stage and keep Save card / Copy text next to it, above the fold",
+   "goal_served": "L1"
+  },
+  {
+   "what": "Tap-to-explain on names inside The truth table",
+   "goal_served": "L2"
+  }
+ ],
+ "delight": [
+  "Declare war on Japan: the No undo confirm named the exact goal it would break, then the US joining the war and the MISSION FAILED stamp. Exactly the clip (screenshots 016, 018, 021)",
+  "Share card quotes my own best moment, 'Declare war on Japan, month 2' (029)",
+  "Blocked orders say why in one line (Japan will not sign a pact across the bloc line) (015)",
+  "Result card with big +8 World tension number and the newspaper (009, 010)",
+  "Map mode: tapping Taiwan opens orders on the spot (033)"
+ ],
+ "scores": {
+  "fun": {
+   "value": 7,
+   "reason": "The war chain reaction was great; the 12 month run on cabinet picks was a lot of Next month presses."
+  },
+  "clarity": {
+   "value": 7,
+   "reason": "Goal line, mission and warnings were clear; a few reveal numbers contradict."
+  },
+  "visual": {
+   "value": 7,
+   "reason": "Illustrated scenes and newspaper look good; reveal stages are static and empty on desktop."
+  },
+  "feels_like_a_game": {
+   "value": 7,
+   "reason": "Mission failed stamp, grades, seals feel like a game."
+  },
+  "agency": {
+   "value": 8,
+   "reason": "Wild move allowed with a clear warning; blocked orders explained themselves."
+  },
+  "realism": {
+   "value": 6,
+   "reason": "Japan war pulling in the US was believable; Australia spying and Germany offer lines were not."
+  },
+  "replay": {
+   "value": 7,
+   "reason": "Replay same opening and seed beat target pulled me back; compare runs line is nice."
+  },
+  "recommend": {
+   "value": 7,
+   "reason": "I would show chat the war run; the end of a peaceful run is a D and not worth posting."
+  }
+ },
+ "quit_point": null,
+ "verbatim": "I declared war on Japan and the whole screen told me I'd wrecked my own mission. That's the clip. The calm 12 months after it was a lot of Next month."
+}

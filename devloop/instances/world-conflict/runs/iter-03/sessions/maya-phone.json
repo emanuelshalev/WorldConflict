@@ -1,0 +1,40 @@
+{
+"persona":"maya","variant":"maya-phone","panel_version":"1.2","build":"d70608a","iteration":3,"minutes_played":25,
+"scenarios":[
+{"id":"M1","outcome":"achieved","steps":["Entered CO-UKR-MAYA1 under Play a seed","Chose Guide me","Played 12 months, mostly accepting cabinet picks","Read verdict, achievements, moments, truth, ranking, share card"],"turns":12,"notes":"Knew at the end why I lost: Washington relations 28.5 of 33 and UK 88 of 93."},
+{"id":"M2","outcome":"achieved","steps":["Finished whole Flashpoint without getting stuck","Started New world from the share card page"],"turns":12,"notes":"Mission failed, grade D, but no moment of being stuck."}
+],
+"friction":[
+{"where":"Title, Play a seed","expected":"A visible code field","happened":"Button opens a field that is hidden until tapped; the first tap looked like it failed in the driver, field has a placeholder of a different code","kind":"affordance","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/maya-phone/004-seed3.png"},
+{"where":"Month 3, top bar","expected":"A Map switch next to Focus/Full desk","happened":"Map was only inside the hamburger Menu; Focus/Full desk looked like the only view choice","kind":"hesitation","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/maya-phone/014-fd.png"},
+{"where":"Map mode","expected":"A readable map","happened":"Dozens of markers, layer icons and a Guide button; the useful part was the bottom strip with Review recommended","kind":"dashboard-feel","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/maya-phone/016-map.png"},
+{"where":"Month 12 and verdict, top bar","expected":"Main menu and Skip tappable","happened":"The sound button overlaps Main menu and Skip text on every reveal stage","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/maya-phone/038-v1.png"},
+{"where":"Achievements stage","expected":"Button named after the current stage","happened":"Bottom-right button names the next stage (Achievements then The moments), my click by label failed twice","kind":"affordance","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/maya-phone/043-cur.png"},
+{"where":"End screen, New game label","expected":"New game to be a button","happened":"It is a grey centered label; the real buttons are Replay same opening and New world. New world was not obviously a new game","kind":"affordance","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/maya-phone/050-sc.png"},
+{"where":"Months 6 to 7","expected":"Crisis titles not to repeat","happened":"Land for a promise seemed to show for two consecutive screens (result screen then the next month); I could not tell if it was the same crisis again","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/maya-phone/023-s7.png"},
+{"where":"Month 1 crisis","expected":"Know Washington, Donetsk, Kramatorsk","happened":"Underlined names with an i helped; 2 names chip was clear","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/maya-phone/006-m1.png"},
+{"where":"Ranking","expected":"Understand a ladder of 108 runs","happened":"Better than 0% of simulated competent leaders, Best known run 730: fine but heavy on numbers; the Truth stage terms Declassified, nuclear program estimate not meaningful to me","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/maya-phone/048-e4.png"},
+{"where":"Political capital","expected":"Reason to spend it","happened":"Capital sat at 5-6 unspent most months because accepting only the crisis pick used none; this probably cost me Washington and UK","kind":"hesitation","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/maya-phone/032-r11.png"}
+],
+"bugs":[
+{"title":"Sound button overlaps Main menu and Skip in reveal header on phone","steps":["Finish month 12","See your verdict","Look at top bar of any reveal stage"],"expected":"No overlap","actual":"Sound icon covers Main menu text and Skip","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/maya-phone/039-v2.png"}
+],
+"suggestions":[
+{"what":"Put Map next to Focus/Full desk","goal_served":"M2"},
+{"what":"On Focus desk, after the crisis pick, say once 'you have 6 capital unspent and Washington is falling' with one-tap accept of the recommended orders","goal_served":"M1"},
+{"what":"Make Main menu and the New world button obvious at the end: one big Play again button","goal_served":"M1"}
+],
+"delight":["Result card with a Trump quote after my first choice (devloop/instances/world-conflict/runs/iter-03/shots/maya-phone/009-r1.png)","Review recommended list in Map mode is clear (devloop/instances/world-conflict/runs/iter-03/shots/maya-phone/017-rev.png)","The count: one square per month (devloop/instances/world-conflict/runs/iter-03/shots/maya-phone/038-v1.png)","The truth stage: your estimate crossed out (devloop/instances/world-conflict/runs/iter-03/shots/maya-phone/048-e4.png)"],
+"scores":{
+"fun":{"value":6,"reason":"Quick and tidy, but I mostly tapped Accept cabinet pick and lost anyway."},
+"clarity":{"value":7,"reason":"Always knew the next tap; the verdict said exactly what I missed."},
+"visual":{"value":8,"reason":"Illustrated scenes and chronicle look great on phone."},
+"feels_like_a_game":{"value":6,"reason":"Cards feel like Reigns; the map and numbers feel like a dashboard."},
+"agency":{"value":6,"reason":"Never blocked, but I did not realise the crisis choice alone would not win."},
+"realism":{"value":7,"reason":"Headlines feel real."},
+"replay":{"value":6,"reason":"Beat 470 is a hook, but I would want to know what to do differently."},
+"recommend":{"value":6,"reason":"Fine for a commute, ending is satisfying, the loss felt avoidable."}
+},
+"quit_point":null,
+"verbatim":"I lost and I understand why, which is more than I can say for most games. I wish it had nudged me about Washington earlier."
+}

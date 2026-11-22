@@ -1,0 +1,199 @@
+{
+ "persona": "priya",
+ "variant": "priya-flash",
+ "panel_version": "1.2",
+ "build": "d70608a",
+ "iteration": 3,
+ "minutes_played": 35,
+ "scenarios": [
+  {
+   "id": "P1",
+   "outcome": "achieved",
+   "turns": 12,
+   "steps": [
+    "Entered seed CO-UKR-PRIY1 under Play a seed (had to click into the box)",
+    "Answered familiarity with I know this",
+    "Played 12 months as Zelensky mostly via Accept all recommended and Execute",
+    "Proposed ceasefire in month 1-3; war ended in month 3",
+    "Two months in Map mode (4, 5)",
+    "Finished: mission complete, 714, A, 3 stars"
+   ],
+   "notes": "Ceasefire in month 3 after one order is not credible for Ukraine."
+  },
+  {
+   "id": "P2",
+   "outcome": "partial",
+   "turns": 12,
+   "steps": [
+    "Read goal line and Helps/Hurts tags before choices",
+    "Read The truth table at the end"
+   ],
+   "notes": "Tags tell what a choice does to the mission, but not why it matches the real situation. The truth table at the end delivers the real-world context."
+  }
+ ],
+ "friction": [
+  {
+   "where": "Title, Play a seed",
+   "expected": "One click opens a field and I can type",
+   "happened": "Clicking the Play a seed label opened the field but typing without clicking into it did nothing; Play this seed beside Todays crisis is disabled and looks like the one to press",
+   "kind": "affordance",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/priya-flash/004-s2.png"
+  },
+  {
+   "where": "Desk month 1, crisis option cards",
+   "expected": "Clear selected state when I tap an option",
+   "happened": "Tapping Only by referendum changed nothing visible because the cabinet pick was already highlighted; unsure whether anything was chosen",
+   "kind": "affordance",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/priya-flash/007-m1b.png"
+  },
+  {
+   "where": "Familiarity prompt",
+   "expected": "Skip quickly",
+   "happened": "Fine; I know this suited me. The faint i marks and What is going on here? buttons remain on every crisis and are noise for an expert",
+   "kind": "naming",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/priya-flash/005-game.png"
+  },
+  {
+   "where": "Desk, Your advisors suggest cards",
+   "expected": "Readable order cards",
+   "happened": "Order cards render as narrow vertical columns with one letter per line (Court United Kingdom spelled vertically)",
+   "kind": "other",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/priya-flash/013-m2c.png"
+  },
+  {
+   "where": "Month report, Also this month after Court United Kingdom",
+   "expected": "UK reaction",
+   "happened": "Showed Denmark PM and Germany Merz reacting; the UK order itself had no UK voice, and Court United States quoted We read this as a constructive signal",
+   "kind": "misread",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/priya-flash/015-d2.png"
+  },
+  {
+   "where": "Crisis flow",
+   "expected": "Ukraine-specific crises throughout",
+   "happened": "Generic templates (Energy price shock, assassination attempt, Beg for Patriots, Burn their refineries, Ultimatum from Russia, Grid down) after the war had ended, mixed with sharp authored ones (free economic zone, minerals offer, corruption scandal, coalition of the willing)",
+   "kind": "other",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/priya-flash/022-e4.png"
+  },
+  {
+   "where": "End, The moments",
+   "expected": "Consistent verdict",
+   "happened": "Accept it publicly in the Coalition crisis is listed under What went badly although it was the cabinet pick that helped the mission and the mission completed",
+   "kind": "misread",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/priya-flash/041-r2.png"
+  },
+  {
+   "where": "End, The count",
+   "expected": "Believable Ukraine election",
+   "happened": "A 377 seat majority projection animation for a wartime president in a 12 month flashpoint; Rada has 450 seats and the election is not part of the scenario",
+   "kind": "other",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/priya-flash/039-end1.png"
+  },
+  {
+   "where": "End, Ranking buttons",
+   "expected": "Obvious way to play again",
+   "happened": "Four similar choices: Replay same opening, New world, Compare runs (disabled), New game. I guessed New game and it went to the title; fine but New world vs New game is unclear",
+   "kind": "naming",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/priya-flash/045-r6.png"
+  },
+  {
+   "where": "Driver",
+   "expected": "click by label for Play a seed and Map",
+   "happened": "Label click returned not ok; needed text tap",
+   "kind": "retry"
+  }
+ ],
+ "bugs": [
+  {
+   "title": "Advisor suggestion cards collapse to one-letter-wide columns on laptop",
+   "steps": [
+    "Month 2 desk, accept Big move (Do it)",
+    "Scroll to Your advisors suggest"
+   ],
+   "expected": "Order cards with readable name and cost",
+   "actual": "Cards render as thin vertical strips with text one letter per line; Remove/Add button overlaps",
+   "severity": "S2",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/priya-flash/013-m2c.png"
+  },
+  {
+   "title": "A single ceasefire order ends the Russia-Ukraine war in month 3",
+   "steps": [
+    "Accept Big move: Propose ceasefire to Russia",
+    "Execute month 1-3"
+   ],
+   "expected": "Russia refuses or talks stall as in the real world",
+   "actual": "The war with Russia is over; paper and moments celebrate it, later crises still stage a Russian ultimatum and Offer defense pact to Russia",
+   "severity": "S2",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/priya-flash/018-map4.png"
+  },
+  {
+   "title": "Political capital shows 6 left while 0 seals and 5 orders are queued",
+   "steps": [
+    "Month 2, Do it then Accept all recommended"
+   ],
+   "expected": "Header consistent",
+   "actual": "Header 0 left; sidebar says 0 of 6 left but Orders 5 of 6 is a different counter; header after Execute reads 6 left on month 1 result",
+   "severity": "S4",
+   "screenshot": "devloop/instances/world-conflict/runs/iter-03/shots/priya-flash/012-m2b.png"
+  }
+ ],
+ "suggestions": [
+  {
+   "what": "Make crisis and order texts country-specific all year (no generic Energy price shock for Ukraine), and keep Russian behaviour consistent with a ceasefire only after real terms",
+   "goal_served": "P1"
+  },
+  {
+   "what": "Show a one-line real-world reference beside each authored crisis option so I know what each choice is meant to echo",
+   "goal_served": "P2"
+  },
+  {
+   "what": "Let experts hide the faint i marks entirely on I know this",
+   "goal_served": "P2"
+  },
+  {
+   "what": "Name the end buttons by what they do: Play this seat again, Pick another crisis",
+   "goal_served": "P1"
+  }
+ ],
+ "delight": [
+  "The truth table comparing my session with the real Nov 2026 situation (Abu Dhabi talks, 28 then 19 then 20 point plan) devloop/instances/world-conflict/runs/iter-03/shots/priya-flash/044-r5.png",
+  "Free economic zone and United States offer crises felt like the real Kramatorsk and minerals debate devloop/instances/world-conflict/runs/iter-03/shots/priya-flash/006-m1.png",
+  "Refusal reasons on the map menu (Russia rebuffed, needs PROFITABLE) are clear devloop/instances/world-conflict/runs/iter-03/shots/priya-flash/020-map4c.png",
+  "Result card after Execute is a clear what-your-choice-did summary devloop/instances/world-conflict/runs/iter-03/shots/priya-flash/009-e1.png"
+ ],
+ "scores": {
+  "fun": {
+   "value": 7,
+   "reason": "Good flow once I used Accept all; shallow because most months were rubber-stamping."
+  },
+  "clarity": {
+   "value": 7,
+   "reason": "Goal line and Helps/Hurts tags are clear; selection state and order cards are not."
+  },
+  "visual": {
+   "value": 7,
+   "reason": "Map and scenes look good; vertical-text card layout bug and generic portraits hurt."
+  },
+  "feels_like_a_game": {
+   "value": 7,
+   "reason": "Months, results, reveal and seals make it feel like a game."
+  },
+  "agency": {
+   "value": 8,
+   "reason": "Never blocked without a reason; refusals say why."
+  },
+  "realism": {
+   "value": 5,
+   "reason": "Leaders and context are right (Trump, Merz, Starmer era) but a one-order ceasefire in month 3 and generic crises break it."
+  },
+  "replay": {
+   "value": 7,
+   "reason": "Want to try Iran or Taiwan and compare to the truth table."
+  },
+  "recommend": {
+   "value": 7,
+   "reason": "I would send it to friends in IR class with a warning about the ceasefire."
+  }
+ },
+ "quit_point": null,
+ "verbatim": "The truth screen is the best thing here. But the war ending in month 3 because I pressed one button, that is not Ukraine."
+}

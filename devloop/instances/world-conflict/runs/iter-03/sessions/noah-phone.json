@@ -1,0 +1,49 @@
+{
+"persona":"noah","variant":"noah-phone","panel_version":"1.2","build":"d70608a","iteration":3,"minutes_played":25,
+"scenarios":[
+{"id":"N1","outcome":"achieved","turns":12,"steps":["Typed HC-ARE-NOAH1 under Play a seed: worked first try","Picked Guide me","Accepted cabinet pick month 1, 'Reinforce' month 2","Months 3 in Map mode with Accept all recommended","Months 4-12 accept cabinet pick + Execute","Reached verdict: mission failed, D, 422"],"notes":"Started in under a minute. Fine."},
+{"id":"N2","outcome":"achieved","turns":12,"steps":["Share card screen reached from ranking stage","Card saved, Save/Phone/Copy buttons present","Started second game via New world"],"notes":"Card is small and text heavy but shareable."}
+],
+"friction":[
+{"where":"Title: Play a seed","expected":"seed field visible","happened":"had to tap Play a seed then scroll; click by label failed once, text tap worked; field lower on screen","kind":"hesitation","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/noah-phone/003-seed2.png"},
+{"where":"Familiarity prompt example","expected":"example about my game","happened":"example sentence about Donetsk and Kramatorsk while I play UAE; 2 names unexplained","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/noah-phone/004-seed3.png"},
+{"where":"Month 1 mission box","expected":"short goal","happened":"wall of underlined goal text with 'Iran relations -90+' and 'approval 80%+'; Iran, Tehran, relations scale not understood; Guide me underlines helped a bit","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/noah-phone/005-m1.png"},
+{"where":"Crisis text names","expected":"know who these are","happened":"Al Dhafra, Fujairah, Sudan warship, Abiy Ahmed, Khamenei, IRGC unknown to me; the i chip '1 name' explained on tap but I would not tap","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/noah-phone/006-m1b.png"},
+{"where":"Map switch","expected":"Map switch at the top next to Focus/Full desk","happened":"top switch only says Focus and Full desk; Map is hidden in hamburger Menu","kind":"hesitation","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/noah-phone/019-menu.png"},
+{"where":"Map tap on Iran","expected":"Iran dossier","happened":"opened Afghanistan; globe small and crowded, 19 unlabeled Map marker icons","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/noah-phone/021-map2.png"},
+{"where":"Map mode crisis","expected":"see the crisis","happened":"crisis not visible; only 'Review 7 recommended' folded list; I accepted all without reading, including special forces raid","kind":"dashboard-feel","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/noah-phone/022-map3.png"},
+{"where":"Results card after month 3","expected":"what happened with the hostages raid","happened":"top card showed only Mediate peace; raid result not shown unless See everything","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/noah-phone/024-r3.png"},
+{"where":"Month desk after Map mode","expected":"stay in Map","happened":"next month returned to Focus mode","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/noah-phone/026-m4.png"},
+{"where":"Month 2 option cards","expected":"tap card to pick","happened":"unsure card was pressable until YOUR PICK stamp appeared; Accept cabinet pick button clear","kind":"affordance","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/noah-phone/014-m2d.png"},
+{"where":"Mission box dotted outlines","expected":"button","happened":"dotted 'How you win' / 'This month' box looks like control; it opens a sheet, ok","kind":"affordance","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/noah-phone/011-m2.png"},
+{"where":"Result card stamp","expected":"readable label","happened":"STEP ACHIEVED stamp covers 'Mobilization' label","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/noah-phone/015-r2.png"},
+{"where":"Reveal header","expected":"clean header","happened":"sound button overlaps 'Main menu' and Skip","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/noah-phone/044-v1.png"},
+{"where":"Reveal verdict","expected":"hear why I failed simply","happened":"Mission failed D with 0 stars; text mentions 'Still Washington's partner (US relations 60+)' by 2 points; felt unlucky not skilled; I did not know my choices (Iranian meeting) hurt US ties","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/noah-phone/045-v2.png"},
+{"where":"Reveal length","expected":"quick","happened":"8 stages, ladder with quantiles and 'Competent, top 10%' is homework","kind":"dashboard-feel","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/noah-phone/052-v8.png"},
+{"where":"End screen buttons","expected":"clear Play again","happened":"Replay same opening, New world, Compare runs (disabled) and a 'New game' label that is not a button; New world dropped me straight into a briefing of the same UAE game, not a new world","kind":"affordance","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/noah-phone/053-sh.png"}
+],
+"bugs":[
+{"title":"Sound button overlaps header on reveal","steps":["Finish month 12","See your verdict","Look at top right"],"expected":"Main menu and Skip tappable","actual":"Speaker button covers them","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/noah-phone/044-v1.png"},
+{"title":"New world restarts same seat","steps":["End screen, tap New world"],"expected":"a different world or a picker","actual":"opened Fire at Fujairah briefing again","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/noah-phone/054-nw.png"},
+{"title":"Stamp covers result label","steps":["Execute month 2 Reinforce"],"expected":"readable","actual":"STEP ACHIEVED over Mobilization","severity":"S4","screenshot":"devloop/instances/world-conflict/runs/iter-03/shots/noah-phone/015-r2.png"}
+],
+"suggestions":[
+{"what":"Put a Map switch next to Focus/Full desk","goal_served":"N1"},
+{"what":"Show the crisis answer outcome (raid) on the first result card","goal_served":"N1"},
+{"what":"Short fail explanation with the one move that would have flipped it, plus a one-tap Try again","goal_served":"N2"},
+{"what":"Tell the user what Iran or relations -90 means in one icon and word","goal_served":"N1"}
+],
+"delight":["Seed code worked and the game started within a minute","Month result cards with big +10 numbers, flags and stamps felt like a mobile game (devloop/instances/world-conflict/runs/iter-03/shots/noah-phone/010-r1.png)","Accept cabinet pick is a one-tap way to move on","Share card exists with Save and Phone card"],
+"scores":{
+"fun":{"value":6,"reason":"Month loop is quick and the stamps are nice, but my choices felt invisible after month 3"},
+"clarity":{"value":4,"reason":"Goal text, names and numbers like -90+ are homework"},
+"visual":{"value":7,"reason":"Scene art and cards look good"},
+"feels_like_a_game":{"value":6,"reason":"Tactile and animated at times, but a lot of text"},
+"agency":{"value":5,"reason":"Never hard blocked, but I accepted picks without knowing consequences and failed the goal"},
+"realism":{"value":6,"reason":"Seems real; I cannot judge"},
+"replay":{"value":5,"reason":"Replay same opening is offered; I would only retry if a friend challenged me"},
+"recommend":{"value":5,"reason":"Cool idea, too wordy for me; I might show the share card"}
+},
+"quit_point":null,
+"verbatim":"It looks sick but I just kept hitting accept and then it said I failed and I did not really get why."
+}
