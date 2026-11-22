@@ -75,7 +75,7 @@ describe("RS-005: staff picks are listed next to their Approve button", () => {
     // Every recommendation names its adviser (D-72: "Recommended by <role>", never bare)
     for (const it of items) expect(it.by).toMatch(/^(Foreign|Defense|Finance|Interior) Minister$|^Intelligence Chief$|^Chief of Staff$/);
     expect(items.find((x) => x.kind === "order")?.by).toBe("Chief of Staff");
-    // Truthful next to "Nothing happens until you accept": a crisis answer goes ahead
+    // Truthful with the first-use line: a crisis answer goes ahead
     expect(items[0].what).toMatch(/^Crisis: .* · goes ahead unless you change it$/);
     expect(items.find((x) => x.kind === "order")?.what).toMatch(/^(Spends ◆ \d if accepted|Free)$/);
     // The count matches what Approve all does

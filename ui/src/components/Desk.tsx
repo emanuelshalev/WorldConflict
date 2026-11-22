@@ -57,7 +57,10 @@ function useDeskKeys(enabled: boolean) {
           if (s.deskView === 'focus') s.setDeskView('full');
           s.setFocus({ kind: next.kind, id: next.id });
         }
-      } else if (e.key === 'A' && e.shiftKey) approveAll();
+      } else if (e.key === 'A' && e.shiftKey) {
+        // Only where the Recommended list is on screen: month 1's simple desk shows none (RS-005)
+        if (!simpleMonth(s.worldState?.turn, s.deskView, s.deskShown)) approveAll();
+      }
       else if (e.key === '/') {
         e.preventDefault();
         flushSync(() => {

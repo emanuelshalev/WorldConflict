@@ -77,7 +77,7 @@ await run('RS-005', async (g, track) => {
     }
     const desk = await checkGroup(g, p, `${device} desk`);
     const why = await p.locator('.sp-why').first().innerText().catch(() => '');
-    g.check(/^Your advisers recommend these for this month\. Nothing happens until you accept\.$/.test(why.trim()), `${device} desk: first use explains what the recommendations are`);
+    g.check(/^Your advisers recommend these for this month\. Orders and meetings wait for you to accept; a crisis goes ahead on its recommended answer unless you change it\.$/.test(why.trim()), `${device} desk: first use explains what the recommendations are`);
     await s.look(`${device}-desk`);
     if (device === 'laptop') {
       // F-02-4 (QA): the Full desk navigator counted unapproved proposals ("Orders this month 2 of 6",

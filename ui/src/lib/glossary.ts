@@ -106,7 +106,7 @@ export const TERMS = {
     name: 'Recommended',
     compact: 'Recommended ({n})',
     // The first-use line next to every Accept control (RS-005, D-72 wording)
-    definition: 'Your advisers recommend these for this month. Nothing happens until you accept.',
+    definition: 'Your advisers recommend these for this month. Orders and meetings wait for you to accept; a crisis goes ahead on its recommended answer unless you change it.',
     banned: [],
   },
   proposed: {
