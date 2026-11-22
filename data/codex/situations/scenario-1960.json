@@ -1,0 +1,94 @@
+{
+  "id": "scenario-1960",
+  "title": "The Cold War at its peak: January 1960",
+  "oneLine": "Two nuclear superpowers face off over Berlin, empires are breaking up across Africa and Asia, and a new revolutionary government in Cuba sits 150 km from Florida.",
+  "whoIsWho": [
+    {
+      "entryId": "dwight-eisenhower",
+      "stance": "Contain communism everywhere but avoid war; his second term ends in a year."
+    },
+    {
+      "entryId": "nikita-khrushchev",
+      "stance": "Wants the West out of Berlin and boasts of Soviet missiles, yet seeks a summit."
+    },
+    {
+      "entryId": "mao-zedong",
+      "stance": "Drifting away from Moscow; his Great Leap Forward is causing famine at home."
+    },
+    {
+      "entryId": "charles-de-gaulle",
+      "stance": "Fighting in Algeria and building a French bomb to stay independent of Washington."
+    },
+    {
+      "entryId": "fidel-castro",
+      "stance": "Seizing US-owned land and opening trade talks with Moscow."
+    },
+    {
+      "entryId": "jawaharlal-nehru",
+      "stance": "Speaks for the new nations that refuse to pick a side."
+    }
+  ],
+  "whyItMatters": "Both superpowers can already destroy each other's cities with nuclear weapons, and Berlin, Cuba and the Taiwan Strait are places where a local quarrel could drag them into war. Meanwhile dozens of newly independent countries are choosing sides, or refusing to.",
+  "timeline": [
+    {
+      "date": "1945-08",
+      "text": "Atomic bombs on Hiroshima and Nagasaki; the Second World War ends."
+    },
+    {
+      "date": "1949",
+      "text": "NATO is founded, the Soviets test a bomb and Mao wins China's civil war."
+    },
+    {
+      "date": "1950-06",
+      "text": "North Korea invades the South; the Korean War ends in a 1953 armistice."
+    },
+    {
+      "date": "1955-05",
+      "text": "The Soviet Union and its allies form the Warsaw Pact."
+    },
+    {
+      "date": "1957-10",
+      "text": "The Soviet Union launches Sputnik, the first satellite."
+    },
+    {
+      "date": "1958-11",
+      "text": "Khrushchev demands that Western troops leave Berlin within six months.",
+      "source": "https://history.state.gov/milestones/1961-1968/berlin-crises"
+    },
+    {
+      "date": "1959-01",
+      "text": "Fidel Castro's rebels take power in Cuba."
+    }
+  ],
+  "gameStarts": "1960-01",
+  "map": {
+    "countries": [
+      "USA",
+      "RUS",
+      "CHN",
+      "CUB",
+      "FRA"
+    ],
+    "points": [
+      {
+        "name": "Berlin",
+        "lon": 13.4,
+        "lat": 52.52
+      }
+    ]
+  },
+  "onThisCard": [
+    "cold-war",
+    "warsaw-pact",
+    "non-aligned-movement",
+    "algerian-war",
+    "sino-soviet-split"
+  ],
+  "sources": [
+    "https://en.wikipedia.org/wiki/Cold_War",
+    "https://en.wikipedia.org/wiki/Berlin_Crisis_of_1961",
+    "https://en.wikipedia.org/wiki/Cuban_Revolution",
+    "https://en.wikipedia.org/wiki/Year_of_Africa"
+  ],
+  "asOf": "2026-11-22"
+}
