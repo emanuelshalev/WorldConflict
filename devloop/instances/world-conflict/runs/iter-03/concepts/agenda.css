@@ -249,3 +249,9 @@ button { font: inherit; color: inherit; }
 .col-agenda .agenda { overflow: auto; flex: 1; align-content: start; }
 .hud .who, .hud .stat span { white-space: nowrap; }
 @media (max-width: 700px) { .hero svg { opacity: .35; } .hud .stat span { font-size: 11px; } }
+@media (max-width: 700px) { .hud { gap: 10px; } .hud .seg button { padding: 6px 9px; } .hud .who { font-size: 14px; } }
+@media (max-width: 700px) { .hud { gap: 8px; padding: 0 10px; } }
+.strip .stat b, .strip .stat span { white-space: nowrap; }
+.topbar .lead .step-n { min-width: 20px; }
+@media (max-width: 700px) { .strip .grow { display: none; } .strip .agenda-pill { flex: 1 1 auto; width: auto; } }
+@media (min-width: 1280px) { .col-item .opts { grid-template-columns: repeat(3, minmax(0, 1fr)); } }

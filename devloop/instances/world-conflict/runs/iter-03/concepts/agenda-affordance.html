@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Affordance key</title>
+<link rel="stylesheet" href="agenda.css">
+<style>
+  .sheet { max-width: 1320px; margin: 0 auto; padding: 24px 16px 40px; }
+  .sheet h1 { margin: 0 0 4px; font-size: 24px; }
+  .sheet > p { margin: 0 0 18px; color: var(--text-2); }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .box { border-radius: 14px; padding: 16px; background: #0f1724; border: 1px solid var(--line); }
+  .box h2 { margin: 0 0 4px; font-size: 18px; }
+  .box > p { margin: 0 0 14px; font-size: 14px; color: var(--text-2); }
+  .ex { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid var(--line); }
+  .ex .rule { font-size: 13px; color: var(--text-2); }
+  .ex .rule b { color: var(--text-1); display: block; font-size: 14px; }
+  .bad { margin-top: 20px; }
+  .bad table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .bad td, .bad th { text-align: left; padding: 6px 8px; border-top: 1px solid var(--line); vertical-align: top; }
+  .bad th { color: var(--text-3); font-weight: 500; }
+  @media (max-width: 900px) { .cols { grid-template-columns: 1fr; } .ex { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <h1>One look for what you can press</h1>
+  <p>Everything pressable is raised, outlined and has a visible cue. Everything else is flat and has no border or pill. A test checks it on every screen.</p>
+  <div class="cols">
+    <section class="box" aria-label="Clickable">
+      <h2>Clickable</h2>
+      <p>Raised (bottom shadow), outlined, sinks 1px when pressed, focus ring, at least 44 px tall on touch.</p>
+      <div class="ex"><div><button class="btn primary">Execute month</button></div><div class="rule"><b>Primary button</b>Filled amber. At most one per region: the current item's main choice, Execute.</div></div>
+      <div class="ex"><div><button class="btn">Approve</button> <button class="btn skip" style="border-style:dashed;background:transparent;box-shadow:none">Skip</button></div><div class="rule"><b>Button</b>Outlined and raised. Skip is the same button with a dashed border: deliberate, never hidden.</div></div>
+      <div class="ex"><div><button class="ac"><span class="no" style="width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line-2);display:grid;place-items:center;font-size:12px">3</span><span class="t" style="display:grid"><b style="font-size:14px">PM Takaichi visits</b><small class="tag needs">Needs you</small></span><span class="cue">›</span></button></div><div class="rule"><b>Card you can open</b>Raised card with a trailing cue: › opens, ▾ expands, a radio picks. The whole card is the target.</div></div>
+      <div class="ex"><div><button class="ac" role="radio" aria-checked="true" style="border-color:var(--accent)"><b style="flex:1;font-size:14px">Hold firm</b><span class="radio" style="border-color:var(--accent)"></span></button></div><div class="rule"><b>Choice card</b>Radio cue on the right; selected = amber border and filled radio.</div></div>
+      <div class="ex"><div><button class="lnk">See the meetings anyway</button></div><div class="rule"><b>Link</b>Blue and always underlined (not only on hover).</div></div>
+      <div class="ex"><div><div class="seg"><button class="on">Guided</button><button>Full desk</button></div></div><div class="rule"><b>Switch</b>A bordered pill is always a switch or a chip you can press.</div></div>
+    </section>
+    <section class="box" aria-label="Not clickable">
+      <h2>Not clickable</h2>
+      <p>Flat: no border, no shadow, no cue, no hover change, normal cursor.</p>
+      <div class="ex"><div><div class="panel stat"><span>Orders this month</span><b class="num">1 of 6</b></div></div><div class="rule"><b>Stat panel</b>Flat surface. Budgets, meters and facts. If it explains itself on press, it becomes a card with a cue.</div></div>
+      <div class="ex"><div><span class="tag staff">Staff pick waiting</span> &nbsp; <span class="tag mine">Your pick</span> &nbsp; <span class="tag skip">Skipped</span></div><div class="rule"><b>Status</b>A dot and a word. Never a bordered pill (today's "Cabinet pick" pills look like buttons).</div></div>
+      <div class="ex"><div><span class="label">Meetings · you can attend 3</span></div><div class="rule"><b>Label and group heading</b>Plain text, sentence case, 13 px or more.</div></div>
+      <div class="ex"><div><div class="panel" style="font-size:14px">Thirty ships and a carrier have closed the north channel.</div></div><div class="rule"><b>Text and scene art</b>Never reacts to hover. Art behind an item is not a target.</div></div>
+      <div class="ex"><div><div class="panel" style="display:flex;gap:8px;align-items:center"><span style="flex:1;font-size:14px">Court India · ◆ 1</span><button class="btn small">Approve</button></div></div><div class="rule"><b>Static row with a button</b>When only part of a row acts, the row is flat and the button is a button. No half-clickable cards.</div></div>
+    </section>
+  </div>
+  <section class="box bad" aria-label="Today in the code">
+    <h2>Today in the code (examples; full list in design-agenda.md 6.4)</h2>
+    <table>
+      <tr><th>Looks clickable, is not</th><th>Clickable, looks static</th></tr>
+      <tr><td>Advisor rows (bordered cards like "Also on your desk" rows)</td><td>Navigator rows (transparent until hover)</td></tr>
+      <tr><td>"Cabinet pick", "Open", "Deputy" pills; the selection badge</td><td>The goal line (one big borderless button)</td></tr>
+      <tr><td>Budget tiles; Map strip chips (44 px pills)</td><td>"2 meetings: a deputy goes" (dashed, grey: reads as an empty slot)</td></tr>
+      <tr><td>Order slot card frame (only its middle is a button)</td><td>HUD capital and score (same look as the static stats)</td></tr>
+    </table>
+  </section>
+</div>
+</body>
+</html>
