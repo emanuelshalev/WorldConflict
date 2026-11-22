@@ -1,0 +1,20 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Staff picks concept</title>
+<link rel="stylesheet" href="order-cards.css">
+<style>.list{display:grid;gap:12px;max-width:760px}.hint{color:var(--text-2);font-size:13px;margin:4px 0 14px}
+.bar{display:flex;gap:10px;align-items:center;margin:0 0 14px;flex-wrap:wrap}
+@media (max-width:600px){.or .thumb{width:auto;height:auto;overflow:visible}.or .thumb img{display:none}.or .thumb .plate{position:relative;left:0;bottom:0;--s:46px}}
+</style></head><body><script src="order-icons/sprite.js"></script><script src="order-cards.js"></script>
+<div class="page"><p class="ctx">Concept, D-66 · staff picks list (desk, full desk and map strip use the same row)</p>
+<h1>Your staff suggest</h1><p class="hint">Two staff orders wait for your approval; they hold no political capital until you approve them. The pictogram tells you what each one is before you read it.</p>
+<div class="bar"><span class="btn pri">&#10003; Approve all (◆ 2)</span><span style="color:var(--text-2);font-size:13px">◆ 2 left after approving</span></div>
+<div class="list" id="l"></div></div>
+<script>
+var R=[
+ {id:'ceasefire',title:'Propose ceasefire to Iran',state:'proposed',thumb:true,meta:'◆ 1 if approved · 35% chance',staff:'Foreign Minister: "Exhaustion is on our side now; ask before the front moves."',staffInit:'FM'},
+ {id:'reform',title:'Reform program',state:'proposed',thumb:true,meta:'◆ 1 if approved',staff:'Economy Minister: "Stability now, growth by spring."',staffInit:'EM'},
+ {id:'spy',title:'Spy on Iran',state:'queued',thumb:true,meta:'In this month · ◆ 1 held',staff:'Staff pick: Intelligence Chief',staffInit:'IC'},
+ {id:'address',title:'National address',state:'available',thumb:true,meta:'free · approval up a little',staff:'Chief of Staff: "Remind them why we are doing this."',staffInit:'CS'},
+ {id:'policing-hard',title:'Hard crackdown',state:'unaffordable',thumb:true,meta:'◆ 2',why:'Needs ◆ 2, you have ◆ 1. Remove a staff order (frees ◆ 1).',staff:'Interior Minister',staffInit:'IM'},
+];
+document.getElementById('l').innerHTML=R.map(orderRow).join('');
+</script></body></html>

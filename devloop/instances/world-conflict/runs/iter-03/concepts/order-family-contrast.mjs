@@ -1,11 +1,11 @@
 // Order family colours: WCAG contrast and colour-vision-deficiency separation.
 // Run: node order-family-contrast.mjs   (prints the tables used in design-order-cards.md)
 const FAM = {
-  diplo: { name: 'Diplomacy', accent: process.env.DIPLO || '#5cb8ff' },
-  mil: { name: 'Military', accent: process.env.MIL || '#ff7a59' },
-  intel: { name: 'Covert', accent: process.env.INTEL || '#b694ff' },
-  econ: { name: 'Economy', accent: process.env.ECON || '#3fd49a' },
-  home: { name: 'Home', accent: process.env.HOME_ || '#ff9cc8' },
+  diplo: { name: 'Diplomacy', accent: process.env.DIPLO || '#4691ff' },
+  mil: { name: 'Military', accent: process.env.MIL || '#ff7d4f' },
+  intel: { name: 'Covert', accent: process.env.INTEL || '#f48fd2' },
+  econ: { name: 'Economy', accent: process.env.ECON || '#1fbf95' },
+  home: { name: 'Home', accent: process.env.HOME_ || '#f1ede4' },
   nuke: { name: 'Nuclear', accent: '#f5d547' },
 };
 const CARD = '#1d2738'; // proposed card body top (--card-top)

@@ -1,0 +1,35 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Map order menu concept</title>
+<link rel="stylesheet" href="order-cards.css">
+<style>
+body{overflow-x:hidden}
+.map{position:relative;min-height:900px;background:radial-gradient(60% 70% at 35% 45%,#14304f 0%,#0e1a2b 60%,#0b0f17 100%);overflow:hidden}
+.map svg.land{position:absolute;left:0;top:60px;width:900px;opacity:.9}
+.pin{position:absolute;left:520px;top:330px;width:16px;height:16px;border-radius:50%;background:#ff7d4f;box-shadow:0 0 0 6px rgba(255,125,79,.25)}
+.menu{position:absolute;left:600px;top:110px;width:400px;padding:14px;border-radius:16px;background:rgba(20,27,39,.94);border:1px solid var(--line-2);box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.menu h2{margin:0 0 2px;font-size:18px}.menu .sub{color:var(--text-2);font-size:13px;margin:0 0 12px}
+.mg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.more{margin-top:12px;display:block;text-align:center;padding:9px;border-radius:10px;border:1px dashed var(--line-2);color:var(--text-1);font-weight:650;font-size:14px}
+.sheet{display:none}
+@media (max-width:600px){.map{min-height:300px}.map svg.land{width:600px;left:-150px;top:10px}.pin{left:230px;top:150px}.menu{display:none}
+.sheet{display:block;margin-top:-30px;position:relative;padding:14px 16px 24px;border-radius:18px 18px 0 0;background:#141b27;border-top:1px solid var(--line-2);box-shadow:0 -10px 30px rgba(0,0,0,.5)}
+.sheet .grab{width:40px;height:4px;border-radius:2px;background:#3a4759;margin:0 auto 10px}.sheet h2{margin:0 0 2px;font-size:18px}.sheet .sub{color:var(--text-2);font-size:13px;margin:0 0 12px}
+.sheet .rows{display:grid;gap:10px}}
+</style></head><body><script src="order-icons/sprite.js"></script><script src="order-cards.js"></script>
+<div class="map">
+<svg class="land" viewBox="0 0 900 600" aria-hidden="true"><path d="M120 120 C220 60 380 80 470 140 C560 200 620 180 700 230 C760 270 720 360 640 380 C560 400 520 470 430 450 C340 430 300 360 220 360 C140 360 60 300 70 220 C75 170 90 140 120 120Z" fill="#1f2a3a" stroke="#2f3d52" stroke-width="2"/><path d="M450 240 C490 225 540 240 560 270 C575 300 545 330 505 330 C470 330 440 300 450 240Z" fill="#5a2f2a" stroke="#ff7d4f" stroke-width="2"/></svg>
+<span class="pin"></span>
+<div class="menu"><p class="ctx">Concept, D-66 · map menu (same position and size as today)</p><h2>Iran</h2><p class="sub">At war with you · the six most relevant orders</p><div class="mg" id="mg"></div><span class="more">All 21 orders for Iran</span></div>
+</div>
+<div class="sheet"><div class="grab"></div><p class="ctx">Concept, D-66 · phone sheet</p><h2>Iran</h2><p class="sub">At war with you · the six most relevant orders</p><div class="rows" id="rs"></div><span class="more" style="display:block;margin-top:12px;text-align:center;padding:9px;border-radius:10px;border:1px dashed var(--line-2);font-weight:650">All 21 orders for Iran</span></div>
+<script>
+var L=[
+ {id:'ceasefire',title:'Propose ceasefire',cost:1,chance:35},
+ {id:'airstrike-military',title:'Strike military targets',cost:1,chance:80,hover:true},
+ {id:'deploy-border',title:'Mass troops facing Iran',cost:0,def:6,state:'queued'},
+ {id:'airstrike-nuclear',title:'Strike nuclear sites',cost:2,missing:1,state:'unaffordable',reason:'Needs ◆ 2, you have ◆ 1.'},
+ {id:'spy',title:'Spy on Iran',cost:1,chance:95},
+ {id:'destabilize',title:'Destabilize Iran',cost:2,chance:89},
+];
+document.getElementById('mg').innerHTML=L.map(function(o){o.compact=true;return orderCard(o)}).join('');
+document.getElementById('rs').innerHTML=L.map(function(o){return orderRow({id:o.id,title:o.title,state:o.state,meta:(o.cost?'◆ '+o.cost:'free')+(o.chance!=null?' · '+o.chance+'%':''),why:o.reason})}).join('');
+</script></body></html>

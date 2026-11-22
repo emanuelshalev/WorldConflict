@@ -500,7 +500,9 @@ async function game(size) {
       const ang = cap ? (Math.acos(Math.sin((c.lat * Math.PI) / 180) * Math.sin((cap[1] * Math.PI) / 180) + Math.cos((c.lat * Math.PI) / 180) * Math.cos((cap[1] * Math.PI) / 180) * Math.cos(((cap[0] - c.lng) * Math.PI) / 180)) * 180) / Math.PI : 999;
       return { d: Math.hypot(b.x - a.x, b.y - a.y), ang };
     });
-    if (size.w === 1920) mark(3, g.d >= 900 && g.ang < 80, `1920 in game: D ${Math.round(g.d)} (at least 900), capital ${Math.round(g.ang)} deg from the centre`);
+    // Whole pixels, as globe-fit.mjs and the note: the three-pass fit lands within a fraction of a
+    // pixel of its target (899.74 for 900 failed while the note printed "D 900")
+    if (size.w === 1920) mark(3, Math.round(g.d) >= 900 && g.ang < 80, `1920 in game: D ${Math.round(g.d)} (at least 900), capital ${Math.round(g.ang)} deg from the centre`);
     else mark(3, g.ang < 80, `${size.w} in game: D ${Math.round(g.d)}, capital ${Math.round(g.ang)} deg from the centre`);
     await p.screenshot({ path: path.join(out, `game-${size.w}.png`) });
     const o = await overlapCheck(p, { layers: ['country-labels'], game: true });

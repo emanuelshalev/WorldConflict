@@ -1,0 +1,26 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Order card states concept</title>
+<link rel="stylesheet" href="order-cards.css">
+<style>.g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px 16px}.cell>.lab{font:700 12px/1.3 var(--font-mono);color:var(--text-2);margin:0 0 8px;text-transform:uppercase;letter-spacing:.06em}
+.fams{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin:0 0 26px}
+@media (max-width:600px){.g{grid-template-columns:1fr}.fams{grid-template-columns:repeat(2,1fr)}}
+</style></head><body><script src="order-icons/sprite.js"></script><script src="order-cards.js"></script>
+<div class="page"><p class="ctx">Concept, D-66 · card anatomy, families and the six states</p><h1>Order card states</h1>
+<p class="note">Family is carried by four things at once: the pictogram, the family word, the plate colour and the edge (Nuclear adds hazard stripes). State is carried by border, stamp and words, never by the family colour.</p>
+<div class="fams" id="f"></div>
+<div class="g" id="g"></div></div>
+<script>
+var fams=[['court','Diplomacy'],['airstrike-military','Military'],['fund-nuclear','Nuclear'],['sabotage','Covert'],['reform','Economy'],['address','Home']];
+document.getElementById('f').innerHTML=fams.map(function(x){return orderCard({id:x[0],title:x[1]+' family',compact:true,cost:1})}).join('');
+var C=[
+ ['1. Available (rest)',{id:'court',title:'Court Iran',desc:'Trade talks and quiet diplomacy warm relations with Iran.',cost:1,chance:70}],
+ ['1b. Available, hover or focus (lift 4 px)',{id:'court',title:'Court Iran',desc:'Trade talks and quiet diplomacy warm relations with Iran.',cost:1,chance:70,hover:true}],
+ ['2. Unaffordable (amber, reason and fix)',{id:'sabotage',title:'Sabotage Iran',cost:2,missing:1,chance:60,state:'unaffordable',reason:'Needs ◆ 2, you have ◆ 1.',fix:'Remove Reform program (frees ◆ 1)'}],
+ ['3. Invalid (dashed, rule and alternative)',{id:'offer-pact',title:'Offer defense pact to Iran',state:'invalid',reason:"Iran won't sign a mutual-defence treaty in the middle of a war.",alt:'Court Iran instead'}],
+ ['4. Queued (green, stamp, In this month)',{id:'deploy-border',title:'Mass troops facing Iran',cost:0,def:6,state:'queued'}],
+ ['5. Proposed by staff (dashed amber, Approve)',{id:'reform',title:'Reform program',cost:1,state:'proposed',staff:'Economy Minister',staffInit:'EM',fx:'stability up, growth up later'}],
+ ['6. Confirming: declare war',{id:'declare-war',state:'confirming',question:'Declare war on Iran?',lines:['Iran: relations at war','World tension up a lot','Their allies may join them'],confirm:'Declare war',cancel:'Keep the peace'}],
+ ['6b. Confirming: nuclear release',{id:'nuclear-strike',state:'confirming',question:'Authorize a nuclear strike on Iran?',lines:['Global embargo, every relation -60','Approval and legitimacy crash','Retaliation possible'],confirm:'Hold to authorize',cancel:'Stand down'}],
+ ['Family band fallback (no scene)',{id:'arm-rebels',title:'Arm rebels in Iran',desc:'Arm and finance insurgents inside Iran.',cost:2,chance:55,band:'fam'}],
+];
+document.getElementById('g').innerHTML=C.map(function(c){return '<div class="cell"><p class="lab">'+c[0]+'</p>'+orderCard(c[1])+'</div>'}).join('');
+</script></body></html>

@@ -31,6 +31,7 @@ Derived from the CEO playtest (RS-001) and confirmed or refined by the panel int
 | P3 | **Quality by construction** | Every shipped change has a ledger entry, a spec or test, and a QA check; verified-bug rate and decision traceability tracked | Method |
 | P4 | **Parallel agents at scale** | Independent work runs in parallel agents with clear briefs and isolated worktrees where they touch the same files; merge conflicts and rework tracked | CEO 2026-11-21 |
 | P5 | **Learning loop on the process** | Every iteration adds at least one journal entry with a process change, reflected in `devloop/HOW_WE_WORK.md`; cross-project lessons go to `devloop/LEARNINGS.md` | CEO 2026-11-21 |
+| P7 | **Estimate and learn** | Every stage shows progress within the stage (work units done of total), ETA for the current and every later stage and the iteration, and expected consumption; estimates are logged and scored against actuals each iteration (median absolute error shrinks as history grows) | CEO 2026-11-23 |
 | P6 | **Panel fidelity** | The panel predicts real signals (hold-out checks); evidence mix shifts toward observed | Method |
 
 Release gate: see `../../method/triage.md` (gate thresholds) and `gate.md`.

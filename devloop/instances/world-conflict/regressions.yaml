@@ -25,6 +25,7 @@ findings:
     title: Political capital is named one way everywhere and the warning points at its meter
     source: RS-001 (CEO, "political credit" vs the small bar); D-45; QA0-5
     covers: [ui/src/components/Hud.tsx, ui/src/components/desk/CommandRail.tsx, ui/src/lib/pointAt.ts, ui/src/lib/glossary.ts, ui/src/components/orders/OrderCard.tsx, ui/src/components/game/CapitalSeal.tsx]
+    changed: "2026-11-23 verify gate fixes: RS-001-2.mjs approves the staff picks before looking for an unaffordable order; staff picks spend nothing until approved (F-02-4, D-58), so month 1 no longer opens with seals spent. Same need tested, plus the meters must agree after the spend"
     guards:
       - vitest: tests/ui-glossary.spec.ts
         name: finds no banned synonym
@@ -50,6 +51,7 @@ findings:
     title: Suggestions are visible, with a why line, on the desk and the map
     source: RS-001 (CEO, "where are the suggestions?"); D-46
     covers: [src/core/advisors.ts, ui/src/components/desk/AdvisorList.tsx, ui/src/components/desk/CommandRail.tsx, ui/src/lib/advisorRows.ts]
+    changed: "2026-11-23 verify gate fixes: shared guard QA1-S2-1.mjs, see QA1-S2-1"
     guards:
       - vitest: tests/core/advisors.spec.ts
         name: suggests orders with a why line
@@ -255,6 +257,7 @@ findings:
     title: HUD and rail capital meters show the same number of seals
     source: iter-00 qa-repro #5 (HUD filled what is left, rail what is spent)
     covers: [ui/src/components/Hud.tsx, ui/src/components/desk/CommandRail.tsx, ui/src/components/game/CapitalSeal.tsx]
+    changed: "2026-11-23 verify gate fixes: shared guard RS-001-2.mjs updated for F-02-4 (D-58), see RS-001-2; the meters are now compared before and after approving the staff picks"
     guards:
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-001-2.mjs
   - id: QA0-7
@@ -356,7 +359,8 @@ findings:
   - id: QA1-S2-1
     title: Advisors are readable in Map mode at 1024 and 1440 (no squashed, overlapping rows)
     source: iter-01 qa-verify S2-1; QA2 FIXED
-    covers: [ui/src/components/desk/CommandRail.tsx, ui/src/components/desk/AdvisorList.tsx, ui/src/styles/ease.css, ui/src/styles/**]
+    covers: [ui/src/components/desk/CommandRail.tsx, ui/src/components/desk/AdvisorList.tsx, ui/src/components/orders/OrderCard.tsx, ui/src/lib/advisorRows.ts, ui/src/styles/ease.css, ui/src/styles/**]
+    changed: "2026-11-23 verify gate fixes: REGRESSED and fixed. The AC3 fold (D-58) hid the advisors without a count, the strip hid Show more, and the shared order card (F-02-5) drew Approve order over its text. The fold now names the count, the strip reaches every suggestion and the row text clears the button. The guard checks the folded count, one-tap open, Show N more, the card title (.wc-card-title) and text under any control; the full-card hit area is excluded from the button overlap check"
     guards:
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/QA1-S2-1.mjs
   - id: QA1-S2-2
@@ -381,6 +385,7 @@ findings:
     title: The 1024 HUD shows all seven resources in words
     source: iter-01 qa-verify S3-3 (orders AC17); QA2 FIXED
     covers: [ui/src/components/Hud.tsx, ui/src/styles/**]
+    changed: "2026-11-23 verify gate fixes: shared guard RS-001-2.mjs updated for F-02-4 (D-58), see RS-001-2; the 1024 HUD check is unchanged"
     guards:
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-001-2.mjs
   - id: QA1-S3-5
@@ -643,6 +648,7 @@ findings:
     title: In-game globe 876 px at 1920 (target 900) and its top under the goal line
     source: runs/iter-02/qa-verify.md (world map AC3)
     covers: [ui/src/lib/globeFit.ts, ui/src/components/MapView.tsx, ui/src/styles/ease.css]
+    changed: "2026-11-23 verify gate fixes: guard bug, worldmap.mjs compared the raw 1920 diameter (899.74) with 900 while globe-fit.mjs and its own note use whole pixels (D 900); it now rounds like globe-fit.mjs. The ACB-17 era seat checks already expect the What if refusal (D-56) and pass"
     guards:
       - vitest: tests/ui-newcomers.spec.ts
         name: "QA AC3: the in-game globe fit"
@@ -652,6 +658,7 @@ findings:
     title: After the reveal there is always a clear way back to play again
     source: real-signals/RS-004-ceo-end-screen-exit-2026-11-23.md (CEO playtest of iter-2)
     covers: [ui/src/components/reveal/**, ui/src/components/EndScreen.tsx]
+    changed: "2026-11-23 verify gate fixes: guard bug, RS-004.mjs read the base URL from argv[2], which the gate fills with the output folder; it now uses _lib.mjs args() and run() like every guard here"
     guards:
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-004.mjs
   - id: RS-005

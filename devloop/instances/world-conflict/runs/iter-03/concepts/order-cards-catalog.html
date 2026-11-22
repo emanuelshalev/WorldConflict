@@ -1,0 +1,48 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Order catalog concept</title>
+<link rel="stylesheet" href="order-cards.css">
+<style>
+.tgt{display:flex;gap:10px;align-items:center;margin:0 0 18px;flex-wrap:wrap}.tgt .pick{padding:8px 12px;border-radius:10px;border:1px solid var(--line-2);background:var(--surface-2);font-weight:700}
+.sec{margin:22px 0 10px;display:flex;align-items:center;gap:10px}.sec h2{margin:0;font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2)}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px 16px;align-items:stretch}
+.rows{display:none;gap:10px}
+@media (max-width:600px){.grid{display:none}.rows{display:grid}}
+</style></head><body><script src="order-icons/sprite.js"></script><script src="order-cards.js"></script>
+<div class="page">
+<p class="ctx">Concept, D-66 · desk catalog (layout unchanged, cards only)</p>
+<h1>Orders for Iran</h1>
+<p class="note">Each card leads with a pictogram plate in its family colour, the family word beside it, and the scene it will play as. Read the picture first, the title second.</p>
+<div class="tgt"><span class="pick">Target: Iran &#9662;</span><span style="color:var(--text-2);font-size:14px">Political capital: <b style="color:var(--accent)">&#9670; 2 left</b> · Orders 2 of 6</span></div>
+<div id="cat"></div></div>
+<script>
+var T='Iran';
+var S=[
+ ['Diplomacy','court',[
+  {id:'court',title:'Court '+T,desc:'Trade talks and quiet diplomacy warm relations with Iran.',cost:1,chance:70},
+  {id:'denounce',title:'Denounce '+T,desc:'Condemn Iran in public. Voters may cheer; Iran will remember.',cost:0,chance:95,state:'queued'},
+  {id:'offer-pact',title:'Offer defense pact to '+T,state:'invalid',reason:"Iran won't sign a mutual-defence treaty in the middle of a war.",alt:'Court Iran instead'},
+  {id:'ceasefire',title:'Propose ceasefire to '+T,desc:'Seek an end to the war with Iran. Exhaustion and the front decide.',cost:1,chance:35,state:'proposed',staff:'Foreign Minister',fx:'world tension down, approval down a little'},
+  {id:'mediate',title:'Mediate peace for '+T,desc:'Host talks to end the war Iran is fighting.',cost:1,chance:40},
+  {id:'break-pact',title:'Break pact with '+T,state:'invalid',reason:'You have no pact with Iran.'},
+  {id:'declare-war',title:'Declare war on '+T,desc:'Order the invasion of Iran. Their allies may join them.',cost:2,noundo:true,chance:null}]],
+ ['Military','deploy-border',[
+  {id:'deploy-border',title:'Mass troops facing '+T,desc:'Station troops on the border with Iran: steady pressure every month.',cost:0,def:6,hover:true},
+  {id:'withdraw-border',title:'Withdraw troops facing '+T,state:'invalid',reason:'No troops face Iran yet.',alt:'Mass troops facing Iran'},
+  {id:'airstrike-military',title:'Strike military targets in '+T,desc:'Precision strikes on the armed forces of Iran.',cost:1,def:8,chance:80},
+  {id:'airstrike-nuclear',title:'Strike nuclear sites in '+T,desc:'Hit the nuclear program of Iran. Two hits in a row cripple it.',cost:2,missing:1,def:10,state:'unaffordable',reason:'Needs ◆ 2, you have ◆ 1.',fix:'Remove a staff order (frees ◆ 1)'},
+  {id:'nuclear-strike',title:'Nuclear strike on '+T,desc:'Nuclear release against Iran. The world will answer.',cost:3,missing:1,noundo:true,state:'unaffordable',reason:'Needs ◆ 3, you have ◆ 2.',fix:'or wait: +2 next month'}]],
+ ['Intelligence','spy',[
+  {id:'spy',title:'Spy on '+T,desc:'Sharpens your estimate of the forces and economy of Iran.',cost:1,chance:95},
+  {id:'sabotage',title:'Sabotage '+T,desc:'Covert damage to the infrastructure of Iran.',cost:2,chance:60},
+  {id:'destabilize',title:'Destabilize '+T,desc:'Fund opposition media, strikes and scandal in Iran.',cost:2,chance:89},
+  {id:'arm-rebels',title:'Arm rebels in '+T,desc:'Arm and finance insurgents inside Iran.',cost:2,chance:55},
+  {id:'disinformation',title:'Feed disinformation to '+T,desc:'Give the spies of Iran a false picture of your strength.',cost:1,chance:75},
+  {id:'assassinate',title:'Assassinate leader of '+T,desc:'Eliminate the leader of Iran. The successor may be worse.',cost:3,chance:20},
+  {id:'coup',title:'Back a coup in '+T,desc:'Back a faction to install a friendly government in Iran.',cost:3,chance:15}]],
+];
+var h='';
+S.forEach(function(s){
+ h+='<div class="sec"><h2>'+s[0]+'</h2></div><div class="grid">'+s[2].map(orderCard).join('')+'</div>';
+ h+='<div class="rows">'+s[2].map(function(o){return orderRow({id:o.id,title:o.title,state:o.state==='hover'?'available':o.state,meta:o.state==='invalid'?'':(o.cost?'◆ '+o.cost:'free')+(o.chance!=null?' · '+o.chance+'% chance':''),why:o.reason,staff:o.state==='proposed'?'Proposed by the '+o.staff:null})}).join('')+'</div>';
+});
+document.getElementById('cat').innerHTML=h;
+</script></body></html>

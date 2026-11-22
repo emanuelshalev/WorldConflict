@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agenda round 2, map</title>
+<link rel="stylesheet" href="agenda2.css">
+</head>
+<body>
+<!-- Round 2 concept mock (D-70). Map mode: the same step bar, the current thing as a floating card, recommendations open a list (no one-press approve), Execute consequence in words. -->
+<div class="lap">
+<header class="hud">
+  <span class="who">🇺🇸 President of the United States</span>
+  <span class="s">Approval <b class="num">48%</b></span>
+  <span class="s wide">Stability <b class="num">71</b></span>
+  <span class="s">Political capital <b class="num">◆ 3 of 6</b></span><button class="btn info" aria-label="What is political capital?">?</button>
+  <span class="s wide">World tension <b class="num">62</b></span>
+  <span class="grow"></span>
+  <div class="seg" role="tablist" aria-label="View"><button role="tab" aria-selected="false">Desk</button><button class="on" role="tab" aria-selected="true">Map</button></div>
+</header><div class="goal">
+  <span class="st">Mission</span><b>Keep the Strait open without a war</b><span class="st">2 of 3 goals on track · month 4 of 12</span>
+  <button class="btn small">Mission details <span class="chev">›</span></button>
+  <span class="grow"></span>
+  
+</div><div class="map"><svg class="world" viewBox="0 0 1440 800" preserveAspectRatio="xMidYMid slice" aria-hidden>
+  <path d="M520 60 C700 40 900 80 1000 160 C1040 240 980 300 900 330 C860 380 820 420 760 430 C700 400 640 360 600 300 C540 250 480 180 520 60Z" fill="#2c3b2f" stroke="#41543f"/>
+  <path d="M1060 200 C1090 230 1100 280 1080 330 C1070 300 1050 250 1060 200Z" fill="#33465a" stroke="#4d6680"/>
+  <path d="M930 420 C945 430 950 460 935 480 C925 465 922 440 930 420Z" fill="#3d5a7a" stroke="#6b93bd" stroke-width="2"/>
+  <path d="M700 470 C760 500 800 560 780 640 C740 620 700 560 700 470Z" fill="#26332a" stroke="#3a4a3c"/>
+  <path d="M880 400 C900 420 905 450 900 470" stroke="#e5383b" stroke-width="3" stroke-dasharray="6 6" fill="none"/>
+</svg><span class="pin" style="left:928px;top:438px"></span><span class="maplabel" style="left:950px;top:440px">Taiwan · drills</span><span class="maplabel" style="left:720px;top:220px">China</span><span class="maplabel" style="left:1100px;top:250px">Japan</span><nav class="stepbar" aria-label="This month">
+  
+  <div class="chips"><button class="chip done" aria-label="1 done, open the list"><span class="n">✓</span><span class="t">1 done</span></button><button class="chip now" aria-current="step"><span class="n">2</span><span class="t">Now: Xi Jinping calls</span></button><button class="chip"><span class="n">3</span><span class="t">Takaichi visits</span></button><button class="chip r2"><span class="n">4</span><span class="t">Routine meetings (2)</span></button><button class="chip more wide">+2 more</button><button class="chip more narrow">+3 more</button></div>
+  <div class="ends"><button class="btn">All 6 <span class="chev">▾</span></button><button class="btn">Review and execute <span class="chev">›</span></button></div>
+</nav><section class="mapcard" aria-label="2 of 6: Xi Jinping calls"><div class="st">2 of 6 · a call · 🇨🇳 China</div><h3>Xi Jinping calls</h3><p>"Pull the patrol back and we can talk about the exercise."</p>
+<div class="opts" role="list">
+  <button class="opt"><span class="name">Hold firm: the patrol stays <span class="chev">Choose ›</span></span><span class="fx"><span class="good">Keeps the Strait open (your goal).</span> China relations -6. Tension rises.</span></button>
+  <button class="opt"><span class="rec">★ Recommended by your Secretary of State</span><span class="name">Offer a quiet pause <span class="chev">Choose ›</span></span><span class="fx">Tension falls. <span class="bad">Japan trusts you less (-4): hurts your goal "Japan stays on side".</span></span></button>
+  <button class="opt"><span class="name">Propose a hotline · costs ◆ 1 <span class="chev">Choose ›</span></span><span class="fx">Tension falls a lot. China relations +5.</span></button>
+</div>
+<div style="display:grid;gap:6px"><button class="btn">Skip this call</button><p style="font-size:15px">Your Foreign Minister answers "We note your concern." Free, China relations -3.</p></div></section><div class="strip"><span class="st">Political capital <b class="num">◆ 3 of 6</b></span><span class="st">Meetings you take <b class="num">0 of 3</b></span>
+<button class="btn">3 recommendations to check <span class="chev">›</span></button><span class="grow"></span>
+<span class="conseq"><b>If you execute now:</b> your 1 choice happens, ministers take 4 meetings (China -3, Japan -2), 2 proposed orders do not run.</span>
+<button class="btn primary" style="min-height:52px;font-size:17px">Execute month</button></div></div>
+</div>
+<div class="ph">
+<div class="ph-top"><button class="btn small">Desk</button><span class="t"><b>2 of 6 · Xi Jinping calls</b>Map · 1 of 6 done</span><button class="btn small">List</button></div>
+<div class="ph-map"><svg viewBox="0 0 1440 800" preserveAspectRatio="xMidYMid slice" aria-hidden>
+  <path d="M520 60 C700 40 900 80 1000 160 C1040 240 980 300 900 330 C860 380 820 420 760 430 C700 400 640 360 600 300 C540 250 480 180 520 60Z" fill="#2c3b2f" stroke="#41543f"/>
+  <path d="M1060 200 C1090 230 1100 280 1080 330 C1070 300 1050 250 1060 200Z" fill="#33465a" stroke="#4d6680"/>
+  <path d="M930 420 C945 430 950 460 935 480 C925 465 922 440 930 420Z" fill="#3d5a7a" stroke="#6b93bd" stroke-width="2"/>
+  <path d="M700 470 C760 500 800 560 780 640 C740 620 700 560 700 470Z" fill="#26332a" stroke="#3a4a3c"/>
+  <path d="M880 400 C900 420 905 450 900 470" stroke="#e5383b" stroke-width="3" stroke-dasharray="6 6" fill="none"/>
+</svg></div>
+<div class="ph-body" style="padding-top:12px"><div class="ph-kick">A call · 🇨🇳 China</div><h1 style="font-size:22px">Xi Jinping calls</h1><div class="opts" role="list">
+  <button class="opt"><span class="name">Hold firm: the patrol stays <span class="chev">Choose ›</span></span><span class="fx"><span class="good">Keeps the Strait open (your goal).</span> China relations -6. Tension rises.</span></button>
+  <button class="opt"><span class="rec">★ Recommended by your Secretary of State</span><span class="name">Offer a quiet pause <span class="chev">Choose ›</span></span><span class="fx">Tension falls. <span class="bad">Japan trusts you less (-4): hurts your goal "Japan stays on side".</span></span></button>
+  <button class="opt"><span class="name">Propose a hotline · costs ◆ 1 <span class="chev">Choose ›</span></span><span class="fx">Tension falls a lot. China relations +5.</span></button>
+</div><div class="ph-skip"><button class="btn">Skip this call</button><p>Your Foreign Minister answers. Free, China relations -3.</p></div></div>
+<div class="ph-bottom"><p>If you execute now: 1 choice happens, ministers take 4 meetings, 2 orders do not run.</p><button class="btn primary big">Execute month</button></div>
+</div>
+</body>
+</html>

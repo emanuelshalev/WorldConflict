@@ -1,0 +1,60 @@
+{"t": "2026-11-22T05:37:25Z", "iteration": 0, "stage": "Plan", "kind": "start", "note": "backfilled"}
+{"t": "2026-11-22T05:57:00Z", "iteration": 0, "stage": "Plan", "kind": "end", "note": "backfilled"}
+{"t": "2026-11-22T05:57:00Z", "iteration": 0, "stage": "Design", "kind": "skip", "note": "backfilled"}
+{"t": "2026-11-22T05:57:00Z", "iteration": 0, "stage": "Build", "kind": "skip", "note": "backfilled"}
+{"t": "2026-11-22T05:57:00Z", "iteration": 0, "stage": "Verify", "kind": "skip", "note": "backfilled"}
+{"t": "2026-11-22T05:57:00Z", "iteration": 0, "stage": "Use", "kind": "start", "note": "backfilled"}
+{"t": "2026-11-22T05:57:00Z", "iteration": 0, "stage": "Use", "kind": "unit-total", "note": "backfilled", "units": 9}
+{"t": "2026-11-22T06:42:31Z", "iteration": 0, "stage": "Use", "kind": "unit-done", "note": "backfilled", "units": 9}
+{"t": "2026-11-22T06:42:31Z", "iteration": 0, "stage": "Use", "kind": "end", "note": "backfilled"}
+{"t": "2026-11-22T06:42:31Z", "iteration": 0, "stage": "Triage", "kind": "start", "note": "backfilled"}
+{"t": "2026-11-22T06:42:31Z", "iteration": 1, "stage": "Plan", "kind": "start", "note": "backfilled"}
+{"t": "2026-11-22T06:43:33Z", "iteration": 1, "stage": "Plan", "kind": "end", "note": "backfilled"}
+{"t": "2026-11-22T06:43:33Z", "iteration": 1, "stage": "Design", "kind": "start", "note": "backfilled"}
+{"t": "2026-11-22T06:51:49Z", "iteration": 1, "stage": "Design", "kind": "end", "note": "backfilled"}
+{"t": "2026-11-22T06:51:49Z", "iteration": 1, "stage": "Build", "kind": "start", "note": "backfilled"}
+{"t": "2026-11-22T06:53:00Z", "iteration": 0, "stage": "Triage", "kind": "end", "note": "backfilled"}
+{"t": "2026-11-22T06:53:00Z", "iteration": 0, "stage": "Report", "kind": "start", "note": "backfilled"}
+{"t": "2026-11-22T06:56:04Z", "iteration": 0, "stage": "Report", "kind": "end", "note": "backfilled"}
+{"t": "2026-11-22T06:56:04Z", "iteration": 0, "stage": "Gate", "kind": "skip", "note": "backfilled"}
+{"t": "2026-11-22T08:30:11Z", "iteration": 1, "stage": "Build", "kind": "end", "note": "backfilled"}
+{"t": "2026-11-22T08:30:11Z", "iteration": 1, "stage": "Verify", "kind": "start", "note": "backfilled"}
+{"t": "2026-11-22T08:34:00Z", "iteration": 1, "stage": "Verify", "kind": "end", "note": "backfilled"}
+{"t": "2026-11-22T08:34:00Z", "iteration": 1, "stage": "Use", "kind": "start", "note": "backfilled"}
+{"t": "2026-11-22T08:34:00Z", "iteration": 1, "stage": "Use", "kind": "unit-total", "note": "backfilled", "units": 9}
+{"t": "2026-11-22T08:49:00Z", "iteration": 1, "stage": "Use", "kind": "unit-done", "note": "backfilled", "units": 9}
+{"t": "2026-11-22T08:49:00Z", "iteration": 1, "stage": "Use", "kind": "end", "note": "backfilled"}
+{"t": "2026-11-22T08:49:00Z", "iteration": 1, "stage": "Triage", "kind": "start", "note": "backfilled"}
+{"t": "2026-11-22T08:49:00Z", "iteration": 2, "stage": "Plan", "kind": "start", "note": "backfilled"}
+{"t": "2026-11-22T08:52:01Z", "iteration": 1, "stage": "Triage", "kind": "end", "note": "backfilled"}
+{"t": "2026-11-22T08:52:01Z", "iteration": 1, "stage": "Report", "kind": "start", "note": "backfilled"}
+{"t": "2026-11-22T08:52:01Z", "iteration": 2, "stage": "Plan", "kind": "end", "note": "backfilled"}
+{"t": "2026-11-22T08:52:01Z", "iteration": 2, "stage": "Design", "kind": "skip", "note": "backfilled"}
+{"t": "2026-11-22T08:52:01Z", "iteration": 2, "stage": "Build", "kind": "start", "note": "backfilled"}
+{"t": "2026-11-22T08:57:54Z", "iteration": 1, "stage": "Report", "kind": "end", "note": "backfilled"}
+{"t": "2026-11-22T08:57:54Z", "iteration": 1, "stage": "Gate", "kind": "start", "note": "backfilled"}
+{"t": "2026-11-22T08:59:00Z", "iteration": 1, "stage": "Gate", "kind": "end", "note": "backfilled"}
+{"t": "2026-11-22T09:50:36Z", "iteration": 2, "stage": "Build", "kind": "end", "note": "backfilled"}
+{"t": "2026-11-22T09:50:36Z", "iteration": 2, "stage": "Verify", "kind": "start", "note": "backfilled"}
+{"t": "2026-11-22T10:28:00Z", "iteration": 2, "stage": "Verify", "kind": "end", "note": "backfilled"}
+{"t": "2026-11-22T10:28:00Z", "iteration": 2, "stage": "Use", "kind": "start", "note": "backfilled"}
+{"t": "2026-11-22T10:28:00Z", "iteration": 2, "stage": "Use", "kind": "unit-total", "note": "backfilled", "units": 9}
+{"t": "2026-11-22T10:44:00Z", "iteration": 2, "stage": "Use", "kind": "unit-done", "note": "backfilled", "units": 9}
+{"t": "2026-11-22T10:44:00Z", "iteration": 2, "stage": "Use", "kind": "end", "note": "backfilled"}
+{"t": "2026-11-22T10:44:00Z", "iteration": 2, "stage": "Triage", "kind": "start", "note": "backfilled"}
+{"t": "2026-11-22T10:46:18Z", "iteration": 2, "stage": "Triage", "kind": "end", "note": "backfilled"}
+{"t": "2026-11-22T10:46:18Z", "iteration": 2, "stage": "Report", "kind": "start", "note": "backfilled"}
+{"t": "2026-11-22T10:46:18Z", "iteration": 3, "stage": "Plan", "kind": "start", "note": "backfilled"}
+{"t": "2026-11-22T10:49:34Z", "iteration": 2, "stage": "Report", "kind": "end", "note": "backfilled"}
+{"t": "2026-11-22T10:49:34Z", "iteration": 2, "stage": "Gate", "kind": "start", "note": "backfilled"}
+{"t": "2026-11-22T10:50:00Z", "iteration": 2, "stage": "Gate", "kind": "end", "note": "backfilled"}
+{"t": "2026-11-22T10:50:00Z", "kind": "pause", "note": "backfilled"}
+{"t": "2026-11-22T11:37:12Z", "kind": "resume", "note": "backfilled"}
+{"t": "2026-11-22T11:39:00Z", "iteration": 3, "stage": "Plan", "kind": "end", "note": "backfilled"}
+{"t": "2026-11-22T11:39:00Z", "iteration": 3, "stage": "Design", "kind": "skip", "note": "backfilled"}
+{"t": "2026-11-22T11:39:00Z", "iteration": 3, "stage": "Build", "kind": "start", "note": "backfilled"}
+{"t": "2026-11-22T12:49:44Z", "iteration": 3, "stage": "Build", "kind": "end", "note": "backfilled"}
+{"t": "2026-11-22T12:49:44Z", "iteration": 3, "stage": "Verify", "kind": "start", "note": "backfilled"}
+{"t": "2026-11-22T12:51:00Z", "iteration": 3, "stage": "Verify", "kind": "unit-total", "note": "backfilled; units: gate-fixes, staff-picks fix (RS-005), QA verification", "units": 3}
+{"t": "2026-11-22T13:12:57Z", "kind": "pause", "note": "backfilled"}
+{"t": "2026-11-22T20:11:59Z", "kind": "resume", "note": "backfilled"}
