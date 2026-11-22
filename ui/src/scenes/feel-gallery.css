@@ -1,0 +1,65 @@
+/* Dev gallery: the Feel section (/#scenes/feel). Not used by the game itself. */
+.fg {
+  color: var(--text-1);
+  font-family: var(--font-ui);
+  max-width: 1440px;
+  margin: 0 auto 48px;
+}
+.fg-h1 { font: 400 40px/1.1 var(--font-news); margin: 0 0 6px; }
+.fg-lede { color: var(--text-2); font-size: 16px; line-height: 1.45; margin: 0 0 8px; max-width: 80ch; }
+.fg-h2 { font-size: 15px; color: var(--text-2); font-weight: 650; margin: 34px 0 14px; letter-spacing: 0.02em; }
+.fg-p { margin: 0; font-size: 14px; color: var(--text-2); line-height: 1.45; }
+.fg-p b { color: var(--text-1); }
+.fg-sheet { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 26px 20px; align-items: start; }
+.fg-cell { display: grid; gap: 10px; align-content: start; }
+.fg-label { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: 14px; font-weight: 700; }
+.fg-label span { font: 500 13px var(--font-mono); color: var(--text-3); }
+.fg-note { font-size: 13.5px; color: var(--text-2); line-height: 1.45; }
+.fg-odds { font-size: 13px; color: var(--text-2); }
+.fg-odds b { color: var(--text-1); }
+.fg-layouts { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 28px; }
+.fg-col { display: grid; gap: 16px; align-content: start; }
+.fg-panel { padding: 16px; border-radius: 14px; border: 1px solid var(--line); background: rgba(20, 27, 39, 0.7); display: grid; gap: 10px; align-content: start; }
+.fg-anat { grid-template-columns: 200px 1fr; align-items: center; gap: 24px; }
+.fg-sizes { display: flex; gap: 28px; align-items: end; margin-top: 16px; flex-wrap: wrap; }
+.fg-sizes figure { margin: 0; display: grid; gap: 6px; justify-items: center; font: 500 13px var(--font-mono); color: var(--text-3); }
+.fg-seal-states { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px; margin-top: 16px; }
+.fg-seal-stage { height: 64px; display: flex; gap: 10px; align-items: center; }
+.fg-banks { margin-top: 16px; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; align-items: start; }
+.fg-banks .fg-label { margin-bottom: 10px; }
+.fg-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.fg-row .wc-cost { background: rgba(0, 0, 0, 0.5); border: 1px solid var(--line-2); }
+.fg-stamps { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 28px 20px; justify-items: center; align-items: center; padding: 28px 16px; }
+.fg-controls { display: flex; gap: 10px; align-items: center; margin-bottom: 14px; flex-wrap: wrap; }
+.fg-controls span { color: var(--text-2); font-size: 14px; }
+.fg-btn { min-height: 44px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--line-2); background: var(--surface-2); color: var(--text-1); font: 650 15px var(--font-ui); cursor: pointer; }
+.fg-demo { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 24px; padding: 20px; border-radius: 18px; border: 1px solid var(--line); background: rgba(10, 14, 22, 0.55); }
+.fg-tray { display: grid; gap: 10px; align-content: start; }
+.fg-bank { padding: 14px; border-radius: 14px; border: 1px solid var(--line-2); background: var(--surface-1); display: grid; gap: 10px; }
+.fg-bank-head { display: flex; justify-content: space-between; font-size: 15px; font-weight: 650; }
+.fg-bank-head span { color: var(--text-2); font-weight: 500; }
+.fg-plan { padding: 14px; border-radius: 14px; border: 1px solid var(--line-2); background: var(--surface-1); display: grid; gap: 8px; min-height: 160px; align-content: start; }
+.fg-plan h4 { margin: 0 0 2px; font-size: 14px; color: var(--text-2); }
+.fg-plan .wc-card-slot { animation: fg-land var(--dur-travel) var(--ease-back) both; }
+@keyframes fg-land { from { opacity: 0; transform: translateX(-40px) scale(0.9); } }
+.fg-empty-slot { min-height: 52px; display: grid; place-items: center start; padding: 0 14px; border-radius: 10px; border: 1.5px dashed var(--line-2); color: var(--text-3); font-size: 13px; }
+.fg-verdicts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }
+/* Forced hover for the state sheet */
+.wc-card.fg-force-hover { transform: translateY(-4px); box-shadow: var(--card-shadow-lift); border-color: var(--card-line-hover); }
+.wc-card.fg-force-hover .wc-card-art .scene { filter: none; }
+@media (max-width: 1100px) {
+  .fg-sheet { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fg-demo, .fg-layouts { grid-template-columns: 1fr; }
+  .fg-seal-states { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .fg-banks, .fg-verdicts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+  .fg-sheet, .fg-banks, .fg-verdicts { grid-template-columns: 1fr; }
+  .fg-seal-states { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fg-anat { grid-template-columns: 1fr; justify-items: center; }
+  .fg-h1 { font-size: 32px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wc-card.fg-force-hover { transform: none; }
+  .fg-plan .wc-card-slot { animation: none; }
+}

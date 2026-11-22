@@ -5,6 +5,11 @@ import { ActionIcon } from './icons';
 import { SceneFrame } from './SceneFrame';
 import { OutcomeMap } from './OutcomeMap';
 import { FactRow } from './debriefParts';
+import { moodForVerdict } from './kinds';
+import { Stamp, type StampWord } from '../components/game/Stamp';
+
+/** R6: the verdict lands as the same stamp that marks a choice. Neutral months get none. */
+const VERDICT_STAMP: Partial<Record<OutcomeCardData['verdict'], StampWord>> = { good: 'DONE', mixed: 'MIXED', bad: 'FAILED' };
 
 const LINE_ICON: Record<string, typeof IconPhoneCall> = {
   CALL: IconPhoneCall,
@@ -21,8 +26,13 @@ function LineIcon({ icon }: { icon?: string }) {
   return I ? <I size={14} aria-hidden /> : <ActionIcon type={icon} size={14} />;
 }
 
-/** One outcome: what you did, how they answered, what moved, what to watch. */
-export function OutcomeCard({ c, home, big = false }: { c: OutcomeCardData; home: string; big?: boolean }) {
+/**
+ * One outcome: what you did, how they answered, what moved, what to watch. The verdict stamp
+ * (DONE, MIXED, FAILED) lands once as the card enters; `stampSound` plays the stamp sound with it
+ * (default: the big highlight card only, so a page of cards makes one sound).
+ */
+export function OutcomeCard({ c, home, big = false, stampSound = big }: { c: OutcomeCardData; home: string; big?: boolean; stampSound?: boolean }) {
+  const stamp = VERDICT_STAMP[c.verdict];
   const visual = c.front ? (
     <div className="db-front" aria-label={`Front from your side: ${c.front.before} to ${c.front.after} of 100`}>
       <span className="db-front-mid" />
@@ -37,17 +47,31 @@ export function OutcomeCard({ c, home, big = false }: { c: OutcomeCardData; home
   ) : c.map && (!big || !c.scene) ? (
     <OutcomeMap home={home} target={c.map.target} effect={c.map.effect} ok={c.verdict !== 'bad'} />
   ) : c.scene ? (
-    <SceneFrame kind={c.scene} home={home} other={c.country} size={big ? 'card' : 'thumb'} mood={c.verdict === 'bad' ? 'bad' : c.verdict === 'good' ? 'good' : 'neutral'} live={big} />
+    <SceneFrame kind={c.scene} home={home} other={c.country} size={big ? 'card' : 'thumb'} mood={moodForVerdict(c.verdict)} live={big} />
   ) : null;
   return (
     <article className={`db-card v-${c.verdict} ${big ? 'big' : ''}`}>
-      {visual && <div className="db-visual">{visual}</div>}
+      {visual && (
+        <div className="db-visual">
+          {visual}
+          {stamp && (
+            <span className="db-stamp">
+              <Stamp word={stamp} size={big ? 'lg' : 'md'} delay={big ? 500 : 250} sound={stampSound} />
+            </span>
+          )}
+        </div>
+      )}
       <div className="db-body">
+        {!visual && stamp && (
+          <span className="db-stamp in-body">
+            <Stamp word={stamp} size="sm" delay={200} sound={stampSound} />
+          </span>
+        )}
         <div className="db-kicker">
           {c.country && <span className="db-flag">{flag(c.country)}</span>}
           <span>{c.kicker}</span>
           <span className="db-verdict" aria-label={c.verdict}>
-            {c.verdict === 'good' ? <IconCircleCheck size={16} /> : c.verdict === 'bad' ? <IconCircleX size={16} /> : null}
+            {c.verdict === 'good' ? <IconCircleCheck size={16} /> : c.verdict === 'bad' ? <IconCircleX size={16} /> : c.verdict === 'mixed' ? <span className="db-mixed-glyph" /> : null}
           </span>
         </div>
         <h3 className="db-headline">{c.headline}</h3>

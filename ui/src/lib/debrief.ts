@@ -1,7 +1,7 @@
 import type { Reaction, ReportFact, TurnReport, WorldState } from '../store/gameStore';
 import { countryName } from '../store/gameStore';
 import type { SceneKind } from '../scenes/kinds';
-import { sceneForAction, sceneForCrisis } from '../scenes/kinds';
+import { actionFamily, guardFamily, sceneForAction, sceneForDecision, sceneForOutcome } from '../scenes/kinds';
 import type { MapEffect } from '../scenes/OutcomeMap';
 import { mapEffect } from './mapEffect';
 
@@ -11,7 +11,8 @@ import { mapEffect } from './mapEffect';
  * Pure: everything shown comes from the engine's report, nothing is invented here.
  */
 
-export type Verdict = 'good' | 'bad' | 'neutral';
+/** `mixed`: something went right and something failed in the same card (R5). */
+export type Verdict = 'good' | 'bad' | 'mixed' | 'neutral';
 
 export interface CardLine {
   /** What you did, or what they did. */
@@ -70,14 +71,23 @@ function verdictOf(facts: ReportFact[] = [], reaction?: Reaction, ok = true): Ve
   return score > 0 ? 'good' : score < 0 ? 'bad' : 'neutral';
 }
 
-function decisionScene(d: Decision): SceneKind {
-  if (d.kind === 'CALL' || d.kind === 'VISIT') return 'summit';
-  if (d.kind === 'STAFF') return 'cabinet';
-  if (d.kind === 'PRESS') return 'tv_interview';
-  return sceneForCrisis(d.templateId, d.title);
+/**
+ * R1: the scene of the chosen option (the same call the desk thumbnail makes), then R3: a failed
+ * or bad outcome never keeps a celebratory scene.
+ */
+function decisionScene(d: Decision, verdict: Verdict): SceneKind {
+  const kind = sceneForDecision({ kind: d.kind, templateId: d.templateId, title: d.title, label: d.choice, scene: (d as { scene?: string }).scene });
+  return sceneForOutcome(kind, verdict);
+}
+
+/** R3 and R4 for an order: the action's scene, kept in its family, swapped when it failed. */
+function orderScene(o: Order, verdict: Verdict): SceneKind | undefined {
+  if (!o.type) return undefined;
+  return sceneForOutcome(guardFamily(sceneForAction(o.type), actionFamily(o.type)), verdict, o.ok);
 }
 
 function decisionCard(d: Decision, i: number): OutcomeCardData {
+  const verdict = verdictOf(d.facts, d.reaction, !/no decision taken/.test(d.choice));
   return {
     key: `d${i}`,
     kicker: `${KIND_WORD[d.kind ?? 'CRISIS'] ?? 'Decision'}${d.withCountry ? ` · ${countryName(d.withCountry)}` : ''}`,
@@ -87,12 +97,13 @@ function decisionCard(d: Decision, i: number): OutcomeCardData {
     reaction: d.reaction,
     facts: d.facts ?? [],
     watch: d.watch,
-    verdict: verdictOf(d.facts, d.reaction, !/no decision taken/.test(d.choice)),
-    scene: decisionScene(d),
+    verdict,
+    scene: decisionScene(d, verdict),
   };
 }
 
 function orderCard(o: Order, i: number): OutcomeCardData {
+  const verdict = verdictOf(o.facts, o.reaction, o.ok);
   return {
     key: `o${i}`,
     kicker: `Order${o.target ? ` · ${countryName(o.target)}` : ''}`,
@@ -102,8 +113,8 @@ function orderCard(o: Order, i: number): OutcomeCardData {
     reaction: o.reaction,
     facts: o.facts ?? [],
     watch: o.watch,
-    verdict: verdictOf(o.facts, o.reaction, o.ok),
-    scene: o.type ? sceneForAction(o.type) : undefined,
+    verdict,
+    scene: orderScene(o, verdict),
     map: o.target ? { target: o.target, effect: mapEffect(o.type) ?? 'none' } : undefined,
   };
 }
@@ -116,7 +127,10 @@ function countryCard(id: string, decisions: Array<[Decision, number]>, orders: A
   const hostile = moveList.some((m) => HOSTILE.test(m.type));
   const relDelta = rel ? rel.after - rel.before : 0;
   decisions = [...decisions].sort((a, b) => Number(b[0].kind === 'CALL' || b[0].kind === 'VISIT') - Number(a[0].kind === 'CALL' || a[0].kind === 'VISIT'));
-  const lead: OutcomeCardData = decisions[0] ? decisionCard(decisions[0][0], decisions[0][1]) : orders[0] ? orderCard(orders[0][0], orders[0][1]) : {
+  // R5: one card, one verdict. If one of your own orders failed, it leads the card
+  const failed = orders.find(([o]) => !o.ok);
+  if (failed) orders = [failed, ...orders.filter((x) => x !== failed)];
+  const lead: OutcomeCardData = failed ? orderCard(failed[0], failed[1]) : decisions[0] ? decisionCard(decisions[0][0], decisions[0][1]) : orders[0] ? orderCard(orders[0][0], orders[0][1]) : {
     key: `c-${id}`,
     kicker: countryName(id),
     country: id,
@@ -126,8 +140,8 @@ function countryCard(id: string, decisions: Array<[Decision, number]>, orders: A
     verdict: hostile ? 'bad' : relDelta > 0 ? 'good' : 'neutral',
   };
   const extra: CardLine[] = [
-    ...decisions.slice(1).map(([d]) => ({ text: `${KIND_WORD[d.kind ?? 'CRISIS']}: ${d.choice}`, icon: d.kind })),
-    ...orders.slice(decisions[0] ? 0 : 1).map(([o]) => ({ text: `${o.label}${o.ok ? '' : ' (failed)'}`, icon: o.type, ok: o.ok })),
+    ...decisions.slice(failed ? 0 : 1).map(([d]) => ({ text: `${KIND_WORD[d.kind ?? 'CRISIS']}: ${d.choice}`, icon: d.kind })),
+    ...orders.slice(failed || !decisions[0] ? 1 : 0).map(([o]) => ({ text: `${o.label}${o.ok ? '' : ' (failed)'}`, icon: o.type, ok: o.ok })),
     ...moves.map((m) => ({ text: `They: ${m.replace(/^[^:]+: /, '')}`, icon: 'THEM' })),
   ];
   // Their view of you over the whole month (all your dealings plus theirs), so the reply, the
@@ -135,8 +149,15 @@ function countryCard(id: string, decisions: Array<[Decision, number]>, orders: A
   const facts = rel ? lead.facts.filter((f) => !/ view of you$/.test(f.label)) : [...lead.facts];
   if (rel) facts.unshift({ label: `${possessiveName(countryName(id))} view of you`, before: rel.before, after: rel.after });
   const firstOrder = orders[0]?.[0];
+  const relVerdict: Verdict = rel ? (rel.after > rel.before ? 'good' : rel.after < rel.before ? 'bad' : lead.verdict) : lead.verdict;
+  // R5: a failure in the card caps it at mixed (the relation still improved) or bad, and the
+  // headline names the failure first
+  const verdict: Verdict = failed ? (relVerdict === 'good' ? 'mixed' : 'bad') : relVerdict;
+  const other = decisions[0] ? decisionCard(decisions[0][0], decisions[0][1]) : undefined;
+  const headline = failed ? `${failed[0].label} failed${other ? `; ${other.headline.charAt(0).toLowerCase()}${other.headline.slice(1)}` : ''}` : lead.headline;
   return {
     ...lead,
+    headline,
     key: `c-${id}`,
     kicker: `${countryName(id)}${decisions.length + orders.length + moves.length > 1 ? ` · ${decisions.length + orders.length + moves.length} items` : ''}`,
     country: id,
@@ -144,7 +165,8 @@ function countryCard(id: string, decisions: Array<[Decision, number]>, orders: A
     facts: facts.slice(0, 3),
     reaction: pickReaction(id, [lead.reaction, ...decisions.map(([d]) => d.reaction), ...orders.map(([o]) => o.reaction)], rel),
     relation: rel,
-    verdict: rel ? (rel.after > rel.before ? 'good' : rel.after < rel.before ? 'bad' : lead.verdict) : lead.verdict,
+    verdict,
+    scene: failed ? orderScene(failed[0], 'bad') : lead.scene && sceneForOutcome(lead.scene, verdict),
     map: { target: id, effect: firstOrder ? mapEffect(firstOrder.type) ?? 'court' : decisions[0] ? 'court' : 'denounce' },
   };
 }
