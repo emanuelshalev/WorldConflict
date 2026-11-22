@@ -3,6 +3,9 @@ import { countryNames, useGameStore, useViewCountry } from '../store/gameStore';
 import type { UncertainRange } from '../store/gameStore';
 import { ordersFor } from '../lib/orders';
 import { OrderCard } from './orders/OrderCard';
+import { ExplainText } from './learn/ExplainText';
+import { LeaderLink } from './learn/LeaderLink';
+import { useCodex } from './learn/explain';
 
 function fmtMoney(n: number): string {
   if (n >= 1e12) return `$${(n / 1e12).toFixed(1)}T`;
@@ -80,6 +83,9 @@ export function CountryDetailPanel() {
   const view = useViewCountry(selectedCountryId);
   const [showHistory, setShowHistory] = useState(false);
   const [allOrders, setAllOrders] = useState(false);
+  // The dossier never marks its own subject (density rule 4: Russia's dossier does not mark "Russia")
+  const codex = useCodex();
+  const selfIds = codex && view ? codex.entries.filter((e) => e.kind === 'place' && e.countryId === view.id && e.name === view.name).map((e) => e.id) : [];
 
   if (!view) return null;
 
@@ -102,7 +108,7 @@ export function CountryDetailPanel() {
         {(view.nuclearStatus === 'ARMED' || view.nuclearStatus === 'TESTED') && ' ☢'}
       </h3>
       <div style={S.sub}>
-        {view.leader.title} <b style={{ color: '#ccd' }}>{view.leader.name}</b> ·{' '}
+        {view.leader.title} <LeaderLink countryId={view.id} style={{ color: '#ccd' }} /> ·{' '}
         {view.leader.style.toLowerCase()} · {view.leader.sinceTurn === 0 ? 'in power before your term' : `in power since month ${view.leader.sinceTurn}`}
       </div>
 
@@ -173,7 +179,7 @@ export function CountryDetailPanel() {
       {view.history.narrative && (
         <div style={S.section}>
           <div style={S.sectionTitle}>National character</div>
-          <div style={{ color: '#bbc', fontSize: 12, fontStyle: 'italic' }}>{view.history.narrative}</div>
+          <ExplainText as="div" style={{ color: '#bbc', fontSize: 12, fontStyle: 'italic' }} text={view.history.narrative} exclude={selfIds} info where={view.name} />
           <button
             onClick={() => setShowHistory(!showHistory)}
             style={{ ...S.actionBtn, marginTop: 6, textAlign: 'center' }}
@@ -184,7 +190,7 @@ export function CountryDetailPanel() {
             <div style={{ marginTop: 4 }}>
               {view.history.keyEvents.map((e) => (
                 <div key={e.year + e.event} style={{ marginBottom: 5, fontSize: 11 }}>
-                  <b style={{ color: '#9ab' }}>{e.year}</b>, {e.event}
+                  <b style={{ color: '#9ab' }}>{e.year}</b>, <ExplainText text={e.event} exclude={selfIds} where={view.name} />
                   <div style={{ color: '#788' }}>{e.impact}</div>
                 </div>
               ))}

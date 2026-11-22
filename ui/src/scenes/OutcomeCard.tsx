@@ -7,6 +7,7 @@ import { OutcomeMap } from './OutcomeMap';
 import { FactRow } from './debriefParts';
 import { moodForVerdict } from './kinds';
 import { Stamp, type StampWord } from '../components/game/Stamp';
+import { ExplainText } from '../components/learn/ExplainText';
 
 /** R6: the verdict lands as the same stamp that marks a choice. Neutral months get none. */
 const VERDICT_STAMP: Partial<Record<OutcomeCardData['verdict'], StampWord>> = { good: 'DONE', mixed: 'MIXED', bad: 'FAILED' };
@@ -80,7 +81,7 @@ export function OutcomeCard({ c, home, big = false, stampSound = big }: { c: Out
             {c.lines.map((l, i) => (
               <li key={i} className={l.ok === false ? 'failed' : ''}>
                 <LineIcon icon={l.icon} />
-                <span>{l.text}</span>
+                <ExplainText text={l.text} card={c.lines.map((x) => x.text)} block={i} where={c.headline} />
               </li>
             ))}
           </ul>

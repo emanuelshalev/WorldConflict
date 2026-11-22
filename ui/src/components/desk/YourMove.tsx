@@ -9,6 +9,8 @@ import { CardCost, CardShell, EffectChips, type CardTag } from '../game/CardShel
 import { useGoalHighlight } from '../../lib/goals';
 import { CoachBubble } from './Coach';
 import { useNarrow } from '../../lib/useNarrow';
+import { ExplainText } from '../learn/ExplainText';
+import { SituationButton } from '../learn/SituationBriefing';
 import '../../styles/month.css';
 
 /**
@@ -71,7 +73,10 @@ function OptionCard({
   onPick,
   onMore,
   highlight,
+  card,
 }: {
+  /** Text blocks of the whole crisis card (learning aids: density rules span the card). */
+  card?: readonly string[];
   item: PendingDecision | Meeting;
   o: DecisionOption;
   i: number;
@@ -98,7 +103,7 @@ function OptionCard({
     <CardShell
       id={`${item.id}-${o.id}`}
       title={o.label}
-      description={o.description}
+      description={<ExplainText text={o.description} card={card} block={card ? card.indexOf(o.description) : 0} where={item.title} />}
       art={art}
       home={home}
       other={other}
@@ -181,6 +186,8 @@ export function DecisionStage({ item, primary = false, onlyLede = false }: { ite
   const kicker = `${primary ? 'Your move · ' : ''}${urgency ? `${urgency} ` : ''}${urgency ? kindWord.toLowerCase() : kindWord}`;
   const scene = meeting ? KIND_SCENE[meeting.kind] : avoidRepeat(sceneForCrisis(item.templateId, item.title, item.situation), previousScene());
   const [lede, rest] = splitLede(item.situation);
+  // One card for the learning aids: lede, rest and option texts share the density rules
+  const card = [lede, rest ?? '', ...options.map((o) => o.description)];
   const attended = meeting ? agenda.filter((x) => x.id !== meeting.id && choices[x.id] && choices[x.id] !== x.defaultOptionId).length : 0;
   const full = !!meeting && attended >= MEETING_SLOTS && !choices[meeting.id];
   const cabTag = cab ? missionTag(useGameStore.getState().missionImpact[item.id]?.[cab.id], status) : null;
@@ -203,7 +210,7 @@ export function DecisionStage({ item, primary = false, onlyLede = false }: { ite
           <h2 className="stage-title">{meeting ? `${meeting.speaker}` : item.title}</h2>
           {meeting && <p className="stage-sub">{item.title}</p>}
           <p className="stage-lede">
-            {lede}
+            <ExplainText text={lede} card={card} block={0} info where={item.title} />
             {(rest || options.length > 0) && (
               <>
                 {' '}
@@ -217,13 +224,18 @@ export function DecisionStage({ item, primary = false, onlyLede = false }: { ite
         {primary && <CoachBubble step="move" />}
       </div>
       <p className="stage-lede-phone">
-        {lede}{' '}
+        <ExplainText text={lede} card={card} block={0} info where={item.title} />{' '}
         {(rest || options.length > 0) && (
           <button type="button" className="link stage-more" onClick={() => setMore((v) => !v)} aria-expanded={more}>
             {more ? 'Less' : 'More'}
           </button>
         )}
       </p>
+      {!meeting && (
+        <div className="lx-situation-row">
+          <SituationButton blocks={[item.situation, ...options.map((o) => o.description)]} cardTitle={item.title} />
+        </div>
+      )}
       <div className="stage-staff">
         <span className="staff-avatar" aria-hidden>{INITIALS[lead] ?? 'CS'}</span>
         <p>
@@ -267,6 +279,7 @@ export function DecisionStage({ item, primary = false, onlyLede = false }: { ite
             onPick={() => choose(item.id, o.id)}
             onMore={() => setMore(true)}
             highlight={helpsHighlighted(o)}
+            card={card}
           />
         ))}
       </div>
@@ -278,7 +291,7 @@ export function DecisionStage({ item, primary = false, onlyLede = false }: { ite
           </button>
         </p>
       )}
-      {more && rest && <p className="stage-rest">{rest}</p>}
+      {more && rest && <ExplainText as="p" className="stage-rest" text={rest} card={card} block={1} info where={item.title} />}
       {more && <MoreDetail item={item} options={options} />}
     </article>
   );

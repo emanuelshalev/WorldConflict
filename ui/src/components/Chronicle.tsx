@@ -11,6 +11,7 @@ import { useCoach } from '../lib/coach';
 import '../scenes/result.css';
 import { SceneFrame } from '../scenes/SceneFrame';
 import { sceneForAction, sceneForCrisis, sceneForNews } from '../scenes/kinds';
+import { ExplainText } from './learn/ExplainText';
 
 const MOMENT_COLOR: Record<string, string> = {
   'CLOSE CALL': '#b3261e',
@@ -225,7 +226,7 @@ export function Chronicle() {
               const [body, next] = lead.description.replace(quoteText, '').split(' What next: ');
               return (
                 <>
-                  <p className="lede">{body.replace(/\s{2,}/g, ' ').trim()}</p>
+                  <ExplainText as="p" className="lede" text={body.replace(/\s{2,}/g, ' ').trim()} info where={lead.headline} />
                   {r && lead.relatedCountries.includes(me.id) && (
                     <blockquote className="pull">
                       “{r.line.replace(/^'|'$/g, '')}”<cite>{r.who}</cite>
@@ -283,7 +284,7 @@ export function Chronicle() {
                 {n.category} {n.relatedCountries.slice(0, 2).map((id) => flag(id)).join(' ')}
               </span>
               <h4>{n.headline}</h4>
-              <p>{n.description}</p>
+              <ExplainText as="p" text={n.description} info where={n.headline} />
             </div>
           ))}
           {statements.map((s) => (

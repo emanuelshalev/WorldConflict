@@ -15,6 +15,8 @@ import { DecisionStage } from './YourMove';
 import { AdvisorList } from './AdvisorList';
 import { whyLine } from '../../lib/advisorRows';
 import { STATE_WORD, nowNeed, stateOf } from '../../lib/goals';
+import { ExplainText } from '../learn/ExplainText';
+import { SituationButton } from '../learn/SituationBriefing';
 
 /**
  * The orders agent's catalog (design-orders.md 4.5: OrderCard tiles with search) mounts here
@@ -267,7 +269,10 @@ function MissionDetail() {
       <p className="hint">
         {world.maxTurns - world.turn} months left · score <b className="num">{world.score?.total ?? 0}</b>
       </p>
-      {world.objective.briefing && <p className="situation">{world.objective.briefing}</p>}
+      {world.objective.briefing && <ExplainText as="p" className="situation" text={world.objective.briefing} info where={world.objective.title} />}
+      <div className="lx-situation-row">
+        <SituationButton />
+      </div>
       <ul className="mission-list">
         {status.map((c) => {
           const s = stateOf(c);

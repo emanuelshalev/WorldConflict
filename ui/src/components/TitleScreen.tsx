@@ -26,6 +26,7 @@ import {
   type GameMode,
   type ScenarioInfo,
   fetchCatalog,
+  fetchCodex,
   lastSaveId,
   loadGame,
   startGame,
@@ -33,6 +34,8 @@ import {
 } from '../store/gameStore';
 import { flag } from '../lib/format';
 import { YourRecord } from './reveal/YourRecord';
+import { ExplainText } from './learn/ExplainText';
+import { SituationButton } from './learn/SituationBriefing';
 
 interface CountryInfo {
   id: string;
@@ -121,6 +124,13 @@ export function TitleScreen() {
 
   const fp = flashpoints.find((f) => f.id === flashpointId) ?? null;
   const usingFlashpoint = mode === 'FLASHPOINT' && !!fp;
+  // Learning aids on the dossier: the codex for the crisis or era on show (one cached request)
+  const codexFor = usingFlashpoint && fp ? `|${fp.id}` : scenarioId ? `${scenarioId}|` : '';
+  useEffect(() => {
+    if (!codexFor) return;
+    const [sc, f] = codexFor.split('|');
+    void fetchCodex(sc, f || null);
+  }, [codexFor]);
   const nationChoices = useMemo(() => {
     if (usingFlashpoint && fp) {
       return fp.playable.map((p) => ({
@@ -350,9 +360,10 @@ export function TitleScreen() {
               </button>
             </div>
             <p className="ts2-hook">{fp.tagline}</p>
+            <SituationButton situationId={fp.id} className="ts2-situation" />
             <details className="ts2-more">
               <summary>What is happening</summary>
-              <p>{fp.hook}</p>
+              <ExplainText as="p" text={fp.hook} info where={fp.title} />
             </details>
             <div className="ts2-label">Choose your side</div>
           </>
@@ -389,7 +400,7 @@ export function TitleScreen() {
           <p className="ts2-brief">
             {objective ? (
               <>
-                <b>{objective.title}.</b> {objective.briefing.split('. ').slice(0, 2).join('. ')}.
+                <b>{objective.title}.</b> <ExplainText text={`${objective.briefing.split('. ').slice(0, 2).join('. ')}.`} info where={objective.title} />
               </>
             ) : (
               country?.narrative.split('. ').slice(0, 2).join('. ')

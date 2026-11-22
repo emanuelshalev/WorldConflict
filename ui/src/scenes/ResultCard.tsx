@@ -15,6 +15,7 @@ import { useModalFocus } from '../lib/useModalFocus';
 import { type AfterMonth, readAfterMonth, writeAfterMonth } from '../lib/afterMonth';
 import './debrief.css';
 import './result.css';
+import { ExplainText } from '../components/learn/ExplainText';
 
 /**
  * The result card (design-month.md 6.2 and 8): the first screen after Execute. What your choice
@@ -121,7 +122,9 @@ export function ResultCard({ report, world, home, onNext, onEverything, onPaper,
           <h2 className="rc-sentence">{card?.headline ?? 'A quiet month: the world moved on its own.'}</h2>
           {card?.reaction && (
             <blockquote className={`rc-quote t-${card.reaction.tone}`}>
-              <p>“{card.reaction.line.replace(/^'|'$/g, '')}”</p>
+              <p>
+                “<ExplainText text={card.reaction.line.replace(/^'|'$/g, '')} where={card.headline} />”
+              </p>
               <cite>{card.reaction.who}</cite>
             </blockquote>
           )}
