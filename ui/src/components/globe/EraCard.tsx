@@ -1,5 +1,6 @@
 import { IconBolt, IconX } from '@tabler/icons-react';
-import type { EraMap, EraSituation } from '../../store/gameStore';
+import { type EraMap, type EraSituation, useGameStore } from '../../store/gameStore';
+import { codexTargetFor, openSituationCodex } from '../learn/explain';
 import { SITUATION_KINDS, situationKindOf } from '../../lib/crisisKind';
 import { BLOC_SIDE_COLOR, blocSideOf, stabilityWord, unplayableIn } from './eraLayers';
 
@@ -30,6 +31,10 @@ export function EraCard({ era, situation: s, variant, picked, onLead, onFlashpoi
   const rows = s.countries.map((id) => era.countries.find((c) => c.id === id)).filter((c) => !!c);
   const leadable = rows.filter((c) => !unplayableIn(era, c.id)).slice(0, 2);
   const phase = PHASE_WORD[s.phase];
+  // "What is going on here?" (design-worldmap.md 3.3, B-26): the codex briefing or entry named by
+  // codexId; a flashpoint's briefing loads on click, so it counts as available.
+  const codex = useGameStore((st) => st.codex);
+  const explainable = !!s.codexId && (!!codexTargetFor(s.codexId, codex) || s.codexId === s.flashpointId);
   return (
     <section className={`era-card ${variant}`} aria-label={`${s.title}: situation`} style={{ ['--pin' as string]: kind.color }}>
       <header className="era-card-head">
@@ -51,6 +56,19 @@ export function EraCard({ era, situation: s, variant, picked, onLead, onFlashpoi
       </header>
       <h3>{s.title}</h3>
       <p className="era-card-blurb">{s.blurb}</p>
+      {explainable && (
+        <button
+          type="button"
+          className="lx-situation era-card-explain"
+          aria-haspopup="dialog"
+          onClick={(e) => void openSituationCodex(s, era.scenarioId, e.currentTarget)}
+        >
+          <span className="lx-info-i" aria-hidden>
+            i
+          </span>
+          What is going on here?
+        </button>
+      )}
       {phase && <p className="era-card-phase-note">{phase}: {PHASE_HINT[s.phase]}.</p>}
       {rows.length > 0 && (
         <ul className="era-card-sides">

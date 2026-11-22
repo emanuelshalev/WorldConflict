@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import { create } from 'zustand';
-import { type CodexEntry, type CompiledCodex, type LearnLevel, LEVEL_RULES, type Situation, compiledFor } from '../../lib/codexMatch';
+import { type CodexEntry, type CodexPayload, type CompiledCodex, type LearnLevel, LEVEL_RULES, type Situation, compiledFor } from '../../lib/codexMatch';
 import type { TermId } from '../../lib/glossary';
 import { flag } from '../../lib/format';
-import { countryName, useGameStore } from '../../store/gameStore';
+import { countryName, fetchCodex, useGameStore } from '../../store/gameStore';
 
 /**
  * Shared state of the learning aids (design-learn.md §4, decision D-53): which explainer is open
@@ -103,6 +103,47 @@ export function situationFor(
     if (s) return s;
   }
   return situations.find((x) => x.id === `scenario-${scenarioId}`) ?? (flashpointId ? null : situations[0]) ?? null;
+}
+
+/**
+ * What an era situation's `codexId` opens (B-26): the situation briefing when it names a codex
+ * situation (a flashpoint or scenario briefing), else the explainer for a codex entry valid in
+ * the era. Null when the loaded codex has neither.
+ */
+export type CodexTarget = { kind: 'briefing'; situationId: string } | { kind: 'entry'; id: string };
+
+export function codexTargetFor(
+  codexId: string | undefined,
+  payload: Pick<CodexPayload, 'situations' | 'entries'> | null | undefined,
+): CodexTarget | null {
+  if (!codexId || !payload) return null;
+  if (payload.situations.some((s) => s.id === codexId)) return { kind: 'briefing', situationId: codexId };
+  if (payload.entries.some((e) => e.id === codexId)) return { kind: 'entry', id: codexId };
+  return null;
+}
+
+/**
+ * Opens the explainer for an era situation from the title globe's card. A briefing that belongs
+ * to a flashpoint is not in the era's codex: it loads that flashpoint's codex first (one request).
+ * Returns false when there is nothing to open.
+ */
+export async function openSituationCodex(
+  situation: { codexId?: string; flashpointId?: string; title?: string },
+  scenarioId: string,
+  anchor: HTMLElement | null,
+): Promise<boolean> {
+  const { codexId, flashpointId } = situation;
+  if (!codexId) return false;
+  let target = codexTargetFor(codexId, useGameStore.getState().codex);
+  if (!target && flashpointId === codexId) {
+    await fetchCodex(scenarioId, flashpointId);
+    target = codexTargetFor(codexId, useGameStore.getState().codex);
+  }
+  if (!target) return false;
+  const ex = useExplain.getState();
+  if (target.kind === 'briefing') ex.openBriefing({ situationId: target.situationId, cardTitle: situation.title });
+  else ex.openExplainer({ kind: 'entry', id: target.id }, anchor);
+  return true;
 }
 
 export function useSituation(): Situation | null {

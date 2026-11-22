@@ -314,7 +314,10 @@ export function TitleGlobe(props: Props) {
           if (!fc?.features?.length || !map.getLayer('land-line')) return;
           const feats = fc.features.map((f) => ({ ...f, properties: { ...f.properties, sid: String((f.properties as Record<string, unknown>)?.id ?? (f.properties as Record<string, unknown>)?.ADM0_A3 ?? '') } }));
           map.addSource('era-shapes', { type: 'geojson', data: { type: 'FeatureCollection', features: feats }, promoteId: 'sid' });
-          map.addLayer({ id: 'era-shapes', type: 'fill', source: 'era-shapes', paint: { 'fill-color': ['coalesce', ['feature-state', 'tint'], 'rgba(0,0,0,0)'], 'fill-opacity': 0.92 } }, 'land-line');
+          // An ocean-coloured base hides the modern country underneath (East Germany over West
+          // Germany), so the shape's tint composites exactly like any other country's
+          map.addLayer({ id: 'era-shapes-base', type: 'fill', source: 'era-shapes', paint: { 'fill-color': '#0a1628', 'fill-opacity': ['case', ['boolean', ['feature-state', 'on'], false], 1, 0] } }, 'land-line');
+          map.addLayer({ id: 'era-shapes', type: 'fill', source: 'era-shapes', paint: { 'fill-color': ['coalesce', ['feature-state', 'tint'], 'rgba(0,0,0,0)'], 'fill-opacity': 0.85 } }, 'land-line');
           map.addLayer({ id: 'era-shapes-line', type: 'line', source: 'era-shapes', paint: { 'line-color': ['case', ['boolean', ['feature-state', 'on'], false], '#0a1628', 'rgba(0,0,0,0)'], 'line-width': 0.8 } }, 'era-outline');
           setShapes(new Set(feats.map((f) => f.properties.sid)));
         })
