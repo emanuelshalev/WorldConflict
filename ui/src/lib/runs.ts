@@ -187,3 +187,30 @@ export function normaliseSeedCode(code: string): string | null {
   const c = code.trim().toUpperCase().replace(/\s+/g, '');
   return /^[A-Z0-9]+-[A-Z]{3}-[0-9A-Z]+$/.test(c) ? c : null;
 }
+
+/** Mirrors src/core/reveal.ts seedCodeOf: "HC-USA-1A2B3" for a flashpoint, "T2026-USA-1A2B3" for a Term. */
+export function seedCodeFor(s: { flashpointId?: string | null; scenarioId?: string; mode?: string; playerCountry: string; seed: number }): string {
+  const words = (s.flashpointId ?? '').split('-').filter(Boolean);
+  const head = s.flashpointId
+    ? (words.length >= 2 ? `${words[0][0]}${words[1][0]}` : (words[0] ?? 'XX').slice(0, 2)).toUpperCase()
+    : `${(s.mode ?? 'TERM')[0]}${s.scenarioId ?? ''}`;
+  return `${head}-${s.playerCountry}-${(s.seed >>> 0).toString(36).toUpperCase()}`;
+}
+
+/** Replay same opening for a finished run: same seat, seed and difficulty (Your record). */
+export function replayRequestOf(r: Pick<RunRecord, 'mode' | 'countryId' | 'flashpointId' | 'scenarioId' | 'difficulty' | 'seed'>) {
+  return {
+    mode: r.mode,
+    playerCountryId: r.countryId,
+    flashpointId: r.flashpointId ?? undefined,
+    scenarioId: r.flashpointId ? undefined : r.scenarioId,
+    difficulty: r.difficulty,
+    seed: r.seed,
+  };
+}
+
+/** The months a save can branch from: 0 (the opening desk) to the current month (the last played one when over). */
+export function branchMonths(s: { turn: number; gameOver?: boolean }): number[] {
+  const last = s.gameOver ? s.turn - 1 : s.turn;
+  return Array.from({ length: Math.max(0, last + 1) }, (_, i) => i);
+}

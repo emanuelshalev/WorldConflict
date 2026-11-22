@@ -14,6 +14,7 @@ import {
   IconPencil,
   IconBuildingBank,
   IconCrown,
+  IconDeviceFloppy,
   IconFlame,
   IconPlayerPlay,
   IconSettings,
@@ -103,6 +104,9 @@ export function TitleScreen() {
   const [pickedCountry, setPickedCountry] = useState<string>('');
   const [difficulty, setDifficulty] = useState<Difficulty>('STATESMAN');
   const [leaderName, setLeaderName] = useState('');
+  // D-56: alternate-history seats (off by default); F-02-7: the One Term opening pick
+  const [whatIf, setWhatIf] = useState(false);
+  const [opening, setOpening] = useState('');
   const isLoading = useGameStore((s) => s.isLoading);
   const player = useGameStore((s) => s.player);
   const openModal = useGameStore((s) => s.openModal);
@@ -156,13 +160,21 @@ export function TitleScreen() {
         sub: p.role,
         difficulty: p.difficulty,
         off: null as string | null,
+        alt: null as string | null,
       }));
     }
     return [...countries]
       .sort((a, b) => DIFF_ORDER[a.difficulty] - DIFF_ORDER[b.difficulty] || a.name.localeCompare(b.name))
-      .map((c) => ({ id: c.id, name: eraNameOf(c.id) ?? c.name, sub: c.leaderTitle, difficulty: c.difficulty, off: unplayableIn(era, c.id) }))
-      .sort((a, b) => Number(!!a.off) - Number(!!b.off));
-  }, [usingFlashpoint, fp, countries, era, eraNameOf]);
+      .map((c) => {
+        const absent = unplayableIn(era, c.id);
+        // What if: a nation the era did not have is a choice of its own, labelled as alternate history
+        return { id: c.id, name: eraNameOf(c.id) ?? c.name, sub: c.leaderTitle, difficulty: c.difficulty, off: whatIf ? null : absent, alt: absent };
+      })
+      .sort((a, b) => Number(!!a.alt) - Number(!!b.alt));
+  }, [usingFlashpoint, fp, countries, era, eraNameOf, whatIf]);
+  const eraHasAbsent = !usingFlashpoint && !!era && era.countries.some((c) => c.status !== 'STATE');
+  const openings = mode === 'TERM' && era ? era.situations.filter((x) => x.phase === 'ACTIVE') : [];
+  const openingId = openings.some((x) => x.id === opening) ? opening : '';
 
   // Keep the selection valid when the crisis (and its playable sides) changes, or the era has no
   // such state (B-17: the Ukrainian SSR cannot be led in 1960)
@@ -175,6 +187,7 @@ export function TitleScreen() {
   const country = countries.find((c) => c.id === countryId);
   const objective = usingFlashpoint && fp ? fp.objectives[countryId] : null;
 
+  const alternate = !usingFlashpoint && !!chosen?.alt;
   const launch = () =>
     startGame({
       mode,
@@ -183,6 +196,8 @@ export function TitleScreen() {
       scenarioId: usingFlashpoint ? undefined : scenarioId,
       difficulty,
       leaderName: leaderName.trim() || undefined,
+      ...(alternate ? { whatIf: true } : {}),
+      ...(mode === 'TERM' && openingId ? { opening: openingId } : {}),
     });
 
   const playDaily = () =>
@@ -346,8 +361,8 @@ export function TitleScreen() {
               <IconPlayerPlay size={16} /> Continue
             </button>
           )}
-          <button className="wc-btn ghost" onClick={() => openModal('saveLoad')}>
-            Saved games
+          <button className="wc-btn ghost ts2-saves" onClick={() => openModal('saveLoad')} aria-label="Saved games" title="Saved games: resume, replay or branch">
+            <IconDeviceFloppy size={16} aria-hidden /> <span className="ts2-saves-label">Saved games</span>
           </button>
           <button className="icon-btn" title="AI & settings" onClick={() => openModal('settings')}>
             <IconSettings size={18} />
@@ -460,7 +475,34 @@ export function TitleScreen() {
               scenario && <p className="ts2-hook small">{scenario.description}</p>
             )}
             {era && <EraFires era={era} density={density} onDensity={setDensity} selected={situationId} onSelect={pickSituation} variant="list" compact={!!situation} />}
+            {openings.length > 0 && (
+              <div className="ts2-opening">
+                <label className="ts2-label" htmlFor="ts2-opening">
+                  Start with
+                </label>
+                <select id="ts2-opening" className="leader-input" value={openingId} onChange={(e) => setOpening(e.target.value)}>
+                  <option value="">Whatever the first month brings</option>
+                  {openings.map((x) => (
+                    <option key={x.id} value={x.id}>
+                      {x.title}
+                    </option>
+                  ))}
+                </select>
+                <small>{openingId ? 'Your first crisis is about this situation.' : 'Optional: pick the situation your first crisis is about.'}</small>
+              </div>
+            )}
             <div className="ts2-label">Your nation · click the globe or the list</div>
+            {eraHasAbsent && (
+              <label className="ts2-whatif">
+                <input type="checkbox" checked={whatIf} onChange={(e) => setWhatIf(e.target.checked)} />
+                <span>
+                  <span>
+                    <b>What if</b>: also lead nations that did not exist yet in {era?.year}
+                  </span>
+                  <small>Alternate history, off by default</small>
+                </span>
+              </label>
+            )}
           </>
         )}
         <div className={`ts2-sides ${usingFlashpoint ? '' : 'many'}`}>
@@ -471,6 +513,7 @@ export function TitleScreen() {
                 <b>{n.name}</b>
                 {usingFlashpoint && <small>{n.sub}</small>}
                 {n.off && <small className="ts2-side-off">{n.off}</small>}
+                {!n.off && n.alt && <small className="ts2-side-alt">What if: {n.alt}</small>}
               </span>
               <span className="ts2-pips num" title={DIFF_LABEL[n.difficulty]}>
                 {pips(n.difficulty)}
@@ -478,6 +521,11 @@ export function TitleScreen() {
             </button>
           ))}
         </div>
+        {alternate && chosen?.alt && (
+          <p className="ts2-brief ts2-alt-note">
+            <b>Alternate history.</b> In real history, {chosen.alt}. Here it is a sovereign state and you lead it.
+          </p>
+        )}
         {(objective || country) && (
           <p className="ts2-brief">
             {objective ? (
@@ -507,7 +555,7 @@ export function TitleScreen() {
             )}
           </div>
           <button className={`wc-btn big ${resume ? '' : 'primary'} ts2-go`} disabled={!countryId || isLoading} onClick={launch}>
-            {isLoading ? 'Briefing…' : `Take office${chosen ? ` as ${chosen.name}` : ''} ▸`}
+            {isLoading ? 'Briefing…' : `Take office${chosen ? ` as ${chosen.name}` : ''}${alternate ? ' (what if)' : ''} ▸`}
           </button>
         </div>
       </aside>

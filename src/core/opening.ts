@@ -10,7 +10,13 @@ import type { EraSituation } from "./data-loader.js";
 import { isPresent } from "./era.js";
 import type { SeededRandom } from "./seed.js";
 import { possessive, withArticle } from "./text.js";
-import type { CountryState, DecisionOption, GameEvent, PendingDecision, WorldState } from "./types.js";
+import type {
+  CountryState,
+  DecisionOption,
+  GameEvent,
+  PendingDecision,
+  WorldState,
+} from "./types.js";
 
 /** The situations a Term may open on: the ones burning now (not frozen or still brewing). */
 export function openingChoices(situations: EraSituation[]): EraSituation[] {

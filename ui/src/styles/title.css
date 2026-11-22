@@ -87,7 +87,9 @@
   .ts2-vignette { height: calc(44vh + 120px); }
   .ts2-top { padding-top: 14px; }
   .ts2-brand h1 { font-size: 30px; }
-  .ts2-actions .ghost { display: none; }
+  .ts2-actions .ghost:not(.ts2-saves) { display: none; }
+  .ts2-saves { min-width: 44px; min-height: 44px; padding: 0 10px; }
+  .ts2-saves-label { display: none; }
   .ts2-left { grid-row: 2; padding: 10px 16px; gap: 8px; max-width: none; }
   .ts2-pitch, .ts2-tag { display: none; }
   .ts2-daily { margin-top: auto; }
@@ -428,3 +430,14 @@
 }
 @keyframes tg-fade-in { from { opacity: 0; } }
 @keyframes tg-fade-out { to { opacity: 0; } }
+
+/* D-56 What if (alternate-history seats) and F-02-7 Start with (One Term opening pick) */
+.ts2-whatif { display: flex; align-items: center; gap: 10px; min-height: 44px; margin: 2px 0 6px; padding: 6px 10px; border: 1px dashed var(--line-2); border-radius: 10px; color: var(--text-2); font-size: 13px; cursor: pointer; }
+.ts2-whatif input { width: 20px; height: 20px; accent-color: var(--accent); flex: none; }
+.ts2-whatif > span { display: flex; flex-direction: column; gap: 2px; }
+.ts2-whatif small { color: var(--text-3); font-size: 12px; }
+.ts2-side-body small.ts2-side-alt { color: var(--accent); font-size: 11px; white-space: normal; }
+.ts2-alt-note { border-left: 3px solid var(--accent); padding-left: 8px; }
+.ts2-opening { display: flex; flex-direction: column; gap: 4px; margin: 6px 0 8px; }
+.ts2-opening select { min-height: 44px; }
+.ts2-opening small { color: var(--text-3); font-size: 12px; }

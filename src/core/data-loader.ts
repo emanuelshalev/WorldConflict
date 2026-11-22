@@ -4,8 +4,8 @@ import { z } from "zod";
 import { startSnapshot } from "./chronicle.js";
 import { type Codex, CodexFileSchema, SituationSchema as CodexSituationSchema } from "./codex.js";
 import { runDirector } from "./crises.js";
-import { openingChoices, situationOpening } from "./opening.js";
 import { generateAgenda } from "./meetings.js";
+import { openingChoices, situationOpening } from "./opening.js";
 import { combineSeed, createSeed, SeededRandom } from "./seed.js";
 import { generateLeaderName, generatePlayerBackstory } from "./systems/government.js";
 import { updateBeliefs } from "./systems/intelligence.js";
@@ -468,7 +468,9 @@ export class DataLoader {
   /** The active situation a One Term opens on; throws on an unknown or inactive one. */
   private openingSituation(world: WorldState, id: string): EraSituation | null {
     if (world.mode === "FLASHPOINT") return null; // a flashpoint scripts its own opening
-    const s = openingChoices(this.loadScenario(world.scenarioId).situations).find((x) => x.id === id);
+    const s = openingChoices(this.loadScenario(world.scenarioId).situations).find(
+      (x) => x.id === id,
+    );
     if (!s) throw new UnplayableNationError(`No active situation "${id}" in ${world.scenarioId}`);
     return s;
   }
@@ -490,7 +492,9 @@ export class DataLoader {
     const reason = unplayableReason(eraScenario, playerCountryId);
     // D-56: a nation that is not a state in the era is led only as alternate history ("What if")
     if (reason && !options.whatIf)
-      throw new UnplayableNationError(`${reason} Turn on "What if" to lead it as alternate history.`);
+      throw new UnplayableNationError(
+        `${reason} Turn on "What if" to lead it as alternate history.`,
+      );
     const world = this.initializeWorldState(options.scenarioId, playerCountryId, seed, leaderName);
     if (reason) {
       const era = eraScenario.eraStatus[playerCountryId];

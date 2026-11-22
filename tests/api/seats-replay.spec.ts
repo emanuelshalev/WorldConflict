@@ -39,6 +39,21 @@ describe("seats restored (QA S1-2, D-56)", () => {
     }
   });
 
+  it("the West Bank seat gets its own decisions again (raids, a role in Gaza)", async () => {
+    const { TurnEngine } = await import("../../src/core/turn.js");
+    const { generateDeterministicIntents } = await import("../../src/agents/fallback.js");
+    const seen = new Set<string>();
+    for (const seed of [1, 2, 3]) {
+      let w = createDataLoader().newGame({ scenarioId: "2026", playerCountryId: "PSX", mode: "TERM", seed });
+      for (let m = 0; m < 24 && !w.gameOver; m++) {
+        for (const d of w.pendingDecisions) seen.add(d.templateId);
+        const decisions = w.pendingDecisions.map((d) => ({ decisionId: d.id, optionId: d.options[0].id }));
+        w = new TurnEngine().executeTurn(w, [], generateDeterministicIntents(w), decisions).newState;
+      }
+    }
+    expect([...seen].some((t) => t === "westbank_raid" || t === "pa_gaza_role")).toBe(true);
+  }, 60_000);
+
   const whatIfSeats: Array<[string, string]> = [
     ["1960", "UKR"],
     ["1960", "BLR"],
