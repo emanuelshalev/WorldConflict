@@ -1,0 +1,74 @@
+/* =========================================================================
+   HUD (design-orders.md WP5, design-feel.md 5.2 and 8.1): full-word labels in
+   sentence case at 13 px, 18 px values, political capital as seals, the sound
+   toggle in sight. Overrides the older compact HUD rules in wc.css.
+   ========================================================================= */
+.game-top { position: relative; z-index: 20; display: grid; grid-template-columns: minmax(0, 1fr); }
+.game-top .hud { position: relative; gap: 16px; padding: 8px 16px; min-height: 64px; flex-wrap: nowrap; }
+.hud-flag { font-size: 30px; line-height: 1; flex: none; }
+.game-top .hud-who { min-width: 0; flex: 0 1 auto; max-width: 340px; }
+.game-top .hud-who b { font-size: 17px; }
+.game-top .hud-who span { font-size: 13px; overflow: hidden; text-overflow: ellipsis; }
+.game-top .hud-stats { display: flex !important; gap: 18px !important; margin-left: auto; align-items: center; overflow: visible !important; width: auto; order: 0; justify-content: flex-end !important; }
+.game-top .stat { min-width: 0; position: relative; }
+.game-top .stat label { font-size: 13px; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--text-2); white-space: nowrap; cursor: inherit; }
+.game-top .stat .val { font-size: 18px; white-space: nowrap; }
+.game-top .stat .val small { font-size: 13px; display: inline; }
+.game-top .stat.tension { width: 120px; }
+.game-top .stat.tension .bar { display: block; }
+.game-top .stat .tension-num { display: flex; }
+.stat-btn { display: flex; flex-direction: column; align-items: flex-start; gap: 0; background: none; border: 0; padding: 4px 6px; margin: -4px -6px; border-radius: 8px; color: inherit; font: inherit; cursor: pointer; min-height: 44px; justify-content: center; }
+.stat-btn:hover { background: rgba(255, 255, 255, 0.05); }
+.stat-btn label { cursor: pointer; }
+.pc-val { display: flex; align-items: center; gap: 8px; }
+.pc-left { font-size: 16px; }
+.hud-explain { position: absolute; top: calc(100% + 10px); left: 0; z-index: 30; width: 300px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line-2); background: var(--surface-1); box-shadow: var(--shadow); font-size: 14px; line-height: 1.45; color: var(--text-1); }
+.hud-more { display: none; align-items: center; gap: 4px; min-height: 44px; min-width: 44px; padding: 0 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-1); color: var(--text-1); font: inherit; font-size: 13px; cursor: pointer; }
+.game-top .hud-menu { display: flex; gap: 4px; align-items: center; margin-left: 0; }
+.game-top .icon-btn { width: 40px; height: 40px; }
+.hud-sound { width: 44px; height: 44px; }
+.hud-phone-menu { display: none; }
+
+/* 1024 to 1279: Approval, Stability, Political capital; the rest behind More */
+@media (max-width: 1279px) {
+  .game-top .stat.minor { display: none; }
+  .hud-more { display: inline-flex; }
+  .game-top .hud.more-open .hud-stats { flex-wrap: wrap; }
+  .game-top .hud.more-open { flex-wrap: wrap; }
+  .game-top .hud.more-open .stat.minor { display: flex; }
+  .game-top .hud.more-open .hud-stats { order: 5; flex-basis: 100%; justify-content: flex-start !important; padding-top: 6px; border-top: 1px solid var(--line); }
+  .game-top .hud-who { max-width: 260px; }
+  .mode-seg span { display: inline; }
+}
+@media (max-width: 1099px) {
+  .game-top .hud-menu .hide-phone:not(.hud-sound) { display: none; }
+  .game-top .hud-menu .icon-btn:not(.hide-phone) { display: inline-flex; }
+}
+
+/* Phone: row 1 who + sound + menu; row 2 Approval, Stability, Political capital and More */
+@media (max-width: 600px) {
+  .game-top .hud { flex-wrap: wrap; gap: 4px 8px; padding: 6px 12px 6px; min-height: 0; }
+  .hud-flag { display: none; }
+  .game-top .hud-who { flex: 1 1 0; max-width: none; }
+  .game-top .hud-who b { font-size: 15px; }
+  .game-top .hud-who span { font-size: 13px; }
+  .game-top .hud-stats { order: 3; flex-basis: 100%; justify-content: space-between !important; gap: 8px !important; margin-left: 0; }
+  .game-top .stat .val { font-size: 17px; }
+  .game-top .stat label { font-size: 13px; }
+  .game-top .stat .wc-seal { width: 20px; height: 20px; }
+  .pc-left { font-size: 15px; }
+  .game-top .hud.more-open .hud-stats { border-top: 0; padding-top: 0; display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .game-top .hud.more-open .hud-more { grid-column: 3; justify-self: end; }
+  .mode-seg { display: none !important; }
+  .game-top .hud-menu .icon-btn { width: 44px; height: 44px; }
+  .hud-phone-menu { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; order: 6; flex-basis: 100%; padding: 6px 0 4px; }
+  .hud-phone-menu .wc-btn { min-height: 44px; justify-content: flex-start; }
+  .hud-explain { width: min(300px, calc(100vw - 24px)); }
+}
+
+.pc-val .wc-seals { flex-wrap: nowrap; }
+@media (max-width: 1599px) {
+  .game-top .hud-menu .icon-btn[aria-label='Mission and record'] { display: none; }
+  .game-top .hud { gap: 12px; }
+  .game-top .hud-stats { gap: 14px !important; }
+}

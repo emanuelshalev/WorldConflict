@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { IconChevronRight, IconLayoutList, IconLayoutGrid, IconNews } from '@tabler/icons-react';
-import type { TurnReport, WorldState } from '../store/gameStore';
+import { IconArrowRight, IconChevronRight, IconLayoutList, IconLayoutGrid, IconNews } from '@tabler/icons-react';
+import type { ReportFact, TurnReport, WorldState } from '../store/gameStore';
 import { countryName } from '../store/gameStore';
 import { buildPages, type DebriefPage, type OutcomeCardData } from '../lib/debrief';
 import { monthLabel } from '../lib/format';
@@ -8,6 +8,7 @@ import { OutcomeCard } from './OutcomeCard';
 import { StatCount } from './debriefParts';
 import './reel.css';
 import './debrief.css';
+import './result.css';
 
 const plural = (n: number, w: string) => `${n} ${w}${n === 1 ? '' : 's'}`;
 const DENSE_KEY = 'worldconflict.debriefDense';
@@ -65,9 +66,14 @@ function DenseTable({ pages }: { pages: DebriefPage[] }) {
  * After Execute: the month in at most three pages (the highlight, diplomacy by country, home and
  * security), several outcomes per page, then the paper. Keys: 1-4, arrows, Enter, Esc.
  */
-export function MonthDebrief({ report, world, home, onDone }: { report: TurnReport; world: WorldState; home: string; onDone: () => void }) {
-  const pages = useMemo(() => buildPages(report, world), [report, world]);
-  const [at, setAt] = useState(0);
+export function MonthDebrief({ report, world, home, onDone, onNext, onBack, initialPage = 0, nextLabel = 'Next month' }: { report: TurnReport; world: WorldState; home: string; onDone: () => void; onNext?: () => void; onBack?: () => void; initialPage?: number; nextLabel?: string }) {
+  // One tension number everywhere (B-11): the month's start and the world's tension now, rounded
+  const pages = useMemo(() => {
+    const now = Math.round(world.globalTension);
+    const fix = (f: ReportFact) => (/tension/i.test(f.label) && report.tension ? { ...f, before: report.tension.before, after: now } : f);
+    return buildPages(report, world).map((p) => ({ ...p, cards: p.cards.map((c) => ({ ...c, facts: c.facts.map(fix) })) }));
+  }, [report, world]);
+  const [at, setAt] = useState(() => Math.max(0, Math.min(initialPage, pages.length - 1)));
   const [dense, setDense] = useState(readDense);
   const touched = useRef(dense);
   const page = pages[at];
@@ -80,7 +86,7 @@ export function MonthDebrief({ report, world, home, onDone }: { report: TurnRepo
     const onKey = (e: KeyboardEvent) => {
       // Captured first, so the app's own Escape does not also close the paper behind us
       e.stopPropagation();
-      if (e.key === 'Escape') onDone();
+      if (e.key === 'Escape') (onBack ?? onDone)();
       else if (e.key === 'ArrowRight' || e.key === 'Enter') go(at + 1);
       else if (e.key === 'ArrowLeft') go(at - 1);
       else if (/^[1-4]$/.test(e.key)) go(Number(e.key) - 1);
@@ -104,7 +110,7 @@ export function MonthDebrief({ report, world, home, onDone }: { report: TurnRepo
   if (!page) return null;
   const deltas = report.deltas;
   const stat = (k: string, label: string, i: number, suffix = '%') =>
-    deltas[k] ? <StatCount key={k} label={label} before={deltas[k].before} after={deltas[k].after} i={i} suffix={suffix} /> : null;
+    deltas[k] ? <StatCount key={k} label={label} before={Math.round(deltas[k].before)} after={Math.round(deltas[k].after)} i={i} suffix={suffix} /> : null;
   const [first, ...rest] = page?.cards ?? [];
   return (
     <div className="debrief" role="dialog" aria-modal="true" aria-label={`${monthLabel(world.date)}: what happened`}>
@@ -115,18 +121,23 @@ export function MonthDebrief({ report, world, home, onDone }: { report: TurnRepo
         </div>
         <nav className="db-tabs" role="tablist" aria-label="Debrief pages">
           {pages.map((p, i) => (
-            <button key={p.key} role="tab" aria-selected={i === at} className={i === at ? 'on' : ''} onClick={() => go(i)}>
+            <button key={p.key} type="button" role="tab" aria-selected={i === at} className={i === at ? 'on' : ''} onPointerDown={(e) => e.pointerType !== 'mouse' && go(i)} onClick={() => go(i)}>
               <kbd>{i + 1}</kbd> {p.title}
               {p.cards.length > 1 && <span className="db-count num">{p.cards.length}</span>}
             </button>
           ))}
-          <button role="tab" aria-selected={false} onClick={onDone}>
+          <button type="button" role="tab" aria-selected={false} onClick={onDone}>
             <kbd>{pages.length + 1}</kbd> <IconNews size={14} /> The paper
           </button>
         </nav>
-        <button className="wc-btn ghost small" onClick={toggleDense} title="Everything as one table">
+        <button type="button" className="wc-btn ghost small" onClick={toggleDense} title="Everything as one table">
           {dense ? <IconLayoutGrid size={15} /> : <IconLayoutList size={15} />} {dense ? 'Cards' : 'Table'}
         </button>
+        {onNext && (
+          <button type="button" className="wc-btn primary db-next" onClick={onNext}>
+            {nextLabel} <IconArrowRight size={16} aria-hidden />
+          </button>
+        )}
       </header>
 
       <main className="db-stage">
@@ -140,7 +151,7 @@ export function MonthDebrief({ report, world, home, onDone }: { report: TurnRepo
               {stat('stability', 'Stability', 1)}
               {stat('legitimacy', 'Legitimacy', 2)}
               {stat('score', 'Score', 3, '')}
-              {report.tension && <StatCount label="World tension" before={report.tension.before} after={report.tension.after} i={4} />}
+              {report.tension && <StatCount label="World tension" before={report.tension.before} after={Math.round(world.globalTension)} i={4} />}
             </div>
             {report.moments.length > 0 && (
               <div className="db-moments">

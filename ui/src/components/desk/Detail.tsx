@@ -1,26 +1,28 @@
-import { useMemo, useRef, useState } from 'react';
-import { IconArrowLeft, IconArrowRight, IconCheck, IconMessageCircle, IconPlus, IconUserShare, IconX } from '@tabler/icons-react';
-import {
-  type DecisionOption,
-  type Meeting,
-  type PendingAction,
-  type PendingDecision,
-  MEETING_SLOTS,
-  countryName,
-  orderKey,
-  queueOrder,
-  useGameStore,
-  usePlayerCountry,
-} from '../../store/gameStore';
-import { ADVISOR_NAMES, arrowText, effectArrows, flag } from '../../lib/format';
+import { type ComponentType, useMemo, useRef, useState } from 'react';
+import { IconArrowLeft, IconArrowRight, IconPlus, IconX } from '@tabler/icons-react';
+import { type PendingAction, countryName, orderKey, queueOrder, useGameStore, usePlayerCountry } from '../../store/gameStore';
+import { flag } from '../../lib/format';
 import { pcCost } from '../../lib/actions';
 import { budgetShare } from '../../lib/budget';
-import { computeSuggestions, crisisStaffPick, meetingSuggestion, missionRisk } from '../../lib/staff';
+import { computeSuggestions } from '../../lib/staff';
+import { primaryId, primaryItem } from '../../lib/month';
 import { SceneFrame } from '../../scenes/SceneFrame';
-import { sceneForAction, sceneForCrisis } from '../../scenes/kinds';
+import { sceneForAction } from '../../scenes/kinds';
 import { ActionIcon } from '../../scenes/icons';
 import { actionFamily } from '../../scenes/actionIcons';
 import { deskItems } from '../../lib/deskItems';
+import { DecisionStage } from './YourMove';
+import { AdvisorList } from './AdvisorList';
+import { whyLine } from '../../lib/advisorRows';
+import { STATE_WORD, nowNeed, stateOf } from '../../lib/goals';
+
+/**
+ * The orders agent's catalog (design-orders.md 4.5: OrderCard tiles with search) mounts here
+ * when its module exists; until then the desk keeps its own catalog below. Vite resolves the
+ * glob at build time, so a missing file is simply an empty map.
+ */
+type CatalogProps = { target: string; setTarget: (id: string) => void };
+const ORDER_CATALOG = Object.values(import.meta.glob<{ OrderCatalog?: ComponentType<CatalogProps> }>('../orders/OrderCatalog.tsx', { eager: true }))[0]?.OrderCatalog;
 
 interface OrderDef {
   type: string;
@@ -75,138 +77,8 @@ function Cost({ type }: { type: string }) {
   return (
     <span className="cost">
       {pc ? <span className="num pc">◆{pc}</span> : <span className="num free">free</span>}
-      {def > 0 && <span className="num def">{Math.round(def * 100)}% def</span>}
+      {def > 0 && <span className="num def">{Math.round(def * 100)}% defense</span>}
     </span>
-  );
-}
-
-function Arrows({ o }: { o: DecisionOption }) {
-  return (
-    <div className="arrows">
-      {effectArrows(o, countryName).map((a, i) => (
-        <span key={`${a.label}-${i}`} className={a.good ? 'delta-up' : 'delta-down'}>
-          {arrowText(a)}
-        </span>
-      ))}
-    </div>
-  );
-}
-
-function Option({ o, chosen, tag, disabled, onPick, risk }: { o: DecisionOption; chosen: boolean; tag?: string; disabled?: boolean; onPick: () => void; risk?: string | null }) {
-  return (
-    <button className={`option ${chosen ? 'chosen' : ''}`} onClick={onPick} disabled={disabled} aria-pressed={chosen}>
-      <b>{o.label}</b>
-      {tag && <span className={`opt-tag ${tag === 'Staff pick' ? 'staff' : 'suggest'}`}>{tag}</span>}
-      {risk && (
-        <span className="opt-tag risk" title={risk}>
-          ⚠ mission
-        </span>
-      )}
-      {(o.effects.pc ?? 0) !== 0 && <span className="num opt-pc">{(o.effects.pc ?? 0) > 0 ? '+' : '−'}◆{Math.abs(o.effects.pc ?? 0)}</span>}
-      <div className="desc">{o.description}</div>
-      <Arrows o={o} />
-      {o.backedBy.length > 0 && <div className="backers">Backed by {o.backedBy.map((b) => ADVISOR_NAMES[b] ?? b).join(', ')}</div>}
-    </button>
-  );
-}
-
-function CrisisDetail({ d }: { d: PendingDecision }) {
-  const choices = useGameStore((s) => s.decisionChoices);
-  const choose = useGameStore((s) => s.chooseDecision);
-  const reviewed = useGameStore((s) => s.reviewed);
-  const objective = useGameStore((s) => s.worldState?.objective);
-  const home = useGameStore((s) => s.worldState?.playerCountryId);
-  const staff = useMemo(() => crisisStaffPick(d, objective), [d, objective]);
-  const existential = d.urgency === 'EXISTENTIAL';
-  return (
-    <article className={`detail-crisis ${existential ? 'existential' : ''}`}>
-      <SceneFrame
-        kind={sceneForCrisis(d.templateId, d.title, d.situation)}
-        home={home}
-        other={d.affectedCountries.find((id) => id !== home)}
-        mood={existential || d.urgency === 'URGENT' ? 'bad' : 'neutral'}
-        size="card"
-        kicker={`${existential ? 'Existential' : d.urgency === 'URGENT' ? 'Urgent' : 'Crisis'} ${d.affectedCountries.slice(0, 3).map((id) => flag(id)).join(' ')}`}
-        headline={d.title}
-      />
-      <div className="detail-bar">
-        <span className={`nav-tag ${reviewed[d.id] ? 'mine' : 'staff'}`}>{reviewed[d.id] ? 'Your call' : `Staff pick: ${staff.label}`}</span>
-        {!reviewed[d.id] && (
-          <button className="wc-btn ghost small" onClick={() => choose(d.id, choices[d.id] ?? staff.id)}>
-            <IconCheck size={14} /> Approve staff pick
-          </button>
-        )}
-        <button
-          className="wc-btn ghost small"
-          onClick={() => useGameStore.getState().consult(d.options.find((o) => o.backedBy.length)?.backedBy[0] ?? 'CHIEF_OF_STAFF', `${d.title}: what do you advise, and what are the risks of each option?`)}
-        >
-          <IconMessageCircle size={14} /> Consult your staff
-        </button>
-      </div>
-      <p className="situation">{d.situation}</p>
-      <div className="options">
-        {d.options.map((o) => (
-          <Option key={o.id} o={o} chosen={choices[d.id] === o.id} tag={o.id === staff.id ? 'Staff pick' : undefined} risk={missionRisk(o, objective)} onPick={() => choose(d.id, o.id)} />
-        ))}
-      </div>
-    </article>
-  );
-}
-
-const KIND_SCENE: Record<Meeting['kind'], Parameters<typeof SceneFrame>[0]['kind']> = { CALL: 'summit', STAFF: 'cabinet', VISIT: 'summit', PRESS: 'tv_interview' };
-const KIND_WORD: Record<Meeting['kind'], string> = { CALL: 'Call', STAFF: 'Staff meeting', VISIT: 'State visit', PRESS: 'Interview' };
-
-function advisorFor(m: Meeting): string {
-  if (m.kind === 'CALL' || m.kind === 'VISIT') return 'FOREIGN_MINISTER';
-  if (m.kind === 'PRESS') return 'CHIEF_OF_STAFF';
-  if (/front|troops/i.test(m.title)) return 'DEFENSE_MINISTER';
-  if (/economy/i.test(m.title)) return 'FINANCE_MINISTER';
-  if (/unrest/i.test(m.title)) return 'DOMESTIC_ADVISOR';
-  if (/intelligence/i.test(m.title)) return 'INTELLIGENCE_CHIEF';
-  return 'CHIEF_OF_STAFF';
-}
-
-function MeetingDetail({ m }: { m: Meeting }) {
-  const me = usePlayerCountry();
-  const choices = useGameStore((s) => s.decisionChoices);
-  const choose = useGameStore((s) => s.chooseDecision);
-  const agenda = useGameStore((s) => s.worldState?.agenda ?? []);
-  const attended = agenda.filter((x) => x.id !== m.id && choices[x.id] && choices[x.id] !== x.defaultOptionId).length;
-  const full = attended >= MEETING_SLOTS;
-  const picked = choices[m.id];
-  const suggestion = meetingSuggestion(m);
-  return (
-    <article className="detail-meeting">
-      <SceneFrame kind={KIND_SCENE[m.kind]} home={me?.id} other={m.withCountry} size="card" live kicker={`${KIND_WORD[m.kind]}${m.withCountry ? ` ${flag(m.withCountry)}` : ''}`} headline={m.speaker} />
-      <div className="detail-bar">
-        <span className={`nav-tag ${!picked ? 'suggest' : picked === m.defaultOptionId ? 'deputy' : 'mine'}`}>
-          {!picked ? 'Waiting for you: a deputy goes if you do not answer' : picked === m.defaultOptionId ? 'Deputy goes' : 'You attend'}
-        </span>
-        {suggestion && picked !== suggestion.id && (
-          <button className="wc-btn ghost small" disabled={full && !picked} onClick={() => choose(m.id, suggestion.id)}>
-            <IconCheck size={14} /> Approve suggestion: {suggestion.label}
-          </button>
-        )}
-        {picked !== m.defaultOptionId && m.defaultOptionId && (
-          <button className="wc-btn ghost small" onClick={() => choose(m.id, m.defaultOptionId as string)}>
-            <IconUserShare size={14} /> Send deputy
-          </button>
-        )}
-        <button className="wc-btn ghost small" onClick={() => useGameStore.getState().consult(advisorFor(m), `${m.title}. ${m.situation} How should I respond?`)}>
-          <IconMessageCircle size={14} /> Consult
-        </button>
-      </div>
-      <h3 className="detail-title">{m.title}</h3>
-      <blockquote className="situation">{m.situation}</blockquote>
-      {full && !picked && <p className="hint warn">Your calendar is full (3 in person). Send a deputy to another meeting to take this one.</p>}
-      <div className="options">
-        {m.options
-          .filter((o) => o.id !== m.defaultOptionId)
-          .map((o) => (
-            <Option key={o.id} o={o} chosen={picked === o.id} tag={o.id === suggestion?.id ? 'Staff suggests' : undefined} disabled={full && picked !== o.id && !picked} onPick={() => choose(m.id, o.id)} />
-          ))}
-      </div>
-    </article>
   );
 }
 
@@ -220,8 +92,8 @@ function SuggestionsDetail() {
   const suggestions = useMemo(() => computeSuggestions(world, view, me), [world, view, me]);
   return (
     <article>
-      <h3 className="detail-title">Your staff suggest</h3>
-      <p className="hint">The staff queue up to two of these at the start of each month, never one with poor odds or a repeat of last month, and always leave you at least 1 ◆. Remove what you do not want; add the others here.</p>
+      <h3 className="detail-title">Your advisors suggest</h3>
+      <p className="hint">The staff add up to two of these at the start of each month, never one with poor odds or a repeat of last month, and always leave you at least ◆ 1. Remove what you do not want; add the others here.</p>
       <div className="sugg-list">
         {suggestions.map((s) => {
           const i = actions.findIndex((a) => orderKey(a) === orderKey(s.action));
@@ -235,7 +107,7 @@ function SuggestionsDetail() {
                 <b>
                   {s.label} <Cost type={s.action.type} />
                 </b>
-                <div className="why">{s.why}</div>
+                <div className="why">{whyLine(s.why)}</div>
               </div>
               {i >= 0 ? (
                 <button className="wc-btn small" onClick={() => remove(i)}>
@@ -254,7 +126,17 @@ function SuggestionsDetail() {
   );
 }
 
+const IRREVERSIBLE = new Set(['DIPLOMACY_DECLARE_WAR', 'NUCLEAR_STRIKE']);
+
 function CatalogDetail({ target, setTarget }: { target: string; setTarget: (id: string) => void }) {
+  if (ORDER_CATALOG) {
+    const Catalog = ORDER_CATALOG;
+    return <Catalog target={target} setTarget={setTarget} />;
+  }
+  return <DeskCatalog target={target} setTarget={setTarget} />;
+}
+
+function DeskCatalog({ target, setTarget }: { target: string; setTarget: (id: string) => void }) {
   const view = useGameStore((s) => s.playerView);
   const [q, setQ] = useState('');
   const [sel, setSel] = useState(0);
@@ -284,7 +166,9 @@ function CatalogDetail({ target, setTarget }: { target: string; setTarget: (id: 
               setSel((v) => Math.max(0, Math.min(hits.length - 1, v + (e.key === 'ArrowDown' ? 1 : -1))));
             } else if (e.key === 'Enter' && hits[Math.min(sel, hits.length - 1)]) {
               const h = hits[Math.min(sel, hits.length - 1)];
-              add(h.o, h.t);
+              // Irreversible orders need a deliberate press on the button, never Enter alone
+              if (IRREVERSIBLE.has(h.o.type)) document.getElementById(`hit-${Math.min(sel, hits.length - 1)}`)?.focus();
+              else add(h.o, h.t);
             } else if (e.key === 'Escape') (e.target as HTMLInputElement).blur();
           }}
           aria-label="Search orders (Up/Down to choose, Enter to add)"
@@ -298,13 +182,14 @@ function CatalogDetail({ target, setTarget }: { target: string; setTarget: (id: 
           ))}
         </select>
       </div>
+      {!query && !target && <p className="hint">Orders aimed at a country need a target: pick a country first.</p>}
       {query ? (
         <div className="catalog-hits">
           {hits.length === 0 && <p className="hint">No order matches.</p>}
           {hits.map((h, i) => (
-            <button key={`${h.label}-${i}`} className={`wc-btn ${h.o.danger ? 'danger' : ''} ${i === Math.min(sel, hits.length - 1) ? 'hit-on' : ''}`} onClick={() => add(h.o, h.t)}>
+            <button key={`${h.label}-${i}`} id={`hit-${i}`} className={`wc-btn ${h.o.danger ? 'danger' : ''} ${i === Math.min(sel, hits.length - 1) ? 'hit-on' : ''}`} onClick={() => add(h.o, h.t)}>
               <ActionIcon type={h.o.type} size={15} /> {h.label} <Cost type={h.o.type} />
-              {i === Math.min(sel, hits.length - 1) && <kbd>Enter</kbd>}
+              {i === Math.min(sel, hits.length - 1) && (IRREVERSIBLE.has(h.o.type) ? <small className="hit-note">No undo: press to confirm</small> : <kbd>Enter</kbd>)}
             </button>
           ))}
         </div>
@@ -374,40 +259,55 @@ function OrderDetail({ a, index }: { a: PendingAction; index: number }) {
 function MissionDetail() {
   const world = useGameStore((s) => s.worldState);
   const status = useGameStore((s) => s.objectiveStatus);
+  const setDrawer = useGameStore((s) => s.setDrawer);
   if (!world?.objective) return null;
   return (
     <article>
-      <h3 className="detail-title">◎ {world.objective.title}</h3>
+      <h3 className="detail-title">{world.objective.title}</h3>
       <p className="hint">
-        {world.maxTurns - world.turn} months left · leadership score <b className="num">{world.score?.total ?? 0}</b>
+        {world.maxTurns - world.turn} months left · score <b className="num">{world.score?.total ?? 0}</b>
       </p>
       {world.objective.briefing && <p className="situation">{world.objective.briefing}</p>}
       <ul className="mission-list">
-        {status.map((c) => (
-          <li key={c.label} className={c.failed ? 'failed' : c.met ? 'met' : ''}>
-            {c.failed ? '✗' : c.met ? '✓' : '○'} {c.label} {c.bonus && <span className="nav-tag">bonus</span>}
-          </li>
-        ))}
+        {status.map((c) => {
+          const s = stateOf(c);
+          return (
+            <li key={c.label} className={`s-${s}`}>
+              <i className={c.bonus ? `gdot s-${s}` : `gseg s-${s}`} aria-hidden /> <b>{c.short ?? c.label}</b> {nowNeed(c) ? `: ${nowNeed(c)}` : ''} <span className="mission-state">{STATE_WORD[s]}</span>
+              {c.bonus && <span className="nav-tag">bonus</span>}
+            </li>
+          );
+        })}
       </ul>
+      <button type="button" className="wc-btn" onClick={() => setDrawer('objective')}>
+        Open the mission sheet
+      </button>
     </article>
   );
 }
 
-/** The one item in focus, with previous/next to walk the desk. */
+/** The one item in focus (full desk), with previous/next to walk the desk. */
 export function Detail({ target, setTarget }: { target: string; setTarget: (id: string) => void }) {
   const focus = useGameStore((s) => s.focus);
   const decisions = useGameStore((s) => s.pendingDecisions);
   const agenda = useGameStore((s) => s.worldState?.agenda ?? []);
   const actions = useGameStore((s) => s.pendingActions);
   const setFocus = useGameStore((s) => s.setFocus);
+  useGameStore((s) => s.missionImpact);
   const ref = useRef<HTMLDivElement>(null);
+  const primary = primaryId(primaryItem());
   let body: React.ReactNode = null;
   if (focus.kind === 'crisis') {
     const d = decisions.find((x) => x.id === focus.id);
-    body = d ? <CrisisDetail d={d} /> : null;
+    body = d ? (
+      <>
+        <DecisionStage key={d.id} item={d} primary={d.id === primary} />
+        {d.id === primary && <AdvisorList />}
+      </>
+    ) : null;
   } else if (focus.kind === 'meeting') {
     const m = agenda.find((x) => x.id === focus.id);
-    body = m ? <MeetingDetail m={m} /> : null;
+    body = m ? <DecisionStage key={m.id} item={m} primary={m.id === primary} /> : null;
   } else if (focus.kind === 'suggestions') body = <SuggestionsDetail />;
   else if (focus.kind === 'catalog') body = <CatalogDetail target={target} setTarget={setTarget} />;
   else if (focus.kind === 'order') {
@@ -421,7 +321,7 @@ export function Detail({ target, setTarget }: { target: string; setTarget: (id: 
     const next = items[at + n];
     if (next) {
       setFocus({ kind: next.kind, id: next.id });
-      ref.current?.scrollTo({ top: 0 });
+      document.getElementById('desk-stage')?.scrollTo({ top: 0 });
     }
   };
   return (
@@ -429,11 +329,11 @@ export function Detail({ target, setTarget }: { target: string; setTarget: (id: 
       {body}
       {at >= 0 && (
         <div className="detail-nav">
-          <button className="wc-btn ghost small" disabled={at <= 0} onClick={() => go(-1)}>
-            <IconArrowLeft size={14} /> {items[at - 1]?.label ?? 'Previous'} <kbd>K</kbd>
+          <button type="button" className="wc-btn ghost small" disabled={at <= 0} onClick={() => go(-1)}>
+            <IconArrowLeft size={14} aria-hidden /> {items[at - 1]?.label ?? 'Previous'} <kbd>K</kbd>
           </button>
-          <button className="wc-btn ghost small" disabled={at >= items.length - 1} onClick={() => go(1)}>
-            {items[at + 1]?.label ?? 'Next'} <IconArrowRight size={14} /> <kbd>J</kbd>
+          <button type="button" className="wc-btn ghost small" disabled={at >= items.length - 1} onClick={() => go(1)}>
+            {items[at + 1]?.label ?? 'Next'} <IconArrowRight size={14} aria-hidden /> <kbd>J</kbd>
           </button>
         </div>
       )}
