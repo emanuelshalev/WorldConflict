@@ -11,9 +11,10 @@ function errorStatus(error: unknown): number {
 
 import { AIConfigSchema, planTurn } from "../../agents/strategist.js";
 import { addUsage } from "../../agents/usage.js";
-import { createDataLoader } from "../../core/data-loader.js";
+import { createDataLoader, type DataLoader } from "../../core/data-loader.js";
 import { objectiveStatus } from "../../core/objectives.js";
 import { previewAction } from "../../core/preview.js";
+import { buildReveal, parseSeedCode, type RevealPayload, seatKeyOf } from "../../core/reveal.js";
 import { classifyLeadership } from "../../core/scoring.js";
 import { createSeed } from "../../core/seed.js";
 import { buildPlayerView } from "../../core/systems/intelligence.js";
@@ -24,12 +25,14 @@ import {
   GameModeSchema,
   type WorldState,
 } from "../../core/types.js";
-import { gameDb } from "../../infra/db.js";
+import { loadAchievementRarity, loadSeatBenchmark } from "../../infra/benchmarks.js";
+import { gameDb, type RunResultRecord } from "../../infra/db.js";
 
 const NewGameSchema = z.object({
   scenarioId: z.string().default("2026"),
-  playerCountryId: z.string(),
+  playerCountryId: z.string().optional(), // required unless seedCode names the seat
   seed: z.number().optional(),
+  seedCode: z.string().max(40).optional(), // "HC-USA-1A2B3": Play this seed (seat + seed)
   saveName: z.string().optional(),
   playerId: z.string().optional(),
   leaderName: z.string().min(1).max(40).optional(),
@@ -59,8 +62,14 @@ const PreviewRequestSchema = z.object({
  */
 export function publicWorldState(world: WorldState): WorldState {
   const me = world.countries.find((c) => c.id === world.playerCountryId);
+  // The chronicle's ground truth (rivals' programs at the start, who plotted against you) is
+  // declassified only by the end reveal (GET /reveal/:saveId)
+  const chronicle = world.chronicle
+    ? { ...world.chronicle, start: undefined, plots: {} }
+    : undefined;
   return {
     ...world,
+    chronicle,
     countries: world.countries.map((c) => {
       if (c.id === world.playerCountryId) return c;
       const b = me?.beliefs[c.id];
@@ -254,8 +263,27 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
     ) => {
       try {
         const body = NewGameSchema.parse(request.body);
-        const { scenarioId, playerCountryId, saveName, playerId, leaderName } = body;
         const dataLoader = createDataLoader();
+        // "Play this seed": a seed code names the seat and the seed
+        if (body.seedCode) {
+          const parsed = parseSeedCode(body.seedCode, dataLoader.loadAvailableFlashpoints());
+          if (!parsed) {
+            return reply
+              .status(400)
+              .send({ success: false, error: `Unknown seed code ${body.seedCode}` });
+          }
+          body.seed = parsed.seed;
+          body.playerCountryId = parsed.playerCountryId;
+          body.mode = parsed.mode;
+          body.flashpointId = parsed.flashpointId;
+          if (parsed.scenarioId) body.scenarioId = parsed.scenarioId;
+          body.daily = false;
+        }
+        const { scenarioId, saveName, playerId, leaderName } = body;
+        const playerCountryId = body.playerCountryId;
+        if (!playerCountryId) {
+          return reply.status(400).send({ success: false, error: "playerCountryId is required" });
+        }
         if (!dataLoader.loadAllCountries().some((c) => c.id === playerCountryId)) {
           return reply
             .status(400)
@@ -333,6 +361,11 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
           const aiIntents = plan.intents;
           const result = engine.executeTurn(worldState, playerActions, aiIntents, decisions);
           const totalUsage = addUsage(llmUsage, plan.usage);
+          // Which AI tier drove the rivals (route-level: the engine never sees it). A replay is
+          // only exact when every month ran ALGORITHMIC.
+          const chronicle = result.newState.chronicle;
+          const tier = plan.llmCountries?.length ? (ai?.tier ?? "ALGORITHMIC") : "ALGORITHMIC";
+          if (chronicle && !chronicle.aiTiersUsed.includes(tier)) chronicle.aiTiersUsed.push(tier);
 
           await gameDb.updateSave(saveId, result.newState, totalUsage);
           await gameDb.addTurnLog(saveId, {
@@ -444,6 +477,151 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
   );
 
   // ------------------------------------------------------------------
+  // The end-of-session reveal: only for finished games (the declassified cards are the one
+  // place foreign ground truth reaches the client)
+  fastify.get(
+    "/reveal/:saveId",
+    async (
+      request: FastifyRequest<{
+        Params: { saveId: string };
+        Querystring: { playerId?: string; guestId?: string };
+      }>,
+      reply: FastifyReply,
+    ) => {
+      try {
+        const saveData = await gameDb.loadGame(request.params.saveId);
+        if (!saveData) {
+          return reply.status(404).send({ success: false, error: "Save game not found" });
+        }
+        const world = saveData.worldState;
+        if (!world.gameOver) {
+          return reply
+            .status(409)
+            .send({ success: false, error: "The reveal opens when the session is over" });
+        }
+        const reveal = await revealFor(world, request.params.saveId, request.query);
+        return reply.send({ success: true, reveal });
+      } catch (error) {
+        fastify.log.error(error);
+        return reply.status(500).send({
+          success: false,
+          error: error instanceof Error ? error.message : "Failed to build the reveal",
+        });
+      }
+    },
+  );
+
+  // ------------------------------------------------------------------
+  // Record a finished run (derived server-side from the save: the client only names it)
+  fastify.post(
+    "/runs",
+    async (
+      request: FastifyRequest<{ Body: z.infer<typeof RunRequestSchema> }>,
+      reply: FastifyReply,
+    ) => {
+      try {
+        const body = RunRequestSchema.parse(request.body);
+        const saveData = await gameDb.loadGame(body.saveId);
+        if (!saveData) {
+          return reply.status(404).send({ success: false, error: "Save game not found" });
+        }
+        const world = saveData.worldState;
+        if (!world.gameOver) {
+          return reply
+            .status(409)
+            .send({ success: false, error: "Only finished sessions can be recorded" });
+        }
+        const owner = await gameDb.getSaveOwner(body.saveId);
+        const reveal = await revealFor(world, body.saveId, {});
+        const run = reveal.run;
+        const stored = await gameDb.saveRun({
+          saveId: body.saveId,
+          playerId: owner ?? body.playerId ?? null,
+          guestId: body.guestId ?? null,
+          seatKey: run.seatKey,
+          difficulty: run.difficulty,
+          seed: run.seed,
+          score: run.presidencyScore,
+          grade: run.grade,
+          stars: run.stars,
+          verdict: run.verdict,
+          parts: JSON.stringify(run.parts),
+          achievements: JSON.stringify(run.achievements),
+          detail: JSON.stringify({
+            seedCode: run.seedCode,
+            mode: run.mode,
+            countryId: run.countryId,
+            victory: run.victory,
+            series: run.series,
+            choices: run.choices,
+            aiTier: run.aiTier,
+          }),
+        });
+        const mine = await gameDb.listRuns({
+          seatKey: run.seatKey,
+          ...(stored.playerId ? { playerId: stored.playerId } : {}),
+          ...(!stored.playerId && stored.guestId ? { guestId: stored.guestId } : {}),
+        });
+        const sameOwner = stored.playerId || stored.guestId ? mine : [stored];
+        const rank = 1 + sameOwner.filter((r) => r.score > stored.score).length;
+        return reply.send({
+          success: true,
+          run: publicRun(stored),
+          rank: { position: rank, of: sameOwner.length },
+        });
+      } catch (error) {
+        fastify.log.error(error);
+        return reply.status(errorStatus(error)).send({
+          success: false,
+          error: error instanceof Error ? error.message : "Failed to record the run",
+        });
+      }
+    },
+  );
+
+  // ------------------------------------------------------------------
+  // Personal history on a seat, and the seat's top 20 among signed-in players
+  fastify.get(
+    "/runs",
+    async (
+      request: FastifyRequest<{
+        Querystring: { seat?: string; playerId?: string; guestId?: string; limit?: string };
+      }>,
+      reply: FastifyReply,
+    ) => {
+      try {
+        const { seat, playerId, guestId } = request.query;
+        const limit = Math.max(1, Math.min(200, Number(request.query.limit ?? 50) || 50));
+        const runs =
+          playerId || guestId
+            ? await gameDb.listRuns({
+                seatKey: seat,
+                ...(playerId ? { playerId } : { guestId }),
+                limit,
+              })
+            : [];
+        const top = seat
+          ? (await gameDb.listRuns({ seatKey: seat, limit: 1000 }))
+              .filter((r) => r.playerId)
+              .sort((a, b) => b.score - a.score || a.createdAt.getTime() - b.createdAt.getTime())
+              .slice(0, 20)
+          : [];
+        return reply.send({
+          success: true,
+          runs: runs.map(publicRun),
+          top: top.map(publicRun),
+        });
+      } catch (error) {
+        fastify.log.error(error);
+        return reply.status(500).send({
+          success: false,
+          error: error instanceof Error ? error.message : "Failed to list runs",
+        });
+      }
+    },
+  );
+
+  // ------------------------------------------------------------------
   fastify.get(
     "/load/:saveId",
     async (request: FastifyRequest<{ Params: { saveId: string } }>, reply: FastifyReply) => {
@@ -504,6 +682,82 @@ export async function gameRoutes(fastify: FastifyInstance): Promise<void> {
       }
     },
   );
+}
+
+const RunRequestSchema = z.object({
+  saveId: z.string(),
+  playerId: z.string().max(80).optional(),
+  guestId: z.string().max(80).optional(),
+});
+
+/** A run as the client sees it: JSON columns parsed, owner ids left out. */
+function publicRun(r: RunResultRecord) {
+  const parse = <T>(s: string | null, fallback: T): T => {
+    try {
+      return s ? (JSON.parse(s) as T) : fallback;
+    } catch {
+      return fallback;
+    }
+  };
+  return {
+    id: r.id,
+    saveId: r.saveId,
+    seatKey: r.seatKey,
+    difficulty: r.difficulty,
+    seed: r.seed,
+    score: r.score,
+    grade: r.grade,
+    stars: r.stars,
+    verdict: r.verdict,
+    parts: parse<number[]>(r.parts, []),
+    achievements: parse<string[]>(r.achievements, []),
+    detail: parse<Record<string, unknown> | null>(r.detail, null),
+    createdAt: r.createdAt.toISOString(),
+  };
+}
+
+/**
+ * Everything the reveal needs besides the world: the flashpoint's reality rows, signature and
+ * sources (read fresh, so content fixes reach old saves), benchmarks, rarity and personal best.
+ */
+async function revealFor(
+  world: WorldState,
+  saveId: string,
+  owner: { playerId?: string; guestId?: string },
+  loader: DataLoader = createDataLoader(),
+): Promise<RevealPayload> {
+  let fp: ReturnType<DataLoader["loadFlashpoint"]> | null = null;
+  if (world.flashpointId) {
+    try {
+      fp = loader.loadFlashpoint(world.flashpointId);
+    } catch {
+      fp = null; // a flashpoint removed since the game was played: no truth table
+    }
+  }
+  const side = fp?.objectives[world.playerCountryId];
+  const seatKey = seatKeyOf(world);
+  let personalBest: number | null = null;
+  if (owner.playerId || owner.guestId) {
+    const previous = (
+      await gameDb.listRuns({
+        seatKey,
+        ...(owner.playerId ? { playerId: owner.playerId } : { guestId: owner.guestId }),
+      })
+    ).filter((r) => r.saveId !== saveId);
+    if (previous.length) personalBest = Math.max(...previous.map((r) => r.score));
+  }
+  return buildReveal(world, {
+    benchmarks: loadSeatBenchmark(seatKey),
+    rarity: loadAchievementRarity(),
+    reality: side?.reality ?? null,
+    signature: side?.signature ?? null,
+    sources: fp?.sources ?? [],
+    seatDifficulty:
+      fp?.playable.find((p) => p.countryId === world.playerCountryId)?.difficulty ?? null,
+    personalBest,
+    saveId,
+    date: new Date().toISOString(),
+  });
 }
 
 /** Keep only the player's entry of a per-country action map. */

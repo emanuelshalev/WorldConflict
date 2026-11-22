@@ -35,6 +35,45 @@ interface StoredSave extends SaveGameRecord {
   llmUsage: string | null;
 }
 
+/** A finished session's result (one per save), for personal history and per-seat rankings. */
+export interface RunResultRecord {
+  id: string;
+  saveId: string;
+  playerId: string | null;
+  guestId: string | null;
+  seatKey: string;
+  difficulty: string;
+  seed: number;
+  score: number;
+  grade: string;
+  stars: number;
+  verdict: string;
+  parts: string; // JSON [mission, timing, leadership, finish]
+  achievements: string; // JSON string[]
+  detail: string | null; // JSON { seedCode, series, choices, aiTier, ... } for Compare runs
+  createdAt: Date;
+}
+export type NewRunResult = Omit<RunResultRecord, "id" | "createdAt">;
+export interface RunQuery {
+  seatKey?: string;
+  playerId?: string;
+  guestId?: string;
+  limit?: number;
+}
+
+/** Newest first, filtered by seat and owner; `limit` caps the result. */
+function filterRuns(runs: RunResultRecord[], q: RunQuery): RunResultRecord[] {
+  return runs
+    .filter(
+      (r) =>
+        (!q.seatKey || r.seatKey === q.seatKey) &&
+        (!q.playerId || r.playerId === q.playerId) &&
+        (!q.guestId || r.guestId === q.guestId),
+    )
+    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+    .slice(0, q.limit ?? 200);
+}
+
 interface Store {
   readonly kind: "sqlite" | "json";
   createSave(data: Omit<StoredSave, "id" | "createdAt" | "updatedAt">): Promise<string>;
@@ -49,6 +88,8 @@ interface Store {
   turnLogs(saveId: string): Promise<Array<{ turn: number; events: string; actions: string }>>;
   findPlayer(name: string): Promise<PlayerRecord | null>;
   createPlayer(name: string, passwordHash: string): Promise<PlayerRecord>;
+  saveRun(run: NewRunResult): Promise<RunResultRecord>;
+  listRuns(query: RunQuery): Promise<RunResultRecord[]>;
   disconnect(): Promise<void>;
 }
 
@@ -110,7 +151,7 @@ export class JsonStore implements Store {
   async listSaves(playerId?: string) {
     const out: StoredSave[] = [];
     for (const f of readdirSync(this.dir)) {
-      if (!f.endsWith(".json") || f === "players.json") continue;
+      if (!f.endsWith(".json") || f === "players.json" || f === "runs.json") continue;
       const raw = this.read<StoredSave>(join(this.dir, f));
       if (raw?.id && (!playerId || raw.playerId === playerId)) out.push(this.revive(raw));
     }
@@ -141,6 +182,30 @@ export class JsonStore implements Store {
     this.write(path, [...players, player]);
     return player;
   }
+  /** One result per save: finishing the same save again replaces its result. */
+  async saveRun(run: NewRunResult) {
+    const path = join(this.dir, "runs.json");
+    const runs =
+      this.read<Array<Omit<RunResultRecord, "createdAt"> & { createdAt: string }>>(path) ?? [];
+    const existing = runs.find((r) => r.saveId === run.saveId);
+    const stored = {
+      ...run,
+      id: existing?.id ?? randomUUID(),
+      createdAt: existing?.createdAt ?? new Date().toISOString(),
+    };
+    this.write(path, [...runs.filter((r) => r.saveId !== run.saveId), stored]);
+    return { ...stored, createdAt: new Date(stored.createdAt) };
+  }
+  async listRuns(query: RunQuery) {
+    const runs =
+      this.read<Array<Omit<RunResultRecord, "createdAt"> & { createdAt: string }>>(
+        join(this.dir, "runs.json"),
+      ) ?? [];
+    return filterRuns(
+      runs.map((r) => ({ ...r, createdAt: new Date(r.createdAt) })),
+      query,
+    );
+  }
   async disconnect() {}
 }
 
@@ -153,7 +218,24 @@ type AnyPrisma = any;
 
 class SqliteStore implements Store {
   readonly kind = "sqlite" as const;
+  /** Run results go to saves/runs.json while the RunResult table is missing (`prisma db push`). */
+  private runsFallback: JsonStore | null = null;
+  private runsChecked = false;
   constructor(private prisma: AnyPrisma) {}
+
+  private async runs(): Promise<JsonStore | null> {
+    if (this.runsChecked) return this.runsFallback;
+    this.runsChecked = true;
+    try {
+      await this.prisma.runResult.count();
+    } catch {
+      console.warn(
+        "[db] RunResult table missing (run `npx prisma db push`); keeping run results in ./saves/runs.json.",
+      );
+      this.runsFallback = new JsonStore();
+    }
+    return this.runsFallback;
+  }
 
   static async open(): Promise<SqliteStore> {
     const { PrismaBetterSqlite3 } = await import("@prisma/adapter-better-sqlite3");
@@ -201,6 +283,28 @@ class SqliteStore implements Store {
   }
   async createPlayer(name: string, passwordHash: string) {
     return this.prisma.player.create({ data: { name, passwordHash } });
+  }
+  async saveRun(run: NewRunResult) {
+    const fallback = await this.runs();
+    if (fallback) return fallback.saveRun(run);
+    return this.prisma.runResult.upsert({
+      where: { saveId: run.saveId },
+      create: run,
+      update: run,
+    });
+  }
+  async listRuns(query: RunQuery) {
+    const fallback = await this.runs();
+    if (fallback) return fallback.listRuns(query);
+    return this.prisma.runResult.findMany({
+      where: {
+        ...(query.seatKey ? { seatKey: query.seatKey } : {}),
+        ...(query.playerId ? { playerId: query.playerId } : {}),
+        ...(query.guestId ? { guestId: query.guestId } : {}),
+      },
+      orderBy: { createdAt: "desc" },
+      take: query.limit ?? 200,
+    });
   }
   async disconnect() {
     await this.prisma.$disconnect();
@@ -303,6 +407,11 @@ export class GameDatabase {
     return (await (await store()).listSaves(playerId)).map(record);
   }
 
+  /** The account that owns a save (null for guest saves). */
+  async getSaveOwner(saveId: string): Promise<string | null> {
+    return (await (await store()).getSave(saveId))?.playerId ?? null;
+  }
+
   async getSaveById(saveId: string): Promise<SaveGameRecord | null> {
     const s = await (await store()).getSave(saveId);
     return s ? record(s) : null;
@@ -323,6 +432,15 @@ export class GameDatabase {
 
   async createPlayer(name: string, passwordHash: string): Promise<PlayerRecord> {
     return (await store()).createPlayer(name, passwordHash);
+  }
+
+  /** Record a finished session's result (replaces an earlier result for the same save). */
+  async saveRun(run: NewRunResult): Promise<RunResultRecord> {
+    return (await store()).saveRun(run);
+  }
+
+  async listRuns(query: RunQuery): Promise<RunResultRecord[]> {
+    return (await store()).listRuns(query);
   }
 
   /** Which store is in use ("sqlite" or "json"), for the health check and the setup script. */
