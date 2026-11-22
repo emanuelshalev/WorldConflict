@@ -754,6 +754,10 @@ const ReportFactSchema = z.object({
   unit: z.string().optional(),
   good: z.boolean().optional(),
 });
+/** One outcome vocabulary (status.ts): every resolved item carries exactly one of these. */
+export const OutcomeStatusSchema = z.enum(["DONE", "PARTLY", "FAILED", "REFUSED", "NO_EFFECT"]);
+export type OutcomeStatus = z.infer<typeof OutcomeStatusSchema>;
+
 const ReactionSchema = z.object({
   who: z.string(),
   line: z.string(),
@@ -798,6 +802,9 @@ export const PlayerTurnReportSchema = z.object({
         code: z.string().optional(),
         again: z.number().optional(), // times this order was carried out in the last 6 months
         repeat: z.boolean().optional(), // same order and same result as last month
+        // The one status every surface shows (status.ts), and why; optional for older saves
+        status: OutcomeStatusSchema.optional(),
+        reason: z.string().optional(),
       }),
     )
     .default([]),
@@ -818,6 +825,8 @@ export const PlayerTurnReportSchema = z.object({
         reaction: ReactionSchema.optional(),
         watch: z.string().optional(),
         repeat: z.boolean().optional(), // same item, same answer as last month
+        status: OutcomeStatusSchema.optional(),
+        reason: z.string().optional(),
       }),
     )
     .default([]),
@@ -832,6 +841,8 @@ export const PlayerTurnReportSchema = z.object({
         type: z.string(),
         target: z.string().optional(),
         label: z.string(),
+        // Their move happened (only resolved moves are listed); never the player's own result
+        status: OutcomeStatusSchema.optional(),
       }),
     )
     .default([]),
@@ -859,6 +870,9 @@ export const PlayerTurnReportSchema = z.object({
     .default([]),
   tension: z.object({ before: z.number(), after: z.number() }).optional(),
   highlight: z.object({ ref: z.enum(["decision", "order", "war"]), index: z.number() }).optional(),
+  // The player's own biggest move this month ("What your choice did"). The highlight above can
+  // be a front that moved on its own, which must never be told as the player's choice
+  yourMove: z.object({ ref: z.enum(["decision", "order"]), index: z.number() }).optional(),
   deltas: z.record(z.string(), StatDeltaSchema).default({}),
   causes: z.array(z.string()).default([]), // plain-language explanations of what moved
   moments: z.array(z.string()).default([]), // milestone stamps: "RALLY", "CLOSE CALL", "FIRST ALLIANCE"…

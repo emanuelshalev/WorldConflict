@@ -212,6 +212,15 @@ export function recordMonth(
   });
 
   // ---- Objectives: met and lost, first month of the final unbroken run ----------------
+  // The objective's own number, never an unrelated month stat (QA S2-1): "58, needs 61"
+  // One decimal when whole numbers would hide the gap ("65.9, needs 66", never "66, needs 66")
+  const own = (s: (typeof statuses)[number]) => {
+    if (s.now === undefined || s.need === undefined) return "";
+    const exact = Math.round(s.now) === Math.round(s.need) && s.now !== s.need;
+    const f = (v: number) =>
+      `${exact ? Math.round(v * 10) / 10 : Math.round(v)}${s.unit === "%" ? "%" : ""}`;
+    return `: ${f(s.now)}, needs ${f(s.need)}`;
+  };
   statuses.forEach((s, i) => {
     const key = `cond:${i}`;
     const was = prevSample?.objectives[i];
@@ -223,7 +232,7 @@ export function recordMonth(
         turn,
         kind: "OBJECTIVE_MET",
         title: s.label,
-        detail: "Objective met",
+        detail: `Objective met${own(s)}`,
         tone: "good",
         weight: s.bonus ? 3 : 6,
       });
@@ -232,7 +241,7 @@ export function recordMonth(
         turn,
         kind: "OBJECTIVE_LOST",
         title: s.label,
-        detail: "Objective slipped",
+        detail: `Objective slipped${own(s)}`,
         tone: "bad",
         weight: s.bonus ? -3 : -6,
       });

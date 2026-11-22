@@ -15,6 +15,14 @@
 .rc-chose { margin: -4px 0 0; font-size: 14px; color: var(--text-2); }
 .rc-chose b { color: var(--accent); }
 .rc-sentence { margin: 0; font-family: var(--font-news); font-weight: 400; font-size: clamp(26px, 3vw, 36px); line-height: 1.08; letter-spacing: -.005em; }
+.rc-meanwhile { margin: 0; font-size: 13.5px; color: var(--text-2); border-left: 2px solid var(--text-3); padding-left: 10px; }
+/* The Chronicle's "your month": each order and answer with the engine's status (F-02-2) */
+.paper-status { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 4px; font-size: 13px; color: #f4efe4; }
+.paper-status b { display: inline-block; min-width: 92px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+.paper-status .s-done { color: var(--good); }
+.paper-status .s-partly { color: var(--accent); }
+.paper-status .s-failed, .paper-status .s-refused { color: #ff8486; }
+.paper-status .s-no_effect { color: #b9b2a2; }
 .rc-quote { margin: 0; padding: 2px 0 2px 12px; border-left: 3px solid var(--line-2); }
 .rc-quote p { margin: 0; font-family: var(--font-serif); font-style: italic; font-size: 16px; }
 .rc-quote cite { font-style: normal; font-size: 13px; color: var(--text-3); }

@@ -81,13 +81,25 @@ const VISIT: Record<Tone, string[]> = {
     "A memorable visit. {C} leaves with more friends in {Y} than it arrived with.",
     "The honour guard, the dinner, the joint statement: our press is calling it a new chapter.",
     "We came for one agreement and left with three ideas. Thank you.",
+    "Our ministers worked through the night. The texts we signed are better than the ones we brought.",
+    "I leave {Y} with a full notebook and a date for the next meeting.",
+    "Today our two countries spoke as partners. My people will hear that tonight.",
   ],
   cold: [
     "A short meeting, a shorter statement. {C} had hoped for more.",
     "Our delegation flew home early. The communique says 'frank exchanges'.",
+    "We listened. We did not hear what we came to hear.",
+    "The dinner was long and the answers were short.",
   ],
-  angry: ["{C} will not forget how its leader was received in {Y}."],
-  neutral: ["Polite, correct, forgettable. The photographs were good."],
+  angry: [
+    "{C} will not forget how its leader was received in {Y}.",
+    "I did not cross half the world to be lectured.",
+  ],
+  neutral: [
+    "Polite, correct, forgettable. The photographs were good.",
+    "We agreed to keep talking. That is all we agreed.",
+    "A useful exchange. Nothing more, nothing less.",
+  ],
 };
 
 const PRESS: Record<Tone, string[]> = {
@@ -186,20 +198,42 @@ const VOICE: Record<string, { who: (ctx: LineCtx) => string; lines: Record<Tone,
   },
 };
 
+/**
+ * The target leader's own words (F-02-8): every line is first person, so a quote signed by a
+ * president is something a president would say. Narration ("crowds gather outside the
+ * embassy") used to be signed by the leader, and with two lines per tone the same "quote"
+ * came back under different decisions.
+ */
 const ORDER: Record<Tone, string[]> = {
   warm: [
-    "{C} welcomes the move. 'A gesture we will answer in kind.'",
-    "In {C}, the foreign ministry calls it 'a constructive signal'.",
+    "A gesture we will answer in kind.",
+    "We read this as a constructive signal, and we will say so in public.",
+    "Good. This is how partners behave. My ministers will follow up.",
+    "We noticed, and we will remember it the next time {Y} needs a friend.",
+    "That was the right call. {C} will match it.",
   ],
   cold: [
-    "{C} summons {possY} ambassador. 'We will not forget this.'",
-    "{C} calls it 'a provocation' and recalls its envoy for consultations.",
+    "We will not forget this.",
+    "I have recalled our ambassador for consultations. Draw your own conclusions.",
+    "{Y} has made its choice. {C} will make its own.",
+    "This is a provocation, and it will be answered at the negotiating table.",
   ],
   angry: [
-    "{C} vows a response 'at a time of our choosing'.",
-    "Crowds gather outside the embassy of {Y} in {C}.",
+    "We will respond at a time of our choosing.",
+    "Nobody in {C} will forgive this. Neither will I.",
+    "You have made an enemy today. I hope it was worth it.",
+    "Every option is now on my desk.",
   ],
-  neutral: ["{C} says nothing in public. Its silence is being read closely."],
+  neutral: [
+    "We have nothing to say in public.",
+    "We are studying your decision. Our answer will come in our own time.",
+    "Noted.",
+    "Words are cheap. We will watch what you do next.",
+    "It changes nothing between us, for now.",
+    "My ministers will brief me. I will not comment tonight.",
+    "We have heard all this before.",
+    "Our position is unchanged.",
+  ],
 };
 
 interface LineCtx {
@@ -386,8 +420,10 @@ const LINE_TABLES: string[][] = [
   ...[CALL, VISIT, PRESS, STAFF, ORDER].flatMap((t) => Object.values(t)),
   ...Object.values(VOICE).flatMap((v) => Object.values(v.lines)),
 ];
-const RECENT_LINES = 40;
-const SPEAKER_WINDOW = 6;
+// A speaker never repeats a line within a year; nobody repeats another's line within 2 months
+const RECENT_LINES = 80;
+const SPEAKER_WINDOW = 12;
+const ANYONE_WINDOW = 2;
 
 type Card = {
   reaction?: Reaction;
@@ -413,7 +449,9 @@ export function freshLines(
   const headlines = new Set<string>();
   const stale = (h: number, who: string) =>
     month.has(h) ||
-    d.recentLines.some((r) => r.h === h && r.who === who && world.turn - r.turn <= SPEAKER_WINDOW);
+    d.recentLines.some(
+      (r) => r.h === h && world.turn - r.turn <= (r.who === who ? SPEAKER_WINDOW : ANYONE_WINDOW),
+    );
   for (const card of [...report.decisions, ...report.orders]) {
     const r = card.reaction;
     const id = card.withCountry ?? card.target;
@@ -429,13 +467,25 @@ export function freshLines(
       }
       if (found) {
         const { list, i } = found;
-        let chosen = i;
+        let chosen = -1;
         for (let k = 0; k < list.length; k++) {
           const j = (i + k) % list.length;
           if (!stale(hashParts(list[j]), r.who)) {
             chosen = j;
             break;
           }
+        }
+        // Every variant was used recently: take the one this speaker heard longest ago, never
+        // a line already on another card this month
+        if (chosen < 0) {
+          const lastUse = (j: number) => {
+            const h = hashParts(list[j]);
+            if (month.has(h)) return Number.POSITIVE_INFINITY;
+            const uses = d.recentLines.filter((x) => x.h === h && x.who === r.who);
+            return uses.length ? Math.max(...uses.map((x) => x.turn)) : -1;
+          };
+          chosen = i;
+          for (let j = 0; j < list.length; j++) if (lastUse(j) < lastUse(chosen)) chosen = j;
         }
         if (chosen !== i) r.line = fill(list[chosen], ctx);
         const h = hashParts(list[chosen]);

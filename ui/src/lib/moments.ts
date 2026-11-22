@@ -74,7 +74,7 @@ export function momentsFor(report: TurnReport | null | undefined, world: WorldSt
     const declared = fresh?.attackerId === home;
     out.push({
       kind: 'war',
-      title: 'War declared',
+      title: report?.moments.includes('ACT OF WAR') ? 'Act of war' : 'War declared',
       line: enemy ? `${up(declared ? me : countryName(enemy))} AGAINST ${up(declared ? countryName(enemy) : me)} · ${month}` : `${up(me)} · ${month}`,
       stat: report?.tension ? { label: 'World tension', before: report.tension.before, after: Math.round(world.globalTension) } : undefined,
       scene: declared ? 'address' : 'deployment',

@@ -86,6 +86,7 @@ Around the engine, `src/api/routes/game.ts` adds the month's advice to every pay
 | Orders | `src/core/orders.ts`, `availability.ts` | The order list as data; why an order can or can't be given (reason code, one line of copy, a fix, an alternative), shared by the orders menu, preview and Execute |
 | Advisors | `src/core/advisors.ts`, `missionImpact.ts` | Staff suggestions, cabinet pick vs mission pick, meeting answers, staff orders; which objectives an option or order helps, hurts or breaks |
 | Explaining the month | `src/core/explain.ts`, `outcomes.ts`, `reactions.ts`, `scoring.ts` | Choices vs drift, follow-ups, the step objective, order dispatches, reaction lines without repeats, the terms behind each score part |
+| Outcome status | `src/core/status.ts`, UI `ui/src/lib/outcome.ts` | One status per resolved item (DONE, PARTLY, FAILED, REFUSED, NO_EFFECT) with a reason, on every order, decision and foreign move in the turn report; `report.yourMove` is the player's own move. The UI renders it and never infers a status from the numbers |
 | Chronicle | `src/core/chronicle.ts` | One sample and up to 6 moments per month, recorded for the reveal |
 | Reveal | `src/core/reveal.ts`, `reveal-text.ts`, `achievements.ts` | End-of-session payload: Presidency Score, achievements, moments, perception, declassified truth, real-history table, ranking, replay |
 | Era | `src/core/era.ts`, `era-map.ts` | Which nations are states in the scenario's year (era filter); the title globe's era map |

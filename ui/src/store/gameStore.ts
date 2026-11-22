@@ -279,6 +279,9 @@ export interface ScoreMove {
   components: Record<'economic' | 'security' | 'approval' | 'prestige', ScorePart>;
 }
 
+/** The engine's outcome vocabulary (src/core/types.ts OutcomeStatusSchema). */
+export type OutcomeStatus = 'DONE' | 'PARTLY' | 'FAILED' | 'REFUSED' | 'NO_EFFECT';
+
 export interface TurnReport {
   turn: number;
   orders: Array<{
@@ -297,6 +300,9 @@ export interface TurnReport {
     again?: number;
     /** Same order, same result as last month. */
     repeat?: boolean;
+    /** The engine's one outcome status (src/core/status.ts) and why. */
+    status?: OutcomeStatus;
+    reason?: string;
   }>;
   decisions: Array<{
     title: string;
@@ -312,16 +318,20 @@ export interface TurnReport {
     reaction?: Reaction;
     watch?: string;
     repeat?: boolean;
+    status?: OutcomeStatus;
+    reason?: string;
   }>;
   deltas: Record<string, { before: number; after: number }>;
   causes: string[];
   moments: string[];
   relations?: Array<{ id: string; before: number; after: number }>;
-  world?: Array<{ actor: string; type: string; target?: string; label: string }>;
+  world?: Array<{ actor: string; type: string; target?: string; label: string; status?: OutcomeStatus }>;
   wars?: Array<{ vs: string; frontBefore: number; frontAfter: number; ended: boolean }>;
   hot?: Array<{ id: string; name: string; metric: string; before: number; after: number; phase: string }>;
   tension?: { before: number; after: number };
   highlight?: { ref: 'decision' | 'order' | 'war'; index: number };
+  /** The player's own biggest move ("What your choice did"); never a front that moved on its own. */
+  yourMove?: { ref: 'decision' | 'order'; index: number };
   /** Why the score moved (scoring.ts scoreBreakdown). */
   score?: ScoreMove;
   /** Movement not caused by the month's choices, per stat (approval, stability, legitimacy). */

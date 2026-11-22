@@ -517,21 +517,36 @@ function seriesView(
   };
 }
 
-/** The biggest measured move of the month a moment happened in: "approval 52 to 58". */
-function consequence(rows: ChronicleSample[], turn: number, fallback: string): string {
+/**
+ * The biggest measured move of the month a moment happened in ("approval 52 to 58"), only when
+ * it agrees with the moment: a moment that went well never cites a falling number, one that went
+ * badly never an improving one (QA S2-1). Objective moments carry their own number already.
+ */
+function consequence(
+  rows: ChronicleSample[],
+  turn: number,
+  fallback: string,
+  tone: ChronicleMoment["tone"] = "neutral",
+): string {
   const i = rows.findIndex((s) => s.turn === turn);
   if (i < 0) return fallback;
   const now = rows[i];
   const prev = rows[i - 1];
   if (!prev) return fallback;
   const moves = [
-    { label: "approval", a: prev.approval, b: now.approval, unit: "%" },
-    { label: "stability", a: prev.stability, b: now.stability, unit: "%" },
-    { label: "tension", a: prev.tension, b: now.tension, unit: "" },
-    { label: "score", a: prev.score, b: now.score, unit: "" },
-  ].sort((x, y) => Math.abs(y.b - y.a) - Math.abs(x.b - x.a));
+    { label: "approval", a: prev.approval, b: now.approval, unit: "%", up: true },
+    { label: "stability", a: prev.stability, b: now.stability, unit: "%", up: true },
+    { label: "tension", a: prev.tension, b: now.tension, unit: "", up: false },
+    { label: "score", a: prev.score, b: now.score, unit: "", up: true },
+  ]
+    .filter((m) => {
+      if (tone === "neutral") return true;
+      const better = m.b > m.a === m.up;
+      return tone === "good" ? better : !better;
+    })
+    .sort((x, y) => Math.abs(y.b - y.a) - Math.abs(x.b - x.a));
   const top = moves[0];
-  if (Math.abs(top.b - top.a) < 1) return fallback;
+  if (!top || Math.abs(top.b - top.a) < 1) return fallback;
   const move = `${top.label} ${Math.round(top.a)}${top.unit} to ${Math.round(top.b)}${top.unit}`;
   return fallback ? `${fallback}, ${move}` : move;
 }
@@ -539,7 +554,10 @@ function consequence(rows: ChronicleSample[], turn: number, fallback: string): s
 function momentView(m: ChronicleMoment, rows: ChronicleSample[]): MomentView {
   const detail = m.kind === "CRISIS" ? (m.choice ?? "") : m.detail;
   const short = detail.replace(/[.!?]+$/, "");
-  const cons = consequence(rows, m.turn, short.length <= 60 ? short : "");
+  const objective = m.kind === "OBJECTIVE_MET" || m.kind === "OBJECTIVE_LOST";
+  const cons = objective
+    ? short
+    : consequence(rows, m.turn, short.length <= 60 ? short : "", m.tone);
   return {
     turn: m.turn,
     month: m.turn + 1,

@@ -55,25 +55,32 @@ export function pressQuotes(world: WorldState, p: PressInput): PressQuote[] {
   const up = p.approvalEnd - p.approvalStart;
   const growth = `${(p.growthEnd * 100).toFixed(1)}%`;
   const homeGood = up >= 3 && p.growthEnd >= 0;
-  const homeBad = up <= -5 || p.growthEnd < 0;
+  const homeBad = (up <= -5 && p.growthEnd < 0.01) || (p.growthEnd < 0 && up < 3);
+  // Stance check (F-02-8): a line never reads against its own numbers ("From 56% to 73%: a
+  // government that lost the room"). Approval and growth pulling apart get a split verdict.
+  const split = !homeGood && !homeBad && (up >= 3 || up <= -5);
   out.push({
     role: "home",
     outlet: "The capital's paper",
     tone: homeGood ? "good" : homeBad ? "bad" : "neutral",
-    quote: homeGood
-      ? pick(world, 1, [
-          `Approval from ${Math.round(p.approvalStart)}% to ${Math.round(p.approvalEnd)}%, growth at ${growth}: the country liked what it saw.`,
-          `${Math.round(p.approvalEnd)}% approval and an economy growing ${growth}. Few saw that coming.`,
-        ])
-      : homeBad
-        ? pick(world, 2, [
-            `Approval slid to ${Math.round(p.approvalEnd)}% with growth at ${growth}. The public stopped listening.`,
-            `From ${Math.round(p.approvalStart)}% to ${Math.round(p.approvalEnd)}%: a government that lost the room.`,
+    quote: split
+      ? up >= 3
+        ? `Approval climbed from ${Math.round(p.approvalStart)}% to ${Math.round(p.approvalEnd)}%, even as the economy shrank (growth ${growth}).`
+        : `Growth at ${growth}, and still approval slid from ${Math.round(p.approvalStart)}% to ${Math.round(p.approvalEnd)}%.`
+      : homeGood
+        ? pick(world, 1, [
+            `Approval from ${Math.round(p.approvalStart)}% to ${Math.round(p.approvalEnd)}%, growth at ${growth}: the country liked what it saw.`,
+            `${Math.round(p.approvalEnd)}% approval and an economy growing ${growth}. Few saw that coming.`,
           ])
-        : pick(world, 3, [
-            `Approval at ${Math.round(p.approvalEnd)}%, growth at ${growth}: steady, if never stirring.`,
-            `Neither triumph nor disaster: ${Math.round(p.approvalEnd)}% approval and a ${growth} economy.`,
-          ]),
+        : homeBad
+          ? pick(world, 2, [
+              `Approval slid to ${Math.round(p.approvalEnd)}% with growth at ${growth}. The public stopped listening.`,
+              `From ${Math.round(p.approvalStart)}% to ${Math.round(p.approvalEnd)}%: a government that lost the room.`,
+            ])
+          : pick(world, 3, [
+              `Approval at ${Math.round(p.approvalEnd)}%, growth at ${growth}: steady, if never stirring.`,
+              `Neither triumph nor disaster: ${Math.round(p.approvalEnd)}% approval and a ${growth} economy.`,
+            ]),
   });
   if (p.ally) {
     const d = p.ally.after - p.ally.before;
@@ -102,7 +109,11 @@ export function pressQuotes(world: WorldState, p: PressInput): PressQuote[] {
         p.warsStarted > 0
           ? `The aggressor showed its face. History will remember who fired first.`
           : p.warsEnded > 0 && d >= 0
-            ? `Even the enemy can count: the guns are quiet, and they blinked first.`
+            ? // Stance check (F-02-8): the rival's own outlet speaks for the rival. State
+              // television claims the peace; an opposition paper blames its own government.
+              p.rival.autocracy
+              ? `Our patience won the peace. ${withArticle(p.country).replace(/^the /, "The ")} finally came to the table.`
+              : `The guns are quiet at last. Our own government should have talked sooner.`
             : d >= 10
               ? `A thaw nobody predicted. Our relations climbed from ${Math.round(p.rival.before)} to ${Math.round(p.rival.after)}.`
               : d <= -10

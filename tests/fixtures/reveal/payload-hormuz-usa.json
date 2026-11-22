@@ -273,8 +273,8 @@
       "month": 8,
       "kind": "CRISIS",
       "title": "Isfahan's tunnels",
-      "consequence": "Bunker-busters on Isfahan, approval 53% to 55%",
-      "text": "Month 8 · Isfahan's tunnels · Bunker-busters on Isfahan, approval 53% to 55%",
+      "consequence": "Bunker-busters on Isfahan",
+      "text": "Month 8 · Isfahan's tunnels · Bunker-busters on Isfahan",
       "tone": "bad",
       "weight": -13
     },
@@ -302,8 +302,8 @@
         "month": 4,
         "kind": "CRISIS",
         "title": "Tanker hit",
-        "consequence": "Full convoy operation, approval 47% to 45%",
-        "text": "Month 4 · Tanker hit · Full convoy operation, approval 47% to 45%",
+        "consequence": "Full convoy operation, tension 68 to 66",
+        "text": "Month 4 · Tanker hit · Full convoy operation, tension 68 to 66",
         "tone": "good",
         "weight": 9
       }
@@ -314,8 +314,8 @@
         "month": 8,
         "kind": "CRISIS",
         "title": "Isfahan's tunnels",
-        "consequence": "Bunker-busters on Isfahan, approval 53% to 55%",
-        "text": "Month 8 · Isfahan's tunnels · Bunker-busters on Isfahan, approval 53% to 55%",
+        "consequence": "Bunker-busters on Isfahan",
+        "text": "Month 8 · Isfahan's tunnels · Bunker-busters on Isfahan",
         "tone": "bad",
         "weight": -13
       },
@@ -324,8 +324,8 @@
         "month": 2,
         "kind": "CRISIS",
         "title": "The midterm clock",
-        "consequence": "Hit the IRGC navy now, approval 44% to 46%",
-        "text": "Month 2 · The midterm clock · Hit the IRGC navy now, approval 44% to 46%",
+        "consequence": "Hit the IRGC navy now",
+        "text": "Month 2 · The midterm clock · Hit the IRGC navy now",
         "tone": "bad",
         "weight": -5
       }
@@ -431,7 +431,7 @@
         "role": "rival",
         "outlet": "Iran's state television",
         "tone": "good",
-        "quote": "Even the enemy can count: the guns are quiet, and they blinked first."
+        "quote": "Our patience won the peace. The United States finally came to the table."
       }
     ],
     "judgement": "A president who kept the ship afloat without turning the wheel, and was proved right by the end, remembered for \"Clean Sheet\"."

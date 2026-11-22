@@ -8,6 +8,7 @@ import { OutcomeCard } from './OutcomeCard';
 import { StatCount } from './debriefParts';
 import { fmtValue, shownDelta, signed } from '../lib/numbers';
 import './reel.css';
+import { STATUS_WORD } from '../lib/outcome';
 import './debrief.css';
 import './result.css';
 
@@ -32,6 +33,7 @@ function DenseTable({ pages }: { pages: DebriefPage[] }) {
         <thead>
           <tr>
             <th>Section</th>
+            <th>Status</th>
             <th>What</th>
             <th>Reply</th>
             <th>Numbers</th>
@@ -42,6 +44,7 @@ function DenseTable({ pages }: { pages: DebriefPage[] }) {
           {rows.map(({ p, c }) => (
             <tr key={`${p.key}-${c.key}`} className={`v-${c.verdict}`}>
               <td>{p.title}</td>
+              <td data-status={c.status ?? ''}>{c.status ? STATUS_WORD[c.status] : ''}</td>
               <td>
                 <b>{c.headline}</b>
                 <div className="db-dense-sub">{c.lines.map((l) => l.text).join(' · ')}</div>
@@ -54,7 +57,7 @@ function DenseTable({ pages }: { pages: DebriefPage[] }) {
           {pages.flatMap((p) => p.footnotes.flatMap((f) => f.items.map((it, i) => (
             <tr key={`${p.key}-${f.title}-${i}`} className="foot">
               <td>{f.title}</td>
-              <td colSpan={4}>{it}</td>
+              <td colSpan={5}>{it}</td>
             </tr>
           ))))}
         </tbody>

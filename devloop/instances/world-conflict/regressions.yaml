@@ -44,3 +44,41 @@
   fixed_in: main tree (iteration 3)
   guards:
     - ui: devloop/instances/world-conflict/scenarios-qa/regressions/RS-004.mjs (Main menu visible during the reveal and in the report; Play again visible in the report; laptop and phone)
+
+- id: F-02-2
+  title: One outcome vocabulary; status words never contradict outcomes
+  evidence: >
+    dan-term 030-hs (staff meeting FAILED while mobilization 85 to 95 applied); marcus-term 010-m1f
+    (FAILED on a vote cast and on China/Russia moves); priya-flash 011-ex1 (-9 labelled A step
+    forward); maya-phone 018-m4d (front move as "what your choice did"); QA S2-1 (Hormuz USA month 1)
+  fixed_in: fix-outcomes
+  guards:
+    - tests/core/outcome-status.spec.ts > status rules
+    - tests/core/outcome-status.spec.ts > every resolved item carries one status
+    - tests/ui-outcomes.spec.ts > debrief cards carry the engine's status
+    - tests/ui-outcomes.spec.ts > the result card
+
+- id: QA-S2-1-reveal
+  title: Reveal moments never cite an improving number under "went badly" or a falling one under "went well"
+  evidence: qa-verify.md S2-1 (finish-laptop/003-reveal-2.png)
+  fixed_in: fix-outcomes
+  guards:
+    - tests/core/outcome-status.spec.ts > the reveal's moments agree with their numbers (QA S2-1)
+    - tests/core/reveal.spec.ts > matches the committed payload fixture the UI builds against
+
+- id: F-02-8
+  title: No recycled or misattributed lines; no courting the enemy's camp
+  evidence: priya-flash 035-m9 (recycled Trump quote), 051-end-seen (Russian state TV "they blinked"), 026-m5 (Court Belarus for Ukraine)
+  fixed_in: fix-outcomes
+  guards:
+    - tests/core/outcome-status.spec.ts > speaker and stance checks (F-02-8)
+    - tests/core/repetition.spec.ts > anti-repetition
+
+- id: F-02-3
+  title: Wild moves have loud consequences; postable image share card
+  evidence: leo-stream 012-ex1, 013-num (strike on China's nuclear sites raised approval); 046-rank (clipped text card)
+  fixed_in: fix-outcomes
+  guards:
+    - tests/core/wild-moves.spec.ts
+    - tests/core/aftermath.spec.ts
+    - tests/ui-outcomes.spec.ts > the share card (F-02-3, Leo: clipped lines)

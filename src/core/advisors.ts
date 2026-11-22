@@ -138,6 +138,16 @@ export function computeSuggestions(world: WorldState, limit = 5): Suggestion[] {
     const moved = (report?.relations ?? []).find((r) => r.id === id);
     return !moved || moved.after <= moved.before;
   };
+  // Stance check (F-02-8): no courting the enemy's camp. A state allied with a country we are
+  // at war with (Belarus for Ukraine) is not a partner the Foreign Minister would pitch.
+  const enemyCamp = (id: string) => {
+    const c = world.countries.find((x) => x.id === id);
+    return (
+      !!c &&
+      (c.alliances.some((a) => player.atWarWith.includes(a)) ||
+        c.atWarWith.some((a) => player.alliances.includes(a)))
+    );
+  };
   const court = (id: string, p: number, why: string): Suggestion & { p: number } => ({
     p,
     who: "Foreign Minister",
@@ -297,7 +307,8 @@ export function computeSuggestions(world: WorldState, limit = 5): Suggestion[] {
                 !(player.history?.historicalRivals ?? []).includes(v.id) &&
                 rel(v.id) > -30 &&
                 rel(v.id) < 70 &&
-                !courtStalled(v.id),
+                !courtStalled(v.id) &&
+                !enemyCamp(v.id),
             )
             .sort((a, b) => b.relationWithPlayer - a.relationWithPlayer)[0];
           if (partner)
@@ -387,7 +398,13 @@ export function computeSuggestions(world: WorldState, limit = 5): Suggestion[] {
     });
   const missionIds = new Set(goals.map(({ c }) => c.targetId).filter(Boolean));
   const worst = [...others]
-    .filter((v) => !player.atWarWith.includes(v.id) && !missionIds.has(v.id) && !courtStalled(v.id))
+    .filter(
+      (v) =>
+        !player.atWarWith.includes(v.id) &&
+        !missionIds.has(v.id) &&
+        !courtStalled(v.id) &&
+        !enemyCamp(v.id),
+    )
     .sort((a, b) => a.relationWithPlayer - b.relationWithPlayer)[0];
   if (worst && worst.relationWithPlayer < -20)
     out.push(

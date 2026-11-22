@@ -1,5 +1,6 @@
 import { IconBuildingCommunity, IconCircleCheck, IconCircleX, IconEye, IconMicrophone, IconPhoneCall, IconUsers, IconArrowBackUp, IconAlertTriangle } from '@tabler/icons-react';
 import type { OutcomeCardData } from '../lib/debrief';
+import type { OutcomeStatus } from '../store/gameStore';
 import { flag } from '../lib/format';
 import { ActionIcon } from './icons';
 import { SceneFrame } from './SceneFrame';
@@ -8,9 +9,16 @@ import { FactRow } from './debriefParts';
 import { moodForVerdict } from './kinds';
 import { Stamp, type StampWord } from '../components/game/Stamp';
 import { ExplainText } from '../components/learn/ExplainText';
+import { STATUS_STAMP, STATUS_WORD } from '../lib/outcome';
 
-/** R6: the verdict lands as the same stamp that marks a choice. Neutral months get none. */
-const VERDICT_STAMP: Partial<Record<OutcomeCardData['verdict'], StampWord>> = { good: 'DONE', mixed: 'MIXED', bad: 'FAILED' };
+/**
+ * R6 with F-02-2: the stamp is the engine's status for the player's own item (DONE, PARTLY,
+ * FAILED, REFUSED, NO EFFECT), never a guess from the colour of the numbers. Cards that are not
+ * the player's doing (a front, a hot zone, a foreign move) get no stamp.
+ */
+function stampFor(c: OutcomeCardData): StampWord | undefined {
+  return c.status ? STATUS_STAMP[c.status] : undefined;
+}
 
 const LINE_ICON: Record<string, typeof IconPhoneCall> = {
   CALL: IconPhoneCall,
@@ -20,6 +28,17 @@ const LINE_ICON: Record<string, typeof IconPhoneCall> = {
   CRISIS: IconAlertTriangle,
   THEM: IconArrowBackUp,
 };
+
+/** "Done, at a cost: Approval -2", "Failed: Russia rejected the ceasefire proposal". */
+export function StatusLine({ status, reason }: { status: OutcomeStatus; reason?: string }) {
+  const why = (reason ?? '').replace(/^(Carried out|Your answer took effect)/, '').replace(/^[,:]\s*/, '').trim();
+  return (
+    <p className={`db-status s-${status.toLowerCase()}`} data-status={status}>
+      <b>{STATUS_WORD[status]}</b>
+      {why ? (/^at a cost/.test(why) ? `, ${why}` : `: ${why}`) : ''}
+    </p>
+  );
+}
 
 function LineIcon({ icon }: { icon?: string }) {
   if (!icon) return null;
@@ -33,7 +52,7 @@ function LineIcon({ icon }: { icon?: string }) {
  * (default: the big highlight card only, so a page of cards makes one sound).
  */
 export function OutcomeCard({ c, home, big = false, stampSound = big }: { c: OutcomeCardData; home: string; big?: boolean; stampSound?: boolean }) {
-  const stamp = VERDICT_STAMP[c.verdict];
+  const stamp = stampFor(c);
   const visual = c.front ? (
     <div className="db-front" aria-label={`Front from your side: ${c.front.before} to ${c.front.after} of 100`}>
       <span className="db-front-mid" />
@@ -76,6 +95,7 @@ export function OutcomeCard({ c, home, big = false, stampSound = big }: { c: Out
           </span>
         </div>
         <h3 className="db-headline">{c.headline}</h3>
+        {c.status && <StatusLine status={c.status} reason={c.reason} />}
         {c.lines.length > 0 && (
           <ul className="db-lines">
             {c.lines.map((l, i) => (

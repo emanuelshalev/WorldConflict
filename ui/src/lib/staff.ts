@@ -85,6 +85,11 @@ export function computeSuggestions(world: WorldState | null, view: PlayerViewCou
       const courted = (world.turnReport?.orders ?? []).some((o) => o.ok && o.label === `Court ${countryName(id)}`);
       return courted && before !== undefined && (me.relations[id] ?? 0) <= before;
     };
+    // Same stance check as the engine (advisors.ts): never court an enemy's ally
+    const enemyCamp = (id: string) => {
+      const c = world.countries.find((x) => x.id === id);
+      return !!c && ((c.alliances ?? []).some((a) => me.atWarWith.includes(a)) || (c.atWarWith ?? []).some((a) => me.alliances.includes(a)));
+    };
     const court = (id: string, p: number, why: string): Suggestion & { p: number } => ({
       p,
       who: 'Foreign Minister',
@@ -161,7 +166,7 @@ export function computeSuggestions(world: WorldState | null, view: PlayerViewCou
             out.push({ p, who: 'Chief of Staff', label: 'National address', why: `Mission: leadership score ${gap}. Approval is its weakest part.`, action: address });
           else if (weakest === 'prestige') {
             const partner = [...others]
-              .filter((v) => !me.atWarWith.includes(v.id) && !(me.history?.historicalRivals ?? []).includes(v.id) && rel(v.id) > -30 && rel(v.id) < 70 && !courtStalled(v.id))
+              .filter((v) => !me.atWarWith.includes(v.id) && !(me.history?.historicalRivals ?? []).includes(v.id) && rel(v.id) > -30 && rel(v.id) < 70 && !courtStalled(v.id) && !enemyCamp(v.id))
               .sort((a, b) => b.relationWithPlayer - a.relationWithPlayer)[0];
             if (partner) out.push(court(partner.id, p, `Mission: leadership score ${gap}. World standing is its weakest part.`));
           } else
@@ -191,7 +196,7 @@ export function computeSuggestions(world: WorldState | null, view: PlayerViewCou
       out.push({ p: 75, who: 'Chief of Staff', label: 'National address', why: `Approval ${Math.round(me.approval)}%. Speak to the nation (works less if repeated).`, action: address });
     const missionIds = new Set(goals.map(({ c }) => c.targetId).filter(Boolean));
     const worst = [...others]
-      .filter((v) => !me.atWarWith.includes(v.id) && !missionIds.has(v.id) && !courtStalled(v.id))
+      .filter((v) => !me.atWarWith.includes(v.id) && !missionIds.has(v.id) && !courtStalled(v.id) && !enemyCamp(v.id))
       .sort((a, b) => a.relationWithPlayer - b.relationWithPlayer)[0];
     if (worst && worst.relationWithPlayer < -20)
       out.push(court(worst.id, world.objective ? 40 : 60, `Relations ${Math.round(worst.relationWithPlayer)}. Lower the temperature before it boils over.`));
