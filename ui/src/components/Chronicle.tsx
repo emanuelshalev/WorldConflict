@@ -3,6 +3,11 @@ import { countryName, useGameStore, usePlayerCountry } from '../store/gameStore'
 import { flag, money, monthLabel } from '../lib/format';
 import { useModalFocus } from '../lib/useModalFocus';
 import { MonthDebrief } from '../scenes/MonthDebrief';
+import { ResultCard } from '../scenes/ResultCard';
+import { readAfterMonth } from '../lib/afterMonth';
+import { bigMomentFor } from '../lib/moments';
+import { BigMoment } from './BigMoment';
+import { useCoach } from '../lib/coach';
 import { SceneFrame } from '../scenes/SceneFrame';
 import { sceneForAction, sceneForCrisis, sceneForNews } from '../scenes/kinds';
 
@@ -32,7 +37,9 @@ export function Stinger() {
       clearTimeout(auto);
     };
   }, [critical]);
+  const world = useGameStore.getState().worldState;
   if (!critical || !showChronicle || dismissed === critical.id) return null;
+  if (world && bigMomentFor(world.turnReport, world)) return null;
   return (
     <div className="stinger" onClick={() => setDismissed(critical.id)} role="alert">
       <small>BREAKING NEWS</small>
@@ -41,6 +48,22 @@ export function Stinger() {
   );
 }
 
+type Stage = 'moment' | 'result' | 'details' | 'paper';
+interface Flow {
+  turn: number;
+  stage: Stage;
+  page: number;
+  seenDetails: boolean;
+  seenPaper: boolean;
+  momentDone: boolean;
+}
+
+/**
+ * After Execute (design-month.md 9): the big-moment stinger when there is one, then the result
+ * card, then the desk. Two screens in the common case. "See everything" opens the debrief pages,
+ * "Read the paper" the Chronicle; both have "Next month". The paper opens by itself only on a big
+ * moment month, or when the player asked for everything after each month.
+ */
 export function Chronicle() {
   const show = useGameStore((s) => s.showChronicle);
   const setShow = useGameStore((s) => s.setShowChronicle);
@@ -50,13 +73,81 @@ export function Chronicle() {
   const gameOver = useGameStore((s) => s.gameOver);
   const openModal = useGameStore((s) => s.openModal);
   const me = usePlayerCountry();
-  const [reelTurn, setReelTurn] = useState(-1);
+  const [flowState, setFlowState] = useState<Flow | null>(null);
   const report0 = world?.turnReport;
-  const reel = !!(show && world && me && report0 && reelTurn !== world.turn && (report0.orders.length > 0 || report0.decisions.length > 0));
-  const ref = useModalFocus<HTMLDivElement>(!!(show && world && me) && !reel);
-  if (!show || !world || !me) return null;
-  if (reel && report0)
-    return <MonthDebrief report={report0} world={world} home={me.id} onDone={() => setReelTurn(world.turn)} />;
+  const hasContent = !!report0 && (report0.orders.length > 0 || report0.decisions.length > 0);
+  const moment = show && world && report0 ? bigMomentFor(report0, world) : null;
+  const flow: Flow | null = world
+    ? flowState?.turn === world.turn
+      ? flowState
+      : { turn: world.turn, stage: moment ? 'moment' : hasContent ? 'result' : 'paper', page: 0, seenDetails: false, seenPaper: false, momentDone: false }
+    : null;
+  const paperOpen = !!(show && world && me && flow?.stage === 'paper');
+  const ref = useModalFocus<HTMLDivElement>(paperOpen);
+  const close = () => {
+    setShow(false);
+    if (useCoach.getState().step === 'result') useCoach.getState().finish();
+    if (gameOver) openModal('endGame');
+  };
+  // Escape closes the paper (B-13), however it was opened
+  useEffect(() => {
+    if (!paperOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      e.preventDefault();
+      e.stopPropagation();
+      setShow(false);
+      if (useCoach.getState().step === 'result') useCoach.getState().finish();
+      if (useGameStore.getState().gameOver) useGameStore.getState().openModal('endGame');
+    };
+    window.addEventListener('keydown', onKey, true);
+    return () => window.removeEventListener('keydown', onKey, true);
+  }, [paperOpen, setShow]);
+  if (!show || !world || !me || !flow) return null;
+  const to = (patch: Partial<Flow>) => setFlowState({ ...flow, ...patch });
+  const bigMonth = !!report0 && (report0.moments.length > 0 || (report0.wars ?? []).some((w) => w.ended) || !!moment);
+  const afterResult = () => {
+    const after = readAfterMonth();
+    if (after !== 'result' && !flow.seenDetails && hasContent) to({ stage: 'details', page: 0, seenDetails: true });
+    else if ((after === 'everything' || bigMonth) && !flow.seenPaper) to({ stage: 'paper', seenPaper: true });
+    else close();
+  };
+  if (flow.stage === 'moment' && moment && !flow.momentDone)
+    return (
+      <BigMoment
+        moment={moment}
+        onDone={() => {
+          if (moment.ending && gameOver) close();
+          else to({ stage: hasContent ? 'result' : 'paper', momentDone: true, seenPaper: !hasContent });
+        }}
+      />
+    );
+  if ((flow.stage === 'result' || flow.stage === 'moment') && report0 && hasContent)
+    return (
+      <ResultCard
+        report={report0}
+        world={world}
+        home={me.id}
+        onNext={afterResult}
+        onEverything={(page = 0) => to({ stage: 'details', page, seenDetails: true })}
+        onPaper={() => to({ stage: 'paper', seenPaper: true })}
+        nextLabel={gameOver ? 'See your verdict' : 'Next month'}
+      />
+    );
+  if (flow.stage === 'details' && report0)
+    return (
+      <MonthDebrief
+        key={`${world.turn}-${flow.page}`}
+        report={report0}
+        world={world}
+        home={me.id}
+        initialPage={flow.page}
+        onDone={() => to({ stage: 'paper', seenPaper: true })}
+        onBack={() => to({ stage: 'result' })}
+        onNext={close}
+        nextLabel={gameOver ? 'See your verdict' : 'Next month'}
+      />
+    );
 
   const news = world.newspaper;
   const lead = news.find((n) => n.relatedCountries.includes(me.id)) ?? news[0];
@@ -89,11 +180,6 @@ export function Chronicle() {
       {suffix}
     </b>
   );
-  const close = () => {
-    setShow(false);
-    if (gameOver) openModal('endGame');
-  };
-
   return (
     <div ref={ref} className="overlay" onClick={close} role="dialog" aria-modal="true" aria-label="Monthly report">
       <article className="paper" onClick={(e) => e.stopPropagation()}>
@@ -102,10 +188,10 @@ export function Chronicle() {
           <div className="dateline">
             <span>{monthLabel(world.date)}</span>
             <span>
-              Global tension {Math.round(world.globalTension)}/100
+              World tension {Math.round(world.globalTension)} of 100
             </span>
             <span>
-              Month {world.turn}/{world.maxTurns}
+              Month {world.turn} of {world.maxTurns}
             </span>
           </div>
         </div>
@@ -204,8 +290,8 @@ export function Chronicle() {
         {notice && <p style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: '#8a2a1c' }}>{notice}</p>}
 
         <div className="paper-foot">
-          <button className="wc-btn primary big" onClick={close}>
-            {gameOver ? 'See your verdict ▸' : 'To your desk ▸'}
+          <button type="button" className="wc-btn primary big" onClick={close}>
+            {gameOver ? 'See your verdict ▸' : 'Next month ▸'}
           </button>
         </div>
       </article>

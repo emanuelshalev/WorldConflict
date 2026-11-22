@@ -10,6 +10,7 @@ import {
 } from '../store/gameStore';
 import { useModalFocus } from '../lib/useModalFocus';
 import { SoundSettingsSection } from './game/SoundToggle';
+import { MonthSettings } from './desk/MonthSettings';
 
 const CHAT_TEST_URL = `${(import.meta.env.VITE_API_BASE ?? '/api').replace(/\/$/, '')}/chat/test`;
 
@@ -130,7 +131,7 @@ function Inner({ onClose }: { onClose: () => void }) {
           <label className="setting-row">
             <input type="checkbox" checked={staffOrders} onChange={(e) => setStaffOrders(e.target.checked)} />
             <span>
-              <b>Staff pre-select orders</b> Each month your staff queue up to two safe orders, always leaving at least 1 ◆ for you. You can remove any of them. Turning this off applies from next month.
+              <b>Staff pre-select orders</b> Each month your staff queue up to two safe orders, always leaving at least ◆ 1 for you. You can remove any of them. Turning this off applies from next month.
             </span>
           </label>
           <label className="setting-row">
@@ -139,6 +140,7 @@ function Inner({ onClose }: { onClose: () => void }) {
               <b>News ticker</b> The scrolling headlines along the bottom (key N).
             </span>
           </label>
+          <MonthSettings />
         </div>
         <SoundSettingsSection />
         <div>

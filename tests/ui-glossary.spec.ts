@@ -28,34 +28,11 @@ interface Hit {
  * longer matches, so the list can't rot.
  */
 const PENDING: ReadonlySet<string> = new Set<string>([
-  // WP5 (orders design): HUD and rail vocabulary
-  "ui/src/components/Hud.tsx :: Appr",
-  "ui/src/components/Hud.tsx :: Stab",
-  "ui/src/components/Hud.tsx :: Legit",
-  "ui/src/components/Hud.tsx :: GDP",
-  "ui/src/components/Hud.tsx :: Capital",
-  "ui/src/components/Hud.tsx :: Cap",
-  "ui/src/components/Hud.tsx :: Tens",
-  "ui/src/components/desk/CommandRail.tsx :: ◆ Capital",
-  "ui/src/components/desk/CommandRail.tsx :: Defense",
-  "ui/src/components/desk/CommandRail.tsx :: Orders",
-  "ui/src/components/desk/CommandRail.tsx :: In person",
-  "ui/src/components/desk/CommandRail.tsx :: Staff",
-  "ui/src/components/desk/CommandRail.tsx :: Approve",
-  "ui/src/components/desk/CommandRail.tsx :: /6 · In person",
-  "ui/src/lib/budget.ts :: meetings in person",
   // WP4 (orders design): queueOrder() stops raising duplicate errors
   "ui/src/store/gameStore.ts :: \" is already on your desk this month",
   // WP6 (orders design): desk catalog, staff picks, map menu
-  "ui/src/components/desk/Detail.tsx :: % def",
-  "ui/src/components/desk/Detail.tsx :: Your calendar is full (3 in person). Send a deputy to another meeting to take this one.",
-  "ui/src/components/desk/Detail.tsx :: Staff suggests",
-  "ui/src/components/desk/Detail.tsx :: months left · leadership score",
   "ui/src/components/MapActionMenu.tsx :: Already on your desk",
-  // Month design WP-D (Navigator) and WP-B (staff.ts)
-  "ui/src/components/desk/Navigator.tsx :: /3 in person",
-  "ui/src/components/desk/Navigator.tsx :: Suggested",
-  "ui/src/components/desk/Navigator.tsx :: Orders",
+  // Month design WP-B (staff.ts)
   "ui/src/lib/staff.ts :: Mission: leadership score",
   // Reveal design (EndGameReport moves into the report view)
   "ui/src/components/EndGameReport.tsx :: Leadership score over time (",

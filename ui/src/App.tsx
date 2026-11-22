@@ -17,42 +17,9 @@ import { Drawers } from './components/Drawers'
 import { Chronicle, DangerVignette, Stinger } from './components/Chronicle'
 import { EndScreen } from './components/EndScreen'
 import { useGameStore, usePlayerCountry } from './store/gameStore'
-
-function ObjectiveChip() {
-  const world = useGameStore((s) => s.worldState)
-  const status = useGameStore((s) => s.objectiveStatus)
-  const [open, setOpen] = useState(() => window.innerWidth > 900)
-  if (!world?.objective) return null
-  const primary = status.filter((s) => !s.bonus)
-  return (
-    <button
-      className={`objective-chip ${open ? '' : 'collapsed'}`}
-      onClick={() => setOpen((v) => !v)}
-      style={{ textAlign: 'left', color: 'inherit' }}
-      title={open ? 'Collapse' : 'Show mission'}
-    >
-      <div className="ttl">
-        <span>◎ {world.objective.title}</span>
-        <span className="num" style={{ color: 'var(--text-3)' }}>
-          {world.maxTurns - world.turn} mo left
-        </span>
-      </div>
-      <ul>
-        {(primary.length ? primary : status.slice(0, 2)).map((c) => (
-          <li key={c.label} className={c.failed ? 'failed' : c.met ? 'met' : ''}>
-            {c.failed ? '✗' : c.met ? '✓' : '○'} {c.label}
-            {/score/i.test(c.label) && (
-              <span className="num" style={{ color: c.met ? 'var(--good)' : 'var(--accent)' }}>
-                {' '}· now {world.score?.total ?? 0}
-              </span>
-            )}
-          </li>
-        ))}
-        {primary.length === 0 && status.length === 0 && <li>Stay in power until the end.</li>}
-      </ul>
-    </button>
-  )
-}
+import { GoalLine } from './components/desk/GoalLine'
+import { ScoreWhySheet } from './components/ScoreWhy'
+import { useScoreWhy } from './lib/scoreWhy'
 
 function Ticker() {
   const world = useGameStore((s) => s.worldState)
@@ -158,7 +125,8 @@ function useEscapeToClose() {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
       const s = useGameStore.getState()
-      if (s.showLogin) useGameStore.setState({ showLogin: false })
+      if (useScoreWhy.getState().open) useScoreWhy.getState().show(false)
+      else if (s.showLogin) useGameStore.setState({ showLogin: false })
       else if (s.activeModal === 'actionPreview') {
         // Same as the backdrop: a blocked order never stays queued
         const last = s.pendingActions.length - 1
@@ -195,11 +163,13 @@ function App() {
         <TitleScreen />
       ) : (
         <div className={`game mode-${gameOver ? 'map' : deskMode}`}>
-          <Hud />
+          <div className="game-top">
+            <Hud />
+            <GoalLine />
+          </div>
           <div className="game-body">
             <div className="map-stage">
               <MapView />
-              <ObjectiveChip />
             </div>
             {(deskMode === 'map' || gameOver) && !gameOver && <CommandStrip />}
             <Desk />
@@ -217,6 +187,7 @@ function App() {
         <>
           <BackstoryModal />
           <Chronicle />
+          <ScoreWhySheet />
           <Stinger />
           <DangerVignette />
           <EndScreen />

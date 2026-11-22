@@ -1,58 +1,29 @@
 import { useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
-import { crisisStaffPick, meetingSuggestion } from '../lib/staff';
-import { useGameStore } from '../store/gameStore';
-import { approveAll, setupMonth } from '../lib/month';
+import { IconAlertTriangle, IconChevronRight, IconListCheck, IconPhoneCall, IconSearch } from '@tabler/icons-react';
+import { crisisStaffPick } from '../lib/staff';
+import { useGameStore, usePlayerCountry } from '../store/gameStore';
+import { approveAll, crisisSelection, defaultDeskView, meetingPick, meetingSelection, primaryId, primaryItem, setupMonth } from '../lib/month';
+import { budgetStatus } from '../lib/budget';
+import { flag } from '../lib/format';
 import { Navigator } from './desk/Navigator';
 import { deskItems } from '../lib/deskItems';
 import { Detail } from './desk/Detail';
-import { CommandRail } from './desk/CommandRail';
+import { CommandBar, CommandRail } from './desk/CommandRail';
+import { DeskStage } from './desk/DeskStage';
+import { useNarrow } from '../lib/useNarrow';
+import { YourMove } from './desk/YourMove';
+import { AdvisorList } from './desk/AdvisorList';
+import { useAdvisorRows, whyLine } from '../lib/advisorRows';
+import { goalName } from '../lib/month';
 import { useExecute } from '../lib/useExecute';
 
 /**
- * The desk: everything this month on the left, the item in focus in the middle, and on the right
- * what you will do (the 2D map of the subject, budgets, the selection, readiness and Execute).
- * Nothing on the right ever scrolls out of sight.
+ * The desk (design-month.md 3, design-feel.md 5). Focus view: the goal line above, one Your move
+ * card as the stage, the advisors, then "Also on your desk". Full desk: every item on the left (or
+ * as filing tabs), the item in focus on the stage. The rail on the right is the command table;
+ * on phones it is the command bar. The old three-line desk tip moved into the coach replay.
  */
-
-function CoachTip() {
-  const [hidden, setHidden] = useState(() => {
-    try {
-      return localStorage.getItem('worldconflict.deskTip') === 'done';
-    } catch {
-      return false;
-    }
-  });
-  if (hidden) return null;
-  const stacked = window.matchMedia?.('(max-width: 1099px)').matches ?? false;
-  const dismiss = () => {
-    try {
-      localStorage.setItem('worldconflict.deskTip', 'done');
-    } catch {
-      /* storage unavailable */
-    }
-    setHidden(true);
-  };
-  return (
-    <div className="desk-tip" role="note">
-      <span>
-        {stacked ? (
-          <>
-            <b>Top:</b> what needs you. <b>Below:</b> the item you are on. <b>Bottom sheet:</b> what you will do this month.
-          </>
-        ) : (
-          <>
-            <b>Left:</b> what needs you. <b>Middle:</b> the item you are on. <b>Right:</b> what you will do this month.
-          </>
-        )}{' '}
-        Your staff have pre-filled everything: change what you do not like, approve the rest, then Execute.
-      </span>
-      <button className="wc-btn ghost small" onClick={dismiss}>
-        Got it
-      </button>
-    </div>
-  );
-}
 
 /** Desk shortcuts: J/K walk the desk, 1-3 pick an option, Shift+A approve all, / search. */
 function useDeskKeys(enabled: boolean) {
@@ -63,7 +34,7 @@ function useDeskKeys(enabled: boolean) {
       const t = e.target as HTMLElement | null;
       if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable)) return;
       const s = useGameStore.getState();
-      if (s.activeModal || s.showChronicle || s.drawer) return;
+      if (s.activeModal || s.showChronicle || s.drawer || s.showBackstory) return;
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
         e.preventDefault();
         ex.run();
@@ -72,29 +43,38 @@ function useDeskKeys(enabled: boolean) {
       if (e.ctrlKey || e.metaKey || e.altKey) return;
       const items = deskItems();
       const at = items.findIndex((x) => x.kind === s.focus.kind && (x.id ?? '') === (s.focus.id ?? ''));
+      // In Focus view the keys act on the Your move card
+      const focusKind = s.deskView === 'focus' ? (primaryItem()?.kind ?? s.focus.kind) : s.focus.kind;
+      const focusId = s.deskView === 'focus' ? (primaryId(primaryItem()) ?? s.focus.id) : s.focus.id;
       if (e.key === 'j' || e.key === 'k') {
         const next = items[Math.max(0, Math.min(items.length - 1, at + (e.key === 'j' ? 1 : -1)))];
-        if (next) s.setFocus({ kind: next.kind, id: next.id });
+        if (next) {
+          if (s.deskView === 'focus') s.setDeskView('full');
+          s.setFocus({ kind: next.kind, id: next.id });
+        }
       } else if (e.key === 'A' && e.shiftKey) approveAll();
       else if (e.key === '/') {
         e.preventDefault();
-        flushSync(() => s.setFocus({ kind: 'catalog' }));
+        flushSync(() => {
+          s.setDeskView('full');
+          s.setFocus({ kind: 'catalog' });
+        });
         document.getElementById('catalog-search')?.focus();
-      } else if ((e.key === 'Delete' || e.key === 'Backspace') && s.focus.kind === 'order') {
+      } else if ((e.key === 'Delete' || e.key === 'Backspace') && s.focus.kind === 'order' && s.deskView === 'full') {
         s.removePendingAction(Number(s.focus.id));
         s.setFocus({ kind: 'suggestions' });
-      } else if (e.key === 'Enter' && s.focus.kind === 'crisis') {
-        const d = s.pendingDecisions.find((x) => x.id === s.focus.id);
+      } else if (e.key === 'Enter' && focusKind === 'crisis') {
+        const d = s.pendingDecisions.find((x) => x.id === focusId);
         if (!d) return;
         s.chooseDecision(d.id, s.decisionChoices[d.id] ?? crisisStaffPick(d, s.worldState?.objective).id);
-      } else if (e.key === 'Enter' && s.focus.kind === 'meeting') {
-        const m = s.worldState?.agenda?.find((x) => x.id === s.focus.id);
-        const o = m && meetingSuggestion(m);
+      } else if (e.key === 'Enter' && focusKind === 'meeting') {
+        const m = s.worldState?.agenda?.find((x) => x.id === focusId);
+        const o = m && meetingPick(m);
         if (!m || !o) return;
         s.chooseDecision(m.id, o.id);
-      } else if (/^[1-3]$/.test(e.key) && (s.focus.kind === 'crisis' || s.focus.kind === 'meeting')) {
-        const item = s.focus.kind === 'crisis' ? s.pendingDecisions.find((d) => d.id === s.focus.id) : s.worldState?.agenda?.find((m) => m.id === s.focus.id);
-        const opts = item?.options.filter((o) => s.focus.kind === 'crisis' || o.id !== item.defaultOptionId) ?? [];
+      } else if (/^[1-4]$/.test(e.key) && (focusKind === 'crisis' || focusKind === 'meeting')) {
+        const item = focusKind === 'crisis' ? s.pendingDecisions.find((d) => d.id === focusId) : s.worldState?.agenda?.find((m) => m.id === focusId);
+        const opts = item?.options.filter((o) => focusKind === 'crisis' || o.id !== item.defaultOptionId) ?? [];
         const o = opts[Number(e.key) - 1];
         if (item && o) s.chooseDecision(item.id, o.id);
       } else return;
@@ -105,30 +85,167 @@ function useDeskKeys(enabled: boolean) {
   }, [enabled, ex]);
 }
 
+/** A month with no crisis and no mission meeting: the top advisor's move is the card. */
+function QuietMove() {
+  const rows = useAdvisorRows();
+  const top = rows.find((r) => !r.staff) ?? rows[0];
+  return (
+    <article className="stage is-primary quiet" aria-label="Your move: a quiet month">
+      <div className="quiet-card">
+        <span className="stage-kicker">Your move · a quiet month</span>
+        <h2 className="stage-title">{top ? `Your ${top.who}'s move: ${top.label}` : 'A quiet month'}</h2>
+        <p className="stage-lede">{top ? whyLine(top.why) : 'No crisis and no call needs you. Use the month: give an order, or let it run.'}</p>
+      </div>
+    </article>
+  );
+}
+
+/** "Also on your desk": meetings, orders and other crises, each one tap from the full item. */
+function AlsoOnDesk() {
+  const world = useGameStore((s) => s.worldState);
+  const decisions = useGameStore((s) => s.pendingDecisions);
+  const choices = useGameStore((s) => s.decisionChoices);
+  const reviewed = useGameStore((s) => s.reviewed);
+  const actions = useGameStore((s) => s.pendingActions);
+  const status = useGameStore((s) => s.objectiveStatus);
+  const setFocus = useGameStore((s) => s.setFocus);
+  const setDeskView = useGameStore((s) => s.setDeskView);
+  if (!world) return null;
+  const open = (f: Parameters<typeof setFocus>[0]) => {
+    setDeskView('full');
+    setFocus(f);
+    document.getElementById('desk-stage')?.scrollTo({ top: 0 });
+  };
+  const primary = primaryId(primaryItem());
+  const others = decisions.filter((d) => d.id !== primary);
+  const agenda = (world.agenda ?? []).filter((m) => m.id !== primary);
+  const targets = new Map<string, string>();
+  status.forEach((c, i) => {
+    const cond = [...(world.objective?.primary ?? []), ...(world.objective?.bonus ?? [])][i];
+    if (cond?.targetId) targets.set(cond.targetId, goalName(c));
+  });
+  const missionMeeting = agenda.find((m) => m.withCountry && targets.has(m.withCountry));
+  const attend = agenda.filter((m) => choices[m.id] && choices[m.id] !== m.defaultOptionId).length;
+  const waiting = agenda.filter((m) => !choices[m.id]);
+  const willAttend = waiting.filter((m) => meetingPick(m)).length;
+  const b = budgetStatus();
+  const staff = actions.filter((a) => a.origin === 'staff').length;
+  return (
+    <section className="also" aria-label="Also on your desk">
+      <h3 className="block-head">Also on your desk</h3>
+      {others.map((d) => {
+        const sel = crisisSelection(d, choices, reviewed);
+        return (
+          <button key={d.id} type="button" className="also-row hot" onClick={() => open({ kind: 'crisis', id: d.id })}>
+            <IconAlertTriangle size={17} aria-hidden />
+            <span>
+              <b>{d.title}</b>
+              <small>{sel.text}</small>
+            </span>
+            <IconChevronRight size={16} aria-hidden />
+          </button>
+        );
+      })}
+      {missionMeeting && (
+        <button type="button" className="also-row mission" onClick={() => open({ kind: 'meeting', id: missionMeeting.id })}>
+          <IconPhoneCall size={17} aria-hidden />
+          <span>
+            <b>
+              {flag(missionMeeting.withCountry ?? '')} {missionMeeting.speaker} {missionMeeting.kind === 'VISIT' ? 'visits' : missionMeeting.kind === 'CALL' ? 'calls' : 'meets you'}
+            </b>
+            <small>
+              Mission: {targets.get(missionMeeting.withCountry ?? '')} · {meetingSelection(missionMeeting, choices, reviewed).text}
+            </small>
+          </span>
+          <IconChevronRight size={16} aria-hidden />
+        </button>
+      )}
+      {agenda.length > 0 && (
+        <button type="button" className="also-row" onClick={() => open({ kind: 'meeting', id: agenda[0].id })}>
+          <IconPhoneCall size={17} aria-hidden />
+          <span>
+            <b>
+              {agenda.length} call{agenda.length > 1 ? 's' : ''} and meeting{agenda.length > 1 ? 's' : ''}
+            </b>
+            <small>
+              {attend ? `You attend ${attend}` : `On Approve, staff attend ${Math.min(3, willAttend)}`}
+              {agenda.length - Math.max(attend, Math.min(3, willAttend)) > 0 ? `, a deputy takes ${agenda.length - Math.max(attend, Math.min(3, willAttend))}` : ''}
+            </small>
+          </span>
+          <IconChevronRight size={16} aria-hidden />
+        </button>
+      )}
+      <button type="button" className="also-row" onClick={() => open({ kind: 'suggestions' })}>
+        <IconListCheck size={17} aria-hidden />
+        <span>
+          <b>
+            {actions.length} order{actions.length === 1 ? '' : 's'} in this month{staff ? ` (${staff} by staff)` : ''}
+          </b>
+          <small>{b ? `◆ ${b.pc.orders} of ◆ ${Math.max(0, b.pc.bank + b.pc.crisis + b.pc.meetings)} political capital on orders` : ''}</small>
+        </span>
+        <IconChevronRight size={16} aria-hidden />
+      </button>
+      <button type="button" className="also-row" onClick={() => open({ kind: 'catalog' })}>
+        <IconSearch size={17} aria-hidden />
+        <span>
+          <b>All orders</b>
+          <small>Search or browse every order you can give</small>
+        </span>
+        <IconChevronRight size={16} aria-hidden />
+      </button>
+    </section>
+  );
+}
+
+function FocusView() {
+  useGameStore((s) => s.missionImpact);
+  useGameStore((s) => s.pendingDecisions);
+  const p = primaryItem();
+  return (
+    <div className="focus-view">
+      {p?.kind === 'crisis' ? <YourMove item={p.decision} /> : p?.kind === 'meeting' ? <YourMove item={p.meeting} /> : <QuietMove />}
+      <AdvisorList />
+      <AlsoOnDesk />
+    </div>
+  );
+}
+
 export function Desk() {
   const world = useGameStore((s) => s.worldState);
   const gameOver = useGameStore((s) => s.gameOver);
   const saveId = useGameStore((s) => s.saveId);
   const deskMode = useGameStore((s) => s.deskMode);
+  const deskView = useGameStore((s) => s.deskView);
   const selected = useGameStore((s) => s.selectedCountryId);
+  const me = usePlayerCountry();
   const [picked, setTarget] = useState('');
+  const narrowNav = useNarrow(1280);
+  const phone = useNarrow(900);
   // A country picked on the big map becomes the order target until the player picks another
   const target = picked || (selected && selected !== world?.playerCountryId ? selected : '');
   const turn = world?.turn;
-  // The month's defaults (staff picks, staff orders) once per save and month
+  // The month's defaults (cabinet picks, staff orders) once per save and month
   useEffect(() => {
     if (saveId && turn !== undefined) void setupMonth();
   }, [saveId, turn]);
+  // Months 1 and 2, phones and tablets open in Focus view (without overwriting the saved choice)
+  useEffect(() => {
+    if (turn === undefined) return;
+    const s = useGameStore.getState();
+    if (defaultDeskView(s.worldState, s.deskView) === 'focus' && s.deskView !== 'focus') useGameStore.setState({ deskView: 'focus' });
+  }, [turn]);
   useDeskKeys(deskMode === 'desk' && !gameOver);
-  if (!world || gameOver || deskMode !== 'desk') return null;
+  if (!world || !me || gameOver || deskMode !== 'desk') return null;
+  const full = deskView === 'full';
   return (
-    <section className="desk-screen" aria-label="Your desk">
-      <Navigator />
-      <div className="desk-center">
-        <CoachTip />
-        <Detail target={target} setTarget={setTarget} />
-      </div>
-      <CommandRail catalogTarget={target} />
-    </section>
+    <DeskStage
+      view={deskView}
+      nav={full && !narrowNav ? <Navigator /> : undefined}
+      tabs={full && narrowNav ? <Navigator tabs /> : undefined}
+      rail={phone ? undefined : <CommandRail catalogTarget={target} />}
+      bar={phone ? <CommandBar catalogTarget={target} /> : undefined}
+    >
+      {full ? <Detail target={target} setTarget={setTarget} /> : <FocusView />}
+    </DeskStage>
   );
 }

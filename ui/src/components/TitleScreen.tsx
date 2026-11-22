@@ -104,7 +104,12 @@ export function TitleScreen() {
         setFlashpoints(c.flashpoints);
         setDaily(c.daily);
         if (c.scenarios.length) setScenarioId([...c.scenarios].sort((a, b) => b.startYear - a.startYear)[0].id);
-        if (c.flashpoints.length) setFlashpointId(c.flashpoints[0].id);
+        // Today's crisis first (and its side), else the first flashpoint
+        const today = c.daily && c.flashpoints.find((f) => f.id === c.daily?.flashpointId);
+        if (today) {
+          setFlashpointId(today.id);
+          if (c.daily && today.playable.some((p) => p.countryId === c.daily?.countryId)) setPickedCountry(c.daily.countryId);
+        } else if (c.flashpoints.length) setFlashpointId(c.flashpoints[0].id);
       })
       .catch(() => useGameStore.getState().setError('Cannot reach the game server'));
     fetch(`${API_BASE}/countries`)

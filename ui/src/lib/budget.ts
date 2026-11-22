@@ -50,7 +50,7 @@ export function budgetStatus(state: GameState = useGameStore.getState()): Budget
         : used > MAX_ORDERS
           ? `At most ${MAX_ORDERS} orders a month`
           : attended > MEETING_SLOTS
-            ? `At most ${MEETING_SLOTS} meetings in person`
+            ? `At most ${MEETING_SLOTS} meetings a month: send a deputy to one`
             : null;
   return {
     pc: { bank: world.politicalCapital, crisis, meetings, orders, left, cap: 6 },

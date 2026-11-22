@@ -1,0 +1,44 @@
+/* Big-moment stingers (design-feel.md 6.4): one composited frame, no backdrop
+   filter on moving layers, a single white flash band for nuclear (never repeated). */
+.bigmoment { --bm-color: var(--war); position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: 24px; cursor: pointer; color: #fff; }
+.bm-war { --bm-color: var(--war); }
+.bm-nuclear { --bm-color: var(--nuke); }
+.bm-coup, .bm-deposed { --bm-color: var(--intel); }
+.bm-peace { --bm-color: #f2c66b; }
+.bm-mission { --bm-color: var(--accent); }
+.bm-wash { position: absolute; inset: 0; background: radial-gradient(90% 80% at 50% 45%, color-mix(in srgb, var(--bm-color) 30%, transparent), rgba(3, 5, 11, 0.94) 70%); animation: bm-hit 120ms ease-out both; }
+.bm-nuclear .bm-wash { background: radial-gradient(90% 80% at 50% 45%, rgba(245, 213, 71, 0.22), rgba(2, 3, 6, 0.97) 70%); }
+.bm-frame { position: relative; width: min(1100px, 100%); border-radius: 16px; overflow: hidden; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 0 2px color-mix(in srgb, var(--bm-color) 70%, transparent); animation: bm-slam 280ms 120ms var(--ease-stamp) both; will-change: transform, opacity; }
+.bm-frame .scene { border-radius: 0; box-shadow: none; aspect-ratio: 16 / 8; }
+.has-shake .bm-frame { animation: bm-slam 280ms 120ms var(--ease-stamp) both, bm-shake 320ms 400ms linear both; }
+.bm-band { position: absolute; left: 0; right: 0; bottom: 0; padding: 22px 28px 24px; display: grid; gap: 6px; justify-items: start; background: linear-gradient(180deg, transparent, rgba(3, 5, 11, 0.92) 45%); }
+.bm-title { margin: 0; font: 800 clamp(34px, 6vw, 72px)/0.95 var(--font-display); letter-spacing: -0.01em; text-transform: uppercase; padding: 6px 14px 4px; background: var(--bm-color); color: #0b0f17; transform: rotate(-1.5deg); animation: bm-band 280ms 160ms var(--ease-stamp) both; }
+.bm-war .bm-title, .bm-coup .bm-title, .bm-deposed .bm-title { color: #fff; }
+.bm-peace .bm-title { animation-name: bm-rise; }
+.bm-line { margin: 4px 0 0; font: 700 clamp(13px, 1.6vw, 16px)/1.2 var(--font-mono); letter-spacing: 0.14em; animation: bm-fade 400ms 400ms both; }
+.bm-stat { margin: 0; font-size: 16px; color: var(--text-1); animation: bm-fade 400ms 600ms both; }
+.bm-stat b { font-size: 26px; margin-left: 8px; color: var(--bm-color); }
+.bm-flash { position: absolute; inset: 0; background: #fff; opacity: 0; animation: bm-flash 300ms 140ms ease-out 1 both; pointer-events: none; }
+.bm-skip { position: absolute; bottom: 18px; left: 0; right: 0; margin: 0; text-align: center; font-size: 13px; color: rgba(255, 255, 255, 0.7); }
+.is-settling .bm-frame { transition: transform 800ms var(--ease-in), opacity 800ms var(--ease-in); transform: scale(0.62) translateY(4%); opacity: 0; }
+.is-settling .bm-wash { transition: opacity 800ms var(--ease-in); opacity: 0.4; }
+.is-settling .bm-skip { opacity: 0; }
+@keyframes bm-hit { from { opacity: 0; } }
+@keyframes bm-slam { from { opacity: 0; transform: scale(1.12); } }
+@keyframes bm-band { from { opacity: 0; transform: scale(1.8) rotate(-8deg); } }
+@keyframes bm-rise { from { opacity: 0; transform: translateY(24px) rotate(-1.5deg); } }
+@keyframes bm-fade { from { opacity: 0; transform: translateY(6px); } }
+@keyframes bm-shake { 0%, 100% { transform: translate(0, 0); } 20% { transform: translate(-6px, 2px); } 40% { transform: translate(5px, -3px); } 60% { transform: translate(-4px, 3px); } 80% { transform: translate(3px, -1px); } }
+@keyframes bm-flash { 30% { opacity: 0.6; } 100% { opacity: 0; } }
+.is-reduced .bm-frame, .is-reduced .bm-title, .is-reduced .bm-line, .is-reduced .bm-stat { animation: bm-hit 200ms ease-out both; }
+.is-reduced.is-settling .bm-frame { transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .bm-frame, .bm-title, .bm-line, .bm-stat { animation: bm-hit 200ms ease-out both !important; }
+  .bm-flash { display: none; }
+  .is-settling .bm-frame { transform: none; }
+}
+@media (max-width: 600px) {
+  .bigmoment { padding: 12px; }
+  .bm-frame .scene { aspect-ratio: 4 / 5; }
+  .bm-band { padding: 16px; }
+}
