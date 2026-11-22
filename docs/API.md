@@ -62,7 +62,9 @@ Notable `worldState` fields: `mode` (`FLASHPOINT|TERM|LEGACY`), `maxTurns`, `dif
 }
 ```
 
-Only `playerCountryId` is required. Without `flashpointId`, `mode` + `scenarioId` start a Term/Legacy (or generic 12-month) game. `daily: true` seeds the world from today's date. Omit `seed` for a fresh world each time.
+Only `playerCountryId` is required. Without `flashpointId`, `mode` + `scenarioId` start a Term/Legacy (or generic 12-month) game. `daily: true` seeds the world from today's date. Omit `seed` for a fresh world each time. The same `seed` on the same seat gives the same starting world and opening crisis ("Replay same opening").
+
+`seedCode` ("Play this seed") replaces `playerCountryId` + `seed` + seat: `HC-USA-3AF` is flashpoint seat (two-letter flashpoint prefix: initials of its id, e.g. `hormuz-convoy` = HC), country and base-36 seed; `T2026-USA-3AF` / `L2026-…` are Term / Legacy on a scenario. An unknown code is a 400.
 
 ## POST `/api/turn`
 
@@ -112,6 +114,20 @@ Orders the player can't afford (political capital or defense budget) come back i
 `leaderName` is optional: omit it to govern as the scenario's real leader (e.g. Volodymyr Zelensky); flashpoints then use the objective briefing as `playerBackstory`.
 
 `turnReport.orders[].ok` is the order's real outcome: covert operations that were carried out but failed report `ok: false` with `detail` starting `Failed:`; Court orders report the relation change (`Relations -41 → -34`).
+
+## GET `/api/reveal/:saveId`
+
+The end-of-session reveal (`src/core/reveal.ts`, `RevealPayload`). 409 while the game is running, 404 for an unknown save. Optional `?playerId=` or `?guestId=` fills `ranking.personalBest` from earlier runs on the seat. Main blocks: `seat`, `verdict` (same stars/grade as `outcome`), `presidency` (0-1000: `parts` mission/timing/leadership/finish, `modifier`, `career`), `achievements` (`earned`, two `locked` hints, rarity tier and measured rate), `moments` (best, worst, turning point, went well / badly, timing callouts), `perception` (approval series, elections, relations, press, judgement), `numbers` (five series and counts), `declassified` (the only foreign ground truth the client ever receives, post-game), `truth` (flashpoint reality rows with BETTER/SAME/WORSE/CONTEXT verdicts, fear, sources, debrief), `replay` (seed, `seedCode`, `deterministic`), `ranking` (benchmark ticks and percentile from `data/benchmarks/`), `beatNext`, `run` (the run record).
+
+While a game runs, `worldState.chronicle` is sent without its ground-truth parts (`start`, `plots`).
+
+## POST `/api/runs`
+
+`{ "saveId": "…", "guestId": "guest-…" }` records a finished run, derived server-side from the save (409 while running). One result per save; posting again replaces it. Returns `run` and `rank: { position, of }` among the owner's runs on that seat.
+
+## GET `/api/runs?seat=<seatKey>&playerId=|guestId=&limit=50`
+
+`runs`: the owner's runs (newest first; `parts`, `achievements`, `detail` with `seedCode`, `series`, `choices`, `aiTier`). `top`: the seat's top 20 among signed-in players. Seat keys are `flashpointId:COUNTRY` or `scenario:MODE:COUNTRY`.
 
 ## POST `/api/preview-action`
 

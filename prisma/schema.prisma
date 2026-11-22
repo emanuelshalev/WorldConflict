@@ -38,3 +38,24 @@ model TurnLog {
   actions    String   // JSON serialized actions
   createdAt  DateTime @default(now())
 }
+
+// A finished session's result: personal history and per-seat rankings (GET /api/runs)
+model RunResult {
+  id           String   @id @default(uuid())
+  saveId       String   @unique
+  playerId     String?  // account, when signed in
+  guestId      String?  // the browser's guest id otherwise
+  seatKey      String   // "flashpointId:side" or "scenario:mode:country"
+  difficulty   String
+  seed         Int
+  score        Int      // Presidency Score, 0-1000
+  grade        String
+  stars        Int
+  verdict      String
+  parts        String   // JSON [mission, timing, leadership, finish]
+  achievements String   // JSON string[]
+  detail       String?  // JSON { seedCode, series, choices, aiTier } for Compare runs
+  createdAt    DateTime @default(now())
+
+  @@index([seatKey, score])
+}

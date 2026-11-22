@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { z } from "zod";
+import { startSnapshot } from "./chronicle.js";
 import { runDirector } from "./crises.js";
 import { generateAgenda } from "./meetings.js";
 import { combineSeed, createSeed, SeededRandom } from "./seed.js";
@@ -20,6 +21,7 @@ import {
   MODE_TURNS,
   type NuclearStatus,
   type ObjectiveCondition,
+  ObjectiveConditionSchema,
   ObjectiveSchema,
   PendingDecisionSchema,
   type RegimeType,
@@ -126,6 +128,55 @@ const ScriptedCrisisSchema = z.object({
   }),
 });
 
+/** A condition read from the player's world for the reveal; the label is optional here. */
+const RevealConditionSchema = ObjectiveConditionSchema.extend({ label: z.string().default("") });
+
+/**
+ * "What really happened", per playable side: one row per topic pairing the real-world outcome
+ * with a condition read from the player's world (reveal.ts builds the truth table from it).
+ */
+export const RealitySchema = z.object({
+  asOf: z.string().default("2026-11"),
+  rows: z
+    .array(
+      z.object({
+        topic: z.string(),
+        real: z.string(), // the real-world outcome, one hedged line
+        // Read from the player's world; without it the row is Context (not comparable)
+        yours: RevealConditionSchema.optional(),
+        // "In your world" text when the condition is met / missed ({firstMet}, {lastMonth})
+        yoursText: z.object({ met: z.string(), missed: z.string() }).optional(),
+        // Which result beats reality: "met"/"missed"; "same": meeting it matches reality (and
+        // missing it is worse); "context": not comparable
+        better: z.enum(["met", "missed", "same", "context"]).default("met"),
+        // Which result matches reality, when one does (verdict Same instead of Worse)
+        same: z.enum(["met", "missed"]).optional(),
+      }),
+    )
+    .default([]),
+  fear: z.string().optional(), // "what experts fear": the forward-looking last row
+  sources: z.array(z.number()).default([]), // indexes into the flashpoint's `sources`
+});
+export type RealityData = z.infer<typeof RealitySchema>;
+
+/**
+ * The side's signature achievement. `rule` is the player-facing text; `conditions` (all met at
+ * the end) and `byTurn` (each first met and held by that month, 1-based) make it checkable.
+ */
+export const SignatureSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  rule: z.string().default(""),
+  conditions: z.array(RevealConditionSchema).default([]),
+  byTurn: z.number().optional(),
+});
+export type SignatureData = z.infer<typeof SignatureSchema>;
+
+export const FlashpointObjectiveSchema = ObjectiveSchema.extend({
+  reality: RealitySchema.optional(),
+  signature: SignatureSchema.optional(),
+});
+
 export const FlashpointSchema = z.object({
   id: z.string(),
   title: z.string(),
@@ -178,7 +229,7 @@ export const FlashpointSchema = z.object({
         .default({}),
     })
     .default({ wars: [], endWars: [], relations: [], countries: {} }),
-  objectives: z.record(z.string(), ObjectiveSchema),
+  objectives: z.record(z.string(), FlashpointObjectiveSchema),
   scripted: z.record(z.string(), z.array(ScriptedCrisisSchema)).default({}),
   debrief: z.string().default(""),
 });
@@ -259,6 +310,8 @@ export class DataLoader {
     world.pendingDecisions = opening.decisions;
     world.eventQueue = opening.events;
     world.agenda = generateAgenda(world);
+    // The opening picture the end reveal measures against (chronicle.ts)
+    world.chronicle = startSnapshot(world);
     return world;
   }
 
@@ -413,7 +466,13 @@ export class DataLoader {
         fp.turns + 1,
       );
     }
-    world.objective = fp.objectives[world.playerCountryId] ?? null;
+    // Reality rows and the signature stay in the flashpoint file: the reveal reads them from there
+    const {
+      reality: _reality,
+      signature: _signature,
+      ...objective
+    } = fp.objectives[world.playerCountryId] ?? {};
+    world.objective = "title" in objective ? (objective as WorldState["objective"]) : null;
     if (world.objective && !world.objective.debrief) world.objective.debrief = fp.debrief;
     // The flashpoint's own brief is the backstory: a generic rise-to-power story would contradict it
     if (player) {

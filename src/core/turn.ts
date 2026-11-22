@@ -1,4 +1,5 @@
 import { actionRules, orderKey } from "./availability.js";
+import { recordMonth } from "./chronicle.js";
 import { actionCostM, actionCostPC, MAX_ORDERS, PC_CAP, politicalCapitalIncome } from "./costs.js";
 import { applyEffects, raiseCrisis, runDirector, scheduleFollowUp } from "./crises.js";
 import { EventEngine } from "./events.js";
@@ -525,6 +526,12 @@ export class TurnEngine {
         governmentChanges,
         playerActions,
       );
+    // The session's record for the end reveal (chronicle.ts): this month, final month included
+    recordMonth(world, report, {
+      before: currentState,
+      wars: warSummaries,
+      resolved: resolvedActions,
+    });
 
     world.turn += 1;
     world.date = advanceMonth(world.date);
