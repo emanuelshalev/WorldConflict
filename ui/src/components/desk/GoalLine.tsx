@@ -59,11 +59,11 @@ export function GoalLine() {
       )}
       {deskMode === 'desk' && (
         <div className="goal-view seg" role="tablist" aria-label="Desk view">
-          <button type="button" role="tab" aria-selected={deskView === 'focus'} className={deskView === 'focus' ? 'on' : ''} onClick={() => setDeskView('focus')}>
-            <IconLayoutList size={15} aria-hidden /> Focus
+          <button type="button" role="tab" aria-selected={deskView === 'focus'} aria-label="Focus view" className={deskView === 'focus' ? 'on' : ''} onClick={() => setDeskView('focus')}>
+            <IconLayoutList size={15} aria-hidden /> <span className="gv-word">Focus</span>
           </button>
-          <button type="button" role="tab" aria-selected={deskView === 'full'} className={deskView === 'full' ? 'on' : ''} onClick={() => setDeskView('full')}>
-            <IconLayoutColumns size={15} aria-hidden /> Full desk
+          <button type="button" role="tab" aria-selected={deskView === 'full'} aria-label="Full desk" className={deskView === 'full' ? 'on' : ''} onClick={() => setDeskView('full')}>
+            <IconLayoutColumns size={15} aria-hidden /> <span className="gv-word">Full desk</span>
           </button>
         </div>
       )}

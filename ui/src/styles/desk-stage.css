@@ -157,7 +157,7 @@
 .rail-foot .approve { justify-content: center; min-height: 48px; border-color: rgba(242, 169, 59, 0.5); color: var(--accent); gap: 6px; flex-wrap: wrap; }
 .approve-against { color: #ff9a9b; font-weight: 500; }
 .rail-foot .hint { font-size: 13px; color: var(--text-3); text-align: center; }
-.rail-foot .hint.over { color: var(--war); display: flex; gap: 5px; align-items: center; justify-content: center; }
+.rail-foot .hint.over { color: var(--war); display: flex; gap: 5px; align-items: center; justify-content: center; background: none; border: 0; font: inherit; font-size: 13px; cursor: pointer; min-height: 36px; }
 .ex-wrap { position: relative; }
 .execute-btn { width: 100%; min-height: 64px; display: grid !important; place-items: center; align-content: center; gap: 2px; border-radius: 14px; background: linear-gradient(180deg, #ffc35c, var(--accent) 60%, #d98e22); color: var(--accent-ink); border: 0; box-shadow: 0 5px 0 #8d5512, 0 12px 26px rgba(242, 169, 59, 0.22); transition: transform var(--dur-press) var(--ease-out), box-shadow var(--dur-press) var(--ease-out); }
 .execute-btn:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 1px 0 #8d5512, 0 4px 10px rgba(242, 169, 59, 0.2); }

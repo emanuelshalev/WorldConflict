@@ -132,6 +132,7 @@ function MoreDetail({ item, options }: { item: PendingDecision | Meeting; option
         return (
           <div key={o.id} className="move-more-row">
             <b>{o.label}</b>
+            {o.backedBy.length > 0 && <span className="move-more-back">Backed by the {o.backedBy.map((b) => ADVISOR_NAMES[b] ?? b).join(' and the ')}</span>}
             <div className="arrows">
               {effectArrows(o, countryName).map((a, i) => (
                 <span key={`${a.label}-${i}`} className={a.good ? 'delta-up' : 'delta-down'}>
@@ -228,6 +229,23 @@ export function DecisionStage({ item, primary = false, onlyLede = false }: { ite
         <p>
           <b>{ADVISOR_NAMES[lead] ?? 'Chief of Staff'}:</b> {quote ? <>“{quote}”</> : 'Your call.'}
         </p>
+        <SelectionBadge sel={sel} />
+        {!meeting && sel.kind === 'cabinet' && cab && (
+          <button type="button" className="wc-btn ghost small move-approve" onClick={() => choose(item.id, choices[item.id] ?? cab.id)}>
+            <IconCheck size={14} aria-hidden /> Approve cabinet pick
+          </button>
+        )}
+        {meeting && sel.kind === 'waiting' && cab && !full && (
+          <button type="button" className="wc-btn ghost small" onClick={() => choose(item.id, cab.id)}>
+            <IconCheck size={14} aria-hidden /> Attend: {cab.label}
+          </button>
+        )}
+        {meeting && choices[item.id] !== meeting.defaultOptionId && meeting.defaultOptionId && (
+          <button type="button" className="wc-btn ghost small" onClick={() => choose(item.id, meeting.defaultOptionId as string)}>
+            <IconUserShare size={14} aria-hidden /> Send a deputy
+          </button>
+        )}
+        {difficulty === 'ANALYST' && !meeting && <span className="move-note">Easy: your cabinet never picks against your mission.</span>}
         <button type="button" className="wc-btn ghost small" onClick={consult}>
           <IconMessageCircle size={15} aria-hidden /> Ask your staff
         </button>
@@ -260,25 +278,6 @@ export function DecisionStage({ item, primary = false, onlyLede = false }: { ite
           </button>
         </p>
       )}
-      <div className="move-bar">
-        <SelectionBadge sel={sel} />
-        {!meeting && sel.kind === 'cabinet' && cab && (
-          <button type="button" className="wc-btn ghost small" onClick={() => choose(item.id, choices[item.id] ?? cab.id)}>
-            <IconCheck size={14} aria-hidden /> Approve cabinet pick
-          </button>
-        )}
-        {meeting && sel.kind === 'waiting' && cab && !full && (
-          <button type="button" className="wc-btn ghost small" onClick={() => choose(item.id, cab.id)}>
-            <IconCheck size={14} aria-hidden /> Attend: {cab.label}
-          </button>
-        )}
-        {meeting && choices[item.id] !== meeting.defaultOptionId && meeting.defaultOptionId && (
-          <button type="button" className="wc-btn ghost small" onClick={() => choose(item.id, meeting.defaultOptionId as string)}>
-            <IconUserShare size={14} aria-hidden /> Send a deputy
-          </button>
-        )}
-        {difficulty === 'ANALYST' && !meeting && <span className="move-note">Easy: your cabinet never picks against your mission.</span>}
-      </div>
       {more && rest && <p className="stage-rest">{rest}</p>}
       {more && <MoreDetail item={item} options={options} />}
     </article>

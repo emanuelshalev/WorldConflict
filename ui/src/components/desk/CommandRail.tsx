@@ -15,6 +15,8 @@ import { CapitalSeals } from '../game/CapitalSeal';
 import { CardCost } from '../game/CardShell';
 import { Stamp } from '../game/Stamp';
 import { CoachBubble } from './Coach';
+import { sound } from '../../lib/sound';
+import { pointTo } from '../../lib/pointer';
 import { AdvisorList } from './AdvisorList';
 import { scoreLine, useScoreWhy } from '../../lib/scoreWhy';
 import '../../styles/desk-stage.css';
@@ -232,12 +234,22 @@ export function ApproveButton({ compact = false }: { compact?: boolean }) {
   );
 }
 
+/** The meter an Execute-blocked reason is about. */
+const reasonTarget = (r: string) => (/capital/i.test(r) ? 'capital' : /defense/i.test(r) ? 'defense' : /meeting/i.test(r) ? 'meetings' : 'orders');
+
+/** Execute with its sound (design-feel 6.2): the paper slide and drum, then the turn stamp. */
+function runWithSound(ex: ReturnType<typeof useExecute>) {
+  if (ex.disabled) return;
+  sound.play('execute');
+  ex.run();
+}
+
 export function ExecuteButton({ compact = false }: { compact?: boolean }) {
   const ex = useExecute();
   const world = useGameStore((s) => s.worldState);
   const left = world ? world.maxTurns - world.turn : 0;
   return (
-    <button type="button" className="wc-btn primary big execute-btn" disabled={ex.disabled} onClick={ex.run} title={ex.reason ?? 'Execute month (Ctrl+Enter)'} data-point="execute">
+    <button type="button" className="wc-btn primary big execute-btn" disabled={ex.disabled} onClick={() => runWithSound(ex)} title={ex.reason ?? 'Execute month (Ctrl+Enter)'} data-point="execute">
       <span className="ex-main">
         <IconSend size={18} aria-hidden /> {ex.loading ? 'Resolving...' : 'Execute month'}
       </span>
@@ -277,9 +289,9 @@ export function CommandRail({ catalogTarget }: { catalogTarget: string }) {
       <div className="rail-foot">
         <ApproveButton />
         {ex.reason && (
-          <div className="hint over" role="alert">
+          <button type="button" className="hint over" role="alert" onClick={() => pointTo(reasonTarget(ex.reason ?? ''))}>
             <IconAlertTriangle size={13} aria-hidden /> {ex.reason}
-          </div>
+          </button>
         )}
         <div className="ex-wrap">
           <CoachBubble step="execute" place="above" />
@@ -372,7 +384,7 @@ export function CommandStrip() {
             <IconAlertTriangle size={13} aria-hidden /> {ex.reason}
           </span>
         )}
-        <button type="button" className="wc-btn primary" disabled={ex.disabled} onClick={ex.run} title={ex.reason ?? 'Execute month (Ctrl+Enter)'}>
+        <button type="button" className="wc-btn primary" disabled={ex.disabled} onClick={() => runWithSound(ex)} title={ex.reason ?? 'Execute month (Ctrl+Enter)'}>
           <IconSend size={16} aria-hidden /> {ex.loading ? 'Resolving...' : 'Execute month'}
         </button>
       </div>

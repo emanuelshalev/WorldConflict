@@ -50,7 +50,7 @@
 
 /* The stage: the crisis scene is the hero, cards overlap its bottom edge */
 .stage { display: grid; gap: 0; min-width: 0; }
-.stage-hero { position: relative; min-height: 220px; height: clamp(220px, calc(100vh - 560px), 380px); border-radius: 18px 18px 0 0; overflow: hidden; background: #060a12; isolation: isolate; }
+.stage-hero { position: relative; min-height: 200px; height: clamp(200px, calc(100vh - 720px), 380px); border-radius: 18px 18px 0 0; overflow: hidden; background: #060a12; isolation: isolate; }
 .stage-hero > .scene { position: absolute; inset: 0; width: 100%; height: 100%; aspect-ratio: auto; border-radius: 0; box-shadow: none; }
 .stage-shade { position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(5, 8, 14, 0) 25%, rgba(5, 8, 14, 0.55) 55%, rgba(5, 8, 14, 0.94) 100%); pointer-events: none; }
 .stage-text { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 0 28px 18px; display: grid; gap: 8px; justify-items: start; max-width: 860px; }
@@ -116,7 +116,6 @@
   .stage-hero .stage-lede { display: none; }
   .stage-staff { margin: 0 -16px; border-radius: 0; flex-wrap: wrap; border-left: 0; border-right: 0; }
   .stage-staff p { flex-basis: calc(100% - 50px); }
-  .stage-staff .wc-btn { margin-left: 46px; }
   .move-cards, .move-cards.n-2, .move-cards.n-1, .move-cards.n-4 { grid-template-columns: minmax(0, 1fr); gap: 18px; }
   .move-card.wc-card-row { min-height: 150px; }
   .move-card .wc-card-desc { display: -webkit-box; }
@@ -268,3 +267,35 @@
 .advisors.compact .adv-added-word { min-height: 32px; padding: 2px 8px; font-size: 13px; }
 .advisors.compact .adv-added { grid-auto-flow: column; align-items: center; gap: 8px; }
 .adv-add.is-off { max-width: 210px; }
+
+/* Short screens: the advisors stay in view under the cards (backers move to "More") */
+@media (max-height: 959px) and (min-width: 900px) {
+  .move-card .wc-card-byline { display: none; }
+}
+.move-more-back { font-size: 13px; color: var(--text-2); }
+
+.goal-main { overflow: hidden; flex: 0 1 auto; }
+.goal-sum { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+@media (max-width: 1279px) and (min-width: 601px) {
+  .goal-view .gv-word { display: none; }
+  .goal-view button { padding: 4px 10px; min-width: 44px; justify-content: center; }
+}
+/* The staff line carries the named selection and Approve, so the advisors stay in view */
+.stage-staff .sel-badge { flex: none; }
+.stage-staff .move-approve { flex: none; }
+@media (max-width: 1279px) {
+  .stage-staff { flex-wrap: wrap; row-gap: 8px; }
+  .stage-staff p { flex: 1 1 calc(100% - 50px); }
+  .stage-staff .sel-badge { margin-left: 46px; }
+}
+
+/* Touch targets: 44 px at 390 and 1024 (design-feel 8.1) */
+.coach-foot .wc-btn, .mission-help, .goal-view button, .adv-more, .rc-chip { min-height: 44px; }
+.adv-added .link { display: inline-flex; align-items: center; min-height: 44px; padding: 0 4px; }
+.goal-step { min-height: 44px; }
+@media (max-width: 600px) { .goal-view button, .goal-step { min-height: 44px; } }
+
+/* Pointing (until the orders package's pointer.css lands, same class) */
+[data-point].is-pointed { animation: wc-point 0.8s var(--ease-out) 2; box-shadow: 0 0 0 2px var(--accent); border-radius: 10px; }
+@keyframes wc-point { 50% { box-shadow: 0 0 0 10px rgba(242, 169, 59, 0.18); transform: scale(1.03); } }
+@media (prefers-reduced-motion: reduce) { [data-point].is-pointed { animation: none; } }

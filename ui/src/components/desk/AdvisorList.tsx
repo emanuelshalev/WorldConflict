@@ -6,6 +6,8 @@ import { pcCost } from '../../lib/actions';
 import { MAX_ORDERS } from '../../lib/budget';
 import { missionTag } from '../../lib/month';
 import { CardCost } from '../game/CardShell';
+import { pointTo } from '../../lib/pointer';
+import { sound } from '../../lib/sound';
 import { useGoalHighlight } from '../../lib/goals';
 import { CoachBubble } from './Coach';
 import '../../styles/month.css';
@@ -48,7 +50,12 @@ function AdvisorRow({ r, compact }: { r: Row; compact?: boolean }) {
   const mt = missionTag(impact, status);
   const pointed = hl !== null && !!impact?.links?.some((l) => l.index === hl && l.effect === 'helps');
   const add = async () => {
-    if (blocked || busy) return;
+    if (blocked) {
+      sound.play('refuse');
+      pointTo(cost > left ? 'capital' : 'orders', `${r.label} needs ◆ ${cost}`);
+      return;
+    }
+    if (busy) return;
     setBusy(true);
     const ok = await queueOrder({ ...r.action, origin: 'player', why: `${r.who}: ${r.why}` });
     setBusy(false);
