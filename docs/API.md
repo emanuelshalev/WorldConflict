@@ -11,6 +11,7 @@ Base URL: `http://localhost:8080`. All bodies are JSON. Every response has `succ
 | POST | `/api/new-game` | Start a session |
 | POST | `/api/turn` | Resolve one month |
 | POST | `/api/preview-action` | Predict an order's effects (no state change) |
+| POST | `/api/orders/menu` | Every order for one target, with cost, chance and availability |
 | GET | `/api/report/:saveId` | End-of-session report |
 | GET | `/api/load/:saveId` | Load a save |
 | GET | `/api/saves?playerId=` | List saves for an account or guest id |
@@ -38,7 +39,9 @@ Base URL: `http://localhost:8080`. All bodies are JSON. Every response has `succ
   "objectiveStatus": [ { "label": "…", "met": true, "failed": false, "bonus": false } ],
   "score": { "economic": 25, "security": 25, "approval": 25, "prestige": 25, "total": 100 },
   "gameOver": null,
-  "playerBackstory": "…"
+  "playerBackstory": "…",
+  "pcIncome": 3,   // political capital refill next month (2, 3 in a Flashpoint, +1 on Analyst)
+  "pcCap": 6       // the most political capital the bank can hold
 }
 ```
 
@@ -131,7 +134,11 @@ While a game runs, `worldState.chronicle` is sent without its ground-truth parts
 
 ## POST `/api/preview-action`
 
-`{ "saveId": "…", "action": { … } }` → `preview: { summary, costM, budgetM, costPC, pcAvailable, affordable, successChance (0–100 or null), effects[], risks[], blocked, missionWarning }`. `missionWarning` is non-null when the order would fail ("This ends your mission: …"), endanger ("Mission at risk: …") or cost a bonus star of the session objective; the desk asks for confirmation before queuing it.
+`{ "saveId": "…", "action": { … } }` → `preview: { summary, costM, budgetM, costPC, pcAvailable, affordable, successChance (0–100 or null), effects[], risks[], blocked, block, irreversible, missionWarning }`. `block` is the rule-layer reason as `{ code, reason, fix, points, alt? }` (`src/core/availability.ts`) and `blocked === block?.reason`. `missionWarning` is non-null when the order would fail ("This ends your mission: …"), endanger ("Mission at risk: …") or cost a bonus star of the session objective; the order card asks for confirmation on its confirm face before queuing it.
+
+## POST `/api/orders/menu`
+
+`{ "saveId": "…", "targetCountryId": "IRN" | null }` → `{ turn, targetCountryId, pcIncome, pcCap, orders[] }`. One entry per engine order (`src/core/orders.ts`) that acts on that country, or every order that acts at home when `targetCountryId` is null: `{ id, type, params, label, targeted, costPC, costM, budgetM, defenseShare, chance, block, irreversible, missionWarning, summary, effects[], risks[] }`. `block` is the rule layer only (wars, pacts, warheads, stability). The client adds the month layer (capital left, orders this month, defense budget left, duplicates) from the unsent month, with the same copy as `monthBlock()`. One request per menu or catalog open, cached per `turn:target`; 400 on an unknown country, 404 on an unknown save.
 
 ## POST `/api/chat/advisor`
 
