@@ -12,7 +12,7 @@ Sits between the panel and the backlog. Output: `<instance>/runs/iter-NN/triage.
    - **Rework** when completion is acceptable but one archetype's time or retries are far worse.
    - **Never remove** a feature (instance rule, if the owner sets it). Low-use features are surfaced better or made optional instead.
 6. **Ledger.** Every decision that changes the product gets an entry in `<instance>/ledger.md`.
-7. **Regression registry.** Every finding marked fixed gets an entry in `<instance>/regressions.yaml` with at least one automated guard (a unit test, or a UI scenario that replays the customer's reproduction steps). The verify gate runs all guards before every merge and every panel round; a finding without a guard cannot be marked fixed.
+7. **Regression registry.** Every finding marked fixed gets an entry in `<instance>/regressions.yaml` with at least one automated guard (a unit test, or a UI scenario that replays the customer's reproduction steps). The verify gate runs all guards before every merge and every panel round; a finding without a guard cannot be marked fixed. An entry has an id, a one-line title, the source, `covers:` globs (the code it guards, used by change-based selection) and guards: a unit test file plus test name substring, or a short scenario under `<instance>/scenarios-qa/regressions/<id>.mjs`. The meta-check fails when an entry has no guard, a guard file or test name disappears, or a backlog item marked Done is missing (format and checker: `kit/regressions.mjs`).
 8. **Regression check on new feedback.** Before clustering a new round, compare its friction and bugs with the registry. A previously fixed finding that reappears is marked REGRESSED, treated as at least S2, and fixed before new work; the guard that missed it is strengthened.
 
 ## Release gate (template)
@@ -21,4 +21,4 @@ Each instance defines concrete thresholds in `<instance>/gate.md`. The template:
 - No open S1 or S2 finding, and no REGRESSED finding; every registry guard passes.
 - Weighted recommend >= the instance threshold, no persona below its floor.
 - The early-quitter persona completes a first session without quitting.
-- The instance's own quality checks (tests, lints, build, domain harnesses) are green.
+- The instance's own quality checks (tests, lints, build, domain harnesses) are green, run as one command (the verify gate, `kit/verify-runner.mjs`), with every finding guard in the regression registry passing.
