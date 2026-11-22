@@ -1,7 +1,7 @@
 {
   "id": "2026",
   "name": "Age of Ruptures (Nov 2026)",
-  "description": "November 2026: Russia grinds on in Ukraine, an undeclared US–Israeli war with Iran has closed and reopened Hormuz, the Houthis contest Bab al-Mandab, New START is dead and Washington's tariffs have strained every alliance. The US midterms, Israeli coalition talks and Abu Dhabi peace talks all land in your first month.",
+  "description": "November 2026: Russia grinds on in Ukraine, an undeclared US–Israeli war with Iran has closed and reopened Hormuz, the Houthis contest Bab al-Mandab, New START is dead and Washington's tariffs have strained every alliance. The midterms have just handed Democrats both houses of Congress, Israel's hung Knesset cannot form a government, and the Abu Dhabi peace talks ended without a breakthrough.",
   "startYear": 2026,
   "startMonth": 11,
   "globalTension": 74,
@@ -14,7 +14,7 @@
     "New START expired in February: for the first time since 1972 no treaty limits US and Russian strategic forces.",
     "Taiwan Strait: Beijing rehearsed a blockade of Keelung and Kaohsiung last December, while Taipei's opposition halved Lai's special defence budget.",
     "Trade: the Supreme Court struck down Trump's emergency tariffs in February; a 10% global tariff replaced them, and allies from Ottawa to Copenhagen are still smarting.",
-    "This week: US midterms (3 Nov), Israel's hung-Knesset count (4 Nov), and Brazil's losing camp contesting Lula's narrow re-election."
+    "Just behind you: the 3 November midterms gave Democrats the House and Senate from January; Israel's new Knesset, sworn in on 10 November, has no majority for anyone; in Brazil, Flávio Bolsonaro is contesting Lula's narrow runoff win of 25 October."
   ],
   "leaders": {
     "USA": {"name": "Donald Trump", "title": "President", "style": "HAWKISH", "origin": "ELECTED", "sinceDate": "2025-01"},
