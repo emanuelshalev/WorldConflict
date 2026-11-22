@@ -8,7 +8,9 @@
     "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-october-16-2026",
     "https://en.wikipedia.org/wiki/Peace_negotiations_in_the_Russian_invasion_of_Ukraine",
     "https://www.euronews.com/2025/12/20/the-eu-plans-to-raise-90-billion-in-joint-debt-for-ukraine-heres-how",
-    "https://ukranews.com/en/news/1183407-zelenskyy-proposes-rada-extend-martial-law-and-mobilization-until-january-29-2027"
+    "https://ukranews.com/en/news/1183407-zelenskyy-proposes-rada-extend-martial-law-and-mobilization-until-january-29-2027",
+    "https://www.al-monitor.com/originals/2026/11/us-attempts-new-peace-push-first-russia-ukraine-talks-nine-months",
+    "https://saudigazette.com.sa/article/666189/world/abu-dhabi-talks-end-with-russia-ukraine-deal-on-prisoner-swap"
   ],
   "scenarioId": "2026",
   "date": "2026-11",
@@ -49,7 +51,112 @@
         {"kind": "STAT_MIN", "stat": "approval", "min": 75, "label": "A united home front (approval 75%+)"}
       ],
       "par": 102,
-      "debrief": "What really happened: by late 2026 the war had become attritional and drone-dominated. Russia gained under 1% of Ukraine in 2025 and almost nothing in 2026 at enormous cost, while diplomacy oscillated between US-drafted plans (28 points, then 19, then Kyiv's 20) and Russian maximalism over Donetsk. What experts fear: a ceasefire with no guarantees that becomes a rearmament pause, a 'Minsk III'; or a collapse of Ukrainian manpower and grid resilience that turns a stalemate into a breakthrough."
+      "debrief": "What really happened: by late 2026 the war had become attritional and drone-dominated. Russia gained under 1% of Ukraine in 2025 and almost nothing in 2026 at enormous cost, while diplomacy oscillated between US-drafted plans (28 points, then 19, then Kyiv's 20) and Russian maximalism over Donetsk. What experts fear: a ceasefire with no guarantees that becomes a rearmament pause, a 'Minsk III'; or a collapse of Ukrainian manpower and grid resilience that turns a stalemate into a breakthrough.",
+      "reality": {
+        "asOf": "2026-11",
+        "rows": [
+          {
+            "topic": "The front",
+            "real": "Russia gained barely 100 km² net in 2026, by ISW's count; about a fifth of Ukraine remains occupied.",
+            "yours": {
+              "kind": "WAR_RESULT",
+              "targetId": "RUS",
+              "min": 42,
+              "label": "Front at 42 or better, or war over"
+            },
+            "yoursText": {
+              "met": "Your line held, or the war ended.",
+              "missed": "Russia broke through on your watch."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The peace",
+            "real": "Abu Dhabi talks on 10-11 November, the first in nine months, produced a prisoner swap but no settlement.",
+            "yours": {
+              "kind": "WAR_ENDED",
+              "targetId": "RUS",
+              "otherId": "UKR",
+              "label": "No Russia-Ukraine war at the end"
+            },
+            "yoursText": {
+              "met": "The guns fell silent in month {firstMet}.",
+              "missed": "No peace by the end."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "Washington",
+            "real": "US support swung with the peace plans (28 points, then 19, then Kyiv's 20); Europe carried most of the funding, reportedly.",
+            "yours": {
+              "kind": "RELATION_MIN",
+              "targetId": "USA",
+              "min": 33,
+              "label": "US relations at 33 or more"
+            },
+            "yoursText": {
+              "met": "Washington stayed in your corner.",
+              "missed": "Washington drifted away."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The home front",
+            "real": "Martial law and mobilisation were extended into 2027, through another winter of strikes on the grid.",
+            "yours": {
+              "kind": "STAT_MIN",
+              "stat": "stability",
+              "min": 55,
+              "label": "Stability at 55 or more"
+            },
+            "yoursText": {
+              "met": "The country held together.",
+              "missed": "War weariness frayed the country."
+            },
+            "better": "met"
+          }
+        ],
+        "fear": "A ceasefire with no guarantees that becomes a rearmament pause, or a collapse in manpower and grid resilience that turns stalemate into breakthrough.",
+        "sources": [
+          0,
+          1,
+          2,
+          4,
+          5,
+          6
+        ]
+      },
+      "signature": {
+        "id": "ceasefire_ukr_peace_that_holds",
+        "name": "A Peace That Holds",
+        "rule": "End the war with US relations at 50 or more, British relations at 93 or more and stability at 55 or more.",
+        "conditions": [
+          {
+            "kind": "WAR_ENDED",
+            "targetId": "RUS",
+            "otherId": "UKR",
+            "label": "No Russia-Ukraine war at the end"
+          },
+          {
+            "kind": "RELATION_MIN",
+            "targetId": "USA",
+            "min": 50,
+            "label": "US relations at 50 or more"
+          },
+          {
+            "kind": "RELATION_MIN",
+            "targetId": "GBR",
+            "min": 93,
+            "label": "UK relations at 93 or more"
+          },
+          {
+            "kind": "STAT_MIN",
+            "stat": "stability",
+            "min": 55,
+            "label": "Stability at 55 or more"
+          }
+        ]
+      }
     },
     "RUS": {
       "title": "Victory on paper",
@@ -64,7 +171,103 @@
         {"kind": "SCORE_PAR", "min": 105, "label": "Score of 105+"}
       ],
       "par": 102,
-      "debrief": "What really happened: Russia held about 19% of Ukraine at the start of 2026 but gained almost nothing all year; Peskov said Russia 'needs peace, not a ceasefire', the Duma election in September 2026 handed United Russia a constitutional majority, and growth slid below 1%. What experts fear: that a frozen line simply resets the clock for the next offensive, or that a wartime economy running on reserves cracks faster than the front."
+      "debrief": "What really happened: Russia held about 19% of Ukraine at the start of 2026 but gained almost nothing all year; Peskov said Russia 'needs peace, not a ceasefire', the Duma election in September 2026 handed United Russia a constitutional majority, and growth slid below 1%. What experts fear: that a frozen line simply resets the clock for the next offensive, or that a wartime economy running on reserves cracks faster than the front.",
+      "reality": {
+        "asOf": "2026-11",
+        "rows": [
+          {
+            "topic": "The front",
+            "real": "Barely 100 km² of net gains in 2026, at heavy cost, by ISW's count.",
+            "yours": {
+              "kind": "WAR_RESULT",
+              "targetId": "UKR",
+              "min": 58,
+              "label": "Front at 58 or better, or war over"
+            },
+            "yoursText": {
+              "met": "Your forces pushed the line forward, or the war ended.",
+              "missed": "The offensive stalled."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The deal",
+            "real": "Moscow still demanded all of Donetsk at the November talks; only local truces and prisoner swaps.",
+            "yours": {
+              "kind": "WAR_ENDED",
+              "targetId": "RUS",
+              "otherId": "UKR",
+              "label": "No Russia-Ukraine war at the end"
+            },
+            "yoursText": {
+              "met": "A settlement came in month {firstMet}.",
+              "missed": "The war went on."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The economy",
+            "real": "Growth reportedly slid below 1% as the war economy ran down its reserves.",
+            "yours": {
+              "kind": "STAT_MIN",
+              "stat": "stability",
+              "min": 66,
+              "label": "Stability at 66 or more"
+            },
+            "yoursText": {
+              "met": "The home front stayed solid.",
+              "missed": "The strain showed at home."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "NATO",
+            "real": "No direct clash with NATO, despite drone incursions into Poland in 2025.",
+            "yours": {
+              "kind": "NO_WAR_WITH",
+              "targetId": "POL",
+              "label": "Never at war with Poland"
+            },
+            "yoursText": {
+              "met": "No war with NATO's front-line state.",
+              "missed": "The war spilled into Poland."
+            },
+            "better": "met"
+          }
+        ],
+        "fear": "A frozen line that simply resets the clock for the next offensive, or a war economy that cracks faster than the front.",
+        "sources": [
+          1,
+          2,
+          5,
+          6
+        ]
+      },
+      "signature": {
+        "id": "ceasefire_rus_out_of_trenches",
+        "name": "Out of the Trenches",
+        "rule": "End the war with US relations at -10 or more and stability at 66 or more.",
+        "conditions": [
+          {
+            "kind": "WAR_ENDED",
+            "targetId": "RUS",
+            "otherId": "UKR",
+            "label": "No Russia-Ukraine war at the end"
+          },
+          {
+            "kind": "RELATION_MIN",
+            "targetId": "USA",
+            "min": -10,
+            "label": "US relations at -10 or more"
+          },
+          {
+            "kind": "STAT_MIN",
+            "stat": "stability",
+            "min": 66,
+            "label": "Stability at 66 or more"
+          }
+        ]
+      }
     },
     "USA": {
       "title": "The dealmaker",
@@ -80,7 +283,108 @@
         {"kind": "SCORE_PAR", "min": 112, "label": "Score of 112+"}
       ],
       "par": 105,
-      "debrief": "What really happened: the 2025 Alaska summit, the 28-point plan and three trilateral rounds in Abu Dhabi and Geneva in early 2026 produced prisoner swaps, short holiday truces and the Oleshky local ceasefire, but no settlement; the Iran war then swallowed Washington's attention. What experts fear: a deal that trades Ukrainian territory for a pause without guarantees, teaching every revisionist power that patience beats deterrence."
+      "debrief": "What really happened: the 2025 Alaska summit, the 28-point plan and three trilateral rounds in Abu Dhabi and Geneva in early 2026 produced prisoner swaps, short holiday truces and the Oleshky local ceasefire, but no settlement; the Iran war then swallowed Washington's attention. What experts fear: a deal that trades Ukrainian territory for a pause without guarantees, teaching every revisionist power that patience beats deterrence.",
+      "reality": {
+        "asOf": "2026-11",
+        "rows": [
+          {
+            "topic": "The deal",
+            "real": "Alaska summit, peace plans and rounds in Abu Dhabi and Geneva: prisoner swaps and short truces, no settlement by late November.",
+            "yours": {
+              "kind": "WAR_ENDED",
+              "targetId": "RUS",
+              "otherId": "UKR",
+              "label": "No Russia-Ukraine war at the end"
+            },
+            "yoursText": {
+              "met": "You brokered the end of the war in month {firstMet}.",
+              "missed": "No settlement by the end."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "Kyiv",
+            "real": "Ties with Kyiv were strained by pressure to accept US-drafted plans, reportedly.",
+            "yours": {
+              "kind": "RELATION_MIN",
+              "targetId": "UKR",
+              "min": 40,
+              "label": "Ukraine relations at 40 or more"
+            },
+            "yoursText": {
+              "met": "Kyiv still trusted you at the end.",
+              "missed": "Kyiv stopped trusting you."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "Europe",
+            "real": "Moscow refused European seats at the table as of mid-November; Europe paid for most aid.",
+            "yours": {
+              "kind": "RELATION_MIN",
+              "targetId": "DEU",
+              "min": 60,
+              "label": "Germany relations at 60 or more"
+            },
+            "yoursText": {
+              "met": "Berlin stayed a close partner.",
+              "missed": "Berlin and Washington drifted apart."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "Russia",
+            "real": "No direct US-Russia clash; US envoys met Putin in Moscow on 12 November.",
+            "yours": {
+              "kind": "NO_WAR_WITH",
+              "targetId": "RUS",
+              "label": "Never at war with Russia"
+            },
+            "yoursText": {
+              "met": "No war with Russia.",
+              "missed": "You went to war with Russia."
+            },
+            "better": "met"
+          }
+        ],
+        "fear": "A deal that trades Ukrainian land for a pause without guarantees, teaching every revisionist power that patience beats deterrence.",
+        "sources": [
+          2,
+          5,
+          6
+        ]
+      },
+      "signature": {
+        "id": "ceasefire_usa_deal_of_century",
+        "name": "Deal of the Century",
+        "rule": "End the war with Ukrainian relations at 60 or more, German relations at 70 or more and approval at 65% or more.",
+        "conditions": [
+          {
+            "kind": "WAR_ENDED",
+            "targetId": "RUS",
+            "otherId": "UKR",
+            "label": "No Russia-Ukraine war at the end"
+          },
+          {
+            "kind": "RELATION_MIN",
+            "targetId": "UKR",
+            "min": 60,
+            "label": "Ukraine relations at 60 or more"
+          },
+          {
+            "kind": "RELATION_MIN",
+            "targetId": "DEU",
+            "min": 70,
+            "label": "Germany relations at 70 or more"
+          },
+          {
+            "kind": "STAT_MIN",
+            "stat": "approval",
+            "min": 65,
+            "label": "Approval at 65% or more"
+          }
+        ]
+      }
     }
   },
   "scripted": {

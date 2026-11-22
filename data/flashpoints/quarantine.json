@@ -48,7 +48,108 @@
         {"kind": "STAT_MIN", "stat": "stability", "min": 60, "label": "Lights on, nerves steady (stability 60%+)"}
       ],
       "par": 97,
-      "debrief": "What really happened (to 2026): PLA blockade drills grew more realistic every year, from Joint Sword in 2024 to Strait Thunder-2025A and Justice Mission-2025, while Taiwan's divided government stalled its own defence budget and US policy swung between record arms sales and summit deals with Beijing. What experts fear: a gray-zone 'quarantine' run by coast guards and customs law rather than warships, legally deniable and never quite an act of war, that slowly strangles an island importing almost all of its energy, and forces Taipei or Washington to choose between capitulation and firing first."
+      "debrief": "What really happened (to 2026): PLA blockade drills grew more realistic every year, from Joint Sword in 2024 to Strait Thunder-2025A and Justice Mission-2025, while Taiwan's divided government stalled its own defence budget and US policy swung between record arms sales and summit deals with Beijing. What experts fear: a gray-zone 'quarantine' run by coast guards and customs law rather than warships, legally deniable and never quite an act of war, that slowly strangles an island importing almost all of its energy, and forces Taipei or Washington to choose between capitulation and firing first.",
+      "reality": {
+        "asOf": "2026-11",
+        "rows": [
+          {
+            "topic": "Peace",
+            "real": "No quarantine or blockade as of November 2026; the PLA rehearsed one in December 2025.",
+            "yours": {
+              "kind": "NO_WAR_WITH",
+              "targetId": "CHN",
+              "label": "Never at war with China"
+            },
+            "yoursText": {
+              "met": "Not a shot fired with China.",
+              "missed": "The quarantine became a war."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "Washington",
+            "real": "A record $11.1bn arms package, then a public US warning against independence after the May 2026 summit.",
+            "yours": {
+              "kind": "RELATION_MIN",
+              "targetId": "USA",
+              "min": 56,
+              "label": "US relations at 56 or more"
+            },
+            "yoursText": {
+              "met": "Washington stood by you.",
+              "missed": "Washington kept its distance."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "Japan",
+            "real": "Japan's prime minister called a Taiwan contingency potentially 'survival-threatening', and Beijing retaliated against Tokyo.",
+            "yours": {
+              "kind": "RELATION_MIN",
+              "targetId": "JPN",
+              "min": 95,
+              "label": "Japan relations at 95 or more"
+            },
+            "yoursText": {
+              "met": "Tokyo became a near-ally.",
+              "missed": "Tokyo stayed cautious."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The home front",
+            "real": "The opposition-run legislature cut the NT$1.25 trillion special defence budget by about 38% in May 2026, reportedly.",
+            "yours": {
+              "kind": "STAT_MIN",
+              "stat": "stability",
+              "min": 60,
+              "label": "Stability at 60 or more"
+            },
+            "yoursText": {
+              "met": "The island held together under pressure.",
+              "missed": "Pressure split the island."
+            },
+            "better": "met"
+          }
+        ],
+        "fear": "A deniable gray-zone quarantine, run by coast guards and customs law, that slowly strangles an island importing nearly all its energy.",
+        "sources": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      "signature": {
+        "id": "quarantine_twn_lights_on",
+        "name": "Eleven Days, and Then Some",
+        "rule": "Never at war with China, with US relations at 70 or more, Japanese relations at 95 or more and stability at 60 or more.",
+        "conditions": [
+          {
+            "kind": "NO_WAR_WITH",
+            "targetId": "CHN",
+            "label": "Never at war with China"
+          },
+          {
+            "kind": "RELATION_MIN",
+            "targetId": "USA",
+            "min": 70,
+            "label": "US relations at 70 or more"
+          },
+          {
+            "kind": "RELATION_MIN",
+            "targetId": "JPN",
+            "min": 95,
+            "label": "Japan relations at 95 or more"
+          },
+          {
+            "kind": "STAT_MIN",
+            "stat": "stability",
+            "min": 60,
+            "label": "Stability at 60 or more"
+          }
+        ]
+      }
     },
     "CHN": {
       "title": "Customs, not cannons",
@@ -64,7 +165,106 @@
         {"kind": "SCORE_PAR", "min": 122, "label": "Score of 122+"}
       ],
       "par": 115,
-      "debrief": "What really happened (to 2026): Beijing rehearsed a blockade of Taiwan's two great ports in December 2025, punished Japan's prime minister for calling a Taiwan contingency 'survival-threatening' with seafood bans and a dual-use export ban, and extracted a public US warning to Taipei at the May 2026 summit. Meanwhile the Central Military Commission was reportedly hollowed out by purges, including Zhang Youxia in January 2026. What experts fear: that a quarantine designed to stay below the threshold of war meets a jittery commander, an untested chain of command and an ally that decides to escort."
+      "debrief": "What really happened (to 2026): Beijing rehearsed a blockade of Taiwan's two great ports in December 2025, punished Japan's prime minister for calling a Taiwan contingency 'survival-threatening' with seafood bans and a dual-use export ban, and extracted a public US warning to Taipei at the May 2026 summit. Meanwhile the Central Military Commission was reportedly hollowed out by purges, including Zhang Youxia in January 2026. What experts fear: that a quarantine designed to stay below the threshold of war meets a jittery commander, an untested chain of command and an ally that decides to escort.",
+      "reality": {
+        "asOf": "2026-11",
+        "rows": [
+          {
+            "topic": "Taiwan",
+            "real": "No shooting war; pressure stayed in drills, coast guard patrols and trade measures.",
+            "yours": {
+              "kind": "NO_WAR_WITH",
+              "targetId": "TWN",
+              "label": "Never at war with Taiwan"
+            },
+            "yoursText": {
+              "met": "No war with Taiwan.",
+              "missed": "The quarantine became a war."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The Americans",
+            "real": "A trade truce agreed at Busan and extended at the May 2026 Beijing summit kept Washington cautious.",
+            "yours": {
+              "kind": "RELATION_MIN",
+              "targetId": "USA",
+              "min": -40,
+              "label": "US relations at -40 or more"
+            },
+            "yoursText": {
+              "met": "Ties with Washington held steady or improved.",
+              "missed": "Ties with Washington soured."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The US Navy",
+            "real": "No clash with US forces.",
+            "yours": {
+              "kind": "NO_WAR_WITH",
+              "targetId": "USA",
+              "label": "Never at war with the United States"
+            },
+            "yoursText": {
+              "met": "No clash with the United States.",
+              "missed": "You went to war with the United States."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The army",
+            "real": "Purges reportedly reached the top of the Central Military Commission, including Zhang Youxia in January 2026.",
+            "yours": {
+              "kind": "STAT_MIN",
+              "stat": "stability",
+              "min": 88,
+              "label": "Stability at 88 or more"
+            },
+            "yoursText": {
+              "met": "The Party and the army stayed in lockstep.",
+              "missed": "Strain showed inside the system."
+            },
+            "better": "met"
+          }
+        ],
+        "fear": "A quarantine designed to stay below war that meets a jittery commander, an untested chain of command and an ally that decides to escort.",
+        "sources": [
+          0,
+          2,
+          3,
+          4
+        ]
+      },
+      "signature": {
+        "id": "quarantine_chn_customs",
+        "name": "Paperwork, Not Gunfire",
+        "rule": "Never at war with Taiwan or the United States, with US relations at -30 or more and stability at 88 or more.",
+        "conditions": [
+          {
+            "kind": "NO_WAR_WITH",
+            "targetId": "TWN",
+            "label": "Never at war with Taiwan"
+          },
+          {
+            "kind": "NO_WAR_WITH",
+            "targetId": "USA",
+            "label": "Never at war with the United States"
+          },
+          {
+            "kind": "RELATION_MIN",
+            "targetId": "USA",
+            "min": -30,
+            "label": "US relations at -30 or more"
+          },
+          {
+            "kind": "STAT_MIN",
+            "stat": "stability",
+            "min": 88,
+            "label": "Stability at 88 or more"
+          }
+        ]
+      }
     },
     "USA": {
       "title": "Strategic ambiguity, tested",
@@ -80,7 +280,107 @@
         {"kind": "SCORE_PAR", "min": 112, "label": "Score of 112+"}
       ],
       "par": 107,
-      "debrief": "What really happened (to 2026): Washington approved a record US$11.1bn arms package for Taiwan in December 2025, then struck a trade truce with Beijing at Busan and extended it at the May 2026 Beijing summit, after which the President warned Taipei against independence. The Taiwan Relations Act still promises arms, not rescue. What experts fear: a quarantine that forces a binary choice the policy of ambiguity was built to avoid, escort and risk war or stand aside and watch every ally in Asia recalculate."
+      "debrief": "What really happened (to 2026): Washington approved a record US$11.1bn arms package for Taiwan in December 2025, then struck a trade truce with Beijing at Busan and extended it at the May 2026 Beijing summit, after which the President warned Taipei against independence. The Taiwan Relations Act still promises arms, not rescue. What experts fear: a quarantine that forces a binary choice the policy of ambiguity was built to avoid, escort and risk war or stand aside and watch every ally in Asia recalculate.",
+      "reality": {
+        "asOf": "2026-11",
+        "rows": [
+          {
+            "topic": "Peace",
+            "real": "No US-China military clash; the trade truce held through 2026.",
+            "yours": {
+              "kind": "NO_WAR_WITH",
+              "targetId": "CHN",
+              "label": "Never at war with China"
+            },
+            "yoursText": {
+              "met": "No war with China.",
+              "missed": "You went to war with China."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The strait",
+            "real": "No China-Taiwan war as of November 2026.",
+            "yours": {
+              "kind": "WAR_ENDED",
+              "targetId": "CHN",
+              "otherId": "TWN",
+              "label": "No China-Taiwan war at the end"
+            },
+            "yoursText": {
+              "met": "No China-Taiwan war at the end.",
+              "missed": "China and Taiwan were at war at the end."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "Taipei",
+            "real": "Arms flowed, but the President publicly warned Taipei against independence after the May summit.",
+            "yours": {
+              "kind": "RELATION_MIN",
+              "targetId": "TWN",
+              "min": 50,
+              "label": "Taiwan relations at 50 or more"
+            },
+            "yoursText": {
+              "met": "Taipei still trusted you.",
+              "missed": "Taipei stopped counting on you."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "Japan",
+            "real": "The alliance held as Beijing punished Tokyo with seafood and dual-use export bans.",
+            "yours": {
+              "kind": "RELATION_MIN",
+              "targetId": "JPN",
+              "min": 75,
+              "label": "Japan relations at 75 or more"
+            },
+            "yoursText": {
+              "met": "Tokyo stayed a close ally.",
+              "missed": "Tokyo began to hedge."
+            },
+            "better": "met"
+          }
+        ],
+        "fear": "A quarantine that forces the binary choice ambiguity was built to avoid: escort and risk war, or stand aside and watch Asia's allies recalculate.",
+        "sources": [
+          0,
+          2,
+          3
+        ]
+      },
+      "signature": {
+        "id": "quarantine_usa_ambiguity",
+        "name": "Ambiguity, Vindicated",
+        "rule": "No war with China or between China and Taiwan, with Taiwanese relations at 65 or more and Japanese relations at 85 or more.",
+        "conditions": [
+          {
+            "kind": "NO_WAR_WITH",
+            "targetId": "CHN",
+            "label": "Never at war with China"
+          },
+          {
+            "kind": "WAR_ENDED",
+            "targetId": "CHN",
+            "otherId": "TWN",
+            "label": "No China-Taiwan war at the end"
+          },
+          {
+            "kind": "RELATION_MIN",
+            "targetId": "TWN",
+            "min": 65,
+            "label": "Taiwan relations at 65 or more"
+          },
+          {
+            "kind": "RELATION_MIN",
+            "targetId": "JPN",
+            "min": 85,
+            "label": "Japan relations at 85 or more"
+          }
+        ]
+      }
     }
   },
   "scripted": {

@@ -6,7 +6,10 @@
   "sources": [
     "https://www.thejakartapost.com/world/2026/07/23/china-fires-water-cannon-on-philippine-ship-at-scarborough-shoal-manila-says",
     "https://www.arabnews.com/node/2649796/world",
-    "https://en.wikipedia.org/wiki/Scarborough_Shoal"
+    "https://en.wikipedia.org/wiki/Scarborough_Shoal",
+    "https://news.usni.org/2026/10/09/philippine-and-chinese-incidents-spike-in-south-china-sea-luzon-strait",
+    "https://www.aljazeera.com/news/2026/7/6/impeachment-trial-of-philippine-vice-president-sara-duterte-begins",
+    "https://news.usni.org/2026/08/03/chinese-warships-bombers-surge-to-scarborough-shoal-for-drills"
   ],
   "scenarioId": "2026",
   "date": "2026-11",
@@ -43,7 +46,108 @@
         {"kind": "STAT_MIN", "stat": "stability", "min": 55, "label": "Stability of 55%+ through the Duterte trial"}
       ],
       "par": 103,
-      "debrief": "What really happened: since 2012, when China took control of Scarborough Shoal after a standoff, Manila has faced a decade of gray-zone pressure, water cannon, lasers, rammings and blockades of resupply runs, that stopped just short of lethal force; 2026 brought a warship standoff in June and water-cannon attacks in July. What experts fear: the first death at sea that forces Washington to say, in public and under pressure, whether the Mutual Defense Treaty applies, and turns a reef into the trigger for a US–China clash outside Taiwan."
+      "debrief": "What really happened: since 2012, when China took control of Scarborough Shoal after a standoff, Manila has faced a decade of gray-zone pressure, water cannon, lasers, rammings and blockades of resupply runs, that stopped just short of lethal force; 2026 brought a warship standoff in June and water-cannon attacks in July. What experts fear: the first death at sea that forces Washington to say, in public and under pressure, whether the Mutual Defense Treaty applies, and turns a reef into the trigger for a US–China clash outside Taiwan.",
+      "reality": {
+        "asOf": "2026-11",
+        "rows": [
+          {
+            "topic": "The shoal",
+            "real": "Water cannon, a warship standoff in June and at least six incidents in early October, but no shooting war.",
+            "yours": {
+              "kind": "NO_WAR_WITH",
+              "targetId": "CHN",
+              "label": "Never at war with China"
+            },
+            "yoursText": {
+              "met": "No war with China.",
+              "missed": "The standoff became a war."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The treaty",
+            "real": "Washington reaffirmed that the Mutual Defense Treaty covers Philippine forces in the South China Sea.",
+            "yours": {
+              "kind": "RELATION_MIN",
+              "targetId": "USA",
+              "min": 78,
+              "label": "US relations at 78 or more"
+            },
+            "yoursText": {
+              "met": "The alliance with Washington held firm.",
+              "missed": "The alliance with Washington frayed."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "Japan",
+            "real": "A reciprocal access agreement with Japan took effect in 2025.",
+            "yours": {
+              "kind": "RELATION_MIN",
+              "targetId": "JPN",
+              "min": 85,
+              "label": "Japan relations at 85 or more"
+            },
+            "yoursText": {
+              "met": "Tokyo became a close partner.",
+              "missed": "Ties with Tokyo stayed modest."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The republic",
+            "real": "VP Sara Duterte's impeachment trial, narrowed to one charge in October, was reportedly still under way in November.",
+            "yours": {
+              "kind": "STAT_MIN",
+              "stat": "stability",
+              "min": 55,
+              "label": "Stability at 55 or more"
+            },
+            "yoursText": {
+              "met": "Politics at home held steady.",
+              "missed": "The feud at home shook the republic."
+            },
+            "better": "met"
+          }
+        ],
+        "fear": "The first death at sea, forcing Washington to say in public whether the treaty applies, and turning a reef into a US-China flashpoint.",
+        "sources": [
+          0,
+          2,
+          3,
+          4
+        ]
+      },
+      "signature": {
+        "id": "scarborough_phl_treaty_real",
+        "name": "The Treaty Made Real",
+        "rule": "Never at war with China, with US relations at 85 or more, Japanese relations at 85 or more and stability at 60 or more.",
+        "conditions": [
+          {
+            "kind": "NO_WAR_WITH",
+            "targetId": "CHN",
+            "label": "Never at war with China"
+          },
+          {
+            "kind": "RELATION_MIN",
+            "targetId": "USA",
+            "min": 85,
+            "label": "US relations at 85 or more"
+          },
+          {
+            "kind": "RELATION_MIN",
+            "targetId": "JPN",
+            "min": 85,
+            "label": "Japan relations at 85 or more"
+          },
+          {
+            "kind": "STAT_MIN",
+            "stat": "stability",
+            "min": 60,
+            "label": "Stability at 60 or more"
+          }
+        ]
+      }
     },
     "CHN": {
       "title": "Concrete facts",
@@ -59,7 +163,85 @@
         {"kind": "SCORE_PAR", "min": 122, "label": "Score of 122+"}
       ],
       "par": 115,
-      "debrief": "What really happened: China has controlled access to Scarborough Shoal since 2012, ignored the 2016 arbitral ruling against its claims, and steadily raised the pressure on Philippine vessels with coast guard and maritime militia ships rather than its navy. What experts fear: that reclamation turns the shoal into a militarised island 220 km from Manila, that a coast guard captain's ramming goes one step too far, and that a dispute managed in the gray zone for a decade suddenly involves the US Seventh Fleet."
+      "debrief": "What really happened: China has controlled access to Scarborough Shoal since 2012, ignored the 2016 arbitral ruling against its claims, and steadily raised the pressure on Philippine vessels with coast guard and maritime militia ships rather than its navy. What experts fear: that reclamation turns the shoal into a militarised island 220 km from Manila, that a coast guard captain's ramming goes one step too far, and that a dispute managed in the gray zone for a decade suddenly involves the US Seventh Fleet.",
+      "reality": {
+        "asOf": "2026-11",
+        "rows": [
+          {
+            "topic": "The shoal",
+            "real": "Pressure stayed with the coast guard and militia; the PLA held combat-readiness patrols around the shoal in late October.",
+            "yours": {
+              "kind": "NO_WAR_WITH",
+              "targetId": "PHL",
+              "label": "Never at war with the Philippines"
+            },
+            "yoursText": {
+              "met": "No war with the Philippines.",
+              "missed": "The standoff became a war."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "The Americans",
+            "real": "No clash with US forces, despite repeated treaty reaffirmations.",
+            "yours": {
+              "kind": "NO_WAR_WITH",
+              "targetId": "USA",
+              "label": "Never at war with the United States"
+            },
+            "yoursText": {
+              "met": "No clash with the United States.",
+              "missed": "You went to war with the United States."
+            },
+            "better": "met"
+          },
+          {
+            "topic": "Manila",
+            "real": "Relations with Manila at a low after repeated water-cannon incidents.",
+            "yours": {
+              "kind": "RELATION_MIN",
+              "targetId": "PHL",
+              "min": -50,
+              "label": "Philippines relations at -50 or more"
+            },
+            "yoursText": {
+              "met": "You lowered the temperature with Manila.",
+              "missed": "Relations with Manila stayed hostile."
+            },
+            "better": "met"
+          }
+        ],
+        "fear": "Reclamation that turns the shoal into a militarised island 220 km from Manila, and one ramming too many that draws in the US Seventh Fleet.",
+        "sources": [
+          0,
+          2,
+          3,
+          5
+        ]
+      },
+      "signature": {
+        "id": "scarborough_chn_quiet_waters",
+        "name": "Quiet Waters",
+        "rule": "Never at war with the Philippines or the United States, with Philippine relations at -30 or more.",
+        "conditions": [
+          {
+            "kind": "NO_WAR_WITH",
+            "targetId": "PHL",
+            "label": "Never at war with the Philippines"
+          },
+          {
+            "kind": "NO_WAR_WITH",
+            "targetId": "USA",
+            "label": "Never at war with the United States"
+          },
+          {
+            "kind": "RELATION_MIN",
+            "targetId": "PHL",
+            "min": -30,
+            "label": "Philippines relations at -30 or more"
+          }
+        ]
+      }
     }
   },
   "scripted": {
