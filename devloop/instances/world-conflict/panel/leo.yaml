@@ -13,6 +13,7 @@ success_criteria:
 deal_breakers:
   - {value: "One-line game over with nothing to share", evidence: inferred, source: round1}
   - {value: "Static UI that looks dead on camera", evidence: observed, source: RS-001}
+knowledge: {value: "Knows the big names and memes; does not know regional actors or the background of most crises", evidence: assumed, note: "added for RS-003 (CEO): flag every name or concept this persona would not know"}
 skill: {value: "Mid-high; tries to break things", evidence: inferred}
 patience: {value: "Low for dead air; high for chaos", evidence: inferred}
 reading: {value: "Skims; reacts to visuals", evidence: inferred}

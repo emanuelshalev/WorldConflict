@@ -13,6 +13,7 @@ deal_breakers:
   - {value: "Any wall of text before the first action", evidence: assumed}
   - {value: "A refused action whose reason she cannot see on screen", evidence: observed, source: RS-001}
   - {value: "UI that looks like work software (forms, tables, small grey buttons)", evidence: observed, source: RS-001}
+knowledge: {value: "Knows almost no foreign leaders or places beyond the biggest headlines; abbreviations and acronyms (UN agencies, NATO articles, IRGC) mean nothing to her", evidence: assumed, note: "added for RS-003 (CEO): flag every name or concept this persona would not know"}
 skill: {value: "Low for strategy; high for touch UI conventions", evidence: assumed}
 patience: {value: "Quits after 2 blocked or confusing moments, or 3 minutes without fun", evidence: observed, source: RS-001}
 reading: {value: "Reads button labels only; ignores tooltips and paragraphs", evidence: observed, source: RS-000}

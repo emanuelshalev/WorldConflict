@@ -13,6 +13,7 @@ deal_breakers:
   - {value: "Repeated cards or messages (quit in round 1 when the same crisis appeared twice)", evidence: inferred, source: round1}
   - {value: "A screen full of small buttons with no obvious next step", evidence: observed, source: RS-001}
   - {value: "Being told 'not enough X' without seeing what X is or how to get it", evidence: observed, source: RS-001}
+knowledge: {value: "Knows the headline wars (Ukraine, Gaza) from news apps; does not know most leaders outside the US and Europe, the Houthis, Bab al-Mandab, Scarborough Shoal, IAEA or what a 'quarantine' of Taiwan means", evidence: assumed, note: "added for RS-003 (CEO): flag every name or concept this persona would not know"}
 skill: {value: "Casual-to-mid; understands cards and swipes, not spreadsheets", evidence: assumed}
 patience: {value: "Abandons after 2 confusing moments in a row or a month that takes over 90 s", evidence: observed, source: "RS-000, RS-001"}
 reading: {value: "Reads headlines and the first sentence; skips paragraphs", evidence: observed, source: RS-000}

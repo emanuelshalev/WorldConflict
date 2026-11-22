@@ -14,6 +14,7 @@ success_criteria:
 deal_breakers:
   - {value: "Walls of text, spreadsheet screens, anything that feels like homework", evidence: assumed}
   - {value: "Getting blocked without seeing why (he will just tap everything)", evidence: observed, source: RS-001}
+knowledge: {value: "Knows Trump, Putin, Ukraine and 'the Middle East' from TikTok; does not know where Yemen or Taiwan's islands are, who runs most countries, or terms like sanctions, embargo, ceasefire terms", evidence: assumed, note: "added for RS-003 (CEO): flag every name or concept this persona would not know"}
 skill: {value: "High with touch games and their conventions, low with strategy and politics", evidence: assumed}
 patience: {value: "Very low: quits after about 60 s of nothing happening or 2 refusals", evidence: assumed}
 reading: {value: "Reads almost nothing; follows icons, colors, motion and the biggest button", evidence: assumed}

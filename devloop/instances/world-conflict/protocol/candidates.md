@@ -17,3 +17,5 @@ Phrased as player-facing outcomes, not implementation. Spread 100 points; cut th
 | C11 | A shorter, faster month: fewer screens between my decision and the result. |
 | C12 | A better share card and replay highlights to post. |
 | C13 | The end of a game is a big reveal: achievements, what went right and wrong, how I was seen, my stats, and a ranking I want to beat next time. |
+| C14 | When I meet a name, place or idea I do not know, I can tap it and get a short, clear explanation, and more if I want. |
+| C15 | The map shows what is going on in the world of the era I picked: who is stable, who is at war, who is allied, with names on it. |

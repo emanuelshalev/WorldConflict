@@ -16,6 +16,7 @@ deal_breakers:
   - {value: "Gamer jargon ('build', 'buff', 'meta') or unexplained abbreviations", evidence: assumed}
   - {value: "Being told she cannot do something with no plain-language reason", evidence: observed, source: RS-001}
   - {value: "Timers or pressure to act fast", evidence: assumed}
+knowledge: {value: "Follows Ukraine, the Middle East and US politics closely and knows their leaders; does not know Sudan's factions, South China Sea geography, newer leaders (Japan, Germany since 2025) or military terms (enrichment levels, A2/AD)", evidence: assumed, note: "added for RS-003 (CEO): flag every name or concept this persona would not know"}
 skill: {value: "Very low gaming experience; comfortable with a tablet, email and news sites; taps, does not drag or right-click", evidence: assumed}
 patience: {value: "Patient with content (will read a good briefing fully), impatient with interface puzzles: gives up after 3 'what do I press' moments", evidence: assumed}
 reading: {value: "Reads crisis text and history carefully; ignores UI labels in small caps and tiny badges", evidence: assumed}

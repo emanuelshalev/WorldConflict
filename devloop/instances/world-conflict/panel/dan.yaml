@@ -13,6 +13,7 @@ success_criteria:
 deal_breakers:
   - {value: "Fake depth; one repeated move wins", evidence: inferred, source: "RC gate"}
   - {value: "Refused orders with no rule shown", evidence: observed, source: RS-001}
+knowledge: {value: "Knows geopolitics well from games and books; knows most leaders; may not know the newest office holders or regional militias", evidence: assumed, note: "added for RS-003 (CEO): flag every name or concept this persona would not know"}
 skill: {value: "Expert strategist; reads tooltips; tests edge cases", evidence: inferred}
 patience: {value: "High for depth, low for opacity", evidence: inferred}
 reading: {value: "Reads everything, including numbers", evidence: inferred}

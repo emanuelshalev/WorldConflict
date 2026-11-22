@@ -13,6 +13,7 @@ success_criteria:
 deal_breakers:
   - {value: "Factual errors about current leaders or alliances", evidence: inferred, source: round3}
   - {value: "Being unable to do the obvious diplomatic move without a clear reason", evidence: observed, source: RS-001}
+knowledge: {value: "Expert on current affairs: knows leaders, alliances and recent events; will notice mistakes; does not need explanations and finds them noisy unless optional", evidence: assumed, note: "added for RS-003 (CEO): flag every name or concept this persona would not know"}
 skill: {value: "Mid gamer, expert in current affairs", evidence: inferred}
 patience: {value: "Medium; forgives clunky UI if content is accurate, but not opaque refusals", evidence: inferred}
 reading: {value: "Reads crisis text and debriefs fully, skims UI chrome", evidence: inferred}

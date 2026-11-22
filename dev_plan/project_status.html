@@ -660,14 +660,14 @@ $('decisionlist').innerHTML = STATUS.decisions.map((d) =>
 // LOOP DATA: the synthetic-customer development loop (updated every stage)
 // =====================================================================
 const LOOP = {
-  updated: "2026-11-22 10:40",
+  updated: "2026-11-22 13:30",
   iteration: 1,
   stage: 3, // index into stages
-  now: "<b>Iteration 1, stage 3 (Build).</b> Three of four design specs are done: <b>orders</b> (reasons on every control, point at the element, one vocabulary, one order card on desk and map), <b>month</b> (Your move, goal line with progress, advisors with why-now, a 2-screen month, score explained, autopilot no longer wins) and <b>the reveal</b> (election-night end sequence, Presidency Score, 37 achievements, perception, declassified truth, ranking and same-seed replay). Building now in parallel: order availability and glossary (main branch), month engine and reveal engine (isolated worktrees), real-history content for all 8 flashpoints. Waiting on the <b>feel</b> visual language spec before the UI build, and on QA's bug reproduction.",
+  now: "<b>Iteration 1, stage 3 (Build).</b> Merged so far: order availability with reasons and fixes, one order list and the glossary, the month engine (mission progress, advisors with reasons, helps/hurts tags, score breakdown, anti-repetition, fixed headlines), and real-history content for all 8 flashpoints (plus 4 factual fixes). 204 tests green. Building: the visual foundation (cards, seals, motion, sound, art that matches outcomes, performance) and the reveal engine. QA reproduced 8 of 10 reported bugs; the freezes were mostly our test setup (software rendering), now fixed in the kit. Your new feedback (RS-003) is two new goals: <b>G11</b> an era-aware world map with country names, and <b>G12</b> learn as you play with adjustable explainers; both are in design with variants that the customers will compare.",
   stages: [
     ["Plan", "goals"], ["Design", "specs"], ["Build", "code"], ["Verify", "QA"], ["Use", "customers"], ["Triage", "decide"], ["Report", "status"], ["Gate", "RC?"],
   ],
-  kpis: [["Iteration", "1 <small>building</small>"], ["Customer personas", "9"], ["Team personas", "8"], ["Real signals", "2 <small>CEO</small>"], ["Baseline recommend", "4.9 <small>/10 weighted</small>"], ["Decisions logged", "D-48"], ["Release gate", "<span style='color:var(--brand)'>not met</span>"]],
+  kpis: [["Iteration", "1 <small>building</small>"], ["Customer personas", "9"], ["Team personas", "8"], ["Real signals", "3 <small>CEO</small>"], ["Baseline recommend", "4.9 <small>/10 weighted</small>"], ["Decisions logged", "D-51"], ["Release gate", "<span style='color:var(--brand)'>not met</span>"]],
   goals: [
     ["G1", "A", "Never blocked without a reason and a way forward", "CEO RS-001", "doing"],
     ["G2", "A", "Point at what you mean (warnings highlight the element)", "CEO RS-001", "doing"],
@@ -679,6 +679,8 @@ const LOOP = {
     ["G8", "A", "A wide audience: non-gamers, teens, quick and long sessions", "CEO brief", "planned"],
     ["G9", "A", "Learn and test real history (what really happened, replay to compare)", "CEO brief", "planned"],
     ["G10", "A", "The reveal: an end of game worth waiting for (achievements, perception, stats, ranking)", "CEO RS-002", "doing"],
+    ["G11", "A", "A world map that fits and tells the story of its era (names, stability, wars, alliances)", "CEO RS-003", "doing"],
+    ["G12", "A", "Learn as you play: explainers for names, places, terms and situations, adjustable", "CEO RS-003", "doing"],
     ["P1", "B", "Reusable method, kept apart from the game", "CEO", "doing"],
     ["P2", "B", "Fast, safe iterations (more change, zero regressions)", "CEO", "doing"],
     ["P3", "B", "Quality by construction (ledger, spec or test, QA on every change)", "Method", "doing"],
@@ -752,7 +754,7 @@ const LOOP = {
     ["Reach the end", "Every usage round, at least 3 personas reach an end screen."],
     ["Report often", "This page and the journal update at every stage."],
   ],
-  gate: ["Every game goal G1 to G10 verified by QA and confirmed by the panel", "No open S1 or S2 finding", "Weighted would-recommend 7.0 or more, nobody below 6", "Weighted feels-like-a-game and agency 7.0 or more", "Olivia (early quitter) and Ruth (non-gamer) finish a first session without quitting", "Tests, lints, build, balance harness and smoke playtest green"],
+  gate: ["Every game goal G1 to G12 verified by QA and confirmed by the panel", "No open S1 or S2 finding", "Weighted would-recommend 7.0 or more, nobody below 6", "Weighted feels-like-a-game and agency 7.0 or more", "Olivia (early quitter) and Ruth (non-gamer) finish a first session without quitting", "Tests, lints, build, balance harness and smoke playtest green"],
   journal: [
     { date: "2026-11-21", iter: 0, title: "Setup", items: [
       "<b>Found:</b> three earlier persona rounds rated visuals 7/10, yet your playtest found the UI dashboard-like, blocking and unclear. The panel was too patient, read too carefully, and had no skeptic or quitter, which is the bias the research predicts.",

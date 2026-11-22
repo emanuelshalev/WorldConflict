@@ -5,7 +5,7 @@
 #   observed - confirmed by a real person (CEO playtest, real players)
 # Change log: every change cites a real signal or a synthetic round (see ../ledger.md).
 
-version: 1.1
+version: 1.2
 updated: 2026-11-21
 calibration_sources:
   - id: RS-001

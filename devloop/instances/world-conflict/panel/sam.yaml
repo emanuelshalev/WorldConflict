@@ -14,6 +14,7 @@ deal_breakers:
   - {value: "Generic 'AI dashboard' look: cards of text, pill buttons, misaligned rows, no illustration", evidence: observed, source: RS-001}
   - {value: "Inconsistent vocabulary (capital vs political capital vs credit)", evidence: observed, source: RS-001}
   - {value: "Two ways to do the same thing that behave differently (desk vs map)", evidence: observed, source: RS-001}
+knowledge: {value: "General news knowledge; judges explanations as UI: are they crafted, legible and out of the way", evidence: assumed, note: "added for RS-003 (CEO): flag every name or concept this persona would not know"}
 skill: {value: "Expert in game UX; notices pixel misalignment and inconsistent states", evidence: assumed}
 patience: {value: "Gives it 5 minutes; reports every craft flaw he sees on the way", evidence: assumed}
 reading: {value: "Reads everything once, critically", evidence: assumed}

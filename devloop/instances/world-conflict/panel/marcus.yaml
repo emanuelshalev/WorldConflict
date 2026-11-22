@@ -14,6 +14,7 @@ success_criteria:
 deal_breakers:
   - {value: "Outcomes that feel random or unexplained", evidence: assumed}
   - {value: "Interface that assumes video-game habits (hover tooltips, hidden menus, hotkeys)", evidence: assumed}
+knowledge: {value: "Strong history (Cold War, 1990s, military history); weaker on 2025-2026 changes and on Africa and Southeast Asia", evidence: assumed, note: "added for RS-003 (CEO): flag every name or concept this persona would not know"}
 skill: {value: "Expert strategic thinker, moderate digital fluency, little video-game literacy", evidence: assumed}
 patience: {value: "High for a session that makes sense; low for UI hunts", evidence: assumed}
 reading: {value: "Reads briefings, debriefs and numbers; skips decorative text", evidence: assumed}
