@@ -1,27 +1,128 @@
 {
   "projectDir": "~/.claude/projects/-home-emanuel-git-WorldConflict",
-  "sessions": ["560a71e3-7113-4ffa-aea8-74191a508a8c"],
+  "sessions": [
+    "560a71e3-7113-4ffa-aea8-74191a508a8c"
+  ],
   "loopStart": "2026-11-22T05:37:25Z",
   "orchestrator": {
     "role": "Group Manager",
     "windows": [
-      { "from": "2026-11-22T05:37:25Z", "iteration": 0, "stage": "Plan" },
-      { "from": "2026-11-22T05:57:52Z", "iteration": 0, "stage": "Use" },
-      { "from": "2026-11-22T06:42:31Z", "iteration": 0, "stage": "Triage" },
-      { "from": "2026-11-22T06:43:33Z", "iteration": 1, "stage": "Design" },
-      { "from": "2026-11-22T06:51:49Z", "iteration": 1, "stage": "Build" }
+      {
+        "from": "2026-11-22T05:37:25Z",
+        "iteration": 0,
+        "stage": "Plan"
+      },
+      {
+        "from": "2026-11-22T05:57:52Z",
+        "iteration": 0,
+        "stage": "Use"
+      },
+      {
+        "from": "2026-11-22T06:42:31Z",
+        "iteration": 0,
+        "stage": "Triage"
+      },
+      {
+        "from": "2026-11-22T06:43:33Z",
+        "iteration": 1,
+        "stage": "Design"
+      },
+      {
+        "from": "2026-11-22T06:51:49Z",
+        "iteration": 1,
+        "stage": "Build"
+      }
     ]
   },
   "rules": [
-    { "desc": "^Customer (\\w+) iter-(\\d+)", "role": "Customer", "group": "Customers", "persona": "$1", "iteration": "$2", "stage": "Use" },
-    { "desc": "^QA reproduces iter-(\\d+)", "role": "QA Engineer", "group": "QA", "iteration": "$1", "stage": "Triage" },
-    { "desc": "^QA", "role": "QA Engineer", "group": "QA", "iteration": 1, "stage": "Verify" },
-    { "desc": "^Design: (orders|learn)", "role": "UX Designer", "group": "Designers", "iteration": 1, "stage": "Design", "workstream": "$1" },
-    { "desc": "^Design: (game feel|era-aware world map)", "role": "Art Director", "group": "Designers", "iteration": 1, "stage": "Design", "workstream": "$1" },
-    { "desc": "^Design: (monthly flow|the end-of-game reveal)", "role": "Game Designer", "group": "Designers", "iteration": 1, "stage": "Design", "workstream": "$1" },
-    { "desc": "^Design", "role": "Designer", "group": "Designers", "iteration": 1, "stage": "Design" },
-    { "desc": "^Build: feel|^Build: .*UI|^Build: .*(orders UI|month UI|reveal UI)", "role": "Frontend Engineer", "group": "Engineers", "iteration": 1, "stage": "Build" },
-    { "desc": "^Build", "role": "Engine Engineer", "group": "Engineers", "iteration": 1, "stage": "Build" },
-    { "desc": "^Content", "role": "Content Consultant", "group": "Content", "iteration": 1, "stage": "Build" }
+    {
+      "desc": "^Customer (\\w+) iter-(\\d+) concept",
+      "role": "Customer",
+      "group": "Customers",
+      "persona": "$1",
+      "iteration": "$2",
+      "stage": "Design"
+    },
+    {
+      "desc": "^Content: era",
+      "role": "Content Consultant",
+      "group": "Content",
+      "iteration": 1,
+      "stage": "Build"
+    },
+    {
+      "desc": "^Customer (\\w+) iter-(\\d+)",
+      "role": "Customer",
+      "group": "Customers",
+      "persona": "$1",
+      "iteration": "$2",
+      "stage": "Use"
+    },
+    {
+      "desc": "^QA reproduces iter-(\\d+)",
+      "role": "QA Engineer",
+      "group": "QA",
+      "iteration": "$1",
+      "stage": "Triage"
+    },
+    {
+      "desc": "^QA",
+      "role": "QA Engineer",
+      "group": "QA",
+      "iteration": 1,
+      "stage": "Verify"
+    },
+    {
+      "desc": "^Design: (orders|learn)",
+      "role": "UX Designer",
+      "group": "Designers",
+      "iteration": 1,
+      "stage": "Design",
+      "workstream": "$1"
+    },
+    {
+      "desc": "^Design: (game feel|era-aware world map)",
+      "role": "Art Director",
+      "group": "Designers",
+      "iteration": 1,
+      "stage": "Design",
+      "workstream": "$1"
+    },
+    {
+      "desc": "^Design: (monthly flow|the end-of-game reveal)",
+      "role": "Game Designer",
+      "group": "Designers",
+      "iteration": 1,
+      "stage": "Design",
+      "workstream": "$1"
+    },
+    {
+      "desc": "^Design",
+      "role": "Designer",
+      "group": "Designers",
+      "iteration": 1,
+      "stage": "Design"
+    },
+    {
+      "desc": "^Build: feel|^Build: .*UI|^Build: .*(orders UI|month UI|reveal UI)",
+      "role": "Frontend Engineer",
+      "group": "Engineers",
+      "iteration": 1,
+      "stage": "Build"
+    },
+    {
+      "desc": "^Build",
+      "role": "Engine Engineer",
+      "group": "Engineers",
+      "iteration": 1,
+      "stage": "Build"
+    },
+    {
+      "desc": "^Content",
+      "role": "Content Consultant",
+      "group": "Content",
+      "iteration": 1,
+      "stage": "Build"
+    }
   ]
 }

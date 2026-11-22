@@ -1,0 +1,1195 @@
+{
+ "1960": {
+  "focus": [
+   22,
+   36
+  ],
+  "blocs": [
+   {
+    "id": "NATO",
+    "name": "NATO",
+    "side": "WEST",
+    "members": [
+     "USA",
+     "CAN",
+     "GBR",
+     "FRA",
+     "DEU",
+     "ITA",
+     "TUR",
+     "NLD",
+     "BEL",
+     "LUX",
+     "NOR",
+     "DNK",
+     "ISL",
+     "PRT",
+     "GRC"
+    ]
+   },
+   {
+    "id": "USPAC",
+    "name": "US treaty allies (SEATO, CENTO, bilateral)",
+    "side": "WEST2",
+    "members": [
+     "JPN",
+     "KOR",
+     "AUS",
+     "NZL",
+     "PHL",
+     "PAK",
+     "IRN",
+     "THA",
+     "TWN"
+    ]
+   },
+   {
+    "id": "WARSAW",
+    "name": "Warsaw Pact",
+    "side": "EAST",
+    "members": [
+     "RUS",
+     "POL",
+     "CZE",
+     "SVK",
+     "HUN",
+     "ROU",
+     "BGR",
+     "ALB",
+     "DDR",
+     "UKR",
+     "BLR",
+     "EST",
+     "LVA",
+     "LTU",
+     "MDA",
+     "GEO",
+     "ARM",
+     "AZE",
+     "KAZ",
+     "UZB",
+     "TKM",
+     "KGZ",
+     "TJK"
+    ]
+   },
+   {
+    "id": "SINO",
+    "name": "Sino-Soviet alliance (cracking)",
+    "side": "EAST2",
+    "members": [
+     "CHN",
+     "PRK",
+     "MNG",
+     "CUB"
+    ]
+   },
+   {
+    "id": "NAM",
+    "name": "Non-aligned",
+    "side": "NONALIGNED",
+    "members": [
+     "IND",
+     "IDN",
+     "EGY",
+     "SYR",
+     "GHA",
+     "MMR",
+     "AFG",
+     "ETH",
+     "SRB",
+     "HRV",
+     "BIH",
+     "SVN",
+     "MKD",
+     "MNE",
+     "KOS"
+    ]
+   }
+  ],
+  "eraStatus": {
+   "UKR": {
+    "status": "PART_OF",
+    "partOf": "RUS",
+    "label": "Ukrainian SSR",
+    "note": "A Soviet republic in 1960. Leading it is alternate history."
+   },
+   "BLR": {
+    "status": "PART_OF",
+    "partOf": "RUS",
+    "label": "Byelorussian SSR",
+    "note": "A Soviet republic in 1960."
+   },
+   "PSX": {
+    "status": "NOT_INDEPENDENT",
+    "label": "West Bank (Jordan)",
+    "note": "Ruled by Jordan; Gaza by Egypt."
+   },
+   "ARE": {
+    "status": "NOT_INDEPENDENT",
+    "label": "Trucial States",
+    "note": "A British protectorate until 1971."
+   },
+   "NGA": {
+    "status": "NOT_INDEPENDENT",
+    "label": "Nigeria (British)",
+    "note": "Independent on 1 October 1960."
+   },
+   "SYR": {
+    "status": "PART_OF",
+    "partOf": "EGY",
+    "label": "United Arab Republic",
+    "note": "Merged with Egypt from 1958 to 1961."
+   }
+  },
+  "merged": [
+   "UKR",
+   "BLR",
+   "EST",
+   "LVA",
+   "LTU",
+   "MDA",
+   "GEO",
+   "ARM",
+   "AZE",
+   "KAZ",
+   "UZB",
+   "TKM",
+   "KGZ",
+   "TJK"
+  ],
+  "labels": [
+   {
+    "at": [
+     17.2,
+     49.5
+    ],
+    "name": "Czechoslovakia",
+    "rank": 2
+   },
+   {
+    "at": [
+     18.6,
+     44.3
+    ],
+    "name": "Yugoslavia",
+    "rank": 2
+   },
+   {
+    "at": [
+     12.4,
+     52.4
+    ],
+    "name": "East Germany",
+    "rank": 3
+   },
+   {
+    "at": [
+     23.5,
+     -2.5
+    ],
+    "name": "Belgian Congo",
+    "rank": 2
+   },
+   {
+    "at": [
+     2.6,
+     28.5
+    ],
+    "name": "French Algeria",
+    "rank": 2
+   }
+  ],
+  "situations": [
+   {
+    "id": "berlin",
+    "title": "Divided Berlin",
+    "kind": "TRUCE",
+    "phase": "ACTIVE",
+    "at": [
+     13.4,
+     52.52
+    ],
+    "countries": [
+     "USA",
+     "RUS",
+     "DEU"
+    ],
+    "weight": 5,
+    "line": {
+     "from": "USA",
+     "to": "RUS",
+     "style": "rival"
+    },
+    "blurb": "Khrushchev's ultimatum stands: the West out of Berlin, or he signs a separate peace with East Germany. Refugees keep pouring west."
+   },
+   {
+    "id": "algeria",
+    "title": "Algerian War",
+    "kind": "WAR",
+    "phase": "ACTIVE",
+    "at": [
+     3.0,
+     35.6
+    ],
+    "countries": [
+     "FRA"
+    ],
+    "weight": 4,
+    "blurb": "400,000 French troops fight the FLN. De Gaulle speaks of self-determination; settlers raise barricades in Algiers in January."
+   },
+   {
+    "id": "taiwan",
+    "title": "Taiwan Strait shelling",
+    "kind": "SEA",
+    "phase": "ACTIVE",
+    "at": [
+     118.4,
+     24.45
+    ],
+    "countries": [
+     "CHN",
+     "TWN",
+     "USA"
+    ],
+    "weight": 4,
+    "line": {
+     "from": "CHN",
+     "to": "TWN",
+     "style": "rival"
+    },
+    "blurb": "Mao's guns shell Kinmen on odd days. The US Seventh Fleet patrols the strait."
+   },
+   {
+    "id": "cuba",
+    "title": "Castro's Cuba",
+    "kind": "REGIME",
+    "phase": "ACTIVE",
+    "at": [
+     -79.0,
+     21.8
+    ],
+    "countries": [
+     "CUB",
+     "USA"
+    ],
+    "weight": 4,
+    "line": {
+     "from": "CUB",
+     "to": "USA",
+     "style": "rival"
+    },
+    "blurb": "A year after the revolution, Castro seizes US property and courts Moscow. Washington is drawing up plans."
+   },
+   {
+    "id": "korea",
+    "title": "Korean armistice line",
+    "kind": "TRUCE",
+    "phase": "FROZEN",
+    "at": [
+     127.0,
+     38.1
+    ],
+    "countries": [
+     "KOR",
+     "PRK"
+    ],
+    "weight": 3,
+    "blurb": "No peace treaty since 1953. Two armies face each other across the DMZ; Seoul is weeks from revolt against Rhee."
+   },
+   {
+    "id": "reggane",
+    "title": "A fourth atomic power",
+    "kind": "NUCLEAR",
+    "phase": "BREWING",
+    "at": [
+     0.06,
+     26.3
+    ],
+    "countries": [
+     "FRA"
+    ],
+    "weight": 3,
+    "blurb": "France's first atomic test, Gerboise Bleue, is set for February in the Sahara."
+   },
+   {
+    "id": "laos",
+    "title": "Laos and Vietnam insurgency",
+    "kind": "REGIME",
+    "phase": "ACTIVE",
+    "at": [
+     104.5,
+     17.5
+    ],
+    "countries": [],
+    "weight": 2,
+    "blurb": "Communist guerrillas in Laos and South Vietnam. American advisers are few, for now."
+   },
+   {
+    "id": "congo",
+    "title": "Congo independence",
+    "kind": "REGIME",
+    "phase": "BREWING",
+    "at": [
+     23.5,
+     -2.5
+    ],
+    "countries": [],
+    "weight": 2,
+    "blurb": "Belgium leaves in June with almost no handover. 17 African states become independent this year."
+   }
+  ]
+ },
+ "1990": {
+  "focus": [
+   28,
+   38
+  ],
+  "blocs": [
+   {
+    "id": "NATO",
+    "name": "NATO",
+    "side": "WEST",
+    "members": [
+     "USA",
+     "CAN",
+     "GBR",
+     "FRA",
+     "DEU",
+     "ITA",
+     "TUR",
+     "NLD",
+     "BEL",
+     "LUX",
+     "NOR",
+     "DNK",
+     "ISL",
+     "PRT",
+     "GRC",
+     "ESP"
+    ]
+   },
+   {
+    "id": "USPAC",
+    "name": "US treaty allies",
+    "side": "WEST2",
+    "members": [
+     "JPN",
+     "KOR",
+     "AUS",
+     "NZL",
+     "PHL",
+     "THA"
+    ]
+   },
+   {
+    "id": "WARSAW",
+    "name": "Warsaw Pact (dissolving)",
+    "side": "EAST",
+    "members": [
+     "RUS",
+     "POL",
+     "CZE",
+     "SVK",
+     "HUN",
+     "ROU",
+     "BGR",
+     "DDR",
+     "UKR",
+     "BLR",
+     "EST",
+     "LVA",
+     "LTU",
+     "MDA",
+     "GEO",
+     "ARM",
+     "AZE",
+     "KAZ",
+     "UZB",
+     "TKM",
+     "KGZ",
+     "TJK"
+    ],
+    "note": "Communist governments fell across Eastern Europe in late 1989."
+   },
+   {
+    "id": "CHNPRK",
+    "name": "China and North Korea",
+    "side": "EAST2",
+    "members": [
+     "CHN",
+     "PRK",
+     "CUB"
+    ]
+   },
+   {
+    "id": "NAM",
+    "name": "Non-aligned",
+    "side": "NONALIGNED",
+    "members": [
+     "IND",
+     "IDN",
+     "EGY",
+     "MMR",
+     "ETH",
+     "SRB",
+     "HRV",
+     "BIH",
+     "SVN",
+     "MKD",
+     "MNE",
+     "KOS"
+    ]
+   }
+  ],
+  "eraStatus": {
+   "UKR": {
+    "status": "PART_OF",
+    "partOf": "RUS",
+    "label": "Ukrainian SSR",
+    "note": "A Soviet republic until August 1991."
+   },
+   "BLR": {
+    "status": "PART_OF",
+    "partOf": "RUS",
+    "label": "Byelorussian SSR",
+    "note": "A Soviet republic until August 1991."
+   },
+   "PSX": {
+    "status": "NOT_INDEPENDENT",
+    "label": "West Bank (occupied)",
+    "note": "Under Israeli occupation; the first intifada is in its third year."
+   },
+   "YEM": {
+    "status": "NOT_INDEPENDENT",
+    "label": "North Yemen",
+    "note": "North and South unify in May 1990."
+   }
+  },
+  "merged": [
+   "UKR",
+   "BLR",
+   "EST",
+   "LVA",
+   "LTU",
+   "MDA",
+   "GEO",
+   "ARM",
+   "AZE",
+   "KAZ",
+   "UZB",
+   "TKM",
+   "KGZ",
+   "TJK"
+  ],
+  "labels": [
+   {
+    "at": [
+     17.2,
+     49.5
+    ],
+    "name": "Czechoslovakia",
+    "rank": 2
+   },
+   {
+    "at": [
+     18.6,
+     44.3
+    ],
+    "name": "Yugoslavia",
+    "rank": 2
+   },
+   {
+    "at": [
+     12.4,
+     52.4
+    ],
+    "name": "East Germany",
+    "rank": 3
+   },
+   {
+    "at": [
+     47.6,
+     29.3
+    ],
+    "name": "Kuwait",
+    "rank": 3
+   }
+  ],
+  "situations": [
+   {
+    "id": "germany",
+    "title": "German reunification",
+    "kind": "REGIME",
+    "phase": "ACTIVE",
+    "at": [
+     13.4,
+     52.52
+    ],
+    "countries": [
+     "DEU",
+     "RUS",
+     "USA"
+    ],
+    "weight": 5,
+    "blurb": "The Wall fell in November. East Germany is collapsing: will a united Germany sit in NATO?"
+   },
+   {
+    "id": "baltics",
+    "title": "Soviet republics break away",
+    "kind": "REGIME",
+    "phase": "ACTIVE",
+    "at": [
+     24.5,
+     56.2
+    ],
+    "countries": [
+     "RUS"
+    ],
+    "weight": 5,
+    "blurb": "Lithuania is weeks from declaring independence. Soviet troops stormed Baku in January."
+   },
+   {
+    "id": "kashmir",
+    "title": "Kashmir uprising",
+    "kind": "NUCLEAR",
+    "phase": "ACTIVE",
+    "at": [
+     74.8,
+     34.1
+    ],
+    "countries": [
+     "IND",
+     "PAK"
+    ],
+    "weight": 4,
+    "line": {
+     "from": "IND",
+     "to": "PAK",
+     "style": "rival"
+    },
+    "blurb": "Insurgency erupts in the valley. By spring two near-nuclear armies mass on the border."
+   },
+   {
+    "id": "kuwait",
+    "title": "Iraq eyes Kuwait",
+    "kind": "WAR",
+    "phase": "BREWING",
+    "at": [
+     47.6,
+     29.4
+    ],
+    "countries": [
+     "IRQ",
+     "SAU",
+     "USA"
+    ],
+    "weight": 4,
+    "blurb": "Broke after eight years of war with Iran, Saddam accuses Kuwait of stealing Iraqi oil."
+   },
+   {
+    "id": "afghanistan",
+    "title": "Afghan civil war",
+    "kind": "WAR",
+    "phase": "ACTIVE",
+    "at": [
+     69.2,
+     34.5
+    ],
+    "countries": [
+     "AFG",
+     "PAK"
+    ],
+    "weight": 3,
+    "blurb": "The Soviets left in 1989. Najibullah holds Kabul against mujahideen supplied from Pakistan."
+   },
+   {
+    "id": "apartheid",
+    "title": "Apartheid's endgame",
+    "kind": "REGIME",
+    "phase": "ACTIVE",
+    "at": [
+     28.0,
+     -26.2
+    ],
+    "countries": [
+     "ZAF"
+    ],
+    "weight": 3,
+    "blurb": "De Klerk will unban the ANC on 2 February and free Nelson Mandela nine days later."
+   },
+   {
+    "id": "panama",
+    "title": "US invasion of Panama",
+    "kind": "WAR",
+    "phase": "ACTIVE",
+    "at": [
+     -79.5,
+     9.0
+    ],
+    "countries": [
+     "USA"
+    ],
+    "weight": 2,
+    "blurb": "Noriega surrenders to US forces on 3 January."
+   },
+   {
+    "id": "lebanon",
+    "title": "Lebanese civil war",
+    "kind": "WAR",
+    "phase": "ACTIVE",
+    "at": [
+     35.8,
+     33.9
+    ],
+    "countries": [
+     "LBN",
+     "SYR",
+     "ISR"
+    ],
+    "weight": 2,
+    "blurb": "Fifteen years in, Aoun fights his last battles. Syria holds most of the country."
+   },
+   {
+    "id": "korea",
+    "title": "Korean armistice line",
+    "kind": "TRUCE",
+    "phase": "FROZEN",
+    "at": [
+     127.0,
+     38.1
+    ],
+    "countries": [
+     "KOR",
+     "PRK"
+    ],
+    "weight": 2,
+    "blurb": "The Cold War ends everywhere but here."
+   }
+  ]
+ },
+ "2025": {
+  "focus": [
+   38,
+   36
+  ],
+  "blocs": [
+   {
+    "id": "NATO",
+    "name": "NATO",
+    "side": "WEST",
+    "members": [
+     "USA",
+     "CAN",
+     "GBR",
+     "FRA",
+     "DEU",
+     "ITA",
+     "TUR",
+     "NLD",
+     "BEL",
+     "LUX",
+     "NOR",
+     "DNK",
+     "ISL",
+     "PRT",
+     "GRC",
+     "ESP",
+     "POL",
+     "CZE",
+     "SVK",
+     "HUN",
+     "ROU",
+     "BGR",
+     "HRV",
+     "SVN",
+     "ALB",
+     "MNE",
+     "MKD",
+     "EST",
+     "LVA",
+     "LTU",
+     "FIN",
+     "SWE"
+    ]
+   },
+   {
+    "id": "USPAC",
+    "name": "US treaty allies",
+    "side": "WEST2",
+    "members": [
+     "JPN",
+     "KOR",
+     "AUS",
+     "NZL",
+     "PHL",
+     "ISR"
+    ]
+   },
+   {
+    "id": "RUSBLR",
+    "name": "Russia and Belarus",
+    "side": "EAST",
+    "members": [
+     "RUS",
+     "BLR"
+    ]
+   },
+   {
+    "id": "CHNPRK",
+    "name": "China and North Korea",
+    "side": "EAST2",
+    "members": [
+     "CHN",
+     "PRK"
+    ]
+   }
+  ],
+  "eraStatus": {
+   "PSX": {
+    "status": "NOT_INDEPENDENT",
+    "label": "West Bank",
+    "note": "Occupied; the Palestinian Authority governs parts of it."
+   }
+  },
+  "merged": [],
+  "labels": [],
+  "situations": [
+   {
+    "id": "ukraine",
+    "title": "War in Ukraine",
+    "kind": "WAR",
+    "phase": "ACTIVE",
+    "at": [
+     37.8,
+     48.0
+    ],
+    "countries": [
+     "RUS",
+     "UKR"
+    ],
+    "weight": 5,
+    "line": {
+     "from": "RUS",
+     "to": "UKR",
+     "style": "front"
+    },
+    "blurb": "Russia advances slowly in Donetsk after Ukraine's Kursk gambit failed."
+   },
+   {
+    "id": "gaza",
+    "title": "Gaza war",
+    "kind": "WAR",
+    "phase": "ACTIVE",
+    "at": [
+     34.4,
+     31.4
+    ],
+    "countries": [
+     "ISR",
+     "PSX"
+    ],
+    "weight": 5,
+    "blurb": "A ceasefire and hostage deal take effect on 19 January after 15 months of war."
+   },
+   {
+    "id": "iran",
+    "title": "Iran at the threshold",
+    "kind": "NUCLEAR",
+    "phase": "ACTIVE",
+    "at": [
+     51.6,
+     34.9
+    ],
+    "countries": [
+     "IRN",
+     "ISR",
+     "USA"
+    ],
+    "weight": 4,
+    "line": {
+     "from": "IRN",
+     "to": "ISR",
+     "style": "rival"
+    },
+    "blurb": "Iran enriches to 60%. Israel destroyed its air defences in October."
+   },
+   {
+    "id": "redsea",
+    "title": "Red Sea blockade",
+    "kind": "SEA",
+    "phase": "ACTIVE",
+    "at": [
+     43.3,
+     12.6
+    ],
+    "countries": [
+     "YEM",
+     "USA"
+    ],
+    "weight": 4,
+    "blurb": "Houthi missiles keep most shipping out of the Red Sea."
+   },
+   {
+    "id": "taiwan",
+    "title": "Taiwan Strait",
+    "kind": "SEA",
+    "phase": "ACTIVE",
+    "at": [
+     119.5,
+     24.0
+    ],
+    "countries": [
+     "CHN",
+     "TWN"
+    ],
+    "weight": 4,
+    "line": {
+     "from": "CHN",
+     "to": "TWN",
+     "style": "rival"
+    },
+    "blurb": "Drills around the island grow larger every season."
+   },
+   {
+    "id": "syria",
+    "title": "Syria after Assad",
+    "kind": "REGIME",
+    "phase": "ACTIVE",
+    "at": [
+     36.3,
+     33.5
+    ],
+    "countries": [
+     "SYR"
+    ],
+    "weight": 3,
+    "blurb": "Assad fled to Moscow in December. Rebels govern Damascus."
+   },
+   {
+    "id": "sudan",
+    "title": "Sudan civil war",
+    "kind": "WAR",
+    "phase": "ACTIVE",
+    "at": [
+     32.5,
+     15.6
+    ],
+    "countries": [
+     "SDN"
+    ],
+    "weight": 3,
+    "blurb": "Army against RSF for 21 months; famine declared in Darfur."
+   },
+   {
+    "id": "korea",
+    "title": "Korean peninsula",
+    "kind": "TRUCE",
+    "phase": "FROZEN",
+    "at": [
+     127.0,
+     38.1
+    ],
+    "countries": [
+     "KOR",
+     "PRK"
+    ],
+    "weight": 2,
+    "blurb": "North Korean troops are fighting for Russia in Kursk."
+   }
+  ]
+ },
+ "2026": {
+  "focus": [
+   45,
+   28
+  ],
+  "blocs": [
+   {
+    "id": "NATO",
+    "name": "NATO",
+    "side": "WEST",
+    "members": [
+     "USA",
+     "CAN",
+     "GBR",
+     "FRA",
+     "DEU",
+     "ITA",
+     "TUR",
+     "NLD",
+     "BEL",
+     "LUX",
+     "NOR",
+     "DNK",
+     "ISL",
+     "PRT",
+     "GRC",
+     "ESP",
+     "POL",
+     "CZE",
+     "SVK",
+     "HUN",
+     "ROU",
+     "BGR",
+     "HRV",
+     "SVN",
+     "ALB",
+     "MNE",
+     "MKD",
+     "EST",
+     "LVA",
+     "LTU",
+     "FIN",
+     "SWE"
+    ]
+   },
+   {
+    "id": "USPAC",
+    "name": "US treaty allies",
+    "side": "WEST2",
+    "members": [
+     "JPN",
+     "KOR",
+     "AUS",
+     "NZL",
+     "PHL"
+    ]
+   },
+   {
+    "id": "RUSBLR",
+    "name": "Russia and Belarus",
+    "side": "EAST",
+    "members": [
+     "RUS",
+     "BLR"
+    ]
+   },
+   {
+    "id": "CHNPRK",
+    "name": "China and North Korea",
+    "side": "EAST2",
+    "members": [
+     "CHN",
+     "PRK"
+    ]
+   },
+   {
+    "id": "SAUPAK",
+    "name": "Saudi-Pakistani defence pact",
+    "side": "OTHER",
+    "members": [
+     "SAU",
+     "PAK"
+    ]
+   }
+  ],
+  "eraStatus": {},
+  "merged": [],
+  "labels": [],
+  "situations": [
+   {
+    "id": "ukraine",
+    "title": "Ceasefire or Collapse",
+    "kind": "WAR",
+    "phase": "ACTIVE",
+    "at": [
+     37.5,
+     47.8
+    ],
+    "countries": [
+     "RUS",
+     "UKR",
+     "USA"
+    ],
+    "weight": 5,
+    "line": {
+     "from": "RUS",
+     "to": "UKR",
+     "style": "front"
+    },
+    "flashpointId": "ceasefire-or-collapse",
+    "blurb": "Winter is coming to the front line, and so is Washington with a map."
+   },
+   {
+    "id": "hormuz",
+    "title": "Hormuz Convoy",
+    "kind": "WAR",
+    "phase": "ACTIVE",
+    "at": [
+     56.3,
+     26.6
+    ],
+    "countries": [
+     "USA",
+     "IRN",
+     "ISR"
+    ],
+    "weight": 5,
+    "line": {
+     "from": "USA",
+     "to": "IRN",
+     "style": "front"
+    },
+    "flashpointId": "hormuz-convoy",
+    "blurb": "A fifth of the world's oil, one narrow strait, and nobody willing to blink."
+   },
+   {
+    "id": "redsea",
+    "title": "Bab al-Mandab Burning",
+    "kind": "WAR",
+    "phase": "ACTIVE",
+    "at": [
+     43.3,
+     12.9
+    ],
+    "countries": [
+     "YEM",
+     "SAU"
+    ],
+    "weight": 4,
+    "line": {
+     "from": "YEM",
+     "to": "SAU",
+     "style": "front"
+    },
+    "flashpointId": "bab-al-mandab-burning",
+    "blurb": "Two chokepoints, one war, and the Gulf's last sea exit in Houthi rifle range."
+   },
+   {
+    "id": "taiwan",
+    "title": "Quarantine",
+    "kind": "SEA",
+    "phase": "ACTIVE",
+    "at": [
+     120.6,
+     24.2
+    ],
+    "countries": [
+     "CHN",
+     "TWN",
+     "USA"
+    ],
+    "weight": 4,
+    "line": {
+     "from": "CHN",
+     "to": "TWN",
+     "style": "blockade"
+    },
+    "flashpointId": "quarantine",
+    "blurb": "No blockade, no war, no gas: just very thorough customs officers."
+   },
+   {
+    "id": "water",
+    "title": "Water War",
+    "kind": "NUCLEAR",
+    "phase": "ACTIVE",
+    "at": [
+     74.5,
+     32.6
+    ],
+    "countries": [
+     "IND",
+     "PAK"
+    ],
+    "weight": 4,
+    "line": {
+     "from": "IND",
+     "to": "PAK",
+     "style": "rival"
+    },
+    "flashpointId": "water-war",
+    "blurb": "Two nuclear powers, one river system, and a fuse that gets shorter every dry month."
+   },
+   {
+    "id": "nile",
+    "title": "Fire on the Nile",
+    "kind": "REGIME",
+    "phase": "ACTIVE",
+    "at": [
+     32.5,
+     15.6
+    ],
+    "countries": [
+     "SDN",
+     "EGY"
+    ],
+    "weight": 3,
+    "flashpointId": "fire-on-the-nile",
+    "blurb": "Two generals, one country, and every neighbour holding a match."
+   },
+   {
+    "id": "caracas",
+    "title": "Caracas After Maduro",
+    "kind": "REGIME",
+    "phase": "ACTIVE",
+    "at": [
+     -66.9,
+     10.5
+    ],
+    "countries": [
+     "VEN",
+     "CUB",
+     "USA"
+    ],
+    "weight": 3,
+    "flashpointId": "caracas-after-maduro",
+    "blurb": "The dictator is in a New York courtroom. His regime is still in Miraflores."
+   },
+   {
+    "id": "pakafg",
+    "title": "Pakistan-Afghanistan war",
+    "kind": "WAR",
+    "phase": "ACTIVE",
+    "at": [
+     69.6,
+     33.6
+    ],
+    "countries": [
+     "PAK",
+     "AFG"
+    ],
+    "weight": 2,
+    "line": {
+     "from": "PAK",
+     "to": "AFG",
+     "style": "front"
+    },
+    "blurb": "Pakistan's declared 'open war' on the Taliban: border clashes, an uncertain ceasefire."
+   },
+   {
+    "id": "scarborough",
+    "title": "Scarborough Line",
+    "kind": "SEA",
+    "phase": "ACTIVE",
+    "at": [
+     117.8,
+     15.2
+    ],
+    "countries": [
+     "PHL",
+     "CHN"
+    ],
+    "weight": 2,
+    "flashpointId": "scarborough-line",
+    "blurb": "A shoal, a treaty, and a dredger that will not go away."
+   },
+   {
+    "id": "gaza",
+    "title": "Gaza ceasefire",
+    "kind": "WAR",
+    "phase": "FROZEN",
+    "at": [
+     34.4,
+     31.4
+    ],
+    "countries": [
+     "ISR",
+     "PSX"
+    ],
+    "weight": 2,
+    "blurb": "A ceasefire holds, barely; aid is a third of what is needed."
+   }
+  ]
+ }
+}
