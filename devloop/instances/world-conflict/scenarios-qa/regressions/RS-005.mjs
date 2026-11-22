@@ -5,6 +5,8 @@
 // screen next to the Accept control, and the button names its count ("Accept all recommended (7)")
 // and what it covers. In Map mode the list starts folded: "Review 7 recommended" only opens it (a
 // disclosure that accepts nothing). Accepting leaves the button disabled with a visible reason.
+// QA3-S3-3: at 1440 x 900 the rail keeps Execute, Accept all and whole seals in view and the list
+// scrolls inside it, every item reachable.
 //   node devloop/instances/world-conflict/scenarios-qa/regressions/RS-005.mjs <outDir> <baseUrl> <apiUrl>
 import path from 'node:path';
 import { args, run, startGame } from './_lib.mjs';
@@ -51,6 +53,58 @@ async function checkGroup(g, page, where) {
   return { main, n };
 }
 
+/**
+ * QA3-S3-3: at 1440 x 900 the rail was too short for the list (seals cut in half, about one item in
+ * view, the second item's header under Accept all). Execute, Accept all and the title stay fully on
+ * screen; the list scrolls inside the rail and shows more than one item's worth; every item can be
+ * scrolled into the list's view with its own Accept answering a tap; the capital seals are whole.
+ */
+async function checkRailFits(g, page) {
+  const where = 'laptop 1440x900 rail';
+  const exec = page.getByRole('button', { name: /Execute month/i }).first();
+  g.check(await onScreen(page, exec), `${where}: Execute is fully on screen`);
+  const m = await page.evaluate(() => {
+    const rail = document.querySelector('.rail');
+    const list = rail?.querySelector('.staff-picks.v-rail .sp-list');
+    const main = rail?.querySelector('.staff-picks.v-rail .sp-main');
+    const body = rail?.querySelector('.rail-body');
+    const seals = rail?.querySelector('.seal-bank');
+    if (!rail || !list || !main || !body) return null;
+    const lb = list.getBoundingClientRect();
+    const out = { listH: lb.height, scrolls: list.scrollHeight > list.clientHeight + 1, items: [], sealsWhole: true };
+    if (seals) {
+      // The seal row inside the bank must lie inside the visible part of the rail body
+      const bb = body.getBoundingClientRect();
+      const row = seals.querySelector('.wc-seals') ?? seals;
+      const sb = row.getBoundingClientRect();
+      out.sealsWhole = sb.top >= bb.top - 1 && sb.bottom <= bb.bottom + 1;
+    }
+    for (const it of list.querySelectorAll('.sp-item')) {
+      it.scrollIntoView({ block: 'nearest' });
+      const ib = it.getBoundingClientRect();
+      const lb2 = list.getBoundingClientRect();
+      const btn = it.querySelector('.sp-approve') ?? it.querySelector('button');
+      const bb = btn?.getBoundingClientRect();
+      const top = bb ? document.elementFromPoint(bb.left + bb.width / 2, bb.top + bb.height / 2) : null;
+      out.items.push({
+        name: (it.querySelector('.sp-name')?.textContent ?? '').trim().slice(0, 30),
+        inList: ib.top >= lb2.top - 1 && (ib.bottom <= lb2.bottom + 1 || ib.height > lb2.height),
+        tappable: !!btn && !!top && (top === btn || btn.contains(top)),
+      });
+    }
+    list.scrollTop = 0;
+    return out;
+  });
+  g.check(!!m, `${where}: the rail holds the Recommended list`);
+  if (!m) return;
+  g.check(m.listH >= 150, `${where}: the list shows more than one item's worth (${Math.round(m.listH)} px)`);
+  g.check(m.items.length > 0 && m.items.every((x) => x.inList && x.tappable), `${where}: every item scrolls into view with its Accept reachable (${m.items.filter((x) => !(x.inList && x.tappable)).map((x) => x.name).join(', ') || `${m.items.length} items`})`);
+  g.check(m.sealsWhole, `${where}: the political capital seals are whole, not cut by the list`);
+  const main = page.locator('.rail .staff-picks.v-rail .sp-main').first();
+  g.check(await onScreen(page, main), `${where}: Accept all stays on screen`);
+  g.check(await onScreen(page, page.locator('.rail .staff-picks.v-rail .sp-heading').first()), `${where}: the title "Recommended" stays on screen`);
+}
+
 async function toMap(page) {
   await page.keyboard.press('m');
   await page.waitForTimeout(600);
@@ -79,6 +133,7 @@ await run('RS-005', async (g, track) => {
     const why = await p.locator('.sp-why').first().innerText().catch(() => '');
     g.check(/^Your advisers recommend these for this month\. Orders and meetings wait for you to accept; a crisis goes ahead on its recommended answer unless you change it\.$/.test(why.trim()), `${device} desk: first use explains what the recommendations are`);
     await s.look(`${device}-desk`);
+    if (device === 'laptop') await checkRailFits(g, p);
     if (device === 'laptop') {
       // F-02-4 (QA): the Full desk navigator counted unapproved proposals ("Orders this month 2 of 6",
       // "2 added by staff") while the rail said 0 of 6. Both count approved orders only.
