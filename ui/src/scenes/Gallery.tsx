@@ -2,8 +2,9 @@ import { SCENE_KINDS, type SceneKind } from './kinds';
 import '../styles/wc.css';
 import { SceneFrame, type Verdict } from './SceneFrame';
 import { OutcomeMap, type MapEffect } from './OutcomeMap';
+import { FeelGallery } from './FeelGallery';
 
-/** Dev gallery: open the UI at /#scenes (all) or /#scenes/<kind> (one, every variant). */
+/** Dev gallery: open the UI at /#scenes (all), /#scenes/<kind> (one, every variant) or /#scenes/feel (game primitives). */
 /** Recording mode: /#clip?kind=..&home=..&other=..&mood=..&kicker=..&headline=..&sub=..&verdict=..&bare=1 */
 function Clip() {
   const q = new URLSearchParams(window.location.hash.split('?')[1] ?? '');
@@ -89,9 +90,16 @@ export default function Gallery() {
   if (window.location.hash.startsWith('#clip')) return <Clip />;
   if (window.location.hash.startsWith('#mapfx')) return <MapFx />;
   const only = window.location.hash.split('/')[1] as SceneKind | undefined;
+  if ((only as string) === 'feel')
+    return (
+      <div style={{ height: '100%', overflow: 'auto', padding: '28px clamp(16px, 3vw, 32px)', background: 'radial-gradient(120% 70% at 50% 0%, #101a2c, #0b0f17 60%)' }}>
+        <FeelGallery />
+      </div>
+    );
   const kinds = only && SCENE_KINDS.includes(only) ? [only] : SCENE_KINDS;
   return (
     <div style={{ height: '100%', overflow: 'auto', padding: 24, background: '#0b0f17' }}>
+      {!only && <FeelGallery />}
       <h1 style={{ font: '700 28px var(--font-display)', color: '#fff', margin: '0 0 16px' }}>Scenes</h1>
       <div style={{ display: 'grid', gap: 20, gridTemplateColumns: only ? '1fr' : 'repeat(auto-fill, minmax(420px, 1fr))' }}>
         {kinds.map((k) => (

@@ -9,6 +9,7 @@ import {
   useGameStore,
 } from '../store/gameStore';
 import { useModalFocus } from '../lib/useModalFocus';
+import { SoundSettingsSection } from './game/SoundToggle';
 
 const CHAT_TEST_URL = `${(import.meta.env.VITE_API_BASE ?? '/api').replace(/\/$/, '')}/chat/test`;
 
@@ -139,6 +140,7 @@ function Inner({ onClose }: { onClose: () => void }) {
             </span>
           </label>
         </div>
+        <SoundSettingsSection />
         <div>
           <div className="section-label">Who runs the world?</div>
           <div className="mode-grid">

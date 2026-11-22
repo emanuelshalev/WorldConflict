@@ -120,7 +120,7 @@ const CRISIS_SCENES: Record<string, SceneKind> = {
   westbank_raid: 'deployment',
   pa_gaza_role: 'signing',
   sanctions_vote: 'un_vote',
-  assassination_attempt: 'field_visit',
+  assassination_attempt: 'cabinet', // R7: its own frame (cabinet, mood bad), not the refugee walkabout
   general_strike: 'streets',
   pact_offer: 'signing',
   trade_offer: 'summit',
@@ -182,4 +182,146 @@ const NEWS_SCENES: Record<string, SceneKind> = {
 
 export function sceneForNews(category: string, headline: string): SceneKind {
   return sceneForText(headline, NEWS_SCENES[category] ?? 'press');
+}
+
+// ---------------------------------------------------------------------------
+// Art matches outcome (design-feel.md section 7, rules R1 to R7). The picture on a card is the
+// picture you get back in the debrief, lit by the result. Pure functions, no dependencies, so
+// tests/ui/kinds.spec.ts can check them from the backend test runner.
+// ---------------------------------------------------------------------------
+
+export type SceneFamily = 'diplomacy' | 'domestic' | 'military' | 'intel';
+export type OutcomeVerdict = 'good' | 'bad' | 'mixed' | 'neutral';
+
+/** Scenes that show force. Diplomacy and domestic items never render these (R4). */
+export const MILITARY_SCENES: ReadonlySet<SceneKind> = new Set<SceneKind>(['airstrike', 'deployment', 'war_room', 'nuclear']);
+/** Scenes that celebrate. Military items never render these (R4), failures never do (R3). */
+export const CELEBRATORY_SCENES: ReadonlySet<SceneKind> = new Set<SceneKind>(['summit', 'signing', 'ceasefire']);
+
+export const ACTION_SCENE_TABLE: Readonly<Record<string, SceneKind>> = ACTION_SCENES;
+
+/** The family of an engine action type, from its prefix. */
+export function actionFamily(type: string): SceneFamily {
+  if (/^(MILITARY_|NUCLEAR_)/.test(type)) return 'military';
+  if (/^INTEL_/.test(type)) return 'intel';
+  if (/^(DOMESTIC_|ECONOMY_)/.test(type)) return 'domestic';
+  return 'diplomacy';
+}
+
+/**
+ * R1(b): keywords on the chosen option's label, checked before the crisis's own scene. First
+ * match wins, so the specific phrases come first (a labour "strike" before an air strike, a
+ * "call for unity" is not a phone call).
+ */
+export const OPTION_KEYWORDS: ReadonlyArray<{ re: RegExp; scene: SceneKind; family: SceneFamily }> = [
+  { re: /back ?channel|\btalks?\b|\btalking\b|envoy|mediat|ceasefire|truce|deconfliction|hotline|negotiat|at the table|behind closed doors|intermediar/i, scene: 'ceasefire', family: 'diplomacy' },
+  { re: /break the strike|crackdown|police|curfew|clear the squares|\barrest|ringleaders|lock the country down/i, scene: 'streets', family: 'domestic' },
+  { re: /visit the victims|mourn|relief|airlift|humanitarian|\baid\b|open the borders|open the crossings|open rafah|let them in/i, scene: 'field_visit', family: 'domestic' },
+  { re: /\bcall\b(?! (it|for)\b)|\bvisit\b|summit|\bcourt\b|rally your allies|lean on|press washington|counter-offer|restrain/i, scene: 'summit', family: 'diplomacy' },
+  { re: /air ?strikes?|\bstrikes?\b|\bbomb|\bair\b|missile|\bdrones?\b|\bshell|hit their|special forces/i, scene: 'airstrike', family: 'military' },
+  { re: /troops|deploy|mobili[sz]|\bborder|reinforce|battalion|offensive|finish the job|join the war|send weapons|\bstorm\b|garrison|convoy|hold the line/i, scene: 'deployment', family: 'military' },
+  { re: /address|speech|rally the nation|televised|national unity|apolog|concede|announce/i, scene: 'address', family: 'domestic' },
+  { re: /sanction|\bun\b|united nations|resolution|vote (yes|no|for|against)|abstain/i, scene: 'un_vote', family: 'diplomacy' },
+  { re: /\bwhip\b|\bvotes?\b|pass it|inquiry|commission|legali[sz]e|shelve/i, scene: 'parliament', family: 'domestic' },
+  { re: /\bspy|covert|sabotage|back a coup|\b(re)?arm(s|ing)?\b|\bhack|counter-intel|intelligence|cut-outs|in kind|purge|plotters|buy the generals/i, scene: 'covert', family: 'intel' },
+  { re: /reform|decree|\border\b|emergency (security )?powers|stimulus|subsidi[sz]e|bail out|austerity|\btax|fire them|prosecute/i, scene: 'exec_order', family: 'domestic' },
+  { re: /condemn|denounc|statement|name and shame|expose|blame|\bdeny|reject it publicly|downplay|forgery/i, scene: 'press', family: 'diplomacy' },
+  { re: /\bpact\b|treaty|\bsign\b|sign it|\bdeal\b|accord|agreement|pledge/i, scene: 'signing', family: 'diplomacy' },
+  { re: /run on|campaign|promise/i, scene: 'election', family: 'domestic' },
+  { re: /markets|\bfuel\b|producers|\boil\b/i, scene: 'econ_tv', family: 'domestic' },
+];
+
+const isSceneKind = (s: unknown): s is SceneKind => typeof s === 'string' && (SCENE_KINDS as string[]).includes(s);
+
+/** The label without the engine's suffixes ("(no decision taken)", "(you did not attend)"). */
+export const cleanChoice = (label: string) => label.replace(/\s*\((no decision taken|you did not attend)\)\s*$/, '').trim();
+
+/** The keyword entry an option label matches, if any. */
+export function optionKeyword(label: string): (typeof OPTION_KEYWORDS)[number] | undefined {
+  const l = cleanChoice(label);
+  return OPTION_KEYWORDS.find((k) => k.re.test(l));
+}
+
+/**
+ * R1: the picture follows the choice, not the crisis. (a) An explicit `scene` on the option
+ * (data) wins; (b) keywords on the option label; (c) the crisis's own scene (or `fallback`).
+ */
+export function sceneForChoice(templateId: string | undefined, title: string, optionLabel: string, opts: { scene?: string; fallback?: SceneKind; situation?: string } = {}): SceneKind {
+  if (isSceneKind(opts.scene)) return opts.scene;
+  const k = optionKeyword(optionLabel);
+  if (k) return k.scene;
+  if (opts.fallback && !(templateId && CRISIS_SCENES[templateId])) return opts.fallback;
+  return sceneForCrisis(templateId, title, opts.situation);
+}
+
+const MEETING_SCENES: Record<string, SceneKind> = { CALL: 'summit', VISIT: 'summit', STAFF: 'cabinet', PRESS: 'tv_interview' };
+
+/**
+ * One entry point for a decision (crisis or meeting option) so the desk thumbnail and the debrief
+ * decision card always agree (acceptance 21). Meetings fall back to their room (summit, cabinet,
+ * interview) instead of the crisis keywords.
+ */
+export function sceneForDecision(d: { kind?: string; templateId?: string; title: string; label: string; scene?: string }): SceneKind {
+  const fallback = d.kind ? MEETING_SCENES[d.kind] : undefined;
+  return sceneForChoice(d.templateId, d.title, d.label, { scene: d.scene, fallback });
+}
+
+/** R2: mood follows the verdict. Never a good mood on a failure. */
+export function moodForVerdict(verdict: OutcomeVerdict | undefined, ok = true): 'good' | 'bad' | 'neutral' {
+  if (!ok || verdict === 'bad') return 'bad';
+  return verdict === 'good' ? 'good' : 'neutral';
+}
+
+/**
+ * R3: celebratory scenes never illustrate a failure. Summit, signing and ceasefire become the
+ * cold press room; an executive order becomes the chamber; the UN vote board shows the loss as
+ * it is; military scenes stay military.
+ */
+export function sceneForOutcome(kind: SceneKind, verdict: OutcomeVerdict | undefined, ok = true): SceneKind {
+  const failed = !ok || verdict === 'bad';
+  if (!failed) return kind;
+  if (CELEBRATORY_SCENES.has(kind)) return 'press';
+  if (kind === 'exec_order') return 'parliament';
+  return kind;
+}
+
+/** R4: keep a scene inside its family (diplomacy and domestic never show force; military never celebrates). */
+export function guardFamily(kind: SceneKind, family: SceneFamily | undefined): SceneKind {
+  if ((family === 'diplomacy' || family === 'domestic') && MILITARY_SCENES.has(kind)) return family === 'diplomacy' ? 'press' : 'cabinet';
+  if (family === 'military' && CELEBRATORY_SCENES.has(kind)) return 'war_room';
+  return kind;
+}
+
+/** A crisis frame's own mood before any choice (the assassination attempt is lit as a threat). */
+export function crisisMood(templateId: string | undefined): 'good' | 'bad' | 'neutral' | undefined {
+  return templateId === 'assassination_attempt' ? 'bad' : undefined;
+}
+
+/** Same family, different room: the backdrop used when a crisis would repeat last month's (R7). */
+const ALTERNATE: Record<SceneKind, SceneKind> = {
+  cabinet: 'press',
+  tv_interview: 'press',
+  press: 'tv_interview',
+  parliament: 'cabinet',
+  econ_tv: 'cabinet',
+  field_visit: 'disaster',
+  summit: 'signing',
+  signing: 'summit',
+  exec_order: 'cabinet',
+  address: 'press',
+  war_room: 'deployment',
+  deployment: 'war_room',
+  airstrike: 'war_room',
+  nuclear: 'war_room',
+  covert: 'cabinet',
+  streets: 'press',
+  election: 'parliament',
+  disaster: 'field_visit',
+  ceasefire: 'summit',
+  un_vote: 'parliament',
+};
+
+/** R7: no repeat backdrop month to month, unless the crisis is a follow-up of the last one. */
+export function avoidRepeat(kind: SceneKind, previous: SceneKind | undefined, followUp = false): SceneKind {
+  return !followUp && previous === kind ? ALTERNATE[kind] : kind;
 }

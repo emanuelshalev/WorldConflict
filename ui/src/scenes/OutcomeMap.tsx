@@ -1,4 +1,5 @@
-import { type CSSProperties, type JSX, type ReactNode, useEffect, useId, useMemo, useState } from 'react';
+import { type CSSProperties, type JSX, type ReactNode, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { useIdle } from '../lib/motion';
 import { countryName } from '../store/gameStore';
 import {
   type Ring,
@@ -764,13 +765,23 @@ export function OutcomeMap({ home, target, effect, ok, label }: OutcomeMapProps)
   const scene = useMemo(() => (geo ? buildScene(geo, home, target) : null), [geo, home, target]);
   const [reduced] = useState(prefersReducedMotion);
   const ctx: Ctx = { still: reduced, uid };
+  // Still when idle (design-feel 8.2): the SMIL loops (war rings) hold their frame after 15 s
+  // without input and resume on the next one
+  const idle = useIdle();
+  const svgRef = useRef<SVGSVGElement>(null);
+  useEffect(() => {
+    const el = svgRef.current;
+    if (!el) return;
+    if (idle) el.pauseAnimations();
+    else el.unpauseAnimations();
+  }, [idle, scene]);
   const [tFill, tLine] = targetColors(effect, ok);
   const hasTarget = !!scene?.B;
 
   return (
     <div className={`outcome-map ${ok ? 'ok' : 'failed'}`} role="img" aria-label={label ?? `${home}${target ? ` and ${target}` : ''}: ${effect}${ok ? '' : ' (failed)'}`}>
       {scene ? (
-        <svg key={`${home}-${target ?? ''}-${effect}-${ok ? 1 : 0}`} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid slice" aria-hidden>
+        <svg ref={svgRef} key={`${home}-${target ?? ''}-${effect}-${ok ? 1 : 0}`} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid slice" aria-hidden>
           <defs>
             <radialGradient id={`${uid}-sea`} cx="50%" cy="45%" r="75%">
               <stop offset="0%" stopColor={C.ocean} />

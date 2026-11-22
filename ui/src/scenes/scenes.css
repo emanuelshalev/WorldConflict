@@ -207,7 +207,7 @@
   stroke-width: 1.5;
   opacity: 0.5;
   transform-origin: 25px 25px;
-  animation: vg-ring 1.8s 1s ease-out infinite;
+  animation: vg-ring 1.8s 1s ease-out 3; /* pulses three times, then still */
 }
 .vg-disc { fill: color-mix(in srgb, var(--verdict) 22%, rgba(6, 8, 14, 0.85)); stroke: var(--verdict); stroke-width: 2; }
 .vg-mark {
@@ -233,3 +233,13 @@
 .scene-card .scene-verdict { font-size: 11px; }
 .clip-bare .scene { border-radius: 0; box-shadow: none; }
 .clip-bare .scene-bug, .clip-bare .scene-mark { display: none; }
+
+/* Still when not seen (design-feel 8.2): SceneFrame sets .is-playing only while the scene is on
+   screen, the tab is visible and it is not a thumbnail; every loop of the 20 art files holds
+   otherwise. One-shot entrances (lower third, verdict) are not paused, so nothing stays hidden. */
+.scene:not(.is-playing) .scene-art *,
+.scene:not(.is-playing) .scene-bug .dot,
+.scene:not(.is-playing) .vg-ring,
+.scene:not(.is-playing) .tk-run {
+  animation-play-state: paused;
+}

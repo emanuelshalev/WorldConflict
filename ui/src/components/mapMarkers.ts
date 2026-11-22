@@ -421,7 +421,7 @@ export function buildMarkers(input: MarkerInput): MarkerSpec[] {
       countryId: v.id,
       className: `wcm-row${shown.some((b) => b.fresh) ? ' wcm-fresh' : ''}`,
       priority: (v.isPlayer ? 50 : 0) + badges.reduce((n, b) => n + (WEIGHT[b.kind] ?? 1) + (b.fresh ? 4 : 0), 0),
-      label: badges.map((b) => b.label).join('; '),
+      label: `${names.get(v.id) ?? v.id}: ${badges.map((b) => b.label).join('; ')}`,
       html:
         shown.map(badgeHtml).join('') +
         (more > 0 ? `<span class="wcm-more" title="${esc(badges.slice(MAX_BADGES).map((b) => b.label).join('; '))}">+${more}</span>` : ''),
@@ -443,6 +443,50 @@ interface Live {
   html: string;
   className: string;
   priority?: number;
+}
+
+/** The transparent image the label-reservation layer stamps (8 x 8 px, scaled per pin). */
+export const RESERVE_IMAGE = 'wc-pin-reserve';
+export const RESERVE_IMAGE_SIZE = 8;
+
+/**
+ * Pin footprints for MapLibre's label collision (design-feel 8.3). DOM pins are invisible to the
+ * symbol placer, so each pin becomes a row of transparent square icons of its size at its anchor;
+ * a symbol layer of them (always placed, never ignored) makes country labels move to a free side
+ * or drop out instead of printing over a pin. Sizes mirror the marker CSS in wc.css.
+ */
+export function reserveFeatures(specs: MarkerSpec[]): GeoJSON.Feature[] {
+  const out: GeoJSON.Feature[] = [];
+  for (const s of specs) {
+    let w = 0;
+    let h = 0;
+    let cy = 0; // box centre below (+) or above (-) the anchor point, px
+    if (s.className.startsWith('wcm-row')) {
+      const badges = (s.html.match(/class="wcm-badge/g) ?? []).length;
+      const more = s.html.includes('wcm-more') ? 1 : 0;
+      if (!badges && !more) continue;
+      h = 22;
+      w = badges * 22 + more * 22 + Math.max(0, badges + more - 1) * 3;
+      cy = (s.offset?.[1] ?? 0) - h / 2;
+    } else if (s.className.startsWith('wcm-war')) {
+      w = h = 24;
+    } else if (s.className.startsWith('wcm-hot')) {
+      w = h = 22;
+    } else if (s.className.startsWith('wcm-refugee')) {
+      w = h = 18;
+    } else continue;
+    const tiles = Math.max(1, Math.round(w / h));
+    const size = h / RESERVE_IMAGE_SIZE;
+    for (let i = 0; i < tiles; i++) {
+      const dx = (i - (tiles - 1) / 2) * h;
+      out.push({
+        type: 'Feature',
+        geometry: { type: 'Point', coordinates: s.at },
+        properties: { size, offset: [dx / size, cy / size] },
+      });
+    }
+  }
+  return out;
 }
 
 export class StateMarkers {

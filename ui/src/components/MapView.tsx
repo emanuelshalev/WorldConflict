@@ -19,7 +19,7 @@ import { MapGuide } from './MapGuide';
 import { MapActionMenu } from './MapActionMenu';
 import { REFUGEE_ARROW, UNIT_FOE, UNIT_MINE, addMapImages, orderImage } from './mapIcons';
 import { countryPaint } from './mapColors';
-import { StateMarkers, buildMarkers, deriveSignals, latestNews, refugeeFlows } from './mapMarkers';
+import { RESERVE_IMAGE, RESERVE_IMAGE_SIZE, StateMarkers, buildMarkers, deriveSignals, latestNews, refugeeFlows, reserveFeatures } from './mapMarkers';
 import { HotspotCard } from './HotspotCard';
 import { heat, hotspotLine } from '../lib/hotspots';
 import { FAMILY_COLOR, actionFamily } from '../scenes/actionIcons';
@@ -251,6 +251,7 @@ export function MapView() {
 
     let raf = 0;
     let disposed = false;
+    let stopSleep = () => {};
     map.on('load', async () => {
       const [geo] = await Promise.all([loadWorld(), addMapImages(map).catch(() => undefined)]);
       if (disposed) return;
@@ -277,7 +278,7 @@ export function MapView() {
       // and never re-upload the polygons
       map.addSource('countries', { type: 'geojson', data: emptyFC(), promoteId: 'gameId' });
       map.addSource('hotzones', { type: 'geojson', data: emptyFC() });
-      for (const id of ['alliances', 'lines', 'icons', 'war-arcs', 'events', 'orders', 'deploy', 'capitals', 'pulse-labels', 'refugees'])
+      for (const id of ['alliances', 'lines', 'icons', 'war-arcs', 'events', 'orders', 'deploy', 'capitals', 'pulse-labels', 'refugees', 'pin-reserve'])
         map.addSource(id, { type: 'geojson', data: emptyFC() });
 
       const hovered: maplibregl.ExpressionSpecification = ['boolean', ['feature-state', 'hover'], false];
@@ -541,10 +542,27 @@ export function MapView() {
           'text-field': ['get', 'name'],
           'text-size': ['interpolate', ['linear'], ['zoom'], 1.2, 10, 4, 13],
           'text-allow-overlap': false,
-          'text-offset': [0, 0.5],
-          'text-anchor': 'top',
+          // Pins reserve their space (pin-reserve below): the name moves to a free side or drops
+          'text-variable-anchor': ['top', 'bottom', 'left', 'right'],
+          'text-radial-offset': 1.2,
         },
         paint: { 'text-color': '#e8ecf2', 'text-halo-color': '#0b0f17', 'text-halo-width': 1.4 },
+      });
+      // Invisible footprints of the DOM pins, above the labels so they are placed first and labels
+      // collide with them (design-feel 8.3; reserveFeatures in mapMarkers.ts)
+      map.addImage(RESERVE_IMAGE, { width: RESERVE_IMAGE_SIZE, height: RESERVE_IMAGE_SIZE, data: new Uint8Array(RESERVE_IMAGE_SIZE * RESERVE_IMAGE_SIZE * 4) });
+      map.addLayer({
+        id: 'pin-reserve',
+        type: 'symbol',
+        source: 'pin-reserve',
+        layout: {
+          'icon-image': RESERVE_IMAGE,
+          'icon-size': ['get', 'size'],
+          'icon-offset': ['get', 'offset'],
+          'icon-allow-overlap': true,
+          'icon-ignore-placement': false,
+        },
+        paint: { 'icon-opacity': 0 },
       });
       map.addLayer({
         id: 'pulse-labels',
@@ -701,10 +719,12 @@ export function MapView() {
         map.setPaintProperty('pulse-labels', 'text-opacity', 0.85);
       };
       const frame = (now: number) => {
+        // The desk covers the globe: the loop stops (the sleep switch below restarts it)
+        if (asleep) {
+          raf = 0;
+          return;
+        }
         raf = requestAnimationFrame(frame);
-        // The desk covers the globe: no animation work (and no GL repaints) behind it
-        const st = useGameStore.getState();
-        if (st.deskMode === 'desk' && !st.gameOver) return;
         if (now - last < 50) return;
         last = now;
         const t = now / 1000;
@@ -744,6 +764,33 @@ export function MapView() {
           settlePulse();
         }
       };
+      // Sleep while the desk covers the globe (design-feel 8.2.4): MapLibre's own render loop keeps
+      // repainting a globe it cannot show (tens of thousands of draw calls a second under software
+      // GL), and the marker keyframes keep running. Asleep, repaints are swallowed, the camera
+      // stops, our loop ends and the canvas container (canvas plus markers) leaves the render tree.
+      // Waking restores all of it and repaints once.
+      let asleep = false;
+      const wakeRepaint = map.triggerRepaint.bind(map);
+      const covered = (st: { deskMode: string; gameOver: unknown }) => st.deskMode === 'desk' && !st.gameOver;
+      const setAsleep = (v: boolean) => {
+        if (v === asleep || disposed) return;
+        asleep = v;
+        const cc = map.getCanvasContainer();
+        if (v) {
+          map.stop();
+          map.triggerRepaint = () => {};
+          cancelAnimationFrame(raf);
+          raf = 0;
+          cc.style.display = 'none';
+        } else {
+          map.triggerRepaint = wakeRepaint;
+          cc.style.display = '';
+          if (!reduced && !raf) raf = requestAnimationFrame(frame);
+          wakeRepaint();
+          markersRef.current?.declutter();
+        }
+      };
+      stopSleep = useGameStore.subscribe((st) => setAsleep(covered(st)));
       if (!reduced) raf = requestAnimationFrame(frame);
 
       // Animated state markers (HTML + CSS keyframes); they scale with the zoom through CSS vars
@@ -768,10 +815,12 @@ export function MapView() {
       map.on('zoom', onZoom);
 
       setMapReady(true);
+      setAsleep(covered(useGameStore.getState()));
     });
 
     return () => {
       disposed = true;
+      stopSleep();
       cancelAnimationFrame(raf);
       markersRef.current?.clear();
       markersRef.current = null;
@@ -1012,9 +1061,8 @@ export function MapView() {
     }
     // Status badges, strike sites, war fronts and refugees as animated HTML markers
     const sig = deriveSignals(worldState, playerView);
-    markersRef.current?.sync(
-      buildMarkers({ world: worldState, view: playerView, sig, layer: mapLayer, centers: COUNTRY_CENTERS, frontOf: (i) => fronts[i] ?? null }),
-    );
+    const markerSpecs = buildMarkers({ world: worldState, view: playerView, sig, layer: mapLayer, centers: COUNTRY_CENTERS, frontOf: (i) => fronts[i] ?? null });
+    markersRef.current?.sync(markerSpecs);
     const flows: GeoJSON.Feature[] = [];
     for (const f of refugeeFlows({ world: worldState, sig, centers: COUNTRY_CENTERS })) {
       const a = COUNTRY_CENTERS[f.from];
@@ -1030,6 +1078,7 @@ export function MapView() {
     set('capitals', capitals);
     set('icons', icons);
     set('refugees', flows);
+    set('pin-reserve', reserveFeatures(markerSpecs));
     animRef.current.wars = worldState.wars.length > 0;
     animRef.current.events = beacons.length > 0;
     animRef.current.refugees = flows.length > 0;
