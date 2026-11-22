@@ -32,6 +32,9 @@
 .rc-bar { height: 6px; border-radius: 3px; background: var(--line); margin-top: 6px; overflow: hidden; }
 .rc-bar i { display: block; height: 100%; border-radius: 3px; background: var(--good); transform-origin: left; animation: rc-grow .7s .2s var(--ease-out) both; }
 .rc-delta.bad .rc-bar i { background: var(--bad); }
+.rc-delta.flat .rc-bar i { background: var(--text-3); }
+.rc-delta.flat em { background: var(--line); color: var(--text-2); }
+.rc-split-k { color: var(--text-3); }
 @keyframes rc-grow { from { transform: scaleX(0); } }
 .rc-split, .rc-later { margin: -2px 0 0; font-size: 13px; color: var(--text-2); }
 .rc-later { color: var(--intel); }

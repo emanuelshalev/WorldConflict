@@ -13,6 +13,7 @@ import { metricWord, stepObjective } from '../lib/goals';
 import { scoreLine, useScoreWhy } from '../lib/scoreWhy';
 import { useModalFocus } from '../lib/useModalFocus';
 import { type AfterMonth, readAfterMonth, writeAfterMonth } from '../lib/afterMonth';
+import { factTone, fmtValue, shownDelta, signed, splitMonth } from '../lib/numbers';
 import './debrief.css';
 import './result.css';
 
@@ -25,18 +26,33 @@ import './result.css';
 
 const r1 = (v: number) => Math.round(v);
 
-/** A fact as a bar: where it ended on its own scale, the change in words and numbers. */
+/**
+ * A fact as a bar: where it ended on its own scale, the change in words and numbers. The bar, the
+ * number and the chip share one colour: good or bad for you (lib/numbers.ts), never the bare sign.
+ * A month stat in the choice box is the choice's share, shown as a signed change with no bar.
+ */
 function DeltaBar({ f }: { f: ReportFact }) {
   const pct = /view|relation/i.test(f.label) ? (f.after + 100) / 2 : Math.max(0, Math.min(100, f.after));
-  const d = f.after - f.before;
-  const good = /tension/i.test(f.label) ? d <= 0 : (f.good ?? d >= 0);
+  const tone = factTone(f);
+  const d = shownDelta(f.before, f.after, f.unit, f.share);
+  if (f.share)
+    return (
+      <div className={`rc-delta share ${tone}`}>
+        <div className="rc-delta-top">
+          <span>{/ from your move$/.test(f.label) ? f.label : `${f.label}, from this choice`}</span>
+          <span className="num">
+            <em>{tone === 'flat' ? 'no change' : signed(d)}</em>
+          </span>
+        </div>
+      </div>
+    );
   return (
-    <div className={`rc-delta ${good ? 'good' : 'bad'}`}>
+    <div className={`rc-delta ${tone}`}>
       <div className="rc-delta-top">
         <span>{f.label}</span>
         <span className="num">
-          {r1(f.before)} → <b>{r1(f.after)}{f.unit === '%' ? '%' : ''}</b>
-          <em>{d > 0 ? '+' : ''}{r1(d)}</em>
+          {fmtValue(f.before, f.unit)} → <b>{fmtValue(f.after, f.unit)}{f.unit === '%' ? '%' : ''}</b>
+          {tone !== 'flat' && <em>{signed(d)}</em>}
         </span>
       </div>
       <div className="rc-bar" aria-hidden>
@@ -74,17 +90,16 @@ export function ResultCard({ report, world, home, onNext, onEverything, onPaper,
   const hd = h?.ref === 'decision' ? report.decisions[h.index] : undefined;
   const ho = h?.ref === 'order' ? report.orders[h.index] : undefined;
   const chose = hd ? hd.choice.replace(/\s*\((no decision taken|you did not attend)\)\s*$/, '') : ho?.label;
-  // One tension number everywhere: the month's start and the world's tension now, rounded
-  const tension = (f: ReportFact): ReportFact => (/tension/i.test(f.label) && report.tension ? { ...f, before: report.tension.before, after: r1(world.globalTension) } : f);
-  // Home stats show the whole month (with the choice/drift split below), so they never disagree
-  const STAT = /^(approval|stability|legitimacy)$/i;
-  const facts = (card?.facts ?? []).filter((f) => !STAT.test(f.label)).map(tension).slice(0, 2);
-  if (facts.length < 3 && report.tension && !facts.some((f) => /tension/i.test(f.label)) && Math.abs(r1(world.globalTension) - report.tension.before) >= 2)
-    facts.push({ label: 'World tension', before: report.tension.before, after: r1(world.globalTension), good: r1(world.globalTension) < report.tension.before });
+  // "What your choice did" shows only what the choice itself moved (its own measured facts; month
+  // stats as its share). The month's totals, which include everyone else's moves, sit on their own
+  // line below, so tension from someone else's nuclear test is never credited to your order.
+  const facts = (card?.facts ?? []).slice(0, 3);
   const appr = report.deltas.approval;
-  if (facts.length < 3 && appr && Math.abs(appr.after - appr.before) >= 1 && !facts.some((f) => /approval/i.test(f.label))) facts.push({ label: 'Approval', before: appr.before, after: appr.after, unit: '%' });
   const drift = report.drift?.approval;
-  const apprMove = appr ? appr.after - appr.before : 0;
+  const split = appr && drift !== undefined ? splitMonth(appr.before, appr.after, drift) : null;
+  const tensionNow = r1(world.globalTension);
+  const tensionMove = report.tension ? tensionNow - report.tension.before : 0;
+  const tensionCause = report.causes.find((c) => /tension|nuclear|war|strike|test/i.test(c));
   const mm = missionMove(report, status);
   const followUp = report.followUps?.[0];
   const resolved = report.followUpsResolved?.[0];
@@ -132,11 +147,20 @@ export function ResultCard({ report, world, home, onNext, onEverything, onPaper,
               ))}
             </div>
           )}
-          {appr && drift !== undefined && Math.abs(apprMove) >= 1 && (
+          {((appr && split && split.total !== 0) || (report.tension && Math.abs(tensionMove) >= 2)) && (
             <p className="rc-split num">
-              Approval {r1(appr.before)} → {r1(appr.after)}%: your choices {apprMove - drift >= 0 ? '+' : ''}
-              {r1(apprMove - drift)}, everything else {drift >= 0 ? '+' : ''}
-              {r1(drift)}.{' '}
+              <span className="rc-split-k">This month, all moves:</span>{' '}
+              {appr && split && split.total !== 0 && (
+                <>
+                  approval {r1(appr.before)} → {r1(appr.after)}% ({signed(split.total)}: all your choices together {signed(split.yours)}, everything else {signed(split.rest)}).{' '}
+                </>
+              )}
+              {report.tension && Math.abs(tensionMove) >= 2 && (
+                <>
+                  World tension {report.tension.before} → {tensionNow}
+                  {tensionCause ? ` (${tensionCause.charAt(0).toLowerCase()}${tensionCause.slice(1).replace(/\.$/, '')})` : ''}.{' '}
+                </>
+              )}
               {homePage > 0 && (
                 <button type="button" className="link" onClick={() => onEverything(homePage)}>
                   Why?

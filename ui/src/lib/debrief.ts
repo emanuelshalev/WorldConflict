@@ -4,6 +4,7 @@ import type { SceneKind } from '../scenes/kinds';
 import { actionFamily, guardFamily, sceneForAction, sceneForDecision, sceneForOutcome } from '../scenes/kinds';
 import type { MapEffect } from '../scenes/OutcomeMap';
 import { mapEffect } from './mapEffect';
+import { factTone, shareFacts } from './numbers';
 
 /**
  * The month debrief: the turn report grouped into at most three pages (the month's highlight,
@@ -67,7 +68,7 @@ const KIND_WORD: Record<string, string> = { CALL: 'Call', VISIT: 'State visit', 
 
 function verdictOf(facts: ReportFact[] = [], reaction?: Reaction, ok = true): Verdict {
   if (!ok) return 'bad';
-  const score = facts.reduce((s, f) => s + Math.sign(f.after - f.before) * (f.good === false ? -1 : 1), 0) + (reaction?.tone === 'warm' ? 1 : reaction?.tone === 'angry' || reaction?.tone === 'cold' ? -1 : 0);
+  const score = facts.reduce((s, f) => s + ({ good: 1, bad: -1, flat: 0 } as const)[factTone(f)], 0) + (reaction?.tone === 'warm' ? 1 : reaction?.tone === 'angry' || reaction?.tone === 'cold' ? -1 : 0);
   return score > 0 ? 'good' : score < 0 ? 'bad' : 'neutral';
 }
 
@@ -95,7 +96,7 @@ function decisionCard(d: Decision, i: number): OutcomeCardData {
     headline: d.headline ?? d.title,
     lines: [{ text: `You: ${d.choice.replace(/ \(no decision taken\)$/, ' (no decision taken)')}`, icon: d.kind }],
     reaction: d.reaction,
-    facts: d.facts ?? [],
+    facts: shareFacts(d.facts),
     watch: d.watch,
     verdict,
     scene: decisionScene(d, verdict),
@@ -111,7 +112,7 @@ function orderCard(o: Order, i: number): OutcomeCardData {
     headline: o.label + (o.ok ? '' : ': it failed'),
     lines: [{ text: (o.story ?? o.detail).replace(/\.\.+/g, '.'), icon: o.type, ok: o.ok }],
     reaction: o.reaction,
-    facts: o.facts ?? [],
+    facts: shareFacts(o.facts),
     watch: o.watch,
     verdict,
     scene: orderScene(o, verdict),
@@ -146,8 +147,10 @@ function countryCard(id: string, decisions: Array<[Decision, number]>, orders: A
   ];
   // Their view of you over the whole month (all your dealings plus theirs), so the reply, the
   // numbers and the verdict tell one story
-  const facts = rel ? lead.facts.filter((f) => !/ view of you$/.test(f.label)) : [...lead.facts];
-  if (rel) facts.unshift({ label: `${possessiveName(countryName(id))} view of you`, before: rel.before, after: rel.after });
+  // The month total leads; your move's own effect on their view follows as its share, so "Court
+  // Poland" is never credited with a drop that Poland's own moves caused
+  const facts = rel ? lead.facts.map((f) => (/ view of you$/.test(f.label) ? { ...f, label: 'Their view, from your move', share: true } : f)) : [...lead.facts];
+  if (rel) facts.unshift({ label: `${possessiveName(countryName(id))} view of you this month`, before: rel.before, after: rel.after });
   const firstOrder = orders[0]?.[0];
   const relVerdict: Verdict = rel ? (rel.after > rel.before ? 'good' : rel.after < rel.before ? 'bad' : lead.verdict) : lead.verdict;
   // R5: a failure in the card caps it at mixed (the relation still improved) or bad, and the
