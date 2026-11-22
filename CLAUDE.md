@@ -16,7 +16,7 @@ npm run dev          # backend (tsx watch, port 8080) + frontend (Vite, port 517
 npm run dev:api      # backend only
 npm run dev:ui       # frontend only
 
-npm run test                                    # all tests (vitest, backend only)
+npm run test                                    # all tests (vitest); timing tests in tests/perf run after the main suite
 npx vitest run tests/core/turn.spec.ts          # single test file
 npx vitest run -t "determinism"                 # tests matching name
 npm run perf                                    # perf tests in tests/perf

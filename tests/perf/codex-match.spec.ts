@@ -62,6 +62,7 @@ const flashpointCards = readdirSync(join(DATA, "flashpoints"))
   .flatMap((f) => cards(JSON.parse(readFileSync(join(DATA, "flashpoints", f), "utf-8"))));
 
 function best(runs: number, fn: () => void): number {
+  fn(); // warm-up: let the JIT compile the hot paths before timing (the full suite runs files in parallel)
   let min = Infinity;
   for (let i = 0; i < runs; i++) {
     const t = performance.now();
@@ -93,7 +94,7 @@ describe("codex matcher performance", () => {
     const fp = JSON.parse(readFileSync(join(DATA, "flashpoints/ceasefire-or-collapse.json"), "utf-8"));
     const d = fp.scripted.UKR[0].decision;
     const screen = [fp.hook, fp.tagline, d.situation, ...d.options.map((o: { description: string }) => o.description)];
-    const compiled = Array.from({ length: 7 }, () => compile(entries));
+    const compiled = Array.from({ length: 8 }, () => compile(entries)); // 7 timed runs + 1 warm-up
     let i = 0;
     const ms = best(7, () => {
       const c = compiled[i++];
