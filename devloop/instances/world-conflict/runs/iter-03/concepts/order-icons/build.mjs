@@ -285,7 +285,7 @@ export const ICONS = [
   },
   {
     id: 'coup', family: 'intel', label: 'Back a coup', idea: 'A crown with arrows swapping it',
-    accept: ['coup', 'regime change', 'overthrow', 'replace leader', 'seize power', 'take over', 'change government', 'topple leader', 'new ruler', 'crown'],
+    accept: ['coup', 'regime change', 'overthrow', 'replace leader', 'seize power', 'take over', 'change government', 'topple leader', 'new ruler'],
     svg: () =>
       `<g transform="translate(24 24.5) scale(0.7) translate(-24 -24)">${fl('M12 31L9.5 13.5L17.5 21.5L24 10L30.5 21.5L38.5 13.5L36 31Z') + rect(12, 33, 24, 5, 1.5)}</g>` +
       arcArrow(24, 24, 20.5, 200, 330) + arcArrow(24, 24, 20.5, 20, 150),
