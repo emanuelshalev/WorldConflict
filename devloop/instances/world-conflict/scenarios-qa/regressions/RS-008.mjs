@@ -9,13 +9,13 @@
 // 1024x768 (tablet), and one desktop session resized through 1366x768, 1440x900, 1920x1080,
 // 2560x1440, 3440x1440 and 3840x2160.
 // Seat: the control seed code CA-USA-OLIV1 (scenarios.yaml control: olivia), never today's daily.
-// Registry status: open (expected to fail until the D-80 layout ships; the iter-3 baseline is in
-// the registry note). Artifacts: <outDir>/layout-audit.json, layout-audit.txt, screenshots.
+// Registry: a normal guard since the iteration-4 layout (design-layout.md) shipped; the iter-3
+// baseline is in the registry note. Artifacts: <outDir>/layout-audit.json, layout-audit.txt, screenshots.
 //   node devloop/instances/world-conflict/scenarios-qa/regressions/RS-008.mjs <outDir> <baseUrl> <apiUrl>
 import path from 'node:path';
 import { auditViewports, printAudit, writeReport } from '../../../../kit/layout-audit.mjs';
 import cfg from '../../layout-audit.config.mjs';
-import { args, run, startGame } from './_lib.mjs';
+import { args, run, startGame, toPhoneReview } from './_lib.mjs';
 
 const { out, base } = args('RS-008');
 const SEAT = { flashpointId: 'caracas-after-maduro', countryId: 'USA', title: 'Caracas After Maduro', seedCode: 'CA-USA-OLIV1' };
@@ -33,7 +33,8 @@ async function settle(page) {
 
 async function toResult(s) {
   const p = s.page;
-  await s.click(/^Accept all recommended/i, { timeout: 1500 });
+  await toPhoneReview(p);
+  await s.click(/^Choose all recommended/i, { timeout: 1500 });
   if (!(await s.click(/Execute month/i, { timeout: 12000 }))) throw new Error('Execute month not clickable');
   await p.locator('.result-card .rc-next').first().waitFor({ state: 'visible', timeout: 30000 });
   await p.waitForTimeout(1500);
@@ -42,8 +43,10 @@ async function toResult(s) {
 async function toDesk(s) {
   const p = s.page;
   const exec = p.getByRole('button', { name: /Execute month/i }).first();
+  const phoneNext = p.locator('.ph-bottom .ph-next').first();
   for (let i = 0; i < 14; i++) {
     if (await exec.click({ trial: true, timeout: 800 }).then(() => true, () => false)) break;
+    if (await phoneNext.click({ trial: true, timeout: 300 }).then(() => true, () => false)) break;
     const moved =
       (await s.click(/To your desk|Next month|Continue|Done/i, { timeout: 800 })) ||
       (await p
@@ -59,16 +62,18 @@ async function toDesk(s) {
 async function toMap(page) {
   await page.keyboard.press('m');
   await page.waitForTimeout(800);
-  if (!(await page.locator('.cmd-strip').isVisible().catch(() => false))) {
-    await page.getByRole('button', { name: /^Map\b/ }).first().click().catch(() => {});
+  if (!(await page.locator('.map-month').isVisible().catch(() => false))) {
+    await page.getByRole('tab', { name: /^Map\b/ }).first().click().catch(() => {});
     await page.waitForTimeout(800);
   }
-  return page.locator('.cmd-strip').isVisible().catch(() => false);
+  // Map mode: the Thing card (or the phone page) and the Plan in its form
+  return page.locator('.map-month').isVisible().catch(() => false);
 }
 
 const rows = [];
 await run('RS-008', async (g, track) => {
-  for (const { device, viewports } of SESSIONS) {
+  // RS008_ONLY=desktop (or phone, tablet) runs one session while iterating; the registry runs all
+  for (const { device, viewports } of SESSIONS.filter((x) => !process.env.RS008_ONLY || x.device === process.env.RS008_ONLY)) {
     const s = track(await startGame({ variant: `rs008-${device}`, device, out: path.join(out, device), base, seat: SEAT }));
     const shots = path.join(out, 'shots');
     const audit = async (name, config) => {

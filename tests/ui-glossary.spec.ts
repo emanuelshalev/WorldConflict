@@ -210,7 +210,7 @@ describe("UI glossary", () => {
 // QA3R-5e (F-02-5, RS-005, D-72, D-73): one verb for a recommended order on every mount point. The
 // order card (tile on the desk and map, row in the phone sheet and dossier) chooses a recommended
 // order with the same verb as the agenda's answer cards (Choose); the Plan's rows only Open.
-describe("one verb for a recommended order on every surface (QA3R-5e, D-73)", () => {
+describe("one verb for a recommended order on every surface (QA3R-5e)", () => {
   it("OrderCard tile and row use the agenda's verb, Choose", () => {
     const verb = "Choose order";
     expect(TERMS.choose.name).toBe("Choose");

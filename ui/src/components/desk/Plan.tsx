@@ -137,7 +137,7 @@ function Head({ id, label, n, folded, summary, onShow, heading = false }: { id: 
 }
 
 /** Recommended (n) with Choose all recommended and its definition line (D-73). */
-export function Recommended({ compact = false, folded = false, onShow = () => {}, onOpen }: { compact?: boolean; folded?: boolean; onShow?: (s: PlanSection | null) => void; onOpen?: () => void }) {
+export function Recommended({ compact = false, folded = false, onShow = () => {}, onOpen, button = true }: { compact?: boolean; folded?: boolean; onShow?: (s: PlanSection | null) => void; onOpen?: () => void; /** False when the open list shows beside the rail with its own button. */ button?: boolean }) {
   const { items, n, breakdown, against } = useStaffPicks();
   const agenda = agendaItems();
   const pc = items.filter((x) => x.fits).reduce((s, x) => s + x.cost, 0);
@@ -165,7 +165,7 @@ export function Recommended({ compact = false, folded = false, onShow = () => {}
           ))}
         </ul>
       )}
-      {n > 0 ? (
+      {!button ? null : n > 0 ? (
         <button type="button" className="wc-btn sp-main" onClick={choose} data-choose-all="" aria-describedby="plan-choose-def">
           <span className="sp-main-label">
             <IconChecks size={16} aria-hidden /> {approveLabel(n)}
@@ -185,9 +185,11 @@ export function Recommended({ compact = false, folded = false, onShow = () => {}
           <small className="sp-main-sub">Nothing to choose: every recommendation is decided</small>
         </button>
       )}
-      <p className="sp-why" id="plan-choose-def">
-        {TERMS.approveAll.definition}
-      </p>
+      {button && (
+        <p className="sp-why" id="plan-choose-def">
+          {TERMS.approveAll.definition}
+        </p>
+      )}
     </section>
   );
 }
@@ -322,18 +324,35 @@ export function Plan({ form }: { form: PlanForm }) {
   if (form === 'bar') return <PlanBar map={false} />;
   const items = agendaItems();
   const against = planSummary().against;
+  // A section opened with Show that still does not fit in the rail opens beside it, over the Thing,
+  // with every row (L-10: Show opens it with no scroll); the rail keeps its folded summary
+  const beside = fit.shown && fit.level >= 2 ? fit.shown : null;
+  const folded = (s: PlanSection) => (beside ? true : fit.folded(s));
   return (
     <aside className={`plan f-${form}`} data-region="plan" data-form={form} aria-label="What will happen" data-fit={fit.level}>
-      <div className={`plan-list${fit.compact ? ' compact' : ''}`} ref={listRef}>
+      {beside && (
+        <div className="plan-panel plan-beside" role="region" aria-label={beside === 'recommended' ? TERMS.recommended.name : beside === 'decided' ? 'Decided' : 'Skipped'}>
+          <div className="plan-panel-h">
+            <h2>What will happen</h2>
+            <button type="button" className="wc-btn small" onClick={() => fit.show(null)} aria-label="Close the list">
+              <IconX size={16} aria-hidden /> Close
+            </button>
+          </div>
+          {beside === 'recommended' && <Recommended compact onOpen={() => fit.show(null)} />}
+          {beside === 'decided' && <Decided items={items} folded={false} compact={false} onShow={fit.show} />}
+          {beside === 'skipped' && <Skipped items={items} folded={false} onShow={fit.show} />}
+        </div>
+      )}
+      <div className={`plan-list${fit.compact ? ' compact' : ''}${fit.tight && !beside ? ' tight' : ''}`} ref={listRef}>
         <h2 className="plan-h">What will happen</h2>
-        <Decided items={items} folded={fit.folded('decided')} compact={fit.compact} onShow={fit.show} />
-        <Recommended folded={fit.folded('recommended')} compact={fit.compact} onShow={fit.show} />
+        <Decided items={items} folded={folded('decided')} compact={fit.compact} onShow={fit.show} />
+        <Recommended folded={folded('recommended')} compact={fit.compact} onShow={fit.show} button={beside !== 'recommended'} />
         {against.length > 0 && !fit.compact && (
           <p className="plan-against" role="note">
             <IconAlertTriangle size={14} aria-hidden /> {against.length} recommended {against.length === 1 ? 'answer works' : 'answers work'} against your mission: <b>{against[0].label}</b>.
           </p>
         )}
-        <Skipped items={items} folded={fit.folded('skipped')} onShow={fit.show} />
+        <Skipped items={items} folded={folded('skipped')} onShow={fit.show} />
         {fit.shown && (
           <button type="button" className="wc-btn small psec-all" onClick={() => fit.show(null)}>
             Show all sections

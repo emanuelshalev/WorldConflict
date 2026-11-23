@@ -74,6 +74,8 @@ export interface PlanFit {
   show: (s: PlanSection | null) => void;
   folded: (s: PlanSection) => boolean;
   compact: boolean;
+  /** A section opened with Show that still does not fit: its rows drop their second line. */
+  tight: boolean;
 }
 
 /**
@@ -135,5 +137,5 @@ export function useFitPlan(ref: RefObject<HTMLElement | null>, key: string): Pla
     if (s === 'decided') return level >= 3;
     return level >= 4;
   };
-  return { level, shown, show: setShown, folded, compact: level >= 2 || !!shown };
+  return { level, shown, show: setShown, folded, compact: level >= 2 || !!shown, tight: !!shown && level >= 1 };
 }

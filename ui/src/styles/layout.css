@@ -283,6 +283,7 @@ html { font-size: clamp(16px, calc(0.42vmin + 11.5px), 22px); }
 .sp-item.is-off { opacity: .85; }
 .prow .wc-btn, .sp-item .wc-btn { flex: none; min-height: 2.25rem; white-space: nowrap; }
 .plan-list.compact .prow-t small { display: none; }
+.plan-list.tight .sp-by, .plan-list.tight .plan-h { display: none; }
 .sp-main { display: grid !important; justify-items: center; align-content: center; gap: 2px; width: 100%; min-height: 2.75rem; padding: .4rem .75rem; margin-top: .3rem; text-align: center; }
 .sp-main-label { display: inline-flex; align-items: center; gap: .4rem; font-size: 1rem; font-weight: 700; }
 .sp-main-sub { font-size: .9375rem; font-weight: 500; color: var(--text-2); }
@@ -314,6 +315,9 @@ html { font-size: clamp(16px, calc(0.42vmin + 11.5px), 22px); }
 .plan.f-bar .ex-main { font-size: 1.05rem; }
 .plan-panel { position: absolute; left: var(--pad); bottom: calc(100% + .5rem); width: min(32rem, calc(100vw - 2 * var(--pad))); max-height: calc(100vh - 14rem); overflow: hidden;
   display: grid; gap: .5rem; padding: 1rem; border: 1.5px solid var(--line-2); border-radius: 1rem; background: var(--panel-bg); box-shadow: 0 16px 40px rgba(0, 0, 0, .55); }
+.plan.f-rail, .plan.f-float { position: relative; }
+.plan-beside { left: auto; right: calc(100% + .5rem); top: .5rem; bottom: auto; width: min(32rem, 60vw); max-height: calc(100% - 1rem); z-index: 30; }
+.plan.f-rail .plan-beside { right: calc(100% + .5rem); }
 .plan-panel-h { display: flex; align-items: center; justify-content: space-between; }
 .plan-panel-h h2 { margin: 0; font-size: 1.1875rem; }
 
@@ -437,3 +441,10 @@ html { font-size: clamp(16px, calc(0.42vmin + 11.5px), 22px); }
 [data-fit='2'] .th-hero > .scene, [data-fit='3'] .th-hero > .scene, [data-fit='2'] .th-hero .shade, [data-fit='3'] .th-hero .shade { display: none; }
 [data-fit='2'] .th-hero .txt, [data-fit='3'] .th-hero .txt { position: static; padding: .55rem 1rem; }
 [data-fit='3'] .ask-row, [data-fit='3'] .opt-or, [data-fit='3'] .hero-quote { display: none !important; }
+
+/* AC-L7 / AC-22: nothing a player reads in the game screen's regions is under 15 px (buttons, the
+   learning chip, the paragraph explain mark) */
+.game [data-region] .wc-btn, .game [data-region] .wc-btn.small { font-size: max(.9375rem, 15px); }
+.game [data-region] .lx-info { font-size: 15px; }
+.game [data-region] .lx-info-i { font-size: 15px; }
+.state-band .lx-chip, .state-band .lx-chip-label { font-size: max(.9375rem, 15px); }

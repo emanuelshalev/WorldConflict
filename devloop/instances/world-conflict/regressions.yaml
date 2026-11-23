@@ -705,22 +705,23 @@ findings:
     guards:
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-004.mjs
   - id: RS-005
-    title: "Recommendations are listed under \"Recommended\" next to every Accept control; the button names its count and never accepts unseen (wording D-72)"
-    source: real-signals/RS-005-ceo-staff-picks-unclear-2026-11-23.md (CEO playtest); D-64; words D-71, D-72
-    covers: [ui/src/components/desk/StaffPicks.tsx, ui/src/components/desk/CommandRail.tsx, ui/src/components/desk/Navigator.tsx, ui/src/lib/useStaffPicks.ts, ui/src/lib/month.ts, ui/src/styles/staff-picks.css, ui/src/lib/glossary.ts]
+    title: "Recommendations are listed under \"Recommended\" next to every Choose all control; the button names its count and never chooses unseen (wording D-72, one verb Choose D-73)"
+    source: real-signals/RS-005-ceo-staff-picks-unclear-2026-11-23.md (CEO playtest); D-64; words D-71, D-72, D-73
+    covers: [ui/src/components/desk/Plan.tsx, ui/src/components/desk/ReviewPage.tsx, ui/src/components/desk/PhoneMonth.tsx, ui/src/components/desk/MapMonth.tsx, ui/src/lib/useStaffPicks.ts, ui/src/lib/month.ts, ui/src/lib/agenda.ts, ui/src/lib/glossary.ts]
     guards:
       - vitest: tests/ui-staff-picks.spec.ts
       - vitest: tests/ui-glossary.spec.ts
         name: names the Recommended group
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-005.mjs
+    note: "Iteration 4 (D-80, D-73): the QA3-S3-3 inner-scroll check became the fit rule check (no scroll box in the Plan, every row's Open tappable, Show opens a folded section); rows have Open instead of Accept (D-72 D8); the navigator count check became the state band count (the navigator is gone); the phone list is on the review screen (AC-21)."
   - id: RS-008
-    title: "The game screen uses the space and hides nothing: no inner scrolling for month items, state or actions at 1366x768 and up, width used at 1920 and up, small screens collapse visibly (layout audit)"
+    title: "The game screen uses the space and hides nothing: no inner scrolling for month items, state or actions at 1024x768 and up, width used at 1920 and up, small screens collapse visibly (layout audit)"
     source: real-signals/RS-008-ceo-layout-wide-screen-2026-11-23.md (CEO playtest of iter-3 at 3440x1440); D-80
-    status: open
-    covers: [ui/src/components/Desk.tsx, ui/src/components/desk/**, ui/src/components/Hud.tsx, ui/src/scenes/ResultCard.tsx, ui/src/styles/**, devloop/kit/layout-audit.mjs, devloop/instances/world-conflict/layout-audit.config.mjs]
+    covers: [ui/src/App.tsx, ui/src/components/Desk.tsx, ui/src/components/StateBand.tsx, ui/src/components/desk/**, ui/src/scenes/ResultCard.tsx, ui/src/lib/layout.ts, ui/src/styles/**, ui/src/scenes/result.css, devloop/kit/layout-audit.mjs, devloop/instances/world-conflict/layout-audit.config.mjs]
     guards:
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-008.mjs
-    note: "Open until the D-80 layout ships; the fixing build removes status: open. Iter-3 baseline (06f937b + iter-3 UI on the shared dev server, seat CA-USA-OLIV1), 29 violations in 32 measurements. CEO 3440x1440: month 1 used width 0.45 (943 px empty left); month 2 desk 3 inner scrollers (desk stage, rail body, Recommended list; 1495 px hidden), 24 controls below their fold, used width 0.45, 2 covered Remove links; Map mode passes. 1366x768 and 1440x900: inner scrolling in every desk state (month 2: 2585 / 2379 px hidden, 49 / 42 controls out of view). 1920x1080: same plus used width 0.80. 2560 and 3840: used width 0.60 / 0.40. Phone and tablet collapse rules hold."
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-008-1.mjs
+    note: "Shipped with the iteration-4 layout (design-layout.md, build-agenda-layout): CEO 3440x1440 0 violations in month 1, the result card, month 2 desk and Map (used width 1.00); all 32 measurements pass. The config now uses the five regions on their real selectors and applies the scroll rules from 1024x768 (the spec's bar, was 1366). RS-008-1 adds AC-L2, L3, L6 to L14 and the agenda criteria (AC-2, AC-5, AC-21, AC-25 to AC-27, AF-14) at 3440x1440, 3840x2160, 2560x1440, 1920x1080, 1599x900, 1440x900, 1366x820, 1366x768, 1024x768 and 390x844. Iter-3 baseline (06f937b + iter-3 UI on the shared dev server, seat CA-USA-OLIV1), 29 violations in 32 measurements. CEO 3440x1440: month 1 used width 0.45 (943 px empty left); month 2 desk 3 inner scrollers (desk stage, rail body, Recommended list; 1495 px hidden), 24 controls below their fold, used width 0.45, 2 covered Remove links; Map mode passes. 1366x768 and 1440x900: inner scrolling in every desk state (month 2: 2585 / 2379 px hidden, 49 / 42 controls out of view). 1920x1080: same plus used width 0.80. 2560 and 3840: used width 0.60 / 0.40. Phone and tablet collapse rules hold."
   - id: F-02-2
     title: One outcome vocabulary; status words never contradict outcomes
     source: dan-term 030-hs (staff meeting FAILED while mobilization 85 to 95 applied); marcus-term 010-m1f (FAILED on a vote cast and on China/Russia moves); priya-flash 011-ex1 (-9 labelled A step forward); maya-phone 018-m4d (front move as "what your choice did"); QA S2-1 (Hormuz USA month 1)

@@ -65,6 +65,20 @@ export async function pinSeat(page, seat = SEAT) {
   });
 }
 
+/** Phones: go to the review screen, where the only Execute of the phone desk is (AC-21). */
+export async function toPhoneReview(page) {
+  if (await page.getByRole('button', { name: /Execute month/i }).first().isVisible().catch(() => false)) return;
+  const review = page.getByRole('button', { name: /^Check and execute|^Review your month/ }).first();
+  for (let i = 0; i < 12 && !(await review.isVisible().catch(() => false)); i++) {
+    const next = page.locator('.ph-bottom .ph-next').first();
+    if (!(await next.isVisible().catch(() => false))) break;
+    await next.click().catch(() => {});
+    await page.waitForTimeout(250);
+  }
+  await review.click().catch(() => {});
+  await page.waitForTimeout(400);
+}
+
 /** Open the title on a fresh profile and take office on the pinned seat; resolves on the month 1 desk. */
 export async function startGame({ variant, device, out, base, seat = SEAT }) {
   fs.rmSync(path.join(out, '.profile'), { recursive: true, force: true });
@@ -76,8 +90,12 @@ export async function startGame({ variant, device, out, base, seat = SEAT }) {
   // The briefing (and on some builds a familiarity question) sits between the title and the desk
   const exec = s.page.getByRole('button', { name: /Execute month/i }).first();
   const t0 = Date.now();
-  // Execute must be pressable, not only rendered under the briefing
-  const ready = () => exec.click({ trial: true, timeout: 600 }).then(() => true, () => false);
+  // Execute must be pressable, not only rendered under the briefing. Phones have no Execute on the
+  // desk until the review screen (design-agenda AC-21): there the month's Next button counts
+  const phoneNext = s.page.locator('.ph-bottom .ph-next').first();
+  const ready = async () =>
+    (await exec.click({ trial: true, timeout: 600 }).then(() => true, () => false)) ||
+    (await phoneNext.click({ trial: true, timeout: 300 }).then(() => true, () => false));
   while (!(await ready())) {
     if (Date.now() - t0 > 30000) {
       await s.look('start-stuck');
