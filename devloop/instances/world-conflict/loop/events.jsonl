@@ -47,3 +47,7 @@
 {"t":"2026-11-23T20:54:52.270Z","kind":"merge","branch":"build-your-call","commit":"f5eec6da3bb179e7dc03a369ef82f710a890fb95","codeTree":"aee522ddb528212e","iteration":4,"stage":"Build","treeMatches":true}
 {"t":"2026-11-23T20:54:52.272Z","kind":"owed","tier":"T1","because":"merge of build-your-call"}
 {"t":"2026-11-23T20:56:18.017Z","kind":"record","gate":"status-refresh","result":"pass","commit":"f5eec6da3bb179e7dc03a369ef82f710a890fb95","codeTree":"aee522ddb528212e","evidence":"dev_plan/project_status.html","note":"status-refresh T1","iteration":4,"stage":"Build","tier":"T1"}
+{"t":"2026-11-23T21:22:41.592Z","kind":"record","gate":"verify","result":"pass","commit":"5b6716a325e2b09edb301f677fef7cc6d3cba05f","codeTree":"f25db7fbefea0505","evidence":".verify/summary.json","note":"modes default","iteration":4,"stage":"Build","steps":["registry","test","lint","ui-lint","build","smoke","reveal","visual","regressions","balance"]}
+{"t":"2026-11-23T21:22:49.230Z","kind":"merge","branch":"fix-loop-progress","commit":"2efbeddff49326dd94f1aa46cb1e818f726f1ddb","codeTree":"f25db7fbefea0505","iteration":4,"stage":"Build","treeMatches":true}
+{"t":"2026-11-23T21:22:49.232Z","kind":"owed","tier":"T1","because":"merge of fix-loop-progress"}
+{"t":"2026-11-23T21:23:42.143Z","kind":"record","gate":"status-refresh","result":"pass","commit":"2efbeddff49326dd94f1aa46cb1e818f726f1ddb","codeTree":"f25db7fbefea0505","evidence":"dev_plan/project_status.html","note":"status-refresh T1","iteration":4,"stage":"Build","tier":"T1"}

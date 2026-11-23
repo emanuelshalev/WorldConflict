@@ -636,6 +636,41 @@
       "iteration": 4,
       "stage": "Build",
       "tier": "T1"
+    },
+    {
+      "gate": "verify",
+      "result": "pass",
+      "commit": "5b6716a325e2b09edb301f677fef7cc6d3cba05f",
+      "codeTree": "f25db7fbefea0505",
+      "evidence": ".verify/summary.json",
+      "note": "modes default",
+      "t": "2026-11-23T21:22:41.592Z",
+      "iteration": 4,
+      "stage": "Build",
+      "steps": [
+        "registry",
+        "test",
+        "lint",
+        "ui-lint",
+        "build",
+        "smoke",
+        "reveal",
+        "visual",
+        "regressions",
+        "balance"
+      ]
+    },
+    {
+      "gate": "status-refresh",
+      "result": "pass",
+      "commit": "2efbeddff49326dd94f1aa46cb1e818f726f1ddb",
+      "codeTree": "f25db7fbefea0505",
+      "evidence": "dev_plan/project_status.html",
+      "note": "status-refresh T1",
+      "t": "2026-11-23T21:23:42.143Z",
+      "iteration": 4,
+      "stage": "Build",
+      "tier": "T1"
     }
   ],
   "merges": [
@@ -674,6 +709,15 @@
       "iteration": 4,
       "stage": "Build",
       "treeMatches": true
+    },
+    {
+      "t": "2026-11-23T21:22:49.230Z",
+      "branch": "fix-loop-progress",
+      "commit": "2efbeddff49326dd94f1aa46cb1e818f726f1ddb",
+      "codeTree": "f25db7fbefea0505",
+      "iteration": 4,
+      "stage": "Build",
+      "treeMatches": true
     }
   ],
   "overrides": [],
@@ -708,6 +752,11 @@
       "tier": "T1",
       "because": "merge of build-your-call",
       "t": "2026-11-23T20:54:52.272Z"
+    },
+    {
+      "tier": "T1",
+      "because": "merge of fix-loop-progress",
+      "t": "2026-11-23T21:22:49.232Z"
     }
   ],
   "blocked": []
