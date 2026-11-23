@@ -2,7 +2,7 @@ import type { OutcomeStatus, Reaction, ReportFact, TurnReport, WorldState } from
 import { STATUS_WORD, statusOf, verdictForStatus } from './outcome';
 import { countryName } from '../store/gameStore';
 import type { SceneKind } from '../scenes/kinds';
-import { actionFamily, guardFamily, sceneForAction, sceneForDecision, sceneForOutcome } from '../scenes/kinds';
+import { actionFamily, cleanChoice, guardFamily, leftOpenChoice, sceneForAction, sceneForDecision, sceneForOutcome } from '../scenes/kinds';
 import type { MapEffect } from '../scenes/OutcomeMap';
 import { mapEffect } from './mapEffect';
 import { shareFacts } from './numbers';
@@ -102,8 +102,10 @@ function decisionCard(d: Decision, i: number): OutcomeCardData {
     key: `d${i}`,
     kicker: `${KIND_WORD[d.kind ?? 'CRISIS'] ?? 'Decision'}${d.withCountry ? ` · ${countryName(d.withCountry)}` : ''}`,
     country: d.withCountry,
-    headline: d.headline ?? d.title,
-    lines: [{ text: `You: ${d.choice.replace(/ \(no decision taken\)$/, ' (no decision taken)')}`, icon: d.kind }],
+    // A crisis left open ran its default answer: the engine's "(no decision taken)" is the truth, so
+    // it is never told as the leader's answer or the player's choice (design-rereview C2-2)
+    headline: leftOpenChoice(d.choice) ? `Left open: ${cleanChoice(d.choice)}` : (d.headline ?? d.title),
+    lines: [{ text: leftOpenChoice(d.choice) ? `You left it open: ${cleanChoice(d.choice)} went ahead by default` : `You: ${d.choice}`, icon: d.kind }],
     reaction: d.reaction,
     facts: shareFacts(d.facts),
     watch: d.watch,
