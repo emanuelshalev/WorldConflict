@@ -1,0 +1,115 @@
+{
+  "$schema": "../../method/quality.schema.json",
+  "product": "<product>",
+  "version": 1,
+  "about": "The release gate of gate.md as metrics (method/quality.md). Every metric says its source, threshold, noise band and cadence.",
+  "loopConfig": "loop/config.json",
+  "adapters": [],
+  "gate": "quality",
+  "verdict": { "notMeasured": "not-met" },
+  "release": { "tagPattern": "rc-*" },
+  "trend": { "from": 0 },
+  "dimensions": [
+    {
+      "id": "functional",
+      "label": "Functional correctness",
+      "metrics": [
+        {
+          "id": "verify-green",
+          "label": "Verify gate green on the commit",
+          "source": { "adapter": "verify" },
+          "direction": "bool",
+          "noise": { "kind": "none", "why": "a deterministic run" },
+          "cadence": "per-commit",
+          "blocking": true
+        },
+        {
+          "id": "guards-pass",
+          "label": "Every finding guard passes",
+          "source": { "adapter": "verify", "args": { "step": "regressions" } },
+          "direction": "bool",
+          "noise": { "kind": "none", "why": "deterministic guards" },
+          "cadence": "per-commit",
+          "blocking": true
+        }
+      ]
+    },
+    {
+      "id": "reliability",
+      "label": "Reliability and stability",
+      "metrics": [
+        {
+          "id": "open-s1-s2",
+          "label": "Open S1 or S2 findings",
+          "source": { "adapter": "table", "args": { "file": "runs/iter-{NN}/triage.md", "header": ["Cluster", "Sev"], "where": { "Sev": "^S[12]" }, "agg": "count" } },
+          "direction": "lower",
+          "threshold": 0,
+          "noise": { "kind": "none", "why": "a triage decision" },
+          "cadence": "per-iteration",
+          "blocking": true
+        },
+        {
+          "id": "real-signals-open",
+          "label": "Open real signals at S2 or worse",
+          "source": { "adapter": "real-signals", "args": { "dir": "real-signals", "minSeverity": "S2" } },
+          "direction": "lower",
+          "threshold": 0,
+          "noise": { "kind": "none", "why": "real people: no band" },
+          "cadence": "per-commit",
+          "veto": true
+        }
+      ]
+    },
+    {
+      "id": "experience",
+      "label": "User experience",
+      "metrics": [
+        {
+          "id": "recommend-weighted",
+          "label": "Weighted recommend",
+          "source": { "adapter": "feedback", "args": { "metric": "weighted", "key": "recommend" } },
+          "direction": "higher",
+          "threshold": 7.0,
+          "noise": { "kind": "derived", "k": 1, "why": "1 standard error of the weighted mean from the persona retest spread" },
+          "cadence": "per-iteration",
+          "blocking": true
+        },
+        {
+          "id": "recommend-floor",
+          "label": "Lowest persona recommend",
+          "source": { "adapter": "feedback", "args": { "metric": "min", "key": "recommend" } },
+          "direction": "higher",
+          "threshold": 6,
+          "noise": { "kind": "fixed", "band": 1, "why": "a one-point move of one persona is noise" },
+          "cadence": "per-iteration",
+          "blocking": true
+        },
+        {
+          "id": "early-quitter-completes",
+          "label": "The early quitter completes a session",
+          "source": { "adapter": "feedback", "args": { "metric": "completed", "personas": ["<early-quitter-id>"] } },
+          "direction": "bool",
+          "noise": { "kind": "none", "why": "behaviour, not a score" },
+          "cadence": "per-iteration",
+          "blocking": true
+        }
+      ]
+    },
+    {
+      "id": "performance",
+      "label": "Performance",
+      "metrics": [
+        {
+          "id": "perf-budget",
+          "label": "Perf budget tests failing",
+          "source": { "adapter": "vitest-log", "args": { "log": ".verify/test.log", "file": "tests/perf", "metric": "failed" } },
+          "direction": "lower",
+          "threshold": 0,
+          "noise": { "kind": "none", "why": "budgets carry their own headroom" },
+          "cadence": "per-iteration",
+          "blocking": false
+        }
+      ]
+    }
+  ]
+}

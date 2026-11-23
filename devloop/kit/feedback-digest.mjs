@@ -7,13 +7,27 @@
 //
 // With --inject, replaces the text between /*<MARKER>:START*/ and /*<MARKER>:END*/ in the HTML
 // with `<MARKER>[<iteration>] = {...};` entries for every iteration found under runs/.
+//
+// Also a module: `digest(instanceDir, iteration)`, `panelWeights(instanceDir)`, `iterations(instanceDir)`
+// and `sessionsOf(instanceDir, iteration)` (raw session reports) are used by kit/evaluate.mjs.
 import fs from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 
-const [instanceDir, , ...rest] = process.argv.slice(2);
-const weights = {};
-const panel = fs.readFileSync(path.join(instanceDir, 'panel', 'panel.yaml'), 'utf8');
-for (const m of panel.matchAll(/id:\s*(\w+),\s*file:\s*[\w.]+,\s*weight:\s*([\d.]+)/g)) weights[m[1]] = Number(m[2]);
+/** Persona weights from <instance>/panel/panel.yaml: { id: weight }. */
+export function panelWeights(instanceDir) {
+  const weights = {};
+  const file = path.join(instanceDir, 'panel', 'panel.yaml');
+  if (!fs.existsSync(file)) return weights;
+  const panel = fs.readFileSync(file, 'utf8');
+  for (const m of panel.matchAll(/id:\s*(\w+),\s*file:\s*[\w.]+,\s*weight:\s*([\d.]+)/g)) weights[m[1]] = Number(m[2]);
+  return weights;
+}
+
+export const runDirOf = (instanceDir, iter) => path.join(instanceDir, 'runs', `iter-${String(iter).padStart(2, '0')}`);
+
+/** Raw session reports of one iteration (method/report.schema.json). */
+export const sessionsOf = (instanceDir, iter) => readJson(path.join(runDirOf(instanceDir, iter), 'sessions'));
 
 const readJson = (dir) =>
   fs.existsSync(dir)
@@ -35,8 +49,8 @@ const short = (s, n = 220) => {
   return t.length > n ? `${t.slice(0, n - 1)}…` : t;
 };
 
-function digest(iter) {
-  const runDir = path.join(instanceDir, 'runs', `iter-${String(iter).padStart(2, '0')}`);
+export function digest(instanceDir, iter, weights = panelWeights(instanceDir)) {
+  const runDir = runDirOf(instanceDir, iter);
   const sessions = readJson(path.join(runDir, 'sessions'));
   const interviews = readJson(path.join(runDir, 'interviews'));
   const customers = sessions
@@ -83,22 +97,33 @@ function digest(iter) {
   };
 }
 
-const iters = fs
-  .readdirSync(path.join(instanceDir, 'runs'))
-  .map((d) => /^iter-(\d+)$/.exec(d)?.[1])
-  .filter((x) => x != null && fs.existsSync(path.join(instanceDir, 'runs', `iter-${x}`, 'sessions')))
-  .map(Number)
-  .sort((a, b) => a - b);
-
-const injectAt = rest.indexOf('--inject');
-if (injectAt >= 0) {
-  const [html, marker] = rest.slice(injectAt + 1);
-  const body = iters.map((i) => `${marker}[${i}] = ${JSON.stringify(digest(i))};`).join('\n');
-  const src = fs.readFileSync(html, 'utf8');
-  const re = new RegExp(`/\\*${marker}:START\\*/[\\s\\S]*?/\\*${marker}:END\\*/`);
-  if (!re.test(src)) throw new Error(`markers /*${marker}:START*/ ... /*${marker}:END*/ not found in ${html}`);
-  fs.writeFileSync(html, src.replace(re, () => `/*${marker}:START*/\n${body}\n/*${marker}:END*/`));
-  console.log(`injected iterations ${iters.join(', ')} into ${html}`);
-} else {
-  console.log(JSON.stringify(digest(process.argv[3]), null, 1));
+/** Iterations that have session reports, ascending. */
+export function iterations(instanceDir) {
+  const runs = path.join(instanceDir, 'runs');
+  if (!fs.existsSync(runs)) return [];
+  return fs
+    .readdirSync(runs)
+    .map((d) => /^iter-(\d+)$/.exec(d)?.[1])
+    .filter((x) => x != null && fs.existsSync(path.join(runs, `iter-${x}`, 'sessions')))
+    .map(Number)
+    .sort((a, b) => a - b);
 }
+
+function cli(argv) {
+  const [instanceDir, iteration, ...rest] = argv;
+  const iters = iterations(instanceDir);
+  const injectAt = rest.indexOf('--inject');
+  if (injectAt >= 0) {
+    const [html, marker] = rest.slice(injectAt + 1);
+    const body = iters.map((i) => `${marker}[${i}] = ${JSON.stringify(digest(instanceDir, i))};`).join('\n');
+    const src = fs.readFileSync(html, 'utf8');
+    const re = new RegExp(`/\\*${marker}:START\\*/[\\s\\S]*?/\\*${marker}:END\\*/`);
+    if (!re.test(src)) throw new Error(`markers /*${marker}:START*/ ... /*${marker}:END*/ not found in ${html}`);
+    fs.writeFileSync(html, src.replace(re, () => `/*${marker}:START*/\n${body}\n/*${marker}:END*/`));
+    console.log(`injected iterations ${iters.join(', ')} into ${html}`);
+  } else {
+    console.log(JSON.stringify(digest(instanceDir, iteration), null, 1));
+  }
+}
+
+if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) cli(process.argv.slice(2));
