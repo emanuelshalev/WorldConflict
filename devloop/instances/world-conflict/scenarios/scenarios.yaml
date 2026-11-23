@@ -37,7 +37,7 @@ control:
   ruth:   {code: CO-UKR-RUTH1,    device: tablet,  play: "Flashpoint to the end (12 months)"}
   noah:   {code: HC-ARE-NOAH1,    device: phone,   play: "Flashpoint, as far as he would"}
   priya:  {code: CO-UKR-PRIY1,    device: laptop,  play: "Flashpoint to the end (12 months)"}
-  dan:    {code: T2026-RUS-DAN01, device: desktop, play: "One Term, at least 12 months"}
+  dan:    {code: T2026-RUS-DAN01, device: ultrawide, play: "One Term, at least 12 months (3440x1440, the CEO's setup, from iteration 4)"}
   sam:    {code: SL-CHN-SAM01,    device: desktop, play: "Flashpoint, as far as he would"}
   leo:    {code: QU-CHN-LEO01,    device: desktop, play: "Flashpoint to the end (12 months)"}
   marcus: {code: T1990-USA-MARC1, device: desktop, play: "One Term, at least 12 months"}

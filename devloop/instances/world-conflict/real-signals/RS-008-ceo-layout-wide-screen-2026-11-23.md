@@ -3,7 +3,7 @@
 Severity: S2
 Status: open
 
-Build played: `main` at tag `iter-3` (06f937b), a very large monitor.
+Build played: `main` at tag `iter-3` (06f937b), a very large monitor: 3440x1440 at 100% zoom (ultrawide).
 
 > Tested iter3, the UI is not good. I don't like the scrolling block at the center: with a wide screen there is a central piece with wasted space on the sides. I can scroll to see more things at the bottom, but it is unclear that such things exist and a player may miss them. The UI elements should adjust to leverage screen size; elements need to be visible without scrolling. If there is enough space we need to leverage it; if there isn't, elements need to exist, maybe collapsed, and expand as needed. But we cannot hide things in a scroll or leave the screen empty. One more element that scrolls is the one on the right with political capital: I have a massive screen and that section is scrolling within a tiny space, which makes no sense. Important things like state should be visible and should have a dedicated space. We cannot scroll all these things within a tiny space. Bad UI arrangement.
 

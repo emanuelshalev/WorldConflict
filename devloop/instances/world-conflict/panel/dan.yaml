@@ -20,6 +20,7 @@ reading: {value: "Reads everything, including numbers", evidence: inferred}
 weighs_most: [depth, transparency, fairness, consistency]
 variants:
   - {id: dan-term,   device: "1920x1080 desktop", note: "One Term, a Tough nation"}
+  - {id: dan-ultrawide, device: "3440x1440 ultrawide", note: "One Term on an ultrawide monitor at 100% zoom (the CEO's setup, RS-008)"}
   - {id: dan-legacy, device: "1440x900 laptop",  note: "Legacy start, systems probing"}
 verbatim_grounding:
   - "Nothing to optimise once the country is at peace. (round 1)"
