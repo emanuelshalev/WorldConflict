@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: 560a71e3-7113-4ffa-aea8-74191a508a8c
-  modified: 2026-11-22T06:01:36.702Z
+  modified: 2026-11-23T10:07:26.954Z
 ---
 
 Since 2026-11-21 the user (acting as CEO) has me run World Conflict development as a synthetic-customer loop toward a public RC, on branch dev/rc1-synthetic-loop (main tagged v0.9.0).
@@ -14,6 +14,7 @@ Since 2026-11-21 the user (acting as CEO) has me run World Conflict development 
 - Two goal tracks: a fantastic game (G1-G9) AND discovering/adopting best agentic-AI dev practices (P1-P6).
 - Audience is wide: gamers and non-gamers, teens to older current-affairs readers, quick and long sessions.
 - At the end of each iteration (after a green verify gate) fast-forward main to the finished iteration and tag it iter-N so the CEO can playtest from main (CEO instruction 2026-11-23; overrides the general 'never push to main' default for this purpose only).
+- After each iteration is published to main (`node devloop/kit/publish.mjs` succeeded and main is pushed), tell OpenClaw to deploy the latest WorldConflict main to the Oracle server (CEO instruction 2026-11-23, standing). OpenClaw's CLI is on PATH on the Windows machine: `openclaw agent --message "..."` runs an agent turn through its gateway; it has an Oracle SSH skill (`skills/oracle-server-ssh`). As of 2026-11-23 its PROJECTS.md had no WorldConflict deploy entry, so the first request should name the GitHub repo and branch. Report the deploy result to the CEO; never deploy anything but published main.
 - "Fixed stays fixed" is product goal G13: every addressed finding needs an automated guard in devloop/instances/world-conflict/regressions.yaml; one `npm run verify` gate before merges and panel rounds.
 - Never remove features. Be autonomous; ask only if absolutely blocked. Check in regularly and keep `dev_plan/project_status.html` (Iterations, Personas, How we work, Journal tabs, driven by the LOOP object) current.
 
