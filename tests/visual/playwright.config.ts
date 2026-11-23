@@ -5,8 +5,9 @@
 // Or against running servers:
 //   VISUAL_BASE_URL=http://localhost:5173/ VISUAL_API_URL=http://localhost:8080/api \
 //     npx playwright test -c tests/visual/playwright.config.ts [--update-snapshots]
-// Baselines: tests/visual/__screenshots__/<test file>/<name>.png. Specs are *.visual.ts so vitest
-// never picks them up.
+// Baselines: tests/visual/__screenshots__/<test file>/<name>.png on Linux; other systems render
+// fonts differently and keep their own set in a subfolder (win32/, darwin/). Specs are *.visual.ts
+// so vitest never picks them up.
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'playwright/test';
@@ -19,10 +20,12 @@ export default defineConfig({
   testDir: here,
   testMatch: /.*\.visual\.ts$/,
   outputDir: path.join(out, 'results'),
-  snapshotPathTemplate: '{testDir}/__screenshots__/{testFileName}/{arg}{ext}',
+  snapshotPathTemplate: `{testDir}/__screenshots__/{testFileName}/${process.platform === 'linux' ? '' : `${process.platform}/`}{arg}{ext}`,
   fullyParallel: true,
   workers: 4,
-  retries: 1,
+  // Two retries: the title screen and reveal stage 0 are captured mid-transition now and then
+  // (seen on Windows, 2026-11); a real change fails all three attempts
+  retries: 2,
   timeout: 90_000,
   reporter: [['list'], ['html', { outputFolder: path.join(out, 'report'), open: 'never' }]],
   expect: {

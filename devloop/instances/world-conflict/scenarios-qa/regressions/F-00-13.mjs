@@ -31,7 +31,7 @@ await run('F-00-13', async (g, track) => {
   for (const [query, kind] of [
     // Dan's words: the first hit is the strike on nuclear sites, an act of war (its face may lead
     // with the mission warning, which also has to be confirmed)
-    ['nuclear strike india', /^(war|mission)$/],
+    ['nuclear strike india', /^(war|mission|danger)$/],
     ['declare war india', /^war$/],
   ]) {
     // The pointer must not rest on a hit (pointer-enter moves the cursor there): park it on the band

@@ -282,6 +282,12 @@ async function gallery({ device, w }) {
       for (const id of ['denounce', 'demobilize', 'policing-soft', 'policing-hard']) {
         await p.locator(`[data-og=catalog] [data-order-id="${id}"] .wc-card-hit`).click();
         await p.waitForTimeout(700);
+        // Danger orders (Hard crackdown) confirm on a face first (D-75)
+        const go = p.locator(`[data-og=catalog] [data-order-id="${id}"] [data-confirm-go]`);
+        if (await go.count()) {
+          await go.first().click();
+          await p.waitForTimeout(700);
+        }
       }
       const n = await slots();
       const others = p.locator('[data-og=catalog] [data-order-state]:not([data-order-state="queued"])');

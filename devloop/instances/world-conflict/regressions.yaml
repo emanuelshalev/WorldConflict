@@ -868,6 +868,43 @@ findings:
       - vitest: tests/ui-month.spec.ts
         name: "a near miss picks the smallest country drawn within the tap slop"
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/QA3R-5d.mjs
+  # ------------------------------------------------------------------------------------------
+  # Design review of build-order-cards (runs/iter-04/design-review-order-cards.md, D-81)
+  # ------------------------------------------------------------------------------------------
+  - id: DR-OC-1
+    title: "The danger confirmation in the Map order menu is whole: title once, Cancel and Give the order on one line each and inside the menu's visible box"
+    source: runs/iter-04/design-review-order-cards.md required change 1 (S2; zoom-map-confirm-3440.jpg, month-2-map-confirm-1024x768.jpg)
+    covers: [ui/src/components/orders/ConfirmFace.tsx, ui/src/components/orders/OrderCard.tsx, ui/src/components/MapActionMenu.tsx, ui/src/styles/orders.css]
+    changed: "re-review (design-rereview-order-cards.md C1, C3): the guard also checks that the menu header's close button stays in view while the face is open (sticky header), that Cancel and Escape restore the menu's scroll position, and that pointing at another order shows no hover forecast beside the face"
+    guards:
+      - vitest: tests/ui-order-cards-render.spec.ts
+        name: "every danger order confirms first (D-75), and the face shows title, family word and icon"
+      - vitest: tests/ui-order-cards-render.spec.ts
+        name: "the face keeps a title line only when the question does not name the order (DR-OC-1)"
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-OC-1.mjs
+  - id: DR-OC-2
+    title: "All orders groups by family, headed by the same family word as every card's chip (no Intelligence or Domestic headings)"
+    source: runs/iter-04/design-review-order-cards.md required change 2 (S3; m1-catalog-russia-3440x1440-CEO.jpg, m1-confirm-danger-1920x1080.jpg)
+    covers: [ui/src/components/orders/OrderCatalog.tsx, ui/src/lib/orders.ts, ui/src/lib/glossary.ts]
+    guards:
+      - vitest: tests/ui-order-catalog-families.spec.ts
+        name: "All orders is grouped by family, under the family words (DR-OC-2)"
+      - vitest: tests/ui-orders-parity.spec.ts
+        name: "files every order under one family group and gives it a blurb"
+  - id: DR-OC-3
+    title: "The catalogue is dense again: rows on a phone (6 or more orders a screen), tiles near their earlier height from 600 px up"
+    source: runs/iter-04/design-review-order-cards.md required change 3 (S3; m1-catalog-russia-390x844.jpg, audit-phone.txt)
+    covers: [ui/src/components/orders/OrderCatalog.tsx, ui/src/components/orders/OrderCard.tsx, ui/src/styles/orders.css]
+    changed: "re-review (design-rereview-order-cards.md C2, C4): rows are counted where the player sees them (inside the desk stage, above the command bar; the first version counted rows under the bar), in the reviewer's state (target Russia, Military group at the top) as well as with no target; floors 4 and 5, not the target of 6 (see the guard's note); a press on an available phone row opens its blurb and forecast without adding it, Add adds it. Review 3 (design-review3-order-cards.md new problems 2 to 4): the opened row's forecast is at least 80% of the row's width and Add stays within its first 80 px; the hint line only shows with no target; a phone search hit behaves as a list row (a tap shows the forecast, Add adds)"
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-OC-3.mjs
+  - id: DR-OC-4
+    title: "On the phone desk catalogue a danger order's Cancel and Give the order open above the fixed command bar, wherever the row was pressed"
+    source: runs/iter-04/design-rereview-order-cards.md new problem 1 (S2; reach-airstrike-military-390x844-70pct.jpg, probe-face-reach-phone.txt)
+    covers: [ui/src/components/orders/ConfirmFace.tsx, ui/src/components/desk/CommandRail.tsx, ui/src/styles/desk-stage.css, ui/src/styles/month.css, ui/src/components/desk/Coach.tsx]
+    changed: "review 3 (design-review3-order-cards.md new problems 1 and 5): with an order of the player's own added first, the first month's coach bubble stands on the bar; the guard checks at 390x844 and 360x740 that no bubble shows while a face is open, that both answers are uncovered at the centre and four corners, that a tap on Give the order queues the order, and that Cancel leaves the list where the player had it"
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-OC-4.mjs
 # ------------------------------------------------------------------------------------------
 # Not listed (still open or not a code fix); add them here when a fix lands with its guard:
 #   RS-001-6  dashboard feel, "serious visual design": the ledger keeps it not done (D-37 check)

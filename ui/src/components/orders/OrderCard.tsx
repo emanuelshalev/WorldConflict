@@ -1,11 +1,11 @@
 import { type ReactNode, type Ref, useCallback, useEffect, useId, useImperativeHandle, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { IconCheck, IconInfoCircle, IconLock, IconPlus, IconX } from '@tabler/icons-react';
+import { IconCheck, IconChevronDown, IconChevronUp, IconInfoCircle, IconLock, IconPlus, IconX } from '@tabler/icons-react';
 import { type ConfirmNeed, type PendingAction, orderKey, queueOrder, useGameStore } from '../../store/gameStore';
 import { proposalEffects } from '../../lib/month';
 import { CardCost, CardShell } from '../game/CardShell';
 import { spendSeals } from '../game/SealFlight';
-import { type OrderDef, orderAction, orderBlurb, orderFor, orderLabel } from '../../lib/orders';
+import { FAMILY_WORD, type OrderDef, orderAction, orderBlurb, orderFor, orderLabel } from '../../lib/orders';
 import { TERMS, term } from '../../lib/glossary';
 import { pcCost } from '../../lib/actions';
 import { defenseShareOf, type MonthBlock } from '../../lib/availability';
@@ -13,8 +13,9 @@ import { pointAt } from '../../lib/pointAt';
 import { shake } from '../../lib/motion';
 import { sound } from '../../lib/sound';
 import { sceneForAction } from '../../scenes/kinds';
-import { actionFamily } from '../../scenes/actionIcons';
+import { logOrder } from '../../lib/orderLog';
 import { ConfirmFace } from './ConfirmFace';
+import { FamilyBand, FamilyChip, OrderPlate } from './OrderPictogram';
 import { OrderPreview } from './OrderPreview';
 import { previewOf } from './preview';
 import { useOrderState } from './useOrders';
@@ -56,6 +57,11 @@ export interface OrderCardProps {
   extra?: Partial<PendingAction>;
   /** Show the forecast beside the tile on hover/focus (desktop). Default true for tiles. */
   hoverPreview?: boolean;
+  /**
+   * Row variant (phone catalogue): a press on an available row toggles its blurb and forecast
+   * instead of adding it; the Add button adds. Search hits keep press-to-add (Enter acts on them).
+   */
+  pressForecast?: boolean;
   handle?: Ref<OrderCardHandle>;
   className?: string;
 }
@@ -69,8 +75,13 @@ function bankEl(): Element | null {
 function confirmCopy(def: OrderDef, label: string, need: ConfirmNeed) {
   if (def.type === 'NUCLEAR_STRIKE') return { kind: 'nuclear' as const, question: `Authorize a ${label.charAt(0).toLowerCase()}${label.slice(1)}?`, confirmText: 'Hold to authorize', cancelText: 'Stand down' };
   if (need.irreversible) return { kind: 'war' as const, question: `${label}?`, confirmText: def.type === 'DIPLOMACY_DECLARE_WAR' ? 'Declare war' : 'Give the order', cancelText: 'Keep the peace' };
-  return { kind: 'mission' as const, question: `${label} anyway?`, confirmText: 'Give the order', cancelText: 'Cancel' };
+  if (need.missionWarning) return { kind: 'mission' as const, question: `${label} anyway?`, confirmText: 'Give the order', cancelText: 'Cancel' };
+  // A danger order (D-75): one look at the order before it is given, so a mis-pick by icon is caught
+  return { kind: 'danger' as const, question: `${label}?`, confirmText: 'Give the order', cancelText: 'Cancel' };
 }
+
+/** Plate sizes per surface (design-order-cards.md section 5): never below 34 px on a card. */
+const PLATE = { tile: 52, compact: 42, row: 46, slot: 34 } as const;
 
 /**
  * The order card (design-orders.md §4): one component for the desk catalog, search hits, staff
@@ -92,12 +103,14 @@ export function OrderCard({
   onQueued,
   extra,
   hoverPreview,
+  pressForecast = false,
   handle,
   className = '',
 }: OrderCardProps) {
   const st = useOrderState(def, targetId);
   const remove = useGameStore((s) => s.removePendingAction);
   const home = useGameStore((s) => s.worldState?.playerCountryId);
+  const turnNo = useGameStore((s) => s.worldState?.turn);
   const wrap = useRef<HTMLDivElement>(null);
   const uid = useId().replace(/:/g, '');
   const [confirm, setConfirm] = useState<ConfirmNeed | null>(null);
@@ -122,7 +135,8 @@ export function OrderCard({
   const isProposal = !!proposal && !isQueued;
   const proposalFx = proposal ? proposalEffects(proposal) : '';
   const off = avail.state === 'unaffordable' || avail.state === 'invalid';
-  const fam = actionFamily(def.type);
+  const fam = def.family;
+  const famWord = FAMILY_WORD[fam];
 
   const pointBlock = useCallback(
     (b: MonthBlock | null) => {
@@ -149,8 +163,9 @@ export function OrderCard({
 
   const give = async (confirmed = false) => {
     if (busy) return;
-    if (!confirmed && !isProposal && (def.irreversible || entry?.irreversible || entry?.missionWarning)) {
+    if (!confirmed && !isProposal && (def.irreversible || entry?.irreversible || entry?.missionWarning || def.danger)) {
       setConfirm({ irreversible: !!(def.irreversible || entry?.irreversible), missionWarning: entry?.missionWarning ?? null, preview: null });
+      logOrder('confirm-open', def.id, { target: st.targetId, month: turnNo });
       return;
     }
     setBusy(true);
@@ -167,6 +182,7 @@ export function OrderCard({
     }
     if (r.confirm) {
       setConfirm(r.confirm);
+      if (!confirm) logOrder('confirm-open', def.id, { target: st.targetId, month: turnNo });
       return;
     }
     setConfirm(null);
@@ -198,9 +214,10 @@ export function OrderCard({
   }));
 
   const cancelConfirm = useCallback(() => {
+    logOrder('confirm-cancel', def.id, { target: st.targetId, month: turnNo });
     setConfirm(null);
     window.setTimeout(() => wrap.current?.querySelector<HTMLButtonElement>('.wc-card-hit')?.focus({ preventScroll: true }), 0);
-  }, []);
+  }, [def.id, st.targetId, turnNo]);
 
   // ---------- the confirm face replaces the card ----------
   if (confirm) {
@@ -212,7 +229,7 @@ export function OrderCard({
     ];
     return (
       <div ref={wrap} className={`ord-wrap ord-${variant} is-confirming ${className}`.trim()} data-order-id={def.id} data-order-state="confirming">
-        <ConfirmFace {...copy} missionWarning={confirm.missionWarning} lines={lines} onConfirm={() => void give(true)} onCancel={cancelConfirm} />
+        <ConfirmFace {...copy} missionWarning={confirm.missionWarning} lines={lines} onConfirm={() => void give(true)} onCancel={cancelConfirm} order={{ id: def.id, family: fam, title: label }} />
       </div>
     );
   }
@@ -349,7 +366,7 @@ export function OrderCard({
     </button>
   );
 
-  const ariaLabel = off && block ? `${label}, unavailable: ${block.reason}` : isQueued ? `${label}, ${TERMS.inThisMonth.name.toLowerCase()}` : isProposal ? `${label}, ${TERMS.proposed.name.toLowerCase()}: accept${pc ? `, spends ◆ ${pc}` : ''}${proposalFx ? `. Will change: ${proposalFx}` : ''}` : `${label}, ${pc ? `costs ◆ ${pc}` : 'free'}${entry?.chance != null ? `, ${entry.chance}% chance` : ''}`;
+  const ariaLabel = off && block ? `${label}, unavailable: ${block.reason}` : isQueued ? `${label}, ${TERMS.inThisMonth.name.toLowerCase()}` : isProposal ? `${label}, ${TERMS.proposed.name.toLowerCase()}: accept${pc ? `, spends ◆ ${pc}` : ''}${proposalFx ? `. Will change: ${proposalFx}` : ''}` : `${label}, ${famWord}, ${pc ? `costs ◆ ${pc}` : 'free'}${entry?.chance != null ? `, ${entry.chance}% chance` : ''}`;
   const stateCls = `ord-${variant} st-${avail.state} fam-${fam}${compact ? ' ord-compact' : ''}${busy ? ' is-busy' : ''}${selected ? ' is-selected' : ''}${isProposal ? ' is-proposal' : ''}`;
   const desc = blurb ?? (compact ? undefined : orderBlurb(def, st.targetName));
 
@@ -358,6 +375,16 @@ export function OrderCard({
     const slot = block?.code === 'NO_CAPITAL' ? block.slots?.[0] : undefined;
     const actKind = avail.state === 'available' ? 'add' : isQueued ? 'remove' : slot !== undefined ? 'free' : block?.code === 'NEEDS_TARGET' ? 'pick' : 'why';
     const actText = { add: isProposal ? 'Choose order' : 'Add', remove: 'Remove', free: `Free ◆ ${slot !== undefined ? month.queuedCosts[slot] : 0}`, pick: 'Pick', why: 'Why' }[actKind];
+    // A free order says "free" once, on its seal badge, not again in the meta line
+    const metaParts = [
+      ...(pc ? [`◆ ${pc}`] : []),
+      ...(share > 0 ? [term(TERMS.defense.compact, Math.round(share * 100))] : []),
+      ...(entry?.chance != null ? [term(TERMS.chance.name, entry.chance)] : []),
+      ...(def.irreversible ? [TERMS.noUndo.name] : []),
+    ];
+    // Catalogue rows on a phone (C2): a press on an available row opens its blurb and forecast, as
+    // the tile's "How much? Forecast" does; Add is the one way to queue it
+    const rowForecast = pressForecast && avail.state === 'available' && !isProposal;
     const onAct = () => {
       if (actKind === 'add') void give(false);
       else if (actKind === 'remove') remove(st.queuedIndex);
@@ -370,24 +397,41 @@ export function OrderCard({
         pointBlock(block);
       }
     };
+    const expansion = (
+      <div className="ord-expand" id={`ord-${uid}-pv`} data-row-forecast={rowForecast ? '' : undefined}>
+        {off && fix && <div className="ord-fixes">{fix}</div>}
+        {rowForecast && desc && <p className="ord-expand-blurb">{desc}</p>}
+        <OrderPreview preview={previewOf(entry)} compact />
+      </div>
+    );
+    // An opened catalogue row (S3): the forecast runs the row's full width under the title line,
+    // and Add and the plate stay level with the title (orders.css `.is-open`)
+    const opened = rowForecast && info;
     return (
-      <div ref={wrap} className={`ord-wrap ${stateCls} ${className}`.trim()} data-order-id={def.id} data-order-state={avail.state} data-order-code={block?.code}>
+      <div ref={wrap} className={`ord-wrap ${stateCls}${opened ? ' is-open' : ''} ${className}`.trim()} data-order-id={def.id} data-order-state={avail.state} data-order-code={block?.code} data-family={fam}>
         <CardShell
           layout="row"
+          foot={opened ? expansion : undefined}
           id={`ord-${def.id}-${uid}`}
           title={label}
-          art={sceneForAction(def.type)}
+          artNode={<OrderPlate id={def.id} family={fam} size={PLATE.row} queued={isQueued} />}
           home={home}
           other={st.targetId}
           mood={def.danger ? 'bad' : 'neutral'}
           cost={<CardCost seals={pc} missing={block?.code === 'NO_CAPITAL' ? Math.max(0, pc - (block.need?.have ?? 0)) : 0} alarm={alarm} size={18} />}
           state={off ? 'unavailable' : 'rest'}
           stamp={isQueued ? 'ORDERED' : undefined}
-          onPress={activate}
+          onPress={rowForecast ? () => setInfo((v) => !v) : activate}
           onRefuse={refused}
-          ariaLabel={ariaLabel}
+          ariaLabel={rowForecast ? `${ariaLabel}. ${info ? 'Hide the forecast' : 'Show the forecast'}; Add puts it in this month` : ariaLabel}
         >
           <div className="ord-meta">
+            <FamilyChip family={fam} />
+            {rowForecast && (
+              <span className="ord-meta-fc" aria-hidden>
+                {info ? 'Hide forecast' : 'Forecast'} {info ? <IconChevronUp size={13} /> : <IconChevronDown size={13} />}
+              </span>
+            )}
             {isQueued ? (
               <span className="ord-meta-in">
                 {TERMS.inThisMonth.name}
@@ -397,20 +441,15 @@ export function OrderCard({
             ) : isProposal ? (
               <span className="ord-meta-line ord-meta-proposed">
                 {TERMS.proposed.name}
-                {staff ? ` (${staff})` : ''} · {pc ? `◆ ${pc} if chosen` : 'free'}{' '}
+                {staff ? ` (${staff})` : ''}
+                {pc ? ` · ◆ ${pc} if chosen` : ''}{' '}
                 <button type="button" className="link ord-dismiss" onClick={() => remove(proposalIndex)}>
                   Remove
                 </button>
               </span>
             ) : (
-              avail.state !== 'invalid' && (
-                <span className="ord-meta-line">
-                  {pc ? `◆ ${pc}` : 'free'}
-                  {share > 0 ? ` · ${term(TERMS.defense.compact, Math.round(share * 100))}` : ''}
-                  {entry?.chance != null ? ` · ${term(TERMS.chance.name, entry.chance)}` : ''}
-                  {def.irreversible ? ` · ${TERMS.noUndo.name}` : ''}
-                </span>
-              )
+              avail.state !== 'invalid' &&
+              metaParts.length > 0 && <span className="ord-meta-line">{metaParts.join(' · ')}</span>
             )}
             {off && block && (
               <span className={`ord-meta-why ${avail.state === 'unaffordable' ? 'is-budget' : 'is-rule'}`}>
@@ -422,12 +461,7 @@ export function OrderCard({
             {desc && avail.state === 'available' && <span className="ord-meta-blurb">{desc}</span>}
             {selected && avail.state === 'available' && <kbd className="ord-kbd">Enter</kbd>}
           </div>
-          {info && (
-            <div className="ord-expand" id={`ord-${uid}-pv`}>
-              {off && fix && <div className="ord-fixes">{fix}</div>}
-              <OrderPreview preview={previewOf(entry)} compact />
-            </div>
-          )}
+          {info && !rowForecast && expansion}
         </CardShell>
         <button type="button" className={`ord-act act-${avail.state}`} onClick={onAct} data-fix={off ? '' : undefined} aria-label={`${actText}: ${label}`}>
           {actText}
@@ -444,7 +478,7 @@ export function OrderCard({
       data-order-id={def.id}
       data-order-state={avail.state}
       data-order-code={block?.code}
-      style={{ ['--fam' as string]: `var(--fam-${fam})` }}
+      data-family={fam}
     >
       <CardShell
         layout="tile"
@@ -452,6 +486,21 @@ export function OrderCard({
         title={label}
         description={avail.state === 'available' ? desc : undefined}
         art={sceneForAction(def.type)}
+        // A 54 px scene crop is unreadable: compact tiles draw the family band instead
+        artNode={compact ? <FamilyBand id={def.id} family={fam} /> : undefined}
+        artOverlay={
+          compact ? (
+            <span className="ord-bandchip">
+              <FamilyChip family={fam} />
+            </span>
+          ) : undefined
+        }
+        lead={
+          <>
+            <OrderPlate id={def.id} family={fam} size={compact ? PLATE.compact : PLATE.tile} queued={isQueued} />
+            {!compact && <FamilyChip family={fam} />}
+          </>
+        }
         home={home}
         other={st.targetId}
         mood={def.danger ? 'bad' : 'neutral'}
@@ -490,6 +539,9 @@ function HoverPreview({ anchor, entry, label }: { anchor: React.RefObject<HTMLDi
     const show = () => {
       window.clearTimeout(t);
       t = window.setTimeout(() => {
+        // No forecast of another order beside an open confirmation in the same menu or catalogue:
+        // its numbers would read as the confirmed order's (C3, DR-OC-1)
+        if (el.closest('.map-action-menu, [data-order-catalog]')?.querySelector('.ord-confirm')) return;
         const r = el.getBoundingClientRect();
         const w = 300;
         const left = r.right + 12 + w < window.innerWidth ? r.right + 12 : r.left - 12 - w >= 0 ? r.left - 12 - w : Math.max(8, Math.min(window.innerWidth - w - 8, r.left));
@@ -537,13 +589,15 @@ export function OrderSlot({ action, index, onOpen }: { action: PendingAction; in
   const remove = useGameStore((s) => s.removePendingAction);
   const home = useGameStore((s) => s.worldState?.playerCountryId);
   const pc = pcCost(action.type);
+  const def = orderFor(action);
   return (
-    <div className="ord-wrap ord-slot st-queued" data-point-slot={index} data-order-id={orderFor(action)?.id}>
+    <div className={`ord-wrap ord-slot st-queued${def ? ` fam-${def.family}` : ''}`} data-point-slot={index} data-order-id={def?.id}>
       <CardShell
         layout="slot"
         id={`slot-${index}`}
         title={action.label}
         art={sceneForAction(action.type)}
+        artNode={def ? <OrderPlate id={def.id} family={def.family} size={PLATE.slot} /> : undefined}
         home={home}
         other={action.targetCountryId}
         cost={pc > 0 ? <span className="ord-chip ord-held num">◆ {pc}</span> : <span className="ord-chip num">free</span>}

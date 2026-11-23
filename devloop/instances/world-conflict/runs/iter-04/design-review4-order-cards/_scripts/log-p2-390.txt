@@ -1,0 +1,22 @@
+390x844 no-coach-notarget end of list, Hard crackdown (last row): before [top 2578 height 3125 client 547 max 2578] face [top 2741 height 3352 client 547 max 2805] 150 ms after Cancel [top 2507 height 3125 client 547 max 2578] 1 s after [top 2507 height 3125 client 547 max 2578]
+   face 415..713 (stage top 297), title top 457 | Cancel y648..696 uncovered(c,tl,tr,bl,br)=11111 | Give the order y648..696 uncovered(c,tl,tr,bl,br)=11111
+390x844 Mobilize queued
+390x844 coach-notarget end of list, Hard crackdown (last row): before [top 2656 height 3203 client 547 max 2656] face [top 2743 height 3430 client 547 max 2883] 150 ms after Cancel [top 2585 height 3203 client 547 max 2656] 1 s after [top 2585 height 3203 client 547 max 2656]
+   face 415..713 (stage top 297), title top 457 | Cancel y648..696 uncovered(c,tl,tr,bl,br)=11111 | Give the order y648..696 uncovered(c,tl,tr,bl,br)=11111
+390x844 Add-band scan (Add top from stage top 297 to bar 743, 4 px steps, 67 positions): centre unpressable at 15 positions (22%), of which wholly covered 10; unpressable band Add top y 641..697
+390x844 top row notarget fund-nuclear Add y321: before [top 1611 height 3203 client 547 max 2656] face [top 1611 height 3426 client 547 max 2879] after Cancel [top 1611 height 3203 client 547 max 2656] -> available; coach 660 visible
+   face 311..609 (stage top 297), title top 353 | Cancel y544..592 uncovered(c,tl,tr,bl,br)=11111 | Give the order y544..592 uncovered(c,tl,tr,bl,br)=11111
+390x844 top row notarget fund-nuclear Add y321: before [top 1611 height 3203 client 547 max 2656] face [top 1611 height 3426 client 547 max 2879] after Give [top 1611 height 3222 client 547 max 2675] -> queued; coach 660 visible
+   face 311..609 (stage top 297), title top 353 | Cancel y544..592 uncovered(c,tl,tr,bl,br)=11111 | Give the order y544..592 uncovered(c,tl,tr,bl,br)=11111
+390x844 top row russia deploy-border Add y321: before [top 1375 height 3596 client 547 max 3049] face [top 1375 height 3782 client 547 max 3235] after Cancel [top 1375 height 3596 client 547 max 3049] -> available; coach 660 visible
+   face 311..590 (stage top 297), title top 353 | Cancel y525..573 uncovered(c,tl,tr,bl,br)=11110 | Give the order y525..573 uncovered(c,tl,tr,bl,br)=11111
+390x844 top row russia deploy-border Add y321: before [top 1375 height 3596 client 547 max 3049] face [top 1375 height 3782 client 547 max 3235] after Give [top 1375 height 3598 client 547 max 3051] -> queued; coach 660 visible
+   face 311..590 (stage top 297), title top 353 | Cancel y525..573 uncovered(c,tl,tr,bl,br)=11110 | Give the order y525..573 uncovered(c,tl,tr,bl,br)=11111
+390x844 top row russia airstrike-military Add y321: before [top 1558 height 3596 client 547 max 3049] face [top 1558 height 3784 client 547 max 3237] after Cancel [top 1558 height 3596 client 547 max 3049] -> available; coach 660 visible
+   face 311..610 (stage top 297), title top 353 | Cancel y545..593 uncovered(c,tl,tr,bl,br)=11110 | Give the order y545..593 uncovered(c,tl,tr,bl,br)=11110
+390x844 top row russia airstrike-military Add y321: before [top 1558 height 3596 client 547 max 3049] face [top 1558 height 3784 client 547 max 3237] after Give [top 1558 height 3746 client 547 max 3199] -> queued; coach 660 visible
+   face 311..610 (stage top 297), title top 353 | Cancel y545..593 uncovered(c,tl,tr,bl,br)=11110 | Give the order y545..593 uncovered(c,tl,tr,bl,br)=11110
+390x844 coach-russia end of list, Hard crackdown (last row): before [top 3049 height 3596 client 547 max 3049] face [top 3136 height 3823 client 547 max 3276] 150 ms after Cancel [top 2978 height 3596 client 547 max 3049] 1 s after [top 2978 height 3596 client 547 max 3049]
+   face 415..713 (stage top 297), title top 457 | Cancel y648..696 uncovered(c,tl,tr,bl,br)=11111 | Give the order y648..696 uncovered(c,tl,tr,bl,br)=11111
+390x844 search "sanction": no hits
+page errors: none

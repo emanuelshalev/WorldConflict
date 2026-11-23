@@ -9,7 +9,7 @@ import { ACTION_VERBS, PC } from "../ui/src/lib/actions.js";
 import {
   deskOrders,
   ORDERS,
-  ORDERS_BY_CATEGORY,
+  ORDERS_BY_FAMILY,
   orderAction,
   orderFor,
   orderLabel,
@@ -52,8 +52,8 @@ describe("Order registry parity", () => {
     expect(new Set(ORDERS.map((o) => o.id)).size).toBe(ORDERS.length);
   });
 
-  it("files every order under one category and gives it a blurb", () => {
-    const grouped = Object.values(ORDERS_BY_CATEGORY).flat();
+  it("files every order under one family group and gives it a blurb", () => {
+    const grouped = Object.values(ORDERS_BY_FAMILY).flat();
     expect(grouped).toHaveLength(ORDERS.length);
     for (const o of ORDERS) {
       expect(o.blurb.length, o.id).toBeGreaterThan(10);

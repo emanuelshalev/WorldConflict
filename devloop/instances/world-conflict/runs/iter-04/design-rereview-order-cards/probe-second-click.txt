@@ -1,0 +1,6 @@
+month 1 menu tiles: ceasefire:available airstrike-military:available deploy-border:available spy:available destabilize:available
+pending at start: DIPLOMACY_IMPROVE_RELATIONS>GBR(proposed), DOMESTIC_PROPAGANDA(proposed)
+airstrike-military: after the first press, under the pointer (1062,413): deploy-border
+airstrike-military / second click after 350 ms: face now open on: none; pending before [DIPLOMACY_IMPROVE_RELATIONS>GBR(proposed), DOMESTIC_PROPAGANDA(proposed)] after [DIPLOMACY_IMPROVE_RELATIONS>GBR(proposed), DOMESTIC_PROPAGANDA(proposed)]
+airstrike-military / double-click: face now open on: airstrike-military; pending before [DIPLOMACY_IMPROVE_RELATIONS>GBR(proposed), DOMESTIC_PROPAGANDA(proposed)] after [DIPLOMACY_IMPROVE_RELATIONS>GBR(proposed), DOMESTIC_PROPAGANDA(proposed)]
+THREW locator.waitFor: Timeout 5000ms exceeded.
