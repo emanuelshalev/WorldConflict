@@ -301,7 +301,8 @@ function dailyChallenge(
   if (flashpoints.length === 0) return null;
   // WC_DAILY_DATE pins the daily (YYYY-MM-DD) for reproducible test runs; players get today's date
   const pinned = process.env.WC_DAILY_DATE;
-  const date = pinned && /^\d{4}-\d{2}-\d{2}$/.test(pinned) ? pinned : new Date().toISOString().slice(0, 10);
+  const date =
+    pinned && /^\d{4}-\d{2}-\d{2}$/.test(pinned) ? pinned : new Date().toISOString().slice(0, 10);
   const h = createSeed(Number(date.slice(0, 4)), date);
   const fp = flashpoints[h % flashpoints.length];
   const country = fp.playable[Math.floor(h / 7) % fp.playable.length];
