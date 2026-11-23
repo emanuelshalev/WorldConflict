@@ -52,7 +52,7 @@ ui/public/
   world.geojson    Natural Earth countries
   era/shapes.geojson  borders that no longer exist (East Germany, South Yemen)
 ui/src/
-  components/      TitleScreen, TitleGlobe, Hud, Desk, Chronicle, EndScreen, Drawers, MapView, SettingsModal…
+  components/      TitleScreen, TitleGlobe, StateBand, Desk, Chronicle, EndScreen, Drawers, MapView, SettingsModal…
     desk/            Your move, goal line, advisors, coach, command rail
     orders/          OrderCard, catalog, confirm face, country picker
     reveal/          the staged reveal, seals, ranking, compare, share bar
