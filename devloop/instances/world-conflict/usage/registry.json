@@ -6,6 +6,10 @@
   "loopStart": "2026-11-22T05:37:25Z",
   "orchestrator": {
     "role": "Group Manager",
+    "windowsFrom": [
+      "../progress/stages.jsonl",
+      "../loop/events.jsonl"
+    ],
     "windows": [
       {
         "from": "2026-11-22T05:37:25Z",
@@ -34,6 +38,31 @@
       }
     ]
   },
+  "prices": {
+    "_asOf": "2026-11",
+    "_note": "USD per million tokens, list prices as of 2026-11 (Anthropic pricing page, standard rates; cache read 5% of input, 5 minute write 1.25x, 1 hour write 2x, output 5x on Opus 5.5 and Sonnet 5.5; Haiku 5.5 writes are 1.25x and 2x input). To update: copy the new rates from the pricing page per model id, add a key for a new model id (a key also matches dated ids that start with it), then re-run usage-ledger.mjs --inject. Models without an entry count 0 USD and are listed in unpricedModels.",
+    "claude-opus-5-5": {
+      "input": 4,
+      "cacheWrite5m": 5,
+      "cacheWrite1h": 8,
+      "cacheRead": 0.2,
+      "output": 20
+    },
+    "claude-sonnet-5-5": {
+      "input": 2,
+      "cacheWrite5m": 2.5,
+      "cacheWrite1h": 4,
+      "cacheRead": 0.1,
+      "output": 10
+    },
+    "claude-haiku-5-5": {
+      "input": 0.1,
+      "cacheWrite5m": 0.125,
+      "cacheWrite1h": 0.2,
+      "cacheRead": 0.01,
+      "output": 0.5
+    }
+  },
   "rules": [
     {
       "desc": "^Customer (\\w+) iter-(\\d+) concept",
@@ -44,10 +73,10 @@
       "stage": "Design"
     },
     {
-      "desc": "^Content: era",
+      "desc": "^Content",
       "role": "Content Consultant",
       "group": "Content",
-      "iteration": 1,
+      "iteration": "auto",
       "stage": "Build"
     },
     {
@@ -69,14 +98,28 @@
       "desc": "^QA",
       "role": "QA Engineer",
       "group": "QA",
-      "iteration": 1,
+      "iteration": "auto",
       "stage": "Verify"
+    },
+    {
+      "desc": "^Verify",
+      "role": "QA Engineer",
+      "group": "QA",
+      "iteration": "auto",
+      "stage": "Verify"
+    },
+    {
+      "desc": "^Adjudicate",
+      "role": "Adjudicator",
+      "group": "Designers",
+      "iteration": "auto",
+      "stage": "Design"
     },
     {
       "desc": "^Design: (orders|learn)",
       "role": "UX Designer",
       "group": "Designers",
-      "iteration": 1,
+      "iteration": "auto",
       "stage": "Design",
       "workstream": "$1"
     },
@@ -84,7 +127,7 @@
       "desc": "^Design: (game feel|era-aware world map)",
       "role": "Art Director",
       "group": "Designers",
-      "iteration": 1,
+      "iteration": "auto",
       "stage": "Design",
       "workstream": "$1"
     },
@@ -92,7 +135,7 @@
       "desc": "^Design: (monthly flow|the end-of-game reveal)",
       "role": "Game Designer",
       "group": "Designers",
-      "iteration": 1,
+      "iteration": "auto",
       "stage": "Design",
       "workstream": "$1"
     },
@@ -100,29 +143,55 @@
       "desc": "^Design",
       "role": "Designer",
       "group": "Designers",
-      "iteration": 1,
+      "iteration": "auto",
       "stage": "Design"
+    },
+    {
+      "desc": "^Fix",
+      "role": "Engine Engineer",
+      "group": "Engineers",
+      "iteration": "auto",
+      "stage": "Build",
+      "workPackage": "$label"
+    },
+    {
+      "desc": "^Docs",
+      "role": "Documentation Engineer",
+      "group": "Engineers",
+      "iteration": "auto",
+      "stage": "Build",
+      "workPackage": "$label"
+    },
+    {
+      "desc": "^Build: usage ledger|^Build: loop controller|^Build: quality scorecard|^Build: progress and ETA|^Build: layout audit|^Build: verify gate|^Build findings|^Build: stability",
+      "role": "Platform Engineer",
+      "group": "Platform",
+      "iteration": "auto",
+      "stage": "Build",
+      "workPackage": "$label"
     },
     {
       "desc": "^Build: feel|^Build: .*UI|^Build: .*(orders UI|month UI|reveal UI)",
       "role": "Frontend Engineer",
       "group": "Engineers",
-      "iteration": 1,
-      "stage": "Build"
+      "iteration": "auto",
+      "stage": "Build",
+      "workPackage": "$label"
     },
     {
       "desc": "^Build",
       "role": "Engine Engineer",
       "group": "Engineers",
-      "iteration": 1,
-      "stage": "Build"
+      "iteration": "auto",
+      "stage": "Build",
+      "workPackage": "$label"
     },
     {
-      "desc": "^Content",
-      "role": "Content Consultant",
-      "group": "Content",
-      "iteration": 1,
-      "stage": "Build"
+      "desc": "guidance lookup|^Research|lookup$",
+      "role": "Researcher",
+      "group": "Research",
+      "iteration": "auto",
+      "stage": "Plan"
     }
   ]
 }

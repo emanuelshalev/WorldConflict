@@ -74,3 +74,11 @@
 {"t":"2026-11-22T23:32:48.582Z","iteration":3,"stage":"Gate","kind":"start"}
 {"t":"2026-11-22T23:32:53.855Z","iteration":4,"stage":"Design","kind":"end"}
 {"t":"2026-11-22T23:32:53.855Z","iteration":4,"stage":"Plan","kind":"start"}
+{"t":"2026-11-23T05:42:19.229Z","iteration":4,"stage":"Plan","kind":"end"}
+{"t":"2026-11-23T05:42:19.229Z","iteration":4,"stage":"Design","kind":"start"}
+{"t":"2026-11-23T05:42:30.308Z","iteration":4,"stage":"Build","kind":"start"}
+{"t":"2026-11-23T05:42:35.982Z","iteration":4,"stage":"Build","kind":"unit-total","units":8}
+{"t":"2026-11-23T05:42:41.521Z","iteration":4,"stage":"Build","kind":"unit-done","units":4,"note":"built: loop controller, status protocol, quality scorecard, usage ledger at real prices; in gate: layout audit bundle, stability package"}
+{"t":"2026-11-23T05:42:52.369Z","iteration":4,"stage":"Build","kind":"unit-total","units":8}
+{"t":"2026-11-23T05:42:57.842Z","iteration":4,"stage":"Build","kind":"unit-done","units":4,"note":"built: loop controller, status protocol, quality scorecard, usage ledger; in gate: layout audit bundle, stability package; next: agenda and order cards in the new layout"}
+{"t":"2026-11-23T05:52:33.200Z","iteration":4,"stage":"Build","kind":"unit-done","units":1,"note":"bundle merged (layout audit, layout design, CLAUDE.md trim, usage ledger)"}

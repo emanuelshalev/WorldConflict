@@ -25,6 +25,10 @@
 //           name: refused order carries a reason                   # optional: test name substring
 //         - script: devloop/instances/x/scenarios-qa/regressions/F-00-1.mjs
 //       note: optional free text
+//       status: open             # optional: an open finding (not fixed yet) whose guard is expected
+//                                # to fail. Its guards run and are reported (OPEN), but never fail
+//                                # the gate; when they pass, the table says so and the fixing build
+//                                # removes `status: open`, which makes it a normal guard.
 import { execFileSync, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -198,6 +202,7 @@ export function checkRegistry(reg, root = process.cwd()) {
     if (!f.title) problems.push(`${f.id}: no title`);
     if (!f.source) problems.push(`${f.id}: no source`);
     if (!f.guards.length) problems.push(`${f.id}: no guard`);
+    if (f.status != null && f.status !== 'open') problems.push(`${f.id}: status must be "open" or absent (got "${f.status}")`);
     for (const g of f.guards) {
       const file = g.vitest ?? g.script;
       if (!file) {
@@ -279,29 +284,31 @@ export function runGuards(reg, { root = process.cwd(), out = '.verify/regression
   const scriptCache = new Map();
   const rows = [];
   for (const f of findings) {
+    // An open finding's rows carry `open`: reported, never a regression
+    const add = (r) => rows.push(f.status === 'open' ? { ...r, open: true } : r);
     for (const g of f.guards) {
       if (g.vitest) {
         const label = `${g.vitest}${g.name ? ` :: ${g.name}` : ''}`;
         const res = vt.byFile.get(g.vitest);
         if (!res) {
-          rows.push({ id: f.id, guard: label, ok: false, detail: vt.error ? 'vitest failed to run' : 'file not run' });
+          add({ id: f.id, guard: label, ok: false, detail: vt.error ? 'vitest failed to run' : 'file not run' });
           continue;
         }
         if (res.fileError) {
-          rows.push({ id: f.id, guard: label, ok: false, detail: String(res.fileError).split('\n')[0].slice(0, 160) });
+          add({ id: f.id, guard: label, ok: false, detail: String(res.fileError).split('\n')[0].slice(0, 160) });
           continue;
         }
         const tests = g.name ? res.tests.filter((t) => t.fullName.includes(String(g.name))) : res.tests;
         const bad = tests.filter((t) => t.status === 'failed');
         const ran = tests.filter((t) => t.status === 'passed');
-        if (!tests.length) rows.push({ id: f.id, guard: label, ok: false, detail: 'no matching test ran' });
-        else if (bad.length) rows.push({ id: f.id, guard: label, ok: false, detail: `failed: ${bad[0].fullName}`.slice(0, 160) });
-        else if (!ran.length) rows.push({ id: f.id, guard: label, ok: false, detail: 'matching tests were skipped' });
-        else rows.push({ id: f.id, guard: label, ok: true, detail: `${ran.length} test${ran.length > 1 ? 's' : ''}` });
+        if (!tests.length) add({ id: f.id, guard: label, ok: false, detail: 'no matching test ran' });
+        else if (bad.length) add({ id: f.id, guard: label, ok: false, detail: `failed: ${bad[0].fullName}`.slice(0, 160) });
+        else if (!ran.length) add({ id: f.id, guard: label, ok: false, detail: 'matching tests were skipped' });
+        else add({ id: f.id, guard: label, ok: true, detail: `${ran.length} test${ran.length > 1 ? 's' : ''}` });
       } else if (g.script) {
         if (!scriptCache.has(g.script)) scriptCache.set(g.script, runScript(g.script, path.resolve(root, out), root, env));
         const r = scriptCache.get(g.script);
-        rows.push({ id: f.id, guard: g.script, ok: r.ok, detail: r.detail });
+        add({ id: f.id, guard: g.script, ok: r.ok, detail: r.detail });
       }
     }
   }
@@ -311,15 +318,24 @@ export function runGuards(reg, { root = process.cwd(), out = '.verify/regression
 export function printTable(rows) {
   const wi = Math.max(4, ...rows.map((r) => r.id.length));
   const wg = Math.min(90, Math.max(5, ...rows.map((r) => r.guard.length)));
-  console.log(`${'ID'.padEnd(wi)}  ${'Guard'.padEnd(wg)}  Result  Detail`);
-  console.log('-'.repeat(wi + wg + 24));
+  const result = (r) => (r.open ? (r.ok ? 'OPEN-PASS' : 'OPEN') : r.ok ? 'PASS' : 'FAIL');
+  console.log(`${'ID'.padEnd(wi)}  ${'Guard'.padEnd(wg)}  Result     Detail`);
+  console.log('-'.repeat(wi + wg + 28));
   for (const r of rows) {
     const g = r.guard.length > wg ? `...${r.guard.slice(-(wg - 3))}` : r.guard;
-    console.log(`${r.id.padEnd(wi)}  ${g.padEnd(wg)}  ${(r.ok ? 'PASS' : 'FAIL').padEnd(6)}  ${r.detail ?? ''}`);
+    console.log(`${r.id.padEnd(wi)}  ${g.padEnd(wg)}  ${result(r).padEnd(9)}  ${r.detail ?? ''}`);
   }
-  const failedIds = [...new Set(rows.filter((r) => !r.ok).map((r) => r.id))];
-  const ids = new Set(rows.map((r) => r.id));
+  // Open findings (status: open) are reported, never counted as regressions
+  const closed = rows.filter((r) => !r.open);
+  const failedIds = [...new Set(closed.filter((r) => !r.ok).map((r) => r.id))];
+  const ids = new Set(closed.map((r) => r.id));
   console.log(`\n${ids.size - failedIds.length}/${ids.size} findings guarded and passing${failedIds.length ? `; REGRESSED: ${failedIds.join(', ')}` : ''}`);
+  const openIds = [...new Set(rows.filter((r) => r.open).map((r) => r.id))];
+  if (openIds.length) {
+    const nowPassing = openIds.filter((id) => rows.filter((r) => r.id === id).every((r) => r.ok));
+    const still = openIds.filter((id) => !nowPassing.includes(id));
+    console.log(`open findings (reported, not gating): ${still.length ? `${still.join(', ')} still failing as expected` : 'none failing'}${nowPassing.length ? `; NOW PASSING: ${nowPassing.join(', ')}: remove \`status: open\` to make the guard gate` : ''}`);
+  }
   return failedIds;
 }
 

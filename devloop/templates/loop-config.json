@@ -42,7 +42,8 @@
     "qa",
     "triage",
     "status-refresh",
-    "quality"
+    "quality",
+    "design-review"
   ],
   "rules": {
     "verify-before-use": {
@@ -74,6 +75,13 @@
       "gate": "verify",
       "match": "code",
       "why": "Verify passes on the merge result before any merge"
+    },
+    "design-review-before-merge": {
+      "on": "merge",
+      "gate": "design-review",
+      "match": "code",
+      "when": { "paths": ["ui/"] },
+      "why": "A merge that changes the user interface needs a design review of the built screen at every breakpoint (screenshots, layout audit); set the paths to the product's UI folders"
     },
     "status-refresh-owed": {
       "on": "enter:*",

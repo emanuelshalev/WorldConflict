@@ -20,6 +20,9 @@ Read this first when picking the work back up. Then run `node devloop/kit/loop.m
 3. Layout design review (UX, Art Director, Game Designer sign-off), then build the guided agenda and order cards in the new layout (design-agenda.md, design-order-cards.md, design-layout.md).
 4. Design pass and play pass, QA, then the iteration 4 customer round (QA before customers; Dan plays at 3440x1440), triage, scorecard, publish iter-4.
 
+## Parked ideas (not scheduled; CEO said wait)
+- Status portal over structured data: per-section JSON written by tools, short markdown for hand fields, a generic kit viewer and a build step bundling one HTML (fewer merge conflicts, schema checks, reusable). Discussed 2026-11-23; do not start until the CEO asks.
+
 ## Useful facts
 - Status page: `node devloop/kit/status-refresh.mjs devloop/instances/world-conflict/status-protocol.json --tier T1|T2|T3 [--hand now,iter-current,iter-summary]`.
 - Never commit in the shared checkout while a full verify runs there (the runner refuses to record when HEAD moves). `setup.cmd` is a CRLF artifact: `git update-index --assume-unchanged setup.cmd` in each worktree before a verify.

@@ -1,8 +1,8 @@
 {
   "version": 1,
   "iteration": 4,
-  "stage": "Plan",
-  "stageSince": "2026-11-22T23:32:53.855Z",
+  "stage": "Build",
+  "stageSince": "2026-11-23T05:42:30.308Z",
   "records": [
     {
       "gate": "verify",
@@ -95,9 +95,112 @@
       "iteration": 4,
       "stage": "Plan",
       "tier": "T2"
+    },
+    {
+      "gate": "verify",
+      "result": "fail",
+      "commit": "d06e45892aed91d972df7a0c50329ccee34c8f14",
+      "codeTree": "6d9efdd0b5662d9d",
+      "evidence": ".verify/summary.json",
+      "note": "modes default",
+      "t": "2026-11-23T05:06:42.554Z",
+      "iteration": 4,
+      "stage": "Plan",
+      "steps": [
+        "registry",
+        "test",
+        "lint",
+        "ui-lint",
+        "build",
+        "smoke",
+        "reveal",
+        "visual",
+        "regressions",
+        "balance"
+      ]
+    },
+    {
+      "gate": "verify",
+      "result": "fail",
+      "commit": "5613bb74057bbda829225e9aaf3a00dda109441e",
+      "codeTree": "6233dfe224220f37",
+      "evidence": ".verify/summary.json",
+      "note": "modes default",
+      "t": "2026-11-23T05:26:55.479Z",
+      "iteration": 4,
+      "stage": "Plan",
+      "steps": [
+        "registry",
+        "test",
+        "lint",
+        "ui-lint",
+        "build",
+        "smoke",
+        "reveal",
+        "visual",
+        "regressions",
+        "balance"
+      ]
+    },
+    {
+      "gate": "status-refresh",
+      "result": "pass",
+      "commit": "815488532cc2c46f497d45ecdb458d224c959a5f",
+      "codeTree": "657e794cf0795c21",
+      "evidence": "dev_plan/project_status.html",
+      "note": "status-refresh T1",
+      "t": "2026-11-23T05:43:41.005Z",
+      "iteration": 4,
+      "stage": "Build",
+      "tier": "T1"
+    },
+    {
+      "gate": "verify",
+      "result": "pass",
+      "commit": "8b90160171752ccb85a91420c5ab5b7b113ba25f",
+      "codeTree": "7314fe528f17b448",
+      "evidence": ".verify/summary.json",
+      "note": "modes default",
+      "t": "2026-11-23T05:50:51.809Z",
+      "iteration": 4,
+      "stage": "Build",
+      "steps": [
+        "registry",
+        "test",
+        "lint",
+        "ui-lint",
+        "build",
+        "smoke",
+        "reveal",
+        "visual",
+        "regressions",
+        "balance"
+      ]
+    },
+    {
+      "gate": "status-refresh",
+      "result": "pass",
+      "commit": "2ce56f77f5d934859ec4888b173d6c91fa776b4a",
+      "codeTree": "7314fe528f17b448",
+      "evidence": "dev_plan/project_status.html",
+      "note": "status-refresh T1",
+      "t": "2026-11-23T05:53:09.039Z",
+      "iteration": 4,
+      "stage": "Build",
+      "tier": "T1"
     }
   ],
-  "merges": [],
+  "merges": [
+    {
+      "t": "2026-11-23T05:51:51.679Z",
+      "branch": "build-layout-audit",
+      "commit": "2ce56f77f5d934859ec4888b173d6c91fa776b4a",
+      "codeTree": "7314fe528f17b448",
+      "iteration": 4,
+      "stage": "Build",
+      "treeMatches": true
+    }
+  ],
   "overrides": [],
   "publishes": [
     {
@@ -110,6 +213,12 @@
       "note": "backfilled, published by hand before the controller"
     }
   ],
-  "owed": [],
+  "owed": [
+    {
+      "tier": "T1",
+      "because": "merge of build-layout-audit",
+      "t": "2026-11-23T05:51:51.680Z"
+    }
+  ],
   "blocked": []
 }

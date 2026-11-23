@@ -713,6 +713,14 @@ findings:
       - vitest: tests/ui-glossary.spec.ts
         name: names the Recommended group
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-005.mjs
+  - id: RS-008
+    title: "The game screen uses the space and hides nothing: no inner scrolling for month items, state or actions at 1366x768 and up, width used at 1920 and up, small screens collapse visibly (layout audit)"
+    source: real-signals/RS-008-ceo-layout-wide-screen-2026-11-23.md (CEO playtest of iter-3 at 3440x1440); D-80
+    status: open
+    covers: [ui/src/components/Desk.tsx, ui/src/components/desk/**, ui/src/components/Hud.tsx, ui/src/scenes/ResultCard.tsx, ui/src/styles/**, devloop/kit/layout-audit.mjs, devloop/instances/world-conflict/layout-audit.config.mjs]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-008.mjs
+    note: "Open until the D-80 layout ships; the fixing build removes status: open. Iter-3 baseline (06f937b + iter-3 UI on the shared dev server, seat CA-USA-OLIV1), 29 violations in 32 measurements. CEO 3440x1440: month 1 used width 0.45 (943 px empty left); month 2 desk 3 inner scrollers (desk stage, rail body, Recommended list; 1495 px hidden), 24 controls below their fold, used width 0.45, 2 covered Remove links; Map mode passes. 1366x768 and 1440x900: inner scrolling in every desk state (month 2: 2585 / 2379 px hidden, 49 / 42 controls out of view). 1920x1080: same plus used width 0.80. 2560 and 3840: used width 0.60 / 0.40. Phone and tablet collapse rules hold."
   - id: F-02-2
     title: One outcome vocabulary; status words never contradict outcomes
     source: dan-term 030-hs (staff meeting FAILED while mobilization 85 to 95 applied); marcus-term 010-m1f (FAILED on a vote cast and on China/Russia moves); priya-flash 011-ex1 (-9 labelled A step forward); maya-phone 018-m4d (front move as "what your choice did"); QA S2-1 (Hormuz USA month 1)
