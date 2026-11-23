@@ -112,6 +112,11 @@ const NUMBER_WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven
 /** First words that are not names, so they read lower case inside the sentence. */
 const COMMON_FIRST = /^(The|A|An|No|Voters|Your|Keep|Stay|Hold|End|Win|Score|Stability|Legitimacy|Approval|Make|Mend|Front|Never|Peace|Survive|Our|At|Get|Stop|Protect|Defend|Avoid|Reach|Bring)\b/;
 
+/** A goal name inside a sentence: "voters stay on side", but "Taipei comes to the table". */
+export function goalInSentence(name: string): string {
+  return COMMON_FIRST.test(name) ? name.charAt(0).toLowerCase() + name.slice(1) : name;
+}
+
 /** One goal in plain words: the short label, plus the number it is judged on when the label has one. */
 export function goalPhrase(c: { label: string; short?: string }): string {
   const cut = (c.short ?? c.label.split(/[(:]/)[0]).trim() || c.label;

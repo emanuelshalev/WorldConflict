@@ -241,6 +241,13 @@ describe("RS-005: staff picks are listed next to their Approve button", () => {
     expect(agenda.skipMeaning(move!).means).toMatch(/^No move for your mission\./);
   });
 
+  it("a call card's reason names goals in sentence case (C-2, engine adviser lines)", async () => {
+    const agenda = await import("../ui/src/lib/agenda.js");
+    const card = { why: "It moves Voters stay on side and Taipei comes to the table.", helps: ["Voters stay on side", "Taipei comes to the table"], hurts: [], breaks: [], bonusHelps: [] };
+    expect(agenda.callWhy(card)).toBe("It moves voters stay on side and Taipei comes to the table.");
+    expect(agenda.callWhy({ ...card, why: null })).toBe("");
+  });
+
   it("F-02-4 counts: the state band and the advisors count chosen orders only", () => {
     // QA: the Full desk said "Orders this month 2 of 6 / 2 added by staff" while the rail said 0 of 6.
     // The navigator and the rail are gone (D-80): the one count is the state band's, from budgetStatus

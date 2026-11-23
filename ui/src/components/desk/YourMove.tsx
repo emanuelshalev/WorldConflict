@@ -3,7 +3,7 @@ import { IconMessageCircle, IconSearch } from '@tabler/icons-react';
 import { type CallCard, type DecisionOption, type Impact, type Meeting, MEETING_SLOTS, type MissionNote, type PendingDecision, approveProposal, countryName, orderKey, useGameStore, usePlayerCountry } from '../../store/gameStore';
 import { ADVISOR_NAMES, flag, monthLabel } from '../../lib/format';
 import { cabinetPick, crisisSelection, effectWords, goalName, guideLede, meetingAdviser, meetingPick, meetingSelection, missionPick, missionTag, proposalEffects, splitLede } from '../../lib/month';
-import { type AgendaItem, advisersLine, agendaItems, callSides, chooseAnswer, chooseMove, chooseSmall, costPhrase, currentItem, meetingTitle, ministerFor, skipItem, skipMeaning, undoSkip, unchooseMove } from '../../lib/agenda';
+import { type AgendaItem, advisersLine, agendaItems, callWhy, callSides, chooseAnswer, chooseMove, chooseSmall, costPhrase, currentItem, meetingTitle, ministerFor, skipItem, skipMeaning, undoSkip, unchooseMove } from '../../lib/agenda';
 import { TERMS } from '../../lib/glossary';
 import { SceneFrame } from '../../scenes/SceneFrame';
 import { type SceneKind, avoidRepeat, crisisMood, sceneForCrisis } from '../../scenes/kinds';
@@ -345,7 +345,7 @@ function DecisionThing({ item, compact }: { item: AgendaItem; compact: boolean }
             ]
               .filter(Boolean)
               .join(' ');
-            const ccRec = cc && cc.advisers.length ? `${advisersLine(cc)}${cc.why ? `: "${guide ? guideLede(cc.why, 14).short : cc.why}"` : ''}` : undefined;
+            const ccRec = cc && cc.advisers.length ? `${advisersLine(cc)}${cc.why ? `: "${guide ? guideLede(callWhy(cc), 14).short : callWhy(cc)}"` : ''}` : undefined;
             return (
               <AnswerCard
                 key={o.id}
@@ -502,7 +502,7 @@ function MoveThing({ item }: { item: AgendaItem }) {
               <div key={c.id} className="opt-pair">
                 <AnswerCard
                   title={`Order: ${c.label}${c.pc ? ` · ◆ ${c.pc}` : ''}`}
-                  rec={c.advisers.length ? `${advisersLine(c)}${c.why ? `: "${c.why}"` : ''}` : undefined}
+                  rec={c.advisers.length ? `${advisersLine(c)}${c.why ? `: "${callWhy(c)}"` : ''}` : undefined}
                   fx={goals ? `${goals}.` : 'No goal moves that we can see.'}
                   fxTone={c.breaks.length + c.hurts.length ? 'risk' : c.helps.length ? 'help' : undefined}
                   more={[odds, a?.proposed ? 'Your Chief of Staff proposes it: Choose all recommended chooses it.' : '', refused[c.id] ?? (c.blocked ? `${c.blocked.reason} ${c.blocked.fix}` : '')].filter(Boolean).join(' ')}

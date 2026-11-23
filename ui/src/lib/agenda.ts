@@ -2,6 +2,7 @@ import { type CallCard, type DecisionOption, type GameState, type Meeting, type 
 import { ADVISOR_NAMES } from './format';
 import { type CallSet, approveAll, cabinetPick, callSet, crisisChoices, leaveText, meetingAdviser, meetingPick, primaryItem, splitLede } from './month';
 import { pcCost } from './actions';
+import { goalInSentence } from './goals';
 
 /**
  * The month as a guided agenda (design-agenda.md 0, round 3; design-layout.md 6). One list, one
@@ -452,6 +453,16 @@ export function callSides(item: AgendaItem, state: GameState = useGameStore.getS
   const call = item.yourCall ?? (item.decision ? (callSet(state).byId[item.decision.id] ?? null) : null);
   if (!call) return { cards: {}, guide: '', call: null };
   return { cards: Object.fromEntries(call.cards.map((card) => [card.id, card])), guide: call.guide, call };
+}
+
+/**
+ * A call card's reason in the desk's sentence case: the engine names goals by their labels ("It moves
+ * Voters stay on side."), which read lower case inside a sentence unless they start with a name.
+ */
+export function callWhy(card: Pick<CallCard, 'why' | 'helps' | 'hurts' | 'breaks' | 'bonusHelps'>): string {
+  let why = card.why ?? '';
+  for (const g of new Set([...card.helps, ...card.hurts, ...card.breaks, ...card.bonusHelps])) if (g) why = why.split(` ${g}`).join(` ${goalInSentence(g)}`);
+  return why;
 }
 
 /** "Recommended by your Foreign Minister" / "... by your Foreign Minister and your Chief of Staff". */
