@@ -1,0 +1,41 @@
+## 3440x1440-CEO
+horizontal page scroll: false
+controls under 44 px (count x control): 3
+  20x ord-info "How much? Forecast" 130x32
+  2x ord-remove "Remove" 85x36
+  20x ord-fix "Pick a country" 123x36
+buttons whose label wraps to 2+ lines: 0
+  
+## 2560x1440
+horizontal page scroll: false
+controls under 44 px (count x control): 3
+  20x ord-info "How much? Forecast" 130x32
+  2x ord-remove "Remove" 85x36
+  20x ord-fix "Pick a country" 123x36
+buttons whose label wraps to 2+ lines: 0
+  
+## 1920x1080
+horizontal page scroll: false
+controls under 44 px (count x control): 3
+  20x ord-info "How much? Forecast" 130x32
+  2x ord-remove "Remove" 85x36
+  20x ord-fix "Pick a country" 123x36
+buttons whose label wraps to 2+ lines: 0
+  
+## 1440x900
+horizontal page scroll: false
+controls under 44 px (count x control): 3
+  20x ord-info "How much? Forecast" 130x32
+  2x ord-remove "Remove" 85x36
+  20x ord-fix "Pick a country" 123x36
+buttons whose label wraps to 2+ lines: 0
+  
+## 1366x768
+horizontal page scroll: false
+controls under 44 px (count x control): 3
+  20x ord-info "How much? Forecast" 130x32
+  2x ord-remove "Remove" 85x36
+  20x ord-fix "Pick a country" 123x36
+buttons whose label wraps to 2+ lines: 0
+  
+page errors: none

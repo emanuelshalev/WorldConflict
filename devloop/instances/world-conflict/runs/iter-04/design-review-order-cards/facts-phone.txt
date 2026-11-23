@@ -1,0 +1,58 @@
+
+## catalog no target 390x844
+visible cards 1; page horizontal scroll false
+card sizes: court:invalid:358x252
+controls under 44px: 0
+  
+text overflowing its box: 0
+  
+
+## catalog Russia 390x844
+visible cards 1; page horizontal scroll false
+card sizes: court:invalid:358x292
+controls under 44px: 0
+  
+text overflowing its box: 0
+  
+
+## confirm face 390x844
+visible cards 4; page horizontal scroll false
+card sizes: deploy-border:available:358x326 withdraw-border:available:358x294 airstrike-military:confirming:358x311 airstrike-nuclear:available:358x326
+controls under 44px: 1
+  ord-info "How much? Forecast" 130x32
+text overflowing its box: 0
+  
+
+## orders added 390x844
+visible cards 4; page horizontal scroll false
+card sizes: break-pact:invalid:358x248 declare-war:invalid:358x324 mobilize:queued:358x299 demobilize:available:358x275
+controls under 44px: 3
+  ord-info "How much? Forecast" 130x32
+  ord-fix "Strike military targets instead" 229x36
+  ord-remove "Remove" 85x36
+text overflowing its box: 0
+  
+
+## month 2 desk 390x844
+visible cards 0; page horizontal scroll false
+card sizes: 
+controls under 44px: 0
+  
+text overflowing its box: 0
+  
+
+## map menu 390x844
+visible cards 5; page horizontal scroll false
+card sizes: ceasefire:available:358x104 airstrike-military:available:358x122 deploy-border:available:358x104 spy:available:358x85 destabilize:available:358x85
+controls under 44px: 0
+  
+text overflowing its box: 0
+  
+
+## map confirm 390x844
+visible cards 3; page horizontal scroll false
+card sizes: ceasefire:available:358x104 airstrike-military:confirming:358x311 deploy-border:available:358x104
+controls under 44px: 0
+  
+text overflowing its box: 0
+  
