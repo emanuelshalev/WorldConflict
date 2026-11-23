@@ -407,6 +407,30 @@ describe("progress integration", () => {
   });
 });
 
+describe("progress pass-through", () => {
+  it("accepts a note with spaces and quotes, and a new iteration closes the previous one", () => {
+    const progressCfg = { stages: baseConfig().stages, log: "stages.jsonl", estimates: "estimates.jsonl" };
+    const { root, ctx } = makeRepo({ progress: { config: "../progress/config.json" } });
+    write(root, "inst/progress/config.json", JSON.stringify(progressCfg));
+    loop.init(ctx, { iteration: 3, stage: "Report" });
+    loop.advance(ctx, "Gate");
+    const cfgArgs = ["--config", join(root, CFG)];
+    expect(loop.main([...cfgArgs, "progress", "--total", "4"], root)).toBe(0);
+    const note = `two words, "quoted" and it's fine`;
+    expect(loop.main([...cfgArgs, "progress", "--done", "2", "--note", note], root)).toBe(0);
+    const read = () =>
+      readFileSync(join(root, "inst/progress/stages.jsonl"), "utf8")
+        .trim()
+        .split("\n")
+        .map((l) => JSON.parse(l));
+    expect(read().find((e) => e.kind === "unit-done")?.note).toBe(note);
+    loop.advance(ctx, "Plan");
+    const log = read();
+    expect(log.some((e) => e.kind === "end" && e.iteration === 3 && e.stage === "Gate")).toBe(true);
+    expect(log.some((e) => e.kind === "start" && e.iteration === 4 && e.stage === "Plan")).toBe(true);
+  });
+});
+
 describe("git pre-push hook", () => {
   it("blocks pushing main or an iter tag without verify on that commit; other refs pass", async () => {
     const { root, ctx, ev } = makeRepo();
