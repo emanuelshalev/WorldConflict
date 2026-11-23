@@ -27,11 +27,27 @@ export const FLASHPOINT_CONTROL = CONTROL_SEEDS.filter((c) => !c.startsWith("T")
 export const UKR_CONTROL = CONTROL_SEEDS.filter((c) => c.startsWith("CO-UKR"));
 
 /**
- * staff = Accept all recommended (cabinet picks, staff orders, meetings); staffswitch = the same
- * with mission picks; picks = crisis and meeting picks, no orders; none = nothing; cease = staff
- * plus a ceasefire proposal to Russia every month of the war; war = staff, war on Japan in month 2.
+ * staff = Accept all recommended (D-84: the routine, every call skipped); staffswitch = the same
+ * with the Chief of Staff making the calls (the opt-in setting; chief is its new name); guided =
+ * Accept all plus the Guide me line on every call; callpush / callhold = the two fixed rules
+ * (scripts/policies.ts); picks = the routine answers, no orders; none = nothing; cease = the full
+ * one-press month (chief, the pre-D-84 Accept all) plus a ceasefire proposal to Russia every month
+ * of the war; war = chief, war on Japan in month 2.
  */
-export type ControlPolicy = "staff" | "staffswitch" | "picks" | "none" | "cease" | "war";
+export type ControlPolicy =
+  | "staff"
+  | "staffswitch"
+  | "chief"
+  | "guided"
+  | "callpush"
+  | "callhold"
+  | "picks"
+  | "none"
+  | "cease"
+  | "war";
+const STAFF_LIKE = new Set(["staffswitch", "chief", "guided", "callpush", "callhold"]);
+/** The staff month each control policy builds on (cease and war keep the full one-press month). */
+const BASE: Partial<Record<ControlPolicy, string>> = { cease: "chief", war: "chief" };
 
 export interface ControlMonth {
   /** The world the player saw at the start of the month (advice computed on it). */
@@ -76,7 +92,7 @@ export function playControl(
   const out: ControlMonth[] = [];
   for (let t = 0; t < months && !world.gameOver; t++) {
     const advice = buildAdvice(world);
-    const staff = staffMonth(world, policy === "staffswitch");
+    const staff = staffMonth(world, BASE[policy] ?? (STAFF_LIKE.has(policy) ? policy : "staff"));
     let orders: Action[] = policy === "none" || policy === "picks" ? [] : staff.orders;
     const me = world.countries.find((c) => c.id === world.playerCountryId);
     if (policy === "cease" && me?.atWarWith.includes("RUS"))

@@ -162,6 +162,22 @@ export const TERMS = {
     compact: 'No undo',
     banned: [],
   },
+  yourCall: {
+    id: 'yourCall',
+    // D-84 R11: the month's one or two decisions Accept all leaves to the player
+    name: 'Your call',
+    compact: 'Your call',
+    definition: 'A decision your advisers disagree on, or the move for your mission. Accept all recommended never decides it: you choose a card, or skip and the cost is named.',
+    banned: [],
+  },
+  chiefCalls: {
+    id: 'chiefCalls',
+    // D-84: the opt-in setting that restores the full one-press Accept all
+    name: 'Let the Chief of Staff make my calls',
+    compact: 'Chief of Staff makes my calls',
+    definition: 'Off by default. When on, Accept all recommended also decides each Your call: the Chief of Staff takes the card that serves your mission (the calm one when political capital is short) and the first move for your mission.',
+    banned: [],
+  },
 } as const satisfies Record<string, Term>;
 
 export type TermId = keyof typeof TERMS;

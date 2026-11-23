@@ -40,11 +40,19 @@ interface Stored {
 
 const storeKey = (key: string) => `worldconflict.pending.${key}`;
 /** Mirrors src/core/advisors.ts STAFF_ORDERS, RESERVE_PC and MIN_ODDS (tests compare them). */
-export const STAFF_ORDERS = 2;
+export const STAFF_ORDERS = 3;
 /** The staff always leave this much political capital for the player's own orders. */
 export const RESERVE_PC = 1;
 /** Orders with worse odds than this are left for the player to decide. */
 export const MIN_ODDS = 0.35;
+
+/**
+ * The crises that are "Your call" this month (D-84): Accept all never decides them, unless the
+ * player turned on "Let the Chief of Staff make my calls" (then Accept all takes advice.chief).
+ */
+export function callCrisisIds(s: GameState = useGameStore.getState()): Set<string> {
+  return new Set((s.advice?.calls ?? []).filter((c) => c.kind === 'crisis').map((c) => c.id));
+}
 
 function readStored(key: string): Stored | null {
   try {
@@ -98,11 +106,18 @@ export async function setupMonth(): Promise<void> {
       useGameStore.setState({ focus: firstFocus() });
       return;
     }
-    // 1. Crises: the staff pick, paid for in order
+    // 1. Crises: the staff pick, paid for in order. A call is left open (D-84), or takes the Chief
+    //    of Staff's pick when the player lets them make the calls
     const choices: Record<string, string> = { ...s.decisionChoices };
     let pc = world.politicalCapital;
+    const calls = callCrisisIds(s);
     for (const d of s.pendingDecisions) {
       if (choices[d.id]) continue;
+      if (calls.has(d.id)) {
+        const chief = s.chiefCalls ? s.advice?.chief?.decisions[d.id] : undefined;
+        if (chief) choices[d.id] = chief;
+        continue;
+      }
       const pick = crisisStaffPick(d, world.objective, pc);
       choices[d.id] = pick.id;
       pc += pick.effects.pc ?? 0;
@@ -138,6 +153,17 @@ export async function setupMonth(): Promise<void> {
       proposedPc += pcCost(sug.action.type);
       queued++;
     }
+    // 3. The mission move is the player's call (D-84); with the Chief of Staff making the calls,
+    //    their first mission proposal joins the recommended orders
+    if (!useGameStore.getState().chiefCalls) return;
+    for (const sug of s.advice?.chief?.orders ?? []) {
+      const now = useGameStore.getState();
+      if (now.monthKey !== key) return;
+      if (now.pendingActions.some((a) => orderKey(a) === orderKey(sug.action))) continue;
+      const preview = await fetchPreview(sug.action);
+      if (!preview || preview.blocked || useGameStore.getState().monthKey !== key) continue;
+      useGameStore.getState().addPendingAction({ ...sug.action, preview, origin: 'staff', why: `${sug.who}: ${sug.why}`, proposed: true });
+    }
   } finally {
     setupRunning = null;
   }
@@ -152,7 +178,11 @@ export function pendingApprovals(): { crises: string[]; orders: number[]; meetin
   const s = useGameStore.getState();
   const world = s.worldState;
   if (!world) return { crises: [], orders: [], meetings: [], deputies: [] };
-  const crises = s.pendingDecisions.filter((d) => !s.reviewed[d.id]).map((d) => d.id);
+  // A call stays open unless the Chief of Staff makes the calls and has a pick for it (D-84)
+  const calls = callCrisisIds(s);
+  const crises = s.pendingDecisions
+    .filter((d) => !s.reviewed[d.id] && (!calls.has(d.id) || (s.chiefCalls && !!s.advice?.chief?.decisions[d.id])))
+    .map((d) => d.id);
   let pc = Math.max(0, capitalLeft(s));
   let slots = MAX_ORDERS - committedActions(s.pendingActions).length;
   const orders: number[] = [];
@@ -196,7 +226,11 @@ export function approveAll(): void {
   const s = useGameStore.getState();
   const reviewed = { ...s.reviewed };
   const choices = { ...s.decisionChoices };
-  for (const id of crises) reviewed[id] = true;
+  for (const id of crises) {
+    reviewed[id] = true;
+    const chief = s.chiefCalls ? s.advice?.chief?.decisions[id] : undefined;
+    if (chief && !choices[id]) choices[id] = chief;
+  }
   for (const m of meetings) {
     choices[m.id] = m.optionId;
     reviewed[m.id] = true;

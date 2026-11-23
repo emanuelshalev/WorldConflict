@@ -9,6 +9,7 @@
 import { actionCostPC, PC_CAP } from "./costs.js";
 import { MEETING_SLOTS } from "./meetings.js";
 import {
+  actionEffects,
   actionImpact,
   againstMission,
   type Impact,
@@ -110,8 +111,11 @@ export interface CallCard {
   label: string;
   /** mission: serves a goal; calm: the steady answer; other: an unbacked answer; hold: no move. */
   side: "mission" | "calm" | "other" | "hold";
-  /** "Recommended by your <adviser>" (null on cards no adviser backs). */
-  adviser: Advisor | null;
+  /**
+   * "Recommended by your <adviser>": who backs this card (empty when nobody does; two names when
+   * the advisers agree on the only safe answer, R5).
+   */
+  advisers: Advisor[];
   /** The adviser's reason, one sentence (null when unbacked). */
   why: string | null;
   /** Goals moved, as short labels (missionImpact.ts). */
@@ -126,6 +130,8 @@ export interface CallCard {
   price: number;
   /** Odds of success 0-100 for an order (null = certain or not an order). */
   successChance: number | null;
+  /** Approval + stability + legitimacy the card moves directly (the home front, for trade). */
+  home: number;
   /** The order a mission-move card queues. */
   action?: Action & { label: string };
   /** Shown unavailable before the press when the bank cannot pay (G1: reason and fix). */
@@ -155,8 +161,13 @@ export interface YourCall {
     breaks: string[];
     bonusHurts: string[];
   };
-  /** How much more the mission card does for the goals than the calm one (ranking only). */
+  /** How far apart the answers are for the mission (ranking only). */
   gap: number;
+  /**
+   * A real trade (D-84 criterion c): two cards where neither is at least as good as the other on
+   * all of primary goals, bonus goals, capital, odds and the home front.
+   */
+  trade: boolean;
 }
 
 export interface MissionNote {
@@ -998,6 +1009,24 @@ const goalsOf = (i: Impact) => ({
   bonusHurts: i.bonusHurts,
 });
 
+const homeOf = (e: Record<string, number>) =>
+  (e.approval ?? 0) + (e.stability ?? 0) + (e.legitimacy ?? 0);
+
+/** D-84 criterion c: some pair of cards where neither is at least as good as the other. */
+export function isTrade(cards: CallCard[]): boolean {
+  const v = (c: CallCard) => [
+    3 * c.helps.length - 4 * c.hurts.length - 20 * c.breaks.length,
+    c.bonusHelps.length - c.bonusHurts.length,
+    -c.pc,
+    c.successChance ?? 100,
+    c.home,
+  ];
+  const atLeast = (a: number[], b: number[]) => a.every((x, i) => x >= b[i]);
+  return cards.some((a, i) =>
+    cards.slice(i + 1).some((b) => !atLeast(v(a), v(b)) && !atLeast(v(b), v(a))),
+  );
+}
+
 const blockedBy = (pc: number, bank: number): CallCard["blocked"] =>
   pc > bank
     ? {
@@ -1007,12 +1036,12 @@ const blockedBy = (pc: number, bank: number): CallCard["blocked"] =>
     : null;
 
 /**
- * A crisis as a call (R1 a): its answers differ for the mission, and two answers can be backed
- * without backing one that hurts a goal when a safe one exists (D-72). The mission card is the
- * safe answer best for the goals; the calm card the safe answer best for the country, one that
- * helps no goal first. When only one answer is safe there is nothing to argue about: the crisis is
- * routine and Accept all takes the safe answer. When none is safe, the call is the least harm
- * against the steadier answer. Null when the crisis is routine.
+ * A crisis as a call (R1 a): its answers differ for the mission. The mission card is the answer
+ * best for the goals among those that hurt no goal (D-72: no adviser backs a goal-hurting answer
+ * when a safe one exists); the calm card the other safe answer best for the country, one that
+ * helps no goal first. When only one answer is safe, both advisers back it (R5: "Your advisers
+ * agree"); when none is safe, the call is the least harm against the steadier answer. Null when
+ * every answer is the same for the mission (routine).
  */
 export function crisisCall(
   world: WorldState,
@@ -1022,23 +1051,24 @@ export function crisisCall(
   bank = world.politicalCapital,
 ): YourCall | null {
   const opts = d.options.map((o) => ({ o, i: optionImpact(world, o, ctx) }));
-  if (new Set(opts.map((x) => missionValue(x.i))).size < 2) return null;
+  const values = opts.map((x) => missionValue(x.i));
+  if (new Set(values).size < 2) return null;
   const safe = opts.filter((x) => !hurtsGoal(x.i));
-  if (safe.length === 1) return null;
   const pool = safe.length ? safe : opts;
   const mission = [...pool].sort(
     (a, b) => missionValue(b.i) - missionValue(a.i) || netScore(b.o) - netScore(a.o),
   )[0];
-  const calm = pool
-    .filter((x) => x !== mission)
-    .sort(
-      (a, b) =>
-        Number(helpsNone(b.i)) - Number(helpsNone(a.i)) ||
-        netScore(b.o) - netScore(a.o) ||
-        answerCost(a.o, prices) - answerCost(b.o, prices),
-    )[0];
-  if (!calm || missionValue(mission.i) <= missionValue(calm.i)) return null;
+  const calm =
+    pool
+      .filter((x) => x !== mission)
+      .sort(
+        (a, b) =>
+          Number(helpsNone(b.i)) - Number(helpsNone(a.i)) ||
+          netScore(b.o) - netScore(a.o) ||
+          answerCost(a.o, prices) - answerCost(b.o, prices),
+      )[0] ?? mission;
   const [mAdv, cAdv] = adviserPair(ctx, mission.o, mission.i, calm.o);
+  const agree = calm === mission;
   const cards: CallCard[] = opts.map(({ o, i }) => {
     const side = o === mission.o ? "mission" : o === calm.o ? "calm" : "other";
     const pc = answerCost(o, prices);
@@ -1047,10 +1077,12 @@ export function crisisCall(
       id: o.id,
       label: o.label,
       side,
-      adviser: side === "mission" ? mAdv : side === "calm" ? cAdv : null,
+      advisers: side === "mission" ? (agree ? [mAdv, cAdv] : [mAdv]) : side === "calm" ? [cAdv] : [],
       why:
         side === "mission"
-          ? `It moves ${listWords(helped)}.`
+          ? helped.length
+            ? `It moves ${listWords(helped)}.`
+            : "It is the answer that costs your mission least."
           : side === "calm"
             ? helpsNone(i)
               ? "It keeps the country steady and puts no goal at stake."
@@ -1060,6 +1092,7 @@ export function crisisCall(
       pc,
       price: prices[o.id] ?? 0,
       successChance: null,
+      home: homeOf(o.effects),
       blocked: blockedBy(pc, bank),
     };
   });
@@ -1068,6 +1101,9 @@ export function crisisCall(
   const fallback = d.options.find((o) => o.id === d.defaultOptionId) ?? d.options[0];
   const di = optionImpact(world, fallback, ctx);
   const lost = [...di.breaks, ...di.hurts];
+  const othersCost = [
+    ...new Set(opts.filter((x) => x !== mission).flatMap((x) => [...x.i.breaks, ...x.i.hurts])),
+  ];
   return {
     id: d.id,
     kind: "crisis",
@@ -1076,7 +1112,9 @@ export function crisisCall(
     missionCard: mission.o.id,
     calmCard: calm.o.id,
     chiefPick: chief,
-    guide: `For your mission: ${mission.o.label}. To keep things calm: ${calm.o.label}.`,
+    guide: agree
+      ? `Your advisers agree on ${mission.o.label}.${othersCost.length ? ` The others cost you: ${listWords(othersCost)}.` : ""}`
+      : `For your mission: ${mission.o.label}. To keep things calm: ${calm.o.label}.`,
     skip: {
       label: "Skip",
       text: `The cabinet waits: ${fallback.label}.${lost.length ? ` It costs ${listWords(lost)}.` : ""}`,
@@ -1085,7 +1123,8 @@ export function crisisCall(
       breaks: di.breaks,
       bonusHurts: di.bonusHurts,
     },
-    gap: missionValue(mission.i) - missionValue(calm.i),
+    gap: Math.max(...values) - Math.min(...values),
+    trade: isTrade(cards),
   };
 }
 
@@ -1115,29 +1154,34 @@ export function missionMove(
     const preview = previewAction(world, s.action);
     if (preview.blocked || preview.missionWarning) continue;
     if (preview.successChance !== null && preview.successChance < MIN_ODDS) continue;
+    const impact = actionImpact(world, s.action, ctx);
+    // D-72 on the mission move: no adviser backs an order that hurts a goal (Hold is always safe)
+    if (hurtsGoal(impact)) continue;
     const pc = actionCostPC(s.action);
     cards.push({
       id: `order:${cards.length}`,
       label: s.label,
       side: "mission",
-      adviser: s.who,
+      advisers: [s.who],
       why: s.why,
-      ...goalsOf(actionImpact(world, s.action, ctx)),
+      ...goalsOf(impact),
       pc,
       price: 0,
       successChance: preview.successChance,
+      home: homeOf(actionEffects(s.action)),
       action: s.action,
       blocked: blockedBy(pc, bank),
     });
   }
   if (!cards.length) return null;
-  const holdBy: Advisor = cards[0].adviser !== "Chief of Staff" ? "Chief of Staff" : "Interior Minister";
+  const holdBy: Advisor =
+    cards[0].advisers[0] !== "Chief of Staff" ? "Chief of Staff" : "Interior Minister";
   const keep = `Political capital ${bank} stays (above ${PC_CAP} is lost).`;
   cards.push({
     id: "hold",
     label: "Hold this month",
     side: "hold",
-    adviser: holdBy,
+    advisers: [holdBy],
     why: `No move for your mission this month. ${keep}`,
     helps: [],
     hurts: [],
@@ -1147,6 +1191,7 @@ export function missionMove(
     pc: 0,
     price: 0,
     successChance: null,
+    home: 0,
     blocked: null,
   });
   const first = cards.find((c) => c.side === "mission" && !c.blocked);
@@ -1168,6 +1213,7 @@ export function missionMove(
       bonusHurts: [],
     },
     gap: 0,
+    trade: isTrade(cards),
   };
 }
 
@@ -1267,7 +1313,7 @@ export function buildAdvice(world: WorldState): Advice {
       call.chiefPick = pick?.id ?? null;
       if (!pick?.action) continue;
       chief.orders.push({
-        who: pick.adviser ?? "Chief of Staff",
+        who: pick.advisers[0] ?? "Chief of Staff",
         label: pick.label,
         why: pick.why ?? "",
         action: pick.action,
