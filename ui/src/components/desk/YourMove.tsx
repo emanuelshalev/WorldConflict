@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { IconCheck, IconChevronDown, IconChevronUp, IconMessageCircle, IconUserShare } from '@tabler/icons-react';
-import { type DecisionOption, type Meeting, MEETING_SLOTS, type MissionNote, type PendingDecision, countryName, useGameStore, usePlayerCountry } from '../../store/gameStore';
+import { type DecisionOption, type Impact, type Meeting, MEETING_SLOTS, type MissionNote, type PendingDecision, countryName, useGameStore, usePlayerCountry } from '../../store/gameStore';
 import { ADVISOR_NAMES, arrowText, effectArrows, flag } from '../../lib/format';
 import { cabinetPick, crisisSelection, guideLede, splitLede, effectWords, meetingAdviser, meetingPick, meetingSelection, missionPick, missionTag, type Selection } from '../../lib/month';
 import { SceneFrame } from '../../scenes/SceneFrame';
@@ -95,7 +95,8 @@ function OptionCard({
   const chosen = chosenId === o.id && (sel.kind === 'yours' || sel.kind === 'approved');
   const pc = o.effects.pc ?? 0;
   const art = sceneForDecision({ kind: isMeeting(item) ? item.kind : undefined, templateId: item.templateId, title: item.title, label: o.label });
-  const backers = o.backedBy.map((b) => ADVISOR_NAMES[b] ?? b);
+  const impacts = useGameStore((st) => st.missionImpact[item.id]);
+  const backers = shownBackers(o, impacts);
   const phone = useNarrow(600);
   const [showSizes, setShowSizes] = useState(false);
   const sizes = optionSizes(o, countryName);
@@ -142,6 +143,18 @@ function OptionCard({
   );
 }
 
+/**
+ * The advisers named under an answer (its authored backers), except on an answer that breaks a
+ * primary goal while another answer breaks none: no adviser backs such a card (D-72 extended,
+ * src/core/advisors.ts crisisCall), so the desk does not say one does (design review C-2 note,
+ * Water War India "Strike the camps").
+ */
+function shownBackers(o: DecisionOption, impacts: Record<string, Impact> | undefined): string[] {
+  const breaks = (id: string) => (impacts?.[id]?.breaks.length ?? 0) > 0;
+  if (impacts && breaks(o.id) && Object.keys(impacts).some((id) => !breaks(id))) return [];
+  return o.backedBy.map((b) => ADVISOR_NAMES[b] ?? b);
+}
+
 /** The full situation and every effect arrow, so nothing is lost behind the lede. */
 function MoreDetail({ item, options }: { item: PendingDecision | Meeting; options: DecisionOption[] }) {
   const impacts = useGameStore((s) => s.missionImpact[item.id]);
@@ -152,7 +165,7 @@ function MoreDetail({ item, options }: { item: PendingDecision | Meeting; option
         return (
           <div key={o.id} className="move-more-row">
             <b>{o.label}</b>
-            {o.backedBy.length > 0 && <span className="move-more-back">Backed by the {o.backedBy.map((b) => ADVISOR_NAMES[b] ?? b).join(' and the ')}</span>}
+            {shownBackers(o, impacts).length > 0 && <span className="move-more-back">Backed by the {shownBackers(o, impacts).join(' and the ')}</span>}
             <div className="arrows">
               {effectArrows(o, countryName).map((a, i) => (
                 <span key={`${a.label}-${i}`} className={a.good ? 'delta-up' : 'delta-down'}>
@@ -329,9 +342,14 @@ export function DecisionStage({ item, primary = false, onlyLede = false }: { ite
 
 /** The tag words for the mission pick: alone, and when it is also the recommended answer. */
 function bestTagText(note: MissionNote): { best: string; both: string } {
+  // A note that names more than two goals (or runs long) no longer fits the tag on a card (RC-6, Water War India
+  // at 1440: four lines, the first cut): the tag keeps the kind, the card's ribbon and the
+  // disagreement line name the goals
+  const long = note.kind !== 'best' && (note.helps.length + note.costs.length > 2 || note.text.length > 64);
+  const text = long ? (note.kind === 'tradeoff' ? 'Best trade-off for your mission' : 'Least harm to your mission') : note.text;
   return {
-    best: note.text,
-    both: note.kind === 'best' ? 'Recommended · good for your mission' : `Recommended · ${note.text.charAt(0).toLowerCase()}${note.text.slice(1)}`,
+    best: text,
+    both: note.kind === 'best' ? 'Recommended · good for your mission' : `Recommended · ${long ? (note.kind === 'tradeoff' ? 'best trade-off' : 'least harm') : `${text.charAt(0).toLowerCase()}${text.slice(1)}`}`,
   };
 }
 
