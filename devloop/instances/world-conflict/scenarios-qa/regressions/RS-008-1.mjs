@@ -144,13 +144,15 @@ function audit() {
   })() : null;
   return {
     W, H, rootPx: parseFloat(getComputedStyle(document.documentElement).fontSize),
-    stateOk, stateText: stateText.slice(0, 200),
+    stateOk, stateText: stateText.slice(0, 800),
     listForm: region('list') && vis(region('list')) ? region('list').dataset.form : null,
     planForm: region('plan') ? region('plan').dataset.form : null,
     answers: answers.length, answersFace, lastIsSkip, skipText, skipOk, recLines: recLines.length, recStyled,
     execs: execs.length, choose: choose.map(name), mustOut, small: small.slice(0, 5), truncated, overlaps: overlaps.slice(0, 4), spill: spill.slice(0, 4),
     fill, coverage: +(cov / W).toFixed(2), scrollers, docScroll: document.documentElement.scrollHeight > H + 1, accept, barPrimaries, barReview, where, cue,
     folded: [...document.querySelectorAll('[data-region="plan"] .psec-tog')].filter(vis).length,
+    planText: (document.querySelector('[data-region="plan"]')?.textContent ?? '').replace(/\s+/g, ' '),
+    barText: (document.querySelector('[data-region="bar"]')?.textContent ?? '').replace(/\s+/g, ' '),
   };
 }
 
@@ -187,6 +189,12 @@ function judge(a, label, { mode, month }) {
     if (month === 4) g.check(/^\d+ done, \d+ to go$/.test(a.where.trim()), `${at} AC-2: progress in words ("${a.where}")`);
   }
   if (a.W >= 1024 && a.H <= 900 && a.skipOk !== null) g.check(a.skipOk, `${at} AC-26: the Skip card is in view without overlap`);
+  // D-84 (decision-accept-all 6.2 g, h): month 4 opens on a call: it is marked, counted in the state
+  // band, and the Choose all line and If you execute now name what stays open
+  if (month === 4 && desk) {
+    g.check(/Your calls \d+ open/.test(a.stateText) && /Your call/.test(a.barText), `${at} D-84: the call is marked in the month bar and counted in the state band`);
+    if (a.planForm === 'rail') g.check(/(\d+ of your calls stay open|Your call stays open)\./.test(a.planText) && /Your call, .+, is open: /.test(a.planText), `${at} D-84 (g): the Choose all line and If you execute now name the open calls`);
+  }
 }
 
 const browser = await chromium.launch();

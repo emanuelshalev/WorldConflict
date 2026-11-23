@@ -151,7 +151,8 @@ test.describe('desk', () => {
       await pinDaily(page);
       await page.goto('/');
       await page.getByRole('button', { name: /^Continue/i }).first().click({ timeout: 30_000 });
-      await page.getByRole('button', { name: /Execute month/i }).first().waitFor({ timeout: 30_000 });
+      // Phones keep Execute for the review screen (AC-21): wait for the month's Thing
+      await page.locator('[data-region="item"]').first().waitFor({ timeout: 30_000 });
       await settle(page, 2500);
       await expect(page).toHaveScreenshot(`desk-m1-${width}.png`, { mask: liveMasks(page) });
     });
@@ -159,7 +160,9 @@ test.describe('desk', () => {
 
   // QA3-S2-1: the month 2 desk shows "Orders to consider" (the month 1 desk hides it), where the
   // shared order card was crushed to one letter per line. Month 1 is resolved with no orders and
-  // the default answers, so month 2 is the same every run.
+  // the default answers, so month 2 is the same every run. Iteration 4 (D-80): the order ideas are
+  // the month's "Your own orders" thing ("full": Everything with the List as a column; "focus" on
+  // the phone: the thing opened from See all).
   for (const [width, view] of [[1440, 'full'], [390, 'focus']] as const) {
     test(`month 2 desk ${view} ${width}`, async ({ page, request }) => {
       const guest = `guest-visual-m2-${width}`;
@@ -174,16 +177,85 @@ test.describe('desk', () => {
       await pinDaily(page);
       await page.goto('/');
       await page.getByRole('button', { name: /^Continue/i }).first().click({ timeout: 30_000 });
-      await page.getByRole('button', { name: /Execute month/i }).first().waitFor({ timeout: 30_000 });
-      if (view === 'full') {
-        await page.getByRole('tab', { name: 'Full desk' }).first().click();
-        await page.locator('nav.navigator').getByRole('option', { name: /^Orders to consider/ }).first().click();
-        await page.locator('.detail .adv-list').first().waitFor({ timeout: 10_000 });
-      } else {
-        await page.locator('section.advisors').first().scrollIntoViewIfNeeded();
-      }
+      await page.locator('[data-region="item"]').first().waitFor({ timeout: 30_000 });
+      if (view === 'full') await page.getByRole('button', { name: 'Everything' }).first().click();
+      else await page.locator('.see-all').first().click();
+      await page.locator('[data-agenda-item="own"]').first().click();
+      await page.locator('section.advisors').first().waitFor({ timeout: 10_000 });
       await settle(page, 2500);
       await expect(page).toHaveScreenshot(`desk-m2-${view}-${width}.png`, { mask: liveMasks(page) });
     });
+  }
+});
+
+// ---------------------------------------------------------------------------------------------
+// Iteration 4 layout (design-layout.md WP-A6, WP-L2): desk month 1, desk month 4 and Map month 4 at
+// 1366x768, 1920x1080 and the CEO's 3440x1440; the result card and the paper at 1920x1080 and
+// 3440x1440. Hormuz Convoy as the United States, seed 4242; month 4 after three months resolved
+// with no orders and the default answers (7 recommended). The coach is finished so it covers nothing.
+// ---------------------------------------------------------------------------------------------
+
+const LAYOUT = { '1366x768': { width: 1366, height: 768 }, '1920x1080': { width: 1920, height: 1080 }, '3440x1440': { width: 3440, height: 1440 } } as const;
+
+async function openMonth(page: Page, request: import('playwright/test').APIRequestContext, size: keyof typeof LAYOUT, months: number, tag: string) {
+  const guest = `guest-visual-layout-${tag}-${size}`;
+  const res = await request.post(`${API}/new-game`, {
+    data: { playerCountryId: 'USA', flashpointId: 'hormuz-convoy', mode: 'FLASHPOINT', seed: 4242, playerId: guest, saveName: 'Visual regression' },
+  });
+  const data = await res.json();
+  expect(data.success, JSON.stringify(data).slice(0, 300)).toBe(true);
+  for (let i = 0; i < months; i++) {
+    const turn = await (await request.post(`${API}/turn`, { data: { saveId: data.saveId, playerActions: [], decisions: [] } })).json();
+    expect(turn.success, JSON.stringify(turn).slice(0, 300)).toBe(true);
+  }
+  await page.setViewportSize(LAYOUT[size]);
+  await page.clock.install({ time: NOW });
+  await page.addInitScript((kv) => {
+    try {
+      for (const [k, v] of Object.entries(kv)) localStorage.setItem(k, v);
+      localStorage.setItem('worldconflict.sound', JSON.stringify({ muted: true }));
+      localStorage.setItem('worldconflict.coach', 'done');
+    } catch {}
+  }, { 'worldconflict.guest': guest, 'worldconflict.lastSave': data.saveId });
+  await pinDaily(page);
+  await page.goto('/');
+  await page.getByRole('button', { name: /^Continue/i }).first().click({ timeout: 30_000 });
+  await page.locator('[data-region="item"]').first().waitFor({ timeout: 30_000 });
+}
+
+test.describe('layout', () => {
+  for (const size of Object.keys(LAYOUT) as Array<keyof typeof LAYOUT>) {
+    for (const [state, months] of [['desk-m1', 0], ['desk-m4', 3], ['map-m4', 3]] as const) {
+      test(`${state} ${size}`, async ({ page, request }) => {
+        await openMonth(page, request, size, months, state);
+        if (state === 'map-m4') {
+          await page.keyboard.press('m');
+          await page.locator('.map-month').first().waitFor({ timeout: 10_000 });
+        }
+        await settle(page, 2500);
+        // Map mode: the globe (camera, labels) is hidden, not masked, so the panels over it are compared
+        await expect(page).toHaveScreenshot(`layout-${state}-${size}.png`, state === 'map-m4'
+          ? { mask: liveMasks(page, { canvas: false }), style: '.maplibregl-canvas, .maplibregl-marker, .maplibregl-popup, .wcm { visibility: hidden !important; }' }
+          : { mask: liveMasks(page) });
+      });
+    }
+  }
+  for (const size of ['1920x1080', '3440x1440'] as const) {
+    for (const state of ['result', 'paper'] as const) {
+      test(`${state} ${size}`, async ({ page, request }) => {
+        await openMonth(page, request, size, 0, state);
+        await page.getByRole('button', { name: /^Choose all recommended/ }).first().click();
+        // A fresh month ignores Execute for 900 ms (useExecute's double-press guard)
+        await page.waitForTimeout(1500);
+        await page.getByRole('button', { name: /Execute month/ }).first().click();
+        await page.locator('.result-card .rc-next').first().waitFor({ timeout: 75_000 });
+        if (state === 'paper') {
+          await page.getByRole('button', { name: /Read the paper/ }).first().click();
+          await page.locator('.paper-overlay').first().waitFor({ timeout: 10_000 });
+        }
+        await settle(page, 2500);
+        await expect(page).toHaveScreenshot(`layout-${state}-${size}.png`, { mask: liveMasks(page) });
+      });
+    }
   }
 });
