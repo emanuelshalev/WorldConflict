@@ -708,7 +708,7 @@ findings:
     title: "Recommendations are listed under \"Recommended\" next to every Accept control; the button names its count and never accepts unseen (wording D-72)"
     source: real-signals/RS-005-ceo-staff-picks-unclear-2026-11-23.md (CEO playtest); D-64; words D-71, D-72
     covers: [ui/src/components/desk/StaffPicks.tsx, ui/src/components/desk/CommandRail.tsx, ui/src/components/desk/Navigator.tsx, ui/src/lib/useStaffPicks.ts, ui/src/lib/month.ts, ui/src/styles/staff-picks.css, ui/src/lib/glossary.ts]
-    changed: "design-review-your-call.md RC-1: the greyed-out Accept all may read \"Nothing else to accept. Still open: <crisis title>\" while a crisis Accept all leaves open (a call with no answer yet); the guard accepts that reason as well as \"Nothing to accept\""
+    changed: "design-review-your-call.md RC-1: the greyed-out Accept all may read \"Nothing else to accept. Still open: <crisis title>\" while a crisis Accept all leaves open (a call with no answer yet), and the first-use line reads \"...; a crisis listed here goes ahead on its recommended answer unless you change it, one not listed is yours to answer.\" (design-rereview-your-call.md N-2); the guard accepts that reason as well as \"Nothing to accept\""
     guards:
       - vitest: tests/ui-staff-picks.spec.ts
       - vitest: tests/ui-glossary.spec.ts
@@ -972,6 +972,12 @@ findings:
       - vitest: tests/core/your-call.spec.ts
         name: "D84-DESK-TRUTH"
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/D84-DESK-TRUTH.mjs
+  - id: D84-BADGE-FIT
+    title: "On a phone (390 and 360 wide) a crisis selection badge, the open call's \"No answer yet. If you leave it: ...\" and a long \"Your pick\" or \"Accepted\" included, wraps inside the screen: never clipped, never wider than the screen, no horizontal scroll"
+    source: runs/iter-04/design-rereview-your-call.md RC2-1 (S2; badge clipped at 390x844 and 360x740)
+    covers: [ui/src/styles/month.css, ui/src/components/desk/YourMove.tsx, ui/src/lib/month.ts]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/D84-BADGE-FIT.mjs
   - id: D84-QU-CHN
     title: "Quarantine China asks for a move: staff loses QU-CHN-LEO01, guided wins, the Taiwan court is a mission move and never an upkeep order"
     source: runs/iter-04/decision-call-balance.md 5.3 (staff 89% by waiting, 36 games)

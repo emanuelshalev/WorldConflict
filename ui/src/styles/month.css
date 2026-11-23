@@ -325,7 +325,9 @@ body:has(.ord-confirm) .coach-bubble { visibility: hidden; pointer-events: none;
 @media (max-width: 1279px) {
   .stage-staff { flex-wrap: wrap; row-gap: 8px; }
   .stage-staff p { flex: 1 1 calc(100% - 50px); }
-  .stage-staff .sel-badge { margin-left: 46px; }
+  /* A long badge ("No answer yet. If you leave it: ...") wraps inside the screen instead of being
+     clipped (design-rereview-your-call.md RC2-1) */
+  .stage-staff .sel-badge { margin-left: 46px; flex: 0 1 auto; min-width: 0; max-width: calc(100% - 46px); white-space: normal; overflow-wrap: anywhere; border-radius: 18px; }
 }
 
 /* Touch targets: 44 px at 390 and 1024 (design-feel 8.1) */
