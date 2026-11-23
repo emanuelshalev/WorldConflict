@@ -89,7 +89,7 @@ function SuggestionsDetail() {
       <h3 className="detail-title">
         {TERMS.orderIdeas.name} ({rows.length})
       </h3>
-      <p className="hint">The staff propose up to two of these at the start of each month, never one with poor odds or a repeat of last month, and always leave you at least ◆ 1. A recommended order spends nothing until you accept it (or press Accept all recommended); add the others here.</p>
+      <p className="hint">The staff propose up to three of these at the start of each month, never one with poor odds or a repeat of last month, and always leave you at least ◆ 1. A recommended order spends nothing until you accept it (or press Accept all recommended); add the others here.</p>
       <div className="adv-list">
         {rows.map((r) => (
           <AdvisorCardRow key={r.key} r={r} />

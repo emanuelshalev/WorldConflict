@@ -175,7 +175,8 @@ export const TERMS = {
     // D-84: the opt-in setting that restores the full one-press Accept all
     name: 'Let the Chief of Staff make my calls',
     compact: 'Chief of Staff makes my calls',
-    definition: 'Off by default. When on, Accept all recommended also decides each Your call: the Chief of Staff takes the card that serves your mission (the calm one when political capital is short) and the first move for your mission.',
+    // Interim wording while this build has no Your call screen (design-review-your-call.md RC-4)
+    definition: "When on, the crises your advisers disagree on start on the Chief of Staff's answer (the one that serves your mission, or the calm one when political capital is short) and Accept all recommended also accepts them; the Chief of Staff also proposes the first order for your mission. Fully in effect from the next month.",
     banned: [],
   },
 } as const satisfies Record<string, Term>;
