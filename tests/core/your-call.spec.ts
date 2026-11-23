@@ -324,6 +324,30 @@ describe("D84-CALL-TRAP: the calm card is never a trap the Guide me line walks t
   });
 });
 
+describe("D84-QU-CHN: Quarantine China asks for a move (Taipei comes to the table)", () => {
+  const CODE = "QU-CHN-LEO01";
+  const courtsTaiwan = (a?: { type: string; targetCountryId?: string }) =>
+    a?.type === "DIPLOMACY_IMPROVE_RELATIONS" && a.targetCountryId === "TWN";
+
+  it("staff (every call skipped) does not win the control seed, guided does", () => {
+    const staff = playControl(CODE, "staff").final;
+    const guided = playControl(CODE, "guided").final;
+    expect(staff.outcome?.victory ?? false).toBe(false);
+    expect(guided.outcome?.victory ?? false).toBe(true);
+  });
+
+  it("the Taiwan court is a mission move, never an upkeep order", () => {
+    let inMove = 0;
+    for (const { before, advice } of playControl(CODE, "staff").months) {
+      const where = `${CODE} m${before.turn + 1}`;
+      for (const o of advice.staffOrders) expect(courtsTaiwan(o.action), `${where} ${o.label}`).toBe(false);
+      for (const call of advice.calls.filter((c) => c.kind === "move"))
+        if (call.cards.some((c) => courtsTaiwan(c.action))) inMove++;
+    }
+    expect(inMove).toBeGreaterThan(0);
+  });
+});
+
 describe("D84-BANDS-CONTROL: Accept all alone does not win the control seeds; guided play spends its capital", () => {
   it("staff (calls skipped) wins at most 2 of the 7 flashpoint control seeds", () => {
     const won = FLASHPOINT_CONTROL.filter((code) => playControl(code, "staff").final.outcome?.victory);

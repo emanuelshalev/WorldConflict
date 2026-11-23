@@ -7,11 +7,6 @@
       "note": "Iran's Term is a deliberately brutal seat (CLAUDE.md balance targets; dev_plan/HANDOFF.md: 0-3% smart)."
     },
     {
-      "check": "staff-seat",
-      "seat": "FLASHPOINT:quarantine:CHN",
-      "note": "D-84 4.4: Quarantine China wins by waiting (89% with every call skipped, 36 games). Needs one primary condition that asks for a move (Game Designer, flashpoint data, then npm run bench:reveal); blocking once that lands."
-    },
-    {
       "check": "random-pooled",
       "note": "Known pre-existing gap (ledger D-49): the random policy sits below its 15-45% band on most seats (0% on USA, UKR, ISR Term). Logged, not retuned."
     }
