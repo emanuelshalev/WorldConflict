@@ -188,6 +188,33 @@ export function cardData(r: RevealPayload, history: StoredRun[], daily: string |
   };
 }
 
+/**
+ * Where each moment label on the month axis goes (QA3R-6a: labels overlapped at 1440): above or
+ * below the line, whichever side has room after the last label placed there, or no label (the dot
+ * and the axis's aria-label still name it). Big marks are placed first so they always get a side.
+ * Input: x centre, estimated width and the anchor in use; output per index: 'up' | 'down' | null.
+ */
+export function placeAxisLabels(
+  items: ReadonlyArray<{ x: number; width: number; anchor: 'start' | 'middle' | 'end'; big?: boolean }>,
+  gap = 8,
+): Array<'up' | 'down' | null> {
+  const span = (it: (typeof items)[number]) =>
+    it.anchor === 'start' ? [it.x, it.x + it.width] : it.anchor === 'end' ? [it.x - it.width, it.x] : [it.x - it.width / 2, it.x + it.width / 2];
+  const taken: Record<'up' | 'down', Array<[number, number]>> = { up: [], down: [] };
+  const out: Array<'up' | 'down' | null> = items.map(() => null);
+  const order = items.map((_, i) => i).sort((a, b) => Number(!!items[b].big) - Number(!!items[a].big) || a - b);
+  for (const i of order) {
+    const [a, b] = span(items[i]);
+    const free = (side: 'up' | 'down') => taken[side].every(([c, d]) => b + gap <= c || d + gap <= a);
+    const pref: Array<'up' | 'down'> = i % 2 === 0 ? ['up', 'down'] : ['down', 'up'];
+    const side = pref.find(free);
+    if (!side) continue;
+    taken[side].push([a, b]);
+    out[i] = side;
+  }
+  return out;
+}
+
 /** The closing shot: how this story ends on the evening news. */
 export const END_SCENE: Record<string, SceneKind> = {
   DEPOSED_COUP: 'war_room',

@@ -9,7 +9,7 @@ import { buildPages } from "../ui/src/lib/debrief.js";
 import { factTone, fmtValue, isMonthStat, shareFacts, shownDelta, splitMonth } from "../ui/src/lib/numbers.js";
 import { defaultSide } from "../ui/src/lib/sides.js";
 import { missionSummary } from "../ui/src/lib/goals.js";
-import { cardData, endScene, kindRank, rankHeadline, rankLines } from "../ui/src/components/reveal/model.js";
+import { cardData, endScene, kindRank, placeAxisLabels, rankHeadline, rankLines } from "../ui/src/components/reveal/model.js";
 import { countText } from "../ui/src/lib/useCountUp.js";
 import type { RevealPayload, TurnReport, WorldState } from "../ui/src/store/gameStore.js";
 
@@ -233,5 +233,37 @@ describe("closing scene and score count (QA3R-3g, 2i)", () => {
     expect(countText(562, 562)).toBe("562");
     expect(countText(0, 0)).toBe("0");
     expect(readFileSync("ui/src/components/reveal/stages.tsx", "utf-8")).toMatch(/countText\(p\.total, useCountUp\(/);
+  });
+});
+
+// QA3R-6a (phone): the STEP ACHIEVED stamp sat over the big number's label on the result card.
+describe("the result card stamp never sits on the big number (QA3R-6a)", () => {
+  it("with a big number the stamp moves to the top corner", () => {
+    const css = readFileSync("ui/src/scenes/result.css", "utf-8");
+    expect(css).toMatch(/\.rc-visual:has\(\.rc-big\) \.rc-step \{[^}]*top:/);
+    expect(css).toMatch(/\.rc-big \{[^}]*bottom:/);
+  });
+});
+
+// QA3R-6a (reveal at 1440): the moments axis alternated labels up and down, so neighbours two
+// months apart collided. placeAxisLabels gives each label a free side or none.
+describe("moment axis labels never overlap (QA3R-6a)", () => {
+  const spanOf = (it: { x: number; width: number; anchor: string }) =>
+    it.anchor === "start" ? [it.x, it.x + it.width] : it.anchor === "end" ? [it.x - it.width, it.x] : [it.x - it.width / 2, it.x + it.width / 2];
+  it("no two labels on one side overlap, whatever the spacing; big marks always get a side", () => {
+    for (const step of [20, 45, 80, 140]) {
+      const items = Array.from({ length: 10 }, (_, i) => ({ x: 26 + i * step, width: 120 + (i % 3) * 40, anchor: "middle" as const, big: i === 4 }));
+      const sides = placeAxisLabels(items);
+      expect(sides[4], `step ${step}`).not.toBeNull();
+      for (const side of ["up", "down"])
+        for (let i = 0; i < items.length; i++)
+          for (let j = i + 1; j < items.length; j++) {
+            if (sides[i] !== side || sides[j] !== side) continue;
+            const [a, b] = spanOf(items[i]);
+            const [c, d] = spanOf(items[j]);
+            expect(b <= c || d <= a, `step ${step}: ${i} and ${j} on ${side}`).toBe(true);
+          }
+    }
+    expect(readFileSync("ui/src/components/reveal/stages.tsx", "utf-8")).toContain("placeAxisLabels(");
   });
 });

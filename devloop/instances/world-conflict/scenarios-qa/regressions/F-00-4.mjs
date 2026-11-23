@@ -80,8 +80,8 @@ await run('F-00-4', async (g, track) => {
       await p.waitForTimeout(1500);
       // The result card: a stamp never covers a fact label
       const hits = await p.evaluate(() => {
-        const stamps = [...document.querySelectorAll('.stamp, [class*="stamp"]')].filter((e) => e.getBoundingClientRect().width > 0);
-        const labels = [...document.querySelectorAll('.rc-row label, .rc-fact label, .rc-label, .fact-label')].filter((e) => e.getBoundingClientRect().width > 0);
+        const stamps = [...document.querySelectorAll('.result-card .wc-stamp')].filter((e) => e.getBoundingClientRect().width > 0);
+        const labels = [...document.querySelectorAll('.result-card .rc-big-word, .result-card .rc-big-num, .result-card .rc-big-label, .result-card .rc-date')].filter((e) => e.getBoundingClientRect().width > 0);
         const over = (a, b) => !(a.right <= b.left || b.right <= a.left || a.bottom <= b.top || b.bottom <= a.top);
         const out = [];
         for (const s of stamps) for (const l of labels) if (over(s.getBoundingClientRect(), l.getBoundingClientRect())) out.push(`${(s.textContent ?? '').trim().slice(0, 20)} over ${(l.textContent ?? '').trim().slice(0, 20)}`);

@@ -16,6 +16,7 @@ import {
   fmtValue,
   lastMonthLabel,
   endScene,
+  placeAxisLabels,
   monthLetters,
   momentsHeadline,
   seenHeadline,
@@ -285,6 +286,11 @@ export function MomentAxis({ r, animate }: { r: RevealPayload; animate: boolean 
     const max = narrow ? (big ? 22 : 16) : big ? 40 : 26;
     return s.length > max ? `${s.slice(0, max - 1).trimEnd()}…` : s;
   };
+  // Labels never overlap: each takes the side with room, or stays a dot (QA3R-6a)
+  const anchorOf = (m: AxisMark) => (x(m.month) < 60 ? 'start' : x(m.month) > w - 60 ? 'end' : 'middle') as 'start' | 'middle' | 'end';
+  const sides = placeAxisLabels(
+    marks.map((m) => ({ x: x(m.month), width: short(m.label, m.big).length * (m.big ? 8.4 : 7) + 4, anchor: anchorOf(m), big: m.big })),
+  );
   return (
     <div className="rv-card rv-axiscard">
       <div ref={ref}>
@@ -303,9 +309,9 @@ export function MomentAxis({ r, animate }: { r: RevealPayload; animate: boolean 
           )}
           {marks.map((m, k) => {
             const r0 = m.big ? 11 : 7;
-            const up = k % 2 === 0;
-            const showLabel = !narrow || m.big;
-            const anchor = x(m.month) < 60 ? 'start' : x(m.month) > w - 60 ? 'end' : 'middle';
+            const up = sides[k] === 'up';
+            const showLabel = (!narrow || m.big) && sides[k] !== null;
+            const anchor = anchorOf(m);
             return (
               <g key={`${m.month}-${m.label}`} className={animate ? 'rv-pop' : ''} style={animate ? ({ animationDelay: `${300 + k * 120}ms` } as CSSProperties) : undefined}>
                 {m.big && <circle cx={x(m.month)} cy={y} r={r0 + 6} fill="none" stroke={m.color} strokeOpacity={0.4} />}

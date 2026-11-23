@@ -164,13 +164,17 @@ findings:
   - id: F-00-4
     title: A game, not a dashboard (illustrated option cards, titles never cut off)
     source: iter-00 triage F-00-4; design-feel; RS-001 dashboard point (partly, see open list)
-    covers: [ui/src/components/game/**, ui/src/components/desk/YourMove.tsx, ui/src/scenes/**, ui/src/styles/**]
+    covers: [ui/src/components/game/**, ui/src/components/desk/YourMove.tsx, ui/src/scenes/**, ui/src/styles/**, ui/src/components/reveal/stages.tsx, ui/src/components/reveal/model.ts]
     guards:
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-01-4.mjs
       - vitest: tests/ui/kinds.spec.ts
         name: "R7: no repeat backdrop"
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-00-4.mjs
-    note: "QA3R-6a (iteration 3 repro, GUARD GAP): Accept all over the second recommendation and the list squeezed to 60 px at 1024 x 768, goal line and leader name cut at 1024 and 1440; F-00-4.mjs checks months 1 and 2 at 390, 1024, 1440 and 1920"
+      - vitest: tests/ui-numbers.spec.ts
+        name: "the result card stamp never sits on the big number (QA3R-6a)"
+      - vitest: tests/ui-numbers.spec.ts
+        name: "moment axis labels never overlap (QA3R-6a)"
+    note: "QA3R-6a (iteration 3 repro, GUARD GAP): Accept all over the second recommendation and the list squeezed to 60 px at 1024 x 768, goal line and leader name cut at 1024 and 1440; F-00-4.mjs checks months 1 and 2 at 390, 1024, 1440 and 1920; the result card stamp moves off the big number; reveal axis labels take a free side or none"
   - id: F-00-5
     title: No contradictions (art vs outcome, check mark over a failed order, deltas, Your call)
     source: iter-00 triage F-00-5; QA repro #6, #7
