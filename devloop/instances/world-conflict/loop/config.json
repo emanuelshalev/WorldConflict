@@ -42,7 +42,8 @@
     "qa",
     "triage",
     "status-refresh",
-    "quality"
+    "quality",
+    "design-review"
   ],
   "rules": {
     "verify-before-use": {
@@ -84,7 +85,10 @@
       "on": "enter:Gate",
       "gate": "quality",
       "match": "code",
-      "accept": ["pass", "fail"],
+      "accept": [
+        "pass",
+        "fail"
+      ],
       "why": "An iteration closes through Gate with a recorded quality scorecard on the code being closed (D-78, kit/evaluate.mjs --record); a release candidate additionally needs the verdict met (D-79)"
     },
     "t3-before-plan": {
@@ -93,6 +97,19 @@
       "match": "stage",
       "minTier": "T3",
       "why": "The finished iteration is closed on the status page (T3: summary, consumption, goals, journal) before the next Plan"
+    },
+    "design-review-before-merge": {
+      "on": "merge",
+      "gate": "design-review",
+      "match": "code",
+      "when": {
+        "paths": [
+          "ui/",
+          "data/codex/**",
+          "data/flashpoints/**"
+        ]
+      },
+      "why": "Merges that touch the UI need the UX Designer and Art Director's review of the built screen at every breakpoint (screenshots plus the layout audit), D-81"
     }
   },
   "code": {
