@@ -1,6 +1,6 @@
 # How we work (current state)
 
-Version 1.5, 2026-11-23. Changed only through journal entries (`instances/*/journal.md`) and mirrored on the instance status page.
+Version 1.6, 2026-11-23. Changed only through journal entries (`instances/*/journal.md`) and mirrored on the instance status page.
 
 ## Principles
 1. **Customers decide, builders build.** Synthetic customers run in fresh sessions, blind to design intent and the goal list, on a different model from the builders where possible.
@@ -20,6 +20,7 @@ Version 1.5, 2026-11-23. Changed only through journal entries (`instances/*/jour
 15. **Report often**: the status page and journal are updated at each stage and after every merge, so the owner can follow without asking.
 16. **Orchestration is code, judgment is ours.** A deterministic controller (`kit/loop.mjs`, `method/controller.md`) owns stage transitions, mandatory gates (verify on the exact commit before merge and publish, QA before the customer round, status refresh after a merge) and the record of every transition; the Group Manager owns priorities, severity, trade-offs and what feedback means. Merges and publishes go through `kit/merge.mjs` and `kit/publish.mjs`, hooks block the dangerous git commands in the shared checkout, and a rule is skipped only with `loop override <rule> --reason`, which drafts a ledger row.
 17. **Estimate and learn**: record every stage transition (and units of work done) with `kit/progress.mjs` (the controller does it on every `loop advance`), so the status page shows progress and ETAs from our own history; review estimate accuracy at each Report stage and adjust the method when a stage stays off.
+18. **The gate is measured, noise included.** Each instance declares its release gate as metrics in `quality.json` (source, threshold, noise band, cadence, blocking or informative, veto); `kit/evaluate.mjs` scores them from existing outputs (method/quality.md). Inside the noise band a metric is neither pass nor fail; a stale or missing measurement is "not measured", never a pass; open real signals at S2 or worse veto the gate. The Gate stage reads the recorded verdict, and the status page shows the scorecard and its trend per dimension.
 
 ## Iteration
 | Stage | Who | Output |
@@ -31,7 +32,7 @@ Version 1.5, 2026-11-23. Changed only through journal entries (`instances/*/jour
 | 5. Use | Customer panel (blind, parallel) | Schema-valid session reports with screenshots |
 | 6. Triage | Group Manager + QA | Regression check against the registry first, then clusters, reproduced bugs, decisions; every fix adds a guard |
 | 7. Report | Group Manager | Status page, journal; after a green verify gate, fast-forward `main` to the finished iteration and tag it `iter-N` so the owner can playtest it from `main` |
-| 8. Gate | Group Manager | Pass: release candidate tag. Fail: next iteration |
+| 8. Gate | Group Manager | Quality scorecard recorded (`kit/evaluate.mjs --record`). Pass: release candidate tag. Fail: next iteration |
 
 Iteration 0 is special: interviews and a baseline usage round on the current build, before any building, so the first goals come from evidence.
 
