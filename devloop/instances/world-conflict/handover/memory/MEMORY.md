@@ -1,0 +1,3 @@
+- [Engagement overhaul decisions](engagement-overhaul-decisions.md): user's mode/roster/AI-tier decisions, branch + status page requirements
+- [Dev env: Node 22](dev-env-node22.md): system node 18 too old; use ~/.local/share/node/current/bin (aarch64)
+- [devloop RC1 loop](devloop-rc1-loop.md): CEO rules: reusable devloop/ module, dual goals, wide audience, check-ins, status page

@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/devloop/kit/hooks/guard-bash.mjs\""
+          }
+        ]
+      }
+    ]
+  },
+  "autoCompactWindow": 400000
+}
