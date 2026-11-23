@@ -33,6 +33,12 @@ export function MapMonth() {
     const t = window.setTimeout(() => window.dispatchEvent(new Event('resize')), 60);
     return () => window.clearTimeout(t);
   }, [on, L.cls, L.mapFloat, L.mapList]);
+  // Phones: Map shows the map band on top, so switching to it brings the page back to the top (a
+  // page scrolled down to the answers would leave the map out of view and its taps unreachable)
+  const phone = L.cls === 'P';
+  useEffect(() => {
+    if (on && phone) document.querySelector('.game')?.scrollTo({ top: 0 });
+  }, [on, phone]);
   if (!on) return null;
   const detail = focus.kind === 'catalog' || focus.kind === 'order' || focus.kind === 'suggestions';
   if (L.cls === 'P')
