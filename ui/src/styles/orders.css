@@ -581,6 +581,10 @@
    and odds beside it; the blurb waits for the forecast (a tap), as in the map sheet, and "Pick a
    country first." is said once above the groups, not on every targeted row (their button says Pick) */
 .ord-cat-hint { margin: 0 0 4px; font-size: 14px; color: var(--text-1); }
+/* No browser scroll anchoring inside the catalogue: when a row turns into its confirmation near the
+   top of the list, Chrome re-anchored and moved the list (66 px at 360x740) and again on Cancel; the
+   face alone decides whether the list moves, and puts back only what it moved (S4) */
+.ord-catalog { overflow-anchor: none; }
 .ord-cat-rows { gap: 6px; }
 .ord-catalog .ord-cat:has(.ord-cat-rows) { margin-bottom: 12px; }
 .ord-catalog .ord-cat:has(.ord-cat-rows) .nav-head { padding-top: 4px; padding-bottom: 2px; margin-bottom: 6px; }
@@ -592,13 +596,21 @@
 .ord-cat-rows .ord-meta > * { min-width: 0; }
 .ord-cat-rows .ord-meta-blurb,
 .ord-cat-rows .ord-wrap[data-order-code='NEEDS_TARGET'] .ord-meta-why { display: none; }
-.ord-cat-rows .ord-act { top: 50%; transform: translateY(-50%); min-width: 70px; }
+/* Add sits level with the title (10 px is the middle of a two-line row), so it stays put when the
+   row opens its forecast (S3) */
+.ord-cat-rows .ord-act { top: 10px; min-width: 70px; }
 /* The forecast cue shares the chip's line (the row itself is the 44 px target), the cost and odds
    wrap below: no extra height (C2) */
 .ord-cat-rows .ord-meta .ord-famchip { order: 0; }
 .ord-cat-rows .ord-meta-fc { order: 1; display: inline-flex; align-items: center; gap: 2px; font-size: 13px; color: var(--text-2); text-decoration: underline; text-underline-offset: 3px; }
 .ord-cat-rows .ord-meta > :not(.ord-famchip):not(.ord-meta-fc) { order: 2; }
 .ord-cat-rows .ord-expand { margin-top: 6px; display: grid; gap: 6px; }
+/* An opened row (S3): the blurb and forecast run the card's full width under the title line, not
+   in the column beside Add; the plate keeps to the title line */
+.wc-card-row .wc-card-foot { grid-row: 3; grid-column: 1 / -1; min-width: 0; }
+.ord-row > .wc-card .wc-card-foot { padding: 0 12px 12px; }
+.ord-row > .wc-card .wc-card-foot .ord-expand { margin-top: 0; }
+.ord-cat-rows .ord-wrap.is-open > .wc-card .wc-card-art { justify-content: flex-start; }
 .ord-expand-blurb { margin: 0; font-size: 14px; line-height: 1.35; color: var(--text-1); }
 .ord-cat-rows .ord-row.is-proposal > .ord-act { transform: none; }
 .ord-grid {

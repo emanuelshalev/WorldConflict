@@ -142,7 +142,7 @@ export function OrderCatalog({ target, setTarget, onOpenOrder, title = 'All orde
         />
       </div>
       {query ? (
-        <div className="ord-hits" id="ord-hits" role="listbox" aria-label="Matching orders">
+        <div className={rows ? 'ord-hits ord-cat-rows' : 'ord-hits'} id="ord-hits" role="listbox" aria-label="Matching orders">
           {hits.length === 0 && <p className="hint">No order matches.</p>}
           {hits.map((h, i) => (
             <div key={`${h.def.id}:${h.target ?? ''}`} id={`ord-hit-${i}`} role="option" aria-selected={i === at} onPointerEnter={() => setSel(i)}>
@@ -153,6 +153,9 @@ export function OrderCatalog({ target, setTarget, onOpenOrder, title = 'All orde
                 selected={i === at}
                 onOpen={openOrder}
                 hoverPreview={false}
+                // On a phone a search hit behaves as a list row: a tap shows the forecast, Add adds
+                // (Enter in the search box still acts on the highlighted hit)
+                pressForecast={rows}
                 handle={(r) => {
                   handles.current[i] = r;
                 }}
@@ -162,10 +165,11 @@ export function OrderCatalog({ target, setTarget, onOpenOrder, title = 'All orde
         </div>
       ) : (
         <>
-          {rows && (
+          {/* Only while it applies (S4): with a target chosen, every row's own Forecast cue and Add
+              button say the rest, and the line would cost the list a row */}
+          {rows && !target && (
             <p className="ord-cat-hint" data-cat-hint="">
-              {target ? '' : 'Pick a country first: orders aimed at a country say Pick until you choose one. '}
-              Tap an order for its forecast; Add puts it in this month.
+              Pick a country first: orders aimed at a country say Pick until you choose one. Tap an order for its forecast; Add puts it in this month.
             </p>
           )}
           {FAMILIES.map((fam) => {

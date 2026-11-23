@@ -397,10 +397,21 @@ export function OrderCard({
         pointBlock(block);
       }
     };
+    const expansion = (
+      <div className="ord-expand" id={`ord-${uid}-pv`} data-row-forecast={rowForecast ? '' : undefined}>
+        {off && fix && <div className="ord-fixes">{fix}</div>}
+        {rowForecast && desc && <p className="ord-expand-blurb">{desc}</p>}
+        <OrderPreview preview={previewOf(entry)} compact />
+      </div>
+    );
+    // An opened catalogue row (S3): the forecast runs the row's full width under the title line,
+    // and Add and the plate stay level with the title (orders.css `.is-open`)
+    const opened = rowForecast && info;
     return (
-      <div ref={wrap} className={`ord-wrap ${stateCls} ${className}`.trim()} data-order-id={def.id} data-order-state={avail.state} data-order-code={block?.code} data-family={fam}>
+      <div ref={wrap} className={`ord-wrap ${stateCls}${opened ? ' is-open' : ''} ${className}`.trim()} data-order-id={def.id} data-order-state={avail.state} data-order-code={block?.code} data-family={fam}>
         <CardShell
           layout="row"
+          foot={opened ? expansion : undefined}
           id={`ord-${def.id}-${uid}`}
           title={label}
           artNode={<OrderPlate id={def.id} family={fam} size={PLATE.row} queued={isQueued} />}
@@ -450,13 +461,7 @@ export function OrderCard({
             {desc && avail.state === 'available' && <span className="ord-meta-blurb">{desc}</span>}
             {selected && avail.state === 'available' && <kbd className="ord-kbd">Enter</kbd>}
           </div>
-          {info && (
-            <div className="ord-expand" id={`ord-${uid}-pv`} data-row-forecast={rowForecast ? '' : undefined}>
-              {off && fix && <div className="ord-fixes">{fix}</div>}
-              {rowForecast && desc && <p className="ord-expand-blurb">{desc}</p>}
-              <OrderPreview preview={previewOf(entry)} compact />
-            </div>
-          )}
+          {info && !rowForecast && expansion}
         </CardShell>
         <button type="button" className={`ord-act act-${avail.state}`} onClick={onAct} data-fix={off ? '' : undefined} aria-label={`${actText}: ${label}`}>
           {actText}

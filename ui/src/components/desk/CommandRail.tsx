@@ -352,22 +352,44 @@ export function CommandBar({ catalogTarget, simple = false }: { catalogTarget: s
   const ex = useExecute();
   const [sheet, setSheet] = useState(false);
   // The bar lies over the desk stage: its height goes to --cmd-bar-h (the stage's --cover-bottom),
-  // so an order's confirmation brought into view there ends above the bar (DR-OC-4)
-  const watch = useRef<ResizeObserver | null>(null);
+  // so an order's confirmation brought into view there ends above the bar (DR-OC-4). The coach
+  // bubble standing on the bar covers more of the stage: --cmd-cover-h is the bar plus the bubble,
+  // the stage's bottom padding, so the lowest rows can scroll clear of it too. The bubble itself is
+  // hidden while a confirmation is open (month.css), so the face only has the bar to clear
+  const watch = useRef<{ off: () => void } | null>(null);
   const barRef = useCallback((el: HTMLElement | null) => {
-    watch.current?.disconnect();
+    watch.current?.off();
     watch.current = null;
     const root = document.documentElement;
     if (!el) {
       root.style.removeProperty('--cmd-bar-h');
+      root.style.removeProperty('--cmd-cover-h');
       return;
     }
-    const set = () => root.style.setProperty('--cmd-bar-h', `${Math.ceil(el.getBoundingClientRect().height)}px`);
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => set()) : null;
+    const set = () => {
+      const r = el.getBoundingClientRect();
+      let top = r.top;
+      for (const b of el.querySelectorAll<HTMLElement>('.coach-bubble')) {
+        top = Math.min(top, b.getBoundingClientRect().top);
+        ro?.observe(b);
+      }
+      root.style.setProperty('--cmd-bar-h', `${Math.ceil(r.height)}px`);
+      root.style.setProperty('--cmd-cover-h', `${Math.ceil(r.bottom - top)}px`);
+    };
     set();
-    if (typeof ResizeObserver !== 'undefined') {
-      watch.current = new ResizeObserver(set);
-      watch.current.observe(el);
-    }
+    ro?.observe(el);
+    // A bubble comes and goes without resizing the bar; it also rises 6 px as it fades in
+    const mo = typeof MutationObserver !== 'undefined' ? new MutationObserver(set) : null;
+    mo?.observe(el, { childList: true, subtree: true });
+    el.addEventListener('animationend', set);
+    watch.current = {
+      off: () => {
+        ro?.disconnect();
+        mo?.disconnect();
+        el.removeEventListener('animationend', set);
+      },
+    };
   }, []);
   const b = budgetStatus();
   if (!world || !b) return null;

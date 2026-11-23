@@ -85,6 +85,8 @@ export interface CardShellProps {
   queuedText?: string;
   /** Extra body content after the description: effect chips, odds. */
   children?: ReactNode;
+  /** Row layout: content under the art and the body, across the card's full width (an opened forecast). */
+  foot?: ReactNode;
   /** Accessible name of the press target (default: the title). */
   ariaLabel?: string;
   className?: string;
@@ -125,6 +127,7 @@ export function CardShell({
   onUndo,
   queuedText = "In this month's plan",
   children,
+  foot,
   ariaLabel,
   className = '',
 }: CardShellProps) {
@@ -205,6 +208,7 @@ export function CardShell({
         {children}
         {byline && layout !== 'slot' && <div className="wc-card-byline">{byline}</div>}
       </div>
+      {foot && <div className="wc-card-foot">{foot}</div>}
       {off && reason && (
         <div className="wc-card-reason" role="note">
           <span>
