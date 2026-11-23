@@ -276,6 +276,67 @@ describe("merge and publish scripts", () => {
   });
 });
 
+describe("rules conditioned on the changed paths (when.paths) and the design-review gate", () => {
+  const designRule = {
+    "design-review-before-merge": { on: "merge", gate: "design-review", match: "code", when: { paths: ["ui/", "data/codex/**"] }, why: "UI merges need a design review" },
+  };
+  const extra = () => ({ gates: ["verify", "qa", "triage", "status-refresh", "design-review"], rules: { ...baseConfig().rules, ...designRule } });
+
+  it("matches folder prefixes and globs", () => {
+    expect(loop.pathMatches("ui/src/App.tsx", ["ui/"])).toBe(true);
+    expect(loop.pathMatches("ui/src/App.tsx", ["ui"])).toBe(true);
+    expect(loop.pathMatches("uikit/x.ts", ["ui/"])).toBe(false);
+    expect(loop.pathMatches("data/codex/a.json", ["data/codex/**"])).toBe(true);
+    expect(loop.pathMatches("data/countries/a.json", ["data/codex/**"])).toBe(false);
+  });
+
+  it("skips the rule when the merge touches none of the paths", () => {
+    const { root, ctx, ev } = makeRepo(extra());
+    loop.init(ctx, { iteration: 1, stage: "Build" });
+    git(root, "checkout", "-q", "-b", "work");
+    commit(root, "src/b.ts", "export const b = 1;\n");
+    pass(ctx, "verify", ev);
+    git(root, "checkout", "-q", "dev");
+    const r = merge({ cwd: root, config: join(root, CFG), branch: "work", log: () => {} });
+    expect(r.commit).toBe(git(root, "rev-parse", "HEAD"));
+    const c = loop.evaluate(ctx, "merge", { commit: "HEAD", paths: ["src/b.ts"] });
+    const d = c.results.find((x: { rule: string }) => x.rule === "design-review-before-merge");
+    expect(d).toMatchObject({ ok: true, skipped: true });
+    expect(loop.formatResults(c)).toMatch(/skip design-review-before-merge: not applicable/);
+  });
+
+  it("needs a design-review pass when the merge touches ui/, recorded with evidence on the code", () => {
+    const { root, ctx, ev } = makeRepo({ ...extra(), code: { include: ["src/**", "ui/**", "package.json"] } });
+    loop.init(ctx, { iteration: 1, stage: "Build" });
+    git(root, "checkout", "-q", "-b", "work");
+    commit(root, "ui/src/Desk.tsx", "export const Desk = 1;\n");
+    pass(ctx, "verify", ev);
+    git(root, "checkout", "-q", "dev");
+    const log = () => {};
+    expect(() => merge({ cwd: root, config: join(root, CFG), branch: "work", log })).toThrow(/design-review-before-merge/);
+    // `loop check merge --commit work` from the work branch sees the same: base...commit touches ui/
+    const c = loop.evaluate(ctx, "merge", { commit: "work" });
+    expect(c.results.find((x: { rule: string }) => x.rule === "design-review-before-merge")).toMatchObject({ ok: false });
+    expect(() => loop.record(ctx, { gate: "design-review", result: "pass", commit: "work" })).toThrow(/evidence/);
+    write(root, "shots/layout-audit.json", "{}\n");
+    loop.record(ctx, { gate: "design-review", result: "pass", commit: "work", evidence: join(root, "shots") });
+    const r = merge({ cwd: root, config: join(root, CFG), branch: "work", log });
+    expect(r.commit).toBe(git(root, "rev-parse", "HEAD"));
+  });
+
+  it("a later design-review fail blocks again", () => {
+    const { root, ctx, ev } = makeRepo(extra());
+    loop.init(ctx, { iteration: 1, stage: "Build" });
+    git(root, "checkout", "-q", "-b", "work");
+    commit(root, "data/codex/x.json", "{}\n");
+    pass(ctx, "verify", ev);
+    pass(ctx, "design-review", ev);
+    expect(loop.evaluate(ctx, "merge", { commit: "work" }).ok).toBe(true);
+    loop.record(ctx, { gate: "design-review", result: "fail", commit: "work" });
+    expect(loop.evaluate(ctx, "merge", { commit: "work" }).ok).toBe(false);
+  });
+});
+
 describe("shared state across worktrees", () => {
   it("records from a linked worktree land in the main worktree's state", () => {
     const { root, ctx, ev } = makeRepo();

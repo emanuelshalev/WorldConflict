@@ -13,7 +13,7 @@
 //   advance [--to Stage]                    move to the next legal stage; refuses when a precondition fails
 //   record <gate> --result pass|fail [--commit <sha>] [--evidence <path>] [--note "..."] [--verdict v]
 //                                           record a gate result on a commit (and its code tree)
-//   check <action> [--commit <sha>] [--tree <tree-ish>]
+//   check <action> [--commit <sha>] [--tree <tree-ish>] [--base <ref>]
 //                                           exit 0 when every rule for the action holds, else 1 with reasons
 //                                           (actions: publish, merge, enter:<Stage>, or any `on` in the rules)
 //   override <rule> --reason "..." [--ttl minutes]
@@ -35,8 +35,12 @@
 //   "gates": ["verify", "qa", "triage", "status-refresh"],
 //   "rules": { "<id>": { "on": "enter:Use" | ["publish", ...], "gate": "qa",
 //                        "match": "code" | "commit" | "iteration" | "stage" | "after-merge" | "owed",
-//                        "minTier": "T3", "accept": ["pass"], "why": "..." } },  // "on" may end in ":*" (every enter:);
-//                                                          // "accept": the results that satisfy the rule (default pass)
+//                        "minTier": "T3", "accept": ["pass"], "why": "...",
+//                        "when": { "paths": ["ui/", "data/codex/**"] } } },  // "on" may end in ":*" (every enter:);
+//                                                          // "accept": the results that satisfy the rule (default pass);
+//                                                          // "when.paths": the rule applies only when the change
+//                                                          // touches those paths (merge: the merge result against the
+//                                                          // shared branch; check: base...commit), else it is skipped
 //   "owes": { "merge": "T1", "publish": "T1", "exit:Use": "T2" },   // status refreshes owed by events
 //   "statusProtocol": "../status-protocol.json",                    // for merge/publish auto refresh
 //   "code": { "include": ["src/**", ...], "exclude": ["**/*.md"] },  // what counts as code for "code" matches
@@ -248,9 +252,30 @@ export function activeOverride(ctx, state, rule) {
   return [...state.overrides].reverse().find((o) => o.rule === rule && Date.parse(o.until) > now) ?? null;
 }
 
+/** Does a repo path match a `when.paths` entry? "ui/" (or "ui") is a folder prefix; globs use *, ** and ?. */
+export function pathMatches(file, patterns) {
+  return patterns.some((p) => {
+    if (/[*?]/.test(p)) return globToRegExp(p).test(file);
+    const dir = p.replace(/\/+$/, '');
+    return file === dir || file.startsWith(`${dir}/`);
+  });
+}
+
+/**
+ * The paths a change touches, for rules with `when.paths`: against `base` (default the shared
+ * branch, else HEAD) either the given tree-ish (a merge result: exact) or the commit's changes
+ * since the merge base (base...commit, what merging it would bring).
+ */
+export function changedPathsOf(ctx, { base, tree, commit }) {
+  const b = base ?? (ctx.cfg.sharedBranch && git(ctx.repo, ['rev-parse', '--verify', '--quiet', ctx.cfg.sharedBranch], { allowFail: true }) ? ctx.cfg.sharedBranch : 'HEAD');
+  const args = tree ? ['diff', '--name-only', b, tree] : ['diff', '--name-only', `${b}...${commit}`];
+  return (git(ctx.repo, args, { allowFail: true }) ?? '').split('\n').filter(Boolean);
+}
+
 /**
  * Evaluate every rule that applies to `action`. opts: commit (sha or ref), tree (tree-ish for
- * code matches, e.g. a merge result), codeTree (precomputed hash).
+ * code matches, e.g. a merge result), codeTree (precomputed hash), paths (the changed paths, for
+ * rules with `when.paths`; computed from base/tree/commit when not given), base (default: sharedBranch).
  */
 export function evaluate(ctx, action, opts = {}, state = readState(ctx)) {
   const results = [];
@@ -264,7 +289,20 @@ export function evaluate(ctx, action, opts = {}, state = readState(ctx)) {
     if (!ct) ct = codeTreeOf(ctx, opts.tree ?? target());
     return ct;
   };
+  let changed = opts.paths ?? null;
+  const changedPaths = () => {
+    if (!changed) changed = changedPathsOf(ctx, { base: opts.base, tree: opts.tree, commit: target() });
+    return changed;
+  };
   for (const [id, rule] of rulesFor(ctx.cfg, action)) {
+    // "when": { "paths": [...] }: the rule applies only when the change touches one of these paths
+    if (rule.when?.paths) {
+      const hits = changedPaths().filter((f) => pathMatches(f, asList(rule.when.paths)));
+      if (!hits.length) {
+        results.push({ rule: id, ok: true, why: rule.why, detail: `not applicable: the change touches none of ${asList(rule.when.paths).join(', ')}`, skipped: true });
+        continue;
+      }
+    }
     const recs = state.records.filter((r) => r.gate === rule.gate && (rule.minTier == null || tierNum(r.tier) >= tierNum(rule.minTier)));
     let pool;
     let what;
@@ -474,7 +512,7 @@ function appendLedgerDraft(ctx, o) {
 }
 
 export function formatResults(check) {
-  return check.results.map((r) => `  ${r.ok ? 'ok  ' : 'FAIL'} ${r.rule}: ${r.detail}${!r.ok && r.why ? `\n       why: ${r.why}` : ''}`).join('\n') || '  (no rules)';
+  return check.results.map((r) => `  ${r.skipped ? 'skip' : r.ok ? 'ok  ' : 'FAIL'} ${r.rule}: ${r.detail}${!r.ok && r.why ? `\n       why: ${r.why}` : ''}`).join('\n') || '  (no rules)';
 }
 
 function status(ctx) {
@@ -571,8 +609,8 @@ export function main(argv, cwd = process.cwd()) {
       return 0;
     }
     case 'check': {
-      if (!pos[1]) throw new Error('usage: loop check <action> [--commit sha] [--tree tree-ish]');
-      const c = evaluate(ctx, pos[1], { commit: opt.commit, tree: opt.tree });
+      if (!pos[1]) throw new Error('usage: loop check <action> [--commit sha] [--tree tree-ish] [--base ref]');
+      const c = evaluate(ctx, pos[1], { commit: opt.commit, tree: opt.tree, base: opt.base });
       if (c.results.some((r) => r.overridden)) appendEvent(ctx, { kind: 'override-used', action: pos[1], rules: c.results.filter((r) => r.overridden).map((r) => r.rule) });
       if (c.ok) {
         if (!opt.quiet) console.log(`ok: ${pos[1]}\n${formatResults(c)}`);
