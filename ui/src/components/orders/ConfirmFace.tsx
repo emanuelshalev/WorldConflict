@@ -70,11 +70,12 @@ export function ConfirmFace({ kind, question, missionWarning, lines, confirmText
       if (!btns || !box || box === document.body || box === document.documentElement) return;
       const b = btns.getBoundingClientRect();
       const c = box.getBoundingClientRect();
-      // The box's scroll padding marks what lies over it (the phone's fixed command bar sets the
-      // desk stage's scroll-padding-bottom, DR-OC-4): the answers must end above that, not under it
+      // What lies over the box's edges: its scroll padding (the Map menu's sticky header sets
+      // scroll-padding-top) or --cover-bottom (the phone's fixed command bar over the desk stage,
+      // DR-OC-4). The answers must end clear of both, not under them
       const cs = getComputedStyle(box);
       const padTop = Number.parseFloat(cs.scrollPaddingTop) || 0;
-      const padBottom = Number.parseFloat(cs.scrollPaddingBottom) || 0;
+      const padBottom = Math.max(Number.parseFloat(cs.scrollPaddingBottom) || 0, Number.parseFloat(cs.getPropertyValue('--cover-bottom')) || 0);
       const top = Math.max(c.top, 0) + padTop;
       const bottom = Math.min(c.bottom, window.innerHeight) - padBottom;
       let dy = 0;

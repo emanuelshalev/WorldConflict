@@ -351,8 +351,8 @@ export function CommandBar({ catalogTarget, simple = false }: { catalogTarget: s
   const choices = useGameStore((s) => s.decisionChoices);
   const ex = useExecute();
   const [sheet, setSheet] = useState(false);
-  // The bar lies over the desk stage: its height goes to --cmd-bar-h, the stage's scroll padding,
-  // so whatever scrolls into view there (an order's confirmation) ends above the bar (DR-OC-4)
+  // The bar lies over the desk stage: its height goes to --cmd-bar-h (the stage's --cover-bottom),
+  // so an order's confirmation brought into view there ends above the bar (DR-OC-4)
   const watch = useRef<ResizeObserver | null>(null);
   const barRef = useCallback((el: HTMLElement | null) => {
     watch.current?.disconnect();

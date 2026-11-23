@@ -206,9 +206,11 @@
 /* Phone and small tablet: one column, the command bar at the bottom */
 @media (max-width: 899px) {
   .desk-screen, .desk-screen.v-full:has(> .navigator) { grid-template-columns: minmax(0, 1fr); }
-  /* The command bar lies over the stage's bottom (CommandBar sets --cmd-bar-h): content can scroll
-     clear of it, and a confirmation scrolled into view ends above it (DR-OC-4) */
-  .desk-stage { padding: 12px 16px max(120px, calc(var(--cmd-bar-h, 0px) + 24px)); scroll-padding-bottom: var(--cmd-bar-h, 0px); }
+  /* The command bar lies over the stage's bottom (CommandBar sets --cmd-bar-h, about 100 px): the
+     120 px bottom padding lets content scroll clear of it, and --cover-bottom tells an order's
+     confirmation how much of the stage the bar hides, so its answers end above it (DR-OC-4). A
+     custom property, not scroll-padding: other scrolls on the desk land where they always did */
+  .desk-stage { padding: 12px 16px 120px; --cover-bottom: var(--cmd-bar-h, 0px); }
   .cmd-strip { grid-template-columns: minmax(0, 1fr); gap: 8px; }
   .cmd-strip .advisors.compact { display: none; }
   .strip-act { justify-content: flex-end; }
