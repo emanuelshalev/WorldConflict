@@ -21,12 +21,14 @@ devloop/
     controller.md      what the loop controller decides vs what the AI decides, the override path
     status-page.md     status page update protocol: tiers by loop event, generate not copy, freshness stamps
     quality.md         the release gate as metrics: spec format, noise, staleness, verdict (schema quality.schema.json)
+    layout-audit.md    when and how to measure that a screen uses its space and hides nothing
   kit/
     kit.mjs            Playwright kit: act by visible label, screenshots, control dumps, frame bursts
     driver.mjs, act.mjs persistent browser per persona, one command per shell call
     page-check.mjs     loads a page, visits every tab, fails on script errors
     verify-runner.mjs  the verify gate: one command for every merge check (config per instance)
     regressions.mjs    findings regression registry: checker, guard runner, changed-file selection
+    layout-audit.mjs   layout audit: inner scrolling, content below the fold, used width, cut off and covered controls
     feedback-digest.mjs builds per-iteration customer feedback data for status pages
     usage-ledger.mjs   token consumption by role, persona, stage, iteration and time from session transcripts
     progress.mjs       stage log, progress within a stage, ETAs for the rest, expected tokens, estimate accuracy
@@ -79,7 +81,7 @@ Visual regression belongs in the gate only for surfaces that are deterministic: 
 Domain harnesses with targets (balance bands, performance budgets) get an opt-in test kept out of the default unit run, with known gaps in a JSON exemption file that says why: an exempt check is still measured and printed, so a gap is visible instead of hidden.
 
 ## The findings regression registry
-`instances/<product>/regressions.yaml` lists every finding a fix addressed (real signals, triage clusters, QA items, backlog items marked Done), each with at least one guard: a unit test (file plus test name substring) or a short UI scenario that replays the customer's repro (`node <script> <outDir> <baseUrl> <apiUrl>`, exit code is the verdict). `kit/regressions.mjs <registry> check` is the meta-check (no guard, a missing guard file or test name, a Done backlog row not listed); `run` runs every guard and prints a per-finding table; `changed --base <ref>` maps the files changed since a base to the unit suites that import them and the findings whose `covers:` globs match, and runs those first. Wire `check` into the quick mode and `run` into the default mode of the verify gate, and make the triage step "every fix adds a registry entry with its guard" (`method/triage.md`).
+`instances/<product>/regressions.yaml` lists every finding a fix addressed (real signals, triage clusters, QA items, backlog items marked Done), each with at least one guard: a unit test (file plus test name substring) or a short UI scenario that replays the customer's repro (`node <script> <outDir> <baseUrl> <apiUrl>`, exit code is the verdict). `kit/regressions.mjs <registry> check` is the meta-check (no guard, a missing guard file or test name, a Done backlog row not listed); `run` runs every guard and prints a per-finding table; `changed --base <ref>` maps the files changed since a base to the unit suites that import them and the findings whose `covers:` globs match, and runs those first. A finding that is not fixed yet can carry `status: open`: its guard runs and is reported (OPEN, or OPEN-PASS once it passes) without failing the gate; the fixing build removes the flag. Wire `check` into the quick mode and `run` into the default mode of the verify gate, and make the triage step "every fix adds a registry entry with its guard" (`method/triage.md`).
 
 ## Quality scorecard
 The release gate is declared per instance in `quality.json` (dimensions and metrics with a source adapter, threshold, noise band, cadence, blocking or informative, veto; template `templates/quality.json`, schema `method/quality.schema.json`). `kit/evaluate.mjs <instance>/quality.json [--iteration N]` scores it from outputs that already exist (verify records and logs, the regression registry, triage and repro tables, session reports, real signals, perf logs, visual baselines) and prints the verdict (met, not met, undecided within noise), its reasons and the trend; `--record` stores it as the `quality` gate the controller's Gate rule reads. The status page gets it through the `quality` generator of `status-refresh.mjs`. Rules in `method/quality.md`.
