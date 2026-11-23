@@ -54,8 +54,9 @@
 }
 /* Phones: one line and "State" (the sheet holds the rest) */
 .state-band.is-phone { display: block; padding: 6px 10px 4px; }
-.state-band.is-phone .sb-line { display: flex; align-items: center; gap: 10px; font-size: 15px; }
-.state-band.is-phone .sb-more { margin-left: auto; min-height: 44px; }
+.state-band.is-phone .sb-line { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px; font-size: 15px; }
+.state-band.is-phone .sb-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 12px; min-width: 0; }
+.state-band.is-phone .sb-more { min-height: 44px; }
 .sb-sheet { display: grid; gap: 10px; padding: 10px 2px 12px; }
 .sb-sheet-who { margin: 0; color: var(--text-1); }
 .sb-sheet-grid { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }

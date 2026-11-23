@@ -295,14 +295,18 @@ export function StateBand() {
     return (
       <header className="state-band is-phone" data-region="state" ref={ref}>
         <div className="sb-line">
-          <span className="sb-s">
-            <V v={monthText} />
-          </span>
-          <span className="sb-s sb-pc" data-point="capital">
-            <V v={`◆ ${pcLeft} of ${pcCap}`} />
-          </span>
-          {orders}
-          {calls}
+          {/* The counts wrap inside their own column, so the State button never runs off the
+              screen (the line was 516 px wide at 390 with the calls count) */}
+          <div className="sb-chips">
+            <span className="sb-s">
+              <V v={monthText} />
+            </span>
+            <span className="sb-s sb-pc" data-point="capital">
+              <V v={`◆ ${pcLeft} of ${pcCap}`} />
+            </span>
+            {orders}
+            {calls}
+          </div>
           <button type="button" className="wc-btn small sb-more" aria-expanded={sheet} onClick={() => setSheet((v) => !v)}>
             State {sheet ? <IconChevronUp size={14} aria-hidden /> : <IconChevronDown size={14} aria-hidden />}
           </button>

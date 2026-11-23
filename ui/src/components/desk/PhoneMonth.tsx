@@ -36,8 +36,9 @@ export function PhoneThingLine() {
   const at = cur ? items.findIndex((x) => x.key === cur.key) + 1 : 0;
   return (
     <nav className="ph-thingline month-bar" data-region="bar" aria-label="This month">
-      <button type="button" className="wc-btn small" disabled={!back && !review} onClick={() => (review ? useGameStore.setState({ review: false }) : back && openItem(back.key))} aria-label="Back">
-        <IconChevronLeft size={16} aria-hidden /> Back
+      {/* Back is its arrow on the phone (the word stays its name): the title gets the width (C4) */}
+      <button type="button" className="wc-btn small ph-back" disabled={!back && !review} onClick={() => (review ? useGameStore.setState({ review: false }) : back && openItem(back.key))} aria-label="Back" title="Back">
+        <IconChevronLeft size={18} aria-hidden /> <span className="ph-back-word">Back</span>
       </button>
       <p className="mb-where">
         <b>{review ? 'Review your month' : cur ? `${at} of ${items.length} · ${cur.title}${cur.call ? ' · Your call' : ''}` : 'A quiet month'}</b>
@@ -48,7 +49,8 @@ export function PhoneThingLine() {
       <button type="button" className="wc-btn small see-all" aria-expanded={listOpen} onClick={() => useGameStore.setState({ listOpen: !listOpen })}>
         <IconListDetails size={16} aria-hidden /> See all {items.length}
       </button>
-      {/* design-layout section 5: on phones the Desk / Map switch lives in the thing line */}
+      {/* design-layout section 5: on phones the Desk / Map switch lives in the thing line, under
+          See all in the right column (C4: the line is one block, not a row for the switch) */}
       <ModeSwitch />
     </nav>
   );
