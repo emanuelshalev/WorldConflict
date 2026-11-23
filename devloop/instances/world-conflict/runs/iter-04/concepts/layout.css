@@ -1,0 +1,394 @@
+/* Iteration 4 layout system mocks (D-80, RS-008), for design-layout.md.
+   Visual language from iter-03/concepts/agenda2.css (round 3, D-72): buttons raised and outlined, status as
+   plain text, no dashed boxes, no progress bars, 15 px floor.
+   Layout rules: L-1 to L-20 in design-layout.md. Sizes are in rem so the whole screen scales with the
+   root size (L-3); columns are added as the width grows (L-2); nothing the player acts on scrolls inside
+   a box (L-6). */
+:root {
+  --bg-0: #0b0f17; --ocean: #0e1a2b;
+  --surface-1: #141b27; --surface-2: #1c2533; --surface-3: #243042;
+  --line: #2a3546; --line-2: #3a4759;
+  --text-1: #eef1f6; --text-2: #b3bdcc; --text-3: #95a1b3;
+  --accent: #f2a93b; --accent-ink: #1b1204; --intel: #4fb3d9; --good: #56c596; --war: #e5383b;
+  --font: 'Geist', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --gap: 1rem;        /* gutter between regions and inside columns */
+  --pad: 1.25rem;     /* region inner padding */
+  --read: 38rem;      /* L-4: longest comfortable line for running text (about 70 characters) */
+}
+* { box-sizing: border-box; }
+/* L-3: one root size; everything below is rem, so a 4K screen at 100 % gets a larger, not emptier, screen.
+   16 px up to 1080 tall, 17.5 px at 1440 tall, 20.6 px at 2160 tall (scaled by the short side). */
+html { font-size: clamp(16px, calc(0.42vmin + 11.5px), 22px); }
+html, body { margin: 0; background: var(--bg-0); color: var(--text-1); font-family: var(--font); line-height: 1.45; }
+body { font-size: 1rem; }
+button { font: inherit; color: inherit; }
+.num { font-variant-numeric: tabular-nums; }
+.good { color: #8fe3bd; } .bad { color: #ff9a9c; } .muted { color: var(--text-2); }
+h1, h2, h3, p { margin: 0; }
+
+/* ---------- clickable: one look (AF rules) ---------- */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 2.75rem; padding: .45rem 1rem;
+  border: 1.5px solid #5a6b82; border-radius: .625rem; background: linear-gradient(180deg, #2a3649, #1f2938);
+  box-shadow: 0 3px 0 #05080d; cursor: pointer; font-weight: 650; white-space: nowrap; }
+.btn:hover { border-color: #8496ad; }
+.btn.primary { background: linear-gradient(180deg, #f7bb5a, #e49a2a); border-color: #f7bb5a; color: var(--accent-ink); box-shadow: 0 3px 0 #7a4d0e; }
+.btn.small { min-height: 2.375rem; padding: .3rem .75rem; font-size: .9375rem; }
+.btn.wide { width: 100%; }
+.btn .chev { font-size: 1.15rem; line-height: 1; }
+.btn .sub { display: block; font-size: .9375rem; font-weight: 500; opacity: .85; }
+.btn.exec { flex-direction: column; gap: 0; width: 100%; min-height: 3.75rem; font-size: 1.2rem; }
+.opt { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: .875rem; width: 100%; padding: .8rem 1rem; text-align: left;
+  border: 1.5px solid #5a6b82; border-radius: .875rem; background: linear-gradient(180deg, #243044, #1b2433); box-shadow: 0 3px 0 #05080d; cursor: pointer; }
+.opt:hover { border-color: var(--accent); }
+.opt .body { display: grid; gap: .2rem; min-width: 0; }
+.opt .rec { font-size: .9375rem; color: var(--text-1); }
+.opt .name { font-size: 1.125rem; font-weight: 700; }
+.opt .fx { font-size: 1rem; color: var(--text-2); }
+.opt .face { padding: .45rem 1rem; border-radius: .625rem; border: 1.5px solid #8496ad; background: #2f3d53; font-weight: 700; white-space: nowrap; }
+.opt.skipopt { background: linear-gradient(180deg, #1f2836, #19212e); }
+.opt .or { font-size: .9375rem; color: var(--text-2); }
+.seg { display: inline-flex; border: 1.5px solid #5a6b82; border-radius: 999px; padding: 2px; background: var(--surface-1); }
+.seg button { border: 0; background: none; border-radius: 999px; padding: .3rem .85rem; min-height: 2.25rem; cursor: pointer; color: var(--text-2); font-size: .9375rem; white-space: nowrap; }
+.seg button.on { background: var(--surface-3); color: var(--text-1); font-weight: 650; }
+
+/* ---------- the frame: state band, month bar, main (L-1) ---------- */
+.ph { display: none; }
+.app { display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; height: 100vh; overflow: hidden; }
+.tabonly { display: none; }
+
+/* L-5: the state band. Dedicated, always visible, never scrolls, never covered. Two lines at every desktop size. */
+.state { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .35rem 1.25rem; padding: .5rem var(--pad); background: #0f1520; border-bottom: 1px solid var(--line); font-size: .9375rem; }
+.state .l1, .state .l2 { display: flex; align-items: center; gap: 1.25rem; min-width: 0; flex-wrap: wrap; }
+.state .l1 { flex-wrap: nowrap; } .state .l2 { grid-column: 1 / -1; gap: .4rem 1.5rem; flex-wrap: nowrap; }
+.state .who { font-weight: 700; font-size: 1rem; }
+.state .month { color: var(--text-1); font-weight: 650; }
+.state .grp { display: flex; align-items: center; gap: .4rem 1.1rem; flex-wrap: wrap; }
+.state .grp > .lbl { color: var(--text-3); }
+.state .s { color: var(--text-2); white-space: nowrap; } .state .s b { color: var(--text-1); font-size: 1rem; }
+.state .s.pc b { color: var(--accent); }
+.state .divv { width: 1px; align-self: stretch; background: var(--line-2); }
+.state .right { display: flex; align-items: center; gap: .75rem; }
+.goalbtn { gap: .875rem; font-weight: 400; min-height: 2.5rem; }
+.goalbtn .chev { color: var(--accent); font-weight: 700; }
+
+/* Month bar: a sentence plus labelled buttons (D-72 D2) */
+.bar { display: flex; align-items: center; gap: .625rem; padding: .55rem var(--pad); border-bottom: 1px solid var(--line); background: #0e141e; }
+.bar .t { font-size: .9375rem; color: var(--text-2); min-width: 0; flex: 1; } .bar .t b { display: block; font-size: 1.125rem; color: var(--text-1); }
+.bar .seeall { display: inline-flex; }
+.bar .showl { display: inline-flex; align-items: center; gap: .5rem; margin-right: .5rem; } .bar .showl .s { color: var(--text-2); font-size: .9375rem; }
+
+/* ---------- main grid: regions added as the width grows (L-2) ---------- */
+.main { display: grid; min-height: 0; grid-template-columns: minmax(0, 1fr) 20rem; grid-template-areas: 'item plan'; }
+.col-list { grid-area: list; display: none; }
+.item { grid-area: item; container: item / inline-size; min-height: 0; padding: var(--pad); overflow: hidden; }
+.plan { grid-area: plan; }
+
+/* the list region (D and wider): the See all list made permanent */
+.col-list { flex-direction: column; gap: .5rem; padding: var(--pad) 1rem; border-right: 1px solid var(--line); background: #0e141e; min-height: 0; }
+.col-list h2 { font-size: 1.0625rem; margin-bottom: .25rem; }
+.col-list .hint { font-size: .9375rem; color: var(--text-2); }
+.lrow { display: flex; gap: .75rem; align-items: center; width: 100%; min-height: 3.5rem; padding: .5rem .75rem; text-align: left; border: 1.5px solid #5a6b82; border-radius: .75rem;
+  background: linear-gradient(180deg, #243044, #1b2433); box-shadow: 0 3px 0 #05080d; cursor: pointer; }
+.lrow .t { flex: 1; display: grid; min-width: 0; } .lrow .t b { font-size: 1rem; } .lrow .lst { font-size: .9375rem; color: var(--text-2); }
+.lrow.now { border-color: var(--accent); } .lrow.now .lst { color: var(--accent); }
+.lrow .face { padding: .3rem .7rem; border-radius: .55rem; border: 1.5px solid #8496ad; background: #2f3d53; font-weight: 700; font-size: .9375rem; }
+.flat { padding: .75rem .875rem; border-radius: .625rem; background: var(--surface-1); font-size: .9375rem; color: var(--text-2); }
+.flat b { color: var(--text-1); }
+
+/* ---------- the current thing: its own columns by container width (L-7) ---------- */
+.thing { display: grid; gap: var(--gap); height: 100%; min-height: 0; grid-template-columns: minmax(0, 1fr); align-content: start; }
+.sit, .ans, .ctx { display: flex; flex-direction: column; gap: .75rem; min-width: 0; min-height: 0; }
+.ctx { display: none; }
+.hero { position: relative; flex: none; height: clamp(7.5rem, 22vh, 18rem); border-radius: 1rem; overflow: hidden; background: radial-gradient(120% 90% at 75% 30%, #34507a, #0b1220 70%); }
+.hero svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hero .shade { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 20%, rgba(6,9,14,.92)); }
+.hero .txt { position: absolute; left: 1.25rem; right: 1.25rem; bottom: .9rem; }
+.hero .kick { font-size: .9375rem; color: var(--accent); font-weight: 650; }
+.hero h1 { font-size: 1.875rem; line-height: 1.15; margin: .1rem 0 .2rem; }
+.hero p { font-size: 1.0625rem; color: #dbe2ec; max-width: var(--read); }
+.hero.crisis { box-shadow: inset 0 0 0 2px var(--war); } .hero.crisis .kick { color: #ff9a9c; }
+.ask { font-size: 1.1875rem; font-weight: 700; }
+.opts { display: grid; gap: .75rem; grid-template-columns: minmax(0, 1fr); }
+.goal1 { font-size: 1.0625rem; padding: .7rem 1rem; border-left: 3px solid var(--good); background: var(--surface-1); max-width: var(--read); }
+.intro1 { font-size: 1.0625rem; max-width: var(--read); }
+.facts { display: grid; gap: .35rem; padding: .875rem 1rem; border-radius: .75rem; background: var(--surface-1); }
+.facts h3 { font-size: .9375rem; color: var(--text-2); font-weight: 650; }
+.facts .r { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1rem; font-size: 1rem; }
+.facts .r span:last-child { color: var(--text-2); }
+.ctxmap { position: relative; flex: none; height: clamp(10rem, 30vh, 26rem); border-radius: .75rem; overflow: hidden; background: var(--ocean); }
+.ctxmap svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.ctxmap .cap { position: absolute; left: .75rem; bottom: .5rem; font-size: .9375rem; color: #d3dbe6; text-shadow: 0 1px 2px #000; }
+.bg p { font-size: 1rem; color: var(--text-2); max-width: var(--read); }
+.bg { display: grid; gap: .5rem; justify-items: start; }
+.opt-only-wide { display: none; }
+
+/* answers in two columns when the single column is wide enough */
+@container item (min-width: 38rem) { .opts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* two columns: the situation | the answers (L-7) */
+@container item (min-width: 56rem) {
+  .thing { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: 'sit ans'; }
+  .sit { grid-area: sit; } .ans { grid-area: ans; }
+  .opts { grid-template-columns: minmax(0, 1fr); }
+  .hero { height: clamp(10rem, 30vh, 22rem); }
+  .opt-only-wide { display: grid; }
+}
+/* three columns: the situation | the answers | the context (map, goals at stake, background) */
+@container item (min-width: 96rem) {
+  .thing { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr) minmax(0, 1fr); grid-template-areas: 'sit ans ctx'; }
+  .ctx { display: flex; grid-area: ctx; }
+  .sit .facts.goals { display: none; }
+  .hero { height: clamp(12rem, 34vh, 30rem); }
+}
+
+/* ---------- plan region: what will happen, Recommended, Accept all, Execute (L-9, L-10) ---------- */
+.plan { display: flex; flex-direction: column; min-height: 0; border-left: 1px solid var(--line); background: #0e141e; }
+.plan .list { flex: 1 1 auto; min-height: 0; padding: .25rem var(--pad) .5rem; overflow: hidden; display: flex; flex-direction: column; }
+.plan h2 { font-size: 1.1875rem; margin: .9rem 0 .25rem; }
+.psec { border-bottom: 1px solid var(--line); padding: .5rem 0; }
+.psec:last-child { border-bottom: 0; }
+.psec > .h { display: flex; align-items: center; gap: .5rem; width: 100%; min-height: 2.5rem; padding: 0; border: 0; background: none; text-align: left; font-size: .9375rem; font-weight: 650; color: var(--text-2); cursor: pointer; }
+.psec > .h .cnt { color: var(--text-1); }
+.psec > .h .tog { margin-left: auto; padding: .15rem .6rem; border: 1.5px solid #5a6b82; border-radius: .5rem; font-size: .9375rem; color: var(--text-1); box-shadow: 0 2px 0 #05080d; }
+.psec .sum { font-size: .9375rem; color: var(--text-2); display: none; }
+.psec.folded .rows { display: none; } .psec.folded .sum { display: block; }
+.row { display: flex; gap: .625rem; align-items: center; padding: .3rem 0; font-size: 1rem; }
+.row .t { flex: 1; min-width: 0; } .row .t small { display: block; font-size: .9375rem; color: var(--text-2); }
+.accept { display: grid; gap: .2rem; margin-top: .4rem; }
+.accept .def { font-size: .9375rem; color: var(--text-2); }
+.execb { flex: none; padding: .875rem var(--pad) 1rem; border-top: 1px solid var(--line-2); background: #0c121b; }
+.execb .h { font-size: 1rem; font-weight: 700; }
+.execb ul { margin: .2rem 0 .7rem; padding-left: 1.25rem; font-size: 1rem; }
+.execb li { margin: .1rem 0; }
+
+/* ---------- breakpoints (L-2) ---------- */
+/* T: 701 to 1279 (1024 x 768): item | plan 20 rem; list behind See all; plan sections fold first */
+@media (max-width: 1599px) {
+  .state .wideonly, .state .wideonly2 { display: none; }
+  .state .l2 { gap: .4rem 1.1rem; } .state .grp { gap: .4rem .9rem; }
+  .bar .showl .s { display: none; }
+}
+@media (max-width: 1279px) {
+  .bar .nexttitle, .bar .showl, .tabhide { display: none; }
+  .tabonly { display: inline; }
+  .state .l1, .state .l2 { gap: .4rem .9rem; }
+  /* T: the plan becomes the bar under the thing (L-11); the thing takes the full width */
+  .main { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'item'; }
+  .main > .plan { display: none; }
+  .strip .conseq { max-width: 26rem; }
+}
+/* L: 1280 to 1599 (1366 x 768, 1440 x 900) */
+@media (min-width: 1280px) {
+  .main { grid-template-columns: minmax(0, 1fr) 26rem; }
+  .deskstrip { display: none; }
+}
+/* D: 1600 to 2239 (1920 x 1080): list | item | plan */
+@media (min-width: 1600px) {
+  .main { grid-template-columns: 18rem minmax(0, 1fr) 25rem; grid-template-areas: 'list item plan'; }
+  .col-list { display: flex; }
+  .bar .seeall { display: none; }
+}
+/* W: 2240 to 3199 (2560 x 1440) */
+@media (min-width: 2240px) {
+  .main { grid-template-columns: 20rem minmax(0, 1fr) 27rem; }
+}
+/* U: 3200 and wider (3440 x 1440, 3840 x 2160) */
+@media (min-width: 3200px) {
+  .main { grid-template-columns: 21rem minmax(0, 1fr) 28rem; }
+  :root { --pad: 1.5rem; --gap: 1.25rem; }
+}
+/* short screens (768 tall): smaller hero, one-line rows (L-8) */
+@media (max-height: 820px) and (min-width: 701px) {
+  .hero { height: 8.5rem !important; }
+  .hero p { display: none; }
+  .item { padding-top: .875rem; padding-bottom: .875rem; }
+  .opts { gap: .6rem; } .opt { padding: .6rem .9rem; }
+  .plan h2 { margin-top: .6rem; }
+  .row .t small.opt2 { display: none; }
+}
+/* short laptop and tablet (1366 x 768, 1024 x 768): the situation goes on top, the answers in two columns
+   under it, the goals table (optional, its facts are on the cards) leaves (L-8) */
+@media (max-height: 820px) and (min-width: 701px) and (max-width: 1599px) {
+  .thing { grid-template-columns: minmax(0, 1fr) !important; grid-template-areas: none !important; }
+  .thing > * { grid-area: auto !important; }
+  .sit .facts.goals { display: none; }
+  @container item (min-width: 38rem) { .opts { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } }
+}
+
+/* ---------- Map mode (L-14) ---------- */
+.mapmain { position: relative; min-height: 0; overflow: hidden; background: var(--ocean); display: grid; grid-template-rows: minmax(0, 1fr) auto; grid-template-columns: minmax(0, 1fr); }
+.mapmain svg.world { position: absolute; inset: 0; width: 100%; height: 100%; }
+.mapstage { position: relative; min-height: 0; height: 100%; grid-template-rows: minmax(0, 1fr); display: grid; grid-template-columns: clamp(24rem, 28vw, 40rem) minmax(0, 1fr); gap: var(--gap); padding: var(--gap); pointer-events: none; }
+.mapstage > * { pointer-events: auto; }
+.mapcard { align-self: start; max-height: 100%; min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: .6rem; border-radius: 1rem; background: rgba(16,23,34,.97); border: 1.5px solid var(--line-2); box-shadow: 0 16px 40px rgba(0,0,0,.55); padding: 1rem; }
+.mapcard h3 { font-size: 1.3rem; } .mapcard > p { font-size: 1rem; color: var(--text-2); }
+.mapcard .opt { padding: .6rem .8rem; } .mapcard .opt .name { font-size: 1rem; } .mapcard .opt .fx { font-size: .9375rem; }
+.mapcard .st { font-size: .9375rem; color: var(--text-2); }
+.mapplan { display: none; grid-area: auto; }
+.strip { position: relative; display: flex; gap: 1.1rem; align-items: center; padding: .7rem var(--pad); background: rgba(12,17,26,.98); border-top: 1px solid var(--line-2); }
+.strip .grow { flex: 1; }
+.strip .conseq { font-size: .9375rem; color: var(--text-2); max-width: 30rem; text-align: right; }
+.strip .conseq b { color: var(--text-1); }
+.strip .endgrp { display: flex; gap: 1rem; align-items: center; padding-left: 1.1rem; border-left: 1px solid var(--line-2); }
+.strip .execmap { min-height: 3.25rem; font-size: 1.05rem; }
+.pin { position: absolute; width: 14px; height: 14px; border-radius: 50%; background: var(--war); box-shadow: 0 0 0 6px rgba(229,56,59,.25); }
+.maplabel { position: absolute; font-size: .9375rem; color: #d3dbe6; text-shadow: 0 1px 2px #000; pointer-events: none; }
+.mapstage .void { pointer-events: none; }
+/* D and wider: the plan region floats on the right of the map, same content and place as on the desk (L-14) */
+@media (min-width: 1600px) {
+  .mapstage { grid-template-columns: clamp(26rem, 26vw, 42rem) minmax(0, 1fr) 25rem; }
+  .mapplan { display: flex; align-self: stretch; border: 1.5px solid var(--line-2); border-radius: 1rem; overflow: hidden; background: rgba(14,20,30,.97); box-shadow: 0 16px 40px rgba(0,0,0,.55); }
+  .mapmain .strip { display: none; }
+  .mapmain { grid-template-rows: minmax(0, 1fr); }
+}
+@media (min-width: 2240px) { .mapstage { grid-template-columns: clamp(26rem, 24vw, 44rem) minmax(0, 1fr) 27rem; } }
+@media (min-width: 3200px) { .mapstage { grid-template-columns: clamp(26rem, 22vw, 46rem) minmax(0, 1fr) 28rem; } }
+@media (max-width: 1599px) { .mapcard .optrec { display: none; } }
+@media (max-height: 820px) and (min-width: 701px) {
+  .mapcard > p { display: none; } .mapcard .opt { padding: .45rem .7rem; } .mapcard .opt .rec { font-size: .9375rem; }
+  .mapcard .opt .fx { font-size: .9375rem; } .mapcard { gap: .45rem; padding: .8rem; }
+}
+
+/* ---------- See all panel (T and L) ---------- */
+.listpanel { display: none; }
+
+/* ---------- Phone: its own tree (L-15) ---------- */
+@media (max-width: 700px) {
+  html { font-size: 16px; }
+  body { font-size: 17px; }
+  .app { display: none; }
+  .ph { display: block; }
+  .ph-state { position: sticky; top: 0; z-index: 5; background: #0f1520; border-bottom: 1px solid var(--line); }
+  .ph-state .l1 { display: flex; align-items: center; gap: 10px; padding: 6px 12px 4px; font-size: 15px; color: var(--text-2); }
+  .ph-state .l1 b { color: var(--text-1); } .ph-state .l1 .pc b { color: var(--accent); }
+  .ph-state .l1 .grow { flex: 1; }
+  .ph-state .l2 { display: flex; align-items: center; gap: 8px; padding: 4px 12px 8px; }
+  .ph-state .l2 .t { flex: 1; min-width: 0; font-size: 15px; color: var(--text-2); } .ph-state .l2 .t b { display: block; font-size: 17px; color: var(--text-1); }
+  .ph-body { padding: 14px 14px 20px; display: grid; gap: 12px; }
+  .ph-body h1 { font-size: 26px; line-height: 1.15; }
+  .ph-kick { font-size: 15px; color: var(--accent); font-weight: 650; }
+  .ph-quote { font-size: 18px; color: #dbe2ec; }
+  .ph-body .opts { grid-template-columns: 1fr; }
+  .ph-body .opt { grid-template-columns: 1fr; } .ph-body .opt .face { justify-self: start; }
+  .ph-bottom { position: sticky; bottom: 0; z-index: 5; display: grid; gap: 6px; padding: 8px 14px 12px; background: rgba(12,17,26,.98); border-top: 1px solid var(--line-2); }
+  .ph-bottom p { font-size: 15px; color: var(--text-2); text-align: center; }
+  .below { justify-content: center; min-height: 40px; font-size: 15px; font-weight: 600; background: var(--surface-2); }
+  .below[hidden] { display: none; }
+  .ph-map { position: relative; height: 34vh; background: var(--ocean); overflow: hidden; }
+  .ph-map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .btn.big { width: 100%; min-height: 56px; font-size: 18px; }
+}
+
+/* ---------- fixes and the fill rule (L-12) ---------- */
+.app > .deskstrip { display: none; }
+@media (max-width: 1279px) { .app > .deskstrip { display: flex; } }
+.opt .more { display: none; font-size: 1rem; color: var(--text-2); }
+.col-list .grow { flex: 1; }
+.col-list .facts.mission { display: none; }
+/* L-12 fill: on tall wide screens (2 or 3 columns in the thing, 900 px tall or more) every column reaches the
+   bottom: the scene grows, answer cards share the column height and show their detail line, the context map grows,
+   the list column ends with the mission panel. Nothing is stretched past its reading width. */
+@media (min-height: 900px) and (min-width: 1600px) {
+  .col-list .facts.mission { display: grid; }
+  .thing { height: 100%; grid-template-rows: minmax(0, 1fr); }
+  @container item (min-width: 56rem) {
+    .sit .hero { flex: 1 1 auto; height: auto; min-height: 12rem; }
+    .ans .opts { flex: 1 1 auto; grid-auto-rows: minmax(0, 1fr); max-height: 52rem; }
+    .opt { align-content: center; }
+    .opt .more { display: block; }
+    .ctx .ctxmap { flex: 1 1 auto; height: auto; min-height: 12rem; }
+  }
+}
+
+.list.compact .row .t small { display: none; }
+.facts.advice { display: none; } .facts.advice .r { grid-template-columns: minmax(0, 1fr); color: var(--text-1); }
+.facts.advice .r span:last-child { color: var(--text-1); }
+@media (min-height: 1300px) and (min-width: 1600px) { .ans .facts.advice { display: grid; } }
+/* short screens, month 1: the goal and the intro sit side by side; the scene band is lower */
+@media (max-height: 820px) and (min-width: 701px) {
+  .sit:has(.goal1) { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: .6rem var(--gap); }
+  .sit:has(.goal1) .hero { grid-column: 1 / -1; height: 7rem !important; }
+  .goal1, .intro1 { font-size: 1rem; max-width: none; } .intro1 { align-self: center; }
+}
+/* T and short: the scene band becomes a header with no picture (L-8) */
+@media (max-height: 820px) and (min-width: 701px) and (max-width: 1279px) {
+  .hero, .sit:has(.goal1) .hero { height: auto !important; background: var(--surface-1); }
+  .hero svg, .hero .shade { display: none; }
+  .hero .txt { position: static; padding: .6rem 1rem; }
+  .hero h1 { font-size: 1.5rem; }
+  .strip { padding-top: .5rem; padding-bottom: .5rem; }
+  .strip .conseq { max-width: 30rem; }
+}
+
+/* T and short, round 2: kicker and title on one line, the intro moves into the month bar sentence,
+   Execute without its sub-line, smaller card faces */
+@media (max-height: 820px) and (min-width: 701px) and (max-width: 1279px) {
+  .hero .txt { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: .9rem; }
+  .intro1 { display: none; }
+  .sit:has(.goal1) { grid-template-columns: minmax(0, 1fr); }
+  .strip .execmap .sub { display: none; }
+  .strip .conseq { max-width: none; flex: 1; text-align: left; }
+  .strip .grow { display: none; }
+  .strip .endgrp { flex: 1; }
+  .opt { gap: .6rem; } .opt .face { padding: .35rem .7rem; }
+  .ask { font-size: 1.0625rem; }
+  .mapcard .ask { display: none; }
+  .mapcard h3 { font-size: 1.125rem; }
+}
+/* short laptops too (1366 x 768): the month 1 intro lives in the month bar sentence; goal box full width */
+@media (max-height: 820px) and (min-width: 701px) {
+  .intro1 { display: none; }
+  .sit:has(.goal1) { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-height: 820px) and (min-width: 701px) {
+  .hero .txt { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: .9rem; }
+  .sit:has(.goal1) .hero { height: 5.5rem !important; }
+}
+
+.row { padding: .2rem 0; }
+.psec { padding: .35rem 0; }
+@media (max-width: 1279px) and (max-height: 820px) { .goal1 { font-size: .9375rem; padding: .5rem .8rem; } .item { padding-top: .6rem; } }
+@media (max-height: 820px) and (min-width: 701px) and (max-width: 1279px) { .sit:has(.goal1) .hero { height: auto !important; } }
+
+/* L-12 fill, round 2 (Art Director): the scene keeps its picture shape (16:9) instead of stretching; the
+   column below it is the story so far, a timeline whose entries spread over the height. */
+.story { display: none; }
+@media (min-height: 900px) and (min-width: 1600px) {
+  @container item (min-width: 56rem) {
+    .sit .hero { flex: none; aspect-ratio: 16 / 9; height: auto; min-height: 0; }
+    .story { display: flex; flex: 1 1 auto; flex-direction: column; gap: .5rem; min-height: 8rem; padding: .875rem 1rem; border-radius: .75rem; background: var(--surface-1); }
+    .story h3 { font-size: .9375rem; color: var(--text-2); font-weight: 650; }
+    .story ol { flex: 1; list-style: none; margin: 0; padding: 0 0 0 1rem; border-left: 2px solid var(--line-2); display: flex; flex-direction: column; justify-content: space-between; gap: .75rem; }
+    .story li { position: relative; display: grid; gap: .1rem; font-size: 1rem; max-width: var(--read); }
+    .story li::before { content: ''; position: absolute; left: calc(-1rem - 6px); top: .45rem; width: 10px; height: 10px; border-radius: 50%; background: var(--line-2); }
+    .story li:last-child::before { background: var(--accent); }
+    .story .when { font-size: .9375rem; color: var(--text-2); font-weight: 650; }
+  }
+}
+/* U: the state band is one line (who, month, mission | this month, your country | switches) */
+@media (min-width: 3200px) {
+  .state { grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; }
+  .state .l2 { grid-column: 2; grid-row: 1; justify-content: center; }
+  .state .right { grid-column: 3; grid-row: 1; }
+}
+
+/* Map, W and U: the month's list sits under the thing card on the left (L-14) */
+.mapleft { display: flex; flex-direction: column; gap: var(--gap); min-height: 0; }
+.maplist { display: none; }
+@media (min-width: 2240px) and (min-height: 1200px) {
+  .maplist { display: grid; gap: .45rem; padding: 1rem; border-radius: 1rem; background: rgba(16,23,34,.97); border: 1.5px solid var(--line-2); box-shadow: 0 16px 40px rgba(0,0,0,.55); }
+  .maplist h2 { font-size: 1.0625rem; }
+  .maplist .lrow { min-height: 3rem; padding: .35rem .7rem; }
+}
+
+/* list column: rows never shrink (they overlapped at 1920 x 1080); the mission panel needs a tall screen */
+.col-list > *, .maplist > * { flex: none; }
+.col-list > .grow { flex: 1 1 auto; }
+@media (min-width: 1600px) { .main { grid-template-columns: 20rem minmax(0, 1fr) 25rem; } }
+@media (min-width: 2240px) { .main { grid-template-columns: 21rem minmax(0, 1fr) 27rem; } }
+@media (min-width: 3200px) { .main { grid-template-columns: 22rem minmax(0, 1fr) 28rem; } }
+@media (max-height: 1199px) { .col-list .facts.mission { display: none !important; } }
+@media (max-width: 700px) { .ph-state .l1 > span { white-space: nowrap; } }
+@media (max-height: 1199px) { .opt .more { display: none !important; } }
+/* Map: the month's list is behind See all until the map has room for it (W and U, 1200 tall) */
+.app:has(.mapmain) .bar .seeall { display: inline-flex; }
+@media (min-width: 2240px) and (min-height: 1200px) { .app:has(.mapmain) .bar .seeall { display: none; } }

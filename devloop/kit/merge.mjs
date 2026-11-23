@@ -38,7 +38,8 @@ export function merge({ cwd = process.cwd(), config, branch, message, dryRun = f
   if (mt === null) throw new Error(`${branch} conflicts with ${shared ?? 'HEAD'}: merge ${shared ?? 'it'} into ${branch}, resolve file by file, verify, then retry`);
   const tree = mt.split('\n')[0];
   const ct = loop.codeTreeOf(ctx, tree);
-  const check = loop.evaluate(ctx, 'merge', { tree, codeTree: ct, commit: theirs });
+  // base: rules with when.paths look at what the merge result changes on the shared branch
+  const check = loop.evaluate(ctx, 'merge', { tree, codeTree: ct, commit: theirs, base: head });
   if (!check.ok) throw new Error(`merge of ${branch} refused:\n${loop.formatResults(check)}\nVerify the merge result: merge ${shared ?? 'the shared branch'} into ${branch}, run \`npm run verify\` there, then retry.`);
   if (check.results.some((r) => r.overridden)) loop.appendEvent(ctx, { kind: 'override-used', action: 'merge', rules: check.results.filter((r) => r.overridden).map((r) => r.rule) });
   const msg = message ?? `merge: ${branch}`;

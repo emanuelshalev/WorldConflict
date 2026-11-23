@@ -57,7 +57,9 @@ export async function pinSeat(page, seat = SEAT) {
   });
   await page.route(/\/api\/new-game$/, async (r) => {
     const body = JSON.parse(r.request().postData() ?? '{}');
-    if (body.seed === undefined && !body.seedCode) body.seed = seat.seed;
+    // A seat with a seed code (scenarios.yaml control:) starts exactly that seat and seed
+    if (seat.seedCode) body.seedCode = seat.seedCode;
+    else if (body.seed === undefined && !body.seedCode) body.seed = seat.seed;
     body.daily = false;
     await r.continue({ postData: JSON.stringify(body) });
   });
