@@ -128,7 +128,7 @@ export function ModeSwitch() {
   const setDeskMode = useGameStore((s) => s.setDeskMode);
   return (
     <div className="seg mode-seg" role="tablist" aria-label="Map or desk (M)">
-      <button type="button" role="tab" aria-selected={deskMode === 'desk'} className={deskMode === 'desk' ? 'on' : ''} onClick={() => setDeskMode('desk')} title="Decide this month (M)">
+      <button type="button" role="tab" aria-selected={deskMode === 'desk'} className={deskMode === 'desk' ? 'on' : ''} onClick={() => setDeskMode('desk')} title="Decide this month (M)" data-desk-switch="">
         <IconLayoutDashboard size={15} aria-hidden /> <span>Desk</span>
       </button>
       <button type="button" role="tab" aria-selected={deskMode === 'map'} className={deskMode === 'map' ? 'on' : ''} onClick={() => setDeskMode('map')} title="Investigate the world (M)">
