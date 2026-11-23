@@ -345,6 +345,173 @@
       "iteration": 4,
       "stage": "Build",
       "tier": "T1"
+    },
+    {
+      "gate": "verify",
+      "result": "pass",
+      "commit": "6c18b636243f3846b12a1832a8caeca8eefaa4ba",
+      "codeTree": "2e9d44f0ffe37cf6",
+      "evidence": ".verify/summary.json",
+      "note": "modes default",
+      "t": "2026-11-23T11:19:08.422Z",
+      "iteration": 4,
+      "stage": "Build",
+      "steps": [
+        "registry",
+        "test",
+        "lint",
+        "ui-lint",
+        "build",
+        "smoke",
+        "reveal",
+        "visual",
+        "regressions",
+        "balance"
+      ]
+    },
+    {
+      "gate": "design-review",
+      "result": "fail",
+      "commit": "6c18b636243f3846b12a1832a8caeca8eefaa4ba",
+      "codeTree": "2e9d44f0ffe37cf6",
+      "evidence": "devloop/instances/world-conflict/runs/iter-04/design-review-order-cards.md",
+      "t": "2026-11-23T11:32:26.666Z",
+      "iteration": 4,
+      "stage": "Build"
+    },
+    {
+      "gate": "verify",
+      "result": "fail",
+      "commit": "0a016032498ec467f999782b2f70a7496732d132",
+      "codeTree": "381f5ce2914e0a6e",
+      "evidence": ".verify/summary.json",
+      "note": "modes default",
+      "t": "2026-11-23T12:23:49.084Z",
+      "iteration": 4,
+      "stage": "Build",
+      "steps": [
+        "registry",
+        "test",
+        "lint",
+        "ui-lint",
+        "build",
+        "smoke",
+        "reveal",
+        "visual",
+        "regressions",
+        "balance"
+      ]
+    },
+    {
+      "gate": "verify",
+      "result": "pass",
+      "commit": "3fa1fa5c1dc3765ba9d38cd85729ca2a4f956e4a",
+      "codeTree": "4b580bb6070e2db5",
+      "evidence": ".verify/summary.json",
+      "note": "modes default",
+      "t": "2026-11-23T12:51:49.081Z",
+      "iteration": 4,
+      "stage": "Build",
+      "steps": [
+        "registry",
+        "test",
+        "lint",
+        "ui-lint",
+        "build",
+        "smoke",
+        "reveal",
+        "visual",
+        "regressions",
+        "balance"
+      ]
+    },
+    {
+      "gate": "design-review",
+      "result": "fail",
+      "commit": "3fa1fa5c1dc3765ba9d38cd85729ca2a4f956e4a",
+      "codeTree": "4b580bb6070e2db5",
+      "evidence": "devloop/instances/world-conflict/runs/iter-04/design-rereview-order-cards.md",
+      "t": "2026-11-23T13:02:18.734Z",
+      "iteration": 4,
+      "stage": "Build"
+    },
+    {
+      "gate": "verify",
+      "result": "pass",
+      "commit": "ee3b69a59d1f3bf622eeec1ff0c54bcb499e10b0",
+      "codeTree": "bdb65ef25fd5a390",
+      "evidence": ".verify/summary.json",
+      "note": "modes default",
+      "t": "2026-11-23T14:28:58.466Z",
+      "iteration": 4,
+      "stage": "Build",
+      "steps": [
+        "registry",
+        "test",
+        "lint",
+        "ui-lint",
+        "build",
+        "smoke",
+        "reveal",
+        "visual",
+        "regressions",
+        "balance"
+      ]
+    },
+    {
+      "gate": "design-review",
+      "result": "fail",
+      "commit": "ee3b69a59d1f3bf622eeec1ff0c54bcb499e10b0",
+      "codeTree": "bdb65ef25fd5a390",
+      "evidence": "devloop/instances/world-conflict/runs/iter-04/design-review3-order-cards.md",
+      "t": "2026-11-23T14:47:37.343Z",
+      "iteration": 4,
+      "stage": "Build"
+    },
+    {
+      "gate": "verify",
+      "result": "pass",
+      "commit": "2ec6478bb34757b98b04720bd7a5504063fe61be",
+      "codeTree": "b204ecb6717289fd",
+      "evidence": ".verify/summary.json",
+      "note": "modes default",
+      "t": "2026-11-23T15:58:14.730Z",
+      "iteration": 4,
+      "stage": "Build",
+      "steps": [
+        "registry",
+        "test",
+        "lint",
+        "ui-lint",
+        "build",
+        "smoke",
+        "reveal",
+        "visual",
+        "regressions",
+        "balance"
+      ]
+    },
+    {
+      "gate": "design-review",
+      "result": "pass",
+      "commit": "14456120358ab0778c8a598d54ed88e1dcbcbde0",
+      "codeTree": "b204ecb6717289fd",
+      "evidence": "devloop/instances/world-conflict/runs/iter-04/design-review4-order-cards.md",
+      "t": "2026-11-23T16:13:41.154Z",
+      "iteration": 4,
+      "stage": "Build"
+    },
+    {
+      "gate": "status-refresh",
+      "result": "pass",
+      "commit": "ac41619a32aadb2c8b707beb28d2faf7827b7050",
+      "codeTree": "b204ecb6717289fd",
+      "evidence": "dev_plan/project_status.html",
+      "note": "status-refresh T1",
+      "t": "2026-11-23T16:15:25.716Z",
+      "iteration": 4,
+      "stage": "Build",
+      "tier": "T1"
     }
   ],
   "merges": [
@@ -362,6 +529,15 @@
       "branch": "stability-iter4",
       "commit": "b7bb90057974fe1e9f8f4fbd1bcc36e788c268c4",
       "codeTree": "a9c5bd23660ec378",
+      "iteration": 4,
+      "stage": "Build",
+      "treeMatches": true
+    },
+    {
+      "t": "2026-11-23T16:13:42.698Z",
+      "branch": "build-order-cards",
+      "commit": "ac41619a32aadb2c8b707beb28d2faf7827b7050",
+      "codeTree": "b204ecb6717289fd",
       "iteration": 4,
       "stage": "Build",
       "treeMatches": true
@@ -389,6 +565,11 @@
       "tier": "T1",
       "because": "merge of stability-iter4",
       "t": "2026-11-23T10:52:39.431Z"
+    },
+    {
+      "tier": "T1",
+      "because": "merge of build-order-cards",
+      "t": "2026-11-23T16:13:42.700Z"
     }
   ],
   "blocked": []
