@@ -1040,7 +1040,8 @@ const blockedBy = (pc: number, bank: number): CallCard["blocked"] =>
  * best for the goals among those that hurt no goal (D-72: no adviser backs a goal-hurting answer
  * when a safe one exists); the calm card the other safe answer best for the country, one that
  * helps no goal first. When only one answer is safe, both advisers back it (R5: "Your advisers
- * agree"); when none is safe, the call is the least harm against the steadier answer. Null when
+ * agree"); when none is safe, the call is the least harm against the steadier answer among the
+ * answers that break no primary goal (all answers only when every one breaks a goal). Null when
  * every answer is the same for the mission (routine).
  */
 export function crisisCall(
@@ -1053,8 +1054,12 @@ export function crisisCall(
   const opts = d.options.map((o) => ({ o, i: optionImpact(world, o, ctx) }));
   const values = opts.map((x) => missionValue(x.i));
   if (new Set(values).size < 2) return null;
+  // D-72 extended (D-84 revision): the safe answers; if none, the answers that break no primary
+  // goal; only if every answer breaks one, all of them. No adviser backs a goal-breaking card
+  // while another card breaks none
   const safe = opts.filter((x) => !hurtsGoal(x.i));
-  const pool = safe.length ? safe : opts;
+  const unbroken = opts.filter((x) => x.i.breaks.length === 0);
+  const pool = safe.length ? safe : unbroken.length ? unbroken : opts;
   const mission = [...pool].sort(
     (a, b) => missionValue(b.i) - missionValue(a.i) || netScore(b.o) - netScore(a.o),
   )[0];

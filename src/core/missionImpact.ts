@@ -10,6 +10,7 @@ import {
   objectiveStatus,
   shortLabel,
 } from "./objectives.js";
+import { isNuclearOperational } from "./systems/nuclear.js";
 import type {
   Action,
   CountryState,
@@ -169,8 +170,13 @@ function conditionEffect(
           world.countries.find((c) => c.id === a.targetCountryId)?.alliances.includes(t),
       );
       if (allyOf) return "hurts";
-      if (acts("MILITARY_AIRSTRIKE", t) || acts("INTEL_COUP", t) || acts("INTEL_ASSASSINATE", t))
-        return "hurts";
+      if (acts("MILITARY_AIRSTRIKE", t)) {
+        // A peacetime strike on a nuclear power is an act of war: it answers with one
+        // (TurnEngine.actOfWar), so the goal is lost, not just at risk
+        const target = world.countries.find((c) => c.id === t);
+        return target && isNuclearOperational(target) ? "breaks" : "hurts";
+      }
+      if (acts("INTEL_COUP", t) || acts("INTEL_ASSASSINATE", t)) return "hurts";
       // Only a real swing in an already hostile relationship moves the risk of war
       const rel = me.relations[t] ?? 0;
       if (rel < -40) return pick(sign(e[`relations:${t}`], 8));

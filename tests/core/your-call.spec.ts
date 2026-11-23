@@ -11,6 +11,7 @@ import {
 import { monthStateFor } from "../../src/core/availability.js";
 import { actionCostPC, PUSH_PC } from "../../src/core/costs.js";
 import { itemPrices, optionImpact } from "../../src/core/missionImpact.js";
+import { missionWarning } from "../../src/core/preview.js";
 import { TurnEngine } from "../../src/core/turn.js";
 import type { PendingDecision, WorldState } from "../../src/core/types.js";
 import { staffMonth } from "../../scripts/policies.js";
@@ -256,6 +257,70 @@ describe("D84-SETTING: Let the Chief of Staff make my calls restores the full on
       const { useGameStore } = await import("../../ui/src/store/gameStore.js");
       expect(useGameStore.getState().chiefCalls).toBe(false);
     });
+  });
+});
+
+/** Water-war India seeds (WW is water-war's seed-code prefix), the seat where a strike on Pakistan
+ *  is an act of war (decision-call-balance.md 2.1). */
+const WW_IND = ["WW-IND-1", "WW-IND-2", "WW-IND-3", "WW-IND-4", "WW-IND-5", "WW-IND-6", "WW-IND-7", "WW-IND-8"];
+const strikes = (d: PendingDecision, optionId: string | null | undefined, target: string) =>
+  d.options.find((o) => o.id === optionId)?.actions.some((a) => a.type === "MILITARY_AIRSTRIKE" && a.targetCountryId === target) ?? false;
+
+describe("D84-ACTOFWAR: a peacetime strike on a nuclear power breaks a no-war goal, and no adviser backs it", () => {
+  it("water-war India month 1: the strike answers break the no-war goal; neither the guide line nor the Chief of Staff pick is a strike", () => {
+    const world = newControlWorld(WW_IND[0]);
+    const d = world.pendingDecisions.find((x) => x.options.some((o) => strikes(x, o.id, "PAK")));
+    expect(d, "the opening crisis offers a strike on Pakistan").toBeTruthy();
+    if (!d) return;
+    for (const o of d.options.filter((x) => strikes(d, x.id, "PAK")))
+      expect(optionImpact(world, o).breaks, o.label).toContain("No full-scale war with Pakistan");
+    const call = buildAdvice(world).calls.find((c) => c.id === d.id);
+    expect(call, "the opening crisis is a call").toBeTruthy();
+    if (!call || call.kind !== "crisis") return;
+    expect(strikes(d, call.missionCard, "PAK"), call.guide).toBe(false);
+    expect(strikes(d, call.calmCard, "PAK"), call.guide).toBe(false);
+    expect(strikes(d, call.chiefPick, "PAK"), call.guide).toBe(false);
+    for (const o of d.options.filter((x) => strikes(d, x.id, "PAK"))) expect(call.guide).not.toContain(o.label);
+    // The strike cards stay choosable and say what they cost (no capability removed)
+    for (const c of call.cards.filter((x) => strikes(d, x.id, "PAK"))) {
+      expect(c.breaks).toContain("No full-scale war with Pakistan");
+      expect(c.advisers).toEqual([]);
+    }
+  });
+
+  it("the order preview calls the war certain, not a risk", () => {
+    const world = newControlWorld(WW_IND[0]);
+    const warning = missionWarning(world, { type: "MILITARY_AIRSTRIKE", targetCountryId: "PAK" });
+    expect(warning).toMatch(/nuclear power: striking it means war/);
+  });
+
+  it("on every call of the control seeds and water-war India, no backed card breaks a primary goal while another card breaks none", () => {
+    const all = [...months("staff"), ...WW_IND.flatMap((code) => playControl(code, "guided").months.map((m) => ({ code, ...m })))];
+    for (const { code, before, advice } of all)
+      for (const call of advice.calls) {
+        if (!call.cards.some((c) => c.breaks.length === 0)) continue;
+        for (const c of call.cards.filter((x) => x.advisers.length))
+          expect(c.breaks, `${code} m${before.turn + 1} ${call.title}: ${c.label}`).toEqual([]);
+      }
+  });
+});
+
+describe("D84-CALL-TRAP: the calm card is never a trap the Guide me line walks the player into", () => {
+  // The 36-game, 21-seat bands (call-trap, call-trap-seat, calm-floor, push-ceiling) are in
+  // tests/balance/bands.spec.ts; this is the fast corpus version that runs with npm test
+  const wins = (codes: readonly string[], policy: "callpush" | "callhold" | "guided") =>
+    codes.filter((code) => playControl(code, policy).final.outcome?.victory).length;
+
+  it("water-war India: always the calm card wins at most 2 of 8 seeds more than always the mission card", () => {
+    const push = wins(WW_IND, "callpush");
+    const hold = wins(WW_IND, "callhold");
+    expect(hold - push, `callhold ${hold}/8, callpush ${push}/8`).toBeLessThanOrEqual(2);
+  });
+
+  it("the flashpoint control seeds: always the calm card wins no more than always the mission card", () => {
+    const push = wins(FLASHPOINT_CONTROL, "callpush");
+    const hold = wins(FLASHPOINT_CONTROL, "callhold");
+    expect(hold, `callhold ${hold}/7, callpush ${push}/7`).toBeLessThanOrEqual(push);
   });
 });
 
