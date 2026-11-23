@@ -227,6 +227,21 @@
     },
     "verbatim": {
       "type": "string"
+    },
+    "tasks": {
+      "type": "object",
+      "description": "Optional task completion flags read by kit/evaluate.mjs (feedback adapter, metric task): end_reached (reached the end screen), second_game (started another game), or any task the instance names",
+      "additionalProperties": {
+        "type": "boolean"
+      },
+      "properties": {
+        "end_reached": {
+          "type": "boolean"
+        },
+        "second_game": {
+          "type": "boolean"
+        }
+      }
     }
   },
   "$defs": {

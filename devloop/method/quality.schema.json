@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Instance quality spec (kit/evaluate.mjs, method/quality.md)",
+  "type": "object",
+  "required": ["product", "dimensions"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "product": { "type": "string" },
+    "version": { "type": "integer" },
+    "about": { "type": "string" },
+    "loopConfig": { "type": "string", "description": "loop controller config, relative to this file: verify records, code trees, iteration tags, --record" },
+    "adapters": { "type": ["string", "array"], "items": { "type": "string" }, "description": "instance modules exporting `adapters` ({ name: (args, ctx) => measurement }), relative to this file" },
+    "gate": { "type": "string", "description": "controller gate the verdict is recorded on (default quality)" },
+    "tagPrefix": { "type": "string", "description": "iteration tags (default: the loop config's tagPrefix, else iter-)" },
+    "verdict": {
+      "type": "object",
+      "properties": { "notMeasured": { "enum": ["not-met", "undecided"], "description": "verdict when a blocking metric is not measured (default not-met)" } },
+      "additionalProperties": false
+    },
+    "release": {
+      "type": "object",
+      "properties": { "tagPattern": { "type": "string", "description": "git tag glob of releases, for per-release cadence (e.g. rc-*)" } },
+      "additionalProperties": false
+    },
+    "trend": {
+      "type": "object",
+      "properties": { "from": { "type": "integer", "minimum": 0, "description": "first iteration of the trend" } },
+      "additionalProperties": false
+    },
+    "dimensions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "metrics"],
+        "properties": {
+          "id": { "type": "string" },
+          "label": { "type": "string" },
+          "metrics": { "type": "array", "items": { "$ref": "#/$defs/metric" } }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "metric": {
+      "type": "object",
+      "required": ["id", "label", "source", "direction", "noise", "cadence"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+        "label": { "type": "string" },
+        "gate": { "type": "string", "description": "the gate line or decision this metric encodes" },
+        "source": {
+          "type": "object",
+          "required": ["adapter"],
+          "properties": {
+            "adapter": { "type": "string", "description": "built in: verify, registry, table, feedback, real-signals, vitest-log, visual; or an instance adapter" },
+            "args": { "type": "object" }
+          },
+          "additionalProperties": false
+        },
+        "direction": { "enum": ["higher", "lower", "bool"], "description": "higher: value >= threshold passes; lower: value <= threshold; bool: value === threshold (default true)" },
+        "threshold": { "type": ["number", "boolean"] },
+        "format": { "enum": ["percent"] },
+        "noise": {
+          "type": "object",
+          "required": ["kind", "why"],
+          "properties": {
+            "kind": { "enum": ["none", "fixed", "derived"] },
+            "band": { "type": "number", "minimum": 0, "description": "fixed: half-width of the band" },
+            "k": { "type": "number", "minimum": 0, "description": "derived: band = k x the standard error the adapter reports" },
+            "since": { "type": "integer", "description": "derived (feedback): first iteration of the persona retest spread" },
+            "until": { "type": "integer" },
+            "personaSd": { "type": "number", "minimum": 0, "description": "derived (feedback): persona score sd given instead of estimated" },
+            "why": { "type": "string", "description": "every metric says why its band is what it is, including none" }
+          },
+          "additionalProperties": false
+        },
+        "cadence": { "enum": ["per-commit", "per-iteration", "per-release"] },
+        "blocking": { "type": "boolean", "description": "true: decides the verdict; false: informative" },
+        "veto": { "type": "boolean", "description": "a failure means not met whatever else holds; implies blocking; ignores the noise band" }
+      },
+      "allOf": [
+        { "if": { "properties": { "direction": { "enum": ["higher", "lower"] } } }, "then": { "required": ["threshold"] } }
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,6 +1,6 @@
 # World Conflict release gate (RC)
 
-Thresholds on top of the method template (`../../method/triage.md`). Raised by D-39 after RS-001.
+Thresholds on top of the method template (`../../method/triage.md`). Raised by D-39 after RS-001. Scored as metrics by `quality.json` (`npm run quality`, D-78).
 
 - Every game goal G1 to G13 (`goals.md`) verified by QA and confirmed by the panel.
 - No open S1 or S2 finding, and no REGRESSED finding; every registry guard passes.

@@ -175,6 +175,16 @@
       }
     },
     {
+      "id": "quality",
+      "tier": "T2",
+      "source": "generated",
+      "el": "quality",
+      "gen": {
+        "kind": "quality",
+        "spec": "quality.json"
+      }
+    },
+    {
       "id": "iter-summary",
       "tier": "T2",
       "source": "hand",
