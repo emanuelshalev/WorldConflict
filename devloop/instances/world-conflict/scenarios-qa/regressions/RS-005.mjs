@@ -131,7 +131,7 @@ await run('RS-005', async (g, track) => {
     }
     const desk = await checkGroup(g, p, `${device} desk`);
     const why = await p.locator('.sp-why').first().innerText().catch(() => '');
-    g.check(/^Your advisers recommend these for this month\. Orders and meetings wait for you to accept; a crisis goes ahead on its recommended answer unless you change it\.$/.test(why.trim()), `${device} desk: first use explains what the recommendations are`);
+    g.check(/^Your advisers recommend these for this month\. Orders and meetings wait for you to accept; a crisis listed here goes ahead on its recommended answer unless you change it, one not listed is yours to answer\.$/.test(why.trim()), `${device} desk: first use explains what the recommendations are`);
     await s.look(`${device}-desk`);
     if (device === 'laptop') await checkRailFits(g, p);
     if (device === 'laptop') {

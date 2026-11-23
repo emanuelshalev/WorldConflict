@@ -157,7 +157,7 @@ describe("UI glossary", () => {
 
   it("names the Recommended group, one verb Accept, and explains it in one line (RS-005, D-72)", () => {
     expect(TERMS.recommended.name).toBe("Recommended");
-    expect(TERMS.recommended.definition).toBe("Your advisers recommend these for this month. Orders and meetings wait for you to accept; a crisis goes ahead on its recommended answer unless you change it.");
+    expect(TERMS.recommended.definition).toBe("Your advisers recommend these for this month. Orders and meetings wait for you to accept; a crisis listed here goes ahead on its recommended answer unless you change it, one not listed is yours to answer.");
     expect(TERMS.staffPick.name).toBe("Recommended by {role}");
     expect(TERMS.approveAll.name).toBe("Accept all recommended ({n})");
     // The old phrasing is banned in UI strings and the gameplay guide
