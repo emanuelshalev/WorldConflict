@@ -1,0 +1,17 @@
+state           viewport        pageScr  inner  innerPx  below  width  L/R px     cut  cover  fails  regions (e=expanded c=collapsed b=below m=missing)
+------------------------------------------------------------------------------------------------------------------------
+month-1         1024x768        0        1      391      10     0.95   16/0       0    0      0      state:e capital:e mission:e your-move:e recommended:c execute:e
+result-card     1024x768        0        0      0        0      0.96   22/22      0    0      0      result:e next:e
+month-2-desk    1024x768        0        3      2301     44     0.95   16/0       5    0      1      state:e capital:e mission:e your-move:e recommended:b execute:b
+    collapsed-not-hidden: region(s) neither on screen nor collapsed into a visible counted summary: recommended (below), execute (below)
+month-2-map     1024x768        0        0      0        0      1.00   0/0        0    0      0      state:e capital:e mission:e your-move:c recommended:c execute:e
+
+4 measurement(s), 1 violation(s)
+state           viewport        pageScr  inner  innerPx  below  width  L/R px     cut  cover  fails  regions (e=expanded c=collapsed b=below m=missing)
+------------------------------------------------------------------------------------------------------------------------
+month-1         390x844         0        1      1325     15     1.00   0/0        0    1      0      state:e capital:e mission:e your-move:e recommended:c execute:e
+result-card     390x844         0        0      0        0      1.00   0/0        0    0      0      result:e next:e
+month-2-desk    390x844         0        1      1996     25     1.00   0/0        1    0      0      state:e capital:e mission:e your-move:e recommended:c execute:e
+month-2-map     390x844         0        0      0        0      1.00   0/0        1    0      0      state:e capital:e mission:e your-move:c recommended:c execute:e
+
+4 measurement(s), 0 violation(s)
