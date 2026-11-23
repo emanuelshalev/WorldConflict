@@ -30,3 +30,7 @@ Read this first. Setting up a new machine: `handover/README.md` (Node 22, `npm r
 - Models (D-83): Group Manager and engineers Opus 5.5; designers Opus; Fable 5.2 for hard decisions; QA Sonnet for scripted checks, Opus for root-cause; customers, scorers Sonnet; Sonnet trial for mechanical packages (D-82).
 - `setup.cmd` is a CRLF artifact: `git update-index --assume-unchanged setup.cmd` in every checkout and worktree before a verify.
 - Rules: never remove a capability; no em dashes; conventional commits with the Co-Authored-By and Claude-Session trailer; at most 4 to 5 browser personas at once; restart dev servers after merges.
+
+## Usage ledger (added 2026-11-23)
+
+The Consumption tab is fed by `usage/registry.json`: the Linux session (kept as `usage/baseline-linux.json`, taken from the status page at cc4caeb, since its transcripts are on the Linux machine) plus the Windows session c790e4f0 (archived in `usage/archive/`). A new session must be added under `sources` before its first status refresh; commit `usage/archive/` with every status commit. To replace the Linux baseline with full data, run `node devloop/kit/usage-ledger.mjs devloop/instances/world-conflict/usage/registry.json` once on the Linux machine and commit the archive file it writes.

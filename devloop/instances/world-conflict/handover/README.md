@@ -6,3 +6,7 @@
 4. Claude Code project settings: `mkdir -p .claude && cp devloop/instances/world-conflict/handover/claude-settings.json .claude/settings.json` (the shell guard hook against rebase and autostash in the shared checkout, and auto-compaction at about 400k tokens).
 5. Claude memory: copy `memory/*.md` into the new machine's project memory folder, `~/.claude/projects/<repo path with slashes as dashes>/memory/` (for example `~/.claude/projects/-home-<user>-git-WorldConflict/memory/`). Update the Node path note in `dev-env-node22.md` if Node lives elsewhere.
 6. Start the dev servers (`npm run dev`), open Claude Code in the repo and say "resume": the Group Manager reads `../RESUME.md`, then `node devloop/kit/loop.mjs status`.
+
+## Usage data on a new machine or in a new session
+
+Consumption is read from the Claude Code session transcripts of the machine the work runs on. Before the first status refresh on a new machine, or in a new session on the same machine, add the session to `usage/registry.json` under `sources` (the transcript folder under `~/.claude/projects/` and the session id). Every ledger run writes `usage/archive/<session>.json`; commit it with the status page. The ledger fails when a registered session cannot be read and refuses to shrink the page, so a missing registration shows as a failed injector in the status refresh output, not as an empty tab.

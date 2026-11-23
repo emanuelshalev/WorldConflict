@@ -3,6 +3,24 @@
   "sessions": [
     "560a71e3-7113-4ffa-aea8-74191a508a8c"
   ],
+  "sources": [
+    {
+      "projectDir": "~/.claude/projects/C--MyData-git-WorldConflict",
+      "sessions": [
+        "c790e4f0-25ab-45ad-bcda-a1bb0eac880c"
+      ]
+    }
+  ],
+  "archiveDir": "archive",
+  "baselines": [
+    {
+      "file": "baseline-linux.json",
+      "sessions": [
+        "560a71e3-7113-4ffa-aea8-74191a508a8c"
+      ],
+      "note": "Linux machine session up to 2026-11-23T05:52Z, taken from the status page at commit cc4caeb. Used only where that session has no transcripts or archive. To replace it with full data, run the ledger once on the Linux machine and commit usage/archive/."
+    }
+  ],
   "loopStart": "2026-11-22T05:37:25Z",
   "orchestrator": {
     "role": "Group Manager",
@@ -40,7 +58,7 @@
   },
   "prices": {
     "_asOf": "2026-11",
-    "_note": "USD per million tokens, list prices as of 2026-11 (Anthropic pricing page, standard rates; cache read 5% of input, 5 minute write 1.25x, 1 hour write 2x, output 5x on Opus 5.5 and Sonnet 5.5; Haiku 5.5 writes are 1.25x and 2x input). To update: copy the new rates from the pricing page per model id, add a key for a new model id (a key also matches dated ids that start with it), then re-run usage-ledger.mjs --inject. Models without an entry count 0 USD and are listed in unpricedModels.",
+    "_note": "USD per million tokens, list prices as of 2026-11 (Anthropic pricing page, standard rates; cache read 5% of input, 5 minute write 1.25x, 1 hour write 2x, output 5x on Opus 5.5 and Sonnet 5.5; Haiku 5.5 writes are 1.25x and 2x input). To update: copy the new rates from the pricing page per model id, add a key for a new model id (a key also matches dated ids that start with it), then re-run usage-ledger.mjs --inject. Models without an entry count 0 USD and are listed in unpricedModels. Fable 5.2: input 8, output 40, cache read 0.20 from the price list; cache writes taken as 1.25x and 2x input like the other models.",
     "claude-opus-5-5": {
       "input": 4,
       "cacheWrite5m": 5,
@@ -61,6 +79,13 @@
       "cacheWrite1h": 0.2,
       "cacheRead": 0.01,
       "output": 0.5
+    },
+    "claude-fable-5-2": {
+      "input": 8,
+      "cacheWrite5m": 10,
+      "cacheWrite1h": 16,
+      "cacheRead": 0.2,
+      "output": 40
     }
   },
   "rules": [
@@ -138,6 +163,28 @@
       "iteration": "auto",
       "stage": "Design",
       "workstream": "$1"
+    },
+    {
+      "desc": "^Design (re-?)?review|^(Re-review|Third review|Fourth review)|review order cards$",
+      "role": "Design Reviewer",
+      "group": "Designers",
+      "iteration": "auto",
+      "stage": "Build"
+    },
+    {
+      "desc": "^Game Designer",
+      "role": "Game Designer",
+      "group": "Designers",
+      "iteration": "auto",
+      "stage": "Build"
+    },
+    {
+      "desc": "^New month screen",
+      "role": "Frontend Engineer",
+      "group": "Engineers",
+      "iteration": "auto",
+      "stage": "Build",
+      "workPackage": "New month screen"
     },
     {
       "desc": "^Design",
