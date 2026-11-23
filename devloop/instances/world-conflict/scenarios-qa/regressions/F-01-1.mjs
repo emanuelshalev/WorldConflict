@@ -2,13 +2,13 @@
 // it works by typing ("ira" + Enter picks Iran) and by picking on the map, on laptop and phone.
 // Repro from runs/iter-01/sessions (maya-laptop, noah-tablet): All orders, open the target picker.
 import path from 'node:path';
-import { args, run, startGame } from './_lib.mjs';
+import { args, openAllOrders, run, startGame } from './_lib.mjs';
 
 const { out, base } = args('F-01-1');
 
 async function openCatalog(s) {
-  await s.click(/^Full desk$/);
-  if (!(await s.click(/^All orders/))) throw new Error('no All orders on the full desk');
+  // Iteration 4: All orders opens from the month's List (Your own orders; month 1: its panel)
+  if (!(await openAllOrders(s))) throw new Error('no All orders on the desk');
   await s.page.locator('[data-order-catalog], #catalog-search').first().waitFor({ timeout: 8000 });
 }
 

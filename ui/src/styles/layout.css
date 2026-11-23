@@ -252,6 +252,7 @@ html { font-size: clamp(16px, calc(0.42vmin + 11.5px), 22px); }
 .lrow .face { flex: none; padding: .3rem .7rem; border-radius: .55rem; border: 1.5px solid var(--face-line); background: #2f3d53; font-weight: 700; font-size: .9375rem; }
 .al-flat { display: grid; gap: .5rem; justify-items: start; padding: .75rem .875rem; border-radius: .625rem; background: var(--surface-1); font-size: .9375rem; color: var(--text-2); }
 .al-flat p { margin: 0; }
+.al-flat-btns { display: flex; flex-wrap: wrap; gap: .5rem; }
 .al-mission h3 { font-size: .9375rem; }
 .agenda-list.f-panel { position: absolute; z-index: 6; top: var(--pad); left: var(--pad); width: min(30rem, calc(100% - 2 * var(--pad))); max-height: calc(100% - 2 * var(--pad)); overflow: hidden;
   border: 1.5px solid var(--line-2); border-radius: 1rem; box-shadow: 0 16px 40px rgba(0, 0, 0, .55); }
@@ -289,7 +290,7 @@ html { font-size: clamp(16px, calc(0.42vmin + 11.5px), 22px); }
 .sp-main-sub { font-size: .9375rem; font-weight: 500; color: var(--text-2); }
 .sp-main:disabled { cursor: not-allowed; opacity: .85; }
 .sp-why { margin: 0; font-size: .9375rem; color: var(--text-2); }
-.plan-against { margin: .35rem 0 0; font-size: .9375rem; color: #ff9a9b; }
+.plan .plan-against { margin: .35rem 0 0; font-size: max(.9375rem, 15px); color: #ff9a9b; line-height: 1.4; }
 .execb { flex: none; padding: .75rem var(--pad) 1rem; border-top: 1px solid var(--line-2); background: #0c121b; display: grid; gap: .35rem; }
 .execb-h { margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-1); }
 .execb ul, .rv-exec ul { margin: 0 0 .4rem; padding-left: 1.25rem; font-size: 1rem; color: var(--text-1); line-height: 1.4; }
@@ -361,7 +362,6 @@ html { font-size: clamp(16px, calc(0.42vmin + 11.5px), 22px); }
 .mapcard .opt-fx { font-size: .9375rem; }
 .mapcard .opt-more { display: none !important; }
 .mapcard .ask { font-size: 1rem; }
-.mapcard .thing.is-own .adv-list { display: none; }
 .map-right { min-height: 0; display: flex; }
 .map-right > .plan { flex: 1; }
 @media (max-width: 1599px) { .mapcard .opt-rec { display: none; } }
@@ -448,3 +448,5 @@ html { font-size: clamp(16px, calc(0.42vmin + 11.5px), 22px); }
 .game [data-region] .lx-info { font-size: 15px; }
 .game [data-region] .lx-info-i { font-size: 15px; }
 .state-band .lx-chip, .state-band .lx-chip-label { font-size: max(.9375rem, 15px); }
+.game [data-region] .lx-situation { font-size: 15px; }
+.game [data-region] .context-cap, .game [data-region] .om-name, .game [data-region] .om-label { font-size: max(.9375rem, 15px); }

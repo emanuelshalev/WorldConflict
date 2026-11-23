@@ -20,9 +20,9 @@ try {
   await s.click(/Take office|Begin|Start/i);
   let month = 0;
   for (; month < 130 && !(await revealUp()); month++) {
-    // Accept all ("Accept all recommended (4)"): crisis answers, staff proposals and meetings. A bare
-    // "Accept order" is a single staff proposal on its card (F-02-4), not the month
-    await s.click(/^Accept all recommended/i, { timeout: 1500 });
+    // The month's bulk button: crisis answers, recommended orders and meetings in one press (the
+    // product's words for it: "Choose all recommended", earlier "Accept all recommended")
+    await s.click(/^(Choose|Accept) all recommended/i, { timeout: 1500 });
     if (!(await s.click(/Execute month/i, { timeout: 12000 }))) {
       if (await revealUp()) break;
       await s.look(`m${month + 1}-blocked`);

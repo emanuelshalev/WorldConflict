@@ -4,6 +4,9 @@
 // Since AC3 (D-58) the row starts folded: the folded toggle must name the count and open in one
 // tap; since F-02-5 each suggestion is the shared order card (title .wc-card-title, a full-card
 // hit area under its controls), so text under a control is checked instead of the hit area.
+// Iteration 4 (D-80): Map mode has no strip tray any more; the advisors' order ideas are the month's
+// "Your own orders" thing, on the map card like every other thing. The List names the count
+// ("Optional · 5 suggestions") and one tap opens them on the card.
 // Repro (runs/iter-01/qa-verify.md S2-1): today's crisis as the United States, take office, press Map.
 import path from 'node:path';
 import { args, run, startGame } from './_lib.mjs';
@@ -18,23 +21,31 @@ await run('QA1-S2-1', async (g, track) => {
     const w = p.viewportSize().width;
     if (!(await s.click(/^Map$/))) throw new Error('no Map switch');
     await p.waitForTimeout(2500);
-    // The advisors start folded behind "Your advisors suggest" so the globe keeps its room (QA AC3,
-    // D-58): folded, the toggle must still say how many suggestions wait, and one tap opens them
+    // The order ideas wait behind the List's "Your own orders" so the globe keeps its room (QA AC3):
+    // the row says how many suggestions wait, and one tap opens them on the map card
     let rows = p.locator('.adv-row:visible');
-    g.check((await rows.count()) === 0, `${w}: the advisor row starts folded (globe fit, AC3)`);
-    const toggle = p.locator('.strip-tray-btn').first();
-    const said = Number((await toggle.getAttribute('data-advice-count').catch(() => null)) ?? NaN);
-    const shown = (await toggle.innerText().catch(() => '')).replace(/\s+/g, ' ').trim();
-    g.check(said >= 1 && shown.includes(String(said)), `${w}: folded, the toggle says how many suggestions ("${shown}")`);
-    await toggle.click();
+    g.check((await rows.count()) === 0, `${w}: the order ideas start on their own thing (globe fit, AC3)`);
+    // Month 1 lists only what needs the player; "See the meetings anyway" brings the rest
+    if (!(await p.locator('[data-agenda]').first().isVisible().catch(() => false))) await p.locator('.see-all').first().click();
+    await p.waitForTimeout(400);
+    const more = p.locator('[data-show-desk]').first();
+    if (await more.isVisible().catch(() => false)) {
+      await more.click();
+      await p.waitForTimeout(500);
+    }
+    const own = p.locator('[data-agenda-item="own"]').first();
+    const shown = (await own.innerText().catch(() => '')).replace(/\s+/g, ' ').trim();
+    const said = Number(/(\d+) suggestions?/.exec(shown)?.[1] ?? NaN);
+    g.check(said >= 1, `${w}: the List says how many suggestions wait ("${shown}")`);
+    await own.click();
     await p.waitForTimeout(600);
     rows = p.locator('.adv-row:visible');
-    g.check((await rows.count()) === Math.min(said, 2), `${w}: one tap opens them (${await rows.count()} of ${said} shown, 2 at most)`);
+    g.check((await rows.count()) === Math.min(said, 2), `${w}: one tap opens them (${await rows.count()} of ${said} shown, 2 at most on the card)`);
     if (said > 2) g.check(await p.getByRole('button', { name: `Show ${said - 2} more` }).first().isVisible().catch(() => false), `${w}: "Show ${said - 2} more" reaches the rest`);
     const n = await rows.count();
     g.check(n >= 1, `${w}: Map mode shows advisor suggestions (${n} rows)`);
     await s.look(`${w}-map`);
-    const desk = await p.getByRole('button', { name: /^Desk$/ }).first().boundingBox();
+    const desk = await p.getByRole('tab', { name: /Desk/ }).first().boundingBox();
     for (let i = 0; i < n; i++) {
       const r = rows.nth(i);
       const m = await r.evaluate((e) => {

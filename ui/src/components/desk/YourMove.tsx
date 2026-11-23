@@ -458,8 +458,11 @@ function OrdersThing({ item }: { item: AgendaItem }) {
 }
 
 /** Your own orders (optional): the advisers' order ideas and All orders. */
-function OwnOrdersThing({ item }: { item: AgendaItem }) {
+function OwnOrdersThing({ item, compact }: { item: AgendaItem; compact: boolean }) {
   const setFocus = useGameStore((s) => s.setFocus);
+  const L = useLayout();
+  // As many order ideas as the room holds without scrolling; "Show n more" brings the rest
+  const max = compact || L.short ? 2 : L.tallPlus ? 6 : 3;
   return (
     <article className="thing is-own" data-thing="own" aria-label={item.title}>
       <div className="own-head">
@@ -469,7 +472,7 @@ function OwnOrdersThing({ item }: { item: AgendaItem }) {
           <IconSearch size={16} aria-hidden /> All orders
         </button>
       </div>
-      <AdvisorList max={6} />
+      <AdvisorList max={max} compact={compact} />
       <SkipCard item={item} />
     </article>
   );
@@ -500,5 +503,5 @@ export function Thing({ compact = false }: { compact?: boolean }) {
   if (item.kind === 'crisis' || item.kind === 'meeting') return <DecisionThing key={item.key} item={item} compact={compact} />;
   if (item.kind === 'meetings') return <SmallMeetingsThing key={item.key} item={item} />;
   if (item.kind === 'orders') return <OrdersThing key={item.key} item={item} />;
-  return <OwnOrdersThing key={item.key} item={item} />;
+  return <OwnOrdersThing key={item.key} item={item} compact={compact} />;
 }

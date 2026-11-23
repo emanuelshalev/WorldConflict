@@ -65,6 +65,23 @@ export async function pinSeat(page, seat = SEAT) {
   });
 }
 
+/**
+ * Open All orders the way a player does (iteration 4): the month's "Your own orders" thing (from the
+ * List, or See all when the List is folded) holds the All orders button.
+ */
+export async function openAllOrders(s) {
+  const p = s.page;
+  const direct = p.getByRole('button', { name: /^All orders/ }).first();
+  if (!(await direct.isVisible().catch(() => false))) {
+    // The List holds "Your own orders" (month 2 on) or, in month 1, All orders in its flat panel
+    if (!(await p.locator('[data-agenda]').first().isVisible().catch(() => false))) await p.locator('.see-all').first().click().catch(() => {});
+    await p.waitForTimeout(300);
+    if (!(await direct.isVisible().catch(() => false))) await p.locator('[data-agenda-item="own"]').first().click({ timeout: 5000 }).catch(() => {});
+    await p.waitForTimeout(400);
+  }
+  return p.getByRole('button', { name: /^All orders/ }).first().click({ timeout: 5000 }).then(() => true, () => false);
+}
+
 /** Phones: go to the review screen, where the only Execute of the phone desk is (AC-21). */
 export async function toPhoneReview(page) {
   if (await page.getByRole('button', { name: /Execute month/i }).first().isVisible().catch(() => false)) return;

@@ -95,9 +95,14 @@ export function AgendaList({ form }: { form: ListForm }) {
           <p>
             Your ministers take this month's {meetings} meeting{meetings === 1 ? '' : 's'} (no effect). From month 2 you choose.
           </p>
-          <button type="button" className="wc-btn small" onClick={showDesk} data-show-desk="">
-            See the meetings anyway
-          </button>
+          <span className="al-flat-btns">
+            <button type="button" className="wc-btn small" onClick={showDesk} data-show-desk="">
+              See the meetings anyway
+            </button>
+            <button type="button" className="wc-btn small" onClick={() => useGameStore.setState({ focus: { kind: 'catalog' }, listOpen: false, review: false })} data-all-orders="">
+              All orders
+            </button>
+          </span>
         </div>
       )}
       {form === 'column' && <span className="al-grow" aria-hidden />}

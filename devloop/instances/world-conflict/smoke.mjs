@@ -19,7 +19,16 @@ try {
   await s.click(/Take office|Begin|Start/i);
   for (let month = 1; month <= 3; month++) {
     await s.look(`m${month}-desk`);
-    await s.click(/^Accept all recommended/i);
+    // Phones keep Execute on the review screen (AC-21); the bulk button is Choose all (D-73)
+    for (let i = 0; i < 10; i++) {
+      const next = s.page.locator('.ph-bottom .ph-next').first();
+      if (!(await next.isVisible().catch(() => false))) break;
+      const t = await next.innerText();
+      await next.click();
+      await s.page.waitForTimeout(250);
+      if (/Review/.test(t)) break;
+    }
+    await s.click(/^Choose all recommended/i);
     if (!(await s.click(/Execute month/i, { timeout: 12000 }))) {
       const v = await s.look(`m${month}-execute-blocked`);
       const ex = v.controls.find((c) => /Execute month/i.test(c.label));

@@ -5,10 +5,12 @@
 // at 390, 1440 and 1920, in Focus and Full desk, in month 1 (Show the whole desk) and month 2:
 // every visible suggestion's title is a sensible width, the card height is bounded and the title
 // is not wrapped into a column of letters.
+// Iteration 4 (D-80): the list is the month's "Your own orders" thing (month 1: after "See the
+// meetings anyway"); Focus / Full desk are "One at a time" / "Everything".
 // Repro (runs/iter-03/qa-verify.md S2-1): the pinned seat, Show the whole desk, then month 2.
 //   node devloop/instances/world-conflict/scenarios-qa/regressions/QA3-S2-1.mjs <outDir> <baseUrl> <apiUrl>
 import path from 'node:path';
-import { args, run, startGame } from './_lib.mjs';
+import { args, run, startGame, toPhoneReview } from './_lib.mjs';
 
 const { out, base } = args('QA3-S2-1');
 
@@ -16,7 +18,7 @@ const { out, base } = args('QA3-S2-1');
 async function measure(page) {
   return page.evaluate(() =>
     [...document.querySelectorAll('.adv-row')]
-      .filter((e) => e.getBoundingClientRect().width > 0 && !e.closest('.cmd-strip, .advisors.compact'))
+      .filter((e) => e.getBoundingClientRect().width > 0 && !e.closest('.mapcard, .advisors.compact'))
       .map((e) => {
         const b = e.getBoundingClientRect();
         const t = e.querySelector('.wc-card-title, .adv-label');
@@ -29,7 +31,11 @@ async function measure(page) {
 
 async function checkList(g, s, where) {
   const vw = s.page.viewportSize().width;
-  // Bring the list into view (it can sit under the move cards)
+  // Open the month's "Your own orders" (the List, or See all when it is folded)
+  const p = s.page;
+  if (!(await p.locator('[data-agenda-item="own"]').first().isVisible().catch(() => false))) await p.locator('.see-all').first().click().catch(() => {});
+  await p.locator('[data-agenda-item="own"]').first().click({ timeout: 4000 }).catch(() => {});
+  await s.page.waitForTimeout(400);
   await s.page.locator('section.advisors:not(.compact), .detail-title').first().scrollIntoViewIfNeeded().catch(() => {});
   await s.page.waitForTimeout(400);
   const cards = await measure(s.page);
@@ -45,12 +51,15 @@ async function checkList(g, s, where) {
 
 async function nextMonth(s) {
   const p = s.page;
-  await s.click(/^Accept all recommended/i, { timeout: 1500 });
+  await toPhoneReview(p);
+  await s.click(/^Choose all recommended/i, { timeout: 1500 });
   if (!(await s.click(/Execute month/i, { timeout: 12000 }))) throw new Error('Execute month not clickable');
   await p.waitForTimeout(2500);
   const exec = p.getByRole('button', { name: /Execute month/i }).first();
+  const phoneNext = p.locator('.ph-bottom .ph-next').first();
   for (let i = 0; i < 14; i++) {
     if (await exec.click({ trial: true, timeout: 800 }).then(() => true, () => false)) break;
+    if (await phoneNext.click({ trial: true, timeout: 300 }).then(() => true, () => false)) break;
     const moved =
       (await s.click(/To your desk|Next month|Continue|Done/i, { timeout: 800 })) ||
       (await p
@@ -64,18 +73,10 @@ async function nextMonth(s) {
 }
 
 async function fullDesk(s, on) {
-  const tab = s.page.getByRole('tab', { name: on ? 'Full desk' : 'Focus' }).first();
+  const tab = s.page.getByRole('button', { name: on ? 'Everything' : 'One at a time' }).first();
   if (!(await tab.isVisible().catch(() => false))) return false;
   await tab.click();
   await s.page.waitForTimeout(700);
-  if (on) {
-    // The Full desk shows the suggestions in its detail pane: open them from the navigator
-    const open = s.page.locator('nav.navigator').getByRole('option', { name: /Orders to consider|suggest/i }).first();
-    if (await open.isVisible().catch(() => false)) {
-      await open.click();
-      await s.page.waitForTimeout(600);
-    }
-  }
   return true;
 }
 
@@ -83,8 +84,9 @@ await run('QA3-S2-1', async (g, track) => {
   for (const device of ['laptop', 'desktop', 'phone']) {
     const s = track(await startGame({ variant: `qa3s21-${device}`, device, out: path.join(out, device), base }));
     const w = s.page.viewportSize().width;
-    // Month 1: the advisors wait behind "Show the whole desk"
-    const show = s.page.getByRole('button', { name: /Show the whole desk/i }).first();
+    // Month 1: the order ideas join the List after "See the meetings anyway"
+    if (!(await s.page.locator('[data-show-desk]').first().isVisible().catch(() => false))) await s.page.locator('.see-all').first().click().catch(() => {});
+    const show = s.page.locator('[data-show-desk]').first();
     if (await show.isVisible().catch(() => false)) {
       await show.click();
       await s.page.waitForTimeout(900);

@@ -16,7 +16,7 @@ await run('QA3R-5', async (g, track) => {
     const p = s.page;
     const mapTab = p.locator('.mode-seg').getByRole('tab', { name: /Map/ }).first();
     g.check(await mapTab.isVisible(), `${device}: the Map switch is visible in the top bar`);
-    const inMenu = await mapTab.evaluate((e) => !!e.closest('.hud-phone-menu, [role=menu]'));
+    const inMenu = await mapTab.evaluate((e) => !!e.closest('.hud-phone-menu, .sb-menu-pop, [role=menu]'));
     g.check(!inMenu, `${device}: the Map switch is not inside the menu`);
     // A finger needs a full tap target on the phone (the laptop keeps the compact segmented switch)
     const box = await mapTab.boundingBox();
@@ -34,7 +34,7 @@ await run('QA3R-5', async (g, track) => {
       await p.waitForTimeout(1500);
     }
     await p.waitForTimeout(1200);
-    const goal = (await p.locator('.goal-line').first().innerText().catch(() => '')).replace(/\s+/g, ' ');
+    const goal = (await p.locator('[data-region="state"]').first().innerText().catch(() => '')).replace(/\s+/g, ' ');
     const hud = (await p.locator('.game-top').first().innerText().catch(() => '')).replace(/\s+/g, ' ');
     g.check(/month 2\b/i.test(`${goal} ${hud}`) || /Execute month/i.test(await p.locator('body').innerText()), `${device}: month 2 is on screen`);
     await s.look(`${device}-month2`);

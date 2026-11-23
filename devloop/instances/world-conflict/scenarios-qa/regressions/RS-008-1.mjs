@@ -242,7 +242,13 @@ try {
             await show.click();
             await p.waitForTimeout(500);
             const b = await p.evaluate(audit);
-            g.check(!b.scrollers.length && !b.mustOut.length && b.choose.some((c) => /Choose all recommended \(\d+\)/.test(c)), `${label} AC-L12: Show opens it with no scroll; Choose all and Execute stay in view`);
+            // (an opened section may lie over the answers while it is open, like See all: only the
+            // Plan's own controls must stay in view)
+            const planOut = b.mustOut.filter((n) => /Execute month|Choose all|Review/.test(n));
+            g.check(!b.scrollers.length && !planOut.length && b.choose.some((c) => /Choose all recommended \(\d+\)/.test(c)), `${label} AC-L12: Show opens it with no scroll; Choose all and Execute stay in view (${planOut.join('; ')})`);
+            const close = p.locator('[data-region="plan"]').getByRole('button', { name: /Close the list|Show all sections/ }).first();
+            if (await close.isVisible().catch(() => false)) await close.click();
+            await p.waitForTimeout(400);
           }
         }
         // Choose an answer: the Plan updates and the month moves on (One at a time)

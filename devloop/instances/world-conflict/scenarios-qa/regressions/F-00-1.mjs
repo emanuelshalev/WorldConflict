@@ -3,7 +3,7 @@
 // and pressing it anyway queues nothing and raises no toast or native dialog.
 // Repro (runs/iter-00/qa-repro.md #4, leo-stream): All orders, every targeted order was dimmed with no reason.
 import path from 'node:path';
-import { args, run, startGame } from './_lib.mjs';
+import { args, openAllOrders, run, startGame } from './_lib.mjs';
 
 const { out, base } = args('F-00-1');
 
@@ -27,8 +27,8 @@ await run('F-00-1', async (g, track) => {
   const p = s.page;
   let dialogs = 0;
   p.on('dialog', () => dialogs++);
-  await s.click(/^Full desk$/);
-  if (!(await s.click(/^All orders/))) throw new Error('no All orders');
+  // Iteration 4: All orders opens from the month's List (Your own orders; month 1: its panel)
+  if (!(await openAllOrders(s))) throw new Error('no All orders');
   await p.locator('[data-order-catalog]').first().waitFor();
   await p.waitForTimeout(800);
 

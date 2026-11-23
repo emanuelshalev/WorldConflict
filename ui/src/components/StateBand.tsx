@@ -142,10 +142,12 @@ export function StateBand() {
   const status = useGameStore((s) => s.objectiveStatus);
   const setDrawer = useGameStore((s) => s.setDrawer);
   const gameOver = useGameStore((s) => s.gameOver);
+  const deskShown = useGameStore((s) => s.deskShown);
   const me = usePlayerCountry();
   const L = useLayout();
   const [explain, setExplain] = useState(false);
   const [sheet, setSheet] = useState(false);
+  const [countryOpen, setCountryOpen] = useState(false);
   const ref = useRef<HTMLElement>(null);
   // The result card, the details and the paper open under the band (AC-L2: the state stays in view)
   useEffect(() => {
@@ -168,7 +170,8 @@ export function StateBand() {
   const cls = L.cls;
   const wide = cls === 'D' || cls === 'W' || cls === 'U';
   const month = Math.min(world.turn + 1, world.maxTurns);
-  const from2 = world.turn >= 1;
+  // The meeting and defense budgets join from month 2, or once the player asks for the whole month
+  const from2 = world.turn >= 1 || deskShown;
   const pcLeft = b ? b.pc.left : world.politicalCapital;
   const pcCap = b?.pc.cap ?? 6;
   const d = world.turnReport?.deltas ?? {};
@@ -210,9 +213,37 @@ export function StateBand() {
       {wide ? TERMS.defense.name : DEFENSE} <V v={`${def}% used`} />
     </span>
   );
+  const growth = (me.realGrowth ?? me.growthRate) * 100;
+  // Every indicator stays one press away (QA1 S3-3): "Your country" opens the full set, the band
+  // shows the ones section 5 lists for its width
+  const all = (
+    <div className="sb-country-pop" role="note" aria-label="Your country">
+      <span className="sb-s">
+        {TERMS.approval.name} <V v={`${Math.round(me.approval)}%`} />
+        <Delta v={delta('approval')} />
+      </span>
+      <span className="sb-s">
+        {TERMS.stability.name} <V v={Math.round(me.stability)} />
+        <Delta v={delta('stability')} />
+      </span>
+      <span className="sb-s">
+        {TERMS.legitimacy.name} <V v={`${Math.round(me.legitimacy)}%`} />
+        <Delta v={delta('legitimacy')} />
+      </span>
+      <span className="sb-s">
+        {TERMS.economy.name} <V v={`${growth >= 0 ? '+' : ''}${growth.toFixed(1)}%`} />
+      </span>
+      <span className="sb-s">
+        {TERMS.tension.name} <V v={tension} />
+      </span>
+    </div>
+  );
   const country = (
     <span className="sb-grp sb-country">
-      {wide && <span className="sb-lbl">Your country</span>}
+      <button type="button" className="wc-btn small sb-country-btn" aria-expanded={countryOpen} onClick={() => setCountryOpen((v) => !v)}>
+        Your country {countryOpen ? <IconChevronUp size={14} aria-hidden /> : <IconChevronDown size={14} aria-hidden />}
+      </button>
+      {countryOpen && all}
       {cls !== 'T' && (
         <span className={`sb-s${me.approval < 30 ? ' over' : ''}`}>
           {TERMS.approval.name} <V v={`${Math.round(me.approval)}%`} />
