@@ -904,6 +904,72 @@ findings:
     changed: "review 3 (design-review3-order-cards.md new problems 1 and 5): with an order of the player's own added first, the first month's coach bubble stands on the bar; the guard checks at 390x844 and 360x740 that no bubble shows while a face is open, that both answers are uncovered at the centre and four corners, that a tap on Give the order queues the order, and that Cancel leaves the list where the player had it"
     guards:
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-OC-4.mjs
+  # ------------------------------------------------------------------------------------------
+  # D-84 "Your call" (iteration 4 build-your-call; decision-accept-all.md, decision-call-balance.md)
+  # ------------------------------------------------------------------------------------------
+  - id: D84-CLASSIFY
+    title: "Each crisis is a call or routine, never both; at most 2 calls a month; Accept all decides the routine only"
+    source: ledger D-84 (runs/iter-04/decision-accept-all.md R1, R3)
+    covers: [src/core/advisors.ts, src/core/missionImpact.ts, scripts/policies.ts]
+    guards:
+      - vitest: tests/core/your-call.spec.ts
+        name: "D84-CLASSIFY"
+  - id: D84-ADVISERS
+    title: "Every call names two advisers, and none backs a goal-hurting card when a safe card exists (D-72)"
+    source: ledger D-84 (runs/iter-04/decision-accept-all.md R5); D-72
+    covers: [src/core/advisors.ts, src/core/missionImpact.ts]
+    guards:
+      - vitest: tests/core/your-call.spec.ts
+        name: "D84-ADVISERS"
+  - id: D84-UPKEEP
+    title: "The staff propose up to 3 upkeep orders, never a mission order, and leave the reserve"
+    source: ledger D-84 (runs/iter-04/decision-accept-all.md R9)
+    covers: [src/core/advisors.ts]
+    guards:
+      - vitest: tests/core/your-call.spec.ts
+        name: "D84-UPKEEP"
+  - id: D84-PRICE
+    title: "The mission side of an item costs PUSH_PC when another answer helps no goal, and the engine charges it"
+    source: ledger D-84 (runs/iter-04/decision-accept-all.md R6)
+    covers: [src/core/costs.ts, src/core/missionImpact.ts, src/core/turn.ts, src/core/availability.ts]
+    guards:
+      - vitest: tests/core/your-call.spec.ts
+        name: "D84-PRICE"
+  - id: D84-SETTING
+    title: "Let the Chief of Staff make my calls (opt-in, off by default) restores the full one-press month"
+    source: ledger D-84 (runs/iter-04/decision-accept-all.md R8)
+    covers: [src/core/advisors.ts, ui/src/lib/month.ts, ui/src/store/gameStore.ts, ui/src/components/SettingsModal.tsx]
+    guards:
+      - vitest: tests/core/your-call.spec.ts
+        name: "D84-SETTING"
+  - id: D84-BANDS-CONTROL
+    title: "Accept all alone does not win the flashpoint control seeds; guided play spends its capital"
+    source: ledger D-84 (runs/iter-04/decision-accept-all.md 6.1); QA3R-4b
+    covers: [src/core/advisors.ts, src/core/costs.ts, scripts/policies.ts]
+    guards:
+      - vitest: tests/core/your-call.spec.ts
+        name: "D84-BANDS-CONTROL"
+  - id: D84-ACTOFWAR
+    title: "A peacetime strike on a nuclear power breaks a no-war goal; no adviser backs a goal-breaking card while another breaks none (water-war India month 1)"
+    source: runs/iter-04/decision-call-balance.md 2.1 and 5.1 (India callpush 6% against callhold 100%, 36 games)
+    covers: [src/core/missionImpact.ts, src/core/advisors.ts, src/core/preview.ts]
+    guards:
+      - vitest: tests/core/your-call.spec.ts
+        name: "D84-ACTOFWAR"
+  - id: D84-CALL-TRAP
+    title: "The calm card is never a trap: always the calm card does not beat always the mission card (water-war India, flashpoint control seeds)"
+    source: runs/iter-04/decision-call-balance.md 5.2 (the 36-game bands are in tests/balance/bands.spec.ts, opt-in)
+    covers: [src/core/advisors.ts, src/core/missionImpact.ts, scripts/policies.ts]
+    guards:
+      - vitest: tests/core/your-call.spec.ts
+        name: "D84-CALL-TRAP"
+  - id: D84-QU-CHN
+    title: "Quarantine China asks for a move: staff loses QU-CHN-LEO01, guided wins, the Taiwan court is a mission move and never an upkeep order"
+    source: runs/iter-04/decision-call-balance.md 5.3 (staff 89% by waiting, 36 games)
+    covers: [data/flashpoints/quarantine.json, src/core/advisors.ts]
+    guards:
+      - vitest: tests/core/your-call.spec.ts
+        name: "D84-QU-CHN"
 # ------------------------------------------------------------------------------------------
 # Not listed (still open or not a code fix); add them here when a fix lands with its guard:
 #   RS-001-6  dashboard feel, "serious visual design": the ledger keeps it not done (D-37 check)
