@@ -624,6 +624,18 @@
       "t": "2026-11-23T20:54:36.061Z",
       "iteration": 4,
       "stage": "Build"
+    },
+    {
+      "gate": "status-refresh",
+      "result": "pass",
+      "commit": "f5eec6da3bb179e7dc03a369ef82f710a890fb95",
+      "codeTree": "aee522ddb528212e",
+      "evidence": "dev_plan/project_status.html",
+      "note": "status-refresh T1",
+      "t": "2026-11-23T20:56:18.017Z",
+      "iteration": 4,
+      "stage": "Build",
+      "tier": "T1"
     }
   ],
   "merges": [
@@ -650,6 +662,15 @@
       "branch": "build-order-cards",
       "commit": "ac41619a32aadb2c8b707beb28d2faf7827b7050",
       "codeTree": "b204ecb6717289fd",
+      "iteration": 4,
+      "stage": "Build",
+      "treeMatches": true
+    },
+    {
+      "t": "2026-11-23T20:54:52.270Z",
+      "branch": "build-your-call",
+      "commit": "f5eec6da3bb179e7dc03a369ef82f710a890fb95",
+      "codeTree": "aee522ddb528212e",
       "iteration": 4,
       "stage": "Build",
       "treeMatches": true
@@ -682,6 +703,11 @@
       "tier": "T1",
       "because": "merge of build-order-cards",
       "t": "2026-11-23T16:13:42.700Z"
+    },
+    {
+      "tier": "T1",
+      "because": "merge of build-your-call",
+      "t": "2026-11-23T20:54:52.272Z"
     }
   ],
   "blocked": []
