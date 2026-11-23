@@ -8,8 +8,25 @@ export type SamplePart = string | { mark: string };
 
 export interface FamiliaritySample {
   era: '1960' | '1990' | '2025' | '2026';
+  /** Set when the line is the flashpoint's own (QA3R-3f). */
+  flashpointId?: string;
   parts: SamplePart[];
 }
+
+/**
+ * A flashpoint's own line (QA3R-3f: a China or Venezuela game showed the Donetsk sentence). Each is
+ * true at the flashpoint's start (data/flashpoints/<id>.json hook).
+ */
+const FLASHPOINT_SAMPLES: Record<string, SamplePart[]> = {
+  'ceasefire-or-collapse': ['US mediators propose a zone in ', { mark: 'Donetsk oblast' }, ', including the ', { mark: 'fortress belt' }, ' of Kramatorsk.'],
+  'hormuz-convoy': ['Tankers near the ', { mark: 'Strait of Hormuz' }, ' sail under escort after more than 24 ships were attacked by the ', { mark: 'IRGC' }, '.'],
+  quarantine: ['After drills that rehearsed sealing off ', { mark: 'Keelung' }, ' and Kaohsiung, Beijing weighs a ', { mark: 'quarantine' }, ' of Taiwan short of a blockade.'],
+  'scarborough-line': ['The China Coast Guard turns water cannon on Philippine vessels at ', { mark: 'Scarborough Shoal' }, ', which Manila says the ', { mark: 'Mutual Defense Treaty' }, ' covers.'],
+  'caracas-after-maduro': ['With Maduro on trial in New York, acting president ', { mark: 'Delcy Rodríguez' }, ' opens the oil fields and wins ', { mark: 'sanctions relief' }, '.'],
+  'bab-al-mandab-burning': ['The ', { mark: 'Houthis' }, ' take the port of Mokha at the mouth of the ', { mark: 'Bab al-Mandab' }, ' strait.'],
+  'fire-on-the-nile': ['The ', { mark: 'Rapid Support Forces' }, ' take El Fasher and set up a rival government in ', { mark: 'Nyala' }, '.'],
+  'water-war': ['India keeps the ', { mark: 'Indus Waters Treaty' }, ' in abeyance a year after ', { mark: 'Operation Sindoor' }, '.'],
+};
 
 const SAMPLES: Record<FamiliaritySample['era'], SamplePart[]> = {
   // Khrushchev's Berlin ultimatum (1958 to 1961)
@@ -31,11 +48,18 @@ export function sampleEra(date: string | undefined): FamiliaritySample['era'] {
   return '2026';
 }
 
-/** The sample for the game being started (by its world date; 2026 before a game exists). */
-export function familiaritySample(date: string | undefined): FamiliaritySample {
+/**
+ * The sample for the game being started: the flashpoint's own line when there is one, else the
+ * era's (by its world date; 2026 before a game exists).
+ */
+export function familiaritySample(date: string | undefined, flashpointId?: string | null): FamiliaritySample {
   const era = sampleEra(date);
-  return { era, parts: SAMPLES[era] };
+  const own = flashpointId ? FLASHPOINT_SAMPLES[flashpointId] : undefined;
+  return own ? { era, flashpointId: flashpointId ?? undefined, parts: own } : { era, parts: SAMPLES[era] };
 }
+
+/** The flashpoints that have their own sample line. */
+export const SAMPLE_FLASHPOINTS = Object.keys(FLASHPOINT_SAMPLES);
 
 /** How many names the sample marks ("2 names" on the info chip). */
 export function sampleMarks(s: FamiliaritySample): number {

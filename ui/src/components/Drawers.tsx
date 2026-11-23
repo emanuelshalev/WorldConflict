@@ -4,7 +4,7 @@ import { type ConditionStatus, countryName, orderKey, queueOrder, useGameStore, 
 import { flag, monthLabel } from '../lib/format';
 import { useModalFocus } from '../lib/useModalFocus';
 import { primaryId, primaryItem } from '../lib/month';
-import { STATE_WORD, nowNeed, stateOf } from '../lib/goals';
+import { STATE_WORD, missionSummary, nowNeed, stateOf } from '../lib/goals';
 import { useScoreWhy } from '../lib/scoreWhy';
 import { metCount } from '../lib/learn';
 import { useExplain } from './learn/explain';
@@ -270,7 +270,6 @@ function MissionPanel() {
   if (!world) return null;
   const primary = status.filter((c) => !c.bonus);
   const bonus = status.filter((c) => c.bonus);
-  const onTrack = primary.filter((c) => stateOf(c) === 'on_track').length;
   return (
     <>
       {world.objective ? (
@@ -278,9 +277,7 @@ function MissionPanel() {
           <h4 className="display" style={{ fontSize: 22, margin: '0 0 6px', color: 'var(--accent)' }}>
             {world.objective.title}
           </h4>
-          <p className="mission-sum num">
-            {onTrack} of {primary.length} on track · month {Math.min(world.turn + 1, world.maxTurns)} of {world.maxTurns}
-          </p>
+          <p className="mission-sum num">{missionSummary(status, world.turn, world.maxTurns)}</p>
           <div className="mission-rows">
             {primary.map((c) => (
               <ObjectiveRow key={c.label} c={c} turn={world.turn} />

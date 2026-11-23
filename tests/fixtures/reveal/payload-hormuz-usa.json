@@ -12,6 +12,7 @@
     "difficulty": "STATESMAN",
     "seatDifficulty": null,
     "title": "Open the strait",
+    "regime": "DEMOCRACY",
     "months": 12,
     "maxTurns": 12,
     "finalDate": "2026-11"

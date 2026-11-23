@@ -115,7 +115,7 @@ export function OrderCard({
   const pc = entry?.costPC ?? pcCost(def.type);
   const share = entry && entry.budgetM > 0 && entry.costM > 0 ? entry.costM / entry.budgetM : defenseShareOf(def.type);
   const isQueued = avail.state === 'queued';
-  // A staff proposal for this very order (F-02-4): the card offers Approve, and shows what it changes
+  // A staff proposal for this very order (F-02-4): the card offers Accept order, and shows what it changes
   const myKey = orderKey(orderAction(def, st.targetId, st.targetName));
   const proposalIndex = useGameStore((s) => s.pendingActions.findIndex((a) => a.proposed && orderKey(a) === myKey));
   const proposal = useGameStore((s) => (proposalIndex >= 0 ? s.pendingActions[proposalIndex] : undefined));

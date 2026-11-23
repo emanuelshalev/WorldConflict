@@ -195,6 +195,8 @@ export interface RevealPayload {
     difficulty: Difficulty;
     seatDifficulty: "STEADY" | "TOUGH" | "BRUTAL" | null;
     title: string;
+    /** The seat's regime at the end (the closing scene: no election for a one-party state). */
+    regime?: string;
     months: number;
     maxTurns: number;
     finalDate: string;
@@ -1134,6 +1136,7 @@ export function buildReveal(world: WorldState, ctx: RevealContext = {}): RevealP
       difficulty: world.difficulty,
       seatDifficulty: ctx.seatDifficulty ?? null,
       title: world.objective?.title ?? "",
+      ...(me ? { regime: me.regimeType } : {}),
       months,
       maxTurns: world.maxTurns,
       finalDate: world.date,

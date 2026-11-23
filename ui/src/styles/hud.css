@@ -8,6 +8,10 @@
 .hud-flag { font-size: 30px; line-height: 1; flex: none; }
 .game-top .hud-who { min-width: 0; flex: 0 1 auto; max-width: 340px; }
 .game-top .hud-who b { font-size: 17px; }
+/* The leader's name wraps rather than being cut with an ellipsis (QA3R-6a: "Donald Tr...") */
+@media (min-width: 601px) {
+  .game-top .hud-who b { white-space: normal !important; overflow: visible !important; text-overflow: clip !important; overflow-wrap: anywhere; line-height: 1.15; }
+}
 .game-top .hud-who span { font-size: 13px; overflow: hidden; text-overflow: ellipsis; }
 .game-top .hud-stats { display: flex !important; gap: 18px !important; margin-left: auto; align-items: center; overflow: visible !important; width: auto; order: 0; justify-content: flex-end !important; }
 .game-top .stat { min-width: 0; position: relative; }
@@ -59,7 +63,10 @@
   .pc-left { font-size: 15px; }
   .game-top .hud.more-open .hud-stats { border-top: 0; padding-top: 0; display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .game-top .hud.more-open .hud-more { grid-column: 3; justify-self: end; }
-  .mode-seg { display: none !important; }
+  /* The Map / Desk switch stays in reach on phones, icons only, beside the menu (QA3R-5f) */
+  .mode-seg { display: inline-flex !important; flex: none; margin-left: 0; }
+  .mode-seg button { min-width: 44px; min-height: 44px; justify-content: center; padding: 0 8px; }
+  .mode-seg span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .game-top .hud-menu .icon-btn { width: 44px; height: 44px; }
   .hud-phone-menu { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; order: 6; flex-basis: 100%; padding: 6px 0 4px; }
   .hud-phone-menu .wc-btn { min-height: 44px; justify-content: flex-start; }

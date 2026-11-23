@@ -325,6 +325,8 @@ export interface TurnReport {
   causes: string[];
   moments: string[];
   relations?: Array<{ id: string; before: number; after: number }>;
+  /** Your own view of the countries you dealt with, month start to month end (QA3R-2a). */
+  yourView?: Array<{ id: string; before: number; after: number }>;
   world?: Array<{ actor: string; type: string; target?: string; label: string; status?: OutcomeStatus }>;
   wars?: Array<{ vs: string; frontBefore: number; frontAfter: number; ended: boolean }>;
   hot?: Array<{ id: string; name: string; metric: string; before: number; after: number; phase: string }>;
@@ -1765,6 +1767,7 @@ export interface RevealPayload {
     difficulty: Difficulty;
     seatDifficulty: 'STEADY' | 'TOUGH' | 'BRUTAL' | null;
     title: string;
+    regime?: string;
     months: number;
     maxTurns: number;
     finalDate: string;

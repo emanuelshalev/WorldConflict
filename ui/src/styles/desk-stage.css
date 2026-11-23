@@ -212,7 +212,6 @@
   .strip-act { justify-content: flex-end; }
   .sugg-row { grid-template-columns: minmax(0, 1fr) auto; }
   .sugg-row > .scene { display: none; }
-  .mode-seg { display: none; }
 }
 
 /* A staff proposal in the plan (F-02-4): dashed until approved, effects shown before Approve */

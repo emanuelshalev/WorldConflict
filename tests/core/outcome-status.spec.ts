@@ -265,3 +265,24 @@ describe("the reveal's moments agree with play on the control seeds (QA3R-2d)", 
       }
     });
 });
+
+// QA3R-2a, engine side: the report carries your own view of every country you dealt with, month
+// start to month end, so the debrief card can lead with the number relation goals measure.
+describe("report.yourView on the control seeds (QA3R-2a)", () => {
+  it("covers every order with a 'Your view of' fact and ends at the month-end relation", () => {
+    let checked = 0;
+    for (const code of CONTROL_SEEDS)
+      for (const m of playControl(code, "staff").months) {
+        const r = m.after.turnReport!;
+        const me = m.after.countries.find((c) => c.id === m.after.playerCountryId)!;
+        for (const o of r.orders) {
+          if (!o.target || !(o.facts ?? []).some((f) => /^Your view of /.test(f.label))) continue;
+          const v = r.yourView?.find((x) => x.id === o.target);
+          expect(v, `${code} m${m.before.turn + 1} ${o.label}`).toBeDefined();
+          expect(v!.after).toBeCloseTo(me.relations[o.target] ?? 0, 0);
+          checked += 1;
+        }
+      }
+    expect(checked).toBeGreaterThan(0);
+  });
+});

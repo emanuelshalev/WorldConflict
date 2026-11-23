@@ -31,6 +31,7 @@ import { frontPoint, loadWorld } from '../scenes/worldGeo';
 import { PHONE_MAX, gameInsets, useGlobeFit } from '../lib/globeFit';
 import { FONT_SEMIBOLD, GLYPHS_URL, LABEL_MIN_PX, labelFeatures, labelFilter } from '../lib/mapLabels';
 import { iconSvg } from '../lib/iconSvg';
+import { TAP_SLOP, pickNear } from '../lib/mapPick';
 
 /** Lat/long grid every 20 degrees: the ops-display look under the land. */
 function graticule(): GeoJSON.FeatureCollection {
@@ -714,9 +715,21 @@ export function MapView() {
           setZone((z) => (z === zoneId ? null : zoneId));
           return;
         }
-        const id = map.queryRenderedFeatures(e.point, { layers: ['country-fills'] })[0]?.properties?.gameId as
-          | string
-          | undefined;
+        // Nothing under the pointer: a near miss within TAP_SLOP px picks the smallest country
+        // drawn there (small island states such as Taiwan and the Philippines, QA3R-5d)
+        const id =
+          (map.queryRenderedFeatures(e.point, { layers: ['country-fills'] })[0]?.properties?.gameId as string | undefined) ??
+          pickNear(
+            map
+              .queryRenderedFeatures(
+                [
+                  [e.point.x - TAP_SLOP, e.point.y - TAP_SLOP],
+                  [e.point.x + TAP_SLOP, e.point.y + TAP_SLOP],
+                ],
+                { layers: ['country-fills'] },
+              )
+              .map((f) => ({ id: f.properties?.gameId as string, geometry: f.geometry })),
+          );
         popupRef.current?.remove();
         const s = useGameStore.getState();
         if (!id || !s.worldState) {

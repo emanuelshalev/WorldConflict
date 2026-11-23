@@ -200,3 +200,20 @@ export const END_SCENE: Record<string, SceneKind> = {
   TERM_COMPLETED: 'election',
   OBJECTIVE_FAILED: 'cabinet',
 };
+
+/**
+ * The closing scene for a session (QA3R-3g): the end of a flashpoint is not an election ("377
+ * seats, majority won" closed a China flashpoint), and a one-party state never closes on a ballot.
+ * Every mount point (the reveal's count stage and the end screen) asks here.
+ */
+export function endScene(
+  reason: string | null | undefined,
+  seat: { flashpointId?: string | null; regime?: string | null },
+  lost: boolean,
+): SceneKind {
+  const scene = END_SCENE[reason ?? ''] ?? (lost ? 'streets' : 'address');
+  if (scene !== 'election') return scene;
+  const ballot = !seat.flashpointId && (seat.regime ?? 'DEMOCRACY') === 'DEMOCRACY';
+  if (ballot) return scene;
+  return reason === 'LOST_ELECTION' ? 'parliament' : lost ? 'cabinet' : 'address';
+}

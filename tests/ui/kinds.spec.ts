@@ -17,6 +17,7 @@ import {
   sceneForDecision,
   sceneForOutcome,
 } from "../../ui/src/scenes/kinds";
+import { COUNCIL, COUNCIL_SEATS, councilTally } from "../../ui/src/scenes/art/unTally";
 
 // Art matches outcome (design-feel.md section 7, rules R1 to R7)
 
@@ -160,5 +161,21 @@ describe("R7: no repeat backdrop", () => {
   it("the assassination attempt has its own frame", () => {
     expect(sceneForCrisis("assassination_attempt")).toBe("cabinet");
     expect(sceneForCrisis("assassination_attempt")).not.toBe(sceneForCrisis("refugee_wave"));
+  });
+});
+
+// QA3R-3c: the UN board listed 18 delegates and counted YES 14 NO 2 on a 15-seat council
+describe("the UN vote board is a 15-seat council (QA3R-3c)", () => {
+  it("every mood tallies to 15 and both boards list the 15 seats once", () => {
+    for (const mood of ["good", "bad", "neutral", undefined]) {
+      const t = councilTally(mood);
+      expect(t.yes + t.no + t.abstain).toBe(COUNCIL_SEATS);
+    }
+    expect(COUNCIL.length).toBe(COUNCIL_SEATS);
+    expect(new Set(COUNCIL).size).toBe(COUNCIL_SEATS);
+    for (const p5 of ["USA", "GBR", "FRA", "RUS", "CHN"]) expect(COUNCIL).toContain(p5);
+    const src = readFileSync("ui/src/scenes/art/UnVote.tsx", "utf8");
+    expect(src).not.toMatch(/const CODES = \[/);
+    expect(src).toContain("COUNCIL.slice(");
   });
 });

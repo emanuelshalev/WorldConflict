@@ -3,7 +3,7 @@ import { SceneFrame } from '../../scenes/SceneFrame';
 import type { DeclassifiedCard as DeclassifiedData, MomentView, RevealPayload, RelationRow as RelationData, SeriesView, TruthVerdict } from '../../store/gameStore';
 import { flag } from '../../lib/format';
 import { sound } from '../../lib/sound';
-import { useCountUp } from '../../lib/useCountUp';
+import { countText, useCountUp } from '../../lib/useCountUp';
 import { seatName, type StoredRun } from '../../lib/runs';
 import { tierRank } from './sealArt';
 import { GradeBox, VerdictStamp } from './VerdictStamp';
@@ -15,7 +15,7 @@ import {
   countLine,
   fmtValue,
   lastMonthLabel,
-  END_SCENE,
+  endScene,
   monthLetters,
   momentsHeadline,
   seenHeadline,
@@ -64,7 +64,7 @@ export function CountStage({ r, animate, scene = true }: StageProps & { scene?: 
       {scene && (
         <div className="rv-scene">
           <SceneFrame
-            kind={END_SCENE[r.verdict.reason ?? ''] ?? (lost ? 'streets' : 'address')}
+            kind={endScene(r.verdict.reason, r.seat, lost)}
             home={r.seat.countryId}
             mood={lost ? 'bad' : 'good'}
             size="card"
@@ -98,7 +98,7 @@ export function CountStage({ r, animate, scene = true }: StageProps & { scene?: 
 
 export function ScoreTally({ r, animate, best }: { r: RevealPayload; animate: boolean; best: number | null }) {
   const p = r.presidency;
-  const shown = Math.round(useCountUp(p.total, animate ? 900 : 1, animate ? 1300 : 0));
+  const shown = countText(p.total, useCountUp(p.total, animate ? 900 : 1, animate ? 1300 : 0));
   const record = best !== null && p.total > best;
   return (
     <div className="rv-card rv-tally">

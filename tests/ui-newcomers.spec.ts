@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { MIN_ODDS as ENGINE_MIN_ODDS, RESERVE_PC as ENGINE_RESERVE, STAFF_ORDERS as ENGINE_STAFF } from "../src/core/advisors.js";
 import { createDataLoader } from "../src/core/data-loader.js";
@@ -10,7 +10,7 @@ vi.hoisted(() => {
   g.localStorage ??= { getItem: (k: string) => m.get(k) ?? null, setItem: (k: string, v: string) => void m.set(k, v), removeItem: (k: string) => void m.delete(k), clear: () => m.clear(), key: () => null, length: 0 };
 });
 import { guideLede } from "../ui/src/lib/month.js";
-import { goalPhrase, missionSentence } from "../ui/src/lib/goals.js";
+import { goalPhrase, goalPunct, missionSentence } from "../ui/src/lib/goals.js";
 import { mapMenuShown } from "../ui/src/lib/ease.js";
 
 /**
@@ -242,5 +242,40 @@ describe("QA AC3: the in-game globe fit", () => {
     expect(ui("lib/globeFit.ts")).toContain("['.hud', '.goal-line']");
     expect(ui("components/desk/CommandRail.tsx")).toContain("const [tray, setTray] = useState(false);");
     expect(ui("styles/ease.css")).toMatch(/\.cmd-strip:not\(\.tray-open\) \{ grid-template-areas: 'chips act'; row-gap: 0; \}/);
+  });
+});
+
+// QA3R-7a (F-00-3, F-02-1): Noah's month-1 goal for the Emirates read "Iran relations -90+" and a
+// lone "," wrapped onto its own line. Every flashpoint side: no raw negative floor, and each goal
+// carries its own punctuation (the comma is glued to the goal before it). All goals stay named
+// (F-02-1: Noah failed on the fifth goal he was never told about).
+describe("QA3R-7a: the month-1 goal sentence reads as words on every seat", () => {
+  const files = readdirSync("data/flashpoints").filter((f) => f.endsWith(".json"));
+  it("no raw negative relation floor (-90+) in any flashpoint side's sentence", () => {
+    for (const f of files) {
+      const fp = JSON.parse(readFileSync(`data/flashpoints/${f}`, "utf-8"));
+      for (const [side, obj] of Object.entries(fp.objectives as Record<string, { title: string; primary: Array<{ label: string }> }>)) {
+        const m = missionSentence({ objective: obj, maxTurns: 12 });
+        expect(m.text, `${f} ${side}`).not.toMatch(/-\d+(\.\d+)?\+/);
+        expect(m.goals.length, `${f} ${side}`).toBe(obj.primary.length);
+      }
+    }
+    const ae = loader.newGame({ scenarioId: "2026", flashpointId: "hormuz-convoy", playerCountryId: "ARE", seed: 1 });
+    const m = missionSentence({ objective: ae.objective, maxTurns: ae.maxTurns });
+    expect(m.text).toMatch(/kept above -\d+/);
+  });
+
+  it("punctuation belongs to the goal before it: no separator ever starts a goal's unit", () => {
+    for (let n = 1; n <= 6; n++) {
+      const parts = Array.from({ length: n }, (_, i) => goalPunct(i, n));
+      expect(parts.at(-1)).toEqual({ after: ".", join: "" });
+      for (const p of parts) expect([",", "", "."]).toContain(p.after);
+      const text = parts.map((p, i) => `g${i}${p.after}${p.join}`).join("");
+      expect(text).not.toMatch(/\s,/);
+      if (n > 1) expect(text).toMatch(new RegExp(`g${n - 2} and g${n - 1}\\.$`));
+    }
+    const src = readFileSync("ui/src/components/desk/GoalLine.tsx", "utf-8");
+    expect(src).toContain("mission-goal-unit");
+    expect(src).not.toMatch(/\? ' and ' : ', '/);
   });
 });

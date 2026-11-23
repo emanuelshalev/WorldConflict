@@ -837,6 +837,9 @@ export const PlayerTurnReportSchema = z.object({
   relations: z
     .array(z.object({ id: z.string(), before: z.number(), after: z.number() }))
     .default([]),
+  // Your own view of the countries you dealt with this month, month start to month end: the
+  // number RELATION_MIN missions measure (QA3R-2a: a card said -75 to -68, the month ended at -89)
+  yourView: z.array(z.object({ id: z.string(), before: z.number(), after: z.number() })).optional(),
   world: z
     .array(
       z.object({

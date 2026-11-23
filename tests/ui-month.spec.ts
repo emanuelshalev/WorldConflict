@@ -4,7 +4,9 @@ import { describe, expect, it, vi } from "vitest";
 vi.hoisted(() => {
   (globalThis as unknown as { window: unknown }).window ??= { location: { search: "" }, innerWidth: 1440 };
 });
-import { effectWords, goalName, missionTag, splitLede } from "../ui/src/lib/month.js";
+import { readdirSync, readFileSync } from "node:fs";
+import { effectWords, goalName, missionTag, monthDeskMode, splitLede } from "../ui/src/lib/month.js";
+import { TAP_SLOP, pickNear } from "../ui/src/lib/mapPick.js";
 import { metricWord, nowNeed, stepObjective } from "../ui/src/lib/goals.js";
 import { scoreLine } from "../ui/src/lib/scoreWhy.js";
 import { whyLine } from "../ui/src/lib/advisorRows.js";
@@ -82,5 +84,38 @@ describe("month words", () => {
   it("keeps advisor lines in glossary words and under 120 characters", () => {
     expect(whyLine("Mission: leadership score needs 114+, now 100.")).toBe("Mission: score needs 114+, now 100.");
     expect(whyLine("x ".repeat(100)).length).toBeLessThanOrEqual(120);
+  });
+});
+
+// QA3R-5b: Map mode reset to Desk every month; QA3R-5f: the Map switch was hidden on phones;
+// QA3R-5d: near misses on small island states did nothing. Browser guards: QA3R-5.mjs, QA3R-5d.mjs.
+describe("Map mode is the player's choice, in reach on every width (QA3R-5b, 5d, 5f)", () => {
+  it("a new month keeps the mode the player chose; only month 1 opens on the desk", () => {
+    expect(monthDeskMode(3, "map")).toBe("map");
+    expect(monthDeskMode(3, "desk")).toBe("desk");
+    expect(monthDeskMode(0, "map")).toBe("desk");
+    const src = readFileSync("ui/src/lib/month.ts", "utf8");
+    const setup = src.slice(src.indexOf("export async function setupMonth"), src.indexOf("export function pendingApprovals"));
+    expect(setup).not.toMatch(/deskMode: 'desk'/);
+    expect(setup.match(/monthDeskMode\(/g)?.length).toBe(2);
+  });
+
+  it("no stylesheet hides the Map / Desk switch at phone widths", () => {
+    for (const f of readdirSync("ui/src/styles").filter((x) => x.endsWith(".css"))) {
+      const css = readFileSync(`ui/src/styles/${f}`, "utf8");
+      expect(css, f).not.toMatch(/\.mode-seg\s*\{[^}]*display:\s*none/);
+    }
+  });
+
+  it("a near miss picks the smallest country drawn within the tap slop", () => {
+    const box = (x0: number, y0: number, x1: number, y1: number) => ({
+      type: "Polygon",
+      coordinates: [[[x0, y0], [x1, y0], [x1, y1], [x0, y1], [x0, y0]]],
+    });
+    expect(TAP_SLOP).toBeGreaterThanOrEqual(12);
+    expect(pickNear([{ id: "CHN", geometry: box(73, 18, 135, 53) }, { id: "TWN", geometry: box(120, 22, 122, 25.3) }])).toBe("TWN");
+    expect(pickNear([{ id: "PHL", geometry: { type: "MultiPolygon", coordinates: [box(117, 5, 126, 19).coordinates] } }])).toBe("PHL");
+    expect(pickNear([])).toBeUndefined();
+    expect(readFileSync("ui/src/components/MapView.tsx", "utf8")).toMatch(/pickNear\(/);
   });
 });

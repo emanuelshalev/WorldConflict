@@ -198,3 +198,19 @@ describe("UI glossary", () => {
     expect(open.map((h) => `${h.where} [${h.term} ${h.pattern}] ${h.text}`)).toEqual([]);
   });
 });
+
+// QA3R-5e (F-02-5, RS-005, D-72): one proposal verb on every mount point. The order card (tile on
+// the desk and map, row in the phone sheet and dossier) accepts a recommended order with the same
+// words as the Recommended group (StaffPicks).
+describe("one verb for a recommended order on every surface (QA3R-5e)", () => {
+  it("OrderCard tile and row use the StaffPicks order verb", () => {
+    const picks = readFileSync("ui/src/components/desk/StaffPicks.tsx", "utf8");
+    const verb = /order:\s*'([^']+)'/.exec(picks)?.[1];
+    expect(verb).toMatch(/^Accept\b/);
+    const card = readFileSync("ui/src/components/orders/OrderCard.tsx", "utf8");
+    const tile = card.slice(card.indexOf("const proposalLine"), card.indexOf("const addLine"));
+    expect(tile).toContain(`> ${verb}{`);
+    expect(card).toMatch(new RegExp(`add: isProposal \\? '${verb}'`));
+    expect(card).not.toMatch(/\bApprove\b/);
+  });
+});
