@@ -583,8 +583,11 @@
 .ord-cat-hint { margin: 0 0 4px; font-size: 14px; color: var(--text-1); }
 /* No browser scroll anchoring inside the catalogue: when a row turns into its confirmation near the
    top of the list, Chrome re-anchored and moved the list (66 px at 360x740) and again on Cancel; the
-   face alone decides whether the list moves, and puts back only what it moved (S4) */
-.ord-catalog { overflow-anchor: none; }
+   face alone decides whether the list moves, and puts back only what it moved (S4). The stage that
+   scrolls the catalogue too: at the end of the list Chrome anchored on the pager below it and
+   pushed the face's question off the top */
+.ord-catalog,
+.desk-stage:has(.ord-catalog) { overflow-anchor: none; }
 .ord-cat-rows { gap: 6px; }
 .ord-catalog .ord-cat:has(.ord-cat-rows) { margin-bottom: 12px; }
 .ord-catalog .ord-cat:has(.ord-cat-rows) .nav-head { padding-top: 4px; padding-bottom: 2px; margin-bottom: 6px; }
