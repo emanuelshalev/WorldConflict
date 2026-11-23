@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { IconArrowDown, IconChevronLeft, IconChevronRight, IconListDetails } from '@tabler/icons-react';
 import { useGameStore } from '../../store/gameStore';
 import { agendaItems, agendaProgress, currentItem, neighbours, openItem } from '../../lib/agenda';
@@ -81,7 +81,38 @@ function useBelow(dep: unknown): { n: number; skip: boolean; first: HTMLElement 
   return state;
 }
 
+/**
+ * The sticky top and the bottom bar lie over the page's list: their heights reach the page scroller
+ * as scroll-padding-top and --cover-bottom (layout.css), so an order's confirmation brought into view
+ * ends between them, never under Next or Execute (DR-OC-4; the desk's command bar did this before
+ * the phone tree). The top grows when the State sheet opens, so both are watched.
+ */
+function useCoverHeights() {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const bar = ref.current;
+    if (!bar || typeof ResizeObserver === 'undefined') return;
+    const top = document.querySelector<HTMLElement>('.game-top');
+    const root = document.documentElement;
+    const set = () => {
+      root.style.setProperty('--ph-bottom-h', `${Math.ceil(bar.getBoundingClientRect().height)}px`);
+      root.style.setProperty('--ph-top-h', `${Math.ceil(top?.getBoundingClientRect().height ?? 0)}px`);
+    };
+    set();
+    const ro = new ResizeObserver(set);
+    ro.observe(bar);
+    if (top) ro.observe(top);
+    return () => {
+      ro.disconnect();
+      root.style.removeProperty('--ph-bottom-h');
+      root.style.removeProperty('--ph-top-h');
+    };
+  }, []);
+  return ref;
+}
+
 export function PhoneBottom({ map = false }: { map?: boolean }) {
+  const barRef = useCoverHeights();
   const agendaKey = useGameStore((s) => s.agendaKey);
   const review = useGameStore((s) => s.review);
   useGameStore((s) => s.decisionChoices);
@@ -101,7 +132,7 @@ export function PhoneBottom({ map = false }: { map?: boolean }) {
     document.querySelector('.game')?.scrollTo({ top: 0 });
   };
   return (
-    <div className="ph-bottom" data-region="plan" data-form="sheet">
+    <div className="ph-bottom" ref={barRef} data-region="plan" data-form="sheet">
       {cue && (
         <button type="button" className="wc-btn small ph-below" onClick={() => below.first?.scrollIntoView({ block: 'center', behavior: 'smooth' })} data-below-cue="">
           {cue} <IconArrowDown size={15} aria-hidden />

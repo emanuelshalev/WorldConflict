@@ -385,6 +385,9 @@ html { font-size: clamp(16px, calc(0.42vmin + 11.5px), 22px); }
 @media (max-width: 700px) {
   html { font-size: 16px; }
   .game[data-cls='P'] { display: block; overflow-x: hidden; overflow-y: auto; font-size: 17px; }
+  /* What lies over the page's list (PhoneMonth useCoverHeights): an order's confirmation brought
+     into view ends below the sticky top and above the bottom bar (ConfirmFace, DR-OC-4) */
+  .game[data-cls='P'] { scroll-padding-top: var(--ph-top-h, 0px); --cover-bottom: var(--ph-bottom-h, 0px); }
   .game[data-cls='P'] .game-top { position: sticky; top: 0; z-index: 30; }
   .game[data-cls='P'] .game-body { display: block; position: static; }
   .game[data-cls='P'].mode-desk .game-body > .map-stage { position: absolute; inset: 0; height: 100vh; }
