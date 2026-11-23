@@ -867,6 +867,34 @@ findings:
       - vitest: tests/ui-month.spec.ts
         name: "a near miss picks the smallest country drawn within the tap slop"
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/QA3R-5d.mjs
+  # ------------------------------------------------------------------------------------------
+  # Design review of build-order-cards (runs/iter-04/design-review-order-cards.md, D-81)
+  # ------------------------------------------------------------------------------------------
+  - id: DR-OC-1
+    title: "The danger confirmation in the Map order menu is whole: title once, Cancel and Give the order on one line each and inside the menu's visible box"
+    source: runs/iter-04/design-review-order-cards.md required change 1 (S2; zoom-map-confirm-3440.jpg, month-2-map-confirm-1024x768.jpg)
+    covers: [ui/src/components/orders/ConfirmFace.tsx, ui/src/components/orders/OrderCard.tsx, ui/src/components/MapActionMenu.tsx, ui/src/styles/orders.css]
+    guards:
+      - vitest: tests/ui-order-cards-render.spec.ts
+        name: "every danger order confirms first (D-75), and the face shows title, family word and icon"
+      - vitest: tests/ui-order-cards-render.spec.ts
+        name: "the face keeps a title line only when the question does not name the order (DR-OC-1)"
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-OC-1.mjs
+  - id: DR-OC-2
+    title: "All orders groups by family, headed by the same family word as every card's chip (no Intelligence or Domestic headings)"
+    source: runs/iter-04/design-review-order-cards.md required change 2 (S3; m1-catalog-russia-3440x1440-CEO.jpg, m1-confirm-danger-1920x1080.jpg)
+    covers: [ui/src/components/orders/OrderCatalog.tsx, ui/src/lib/orders.ts, ui/src/lib/glossary.ts]
+    guards:
+      - vitest: tests/ui-order-catalog-families.spec.ts
+        name: "All orders is grouped by family, under the family words (DR-OC-2)"
+      - vitest: tests/ui-orders-parity.spec.ts
+        name: "files every order under one family group and gives it a blurb"
+  - id: DR-OC-3
+    title: "The catalogue is dense again: rows on a phone (6 or more orders a screen), tiles near their earlier height from 600 px up"
+    source: runs/iter-04/design-review-order-cards.md required change 3 (S3; m1-catalog-russia-390x844.jpg, audit-phone.txt)
+    covers: [ui/src/components/orders/OrderCatalog.tsx, ui/src/components/orders/OrderCard.tsx, ui/src/styles/orders.css]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-OC-3.mjs
 # ------------------------------------------------------------------------------------------
 # Not listed (still open or not a code fix); add them here when a fix lands with its guard:
 #   RS-001-6  dashboard feel, "serious visual design": the ledger keeps it not done (D-37 check)
