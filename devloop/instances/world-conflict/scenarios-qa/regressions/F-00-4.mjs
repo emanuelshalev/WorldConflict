@@ -11,6 +11,8 @@ import path from 'node:path';
 import { args, run, startGame } from './_lib.mjs';
 
 const { out, base } = args('F-00-4');
+/** The Ukraine control seat (scenarios.yaml control: maya), 7 recommended in month 2. */
+const MAYA = { flashpointId: 'ceasefire-or-collapse', countryId: 'UKR', title: 'Ceasefire or Collapse', seedCode: 'CO-UKR-MAYA1' };
 const BUTTONS = '.rail button, [data-staff-picks] button, .stage.is-primary .move-card button';
 const CUT = '.goal-line .goal-title, .goal-line .goal-sum, .goal-line .goal-step, .game-top .hud-who b, .game-top .stat label, .game-top .stat .val';
 
@@ -103,5 +105,79 @@ await run('F-00-4', async (g, track) => {
       }
     }
     g.check(!s.errors.length, `${w}: no page errors (${s.errors.slice(0, 2).join(' | ')})`);
+  }
+
+  // Short and mid-width screens with a full Recommended list (design review of stability-iter4,
+  // D-81): CO-UKR-MAYA1 month 2 has 7 recommended. At each size, months 1 and 2: Execute and Accept
+  // all are fully on screen and answer a tap, one whole recommendation is in view, and every
+  // top-bar control is on screen.
+  for (const size of ['1366x768', '1366x820', '1024x768', '1440x900', '1599x900']) {
+    const s = track(await startGame({ variant: `f004-${size}`, device: size, out: path.join(out, size), base, seat: MAYA }));
+    const p = s.page;
+    for (const month of [1, 2]) {
+      await p.waitForTimeout(800);
+      const show = p.getByRole('button', { name: /Show the whole desk|Show budgets, orders and meetings/i }).first();
+      if (await show.isVisible().catch(() => false)) {
+        await show.click();
+        await p.waitForTimeout(700);
+      }
+      const accept = p.getByRole('button', { name: /^Accept all recommended \(\d+\)/ }).first();
+      await accept.waitFor({ state: 'attached', timeout: 8000 }).catch(() => {});
+      await p.waitForTimeout(400);
+      const at = `${size} month ${month}`;
+      for (const [label, loc] of [['Execute month', p.getByRole('button', { name: /Execute month/i }).first()], ['Accept all recommended', accept]]) {
+        const r = await loc
+          .evaluate((e) => {
+            const x = e.getBoundingClientRect();
+            const hit = document.elementFromPoint(x.left + x.width / 2, x.top + x.height / 2);
+            return { on: x.width > 0 && x.top >= 0 && x.left >= 0 && x.bottom <= innerHeight + 1 && x.right <= innerWidth + 1, tap: !!hit && (hit === e || e.contains(hit)), top: Math.round(x.top), bottom: Math.round(x.bottom) };
+          })
+          .catch(() => ({ on: false, tap: false, top: -1, bottom: -1 }));
+        g.check(r.on && r.tap, `${at}: ${label} is fully on screen and answers a tap (${r.top} to ${r.bottom})`);
+      }
+      const whole = await p.evaluate(() => {
+        const list = document.querySelector('.rail .staff-picks.v-rail .sp-list');
+        const item = list?.querySelector('.sp-item');
+        if (!list || !item) return { ok: false, why: 'no list' };
+        list.scrollTop = 0;
+        const lb = list.getBoundingClientRect();
+        const ib = item.getBoundingClientRect();
+        return { ok: ib.top >= lb.top - 1 && ib.bottom <= lb.bottom + 1 && ib.bottom <= innerHeight, why: `item ${Math.round(ib.top)}-${Math.round(ib.bottom)} in list ${Math.round(lb.top)}-${Math.round(lb.bottom)}` };
+      });
+      g.check(whole.ok, `${at}: one whole recommendation is in view (${whole.why})`);
+      const off = await p.evaluate(() =>
+        [...document.querySelectorAll('.game-top button, .game-top [role=tab]')]
+          .filter((e) => { const x = e.getBoundingClientRect(); return x.width > 0 && getComputedStyle(e).visibility !== 'hidden'; })
+          .filter((e) => { const x = e.getBoundingClientRect(); return x.right > innerWidth + 1 || x.left < -1; })
+          .map((e) => (e.getAttribute('aria-label') ?? e.textContent ?? '').trim().slice(0, 24)),
+      );
+      g.check(!off.length, `${at}: every top-bar control is on screen (${off.join('; ') || 'all'})`);
+      await s.look(`${size}-month${month}`);
+      // Folded controls stay one tap away: Menu opens a panel with every secondary control
+      if (month === 2) {
+        await p.locator('.game-top').getByRole('button', { name: 'Menu' }).first().click();
+        await p.waitForTimeout(400);
+        const panel = await p.evaluate(() => {
+          const words = ['Cabinet', 'World', 'Chronicle', 'Settings', 'Mission and record'];
+          const visible = (e) => { const x = e.getBoundingClientRect(); return x.width > 0 && x.right <= innerWidth + 1 && x.bottom <= innerHeight + 1; };
+          const inBar = [...document.querySelectorAll('.game-top .hud-menu button')].filter(visible).map((e) => e.getAttribute('aria-label') ?? '');
+          const inPanel = [...document.querySelectorAll('.game-top .hud-phone-menu button')].filter(visible).map((e) => (e.textContent ?? '').trim());
+          return words.filter((w) => !inBar.includes(w) && !inPanel.some((t) => t.endsWith(w)));
+        });
+        g.check(!panel.length, `${at}: every secondary control is in the bar or in the Menu panel (${panel.join(', ') || 'all reachable'})`);
+        await p.locator('.game-top').getByRole('button', { name: 'Menu' }).first().click().catch(() => {});
+        await p.waitForTimeout(300);
+      }
+      if (month === 2) break;
+      if (!(await s.click(/Execute month/i, { timeout: 10000 }))) throw new Error(`${size}: Execute month not clickable`);
+      const next = p.getByRole('button', { name: /^Next month/i }).first();
+      await next.waitFor({ timeout: 30000 });
+      await p.waitForTimeout(1200);
+      for (let i = 0; i < 3 && (await next.isVisible().catch(() => false)); i++) {
+        await next.click().catch(() => {});
+        await p.waitForTimeout(1500);
+      }
+    }
+    await s.close().catch(() => {});
   }
 });
