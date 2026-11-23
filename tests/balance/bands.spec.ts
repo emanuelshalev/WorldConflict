@@ -7,9 +7,12 @@
  *   tension median 45-70 with <= 20% of months at 80+.
  * D-84 "Your call" bands run on every flashpoint seat (21 seats) with the Accept all family:
  *   staff (Accept all, every call skipped) <= 30% pooled and >= none, no seat above 60%;
- *   guided (Accept all + the Guide me line) 65-90% pooled; callpush and callhold (always the
- *   mission card / always the calm card) within 8 points pooled; guided at the capital cap in
- *   <= 45% of months. The control-seed guards (staff <= 2 of 7, guided cap <= 30 of 84 months) are
+ *   guided (Accept all + the Guide me line) 65-90% pooled; guided at the capital cap in <= 45% of
+ *   months; the directional call bands (D-84 revision, decision-call-balance.md 5.2) on callpush
+ *   and callhold (always the mission card / always the calm card): callhold beats callpush by at
+ *   most 8 points pooled (call-trap) and 25 on any seat (call-trap-seat), callhold >= 65% pooled
+ *   (calm-floor), callpush <= 90% pooled (push-ceiling); callpush minus callhold (target 15) is
+ *   printed, informative. The control-seed guards (staff <= 2 of 7, guided cap <= 30 of 84 months) are
  *   in tests/core/your-call.spec.ts.
  * Known gaps are read from tests/balance/exemptions.json: an exempt check is measured and printed
  * but does not fail.
@@ -85,7 +88,7 @@ beforeAll(async () => {
   rows = outs.flatMap((o) => JSON.parse(o.stdout.slice(o.stdout.indexOf("["))) as Row[]);
   const calls = await Promise.all(
     FLASHPOINTS.map((f) =>
-      run(tsx, ["scripts/simulate.ts", "--flashpoint", f.id, "--scenario", f.scenarioId, "--countries", f.playable.map((p) => p.countryId).join(","), "--games", String(GAMES), "--policy", CALL_POLICIES, "--json", "1"], {
+      run(process.execPath, [tsx, "scripts/simulate.ts", "--flashpoint", f.id, "--scenario", f.scenarioId, "--countries", f.playable.map((p) => p.countryId).join(","), "--games", String(GAMES), "--policy", CALL_POLICIES, "--json", "1"], {
         cwd: root,
         maxBuffer: 32 << 20,
       }),
@@ -143,11 +146,24 @@ describe(`balance bands (${GAMES} games per seat)`, () => {
     band("guided-capped", capped <= 45, `guided capital at the cap ${capped.toFixed(1)}% of months (max 45%)`);
   });
 
-  it("D-84 call balance: always the mission card and always the calm card within 8 points pooled", () => {
-    const push = pooledOf(callRows.filter((r) => r.policy === "callpush"));
-    const hold = pooledOf(callRows.filter((r) => r.policy === "callhold"));
-    const gap = Math.abs(push - hold);
-    band("call-gap", gap <= 8, `call gap ${gap.toFixed(1)} points (callpush ${push.toFixed(1)}% against callhold ${hold.toFixed(1)}%, max 8)`);
+  it("D-84 call balance (directional): calm never a trap, calm card >= 65%, mission card <= 90%", () => {
+    const pushRows = callRows.filter((r) => r.policy === "callpush");
+    const holdRows = callRows.filter((r) => r.policy === "callhold");
+    const push = pooledOf(pushRows);
+    const hold = pooledOf(holdRows);
+    const trap = hold - push;
+    band("call-trap", trap <= 8, `call trap ${trap.toFixed(1)} points (callhold ${hold.toFixed(1)}% minus callpush ${push.toFixed(1)}%, max 8)`);
+    for (const h of holdRows) {
+      const p = pushRows.find((r) => seatOf(r) === seatOf(h));
+      if (!p) continue;
+      const d = pct(h.win) - pct(p.win);
+      band("call-trap-seat", d <= 25, `call trap ${seatOf(h)} ${d} points (callhold ${h.win} minus callpush ${p.win}, max 25)`, seatOf(h));
+    }
+    band("calm-floor", hold >= 65, `callhold pooled ${hold.toFixed(1)}% (min 65%)`);
+    band("push-ceiling", push <= 90, `callpush pooled ${push.toFixed(1)}% (max 90%)`);
+    // Informative in iteration 4 (reviewed in iteration 5): reported, never fails
+    const gap = push - hold;
+    report.push(`${gap <= 15 ? "info  " : "INFO  "} call gap ${gap.toFixed(1)} points (callpush minus callhold, target 15 or less, informative)`);
   });
 
   it("D-84 real decisions: at least 1.0 a month (guided, flashpoint control seeds, months 2-12)", () => {

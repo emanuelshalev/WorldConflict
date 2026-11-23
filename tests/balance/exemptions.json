@@ -12,10 +12,6 @@
       "note": "D-84 4.4: Quarantine China wins by waiting (89% with every call skipped, 36 games). Needs one primary condition that asks for a move (Game Designer, flashpoint data, then npm run bench:reveal); blocking once that lands."
     },
     {
-      "check": "call-gap",
-      "note": "D-84 real-harness miss (iteration 4 build): callpush 83.2% against callhold 71.2% at 36 games, 12.0 points apart (band 8; emulated 0.8). Half of it is water-war India (callhold 100%, callpush 6%, smart 0% already before D-84). Reported to the Game Designer to revise; not tuned in the build (D-84 reversal rule)."
-    },
-    {
       "check": "random-pooled",
       "note": "Known pre-existing gap (ledger D-49): the random policy sits below its 15-45% band on most seats (0% on USA, UKR, ISR Term). Logged, not retuned."
     }

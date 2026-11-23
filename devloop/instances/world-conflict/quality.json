@@ -260,9 +260,9 @@
         },
         {
           "id": "call-balance",
-          "label": "Mission side against calm side of the call (points apart)",
-          "gate": "D-84: no fixed rule wins the call",
-          "source": { "adapter": "balance", "args": { "metric": "call-gap" } },
+          "label": "Calm side above mission side of the call (points; always the calm card minus always the mission card, pooled)",
+          "gate": "D-84 revision: the calm card is never a trap (directional call bands, decision-call-balance.md 5.2)",
+          "source": { "adapter": "balance", "args": { "metric": "call-trap" } },
           "direction": "lower",
           "threshold": 8,
           "noise": { "kind": "none", "why": "seeded harness" },

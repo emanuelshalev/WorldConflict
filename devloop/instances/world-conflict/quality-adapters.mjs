@@ -10,8 +10,9 @@ export const adapters = {
    * Balance bands from the reduced harness (`npm run verify -- --balance`, tests/balance/bands.spec.ts):
    * the log lists every band as "ok", "FAIL" or "EXEMPT" (CLAUDE.md balance targets).
    * args.metric: failed (bands out of range, default) | exempt | smart-pooled (percent) | tension-median
-   * | staff-pooled (share, D-84) | guided-in-band (bool, 65-90%) | call-gap (points) | real-decisions
-   * (per month, control seeds).
+   * | staff-pooled (share, D-84) | guided-in-band (bool, 65-90%) | call-trap (points, callhold minus
+   * callpush, pooled; D-84 revision) | call-gap (points, callpush minus callhold, informative)
+   * | real-decisions (per month, control seeds).
    */
   balance(args, ctx) {
     const art = ctx.artifact(args.log ?? '.verify/balance.log');
@@ -31,7 +32,8 @@ export const adapters = {
     else if (metric === 'guided-in-band') {
       const g = Number(/guided pooled ([\d.]+)%/.exec(text)?.[1] ?? Number.NaN);
       value = Number.isNaN(g) ? g : g >= 65 && g <= 90;
-    } else if (metric === 'call-gap') value = Number(/call gap ([\d.]+) points/.exec(text)?.[1] ?? Number.NaN);
+    } else if (metric === 'call-trap') value = Number(/call trap (-?[\d.]+) points/.exec(text)?.[1] ?? Number.NaN);
+    else if (metric === 'call-gap') value = Number(/call gap (-?[\d.]+) points/.exec(text)?.[1] ?? Number.NaN);
     else if (metric === 'real-decisions') value = Number(/real decisions per month ([\d.]+)/.exec(text)?.[1] ?? Number.NaN);
     else return { missing: `unknown balance metric ${metric}` };
     if (Number.isNaN(value)) return { missing: `${metric} not found in the balance log` };
