@@ -10,6 +10,7 @@ import {
 } from "../../src/core/advisors.js";
 import { monthStateFor } from "../../src/core/availability.js";
 import { actionCostPC, PUSH_PC } from "../../src/core/costs.js";
+import { createDataLoader } from "../../src/core/data-loader.js";
 import { itemPrices, optionImpact } from "../../src/core/missionImpact.js";
 import { missionWarning } from "../../src/core/preview.js";
 import { TurnEngine } from "../../src/core/turn.js";
@@ -260,9 +261,11 @@ describe("D84-SETTING: Let the Chief of Staff make my calls restores the full on
   });
 });
 
-describe("D84-DESK-TRUTH: what the desk shows for a crisis is what Execute sends (setupMonth)", () => {
-  // design-review-your-call.md RC-1: a call crisis was left without an answer while the desk said
-  // "Recommended: X", so the engine ran the default. Three answers: default a, cabinet c, chief b
+describe("D84-DESK-TRUTH: what the desk says happens to each crisis is what Execute sends (setupMonth)", () => {
+  // design-review-your-call.md RC-1: a call crisis was sent without an answer while the desk said
+  // "Recommended: X". Now a call with the setting off has no answer and the desk says what leaving
+  // it does; with the setting on it starts on the Chief of Staff's pick. Three answers: default a
+  // (costs 1), chief b (price 1), cabinet c
   let stored: string | null = null;
   beforeEach(() => {
     vi.resetModules();
@@ -278,16 +281,16 @@ describe("D84-DESK-TRUTH: what the desk shows for a crisis is what Execute sends
   });
   afterEach(() => vi.unstubAllGlobals());
 
-  const opt = (id: string) => ({ id, label: `answer ${id}`, description: "", effects: {}, tensionDelta: 0, actions: [], backedBy: [] });
-  const crisis = (id: string) => ({ id, turn: 1, title: id, situation: "", affectedCountries: [], options: [opt("a"), opt("b"), opt("c")], deadlineTurn: 1, templateId: "t", urgency: "URGENT" as const, defaultOptionId: "a" });
-  const open = async (chiefCalls: boolean) => {
+  const opt = (id: string, pc = 0) => ({ id, label: `answer ${id}`, description: "", effects: pc ? { pc } : {}, tensionDelta: 0, actions: [], backedBy: [] });
+  const crisis = (id: string) => ({ id, turn: 1, title: id, situation: "", affectedCountries: [], options: [opt("a", -1), opt("b"), opt("c")], deadlineTurn: 1, templateId: "t", urgency: "URGENT" as const, defaultOptionId: "a" });
+  const open = async (chiefCalls: boolean, turn = 1) => {
     const { useGameStore } = await import("../../ui/src/store/gameStore.js");
     const month = await import("../../ui/src/lib/month.js");
     useGameStore.setState({
       saveId: "save-1",
       gameOver: false,
       monthKey: null,
-      worldState: { turn: 1, politicalCapital: 4, agenda: [], countries: [], playerCountryId: "USA", turnReport: null } as never,
+      worldState: { turn, politicalCapital: 4, agenda: [], countries: [], playerCountryId: "USA", turnReport: null } as never,
       pendingDecisions: [crisis("routine"), crisis("call")] as never,
       pendingActions: [],
       decisionChoices: {},
@@ -303,7 +306,7 @@ describe("D84-DESK-TRUTH: what the desk shows for a crisis is what Execute sends
         calls: [{ id: "call", kind: "crisis", title: "call", cards: [], missionCard: "b", calmCard: "c", chiefPick: "b", guide: "", skip: { label: "Skip", text: "", optionId: "a", hurts: [], breaks: [], bonusHurts: [] }, gap: 3, trade: true }],
         routine: [{ kind: "crisis", id: "routine", optionId: "c", label: "c" }],
         chief: { decisions: { call: "b" }, orders: [] },
-        prices: {},
+        prices: { call: { b: 1 } },
         reserve: 1,
       } as never,
     });
@@ -316,18 +319,35 @@ describe("D84-DESK-TRUTH: what the desk shows for a crisis is what Execute sends
     return { useGameStore, month, shown };
   };
 
-  it("setting off: the call starts on the recommended answer the desk names, and Accept all leaves it unconfirmed", async () => {
+  it("setting off: the call has no answer, the desk names what leaving it does, and Accept all leaves it open", async () => {
     const { useGameStore, month, shown } = await open(false);
     const s = useGameStore.getState();
-    expect(s.decisionChoices).toEqual({ routine: "c", call: "c" });
-    expect(shown("call").text).toBe("Recommended: answer c");
-    expect(shown("call").option?.id).toBe(s.decisionChoices.call);
+    expect(s.decisionChoices).toEqual({ routine: "c" });
+    expect(shown("call").kind).toBe("waiting");
+    expect(shown("call").option).toBeUndefined();
+    // The engine's default answer runs at the deadline (turn.ts resolveDecisions), with its cost
+    expect(shown("call").text).toBe("No answer yet. If you leave it: answer a · ◆ 1");
     expect(month.pendingApprovals().crises).toEqual(["routine"]);
     month.approveAll();
     const after = useGameStore.getState();
     expect(after.reviewed.call).toBeUndefined();
-    expect(after.decisionChoices.call).toBe("c"); // still sent: what the card shows
-    expect(shown("call").text).toBe("Recommended: answer c");
+    expect(after.decisionChoices.call).toBeUndefined(); // Execute sends none: the engine default runs
+    expect(shown("call").text).toBe("No answer yet. If you leave it: answer a · ◆ 1");
+  });
+
+  it("setting off, before the crisis's deadline month: leaving it passes with no answer", async () => {
+    const { shown } = await open(false, 0);
+    expect(shown("call").text).toBe("No answer yet. If you leave it: no answer is given and the crisis passes");
+  });
+
+  it("an open call holds no price; the meters count what leaving it does, and a picked priced answer pays its price", async () => {
+    const { useGameStore } = await open(false);
+    const { capitalLeft } = await import("../../ui/src/store/gameStore.js");
+    expect(capitalLeft(useGameStore.getState())).toBe(3); // 4 minus the default answer's cost
+    useGameStore.getState().chooseDecision("call", "b");
+    expect(capitalLeft(useGameStore.getState())).toBe(3); // 4 minus the price of b
+    const early = await open(false, 0);
+    expect(capitalLeft(early.useGameStore.getState())).toBe(4); // leaving it passes: nothing paid
   });
 
   it("setting on: the call starts on the Chief of Staff's pick and Accept all accepts it", async () => {
@@ -340,8 +360,13 @@ describe("D84-DESK-TRUTH: what the desk shows for a crisis is what Execute sends
     expect(shown("call").text).toBe("Accepted: answer b");
   });
 
-  it("the setting turned on after the month opened: Accept all takes the Chief of Staff's pick", async () => {
-    const { useGameStore, month } = await open(false);
+  it("the setting changed after the month opened: an unanswered call follows it at once", async () => {
+    const { useGameStore, month, shown } = await open(false);
+    useGameStore.setState({ chiefCalls: true });
+    expect(useGameStore.getState().decisionChoices.call).toBe("b");
+    expect(shown("call").text).toBe("Recommended: answer b");
+    useGameStore.setState({ chiefCalls: false });
+    expect(useGameStore.getState().decisionChoices.call).toBeUndefined();
     useGameStore.setState({ chiefCalls: true });
     month.approveAll();
     expect(useGameStore.getState().decisionChoices.call).toBe("b");
@@ -352,16 +377,39 @@ describe("D84-DESK-TRUTH: what the desk shows for a crisis is what Execute sends
       const { useGameStore, month, shown } = await open(chief);
       useGameStore.getState().chooseDecision("call", "a");
       month.approveAll();
+      useGameStore.setState({ chiefCalls: !chief });
       expect(useGameStore.getState().decisionChoices.call, `chiefCalls ${chief}`).toBe("a");
       expect(shown("call").text).toBe("Your pick: answer a");
       vi.resetModules();
     }
   });
 
-  it("a desk saved without the call's answer gets it when the month reopens", async () => {
-    stored = JSON.stringify({ pendingActions: [], decisionChoices: { routine: "b" }, reviewed: { routine: true }, dismissedStaff: [] });
-    const { useGameStore } = await open(false);
-    expect(useGameStore.getState().decisionChoices).toEqual({ routine: "b", call: "c" });
+  it("a saved desk follows the same rules: a missing staff pick is filled, an unreviewed call answer is dropped", async () => {
+    stored = JSON.stringify({ pendingActions: [], decisionChoices: { call: "c" }, reviewed: {}, dismissedStaff: [] });
+    const first = await open(false);
+    expect(first.useGameStore.getState().decisionChoices).toEqual({ routine: "c" });
+    stored = JSON.stringify({ pendingActions: [], decisionChoices: { routine: "b", call: "c" }, reviewed: { routine: true, call: true }, dismissedStaff: [] });
+    vi.resetModules();
+    const again = await open(false);
+    expect(again.useGameStore.getState().decisionChoices).toEqual({ routine: "b", call: "c" });
+  });
+
+  it("leftAnswer mirrors the engine: Hormuz Convoy USA month 1 passes, months 2 and 3 run the default", async () => {
+    const { leftAnswer } = await import("../../ui/src/store/gameStore.js");
+    let world = createDataLoader().newGame({ scenarioId: "2026", playerCountryId: "USA", seed: 4242, mode: "FLASHPOINT", flashpointId: "hormuz-convoy" });
+    const engine = new TurnEngine();
+    const seen: Array<string | null> = [];
+    for (let m = 0; m < 3; m++) {
+      const left = world.pendingDecisions.map((d) => ({ title: d.title, label: leftAnswer(world, d as never)?.label ?? null }));
+      world = engine.executeTurn(world, [], [], []).newState;
+      for (const l of left) {
+        const hit = world.turnReport?.decisions.find((d) => d.title === l.title);
+        expect(hit?.choice ?? null, `month ${m + 1} ${l.title}`).toBe(l.label === null ? null : `${l.label} (no decision taken)`);
+        seen.push(l.label);
+      }
+    }
+    expect(seen[0]).toBeNull();
+    expect(seen.slice(1).every((x) => x !== null)).toBe(true);
   });
 });
 

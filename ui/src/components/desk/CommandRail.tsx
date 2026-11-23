@@ -5,7 +5,7 @@ import { MEETING_SLOTS, type PendingAction, useGameStore } from '../../store/gam
 import { flag } from '../../lib/format';
 import { pcCost } from '../../lib/actions';
 import { budgetShare, budgetStatus, money } from '../../lib/budget';
-import { crisisSelection, pcIncome, planSummary, proposalEffects } from '../../lib/month';
+import { crisisSelection, leaveText, pcIncome, planSummary, proposalEffects } from '../../lib/month';
 import { StaffPicks } from './StaffPicks';
 import { useRecommendedOpen, useStaffPicks } from '../../lib/useStaffPicks';
 import { approveProposal } from '../../store/gameStore';
@@ -145,12 +145,12 @@ export function Tray() {
             </span>
             <span className="slot-text">
               <b>{o?.label ?? 'No answer yet'}</b>
-              <small>{d.title}</small>
+              <small>{o ? d.title : `${d.title}. ${leaveText(d, world)}`}</small>
             </span>
             {sel.kind === 'yours' || sel.kind === 'approved' ? (
               <Stamp word={sel.kind === 'yours' ? 'YOUR PICK' : 'ACCEPTED'} size="sm" animate={false} tilt={-4} />
             ) : (
-              <span className="sel-mini">Recommended</span>
+              <span className="sel-mini">{sel.kind === 'waiting' ? 'Open' : 'Recommended'}</span>
             )}
           </button>
         );

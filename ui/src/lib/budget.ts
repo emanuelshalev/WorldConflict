@@ -1,4 +1,4 @@
-import { MEETING_SLOTS, type GameState, committedActions, useGameStore } from '../store/gameStore';
+import { MEETING_SLOTS, type GameState, committedActions, crisisAnswer, useGameStore } from '../store/gameStore';
 import { pcCost } from './actions';
 
 /** Share of the monthly defense budget each order uses. Mirrors src/core/costs.ts BUDGET_SHARE. */
@@ -32,7 +32,7 @@ export function budgetStatus(state: GameState = useGameStore.getState()): Budget
   // the same rule as capitalLeft(), so the meters show what the engine will charge
   const price = (id: string, optionId: string | undefined) => (optionId ? (state.advice?.prices?.[id]?.[optionId] ?? 0) : 0);
   const crisis = state.pendingDecisions.reduce((sum, d) => {
-    const o = d.options.find((x) => x.id === (state.decisionChoices[d.id] ?? d.defaultOptionId ?? d.options[0]?.id));
+    const o = crisisAnswer(state, d);
     return sum + (o?.effects.pc ?? 0) - price(d.id, state.decisionChoices[d.id]);
   }, 0);
   const meetings = (world.agenda ?? []).reduce((sum, m) => {

@@ -1,10 +1,15 @@
 // D84-DESK-TRUTH (design-review-your-call.md RC-1, S1): a crisis the engine marks as a call was
 // left without an answer while the desk said it would go ahead on "Recommended: X", so Execute sent
-// nothing and the engine ran the default answer. Guard: on Hormuz Convoy USA (seed 4242) and
-// CO-UKR-MAYA1, months 1 and 2, with and without pressing Accept all recommended first, the answer
-// the desk names for every open crisis is the one in the POST /api/turn payload (or the engine
-// default, when the desk names the default), the one the turn report says ran, and the one the
-// replay record (world.inputs) carries.
+// nothing and the engine did something else. Rule: what the desk says will happen to each open
+// crisis is what the POST /api/turn body (or, with no answer, the engine) does, and what the turn
+// report and the replay record (world.inputs) record. A crisis with an answer shows it
+// ("Recommended: X", "Accepted: X", "Your pick: X") and sends it. A call with "Let the Chief of
+// Staff make my calls" off shows "No answer yet. If you leave it: Y" (with Y's cost when it has
+// one): nothing is sent and the report shows Y "(no decision taken)", or no entry when the desk
+// says the crisis passes. With the setting on, the Chief of Staff's pick everywhere.
+// Guard: Hormuz Convoy USA (seed 4242) and CO-UKR-MAYA1, months 1 and 2: setting off with and
+// without Accept all recommended, and setting on with Accept all. The greyed-out Accept all never
+// says "every recommendation is decided" while a crisis is still open.
 //   node devloop/instances/world-conflict/scenarios-qa/regressions/D84-DESK-TRUTH.mjs <outDir> <baseUrl> <apiUrl>
 import path from 'node:path';
 import { args, run, startGame } from './_lib.mjs';
@@ -14,7 +19,13 @@ const SEATS = [
   { name: 'hc-usa', seat: { flashpointId: 'hormuz-convoy', countryId: 'USA', title: 'Hormuz Convoy', seed: 4242 } },
   { name: 'co-ukr', seat: { flashpointId: 'ceasefire-or-collapse', countryId: 'UKR', title: 'Ceasefire or Collapse', seedCode: 'CO-UKR-MAYA1' } },
 ];
+const VARIANTS = [
+  { key: '', accept: false, chief: false },
+  { key: '-accept', accept: true, chief: false },
+  { key: '-chief', accept: true, chief: true },
+];
 const MONTHS = 2;
+const PASSES = 'no answer is given and the crisis passes';
 
 /** The selection text the desk shows for a crisis: its stage badge, its "Also on your desk" row or its navigator row. */
 const deskText = (p, title) =>
@@ -34,11 +45,21 @@ const deskText = (p, title) =>
     return '';
   }, title);
 
+/** What the desk says will happen: { pick } for an answer it shows, { left, cost } for a crisis with none. */
+function readDesk(text) {
+  const named = /^(Recommended|Accepted|Your pick):\s*(.+)$/.exec(text);
+  if (named) return { pick: named[2] };
+  const left = /^No answer yet\. If you leave it: (.+?)(?: · ◆ (\d+))?$/.exec(text);
+  if (left) return { left: left[1], cost: left[2] ? Number(left[2]) : 0 };
+  return {};
+}
+
 await run('D84-DESK-TRUTH', async (g, track) => {
   for (const { name, seat } of SEATS)
-    for (const accept of [false, true]) {
-      const tag = `${name}${accept ? '-accept' : ''}`;
-      const s = track(await startGame({ variant: `d84-desk-${tag}`, device: 'laptop', out: path.join(out, tag), base, seat }));
+    for (const v of VARIANTS) {
+      const tag = `${name}${v.key}`;
+      const init = v.chief ? () => localStorage.setItem('worldconflict.chiefCalls', 'on') : undefined;
+      const s = track(await startGame({ variant: `d84-desk-${tag}`, device: 'laptop', out: path.join(out, tag), base, seat, init }));
       const p = s.page;
       let req = null;
       let res = null;
@@ -54,8 +75,9 @@ await run('D84-DESK-TRUTH', async (g, track) => {
         const load = await p.evaluate(async (u) => (await fetch(u)).json().catch(() => null), `${api}/load/${sid}`);
         const pending = load?.pendingDecisions ?? load?.worldState?.pendingDecisions ?? [];
         const calls = new Set((load?.advice?.calls ?? []).filter((c) => c.kind === 'crisis').map((c) => c.id));
+        const chiefPicks = load?.advice?.chief?.decisions ?? {};
         g.check(pending.length > 0, `${where}: a crisis is open (${pending.length})`);
-        if (accept) {
+        if (v.accept) {
           await s.click(/^Review \d+ recommended/i, { timeout: 800 });
           await p.waitForTimeout(400);
           const pressed = await s.click(/^Accept all recommended/i, { timeout: 1500 });
@@ -66,17 +88,33 @@ await run('D84-DESK-TRUTH', async (g, track) => {
           console.log(`     ${where}: the button now says "${main}"`);
           if (/every recommendation is decided/.test(main)) {
             const still = [];
-            for (const d of pending) if (/^Recommended:/.test(await deskText(p, d.title))) still.push(d.title);
-            g.check(!still.length, `${where}: "every recommendation is decided" only when no crisis is still on its recommendation (open: ${still.join(', ') || 'none'})`);
+            for (const d of pending) if (/^(Recommended:|No answer yet)/.test(await deskText(p, d.title))) still.push(d.title);
+            g.check(!still.length, `${where}: "every recommendation is decided" only when no crisis is still open (open: ${still.join(', ') || 'none'})`);
           }
+          for (const t of (main.match(/Still open: ([^|]+)/)?.[1] ?? '').split(', ').filter(Boolean))
+            g.check(pending.some((d) => main.includes(d.title)), `${where}: the still-open line names a crisis on the desk ("${t.trim()}")`);
         }
         const desk = {};
         for (const d of pending) {
           const text = await deskText(p, d.title);
-          const label = text.replace(/^(Recommended|Accepted|Your pick):\s*/, '');
-          const o = d.options.find((x) => x.label === label);
-          desk[d.id] = o?.id;
-          g.check(!!o, `${where}: the desk names an answer for "${d.title}"${calls.has(d.id) ? ' (a call)' : ''} ("${text}")`);
+          const said = readDesk(text);
+          const call = calls.has(d.id);
+          if (said.pick) {
+            const o = d.options.find((x) => x.label === said.pick);
+            desk[d.id] = { send: o?.id, runs: o?.id };
+            g.check(!!o, `${where}: the desk names an answer for "${d.title}"${call ? ' (a call)' : ''} ("${text}")`);
+            if (call && v.chief && chiefPicks[d.id]) g.check(o?.id === chiefPicks[d.id], `${where} "${d.title}": with the setting on the call shows the Chief of Staff's pick (${chiefPicks[d.id]}, desk ${o?.id})`);
+            if (call && !v.chief) g.check(/^Your pick/.test(text), `${where} "${d.title}": with the setting off a call shows an answer only when the player picked one ("${text}")`);
+          } else if (said.left) {
+            const passes = said.left === PASSES;
+            const o = passes ? null : d.options.find((x) => x.label === said.left);
+            g.check(passes || !!o, `${where}: the desk names what leaving "${d.title}" does ("${text}")`);
+            desk[d.id] = { send: undefined, runs: o?.id ?? null };
+            if (o) g.check(said.cost === Math.max(0, -(o.effects?.pc ?? 0)), `${where} "${d.title}": the cost shown for leaving it (◆ ${said.cost}) is the answer's (${o.effects?.pc ?? 0})`);
+            g.check(call && !(v.chief && chiefPicks[d.id]), `${where} "${d.title}": only a call left to the player has no answer${v.chief ? ' (setting on)' : ''}`);
+          } else {
+            g.check(false, `${where}: the desk says what happens to "${d.title}" ("${text}")`);
+          }
         }
         req = null;
         res = null;
@@ -90,12 +128,14 @@ await run('D84-DESK-TRUTH', async (g, track) => {
         const input = world?.inputs?.[world.inputs.length - 1];
         const recorded = Object.fromEntries((input?.decisions ?? []).map((d) => [d.decisionId, d.optionId]));
         for (const d of pending) {
-          const shown = desk[d.id];
-          const runs = sent[d.id] ?? d.defaultOptionId;
-          g.check(runs === shown, `${where} "${d.title}": the answer sent (${sent[d.id] ?? `none, engine default ${d.defaultOptionId}`}) is the one the desk names (${shown})`);
+          const want = desk[d.id];
+          if (!want) continue;
+          g.check(sent[d.id] === want.send, `${where} "${d.title}": the answer sent (${sent[d.id] ?? 'none'}) is what the desk says (${want.send ?? 'none'})`);
           const r = report.find((x) => x.id === d.id || x.decisionId === d.id || x.title === d.title);
-          g.check(!!r && r.optionId === shown, `${where} "${d.title}": the turn report's answer (${r?.optionId ?? 'none'}: ${r?.choice ?? ''}) is the one the desk names (${shown})`);
-          g.check((recorded[d.id] ?? d.defaultOptionId) === shown, `${where} "${d.title}": the replay record carries the answer sent (${recorded[d.id] ?? 'none'})`);
+          const label = (id) => d.options.find((o) => o.id === id)?.label;
+          const expected = want.runs == null ? null : want.send ? label(want.runs) : `${label(want.runs)} (no decision taken)`;
+          g.check((r?.choice ?? null) === expected, `${where} "${d.title}": the turn report (${r?.choice ?? 'no entry'}) shows what the desk said would happen (${expected ?? 'no entry: it passes'})`);
+          g.check(recorded[d.id] === want.send, `${where} "${d.title}": the replay record carries the answer sent (${recorded[d.id] ?? 'none'})`);
         }
         if (m === MONTHS) break;
         const next = p.getByRole('button', { name: /^Next month/i }).first();

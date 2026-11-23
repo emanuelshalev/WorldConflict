@@ -1429,8 +1429,24 @@ export async function fetchPreview(action: {
 }
 
 /**
+ * What the engine does with a crisis sent without an answer (src/core/turn.ts resolveDecisions):
+ * from its deadline month on it resolves on its default answer (no price paid); before that it
+ * passes with no answer, and null is returned.
+ */
+export function leftAnswer(world: Pick<WorldState, 'turn'> | null | undefined, d: PendingDecision): DecisionOption | null {
+  if (!world || world.turn <= d.deadlineTurn - 1) return null;
+  return d.options.find((o) => o.id === d.defaultOptionId) ?? d.options[0] ?? null;
+}
+
+/** The answer a crisis resolves on this month: the one chosen, else what leaving it does (leftAnswer). */
+export function crisisAnswer(state: GameState, d: PendingDecision): DecisionOption | null {
+  const chosen = d.options.find((o) => o.id === state.decisionChoices[d.id]);
+  return chosen ?? leftAnswer(state.worldState, d);
+}
+
+/**
  * Political capital left this month: the bank, plus or minus the crisis answers (an unanswered
- * crisis falls to its default option, so it counts), minus the orders already queued.
+ * crisis counts what leaving it does, leftAnswer), minus the orders already queued.
  */
 export function capitalLeft(state: GameState = useGameStore.getState()): number {
   const world = state.worldState;
@@ -1438,7 +1454,7 @@ export function capitalLeft(state: GameState = useGameStore.getState()): number 
   // A chosen answer on the mission side also pays its price (D-84, src/core/costs.ts PUSH_PC)
   const price = (id: string, optionId: string | undefined) => (optionId ? (state.advice?.prices?.[id]?.[optionId] ?? 0) : 0);
   const crisisPc = state.pendingDecisions.reduce((sum, d) => {
-    const option = d.options.find((o) => o.id === (state.decisionChoices[d.id] ?? d.defaultOptionId ?? d.options[0]?.id));
+    const option = crisisAnswer(state, d);
     return sum + (option?.effects.pc ?? 0) - price(d.id, state.decisionChoices[d.id]);
   }, 0);
   // Meetings you attend can cost capital too (a state visit, a hotline); deputies cost nothing

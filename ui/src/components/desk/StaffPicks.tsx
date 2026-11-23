@@ -1,6 +1,6 @@
 import { useId, useState } from 'react';
 import { IconCheck, IconChecks, IconChevronDown, IconInfoCircle, IconListDetails, IconPencil } from '@tabler/icons-react';
-import { type StaffPickItem, approveAll, approveLabel, approveStaffPick, crisisSelection, openStaffPick } from '../../lib/month';
+import { type StaffPickItem, approveAll, approveLabel, approveStaffPick, openStaffPick } from '../../lib/month';
 import { useGameStore } from '../../store/gameStore';
 import { useRecommendedOpen, useStaffPicks } from '../../lib/useStaffPicks';
 import { TERMS } from '../../lib/glossary';
@@ -91,17 +91,13 @@ function PickRow({ item, onDone, onNavigate }: { item: StaffPickItem; onDone: ()
 
 /**
  * What is still open once nothing waits to be accepted (design-review-your-call.md RC-1): a crisis
- * Accept all does not confirm (one your advisers disagree on) still goes ahead on the answer its
- * card shows unless the player changes it, so the button never says every recommendation is decided
- * while one is open.
+ * Accept all does not decide (one your advisers disagree on) is named, so the button never says
+ * every recommendation is decided while one is open. Its card says what leaving it does.
  */
 function useStillOpen(): string | null {
   return useGameStore((s) => {
-    const open = s.pendingDecisions.filter((d) => !s.reviewed[d.id]);
-    if (!open.length) return null;
-    if (open.length > 1) return `Still open: ${open.length} crises go ahead on their recommended answers unless you change them`;
-    const sel = crisisSelection(open[0], s.decisionChoices, s.reviewed);
-    return `Still open: ${open[0].title} goes ahead on ${sel.text} unless you change it`;
+    const open = s.pendingDecisions.filter((d) => !s.reviewed[d.id]).map((d) => d.title);
+    return open.length ? `Still open: ${open.join(', ')}` : null;
   });
 }
 

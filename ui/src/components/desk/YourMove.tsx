@@ -215,7 +215,8 @@ export function DecisionStage({ item, primary = false, onlyLede = false }: { ite
   const notes = !!useGameStore.getState().advice?.missionNotes;
   const best = meeting ? undefined : notes ? (note ? item.options.find((o) => o.id === note.optionId) : undefined) : missionPick(item);
   const bestText = note ? bestTagText(note) : undefined;
-  const chosenId = choices[item.id] ?? (meeting ? undefined : cab?.id);
+  // The answer in choices is what Execute sends; a crisis with none (a call left open) selects no card
+  const chosenId = choices[item.id];
   const urgency = item.urgency === 'EXISTENTIAL' ? 'Existential' : item.urgency === 'URGENT' ? 'Urgent' : '';
   const kindWord = meeting ? KIND_WORD[meeting.kind] : 'Crisis';
   const kicker = `${primary ? 'Your move · ' : ''}${urgency ? `${urgency} ` : ''}${urgency ? kindWord.toLowerCase() : kindWord}`;

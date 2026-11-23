@@ -708,7 +708,7 @@ findings:
     title: "Recommendations are listed under \"Recommended\" next to every Accept control; the button names its count and never accepts unseen (wording D-72)"
     source: real-signals/RS-005-ceo-staff-picks-unclear-2026-11-23.md (CEO playtest); D-64; words D-71, D-72
     covers: [ui/src/components/desk/StaffPicks.tsx, ui/src/components/desk/CommandRail.tsx, ui/src/components/desk/Navigator.tsx, ui/src/lib/useStaffPicks.ts, ui/src/lib/month.ts, ui/src/styles/staff-picks.css, ui/src/lib/glossary.ts]
-    changed: "design-review-your-call.md RC-1: the greyed-out Accept all may read \"Nothing else to accept. Still open: <crisis> goes ahead on Recommended: <answer> unless you change it\" while a crisis Accept all leaves open; the guard accepts that reason as well as \"Nothing to accept\""
+    changed: "design-review-your-call.md RC-1: the greyed-out Accept all may read \"Nothing else to accept. Still open: <crisis title>\" while a crisis Accept all leaves open (a call with no answer yet); the guard accepts that reason as well as \"Nothing to accept\""
     guards:
       - vitest: tests/ui-staff-picks.spec.ts
       - vitest: tests/ui-glossary.spec.ts
@@ -965,9 +965,9 @@ findings:
       - vitest: tests/core/your-call.spec.ts
         name: "D84-CALL-TRAP"
   - id: D84-DESK-TRUTH
-    title: "What the desk shows for a crisis is what Execute sends: every crisis, a call included, carries the answer the desk names; the turn report and the replay record show that answer; Accept all never says every recommendation is decided while a crisis is still open"
+    title: "What the desk says will happen to each crisis is what Execute does: an answer shown is the answer sent; a call left open (Chief of Staff setting off) shows no answer and says what leaving it does, which is what the engine runs; with the setting on, the Chief of Staff's pick everywhere; the turn report and the replay record agree; Accept all never says every recommendation is decided while a crisis is still open"
     source: runs/iter-04/design-review-your-call.md RC-1 (S1; probe-accept-all-usa.txt, probe-accept-all-ukr.txt, usa-aa-m2-after-1440x900.jpg)
-    covers: [ui/src/lib/month.ts, ui/src/components/desk/StaffPicks.tsx, ui/src/store/gameStore.ts]
+    covers: [ui/src/lib/month.ts, ui/src/components/desk/StaffPicks.tsx, ui/src/components/desk/YourMove.tsx, ui/src/components/desk/CommandRail.tsx, ui/src/store/gameStore.ts, ui/src/lib/budget.ts]
     guards:
       - vitest: tests/core/your-call.spec.ts
         name: "D84-DESK-TRUTH"
