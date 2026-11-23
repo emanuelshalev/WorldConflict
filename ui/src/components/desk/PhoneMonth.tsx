@@ -11,6 +11,7 @@ import { executeNow } from '../../lib/agenda';
 import { ModeSwitch } from '../StateBand';
 import { useStaffPicks } from '../../lib/useStaffPicks';
 import { TERMS } from '../../lib/glossary';
+import { CoachBubble } from './Coach';
 
 /**
  * Phones (design-layout L-15, design-agenda 0.1): their own tree, one thing per screen. The sticky
@@ -153,6 +154,9 @@ export function PhoneBottom({ map = false }: { map?: boolean }) {
       )}
       {review || map ? (
         <>
+          {/* Step 3 on the phone: Execute is the next action only here (the review screen), so the
+              tip stands in the bar above it; never over the order list (CA, DR-OC-5; RS-008-2) */}
+          {review && !map && <CoachBubble step="execute" place="inline" />}
           <p className="ph-conseq">
             <b>If you execute now:</b> {executeNow()[0]}
           </p>

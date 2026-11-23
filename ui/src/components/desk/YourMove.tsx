@@ -266,7 +266,6 @@ function DecisionThing({ item, compact }: { item: AgendaItem; compact: boolean }
       </div>
       <div className="th-ans">
         <div className="ask-row">
-          {!compact && <CoachBubble step="move" place="below" />}
           <h2 className="ask">
             {call ? `${TERMS.yourCall.name}: your advisers disagree. ` : ''}What do you {noun}? Choose one of {options.length} answers, or skip (last card).
           </h2>
@@ -276,6 +275,8 @@ function DecisionThing({ item, compact }: { item: AgendaItem; compact: boolean }
             </button>
           )}
         </div>
+        {/* Step 1 under the question, over the answers, in its own place (RS-008-2) */}
+        {!compact && <CoachBubble step="move" place="inline" />}
         {call && guide && call.guide && (
           <p className="call-guide" data-call-guide="">
             <b>Chief of Staff:</b> {call.guide}

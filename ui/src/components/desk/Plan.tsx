@@ -308,8 +308,9 @@ function PlanBar({ map }: { map: boolean }) {
       </p>
       <div className="pbar-exec">
         <Blocked />
+        {/* In the bar, step 3 stands beside Execute inside the bar, not over the list above it (RS-008-2) */}
+        <CoachBubble step="execute" place="inline" />
         <div className="ex-wrap">
-          <CoachBubble step="execute" place="above" />
           <ExecuteButton compact />
         </div>
       </div>
