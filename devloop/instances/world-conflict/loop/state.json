@@ -153,9 +153,54 @@
       "iteration": 4,
       "stage": "Build",
       "tier": "T1"
+    },
+    {
+      "gate": "verify",
+      "result": "pass",
+      "commit": "8b90160171752ccb85a91420c5ab5b7b113ba25f",
+      "codeTree": "7314fe528f17b448",
+      "evidence": ".verify/summary.json",
+      "note": "modes default",
+      "t": "2026-11-23T05:50:51.809Z",
+      "iteration": 4,
+      "stage": "Build",
+      "steps": [
+        "registry",
+        "test",
+        "lint",
+        "ui-lint",
+        "build",
+        "smoke",
+        "reveal",
+        "visual",
+        "regressions",
+        "balance"
+      ]
+    },
+    {
+      "gate": "status-refresh",
+      "result": "pass",
+      "commit": "2ce56f77f5d934859ec4888b173d6c91fa776b4a",
+      "codeTree": "7314fe528f17b448",
+      "evidence": "dev_plan/project_status.html",
+      "note": "status-refresh T1",
+      "t": "2026-11-23T05:53:09.039Z",
+      "iteration": 4,
+      "stage": "Build",
+      "tier": "T1"
     }
   ],
-  "merges": [],
+  "merges": [
+    {
+      "t": "2026-11-23T05:51:51.679Z",
+      "branch": "build-layout-audit",
+      "commit": "2ce56f77f5d934859ec4888b173d6c91fa776b4a",
+      "codeTree": "7314fe528f17b448",
+      "iteration": 4,
+      "stage": "Build",
+      "treeMatches": true
+    }
+  ],
   "overrides": [],
   "publishes": [
     {
@@ -168,6 +213,12 @@
       "note": "backfilled, published by hand before the controller"
     }
   ],
-  "owed": [],
+  "owed": [
+    {
+      "tier": "T1",
+      "because": "merge of build-layout-audit",
+      "t": "2026-11-23T05:51:51.680Z"
+    }
+  ],
   "blocked": []
 }
