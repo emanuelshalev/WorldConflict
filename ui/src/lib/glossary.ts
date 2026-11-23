@@ -166,6 +166,19 @@ export const TERMS = {
 
 export type TermId = keyof typeof TERMS;
 
+/**
+ * The family word on every order card's chip (design-order-cards.md section 4): one word per
+ * order family, shown with the family colour and the pictogram, never colour alone.
+ */
+export const ORDER_FAMILY_WORDS = {
+  diplo: 'Diplomacy',
+  mil: 'Military',
+  nuke: 'Nuclear',
+  intel: 'Covert',
+  econ: 'Economy',
+  home: 'Home',
+} as const;
+
 /** Fill `{n}` / `{m}` in a term's name or compact form. */
 export function term(text: string, n?: number | string, m?: number | string): string {
   return text.split('{n}').join(String(n ?? '')).split('{m}').join(String(m ?? ''));

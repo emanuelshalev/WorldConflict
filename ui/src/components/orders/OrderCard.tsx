@@ -5,7 +5,7 @@ import { type ConfirmNeed, type PendingAction, orderKey, queueOrder, useGameStor
 import { proposalEffects } from '../../lib/month';
 import { CardCost, CardShell } from '../game/CardShell';
 import { spendSeals } from '../game/SealFlight';
-import { type OrderDef, orderAction, orderBlurb, orderFor, orderLabel } from '../../lib/orders';
+import { FAMILY_WORD, type OrderDef, orderAction, orderBlurb, orderFor, orderLabel } from '../../lib/orders';
 import { TERMS, term } from '../../lib/glossary';
 import { pcCost } from '../../lib/actions';
 import { defenseShareOf, type MonthBlock } from '../../lib/availability';
@@ -13,8 +13,9 @@ import { pointAt } from '../../lib/pointAt';
 import { shake } from '../../lib/motion';
 import { sound } from '../../lib/sound';
 import { sceneForAction } from '../../scenes/kinds';
-import { actionFamily } from '../../scenes/actionIcons';
+import { logOrder } from '../../lib/orderLog';
 import { ConfirmFace } from './ConfirmFace';
+import { FamilyBand, FamilyChip, OrderPlate } from './OrderPictogram';
 import { OrderPreview } from './OrderPreview';
 import { previewOf } from './preview';
 import { useOrderState } from './useOrders';
@@ -69,8 +70,13 @@ function bankEl(): Element | null {
 function confirmCopy(def: OrderDef, label: string, need: ConfirmNeed) {
   if (def.type === 'NUCLEAR_STRIKE') return { kind: 'nuclear' as const, question: `Authorize a ${label.charAt(0).toLowerCase()}${label.slice(1)}?`, confirmText: 'Hold to authorize', cancelText: 'Stand down' };
   if (need.irreversible) return { kind: 'war' as const, question: `${label}?`, confirmText: def.type === 'DIPLOMACY_DECLARE_WAR' ? 'Declare war' : 'Give the order', cancelText: 'Keep the peace' };
-  return { kind: 'mission' as const, question: `${label} anyway?`, confirmText: 'Give the order', cancelText: 'Cancel' };
+  if (need.missionWarning) return { kind: 'mission' as const, question: `${label} anyway?`, confirmText: 'Give the order', cancelText: 'Cancel' };
+  // A danger order (D-75): one look at the order before it is given, so a mis-pick by icon is caught
+  return { kind: 'danger' as const, question: `${label}?`, confirmText: 'Give the order', cancelText: 'Cancel' };
 }
+
+/** Plate sizes per surface (design-order-cards.md section 5): never below 34 px on a card. */
+const PLATE = { tile: 52, compact: 42, row: 46, slot: 34 } as const;
 
 /**
  * The order card (design-orders.md §4): one component for the desk catalog, search hits, staff
@@ -98,6 +104,7 @@ export function OrderCard({
   const st = useOrderState(def, targetId);
   const remove = useGameStore((s) => s.removePendingAction);
   const home = useGameStore((s) => s.worldState?.playerCountryId);
+  const turnNo = useGameStore((s) => s.worldState?.turn);
   const wrap = useRef<HTMLDivElement>(null);
   const uid = useId().replace(/:/g, '');
   const [confirm, setConfirm] = useState<ConfirmNeed | null>(null);
@@ -122,7 +129,8 @@ export function OrderCard({
   const isProposal = !!proposal && !isQueued;
   const proposalFx = proposal ? proposalEffects(proposal) : '';
   const off = avail.state === 'unaffordable' || avail.state === 'invalid';
-  const fam = actionFamily(def.type);
+  const fam = def.family;
+  const famWord = FAMILY_WORD[fam];
 
   const pointBlock = useCallback(
     (b: MonthBlock | null) => {
@@ -149,8 +157,9 @@ export function OrderCard({
 
   const give = async (confirmed = false) => {
     if (busy) return;
-    if (!confirmed && !isProposal && (def.irreversible || entry?.irreversible || entry?.missionWarning)) {
+    if (!confirmed && !isProposal && (def.irreversible || entry?.irreversible || entry?.missionWarning || def.danger)) {
       setConfirm({ irreversible: !!(def.irreversible || entry?.irreversible), missionWarning: entry?.missionWarning ?? null, preview: null });
+      logOrder('confirm-open', def.id, { target: st.targetId, month: turnNo });
       return;
     }
     setBusy(true);
@@ -167,6 +176,7 @@ export function OrderCard({
     }
     if (r.confirm) {
       setConfirm(r.confirm);
+      if (!confirm) logOrder('confirm-open', def.id, { target: st.targetId, month: turnNo });
       return;
     }
     setConfirm(null);
@@ -198,9 +208,10 @@ export function OrderCard({
   }));
 
   const cancelConfirm = useCallback(() => {
+    logOrder('confirm-cancel', def.id, { target: st.targetId, month: turnNo });
     setConfirm(null);
     window.setTimeout(() => wrap.current?.querySelector<HTMLButtonElement>('.wc-card-hit')?.focus({ preventScroll: true }), 0);
-  }, []);
+  }, [def.id, st.targetId, turnNo]);
 
   // ---------- the confirm face replaces the card ----------
   if (confirm) {
@@ -212,7 +223,7 @@ export function OrderCard({
     ];
     return (
       <div ref={wrap} className={`ord-wrap ord-${variant} is-confirming ${className}`.trim()} data-order-id={def.id} data-order-state="confirming">
-        <ConfirmFace {...copy} missionWarning={confirm.missionWarning} lines={lines} onConfirm={() => void give(true)} onCancel={cancelConfirm} />
+        <ConfirmFace {...copy} missionWarning={confirm.missionWarning} lines={lines} onConfirm={() => void give(true)} onCancel={cancelConfirm} order={{ id: def.id, family: fam, title: label }} />
       </div>
     );
   }
@@ -349,7 +360,7 @@ export function OrderCard({
     </button>
   );
 
-  const ariaLabel = off && block ? `${label}, unavailable: ${block.reason}` : isQueued ? `${label}, ${TERMS.inThisMonth.name.toLowerCase()}` : isProposal ? `${label}, ${TERMS.proposed.name.toLowerCase()}: accept${pc ? `, spends ◆ ${pc}` : ''}${proposalFx ? `. Will change: ${proposalFx}` : ''}` : `${label}, ${pc ? `costs ◆ ${pc}` : 'free'}${entry?.chance != null ? `, ${entry.chance}% chance` : ''}`;
+  const ariaLabel = off && block ? `${label}, unavailable: ${block.reason}` : isQueued ? `${label}, ${TERMS.inThisMonth.name.toLowerCase()}` : isProposal ? `${label}, ${TERMS.proposed.name.toLowerCase()}: accept${pc ? `, spends ◆ ${pc}` : ''}${proposalFx ? `. Will change: ${proposalFx}` : ''}` : `${label}, ${famWord}, ${pc ? `costs ◆ ${pc}` : 'free'}${entry?.chance != null ? `, ${entry.chance}% chance` : ''}`;
   const stateCls = `ord-${variant} st-${avail.state} fam-${fam}${compact ? ' ord-compact' : ''}${busy ? ' is-busy' : ''}${selected ? ' is-selected' : ''}${isProposal ? ' is-proposal' : ''}`;
   const desc = blurb ?? (compact ? undefined : orderBlurb(def, st.targetName));
 
@@ -371,12 +382,12 @@ export function OrderCard({
       }
     };
     return (
-      <div ref={wrap} className={`ord-wrap ${stateCls} ${className}`.trim()} data-order-id={def.id} data-order-state={avail.state} data-order-code={block?.code}>
+      <div ref={wrap} className={`ord-wrap ${stateCls} ${className}`.trim()} data-order-id={def.id} data-order-state={avail.state} data-order-code={block?.code} data-family={fam}>
         <CardShell
           layout="row"
           id={`ord-${def.id}-${uid}`}
           title={label}
-          art={sceneForAction(def.type)}
+          artNode={<OrderPlate id={def.id} family={fam} size={PLATE.row} queued={isQueued} />}
           home={home}
           other={st.targetId}
           mood={def.danger ? 'bad' : 'neutral'}
@@ -388,6 +399,7 @@ export function OrderCard({
           ariaLabel={ariaLabel}
         >
           <div className="ord-meta">
+            <FamilyChip family={fam} />
             {isQueued ? (
               <span className="ord-meta-in">
                 {TERMS.inThisMonth.name}
@@ -444,7 +456,7 @@ export function OrderCard({
       data-order-id={def.id}
       data-order-state={avail.state}
       data-order-code={block?.code}
-      style={{ ['--fam' as string]: `var(--fam-${fam})` }}
+      data-family={fam}
     >
       <CardShell
         layout="tile"
@@ -452,6 +464,21 @@ export function OrderCard({
         title={label}
         description={avail.state === 'available' ? desc : undefined}
         art={sceneForAction(def.type)}
+        // A 54 px scene crop is unreadable: compact tiles draw the family band instead
+        artNode={compact ? <FamilyBand id={def.id} family={fam} /> : undefined}
+        artOverlay={
+          compact ? (
+            <span className="ord-bandchip">
+              <FamilyChip family={fam} />
+            </span>
+          ) : undefined
+        }
+        lead={
+          <>
+            <OrderPlate id={def.id} family={fam} size={compact ? PLATE.compact : PLATE.tile} queued={isQueued} />
+            {!compact && <FamilyChip family={fam} />}
+          </>
+        }
         home={home}
         other={st.targetId}
         mood={def.danger ? 'bad' : 'neutral'}
@@ -537,13 +564,15 @@ export function OrderSlot({ action, index, onOpen }: { action: PendingAction; in
   const remove = useGameStore((s) => s.removePendingAction);
   const home = useGameStore((s) => s.worldState?.playerCountryId);
   const pc = pcCost(action.type);
+  const def = orderFor(action);
   return (
-    <div className="ord-wrap ord-slot st-queued" data-point-slot={index} data-order-id={orderFor(action)?.id}>
+    <div className={`ord-wrap ord-slot st-queued${def ? ` fam-${def.family}` : ''}`} data-point-slot={index} data-order-id={def?.id}>
       <CardShell
         layout="slot"
         id={`slot-${index}`}
         title={action.label}
         art={sceneForAction(action.type)}
+        artNode={def ? <OrderPlate id={def.id} family={def.family} size={PLATE.slot} /> : undefined}
         home={home}
         other={action.targetCountryId}
         cost={pc > 0 ? <span className="ord-chip ord-held num">◆ {pc}</span> : <span className="ord-chip num">free</span>}

@@ -1,10 +1,14 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { sound } from '../../lib/sound';
+import type { OrderFamily } from '../../lib/orders';
+import { TERMS } from '../../lib/glossary';
+import { FamilyChip, OrderPlate } from './OrderPictogram';
 
 /** How long the nuclear button must be held, ms (design-orders.md §4.4). */
 export const HOLD_MS = 1200;
 
-export type ConfirmKind = 'war' | 'nuclear' | 'mission';
+/** war and nuclear: irreversible; danger: a risky order (D-75 mis-pick check); mission: a warning. */
+export type ConfirmKind = 'war' | 'nuclear' | 'danger' | 'mission';
 
 export interface ConfirmFaceProps {
   kind: ConfirmKind;
@@ -20,6 +24,11 @@ export interface ConfirmFaceProps {
   cancelText: string;
   onConfirm: () => void;
   onCancel: () => void;
+  /**
+   * The order being confirmed (D-75): the face leads with its pictogram plate and family word,
+   * so a player who picked the wrong card by its icon sees which order this is before giving it.
+   */
+  order?: { id: string; family: OrderFamily; title: string };
 }
 
 /**
@@ -29,7 +38,7 @@ export interface ConfirmFaceProps {
  * 1.2 s press-and-hold (pointer, or Space/Enter held), with a fill bar; releasing early cancels
  * the hold. Esc or a press outside the face cancels. Never a native dialog.
  */
-export function ConfirmFace({ kind, question, missionWarning, lines, confirmText, cancelText, onConfirm, onCancel }: ConfirmFaceProps) {
+export function ConfirmFace({ kind, question, missionWarning, lines, confirmText, cancelText, onConfirm, onCancel, order }: ConfirmFaceProps) {
   const root = useRef<HTMLDivElement>(null);
   const safe = useRef<HTMLButtonElement>(null);
   const [progress, setProgress] = useState(0);
@@ -89,12 +98,27 @@ export function ConfirmFace({ kind, question, missionWarning, lines, confirmText
 
   const shown = lines.filter(Boolean).slice(0, 3);
   return (
-    <div ref={root} className={`ord-confirm kind-${kind}`} role="alertdialog" aria-modal="false" aria-labelledby={titleId} data-confirm={kind}>
+    <div ref={root} className={`ord-confirm kind-${kind}`} role="alertdialog" aria-modal="false" aria-labelledby={titleId} data-confirm={kind} data-confirm-order={order?.id}>
+      {order && (
+        <div className="ord-confirm-head">
+          <OrderPlate id={order.id} family={order.family} size={44} className="is-confirm" />
+          <div className="ord-confirm-id">
+            <span className="ord-confirm-chips">
+              <FamilyChip family={order.family} />
+              {(kind === 'war' || kind === 'nuclear') && <span className="ord-chip ord-noundo">{TERMS.noUndo.name}</span>}
+            </span>
+            <span className="ord-confirm-title" data-confirm-title="">
+              {order.title}
+            </span>
+          </div>
+        </div>
+      )}
       <h3 className="ord-confirm-q" id={titleId}>
         {question}
       </h3>
       {missionWarning && <p className="ord-confirm-mission">{missionWarning}</p>}
-      {kind !== 'mission' && <p className="ord-confirm-sub">There is no undo.{shown.length ? ' What your staff expect:' : ''}</p>}
+      {(kind === 'war' || kind === 'nuclear') && <p className="ord-confirm-sub">There is no undo.{shown.length ? ' What your staff expect:' : ''}</p>}
+      {kind === 'danger' && <p className="ord-confirm-sub">A risky order: check it is the one you meant.{shown.length ? ' What your staff expect:' : ''}</p>}
       {shown.length > 0 && (
         <ul className="ord-confirm-lines">
           {shown.map((l) => (

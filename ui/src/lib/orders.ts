@@ -1,4 +1,5 @@
 import type { CountryFull, PlayerViewCountry } from '../store/gameStore';
+import { ORDER_FAMILY_WORDS } from './glossary';
 
 /**
  * The single list of player orders: desk catalog, desk search, map menu, dossier and staff
@@ -7,7 +8,17 @@ import type { CountryFull, PlayerViewCountry } from '../store/gameStore';
  * presentation (family, category, danger, relevance, blurb). `tests/ui-orders-parity.spec.ts`
  * keeps both in step, and checks that the map and the desk offer the same orders per target.
  */
-export type OrderFamily = 'diplo' | 'mil' | 'intel' | 'nuke' | 'home';
+/**
+ * The six visual families (design-order-cards.md section 4): the D-66 five plus Nuclear as the
+ * hazard variant of Military. Each family is always shown four ways at once (pictogram, family
+ * word, plate colour, edge), never by colour alone.
+ */
+export type OrderFamily = 'diplo' | 'mil' | 'intel' | 'nuke' | 'econ' | 'home';
+
+/** The family word on every card's chip (glossary: one word per family). */
+export const FAMILY_WORD: Record<OrderFamily, string> = ORDER_FAMILY_WORDS;
+
+export const FAMILIES: readonly OrderFamily[] = ['diplo', 'mil', 'nuke', 'intel', 'econ', 'home'];
 export type OrderCategory = 'Diplomacy' | 'Military' | 'Intelligence' | 'Domestic';
 
 export interface OrderDef {
@@ -183,7 +194,7 @@ export const ORDERS: readonly OrderDef[] = [
     blurb: 'Rally the nation. Repetition dulls the message.',
   },
   {
-    id: 'reform', type: 'DOMESTIC_REFORM', verb: 'Reform program', family: 'home', category: 'Domestic', targeted: false,
+    id: 'reform', type: 'DOMESTIC_REFORM', verb: 'Reform program', family: 'econ', category: 'Domestic', targeted: false,
     blurb: 'Stability now, growth later. Wins no votes.',
   },
   {

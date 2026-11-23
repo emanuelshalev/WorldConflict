@@ -1,10 +1,12 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { API_BASE, ownerId, queueOrder, useGameStore } from '../../store/gameStore';
 import { CapitalSeals } from '../game/CapitalSeal';
-import { orderAction, orderById, type OrderDef } from '../../lib/orders';
+import { FAMILY_WORD, ORDERS, orderAction, orderById, orderLabel, type OrderDef } from '../../lib/orders';
 import { TERMS, term } from '../../lib/glossary';
 import { MapActionMenu } from '../MapActionMenu';
+import { CountryDetailPanel } from '../CountryDetailPanel';
 import { ConfirmFace } from './ConfirmFace';
+import { OrderPictogram, OrderPlate } from './OrderPictogram';
 import { OrderCard, OrderSlot } from './OrderCard';
 import { OrderCatalog } from './OrderCatalog';
 import { clearMenus, useMonthView } from './useOrders';
@@ -104,6 +106,8 @@ export default function OrdersGallery() {
     void (async () => {
       const ok = await newGallerySave();
       if (ok) await stageMonth();
+      // The dossier section shows India's dossier (same OrderCard rows as the map's phone sheet)
+      if (ok) useGameStore.getState().selectCountry(TARGET);
       if (alive) setReady(ok ? 'ok' : 'error');
     })();
     return () => {
@@ -153,17 +157,17 @@ export default function OrdersGallery() {
       <div className="og-grid three" data-og="confirm">
         <Cell label="Declare war" note="Focus lands on Keep the peace.">
           <div className="ord-wrap ord-tile is-confirming">
-            <ConfirmFace kind="war" question="Declare war on India?" lines={['World tension +15', 'You are outmatched (force ratio 0.62)', 'Both arsenals are operational: this war can end civilization']} confirmText="Declare war" cancelText="Keep the peace" onConfirm={record('war-declared')} onCancel={record('war-cancelled')} />
+            <ConfirmFace order={{ id: 'declare-war', family: 'mil', title: 'Declare war on India' }} kind="war" question="Declare war on India?" lines={['World tension +15', 'You are outmatched (force ratio 0.62)', 'Both arsenals are operational: this war can end civilization']} confirmText="Declare war" cancelText="Keep the peace" onConfirm={record('war-declared')} onCancel={record('war-cancelled')} />
           </div>
         </Cell>
         <Cell label="Nuclear strike" note="1.2 s press and hold, or Space or Enter held.">
           <div className="ord-wrap ord-tile is-confirming">
-            <ConfirmFace kind="nuclear" question="Authorize a nuclear strike on India?" lines={['A total embargo follows, every nation turns on you (relations -60)', 'India can strike back']} confirmText="Hold to authorize" cancelText="Stand down" onConfirm={record('nuclear-authorized')} onCancel={record('nuclear-cancelled')} />
+            <ConfirmFace order={{ id: 'nuclear-strike', family: 'nuke', title: 'Nuclear strike on India' }} kind="nuclear" question="Authorize a nuclear strike on India?" lines={['A total embargo follows, every nation turns on you (relations -60)', 'India can strike back']} confirmText="Hold to authorize" cancelText="Stand down" onConfirm={record('nuclear-authorized')} onCancel={record('nuclear-cancelled')} />
           </div>
         </Cell>
         <Cell label="Mission warning" note="Amber, shown once on the face.">
           <div className="ord-wrap ord-tile is-confirming">
-            <ConfirmFace kind="mission" question="Mass troops facing India anyway?" missionWarning="Mission at risk: keep the Indus Waters Treaty alive." lines={['World tension +4']} confirmText="Give the order" cancelText="Cancel" onConfirm={record('mission-given')} onCancel={record('mission-cancelled')} />
+            <ConfirmFace order={{ id: 'deploy-border', family: 'mil', title: 'Mass troops facing India' }} kind="mission" question="Mass troops facing India anyway?" missionWarning="Mission at risk: keep the Indus Waters Treaty alive." lines={['World tension +4']} confirmText="Give the order" cancelText="Cancel" onConfirm={record('mission-given')} onCancel={record('mission-cancelled')} />
           </div>
         </Cell>
       </div>
@@ -185,7 +189,30 @@ export default function OrdersGallery() {
         <MapActionMenu countryId={TARGET} x={vw < 700 ? 0 : 420} y={30} bounds={{ top: 0, bottom: 640, left: 0, right: Math.min(980, vw - 32) }} onClose={noop} inline />
       </div>
 
-      <H2>5. All orders (desk catalog with search)</H2>
+      <H2>4b. The dossier uses the same card</H2>
+      <div className="og-map og-dossier" data-og="dossier">
+        <CountryDetailPanel />
+      </div>
+
+      <H2>5. Pictograms (28 orders, plate at 52, 42, 34 px and bare at 24 px)</H2>
+      <div className="og-picts" data-og="pictograms">
+        {ORDERS.map((o) => (
+          <div key={o.id} className={`og-pict fam-${o.family}`} data-order-id={o.id}>
+            <OrderPlate id={o.id} family={o.family} size={52} />
+            <OrderPlate id={o.id} family={o.family} size={42} />
+            <OrderPlate id={o.id} family={o.family} size={34} />
+            <span className="og-pict-bare">
+              <OrderPictogram id={o.id} size={24} />
+            </span>
+            <span className="og-pict-name">
+              <b>{orderLabel(o).replace(/ (to|on|in|for|with|facing|of)$/, '')}</b>
+              <span>{FAMILY_WORD[o.family]}</span>
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <H2>6. All orders (desk catalog with search)</H2>
       <div className="og-catalog" data-og="catalog">
         <OrderCatalog target={target} setTarget={setTarget} onOpenOrder={noop} />
       </div>
