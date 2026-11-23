@@ -6,7 +6,10 @@
   "loopStart": "2026-11-22T05:37:25Z",
   "orchestrator": {
     "role": "Group Manager",
-    "windowsFrom": ["../progress/stages.jsonl", "../loop/events.jsonl"],
+    "windowsFrom": [
+      "../progress/stages.jsonl",
+      "../loop/events.jsonl"
+    ],
     "windows": [
       {
         "from": "2026-11-22T05:37:25Z",
@@ -35,29 +38,8 @@
       }
     ]
   },
-  "iterationWindows": [
-    {
-      "from": "2026-11-22T05:37:25Z",
-      "iteration": 0
-    },
-    {
-      "from": "2026-11-22T06:43:33Z",
-      "iteration": 1
-    },
-    {
-      "from": "2026-11-22T09:30:00Z",
-      "iteration": 2
-    },
-    {
-      "from": "2026-11-22T11:30:00Z",
-      "iteration": 3
-    },
-    {
-      "from": "2026-11-22T23:50:00Z",
-      "iteration": 4
-    }
-  ],
   "prices": {
+    "_asOf": "2026-11",
     "_note": "USD per million tokens, list prices as of 2026-11 (Anthropic pricing page, standard rates; cache read 5% of input, 5 minute write 1.25x, 1 hour write 2x, output 5x on Opus 5.5 and Sonnet 5.5; Haiku 5.5 writes are 1.25x and 2x input). To update: copy the new rates from the pricing page per model id, add a key for a new model id (a key also matches dated ids that start with it), then re-run usage-ledger.mjs --inject. Models without an entry count 0 USD and are listed in unpricedModels.",
     "claude-opus-5-5": {
       "input": 4,

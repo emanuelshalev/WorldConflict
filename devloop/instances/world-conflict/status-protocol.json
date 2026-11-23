@@ -43,7 +43,7 @@
     { "id": "quality",    "tab": "Iterations (quality scorecard)",     "tier": "T2", "source": "generated", "from": "quality.json via kit/evaluate.mjs (D-78)", "el": "qualitybox",
       "gen": { "kind": "quality", "spec": "quality.json" } },
     { "id": "iter-summary","tab": "Iterations (iteration summary)",    "tier": "T2", "source": "hand", "fields": ["LOOP.iterations[current].summary"], "el": "iterdetail" },
-    { "id": "usage",      "tab": "Consumption",                        "tier": "T3", "source": "generated", "from": "transcripts via usage/registry.json", "injector": "usage-ledger.mjs --inject USAGE", "el": "utiles",
+    { "id": "usage",      "tab": "Consumption",                        "tier": "T1", "source": "generated", "from": "transcripts via usage/registry.json", "injector": "usage-ledger.mjs --inject USAGE", "el": "utiles",
       "run": ["node", "devloop/kit/usage-ledger.mjs", "devloop/instances/world-conflict/usage/registry.json", "--inject", "{page}", "USAGE"] },
     { "id": "goals",      "tab": "Iterations (goals)",                 "tier": "T3", "source": "generated", "from": "goals.md", "el": "goalrows",
       "gen": { "kind": "goals", "from": "goals.md" } },

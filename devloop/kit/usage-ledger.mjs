@@ -12,7 +12,8 @@
 //   "loopStart": "ISO time", // usage before this is "Before the loop"
 //   "orchestrator": { "role": "Group Manager", "windowsFrom": ["../progress/stages.jsonl", "../loop/events.jsonl"],
 //                     "windows": [{ "from": "ISO", "iteration": 0, "stage": "Plan" }] }, // windows: hand fallback
-//   "iterationWindows": [{ "from": "ISO", "iteration": 1 }], // used by rules with "iteration": "auto"
+//   "iterationWindows": [{ "from": "ISO", "iteration": 1 }], // optional fallback for "iteration": "auto" (the
+//                                    // orchestrator windowsFrom stage log is used first where it covers the time)
 //   "prices": { "<model id>": { "input": 4, "cacheWrite5m": 5, "cacheWrite1h": 8, "cacheRead": 0.2, "output": 20 } },
 //                                    // USD per million tokens (list prices, see the template)
 //   "rules": [{ "desc": "^Customer (\\w+) iter-(\\d+)", "role": "Customer", "group": "Customers",
@@ -124,8 +125,13 @@ const fill = (tpl, m, label = '') =>
   typeof tpl === 'string'
     ? tpl.replace(/\$label|\$(\d)/g, (x, i) => (x === '$label' ? packageName(label) : (m[Number(i)] ?? '')))
     : tpl;
+// "iteration": "auto" takes the iteration from the stage-log windows when the log covers the time, else from
+// the hand-kept iterationWindows (optional fallback).
+let derivedWindows;
 const iterationAt = (t) => {
-  const w = [...(reg.iterationWindows ?? [])].sort((a, b) => a.from.localeCompare(b.from)).filter((x) => t >= x.from).pop();
+  derivedWindows ??= orchestratorWindows(true);
+  const pick = (ws) => [...ws].sort((a, b) => a.from.localeCompare(b.from)).filter((x) => t >= x.from).pop();
+  const w = pick(derivedWindows) ?? pick(reg.iterationWindows ?? []);
   return w ? w.iteration : null;
 };
 const cap = (s) => (s ? s[0].toUpperCase() + s.slice(1).toLowerCase() : s);
@@ -134,7 +140,7 @@ const cap = (s) => (s ? s[0].toUpperCase() + s.slice(1).toLowerCase() : s);
 // registry file) names stage logs: progress.mjs events (start/end/skip) and loop controller events
 // (init/transition). Stages of different iterations can overlap; the window is the active stage that started
 // last (a later line wins a tie). Hand-kept "windows" are the fallback when no log yields any.
-function orchestratorWindows() {
+function orchestratorWindows(logOnly = false) {
   const events = [];
   for (const f of [reg.orchestrator.windowsFrom].flat().filter(Boolean)) {
     const file = path.resolve(path.dirname(path.resolve(args[0])), f);
@@ -164,6 +170,7 @@ function orchestratorWindows() {
     const last = out[out.length - 1];
     if (!last || last.iteration !== Number(iteration) || last.stage !== st) out.push({ from: e.t, iteration: Number(iteration), stage: st });
   }
+  if (logOnly) return out;
   return (out.length ? out : [...(reg.orchestrator.windows ?? [])]).sort((a, b) => a.from.localeCompare(b.from));
 }
 
@@ -300,6 +307,21 @@ const trial = [...new Set(byPackage.map((p) => p.model))]
   })
   .sort((a, b) => b.usd - a.usd);
 
+const trendIters = [...new Set(items.filter((i) => inLoop(i) && i.iteration != null).map((i) => i.iteration))].sort((a, b) => a - b);
+const iterationTrend = trendIters.map((n) => {
+  const its = items.filter((i) => inLoop(i) && i.iteration === n);
+  const pk = byPackage.filter((p) => p.iteration === n);
+  const pkgUsd = pk.reduce((a, p) => a + p.usd, 0);
+  return {
+    iteration: n,
+    ...sum(its.flatMap((i) => i.records)),
+    orchestrationUsd: round2(sum(its.filter((i) => i.kind === 'orchestrator').flatMap((i) => i.records)).usd),
+    packages: pk.length,
+    packageUsd: round2(pkgUsd),
+    usdPerPackage: pk.length ? round2(pkgUsd / pk.length) : null,
+  };
+});
+
 const out = {
   generated: new Date().toISOString(),
   weights: WEIGHTS,
@@ -316,6 +338,9 @@ const out = {
   byPersona: agg((i) => (inLoop(i) && i.persona ? i.persona : null)),
   byModel: agg((i) => (inLoop(i) ? (i.model ?? 'unknown') : null)),
   byIterationStage: agg((i) => (inLoop(i) && i.iteration != null ? `${i.iteration}|${i.stage}` : null)),
+  iterationTrend,
+  priceDate: PRICES._asOf ?? null,
+  byIterationModel: agg((i) => (inLoop(i) && i.iteration != null ? `${i.iteration}|${i.model ?? 'unknown'}` : null)),
   byIterationGroup: agg((i) => (inLoop(i) && i.iteration != null ? `${i.iteration}|${i.group}` : null)),
   byPackage,
   trial,

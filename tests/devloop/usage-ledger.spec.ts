@@ -15,6 +15,7 @@ afterAll(() => {
 });
 
 const PRICES = {
+  _asOf: "2026-11",
   "claude-opus-5-5": { input: 4, cacheWrite5m: 5, cacheWrite1h: 8, cacheRead: 0.2, output: 20 },
   "claude-sonnet-5-5": { input: 2, cacheWrite5m: 2.5, cacheWrite1h: 4, cacheRead: 0.1, output: 10 },
 };
@@ -167,5 +168,28 @@ describe("usage ledger orchestrator windows", () => {
   it("falls back to the hand windows when the log is missing", () => {
     const o = fixture([], []);
     expect(o.byIterationStage.map((r: Any) => r.key)).toEqual(["0|Plan"]);
+  });
+
+  it("takes auto iterations from the stage log and reports USD per iteration and per package", () => {
+    const log = [
+      { t: "2026-01-01T00:00:00Z", iteration: 3, stage: "Build", kind: "start" },
+      { t: "2026-01-01T02:00:00Z", iteration: 3, stage: "Build", kind: "end" },
+      { t: "2026-01-01T02:00:00Z", iteration: 4, stage: "Build", kind: "start" },
+    ];
+    const o = fixture(
+      [
+        { label: "Build: a", model: "claude-opus-5-5", t: "2026-01-01T01:00:00Z" },
+        { label: "Build: b", model: "claude-opus-5-5", t: "2026-01-01T03:00:00Z" },
+      ],
+      log,
+    );
+    expect(o.priceDate).toBe("2026-11");
+    const by = (l: string) => o.agents.find((a: Any) => a.label === l);
+    expect(by("Build: a").iteration).toBe(3);
+    expect(by("Build: b").iteration).toBe(4);
+    const t3 = o.iterationTrend.find((t: Any) => t.iteration === 3);
+    expect(t3.packages).toBe(1);
+    expect(t3.usdPerPackage).toBeCloseTo(30.7, 2);
+    expect(o.iterationTrend.reduce((a: number, t: Any) => a + t.usd, 0)).toBeCloseTo(o.loop.usd, 1);
   });
 });
