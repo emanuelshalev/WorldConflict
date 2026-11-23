@@ -237,7 +237,7 @@ describe("F-02-5: map and desk show one order card; the Desk switch always answe
     expect(list).toContain("<AdvisorCardRow key={r.key} r={r} compact={compact} />");
     expect(ui("components/desk/Detail.tsx")).toContain("<AdvisorCardRow key={r.key} r={r} />");
     // Map mode's own orders are the same Thing card as the desk's (the strip tray is gone, D-80)
-    expect(ui("components/desk/YourMove.tsx")).toContain("<AdvisorList max={max} compact={compact} />");
+    expect(ui("components/desk/YourMove.tsx")).toContain("<AdvisorList max={max} />");
     expect(ui("components/MapActionMenu.tsx")).toContain("<OrderCard");
   });
 });

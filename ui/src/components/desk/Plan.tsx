@@ -202,6 +202,8 @@ function Decided({ items, folded, compact, onShow }: { items: AgendaItem[]; fold
   const mine = actions.map((a, i) => ({ a, i })).filter((x) => !x.a.proposed && x.a.origin !== 'staff');
   const n = done.length + mine.length;
   const summary = [...done.map((x) => x.title), ...mine.map((x) => x.a.label)].join(', ');
+  // Folded and empty, the section says nothing: it leaves the room to the rest (fit rule)
+  if (folded && n === 0) return null;
   return (
     <section className={`psec${folded ? ' folded' : ''}`} aria-labelledby="plan-decided">
       <Head id="decided" label="Decided" n={n} folded={folded} summary={summary} onShow={onShow} />
@@ -343,7 +345,7 @@ export function Plan({ form }: { form: PlanForm }) {
           {beside === 'skipped' && <Skipped items={items} folded={false} onShow={fit.show} />}
         </div>
       )}
-      <div className={`plan-list${fit.compact ? ' compact' : ''}${fit.tight && !beside ? ' tight' : ''}`} ref={listRef}>
+      <div className={`plan-list${fit.compact ? ' compact' : ''}${(fit.tight && !beside) || fit.level >= 4 ? ' tight' : ''}`} ref={listRef}>
         <h2 className="plan-h">What will happen</h2>
         <Decided items={items} folded={folded('decided')} compact={fit.compact} onShow={fit.show} />
         <Recommended folded={folded('recommended')} compact={fit.compact} onShow={fit.show} button={beside !== 'recommended'} />

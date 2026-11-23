@@ -34,6 +34,8 @@ await run('F-00-13', async (g, track) => {
     ['nuclear strike india', /^(war|mission)$/],
     ['declare war india', /^war$/],
   ]) {
+    // The pointer must not rest on a hit (pointer-enter moves the cursor there): park it on the band
+    await p.mouse.move(2, 2);
     await box.fill(query);
     await p.waitForTimeout(900);
     const first = (await p.locator('#ord-hits [role="option"]').first().innerText().catch(() => '')).replace(/\s+/g, ' ');

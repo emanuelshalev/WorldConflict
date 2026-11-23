@@ -70,7 +70,8 @@ describe("QA repro #7: a crisis is never labelled 'Your call'", () => {
       crisisSelection(d, { d1: "abstain" }, { d1: true }),
       crisisSelection(d, { d1: "join" }, { d1: true }),
     ];
-    expect(cases.map((c) => c.text)).toEqual(["Recommended: Abstain", "Accepted: Abstain", "Your pick: Join the sanctions"]);
+    // D-73: the recommended answer chosen reads "You chose" (no "Accepted" for a recommendation)
+    expect(cases.map((c) => c.text)).toEqual(["Recommended: Abstain", "You chose: Abstain", "Your pick: Join the sanctions"]);
     for (const c of cases) expect(`${c.text} ${c.word}`).not.toMatch(/your call/i);
   });
 });

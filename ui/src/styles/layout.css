@@ -431,15 +431,20 @@ html { font-size: clamp(16px, calc(0.42vmin + 11.5px), 22px); }
 @media (min-width: 3200px) { .mode-map .map-stage .layer-bar { right: calc(28rem + 2 * var(--gap)) !important; } }
 
 /* The Thing's own fit (it never scrolls): when the content of a thing is taller than the room (a
-   long crisis, four answers on a short screen), detail leaves in steps: (1) the effect words after
-   the goal tag and the detail lines, (2) the recommendation's reason and the scene picture, (3) the
-   question line and the "Or, if you do not want to decide" line. */
-[data-fit='1'] .fx-rest, [data-fit='2'] .fx-rest, [data-fit='3'] .fx-rest,
-[data-fit='1'] .opt-more, [data-fit='2'] .opt-more, [data-fit='3'] .opt-more { display: none !important; }
+   long crisis, four answers, month 1's goal sentence on a laptop), detail leaves in the order of
+   L-8: (1) the optional blocks (goals in this call, how it got here, the advisers, the month 1
+   intro: their facts are also on the cards), (2) the effect words after the goal tag, the detail
+   lines and the recommendation's reason, (3) the scene picture (a text header) and the question
+   and "Or, if you do not want to decide" lines. */
+[data-fit='1'] .th-facts.goals, [data-fit='2'] .th-facts.goals, [data-fit='3'] .th-facts.goals,
+[data-fit='1'] .th-story, [data-fit='2'] .th-story, [data-fit='3'] .th-story,
+[data-fit='1'] .th-facts.advice, [data-fit='2'] .th-facts.advice, [data-fit='3'] .th-facts.advice,
+[data-fit='1'] .intro1, [data-fit='2'] .intro1, [data-fit='3'] .intro1 { display: none !important; }
+[data-fit='2'] .fx-rest, [data-fit='3'] .fx-rest, [data-fit='2'] .opt-more, [data-fit='3'] .opt-more,
 [data-fit='2'] .rec-why, [data-fit='3'] .rec-why, [data-fit='2'] .opt-after, [data-fit='3'] .opt-after { display: none !important; }
-[data-fit='2'] .th-hero, [data-fit='3'] .th-hero { height: auto !important; aspect-ratio: auto !important; flex: none !important; background: var(--surface-1); }
-[data-fit='2'] .th-hero > .scene, [data-fit='3'] .th-hero > .scene, [data-fit='2'] .th-hero .shade, [data-fit='3'] .th-hero .shade { display: none; }
-[data-fit='2'] .th-hero .txt, [data-fit='3'] .th-hero .txt { position: static; padding: .55rem 1rem; }
+[data-fit='3'] .th-hero { height: auto !important; aspect-ratio: auto !important; flex: none !important; background: var(--surface-1); }
+[data-fit='3'] .th-hero > .scene, [data-fit='3'] .th-hero .shade { display: none; }
+[data-fit='3'] .th-hero .txt { position: static; padding: .55rem 1rem; }
 [data-fit='3'] .ask-row, [data-fit='3'] .opt-or, [data-fit='3'] .hero-quote { display: none !important; }
 
 /* AC-L7 / AC-22: nothing a player reads in the game screen's regions is under 15 px (buttons, the
@@ -450,3 +455,8 @@ html { font-size: clamp(16px, calc(0.42vmin + 11.5px), 22px); }
 .state-band .lx-chip, .state-band .lx-chip-label { font-size: max(.9375rem, 15px); }
 .game [data-region] .lx-situation { font-size: 15px; }
 .game [data-region] .context-cap, .game [data-region] .om-name, .game [data-region] .om-label { font-size: max(.9375rem, 15px); }
+/* The map card's order ideas: one full-width card per row, the avatar gives its width to the card
+   (as on phones), so a 24rem card never crushes them (QA1-S2-1) */
+.mapcard .adv-list { grid-template-columns: minmax(0, 1fr) !important; }
+.mapcard .adv-row.adv-card { grid-template-columns: minmax(0, 1fr); padding: 10px; }
+.mapcard .adv-row.adv-card > .adv-avatar, .mapcard .big-move { display: none; }

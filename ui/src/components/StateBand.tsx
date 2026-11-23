@@ -214,6 +214,11 @@ export function StateBand() {
     </span>
   );
   const growth = (me.realGrowth ?? me.growthRate) * 100;
+  const score = (
+    <button type="button" className="wc-btn small sb-score" onClick={() => useScoreWhy.getState().show(true)} aria-label={`${TERMS.score.name} ${Math.round(world.score?.total ?? 100)}: why your score moved`}>
+      {TERMS.score.name} <span className="num">{Math.round(world.score?.total ?? 100)}</span>
+    </button>
+  );
   // Every indicator stays one press away (QA1 S3-3): "Your country" opens the full set, the band
   // shows the ones section 5 lists for its width
   const all = (
@@ -236,6 +241,7 @@ export function StateBand() {
       <span className="sb-s">
         {TERMS.tension.name} <V v={tension} />
       </span>
+      {!wide && score}
     </div>
   );
   const country = (
@@ -260,9 +266,7 @@ export function StateBand() {
         {cls === 'T' ? 'Tension' : TERMS.tension.name} <V v={tension} />
         <Delta v={tensionDelta} />
       </span>
-      <button type="button" className="wc-btn small sb-score" onClick={() => useScoreWhy.getState().show(true)} aria-label={`${TERMS.score.name} ${Math.round(world.score?.total ?? 100)}: why your score moved`}>
-        {TERMS.score.name} <span className="num">{Math.round(world.score?.total ?? 100)}</span>
-      </button>
+      {wide && score}
     </span>
   );
   const note = explain && (

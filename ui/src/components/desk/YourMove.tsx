@@ -472,7 +472,7 @@ function OwnOrdersThing({ item, compact }: { item: AgendaItem; compact: boolean 
           <IconSearch size={16} aria-hidden /> All orders
         </button>
       </div>
-      <AdvisorList max={max} compact={compact} />
+      <AdvisorList max={max} />
       <SkipCard item={item} />
     </article>
   );
