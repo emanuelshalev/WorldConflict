@@ -143,3 +143,82 @@ export async function run(id, body) {
   }
   g.finish();
 }
+
+/**
+ * The phone month's order list as the player sees it (iteration 4 phone tree, PhoneMonth). The page
+ * scroller is `.game`; what floats over the list: the sticky top (`.game-top`: the state line and
+ * the thing line with Back, See all and the Desk / Map switch), the sticky bottom bar (`.ph-bottom`:
+ * the below-the-fold cue, Next, or Execute on the review screen and in Map mode), any coach bubble
+ * that is shown, and the List or recommendation sheet (`.ph-sheet`) when one is open. Returns the free
+ * band between the top and the bottom bar, the share of it a coach bubble or a sheet covers, and the
+ * catalogue rows that are whole inside it and really on top (elementFromPoint at the centre, the four
+ * corners inset by 4 px and the row's button): rows in the layout box that something covers do not count.
+ */
+export function phoneList(page) {
+  return page.evaluate(() => {
+    const vis = (e) => {
+      if (!e) return false;
+      const cs = getComputedStyle(e);
+      const r = e.getBoundingClientRect();
+      return cs.visibility !== 'hidden' && cs.display !== 'none' && r.height > 0 && r.width > 0;
+    };
+    const top = Math.max(0, document.querySelector('.game-top')?.getBoundingClientRect().bottom ?? 0);
+    const bar = document.querySelector('.ph-bottom');
+    const bottom = Math.min(innerHeight, vis(bar) ? bar.getBoundingClientRect().top : innerHeight);
+    const band = Math.max(0, bottom - top);
+    const floaters = [...document.querySelectorAll('.coach-bubble, .ph-sheet')].filter(vis).map((e) => ({ e, r: e.getBoundingClientRect() }));
+    // Covered share of the band's height: the union of the floaters' vertical extents inside it
+    const spans = floaters.map(({ r }) => [Math.max(top, r.top), Math.min(bottom, r.bottom)]).filter(([a, b]) => b > a).sort((x, y) => x[0] - y[0]);
+    let covered = 0;
+    let end = top;
+    for (const [a, b] of spans) {
+      if (b <= end) continue;
+      covered += b - Math.max(a, end);
+      end = b;
+    }
+    const onTop = (el, x, y) => {
+      const at = y >= 0 && y < innerHeight && x >= 0 && x < innerWidth ? document.elementFromPoint(x, y) : null;
+      return !!at && el.contains(at);
+    };
+    const rows = [...document.querySelectorAll('[data-order-catalog] .ord-cat .ord-wrap')].filter(vis);
+    const whole = rows.filter((w) => {
+      const r = w.getBoundingClientRect();
+      if (r.top < top - 1 || r.bottom > bottom + 1) return false;
+      const pts = [
+        [r.left + r.width / 2, r.top + r.height / 2],
+        [r.left + 4, r.top + 4],
+        [r.right - 4, r.top + 4],
+        [r.left + 4, r.bottom - 4],
+        [r.right - 4, r.bottom - 4],
+      ];
+      const act = w.querySelector('.ord-act');
+      if (act) {
+        const a = act.getBoundingClientRect();
+        pts.push([a.left + a.width / 2, a.top + a.height / 2]);
+      }
+      return pts.every(([x, y]) => onTop(w, x, y));
+    });
+    return {
+      top: Math.round(top),
+      bottom: Math.round(bottom),
+      band: Math.round(band),
+      covered: Math.round(covered),
+      coveredShare: band ? covered / band : 0,
+      floaters: floaters.map(({ e, r }) => `${e.dataset.coach ? `coach ${e.dataset.coach}` : e.className.toString().split(' ')[0]} ${Math.round(r.top)}..${Math.round(r.bottom)}`),
+      whole: whole.length,
+      heights: whole.map((w) => Math.round(w.getBoundingClientRect().height)).join(','),
+      hscroll: (document.querySelector('.game')?.scrollWidth ?? 0) > innerWidth + 1,
+    };
+  });
+}
+
+/** Phone: scroll the page so this catalogue family's group starts right under the sticky top. */
+export async function phoneScrollToFamily(page, fam) {
+  await page.evaluate((fam) => {
+    const g = document.querySelector('.game');
+    const sec = document.querySelector(`[data-order-catalog] [data-order-family="${fam}"]`);
+    const top = document.querySelector('.game-top')?.getBoundingClientRect().bottom ?? 0;
+    g.scrollTop += sec.getBoundingClientRect().top - top;
+  }, fam);
+  await page.waitForTimeout(400);
+}

@@ -905,6 +905,19 @@ findings:
     changed: "review 3 (design-review3-order-cards.md new problems 1 and 5): with an order of the player's own added first, the first month's coach bubble stands on the bar; the guard checks at 390x844 and 360x740 that no bubble shows while a face is open, that both answers are uncovered at the centre and four corners, that a tap on Give the order queues the order, and that Cancel leaves the list where the player had it"
     guards:
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-OC-4.mjs
+  - id: DR-OC-5
+    title: "Condition CA: in month 1 no coach tip stands over the phone order list; every row button is pressable, or a tip covers at most 10% of the list"
+    source: runs/iter-04/design-review4-order-cards.md condition CA (caveat A; coach step 3 over 19% of the list at 390x844, 33% at 360x740, Add under it dead)
+    covers: [ui/src/components/desk/PhoneMonth.tsx, ui/src/components/desk/Coach.tsx, ui/src/components/desk/Plan.tsx, ui/src/components/desk/ReviewPage.tsx, ui/src/styles/layout.css, ui/src/styles/month.css, ui/src/lib/coach.ts]
+    note: "Owner build-agenda-layout. On the iteration-4 phone tree the coach's step 3 bubble stands on Execute (desktop Plan, review screen off the phone), not on the phone list, so the guard passes on the branch as it is; checked against a build with the old placement (the bubble on the phone bottom bar): it fails at 13% (390x844) and 16% (360x740) with Mobilize, Break pact and others under the bubble."
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-OC-5.mjs
+  - id: DR-OC-6
+    title: "Condition C4: at least 6 whole, uncovered order rows per phone screen at 390x844 (less chrome above the phone list; the state line never runs off the screen)"
+    source: runs/iter-04/design-review4-order-cards.md condition C4 (carried from design-rereview-order-cards.md C4; 5 and 4 rows at 390x844, 3 at 360x740)
+    covers: [ui/src/components/desk/PhoneMonth.tsx, ui/src/components/StateBand.tsx, ui/src/styles/layout.css, ui/src/styles/state-band.css, ui/src/components/orders/OrderCatalog.tsx, ui/src/components/orders/OrderCard.tsx, ui/src/styles/orders.css]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-OC-6.mjs
 # ------------------------------------------------------------------------------------------
 # Not listed (still open or not a code fix); add them here when a fix lands with its guard:
 #   RS-001-6  dashboard feel, "serious visual design": the ledger keeps it not done (D-37 check)
