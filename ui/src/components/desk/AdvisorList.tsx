@@ -207,8 +207,17 @@ export function BigMove({ rows }: { rows: Row[] }) {
 export function AdvisorList({ compact = false, max = 3 }: { compact?: boolean; max?: number }) {
   const rows = useAdvisorRows();
   const [all, setAll] = useState(false);
+  // The orders the engine puts in the mission move (they push a primary goal) are never folded
+  // behind "Show n more" (design-review-your-call.md RC-2: Court Taiwan on Quarantine China)
+  const missionKeys = useGameStore((s) =>
+    (s.advice?.calls ?? [])
+      .filter((c) => c.kind === 'move')
+      .flatMap((c) => c.cards.flatMap((card) => (card.action ? [orderKey(card.action)] : [])))
+      .join('|'),
+  );
   if (!rows.length) return null;
-  const shown = all ? rows : rows.slice(0, max);
+  const pinned = new Set(missionKeys ? missionKeys.split('|') : []);
+  const shown = all ? rows : rows.filter((r, i) => i < max || pinned.has(r.key));
   return (
     <section className={`advisors${compact ? ' compact' : ''}`} aria-label={TERMS.orderIdeas.name} data-point="advisors">
       {!compact && (
@@ -216,7 +225,7 @@ export function AdvisorList({ compact = false, max = 3 }: { compact?: boolean; m
           <span>
             {TERMS.orderIdeas.name} <span className="num">({rows.length})</span>
           </span>
-          <span className="num">{orderIdeasNote(rows, rows.length > max && !all ? max : rows.length)}</span>
+          <span className="num">{orderIdeasNote(rows, shown.length)}</span>
         </h3>
       )}
       {!compact && <CoachBubble step="advisors" place="above" />}
@@ -226,9 +235,9 @@ export function AdvisorList({ compact = false, max = 3 }: { compact?: boolean; m
           <AdvisorCardRow key={r.key} r={r} compact={compact} />
         ))}
       </div>
-      {rows.length > max && (
+      {(all ? rows.length > max : shown.length < rows.length) && (
         <button type="button" className="link adv-more" onClick={() => setAll((v) => !v)}>
-          {all ? 'Show fewer' : `Show ${rows.length - max} more`}
+          {all ? 'Show fewer' : `Show ${rows.length - shown.length} more`}
         </button>
       )}
     </section>
