@@ -95,6 +95,29 @@
       "iteration": 4,
       "stage": "Plan",
       "tier": "T2"
+    },
+    {
+      "gate": "verify",
+      "result": "fail",
+      "commit": "d06e45892aed91d972df7a0c50329ccee34c8f14",
+      "codeTree": "6d9efdd0b5662d9d",
+      "evidence": ".verify/summary.json",
+      "note": "modes default",
+      "t": "2026-11-23T05:06:42.554Z",
+      "iteration": 4,
+      "stage": "Plan",
+      "steps": [
+        "registry",
+        "test",
+        "lint",
+        "ui-lint",
+        "build",
+        "smoke",
+        "reveal",
+        "visual",
+        "regressions",
+        "balance"
+      ]
     }
   ],
   "merges": [],
