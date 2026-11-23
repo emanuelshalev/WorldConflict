@@ -10,7 +10,8 @@
 //   "projectDir": "~/.claude/projects/<project-slug>",
 //   "sessions": ["<session-id>"],
 //   "loopStart": "ISO time", // usage before this is "Before the loop"
-//   "orchestrator": { "role": "Group Manager", "windows": [{ "from": "ISO", "iteration": 0, "stage": "Plan" }] },
+//   "orchestrator": { "role": "Group Manager", "windowsFrom": ["../progress/stages.jsonl", "../loop/events.jsonl"],
+//                     "windows": [{ "from": "ISO", "iteration": 0, "stage": "Plan" }] }, // windows: hand fallback
 //   "iterationWindows": [{ "from": "ISO", "iteration": 1 }], // used by rules with "iteration": "auto"
 //   "prices": { "<model id>": { "input": 4, "cacheWrite5m": 5, "cacheWrite1h": 8, "cacheRead": 0.2, "output": 20 } },
 //                                    // USD per million tokens (list prices, see the template)
@@ -129,12 +130,49 @@ const iterationAt = (t) => {
 };
 const cap = (s) => (s ? s[0].toUpperCase() + s.slice(1).toLowerCase() : s);
 
+// Orchestrator windows (iteration and stage over time). "windowsFrom" (a path or list of paths, relative to the
+// registry file) names stage logs: progress.mjs events (start/end/skip) and loop controller events
+// (init/transition). Stages of different iterations can overlap; the window is the active stage that started
+// last (a later line wins a tie). Hand-kept "windows" are the fallback when no log yields any.
+function orchestratorWindows() {
+  const events = [];
+  for (const f of [reg.orchestrator.windowsFrom].flat().filter(Boolean)) {
+    const file = path.resolve(path.dirname(path.resolve(args[0])), f);
+    if (!fs.existsSync(file)) continue;
+    for (const line of fs.readFileSync(file, 'utf8').split('\n')) {
+      try {
+        const e = JSON.parse(line);
+        if (e.t) events.push({ ...e, n: events.length });
+      } catch {
+        // blank or partial line
+      }
+    }
+  }
+  events.sort((a, b) => Date.parse(a.t) - Date.parse(b.t) || a.n - b.n);
+  const active = new Map();
+  const out = [];
+  for (const e of events) {
+    const stage = e.kind === 'transition' ? e.to : e.stage;
+    if (stage == null || e.iteration == null) continue;
+    const key = `${e.iteration}|${stage}`;
+    if (e.kind === 'start' || e.kind === 'init' || e.kind === 'transition') active.set(key, e.n);
+    else if (e.kind === 'end' || e.kind === 'skip') active.delete(key);
+    else continue;
+    const cur = [...active.entries()].sort((a, b) => b[1] - a[1])[0];
+    if (!cur) continue;
+    const [iteration, st] = cur[0].split('|');
+    const last = out[out.length - 1];
+    if (!last || last.iteration !== Number(iteration) || last.stage !== st) out.push({ from: e.t, iteration: Number(iteration), stage: st });
+  }
+  return (out.length ? out : [...(reg.orchestrator.windows ?? [])]).sort((a, b) => a.from.localeCompare(b.from));
+}
+
 const items = []; // each: { kind, label, role, group, persona, stage, iteration, model, tools, first, last, records }
 for (const sid of reg.sessions) {
   const main = path.join(projectDir, `${sid}.jsonl`);
   if (fs.existsSync(main)) {
     const t = readTranscript(main);
-    const windows = [...(reg.orchestrator.windows ?? [])].sort((a, b) => a.from.localeCompare(b.from));
+    const windows = orchestratorWindows();
     // Split orchestrator usage by time window.
     const buckets = new Map();
     for (const r of t.records) {

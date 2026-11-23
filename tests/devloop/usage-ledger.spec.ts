@@ -41,7 +41,7 @@ function write(file: string, text: string) {
   writeFileSync(file, text);
 }
 
-function fixture(agents: Array<{ label: string; model: string; t: string; usage?: Any }>) {
+function fixture(agents: Array<{ label: string; model: string; t: string; usage?: Any }>, stagesLog?: Any[]) {
   const root = mkdtempSync(join(tmpdir(), "usage-ledger-"));
   made.push(root);
   const sid = "sess";
@@ -68,6 +68,10 @@ function fixture(agents: Array<{ label: string; model: string; t: string; usage?
       { desc: "lookup$", role: "Researcher", group: "Research", iteration: "auto", stage: "Plan" },
     ],
   };
+  if (stagesLog) {
+    write(join(root, "stages.jsonl"), `${stagesLog.map((e) => JSON.stringify(e)).join("\n")}\n`);
+    (reg.orchestrator as Any).windowsFrom = ["stages.jsonl"];
+  }
   const regFile = join(root, "registry.json");
   writeFileSync(regFile, JSON.stringify(reg));
   const out = execFileSync("node", ["devloop/kit/usage-ledger.mjs", regFile, "--json"], { encoding: "utf8" });
@@ -144,5 +148,24 @@ describe("usage ledger classification and packages", () => {
     expect(sonnet.packages).toBe(2);
     expect(sonnet.usd).toBeCloseTo(30.7, 2);
     expect(sonnet.usdPerPackage).toBeCloseTo(15.35, 2);
+  });
+});
+
+describe("usage ledger orchestrator windows", () => {
+  it("derives iteration and stage from the stage log, the latest started stage winning an overlap", () => {
+    const log = [
+      { t: "2026-01-01T00:00:00Z", iteration: 3, stage: "Build", kind: "start" },
+      { t: "2026-01-01T00:05:00Z", iteration: 4, stage: "Design", kind: "start" },
+      { t: "2026-01-01T00:20:00Z", iteration: 3, stage: "Build", kind: "end" },
+      { t: "2026-01-01T00:20:00Z", iteration: 3, stage: "Verify", kind: "start" },
+    ];
+    // The fixture's orchestrator turn is at 00:10: Build (iteration 3) and Design (iteration 4) are open, Design started last.
+    const o = fixture([], log);
+    expect(o.byIterationStage.map((r: Any) => r.key)).toEqual(["4|Design"]);
+  });
+
+  it("falls back to the hand windows when the log is missing", () => {
+    const o = fixture([], []);
+    expect(o.byIterationStage.map((r: Any) => r.key)).toEqual(["0|Plan"]);
   });
 });
