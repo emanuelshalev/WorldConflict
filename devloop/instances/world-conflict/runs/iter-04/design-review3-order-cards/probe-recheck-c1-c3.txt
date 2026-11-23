@@ -1,0 +1,17 @@
+C3 catalogue 1440x900 no face: procure (whole on screen true, point on tile false): forecasts shown []
+C3 catalogue 1440x900 no face: deploy-border (whole on screen true, point on tile false): forecasts shown []
+C3 catalogue 1440x900 no face: withdraw-border (whole on screen true, point on tile false): forecasts shown []
+C3 catalogue 1440x900: face open 1
+C3 catalogue 1440x900 face open: procure (whole on screen true, point on tile false): forecasts shown []
+C3 catalogue 1440x900 face open: deploy-border (whole on screen true, point on tile false): forecasts shown []
+C3 catalogue 1440x900 face open: withdraw-border (whole on screen true, point on tile false): forecasts shown []
+C3 catalogue 1440x900 after Cancel: procure (whole on screen true, point on tile false): forecasts shown []
+C3 catalogue 1366x768 no face: airstrike-nuclear (whole on screen true, point on tile true): forecasts shown [Strike nuclear sites in Russia]
+C3 catalogue 1366x768: face open 1
+C3 catalogue 1366x768 face open: airstrike-nuclear (whole on screen true, point on tile true): forecasts shown []
+C3 catalogue 1366x768 after Cancel: airstrike-nuclear (whole on screen true, point on tile true): forecasts shown [Strike nuclear sites in Russia]
+C1 1366x768: menu scrolled by the wheel to 120; Strike tile top 162 (menu 178..629)
+C1 1366x768: before 120 -> face 225 -> Cancel 0 (restored false) -> face again 225 -> Escape 0 (restored false)
+C1 1024x768: menu scrolled by the wheel to 120; Strike tile top 164 (menu 180..621)
+C1 1024x768: before 120 -> face 235 -> Cancel 0 (restored false) -> face again 235 -> Escape 0 (restored false)
+page errors: none

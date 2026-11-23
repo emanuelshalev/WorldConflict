@@ -1,0 +1,7 @@
+390x844 airstrike-military pressed with its top at y=379 (45%): Cancel 616..664 inViewport true onTop button; Give 616..664 inViewport true onTop button
+390x844 airstrike-military pressed with its top at y=590 (70%): Cancel 748..796 inViewport true onTop [object; Give 748..796 inViewport true onTop wc-btn
+390x844 airstrike-military pressed with its top at y=717 (85%): Cancel 753..801 inViewport true onTop [object; Give 753..801 inViewport true onTop wc-btn
+390x844 policing-hard pressed with its top at y=578 (45%): Cancel 748..796 inViewport true onTop [object; Give 748..796 inViewport true onTop wc-btn
+390x844 policing-hard pressed with its top at y=590 (70%): Cancel 748..796 inViewport true onTop [object; Give 748..796 inViewport true onTop wc-btn
+390x844 policing-hard pressed with its top at y=717 (85%): Cancel 748..796 inViewport true onTop [object; Give 748..796 inViewport true onTop wc-btn
+page errors: none

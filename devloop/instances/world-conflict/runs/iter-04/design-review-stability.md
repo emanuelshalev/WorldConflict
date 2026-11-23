@@ -63,3 +63,21 @@ Violations per build, same seat and states (full tables: `design-review-stabilit
 Totals: desktop 24 (shared) vs 25 (branch); tablet 0 vs 1; phone 0 vs 0.
 
 Screenshots: `devloop/instances/world-conflict/runs/iter-04/design-review-stability/` (branch-*, shared-*, topbars-branch-vs-shared.jpg).
+
+## Re-review (980b113): APPROVE WITH CONDITIONS
+
+Same method, same seat (CO-UKR-MAYA1) and states, branch on its own servers (API 8092, UI 5192), compared with the shared 5173 captures above. Extra probe of the rail geometry at 1366x768, 1366x820, 1024x768, 1440x900, 1599x900 and 1600x900 on month 2 (7 recommended).
+
+Required items:
+1. **Rail foot clipped on short screens: fixed.** At 1366x768 the rail rows are `0 56px 562px`: the foot (Recommended group with one whole recommendation and its Accept answer / Change, Accept all recommended (7), Execute month) is fully on screen; same at 1024x768 (`0 56px 512px`) and 1366x820. Audit: `month-2-desk 1366x768` back to 2 violations (the RS-008 inner-scroll and below-fold ones the shared branch also has), no `state-visible`; `month-2-desk 1024x768` 0 violations (shared 0). `re-branch-month-2-desk-1366x768.jpg`, `re-branch-month-2-desk-1024x768.jpg`.
+2. **Top bar overflow: fixed, and better than shared.** Below 1600 the secondary buttons fold into Menu; the bar ends inside the window with Map/Desk, Some help, sound and Menu. Cut controls: 0 at every desktop size and state (shared: Settings and Menu cut at 1366x768). At 1599x900 the folded bar is tidy; at 1600 and up, and at 3440, the full set of icons and the flag return, unchanged from shared. `re-branch-month-2-desk-1599x900.jpg`, `re-branch-month-2-desk-3440x1440-CEO.jpg`.
+
+S3 items: the phone name now wraps to two lines ("Volodymyr / Zelensky") with the Map switch in place (`re-branch-month-2-desk-390x844.jpg`). Reveal label change not re-checked on this seed (the label that was cut is covered by the engineer's guard and the visual baselines).
+
+Audit totals, shared vs branch: desktop 24 vs 24, tablet 0 vs 0, phone 0 vs 0; the branch has fewer cut controls than shared. RS-008 stays open as expected. Tables: `design-review-stability/re-audit-*.txt`.
+
+3440x1440: unchanged from shared and from the first review (centre column with about 940 px empty on the left, RS-008), full top bar with flag, nothing new clipped or overlapping.
+
+**Open point (rail body cut to 56 px on short desktop rails):** acceptable until the D-80 layout build replaces the rail, because political capital stays always visible in the top bar ("6 left" with the seals) and the rail's heading and count ("Political capital 6 of 6 left") stay readable. Condition (follow-up, S3): the 56 px row slices the seal row in half under the Recommended group, which looks accidental. Either size the row to the heading line only (about 44 px, seals hidden) or to heading plus seals (about 96 px), so the cut lands on a clean edge. Track it under WP-L1 so the layout build does not inherit it.
+
+Conditions: the 56 px rail-body edge above. No other condition.

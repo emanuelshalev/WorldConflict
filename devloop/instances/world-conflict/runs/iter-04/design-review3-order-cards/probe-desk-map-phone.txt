@@ -1,0 +1,20 @@
+
+## C1 map 390x844
+  opened: menu 8,228 380x608 scroll 0/143 page 0; head 9,229 378x92 visible true onTop true close 19,239 217x44 onTop true; first tile top 331 head bottom 321; face none face-top minus head-bottom null; title x0
+     Cancel none
+     Give none
+  Strike at menu bottom: menu 8,228 380x608 scroll 0/143 page 0; head 9,229 378x92 visible true onTop true close 19,239 217x44 onTop true; first tile top 331 head bottom 321; face none face-top minus head-bottom null; title x0
+     Cancel none
+     Give none
+  face open: menu 8,228 380x608 scroll 0/323 page 0; head 9,229 378x92 visible true onTop true close 19,239 217x44 onTop true; first tile top 331 head bottom 321; face 19,444 358x301 face-top minus head-bottom 122; title x1
+     Cancel "Cancel" 36,680 130x48 lines 1 centre ok insideMenu true
+     Give "Give the order" 176,680 184x48 lines 1 centre ok insideMenu true
+  after Cancel: menu 8,228 380x608 scroll 0/143 page 0; head 9,229 378x92 visible true onTop true close 19,239 217x44 onTop true; first tile top 331 head bottom 321; face none face-top minus head-bottom null; title x0
+     Cancel none
+     Give none restored true
+  reopened: scroll 0
+  after Escape: menu 8,228 380x608 scroll 0/143 page 0; head 9,229 378x92 visible true onTop true close 19,239 217x44 onTop true; first tile top 331 head bottom 321; face none face-top minus head-bottom null; title x0
+     Cancel none
+     Give none restored true
+  at top: first tile top 331 head bottom 321
+page errors: none

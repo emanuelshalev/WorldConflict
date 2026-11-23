@@ -46,6 +46,12 @@ export interface CardShellProps {
   byline?: ReactNode;
   /** Scene kind for the illustration band (use sceneForChoice / sceneForAction). */
   art?: SceneKind;
+  /** Replaces the scene in the band (order cards: the family band of compact tiles). */
+  artNode?: ReactNode;
+  /** Extra layer drawn over the band (order cards: the family chip of compact tiles). */
+  artOverlay?: ReactNode;
+  /** Above the title, overlapping the band on tiles (order cards: pictogram plate and family chip). */
+  lead?: ReactNode;
   home?: string;
   other?: string;
   mood?: Mood;
@@ -79,6 +85,8 @@ export interface CardShellProps {
   queuedText?: string;
   /** Extra body content after the description: effect chips, odds. */
   children?: ReactNode;
+  /** Row layout: content under the art and the body, across the card's full width (an opened forecast). */
+  foot?: ReactNode;
   /** Accessible name of the press target (default: the title). */
   ariaLabel?: string;
   className?: string;
@@ -97,6 +105,9 @@ export function CardShell({
   description,
   byline,
   art,
+  artNode,
+  artOverlay,
+  lead,
   home,
   other,
   mood = 'neutral',
@@ -116,6 +127,7 @@ export function CardShell({
   onUndo,
   queuedText = "In this month's plan",
   children,
+  foot,
   ariaLabel,
   className = '',
 }: CardShellProps) {
@@ -177,7 +189,8 @@ export function CardShell({
         onClick={press}
       />
       <div className="wc-card-art" aria-hidden>
-        {art ? <SceneFrame kind={art} home={home} other={other} mood={mood} size="thumb" /> : <div className="wc-card-art-blank" />}
+        {artNode ?? (art ? <SceneFrame kind={art} home={home} other={other} mood={mood} size="thumb" /> : <div className="wc-card-art-blank" />)}
+        {artOverlay}
         {keyHint !== undefined && layout !== 'slot' && <span className="wc-card-key num">{keyHint}</span>}
         {cost && <span className="wc-card-cost">{cost}</span>}
         {ribbon && layout === 'tile' && <span className={`wc-card-ribbon ribbon-${ribbon.tone}`}>{ribbon.tone === 'risk' ? '!' : '+'} {ribbon.text}</span>}
@@ -188,12 +201,14 @@ export function CardShell({
         </span>
       )}
       <div className="wc-card-body" id={descId}>
+        {lead && <div className="wc-card-lead">{lead}</div>}
         <h3 className="wc-card-title">{title}</h3>
         {ribbon && layout !== 'tile' && <span className={`wc-card-ribbon-inline ribbon-${ribbon.tone}`}>{ribbon.text}</span>}
         {description && layout !== 'slot' && <div className="wc-card-desc">{description}</div>}
         {children}
         {byline && layout !== 'slot' && <div className="wc-card-byline">{byline}</div>}
       </div>
+      {foot && <div className="wc-card-foot">{foot}</div>}
       {off && reason && (
         <div className="wc-card-reason" role="note">
           <span>

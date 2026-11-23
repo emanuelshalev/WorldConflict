@@ -46,6 +46,9 @@ export function MapActionMenu({ countryId, x, y, bounds, onClose, onChangeCountr
   useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
+    // The sticky header covers the top of the scrolling menu: scrolled-into-view content ends below it
+    const head = el.querySelector<HTMLElement>('.mam-head');
+    el.style.scrollPaddingTop = head ? `${head.offsetHeight}px` : '';
     const w = el.offsetWidth;
     const h = Math.min(el.scrollHeight, el.offsetHeight);
     const pad = 8;

@@ -4,6 +4,8 @@ import { type CodexPayload, type LearnLevel, LEVEL_RULES } from '../lib/codexMat
 import * as learnLib from '../lib/learn';
 import { type MonthView, availabilityOf, defenseCostM, needsTarget, orderKeyOf } from '../lib/availability';
 import { pointAt } from '../lib/pointAt';
+import { logOrder } from '../lib/orderLog';
+import { orderFor } from '../lib/orders';
 import { browserGuestStores, resolveGuestId } from '../lib/guest';
 
 export type TurnPhase = 'news' | 'briefing' | 'diplomacy' | 'military' | 'domestic' | 'confirm';
@@ -1181,11 +1183,13 @@ export const useGameStore = create<GameState>((set) => ({
       if (state.pendingActions.some((a) => orderKey(a) === orderKey(action))) return state;
       // Proposals use no order slot until approved (F-02-4)
       if (!action.proposed && committedActions(state.pendingActions).length >= 6) return state;
+      if (!action.proposed) logPick('pick', action, state.worldState?.turn);
       return { pendingActions: [...state.pendingActions, action], error: null, errorBase: null, errorCount: 0 };
     }),
   removePendingAction: (index) =>
     set((state) => {
       const gone = state.pendingActions[index];
+      if (gone) logPick('remove', gone, state.worldState?.turn);
       return {
         pendingActions: state.pendingActions.filter((_, i) => i !== index),
         dismissedStaff: gone?.origin === 'staff' ? [...state.dismissedStaff, orderKey(gone)] : state.dismissedStaff,
@@ -1196,6 +1200,7 @@ export const useGameStore = create<GameState>((set) => ({
     set((state) => {
       const a = state.pendingActions[index];
       if (!a?.proposed) return state;
+      logPick('pick', a, state.worldState?.turn);
       const pendingActions = state.pendingActions.slice();
       pendingActions[index] = { ...a, proposed: false };
       return { pendingActions };
@@ -1495,6 +1500,11 @@ export type QueueResult =
   | { ok: true; index: number }
   | { ok: false; block: OrderBlock; confirm?: undefined }
   | { ok: false; confirm: ConfirmNeed; block?: undefined };
+
+/** D-75 validation in real use: picks and removals by registry order id (lib/orderLog.ts). */
+function logPick(kind: 'pick' | 'remove', a: PendingAction, month: number | undefined) {
+  logOrder(kind, orderFor(a)?.id, { target: a.targetCountryId, month, origin: a.proposed ? 'recommended' : a.origin });
+}
 
 /**
  * Queue an order the same way from every surface (desk catalog and search, staff picks, map menu,

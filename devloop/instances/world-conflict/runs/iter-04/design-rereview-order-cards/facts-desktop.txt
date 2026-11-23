@@ -1,0 +1,460 @@
+
+## catalog no target 3440x1440
+groups (in order): 
+  Diplomacy [court, denounce, offer-pact, ceasefire, mediate, break-pact]
+  Military [declare-war, mobilize, demobilize, procure, deploy-border, withdraw-border, airstrike-military, airstrike-nuclear]
+  Nuclear [fund-nuclear, nuclear-strike]
+  Covert [spy, counter-intel, sabotage, destabilize, arm-rebels, disinformation, assassinate, coup]
+  Economy [reform]
+  Home [address, policing-soft, policing-hard]
+hint above groups: none
+cards 28; height min/median/max 221/226/348; Spy on tile 225x226; cards wholly on screen 14; page horizontal scroll false
+controls under 44 px: 3
+  19x ord-fix "Pick a country" 123x36
+  9x ord-info "How much? Forecast" 130x32
+  1x ord-remove "Remove" 85x36
+per card:
+  court:invalid(NEEDS_TARGET) 225x226
+  denounce:invalid(NEEDS_TARGET) 225x226
+  offer-pact:invalid(NEEDS_TARGET) 225x226
+  ceasefire:invalid(NEEDS_TARGET) 225x226
+  mediate:invalid(NEEDS_TARGET) 225x226
+  break-pact:invalid(NEEDS_TARGET) 225x226
+  declare-war:invalid(NEEDS_TARGET) 225x258
+  mobilize:available 225x258
+  demobilize:available 225x258
+  procure:available 225x258
+  deploy-border:invalid(NEEDS_TARGET) 225x258
+  withdraw-border:invalid(NEEDS_TARGET) 225x278
+  airstrike-military:invalid(NEEDS_TARGET) 225x278
+  airstrike-nuclear:invalid(NEEDS_TARGET) 225x278
+  fund-nuclear:available 225x258
+  nuclear-strike:invalid(NEEDS_TARGET) 225x258
+  spy:invalid(NEEDS_TARGET) 225x226
+  counter-intel:available 225x226
+  sabotage:invalid(NEEDS_TARGET) 225x226
+  destabilize:invalid(NEEDS_TARGET) 225x226
+  arm-rebels:invalid(NEEDS_TARGET) 225x226
+  disinformation:invalid(NEEDS_TARGET) 225x226
+  assassinate:invalid(NEEDS_TARGET) 225x226
+  coup:invalid(NEEDS_TARGET) 225x226
+  reform:available 225x221
+  address:available 225x348
+  policing-soft:available 225x348
+  policing-hard:available 225x348
+
+## catalog no target 1920x1080
+groups (in order): 
+  Diplomacy [court, denounce, offer-pact, ceasefire, mediate, break-pact]
+  Military [declare-war, mobilize, demobilize, procure, deploy-border, withdraw-border, airstrike-military, airstrike-nuclear]
+  Nuclear [fund-nuclear, nuclear-strike]
+  Covert [spy, counter-intel, sabotage, destabilize, arm-rebels, disinformation, assassinate, coup]
+  Economy [reform]
+  Home [address, policing-soft, policing-hard]
+hint above groups: none
+cards 28; height min/median/max 221/226/348; Spy on tile 225x226; cards wholly on screen 6; page horizontal scroll false
+controls under 44 px: 3
+  19x ord-fix "Pick a country" 123x36
+  9x ord-info "How much? Forecast" 130x32
+  1x ord-remove "Remove" 85x36
+per card:
+  court:invalid(NEEDS_TARGET) 225x226
+  denounce:invalid(NEEDS_TARGET) 225x226
+  offer-pact:invalid(NEEDS_TARGET) 225x226
+  ceasefire:invalid(NEEDS_TARGET) 225x226
+  mediate:invalid(NEEDS_TARGET) 225x226
+  break-pact:invalid(NEEDS_TARGET) 225x226
+  declare-war:invalid(NEEDS_TARGET) 225x258
+  mobilize:available 225x258
+  demobilize:available 225x258
+  procure:available 225x258
+  deploy-border:invalid(NEEDS_TARGET) 225x258
+  withdraw-border:invalid(NEEDS_TARGET) 225x278
+  airstrike-military:invalid(NEEDS_TARGET) 225x278
+  airstrike-nuclear:invalid(NEEDS_TARGET) 225x278
+  fund-nuclear:available 225x258
+  nuclear-strike:invalid(NEEDS_TARGET) 225x258
+  spy:invalid(NEEDS_TARGET) 225x226
+  counter-intel:available 225x226
+  sabotage:invalid(NEEDS_TARGET) 225x226
+  destabilize:invalid(NEEDS_TARGET) 225x226
+  arm-rebels:invalid(NEEDS_TARGET) 225x226
+  disinformation:invalid(NEEDS_TARGET) 225x226
+  assassinate:invalid(NEEDS_TARGET) 225x226
+  coup:invalid(NEEDS_TARGET) 225x226
+  reform:available 225x221
+  address:available 225x348
+  policing-soft:available 225x348
+  policing-hard:available 225x348
+
+## catalog no target 1440x900
+groups (in order): 
+  Diplomacy [court, denounce, offer-pact, ceasefire, mediate, break-pact]
+  Military [declare-war, mobilize, demobilize, procure, deploy-border, withdraw-border, airstrike-military, airstrike-nuclear]
+  Nuclear [fund-nuclear, nuclear-strike]
+  Covert [spy, counter-intel, sabotage, destabilize, arm-rebels, disinformation, assassinate, coup]
+  Economy [reform]
+  Home [address, policing-soft, policing-hard]
+hint above groups: none
+cards 28; height min/median/max 221/226/330; Spy on tile 242x226; cards wholly on screen 6; page horizontal scroll false
+controls under 44 px: 3
+  19x ord-fix "Pick a country" 123x36
+  9x ord-info "How much? Forecast" 130x32
+  1x ord-remove "Remove" 85x36
+per card:
+  court:invalid(NEEDS_TARGET) 242x226
+  denounce:invalid(NEEDS_TARGET) 242x226
+  offer-pact:invalid(NEEDS_TARGET) 242x226
+  ceasefire:invalid(NEEDS_TARGET) 242x226
+  mediate:invalid(NEEDS_TARGET) 242x226
+  break-pact:invalid(NEEDS_TARGET) 242x226
+  declare-war:invalid(NEEDS_TARGET) 242x258
+  mobilize:available 242x258
+  demobilize:available 242x258
+  procure:available 242x258
+  deploy-border:invalid(NEEDS_TARGET) 242x258
+  withdraw-border:invalid(NEEDS_TARGET) 242x258
+  airstrike-military:invalid(NEEDS_TARGET) 242x258
+  airstrike-nuclear:invalid(NEEDS_TARGET) 242x258
+  fund-nuclear:available 242x258
+  nuclear-strike:invalid(NEEDS_TARGET) 242x258
+  spy:invalid(NEEDS_TARGET) 242x226
+  counter-intel:available 242x226
+  sabotage:invalid(NEEDS_TARGET) 242x226
+  destabilize:invalid(NEEDS_TARGET) 242x226
+  arm-rebels:invalid(NEEDS_TARGET) 242x226
+  disinformation:invalid(NEEDS_TARGET) 242x226
+  assassinate:invalid(NEEDS_TARGET) 242x226
+  coup:invalid(NEEDS_TARGET) 242x226
+  reform:available 242x221
+  address:available 242x330
+  policing-soft:available 242x330
+  policing-hard:available 242x330
+
+## catalog no target 1366x768
+groups (in order): 
+  Diplomacy [court, denounce, offer-pact, ceasefire, mediate, break-pact]
+  Military [declare-war, mobilize, demobilize, procure, deploy-border, withdraw-border, airstrike-military, airstrike-nuclear]
+  Nuclear [fund-nuclear, nuclear-strike]
+  Covert [spy, counter-intel, sabotage, destabilize, arm-rebels, disinformation, assassinate, coup]
+  Economy [reform]
+  Home [address, policing-soft, policing-hard]
+hint above groups: none
+cards 28; height min/median/max 226/258/341; Spy on tile 333x268; cards wholly on screen 2; page horizontal scroll false
+controls under 44 px: 3
+  19x ord-fix "Pick a country" 123x36
+  9x ord-info "How much? Forecast" 130x32
+  1x ord-remove "Remove" 85x36
+per card:
+  court:invalid(NEEDS_TARGET) 333x226
+  denounce:invalid(NEEDS_TARGET) 333x226
+  offer-pact:invalid(NEEDS_TARGET) 333x226
+  ceasefire:invalid(NEEDS_TARGET) 333x226
+  mediate:invalid(NEEDS_TARGET) 333x226
+  break-pact:invalid(NEEDS_TARGET) 333x226
+  declare-war:invalid(NEEDS_TARGET) 333x281
+  mobilize:available 333x281
+  demobilize:available 333x281
+  procure:available 333x281
+  deploy-border:invalid(NEEDS_TARGET) 333x258
+  withdraw-border:invalid(NEEDS_TARGET) 333x258
+  airstrike-military:invalid(NEEDS_TARGET) 333x258
+  airstrike-nuclear:invalid(NEEDS_TARGET) 333x258
+  fund-nuclear:available 333x300
+  nuclear-strike:invalid(NEEDS_TARGET) 333x300
+  spy:invalid(NEEDS_TARGET) 333x268
+  counter-intel:available 333x268
+  sabotage:invalid(NEEDS_TARGET) 333x226
+  destabilize:invalid(NEEDS_TARGET) 333x226
+  arm-rebels:invalid(NEEDS_TARGET) 333x226
+  disinformation:invalid(NEEDS_TARGET) 333x226
+  assassinate:invalid(NEEDS_TARGET) 333x226
+  coup:invalid(NEEDS_TARGET) 333x226
+  reform:available 333x249
+  address:available 333x341
+  policing-soft:available 333x341
+  policing-hard:available 333x268
+
+## catalog Russia 3440x1440
+groups (in order): 
+  Diplomacy · Russia [court, denounce, offer-pact, ceasefire, mediate, break-pact]
+  Military · Russia [declare-war, mobilize, demobilize, procure, deploy-border, withdraw-border, airstrike-military, airstrike-nuclear]
+  Nuclear · Russia [fund-nuclear, nuclear-strike]
+  Covert · Russia [spy, counter-intel, sabotage, destabilize, arm-rebels, disinformation, assassinate, coup]
+  Economy [reform]
+  Home [address, policing-soft, policing-hard]
+hint above groups: none
+cards 28; height min/median/max 221/324/373; Spy on tile 225x253; cards wholly on screen 11; page horizontal scroll false
+controls under 44 px: 4
+  28x ord-info "How much? Forecast" 130x32
+  1x ord-fix "Propose a ceasefire" 160x36
+  1x ord-fix "Arm rebels first" 131x36
+  1x ord-remove "Remove" 85x36
+per card:
+  court:invalid(AT_WAR) 225x324
+  denounce:available 225x324
+  offer-pact:invalid(PACT_REFUSED) 225x324
+  ceasefire:available 225x324
+  mediate:invalid(PARTY_TO_WAR) 225x324
+  break-pact:invalid(NOT_ALLIED) 225x241
+  declare-war:invalid(ALREADY_AT_WAR) 225x330
+  mobilize:available 225x330
+  demobilize:available 225x330
+  procure:available 225x330
+  deploy-border:available 225x330
+  withdraw-border:available 225x303
+  airstrike-military:available 225x303
+  airstrike-nuclear:available 225x303
+  fund-nuclear:available 225x293
+  nuclear-strike:invalid(NO_WARHEADS) 225x293
+  spy:available 225x253
+  counter-intel:available 225x253
+  sabotage:available 225x253
+  destabilize:available 225x253
+  arm-rebels:available 225x253
+  disinformation:available 225x373
+  assassinate:invalid(TOO_PROTECTED) 225x373
+  coup:invalid(TOO_STABLE) 225x373
+  reform:available 225x221
+  address:available 225x348
+  policing-soft:available 225x348
+  policing-hard:available 225x348
+
+## catalog Russia 1920x1080
+groups (in order): 
+  Diplomacy · Russia [court, denounce, offer-pact, ceasefire, mediate, break-pact]
+  Military · Russia [declare-war, mobilize, demobilize, procure, deploy-border, withdraw-border, airstrike-military, airstrike-nuclear]
+  Nuclear · Russia [fund-nuclear, nuclear-strike]
+  Covert · Russia [spy, counter-intel, sabotage, destabilize, arm-rebels, disinformation, assassinate, coup]
+  Economy [reform]
+  Home [address, policing-soft, policing-hard]
+hint above groups: none
+cards 28; height min/median/max 221/324/373; Spy on tile 225x253; cards wholly on screen 6; page horizontal scroll false
+controls under 44 px: 4
+  28x ord-info "How much? Forecast" 130x32
+  1x ord-fix "Propose a ceasefire" 160x36
+  1x ord-fix "Arm rebels first" 131x36
+  1x ord-remove "Remove" 85x36
+per card:
+  court:invalid(AT_WAR) 225x324
+  denounce:available 225x324
+  offer-pact:invalid(PACT_REFUSED) 225x324
+  ceasefire:available 225x324
+  mediate:invalid(PARTY_TO_WAR) 225x324
+  break-pact:invalid(NOT_ALLIED) 225x241
+  declare-war:invalid(ALREADY_AT_WAR) 225x330
+  mobilize:available 225x330
+  demobilize:available 225x330
+  procure:available 225x330
+  deploy-border:available 225x330
+  withdraw-border:available 225x303
+  airstrike-military:available 225x303
+  airstrike-nuclear:available 225x303
+  fund-nuclear:available 225x293
+  nuclear-strike:invalid(NO_WARHEADS) 225x293
+  spy:available 225x253
+  counter-intel:available 225x253
+  sabotage:available 225x253
+  destabilize:available 225x253
+  arm-rebels:available 225x253
+  disinformation:available 225x373
+  assassinate:invalid(TOO_PROTECTED) 225x373
+  coup:invalid(TOO_STABLE) 225x373
+  reform:available 225x221
+  address:available 225x348
+  policing-soft:available 225x348
+  policing-hard:available 225x348
+
+## catalog Russia 1440x900
+groups (in order): 
+  Diplomacy · Russia [court, denounce, offer-pact, ceasefire, mediate, break-pact]
+  Military · Russia [declare-war, mobilize, demobilize, procure, deploy-border, withdraw-border, airstrike-military, airstrike-nuclear]
+  Nuclear · Russia [fund-nuclear, nuclear-strike]
+  Covert · Russia [spy, counter-intel, sabotage, destabilize, arm-rebels, disinformation, assassinate, coup]
+  Economy [reform]
+  Home [address, policing-soft, policing-hard]
+hint above groups: none
+cards 28; height min/median/max 221/280/356; Spy on tile 242x253; cards wholly on screen 3; page horizontal scroll false
+controls under 44 px: 4
+  28x ord-info "How much? Forecast" 130x32
+  1x ord-fix "Propose a ceasefire" 160x36
+  1x ord-fix "Arm rebels first" 131x36
+  1x ord-remove "Remove" 85x36
+per card:
+  court:invalid(AT_WAR) 242x280
+  denounce:available 242x280
+  offer-pact:invalid(PACT_REFUSED) 242x280
+  ceasefire:available 242x304
+  mediate:invalid(PARTY_TO_WAR) 242x304
+  break-pact:invalid(NOT_ALLIED) 242x304
+  declare-war:invalid(ALREADY_AT_WAR) 242x330
+  mobilize:available 242x330
+  demobilize:available 242x330
+  procure:available 242x273
+  deploy-border:available 242x273
+  withdraw-border:available 242x273
+  airstrike-military:available 242x273
+  airstrike-nuclear:available 242x273
+  fund-nuclear:available 242x273
+  nuclear-strike:invalid(NO_WARHEADS) 242x273
+  spy:available 242x253
+  counter-intel:available 242x253
+  sabotage:available 242x253
+  destabilize:available 242x273
+  arm-rebels:available 242x273
+  disinformation:available 242x273
+  assassinate:invalid(TOO_PROTECTED) 242x356
+  coup:invalid(TOO_STABLE) 242x356
+  reform:available 242x221
+  address:available 242x330
+  policing-soft:available 242x330
+  policing-hard:available 242x330
+
+## catalog Russia 1366x768
+groups (in order): 
+  Diplomacy · Russia [court, denounce, offer-pact, ceasefire, mediate, break-pact]
+  Military · Russia [declare-war, mobilize, demobilize, procure, deploy-border, withdraw-border, airstrike-military, airstrike-nuclear]
+  Nuclear · Russia [fund-nuclear, nuclear-strike]
+  Covert · Russia [spy, counter-intel, sabotage, destabilize, arm-rebels, disinformation, assassinate, coup]
+  Economy [reform]
+  Home [address, policing-soft, policing-hard]
+hint above groups: none
+cards 28; height min/median/max 249/300/341; Spy on tile 333x300; cards wholly on screen 2; page horizontal scroll false
+controls under 44 px: 6
+  1x ord-fix "Propose a ceasefire instead" 214x36
+  28x ord-info "How much? Forecast" 130x32
+  1x ord-fix "Propose a ceasefire" 160x36
+  1x ord-fix "Strike military targets instea" 229x36
+  1x ord-fix "Arm rebels first" 131x36
+  1x ord-remove "Remove" 85x36
+per card:
+  court:invalid(AT_WAR) 333x268
+  denounce:available 333x268
+  offer-pact:invalid(PACT_REFUSED) 333x300
+  ceasefire:available 333x300
+  mediate:invalid(PARTY_TO_WAR) 333x285
+  break-pact:invalid(NOT_ALLIED) 333x285
+  declare-war:invalid(ALREADY_AT_WAR) 333x298
+  mobilize:available 333x298
+  demobilize:available 333x281
+  procure:available 333x281
+  deploy-border:available 333x300
+  withdraw-border:available 333x300
+  airstrike-military:available 333x300
+  airstrike-nuclear:available 333x300
+  fund-nuclear:available 333x300
+  nuclear-strike:invalid(NO_WARHEADS) 333x300
+  spy:available 333x300
+  counter-intel:available 333x300
+  sabotage:available 333x300
+  destabilize:available 333x300
+  arm-rebels:available 333x300
+  disinformation:available 333x300
+  assassinate:invalid(TOO_PROTECTED) 333x298
+  coup:invalid(TOO_STABLE) 333x298
+  reform:available 333x249
+  address:available 333x341
+  policing-soft:available 333x341
+  policing-hard:available 333x268
+
+## desk face 3440x1440-CEO
+before open: stage 704 page 0
+face 1313,620 225x417; Cancel 1330,913 191x48 lines 1 clipped false; Give 1330,971 191x48 lines 1 clipped false; title line false; text: MILITARY Strike military targets in Russia? A risky order: check it is the one you meant. What your staff expect: Russia: Relations -30 Tension +8 Russia may retaliate: militarily or through proxies. Cancel Give the order; stage scrollTop 704; page 0
+after Cancel: face open 0, card available
+
+## desk face 1440x900
+before open: stage 1312 page 0
+face 288,364 242x377; Cancel 305,618 208x48 lines 1 clipped false; Give 305,676 208x48 lines 1 clipped false; title line false; text: MILITARY Strike military targets in Russia? A risky order: check it is the one you meant. What your staff expect: Russia: Relations -30 Tension +8 Russia may retaliate: militarily or through proxies. Cancel Give the order; stage scrollTop 1312; page 0
+after Cancel: face open 0, card available
+
+queued Mobilize state queued: ORDERED MILITARY Mobilize forces ◆ 1 held 12% defense In this month Remove How much? Forecast
+
+month 2 proposed row height 187: Court United Kingdom DIPLOMACY Proposed by staff (Foreign Minister) · ◆ 1 if accepted Remove Will change: United Kingdom: Relations +5 to +7 Foreign Minister: Mission: United Kingdom needs 93+, now 83
+
+## map 3440x1440-CEO
+menu opened: menu 1817,382 380x943 scrollTop 0/0 head 1828,393 358x84 headVisible true pageScroll 0 menuBottomInViewport true
+  tiles: ceasefire 1828,487 174x260 | airstrike-military 2012,487 174x260 | deploy-border 1828,757 174x230 | spy 2012,757 174x230 | destabilize 1828,998 174x213
+Strike in view: menu 1817,382 380x943 scrollTop 0/0 head 1828,393 358x84 headVisible true pageScroll 0 menuBottomInViewport true
+  tiles: ceasefire 1828,487 174x260 | airstrike-military 2012,487 174x260 | deploy-border 1828,757 174x230 | spy 2012,757 174x230 | destabilize 1828,998 174x213
+150 ms after press: menu 1817,382 380x984 scrollTop 0/0 head 1828,393 358x84 headVisible true pageScroll 0 menuBottomInViewport true
+  face 1828,727 358x301 titles 1 focus "Cancel"
+  face text: MILITARY Strike military targets in Russia? A risky order: check it is the one you meant. What your staff expect: Russia: Relations -30 Tension +8 Russia may retaliate: militarily or through proxies. Cancel Give the order
+  Cancel {"text":"Cancel","rect":"1845,964 130x48","inside":true,"lines":1,"clipped":false}
+  Give {"text":"Give the order","rect":"1985,964 184x48","inside":true,"lines":1,"clipped":false}
+  tiles: ceasefire 1828,487 174x230 | airstrike-military* 1828,727 358x301 | deploy-border 2012,487 174x230 | spy 1828,1039 174x213 | destabilize 2012,1039 174x213
+face open (950 ms): menu 1817,382 380x984 scrollTop 0/0 head 1828,393 358x84 headVisible true pageScroll 0 menuBottomInViewport true
+  face 1828,727 358x301 titles 1 focus "Cancel"
+  face text: MILITARY Strike military targets in Russia? A risky order: check it is the one you meant. What your staff expect: Russia: Relations -30 Tension +8 Russia may retaliate: militarily or through proxies. Cancel Give the order
+  Cancel {"text":"Cancel","rect":"1845,964 130x48","inside":true,"lines":1,"clipped":false}
+  Give {"text":"Give the order","rect":"1985,964 184x48","inside":true,"lines":1,"clipped":false}
+  tiles: ceasefire 1828,487 174x230 | airstrike-military* 1828,727 358x301 | deploy-border 2012,487 174x230 | spy 1828,1039 174x213 | destabilize 2012,1039 174x213
+after Cancel: menu 1817,382 380x943 scrollTop 0/0 head 1828,393 358x84 headVisible true pageScroll 0 menuBottomInViewport true
+  tiles: ceasefire 1828,487 174x260 | airstrike-military 2012,487 174x260 | deploy-border 1828,757 174x230 | spy 2012,757 174x230 | destabilize 1828,998 174x213
+after reopen + Escape: menu 1817,382 380x943 scrollTop 0/0 head 1828,393 358x84 headVisible true pageScroll 0 menuBottomInViewport true
+  tiles: ceasefire 1828,487 174x260 | airstrike-military 2012,487 174x260 | deploy-border 1828,757 174x230 | spy 2012,757 174x230 | destabilize 1828,998 174x213
+
+## map 1920x1080
+menu opened: menu 1033,178 380x813 scrollTop 0/130 head 1044,189 358x84 headVisible true pageScroll 0 menuBottomInViewport true
+  tiles: ceasefire 1044,283 174x260 | airstrike-military 1228,283 174x260 | deploy-border 1044,553 174x230 | spy 1228,553 174x230 | destabilize 1044,794 174x213
+Strike in view: menu 1033,178 380x813 scrollTop 0/130 head 1044,189 358x84 headVisible true pageScroll 0 menuBottomInViewport true
+  tiles: ceasefire 1044,283 174x260 | airstrike-military 1228,283 174x260 | deploy-border 1044,553 174x230 | spy 1228,553 174x230 | destabilize 1044,794 174x213
+150 ms after press: menu 1033,178 380x813 scrollTop 0/171 head 1044,189 358x84 headVisible true pageScroll 0 menuBottomInViewport true
+  face 1044,523 358x302 titles 1 focus "Cancel"
+  face text: MILITARY Strike military targets in Russia? A risky order: check it is the one you meant. What your staff expect: Russia: Relations -30 Tension +8 Russia may retaliate: militarily or through proxies. Cancel Give the order
+  Cancel {"text":"Cancel","rect":"1061,760 130x48","inside":true,"lines":1,"clipped":false}
+  Give {"text":"Give the order","rect":"1201,760 184x48","inside":true,"lines":1,"clipped":false}
+  tiles: ceasefire 1044,283 174x230 | airstrike-military* 1044,523 358x301 | deploy-border 1228,283 174x230 | spy 1044,835 174x213 | destabilize 1228,835 174x213
+face open (950 ms): menu 1033,178 380x813 scrollTop 0/171 head 1044,189 358x84 headVisible true pageScroll 0 menuBottomInViewport true
+  face 1044,523 358x301 titles 1 focus "Cancel"
+  face text: MILITARY Strike military targets in Russia? A risky order: check it is the one you meant. What your staff expect: Russia: Relations -30 Tension +8 Russia may retaliate: militarily or through proxies. Cancel Give the order
+  Cancel {"text":"Cancel","rect":"1061,760 130x48","inside":true,"lines":1,"clipped":false}
+  Give {"text":"Give the order","rect":"1201,760 184x48","inside":true,"lines":1,"clipped":false}
+  tiles: ceasefire 1044,283 174x230 | airstrike-military* 1044,523 358x301 | deploy-border 1228,283 174x230 | spy 1044,835 174x213 | destabilize 1228,835 174x213
+after Cancel: menu 1033,178 380x813 scrollTop 0/130 head 1044,189 358x84 headVisible true pageScroll 0 menuBottomInViewport true
+  tiles: ceasefire 1044,283 174x260 | airstrike-military 1228,283 174x260 | deploy-border 1044,553 174x230 | spy 1228,553 174x230 | destabilize 1044,794 174x213
+after reopen + Escape: menu 1033,178 380x813 scrollTop 0/130 head 1044,189 358x84 headVisible true pageScroll 0 menuBottomInViewport true
+  tiles: ceasefire 1044,283 174x260 | airstrike-military 1228,283 174x260 | deploy-border 1044,553 174x230 | spy 1228,553 174x230 | destabilize 1044,794 174x213
+
+## map 1440x900
+menu opened: menu 780,178 380x633 scrollTop 0/310 head 791,189 358x84 headVisible true pageScroll 0 menuBottomInViewport true
+  tiles: ceasefire 791,283 174x260 | airstrike-military 975,283 174x260 | deploy-border 791,553 174x230 | spy 975,553 174x230 | destabilize 791,794 174x213
+Strike in view: menu 780,178 380x633 scrollTop 0/310 head 791,189 358x84 headVisible true pageScroll 0 menuBottomInViewport true
+  tiles: ceasefire 791,283 174x260 | airstrike-military 975,283 174x260 | deploy-border 791,553 174x230 | spy 975,553 174x230 | destabilize 791,794 174x213
+150 ms after press: menu 780,178 380x633 scrollTop 45/351 head 791,144 358x84 headVisible false pageScroll 0 menuBottomInViewport true
+  face 791,478 358x301 titles 1 focus "Cancel"
+  face text: MILITARY Strike military targets in Russia? A risky order: check it is the one you meant. What your staff expect: Russia: Relations -30 Tension +8 Russia may retaliate: militarily or through proxies. Cancel Give the order
+  Cancel {"text":"Cancel","rect":"808,715 130x48","inside":true,"lines":1,"clipped":false}
+  Give {"text":"Give the order","rect":"948,715 184x48","inside":true,"lines":1,"clipped":false}
+  tiles: ceasefire 791,238 174x230 | airstrike-military* 791,478 358x301 | deploy-border 975,238 174x230 | spy 791,790 174x213 | destabilize 975,790 174x213
+face open (950 ms): menu 780,178 380x633 scrollTop 45/351 head 791,144 358x84 headVisible false pageScroll 0 menuBottomInViewport true
+  face 791,478 358x301 titles 1 focus "Cancel"
+  face text: MILITARY Strike military targets in Russia? A risky order: check it is the one you meant. What your staff expect: Russia: Relations -30 Tension +8 Russia may retaliate: militarily or through proxies. Cancel Give the order
+  Cancel {"text":"Cancel","rect":"808,715 130x48","inside":true,"lines":1,"clipped":false}
+  Give {"text":"Give the order","rect":"948,715 184x48","inside":true,"lines":1,"clipped":false}
+  tiles: ceasefire 791,238 174x230 | airstrike-military* 791,478 358x301 | deploy-border 975,238 174x230 | spy 791,790 174x213 | destabilize 975,790 174x213
+after Cancel: menu 780,178 380x633 scrollTop 0/310 head 791,189 358x84 headVisible true pageScroll 0 menuBottomInViewport true
+  tiles: ceasefire 791,283 174x260 | airstrike-military 975,283 174x260 | deploy-border 791,553 174x230 | spy 975,553 174x230 | destabilize 791,794 174x213
+after reopen + Escape: menu 780,178 380x633 scrollTop 45/310 head 791,144 358x84 headVisible false pageScroll 0 menuBottomInViewport true
+  tiles: ceasefire 791,238 174x260 | airstrike-military 975,238 174x260 | deploy-border 791,508 174x230 | spy 975,508 174x230 | destabilize 791,749 174x213
+
+## map 1366x768
+menu opened: menu 731,178 380x451 scrollTop 0/492 head 742,189 358x84 headVisible true pageScroll 0 menuBottomInViewport true
+  tiles: ceasefire 742,283 174x260 | airstrike-military 926,283 174x260 | deploy-border 742,553 174x230 | spy 926,553 174x230 | destabilize 742,794 174x213
+Strike in view: menu 731,178 380x451 scrollTop 0/492 head 742,189 358x84 headVisible true pageScroll 0 menuBottomInViewport true
+  tiles: ceasefire 742,283 174x260 | airstrike-military 926,283 174x260 | deploy-border 742,553 174x230 | spy 926,553 174x230 | destabilize 742,794 174x213
+150 ms after press: menu 731,178 380x451 scrollTop 227/533 head 742,-38 358x84 headVisible false pageScroll 0 menuBottomInViewport true
+  face 742,296 358x302 titles 1 focus "Cancel"
+  face text: MILITARY Strike military targets in Russia? A risky order: check it is the one you meant. What your staff expect: Russia: Relations -30 Tension +8 Russia may retaliate: militarily or through proxies. Cancel Give the order
+  Cancel {"text":"Cancel","rect":"759,533 130x48","inside":true,"lines":1,"clipped":false}
+  Give {"text":"Give the order","rect":"899,533 184x48","inside":true,"lines":1,"clipped":false}
+  tiles: ceasefire 742,56 174x230 | airstrike-military* 742,296 358x301 | deploy-border 926,56 174x230 | spy 742,608 174x213 | destabilize 926,608 174x213
+face open (950 ms): menu 731,178 380x451 scrollTop 227/533 head 742,-38 358x84 headVisible false pageScroll 0 menuBottomInViewport true
+  face 742,296 358x301 titles 1 focus "Cancel"
+  face text: MILITARY Strike military targets in Russia? A risky order: check it is the one you meant. What your staff expect: Russia: Relations -30 Tension +8 Russia may retaliate: militarily or through proxies. Cancel Give the order
+  Cancel {"text":"Cancel","rect":"759,533 130x48","inside":true,"lines":1,"clipped":false}
+  Give {"text":"Give the order","rect":"899,533 184x48","inside":true,"lines":1,"clipped":false}
+  tiles: ceasefire 742,56 174x230 | airstrike-military* 742,296 358x301 | deploy-border 926,56 174x230 | spy 742,608 174x213 | destabilize 926,608 174x213
+after Cancel: menu 731,178 380x451 scrollTop 140/492 head 742,49 358x84 headVisible false pageScroll 0 menuBottomInViewport true
+  tiles: ceasefire 742,143 174x260 | airstrike-military 926,143 174x260 | deploy-border 742,413 174x230 | spy 926,413 174x230 | destabilize 742,654 174x213
+after reopen + Escape: menu 731,178 380x451 scrollTop 227/492 head 742,-38 358x84 headVisible false pageScroll 0 menuBottomInViewport true
+  tiles: ceasefire 742,56 174x260 | airstrike-military 926,56 174x260 | deploy-border 742,326 174x230 | spy 926,326 174x230 | destabilize 742,567 174x213

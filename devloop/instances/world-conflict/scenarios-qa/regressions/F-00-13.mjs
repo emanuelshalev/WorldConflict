@@ -28,7 +28,7 @@ await run('F-00-13', async (g, track) => {
   for (const [query, kind] of [
     // Dan's words: the first hit is the strike on nuclear sites, an act of war (its face may lead
     // with the mission warning, which also has to be confirmed)
-    ['nuclear strike india', /^(war|mission)$/],
+    ['nuclear strike india', /^(war|mission|danger)$/],
     ['declare war india', /^war$/],
   ]) {
     await box.fill(query);

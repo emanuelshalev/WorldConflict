@@ -211,6 +211,10 @@
 .advisors .coach-bubble.place-above { bottom: auto; top: -6px; right: 0; transform: translateY(-100%); }
 @keyframes coach-in { from { opacity: 0; transform: translateY(6px); } }
 .advisors .coach-bubble { animation: none; }
+/* One question on screen at a time: while an order's confirmation is open the coach steps aside. It
+   keeps its box (visibility, not display), so what is measured around it does not move, and a press
+   there reaches the face, not the bubble (DR-OC-4) */
+body:has(.ord-confirm) .coach-bubble { visibility: hidden; pointer-events: none; }
 @media (max-width: 599px) { .coach-bubble.place-top-right { top: 10px; right: 10px; left: 10px; width: auto; } }
 .coach-result { display: block; width: 100%; text-align: left; padding: 10px 14px; border-radius: 10px; border: 0; background: #2f9fcf; color: #04131c; font: inherit; font-weight: 700; font-size: 14px; cursor: pointer; min-height: 44px; }
 @media (prefers-reduced-motion: reduce) { .coach-bubble, .move-card.is-pointed { animation: none; } }
