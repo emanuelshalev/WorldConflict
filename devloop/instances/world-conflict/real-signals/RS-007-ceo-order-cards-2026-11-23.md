@@ -1,5 +1,8 @@
 # RS-007: CEO playtest (2026-11-23), order cards
 
+Severity: S3
+Status: open
+
 Build played: `main` at tag `iter-2` (67c9b11).
 
 > The order cards are boring and dark; the icons do not give the intuition of what the order type is without reading the card.

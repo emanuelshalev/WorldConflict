@@ -84,8 +84,8 @@
       "on": "enter:Gate",
       "gate": "quality",
       "match": "code",
-      "accept": ["pass"],
-      "why": "The release gate is decided from the quality scorecard on the code being released (D-78, kit/evaluate.mjs --record): gate met, or `loop override quality-gate --reason`"
+      "accept": ["pass", "fail"],
+      "why": "An iteration closes through Gate with a recorded quality scorecard on the code being closed (D-78, kit/evaluate.mjs --record); a release candidate additionally needs the verdict met (D-79)"
     },
     "t3-before-plan": {
       "on": "enter:Plan",

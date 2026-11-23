@@ -1,5 +1,8 @@
 # RS-003: CEO on the world map and learning while playing (2026-11-22)
 
+Severity: S3
+Status: addressed
+
 ## Verbatim (condensed)
 > The world map should zoom to the screen; it would be great to have country names on the globe so it's richer. When changing eras while choosing the game mode, the map stays the same, while stability and significant situations (with icons and lines) should be different and are not represented.
 > The explanations may contain names and concepts people are not familiar with. We want this game to be a learning tool as well, so we need a way to easily access explanations of terms and situations: maybe tooltip style while hovering on words, or an "i" icon for a more in-depth explanation of a paragraph or phrase. Players are not expected to know all the locations, leaders and situations, but we want to make playing an unknown situation accessible to all and let everyone familiarize themselves with the information. It is a fun game, but also educational.
