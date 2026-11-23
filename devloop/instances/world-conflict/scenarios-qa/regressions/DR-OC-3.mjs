@@ -9,7 +9,9 @@
 //    under the desk tabs). Two states: no target with the list at its first group, and target Russia
 //    with the Military group at the top of the stage (the reviewer's screen);
 //  - a press on an available row (Spy on Russia) opens its blurb and forecast and does not add it;
-//    Add adds it (C2);
+//    Add adds it (C2); review 3: the opened forecast runs at least 80% of the row's width and Add
+//    stays within the row's first 80 px (S3), the hint line shows only with no target, and a search
+//    hit on the phone behaves as a list row (S4);
 //  - widened to 1440x900, tiles are back near their earlier height (an available tile at most 265 px;
 //    about 262 before the order cards, 279 on the first reviewed build).
 //   node devloop/instances/world-conflict/scenarios-qa/regressions/DR-OC-3.mjs <outDir> <baseUrl> <apiUrl>
@@ -82,6 +84,7 @@ await run('DR-OC-3', async (g, track) => {
   g.check(!ph.hscroll, 'phone: the page does not scroll sideways');
   const a = await rowsOnScreen(p, 'diplo');
   await s.look('phone-catalog-notarget');
+  g.check((await p.locator('[data-order-catalog] [data-cat-hint]').count()) === 1, 'phone, no target: the "Pick a country first" hint is shown once');
   g.check(a.whole >= MIN_ROWS_NO_TARGET, `phone, no target: at least ${MIN_ROWS_NO_TARGET} whole rows between the desk tabs and the command bar (${a.whole} in ${a.region}; ${a.heights} px)`);
 
   // ---- Desktop width, no target: tiles near the earlier height
@@ -124,7 +127,19 @@ await run('DR-OC-3', async (g, track) => {
   g.check(/Sharpens your estimate/.test(fcText), `phone: the forecast carries the order's description ("${fcText.slice(0, 60)}")`);
   g.check((await spy.getAttribute('data-order-state')) === 'available', 'phone: opening the forecast does not add the order');
   await s.look('phone-row-forecast');
-  // The open forecast sits over the middle of the row: press the row by its title line
+  // Review 3, S3: the opened row's forecast runs the row's full width (not a 180 px column beside
+  // Add), and Add stays level with the title instead of floating to the middle of the tall row
+  const open = await spy.evaluate((w) => {
+    const row = w.getBoundingClientRect();
+    const f = w.querySelector('[data-row-forecast]').getBoundingClientRect();
+    const add = w.querySelector('.ord-act').getBoundingClientRect();
+    return { rowW: Math.round(row.width), fW: Math.round(f.width), addTop: Math.round(add.top - row.top), rowH: Math.round(row.height) };
+  });
+  g.check(open.fW >= open.rowW * 0.8, `phone: the opened forecast is at least 80% of the row's width (${open.fW} of ${open.rowW} px)`);
+  g.check(open.addTop <= 80, `phone: Add stays at the top of the opened row (${open.addTop} px below its top, row ${open.rowH} px tall)`);
+  // Review 3, S4: with a target chosen the "Pick a country first" hint no longer takes a line
+  g.check((await p.locator('[data-order-catalog] [data-cat-hint]').count()) === 0, 'phone, target chosen: no hint line above the groups');
+  // Close the forecast by its title line (the forecast itself lies under the rest of the row)
   await spy.locator('.wc-card-hit').click({ position: { x: 150, y: 14 } });
   await p.waitForTimeout(400);
   g.check(!(await fc.isVisible().catch(() => false)), 'phone: a second press closes the forecast');
@@ -133,6 +148,26 @@ await run('DR-OC-3', async (g, track) => {
   g.check((await spy.getAttribute('data-order-state')) === 'queued', 'phone: Add puts the order in this month');
   await spy.locator('.ord-act').click();
   await p.waitForTimeout(800);
+
+  // ---- Review 3, S4: a search hit on the phone behaves as a list row (a tap shows, Add adds)
+  const search = p.locator('#catalog-search');
+  await search.fill('spy');
+  await p.waitForTimeout(600);
+  const hit = p.locator('#ord-hits .ord-wrap[data-order-id="spy"]').first();
+  if (g.check(await hit.isVisible().catch(() => false), 'phone, search "spy": Spy is listed')) {
+    await search.blur();
+    await hit.locator('.wc-card-hit').tap();
+    await p.waitForTimeout(500);
+    g.check(await hit.locator('[data-row-forecast]').isVisible().catch(() => false), 'phone, search hit: a tap opens its forecast');
+    g.check((await hit.getAttribute('data-order-state')) === 'available', 'phone, search hit: the tap does not add the order');
+    await hit.locator('.ord-act').tap();
+    await p.waitForTimeout(1200);
+    g.check((await hit.getAttribute('data-order-state')) === 'queued', 'phone, search hit: Add puts the order in this month');
+    await hit.locator('.ord-act').tap();
+    await p.waitForTimeout(800);
+  }
+  await search.fill('');
+  await p.waitForTimeout(400);
 
   g.check(!s.errors.length, `no page errors (${s.errors.slice(0, 2).join(' | ')})`);
 });
