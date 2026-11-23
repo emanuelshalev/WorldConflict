@@ -188,6 +188,72 @@
       "iteration": 4,
       "stage": "Build",
       "tier": "T1"
+    },
+    {
+      "gate": "verify",
+      "result": "pass",
+      "commit": "9025b5a36284c65bca863ac43112c3c05a7896b4",
+      "codeTree": "4dde0eeadf68a9a5",
+      "evidence": ".verify/summary.json",
+      "note": "modes default",
+      "t": "2026-11-23T06:18:31.037Z",
+      "iteration": 4,
+      "stage": "Build",
+      "steps": [
+        "registry",
+        "test",
+        "lint",
+        "ui-lint",
+        "build",
+        "smoke",
+        "reveal",
+        "visual",
+        "regressions",
+        "balance"
+      ]
+    },
+    {
+      "gate": "design-review",
+      "result": "fail",
+      "commit": "97b4b5cba4b71c9db57ebea4f340e6aa4cae5136",
+      "codeTree": "4dde0eeadf68a9a5",
+      "evidence": ".claude/worktrees/agent-a55788049b2448915/devloop/instances/world-conflict/runs/iter-04/design-review-stability.md",
+      "t": "2026-11-23T06:27:03.348Z",
+      "iteration": 4,
+      "stage": "Build"
+    },
+    {
+      "gate": "verify",
+      "result": "pass",
+      "commit": "980b113eda45b051b35c96e2073bb368203dd5dc",
+      "codeTree": "26aea7f3021ec34e",
+      "evidence": ".verify/summary.json",
+      "note": "modes default",
+      "t": "2026-11-23T08:07:32.104Z",
+      "iteration": 4,
+      "stage": "Build",
+      "steps": [
+        "registry",
+        "test",
+        "lint",
+        "ui-lint",
+        "build",
+        "smoke",
+        "reveal",
+        "visual",
+        "regressions",
+        "balance"
+      ]
+    },
+    {
+      "gate": "design-review",
+      "result": "pass",
+      "commit": "2839d9b1e2d9acc965c2f311259010e80783d266",
+      "codeTree": "26aea7f3021ec34e",
+      "evidence": ".claude/worktrees/agent-a55788049b2448915/devloop/instances/world-conflict/runs/iter-04/design-review-stability.md",
+      "t": "2026-11-23T08:12:36.310Z",
+      "iteration": 4,
+      "stage": "Build"
     }
   ],
   "merges": [
