@@ -981,7 +981,9 @@ const missionValue = (i: Impact) => primaryScore(i) * 100 + bonusScore(i);
 const helpsNone = (i: Impact) => i.helps.length + i.bonusHelps.length === 0;
 
 function domainAdviser(ctx: ImpactContext | null, i: Impact): Advisor {
-  const link = i.links.find((l) => l.effect === "helps" && !l.bonus) ?? i.links.find((l) => l.effect === "helps");
+  const link =
+    i.links.find((l) => l.effect === "helps" && !l.bonus) ??
+    i.links.find((l) => l.effect === "helps");
   const kind = link && ctx ? ctx.conditions[link.index]?.cond.kind : undefined;
   return (kind && DOMAIN[kind]) || "Interior Minister";
 }
@@ -997,7 +999,8 @@ function adviserPair(
     (o.backedBy ?? []).map((r) => ROLE_NAMES[r]).filter((a): a is Advisor => !!a);
   const m = named(mission).find((a) => a !== "Chief of Staff") ?? domainAdviser(ctx, missionImpact);
   const c =
-    named(calm).find((a) => a !== m) ?? (m !== "Chief of Staff" ? "Chief of Staff" : "Interior Minister");
+    named(calm).find((a) => a !== m) ??
+    (m !== "Chief of Staff" ? "Chief of Staff" : "Interior Minister");
   return [m, c];
 }
 
@@ -1082,7 +1085,8 @@ export function crisisCall(
       id: o.id,
       label: o.label,
       side,
-      advisers: side === "mission" ? (agree ? [mAdv, cAdv] : [mAdv]) : side === "calm" ? [cAdv] : [],
+      advisers:
+        side === "mission" ? (agree ? [mAdv, cAdv] : [mAdv]) : side === "calm" ? [cAdv] : [],
       why:
         side === "mission"
           ? helped.length
