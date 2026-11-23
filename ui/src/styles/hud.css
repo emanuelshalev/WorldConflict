@@ -8,9 +8,13 @@
 .hud-flag { font-size: 30px; line-height: 1; flex: none; }
 .game-top .hud-who { min-width: 0; flex: 0 1 auto; max-width: 340px; }
 .game-top .hud-who b { font-size: 17px; }
-/* The leader's name wraps rather than being cut with an ellipsis (QA3R-6a: "Donald Tr...") */
+/* The leader's name is never cut ("Donald Tr...", QA3R-6a): when the bar is tight the block shrinks
+   to the longest word and the name wraps between words, never inside one; the country line under
+   it fills that width and shortens instead */
 @media (min-width: 601px) {
-  .game-top .hud-who b { white-space: normal !important; overflow: visible !important; text-overflow: clip !important; overflow-wrap: anywhere; line-height: 1.15; }
+  .game-top .hud-who { flex: 0 1 auto; max-width: none !important; min-width: min-content; }
+  .game-top .hud-who b { white-space: normal !important; overflow: visible !important; text-overflow: clip !important; overflow-wrap: normal; word-break: keep-all; line-height: 1.15; }
+  .game-top .hud-who > span { display: block; max-width: 0; min-width: 100%; overflow: hidden !important; text-overflow: ellipsis !important; white-space: nowrap !important; }
 }
 .game-top .hud-who span { font-size: 13px; overflow: hidden; text-overflow: ellipsis; }
 .game-top .hud-stats { display: flex !important; gap: 18px !important; margin-left: auto; align-items: center; overflow: visible !important; width: auto; order: 0; justify-content: flex-end !important; }
@@ -78,4 +82,13 @@
   .game-top .hud-menu .icon-btn[aria-label='Mission and record'] { display: none; }
   .game-top .hud { gap: 12px; }
   .game-top .hud-stats { gap: 14px !important; }
+  /* the flag gives its room to the leader's name, which is never cut (QA3R-6a) */
+  .game-top .hud-flag { display: none; }
+}
+
+/* Narrow phones: with month deltas beside the stats, "More" keeps its chevron and its accessible
+   name but drops the word, so it stays inside the window (QA3R-6a) */
+@media (max-width: 420px) {
+  .game-top .hud-more span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .game-top .hud-more { padding: 0 8px; justify-content: center; }
 }

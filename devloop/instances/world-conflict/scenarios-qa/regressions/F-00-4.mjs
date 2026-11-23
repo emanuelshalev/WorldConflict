@@ -71,6 +71,14 @@ await run('F-00-4', async (g, track) => {
         g.check(r.ok, `${w} month ${month}: ${name.source.slice(0, 20)} is fully on screen (${r.top} to ${r.bottom})`);
       }
       const cuts = await cut(p);
+      // The top bar fits the window: nothing in it runs past the right edge (the menu stays reachable)
+      const over = await p.evaluate(() =>
+        [...document.querySelectorAll('.game-top .hud > *, .game-top .hud-menu > *')]
+          .filter((e) => e.getBoundingClientRect().width > 0 && getComputedStyle(e).display !== 'none')
+          .filter((e) => e.getBoundingClientRect().right > innerWidth + 1)
+          .map((e) => (e.getAttribute('aria-label') ?? e.className ?? '').toString().slice(0, 30)),
+      );
+      g.check(!over.length, `${w} month ${month}: the top bar fits the window (${over.slice(0, 3).join('; ') || 'all inside'})`);
       await s.look(`${w}-month${month}`);
       g.check(!cuts.length, `${w} month ${month}: no goal-line or HUD text is cut (${cuts.slice(0, 3).join('; ') || 'none'})`);
       if (month === 2) break;
