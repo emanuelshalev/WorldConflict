@@ -236,6 +236,49 @@
           "noise": { "kind": "derived", "k": 1, "since": 1, "why": "as weighted recommend" },
           "cadence": "per-iteration",
           "blocking": false
+        },
+        {
+          "id": "accept-all-wins",
+          "label": "Accept all alone: pooled wins (harness staff policy)",
+          "gate": "D-84: Accept all recommended is not a winning strategy",
+          "source": { "adapter": "balance", "args": { "metric": "staff-pooled" } },
+          "direction": "lower",
+          "threshold": 0.30,
+          "noise": { "kind": "none", "why": "seeded harness; use --games 36 near the edge" },
+          "cadence": "per-commit",
+          "blocking": true
+        },
+        {
+          "id": "guided-wins",
+          "label": "Guided play: pooled wins (harness guided policy), band 65 to 90%",
+          "gate": "D-84: a newcomer who follows the Guide me line can win",
+          "source": { "adapter": "balance", "args": { "metric": "guided-in-band" } },
+          "direction": "bool",
+          "noise": { "kind": "none", "why": "seeded harness" },
+          "cadence": "per-commit",
+          "blocking": true
+        },
+        {
+          "id": "call-balance",
+          "label": "Calm side above mission side of the call (points; always the calm card minus always the mission card, pooled)",
+          "gate": "D-84 revision: the calm card is never a trap (directional call bands, decision-call-balance.md 5.2)",
+          "source": { "adapter": "balance", "args": { "metric": "call-trap" } },
+          "direction": "lower",
+          "threshold": 8,
+          "noise": { "kind": "none", "why": "seeded harness" },
+          "cadence": "per-commit",
+          "blocking": true
+        },
+        {
+          "id": "real-decisions",
+          "label": "Real decisions per month (guided harness, flashpoint control seeds, months 2 to 12; the play pass confirms by hand)",
+          "gate": "D-81 play pass; D-84",
+          "source": { "adapter": "balance", "args": { "metric": "real-decisions" } },
+          "direction": "higher",
+          "threshold": 1.0,
+          "noise": { "kind": "none", "why": "counted on fixed seeds" },
+          "cadence": "per-commit",
+          "blocking": true
         }
       ]
     },

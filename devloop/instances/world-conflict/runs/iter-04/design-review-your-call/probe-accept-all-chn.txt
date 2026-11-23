@@ -1,0 +1,30 @@
+######## month 1
+crisis dec_cn_inspection_regime_0 "How tight a squeeze?" IS A CALL default=paper cabinetPick=paper call.mission=paper call.calm=paper skip=paper | all=Inspect every energy cargo ; selective=Selective boardings ; paper=Keep it on paper
+  guide: Your advisers agree on Keep it on paper. The others cost you: No shooting war across the Strait and Bring Taipei to the table. || skip text: The cabinet waits: Keep it on paper.
+routine n=6
+before: main= | count= | items=
+before: strip/bar=Recommended answer on 1 crisis, 2 recommended orders not accepted (they will not run), deputies take 4 meetings.
+before: crisis rec line=
+Accept all pressed: false
+after: main= | count= | items=
+after: strip/bar=Recommended answer on 1 crisis, 2 recommended orders not accepted (they will not run), deputies take 4 meetings.
+after: Recommended words on the screen=Recommended: Keep it on paper
+after: "Your call" on screen: false
+SENT dec_cn_inspection_regime_0: (none sent: engine default paper) | desk said Recommended: paper | call
+result card: JAN 2027 · YOUR MONTH THIS MONTH -13 Japan's view of you this month THE MONTH Japan moves against you Mission: Bring Taipei to the table: -80 → -89, needs -55. Your mission bar moved. Tap it any time to see what each goal needs. The numbers, the score and the rest of the month See everything Read the paper Next month
+######## month 2
+crisis dec_refugee_wave_0_0 "Refugees from Afghanistan" IS A CALL default=close cabinetPick=deal call.mission=close call.calm=deal skip=close | open=Open the borders ; close=Seal the border ; deal=Pay a third country to host them
+  guide: For your mission: Seal the border. To keep things calm: Pay a third country to host them. || skip text: The cabinet waits: Seal the border.
+routine n=7
+before: main=Accept all recommended (7) Shift+A 3 orders, 3 meetings, 1 meeting for a deputy | count=7 | items=Order: Court Russia || Order: Reform program || Order: Court United States || Meeting: Reassure: no threat intended || Meeting: Promise full support || Meeting: Brief the allies first || Deputy takes: Interview: the evening news
+before: strip/bar=Recommended answer on 1 crisis, 3 recommended orders not accepted (they will not run), deputies take 4 meetings.
+before: crisis rec line=
+Accept all pressed: true
+after: main=Accept all recommended Nothing to accept: every recommendation is decided | count=0 | items=
+after: strip/bar=Recommended answer on 1 crisis, 3 recommended orders accepted, you attend 3 meetings.
+after: Recommended words on the screen=Recommended: Pay a third country to host them
+after: "Your call" on screen: false
+SENT dec_refugee_wave_0_0: (none sent: engine default close) | desk said Recommended: deal | call  <== DESK SAID ONE ANSWER, ENGINE RESOLVES ANOTHER
+REPORT crisis "Refugees from Afghanistan": choice="Seal the border (no decision taken)" optionId=close headline=Jinping chooses: Seal the border
+result card: LIVE · ADDRESS FEB 2027 · YOUR MONTH WHAT YOUR CHOICE DID You ordered: Reform program Reform program DONE Mission: stability 75 → 80%, needs 88%. The numbers, the score and the rest of the month See everything Read the paper Next month
+page errors: none

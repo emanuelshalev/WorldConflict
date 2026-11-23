@@ -1,0 +1,44 @@
+
+== usa-on-acc month 1 (turn 0) calls=["crisis:dec_us_midterm_clock_0","move:mission-move"] chief={"dec_us_midterm_clock_0":"escort"}
+  crisis "The January clock" id=dec_us_midterm_clock_0 deadline=1 default=escort options=strike:Hit the IRGC navy now(pc 0) | escort:More escorts, no strikes(pc 0) | oman:Reply via Muscat(pc 0)
+  Accept all pressed: false; button now: ""
+  desk "The January clock": {"badge":"Recommended: More escorts, no strikes","chosenCards":[],"badgeBox":{"top":496,"bottom":532,"vh":900},"stageTop":226}
+  plan text: Recommended answer on 1 crisis, 1 recommended order not accepted (it will not run), deputies take 4 meetings.
+  bank at start 3; HUD "Political capital 3 left World tension 78 Score 100 Map D"; rail "-"
+  SENT decisions: [{"decisionId":"dec_us_midterm_clock_0","optionId":"escort"}]
+  REPORT crisis decisions: [{"title":"The January clock","choice":"More escorts, no strikes"}]
+  report causes: []
+  report screen mentions "The January clock": NO
+  bank after resolve 6
+  everything mentions "The January clock": NO
+
+== usa-on-acc month 2 (turn 1) calls=["crisis:dec_general_strike_0_0","move:mission-move"] chief={"dec_general_strike_0_0":"concede"}
+  crisis "General strike" id=dec_general_strike_0_0 deadline=1 default=break options=concede:Meet their demands(pc 0) | break:Break the strike(pc 0) | mediate:Personally mediate(pc -2)
+  crisis "Foreign interference" id=dec_foreign_interference_0_9 deadline=1 default=sweep options=sweep:Counter-intelligence sweep(pc -1) | expose:Expose them publicly(pc 0) | retaliate:Pay China back in kind(pc -1)
+  Accept all pressed: true; button now: "Accept all recommended Nothing to accept: every recommendation is decided"
+  desk "General strike": {"badge":"Accepted: Meet their demands","chosenCards":[""],"badgeBox":{"top":412,"bottom":448,"vh":900},"stageTop":142,"aria":["Accepted: Meet their demands"]}
+  desk "Foreign interference": {"also":"Accepted: Counter-intelligence sweep","aria":["Accepted: Counter-intelligence sweep"]}
+  plan text: 2 recommended answers accepted, 3 recommended orders accepted, you attend 3 meetings.
+  bank at start 6; HUD "Political capital 1 left World tension 77 ▼1 Score 99 ▼1 "; rail "Political capital 1 of 4 left"
+  SENT decisions: [{"decisionId":"dec_general_strike_0_0","optionId":"concede"},{"decisionId":"dec_foreign_interference_0_9","optionId":"sweep"},{"decisionId":"mtg_1_0","optionId":"support"},{"decisionId":"mtg_1_1","optionId":"support"},{"decisionId":"mtg_1_2","optionId":"force"},{"decisionId":"mtg_1_3","optionId":"deputy"}]
+  REPORT crisis decisions: [{"title":"General strike","choice":"Meet their demands"},{"title":"Foreign interference","choice":"Counter-intelligence sweep"}]
+  report causes: []
+  report screen mentions "General strike": NO
+  report screen mentions "Foreign interference": NO
+  bank after resolve 4
+  everything mentions "General strike": NO
+  everything mentions "Foreign interference": NO
+
+== usa-on-acc month 3 (turn 2) calls=["move:mission-move"] chief={}
+  crisis "India's offer" id=dec_trade_offer_1_0 deadline=2 default=decline options=accept:Sign it(pc 0) | negotiate:Renegotiate the terms(pc -1) | decline:Politely decline(pc 0)
+  Accept all pressed: true; button now: "Accept all recommended Nothing to accept: every recommendation is decided"
+  desk "India's offer": {"badge":"Accepted: Sign it","chosenCards":[""],"badgeBox":{"top":412,"bottom":448,"vh":900},"stageTop":142,"aria":["Accepted: Sign it"]}
+  plan text: 1 recommended answer accepted, 3 recommended orders accepted, you attend 3 meetings.
+  bank at start 4; HUD "Political capital 0 left World tension 74 ▼3 Score 99 Map"; rail "Political capital 0 of 4 left"
+  SENT decisions: [{"decisionId":"dec_trade_offer_1_0","optionId":"accept"},{"decisionId":"mtg_2_3","optionId":"working"},{"decisionId":"mtg_2_0","optionId":"support"},{"decisionId":"mtg_2_1","optionId":"support"},{"decisionId":"mtg_2_2","optionId":"deputy"}]
+  REPORT crisis decisions: [{"title":"India's offer","choice":"Sign it"}]
+  report causes: []
+  report screen mentions "India's offer": NO
+  bank after resolve 3
+  everything mentions "India's offer": NO
+errors: 

@@ -1,0 +1,4 @@
+heading: Orders to consider (5) 3 shown · 2 of them recommended | Court Russia | Reform program | Court Taiwan
+rows: FM Court Russia DIPLOMACY Proposed by staff (Foreign Minister) · ◆ 1 if accepted Remove Will change: Russia: Relations + || IM Reform program ECONOMY Proposed by staff (Interior Minister) · ◆ 2 if accepted Remove Will change: China: Stability a || FM Court Taiwan DIPLOMACY ◆ 1 Foreign Minister: Mission: Taiwan needs -55+, now -89. Helps: Bring Taipei to the table Ad
+more: Show 2 more
+hint: The staff propose up to three of these at the start of each month, never one with poor odds or a repeat of last month, and always leave you at least ◆ 1. A recommended order spends nothing until you accept it (or press Accept all recommended); add the others here.

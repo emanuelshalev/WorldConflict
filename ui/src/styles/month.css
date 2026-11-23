@@ -35,7 +35,10 @@
 .mission-line { display: flex; gap: 10px; align-items: flex-start; margin: 0 0 12px; padding: 12px 16px; border: 1px solid rgba(242, 169, 59, 0.45); border-radius: 12px; background: rgba(242, 169, 59, 0.07); color: var(--text-1); font-size: 16px; line-height: 1.45; outline: none; }
 .mission-line .goal-icon { margin-top: 3px; }
 .mission-line-k { color: var(--accent); }
-.mission-goal { display: inline; text-align: left; padding: 0; min-height: 0; border: 0; background: none; color: var(--text-1); font: inherit; font-weight: 700; text-decoration: underline dotted rgba(242, 169, 59, 0.8); text-underline-offset: 4px; cursor: pointer; }
+.mission-goal { display: inline; text-align: left; padding: 0; min-height: 0; border: 0; background: none; color: var(--text-1); font: inherit; font-weight: 700; cursor: pointer; }
+/* Only the goal text is underlined; its comma or full stop sits in the same box (RC-5) */
+.mission-goal-text { text-decoration: underline dotted rgba(242, 169, 59, 0.8); text-underline-offset: 4px; }
+.mission-goal-punct { font-weight: 400; color: var(--text-1); }
 .mission-goal:hover, .mission-goal:focus-visible { color: var(--accent); }
 .mission-goal-unit { white-space: nowrap; }
 .mission-goal-unit .mission-goal { white-space: normal; }
@@ -322,7 +325,9 @@ body:has(.ord-confirm) .coach-bubble { visibility: hidden; pointer-events: none;
 @media (max-width: 1279px) {
   .stage-staff { flex-wrap: wrap; row-gap: 8px; }
   .stage-staff p { flex: 1 1 calc(100% - 50px); }
-  .stage-staff .sel-badge { margin-left: 46px; }
+  /* A long badge ("No answer yet. If you leave it: ...") wraps inside the screen instead of being
+     clipped (design-rereview-your-call.md RC2-1) */
+  .stage-staff .sel-badge { margin-left: 46px; flex: 0 1 auto; min-width: 0; max-width: calc(100% - 46px); white-space: normal; overflow-wrap: anywhere; border-radius: 18px; }
 }
 
 /* Touch targets: 44 px at 390 and 1024 (design-feel 8.1) */

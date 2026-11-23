@@ -160,6 +160,7 @@
         {"kind": "NO_WAR_WITH", "targetId": "USA", "label": "No war with the United States"},
         {"kind": "NO_WAR_WITH", "targetId": "TWN", "label": "No shooting war across the Strait"},
         {"kind": "RELATION_MIN", "targetId": "USA", "min": -88, "label": "Washington still talking, not decoupling (relations -88+)"},
+        {"kind": "RELATION_MIN", "targetId": "TWN", "min": -55, "label": "Taipei comes to the table (relations -55+)", "short": "Bring Taipei to the table"},
         {"kind": "SCORE_PAR", "min": 120, "label": "Score of 120+: the Party sees a win"}
       ],
       "bonus": [

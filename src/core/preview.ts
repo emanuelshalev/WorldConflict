@@ -564,6 +564,18 @@ export function missionWarning(world: WorldState, action: Action): string | null
             bonus,
             certain: false,
           });
+        else if (
+          action.type === "MILITARY_AIRSTRIKE" &&
+          targetId === c.targetId &&
+          target &&
+          isNuclearOperational(target)
+        )
+          // A peacetime strike on a nuclear power is an act of war (TurnEngine.actOfWar)
+          found.push({
+            text: `${name(c.targetId)} is a nuclear power: striking it means war, failing "${c.label}"`,
+            bonus,
+            certain: true,
+          });
         else if (hostile && targetId === c.targetId)
           found.push({
             text: `${name(c.targetId)} may answer with war, failing "${c.label}"`,

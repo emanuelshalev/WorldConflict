@@ -1,0 +1,40 @@
+
+== chn-off month 1 (turn 0) calls=["crisis:dec_cn_inspection_regime_0","move:mission-move"] chief={"dec_cn_inspection_regime_0":"paper"}
+  crisis "How tight a squeeze?" id=dec_cn_inspection_regime_0 deadline=1 default=paper options=all:Inspect every energy cargo(pc 0) | selective:Selective boardings(pc 0) | paper:Keep it on paper(pc 0)
+  Accept all button: ""
+  desk "How tight a squeeze?": {"badge":"No answer yet. If you leave it: no answer is given and the crisis passes","chosenCards":[],"badgeBox":{"top":520,"bottom":556,"vh":900},"stageTop":250}
+  plan text: No answer yet on 1 crisis, 2 recommended orders not accepted (they will not run), deputies take 4 meetings.
+  bank at start 3; HUD "Political capital 3 left World tension 78 Score 100 Map D"; rail "-"
+  SENT decisions: []
+  REPORT crisis decisions: []
+  report causes: []
+  report screen mentions "How tight a squeeze?": NO
+  bank after resolve 6
+  everything mentions "How tight a squeeze?": NO
+
+== chn-off month 2 (turn 1) calls=["crisis:dec_refugee_wave_0_0","move:mission-move"] chief={"dec_refugee_wave_0_0":"close"}
+  crisis "Refugees from Afghanistan" id=dec_refugee_wave_0_0 deadline=1 default=close options=open:Open the borders(pc 0) | close:Seal the border(pc 0) | deal:Pay a third country to host them(pc 0)
+  Accept all button: "Accept all recommended (7) Shift+A 3 orders, 3 meetings, 1 meeting for a deputy"
+  desk "Refugees from Afghanistan": {"badge":"No answer yet. If you leave it: Seal the border","chosenCards":[],"badgeBox":{"top":412,"bottom":448,"vh":900},"stageTop":142,"aria":["No answer yet. If you leave it: Seal the border"]}
+  plan text: No answer yet on 1 crisis, 3 recommended orders not accepted (they will not run), deputies take 4 meetings.
+  bank at start 6; HUD "Political capital 6 left World tension 75 ▼3 Score 104 ▲4"; rail "Political capital 6 of 6 left"
+  SENT decisions: []
+  REPORT crisis decisions: [{"title":"Refugees from Afghanistan","choice":"Seal the border (no decision taken)"}]
+  report causes: []
+  report screen mentions "Refugees from Afghanistan": NO
+  bank after resolve 6
+  everything mentions "Refugees from Afghanistan": NO
+
+== chn-off month 3 (turn 2) calls=["move:mission-move"] chief={}
+  crisis "Sanctions on Iran" id=dec_sanctions_vote_1_0 deadline=2 default=abstain options=yes:Vote for sanctions(pc 0) | abstain:Abstain(pc 0) | no:Vote against(pc 0)
+  Accept all button: "Accept all recommended (8) Shift+A 1 crisis answer, 3 orders, 3 meetings, 1 meeting for a deputy"
+  desk "Sanctions on Iran": {"badge":"Recommended: Abstain","chosenCards":[],"badgeBox":{"top":412,"bottom":448,"vh":900},"stageTop":142,"aria":["Recommended: Abstain"]}
+  plan text: Recommended answer on 1 crisis, 3 recommended orders not accepted (they will not run), deputies take 4 meetings.
+  bank at start 6; HUD "Political capital 6 left World tension 72 ▼3 Score 107 ▲3"; rail "Political capital 6 of 6 left"
+  SENT decisions: [{"decisionId":"dec_sanctions_vote_1_0","optionId":"abstain"}]
+  REPORT crisis decisions: [{"title":"Sanctions on Iran","choice":"Abstain"}]
+  report causes: []
+  report screen mentions "Sanctions on Iran": NO
+  bank after resolve 6
+  everything mentions "Sanctions on Iran": NO
+errors: 

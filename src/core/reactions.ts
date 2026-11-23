@@ -171,28 +171,73 @@ const VOICE: Record<string, { who: (ctx: LineCtx) => string; lines: Record<Tone,
   stability: {
     who: () => "Interior ministry",
     lines: {
-      warm: ["'The streets are calmer tonight than they have been in weeks.'"],
-      cold: ["'Expect more protests. We are stretched.'"],
-      angry: ["'We are losing control of several districts.'"],
-      neutral: ["'Order holds, for now.'"],
+      warm: [
+        "'The streets are calmer tonight than they have been in weeks.'",
+        "'Fewer calls to the emergency lines this week. The mood has turned.'",
+        "'Our officers report quiet nights in the districts that worried us.'",
+      ],
+      cold: [
+        "'Expect more protests. We are stretched.'",
+        "'The unions are restless. We are cancelling leave.'",
+        "'Crowds are thinning, but the anger is not.'",
+      ],
+      angry: [
+        "'We are losing control of several districts.'",
+        "'Police stations were attacked overnight. We need reinforcements.'",
+      ],
+      neutral: [
+        "'Order holds, for now.'",
+        "'Nothing unusual on the streets tonight.'",
+        "'The districts are quiet. We keep watching.'",
+      ],
     },
   },
   legitimacy: {
     who: () => "The establishment",
     lines: {
-      warm: ["Editorials across the spectrum call it statesmanlike."],
-      cold: ["The constitutional court asks pointed questions."],
-      angry: ["Senior figures openly question the government's authority."],
-      neutral: ["The elites wait to see how it plays out."],
+      warm: [
+        "Editorials across the spectrum call it statesmanlike.",
+        "Former ministers from both camps praise the decision on the evening shows.",
+        "The chamber applauds. Even the opposition benches stay quiet.",
+      ],
+      cold: [
+        "The constitutional court asks pointed questions.",
+        "Party elders ask, in private, who was consulted.",
+        "Two newspapers that usually back you ask for an explanation.",
+      ],
+      angry: [
+        "Senior figures openly question the government's authority.",
+        "The opposition calls a vote of confidence and some of your own side wavers.",
+      ],
+      neutral: [
+        "The elites wait to see how it plays out.",
+        "The capital's insiders reserve judgement for now.",
+        "Commentators call it a reasonable step and move on.",
+      ],
     },
   },
   economy: {
     who: () => "Markets",
     lines: {
-      warm: ["Bonds rally and the currency firms. Traders like what they see."],
-      cold: ["Analysts trim growth forecasts. 'A costly choice.'"],
-      angry: ["The currency slides and rating agencies warn of a downgrade."],
-      neutral: ["Markets shrug. Nothing priced in, nothing priced out."],
+      warm: [
+        "Bonds rally and the currency firms. Traders like what they see.",
+        "Investors return to the stock exchange. The index closes higher.",
+        "Business leaders call it the first good news of the quarter.",
+      ],
+      cold: [
+        "Analysts trim growth forecasts. 'A costly choice.'",
+        "Borrowing costs tick up as investors price in the risk.",
+        "Chambers of commerce warn of a harder year ahead.",
+      ],
+      angry: [
+        "The currency slides and rating agencies warn of a downgrade.",
+        "Capital leaves the country and the central bank steps in.",
+      ],
+      neutral: [
+        "Markets shrug. Nothing priced in, nothing priced out.",
+        "Trading is quiet. The decision barely moves the numbers.",
+        "Economists call the impact small either way.",
+      ],
     },
   },
   mobilization: {

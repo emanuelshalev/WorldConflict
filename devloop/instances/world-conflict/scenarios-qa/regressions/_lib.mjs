@@ -66,11 +66,13 @@ export async function pinSeat(page, seat = SEAT) {
 }
 
 /** Open the title on a fresh profile and take office on the pinned seat; resolves on the month 1 desk. */
-export async function startGame({ variant, device, out, base, seat = SEAT }) {
+/** init: an optional page script run before the app loads (a stored setting, say). */
+export async function startGame({ variant, device, out, base, seat = SEAT, init }) {
   fs.rmSync(path.join(out, '.profile'), { recursive: true, force: true });
   const s = await launch({ variant, device, out, base });
   s.page.setDefaultTimeout(8000);
   await pinSeat(s.page, seat);
+  if (init) await s.page.addInitScript(init);
   await s.goto();
   if (!(await s.click(/^Take office/i, { timeout: 15000 }))) throw new Error('no Take office on the title screen');
   // The briefing (and on some builds a familiarity question) sits between the title and the desk

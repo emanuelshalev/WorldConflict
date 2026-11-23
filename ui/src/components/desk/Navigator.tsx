@@ -103,7 +103,7 @@ export function Navigator({ tabs = false }: { tabs?: boolean }) {
             </span>
             {!tabs && <span className={`nav-tag sel-${sel.kind}`}>{sel.word}</span>}
           </>,
-          sel.kind === 'cabinet' ? 'staff' : 'done',
+          sel.kind === 'cabinet' ? 'staff' : sel.kind === 'waiting' ? 'needs' : 'done',
           d.urgency === 'EXISTENTIAL' ? 'existential' : d.urgency === 'URGENT' ? 'urgent' : '',
           `${d.title}: ${sel.text}`,
         );

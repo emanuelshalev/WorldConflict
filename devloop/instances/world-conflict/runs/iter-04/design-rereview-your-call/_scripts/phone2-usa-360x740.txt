@@ -1,0 +1,2 @@
+m1 DIV.desk-stage ; box 64-600 top 296 vw 360
+m1 desk-stage {"sw":600,"cw":360,"ox":"hidden"}

@@ -1,0 +1,91 @@
+save: 43ccf5c9-3620-4829-8669-e90996abcb58
+--- engine advice month 1 (load)
+crisis dec_cn_inspection_regime_0 "How tight a squeeze?" default=paper cabinetPick=paper missionPick=paper options=all[Inspect every energy cargo] | selective[Selective boardings] | paper[Keep it on paper]
+CALL crisis dec_cn_inspection_regime_0 "How tight a squeeze?" mission=paper calm=paper chief=paper trade=true skip={"label":"Skip","text":"The cabinet waits: Keep it on paper.","optionId":"paper","hurts":[],"breaks":[],"bonusHurts":[]}
+  guide: Your advisers agree on Keep it on paper. The others cost you: No shooting war across the Strait and Bring Taipei to the table.
+  card all "Inspect every energy cargo" side=other advisers= pc=0 price=0 helps= hurts=No shooting war across the Strait;Bring Taipei to the table breaks= why=null
+  card selective "Selective boardings" side=other advisers= pc=0 price=0 helps= hurts=Bring Taipei to the table breaks= why=null
+  card paper "Keep it on paper" side=mission advisers=Finance Minister+Chief of Staff pc=0 price=0 helps= hurts= breaks= why=It is the answer that costs your mission least.
+CALL move mission-move "The move for your mission" mission=order:0 calm=hold chief=order:0 trade=true skip={"label":"Hold this month","text":"No move for your mission. Political capital 3 stays (above 6 is lost).","optionId":null,"hurts":[],"breaks":[],"bonusHurts":[]}
+  guide: For your mission: Court Taiwan. To keep political capital: Hold this month.
+  card order:0 "Court Taiwan" side=mission advisers=Foreign Minister pc=1 price=0 helps=Bring Taipei to the table hurts= breaks= why=Mission: Taiwan needs -55+, now -80.
+  card hold "Hold this month" side=hold advisers=Chief of Staff pc=0 price=0 helps= hurts= breaks= why=No move for your mission this month. Political capital 3 stays (above 6 is lost).
+routine (6): order:National address | order:Court India | meeting:Reassure: no threat intended | meeting:Promise full support | deputy:Staff meeting: intelligence | meeting:A working lunch
+staffOrders: DOMESTIC_PROPAGANDA | DIPLOMACY_IMPROVE_RELATIONS reserve=1
+chief: {"decisions":{"dec_cn_inspection_regime_0":"paper"},"orders":["DIPLOMACY_IMPROVE_RELATIONS>undefined"]}
+missionNotes: {"dec_cn_inspection_regime_0":{"optionId":"paper","kind":"best","text":"Best for your mission","helps":[],"costs":[],"switchFrom":null}}
+=== chn-m1-390x844
+goalLine: Customs, not cannons 3 of 5 on track · month 1 of 12 How you win: read your goal Focus Full desk
+goalBox: x0 y121 w390 h113 scrollW390 clientW390
+glKids: goal-main:12-378/y125h44 sw366cw366 || goal-step:12-236/y179h44 sw222cw222 || goal-view:244-378/y175h52 sw132cw132
+segs: 5
+dots: 2
+mission: Your goal. You win if all five hold at the end of month 12: no war with the United States, no shooting war across the Strait, Washington still talking, not decoupling (relations kept above -88), bring Taipei to the table (relations kept above -55) and score of 120+.
+missionBox: x16 y246 w358 h218 scrollW356 clientW356
+railMission: 
+rec: 
+recCount: 
+main: 
+items: 
+stripNote: 
+primary: GDP -2.4% OIL +3.1 GOLD +0.8 BONDS 4.62% FX -1.2 TECH -3.4 BANKS -2.1 GRAIN +1.6 FREIGHT +0.4 OIL +3.1 GOLD +0.8 BONDS 4.62% FX -1.2 TECH -3.4 BANKS -2.1 GRAIN +1.6 FREIGHT +0.4 MARKETS YOUR MOVE · URGENT CRISIS 🇨🇳 🇹🇼 🇺🇸 How tight a squeeze? This is your move this month. Pick one. Step 1 of 3 Inspecting every energy cargo makes the point fast and invites an escort war. More i What is going on here? FN Finance Minister: “Announce, don't enforce.” Recommended: Keep it on paper Accept recommended Ask your staff 1 free Inspect every energy cargo Hurts: No shooting war across the Strait +1 more Every LNG tanker, every time. Fast pressure, fast reactions. World tension up a lot Approval up +3 more How much? Backed by the Defense Minister 2 free Selective boardings Hurts: Bring Taipei to the table One ship in five, chosen at random, lawyers on board. Strangulation in slow motion. Approval || 1 free Inspect every energy cargo Hurts: No shooting war across the Strait +1 more Every LNG tanker, every time. Fast pressure, fast reactions. World tension up a lot Approval up +3 more How much? Backed by the Defense Minister
+slots: 
+barPlan: 3 left · 0 decided
+pageW: 390
+vw: 390
+Accept all button before: NO ACCEPT ALL BUTTON
+=== chn-m1-after-accept-390x844
+goalLine: Customs, not cannons 3 of 5 on track · month 1 of 12 How you win: read your goal Focus Full desk
+goalBox: x0 y121 w390 h113 scrollW390 clientW390
+glKids: goal-main:12-378/y125h44 sw366cw366 || goal-step:12-236/y179h44 sw222cw222 || goal-view:244-378/y175h52 sw132cw132
+segs: 5
+dots: 2
+mission: Your goal. You win if all five hold at the end of month 12: no war with the United States, no shooting war across the Strait, Washington still talking, not decoupling (relations kept above -88), bring Taipei to the table (relations kept above -55) and score of 120+.
+missionBox: x16 y246 w358 h218 scrollW356 clientW356
+railMission: 
+rec: 
+recCount: 
+main: 
+items: 
+stripNote: 
+primary: GDP -2.4% OIL +3.1 GOLD +0.8 BONDS 4.62% FX -1.2 TECH -3.4 BANKS -2.1 GRAIN +1.6 FREIGHT +0.4 OIL +3.1 GOLD +0.8 BONDS 4.62% FX -1.2 TECH -3.4 BANKS -2.1 GRAIN +1.6 FREIGHT +0.4 MARKETS YOUR MOVE · URGENT CRISIS 🇨🇳 🇹🇼 🇺🇸 How tight a squeeze? This is your move this month. Pick one. Step 1 of 3 Inspecting every energy cargo makes the point fast and invites an escort war. More i What is going on here? FN Finance Minister: “Announce, don't enforce.” Recommended: Keep it on paper Accept recommended Ask your staff 1 free Inspect every energy cargo Hurts: No shooting war across the Strait +1 more Every LNG tanker, every time. Fast pressure, fast reactions. World tension up a lot Approval up +3 more How much? Backed by the Defense Minister 2 free Selective boardings Hurts: Bring Taipei to the table One ship in five, chosen at random, lawyers on board. Strangulation in slow motion. Approval || 1 free Inspect every energy cargo Hurts: No shooting war across the Strait +1 more Every LNG tanker, every time. Fast pressure, fast reactions. World tension up a lot Approval up +3 more How much? Backed by the Defense Minister
+slots: 
+barPlan: 3 left · 0 decided
+pageW: 390
+vw: 390
+result card: JAN 2027 · YOUR MONTH THIS MONTH -13 Japan's view of you this month THE MONTH Japan moves against you Mission: Bring Taipei to the table: -80 → -89, needs -55. Your mission bar moved. Tap it any time to see what each goal needs. The numbers, the score and the rest of the month See everything Read the paper Next month
+--- engine advice month 2 (turn response)
+crisis dec_refugee_wave_0_0 "Refugees from Afghanistan" default=close cabinetPick=deal missionPick=deal options=open[Open the borders] | close[Seal the border] | deal[Pay a third country to host them]
+CALL crisis dec_refugee_wave_0_0 "Refugees from Afghanistan" mission=close calm=deal chief=close trade=false skip={"label":"Skip","text":"The cabinet waits: Seal the border.","optionId":"close","hurts":[],"breaks":[],"bonusHurts":[]}
+  guide: For your mission: Seal the border. To keep things calm: Pay a third country to host them.
+  card open "Open the borders" side=other advisers= pc=0 price=0 helps= hurts= breaks= why=null
+  card close "Seal the border" side=mission advisers=Interior Minister pc=0 price=0 helps= hurts= breaks= why=It is the answer that costs your mission least.
+  card deal "Pay a third country to host them" side=calm advisers=Finance Minister pc=0 price=0 helps= hurts= breaks= why=It keeps the country steady and puts no goal at stake.
+CALL move mission-move "The move for your mission" mission=order:0 calm=hold chief=order:0 trade=true skip={"label":"Hold this month","text":"No move for your mission. Political capital 6 stays (above 6 is lost).","optionId":null,"hurts":[],"breaks":[],"bonusHurts":[]}
+  guide: For your mission: Court Taiwan. To keep political capital: Hold this month.
+  card order:0 "Court Taiwan" side=mission advisers=Foreign Minister pc=1 price=0 helps=Bring Taipei to the table hurts= breaks= why=Mission: Taiwan needs -55+, now -89.
+  card hold "Hold this month" side=hold advisers=Chief of Staff pc=0 price=0 helps= hurts= breaks= why=No move for your mission this month. Political capital 6 stays (above 6 is lost).
+routine (7): order:Court Russia | order:Reform program | order:Court United States | meeting:Promise full support | meeting:Reassure: no threat intended | meeting:Brief the allies first | deputy:Interview: the evening news
+staffOrders: DIPLOMACY_IMPROVE_RELATIONS | DOMESTIC_REFORM | DIPLOMACY_IMPROVE_RELATIONS reserve=1
+chief: {"decisions":{"dec_refugee_wave_0_0":"close"},"orders":["DIPLOMACY_IMPROVE_RELATIONS>undefined"]}
+missionNotes: {"dec_refugee_wave_0_0":{"optionId":"deal","kind":"best","text":"Best for your mission","helps":[],"costs":[],"switchFrom":null}}
+=== chn-m2-390x844
+goalLine: Customs, not cannons 3 of 5 on track · month 2 of 12 This month: Bring Taipei to the table: -89, needs -55 Focus Full desk
+goalBox: x0 y121 w390 h113 scrollW390 clientW390
+glKids: goal-main:12-378/y125h44 sw366cw366 || goal-step:12-236/y179h44 sw222cw222 || goal-view:244-378/y175h52 sw132cw132
+segs: 5
+dots: 2
+mission: 
+missionBox: absent
+railMission: 
+rec: 
+recCount: 
+main: 
+items: 
+stripNote: 
+primary: ON LOCATION YOUR MOVE · URGENT CRISIS 🇨🇳 🇦🇫 Refugees from Afghanistan War in Afghanistan has sent hundreds of thousands fleeing toward your borders. i 1 name More i What is going on here? FN Finance Minister: “Expensive and cynical.” Recommended: Pay a third country to host them Accept recommended Ask your staff 1 free Open the borders A humanitarian triumph abroad, a political fight at home. Approval down Allies' view of you up +2 more How much? Backed by the Foreign Minister 2 free Seal the border Popular at home. Harrowing images abroad. Approval up Allies' view of you down How much? Backed by the Interior Minister Recommended · good for your mission 3 free Pay a third country to host them Expensive and cynical. It works, for now. Approval up Economy down How much? Backed by the Finance Minister || 1 free Open the borders A humanitarian triumph abroad, a political fight at home. Approval down Allies' view of you up +2 more How much? Backed by the Foreign Minister
+slots: 
+barPlan: 6 left · 0 decided
+pageW: 390
+vw: 390
+page errors: none

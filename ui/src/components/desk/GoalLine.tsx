@@ -99,10 +99,17 @@ export function MissionLine() {
           return (
             <span key={g.index}>
               <span className="mission-goal-unit">
+                {/* The punctuation sits inside the button's box (a button is laid out as an
+                    inline block), after the last word, so it wraps with it on the phone (RC-5);
+                    only the goal text is underlined and named */}
                 <button type="button" className="mission-goal" onClick={() => point(g.index)} title="Show it in the goal line and what moves it">
-                  {g.text}
+                  <span className="mission-goal-text">{g.text}</span>
+                  {after && (
+                    <span className="mission-goal-punct" aria-hidden>
+                      {after}
+                    </span>
+                  )}
                 </button>
-                {after}
               </span>
               {join}
             </span>

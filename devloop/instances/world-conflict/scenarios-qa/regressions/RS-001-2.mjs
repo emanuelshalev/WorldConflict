@@ -52,6 +52,13 @@ await run('RS-001-2', async (g, track) => {
   await p.locator('[data-order-catalog]').first().waitFor();
   await p.waitForTimeout(600);
   const card = p.locator('[data-order-catalog] [data-order-code="NO_CAPITAL"]').first();
+  // With one seal left (D-84: the staff hold fewer) every order that costs more needs a country:
+  // choose one so a card the player cannot afford is on the list
+  if ((await card.count()) === 0) {
+    await p.locator('[data-order-catalog] button[aria-haspopup="dialog"]').first().click();
+    await p.locator('[role="dialog"][aria-label="Choose a country"] [role="option"]').first().click();
+    await p.waitForTimeout(600);
+  }
   g.check((await card.count()) === 1, 'an unaffordable order is on the list');
   const label = (await card.locator('.wc-card-title').first().innerText().catch(() => '')).trim();
   g.check(/Needs ◆ \d, you have ◆ \d\./.test(await card.innerText()), `its card says what it needs and what you have ("${label}")`);

@@ -131,7 +131,7 @@ await run('RS-005', async (g, track) => {
     }
     const desk = await checkGroup(g, p, `${device} desk`);
     const why = await p.locator('.sp-why').first().innerText().catch(() => '');
-    g.check(/^Your advisers recommend these for this month\. Orders and meetings wait for you to accept; a crisis goes ahead on its recommended answer unless you change it\.$/.test(why.trim()), `${device} desk: first use explains what the recommendations are`);
+    g.check(/^Your advisers recommend these for this month\. Orders and meetings wait for you to accept; a crisis listed here goes ahead on its recommended answer unless you change it, one not listed is yours to answer\.$/.test(why.trim()), `${device} desk: first use explains what the recommendations are`);
     await s.look(`${device}-desk`);
     if (device === 'laptop') await checkRailFits(g, p);
     if (device === 'laptop') {
@@ -174,7 +174,9 @@ await run('RS-005', async (g, track) => {
     await p.waitForTimeout(800);
     const off = p.locator('[data-staff-picks] .sp-main').first();
     const offText = (await off.innerText().catch(() => '')).replace(/\s+/g, ' ');
-    g.check((await off.isDisabled().catch(() => false)) && /Nothing to accept/i.test(offText), `${device} map: after Accept all the button is disabled with a reason ("${offText.slice(0, 60)}")`);
+    // design-review-your-call.md RC-1: with a crisis Accept all leaves open, the reason names it
+    // ("Nothing else to accept. Still open: ..."); "Nothing to accept" only when none is open
+    g.check((await off.isDisabled().catch(() => false)) && /Nothing (else )?to accept/i.test(offText), `${device} map: after Accept all the button is disabled with a reason ("${offText.slice(0, 90)}")`);
     g.check(s.errors.length === 0, `${device}: no page errors (${s.errors.slice(0, 2).join(' | ')})`);
   }
 });
