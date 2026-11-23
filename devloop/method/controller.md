@@ -22,7 +22,7 @@ Why: the slips that hurt a loop run by an AI orchestrator are rarely bad judgmen
   - `code`: the record is on the same code tree, a hash of the files the config calls code. Commits to docs, the ledger or the status page do not invalidate a QA or verify pass; any code change does.
   - `iteration`: a pass exists in the current iteration (triage before Report).
   - `after-merge`: a pass was recorded after the last merge into the shared branch (status refresh).
-  The latest record wins: a fail after a pass on the same code blocks again.
+  The latest record wins: a fail after a pass on the same code blocks again. `accept` lists the results that satisfy a rule (default `pass`).
 - **State** lives in the main worktree (`sharedState`), so agents in their own worktrees record to the same place the merge and publish scripts read. `state.json` is the current state, `events.jsonl` the append-only history. Only the Group Manager commits them, from the shared checkout; work branches never touch the loop folder.
 
 ## Enforcement in the path
@@ -31,7 +31,7 @@ Rules are only useful where the action happens, so each one has a gatekeeper:
 - `kit/publish.mjs`: fast-forwards the publish branch to the iteration commit, tags it, pushes; refuses without the `publish` rules.
 - `kit/hooks/pre-push.mjs` (installed by `kit/install-hooks.mjs`): blocks pushing the publish branch or an iteration tag unless `check publish` passes for the pushed commit.
 - `kit/hooks/guard-bash.mjs`: a Claude Code PreToolUse hook that blocks `git pull --rebase`, `--autostash` and multi-path `checkout --theirs/--ours` in the shared checkout (installation: `kit/hooks/README.md`).
-- `loop advance` / `loop start`: refuse a stage whose entry rules fail.
+- `loop advance` / `loop start`: refuse a stage whose entry rules fail. Entering Gate reads the latest quality scorecard (`quality-gate` rule on the `quality` gate, recorded by `kit/evaluate.mjs --record`, `quality.md`): gate met on the code being released, or an override with a reason.
 - `loop check <action>`: the same answer for any other script or hook (exit 1 with the reasons).
 
 ## The override path

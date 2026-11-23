@@ -32,7 +32,8 @@
 // /*STAMPS:END*/ ({ id: { t, commit, tier, source, el } }). A section is fresh when its stamp is not
 // older than the last event of its tier (or of its own `events`). Generated sections without `gen`,
 // `run` or `derivedFrom` count as hand-kept until they get an injector.
-// Generators (`gen.kind`): ledger, goals, journal, stability, tasks, blockers, loop, bullets, how, kpis.
+// Generators (`gen.kind`): ledger, goals, journal, stability, tasks, blockers, loop, bullets, how,
+// quality (kit/evaluate.mjs scorecard and trend), kpis.
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -202,6 +203,52 @@ export const generators = {
       .map((l) => mdInline(l.replace(/^[-*]\s+/, '')));
   },
 
+  /**
+   * Quality scorecard (kit/evaluate.mjs, method/quality.md): the latest iteration with customer
+   * measurements in full, the current iteration's verdict, and the per-dimension trend.
+   * gen: { kind: "quality", spec: "quality.json" }.
+   */
+  async quality(g, c) {
+    const ev = await import('./evaluate.mjs');
+    const spec = path.resolve(c.instDir, g.spec ?? 'quality.json');
+    const current = await ev.evaluate(spec, { iteration: c.state?.iteration ?? undefined, now: c.now.toISOString() });
+    // show the latest iteration in which at least half of the blocking metrics were measured
+    const mostlyMeasured = (card) => {
+      const b = card.dimensions.flatMap((d) => d.metrics.filter((m) => m.blocking));
+      return b.length > 0 && b.filter((m) => m.status !== 'not-measured').length * 2 >= b.length;
+    };
+    let shown = current;
+    if (!mostlyMeasured(current)) {
+      for (const n of [...(current.trend?.iterations ?? [])].reverse()) {
+        if (n === current.iteration) continue;
+        const card = await ev.evaluate(spec, { iteration: n, now: c.now.toISOString(), trend: false });
+        if (mostlyMeasured(card)) {
+          shown = card;
+          break;
+        }
+      }
+    }
+    const slim = (card) => ({
+      iteration: card.iteration,
+      commit: card.commit ? card.commit.slice(0, 9) : null,
+      verdict: card.verdict,
+      reasons: card.reasons,
+      counts: card.counts,
+      dimensions: card.dimensions.map((d) => ({
+        id: d.id,
+        label: d.label,
+        metrics: d.metrics.map((m) => ({ id: m.id, label: m.label, status: m.status, value: m.value, threshold: m.threshold, band: m.band, direction: m.direction, format: m.format ?? null, cadence: m.cadence, blocking: m.blocking, veto: m.veto, gate: m.gate ?? null, measured: m.measured ? { commit: m.measured.commit, iteration: m.measured.iteration, ageHours: m.measured.ageHours } : null, note: m.reason ?? m.detail ?? null, noise: m.noise ?? null })),
+      })),
+    });
+    return {
+      evaluatedAt: current.evaluatedAt,
+      spec: current.spec,
+      current: { iteration: current.iteration, commit: current.commit ? current.commit.slice(0, 9) : null, verdict: current.verdict, counts: current.counts, reasons: current.reasons.slice(0, 8) },
+      shown: slim(shown),
+      trend: current.trend ? { iterations: current.trend.iterations, verdicts: current.trend.verdicts.map((v) => ({ iteration: v.iteration, verdict: v.verdict })), dimensions: current.trend.dimensions } : null,
+    };
+  },
+
   /** Principles and version of a How-we-work file: { version, principles: [[title, html]] }. */
   how(g, c) {
     const src = read(c, g.from);
@@ -232,6 +279,11 @@ function kpis(g, c, gen) {
       v = vals.length ? `${vals.at(-1)} <small>${vals.join(' · ')}</small>` : '?';
     } else if (it.kind === 'ledger-last') {
       v = (gen.decisions ?? generators.ledger({ from: it.from }, c))[0]?.id ?? '?';
+    } else if (it.kind === 'quality') {
+      const q = gen.quality;
+      const word = { met: 'met', 'not-met': 'not met', undecided: 'undecided' };
+      const col = { met: 'var(--done)', 'not-met': 'var(--brand)', undecided: 'var(--doing)' };
+      v = q?.shown ? `<span style='color:${col[q.shown.verdict]}'>${word[q.shown.verdict]}</span> <small>iteration ${q.shown.iteration} scorecard</small>` : (it.value ?? '?');
     } else if (it.kind === 'stability') {
       const s = gen.stability;
       v = s ? `${s.findings} <small>${s.guards} guards${s.verify ? ` · verify ${s.verify.result} ${s.verify.commit}` : ''}</small>` : '?';
@@ -367,7 +419,7 @@ export async function refresh(file, { tier, hand = [], check = true, record = tr
     const fn = generators[s.gen.kind];
     if (!fn) throw new Error(`section ${s.id}: unknown generator ${s.gen.kind}`);
     try {
-      gen[s.id] = fn(s.gen, c);
+      gen[s.id] = await fn(s.gen, c);
       ok.add(s.id);
     } catch (e) {
       notes.push(`${s.id}: ${e.message}`);

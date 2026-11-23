@@ -1,5 +1,8 @@
 # RS-002: CEO on the end of the game (2026-11-22)
 
+Severity: S3
+Status: addressed
+
 ## Verbatim (condensed)
 
 > The game end is not great: an unformatted message of what really happened. That is good but not enough. We need fantastic, appealing graphics with achievements, the things that went badly, and how the leadership was perceived. It is what people will remember from the game; that experience needs to be engaging and measurable, and make them want to play again to get a better outcome next time. We need measurements, for example the timing of things, approval, economy numbers. We need to be able to say this presidency was better than that one: we need ranking. The player should look forward to the end of the game for the "reveal".

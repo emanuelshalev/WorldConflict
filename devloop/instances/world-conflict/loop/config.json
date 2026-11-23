@@ -41,7 +41,8 @@
     "verify",
     "qa",
     "triage",
-    "status-refresh"
+    "status-refresh",
+    "quality"
   ],
   "rules": {
     "verify-before-use": {
@@ -78,6 +79,13 @@
       "on": "enter:*",
       "match": "owed",
       "why": "A merge owes a T1 refresh, Use and Triage done owe T2 (method/status-page.md); the owner follows the loop on the status page (principle 15)"
+    },
+    "quality-gate": {
+      "on": "enter:Gate",
+      "gate": "quality",
+      "match": "code",
+      "accept": ["pass", "fail"],
+      "why": "An iteration closes through Gate with a recorded quality scorecard on the code being closed (D-78, kit/evaluate.mjs --record); a release candidate additionally needs the verdict met (D-79)"
     },
     "t3-before-plan": {
       "on": "enter:Plan",

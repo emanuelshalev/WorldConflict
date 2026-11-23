@@ -1,5 +1,8 @@
 # RS-006: CEO playtest (2026-11-23), the desk has no clear flow
 
+Severity: S2
+Status: open
+
 Build played: `main` at tag `iter-2` (67c9b11). Fixes for iteration 3 live on dev/rc1-synthetic-loop until `iter-3` is published.
 
 > It's unclear what the things to go through are: some things on the left panel, some things on the right. There is no clear way to iterate over the things to do or open, and to be intentional about what I want to skip. What should I do, go over all items on the left, then all items on the right, and add customization as needed? Also it's not intuitively clear what is clickable and what is not.

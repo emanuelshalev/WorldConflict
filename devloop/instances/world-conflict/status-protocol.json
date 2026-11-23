@@ -25,7 +25,7 @@
         { "label": "Recommend", "kind": "feedback", "field": "recommend" },
         { "label": "Decisions logged", "kind": "ledger-last", "from": "ledger.md" },
         { "label": "Guarded findings", "kind": "stability" },
-        { "label": "Release gate", "kind": "text", "value": "<span style='color:var(--brand)'>not met</span>" }
+        { "label": "Release gate", "kind": "quality", "value": "<span style='color:var(--brand)'>not met</span>" }
       ] } },
     { "id": "tasks",      "tab": "Development Status",                 "tier": "T1", "source": "generated", "from": "runs/iter-NN work packages and ledger", "el": "taskrows",
       "gen": { "kind": "tasks", "from": "runs/iter-{NN}/work-packages.json" } },
@@ -40,6 +40,8 @@
     { "id": "heat",       "tab": "Iterations (recommend by persona)",  "tier": "T2", "source": "generated", "from": "FEEDBACK (built in the page)", "derivedFrom": "feedback", "el": "heat" },
     { "id": "gate",       "tab": "Iterations (release gate)",          "tier": "T2", "source": "generated", "from": "gate.md and the quality scorecard (D-78)", "el": "gate",
       "gen": { "kind": "bullets", "from": "gate.md" } },
+    { "id": "quality",    "tab": "Iterations (quality scorecard)",     "tier": "T2", "source": "generated", "from": "quality.json via kit/evaluate.mjs (D-78)", "el": "qualitybox",
+      "gen": { "kind": "quality", "spec": "quality.json" } },
     { "id": "iter-summary","tab": "Iterations (iteration summary)",    "tier": "T2", "source": "hand", "fields": ["LOOP.iterations[current].summary"], "el": "iterdetail" },
     { "id": "usage",      "tab": "Consumption",                        "tier": "T3", "source": "generated", "from": "transcripts via usage/registry.json", "injector": "usage-ledger.mjs --inject USAGE", "el": "utiles",
       "run": ["node", "devloop/kit/usage-ledger.mjs", "devloop/instances/world-conflict/usage/registry.json", "--inject", "{page}", "USAGE"] },

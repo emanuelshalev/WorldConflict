@@ -36,6 +36,7 @@ npm run verify -- --quick         # tests, lints, build and the regression regis
 npm run verify -- --full          # adds the orders / world map acceptance scripts
 npm run verify -- --changed       # suites and finding guards covering files changed since the branch base
 npm run verify -- --update-visual # rewrite tests/visual/__screenshots__ after an intended UI change
+npm run quality -- --iteration 3  # release gate scorecard from quality.json (devloop/kit/evaluate.mjs; --json, --record)
                                   # a full verify run records its result with the loop controller
 
 node devloop/kit/loop.mjs status  # loop controller: stage, gates on the current code, what is owed
@@ -46,7 +47,7 @@ node devloop/kit/status-refresh.mjs devloop/instances/world-conflict/status-prot
                                       # regenerate dev_plan/project_status.html by tier (devloop/method/status-page.md)
 ```
 
-Backend env vars go in `.env` at the root (loaded via dotenv): `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY` / `GEMINI_API_KEY_PERSONAL`, `LLM_PROVIDER`, `PORT`, `DATABASE_URL`, `CORS_ORIGINS`. Players normally bring their own LLM key via the in-game Settings.
+Backend env vars go in `.env` at the root (loaded via dotenv): `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY` / `GEMINI_API_KEY_PERSONAL`, `LLM_PROVIDER`, `PORT`, `DATABASE_URL`, `CORS_ORIGINS`, `WC_DAILY_DATE` (pins the daily crisis date; the verify gate sets it so guards never depend on the calendar). Players normally bring their own LLM key via the in-game Settings.
 
 ## Architecture
 

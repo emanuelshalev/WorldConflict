@@ -1,5 +1,8 @@
 # RS-001: CEO playtest of v0.9.0 (2026-11-21)
 
+Severity: S2
+Status: addressed
+
 Source: the CEO played the build tagged `v0.9.0`. This is a real signal and outranks any synthetic report.
 
 ## Verbatim (condensed)

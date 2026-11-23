@@ -20,11 +20,16 @@ export const VIEWPORTS = {
   laptopSmall: { viewport: { width: 1366, height: 768 } },
   laptop: { viewport: { width: 1440, height: 900 } },
   desktop: { viewport: { width: 1920, height: 1080 } },
+  ultrawide: { viewport: { width: 3440, height: 1440 } },
 };
 
 /** Resolve a device profile: a VIEWPORTS key (e.g. 'phone'), or a variant id containing a hint. */
 export function deviceFor(device = '') {
   if (VIEWPORTS[device]) return VIEWPORTS[device];
+  // An exact size anywhere in the id: "3440x1440", "dan-2560x1440"
+  const m = /(\d{3,4})x(\d{3,4})/.exec(device);
+  if (m) return { viewport: { width: Number(m[1]), height: Number(m[2]) } };
+  if (/ultrawide/i.test(device)) return VIEWPORTS.ultrawide;
   if (/phone|clip/i.test(device)) return VIEWPORTS.phone;
   if (/tablet.?portrait/i.test(device)) return VIEWPORTS.tabletPortrait;
   if (/tablet/i.test(device)) return VIEWPORTS.tablet;

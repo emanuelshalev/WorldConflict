@@ -1,0 +1,331 @@
+{
+  "$schema": "../../method/quality.schema.json",
+  "product": "World Conflict",
+  "version": 1,
+  "about": "Release gate of gate.md and goals.md as metrics (D-78), plus informative metrics that show today's gaps. Evaluated by devloop/kit/evaluate.mjs; method/quality.md explains the rules. Noise: persona scores +/- 1 (D-59); weighted means get a derived band, 1 standard error from the persona retest spread of iterations 1 to 3.",
+  "loopConfig": "loop/config.json",
+  "adapters": ["quality-adapters.mjs"],
+  "gate": "quality",
+  "verdict": { "notMeasured": "not-met" },
+  "release": { "tagPattern": "rc-*" },
+  "trend": { "from": 0 },
+  "dimensions": [
+    {
+      "id": "functional",
+      "label": "Functional correctness",
+      "metrics": [
+        {
+          "id": "verify-green",
+          "label": "Verify gate green on the commit",
+          "gate": "gate.md: npm test, lints, build, smoke green (one verify run)",
+          "source": { "adapter": "verify" },
+          "direction": "bool",
+          "noise": { "kind": "none", "why": "a deterministic run" },
+          "cadence": "per-commit",
+          "blocking": true
+        },
+        {
+          "id": "guards-pass",
+          "label": "Every finding guard passes",
+          "gate": "gate.md: every registry guard passes",
+          "source": { "adapter": "verify", "args": { "step": "regressions" } },
+          "direction": "bool",
+          "noise": { "kind": "none", "why": "guards are deterministic tests and replays" },
+          "cadence": "per-commit",
+          "blocking": true
+        },
+        {
+          "id": "registry-unguarded",
+          "label": "Findings without a guard",
+          "gate": "method/triage.md: a finding without a guard cannot be marked fixed",
+          "source": { "adapter": "registry", "args": { "file": "regressions.yaml", "metric": "unguarded" } },
+          "direction": "lower",
+          "threshold": 0,
+          "noise": { "kind": "none", "why": "read from the registry at the commit" },
+          "cadence": "per-commit",
+          "blocking": true
+        },
+        {
+          "id": "balance-in-bands",
+          "label": "Balance harness inside the bands",
+          "gate": "gate.md: balance harness inside the CLAUDE.md bands",
+          "source": { "adapter": "verify", "args": { "step": "balance" } },
+          "direction": "bool",
+          "noise": { "kind": "none", "why": "the reduced harness is seeded; the band edges carry the sampling noise" },
+          "cadence": "per-commit",
+          "blocking": true
+        },
+        {
+          "id": "balance-bands-failed",
+          "label": "Balance bands out of range (harness log)",
+          "source": { "adapter": "balance", "args": { "metric": "failed" } },
+          "direction": "lower",
+          "threshold": 0,
+          "noise": { "kind": "none", "why": "seeded harness; use --games 36 near a band edge (CLAUDE.md)" },
+          "cadence": "per-iteration",
+          "blocking": false
+        }
+      ]
+    },
+    {
+      "id": "reliability",
+      "label": "Reliability and stability",
+      "metrics": [
+        {
+          "id": "open-s1-s2",
+          "label": "Open S1 or S2 findings (triage clusters)",
+          "gate": "gate.md: no open S1 or S2 finding",
+          "source": { "adapter": "table", "args": { "file": "runs/iter-{NN}/triage.md", "header": ["Cluster", "Sev"], "where": { "Sev": "^S[12]" }, "agg": "count" } },
+          "direction": "lower",
+          "threshold": 0,
+          "noise": { "kind": "none", "why": "a triage decision, not a sample" },
+          "cadence": "per-iteration",
+          "blocking": true
+        },
+        {
+          "id": "regressed",
+          "label": "REGRESSED findings (QA repro)",
+          "gate": "gate.md: no REGRESSED finding; G13",
+          "source": { "adapter": "table", "args": { "file": "runs/iter-{NN}/qa-repro.md", "header": ["Classification", "Items"], "where": { "Classification": "^REGRESSED$" }, "agg": "cell", "column": "Items" } },
+          "direction": "lower",
+          "threshold": 0,
+          "noise": { "kind": "none", "why": "QA reproduced each item" },
+          "cadence": "per-iteration",
+          "blocking": true
+        },
+        {
+          "id": "guard-gaps",
+          "label": "GUARD GAP items (QA repro)",
+          "gate": "D-76: a GUARD GAP counts as REGRESSED for gating",
+          "source": { "adapter": "table", "args": { "file": "runs/iter-{NN}/qa-repro.md", "header": ["Classification", "Items"], "where": { "Classification": "^GUARD GAP$" }, "agg": "cell", "column": "Items" } },
+          "direction": "lower",
+          "threshold": 0,
+          "noise": { "kind": "none", "why": "QA reproduced each item" },
+          "cadence": "per-iteration",
+          "blocking": true
+        },
+        {
+          "id": "real-signals-open",
+          "label": "Open real signals at S2 or worse",
+          "gate": "D-78 and P11: open real signals at S2+ veto the gate (Goodhart guard)",
+          "source": { "adapter": "real-signals", "args": { "dir": "real-signals", "minSeverity": "S2" } },
+          "direction": "lower",
+          "threshold": 0,
+          "noise": { "kind": "none", "why": "real people, not a sample: no band" },
+          "cadence": "per-commit",
+          "veto": true
+        },
+        {
+          "id": "quitters",
+          "label": "Customers who would quit",
+          "source": { "adapter": "feedback", "args": { "metric": "quitters" } },
+          "direction": "lower",
+          "threshold": 0,
+          "noise": { "kind": "none", "why": "behaviour (a stated quit point), not a score; any quit is reported" },
+          "cadence": "per-iteration",
+          "blocking": false
+        }
+      ]
+    },
+    {
+      "id": "experience",
+      "label": "User experience",
+      "metrics": [
+        {
+          "id": "recommend-weighted",
+          "label": "Weighted recommend",
+          "gate": "gate.md: weighted recommend >= 7.0",
+          "source": { "adapter": "feedback", "args": { "metric": "weighted", "key": "recommend" } },
+          "direction": "higher",
+          "threshold": 7.0,
+          "noise": { "kind": "derived", "k": 1, "since": 1, "why": "1 standard error of the weighted mean: persona sd from the iteration 1 to 3 retest spread, times sqrt(sum of squared panel weights)" },
+          "cadence": "per-iteration",
+          "blocking": true
+        },
+        {
+          "id": "recommend-floor",
+          "label": "Lowest persona recommend",
+          "gate": "gate.md: no persona below 6",
+          "source": { "adapter": "feedback", "args": { "metric": "min", "key": "recommend" } },
+          "direction": "higher",
+          "threshold": 6,
+          "noise": { "kind": "fixed", "band": 1, "why": "D-59: a one-point move of one persona is noise" },
+          "cadence": "per-iteration",
+          "blocking": true
+        },
+        {
+          "id": "game-feel",
+          "label": "Weighted feels like a game",
+          "gate": "gate.md: weighted feels-like-a-game >= 7.0",
+          "source": { "adapter": "feedback", "args": { "metric": "weighted", "key": "feels_like_a_game" } },
+          "direction": "higher",
+          "threshold": 7.0,
+          "noise": { "kind": "derived", "k": 1, "since": 1, "why": "as weighted recommend" },
+          "cadence": "per-iteration",
+          "blocking": true
+        },
+        {
+          "id": "agency",
+          "label": "Weighted agency",
+          "gate": "gate.md: weighted agency >= 7.0",
+          "source": { "adapter": "feedback", "args": { "metric": "weighted", "key": "agency" } },
+          "direction": "higher",
+          "threshold": 7.0,
+          "noise": { "kind": "derived", "k": 1, "since": 1, "why": "as weighted recommend" },
+          "cadence": "per-iteration",
+          "blocking": true
+        },
+        {
+          "id": "olivia-ruth-complete",
+          "label": "Olivia and Ruth complete a session",
+          "gate": "gate.md: the early quitter and the low-gaming news follower complete a first session",
+          "source": { "adapter": "feedback", "args": { "metric": "completed", "personas": ["olivia", "ruth"] } },
+          "direction": "bool",
+          "noise": { "kind": "none", "why": "behaviour (quit point and scenario outcome), not a score" },
+          "cadence": "per-iteration",
+          "blocking": true
+        },
+        {
+          "id": "control-end-reached",
+          "label": "Control games that reached the end",
+          "source": { "adapter": "table", "args": { "file": "runs/iter-{NN}/triage.md", "header": ["Persona", "End reached"], "where": { "End reached": "^Yes" }, "agg": "share" } },
+          "direction": "higher",
+          "threshold": 0.8,
+          "format": "percent",
+          "noise": { "kind": "none", "why": "behaviour on fixed control seeds (D-59); Term seats stop at month 12 by design and count as not reached" },
+          "cadence": "per-iteration",
+          "blocking": false
+        },
+        {
+          "id": "control-second-game",
+          "label": "Control players who started a second game",
+          "source": { "adapter": "table", "args": { "file": "runs/iter-{NN}/triage.md", "header": ["Persona", "Second game"], "where": { "Second game": "^Yes" }, "agg": "share" } },
+          "direction": "higher",
+          "threshold": 0.5,
+          "format": "percent",
+          "noise": { "kind": "none", "why": "behaviour on fixed control seeds (D-59)" },
+          "cadence": "per-iteration",
+          "blocking": false
+        },
+        {
+          "id": "affordance-friction",
+          "label": "Affordance friction rows",
+          "source": { "adapter": "feedback", "args": { "metric": "friction", "kind": "affordance" } },
+          "direction": "lower",
+          "threshold": 9,
+          "noise": { "kind": "fixed", "band": 3, "why": "row counts depend on how much each persona writes; about one row per persona either way" },
+          "cadence": "per-iteration",
+          "blocking": false
+        },
+        {
+          "id": "naming-friction",
+          "label": "Naming friction rows",
+          "source": { "adapter": "feedback", "args": { "metric": "friction", "kind": "naming" } },
+          "direction": "lower",
+          "threshold": 9,
+          "noise": { "kind": "fixed", "band": 3, "why": "as affordance friction" },
+          "cadence": "per-iteration",
+          "blocking": false
+        },
+        {
+          "id": "clarity",
+          "label": "Weighted clarity",
+          "source": { "adapter": "feedback", "args": { "metric": "weighted", "key": "clarity" } },
+          "direction": "higher",
+          "threshold": 7.0,
+          "noise": { "kind": "derived", "k": 1, "since": 1, "why": "as weighted recommend" },
+          "cadence": "per-iteration",
+          "blocking": false
+        }
+      ]
+    },
+    {
+      "id": "visual",
+      "label": "Visual quality",
+      "metrics": [
+        {
+          "id": "visual-score",
+          "label": "Weighted visual",
+          "source": { "adapter": "feedback", "args": { "metric": "weighted", "key": "visual" } },
+          "direction": "higher",
+          "threshold": 7.0,
+          "noise": { "kind": "derived", "k": 1, "since": 1, "why": "as weighted recommend" },
+          "cadence": "per-iteration",
+          "blocking": false
+        },
+        {
+          "id": "visual-baselines",
+          "label": "Visual regression baselines",
+          "source": { "adapter": "visual", "args": { "metric": "baselines", "dir": "tests/visual/__screenshots__" } },
+          "direction": "higher",
+          "threshold": 20,
+          "noise": { "kind": "none", "why": "a file count at the commit" },
+          "cadence": "per-commit",
+          "blocking": false
+        },
+        {
+          "id": "visual-run",
+          "label": "Visual regression run passes",
+          "source": { "adapter": "verify", "args": { "step": "visual" } },
+          "direction": "bool",
+          "noise": { "kind": "none", "why": "pixel comparison with a tolerance set in the config" },
+          "cadence": "per-commit",
+          "blocking": false
+        }
+      ]
+    },
+    {
+      "id": "performance",
+      "label": "Performance",
+      "metrics": [
+        {
+          "id": "perf-budget",
+          "label": "Perf budget tests failing (tests/perf)",
+          "source": { "adapter": "vitest-log", "args": { "log": ".verify/test.log", "file": "tests/perf", "metric": "failed" } },
+          "direction": "lower",
+          "threshold": 0,
+          "noise": { "kind": "none", "why": "budgets are best of 5 runs with headroom (tests/perf)" },
+          "cadence": "per-iteration",
+          "blocking": false
+        }
+      ]
+    },
+    {
+      "id": "value",
+      "label": "Product value",
+      "metrics": [
+        {
+          "id": "goals-open",
+          "label": "Game goals G1 to G13 not done",
+          "gate": "gate.md: every game goal verified by QA and confirmed by the panel (status done in goals.md)",
+          "source": { "adapter": "table", "args": { "file": "goals.md", "at": "commit", "heading": "Track A", "header": ["ID", "Status"], "where": { "Status": "^(?!done)" }, "agg": "count" } },
+          "direction": "lower",
+          "threshold": 0,
+          "noise": { "kind": "none", "why": "a Group Manager status, read at the commit" },
+          "cadence": "per-commit",
+          "blocking": true
+        },
+        {
+          "id": "fun",
+          "label": "Weighted fun",
+          "source": { "adapter": "feedback", "args": { "metric": "weighted", "key": "fun" } },
+          "direction": "higher",
+          "threshold": 7.0,
+          "noise": { "kind": "derived", "k": 1, "since": 1, "why": "as weighted recommend" },
+          "cadence": "per-iteration",
+          "blocking": false
+        },
+        {
+          "id": "replay",
+          "label": "Weighted replay",
+          "source": { "adapter": "feedback", "args": { "metric": "weighted", "key": "replay" } },
+          "direction": "higher",
+          "threshold": 7.0,
+          "noise": { "kind": "derived", "k": 1, "since": 1, "why": "as weighted recommend" },
+          "cadence": "per-iteration",
+          "blocking": false
+        }
+      ]
+    }
+  ]
+}
