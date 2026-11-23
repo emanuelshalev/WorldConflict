@@ -37,16 +37,23 @@
 .mission-line-k { color: var(--accent); }
 .mission-goal { display: inline; text-align: left; padding: 0; min-height: 0; border: 0; background: none; color: var(--text-1); font: inherit; font-weight: 700; text-decoration: underline dotted rgba(242, 169, 59, 0.8); text-underline-offset: 4px; cursor: pointer; }
 .mission-goal:hover, .mission-goal:focus-visible { color: var(--accent); }
+.mission-goal-unit { white-space: nowrap; }
+.mission-goal-unit .mission-goal { white-space: normal; }
 .mission-line.is-flash { animation: mission-flash 1.2s var(--ease-out, ease-out) 1; }
 .mission-line:focus-visible { box-shadow: 0 0 0 2px var(--accent); }
 @keyframes mission-flash { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 0 transparent; } }
 @media (prefers-reduced-motion: reduce) { .mission-line.is-flash { animation: none; box-shadow: 0 0 0 2px var(--accent); } }
 @media (max-width: 600px) { .mission-line { font-size: 15px; padding: 10px 12px; } }
 .goal-view button { min-height: 36px; display: inline-flex; align-items: center; gap: 6px; }
-@media (max-width: 899px) {
+/* Up to 1279 the step moves to its own row when the row is full, so neither the summary nor the
+   step is cut (QA3R-6a); below 900 it always has its own row */
+@media (max-width: 1279px) {
   .goal-line { flex-wrap: wrap; row-gap: 0; padding: 4px 12px 6px; }
   .goal-main { flex: 1 1 auto; }
-  .goal-step { order: 3; flex: 1 1 100%; text-align: left; border-radius: 10px; }
+  .goal-step { order: 3; flex: 0 0 auto; max-width: 100%; text-align: left; border-radius: 10px; }
+}
+@media (max-width: 899px) {
+  .goal-step { flex: 1 1 100%; }
 }
 @media (max-width: 600px) {
   .goal-line { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 8px; padding: 4px 12px 6px; }
@@ -57,7 +64,7 @@
   .goal-view { grid-column: 2; grid-row: 2; align-self: center; margin: 4px 0 0; }
   .goal-view button { min-height: 36px; padding: 2px 8px; font-size: 13px; }
   .goal-view svg { display: none; }
-  .goal-step { grid-column: 1; grid-row: 2; font-size: 13px; min-height: 36px; margin-top: 4px; }
+  .goal-step { grid-column: 1; grid-row: 2; font-size: 13px; min-height: 36px; margin-top: 4px; white-space: normal; text-overflow: clip; line-height: 1.3; }
 }
 
 /* The stage: the crisis scene is the hero, cards overlap its bottom edge */

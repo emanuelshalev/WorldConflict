@@ -22,6 +22,18 @@ export const useGoalHighlight = create<{ index: number | null; nonce: number; po
 export const STATE_WORD: Record<ObjectiveState, string> = { on_track: 'On track', close: 'Close', off_track: 'Off track', failed: 'Failed' };
 
 /** A condition's state, also for older payloads without one. */
+/**
+ * The goal line's summary, shared by the desk and the Mission sheet: "3 of 4 on track · month 2
+ * of 12", or the month alone when the session has no primary goals (a Term), never "0 of 0"
+ * (QA3R-2e).
+ */
+export function missionSummary(status: ConditionStatus[], turn: number, maxTurns: number): string {
+  const primary = status.filter((c) => !c.bonus);
+  const onTrack = primary.filter((c) => stateOf(c) === 'on_track').length;
+  const month = Math.min(turn + 1, maxTurns);
+  return primary.length ? `${onTrack} of ${primary.length} on track · month ${month} of ${maxTurns}` : `Month ${month} of ${maxTurns}`;
+}
+
 export function stateOf(c: ConditionStatus): ObjectiveState {
   return c.state ?? (c.failed ? 'failed' : c.met ? 'on_track' : 'off_track');
 }
@@ -94,7 +106,11 @@ const COMMON_FIRST = /^(The|A|An|No|Voters|Your|Keep|Stay|Hold|End|Win|Score|Sta
 export function goalPhrase(c: { label: string; short?: string }): string {
   const cut = (c.short ?? c.label.split(/[(:]/)[0]).trim() || c.label;
   const base = cut.replace(/\s+(at the review|at the end|by the end)$/i, '');
-  const inner = /\(([^)]*\d[^)]*)\)/.exec(c.label)?.[1]?.replace(/\s*→\s*/, ' to ');
+  // A negative floor reads as words, never a raw "-90+" (QA3R-7a): "relations kept above -90"
+  const inner = /\(([^)]*\d[^)]*)\)/
+    .exec(c.label)?.[1]
+    ?.replace(/\s*→\s*/, ' to ')
+    .replace(/(\w+)\s+(-\d+(?:\.\d+)?)\+/g, '$1 kept above $2');
   const text = inner && !base.includes(inner) ? `${base} (${inner})` : base;
   return COMMON_FIRST.test(text) ? text.charAt(0).toLowerCase() + text.slice(1) : text;
 }
@@ -104,6 +120,13 @@ export function goalPhrase(c: { label: string; short?: string }): string {
  * Noah failed on "Israel stays on side" and never knew it was the thing). Every primary goal must
  * hold at the end, so the sentence names them all, in the goal line's order.
  */
+/** The punctuation that follows goal i of n in the sentence ("," / "" before "and" / "."). */
+export function goalPunct(i: number, n: number): { after: string; join: string } {
+  if (i === n - 1) return { after: '.', join: '' };
+  if (i === n - 2) return { after: '', join: ' and ' };
+  return { after: ',', join: ' ' };
+}
+
 export function missionSentence(w: MissionSentenceInput): MissionSentence {
   const end = w.maxTurns;
   const primary = w.objective?.primary ?? [];

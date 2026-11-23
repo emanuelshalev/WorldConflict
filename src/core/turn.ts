@@ -131,6 +131,7 @@ export class TurnEngine {
     // The month's starting picture, for the debrief (others' view of us, fronts, hot zones)
     this.start = {
       rel: new Map(world.countries.map((c) => [c.id, c.relations[world.playerCountryId] ?? 0])),
+      mine: new Map(Object.entries(playerBefore?.relations ?? {})),
       front: new Map(world.wars.map((w) => [w.id, w.frontline])),
       hot: new Map(world.hotspots.map((h) => [h.id, { ...h }])),
       tension: world.globalTension,
@@ -587,6 +588,7 @@ export class TurnEngine {
   private month: MonthStart | null = null;
   private start: {
     rel: Map<string, number>;
+    mine: Map<string, number>;
     front: Map<string, number>;
     hot: Map<string, Hotspot>;
     tension: number;
@@ -1393,6 +1395,19 @@ export class TurnEngine {
       .sort((a, b) => Math.abs(b.after - b.before) - Math.abs(a.after - a.before))
       .slice(0, 5)
       .map((r) => ({ ...r, before: Math.round(r.before), after: Math.round(r.after) }));
+    // Our own view of everyone we dealt with this month, start to end (one decimal)
+    const dealt = new Set<string>([
+      ...report.orders.map((o) => o.target).filter((t): t is string => !!t),
+      ...report.decisions.map((d) => d.withCountry).filter((t): t is string => !!t),
+    ]);
+    const tenth = (v: number) => Math.round(v * 10) / 10;
+    report.yourView = [...dealt]
+      .filter((id) => id !== player.id && start.mine.has(id))
+      .map((id) => ({
+        id,
+        before: tenth(start.mine.get(id) ?? 0),
+        after: tenth(player.relations[id] ?? 0),
+      }));
     // AI moves that touch us: aimed at us or an ally, or by a country at war with us
     const rank = (t: string) =>
       t === "NUCLEAR_STRIKE"

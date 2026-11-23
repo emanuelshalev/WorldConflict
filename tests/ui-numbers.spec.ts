@@ -8,7 +8,9 @@ import { readFileSync } from "node:fs";
 import { buildPages } from "../ui/src/lib/debrief.js";
 import { factTone, fmtValue, isMonthStat, shareFacts, shownDelta, splitMonth } from "../ui/src/lib/numbers.js";
 import { defaultSide } from "../ui/src/lib/sides.js";
-import { cardData, kindRank, rankHeadline, rankLines } from "../ui/src/components/reveal/model.js";
+import { missionSummary } from "../ui/src/lib/goals.js";
+import { cardData, endScene, kindRank, placeAxisLabels, rankHeadline, rankLines } from "../ui/src/components/reveal/model.js";
+import { countText } from "../ui/src/lib/useCountUp.js";
 import type { RevealPayload, TurnReport, WorldState } from "../ui/src/store/gameStore.js";
 
 /**
@@ -157,3 +159,111 @@ describe("reveal leads with the outcome, the percentile is kind (F-02-1, Olivia)
   });
 });
 
+
+// QA3R-2a (F-01-3): "Your view of Iran -75 to -68" on the card while the month ended at -89 and
+// the mission strip said -75 to -89. Your own view is what relation goals measure: the month
+// total leads, the order's own effect follows as its share. QA3R-2e: the Mission sheet said
+// "0 of 0 on track" in a Term; the desk and the sheet share one summary.
+describe("your own view of a country and the mission summary (QA3R-2a, 2e)", () => {
+  it("a country card leads with your view over the month when your order moved it (Marcus, Iran)", () => {
+    const r = report({
+      orders: [{ type: "DIPLOMACY_IMPROVE_RELATIONS", label: "Court Iran", target: "IRN", ok: true, detail: "Carried out", facts: [{ label: "Your view of Iran", before: -75, after: -68, good: true }] }],
+      yourView: [{ id: "IRN", before: -75, after: -89 }],
+    } as Partial<TurnReport>);
+    const card = buildPages(r, world).flatMap((p) => p.cards).find((c) => c.country === "IRN");
+    expect(card?.facts[0]).toMatchObject({ before: -75, after: -89 });
+    expect(card?.facts[0].label).toMatch(/^Your view of .* this month$/);
+    const own = card?.facts.find((f) => f.share);
+    expect(own).toMatchObject({ before: -75, after: -68, share: true });
+  });
+
+  it("with both views, both month totals come before the order's shares", () => {
+    const r = report({
+      orders: [{ type: "DIPLOMACY_IMPROVE_RELATIONS", label: "Court Iran", target: "IRN", ok: true, detail: "Carried out", facts: [{ label: "Your view of Iran", before: -75, after: -68, good: true }, { label: "Iran's view of you", before: -80, after: -76, good: true }] }],
+      relations: [{ id: "IRN", before: -80, after: -90 }],
+      yourView: [{ id: "IRN", before: -75, after: -89 }],
+    } as Partial<TurnReport>);
+    const card = buildPages(r, world).flatMap((p) => p.cards).find((c) => c.country === "IRN");
+    const firstShare = card!.facts.findIndex((f) => f.share);
+    const totals = card!.facts.filter((f) => /this month$/.test(f.label));
+    expect(totals.length).toBe(2);
+    expect(firstShare === -1 || firstShare >= 2).toBe(true);
+  });
+
+  it("the mission summary never says 0 of 0, on the desk and the Mission sheet", () => {
+    expect(missionSummary([], 3, 48)).toBe("Month 4 of 48");
+    expect(missionSummary([], 3, 48)).not.toMatch(/0 of 0/);
+    const bonusOnly = [{ label: "Score 115+", met: false, bonus: true } as never];
+    expect(missionSummary(bonusOnly, 0, 48)).toBe("Month 1 of 48");
+    // Every mount point uses the shared summary, none builds its own "of N on track"
+    for (const f of ["ui/src/components/Drawers.tsx", "ui/src/components/desk/GoalLine.tsx"]) {
+      const src = readFileSync(f, "utf-8");
+      expect(src, f).toContain("missionSummary(");
+      expect(src, f).not.toMatch(/\{onTrack\} of \{/);
+    }
+  });
+});
+
+// QA3R-3g: "377 seats, majority won" closed a China flashpoint (TERM_COMPLETED mapped to the
+// election scene). QA3R-2i: the Presidency Score painted 0 for 1.3 s before counting.
+describe("closing scene and score count (QA3R-3g, 2i)", () => {
+  const REASONS = ["TERM_COMPLETED", "OBJECTIVE_FAILED", "LOST_ELECTION", "DEPOSED_COUP", "IMPEACHED", "REVOLUTION"];
+  it("a flashpoint end or a one-party regime never closes on the election scene", () => {
+    for (const reason of REASONS)
+      for (const lost of [false, true]) {
+        expect(endScene(reason, { flashpointId: "scarborough-line", regime: "COMMUNIST" }, lost), reason).not.toBe("election");
+        expect(endScene(reason, { flashpointId: "ceasefire-or-collapse", regime: "DEMOCRACY" }, lost), reason).not.toBe("election");
+        for (const regime of ["COMMUNIST", "AUTOCRACY", "MONARCHY", "THEOCRACY", "MILITARY_JUNTA"])
+          expect(endScene(reason, { flashpointId: null, regime }, lost), `${reason} ${regime}`).not.toBe("election");
+      }
+    // A democracy's Term still ends at the ballot box
+    expect(endScene("TERM_COMPLETED", { flashpointId: null, regime: "DEMOCRACY" }, false)).toBe("election");
+    // Both mount points ask endScene
+    for (const f of ["ui/src/components/reveal/stages.tsx", "ui/src/components/EndScreen.tsx"]) {
+      const src = readFileSync(f, "utf-8");
+      expect(src, f).toContain("endScene(");
+      expect(src, f).not.toMatch(/END_SCENE\[/);
+    }
+  });
+
+  it("the verdict score is never painted 0 while it waits to count", () => {
+    expect(countText(562, 0)).not.toBe("0");
+    expect(countText(562, 0.2)).toBe("1");
+    expect(countText(562, 300.4)).toBe("300");
+    expect(countText(562, 562)).toBe("562");
+    expect(countText(0, 0)).toBe("0");
+    expect(readFileSync("ui/src/components/reveal/stages.tsx", "utf-8")).toMatch(/countText\(p\.total, useCountUp\(/);
+  });
+});
+
+// QA3R-6a (phone): the STEP ACHIEVED stamp sat over the big number's label on the result card.
+describe("the result card stamp never sits on the big number (QA3R-6a)", () => {
+  it("with a big number the stamp moves to the top corner", () => {
+    const css = readFileSync("ui/src/scenes/result.css", "utf-8");
+    expect(css).toMatch(/\.rc-visual:has\(\.rc-big\) \.rc-step \{[^}]*top:/);
+    expect(css).toMatch(/\.rc-big \{[^}]*bottom:/);
+  });
+});
+
+// QA3R-6a (reveal at 1440): the moments axis alternated labels up and down, so neighbours two
+// months apart collided. placeAxisLabels gives each label a free side or none.
+describe("moment axis labels never overlap (QA3R-6a)", () => {
+  const spanOf = (it: { x: number; width: number; anchor: string }) =>
+    it.anchor === "start" ? [it.x, it.x + it.width] : it.anchor === "end" ? [it.x - it.width, it.x] : [it.x - it.width / 2, it.x + it.width / 2];
+  it("no two labels on one side overlap, whatever the spacing; big marks always get a side", () => {
+    for (const step of [20, 45, 80, 140]) {
+      const items = Array.from({ length: 10 }, (_, i) => ({ x: 26 + i * step, width: 120 + (i % 3) * 40, anchor: "middle" as const, big: i === 4 }));
+      const sides = placeAxisLabels(items);
+      expect(sides[4], `step ${step}`).not.toBeNull();
+      for (const side of ["up", "down"])
+        for (let i = 0; i < items.length; i++)
+          for (let j = i + 1; j < items.length; j++) {
+            if (sides[i] !== side || sides[j] !== side) continue;
+            const [a, b] = spanOf(items[i]);
+            const [c, d] = spanOf(items[j]);
+            expect(b <= c || d <= a, `step ${step}: ${i} and ${j} on ${side}`).toBe(true);
+          }
+    }
+    expect(readFileSync("ui/src/components/reveal/stages.tsx", "utf-8")).toContain("placeAxisLabels(");
+  });
+});

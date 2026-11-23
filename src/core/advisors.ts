@@ -109,6 +109,13 @@ export const STAFF_ORDERS = 2;
 export const RESERVE_PC = 1;
 /** Orders with worse odds than this (percent) are left for the player to decide. */
 export const MIN_ODDS = 35;
+/**
+ * Below this relation a goodwill call is a lost cause (QA3R-1b): the staff do not pitch courting
+ * a country at -85 or worse unless a mission needs it.
+ */
+export const COURT_FLOOR = -85;
+/** The same court (type + target) at most twice in six months unless a mission needs it. */
+export const COURT_REPEAT_MAX = 2;
 
 const nameOf = (world: WorldState, id: string) =>
   world.countries.find((c) => c.id === id)?.name ?? id;
@@ -138,16 +145,32 @@ export function computeSuggestions(world: WorldState, limit = 5): Suggestion[] {
     const moved = (report?.relations ?? []).find((r) => r.id === id);
     return !moved || moved.after <= moved.before;
   };
-  // Stance check (F-02-8): no courting the enemy's camp. A state allied with a country we are
-  // at war with (Belarus for Ukraine) is not a partner the Foreign Minister would pitch.
+  // Stance check (F-02-8): no courting the enemy's camp. A state allied with an enemy (Belarus
+  // for Ukraine) is not a partner the Foreign Minister would pitch. An enemy is a country we are
+  // at war with, a historical rival or one we hold below -40, so the stance survives a ceasefire
+  // (QA3R-1c: Court Belarus came back after the Ukraine war ended).
+  const rivals = new Set(player.history?.historicalRivals ?? []);
+  const isEnemy = (id: string) =>
+    player.atWarWith.includes(id) || rivals.has(id) || (player.relations[id] ?? 0) < -40;
   const enemyCamp = (id: string) => {
     const c = world.countries.find((x) => x.id === id);
     return (
       !!c &&
-      (c.alliances.some((a) => player.atWarWith.includes(a)) ||
+      (c.alliances.some((a) => a !== player.id && isEnemy(a)) ||
         c.atWarWith.some((a) => player.alliances.includes(a)))
     );
   };
+  // Courted (type + target) this many times in the last six months, this month's report included
+  const courtedRecently = (id: string) =>
+    targetTurns(world, "DIPLOMACY_IMPROVE_RELATIONS", id).filter((t) => t >= world.turn - 5).length;
+  // A court the staff may pitch without a mission behind it (QA3R-1b): not a lost cause, not the
+  // same country again and again
+  const courtable = (id: string, theirView: number) =>
+    rel(id) > COURT_FLOOR &&
+    theirView > COURT_FLOOR &&
+    courtedRecently(id) < COURT_REPEAT_MAX &&
+    !courtStalled(id) &&
+    !enemyCamp(id);
   const court = (id: string, p: number, why: string): Suggestion & { p: number } => ({
     p,
     who: "Foreign Minister",
@@ -191,7 +214,8 @@ export function computeSuggestions(world: WorldState, limit = 5): Suggestion[] {
     if (c.kind === "RELATION_MIN" && c.targetId && !player.atWarWith.includes(c.targetId)) {
       const need = c.min ?? 0;
       const now = rel(c.targetId);
-      if (now < need + 10) {
+      // A bonus goal is optional: no court the staff repeat month after month (QA3R-1b)
+      if (now < need + 10 && !(bonus && courtedRecently(c.targetId) >= COURT_REPEAT_MAX)) {
         const gap =
           now < need ? `needs ${need}+, now ${now}` : `needs ${need}+, now ${now}: keep the margin`;
         out.push(
@@ -245,7 +269,14 @@ export function computeSuggestions(world: WorldState, limit = 5): Suggestion[] {
         });
     } else if (c.kind === "NO_WAR_WITH" && c.targetId && !player.atWarWith.includes(c.targetId)) {
       const now = rel(c.targetId);
-      if (now < -40 && !courtStalled(c.targetId))
+      const v = others.find((o) => o.id === c.targetId);
+      if (
+        now < -40 &&
+        rel(c.targetId) > COURT_FLOOR &&
+        (v?.relationWithPlayer ?? now) > COURT_FLOOR &&
+        courtedRecently(c.targetId) < COURT_REPEAT_MAX &&
+        !courtStalled(c.targetId)
+      )
         out.push(
           court(
             c.targetId,
@@ -307,8 +338,7 @@ export function computeSuggestions(world: WorldState, limit = 5): Suggestion[] {
                 !(player.history?.historicalRivals ?? []).includes(v.id) &&
                 rel(v.id) > -30 &&
                 rel(v.id) < 70 &&
-                !courtStalled(v.id) &&
-                !enemyCamp(v.id),
+                courtable(v.id, v.relationWithPlayer),
             )
             .sort((a, b) => b.relationWithPlayer - a.relationWithPlayer)[0];
           if (partner)
@@ -402,8 +432,7 @@ export function computeSuggestions(world: WorldState, limit = 5): Suggestion[] {
       (v) =>
         !player.atWarWith.includes(v.id) &&
         !missionIds.has(v.id) &&
-        !courtStalled(v.id) &&
-        !enemyCamp(v.id),
+        courtable(v.id, v.relationWithPlayer),
     )
     .sort((a, b) => a.relationWithPlayer - b.relationWithPlayer)[0];
   if (worst && worst.relationWithPlayer < -20)
@@ -722,6 +751,16 @@ function orderTurns(world: WorldState, type: string): number[] {
   const turns = new Set((world.director.ledger[type] ?? []).map((e) => e.turn));
   const report = world.turnReport;
   if (report?.orders.some((o) => o.type === type)) turns.add(report.turn);
+  return [...turns].sort((a, b) => b - a);
+}
+
+/** Months in which the player carried out this order type on this target, recent first. */
+function targetTurns(world: WorldState, type: string, target: string): number[] {
+  const turns = new Set(
+    (world.director.ledger[type] ?? []).filter((e) => e.target === target).map((e) => e.turn),
+  );
+  const report = world.turnReport;
+  if (report?.orders.some((o) => o.type === type && o.target === target)) turns.add(report.turn);
   return [...turns].sort((a, b) => b - a);
 }
 

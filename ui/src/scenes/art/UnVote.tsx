@@ -1,8 +1,7 @@
 import { useSceneUid } from './uid';
 import type { SceneArtProps } from './types';
+import { BOARD_SPLIT, COUNCIL, councilTally, councilVotes } from './unTally';
 import './public.css';
-
-const CODES = ['ARG', 'BRA', 'CAN', 'EGY', 'GHA', 'IND', 'JPN', 'KEN', 'MEX', 'NOR', 'PER', 'QAT', 'SWE', 'TUR', 'VNM', 'ZAF', 'CHL', 'FIN'];
 
 const CX = 320;
 const CY = 168;
@@ -33,21 +32,18 @@ const LEAVES = Array.from({ length: 7 }, (_, i) => i);
 export default function UnVote({ a, mood }: SceneArtProps) {
   const uid = useSceneUid();
   const yesCut = mood === 'good' ? 7 : mood === 'bad' ? 2 : 4.5;
-  const vote = (i: number) => {
-    const v = (i * 7) % 9;
-    return v < yesCut ? 'y' : v === 8 ? 'a' : 'n';
-  };
+  const votes = councilVotes(mood);
+  const vote = (i: number) => votes[i];
   const col = { y: '#2fe08a', n: '#ff5148', a: '#f5c142' };
-  const yes = CODES.filter((_, i) => vote(i) === 'y').length;
-  const no = CODES.filter((_, i) => vote(i) === 'n').length;
+  const { yes, no } = councilTally(mood);
   const key = mood === 'bad' ? '#ff9a7a' : mood === 'good' ? '#ffe2a0' : '#fff0cc';
-  const board = (x: number, off: number) => (
+  const board = (x: number, off: number, n: number) => (
     <g>
       <rect x={x} y="50" width="132" height="150" rx="5" fill="#04121a" stroke="#c9a24f" strokeOpacity="0.55" />
       <rect x={x + 4} y="54" width="124" height="16" rx="2" fill="#0c2a33" />
       <text x={x + 10} y="66" fontSize="9" className="unv-label" fill={col.y}>YES {yes}</text>
       <text x={x + 122} y="66" fontSize="9" textAnchor="end" className="unv-label" fill={col.n}>NO {no}</text>
-      {CODES.slice(off, off + 9).map((c, j) => {
+      {COUNCIL.slice(off, off + n).map((c, j) => {
         const v = vote(off + j);
         return (
           <g key={c}>
@@ -135,8 +131,8 @@ export default function UnVote({ a, mood }: SceneArtProps) {
         <polygon key={x} className="unv-shaft" points={`${x},0 ${x + 40},0 ${x + 70 - i * 30},250 ${x - 30 - i * 30},250`} fill={`url(#unv-shaft-${uid})`} style={{ animationDelay: `${i * 2.2}s` }} />
       ))}
 
-      {board(34, 0)}
-      {board(474, 9)}
+      {board(34, 0, BOARD_SPLIT)}
+      {board(474, BOARD_SPLIT, COUNCIL.length - BOARD_SPLIT)}
 
       {/* Rostrum: presiding desk and speaker */}
       <rect x="238" y="150" width="164" height="22" fill={`url(#unv-desk-${uid})`} />

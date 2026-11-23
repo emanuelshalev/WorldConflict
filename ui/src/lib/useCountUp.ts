@@ -1,6 +1,16 @@
 import { useEffect, useState } from 'react';
 
 /** Animated count from 0 to the target, eased, once per mount (skipped with reduced motion). */
+/**
+ * What a counting total shows (QA3R-2i): a placeholder until the count starts, then at least 1,
+ * so a positive score never paints as 0 while it waits to count.
+ */
+export function countText(target: number, value: number): string {
+  if (target <= 0) return String(Math.round(target));
+  if (value <= 0) return '···';
+  return String(Math.max(1, Math.min(Math.round(target), Math.round(value))));
+}
+
 export function useCountUp(target: number, ms = 900, delay = 300): number {
   const [reduced] = useState(() => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false);
   const [v, setV] = useState(reduced ? target : 0);

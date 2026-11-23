@@ -35,6 +35,9 @@ function writeKey(k: string, v: string): void {
 
 type Variant = 'rail' | 'sheet' | 'strip';
 
+/** A short desktop rail, where the list, Accept all and Execute need every pixel (staff-picks.css). */
+const SHORT_RAIL = () => typeof window !== 'undefined' && window.innerWidth >= 900 && window.innerHeight <= 820;
+
 /** One verb, Accept (D-72); each pick's own button names what it accepts. */
 const ACCEPT_WORD: Record<StaffPickItem['kind'], string> = { crisis: 'Accept answer', order: 'Accept order', meeting: 'Accept meeting', deputy: 'Accept deputy' };
 
@@ -131,7 +134,9 @@ export function StaffPicks({ variant, onNavigate }: { variant: Variant; onNaviga
   const whyId = `${base}-why`;
   const listId = `${base}-list`;
   const mainId = `${base}-main`;
-  const [why, setWhy] = useState(() => readKey(SEEN_KEY) !== '1');
+  // On a short desk rail (820 px or less) the first-use explanation starts closed so Accept all and
+  // Execute keep their room; "What is this?" opens it (design review of stability-iter4)
+  const [why, setWhy] = useState(() => readKey(SEEN_KEY) !== '1' && !(variant === 'rail' && SHORT_RAIL()));
   // Map mode starts folded behind "Review n recommended" (D-72; the globe keeps its room): on large
   // screens the list opens in the strip, on phones, tablets and short screens as a sheet over the
   // globe (staff-picks.css, 1280 x 820). The player's choice is remembered (lib/useStaffPicks).

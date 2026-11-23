@@ -1,7 +1,7 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { familiaritySample, sampleEra, sampleMarks, sampleText } from "../ui/src/lib/familiaritySample.js";
+import { SAMPLE_FLASHPOINTS, familiaritySample, sampleEra, sampleMarks, sampleText } from "../ui/src/lib/familiaritySample.js";
 
 /**
  * QA3-S3-1: the familiarity question ("How well do you follow world news?") showed the 2026
@@ -49,5 +49,26 @@ describe("familiarity sample sentence (QA3-S3-1)", () => {
     const src = readFileSync(join(ROOT, "ui/src/components/learn/FamiliarityPrompt.tsx"), "utf8");
     expect(src).toContain("familiaritySample(");
     expect(src).not.toContain("Donetsk");
+  });
+});
+
+// QA3R-3f: the era fix (QA3-S3-1) still showed the Donetsk line on every 2026 flashpoint (China,
+// Venezuela). Every flashpoint gets its own line; only the Ukraine one names Donetsk.
+describe("familiarity sample fits the flashpoint (QA3R-3f)", () => {
+  const ids = readdirSync(join(ROOT, "data/flashpoints")).filter((n) => n.endsWith(".json")).map((n) => n.replace(/\.json$/, ""));
+  it("every flashpoint has its own marked line; none but the Ukraine one names Donetsk", () => {
+    for (const id of ids) {
+      const s = familiaritySample("2026-11", id);
+      expect(s.flashpointId, id).toBe(id);
+      expect(sampleMarks(s), id).toBeGreaterThanOrEqual(1);
+      expect(sampleText(s), id).not.toContain(String.fromCharCode(0x2014));
+      if (id !== "ceasefire-or-collapse") expect(sampleText(s), id).not.toMatch(/Donetsk|Kramatorsk/);
+    }
+    expect(new Set(ids.map((id) => sampleText(familiaritySample("2026-11", id)))).size).toBe(ids.length);
+    expect(SAMPLE_FLASHPOINTS.sort()).toEqual([...ids].sort());
+  });
+  it("the prompt passes the flashpoint", () => {
+    const src = readFileSync(join(ROOT, "ui/src/components/learn/FamiliarityPrompt.tsx"), "utf8");
+    expect(src).toMatch(/familiaritySample\(date, flashpointId\)/);
   });
 });

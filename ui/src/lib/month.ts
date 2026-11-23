@@ -66,6 +66,14 @@ export function firstFocus(): DeskFocus {
 
 let setupRunning: string | null = null;
 
+/**
+ * The view a new month opens in (QA3R-5b): the player's own choice of Map or Desk is kept from
+ * month to month; only a session's first month opens on the desk.
+ */
+export function monthDeskMode(turn: number, current: 'map' | 'desk'): 'map' | 'desk' {
+  return turn === 0 ? 'desk' : current;
+}
+
 export async function setupMonth(): Promise<void> {
   const s = useGameStore.getState();
   const world = s.worldState;
@@ -86,7 +94,7 @@ export async function setupMonth(): Promise<void> {
     }
     const stored = readStored(key);
     if (stored) {
-      useGameStore.setState({ ...stored, monthKey: key, deskMode: 'desk' });
+      useGameStore.setState({ ...stored, monthKey: key, deskMode: monthDeskMode(world.turn, s.deskMode) });
       useGameStore.setState({ focus: firstFocus() });
       return;
     }
@@ -99,7 +107,7 @@ export async function setupMonth(): Promise<void> {
       choices[d.id] = pick.id;
       pc += pick.effects.pc ?? 0;
     }
-    useGameStore.setState({ decisionChoices: choices, reviewed: {}, dismissedStaff: [], monthKey: key, deskMode: 'desk' });
+    useGameStore.setState({ decisionChoices: choices, reviewed: {}, dismissedStaff: [], monthKey: key, deskMode: monthDeskMode(world.turn, s.deskMode) });
     useGameStore.setState({ focus: firstFocus() });
     // 2. Orders: up to two safe staff proposals within the capital (the engine's staffOrders rule:
     //    affordable after the crisis picks, leaving RESERVE_PC). Proposals hold nothing, so the

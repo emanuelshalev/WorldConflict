@@ -188,6 +188,33 @@ export function cardData(r: RevealPayload, history: StoredRun[], daily: string |
   };
 }
 
+/**
+ * Where each moment label on the month axis goes (QA3R-6a: labels overlapped at 1440): above or
+ * below the line, whichever side has room after the last label placed there, or no label (the dot
+ * and the axis's aria-label still name it). Big marks are placed first so they always get a side.
+ * Input: x centre, estimated width and the anchor in use; output per index: 'up' | 'down' | null.
+ */
+export function placeAxisLabels(
+  items: ReadonlyArray<{ x: number; width: number; anchor: 'start' | 'middle' | 'end'; big?: boolean }>,
+  gap = 8,
+): Array<'up' | 'down' | null> {
+  const span = (it: (typeof items)[number]) =>
+    it.anchor === 'start' ? [it.x, it.x + it.width] : it.anchor === 'end' ? [it.x - it.width, it.x] : [it.x - it.width / 2, it.x + it.width / 2];
+  const taken: Record<'up' | 'down', Array<[number, number]>> = { up: [], down: [] };
+  const out: Array<'up' | 'down' | null> = items.map(() => null);
+  const order = items.map((_, i) => i).sort((a, b) => Number(!!items[b].big) - Number(!!items[a].big) || a - b);
+  for (const i of order) {
+    const [a, b] = span(items[i]);
+    const free = (side: 'up' | 'down') => taken[side].every(([c, d]) => b + gap <= c || d + gap <= a);
+    const pref: Array<'up' | 'down'> = i % 2 === 0 ? ['up', 'down'] : ['down', 'up'];
+    const side = pref.find(free);
+    if (!side) continue;
+    taken[side].push([a, b]);
+    out[i] = side;
+  }
+  return out;
+}
+
 /** The closing shot: how this story ends on the evening news. */
 export const END_SCENE: Record<string, SceneKind> = {
   DEPOSED_COUP: 'war_room',
@@ -200,3 +227,20 @@ export const END_SCENE: Record<string, SceneKind> = {
   TERM_COMPLETED: 'election',
   OBJECTIVE_FAILED: 'cabinet',
 };
+
+/**
+ * The closing scene for a session (QA3R-3g): the end of a flashpoint is not an election ("377
+ * seats, majority won" closed a China flashpoint), and a one-party state never closes on a ballot.
+ * Every mount point (the reveal's count stage and the end screen) asks here.
+ */
+export function endScene(
+  reason: string | null | undefined,
+  seat: { flashpointId?: string | null; regime?: string | null },
+  lost: boolean,
+): SceneKind {
+  const scene = END_SCENE[reason ?? ''] ?? (lost ? 'streets' : 'address');
+  if (scene !== 'election') return scene;
+  const ballot = !seat.flashpointId && (seat.regime ?? 'DEMOCRACY') === 'DEMOCRACY';
+  if (ballot) return scene;
+  return reason === 'LOST_ELECTION' ? 'parliament' : lost ? 'cabinet' : 'address';
+}

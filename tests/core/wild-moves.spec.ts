@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { generateDeterministicIntents } from "../../src/agents/fallback.js";
 import { createDataLoader } from "../../src/core/data-loader.js";
+import { ceasefireChance, talksAgainTurn } from "../../src/core/systems/diplomacy.js";
 import { startWar } from "../../src/core/systems/military.js";
 import { TurnEngine } from "../../src/core/turn.js";
 import type { Action, WorldState } from "../../src/core/types.js";
+import { playControl, UKR_CONTROL } from "../fixtures/control.js";
 
 /**
  * F-02-3: wild moves have loud consequences (CLAUDE.md invariants). Leo, playing the Hormuz
@@ -84,5 +86,46 @@ describe("nuclear use", () => {
     startWar(w, "USA", "CHN");
     w = step(w, [{ type: "NUCLEAR_STRIKE", targetCountryId: "CHN" } as Action]);
     expect(w.gameOver?.reason).toBe("NUCLEAR_HOLOCAUST");
+  });
+});
+
+// QA3R-3h: one Propose ceasefire a month ended the Ukraine war in month 3 at a stalemate on all
+// three Ukraine control seeds (the chance was rolled again every month with no memory). A side
+// that refuses does not talk again for REFUSAL_MEMORY months; after the pause the odds are full.
+describe("a ceasefire offer every month does not end a stalemate by repetition (QA3R-3h)", () => {
+  const war = (w: WorldState) =>
+    w.wars.find((x) => [x.attackerId, x.defenderId].sort().join() === "RUS,UKR");
+  it("Ukraine control seeds, an offer to Russia every month: no end before month 6 at a front of 40 to 60", () => {
+    let ended = 0;
+    for (const code of UKR_CONTROL) {
+      const g = playControl(code, "cease");
+      for (const m of g.months) {
+        const before = war(m.before);
+        if (!before || war(m.after)) continue;
+        ended += 1;
+        const front = before.frontline;
+        if (front >= 40 && front <= 60)
+          expect(m.before.turn + 1, `${code}: ended in month ${m.before.turn + 1} at ${front}`).toBeGreaterThanOrEqual(6);
+      }
+    }
+    // Still achievable: persistence ends the war within the year on at least one seed
+    expect(ended).toBeGreaterThanOrEqual(1);
+  });
+
+  it("after a refusal the other side will not talk for two months, then the odds are back", () => {
+    const w = playControl("CO-UKR-PRIY1", "none", 1).months[0].before;
+    const x = structuredClone(war(w)!);
+    const ukr = get(w, "UKR");
+    const rus = get(w, "RUS");
+    const full = ceasefireChance(x, ukr, rus, 5);
+    expect(full).toBeGreaterThan(0);
+    x.refusedTurns = [4];
+    expect(ceasefireChance(x, ukr, rus, 5)).toBe(0);
+    expect(ceasefireChance(x, ukr, rus, 6)).toBe(0);
+    expect(ceasefireChance(x, ukr, rus, 7)).toBeCloseTo(full);
+    expect(talksAgainTurn(x)).toBe(7);
+    // The winner who can dictate terms still takes a peace at once
+    const lost = { ...x, frontline: x.attackerId === "RUS" ? 95 : 5 };
+    expect(ceasefireChance(lost, ukr, rus, 5)).toBeGreaterThan(0);
   });
 });

@@ -59,6 +59,16 @@ const CALL: Record<Tone, string[]> = {
     "That was a better conversation than either of us expected. My ministers will follow up.",
     "Good. Words like these travel fast in {C}. Do not make me regret them.",
     "I will tell my cabinet {Y} is serious. That counts for something here.",
+    "You made your case well. I will put it to my government tomorrow.",
+    "We do not agree on everything, but tonight we agreed on more than I expected.",
+    "My advisers wanted me to say no. I am glad I listened to you first.",
+    "A useful hour. Let our teams draft something we can both sign.",
+    "I will call you back before the week is out. That is a promise.",
+    "This is the tone {C} has been waiting for. Keep it.",
+    "We can work with this. My foreign minister will be in touch tomorrow.",
+    "I trust what I heard today. Do not give me a reason to change my mind.",
+    "{C} remembers who picks up the phone. Today it was {Y}.",
+    "Our people will like this call. I will make sure they hear about it.",
   ],
   cold: [
     "We have noted your position. It changes nothing on our side.",
@@ -73,6 +83,9 @@ const CALL: Record<Tone, string[]> = {
   neutral: [
     "Understood. Our ambassadors will take it from here.",
     "We talked. Neither of us moved. Perhaps that is the most we can do this month.",
+    "A correct conversation. I have nothing to add tonight.",
+    "We heard each other out. The rest is for the diplomats.",
+    "Thank you for the call. My government will study your points.",
   ],
 };
 
@@ -119,12 +132,22 @@ const STAFF: Record<Tone, string[]> = {
   warm: [
     "Your staff move at once. 'Clear orders. That is all we needed.'",
     "The cabinet leaves the room with a plan and a deadline.",
+    "The briefing ends early. Everyone knows what to do.",
+    "Your deputies are on the phones within the hour.",
+    "A rare thing: the whole cabinet agrees, and says so.",
   ],
-  cold: ["Your staff carry it out, but the grumbling reaches the press by evening."],
+  cold: [
+    "Your staff carry it out, but the grumbling reaches the press by evening.",
+    "The order goes out. Two departments ask for it in writing.",
+    "Your ministers comply, slowly. Nobody volunteers to explain it on television.",
+  ],
   angry: ["Two ministers threaten to resign over the decision."],
   neutral: [
     "The cabinet secretary circulates the decision; departments report back next month.",
     "Your ministers take the decision without a fight. Nobody expects it to make news.",
+    "The minutes record the decision in one line. The meeting moves on.",
+    "Departments note the change. The work carries on.",
+    "A quiet decision, taken quickly. It will not lead the evening news.",
   ],
 };
 
@@ -136,6 +159,9 @@ const VOICE: Record<string, { who: (ctx: LineCtx) => string; lines: Record<Tone,
       warm: [
         "'Finally, someone in charge who listens.'",
         "'I did not vote for them, but this was the right call.'",
+        "'My neighbours were talking about it at breakfast. Good news, for once.'",
+        "'About time. This is what we elected them for.'",
+        "'I feel a little safer tonight than I did last week.'",
       ],
       cold: ["'They promised us more than this.'", "'Another decision made for someone else.'"],
       angry: ["'Shame on them. We will remember at the ballot box.'"],
@@ -211,6 +237,10 @@ const ORDER: Record<Tone, string[]> = {
     "Good. This is how partners behave. My ministers will follow up.",
     "We noticed, and we will remember it the next time {Y} needs a friend.",
     "That was the right call. {C} will match it.",
+    "My cabinet welcomed the news this morning. So do I.",
+    "This makes the next conversation easier. We will not waste it.",
+    "Well done. {C} takes note of who keeps their word.",
+    "Our ministers will build on this before the month is out.",
   ],
   cold: [
     "We will not forget this.",
@@ -420,10 +450,13 @@ const LINE_TABLES: string[][] = [
   ...[CALL, VISIT, PRESS, STAFF, ORDER].flatMap((t) => Object.values(t)),
   ...Object.values(VOICE).flatMap((v) => Object.values(v.lines)),
 ];
-// A speaker never repeats a line within a year; nobody repeats another's line within 2 months
-const RECENT_LINES = 80;
+// A speaker never repeats a line within a year; nobody repeats another's line within 2 months;
+// no line is heard more than twice in a session while a fresher variant exists (QA3R-1a: "That
+// was a better conversation" came back 5 to 7 times a game from different leaders)
+const RECENT_LINES = 240;
 const SPEAKER_WINDOW = 12;
 const ANYONE_WINDOW = 2;
+export const SESSION_LINE_MAX = 2;
 
 type Card = {
   reaction?: Reaction;
@@ -447,8 +480,10 @@ export function freshLines(
   d.recentLines ??= [];
   const month = new Set<number>();
   const headlines = new Set<string>();
+  const uses = (h: number) => d.recentLines.filter((r) => r.h === h).length;
   const stale = (h: number, who: string) =>
     month.has(h) ||
+    uses(h) >= SESSION_LINE_MAX ||
     d.recentLines.some(
       (r) => r.h === h && world.turn - r.turn <= (r.who === who ? SPEAKER_WINDOW : ANYONE_WINDOW),
     );
@@ -475,17 +510,18 @@ export function freshLines(
             break;
           }
         }
-        // Every variant was used recently: take the one this speaker heard longest ago, never
-        // a line already on another card this month
+        // Every variant was used recently: take the one heard least this session, then the one
+        // this speaker heard longest ago, never a line already on another card this month
         if (chosen < 0) {
-          const lastUse = (j: number) => {
+          const rank = (j: number) => {
             const h = hashParts(list[j]);
             if (month.has(h)) return Number.POSITIVE_INFINITY;
-            const uses = d.recentLines.filter((x) => x.h === h && x.who === r.who);
-            return uses.length ? Math.max(...uses.map((x) => x.turn)) : -1;
+            const mine = d.recentLines.filter((x) => x.h === h && x.who === r.who);
+            const last = mine.length ? Math.max(...mine.map((x) => x.turn)) : -1;
+            return uses(h) * 10000 + last;
           };
           chosen = i;
-          for (let j = 0; j < list.length; j++) if (lastUse(j) < lastUse(chosen)) chosen = j;
+          for (let j = 0; j < list.length; j++) if (rank(j) < rank(chosen)) chosen = j;
         }
         if (chosen !== i) r.line = fill(list[chosen], ctx);
         const h = hashParts(list[chosen]);

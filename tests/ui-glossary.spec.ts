@@ -65,7 +65,7 @@ function scanTsx(file: string, out: Hit[]) {
   const code = readFileSync(file, "utf8");
   const lines = code.split("\n");
   const src = ts.createSourceFile(file, code, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
-  const rel = relative(ROOT, file);
+  const rel = relative(ROOT, file).replaceAll("\\", "/");
   const okLine = (node: ts.Node) => {
     const { line } = src.getLineAndCharacterOfPosition(node.getStart(src));
     return /\/\/\s*glossary-ok\s*$/.test(lines[line] ?? "");
@@ -196,5 +196,21 @@ describe("UI glossary", () => {
       console.info(`glossary: pending entries now fixed, remove them:\n${stale.join("\n")}`);
     const open = hits.filter((h) => !PENDING.has(key(h)) && !ALLOWED.has(key(h)));
     expect(open.map((h) => `${h.where} [${h.term} ${h.pattern}] ${h.text}`)).toEqual([]);
+  });
+});
+
+// QA3R-5e (F-02-5, RS-005, D-72): one proposal verb on every mount point. The order card (tile on
+// the desk and map, row in the phone sheet and dossier) accepts a recommended order with the same
+// words as the Recommended group (StaffPicks).
+describe("one verb for a recommended order on every surface (QA3R-5e)", () => {
+  it("OrderCard tile and row use the StaffPicks order verb", () => {
+    const picks = readFileSync("ui/src/components/desk/StaffPicks.tsx", "utf8");
+    const verb = /order:\s*'([^']+)'/.exec(picks)?.[1];
+    expect(verb).toMatch(/^Accept\b/);
+    const card = readFileSync("ui/src/components/orders/OrderCard.tsx", "utf8");
+    const tile = card.slice(card.indexOf("const proposalLine"), card.indexOf("const addLine"));
+    expect(tile).toContain(`> ${verb}{`);
+    expect(card).toMatch(new RegExp(`add: isProposal \\? '${verb}'`));
+    expect(card).not.toMatch(/\bApprove\b/);
   });
 });

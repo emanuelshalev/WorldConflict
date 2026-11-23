@@ -351,6 +351,9 @@ export const ActiveWarSchema = z.object({
   exhaustion: z.number().min(0).max(100).default(0), // pressure toward ceasefire
   // Joined to help this country (pact or appeal): the war ends when that country's own war does
   alliedWith: z.string().optional(),
+  // Months in which a ceasefire proposal was refused: a side that just said no hardens, so the
+  // same offer every month does not end a stalemate by repetition (QA3R-3h)
+  refusedTurns: z.array(z.number()).optional(),
 });
 export type ActiveWar = z.infer<typeof ActiveWarSchema>;
 
@@ -834,6 +837,9 @@ export const PlayerTurnReportSchema = z.object({
   relations: z
     .array(z.object({ id: z.string(), before: z.number(), after: z.number() }))
     .default([]),
+  // Your own view of the countries you dealt with this month, month start to month end: the
+  // number RELATION_MIN missions measure (QA3R-2a: a card said -75 to -68, the month ended at -89)
+  yourView: z.array(z.object({ id: z.string(), before: z.number(), after: z.number() })).optional(),
   world: z
     .array(
       z.object({
@@ -977,6 +983,9 @@ export const ChronicleMomentSchema = z.object({
   choice: z.string().optional(),
   staffPick: z.boolean().optional(), // crises: did the player follow the staff pick?
   with: z.string().optional(),
+  // Crises and orders: their own headline number ("Approval 50% to 53%"), so the reveal never
+  // pins the month's largest move on them (QA3R-2d)
+  fact: z.string().optional(),
 });
 export type ChronicleMoment = z.infer<typeof ChronicleMomentSchema>;
 
