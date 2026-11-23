@@ -25,7 +25,7 @@ findings:
     title: Political capital is named one way everywhere and the warning points at its meter
     source: RS-001 (CEO, "political credit" vs the small bar); D-45; QA0-5
     covers: [ui/src/components/Hud.tsx, ui/src/components/desk/CommandRail.tsx, ui/src/lib/pointAt.ts, ui/src/lib/glossary.ts, ui/src/components/orders/OrderCard.tsx, ui/src/components/game/CapitalSeal.tsx]
-    changed: "2026-11-23 verify gate fixes: RS-001-2.mjs approves the staff picks before looking for an unaffordable order; staff picks spend nothing until approved (F-02-4, D-58), so month 1 no longer opens with seals spent. Same need tested, plus the meters must agree after the spend"
+    changed: "2026-11-23 verify gate fixes: RS-001-2.mjs approves the staff picks before looking for an unaffordable order; staff picks spend nothing until approved (F-02-4, D-58), so month 1 no longer opens with seals spent. Same need tested, plus the meters must agree after the spend. 2026-11-23 D-84: with one seal left after the staff picks, the script chooses a target country when no unaffordable order is listed (orders that cost more all need one)"
     guards:
       - vitest: tests/ui-glossary.spec.ts
         name: finds no banned synonym
