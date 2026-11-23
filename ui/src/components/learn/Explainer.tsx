@@ -375,7 +375,7 @@ export function Explainer(): JSX.Element | null {
           <IconX size={16} aria-hidden />
         </button>
       )}
-      <div className="lx-scroll">{body}</div>
+      <div className="lx-scroll" data-scroll="reading">{body}</div>
     </div>
   );
   return createPortal(

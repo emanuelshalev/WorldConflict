@@ -463,3 +463,7 @@
 .lx-mark.lx-leader { text-decoration: none; font-weight: 700; }
 .lx-mark.lx-leader:hover { text-decoration: underline solid var(--learn-mark); }
 .lx-info-i.small { width: 15px; height: 15px; font-size: 10.5px; vertical-align: 1px; }
+
+/* Reading regions (design-layout section 7): the only scroll boxes allowed, each signalled with a
+   visible scrollbar and a fade at the bottom edge */
+[data-scroll='reading'] { scrollbar-gutter: stable; scrollbar-width: thin; -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 32px), rgba(0, 0, 0, .35)); mask-image: linear-gradient(to bottom, #000 calc(100% - 32px), rgba(0, 0, 0, .35)); }

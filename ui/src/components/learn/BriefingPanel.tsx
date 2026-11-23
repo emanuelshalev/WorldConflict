@@ -95,7 +95,7 @@ export default function Briefing({ situation }: { situation: Situation }) {
             <IconX size={18} aria-hidden />
           </button>
         </header>
-        <div className="lx-brief-body">
+        <div className="lx-brief-body" data-scroll="reading">
           <p className="lx-one">{situation.oneLine}</p>
           {situation.map && <CodexMap data={situation.map} label={situation.title} />}
           <section className="lx-sec">

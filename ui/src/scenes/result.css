@@ -126,7 +126,7 @@
 @media (min-width: 1280px) {
   .result-overlay { place-items: stretch; padding: var(--gap, 1rem); }
   .result-card { width: 100%; height: 100%; max-height: none; grid-template-columns: minmax(0, 55fr) minmax(0, 45fr); }
-  .rc-body { max-width: 38rem; width: 100%; justify-self: start; padding: 1.75rem 2rem 1.25rem; justify-content: center; overflow: hidden; }
+  .rc-body { max-width: 38rem; width: 100%; justify-self: start; padding: 1.75rem 2rem 1.25rem; justify-content: safe center; overflow: hidden; }
   .rc-sentence { font-size: clamp(2rem, 2.4vw, 3rem); }
   .rc-foot { margin-top: auto; position: static; }
   .paper-overlay { padding: var(--gap, 1rem); }
@@ -147,3 +147,11 @@
   .rc-more { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem 2rem; align-items: start; }
 }
 @media (min-width: 1280px) { .rc-body { font-size: 1rem; } .rc-quote p { font-size: 1.0625rem; } .rc-mission, .rc-delta-top { font-size: 1rem; } }
+/* The stage on short laptops (1366x768, 1440x900): no scroll box, so the body drops the quote and
+   tightens (the quote is also in the details and the paper); the buttons stay in view */
+@media (min-width: 1280px) and (max-height: 900px) {
+  .rc-body { gap: 8px; padding: 1rem 1.5rem .75rem; justify-content: flex-start; }
+  .rc-quote, .rc-meanwhile { display: none; }
+  .rc-sentence { font-size: clamp(1.6rem, 2vw, 2.1rem); }
+  .rc-foot { padding-top: 8px; }
+}

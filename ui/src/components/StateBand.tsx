@@ -122,7 +122,7 @@ function Menu({ phone = false }: { phone?: boolean }) {
   );
 }
 
-function ModeSwitch() {
+export function ModeSwitch() {
   const deskMode = useGameStore((s) => s.deskMode);
   const setDeskMode = useGameStore((s) => s.setDeskMode);
   return (

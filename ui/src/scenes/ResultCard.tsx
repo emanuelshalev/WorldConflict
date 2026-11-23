@@ -12,6 +12,7 @@ import { SceneFrame } from './SceneFrame';
 import { Stamp } from '../components/game/Stamp';
 import { CoachResultLine } from '../components/desk/Coach';
 import { Segments } from '../components/desk/Segments';
+import { useLayout } from '../lib/layout';
 import { metricWord, stepObjective } from '../lib/goals';
 import { scoreLine, useScoreWhy } from '../lib/scoreWhy';
 import { useModalFocus } from '../lib/useModalFocus';
@@ -130,7 +131,10 @@ export function ResultCard({ report, world, home, onNext, onEverything, onPaper,
   })() : null;
   // Tall, wide screens have the room: the numbers, the score and the rest of the month open at once
   // (design-layout L-12, WP-L2); smaller ones keep them one press away
-  const [moreOpen, setMoreOpen] = useState(() => typeof window !== 'undefined' && window.innerWidth >= 1600 && window.innerHeight >= 900);
+  const L = useLayout();
+  const [moreChoice, setMoreChoice] = useState<boolean | null>(null);
+  const moreOpen = moreChoice ?? (L.width >= 1600 && L.tall);
+  const setMoreOpen = (f: (v: boolean) => boolean) => setMoreChoice(f(moreOpen));
   const u = (c: ConditionStatus) => (c.unit === '%' ? '%' : '');
   return (
     <div ref={ref} className="result-overlay" role="dialog" aria-modal="true" aria-label={`${monthLabel(world.date)}: your month`}>

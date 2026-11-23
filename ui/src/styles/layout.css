@@ -420,6 +420,9 @@ html { font-size: clamp(16px, calc(0.42vmin + 11.5px), 22px); }
   .ph-thingline { position: relative; gap: 8px; padding: 6px 10px 8px; }
   .ph-thingline .mb-where b { font-size: 17px; }
   .ph-thingline .wc-btn { min-height: 44px; }
+  .ph-thingline { flex-wrap: wrap; }
+  .ph-thingline .mb-where { flex: 1 1 8rem; }
+  .ph-thingline .mode-seg button { min-height: 44px; min-width: 44px; justify-content: center; }
 }
 /* The layer switcher stays in the map's free gap: right of the card (it wraps), left of the floating Plan */
 .game:not([data-cls='P']).mode-map .map-stage .layer-bar { left: calc(clamp(24rem, 28vw, 40rem) + 2 * var(--gap)) !important; flex-wrap: wrap; justify-content: flex-end; }

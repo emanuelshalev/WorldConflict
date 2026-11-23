@@ -8,6 +8,7 @@ import { AgendaList } from './AgendaList';
 import { Detail } from './Detail';
 import { ExecuteButton, Recommended } from './Plan';
 import { executeNow } from '../../lib/agenda';
+import { ModeSwitch } from '../StateBand';
 import { useStaffPicks } from '../../lib/useStaffPicks';
 import { TERMS } from '../../lib/glossary';
 
@@ -47,6 +48,8 @@ export function PhoneThingLine() {
       <button type="button" className="wc-btn small see-all" aria-expanded={listOpen} onClick={() => useGameStore.setState({ listOpen: !listOpen })}>
         <IconListDetails size={16} aria-hidden /> See all {items.length}
       </button>
+      {/* design-layout section 5: on phones the Desk / Map switch lives in the thing line */}
+      <ModeSwitch />
     </nav>
   );
 }
