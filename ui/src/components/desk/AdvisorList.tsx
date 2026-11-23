@@ -207,17 +207,21 @@ export function BigMove({ rows }: { rows: Row[] }) {
 export function AdvisorList({ compact = false, max = 3 }: { compact?: boolean; max?: number }) {
   const rows = useAdvisorRows();
   const [all, setAll] = useState(false);
-  // The orders the engine puts in the mission move (they push a primary goal) are never folded
-  // behind "Show n more" (design-review-your-call.md RC-2: Court Taiwan on Quarantine China)
+  // The mission move's own order (the engine's mission card, it pushes a primary goal) is never
+  // folded behind "Show n more" (design-review-your-call.md RC-2: Court Taiwan on Quarantine China)
   const missionKeys = useGameStore((s) =>
     (s.advice?.calls ?? [])
       .filter((c) => c.kind === 'move')
-      .flatMap((c) => c.cards.flatMap((card) => (card.action ? [orderKey(card.action)] : [])))
+      .flatMap((c) => c.cards.filter((card) => card.id === c.missionCard).flatMap((card) => (card.action ? [orderKey(card.action)] : [])))
       .join('|'),
   );
   if (!rows.length) return null;
   const pinned = new Set(missionKeys ? missionKeys.split('|') : []);
-  const shown = all ? rows : rows.filter((r, i) => i < max || pinned.has(r.key));
+  // Folded, the list still shows `max` rows: the mission-move order first in the count, the rest
+  // in their order, all in the original order on screen
+  const room = Math.max(0, max - rows.filter((r) => pinned.has(r.key)).length);
+  const kept = new Set(rows.filter((r) => !pinned.has(r.key)).slice(0, room).map((r) => r.key));
+  const shown = all ? rows : rows.filter((r) => pinned.has(r.key) || kept.has(r.key));
   return (
     <section className={`advisors${compact ? ' compact' : ''}`} aria-label={TERMS.orderIdeas.name} data-point="advisors">
       {!compact && (
