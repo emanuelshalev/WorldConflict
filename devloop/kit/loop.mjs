@@ -367,13 +367,18 @@ export function legalNext(cfg, stage) {
 }
 
 // ---------------------------------------------------------------- progress (devloop/kit/progress.mjs)
-function progress(ctx, args, { inject = true } = {}) {
+export function progress(ctx, args, { inject = true } = {}) {
   if (!ctx.paths.progress) return [];
   const script = path.join(KIT, 'progress.mjs');
   const notes = [];
   const run = (a) => {
     const r = spawnSync(process.execPath, [script, ctx.paths.progress, ...a], { cwd: ctx.stateRoot, encoding: 'utf8' });
-    if (r.status !== 0) notes.push(`progress ${a.join(' ')} failed: ${(r.stderr || r.stdout).trim().split('\n').at(-1)}`);
+    if (r.status !== 0) {
+      const err = (r.stderr || r.stdout || r.error?.message || '').trim();
+      const lines = err.split('\n').filter((l) => !/^\s*at |^Node\.js v|^\s*$|^\s*\^+\s*$/.test(l));
+      const why = lines.find((l) => /Error/.test(l)) ?? lines.at(-1) ?? 'no output';
+      notes.push(`progress ${a.join(' ')} failed: ${why}${err && lines.length > 1 ? `\n${err}` : ''}`);
+    }
     return r.status === 0;
   };
   if (args) run([...args, '--no-usage', '--no-record']);
@@ -435,7 +440,7 @@ export function advance(ctx, to) {
     skipped: skipped.length ? skipped : undefined,
     overrides: [viaOverride?.t, ...check.results.filter((r) => r.overridden).map((r) => r.overridden)].filter(Boolean),
   });
-  if (newIteration) progress(ctx, ['--end', from, '--iteration', String(iteration - 1), '--at', now], { inject: false });
+  if (newIteration) progress(ctx, ['--end-all', '--iteration', String(iteration - 1), '--note', `closed when iteration ${iteration} started`, '--at', now], { inject: false });
   for (const s of skipped) progress(ctx, ['--skip', s, '--iteration', String(iteration), '--at', now], { inject: false });
   progress(ctx, ['--start', dest, '--iteration', String(iteration), '--at', now]);
   return { state, event: ev, check };

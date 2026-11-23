@@ -10,7 +10,9 @@
 //   --end [Stage]                                end the open stage (default: the current one)
 //   --skip <Stage>                               the stage is not run in this iteration
 //   --total N [--stage S]                        declare N units of work for the current (or named) stage
-//   --done N [--stage S] --note "..."             N more units are finished
+//   --done N [--stage S] --note "..."             N MORE units are finished (adds N; calling it twice counts twice)
+//   --done-set N [--stage S]                      the finished count is exactly N (correction, never double counts)
+//   --end-all [--iteration N]                     end every open stage of iteration N and earlier (all when no N)
 //   --pause / --resume                            the whole loop is idle (machine off, usage limit, waiting)
 //   --event '<json>'                              append a raw event
 //   common: --at <ISO time> (backdate), --note "...", --iteration N
@@ -319,7 +321,7 @@ const openRuns = () => [...pre.runs.values()].filter((r) => r.start != null && r
 const maxIter = Math.max(-1, ...[...pre.runs.values()].map((r) => r.iteration));
 const focus = () => {
   const o = openRuns();
-  if (o.length) return Math.min(...o.map((r) => r.iteration));
+  if (o.length) return Math.max(...o.map((r) => r.iteration)); // the newest iteration with an open stage
   return maxIter;
 };
 const toAppend = [];
@@ -337,6 +339,8 @@ if (has('--start')) {
   const stage = stageArg(opt('--start'));
   const iteration = iterArg != null ? Number(iterArg) : stage === STAGES[0] ? maxIter + 1 : focus();
   for (const r of openRuns().filter((x) => x.iteration === iteration)) toAppend.push({ t: eventT, iteration, stage: r.stage, kind: 'end' });
+  // the first stage of a new iteration closes whatever earlier iterations left open
+  if (stage === STAGES[0]) for (const r of openRuns().filter((x) => x.iteration < iteration)) toAppend.push({ t: eventT, iteration: r.iteration, stage: r.stage, kind: 'end', note: `closed when iteration ${iteration} started` });
   const e = { t: eventT, iteration, stage, kind: 'start' };
   if (opt('--size')) e.size = Number(opt('--size'));
   toAppend.push(withNote(e));
@@ -347,15 +351,24 @@ if (has('--start')) {
   const stage = v && !v.startsWith('--') ? stageArg(v) : currentOf(iteration)?.stage;
   if (!stage) throw new Error('no open stage to end');
   toAppend.push(withNote({ t: eventT, iteration, stage, kind: 'end' }));
+} else if (has('--end-all')) {
+  const upto = iterArg != null ? Number(iterArg) : Infinity;
+  for (const r of openRuns().filter((x) => x.iteration <= upto)) toAppend.push(withNote({ t: eventT, iteration: r.iteration, stage: r.stage, kind: 'end' }));
 } else if (has('--skip')) {
   const iteration = iterArg != null ? Number(iterArg) : focus();
   toAppend.push(withNote({ t: eventT, iteration, stage: stageArg(opt('--skip')), kind: 'skip' }));
-} else if (has('--total') || has('--done')) {
+} else if (has('--total') || has('--done') || has('--done-set')) {
   const iteration = iterArg != null ? Number(iterArg) : focus();
   const stage = opt('--stage') ? stageArg(opt('--stage')) : currentOf(iteration)?.stage;
   if (!stage) throw new Error('no open stage; pass --stage');
   if (has('--total')) toAppend.push(withNote({ t: eventT, iteration, stage, kind: 'unit-total', units: Number(opt('--total')) }));
   if (has('--done')) toAppend.push(withNote({ t: eventT, iteration, stage, kind: 'unit-done', units: Number(opt('--done') ?? 1) }));
+  if (has('--done-set')) {
+    const cur = pre.runs.get(`${iteration}|${stage}`)?.done ?? 0;
+    const want = Number(opt('--done-set'));
+    if (!Number.isFinite(want) || want < 0) throw new Error('--done-set needs a number >= 0');
+    if (want !== cur) toAppend.push(withNote({ t: eventT, iteration, stage, kind: 'unit-done', units: want - cur }));
+  }
 } else if (has('--pause')) toAppend.push(withNote({ t: eventT, kind: 'pause' }));
 else if (has('--resume')) toAppend.push(withNote({ t: eventT, kind: 'resume' }));
 else if (has('--event')) toAppend.push({ t: eventT, ...JSON.parse(opt('--event')) });
@@ -371,7 +384,7 @@ const all = readJsonl(logPath);
 const st = build(all, nowT);
 const usage = attachTokens(st.runs, nowT);
 const iterOpen = [...st.runs.values()].filter((r) => r.start != null && r.end == null && !r.skip);
-const focusIter = iterOpen.length ? Math.min(...iterOpen.map((r) => r.iteration)) : Math.max(...[...st.runs.values()].map((r) => r.iteration));
+const focusIter = iterOpen.length ? Math.max(...iterOpen.map((r) => r.iteration)) : Math.max(...[...st.runs.values()].map((r) => r.iteration));
 const est = estimate(st.runs, nowT, focusIter);
 const totals = iterationTotals(st.runs);
 const pastTotals = [...totals.entries()].filter(([i]) => i < focusIter && i > 0).map(([, v]) => v); // iteration 0 is a baseline, not a full iteration

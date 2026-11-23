@@ -52,6 +52,7 @@ export function publish({ cwd = process.cwd(), config, commit, iteration, push =
     st.publishes.push(entry);
     loop.writeState(ctx, st);
     loop.appendEvent(ctx, { kind: 'publish', ...entry });
+    loop.progress(ctx, ['--end-all', '--iteration', String(n), '--note', `closed when ${tag} was published`], { inject: false });
   }
   const owes = !dryRun ? (cfg.owes?.publish ?? null) : null;
   if (owes) loop.owe(ctx, owes, `publish of ${tag}`);
