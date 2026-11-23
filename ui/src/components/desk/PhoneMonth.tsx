@@ -40,7 +40,7 @@ export function PhoneThingLine() {
         <IconChevronLeft size={16} aria-hidden /> Back
       </button>
       <p className="mb-where">
-        <b>{review ? 'Review your month' : cur ? `${at} of ${items.length} · ${cur.title}` : 'A quiet month'}</b>
+        <b>{review ? 'Review your month' : cur ? `${at} of ${items.length} · ${cur.title}${cur.call ? ' · Your call' : ''}` : 'A quiet month'}</b>
         <span>
           {done} of {total} done
         </span>

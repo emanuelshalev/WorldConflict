@@ -247,6 +247,25 @@ export interface Advice {
   staffOrders: Array<AdviceSuggestion & { successChance: number | null }>;
   /** decisionId → what the desk may say about the mission pick (src/core/advisors.ts MissionNote). */
   missionNotes?: Record<string, MissionNote>;
+  /**
+   * "Your call" (D-84, decision-accept-all.md R1): the month's things Accept all never decides.
+   * Built by the engine on branch build-your-call; until it lands the UI derives the same set
+   * (lib/agenda.ts callsFor). Field names are the UI's assumption, adapted at merge.
+   */
+  calls?: AdviceCall[];
+}
+
+/** One of the month's calls (D-84 R1, R4, R5, R6): two named sides, the Guide me sentence. */
+export interface AdviceCall {
+  /** 'crisis' (a decision id), 'meeting' (a meeting id) or 'move' (the mission move). */
+  kind: 'crisis' | 'meeting' | 'move';
+  id: string;
+  /** The sides two advisers recommend by name; `optionId` for a crisis or meeting, `label` for a move's order. */
+  sides: Array<{ optionId?: string; label?: string; who: string; reason: string; aim: 'mission' | 'calm' }>;
+  /** The Chief of Staff's sentence at Guide me: "For your mission: X. To keep things calm: Y." */
+  guide?: string;
+  /** Political capital the mission side costs on top of its written cost (R6). */
+  pushPc?: number;
 }
 
 export interface MissionNote {
@@ -695,6 +714,9 @@ export interface GameState extends CodexSlice {
   setFocus: (focus: DeskFocus) => void;
   /** Settings: the staff pre-queue up to 3 orders each month. */
   staffOrders: boolean;
+  /** Settings (D-84, off by default): "Let the Chief of Staff make my calls": Choose all decides calls too. */
+  chiefCalls: boolean;
+  setChiefCalls: (on: boolean) => void;
   setStaffOrders: (on: boolean) => void;
   advisorDraft: string | null; // a question pre-filled when you consult from a crisis or meeting
   consult: (role: string, question: string) => void;
@@ -976,6 +998,11 @@ export const useGameStore = create<GameState>((set) => ({
   setStaffOrders: (on) => {
     writeFlag('worldconflict.staffOrders', on);
     set({ staffOrders: on });
+  },
+  chiefCalls: readFlag('worldconflict.chiefCalls', false),
+  setChiefCalls: (on) => {
+    writeFlag('worldconflict.chiefCalls', on);
+    set({ chiefCalls: on });
   },
   advisorDraft: null,
   consult: (role, question) => set({ activeAdvisorRole: role, advisorDraft: question, activeModal: 'advisor', drawer: null }),

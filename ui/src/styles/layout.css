@@ -463,3 +463,17 @@ html { font-size: clamp(16px, calc(0.42vmin + 11.5px), 22px); }
 .mapcard .adv-list { grid-template-columns: minmax(0, 1fr) !important; }
 .mapcard .adv-row.adv-card { grid-template-columns: minmax(0, 1fr); padding: 10px; }
 .mapcard .adv-row.adv-card > .adv-avatar, .mapcard .big-move { display: none; }
+/* "Your call" (D-84): the Chief of Staff's Guide me sentence above the cards; plain text, not a control */
+.call-guide { margin: 0; padding: .55rem .9rem; border-left: 3px solid var(--intel); background: var(--surface-1); border-radius: 0 .5rem .5rem 0; font-size: 1rem; max-width: var(--read); }
+.lrow.is-call .lrow-st b { color: var(--intel); font-weight: 700; }
+.sp-calls { color: var(--intel); font-weight: 650; }
+.sb-calls.open .sb-v { color: var(--intel); }
+/* The review page never scrolls either (design-layout section 4): with the item's fit it compacts the
+   rows, then folds "Left to your advisers" to one line, then the Recommended rows (Choose all and
+   its line stay); the open calls keep their consequence line */
+.rv-sum { display: none; margin: 0; font-size: .9375rem; color: var(--text-2); }
+[data-fit] .review-page .prow-t small { display: none; }
+[data-fit] .review-page .rv-calls .prow-t small { display: block; }
+[data-fit='2'] .review-page .rv-left .prows, [data-fit='3'] .review-page .rv-left .prows { display: none; }
+[data-fit='2'] .review-page .rv-left .rv-sum, [data-fit='3'] .review-page .rv-left .rv-sum { display: block; }
+[data-fit='3'] .review-page .rv-exec .sp-list, [data-fit='3'] .review-page .rv-exec .sp-heading { display: none; }

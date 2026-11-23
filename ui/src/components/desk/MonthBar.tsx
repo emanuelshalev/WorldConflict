@@ -2,6 +2,7 @@ import { IconChevronDown, IconChevronLeft, IconChevronRight, IconChevronUp } fro
 import { useGameStore } from '../../store/gameStore';
 import { agendaItems, agendaProgress, currentItem, neighbours, openItem } from '../../lib/agenda';
 import { useLayout } from '../../lib/layout';
+import { TERMS } from '../../lib/glossary';
 import { PhoneThingLine } from './PhoneMonth';
 
 /**
@@ -40,7 +41,7 @@ export function MonthBar() {
   const listShown = deskMode === 'map' ? L.mapList : L.listColumn || (L.planRail && deskView === 'full' && !first);
   const showSwitch = !first && L.planRail && deskMode === 'desk';
   const goReview = () => useGameStore.setState({ review: true, deskMode: 'desk', listOpen: false, focus: { kind: 'mission' } });
-  const title = review ? 'Check what will happen' : detail ? (focus.kind === 'catalog' ? 'All orders' : focus.kind === 'order' ? 'An order of this month' : 'Orders to consider') : cur ? `${at} of ${items.length}: ${cur.title}` : 'A quiet month';
+  const title = review ? 'Check what will happen' : detail ? (focus.kind === 'catalog' ? 'All orders' : focus.kind === 'order' ? 'An order of this month' : 'Orders to consider') : cur ? `${at} of ${items.length}: ${cur.title}${cur.call ? ` · ${TERMS.yourCall.name}` : ''}` : 'A quiet month';
   const sub =
     first && L.short && !review
       ? `${done} of ${total} done. Choose or skip each, then check and execute.`

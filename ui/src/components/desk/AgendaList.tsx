@@ -2,6 +2,7 @@ import { IconX } from '@tabler/icons-react';
 import { useGameStore } from '../../store/gameStore';
 import { type AgendaItem, agendaItems, agendaProgress, currentItem, openItem, simpleAgenda } from '../../lib/agenda';
 import { STATE_WORD, stateOf } from '../../lib/goals';
+import { TERMS } from '../../lib/glossary';
 import { useLayout } from '../../lib/layout';
 
 /**
@@ -79,10 +80,13 @@ export function AgendaList({ form }: { form: ListForm }) {
           const here = cur?.key === it.key;
           return (
             <li key={it.key}>
-              <button type="button" className={`lrow s-${it.state}${here ? ' now' : ''}`} aria-current={here ? 'step' : undefined} onClick={() => openItem(it.key)} data-agenda-item={it.kind}>
+              <button type="button" className={`lrow s-${it.state}${here ? ' now' : ''}${it.call ? ' is-call' : ''}`} aria-current={here ? 'step' : undefined} onClick={() => openItem(it.key)} data-agenda-item={it.kind} data-call={it.call ? '' : undefined}>
                 <span className="lrow-t">
                   <b>{it.title}</b>
-                  <span className="lrow-st">{rowState(it, here, full)}</span>
+                  <span className="lrow-st">
+                    {it.call && <b>{TERMS.yourCall.name} · </b>}
+                    {rowState(it, here, full)}
+                  </span>
                 </span>
                 <span className="face">Open</span>
               </button>

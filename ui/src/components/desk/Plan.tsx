@@ -5,7 +5,7 @@ import { useGameStore } from '../../store/gameStore';
 import { pcCost } from '../../lib/actions';
 import { type StaffPickItem, approveLabel, planSummary } from '../../lib/month';
 import { useStaffPicks } from '../../lib/useStaffPicks';
-import { type AgendaItem, agendaItems, chooseAllRecommended, executeNow, openItem, undoSkip } from '../../lib/agenda';
+import { type AgendaItem, agendaItems, chooseAllRecommended, executeNow, openCalls, openItem, undoSkip } from '../../lib/agenda';
 import { type PlanSection, useFitPlan } from '../../lib/layout';
 import { TERMS } from '../../lib/glossary';
 import { CoachBubble } from './Coach';
@@ -140,6 +140,9 @@ function Head({ id, label, n, folded, summary, onShow, heading = false }: { id: 
 export function Recommended({ compact = false, folded = false, onShow = () => {}, onOpen, button = true }: { compact?: boolean; folded?: boolean; onShow?: (s: PlanSection | null) => void; onOpen?: () => void; /** False when the open list shows beside the rail with its own button. */ button?: boolean }) {
   const { items, n, breakdown, against } = useStaffPicks();
   const agenda = agendaItems();
+  const chief = useGameStore((s) => s.chiefCalls);
+  const calls = chief ? 0 : openCalls(agenda).length;
+  const callLine = calls ? ` ${calls === 1 ? 'Your call stays open' : `${calls} of your calls stay open`}.` : '';
   const pc = items.filter((x) => x.fits).reduce((s, x) => s + x.cost, 0);
   const summary = `${items.map((x) => short(x.title)).join(', ')}${pc ? ` (◆ ${pc})` : ''}`;
   const choose = () => {
@@ -188,6 +191,7 @@ export function Recommended({ compact = false, folded = false, onShow = () => {}
       {button && (
         <p className="sp-why" id="plan-choose-def">
           {TERMS.approveAll.definition}
+          {callLine && <b className="sp-calls">{callLine}</b>}
         </p>
       )}
     </section>

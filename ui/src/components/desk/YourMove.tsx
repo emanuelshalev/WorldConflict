@@ -3,7 +3,8 @@ import { IconMessageCircle, IconSearch } from '@tabler/icons-react';
 import { type DecisionOption, type Meeting, MEETING_SLOTS, type PendingDecision, approveProposal, countryName, useGameStore, usePlayerCountry } from '../../store/gameStore';
 import { ADVISOR_NAMES, flag, monthLabel } from '../../lib/format';
 import { cabinetPick, effectWords, goalName, guideLede, meetingAdviser, meetingPick, missionPick, missionTag, proposalEffects, splitLede } from '../../lib/month';
-import { type AgendaItem, agendaItems, chooseAnswer, chooseSmall, costPhrase, currentItem, meetingTitle, ministerFor, skipItem, skipMeaning, undoSkip } from '../../lib/agenda';
+import { type AgendaItem, agendaItems, callSides, chooseAnswer, chooseSmall, costPhrase, currentItem, meetingTitle, ministerFor, skipItem, skipMeaning, undoSkip } from '../../lib/agenda';
+import { TERMS } from '../../lib/glossary';
 import { SceneFrame } from '../../scenes/SceneFrame';
 import { type SceneKind, avoidRepeat, crisisMood, sceneForCrisis } from '../../scenes/kinds';
 import { ContextMap } from '../../scenes/ContextMap';
@@ -228,6 +229,8 @@ function DecisionThing({ item, compact }: { item: AgendaItem; compact: boolean }
   const other = meeting?.withCountry ?? d.affectedCountries.find((id) => id !== home);
   const options = meeting ? d.options.filter((o) => o.id !== meeting.defaultOptionId) : d.options;
   const rec = meeting ? meetingPick(meeting) : cabinetPick(d);
+  // "Your call" (D-84): two advisers recommend different answers by name; no single star
+  const call = item.call ? callSides(item) : null;
   const note = meeting ? undefined : advice?.missionNotes?.[d.id];
   const best = meeting ? undefined : advice?.missionNotes ? (note ? d.options.find((o) => o.id === note.optionId) : undefined) : missionPick(d);
   const decided = !!reviewed[d.id] || (!!meeting && !!choices[d.id] && choices[d.id] !== meeting.defaultOptionId && item.state === 'decided');
@@ -243,12 +246,13 @@ function DecisionThing({ item, compact }: { item: AgendaItem; compact: boolean }
   const urgency = d.urgency === 'EXISTENTIAL' ? 'Existential crisis' : d.urgency === 'URGENT' ? 'Urgent crisis' : 'Crisis';
   const kicker = (
     <>
+      {call ? `${TERMS.yourCall.name} · ` : ''}
       {meeting ? KIND_KICKER[meeting.kind] : urgency}
       {other ? ` · ${flag(other)} ${countryName(other)}` : ''}
     </>
   );
   const recTag = rec ? missionTag(missionImpact[d.id]?.[rec.id], status) : null;
-  const disagree = !meeting && rec && best && best.id !== rec.id && !decided && (advice?.missionNotes ? note?.switchFrom?.cabinetId === rec.id : recTag?.tone === 'risk');
+  const disagree = !call && !meeting && rec && best && best.id !== rec.id && !decided && (advice?.missionNotes ? note?.switchFrom?.cabinetId === rec.id : recTag?.tone === 'risk');
   const consult = () => useGameStore.getState().consult(lead, `${d.title}: what do you advise, and what are the risks of each option?`);
   const noun = meeting ? (meeting.kind === 'CALL' ? 'say' : 'do') : 'do';
   return (
@@ -264,7 +268,7 @@ function DecisionThing({ item, compact }: { item: AgendaItem; compact: boolean }
         <div className="ask-row">
           {!compact && <CoachBubble step="move" place="below" />}
           <h2 className="ask">
-            What do you {noun}? Choose one of {options.length} answers, or skip (last card).
+            {call ? `${TERMS.yourCall.name}: your advisers disagree. ` : ''}What do you {noun}? Choose one of {options.length} answers, or skip (last card).
           </h2>
           {!compact && optionSizes(options[0] ?? { effects: {} }, countryName).length > 0 && (
             <button type="button" className="wc-btn small ask-sizes" aria-pressed={sizes} onClick={() => setSizes((v) => !v)} data-effect-sizes="">
@@ -272,13 +276,19 @@ function DecisionThing({ item, compact }: { item: AgendaItem; compact: boolean }
             </button>
           )}
         </div>
+        {call && guide && call.guide && (
+          <p className="call-guide" data-call-guide="">
+            <b>Chief of Staff:</b> {call.guide}
+          </p>
+        )}
         <div className="opts">
           {options.map((o) => {
             const mt = missionTag(missionImpact[d.id]?.[o.id], status);
+            const side = call?.sides.find((x) => x.optionId === o.id);
             const words = effectWords(o).slice(0, 2).map((w) => w.text);
             const pc = o.effects.pc ?? 0;
             const reason = guide ? guideLede(splitLede(o.description)[0], 12).short : splitLede(o.description)[0];
-            const isRec = rec?.id === o.id;
+            const isRec = !call && rec?.id === o.id;
             const bestLine = best?.id === o.id && note ? ` ${note.text}.` : '';
             // The map card is shorter (D5): the goal it moves, else its strongest effect
             const fx = compact ? (
@@ -293,8 +303,9 @@ function DecisionThing({ item, compact }: { item: AgendaItem; compact: boolean }
                 </span>
               </>
             );
+            const push = side?.aim === 'mission' ? (call?.pushPc ?? 0) : 0;
             const more = [
-              pc < 0 ? `Costs ◆ ${-pc}.` : pc > 0 ? `Gives ◆ ${pc}.` : 'Free.',
+              pc < 0 || push ? `Costs ◆ ${Math.max(0, -pc) + push}${push ? ' (the mission side costs ◆ 1 more)' : ''}.` : pc > 0 ? `Gives ◆ ${pc}.` : 'Free.',
               o.backedBy.length ? `Backed by the ${o.backedBy.map((b) => ADVISOR_NAMES[b] ?? b).join(' and the ')}.` : '',
               sizes ? optionSizes(o, countryName).slice(0, 4).map((x) => x.text).join(', ') : '',
             ]
@@ -304,7 +315,7 @@ function DecisionThing({ item, compact }: { item: AgendaItem; compact: boolean }
               <AnswerCard
                 key={o.id}
                 title={`${o.label}${pc < 0 ? ` · costs ◆ ${-pc}` : ''}`}
-                rec={isRec ? `★ Recommended by your ${recBy}: "${reason}"` : undefined}
+                rec={side ? `Recommended by your ${side.who}: "${guide ? guideLede(side.reason, 14).short : side.reason}"` : isRec ? `★ Recommended by your ${recBy}: "${reason}"` : undefined}
                 fx={fx}
                 fxTone={mt ? (mt.tone === 'risk' ? 'risk' : 'help') : undefined}
                 more={!compact ? more : undefined}
@@ -314,7 +325,7 @@ function DecisionThing({ item, compact }: { item: AgendaItem; compact: boolean }
                   chooseAnswer(item, o.id);
                   sound.play('stamp');
                 }}
-                aria={`${o.label}${isRec ? `, recommended by your ${recBy}` : ''}${mt ? `. ${mt.text}` : ''}${words.length ? `. ${words.join(', ')}` : ''}. Choose`}
+                aria={`${o.label}${side ? `, recommended by your ${side.who}` : isRec ? `, recommended by your ${recBy}` : ''}${mt ? `. ${mt.text}` : ''}${words.length ? `. ${words.join(', ')}` : ''}. Choose`}
               />
             );
           })}
@@ -398,8 +409,10 @@ function SmallMeetingsThing({ item }: { item: AgendaItem }) {
   );
 }
 
-/** The recommended orders: Choose each one, or skip (they do not run). */
+/** The recommended orders: Choose each one, or skip (they do not run). The mission move (D-84) is the
+ *  same cards as a call: each adviser's proposal by name, no star, Skip reads "Hold this month". */
 function OrdersThing({ item }: { item: AgendaItem }) {
+  const move = item.kind === 'move';
   const actions = useGameStore((s) => s.pendingActions);
   const remove = useGameStore((s) => s.removePendingAction);
   const unchoose = (i: number) => useGameStore.setState((s) => ({ pendingActions: s.pendingActions.map((a, j) => (j === i ? { ...a, proposed: true } : a)) }));
@@ -409,9 +422,9 @@ function OrdersThing({ item }: { item: AgendaItem }) {
       <div className="th-sit">
         <div className="th-hero is-text">
           <div className="txt">
-            <span className="kick">Your advisers propose these orders</span>
+            <span className="kick">{move ? `${TERMS.yourCall.name} · the orders that push your mission` : 'Your advisers propose these orders'}</span>
             <h1 className="hero-title">{item.title}</h1>
-            <p className="hero-quote">An order you choose spends its political capital when you execute. One you do not choose does not run.</p>
+            <p className="hero-quote">{move ? 'Your advisers each propose a move for your mission. Choose the one you want to fund, or hold this month.' : 'An order you choose spends its political capital when you execute. One you do not choose does not run.'}</p>
           </div>
         </div>
       </div>
@@ -428,7 +441,7 @@ function OrdersThing({ item }: { item: AgendaItem }) {
               <div key={`${a.label}-${i}`} className="opt-pair">
                 <AnswerCard
                   title={`Order: ${a.label}${pc ? ` · ◆ ${pc}` : ''}`}
-                  rec={`★ Recommended by your ${who}${why ? `: "${why}"` : ''}`}
+                  rec={`${move ? '' : '★ '}Recommended by your ${who}${why ? `: "${why}"` : ''}`}
                   fx={fx ? `Will change: ${fx}` : 'Free of side effects we can see.'}
                   fxTone={a.preview?.missionWarning ? 'risk' : undefined}
                   more={[a.preview?.successChance != null ? `${Math.round(a.preview.successChance <= 1 ? a.preview.successChance * 100 : a.preview.successChance)}% chance.` : '', a.preview?.missionWarning ?? ''].filter(Boolean).join(' ')}
@@ -502,6 +515,6 @@ export function Thing({ compact = false }: { compact?: boolean }) {
     );
   if (item.kind === 'crisis' || item.kind === 'meeting') return <DecisionThing key={item.key} item={item} compact={compact} />;
   if (item.kind === 'meetings') return <SmallMeetingsThing key={item.key} item={item} />;
-  if (item.kind === 'orders') return <OrdersThing key={item.key} item={item} />;
+  if (item.kind === 'orders' || item.kind === 'move') return <OrdersThing key={item.key} item={item} />;
   return <OwnOrdersThing key={item.key} item={item} compact={compact} />;
 }

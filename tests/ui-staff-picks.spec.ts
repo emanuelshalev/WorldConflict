@@ -140,6 +140,60 @@ describe("RS-005: staff picks are listed next to their Approve button", () => {
     expect(store.useGameStore.getState().pendingActions.every((x) => x.proposed)).toBe(true);
   });
 
+  it("D-84: a call is never chosen by Choose all; the Chief of Staff setting restores one press", async () => {
+    const { month, store, d } = await setup();
+    // A crisis whose answers differ for the mission is a call (the engine's mission note), and a
+    // recommended order that helps a goal is the mission move
+    const help = { helps: ["g"], hurts: [], breaks: [], bonusHelps: [] };
+    store.useGameStore.setState({
+      advice: { cabinetPicks: {}, missionPicks: {}, meetingPicks: {}, deputies: [], suggestions: [], staffOrders: [], missionNotes: { [d.id]: { optionId: d.options[1].id, kind: "best", text: "Best for your mission", helps: [], costs: [], switchFrom: null } } } as never,
+      orderImpact: { "Court Israel": help } as never,
+      decisionChoices: {},
+    });
+    const calls = month.callSet();
+    expect([...calls.crises]).toEqual([d.id]);
+    expect(calls.moves.size).toBe(1);
+    const a = month.pendingApprovals();
+    expect(a.crises).not.toContain(d.id);
+    expect(a.orders.map((i) => store.useGameStore.getState().pendingActions[i].label)).toEqual(["National address"]);
+    expect(month.staffPickItems().some((x) => x.kind === "crisis" || x.title === "Order: Court Israel")).toBe(false);
+    month.approveAll();
+    const st = store.useGameStore.getState();
+    expect(st.reviewed[d.id]).toBeUndefined();
+    expect(st.decisionChoices[d.id]).toBeUndefined();
+    expect(st.pendingActions.find((x) => x.label === "Court Israel")?.proposed).toBe(true);
+    // "Let the Chief of Staff make my calls": Choose all decides them too, the calm way
+    store.useGameStore.setState({ chiefCalls: true });
+    month.approveAll();
+    const after = store.useGameStore.getState();
+    expect(after.reviewed[d.id]).toBe(true);
+    expect(after.decisionChoices[d.id]).toBeDefined();
+  });
+
+  it("D-84: the agenda marks the calls, skipping one leaves it to the engine's default, the review lists it", async () => {
+    const { store, d } = await setup();
+    const agenda = await import("../ui/src/lib/agenda.js");
+    store.useGameStore.setState({
+      advice: { cabinetPicks: {}, missionPicks: {}, meetingPicks: {}, deputies: [], suggestions: [], staffOrders: [], missionNotes: { [d.id]: { optionId: d.options[1].id, kind: "best", text: "Best for your mission", helps: [], costs: [], switchFrom: null } } } as never,
+      decisionChoices: {},
+    });
+    const items = agenda.agendaItems();
+    const crisis = items.find((x) => x.key === `crisis:${d.id}`);
+    expect(crisis?.call).toBe(true);
+    expect(items[0].key).toBe(`crisis:${d.id}`);
+    expect(agenda.openCalls(items).map((x) => x.key)).toContain(`crisis:${d.id}`);
+    expect(agenda.executeNow()[0]).toMatch(/^Your call, .+, is open: /);
+    // Two named sides, no single star; the Guide me sentence names both aims
+    const sides = agenda.callSides(crisis!);
+    expect(sides.sides.length).toBe(2);
+    expect(new Set(sides.sides.map((x) => x.who)).size).toBe(2);
+    expect(sides.guide).toMatch(/^For your mission: .+\. To keep things calm: .+\.$/);
+    expect(agenda.skipMeaning(crisis!).label).toBe("Skip: the cabinet waits");
+    agenda.skipItem(crisis!);
+    expect(store.useGameStore.getState().decisionChoices[d.id]).toBeUndefined();
+    expect(agenda.executeNow()[0]).toMatch(/^You skipped your call, .+: /);
+  });
+
   it("F-02-4 counts: the state band and the advisors count chosen orders only", () => {
     // QA: the Full desk said "Orders this month 2 of 6 / 2 added by staff" while the rail said 0 of 6.
     // The navigator and the rail are gone (D-80): the one count is the state band's, from budgetStatus

@@ -46,7 +46,8 @@ async function checkGroup(g, page, where) {
   const title = group.getByRole('heading', { name: /^Recommended\b/ }).first();
   g.check(await onScreen(page, title), `${where}: a group titled "Recommended" is on screen with the button`);
   const def = (await group.locator('.sp-why').first().innerText().catch(() => '')).trim();
-  g.check(def === 'Chooses the recommended answer for every thing still to do.', `${where}: the button defines itself under it ("${def.slice(0, 60)}")`);
+  // D-84: the line also says how many of the player's calls it leaves open
+  g.check(/^Chooses the recommended answer for every routine thing still to do\.( Your call stays open\.| \d+ of your calls stay open\.)?$/.test(def), `${where}: the button defines itself under it ("${def.slice(0, 90)}")`);
   await unfold(page, group);
   const items = group.locator('.sp-item');
   const counted = await group.locator('.sp-item:not(.is-off)').count();

@@ -118,6 +118,14 @@ export const TERMS = {
     compact: 'Review {n}',
     banned: [],
   },
+  yourCall: {
+    id: 'yourCall',
+    // D-84 (R11): a thing Choose all never decides; two advisers recommend different answers by name
+    name: 'Your call',
+    compact: 'Your call',
+    definition: 'A decision that is yours: two advisers recommend different answers, and Choose all recommended leaves it open.',
+    banned: [],
+  },
   choose: {
     id: 'choose',
     // The one per-item verb (D-72 D8, D-73): on every answer card, the recommended one included
@@ -138,7 +146,7 @@ export const TERMS = {
     name: 'Choose all recommended ({n})',
     compact: 'Choose all ({n})',
     // The line under the button: it defines itself as choosing (design-agenda 0.12)
-    definition: 'Chooses the recommended answer for every thing still to do.',
+    definition: 'Chooses the recommended answer for every routine thing still to do.',
     // QA3-S3-2 and D-73: one verb, Choose. No Approve, and no Accept for a recommendation
     banned: [
       /\bAccept (all|order|answer|meeting|deputy|recommended|recommendations?)\b/i,

@@ -7,6 +7,7 @@ import { TERMS } from '../lib/glossary';
 import { pcIncome } from '../lib/month';
 import { goalsLine, missionSummary } from '../lib/goals';
 import { useLayout } from '../lib/layout';
+import { agendaItems, openCalls } from '../lib/agenda';
 import { SoundToggle } from './game/SoundToggle';
 import { useScoreWhy } from '../lib/scoreWhy';
 import { LearnChip } from './learn/LearnChip';
@@ -165,6 +166,9 @@ export function StateBand() {
   // The budgets follow the month's choices
   useGameStore((s) => s.pendingActions);
   useGameStore((s) => s.decisionChoices);
+  useGameStore((s) => s.reviewed);
+  useGameStore((s) => s.skipped);
+  useGameStore((s) => s.advice);
   if (!world || !me) return null;
   const b = budgetStatus();
   const cls = L.cls;
@@ -206,6 +210,14 @@ export function StateBand() {
   const meetings = from2 && (
     <span className="sb-s" data-point="meetings">
       {wide ? 'Meetings you take' : 'Meetings'} <V v={`${b?.inPerson.used ?? 0} of ${b?.inPerson.max ?? 3}`} />
+    </span>
+  );
+  // D-84: how many of the month's calls are still open (they are the player's, never Choose all's)
+  const callItems = agendaItems().filter((x) => x.call);
+  const callsOpen = openCalls(callItems).length;
+  const calls = callItems.length > 0 && (
+    <span className={`sb-s sb-calls${callsOpen ? ' open' : ''}`} data-point="calls">
+      {TERMS.yourCall.name}s <V v={`${callsOpen} open`} />
     </span>
   );
   const defense = from2 && (
@@ -290,6 +302,7 @@ export function StateBand() {
             <V v={`◆ ${pcLeft} of ${pcCap}`} />
           </span>
           {orders}
+          {calls}
           <button type="button" className="wc-btn small sb-more" aria-expanded={sheet} onClick={() => setSheet((v) => !v)}>
             State {sheet ? <IconChevronUp size={14} aria-hidden /> : <IconChevronDown size={14} aria-hidden />}
           </button>
@@ -344,12 +357,13 @@ export function StateBand() {
       </div>
       <div className="sb-l2">
         <span className="sb-grp sb-month-grp">
-          {wide && <span className="sb-lbl">This month</span>}
+          {wide && cls !== 'U' && <span className="sb-lbl">This month</span>}
           {pc}
           {explainBtn}
           {orders}
           {meetings}
           {defense}
+          {calls}
         </span>
         <span className="sb-div" aria-hidden />
         {country}

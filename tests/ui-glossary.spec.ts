@@ -161,7 +161,9 @@ describe("UI glossary", () => {
     expect(TERMS.staffPick.name).toBe("Recommended by {role}");
     // D-73: with the agenda's per-item Choose, the bulk button is "Choose all recommended" and defines itself
     expect(TERMS.approveAll.name).toBe("Choose all recommended ({n})");
-    expect(TERMS.approveAll.definition).toBe("Chooses the recommended answer for every thing still to do.");
+    expect(TERMS.approveAll.definition).toBe("Chooses the recommended answer for every routine thing still to do.");
+    // D-84: the calls are the player's; one glossary word names them
+    expect(TERMS.yourCall.name).toBe("Your call");
     expect(TERMS.choose.name).toBe("Choose");
     expect(TERMS.reviewRecommended.name).toBe("Review {n} recommended");
     // The old phrasing is banned in UI strings and the gameplay guide

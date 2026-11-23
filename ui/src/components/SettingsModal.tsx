@@ -73,6 +73,8 @@ function Inner({ onClose }: { onClose: () => void }) {
   const usage = useGameStore((s) => s.aiTotalUsage);
   const staffOrders = useGameStore((s) => s.staffOrders);
   const setStaffOrders = useGameStore((s) => s.setStaffOrders);
+  const chiefCalls = useGameStore((s) => s.chiefCalls);
+  const setChiefCalls = useGameStore((s) => s.setChiefCalls);
   const showTicker = useGameStore((s) => s.showTicker);
   const setShowTicker = useGameStore((s) => s.setShowTicker);
   const world = useGameStore((s) => s.worldState);
@@ -133,6 +135,12 @@ function Inner({ onClose }: { onClose: () => void }) {
             <input type="checkbox" checked={staffOrders} onChange={(e) => setStaffOrders(e.target.checked)} />
             <span>
               <b>Staff propose orders</b> Each month your staff propose up to two safe orders, always leaving at least ◆ 1 for you. A recommended order spends nothing until you choose it (one by one or with Choose all recommended) and does not run unless you do. Turning this off applies from next month.
+            </span>
+          </label>
+          <label className="setting-row">
+            <input type="checkbox" checked={chiefCalls} onChange={(e) => setChiefCalls(e.target.checked)} />
+            <span>
+              <b>Let the Chief of Staff make my calls</b> Off: Choose all recommended decides the routine things only and leaves your calls (the mission crisis and the move for your mission) to you. On: it decides your calls too, with the calm answer, the way it used to.
             </span>
           </label>
           <label className="setting-row">

@@ -1,5 +1,6 @@
 import { useGameStore } from '../../store/gameStore';
-import { agendaItems, openItem, undoSkip } from '../../lib/agenda';
+import { agendaItems, openCalls, openItem, skipMeaning, undoSkip } from '../../lib/agenda';
+import { TERMS } from '../../lib/glossary';
 import { pcCost } from '../../lib/actions';
 import { ExecuteButton, Recommended } from './Plan';
 import { executeNow } from '../../lib/agenda';
@@ -21,7 +22,8 @@ export function ReviewPage({ phone = false }: { phone?: boolean }) {
   const items = agendaItems();
   const { n } = useStaffPicks();
   const chose = items.filter((x) => x.state === 'decided' && x.kind !== 'own');
-  const left = items.filter((x) => x.state === 'todo');
+  const calls = openCalls(items);
+  const left = items.filter((x) => x.state === 'todo' && !x.call);
   const skipped = items.filter((x) => x.state === 'skipped');
   const mine = actions.map((a, i) => ({ a, i })).filter((x) => !x.a.proposed && x.a.origin !== 'staff');
   const many = chose.length + left.length + skipped.length + mine.length > 8;
@@ -29,6 +31,26 @@ export function ReviewPage({ phone = false }: { phone?: boolean }) {
     <article className={`review-page${many ? ' compact' : ''}`} aria-label="Check what will happen" data-review="">
       <div className="rv-rows">
         <h1 className="hero-title">Check what will happen</h1>
+        {calls.length > 0 && (
+          <section aria-label="Your calls still open" data-open-calls="" className="rv-calls">
+            <h2>
+              {TERMS.yourCall.name}s still open ({calls.length})
+            </h2>
+            <ul className="prows">
+              {calls.map((x) => (
+                <li key={x.key} className="prow">
+                  <span className="prow-t">
+                    {x.title}
+                    <small>If you execute now: {skipMeaning(x).means}</small>
+                  </span>
+                  <button type="button" className="wc-btn small" onClick={() => openItem(x.key)} aria-label={`Open: ${x.title}`}>
+                    Open
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
         <section aria-label="You chose">
           <h2>You chose ({chose.length + mine.length})</h2>
           {chose.length + mine.length === 0 && <p className="muted">Nothing yet.</p>}
@@ -62,8 +84,9 @@ export function ReviewPage({ phone = false }: { phone?: boolean }) {
           </ul>
         </section>
         {left.length > 0 && (
-          <section aria-label="Left to your advisers">
+          <section aria-label="Left to your advisers" className="rv-left">
             <h2>Left to your advisers ({left.length})</h2>
+            <p className="rv-sum">{left.map((x) => x.title).join(', ')}. Choose all recommended decides them.</p>
             <ul className="prows">
               {left.map((x) => (
                 <li key={x.key} className="prow">

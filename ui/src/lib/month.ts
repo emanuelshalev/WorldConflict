@@ -1,4 +1,5 @@
 import {
+  type AdviceCall,
   MEETING_SLOTS,
   type ConditionStatus,
   type DecisionOption,
@@ -57,6 +58,61 @@ function readStored(key: string): Stored | null {
   }
 }
 
+// ============================================================================
+// "Your call" (D-84, decision-accept-all.md R1, R2): the things Choose all never decides
+// ============================================================================
+
+export interface CallSet {
+  /** Crises that are calls (decision ids). */
+  crises: Set<string>;
+  /** Leaders' calls and visits that are calls (meeting ids). */
+  meetings: Set<string>;
+  /** The mission move: recommended orders that push a goal (orderKey). */
+  moves: Set<string>;
+  /** The engine's call by id ('move' for the mission move), when the payload has it. */
+  byId: Record<string, AdviceCall>;
+  /** "Let the Chief of Staff make my calls" (Settings): Choose all decides them too. */
+  chief: boolean;
+}
+
+const impactful = (state: GameState, id: string) => Object.values(state.missionImpact[id] ?? {}).some((i) => i.helps.length + i.hurts.length + i.breaks.length > 0);
+
+/**
+ * The month's calls. The engine sends them (`advice.calls`, branch build-your-call); until it does,
+ * the same rule is derived here: a crisis whose answers differ for the mission (a mission note, or
+ * any answer that moves a goal), a leader's call or visit that moves a goal, and the recommended
+ * orders that help a goal (the mission move). Month 1 keeps its crisis as the call; its meetings
+ * belong to the ministers.
+ */
+export function callSet(state: GameState = useGameStore.getState()): CallSet {
+  const world = state.worldState;
+  const out: CallSet = { crises: new Set(), meetings: new Set(), moves: new Set(), byId: {}, chief: !!state.chiefCalls };
+  if (!world) return out;
+  const calls = state.advice?.calls;
+  if (calls) {
+    for (const c of calls) {
+      out.byId[c.kind === 'move' ? 'move' : c.id] = c;
+      if (c.kind === 'crisis') out.crises.add(c.id);
+      else if (c.kind === 'meeting') out.meetings.add(c.id);
+      else for (const sd of c.sides) {
+        const a = state.pendingActions.find((x) => x.label === sd.label && x.origin === 'staff');
+        if (a) out.moves.add(orderKey(a));
+      }
+    }
+    return out;
+  }
+  const notes = state.advice?.missionNotes;
+  for (const d of state.pendingDecisions) if (notes ? !!notes[d.id] : impactful(state, d.id)) out.crises.add(d.id);
+  if (world.turn >= 1 || state.deskShown)
+    for (const m of world.agenda ?? []) if ((m.kind === 'CALL' || m.kind === 'VISIT') && impactful(state, m.id)) out.meetings.add(m.id);
+  for (const a of state.pendingActions) {
+    if (a.origin !== 'staff') continue;
+    const imp = state.orderImpact[a.label];
+    if (imp && imp.helps.length > 0 && !a.preview?.missionWarning) out.moves.add(orderKey(a));
+  }
+  return out;
+}
+
 /** The first thing that needs the player: a crisis, else a meeting, else the staff orders. */
 export function firstFocus(): DeskFocus {
   const s = useGameStore.getState();
@@ -103,8 +159,11 @@ export async function setupMonth(): Promise<void> {
     // 1. Crises: the staff pick, paid for in order
     const choices: Record<string, string> = { ...s.decisionChoices };
     let pc = world.politicalCapital;
+    const calls = callSet(s);
     for (const d of s.pendingDecisions) {
       if (choices[d.id]) continue;
+      // A call is the player's (D-84): no answer is chosen for them unless the Chief makes the calls
+      if (calls.crises.has(d.id) && !calls.chief) continue;
       const pick = crisisStaffPick(d, world.objective, pc);
       choices[d.id] = pick.id;
       pc += pick.effects.pc ?? 0;
@@ -156,12 +215,15 @@ export function pendingApprovals(): { crises: string[]; orders: number[]; meetin
   if (!world) return { crises: [], orders: [], meetings: [], deputies: [] };
   // A thing the player skipped on purpose is not "still to do" (design-agenda 0.12): Choose all leaves it
   const skipped = s.skipped ?? {};
-  const crises = s.pendingDecisions.filter((d) => !s.reviewed[d.id] && !skipped[`crisis:${d.id}`]).map((d) => d.id);
+  // Choose all decides the routine only; the calls stay the player's unless the Chief makes them (D-84 R2)
+  const calls = callSet(s);
+  const routine = (set: Set<string>, id: string) => calls.chief || !set.has(id);
+  const crises = s.pendingDecisions.filter((d) => !s.reviewed[d.id] && !skipped[`crisis:${d.id}`] && routine(calls.crises, d.id)).map((d) => d.id);
   let pc = Math.max(0, capitalLeft(s));
   let slots = MAX_ORDERS - committedActions(s.pendingActions).length;
   const orders: number[] = [];
   s.pendingActions.forEach((a, i) => {
-    if (!a.proposed || skipped.orders) return;
+    if (!a.proposed || skipped.orders || !routine(calls.moves, orderKey(a))) return;
     const cost = pcCost(a.type);
     if (cost > pc || slots <= 0) return;
     pc -= cost;
@@ -176,7 +238,7 @@ export function pendingApprovals(): { crises: string[]; orders: number[]; meetin
   const meetings: Array<{ id: string; optionId: string }> = [];
   for (const m of meetingPriority(agenda, world.objective)) {
     if (free <= 0) break;
-    if (s.decisionChoices[m.id]) continue;
+    if (s.decisionChoices[m.id] || !routine(calls.meetings, m.id)) continue;
     const o = meetingSuggestion(m);
     if (!o) continue;
     const cost = -(o.effects.pc ?? 0);
@@ -187,7 +249,7 @@ export function pendingApprovals(): { crises: string[]; orders: number[]; meetin
   }
   // Every other open meeting goes to a deputy, so the calendar is settled
   const taken = new Set(meetings.map((m) => m.id));
-  const deputies = agenda.filter((m) => !s.decisionChoices[m.id] && !taken.has(m.id) && m.defaultOptionId).map((m) => m.id);
+  const deputies = agenda.filter((m) => !s.decisionChoices[m.id] && !taken.has(m.id) && m.defaultOptionId && routine(calls.meetings, m.id)).map((m) => m.id);
   return { crises, orders, meetings, deputies };
 }
 
@@ -202,7 +264,12 @@ export function approveAll(): void {
   const s = useGameStore.getState();
   const reviewed = { ...s.reviewed };
   const choices = { ...s.decisionChoices };
-  for (const id of crises) reviewed[id] = true;
+  for (const id of crises) {
+    reviewed[id] = true;
+    // With the Chief making the calls, a call crisis left open gets the calm (recommended) answer
+    const d = s.pendingDecisions.find((x) => x.id === id);
+    if (d && !choices[id]) choices[id] = cabinetPick(d).id;
+  }
   for (const m of meetings) {
     choices[m.id] = m.optionId;
     reviewed[m.id] = true;
@@ -514,6 +581,7 @@ export function staffPickItems(state: GameState = useGameStore.getState()): Staf
   const world = state.worldState;
   if (!world) return [];
   const { crises, orders, meetings, deputies } = pendingApprovals();
+  const calls = callSet(state);
   const items: StaffPickItem[] = [];
   for (const id of crises) {
     const d = state.pendingDecisions.find((x) => x.id === id);
@@ -599,7 +667,7 @@ export function staffPickItems(state: GameState = useGameStore.getState()): Staf
   // Proposals Approve all would leave out: still shown, so the list matches the plan
   const counted = new Set(orders);
   state.pendingActions.forEach((a, i) => {
-    if (a.proposed && !counted.has(i) && !state.skipped?.orders) order(i, false);
+    if (a.proposed && !counted.has(i) && !state.skipped?.orders && (calls.chief || !calls.moves.has(orderKey(a)))) order(i, false);
   });
   return items;
 }
