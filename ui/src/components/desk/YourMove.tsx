@@ -93,7 +93,10 @@ function OptionCard({
   const mt = missionTag(impact, status);
   const words = effectWords(o);
   const chosen = chosenId === o.id && (sel.kind === 'yours' || sel.kind === 'approved');
-  const pc = o.effects.pc ?? 0;
+  // The card's cost is what the answer does to political capital, its D-84 price included (the
+  // price is charged by the engine and counted by the meters, lib/budget.ts)
+  const price = useGameStore((st) => (isMeeting(item) && o.id === item.defaultOptionId ? 0 : (st.advice?.prices?.[item.id]?.[o.id] ?? 0)));
+  const pc = (o.effects.pc ?? 0) - price;
   const art = sceneForDecision({ kind: isMeeting(item) ? item.kind : undefined, templateId: item.templateId, title: item.title, label: o.label });
   const impacts = useGameStore((st) => st.missionImpact[item.id]);
   const backers = shownBackers(o, impacts);
