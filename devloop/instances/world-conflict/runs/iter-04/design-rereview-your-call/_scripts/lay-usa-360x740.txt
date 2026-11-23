@@ -1,0 +1,15 @@
+
+== usa-360x740 month 1: vw 360 vh 740 docScrollW 360
+  item {"cls":"sel-badge sel-waiting","text":"No answer yet. If you leave it: no answer is given and the crisis passes","top":860,"bottom":896,"left":64,"right":600,"inView":false,"covered":"","clipped":""}
+  fixed {"cls":"game mode-desk","pos":"fixed","top":0,"bottom":740,"text":"🇺🇸Donald TrumpUnited States · Nov 2026 · Month 1 of 12Appr"}
+
+== usa-360x740 month 2: vw 360 vh 740 docScrollW 360
+  item {"cls":"sel-badge sel-waiting","text":"No answer yet. If you leave it: Break the strike","top":652,"bottom":688,"left":64,"right":426,"inView":true,"covered":"SPAN.ex-main","clipped":""}
+  item {"cls":"","text":"Recommended: Counter-intelligence sweep","top":2685,"bottom":2719,"left":63,"right":301,"inView":false,"covered":"","clipped":""}
+  item {"cls":"","text":"Recommended: staff attend 3, a deputy takes 1","top":2765,"bottom":2799,"left":60,"right":301,"inView":false,"covered":"","clipped":""}
+  fixed {"cls":"game mode-desk","pos":"fixed","top":0,"bottom":740,"text":"🇺🇸Donald TrumpUnited States · Dec 2026 · Month 2 of 12Appr"}
+  accept all pressed false
+  after item {"cls":"sel-badge sel-waiting","text":"No answer yet. If you leave it: Break the strike","top":652,"bottom":688,"left":64,"right":426,"inView":true,"covered":"SPAN.ex-main","clipped":""}
+  after item {"cls":"","text":"Recommended: Counter-intelligence sweep","top":2685,"bottom":2719,"left":63,"right":301,"inView":false,"covered":"","clipped":""}
+  after item {"cls":"","text":"Recommended: staff attend 3, a deputy takes 1","top":2765,"bottom":2799,"left":60,"right":301,"inView":false,"covered":"","clipped":""}
+errors: 

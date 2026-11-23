@@ -1,0 +1,16 @@
+== usa-390x844 month 1
+  m1 badge {"text":"No answer yet. If you leave it: no answer is given and the crisis passes","l":64,"r":376,"top":338,"hgt":50,"lines":2,"vw":390,"sw":310,"cw":310,"covered":"ok,ok,ok,ok","clip":""}
+  recommended sentence: 
+  answer labels: Hit the IRGC navy now | More escorts, no strikes | Reply via Muscat
+== usa-390x844 month 2
+  m2 badge {"text":"No answer yet. If you leave it: Break the strike","l":64,"r":376,"top":338,"hgt":50,"lines":2,"vw":390,"sw":310,"cw":310,"covered":"ok,ok,ok,ok","clip":""}
+  recommended sentence: 
+  answer labels: Meet their demands | Break the strike | Personally mediate
+  m2-picked-longest badge {"text":"Accepted: Meet their demands","l":64,"r":338,"top":338,"hgt":36,"lines":1,"vw":390,"sw":272,"cw":272,"covered":"ok,ok,ok,ok","clip":""}
+  badges now: Accepted: Meet their demands
+  sheet recommended sentence: Your advisers recommend these for this month. Orders and meetings wait for you to accept; a crisis listed here goes ahead on its recommended answer unless you change it, one not listed is yours to answer.
+  button: Accept all recommended Nothing to accept: every recommendation is decided
+  could not close sheet
+  m2-after-accept badge {"text":"Accepted: Meet their demands","l":64,"r":338,"top":338,"hgt":36,"lines":1,"vw":390,"sw":272,"cw":272,"covered":"BUTTON.slot-card empty,BUTTON.slot-card empty,BUTTON.slot-card empty,BUTTON.slot-card empty","clip":""}
+  sel-badges on the page: 1
+errors: 

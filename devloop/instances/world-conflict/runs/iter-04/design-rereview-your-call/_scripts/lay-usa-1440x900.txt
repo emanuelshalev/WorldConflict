@@ -1,0 +1,21 @@
+
+== usa-1440x900 month 1: vw 1440 vh 900 docScrollW 1440
+  item {"cls":"sel-badge sel-waiting","text":"No answer yet. If you leave it: no answer is given and the crisis passes","top":496,"bottom":532,"left":354,"right":890,"inView":true,"covered":"","clipped":""}
+  item {"cls":"plan-line","text":"No answer yet on 1 crisis, 1 recommended order not accepted (it will not run), deputies take 4 meetings.","top":338,"bottom":394,"left":1110,"right":1411,"inView":true,"covered":"","clipped":""}
+  fixed {"cls":"game mode-desk","pos":"fixed","top":0,"bottom":900,"text":"🇺🇸Donald TrumpUnited States · Nov 2026 · Month 1 of 12Appr"}
+
+== usa-1440x900 month 2: vw 1440 vh 900 docScrollW 1440
+  item {"cls":"sel-badge sel-waiting","text":"No answer yet. If you leave it: Break the strike","top":412,"bottom":448,"left":528,"right":890,"inView":true,"covered":"","clipped":""}
+  item {"cls":"","text":"Recommended: Counter-intelligence sweep","top":1501,"bottom":1518,"left":71,"right":998,"inView":false,"covered":"","clipped":""}
+  item {"cls":"","text":"Recommended: staff attend 3, a deputy takes 1","top":1565,"bottom":1582,"left":68,"right":998,"inView":false,"covered":"","clipped":""}
+  item {"cls":"","text":"No answer yet","top":525,"bottom":543,"left":1170,"right":1355,"inView":true,"covered":"SPAN.sp-what","clipped":""}
+  item {"cls":"","text":"General strike. If you leave it: Break the strike","top":543,"bottom":560,"left":1170,"right":1355,"inView":true,"covered":"SPAN.sp-change","clipped":"scrollW 268 > 185"}
+  item {"cls":"","text":"Recommended by Intelligence Chief · ◆ 1 if accepted","top":671,"bottom":688,"left":1170,"right":1365,"inView":true,"covered":"SECTION.staff-picks v-rail","clipped":"scrollW 312 > 195"}
+  item {"cls":"","text":"Recommended by Intelligence Chief · ◆ 1 if accepted","top":788,"bottom":805,"left":1170,"right":1365,"inView":true,"covered":"BUTTON.wc-btn primary big execute-btn","clipped":"scrollW 312 > 195"}
+  fixed {"cls":"game mode-desk","pos":"fixed","top":0,"bottom":900,"text":"🇺🇸Donald TrumpUnited States · Dec 2026 · Month 2 of 12Appr"}
+  accept all pressed true
+  after item {"cls":"sel-badge sel-waiting","text":"No answer yet. If you leave it: Break the strike","top":412,"bottom":448,"left":528,"right":890,"inView":true,"covered":"","clipped":""}
+  after item {"cls":"","text":"No answer yet","top":603,"bottom":621,"left":1170,"right":1355,"inView":true,"covered":"DIV.sp-head","clipped":""}
+  after item {"cls":"","text":"General strike. If you leave it: Break the strike","top":621,"bottom":638,"left":1170,"right":1355,"inView":true,"covered":"P.sp-why","clipped":"scrollW 268 > 185"}
+  after item {"cls":"sp-main-sub","text":"Nothing else to accept. Still open: General strike","top":728,"bottom":762,"left":1121,"right":1400,"inView":true,"covered":"","clipped":""}
+errors: 

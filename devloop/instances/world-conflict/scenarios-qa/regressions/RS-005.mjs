@@ -125,6 +125,9 @@ await run('RS-005', async (g, track) => {
     if (device === 'phone') await toPhoneReview(p);
     await p.waitForTimeout(600);
     const desk = await checkGroup(g, p, `${device} desk`);
+    // The line under the button defines it (D-73), and names the calls it leaves open (D-84)
+    const why = await p.locator('.sp-why').first().innerText().catch(() => '');
+    g.check(/^Chooses the recommended answer for every routine thing still to do\.( (Your call stays open|\d of your calls stay open)\.)?$/.test(why.trim()), `${device} desk: first use explains what Choose all recommended does ("${why.trim().slice(0, 120)}")`);
     await s.look(`${device}-desk`);
     if (device === 'laptop') {
       await checkPlanFits(g, p);
@@ -142,7 +145,9 @@ await run('RS-005', async (g, track) => {
     await p.waitForTimeout(800);
     const off = p.locator('[data-staff-picks] .sp-main').first();
     const offText = (await off.innerText().catch(() => '')).replace(/\s+/g, ' ');
-    g.check((await off.isDisabled().catch(() => false)) && /Nothing to choose/i.test(offText), `${device} map: after Choose all the button is disabled with a reason ("${offText.slice(0, 60)}")`);
+    // design-review-your-call.md RC-1: with a call Choose all leaves open, the reason names it
+    // ("Nothing else to choose. Still open: ..."); "Nothing to choose" only when none is open
+    g.check((await off.isDisabled().catch(() => false)) && /Nothing (else )?to choose/i.test(offText), `${device} map: after Choose all the button is disabled with a reason ("${offText.slice(0, 90)}")`);
     g.check(s.errors.length === 0, `${device}: no page errors (${s.errors.slice(0, 2).join(' | ')})`);
   }
 });

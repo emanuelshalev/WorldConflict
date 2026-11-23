@@ -3,12 +3,14 @@
  * breaks. One pure reading of the state, shared by the desk tags, the advisors' cabinet and
  * mission picks, and the harness, so all three agree. No RNG, no mutation.
  */
+import { answerPrices } from "./costs.js";
 import {
   type ConditionStatus,
   objectiveConditions,
   objectiveStatus,
   shortLabel,
 } from "./objectives.js";
+import { isNuclearOperational } from "./systems/nuclear.js";
 import type {
   Action,
   CountryState,
@@ -168,8 +170,13 @@ function conditionEffect(
           world.countries.find((c) => c.id === a.targetCountryId)?.alliances.includes(t),
       );
       if (allyOf) return "hurts";
-      if (acts("MILITARY_AIRSTRIKE", t) || acts("INTEL_COUP", t) || acts("INTEL_ASSASSINATE", t))
-        return "hurts";
+      if (acts("MILITARY_AIRSTRIKE", t)) {
+        // A peacetime strike on a nuclear power is an act of war: it answers with one
+        // (TurnEngine.actOfWar), so the goal is lost, not just at risk
+        const target = world.countries.find((c) => c.id === t);
+        return target && isNuclearOperational(target) ? "breaks" : "hurts";
+      }
+      if (acts("INTEL_COUP", t) || acts("INTEL_ASSASSINATE", t)) return "hurts";
       // Only a real swing in an already hostile relationship moves the risk of war
       const rel = me.relations[t] ?? 0;
       if (rel < -40) return pick(sign(e[`relations:${t}`], 8));
@@ -320,4 +327,21 @@ export function actionImpact(
 /** True when the impact works against a primary objective (or a bonus, when `bonus`). */
 export function againstMission(impact: Impact, bonus = false): boolean {
   return impact.hurts.length + impact.breaks.length > 0 || (bonus && impact.bonusHurts.length > 0);
+}
+
+/**
+ * The extra political capital each answer of a crisis or meeting costs (D-84 R6, costs.ts
+ * PUSH_PC): option id to price, priced answers only. Read from the month's starting state, the
+ * same picture the desk shows and the engine charges.
+ */
+export function itemPrices(
+  world: WorldState,
+  item: { options: DecisionOption[] },
+  ctx: ImpactContext | null = impactContext(world),
+): Record<string, number> {
+  if (!ctx) return {};
+  return answerPrices(
+    item.options.map((o) => o.id),
+    item.options.map((o) => optionImpact(world, o, ctx).helps.length > 0),
+  );
 }

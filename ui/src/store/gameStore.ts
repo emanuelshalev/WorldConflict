@@ -249,25 +249,69 @@ export interface Advice {
   staffOrders: Array<AdviceSuggestion & { successChance: number | null }>;
   /** decisionId → what the desk may say about the mission pick (src/core/advisors.ts MissionNote). */
   missionNotes?: Record<string, MissionNote>;
-  /**
-   * "Your call" (D-84, decision-accept-all.md R1): the month's things Accept all never decides.
-   * Built by the engine on branch build-your-call; until it lands the UI derives the same set
-   * (lib/agenda.ts callsFor). Field names are the UI's assumption, adapted at merge.
-   */
-  calls?: AdviceCall[];
+  /** "Your call" (D-84): at most 2 items a month Accept all never decides (advisors.ts YourCall). */
+  calls?: YourCall[];
+  /** Everything Accept all recommended decides, in agenda order; its length is the button's n. */
+  routine?: RoutineItem[];
+  /** What Accept all adds when "Let the Chief of Staff make my calls" is on. */
+  chief?: { decisions: Record<string, string>; orders: Array<AdviceSuggestion & { successChance: number | null }> };
+  /** Extra political capital per answer (D-84 PUSH_PC): item id → option id → price. */
+  prices?: Record<string, Record<string, number>>;
+  /** Political capital the staff leave for the calls (1 to 3). */
+  reserve?: number;
 }
 
-/** One of the month's calls (D-84 R1, R4, R5, R6): two named sides, the Guide me sentence. */
-export interface AdviceCall {
-  /** 'crisis' (a decision id), 'meeting' (a meeting id) or 'move' (the mission move). */
-  kind: 'crisis' | 'meeting' | 'move';
+/** Mirrors src/core/advisors.ts RoutineItem. */
+export interface RoutineItem {
+  kind: 'crisis' | 'meeting' | 'deputy' | 'order';
+  /** Crisis or meeting id; for an order, its label. */
   id: string;
-  /** The sides two advisers recommend by name; `optionId` for a crisis or meeting, `label` for a move's order. */
-  sides: Array<{ optionId?: string; label?: string; who: string; reason: string; aim: 'mission' | 'calm' }>;
-  /** The Chief of Staff's sentence at Guide me: "For your mission: X. To keep things calm: Y." */
-  guide?: string;
-  /** Political capital the mission side costs on top of its written cost (R6). */
-  pushPc?: number;
+  optionId?: string;
+  label: string;
+}
+
+/** Mirrors src/core/advisors.ts CallCard: one card on a call. */
+export interface CallCard {
+  /** Crisis: the option id. Mission move: "order:<n>" or "hold". */
+  id: string;
+  label: string;
+  side: 'mission' | 'calm' | 'other' | 'hold';
+  /** "Recommended by your <adviser>" (empty: nobody backs it; two names: the advisers agree). */
+  advisers: string[];
+  why: string | null;
+  helps: string[];
+  hurts: string[];
+  breaks: string[];
+  bonusHelps: string[];
+  bonusHurts: string[];
+  /** Political capital in all, the price included. */
+  pc: number;
+  /** The part of pc that is the price of the mission side. */
+  price: number;
+  successChance: number | null;
+  home: number;
+  action?: AdviceSuggestion['action'];
+  /** Unavailable before the press, with the reason and the fix (G1). */
+  blocked: { reason: string; fix: string } | null;
+}
+
+/** Mirrors src/core/advisors.ts YourCall. */
+export interface YourCall {
+  /** The crisis id, or "mission-move". */
+  id: string;
+  kind: 'crisis' | 'move';
+  title: string;
+  cards: CallCard[];
+  missionCard: string;
+  calmCard: string;
+  /** What the Chief of Staff takes when the setting is on (null: Skip / Hold). */
+  chiefPick: string | null;
+  /** The Guide me line (show at Guide me only). */
+  guide: string;
+  skip: { label: string; text: string; optionId: string | null; hurts: string[]; breaks: string[]; bonusHurts: string[] };
+  gap: number;
+  /** A real trade: neither of two cards is at least as good as the other on everything. */
+  trade: boolean;
 }
 
 export interface MissionNote {
@@ -1405,20 +1449,38 @@ export async function fetchPreview(action: {
 }
 
 /**
+ * What the engine does with a crisis sent without an answer (src/core/turn.ts resolveDecisions):
+ * from its deadline month on it resolves on its default answer (no price paid); before that it
+ * passes with no answer, and null is returned.
+ */
+export function leftAnswer(world: Pick<WorldState, 'turn'> | null | undefined, d: PendingDecision): DecisionOption | null {
+  if (!world || world.turn <= d.deadlineTurn - 1) return null;
+  return d.options.find((o) => o.id === d.defaultOptionId) ?? d.options[0] ?? null;
+}
+
+/** The answer a crisis resolves on this month: the one chosen, else what leaving it does (leftAnswer). */
+export function crisisAnswer(state: GameState, d: PendingDecision): DecisionOption | null {
+  const chosen = d.options.find((o) => o.id === state.decisionChoices[d.id]);
+  return chosen ?? leftAnswer(state.worldState, d);
+}
+
+/**
  * Political capital left this month: the bank, plus or minus the crisis answers (an unanswered
- * crisis falls to its default option, so it counts), minus the orders already queued.
+ * crisis counts what leaving it does, leftAnswer), minus the orders already queued.
  */
 export function capitalLeft(state: GameState = useGameStore.getState()): number {
   const world = state.worldState;
   if (!world) return 0;
+  // A chosen answer on the mission side also pays its price (D-84, src/core/costs.ts PUSH_PC)
+  const price = (id: string, optionId: string | undefined) => (optionId ? (state.advice?.prices?.[id]?.[optionId] ?? 0) : 0);
   const crisisPc = state.pendingDecisions.reduce((sum, d) => {
-    const option = d.options.find((o) => o.id === (state.decisionChoices[d.id] ?? d.defaultOptionId ?? d.options[0]?.id));
-    return sum + (option?.effects.pc ?? 0);
+    const option = crisisAnswer(state, d);
+    return sum + (option?.effects.pc ?? 0) - price(d.id, state.decisionChoices[d.id]);
   }, 0);
   // Meetings you attend can cost capital too (a state visit, a hotline); deputies cost nothing
   const meetingPc = (world.agenda ?? []).reduce((sum, m) => {
     const option = m.options.find((o) => o.id === state.decisionChoices[m.id]);
-    return sum + (option?.effects.pc ?? 0);
+    return sum + (option?.effects.pc ?? 0) - (option && option.id !== m.defaultOptionId ? price(m.id, option.id) : 0);
   }, 0);
   // Staff proposals hold nothing until approved (F-02-4)
   return Math.max(0, world.politicalCapital + crisisPc + meetingPc) - committedActions(state.pendingActions).reduce((s, a) => s + pcCost(a.type), 0);

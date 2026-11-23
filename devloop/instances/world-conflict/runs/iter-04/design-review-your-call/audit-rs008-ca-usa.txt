@@ -1,0 +1,65 @@
+state           viewport        pageScr  inner  innerPx  below  width  L/R px     cut  cover  fails  regions (e=expanded c=collapsed b=below m=missing)
+------------------------------------------------------------------------------------------------------------------------
+month-1         3440x1440 CEO   0        0      0        0      0.45   943/0      0    0      1      state:e capital:e mission:e your-move:e recommended:c execute:e
+    use-the-width: used width 0.45 < 0.85 (empty left 943px, right 0px, largest gap 958px)
+result-card     3440x1440 CEO   0        0      0        0      0.28   1230/1230  0    0      0      result:e next:e
+month-2-desk    3440x1440 CEO   0        3      1835     31     0.45   943/0      0    3      4      state:e capital:e mission:e your-move:e recommended:e execute:e
+    no-inner-scroll: 3 inner scroll region(s) hold controls or listed regions: div#desk-stage.desk-stage "SUMMIT YOUR MOVE · URGENT CRISIS 🇺🇸 🇮" (386px hidden, 4 control(s) out of view); div.rail-body "Political capital 6 of 6 left Staff prop" (765px hidden, 13 control(s) out of view); ul#_r_1p_-list.sp-list "Recommended, waiting for you to accept" (684px hidden, 10 control(s) out of view)
+    no-hidden-items: 31 control(s) or region(s) below the fold: button.link.adv-more "Show 2 more" (container); button.also-row "4 calls and meetings Recommended: staff " (container); button.also-row "0 orders in this month, 3 recommended or" (container); button.also-row "All orders Search or browse every order " (container); button.slot-card.crisis "India's offer: Recommended: Sign it" (container
+    use-the-width: used width 0.45 < 0.85 (empty left 943px, right 0px, largest gap 958px)
+    not-covered: 3 control(s) covered at their centre: button.link.ord-dismiss "Remove" under button.wc-card-hit "Court Mexico, proposed by staff: accept,"; button.link.ord-dismiss "Remove" under button.wc-card-hit "Spy on Iran, proposed by staff: accept, "; button.link.ord-dismiss "Remove" under button.wc-card-hit "Mobilize forces, proposed by staff: acce"
+month-2-map     3440x1440 CEO   0        0      0        0      1.00   0/0        0    0      0      state:e capital:e mission:e your-move:c recommended:c execute:e
+month-1         390x844         0        1      1248     14     1.00   0/0        0    1      0      state:e capital:e mission:e your-move:e recommended:c execute:e
+month-1         1024x768        0        1      457      12     0.95   16/0       0    0      0      state:e capital:e mission:e your-move:e recommended:c execute:e
+month-1         1366x768        0        1      299      9      0.95   24/0       0    0      2      state:e capital:e mission:e your-move:e recommended:c execute:e
+    no-inner-scroll: 1 inner scroll region(s) hold controls or listed regions: div#desk-stage.desk-stage "Your goal. You win if all five hold at t" (299px hidden, 9 control(s) out of view)
+    no-hidden-items: 9 control(s) or region(s) below the fold: button.wc-card-hit "Back Machado publicly. Helps: Approval o" (container); button.fx-more "+1 more" (container); button.fx-size-btn "How much?" (container); button.wc-card-hit "Back Rodríguez's 'process'. Hurts: Appro" (container); button.fx-size-btn "How much?" (container); button.wc-card-hit "Elections in a year, or snapback. Helps:"
+month-1         1440x900        0        1      167      4      0.96   24/0       0    0      2      state:e capital:e mission:e your-move:e recommended:c execute:e
+    no-inner-scroll: 1 inner scroll region(s) hold controls or listed regions: div#desk-stage.desk-stage "Your goal. You win if all five hold at t" (167px hidden, 4 control(s) out of view)
+    no-hidden-items: 4 control(s) or region(s) below the fold: button.fx-size-btn "How much?" (container); button.fx-size-btn "How much?" (container); button.fx-size-btn "How much?" (container); button.show-desk "Show the whole desk Advisors, 0 orders, " (container)
+month-1         1920x1080       0        1      128      1      0.80   183/0      0    0      3      state:e capital:e mission:e your-move:e recommended:c execute:e
+    no-inner-scroll: 1 inner scroll region(s) hold controls or listed regions: div#desk-stage.desk-stage "Your goal. You win if all five hold at t" (128px hidden, 1 control(s) out of view)
+    no-hidden-items: 1 control(s) or region(s) below the fold: button.show-desk "Show the whole desk Advisors, 0 orders, " (container)
+    use-the-width: used width 0.80 < 0.85 (empty left 183px, right 0px, largest gap 198px)
+month-1         2560x1440       0        0      0        0      0.60   503/0      0    0      1      state:e capital:e mission:e your-move:e recommended:c execute:e
+    use-the-width: used width 0.60 < 0.85 (empty left 503px, right 0px, largest gap 518px)
+month-1         3840x2160       0        0      0        0      0.40   1143/0     0    0      1      state:e capital:e mission:e your-move:e recommended:c execute:e
+    use-the-width: used width 0.40 < 0.85 (empty left 1143px, right 0px, largest gap 1158px)
+result-card     390x844         0        0      0        0      1.00   0/0        0    0      0      result:e next:e
+result-card     1024x768        0        0      0        0      0.96   22/22      0    0      0      result:e next:e
+result-card     1366x768        0        0      0        0      0.72   193/193    0    0      0      result:e next:e
+result-card     1440x900        0        0      0        0      0.68   230/230    0    0      0      result:e next:e
+result-card     1920x1080       0        0      0        0      0.51   470/470    0    0      0      result:e next:e
+result-card     2560x1440       0        0      0        0      0.38   790/790    0    0      0      result:e next:e
+result-card     3840x2160       0        0      0        0      0.26   1430/1430  0    0      0      result:e next:e
+month-2-desk    390x844         0        1      1967     26     1.00   0/0        0    2      0      state:e capital:e mission:e your-move:e recommended:c execute:e
+month-2-desk    1024x768        0        3      3066     57     0.95   16/0       0    0      0      state:e capital:e mission:e your-move:e recommended:e execute:e
+month-2-desk    1366x768        0        3      2887     53     0.95   24/0       0    0      2      state:e capital:e mission:e your-move:e recommended:e execute:e
+    no-inner-scroll: 3 inner scroll region(s) hold controls or listed regions: div#desk-stage.desk-stage "SUMMIT YOUR MOVE · URGENT CRISIS 🇺🇸 🇮" (990px hidden, 17 control(s) out of view); div.rail-body "Political capital 6 of 6 left Orders thi" (857px hidden, 13 control(s) out of view); ul#_r_1p_-list.sp-list "Recommended, waiting for you to accept" (1040px hidden, 14 control(s) out of view)
+    no-hidden-items: 53 control(s) or region(s) below the fold: button.fx-size-btn "How much?" (container); button.fx-more "+1 more" (container); button.fx-size-btn "How much?" (container); button.fx-size-btn "How much?" (container); button.wc-card-hit "Court Mexico, proposed by staff: accept," (container); button.link.ord-dismiss "Remove" (container) ...
+month-2-desk    1440x900        0        3      2746     49     0.96   24/0       0    0      2      state:e capital:e mission:e your-move:e recommended:e execute:e
+    no-inner-scroll: 3 inner scroll region(s) hold controls or listed regions: div#desk-stage.desk-stage "SUMMIT YOUR MOVE · URGENT CRISIS 🇺🇸 🇮" (805px hidden, 13 control(s) out of view); div.rail-body "Political capital 6 of 6 left Staff prop" (888px hidden, 13 control(s) out of view); ul#_r_1p_-list.sp-list "Recommended, waiting for you to accept" (1053px hidden, 14 control(s) out of view)
+    no-hidden-items: 49 control(s) or region(s) below the fold: button.wc-card-hit "Court Mexico, proposed by staff: accept," (container); button.link.ord-dismiss "Remove" (container); button.ord-act.act-available "Accept order: Court Mexico" (container); button.wc-card-hit "Spy on Iran, proposed by staff: accept, " (container); button.link.ord-dismiss "Remove" (container); button.ord-act.act-avai
+month-2-desk    1920x1080       0        3      2535     45     0.80   183/0      0    0      3      state:e capital:e mission:e your-move:e recommended:e execute:e
+    no-inner-scroll: 3 inner scroll region(s) hold controls or listed regions: div#desk-stage.desk-stage "SUMMIT YOUR MOVE · URGENT CRISIS 🇺🇸 🇮" (726px hidden, 13 control(s) out of view); div.rail-body "Political capital 6 of 6 left Staff prop" (888px hidden, 13 control(s) out of view); ul#_r_1p_-list.sp-list "Recommended, waiting for you to accept" (921px hidden, 12 control(s) out of view)
+    no-hidden-items: 45 control(s) or region(s) below the fold: button.wc-card-hit "Court Mexico, proposed by staff: accept," (container); button.link.ord-dismiss "Remove" (container); button.ord-act.act-available "Accept order: Court Mexico" (container); button.wc-card-hit "Spy on Iran, proposed by staff: accept, " (container); button.link.ord-dismiss "Remove" (container); button.ord-act.act-avai
+    use-the-width: used width 0.80 < 0.85 (empty left 183px, right 0px, largest gap 198px)
+month-2-desk    2560x1440       0        3      1835     31     0.60   503/0      0    3      4      state:e capital:e mission:e your-move:e recommended:e execute:e
+    no-inner-scroll: 3 inner scroll region(s) hold controls or listed regions: div#desk-stage.desk-stage "SUMMIT YOUR MOVE · URGENT CRISIS 🇺🇸 🇮" (386px hidden, 4 control(s) out of view); div.rail-body "Political capital 6 of 6 left Staff prop" (765px hidden, 13 control(s) out of view); ul#_r_1p_-list.sp-list "Recommended, waiting for you to accept" (684px hidden, 10 control(s) out of view)
+    no-hidden-items: 31 control(s) or region(s) below the fold: button.link.adv-more "Show 2 more" (container); button.also-row "4 calls and meetings Recommended: staff " (container); button.also-row "0 orders in this month, 3 recommended or" (container); button.also-row "All orders Search or browse every order " (container); button.slot-card.crisis "India's offer: Recommended: Sign it" (container
+    use-the-width: used width 0.60 < 0.85 (empty left 503px, right 0px, largest gap 518px)
+    not-covered: 3 control(s) covered at their centre: button.link.ord-dismiss "Remove" under button.wc-card-hit "Court Mexico, proposed by staff: accept,"; button.link.ord-dismiss "Remove" under button.wc-card-hit "Spy on Iran, proposed by staff: accept, "; button.link.ord-dismiss "Remove" under button.wc-card-hit "Mobilize forces, proposed by staff: acce"
+month-2-desk    3840x2160       0        2      729      12     0.40   1143/0     0    3      4      state:e capital:e mission:e your-move:e recommended:e execute:e
+    no-inner-scroll: 2 inner scroll region(s) hold controls or listed regions: div.rail-body "Political capital 6 of 6 left Staff prop" (333px hidden, 4 control(s) out of view); ul#_r_1p_-list.sp-list "Recommended, waiting for you to accept" (396px hidden, 6 control(s) out of view)
+    no-hidden-items: 12 control(s) or region(s) below the fold: button.wc-btn.small "Accept order: Mobilize forces, spends ◆ " (container); button.slot-card.empty "Empty order slot (6 more this month)" (container); button.slot-card.empty "4 meetings: a deputy goes unless you ans" (container); button.score-note "Score 100 → 99. Approval is pulled down;" (container); button.wc-btn.small "Accept meet
+    use-the-width: used width 0.40 < 0.85 (empty left 1143px, right 0px, largest gap 1158px)
+    not-covered: 3 control(s) covered at their centre: button.link.ord-dismiss "Remove" under button.wc-card-hit "Court Mexico, proposed by staff: accept,"; button.link.ord-dismiss "Remove" under button.wc-card-hit "Spy on Iran, proposed by staff: accept, "; button.link.ord-dismiss "Remove" under button.wc-card-hit "Mobilize forces, proposed by staff: acce"
+month-2-map     390x844         0        0      0        0      1.00   0/0        0    0      0      state:e capital:e mission:e your-move:c recommended:c execute:e
+month-2-map     1024x768        0        0      0        0      1.00   0/0        0    0      0      state:e capital:e mission:e your-move:c recommended:c execute:e
+month-2-map     1366x768        0        0      0        0      1.00   0/0        0    0      0      state:e capital:e mission:e your-move:c recommended:c execute:e
+month-2-map     1440x900        0        0      0        0      1.00   0/0        0    0      0      state:e capital:e mission:e your-move:c recommended:c execute:e
+month-2-map     1920x1080       0        0      0        0      1.00   0/0        0    0      0      state:e capital:e mission:e your-move:c recommended:c execute:e
+month-2-map     2560x1440       0        0      0        0      1.00   0/0        0    0      0      state:e capital:e mission:e your-move:c recommended:c execute:e
+month-2-map     3840x2160       0        0      0        0      1.00   0/0        0    0      0      state:e capital:e mission:e your-move:c recommended:c execute:e
+
+32 measurement(s), 29 violation(s)

@@ -1,6 +1,6 @@
-import { type DecisionOption, type GameState, type Meeting, type PendingDecision, countryName, orderKey, useGameStore } from '../store/gameStore';
+import { type CallCard, type DecisionOption, type GameState, type Meeting, type PendingDecision, type QueueResult, type YourCall, countryName, orderKey, queueOrder, useGameStore } from '../store/gameStore';
 import { ADVISOR_NAMES } from './format';
-import { approveAll, cabinetPick, callSet, meetingAdviser, meetingPick, missionTag, primaryItem, splitLede } from './month';
+import { type CallSet, approveAll, cabinetPick, callSet, crisisChoices, leaveText, meetingAdviser, meetingPick, primaryItem, splitLede } from './month';
 import { pcCost } from './actions';
 
 /**
@@ -36,6 +36,10 @@ export interface AgendaItem {
   orders?: number[];
   /** "Your call" (D-84): Choose all never decides it; two advisers recommend different answers. */
   call?: boolean;
+  /** The engine's call (advice.calls): its cards, adviser names, Guide me line and Skip. */
+  yourCall?: YourCall;
+  /** A crisis with no answer: what leaving it does (lib/month leaveText, D-85 item 5). */
+  leave?: string;
 }
 
 export interface SkipMeaning {
@@ -118,22 +122,36 @@ export function agendaItems(state: GameState = useGameStore.getState()): AgendaI
     const key = `crisis:${d.id}`;
     const cab = cabinetPick(d);
     const call = calls.crises.has(d.id);
-    const chosen = d.options.find((o) => o.id === state.decisionChoices[d.id]) ?? cab;
-    const decided = !!state.reviewed[d.id];
+    // The answer in choices is what Execute sends: a call left open (D-85) has none, never the cabinet's
+    const chosen = d.options.find((o) => o.id === state.decisionChoices[d.id]);
+    const decided = !!state.reviewed[d.id] && !!chosen;
     const st: AgendaState = decided ? 'decided' : skipped[key] ? 'skipped' : 'todo';
+    const leave = chosen ? undefined : leaveText(d, world);
     items.push({
       key,
       kind: 'crisis',
       title: d.title,
       needsYou: true,
       state: st,
-      stateText: st === 'decided' ? `Decided: ${chosen.label}` : st === 'skipped' ? (call ? 'Skipped: the cabinet waits' : `Skipped: your cabinet goes with ${cab.label}`) : 'To do',
-      rec: call ? undefined : cab.label,
+      stateText:
+        st === 'decided'
+          ? `Decided: ${chosen?.label ?? ''}`
+          : st === 'skipped'
+            ? chosen
+              ? `Skipped: your cabinet goes with ${chosen.label}`
+              : `Skipped. ${leave ?? ''}`.trim()
+            : leave
+              ? `To do. No answer yet. ${leave}`
+              : 'To do',
+      // On a call the recommended answer is the Chief of Staff's, and only when they make the calls
+      rec: chosen?.label ?? (call ? undefined : cab.label),
       decision: d,
       call,
+      yourCall: calls.byId[d.id],
+      leave,
     });
   }
-  pushMove(state, items, calls.moves);
+  pushMove(state, items, calls);
   if (simpleAgenda(state)) {
     pushOrders(state, items, calls.moves);
     return items;
@@ -218,21 +236,31 @@ function pushOrders(state: GameState, items: AgendaItem[], moves: Set<string>): 
   });
 }
 
-/** The mission move (D-84 R1 b, F): the recommended orders that push a goal, as one call. */
-function pushMove(state: GameState, items: AgendaItem[], moves: Set<string>): void {
-  const idx = state.pendingActions.map((a, i) => ({ a, i })).filter((x) => x.a.origin === 'staff' && moves.has(orderKey(x.a)));
-  if (!idx.length) return;
+/**
+ * The mission move (D-84 R1 b, F): the engine's move call (advice.calls kind move), its cards the
+ * advisers' orders that push a goal plus Hold this month. A card's order is in pendingActions once
+ * the player chooses it (or as a proposal when the Chief of Staff makes the calls).
+ */
+function pushMove(state: GameState, items: AgendaItem[], calls: CallSet): void {
+  const mv = calls.move;
+  if (!mv) return;
+  const idx = state.pendingActions.map((a, i) => ({ a, i })).filter((x) => calls.moves.has(orderKey(x.a)));
   const chosen = idx.filter((x) => !x.a.proposed);
   const st: AgendaState = chosen.length ? 'decided' : state.skipped?.move ? 'skipped' : 'todo';
+  const proposed = idx.filter((x) => x.a.proposed);
   items.push({
     key: 'move',
     kind: 'move',
-    title: 'The move for your mission',
+    title: mv.title,
     needsYou: true,
     state: st,
-    stateText: st === 'skipped' ? 'Skipped: no move this month' : st === 'decided' ? `Decided: ${chosen.map((x) => x.a.label).join(', ')}` : 'To do',
+    stateText: st === 'skipped' ? `Skipped: ${mv.skip.label.toLowerCase()}` : st === 'decided' ? `Decided: ${chosen.map((x) => x.a.label).join(', ')}` : 'To do',
+    // With the Chief of Staff making the calls the move starts on their pick: their order (a
+    // proposal Choose all chooses), or Hold this month when they have none (advice chiefPick null)
+    rec: proposed.length ? proposed.map((x) => x.a.label).join(', ') : state.chiefCalls && !mv.chiefPick ? mv.skip.label : undefined,
     orders: idx.map((x) => x.i),
     call: true,
+    yourCall: mv,
   });
 }
 
@@ -256,23 +284,19 @@ export function currentItem(items: readonly AgendaItem[], key: string | null = u
 /** What Skip means for a thing: who answers, what they say, what it costs (design-agenda 0.3, 0.12 D5). */
 export function skipMeaning(item: AgendaItem, state: GameState = useGameStore.getState()): SkipMeaning {
   if (item.kind === 'crisis' && item.decision && item.call) {
-    // D-84 R7: on a call the cabinet is split, so it waits: the engine's default applies
-    const d = item.decision;
-    const def = d.options.find((o) => o.id === d.defaultOptionId);
-    const tag = def ? missionTag(state.missionImpact[d.id]?.[def.id], state.objectiveStatus) : null;
-    return {
-      label: 'Skip: the cabinet waits',
-      means: `${def ? `It goes with ${def.label}.` : 'No answer is given.'}${tag ? ` ${tag.text}.` : ''}`,
-      after: 'You can still make this call before you execute.',
-    };
+    // D-85 item 5: the one honest statement of what leaving a call does, from the engine's rule
+    // (lib/month leaveText): before the deadline month nothing happens and the crisis passes; from
+    // it the default answer applies with its cost. The same words as the badge and the plan
+    return { label: 'Leave it open', means: `${leaveText(item.decision, state.worldState)}.`, after: 'You can still make this call before you execute.' };
   }
   if (item.kind === 'move') {
-    const pc = (item.orders ?? []).reduce((s, i) => s + (state.pendingActions[i]?.proposed ? pcCost(state.pendingActions[i].type) : 0), 0);
-    return { label: 'Hold this month', means: `No move for your mission. Political capital stays${pc ? ` (◆ ${pc} of it)` : ''}; above ◆ 6 it is lost.`, after: 'You can still make your move before you execute.' };
+    const mv = item.yourCall;
+    return { label: mv?.skip.label ?? 'Hold this month', means: mv?.skip.text ?? 'No move for your mission.', after: 'You can still make your move before you execute.' };
   }
   if (item.kind === 'crisis' && item.decision) {
-    const cab = cabinetPick(item.decision);
-    return { label: 'Skip for now: your cabinet decides', means: `Your cabinet goes with its recommendation, ${cab.label}.`, after: 'You can come back before you execute.' };
+    const d = item.decision;
+    const pick = d.options.find((o) => o.id === state.decisionChoices[d.id]) ?? cabinetPick(d);
+    return { label: 'Skip for now: your cabinet decides', means: `Your cabinet goes with its recommendation, ${pick.label}.`, after: 'You can come back before you execute.' };
   }
   if (item.kind === 'meeting' && item.meeting) {
     const m = item.meeting;
@@ -331,7 +355,7 @@ export function skipItem(item: AgendaItem): void {
   if (item.decision) {
     // A skipped call has no answer (the engine's default, D-84 R7); a routine crisis keeps the cabinet's
     if (item.call) delete choices[item.decision.id];
-    else choices[item.decision.id] = cabinetPick(item.decision).id;
+    else if (!choices[item.decision.id]) choices[item.decision.id] = cabinetPick(item.decision).id;
     delete reviewed[item.decision.id];
   }
   for (const m of item.meeting ? [item.meeting] : (item.meetings ?? [])) {
@@ -347,7 +371,9 @@ export function undoSkip(item: AgendaItem): void {
   const s = useGameStore.getState();
   const choices = { ...s.decisionChoices };
   for (const m of item.meeting ? [item.meeting] : (item.meetings ?? [])) delete choices[m.id];
-  useGameStore.setState({ decisionChoices: choices, skipped: unskip(item.key), agendaKey: item.key, review: false });
+  const skipped = unskip(item.key);
+  // A call is open again: on the Chief of Staff's pick when they make the calls, else with no answer
+  useGameStore.setState({ decisionChoices: crisisChoices({ ...s, skipped }, choices), skipped, agendaKey: item.key, review: false });
 }
 
 /** Choose all recommended (D-73): the recommended answer for every thing still to do (approveAll). */
@@ -386,9 +412,12 @@ export function executeNow(state: GameState = useGameStore.getState()): string[]
   const out: string[] = [];
   // D-84 R8: each open call first, with what skipping it means
   const items = agendaItems(state);
-  const callItems = items.filter((x) => x.call && x.state !== 'decided');
+  // A call with an answer the player did not press is on the Chief of Staff's pick (setting on): it runs
+  const callItems = items.filter((x) => x.call && x.state !== 'decided' && (x.kind === 'move' ? !x.rec || x.state === 'skipped' : !!x.leave));
   for (const c of callItems) out.push(`${c.state === 'skipped' ? `You skipped your call, ${c.title}:` : `Your call, ${c.title}, is open:`} ${skipMeaning(c, state).means}`);
-  const callIds = new Set(callItems.map((c) => c.decision?.id).filter(Boolean));
+  const chief = items.filter((x) => x.call && x.kind === 'crisis' && x.state !== 'decided' && !x.leave);
+  for (const c of chief) out.push(`The Chief of Staff's answer to ${c.title} applies: ${c.rec}.`);
+  const callIds = new Set([...callItems, ...chief].map((c) => c.decision?.id).filter(Boolean));
   const decided = state.pendingDecisions.filter((d) => state.reviewed[d.id]);
   const open = state.pendingDecisions.filter((d) => !state.reviewed[d.id] && !callIds.has(d.id));
   if (decided.length === 1) out.push(`Your answer to ${decided[0].title} happens.`);
@@ -413,52 +442,52 @@ export function executeNow(state: GameState = useGameStore.getState()): string[]
   return out.slice(0, Math.max(3, callItems.length + 1));
 }
 
-export interface CallSide {
-  optionId: string;
-  who: string;
-  reason: string;
-  aim: 'mission' | 'calm';
+/**
+ * The engine's cards of a call (D-84 R4, R5; design review C-2): for each answer, the advisers who
+ * recommend it by name (CallCard.advisers, never the authored backedBy), why, its political capital
+ * with the mission side's price, and the Chief of Staff's Guide me line. Empty for a crisis that is
+ * not a call.
+ */
+export function callSides(item: AgendaItem, state: GameState = useGameStore.getState()): { cards: Record<string, CallCard>; guide: string; call: YourCall | null } {
+  const call = item.yourCall ?? (item.decision ? (callSet(state).byId[item.decision.id] ?? null) : null);
+  if (!call) return { cards: {}, guide: '', call: null };
+  return { cards: Object.fromEntries(call.cards.map((card) => [card.id, card])), guide: call.guide, call };
+}
+
+/** "Recommended by your Foreign Minister" / "... by your Foreign Minister and your Chief of Staff". */
+export function advisersLine(card: Pick<CallCard, 'advisers'>): string {
+  return card.advisers.length ? `Recommended by your ${card.advisers.join(' and your ')}` : '';
 }
 
 /**
- * The two sides of a crisis or meeting call (D-84 R4, R5): who recommends which answer and why,
- * and the Chief of Staff's sentence for Guide me. The engine's `advice.calls` first; until it lands,
- * the mission side is the mission note's answer (or the one that helps most goals) and the calm
- * side the cabinet's answer (or one that moves no goal), never one that hurts a goal when another
- * does not.
+ * Choose a card of the mission move: its order joins the month as the player's (a proposal the
+ * Chief of Staff made is approved), and another move order chosen before it is taken back, so the
+ * move is one order. Returns the queue result (a refusal points at its meter, gameStore queueOrder).
  */
-export function callSides(item: AgendaItem, state: GameState = useGameStore.getState()): { sides: CallSide[]; guide: string; pushPc: number } {
-  const d = item.decision ?? item.meeting;
-  if (!d) return { sides: [], guide: '', pushPc: 0 };
-  const sent = callSet(state).byId[d.id];
-  const options = item.meeting ? d.options.filter((o) => o.id !== item.meeting?.defaultOptionId) : d.options;
-  const label = (id: string) => options.find((o) => o.id === id)?.label ?? '';
-  if (sent?.sides.length) {
-    const sides = sent.sides.filter((x) => x.optionId && options.some((o) => o.id === x.optionId)).map((x) => ({ optionId: x.optionId as string, who: x.who, reason: x.reason, aim: x.aim }));
-    const m = sides.find((x) => x.aim === 'mission');
-    const c = sides.find((x) => x.aim === 'calm');
-    return { sides, guide: sent.guide ?? (m && c ? `For your mission: ${label(m.optionId)}. To keep things calm: ${label(c.optionId)}.` : ''), pushPc: sent.pushPc ?? 0 };
+export async function chooseMove(item: AgendaItem, card: CallCard): Promise<QueueResult | null> {
+  if (!card.action) return null;
+  const want = orderKey(card.action);
+  const moves = new Set((item.yourCall?.cards ?? []).flatMap((c) => (c.action ? [orderKey(c.action)] : [])));
+  // The move is one order: another chosen move order is taken back first (its capital frees up)
+  const before = useGameStore.getState().pendingActions;
+  useGameStore.setState({ pendingActions: before.filter((a) => orderKey(a) === want || !moves.has(orderKey(a)) || a.proposed) });
+  const res = await queueOrder({ ...card.action, origin: 'staff', why: `${card.advisers[0] ?? 'Chief of Staff'}: ${card.why ?? ''}` });
+  if (!res.ok) {
+    useGameStore.setState({ pendingActions: before });
+    return res;
   }
-  const imp = state.missionImpact[d.id] ?? {};
-  const helps = (o: DecisionOption) => imp[o.id]?.helps.length ?? 0;
-  const hurts = (o: DecisionOption) => (imp[o.id]?.hurts.length ?? 0) + (imp[o.id]?.breaks.length ?? 0);
-  const note = item.decision ? state.advice?.missionNotes?.[d.id] : undefined;
-  const mission = options.find((o) => o.id === note?.optionId) ?? [...options].sort((a, b) => helps(b) - hurts(b) - (helps(a) - hurts(a)))[0];
-  const safe = options.filter((o) => hurts(o) === 0);
-  let calm = item.decision ? cabinetPick(item.decision) : (meetingPick(item.meeting as Meeting) ?? options[0]);
-  // The calm side: the answer that hurts no goal (or the fewest), moves none if it can (D-72 per adviser)
-  const others = options.filter((o) => o.id !== mission?.id).sort((a, b) => hurts(a) - hurts(b) || helps(a) - helps(b));
-  if (!calm || calm.id === mission?.id || (hurts(calm) > 0 && safe.length)) calm = safe.find((o) => o.id !== mission?.id && helps(o) === 0) ?? safe.find((o) => o.id !== mission?.id) ?? others[0] ?? calm;
-  if (!mission || !calm) return { sides: [], guide: '', pushPc: 0 };
-  const name = (o: DecisionOption, fallback: string) => ADVISOR_NAMES[o.backedBy[0] ?? ''] ?? fallback;
-  const reason = (o: DecisionOption) => splitLede(o.description)[0];
-  let mWho = name(mission, item.meeting ? ministerFor(item.meeting) : 'Foreign Minister');
-  let cWho = name(calm, 'Chief of Staff');
-  if (cWho === mWho) cWho = mWho === 'Chief of Staff' ? 'Foreign Minister' : 'Chief of Staff';
-  if (mWho === cWho) mWho = 'Foreign Minister';
-  const sides: CallSide[] = [
-    { optionId: mission.id, who: mWho, reason: note?.text ? `${reason(mission)} ${note.text}.` : reason(mission), aim: 'mission' },
-    { optionId: calm.id, who: cWho, reason: reason(calm), aim: 'calm' },
-  ];
-  return { sides, guide: `For your mission: ${mission.label}. To keep things calm: ${calm.label}.`, pushPc: 0 };
+  useGameStore.setState({ skipped: unskip(item.key) });
+  advance(item.key);
+  return res;
+}
+
+/** Take a chosen move order back: a Chief of Staff proposal is a proposal again, else it is removed. */
+export function unchooseMove(card: CallCard): void {
+  if (!card.action) return;
+  const want = orderKey(card.action);
+  const s = useGameStore.getState();
+  const chief = new Set((s.chiefCalls ? (s.advice?.chief?.orders ?? []) : []).map((o) => orderKey(o.action)));
+  useGameStore.setState({
+    pendingActions: s.pendingActions.flatMap((a) => (orderKey(a) !== want ? [a] : chief.has(want) ? [{ ...a, proposed: true }] : [])),
+  });
 }

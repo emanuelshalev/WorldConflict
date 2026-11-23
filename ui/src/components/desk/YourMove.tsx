@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { IconMessageCircle, IconSearch } from '@tabler/icons-react';
-import { type DecisionOption, type Meeting, MEETING_SLOTS, type PendingDecision, approveProposal, countryName, useGameStore, usePlayerCountry } from '../../store/gameStore';
+import { type CallCard, type DecisionOption, type Impact, type Meeting, MEETING_SLOTS, type MissionNote, type PendingDecision, approveProposal, countryName, orderKey, useGameStore, usePlayerCountry } from '../../store/gameStore';
 import { ADVISOR_NAMES, flag, monthLabel } from '../../lib/format';
-import { cabinetPick, effectWords, goalName, guideLede, meetingAdviser, meetingPick, missionPick, missionTag, proposalEffects, splitLede } from '../../lib/month';
-import { type AgendaItem, agendaItems, callSides, chooseAnswer, chooseSmall, costPhrase, currentItem, meetingTitle, ministerFor, skipItem, skipMeaning, undoSkip } from '../../lib/agenda';
+import { cabinetPick, crisisSelection, effectWords, goalName, guideLede, meetingAdviser, meetingPick, meetingSelection, missionPick, missionTag, proposalEffects, splitLede } from '../../lib/month';
+import { type AgendaItem, advisersLine, agendaItems, callSides, chooseAnswer, chooseMove, chooseSmall, costPhrase, currentItem, meetingTitle, ministerFor, skipItem, skipMeaning, undoSkip, unchooseMove } from '../../lib/agenda';
 import { TERMS } from '../../lib/glossary';
 import { SceneFrame } from '../../scenes/SceneFrame';
 import { type SceneKind, avoidRepeat, crisisMood, sceneForCrisis } from '../../scenes/kinds';
@@ -112,6 +112,18 @@ function SkipCard({ item }: { item: AgendaItem }) {
       </button>
     </div>
   );
+}
+
+/**
+ * The advisers named under an answer (its authored backers), except on an answer that breaks a
+ * primary goal while another answer breaks none: no adviser backs such a card (D-72 extended,
+ * src/core/advisors.ts crisisCall), so the desk does not say one does (design review C-2 note,
+ * Water War India "Strike the camps").
+ */
+function shownBackers(o: DecisionOption, impacts: Record<string, Impact> | undefined): string[] {
+  const breaks = (id: string) => (impacts?.[id]?.breaks.length ?? 0) > 0;
+  if (impacts && breaks(o.id) && Object.keys(impacts).some((id) => !breaks(id))) return [];
+  return o.backedBy.map((b) => ADVISOR_NAMES[b] ?? b);
 }
 
 /** The scene band: kicker, title, the situation's first sentence (or the caller's words). */
@@ -228,11 +240,16 @@ function DecisionThing({ item, compact }: { item: AgendaItem; compact: boolean }
   const home = me?.id;
   const other = meeting?.withCountry ?? d.affectedCountries.find((id) => id !== home);
   const options = meeting ? d.options.filter((o) => o.id !== meeting.defaultOptionId) : d.options;
-  const rec = meeting ? meetingPick(meeting) : cabinetPick(d);
-  // "Your call" (D-84): two advisers recommend different answers by name; no single star
+  const sel = meeting ? meetingSelection(meeting, choices, reviewed) : crisisSelection(d as PendingDecision, choices, reviewed);
+  // The recommended answer: on a crisis the one the desk starts on (what Execute sends until the
+  // player chooses), else the cabinet's; a call has none of its own (D-85), its cards name advisers
+  const rec = meeting ? meetingPick(meeting) : sel.kind === 'cabinet' && sel.option ? sel.option : cabinetPick(d);
+  // "Your call" (D-84): the engine's cards name who recommends which answer (design review C-2)
   const call = item.call ? callSides(item) : null;
+  const agree = !!call?.call && call.call.missionCard === call.call.calmCard;
   const note = meeting ? undefined : advice?.missionNotes?.[d.id];
   const best = meeting ? undefined : advice?.missionNotes ? (note ? d.options.find((o) => o.id === note.optionId) : undefined) : missionPick(d);
+  const bestText = note ? bestTagText(note) : undefined;
   const decided = !!reviewed[d.id] || (!!meeting && !!choices[d.id] && choices[d.id] !== meeting.defaultOptionId && item.state === 'decided');
   const chosenId = decided ? choices[d.id] : undefined;
   const attended = meeting ? agenda.filter((x) => x.id !== meeting.id && choices[x.id] && choices[x.id] !== x.defaultOptionId).length : 0;
@@ -267,7 +284,7 @@ function DecisionThing({ item, compact }: { item: AgendaItem; compact: boolean }
       <div className="th-ans">
         <div className="ask-row">
           <h2 className="ask">
-            {call ? `${TERMS.yourCall.name}: your advisers disagree. ` : ''}What do you {noun}? Choose one of {options.length} answers, or skip (last card).
+            {call ? `${TERMS.yourCall.name}: your advisers ${agree ? 'agree, and the choice is yours' : 'disagree'}. ` : ''}What do you {noun}? Choose one of {options.length} answers, or skip (last card).
           </h2>
           {!compact && optionSizes(options[0] ?? { effects: {} }, countryName).length > 0 && (
             <button type="button" className="wc-btn small ask-sizes" aria-pressed={sizes} onClick={() => setSizes((v) => !v)} data-effect-sizes="">
@@ -275,6 +292,13 @@ function DecisionThing({ item, compact }: { item: AgendaItem; compact: boolean }
             </button>
           )}
         </div>
+        {/* What Execute does with this crisis now, in the desk's one sentence (D-84 RC-1, D-85): the
+            answer it will send, or, for a call with no answer, what leaving it does (lib/month leaveText) */}
+        {!meeting && (
+          <p className={`sel-badge sel-${sel.kind}`} data-sel={sel.kind} role="status" aria-label={`${d.title}: ${sel.text}`}>
+            {sel.text}
+          </p>
+        )}
         {/* Step 1 under the question, over the answers, in its own place (RS-008-2) */}
         {!compact && <CoachBubble step="move" place="inline" />}
         {call && guide && call.guide && (
@@ -285,12 +309,18 @@ function DecisionThing({ item, compact }: { item: AgendaItem; compact: boolean }
         <div className="opts">
           {options.map((o) => {
             const mt = missionTag(missionImpact[d.id]?.[o.id], status);
-            const side = call?.sides.find((x) => x.optionId === o.id);
-            const words = effectWords(o).slice(0, 2).map((w) => w.text);
-            const pc = o.effects.pc ?? 0;
+            const cc = call?.cards[o.id];
+            // A war this answer starts is always named on its card (design review C-2)
+            const all = effectWords(o);
+            const war = all.find((w) => w.text === 'Starts a war');
+            const words = (war ? [war, ...all.filter((w) => w !== war)] : all).slice(0, 2).map((w) => w.text);
+            // The card's cost is what the answer does to political capital, its D-84 price included
+            // (the price is charged by the engine and counted by the meters, lib/budget.ts)
+            const price = meeting && o.id === meeting.defaultOptionId ? 0 : (advice?.prices?.[d.id]?.[o.id] ?? 0);
+            const pc = (o.effects.pc ?? 0) - price;
             const reason = guide ? guideLede(splitLede(o.description)[0], 12).short : splitLede(o.description)[0];
             const isRec = !call && rec?.id === o.id;
-            const bestLine = best?.id === o.id && note ? ` ${note.text}.` : '';
+            const bestLine = best?.id === o.id && bestText ? ` ${bestText.best}.` : '';
             // The map card is shorter (D5): the goal it moves, else its strongest effect
             const fx = compact ? (
               mt ? <span className={`mt mt-${mt.tone}`}>{mt.text}.</span> : <>{words[0] ?? 'No effect we can see'}.</>
@@ -304,19 +334,23 @@ function DecisionThing({ item, compact }: { item: AgendaItem; compact: boolean }
                 </span>
               </>
             );
-            const push = side?.aim === 'mission' ? (call?.pushPc ?? 0) : 0;
+            // On a call the card's advisers are the engine's (C-2); elsewhere the authored backers,
+            // none on an answer that breaks a goal while another breaks none (RC-6)
+            const backers = cc ? [] : shownBackers(o, missionImpact[d.id]);
             const more = [
-              pc < 0 || push ? `Costs ◆ ${Math.max(0, -pc) + push}${push ? ' (the mission side costs ◆ 1 more)' : ''}.` : pc > 0 ? `Gives ◆ ${pc}.` : 'Free.',
-              o.backedBy.length ? `Backed by the ${o.backedBy.map((b) => ADVISOR_NAMES[b] ?? b).join(' and the ')}.` : '',
+              pc < 0 ? `Costs ◆ ${-pc}${price ? ` (◆ ${price} of it is the price of the mission side)` : ''}.` : pc > 0 ? `Gives ◆ ${pc}.` : 'Free.',
+              backers.length ? `Backed by the ${backers.join(' and the ')}.` : '',
+              cc?.blocked ? `${cc.blocked.reason} ${cc.blocked.fix}`.trim() : '',
               sizes ? optionSizes(o, countryName).slice(0, 4).map((x) => x.text).join(', ') : '',
             ]
               .filter(Boolean)
               .join(' ');
+            const ccRec = cc && cc.advisers.length ? `${advisersLine(cc)}${cc.why ? `: "${guide ? guideLede(cc.why, 14).short : cc.why}"` : ''}` : undefined;
             return (
               <AnswerCard
                 key={o.id}
                 title={`${o.label}${pc < 0 ? ` · costs ◆ ${-pc}` : ''}`}
-                rec={side ? `Recommended by your ${side.who}: "${guide ? guideLede(side.reason, 14).short : side.reason}"` : isRec ? `★ Recommended by your ${recBy}: "${reason}"` : undefined}
+                rec={ccRec ?? (isRec ? `★ Recommended by your ${recBy}: "${reason}"` : undefined)}
                 fx={fx}
                 fxTone={mt ? (mt.tone === 'risk' ? 'risk' : 'help') : undefined}
                 more={!compact ? more : undefined}
@@ -326,7 +360,7 @@ function DecisionThing({ item, compact }: { item: AgendaItem; compact: boolean }
                   chooseAnswer(item, o.id);
                   sound.play('stamp');
                 }}
-                aria={`${o.label}${side ? `, recommended by your ${side.who}` : isRec ? `, recommended by your ${recBy}` : ''}${mt ? `. ${mt.text}` : ''}${words.length ? `. ${words.join(', ')}` : ''}. Choose`}
+                aria={`${o.label}${ccRec ? `, ${advisersLine(cc as CallCard).toLowerCase()}` : isRec ? `, recommended by your ${recBy}` : ''}${mt ? `. ${mt.text}` : ''}${words.length ? `. ${words.join(', ')}` : ''}. Choose`}
               />
             );
           })}
@@ -410,10 +444,101 @@ function SmallMeetingsThing({ item }: { item: AgendaItem }) {
   );
 }
 
-/** The recommended orders: Choose each one, or skip (they do not run). The mission move (D-84) is the
- *  same cards as a call: each adviser's proposal by name, no star, Skip reads "Hold this month". */
+/** The tag words for the mission pick: alone, and when it is also the recommended answer. */
+function bestTagText(note: MissionNote): { best: string; both: string } {
+  // A note that names more than two goals (or runs long) no longer fits the tag on a card (RC-6, Water War India
+  // at 1440: four lines, the first cut): the tag keeps the kind, the card's ribbon and the
+  // disagreement line name the goals
+  const long = note.kind !== 'best' && (note.helps.length + note.costs.length > 2 || note.text.length > 64);
+  const text = long ? (note.kind === 'tradeoff' ? 'Best trade-off for your mission' : 'Least harm to your mission') : note.text;
+  return {
+    best: text,
+    both: note.kind === 'best' ? 'Recommended · good for your mission' : `Recommended · ${long ? (note.kind === 'tradeoff' ? 'best trade-off' : 'least harm') : `${text.charAt(0).toLowerCase()}${text.slice(1)}`}`,
+  };
+}
+
+/**
+ * The mission move (D-84 R1 b): the engine's move call. One card per adviser's order that pushes a
+ * goal, each naming its adviser (CallCard.advisers, no star); Choose puts that order in the month
+ * as yours; Skip is the engine's Hold this month. With the Chief of Staff making the calls, their
+ * order starts as a proposal that Choose all approves.
+ */
+function MoveThing({ item }: { item: AgendaItem }) {
+  const actions = useGameStore((s) => s.pendingActions);
+  const status = useGameStore((s) => s.objectiveStatus);
+  const guide = useGameStore((s) => s.learn.level === 'guide');
+  const [refused, setRefused] = useState<Record<string, string>>({});
+  const mv = item.yourCall;
+  if (!mv) return null;
+  const cards = mv.cards.filter((c) => c.action);
+  const stateOf = (c: CallCard) => (c.action ? actions.find((a) => orderKey(a) === orderKey(c.action as NonNullable<CallCard['action']>)) : undefined);
+  return (
+    <article className="thing is-simple" data-thing="move" aria-label={item.title}>
+      <div className="th-sit">
+        <div className="th-hero is-text">
+          <div className="txt">
+            <span className="kick">{TERMS.yourCall.name} · the orders that push your mission</span>
+            <h1 className="hero-title">{item.title}</h1>
+            <p className="hero-quote">Your advisers each propose a move for your mission. Choose the one you want to fund, or hold this month.</p>
+          </div>
+        </div>
+      </div>
+      <div className="th-ans">
+        <h2 className="ask">Choose one of {cards.length} {cards.length === 1 ? 'order' : 'orders'}, or skip (last card).</h2>
+        {guide && mv.guide && (
+          <p className="call-guide" data-call-guide="">
+            <b>Chief of Staff:</b> {mv.guide}
+          </p>
+        )}
+        <div className="opts">
+          {cards.map((c) => {
+            const a = stateOf(c);
+            const chosen = !!a && !a.proposed;
+            const goals = [c.breaks.length ? `Breaks: ${c.breaks.join(', ')}` : '', c.hurts.length ? `Hurts: ${c.hurts.join(', ')}` : '', c.helps.length ? `Helps: ${c.helps.map((x) => goalWords(x, status)).join(', ')}` : '']
+              .filter(Boolean)
+              .join('. ');
+            const odds = c.successChance == null ? '' : `${Math.round(c.successChance <= 1 ? c.successChance * 100 : c.successChance)}% chance.`;
+            return (
+              <div key={c.id} className="opt-pair">
+                <AnswerCard
+                  title={`Order: ${c.label}${c.pc ? ` · ◆ ${c.pc}` : ''}`}
+                  rec={c.advisers.length ? `${advisersLine(c)}${c.why ? `: "${c.why}"` : ''}` : undefined}
+                  fx={goals ? `${goals}.` : 'No goal moves that we can see.'}
+                  fxTone={c.breaks.length + c.hurts.length ? 'risk' : c.helps.length ? 'help' : undefined}
+                  more={[odds, a?.proposed ? 'Your Chief of Staff proposes it: Choose all recommended chooses it.' : '', refused[c.id] ?? (c.blocked ? `${c.blocked.reason} ${c.blocked.fix}` : '')].filter(Boolean).join(' ')}
+                  chosen={chosen}
+                  onChoose={() => {
+                    if (chosen) return;
+                    void chooseMove(item, c).then((r) => {
+                      if (r?.ok) sound.play('stamp');
+                      else if (r && !r.ok) setRefused((m) => ({ ...m, [c.id]: r.block?.reason ?? 'This order needs a confirmation: give it from All orders.' }));
+                    });
+                  }}
+                  aria={`Order: ${c.label}${c.pc ? `, spends ◆ ${c.pc}` : ''}${c.advisers.length ? `, ${advisersLine(c).toLowerCase()}` : ''}. Choose`}
+                />
+                {chosen && (
+                  <button type="button" className="wc-btn small" onClick={() => unchooseMove(c)} aria-label={`Undo: ${c.label}`}>
+                    Undo
+                  </button>
+                )}
+              </div>
+            );
+          })}
+          {item.state !== 'decided' && <SkipCard item={item} />}
+        </div>
+      </div>
+    </article>
+  );
+}
+
+/** "Taipei comes to the table": a goal named by the engine, in the mission line's short words. */
+function goalWords(label: string, status: ReturnType<typeof useGameStore.getState>['objectiveStatus']): string {
+  const c = status.find((x) => x.label === label);
+  return c ? goalName(c, c.label) : label;
+}
+
+/** The recommended orders: Choose each one, or skip (they do not run). */
 function OrdersThing({ item }: { item: AgendaItem }) {
-  const move = item.kind === 'move';
   const actions = useGameStore((s) => s.pendingActions);
   const remove = useGameStore((s) => s.removePendingAction);
   const unchoose = (i: number) => useGameStore.setState((s) => ({ pendingActions: s.pendingActions.map((a, j) => (j === i ? { ...a, proposed: true } : a)) }));
@@ -423,9 +548,9 @@ function OrdersThing({ item }: { item: AgendaItem }) {
       <div className="th-sit">
         <div className="th-hero is-text">
           <div className="txt">
-            <span className="kick">{move ? `${TERMS.yourCall.name} · the orders that push your mission` : 'Your advisers propose these orders'}</span>
+            <span className="kick">Your advisers propose these orders</span>
             <h1 className="hero-title">{item.title}</h1>
-            <p className="hero-quote">{move ? 'Your advisers each propose a move for your mission. Choose the one you want to fund, or hold this month.' : 'An order you choose spends its political capital when you execute. One you do not choose does not run.'}</p>
+            <p className="hero-quote">An order you choose spends its political capital when you execute. One you do not choose does not run.</p>
           </div>
         </div>
       </div>
@@ -442,7 +567,7 @@ function OrdersThing({ item }: { item: AgendaItem }) {
               <div key={`${a.label}-${i}`} className="opt-pair">
                 <AnswerCard
                   title={`Order: ${a.label}${pc ? ` · ◆ ${pc}` : ''}`}
-                  rec={`${move ? '' : '★ '}Recommended by your ${who}${why ? `: "${why}"` : ''}`}
+                  rec={`★ Recommended by your ${who}${why ? `: "${why}"` : ''}`}
                   fx={fx ? `Will change: ${fx}` : 'Free of side effects we can see.'}
                   fxTone={a.preview?.missionWarning ? 'risk' : undefined}
                   more={[a.preview?.successChance != null ? `${Math.round(a.preview.successChance <= 1 ? a.preview.successChance * 100 : a.preview.successChance)}% chance.` : '', a.preview?.missionWarning ?? ''].filter(Boolean).join(' ')}
@@ -516,6 +641,7 @@ export function Thing({ compact = false }: { compact?: boolean }) {
     );
   if (item.kind === 'crisis' || item.kind === 'meeting') return <DecisionThing key={item.key} item={item} compact={compact} />;
   if (item.kind === 'meetings') return <SmallMeetingsThing key={item.key} item={item} />;
-  if (item.kind === 'orders' || item.kind === 'move') return <OrdersThing key={item.key} item={item} />;
+  if (item.kind === 'move') return <MoveThing key={item.key} item={item} />;
+  if (item.kind === 'orders') return <OrdersThing key={item.key} item={item} />;
   return <OwnOrdersThing key={item.key} item={item} compact={compact} />;
 }

@@ -141,7 +141,9 @@ export function Recommended({ compact = false, folded = false, onShow = () => {}
   const { items, n, breakdown, against } = useStaffPicks();
   const agenda = agendaItems();
   const chief = useGameStore((s) => s.chiefCalls);
-  const calls = chief ? 0 : openCalls(agenda).length;
+  // The calls Choose all leaves open (D-84, D-85): with no answer, or a move not made
+  const open = openCalls(agenda).filter((x) => !chief || (x.kind === 'crisis' ? !!x.leave : !x.rec));
+  const calls = open.length;
   const callLine = calls ? ` ${calls === 1 ? 'Your call stays open' : `${calls} of your calls stay open`}.` : '';
   const pc = items.filter((x) => x.fits).reduce((s, x) => s + x.cost, 0);
   const summary = `${items.map((x) => short(x.title)).join(', ')}${pc ? ` (◆ ${pc})` : ''}`;
@@ -185,7 +187,8 @@ export function Recommended({ compact = false, folded = false, onShow = () => {}
           <span className="sp-main-label">
             <IconChecks size={16} aria-hidden /> {TERMS.approveAll.name.replace(' ({n})', '')}
           </span>
-          <small className="sp-main-sub">Nothing to choose: every recommendation is decided</small>
+          {/* Never "every recommendation is decided" while a call is still open (design-review-your-call RC-1) */}
+          <small className="sp-main-sub">{calls ? `Nothing else to choose. Still open: ${open.map((x) => x.title).join(', ')}` : 'Nothing to choose: every recommendation is decided'}</small>
         </button>
       )}
       {button && (

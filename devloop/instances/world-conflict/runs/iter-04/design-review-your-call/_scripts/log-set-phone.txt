@@ -1,0 +1,4 @@
+=== 390x844 settings open: true
+row 0: {"text":"Staff propose orders Each month your staff propose up to three safe orders, always leaving at least ◆ 1 for you. A recommended order spends nothing until you accept it (one by one or with Accept all recommended) and does not run unless you do. Turning this off applies from next month.","row":"x41 y143 w308 h119","checkbox":"w13 h13","lines":6,"font":"13px","checkboxHitsLabel":true,"checked":true,"overflowX":false}
+row 1: {"text":"Let the Chief of Staff make my calls Off by default. When on, Accept all recommended also decides each Your call: the Chief of Staff takes the card that serves your mission (the calm one when political capital is short) and the first move for your mission.","row":"x41 y268 w308 h102","checkbox":"w13 h13","lines":5,"font":"13px","checkboxHitsLabel":true,"checked":false,"overflowX":false}
+page errors: none

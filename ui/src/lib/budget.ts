@@ -1,4 +1,4 @@
-import { MEETING_SLOTS, type GameState, committedActions, useGameStore } from '../store/gameStore';
+import { MEETING_SLOTS, type GameState, committedActions, crisisAnswer, useGameStore } from '../store/gameStore';
 import { pcCost } from './actions';
 
 /** Share of the monthly defense budget each order uses. Mirrors src/core/costs.ts BUDGET_SHARE. */
@@ -28,13 +28,16 @@ export function budgetStatus(state: GameState = useGameStore.getState()): Budget
   const world = state.worldState;
   if (!world) return null;
   const me = world.countries.find((c) => c.id === world.playerCountryId);
+  // A chosen answer on the mission side also pays its price (D-84, src/core/costs.ts PUSH_PC):
+  // the same rule as capitalLeft(), so the meters show what the engine will charge
+  const price = (id: string, optionId: string | undefined) => (optionId ? (state.advice?.prices?.[id]?.[optionId] ?? 0) : 0);
   const crisis = state.pendingDecisions.reduce((sum, d) => {
-    const o = d.options.find((x) => x.id === (state.decisionChoices[d.id] ?? d.defaultOptionId ?? d.options[0]?.id));
-    return sum + (o?.effects.pc ?? 0);
+    const o = crisisAnswer(state, d);
+    return sum + (o?.effects.pc ?? 0) - price(d.id, state.decisionChoices[d.id]);
   }, 0);
   const meetings = (world.agenda ?? []).reduce((sum, m) => {
     const o = m.options.find((x) => x.id === state.decisionChoices[m.id]);
-    return sum + (o?.effects.pc ?? 0);
+    return sum + (o?.effects.pc ?? 0) - (o && o.id !== m.defaultOptionId ? price(m.id, o.id) : 0);
   }, 0);
   // Staff proposals spend nothing until approved (F-02-4)
   const committed = committedActions(state.pendingActions);

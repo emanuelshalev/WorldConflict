@@ -107,8 +107,9 @@ export const TERMS = {
     id: 'recommended',
     name: 'Recommended',
     compact: 'Recommended ({n})',
-    // The line under the group (RS-005, D-72 wording; D-73: one verb, Choose)
-    definition: 'Your advisers recommend these for this month. A recommended order runs only if you choose it; a crisis or meeting you leave goes ahead on its recommended or usual answer.',
+    // The line under the group (RS-005, D-72 wording; D-73: one verb, Choose). N-2 (design-rereview-your-call.md):
+    // a crisis not in the list (a call left open) does not go ahead on the Recommended tag
+    definition: 'Your advisers recommend these for this month. A recommended order runs only if you choose it; a crisis or meeting listed here goes ahead on its recommended or usual answer unless you change it, one not listed is yours to answer.',
     banned: [],
   },
   reviewRecommended: {
@@ -123,7 +124,7 @@ export const TERMS = {
     // D-84 (R11): a thing Choose all never decides; two advisers recommend different answers by name
     name: 'Your call',
     compact: 'Your call',
-    definition: 'A decision that is yours: two advisers recommend different answers, and Choose all recommended leaves it open.',
+    definition: 'A decision that is yours: a crisis your advisers disagree on, or the move for your mission. Choose all recommended never decides it: you choose a card, or skip and the card says what leaving it does.',
     banned: [],
   },
   choose: {
@@ -189,6 +190,15 @@ export const TERMS = {
     id: 'noUndo',
     name: 'No undo',
     compact: 'No undo',
+    banned: [],
+  },
+  chiefCalls: {
+    id: 'chiefCalls',
+    // D-84: the opt-in setting that restores the full one-press Accept all
+    name: 'Let the Chief of Staff make my calls',
+    compact: 'Chief of Staff makes my calls',
+    // RC-4 (design-review-your-call.md), on the month screen with its Your call cards (D-85 item 5)
+    definition: "Off: Choose all recommended decides the routine things only; your calls (a crisis your advisers disagree on, the move for your mission) start with no answer and wait for you. On: each call starts on the Chief of Staff's answer (the one that serves your mission, or the calm one when political capital is short) and Choose all recommended chooses it too. A crisis call you have not answered follows the setting at once; the order for your mission from the next month.",
     banned: [],
   },
 } as const satisfies Record<string, Term>;

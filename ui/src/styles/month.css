@@ -105,7 +105,13 @@
 .sel-badge { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 5px 14px; border-radius: 999px; font-size: 15px; font-weight: 650; border: 1.5px solid var(--accent); color: var(--accent); background: rgba(242, 169, 59, 0.06); }
 .sel-badge.sel-approved { background: var(--good); border-color: var(--good); color: #06180f; }
 .sel-badge.sel-yours { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
-.sel-badge.sel-deputy, .sel-badge.sel-waiting { border-color: var(--line-2); color: var(--text-2); background: none; }
+.sel-badge.sel-deputy { border-color: var(--line-2); color: var(--text-2); background: none; }
+/* An open call (no answer yet) needs you: the amber of a question waiting, never the grey of a
+   disabled control (design-rereview-your-call.md N-3) */
+.sel-badge.sel-waiting { border: 1.5px dashed var(--accent); color: var(--text-1); background: rgba(242, 169, 59, 0.14); }
+/* On the Thing the badge says what Execute does with the crisis; it wraps inside its column on any
+   width, never clipped (D84-BADGE-FIT, RC2-1) */
+.th-ans .sel-badge { display: flex; width: fit-content; max-width: 100%; min-width: 0; margin: 0 0 10px; white-space: normal; overflow-wrap: anywhere; border-radius: 18px; line-height: 1.35; }
 .move-more { margin-top: 14px; display: grid; gap: 8px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: rgba(255, 255, 255, 0.02); }
 .move-more-row { display: grid; gap: 4px; }
 .move-more-row > b { font-size: 15px; }
@@ -334,7 +340,9 @@ body:has(.ord-confirm) .coach-bubble { visibility: hidden; pointer-events: none;
 @media (max-width: 1279px) {
   .stage-staff { flex-wrap: wrap; row-gap: 8px; }
   .stage-staff p { flex: 1 1 calc(100% - 50px); }
-  .stage-staff .sel-badge { margin-left: 46px; }
+  /* A long badge ("No answer yet. If you leave it: ...") wraps inside the screen instead of being
+     clipped (design-rereview-your-call.md RC2-1) */
+  .stage-staff .sel-badge { margin-left: 46px; flex: 0 1 auto; min-width: 0; max-width: calc(100% - 46px); white-space: normal; overflow-wrap: anywhere; border-radius: 18px; }
 }
 
 /* Touch targets: 44 px at 390 and 1024 (design-feel 8.1) */

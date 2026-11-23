@@ -1,0 +1,6 @@
+m1 badges: No answer yet. If you leave it: no answer is given and the crisis passes [312x50 at 64,855 radius 18px]
+m2 badges: No answer yet. If you leave it: Break the strike [312x50 at 64,639 radius 18px]
+m2 Recommended panel: Recommended 7 What is this? Your advisers recommend these for this month. Orders and meetings wait for you to accept; a crisis listed here goes ahead on its recommended answer unless you change it, one not listed is yours to answer. Recommended by Intelligence Chief Crisis answer: Counter-intelligence sweep Crisis: Foreign interference · goes ahead unless you change it Will change: Counter-intel up · Stability up Helps: Stability of 60%+ (bonus) Accept answer Change Recommended by Intelligence Chief Order: Hunt foreign spies Spends ◆ 1 if accepted Will change: United States: Foreign operations 60% foiled · United States: Counter-intelligence about +10 Accept order Change Recommended by Intel
+nav labels: Mission: Open the strait. 3 of 5 on track · month 2 of 12. Open the mission sheet || General strike: No answer yet. If you leave it: Break the strike || Foreign interference: Recommended: Counter-intelligence sweep
+no meeting in navigator
+errors: 

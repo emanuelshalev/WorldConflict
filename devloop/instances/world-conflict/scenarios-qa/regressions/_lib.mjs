@@ -97,11 +97,13 @@ export async function toPhoneReview(page) {
 }
 
 /** Open the title on a fresh profile and take office on the pinned seat; resolves on the month 1 desk. */
-export async function startGame({ variant, device, out, base, seat = SEAT }) {
+/** init: an optional page script run before the app loads (a stored setting, say). */
+export async function startGame({ variant, device, out, base, seat = SEAT, init }) {
   fs.rmSync(path.join(out, '.profile'), { recursive: true, force: true });
   const s = await launch({ variant, device, out, base });
   s.page.setDefaultTimeout(8000);
   await pinSeat(s.page, seat);
+  if (init) await s.page.addInitScript(init);
   await s.goto();
   if (!(await s.click(/^Take office/i, { timeout: 15000 }))) throw new Error('no Take office on the title screen');
   // The briefing (and on some builds a familiarity question) sits between the title and the desk
@@ -221,4 +223,23 @@ export async function phoneScrollToFamily(page, fam) {
     g.scrollTop += sec.getBoundingClientRect().top - top;
   }, fam);
   await page.waitForTimeout(400);
+}
+
+/**
+ * Open a thing of the month by its title (iteration 4 month screen: one thing at a time). The thing
+ * on screen is `article.thing` with the title as its label; any other is opened from the List (a
+ * column, or See all when it is folded; the sheet on a phone). Returns true when it is on screen.
+ */
+export async function openThing(page, title) {
+  const on = () => page.locator(`article.thing[aria-label="${title.replace(/"/g, '\\"')}"]`).first().isVisible().catch(() => false);
+  if (await on()) return true;
+  const row = page.locator('.lrow').filter({ has: page.locator('.lrow-t > b', { hasText: title }) }).first();
+  if (!(await row.isVisible().catch(() => false))) {
+    await page.locator('.see-all').first().click({ timeout: 2000 }).catch(() => {});
+    await page.waitForTimeout(300);
+  }
+  await row.scrollIntoViewIfNeeded().catch(() => {});
+  await row.click({ timeout: 3000 }).catch(() => {});
+  await page.waitForTimeout(400);
+  return on();
 }

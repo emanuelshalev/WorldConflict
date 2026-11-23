@@ -157,7 +157,8 @@ describe("UI glossary", () => {
 
   it("names the Recommended group, one verb Choose, and explains it in one line (RS-005, D-72, D-73)", () => {
     expect(TERMS.recommended.name).toBe("Recommended");
-    expect(TERMS.recommended.definition).toBe("Your advisers recommend these for this month. A recommended order runs only if you choose it; a crisis or meeting you leave goes ahead on its recommended or usual answer.");
+    // N-2 (design-rereview-your-call.md): a crisis not in the list (a call left open) is yours to answer
+    expect(TERMS.recommended.definition).toBe("Your advisers recommend these for this month. A recommended order runs only if you choose it; a crisis or meeting listed here goes ahead on its recommended or usual answer unless you change it, one not listed is yours to answer.");
     expect(TERMS.staffPick.name).toBe("Recommended by {role}");
     // D-73: with the agenda's per-item Choose, the bulk button is "Choose all recommended" and defines itself
     expect(TERMS.approveAll.name).toBe("Choose all recommended ({n})");
