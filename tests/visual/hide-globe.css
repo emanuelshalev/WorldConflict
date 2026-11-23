@@ -1,0 +1,11 @@
+/* Title screen capture: the globe (camera, label placement, pins) settles at a machine-dependent
+   moment, so it is left out of the comparison. Applied through stylePath: toHaveScreenshot has no
+   inline style option and silently ignores one. */
+.tg-map,
+.tg-map *,
+.tg-rim,
+.maplibregl-canvas,
+.maplibregl-marker,
+.maplibregl-popup {
+  visibility: hidden !important;
+}

@@ -2,6 +2,7 @@
 // Config and how to run: ./playwright.config.ts. Every page runs with reduced motion, CSS
 // animations disabled, a fixed clock and, where something is live (the WebGL globe, the ticker,
 // dates), a mask over it.
+import { fileURLToPath } from 'node:url';
 import { expect, type Page, test } from 'playwright/test';
 
 const API = (process.env.VISUAL_API_URL ?? 'http://localhost:8080/api').replace(/\/$/, '');
@@ -136,7 +137,7 @@ test.describe('title', () => {
       // pins, compare everything around it. The globe has its own acceptance script (worldmap.mjs).
       await expect(page).toHaveScreenshot(`title-${width}.png`, {
         mask: liveMasks(page, { canvas: false }),
-        style: '.maplibregl-canvas, .maplibregl-marker, .maplibregl-popup { visibility: hidden !important; }',
+        stylePath: fileURLToPath(new URL('./hide-globe.css', import.meta.url)),
       });
     });
   }
