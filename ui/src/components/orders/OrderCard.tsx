@@ -1,6 +1,6 @@
 import { type ReactNode, type Ref, useCallback, useEffect, useId, useImperativeHandle, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { IconCheck, IconInfoCircle, IconLock, IconPlus, IconX } from '@tabler/icons-react';
+import { IconCheck, IconChevronDown, IconChevronUp, IconInfoCircle, IconLock, IconPlus, IconX } from '@tabler/icons-react';
 import { type ConfirmNeed, type PendingAction, orderKey, queueOrder, useGameStore } from '../../store/gameStore';
 import { proposalEffects } from '../../lib/month';
 import { CardCost, CardShell } from '../game/CardShell';
@@ -57,6 +57,11 @@ export interface OrderCardProps {
   extra?: Partial<PendingAction>;
   /** Show the forecast beside the tile on hover/focus (desktop). Default true for tiles. */
   hoverPreview?: boolean;
+  /**
+   * Row variant (phone catalogue): a press on an available row toggles its blurb and forecast
+   * instead of adding it; the Add button adds. Search hits keep press-to-add (Enter acts on them).
+   */
+  pressForecast?: boolean;
   handle?: Ref<OrderCardHandle>;
   className?: string;
 }
@@ -98,6 +103,7 @@ export function OrderCard({
   onQueued,
   extra,
   hoverPreview,
+  pressForecast = false,
   handle,
   className = '',
 }: OrderCardProps) {
@@ -376,6 +382,9 @@ export function OrderCard({
       ...(entry?.chance != null ? [term(TERMS.chance.name, entry.chance)] : []),
       ...(def.irreversible ? [TERMS.noUndo.name] : []),
     ];
+    // Catalogue rows on a phone (C2): a press on an available row opens its blurb and forecast, as
+    // the tile's "How much? Forecast" does; Add is the one way to queue it
+    const rowForecast = pressForecast && avail.state === 'available' && !isProposal;
     const onAct = () => {
       if (actKind === 'add') void give(false);
       else if (actKind === 'remove') remove(st.queuedIndex);
@@ -401,12 +410,17 @@ export function OrderCard({
           cost={<CardCost seals={pc} missing={block?.code === 'NO_CAPITAL' ? Math.max(0, pc - (block.need?.have ?? 0)) : 0} alarm={alarm} size={18} />}
           state={off ? 'unavailable' : 'rest'}
           stamp={isQueued ? 'ORDERED' : undefined}
-          onPress={activate}
+          onPress={rowForecast ? () => setInfo((v) => !v) : activate}
           onRefuse={refused}
-          ariaLabel={ariaLabel}
+          ariaLabel={rowForecast ? `${ariaLabel}. ${info ? 'Hide the forecast' : 'Show the forecast'}; Add puts it in this month` : ariaLabel}
         >
           <div className="ord-meta">
             <FamilyChip family={fam} />
+            {rowForecast && (
+              <span className="ord-meta-fc" aria-hidden>
+                {info ? 'Hide forecast' : 'Forecast'} {info ? <IconChevronUp size={13} /> : <IconChevronDown size={13} />}
+              </span>
+            )}
             {isQueued ? (
               <span className="ord-meta-in">
                 {TERMS.inThisMonth.name}
@@ -437,8 +451,9 @@ export function OrderCard({
             {selected && avail.state === 'available' && <kbd className="ord-kbd">Enter</kbd>}
           </div>
           {info && (
-            <div className="ord-expand" id={`ord-${uid}-pv`}>
+            <div className="ord-expand" id={`ord-${uid}-pv`} data-row-forecast={rowForecast ? '' : undefined}>
               {off && fix && <div className="ord-fixes">{fix}</div>}
+              {rowForecast && desc && <p className="ord-expand-blurb">{desc}</p>}
               <OrderPreview preview={previewOf(entry)} compact />
             </div>
           )}
@@ -519,6 +534,9 @@ function HoverPreview({ anchor, entry, label }: { anchor: React.RefObject<HTMLDi
     const show = () => {
       window.clearTimeout(t);
       t = window.setTimeout(() => {
+        // No forecast of another order beside an open confirmation in the same menu or catalogue:
+        // its numbers would read as the confirmed order's (C3, DR-OC-1)
+        if (el.closest('.map-action-menu, [data-order-catalog]')?.querySelector('.ord-confirm')) return;
         const r = el.getBoundingClientRect();
         const w = 300;
         const left = r.right + 12 + w < window.innerWidth ? r.right + 12 : r.left - 12 - w >= 0 ? r.left - 12 - w : Math.max(8, Math.min(window.innerWidth - w - 8, r.left));

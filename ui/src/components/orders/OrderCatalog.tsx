@@ -162,9 +162,10 @@ export function OrderCatalog({ target, setTarget, onOpenOrder, title = 'All orde
         </div>
       ) : (
         <>
-          {rows && !target && (
+          {rows && (
             <p className="ord-cat-hint" data-cat-hint="">
-              Pick a country first: orders aimed at a country say Pick until you choose one.
+              {target ? '' : 'Pick a country first: orders aimed at a country say Pick until you choose one. '}
+              Tap an order for its forecast; Add puts it in this month.
             </p>
           )}
           {FAMILIES.map((fam) => {
@@ -186,6 +187,7 @@ export function OrderCatalog({ target, setTarget, onOpenOrder, title = 'All orde
                     targetId={def.targeted ? target || undefined : undefined}
                     variant={rows ? 'row' : 'tile'}
                     hoverPreview={rows ? false : undefined}
+                    pressForecast={rows}
                     onPickTarget={pickTarget}
                     onOpen={openOrder}
                   />

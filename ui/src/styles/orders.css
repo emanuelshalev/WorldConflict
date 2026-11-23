@@ -582,15 +582,24 @@
    country first." is said once above the groups, not on every targeted row (their button says Pick) */
 .ord-cat-hint { margin: 0 0 4px; font-size: 14px; color: var(--text-1); }
 .ord-cat-rows { gap: 6px; }
-.ord-catalog .ord-cat:has(.ord-cat-rows) .nav-head { padding-top: 8px; }
+.ord-catalog .ord-cat:has(.ord-cat-rows) { margin-bottom: 12px; }
+.ord-catalog .ord-cat:has(.ord-cat-rows) .nav-head { padding-top: 4px; padding-bottom: 2px; margin-bottom: 6px; }
+.ord-cat-rows .ord-famchip { min-height: 20px; }
 .ord-cat-rows .ord-row > .wc-card.wc-card-row { min-height: 64px; }
 .ord-cat-rows .ord-row > .wc-card .wc-card-art { min-height: 60px; padding-top: 4px; padding-bottom: 4px; }
-.ord-cat-rows .ord-row > .wc-card .wc-card-body { padding-top: 7px; padding-bottom: 7px; padding-right: 92px; }
+.ord-cat-rows .ord-row > .wc-card .wc-card-body { padding-top: 6px; padding-bottom: 6px; padding-right: 92px; gap: 2px; }
 .ord-cat-rows .ord-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; }
 .ord-cat-rows .ord-meta > * { min-width: 0; }
 .ord-cat-rows .ord-meta-blurb,
 .ord-cat-rows .ord-wrap[data-order-code='NEEDS_TARGET'] .ord-meta-why { display: none; }
 .ord-cat-rows .ord-act { top: 50%; transform: translateY(-50%); min-width: 70px; }
+/* The forecast cue shares the chip's line (the row itself is the 44 px target), the cost and odds
+   wrap below: no extra height (C2) */
+.ord-cat-rows .ord-meta .ord-famchip { order: 0; }
+.ord-cat-rows .ord-meta-fc { order: 1; display: inline-flex; align-items: center; gap: 2px; font-size: 13px; color: var(--text-2); text-decoration: underline; text-underline-offset: 3px; }
+.ord-cat-rows .ord-meta > :not(.ord-famchip):not(.ord-meta-fc) { order: 2; }
+.ord-cat-rows .ord-expand { margin-top: 6px; display: grid; gap: 6px; }
+.ord-expand-blurb { margin: 0; font-size: 14px; line-height: 1.35; color: var(--text-1); }
 .ord-cat-rows .ord-row.is-proposal > .ord-act { transform: none; }
 .ord-grid {
   display: grid;
@@ -634,7 +643,18 @@
   padding: 10px;
   font-size: 14px;
 }
-.ord-menu .mam-head { padding-bottom: 10px; margin-bottom: 10px; }
+/* The header (country, relation, capital left, close) never scrolls away: it sticks to the top of
+   the menu over the tiles (a confirming tile is z-index 4). MapActionMenu sets the menu's
+   scroll-padding-top to its height, so a confirmation scrolled into view ends below it (DR-OC-1) */
+.ord-menu .mam-head {
+  position: sticky;
+  top: -10px;
+  z-index: 6;
+  margin: -10px -10px 10px;
+  padding: 10px 10px 10px;
+  background: #0c111b;
+  border-radius: var(--r-md) var(--r-md) 0 0;
+}
 .ord-menu .mam-title b { font-size: 17px; }
 .ord-menu .mam-rel { font-size: 13px; }
 .ord-menu .mam-pc {

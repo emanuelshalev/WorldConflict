@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useExecute } from '../../lib/useExecute';
 import { IconAlertTriangle, IconCheck, IconChevronDown, IconChevronUp, IconLayoutDashboard, IconPlus, IconSend, IconX } from '@tabler/icons-react';
 import { MEETING_SLOTS, type PendingAction, useGameStore } from '../../store/gameStore';
@@ -351,6 +351,24 @@ export function CommandBar({ catalogTarget, simple = false }: { catalogTarget: s
   const choices = useGameStore((s) => s.decisionChoices);
   const ex = useExecute();
   const [sheet, setSheet] = useState(false);
+  // The bar lies over the desk stage: its height goes to --cmd-bar-h, the stage's scroll padding,
+  // so whatever scrolls into view there (an order's confirmation) ends above the bar (DR-OC-4)
+  const watch = useRef<ResizeObserver | null>(null);
+  const barRef = useCallback((el: HTMLElement | null) => {
+    watch.current?.disconnect();
+    watch.current = null;
+    const root = document.documentElement;
+    if (!el) {
+      root.style.removeProperty('--cmd-bar-h');
+      return;
+    }
+    const set = () => root.style.setProperty('--cmd-bar-h', `${Math.ceil(el.getBoundingClientRect().height)}px`);
+    set();
+    if (typeof ResizeObserver !== 'undefined') {
+      watch.current = new ResizeObserver(set);
+      watch.current.observe(el);
+    }
+  }, []);
   const b = budgetStatus();
   if (!world || !b) return null;
   const attending = (world.agenda ?? []).filter((m) => choices[m.id] && choices[m.id] !== m.defaultOptionId).length;
@@ -358,7 +376,7 @@ export function CommandBar({ catalogTarget, simple = false }: { catalogTarget: s
   return (
     <>
       {sheet && <div className="bar-backdrop" onClick={() => setSheet(false)} aria-hidden />}
-      <aside className={`cmd-bar${sheet ? ' sheet-open' : ''}`} aria-label="This month">
+      <aside ref={barRef} className={`cmd-bar${sheet ? ' sheet-open' : ''}`} aria-label="This month">
         {sheet && (
           <div className="bar-sheet">
             <ContextMap catalogTarget={catalogTarget} />

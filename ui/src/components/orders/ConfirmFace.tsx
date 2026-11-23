@@ -55,6 +55,8 @@ export function ConfirmFace({ kind, question, missionWarning, lines, confirmText
     safe.current?.focus({ preventScroll: true });
     // Both answers on screen without a scroll (DR-OC-1): in a scrolling container (the map order
     // menu) bring the button row into view once the face has its size (after the grid reflows)
+    // The box we scrolled and where it was, so Cancel, Escape or the order given put it back (DR-OC-1)
+    let moved: { box: HTMLElement; top: number } | null = null;
     const raf = requestAnimationFrame(() => {
       // Only the nearest scrolling box moves, never the page: a page with several faces open (the
       // orders gallery) must not jump, and its scroll position must not depend on timing
@@ -68,8 +70,19 @@ export function ConfirmFace({ kind, question, missionWarning, lines, confirmText
       if (!btns || !box || box === document.body || box === document.documentElement) return;
       const b = btns.getBoundingClientRect();
       const c = box.getBoundingClientRect();
-      if (b.bottom > c.bottom) box.scrollTop += b.bottom - c.bottom + 8;
-      else if (b.top < c.top) box.scrollTop -= c.top - b.top + 8;
+      // The box's scroll padding marks what lies over it (the phone's fixed command bar sets the
+      // desk stage's scroll-padding-bottom, DR-OC-4): the answers must end above that, not under it
+      const cs = getComputedStyle(box);
+      const padTop = Number.parseFloat(cs.scrollPaddingTop) || 0;
+      const padBottom = Number.parseFloat(cs.scrollPaddingBottom) || 0;
+      const top = Math.max(c.top, 0) + padTop;
+      const bottom = Math.min(c.bottom, window.innerHeight) - padBottom;
+      let dy = 0;
+      if (b.bottom > bottom) dy = b.bottom - bottom + 8;
+      else if (b.top < top) dy = -(top - b.top + 8);
+      if (!dy) return;
+      moved = { box, top: box.scrollTop };
+      box.scrollTop += dy;
     });
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return;
@@ -88,6 +101,9 @@ export function ConfirmFace({ kind, question, missionWarning, lines, confirmText
       window.removeEventListener('pointerdown', onDown, true);
       window.clearTimeout(t);
       cancelAnimationFrame(raf);
+      // Back to where the player was: the face's card shrinks again, so the list does not jump
+      const m = moved as { box: HTMLElement; top: number } | null;
+      if (m) requestAnimationFrame(() => (m.box.scrollTop = m.top));
       if (hold.current) cancelAnimationFrame(hold.current.raf);
     };
   }, []);
