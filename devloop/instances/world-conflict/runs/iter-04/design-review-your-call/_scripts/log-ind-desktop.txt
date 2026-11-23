@@ -1,0 +1,129 @@
+save: 9c2e3c31-0b0a-4c6d-b546-c298d5929d75
+--- engine advice month 1 (load)
+crisis dec_in_jammu_0 "The answer to Jammu" default=covert cabinetPick=covert missionPick=covert options=camps[Strike the camps] | airbases[Hit their air bases] | covert[Covert action and a dossier]
+CALL crisis dec_in_jammu_0 "The answer to Jammu" mission=covert calm=covert chief=covert trade=true skip={"label":"Skip","text":"The cabinet waits: Covert action and a dossier. It costs No full-scale war with Pakistan and Score of 117+.","optionId":"covert","hurts":["No full-scale war with Pakistan","Score of 117+"],"breaks":[],"bonusHurts":["A nation rallied behind you"]}
+  guide: Your advisers agree on Covert action and a dossier. The others cost you: No full-scale war with Pakistan and Washington sees it India's way.
+  card camps "Strike the camps" side=other advisers= pc=1 price=1 helps=Score of 117+ hurts=Washington sees it India's way breaks=No full-scale war with Pakistan why=null
+  card airbases "Hit their air bases" side=other advisers= pc=0 price=0 helps= hurts=Washington sees it India's way breaks=No full-scale war with Pakistan why=null
+  card covert "Covert action and a dossier" side=mission advisers=Intelligence Chief+Foreign Minister pc=1 price=1 helps=Washington sees it India's way hurts=No full-scale war with Pakistan;Score of 117+ breaks= why=It moves Washington sees it India's way.
+CALL move mission-move "The move for your mission" mission=order:0 calm=hold chief=null trade=true skip={"label":"Hold this month","text":"No move for your mission. Political capital 3 stays (above 6 is lost).","optionId":null,"hurts":[],"breaks":[],"bonusHurts":[]}
+  guide: For your mission: Court United States. To keep political capital: Hold this month.
+  card order:0 "Court United States" side=mission advisers=Foreign Minister pc=1 price=0 helps=Washington sees it India's way hurts= breaks= why=Mission: United States needs 30+, now 30: keep the margin.
+  card hold "Hold this month" side=hold advisers=Chief of Staff pc=0 price=0 helps= hurts= breaks= why=No move for your mission this month. Political capital 3 stays (above 6 is lost).
+routine (6): order:National address | order:Court China | meeting:Promise full support | meeting:Promise full support | deputy:Staff meeting: intelligence | meeting:A working lunch
+staffOrders: DOMESTIC_PROPAGANDA | DIPLOMACY_IMPROVE_RELATIONS reserve=1
+chief: {"decisions":{"dec_in_jammu_0":"covert"},"orders":[]}
+missionNotes: {"dec_in_jammu_0":{"optionId":"covert","kind":"tradeoff","text":"Best trade-off: helps Washington sees it India's way, costs No full-scale war with Pakistan and Score of 117+","helps":["Washington sees it India's way"],"costs":["No full-scale war with Pakistan","Score of 117+"],"switchFrom":null}}
+=== ind-m1-3440x1440
+goalLine: Restore deterrence 2 of 3 on track · month 1 of 10 How you win: read your goal Focus Full desk
+goalBox: x0 y69 w3440 h57 scrollW3440 clientW3440
+glKids: goal-main:16-624/y75h44 sw608cw608 || goal-step:634-848/y75h44 sw212cw212 || goal-view:3239-3424/y71h52 sw183cw183
+segs: 3
+dots: 2
+mission: Your goal. You win if all three hold at the end of month 10: no full-scale war with Pakistan, Washington sees it India's way (relations 30+) and score of 117+.
+missionBox: x24 y142 w3017 h49 scrollW3015 clientW3015
+railMission: 
+rec: 
+recCount: 
+main: 
+items: 
+stripNote: 
+primary: NO LOCK BREAKING YOUR MOVE · EXISTENTIAL CRISIS 🇮🇳 🇵🇰 🇺🇸 The answer to Jammu After Pahalgam, India struck within two weeks and the public expects the same or more. i 1 name More This is your move this month. Pick one. Step 1 of 3 i What is going on here? IC Intelligence Chief: “Quiet operations against the network and evidence to every capital.” Recommended: Covert action and a dossier Accept recommended Ask your staff NO LOCK 1 free ! Breaks: No full-scale war with Pakistan +3 more Strike the camps Standoff missiles on militant infrastructure. The Sindoor playbook: visible, limited, and Pakistan will answer. World tension up a lot Approval up +3 more How much? Backed by the Defense Minister and the Chief of Staff NO LOCK 2 free ! Breaks: No full-scale war with Pakistan +2 more Hit their air bases Go a rung higher than last time. Deterrence by surprise, or the start of something no || NO LOCK 1 free ! Breaks: No full-scale war with Pakistan +3 more Strike the camps Standoff missiles on militant infrastructure. The Sindoor playbook: visible, limited, and Pakistan will answer. World tension up a lot Approval up +3 more How much? Backed by the Defense Minister and the Chief of Staff
+slots: 
+barPlan: Recommended answer on 1 crisis, 2 recommended orders not accepted (they will not run), deputies take 4 meetings. 1 recommended answer works against your mission: Covert action and a dossier. Review
+pageW: 3440
+vw: 3440
+=== ind-m1-1440x900
+goalLine: Restore deterrence 2 of 3 on track · month 1 of 10 How you win: read your goal Focus Full desk
+goalBox: x0 y69 w1440 h57 scrollW1440 clientW1440
+glKids: goal-main:16-624/y75h44 sw608cw608 || goal-step:634-848/y75h44 sw212cw212 || goal-view:1239-1424/y71h52 sw183cw183
+segs: 3
+dots: 2
+mission: Your goal. You win if all three hold at the end of month 10: no full-scale war with Pakistan, Washington sees it India's way (relations 30+) and score of 117+.
+missionBox: x24 y142 w1017 h72 scrollW1015 clientW1015
+railMission: 
+rec: 
+recCount: 
+main: 
+items: 
+stripNote: 
+primary: NO LOCK BREAKING YOUR MOVE · EXISTENTIAL CRISIS 🇮🇳 🇵🇰 🇺🇸 The answer to Jammu After Pahalgam, India struck within two weeks and the public expects the same or more. i 1 name More This is your move this month. Pick one. Step 1 of 3 i What is going on here? IC Intelligence Chief: “Quiet operations against the network and evidence to every capital.” Recommended: Covert action and a dossier Accept recommended Ask your staff NO LOCK 1 free ! Breaks: No full-scale war with Pakistan +3 more Strike the camps Standoff missiles on militant infrastructure. The Sindoor playbook: visible, limited, and Pakistan will answer. World tension up a lot Approval up +3 more How much? NO LOCK 2 free ! Breaks: No full-scale war with Pakistan +2 more Hit their air bases Go a rung higher than last time. Deterrence by surprise, or the start of something nobody planned. Approval up a lot Pakistan's view of you || NO LOCK 1 free ! Breaks: No full-scale war with Pakistan +3 more Strike the camps Standoff missiles on militant infrastructure. The Sindoor playbook: visible, limited, and Pakistan will answer. World tension up a lot Approval up +3 more How much?
+slots: 
+barPlan: Recommended answer on 1 crisis, 2 recommended orders not accepted (they will not run), deputies take 4 meetings. 1 recommended answer works against your mission: Covert action and a dossier. Review
+pageW: 1440
+vw: 1440
+Accept all button before: NO ACCEPT ALL BUTTON
+=== ind-m1-after-accept-3440x1440
+goalLine: Restore deterrence 2 of 3 on track · month 1 of 10 How you win: read your goal Focus Full desk
+goalBox: x0 y69 w3440 h57 scrollW3440 clientW3440
+glKids: goal-main:16-624/y75h44 sw608cw608 || goal-step:634-848/y75h44 sw212cw212 || goal-view:3239-3424/y71h52 sw183cw183
+segs: 3
+dots: 2
+mission: Your goal. You win if all three hold at the end of month 10: no full-scale war with Pakistan, Washington sees it India's way (relations 30+) and score of 117+.
+missionBox: x24 y142 w3017 h49 scrollW3015 clientW3015
+railMission: 
+rec: 
+recCount: 
+main: 
+items: 
+stripNote: 
+primary: NO LOCK BREAKING YOUR MOVE · EXISTENTIAL CRISIS 🇮🇳 🇵🇰 🇺🇸 The answer to Jammu After Pahalgam, India struck within two weeks and the public expects the same or more. i 1 name More This is your move this month. Pick one. Step 1 of 3 i What is going on here? IC Intelligence Chief: “Quiet operations against the network and evidence to every capital.” Recommended: Covert action and a dossier Accept recommended Ask your staff NO LOCK 1 free ! Breaks: No full-scale war with Pakistan +3 more Strike the camps Standoff missiles on militant infrastructure. The Sindoor playbook: visible, limited, and Pakistan will answer. World tension up a lot Approval up +3 more How much? Backed by the Defense Minister and the Chief of Staff NO LOCK 2 free ! Breaks: No full-scale war with Pakistan +2 more Hit their air bases Go a rung higher than last time. Deterrence by surprise, or the start of something no || NO LOCK 1 free ! Breaks: No full-scale war with Pakistan +3 more Strike the camps Standoff missiles on militant infrastructure. The Sindoor playbook: visible, limited, and Pakistan will answer. World tension up a lot Approval up +3 more How much? Backed by the Defense Minister and the Chief of Staff
+slots: 
+barPlan: Recommended answer on 1 crisis, 2 recommended orders not accepted (they will not run), deputies take 4 meetings. 1 recommended answer works against your mission: Covert action and a dossier. Review
+pageW: 3440
+vw: 3440
+result card: DEC 2026 · YOUR MONTH THIS MONTH -2 Pakistan's view of you this month STEP ACHIEVED THE MONTH Pakistan moves against you Mission (Score of 117+): score 100 → 104, needs 117. Your mission bar moved. Tap it any time to see what each goal needs. The numbers, the score and the rest of the month See everything Read the paper Next month
+--- engine advice month 2 (turn response)
+crisis dec_hostage_crisis_0_0 "Hostages in Pakistan" default=sanction cabinetPick=rescue missionPick=rescue options=negotiate[Negotiate through intermediaries] | rescue[Send in special forces] | sanction[Sanctions and silence]
+CALL crisis dec_hostage_crisis_0_0 "Hostages in Pakistan" mission=rescue calm=rescue chief=rescue trade=true skip={"label":"Skip","text":"The cabinet waits: Sanctions and silence. It costs No full-scale war with Pakistan.","optionId":"sanction","hurts":["No full-scale war with Pakistan"],"breaks":[],"bonusHurts":["A nation rallied behind you"]}
+  guide: Your advisers agree on Send in special forces. The others cost you: No full-scale war with Pakistan.
+  card negotiate "Negotiate through intermediaries" side=other advisers= pc=1 price=0 helps= hurts= breaks= why=null
+  card rescue "Send in special forces" side=mission advisers=Defense Minister+Chief of Staff pc=0 price=0 helps= hurts= breaks= why=It is the answer that costs your mission least.
+  card sanction "Sanctions and silence" side=other advisers= pc=0 price=0 helps= hurts=No full-scale war with Pakistan breaks= why=null
+CALL move mission-move "The move for your mission" mission=order:0 calm=hold chief=order:0 trade=true skip={"label":"Hold this month","text":"No move for your mission. Political capital 6 stays (above 6 is lost).","optionId":null,"hurts":[],"breaks":[],"bonusHurts":[]}
+  guide: For your mission: Court United States. To keep political capital: Hold this month.
+  card order:0 "Court United States" side=mission advisers=Foreign Minister pc=1 price=0 helps=Washington sees it India's way hurts= breaks= why=Mission: United States needs 30+, now 30: keep the margin.
+  card hold "Hold this month" side=hold advisers=Chief of Staff pc=0 price=0 helps= hurts= breaks= why=No move for your mission this month. Political capital 6 stays (above 6 is lost).
+routine (7): order:Court Australia | order:National address | order:Reform program | meeting:Reassure: no threat intended | meeting:Promise full support | meeting:Brief the allies first | deputy:Interview: the evening news
+staffOrders: DIPLOMACY_IMPROVE_RELATIONS | DOMESTIC_PROPAGANDA | DOMESTIC_REFORM reserve=1
+chief: {"decisions":{"dec_hostage_crisis_0_0":"rescue"},"orders":["DIPLOMACY_IMPROVE_RELATIONS>undefined"]}
+missionNotes: {"dec_hostage_crisis_0_0":{"optionId":"rescue","kind":"best","text":"Best for your mission","helps":[],"costs":[],"switchFrom":null}}
+=== ind-m2-3440x1440
+goalLine: Restore deterrence 2 of 3 on track · month 2 of 10 This month: score 104, needs 117 Focus Full desk
+goalBox: x0 y69 w3440 h57 scrollW3440 clientW3440
+glKids: goal-main:16-624/y75h44 sw608cw608 || goal-step:634-875/y75h44 sw239cw239 || goal-view:3239-3424/y71h52 sw183cw183
+segs: 3
+dots: 2
+mission: 
+missionBox: absent
+railMission: 
+rec: Recommended 7 What is this? Your advisers recommend these for this month. Orders and meetings wait for you to accept; a crisis goes ahead on its recommended answer unless you change it. Recommended by Foreign Minister Order: Court Australia Spends ◆ 1 if accepted Will change: Australia: Relations +5 to +7 Accept order Change Recommended by Chief of Staff Order: National address Spends ◆ 1 if accepted Will change: India: Legitimacy about +5 · India: Approval about +4 Helps: approval 70%+ (bonus) +1 more Accept order Change Recommended by Interior Minister Order: Reform program Spends ◆ 2 if accepted Will change: India: Stability about +4.5 · India: Legitimacy about +2.5 Helps: stability 70%+ (bonus) Accept order Change Recommended by Foreign Minister Meeting: Reassure: no threat intended You attend: Phone call: Prime Minister Shehbaz Sharif Will change: Pakistan's view of you up · World t
+recCount: 7
+main: Accept all recommended (7) Shift+A 3 orders, 3 meetings, 1 meeting for a deputy
+items: Order: Court Australia || Order: National address || Order: Reform program || Meeting: Reassure: no threat intended || Meeting: Promise full support || Meeting: Brief the allies first || Deputy takes: Interview: the evening news
+stripNote: 
+primary: POOL FEED YOUR MOVE · URGENT CRISIS 🇮🇳 🇵🇰 Hostages in Pakistan Militants with ties to Pakistan's security services have seized 30 of your citizens, including diplomats. i 1 name More i What is going on here? DM Defense Minister: “Entebbe or Desert One.” Recommended: Send in special forces Accept recommended Ask your staff 1 Negotiate through intermediaries Slow, humiliating, usually works. Approval down Political capital down +1 more How much? Backed by the Foreign Minister Recommended · good for your mission TGT LOCK 2 free Send in special forces Entebbe or Desert One. You will find out which. World tension up Consequences later How much? Backed by the Defense Minister YES 4 NO 9 CHN FRA RUS GBR USA BRA EGY GHA YES 4 NO 9 IND JPN KEN MEX NOR QAT TUR 3 free ! Hurts: No full-scale war with Pakistan Sanctions and silence Refuse to bargain. Principled, and the hostages stay put. Pakista || 1 Negotiate through intermediaries Slow, humiliating, usually works. Approval down Political capital down +1 more How much? Backed by the Foreign Minister
+slots: TGT LOCK Send in special forces Hostages in Pakistan Recommended || Court Australia Recommended by Foreign Minister · ◆ 1 if accepted Australia: Relations +5 to +7 Accept order || National address Recommended by Chief of Staff · ◆ 1 if accepted India: Legitimacy about +5 · India: Approval about +4 Accept order || Reform program Recommended by Interior Minister · ◆ 2 if accepted India: Stability about +4.5 · India: Legitimacy about +2.5 Accept order || Empty order slot (6 more this month) || 4 meetings: a deputy goes unless you answer
+barPlan: Recommended answer on 1 crisis, 3 recommended orders not accepted (they will not run), deputies take 4 meetings.
+pageW: 3440
+vw: 3440
+=== ind-m2-1440x900
+goalLine: Restore deterrence 2 of 3 on track · month 2 of 10 This month: score 104, needs 117 Focus Full desk
+goalBox: x0 y69 w1440 h57 scrollW1440 clientW1440
+glKids: goal-main:16-624/y75h44 sw608cw608 || goal-step:634-875/y75h44 sw239cw239 || goal-view:1239-1424/y71h52 sw183cw183
+segs: 3
+dots: 2
+mission: 
+missionBox: absent
+railMission: 
+rec: Recommended 7 What is this? Your advisers recommend these for this month. Orders and meetings wait for you to accept; a crisis goes ahead on its recommended answer unless you change it. Recommended by Foreign Minister Order: Court Australia Spends ◆ 1 if accepted Will change: Australia: Relations +5 to +7 Accept order Change Recommended by Chief of Staff Order: National address Spends ◆ 1 if accepted Will change: India: Legitimacy about +5 · India: Approval about +4 Helps: approval 70%+ (bonus) +1 more Accept order Change Recommended by Interior Minister Order: Reform program Spends ◆ 2 if accepted Will change: India: Stability about +4.5 · India: Legitimacy about +2.5 Helps: stability 70%+ (bonus) Accept order Change Recommended by Foreign Minister Meeting: Reassure: no threat intended You attend: Phone call: Prime Minister Shehbaz Sharif Will change: Pakistan's view of you up · World t
+recCount: 7
+main: Accept all recommended (7) Shift+A 3 orders, 3 meetings, 1 meeting for a deputy
+items: Order: Court Australia || Order: National address || Order: Reform program || Meeting: Reassure: no threat intended || Meeting: Promise full support || Meeting: Brief the allies first || Deputy takes: Interview: the evening news
+stripNote: 
+primary: POOL FEED YOUR MOVE · URGENT CRISIS 🇮🇳 🇵🇰 Hostages in Pakistan Militants with ties to Pakistan's security services have seized 30 of your citizens, including diplomats. i 1 name More i What is going on here? DM Defense Minister: “Entebbe or Desert One.” Recommended: Send in special forces Accept recommended Ask your staff 1 Negotiate through intermediaries Slow, humiliating, usually works. Approval down Political capital down +1 more How much? Recommended · good for your mission TGT LOCK 2 free Send in special forces Entebbe or Desert One. You will find out which. World tension up Consequences later How much? YES 4 NO 9 CHN FRA RUS GBR USA BRA EGY GHA YES 4 NO 9 IND JPN KEN MEX NOR QAT TUR 3 free ! Hurts: No full-scale war with Pakistan Sanctions and silence Refuse to bargain. Principled, and the hostages stay put. Pakistan's view of you down a lot Approval down +1 more How much? || 1 Negotiate through intermediaries Slow, humiliating, usually works. Approval down Political capital down +1 more How much?
+slots: TGT LOCK Send in special forces Hostages in Pakistan Recommended || Court Australia Recommended by Foreign Minister · ◆ 1 if accepted Australia: Relations +5 to +7 Accept order || National address Recommended by Chief of Staff · ◆ 1 if accepted India: Legitimacy about +5 · India: Approval about +4 Accept order || Reform program Recommended by Interior Minister · ◆ 2 if accepted India: Stability about +4.5 · India: Legitimacy about +2.5 Accept order || Empty order slot (6 more this month) || 4 meetings: a deputy goes unless you answer
+barPlan: Recommended answer on 1 crisis, 3 recommended orders not accepted (they will not run), deputies take 4 meetings.
+pageW: 1440
+vw: 1440
+page errors: none

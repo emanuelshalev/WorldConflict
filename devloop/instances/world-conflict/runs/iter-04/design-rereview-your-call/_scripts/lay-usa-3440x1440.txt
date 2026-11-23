@@ -1,0 +1,21 @@
+
+== usa-3440x1440 month 1: vw 3440 vh 1440 docScrollW 3440
+  item {"cls":"sel-badge sel-waiting","text":"No answer yet. If you leave it: no answer is given and the crisis passes","top":653,"bottom":689,"left":1436,"right":1971,"inView":true,"covered":"","clipped":""}
+  item {"cls":"plan-line","text":"No answer yet on 1 crisis, 1 recommended order not accepted (it will not run), deputies take 4 meetings.","top":338,"bottom":394,"left":3110,"right":3411,"inView":true,"covered":"","clipped":""}
+  fixed {"cls":"game mode-desk","pos":"fixed","top":0,"bottom":1440,"text":"🇺🇸Donald TrumpUnited States · Nov 2026 · Month 1 of 12Appr"}
+
+== usa-3440x1440 month 2: vw 3440 vh 1440 docScrollW 3440
+  item {"cls":"sel-badge sel-waiting","text":"No answer yet. If you leave it: Break the strike","top":592,"bottom":628,"left":1609,"right":1971,"inView":true,"covered":"","clipped":""}
+  item {"cls":"","text":"Recommended: Counter-intelligence sweep","top":1642,"bottom":1659,"left":990,"right":2080,"inView":false,"covered":"","clipped":""}
+  item {"cls":"","text":"Recommended: staff attend 3, a deputy takes 1","top":1706,"bottom":1723,"left":987,"right":2080,"inView":false,"covered":"","clipped":""}
+  item {"cls":"","text":"No answer yet","top":565,"bottom":583,"left":3170,"right":3355,"inView":true,"covered":"P.sp-why","clipped":""}
+  item {"cls":"","text":"General strike. If you leave it: Break the strike","top":583,"bottom":600,"left":3170,"right":3355,"inView":true,"covered":"P.sp-why","clipped":"scrollW 268 > 185"}
+  item {"cls":"","text":"Recommended by Intelligence Chief · ◆ 1 if accepted","top":711,"bottom":728,"left":3170,"right":3365,"inView":true,"covered":"SPAN.sp-change","clipped":"scrollW 312 > 195"}
+  item {"cls":"","text":"Recommended by Intelligence Chief · ◆ 1 if accepted","top":828,"bottom":845,"left":3170,"right":3365,"inView":true,"covered":"LI.sp-item kind-order","clipped":"scrollW 312 > 195"}
+  fixed {"cls":"game mode-desk","pos":"fixed","top":0,"bottom":1440,"text":"🇺🇸Donald TrumpUnited States · Dec 2026 · Month 2 of 12Appr"}
+  accept all pressed true
+  after item {"cls":"sel-badge sel-waiting","text":"No answer yet. If you leave it: Break the strike","top":592,"bottom":628,"left":1609,"right":1971,"inView":true,"covered":"","clipped":""}
+  after item {"cls":"","text":"No answer yet","top":603,"bottom":621,"left":3170,"right":3355,"inView":true,"covered":"","clipped":""}
+  after item {"cls":"","text":"General strike. If you leave it: Break the strike","top":621,"bottom":638,"left":3170,"right":3355,"inView":true,"covered":"","clipped":"scrollW 268 > 185"}
+  after item {"cls":"sp-main-sub","text":"Nothing else to accept. Still open: General strike","top":1268,"bottom":1302,"left":3121,"right":3400,"inView":true,"covered":"","clipped":""}
+errors: 

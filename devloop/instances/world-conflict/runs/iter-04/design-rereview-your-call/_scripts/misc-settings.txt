@@ -1,0 +1,21 @@
+3440: settings open true
+3440: Let the Chief of Staff make my calls When on, the crises your advisers disagree on start on the Chief of Staff's answer (the one that serves your mission, or the calm one when political capital is short) and Accept all recommended also accepts them; the Chief of Staff also proposes the first order for your mission. Fully in effect from the next month.
+3440: staff row Staff propose orders Each month your staff propose up to three safe orders, always leaving at least ◆ 1 for you. A recommended order spends nothing until you accept it (one by one or with Accept all recommended) and does not run unless you do. Turning this off applies from next month.
+3440: overflowX false
+1440: settings open true
+1440: Let the Chief of Staff make my calls When on, the crises your advisers disagree on start on the Chief of Staff's answer (the one that serves your mission, or the calm one when political capital is short) and Accept all recommended also accepts them; the Chief of Staff also proposes the first order for your mission. Fully in effect from the next month.
+1440: staff row Staff propose orders Each month your staff propose up to three safe orders, always leaving at least ◆ 1 for you. A recommended order spends nothing until you accept it (one by one or with Accept all recommended) and does not run unless you do. Turning this off applies from next month.
+1440: overflowX false
+after turning on mid-month: badge Recommended: More escorts, no strikes
+1024: settings open true
+1024: Let the Chief of Staff make my calls When on, the crises your advisers disagree on start on the Chief of Staff's answer (the one that serves your mission, or the calm one when political capital is short) and Accept all recommended also accepts them; the Chief of Staff also proposes the first order for your mission. Fully in effect from the next month.
+1024: staff row Staff propose orders Each month your staff propose up to three safe orders, always leaving at least ◆ 1 for you. A recommended order spends nothing until you accept it (one by one or with Accept all recommended) and does not run unless you do. Turning this off applies from next month.
+1024: overflowX false
+390: settings open true
+390: Let the Chief of Staff make my calls When on, the crises your advisers disagree on start on the Chief of Staff's answer (the one that serves your mission, or the calm one when political capital is short) and Accept all recommended also accepts them; the Chief of Staff also proposes the first order for your mission. Fully in effect from the next month.
+390: staff row Staff propose orders Each month your staff propose up to three safe orders, always leaving at least ◆ 1 for you. A recommended order spends nothing until you accept it (one by one or with Accept all recommended) and does not run unless you do. Turning this off applies from next month.
+390: overflowX false
+360: settings open true
+360: Let the Chief of Staff make my calls When on, the crises your advisers disagree on start on the Chief of Staff's answer (the one that serves your mission, or the calm one when political capital is short) and Accept all recommended also accepts them; the Chief of Staff also proposes the first order for your mission. Fully in effect from the next month.
+360: staff row Staff propose orders Each month your staff propose up to three safe orders, always leaving at least ◆ 1 for you. A recommended order spends nothing until you accept it (one by one or with Accept all recommended) and does not run unless you do. Turning this off applies from next month.
+360: overflowX false

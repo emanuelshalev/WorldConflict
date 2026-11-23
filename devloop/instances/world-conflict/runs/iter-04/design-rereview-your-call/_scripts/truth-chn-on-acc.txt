@@ -1,0 +1,40 @@
+
+== chn-on-acc month 1 (turn 0) calls=["crisis:dec_cn_inspection_regime_0","move:mission-move"] chief={"dec_cn_inspection_regime_0":"paper"}
+  crisis "How tight a squeeze?" id=dec_cn_inspection_regime_0 deadline=1 default=paper options=all:Inspect every energy cargo(pc 0) | selective:Selective boardings(pc 0) | paper:Keep it on paper(pc 0)
+  Accept all pressed: false; button now: ""
+  desk "How tight a squeeze?": {"badge":"Recommended: Keep it on paper","chosenCards":[],"badgeBox":{"top":520,"bottom":556,"vh":900},"stageTop":250}
+  plan text: Recommended answer on 1 crisis, 3 recommended orders not accepted (they will not run), deputies take 4 meetings.
+  bank at start 3; HUD "Political capital 3 left World tension 78 Score 100 Map D"; rail "-"
+  SENT decisions: [{"decisionId":"dec_cn_inspection_regime_0","optionId":"paper"}]
+  REPORT crisis decisions: [{"title":"How tight a squeeze?","choice":"Keep it on paper"}]
+  report causes: []
+  report screen mentions "How tight a squeeze?": NO
+  bank after resolve 6
+  everything mentions "How tight a squeeze?": NO
+
+== chn-on-acc month 2 (turn 1) calls=["move:mission-move"] chief={}
+  crisis "Energy price shock" id=dec_energy_shock_0_0 deadline=1 default=ride options=subsidize:Subsidize fuel(pc 0) | producers:Court the producers(pc -1) | ride:Ride it out(pc 0)
+  Accept all pressed: true; button now: "Accept all recommended Nothing to accept: every recommendation is decided"
+  desk "Energy price shock": {"badge":"Accepted: Subsidize fuel","chosenCards":[""],"badgeBox":{"top":412,"bottom":448,"vh":900},"stageTop":142,"aria":["Accepted: Subsidize fuel"]}
+  plan text: 1 recommended answer accepted, 4 recommended orders accepted, you attend 3 meetings.
+  bank at start 6; HUD "Political capital 0 left World tension 72 ▼6 Score 103 ▲3"; rail "Political capital 0 of 5 left"
+  SENT decisions: [{"decisionId":"dec_energy_shock_0_0","optionId":"subsidize"},{"decisionId":"mtg_1_1","optionId":"reassure"},{"decisionId":"mtg_1_0","optionId":"support"},{"decisionId":"mtg_1_2","optionId":"allies"},{"decisionId":"mtg_1_3","optionId":"deputy"}]
+  REPORT crisis decisions: [{"title":"Energy price shock","choice":"Subsidize fuel"}]
+  report causes: []
+  report screen mentions "Energy price shock": NO
+  bank after resolve 3
+  everything mentions "Energy price shock": NO
+
+== chn-on-acc month 3 (turn 2) calls=["move:mission-move"] chief={}
+  crisis "Sanctions on Iran" id=dec_sanctions_vote_1_0 deadline=2 default=abstain options=yes:Vote for sanctions(pc 0) | abstain:Abstain(pc 0) | no:Vote against(pc 0)
+  Accept all pressed: true; button now: "Accept all recommended Nothing to accept: every recommendation is decided"
+  desk "Sanctions on Iran": {"badge":"Accepted: Abstain","chosenCards":[""],"badgeBox":{"top":412,"bottom":448,"vh":900},"stageTop":142,"aria":["Accepted: Abstain"]}
+  plan text: 1 recommended answer accepted, 1 recommended order accepted, you attend 3 meetings.
+  bank at start 3; HUD "Political capital 2 left World tension 70 ▼2 Score 106 ▲3"; rail "Political capital 2 of 3 left"
+  SENT decisions: [{"decisionId":"dec_sanctions_vote_1_0","optionId":"abstain"},{"decisionId":"mtg_2_0","optionId":"reassure"},{"decisionId":"mtg_2_3","optionId":"working"},{"decisionId":"mtg_2_1","optionId":"support"},{"decisionId":"mtg_2_2","optionId":"deputy"}]
+  REPORT crisis decisions: [{"title":"Sanctions on Iran","choice":"Abstain"}]
+  report causes: []
+  report screen mentions "Sanctions on Iran": NO
+  bank after resolve 5
+  everything mentions "Sanctions on Iran": NO
+errors: 
