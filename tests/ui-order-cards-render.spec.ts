@@ -84,11 +84,38 @@ describe("order cards on every surface", () => {
         ),
       );
       expect(html, def.id).toContain(`data-confirm="${kind}"`);
-      expect(html, `${def.id}: title`).toContain(`data-confirm-title="">${title}<`);
+      // DR-OC-1: the title is said once, in the question beside the plate and family chip
+      expect(html, `${def.id}: title`).toContain(`data-confirm-question="">${title}?<`);
+      expect(html.split(title).length - 1, `${def.id}: title said once`).toBe(1);
+      expect(html, `${def.id}: no second title line`).not.toContain("data-confirm-title");
       expect(html, `${def.id}: family word`).toContain(`data-family-word="${FAMILY_WORD[def.family]}"`);
       expect(html, `${def.id}: pictogram`).toContain(`data-pictogram="${def.id}"`);
       expect(html, `${def.id}: safe answer`).toContain("data-confirm-cancel");
       if (def.irreversible) expect(html, `${def.id}: no undo`).toContain("No undo");
     }
+  });
+
+  it("the face keeps a title line only when the question does not name the order (DR-OC-1)", () => {
+    const def = ORDERS.find((o) => o.id === "nuclear-strike") as (typeof ORDERS)[number];
+    const face = (question: string) =>
+      unescape(
+        renderToStaticMarkup(
+          createElement(ConfirmFace, {
+            kind: "nuclear",
+            question,
+            lines: [],
+            confirmText: "Hold to authorize",
+            cancelText: "Stand down",
+            onConfirm: () => undefined,
+            onCancel: () => undefined,
+            order: { id: def.id, family: def.family, title: "Nuclear strike on India" },
+          }),
+        ),
+      );
+    // The nuclear question lower-cases the label: still the same title, said once
+    const named = face("Authorize a nuclear strike on India?");
+    expect(named).not.toContain("data-confirm-title");
+    expect(named.toLowerCase().split("nuclear strike on india").length - 1).toBe(1);
+    expect(face("Are you sure?")).toContain('data-confirm-title="">Nuclear strike on India<');
   });
 });

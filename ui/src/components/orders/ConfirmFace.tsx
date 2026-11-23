@@ -53,6 +53,11 @@ export function ConfirmFace({ kind, question, missionWarning, lines, confirmText
 
   useEffect(() => {
     safe.current?.focus({ preventScroll: true });
+    // Both answers on screen without a scroll (DR-OC-1): in a scrolling container (the map order
+    // menu) bring the button row into view once the face has its size (after the grid reflows)
+    const raf = requestAnimationFrame(() => {
+      root.current?.querySelector('.ord-confirm-btns')?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
+    });
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return;
       e.stopImmediatePropagation();
@@ -69,6 +74,7 @@ export function ConfirmFace({ kind, question, missionWarning, lines, confirmText
       window.removeEventListener('keydown', onKey, true);
       window.removeEventListener('pointerdown', onDown, true);
       window.clearTimeout(t);
+      cancelAnimationFrame(raf);
       if (hold.current) cancelAnimationFrame(hold.current.raf);
     };
   }, []);
@@ -97,9 +103,17 @@ export function ConfirmFace({ kind, question, missionWarning, lines, confirmText
   };
 
   const shown = lines.filter(Boolean).slice(0, 3);
+  // The order's title is said once (DR-OC-1): the question carries it ("Strike military targets in
+  // Russia?"), so a separate title line only appears when the question does not name the order
+  const titleInQuestion = !order || question.toLowerCase().includes(order.title.toLowerCase());
+  const q = (
+    <h3 className="ord-confirm-q" id={titleId} data-confirm-question="">
+      {question}
+    </h3>
+  );
   return (
     <div ref={root} className={`ord-confirm kind-${kind}`} role="alertdialog" aria-modal="false" aria-labelledby={titleId} data-confirm={kind} data-confirm-order={order?.id}>
-      {order && (
+      {order ? (
         <div className="ord-confirm-head">
           <OrderPlate id={order.id} family={order.family} size={44} className="is-confirm" />
           <div className="ord-confirm-id">
@@ -107,15 +121,17 @@ export function ConfirmFace({ kind, question, missionWarning, lines, confirmText
               <FamilyChip family={order.family} />
               {(kind === 'war' || kind === 'nuclear') && <span className="ord-chip ord-noundo">{TERMS.noUndo.name}</span>}
             </span>
-            <span className="ord-confirm-title" data-confirm-title="">
-              {order.title}
-            </span>
+            {!titleInQuestion && (
+              <span className="ord-confirm-title" data-confirm-title="">
+                {order.title}
+              </span>
+            )}
+            {q}
           </div>
         </div>
+      ) : (
+        q
       )}
-      <h3 className="ord-confirm-q" id={titleId}>
-        {question}
-      </h3>
       {missionWarning && <p className="ord-confirm-mission">{missionWarning}</p>}
       {(kind === 'war' || kind === 'nuclear') && <p className="ord-confirm-sub">There is no undo.{shown.length ? ' What your staff expect:' : ''}</p>}
       {kind === 'danger' && <p className="ord-confirm-sub">A risky order: check it is the one you meant.{shown.length ? ' What your staff expect:' : ''}</p>}

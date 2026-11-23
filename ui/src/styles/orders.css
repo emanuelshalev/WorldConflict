@@ -115,8 +115,10 @@
 .ord-bandchip .ord-famchip { min-height: 20px; font-size: 10.5px; background: rgba(7, 9, 15, 0.78); }
 
 /* ---------- Tile ---------- */
+/* 84 px band (was 104, 62 before the order cards): the plate overlaps it by 44 px, so the tile is
+   back near its earlier height without losing the lit band (DR-OC-3) */
 .ord-tile > .wc-card {
-  --card-art-h: 104px;
+  --card-art-h: 84px;
   height: 100%;
   grid-template-rows: var(--card-art-h) 1fr;
   /* the top 38% of the paper takes 9% of the family accent */
@@ -154,7 +156,7 @@
   align-items: flex-end;
   gap: 10px;
   min-width: 0;
-  margin-top: -38px;
+  margin-top: -44px;
 }
 .ord-tile > .wc-card .wc-card-lead .ord-famchip { margin-bottom: 4px; }
 .ord-tile.ord-compact > .wc-card .wc-card-lead { margin-top: -30px; }
@@ -162,9 +164,11 @@
 .ord-tile.ord-compact > .wc-card .wc-card-title { font-size: 15px; }
 .ord-tile.ord-compact > .wc-card .wc-card-body { gap: 6px; padding: 8px 10px 10px 14px; }
 .ord-tile > .wc-card .wc-card-desc { font-size: 14px; }
-/* The ORDERED stamp sits in the band, clear of the plate and the family chip */
-.ord-tile .wc-card-stamp { top: calc(var(--card-art-h) - 76px); right: 10px; }
-.ord-tile.ord-compact .wc-card-stamp { top: 30px; right: 8px; }
+/* The ORDERED stamp sits in the band, clear of the plate, the family chip and the cost seals
+   (spec 9.3: nothing covers the cost seals): left of the seal column on a tile, under it on a
+   compact tile, where the band chip holds the top left */
+.ord-tile .wc-card-stamp { top: 8px; right: 74px; }
+.ord-tile.ord-compact .wc-card-stamp { top: 40px; right: 8px; }
 .ord-compact .ord-queued-line { flex-wrap: wrap; }
 .ord-tile.ord-compact .wc-stamp-md { font-size: 12px; padding: 4px 6px; border-width: 2px; outline: none; }
 
@@ -476,9 +480,11 @@
   from { transform: perspective(700px) rotateY(-90deg); opacity: 0.4; }
   to { transform: perspective(700px) rotateY(0); opacity: 1; }
 }
-.ord-confirm-q { margin: 0; font-size: 19px; line-height: 1.2; font-weight: 750; }
-.ord-confirm-head { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.ord-confirm-q { margin: 0; font-size: 19px; line-height: 1.2; font-weight: 750; overflow-wrap: anywhere; }
+/* Plate and family chip lead the question's line: the order's title is said once (DR-OC-1) */
+.ord-confirm-head { display: flex; align-items: flex-start; gap: 12px; min-width: 0; }
 .ord-confirm-id { display: grid; gap: 5px; min-width: 0; }
+.ord-confirm-head .ord-confirm-q { font-size: 17px; }
 .ord-confirm-chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .ord-confirm-title { font-size: 14px; font-weight: 650; color: #ffd0d0; overflow-wrap: anywhere; }
 .kind-mission .ord-confirm-title { color: #ffe2a0; }
@@ -499,12 +505,17 @@
   font-weight: 600;
 }
 .ord-confirm-lines { margin: 0; padding-left: 18px; display: grid; gap: 3px; font-size: 14px; line-height: 1.35; }
-.ord-confirm-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
+/* Side by side when both labels fit on one line, else stacked full width: a label never wraps or
+   runs past its button (DR-OC-1) */
+.ord-confirm-btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
 .ord-confirm-safe,
 .ord-confirm-go {
   position: relative;
+  flex: 1 1 auto;
+  min-width: 44px;
   min-height: 48px;
-  padding: 0 12px;
+  padding: 0 14px;
+  white-space: nowrap;
   border-radius: 10px;
   font: 750 15px var(--font-ui);
   cursor: pointer;
@@ -562,6 +573,25 @@
 .ord-cat { margin-bottom: 18px; }
 .ord-cat .nav-head { margin-bottom: 8px; }
 .ord-cat-target { color: var(--text-2); text-transform: none; letter-spacing: 0; }
+/* The group heading is the family word, marked with the family's diamond like the chip */
+.ord-cat .ord-cat-head { align-items: center; justify-content: flex-start; gap: 8px; padding-left: 0; }
+.ord-cat-mark { flex: none; width: 9px; height: 9px; border-radius: 2px; background: var(--fam); transform: rotate(45deg); }
+.ord-cat.fam-nuke .ord-cat-mark { background: repeating-linear-gradient(-45deg, var(--fam) 0 2px, #222 2px 4px); }
+/* Phone catalogue rows (DR-OC-3): two lines a row, the title, then the family chip with the cost
+   and odds beside it; the blurb waits for the forecast (a tap), as in the map sheet, and "Pick a
+   country first." is said once above the groups, not on every targeted row (their button says Pick) */
+.ord-cat-hint { margin: 0 0 4px; font-size: 14px; color: var(--text-1); }
+.ord-cat-rows { gap: 6px; }
+.ord-catalog .ord-cat:has(.ord-cat-rows) .nav-head { padding-top: 8px; }
+.ord-cat-rows .ord-row > .wc-card.wc-card-row { min-height: 64px; }
+.ord-cat-rows .ord-row > .wc-card .wc-card-art { min-height: 60px; padding-top: 4px; padding-bottom: 4px; }
+.ord-cat-rows .ord-row > .wc-card .wc-card-body { padding-top: 7px; padding-bottom: 7px; padding-right: 92px; }
+.ord-cat-rows .ord-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; }
+.ord-cat-rows .ord-meta > * { min-width: 0; }
+.ord-cat-rows .ord-meta-blurb,
+.ord-cat-rows .ord-wrap[data-order-code='NEEDS_TARGET'] .ord-meta-why { display: none; }
+.ord-cat-rows .ord-act { top: 50%; transform: translateY(-50%); min-width: 70px; }
+.ord-cat-rows .ord-row.is-proposal > .ord-act { transform: none; }
 .ord-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -616,7 +646,12 @@
   white-space: nowrap;
 }
 .ord-menu .mam-close { min-width: 36px; min-height: 36px; justify-content: center; align-items: center; }
-.ord-mam-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: stretch; }
+/* dense: the tile after a confirming one fills the cell it left */
+.ord-mam-grid { display: grid; grid-template-columns: 1fr 1fr; grid-auto-flow: row dense; gap: 10px; align-items: stretch; }
+/* A confirming tile takes the menu's full width, so its question and buttons are not squeezed
+   into a 170 px column and its row does not stretch the neighbour (DR-OC-1) */
+.ord-menu .ord-wrap.is-confirming { grid-column: 1 / -1; }
+.ord-menu .ord-confirm { min-height: 0; }
 .ord-menu .mam-more { margin-top: 10px; }
 .ord-menu .mam-dossier { min-height: 44px; font-size: 14px; }
 .ord-menu .mam-hint { font-size: 13px; }

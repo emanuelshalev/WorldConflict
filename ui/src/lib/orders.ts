@@ -5,7 +5,7 @@ import { ORDER_FAMILY_WORDS } from './glossary';
  * The single list of player orders: desk catalog, desk search, map menu, dossier and staff
  * picks all read it (design-orders.md §4.1). The engine owns the same list as data in
  * `src/core/orders.ts` (id, type, params, verb, targeted, irreversible); this file adds the
- * presentation (family, category, danger, relevance, blurb). `tests/ui-orders-parity.spec.ts`
+ * presentation (family, danger, relevance, blurb). `tests/ui-orders-parity.spec.ts`
  * keeps both in step, and checks that the map and the desk offer the same orders per target.
  */
 /**
@@ -19,7 +19,6 @@ export type OrderFamily = 'diplo' | 'mil' | 'intel' | 'nuke' | 'econ' | 'home';
 export const FAMILY_WORD: Record<OrderFamily, string> = ORDER_FAMILY_WORDS;
 
 export const FAMILIES: readonly OrderFamily[] = ['diplo', 'mil', 'nuke', 'intel', 'econ', 'home'];
-export type OrderCategory = 'Diplomacy' | 'Military' | 'Intelligence' | 'Domestic';
 
 export interface OrderDef {
   /** Stable id ("airstrike-nuclear"), shared with the engine; used for tests and keys. */
@@ -31,8 +30,8 @@ export interface OrderDef {
   verb: string;
   /** Label when the order has no target ("Fund nuclear program"). */
   untargetedLabel?: string;
+  /** The order's family: chip word, plate colour, edge and its All orders group (one vocabulary). */
   family: OrderFamily;
-  category: OrderCategory;
   targeted: boolean;
   danger?: boolean;
   /** DIPLOMACY_DECLARE_WAR, NUCLEAR_STRIKE: confirmed on a separate face, never on Enter. */
@@ -76,146 +75,145 @@ const rel =
 export const ORDERS: readonly OrderDef[] = [
   // Diplomacy
   {
-    id: 'court', type: 'DIPLOMACY_IMPROVE_RELATIONS', verb: 'Court', family: 'diplo', category: 'Diplomacy', targeted: true,
+    id: 'court', type: 'DIPLOMACY_IMPROVE_RELATIONS', verb: 'Court', family: 'diplo', targeted: true,
     relevance: rel(() => [0, 100]),
     blurb: 'Trade talks and quiet diplomacy warm relations with {T}.',
   },
   {
-    id: 'denounce', type: 'DIPLOMACY_DENOUNCE', verb: 'Denounce', family: 'diplo', category: 'Diplomacy', targeted: true,
+    id: 'denounce', type: 'DIPLOMACY_DENOUNCE', verb: 'Denounce', family: 'diplo', targeted: true,
     relevance: rel(() => [0, 95]),
     blurb: 'Condemn {T} in public. Voters may cheer; {T} will remember.',
   },
   {
-    id: 'offer-pact', type: 'DIPLOMACY_PROPOSE_ALLIANCE', verb: 'Offer defense pact to', family: 'diplo', category: 'Diplomacy', targeted: true,
+    id: 'offer-pact', type: 'DIPLOMACY_PROPOSE_ALLIANCE', verb: 'Offer defense pact to', family: 'diplo', targeted: true,
     relevance: rel((s) => [0, s.allied ? 0 : 85]),
     blurb: 'A mutual defense treaty: an attack on one is an attack on both.',
   },
   {
-    id: 'ceasefire', type: 'DIPLOMACY_PROPOSE_CEASEFIRE', verb: 'Propose ceasefire to', family: 'diplo', category: 'Diplomacy', targeted: true,
+    id: 'ceasefire', type: 'DIPLOMACY_PROPOSE_CEASEFIRE', verb: 'Propose ceasefire to', family: 'diplo', targeted: true,
     relevance: rel(() => [100, 0]),
     blurb: 'Seek an end to the war with {T}. Exhaustion and the front decide.',
   },
   {
-    id: 'mediate', type: 'DIPLOMACY_MEDIATE', verb: 'Mediate peace for', family: 'diplo', category: 'Diplomacy', targeted: true,
+    id: 'mediate', type: 'DIPLOMACY_MEDIATE', verb: 'Mediate peace for', family: 'diplo', targeted: true,
     relevance: rel((s) => [0, s.otherWar ? 80 : 0]),
     blurb: 'Host talks to end the war {T} is fighting.',
   },
   {
-    id: 'break-pact', type: 'DIPLOMACY_BREAK_ALLIANCE', verb: 'Break pact with', family: 'diplo', category: 'Diplomacy', targeted: true, danger: true,
+    id: 'break-pact', type: 'DIPLOMACY_BREAK_ALLIANCE', verb: 'Break pact with', family: 'diplo', targeted: true, danger: true,
     relevance: rel((s) => [0, s.allied ? 85 : 0]),
     blurb: 'Tear up the treaty with {T}. Betrayal is remembered.',
   },
   {
-    id: 'declare-war', type: 'DIPLOMACY_DECLARE_WAR', verb: 'Declare war on', family: 'mil', category: 'Diplomacy', targeted: true, danger: true, irreversible: true,
+    id: 'declare-war', type: 'DIPLOMACY_DECLARE_WAR', verb: 'Declare war on', family: 'mil', targeted: true, danger: true, irreversible: true,
     relevance: rel((s) => [0, s.allied ? 0 : 60]),
     blurb: 'Order the invasion of {T}. Their allies may join them.',
   },
   // Military
   {
-    id: 'mobilize', type: 'MILITARY_MOBILIZE', verb: 'Mobilize forces', family: 'mil', category: 'Military', targeted: false,
+    id: 'mobilize', type: 'MILITARY_MOBILIZE', verb: 'Mobilize forces', family: 'mil', targeted: false,
     blurb: 'Call up the reserves. Rivals read it as a threat.',
   },
   {
-    id: 'demobilize', type: 'MILITARY_DEMOBILIZE', verb: 'Stand down forces', family: 'mil', category: 'Military', targeted: false,
+    id: 'demobilize', type: 'MILITARY_DEMOBILIZE', verb: 'Stand down forces', family: 'mil', targeted: false,
     blurb: 'Send the reserves home. A little calmer at home.',
   },
   {
-    id: 'procure', type: 'MILITARY_PROCURE', verb: 'Buy weapons', family: 'mil', category: 'Military', targeted: false,
+    id: 'procure', type: 'MILITARY_PROCURE', verb: 'Buy weapons', family: 'mil', targeted: false,
     blurb: 'Buy equipment from your arms suppliers.',
   },
   {
-    id: 'deploy-border', type: 'MILITARY_DEPLOY_BORDER', verb: 'Mass troops facing', family: 'mil', category: 'Military', targeted: true, danger: true,
+    id: 'deploy-border', type: 'MILITARY_DEPLOY_BORDER', verb: 'Mass troops facing', family: 'mil', targeted: true, danger: true,
     relevance: rel((s) => (s.deployed ? [0, 0] : [90, 75])),
     blurb: 'Station troops on the border with {T}: steady pressure every month.',
   },
   {
-    id: 'withdraw-border', type: 'MILITARY_WITHDRAW_BORDER', verb: 'Withdraw troops facing', family: 'mil', category: 'Military', targeted: true,
+    id: 'withdraw-border', type: 'MILITARY_WITHDRAW_BORDER', verb: 'Withdraw troops facing', family: 'mil', targeted: true,
     relevance: rel((s) => (s.deployed ? [90, 75] : [0, 0])),
     blurb: 'Pull the troops back from {T}. De-escalation is noticed.',
   },
   {
-    id: 'airstrike-military', type: 'MILITARY_AIRSTRIKE', params: { targetType: 'MILITARY' }, verb: 'Strike military targets in', family: 'mil', category: 'Military', targeted: true, danger: true,
+    id: 'airstrike-military', type: 'MILITARY_AIRSTRIKE', params: { targetType: 'MILITARY' }, verb: 'Strike military targets in', family: 'mil', targeted: true, danger: true,
     relevance: rel(() => [95, 65]),
     blurb: 'Precision strikes on the armed forces of {T}.',
   },
   {
-    id: 'airstrike-nuclear', type: 'MILITARY_AIRSTRIKE', params: { targetType: 'NUCLEAR' }, verb: 'Strike nuclear sites in', family: 'mil', category: 'Military', targeted: true, danger: true,
+    id: 'airstrike-nuclear', type: 'MILITARY_AIRSTRIKE', params: { targetType: 'NUCLEAR' }, verb: 'Strike nuclear sites in', family: 'mil', targeted: true, danger: true,
     relevance: rel((s) => [s.theirProgram ? 85 : 0, 0]),
     blurb: 'Hit the nuclear program of {T}. Two hits in a row cripple it.',
   },
   {
-    id: 'fund-nuclear', type: 'NUCLEAR_FUND_PROGRAM', verb: 'Fund nuclear program', untargetedLabel: 'Fund nuclear program', family: 'nuke', category: 'Military', targeted: false, danger: true,
+    id: 'fund-nuclear', type: 'NUCLEAR_FUND_PROGRAM', verb: 'Fund nuclear program', untargetedLabel: 'Fund nuclear program', family: 'nuke', targeted: false, danger: true,
     blurb: 'Push the nuclear program forward. Foreign spies watch for it.',
   },
   {
-    id: 'nuclear-strike', type: 'NUCLEAR_STRIKE', verb: 'Nuclear strike on', family: 'nuke', category: 'Military', targeted: true, danger: true, irreversible: true,
+    id: 'nuclear-strike', type: 'NUCLEAR_STRIKE', verb: 'Nuclear strike on', family: 'nuke', targeted: true, danger: true, irreversible: true,
     relevance: rel((s) => [s.myBomb ? 70 : 0, 0]),
     blurb: 'Nuclear release against {T}. The world will answer.',
   },
   // Intelligence
   {
-    id: 'spy', type: 'INTEL_GATHER', verb: 'Spy on', family: 'intel', category: 'Intelligence', targeted: true,
+    id: 'spy', type: 'INTEL_GATHER', verb: 'Spy on', family: 'intel', targeted: true,
     relevance: rel(() => [80, 90]),
     blurb: 'Sharpens your estimate of the forces and economy of {T}.',
   },
   {
-    id: 'counter-intel', type: 'INTEL_COUNTER_INTEL', verb: 'Hunt foreign spies', family: 'intel', category: 'Intelligence', targeted: false,
+    id: 'counter-intel', type: 'INTEL_COUNTER_INTEL', verb: 'Hunt foreign spies', family: 'intel', targeted: false,
     blurb: 'Most foreign operations against you fail for 3 months.',
   },
   {
-    id: 'sabotage', type: 'INTEL_SABOTAGE', verb: 'Sabotage', family: 'intel', category: 'Intelligence', targeted: true,
+    id: 'sabotage', type: 'INTEL_SABOTAGE', verb: 'Sabotage', family: 'intel', targeted: true,
     relevance: rel((s) => (s.theirProgram ? [75, 70] : [0, 0])),
     blurb: 'Covert damage to the infrastructure of {T}.',
   },
   {
-    id: 'destabilize', type: 'INTEL_DESTABILIZE', verb: 'Destabilize', family: 'intel', category: 'Intelligence', targeted: true,
+    id: 'destabilize', type: 'INTEL_DESTABILIZE', verb: 'Destabilize', family: 'intel', targeted: true,
     relevance: rel((s) => (s.theirProgram ? [0, 0] : [75, 70])),
     blurb: 'Fund opposition media, strikes and scandal in {T}.',
   },
   {
-    id: 'arm-rebels', type: 'INTEL_SUPPORT_REBELS', verb: 'Arm rebels in', family: 'intel', category: 'Intelligence', targeted: true, danger: true,
+    id: 'arm-rebels', type: 'INTEL_SUPPORT_REBELS', verb: 'Arm rebels in', family: 'intel', targeted: true, danger: true,
     blurb: 'Arm and finance insurgents inside {T}.',
   },
   {
-    id: 'disinformation', type: 'INTEL_MISINFORMATION', verb: 'Feed disinformation to', family: 'intel', category: 'Intelligence', targeted: true,
+    id: 'disinformation', type: 'INTEL_MISINFORMATION', verb: 'Feed disinformation to', family: 'intel', targeted: true,
     blurb: 'Give the spies of {T} a false picture of your strength.',
   },
   {
-    id: 'assassinate', type: 'INTEL_ASSASSINATE', verb: 'Assassinate leader of', family: 'intel', category: 'Intelligence', targeted: true, danger: true,
+    id: 'assassinate', type: 'INTEL_ASSASSINATE', verb: 'Assassinate leader of', family: 'intel', targeted: true, danger: true,
     blurb: 'Eliminate the leader of {T}. The successor may be worse.',
   },
   {
-    id: 'coup', type: 'INTEL_COUP', verb: 'Back a coup in', family: 'intel', category: 'Intelligence', targeted: true, danger: true,
+    id: 'coup', type: 'INTEL_COUP', verb: 'Back a coup in', family: 'intel', targeted: true, danger: true,
     blurb: 'Back a faction to install a friendly government in {T}.',
   },
   // Domestic
   {
-    id: 'address', type: 'DOMESTIC_PROPAGANDA', verb: 'National address', family: 'home', category: 'Domestic', targeted: false,
+    id: 'address', type: 'DOMESTIC_PROPAGANDA', verb: 'National address', family: 'home', targeted: false,
     blurb: 'Rally the nation. Repetition dulls the message.',
   },
   {
-    id: 'reform', type: 'DOMESTIC_REFORM', verb: 'Reform program', family: 'econ', category: 'Domestic', targeted: false,
+    id: 'reform', type: 'DOMESTIC_REFORM', verb: 'Reform program', family: 'econ', targeted: false,
     blurb: 'Stability now, growth later. Wins no votes.',
   },
   {
-    id: 'policing-soft', type: 'DOMESTIC_POLICING', params: { tactic: 'SOFT' }, verb: 'Soft policing', family: 'home', category: 'Domestic', targeted: false,
+    id: 'policing-soft', type: 'DOMESTIC_POLICING', params: { tactic: 'SOFT' }, verb: 'Soft policing', family: 'home', targeted: false,
     blurb: 'Patient policing and talks: slow, with no backlash.',
   },
   {
-    id: 'policing-hard', type: 'DOMESTIC_POLICING', params: { tactic: 'HARD' }, verb: 'Hard crackdown', family: 'home', category: 'Domestic', targeted: false, danger: true,
+    id: 'policing-hard', type: 'DOMESTIC_POLICING', params: { tactic: 'HARD' }, verb: 'Hard crackdown', family: 'home', targeted: false, danger: true,
     blurb: 'Overwhelming force against the insurgency. Democracies object.',
   },
 ];
 
-export const CATEGORIES: readonly OrderCategory[] = ['Diplomacy', 'Military', 'Intelligence', 'Domestic'];
-
-/** The registry grouped for the desk catalog, in category order. */
-export const ORDERS_BY_CATEGORY: Record<OrderCategory, OrderDef[]> = {
-  Diplomacy: ORDERS.filter((o) => o.category === 'Diplomacy'),
-  Military: ORDERS.filter((o) => o.category === 'Military'),
-  Intelligence: ORDERS.filter((o) => o.category === 'Intelligence'),
-  Domestic: ORDERS.filter((o) => o.category === 'Domestic'),
-};
+/**
+ * The registry grouped for the desk's All orders, in `FAMILIES` order (DR-OC-2): each group's
+ * heading is `FAMILY_WORD[family]`, the same word as the chip on every card in it, so a heading
+ * never names a family its cards do not carry. Within a group, registry order.
+ */
+export const ORDERS_BY_FAMILY: Record<OrderFamily, OrderDef[]> = Object.fromEntries(
+  FAMILIES.map((f) => [f, ORDERS.filter((o) => o.family === f)]),
+) as Record<OrderFamily, OrderDef[]>;
 
 export const orderById = (id: string): OrderDef | undefined => ORDERS.find((o) => o.id === id);
 

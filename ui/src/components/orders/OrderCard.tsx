@@ -369,6 +369,13 @@ export function OrderCard({
     const slot = block?.code === 'NO_CAPITAL' ? block.slots?.[0] : undefined;
     const actKind = avail.state === 'available' ? 'add' : isQueued ? 'remove' : slot !== undefined ? 'free' : block?.code === 'NEEDS_TARGET' ? 'pick' : 'why';
     const actText = { add: isProposal ? 'Accept order' : 'Add', remove: 'Remove', free: `Free ◆ ${slot !== undefined ? month.queuedCosts[slot] : 0}`, pick: 'Pick', why: 'Why' }[actKind];
+    // A free order says "free" once, on its seal badge, not again in the meta line
+    const metaParts = [
+      ...(pc ? [`◆ ${pc}`] : []),
+      ...(share > 0 ? [term(TERMS.defense.compact, Math.round(share * 100))] : []),
+      ...(entry?.chance != null ? [term(TERMS.chance.name, entry.chance)] : []),
+      ...(def.irreversible ? [TERMS.noUndo.name] : []),
+    ];
     const onAct = () => {
       if (actKind === 'add') void give(false);
       else if (actKind === 'remove') remove(st.queuedIndex);
@@ -409,20 +416,15 @@ export function OrderCard({
             ) : isProposal ? (
               <span className="ord-meta-line ord-meta-proposed">
                 {TERMS.proposed.name}
-                {staff ? ` (${staff})` : ''} · {pc ? `◆ ${pc} if accepted` : 'free'}{' '}
+                {staff ? ` (${staff})` : ''}
+                {pc ? ` · ◆ ${pc} if accepted` : ''}{' '}
                 <button type="button" className="link ord-dismiss" onClick={() => remove(proposalIndex)}>
                   Remove
                 </button>
               </span>
             ) : (
-              avail.state !== 'invalid' && (
-                <span className="ord-meta-line">
-                  {pc ? `◆ ${pc}` : 'free'}
-                  {share > 0 ? ` · ${term(TERMS.defense.compact, Math.round(share * 100))}` : ''}
-                  {entry?.chance != null ? ` · ${term(TERMS.chance.name, entry.chance)}` : ''}
-                  {def.irreversible ? ` · ${TERMS.noUndo.name}` : ''}
-                </span>
-              )
+              avail.state !== 'invalid' &&
+              metaParts.length > 0 && <span className="ord-meta-line">{metaParts.join(' · ')}</span>
             )}
             {off && block && (
               <span className={`ord-meta-why ${avail.state === 'unaffordable' ? 'is-budget' : 'is-rule'}`}>
