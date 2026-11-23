@@ -413,6 +413,8 @@ html { font-size: clamp(16px, calc(0.42vmin + 11.5px), 22px); }
   .ph-conseq { margin: 0; font-size: 15px; color: var(--text-2); text-align: center; }
   .ph-conseq b { color: var(--text-1); }
   .ph-below { justify-content: center; min-height: 44px; font-size: 15px; font-weight: 600; }
+  /* An open call's leave sentence, in the amber of a question waiting (N-3), while its badge is below */
+  .ph-leave { margin: 0; padding: 6px 10px; border: 1.5px dashed var(--accent); border-radius: 10px; background: rgba(242, 169, 59, 0.14); color: var(--text-1); font-size: 14px; line-height: 1.35; text-align: center; }
   .ph-next { width: 100%; min-height: 48px; font-size: 18px; justify-content: center; }
   .ph-bottom .execute-btn { min-height: 52px; }
   .ph-sheet { position: fixed; inset: auto 0 0 0; z-index: 40; max-height: calc(100vh - 3rem); overflow: hidden; border-top: 1.5px solid var(--line-2); border-radius: 1rem 1rem 0 0; box-shadow: 0 -16px 40px rgba(0, 0, 0, .6); }

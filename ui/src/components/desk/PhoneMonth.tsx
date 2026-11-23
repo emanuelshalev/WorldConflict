@@ -58,8 +58,8 @@ export function PhoneThingLine() {
 }
 
 /** How many answer cards are below the fold or under the bottom bar (the cue's count, AC-L5). */
-function useBelow(dep: unknown): { n: number; skip: boolean; first: HTMLElement | null } {
-  const [state, set] = useState<{ n: number; skip: boolean; first: HTMLElement | null }>({ n: 0, skip: false, first: null });
+function useBelow(dep: unknown): { n: number; skip: boolean; first: HTMLElement | null; badgeBelow: boolean } {
+  const [state, set] = useState<{ n: number; skip: boolean; first: HTMLElement | null; badgeBelow: boolean }>({ n: 0, skip: false, first: null, badgeBelow: false });
   useEffect(() => {
     const scroller = document.querySelector('.game');
     const measure = () => {
@@ -67,7 +67,10 @@ function useBelow(dep: unknown): { n: number; skip: boolean; first: HTMLElement 
       const limit = bar ? bar.top : window.innerHeight;
       const cards = [...document.querySelectorAll<HTMLElement>('.ph-body .thing .opt')];
       const hidden = cards.filter((c) => c.getBoundingClientRect().bottom > limit + 1);
-      set({ n: hidden.length, skip: hidden.some((c) => c.classList.contains('skipopt')), first: hidden[0] ?? null });
+      // The crisis sentence (what Execute does with it) still below the fold: the bar says it (D-85)
+      const badge = document.querySelector<HTMLElement>('.ph-body .thing .sel-badge');
+      const badgeBelow = !!badge && badge.getBoundingClientRect().top > limit - 1;
+      set({ n: hidden.length, skip: hidden.some((c) => c.classList.contains('skipopt')), first: hidden[0] ?? null, badgeBelow });
     };
     measure();
     const t = window.setTimeout(measure, 400);
@@ -134,6 +137,13 @@ export function PhoneBottom({ map = false }: { map?: boolean }) {
   };
   return (
     <div className="ph-bottom" ref={barRef} data-region="plan" data-form="sheet">
+      {/* Month 1 on a phone: the open call's leave sentence is below the first screen, so the bar
+          carries it until the badge itself is in view (D-85 item 5, the same words: leaveText) */}
+      {!review && !map && below.badgeBelow && cur?.leave && (
+        <p className="ph-leave" data-leave="">
+          No answer yet. {cur.leave}.
+        </p>
+      )}
       {cue && (
         <button type="button" className="wc-btn small ph-below" onClick={() => below.first?.scrollIntoView({ block: 'center', behavior: 'smooth' })} data-below-cue="">
           {cue} <IconArrowDown size={15} aria-hidden />
