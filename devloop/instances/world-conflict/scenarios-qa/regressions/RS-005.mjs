@@ -174,7 +174,9 @@ await run('RS-005', async (g, track) => {
     await p.waitForTimeout(800);
     const off = p.locator('[data-staff-picks] .sp-main').first();
     const offText = (await off.innerText().catch(() => '')).replace(/\s+/g, ' ');
-    g.check((await off.isDisabled().catch(() => false)) && /Nothing to accept/i.test(offText), `${device} map: after Accept all the button is disabled with a reason ("${offText.slice(0, 60)}")`);
+    // design-review-your-call.md RC-1: with a crisis Accept all leaves open, the reason names it
+    // ("Nothing else to accept. Still open: ..."); "Nothing to accept" only when none is open
+    g.check((await off.isDisabled().catch(() => false)) && /Nothing (else )?to accept/i.test(offText), `${device} map: after Accept all the button is disabled with a reason ("${offText.slice(0, 90)}")`);
     g.check(s.errors.length === 0, `${device}: no page errors (${s.errors.slice(0, 2).join(' | ')})`);
   }
 });
