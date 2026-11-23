@@ -37,3 +37,5 @@ Version 1.6, 2026-11-23. Changed only through journal entries (`instances/*/jour
 Iteration 0 is special: interviews and a baseline usage round on the current build, before any building, so the first goals come from evidence.
 
 - **The status page follows a protocol, not memory.** Every section has a tier (live, merge, feedback, iteration close, on change) triggered by loop events; generated sections are injected from their source files, only judgement is hand-written, every section carries an as-of stamp and the page check fails on a stale one (method/status-page.md).
+
+- **Design leads user-facing work.** Interface and gameplay decide whether features shine. Every user-facing change starts from a designer's spec and mocks at every screen size, co-signed by the visual and gameplay leads, and merges only after a design review of the real built screen (recorded with the controller). Each integrated build gets a design pass and a play pass before customers see it; their findings block like QA findings.

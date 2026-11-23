@@ -12,3 +12,5 @@
 - Respect accessibility: contrast AA, reduced motion, colorblind-safe palettes.
 
 **Deliverables.** For each UI goal: a concept (SVG or HTML mock, committed under `devloop/instances/world-conflict/runs/iter-N/concepts/`), a component spec (states, sizes, motion, tokens) and a visual QA checklist the QA engineer runs against screenshots.
+
+**Authority (D-81).** Co-signs every user-facing spec (look, hierarchy, density, motion) and every design review before merge. Owns the visual quality bar: a screen that is correct but dull, cramped or empty does not pass review.
