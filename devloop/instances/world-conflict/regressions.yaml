@@ -963,6 +963,14 @@ findings:
     guards:
       - vitest: tests/core/your-call.spec.ts
         name: "D84-CALL-TRAP"
+  - id: D84-DESK-TRUTH
+    title: "What the desk shows for a crisis is what Execute sends: every crisis, a call included, carries the answer the desk names; the turn report and the replay record show that answer; Accept all never says every recommendation is decided while a crisis is still open"
+    source: runs/iter-04/design-review-your-call.md RC-1 (S1; probe-accept-all-usa.txt, probe-accept-all-ukr.txt, usa-aa-m2-after-1440x900.jpg)
+    covers: [ui/src/lib/month.ts, ui/src/components/desk/StaffPicks.tsx, ui/src/store/gameStore.ts]
+    guards:
+      - vitest: tests/core/your-call.spec.ts
+        name: "D84-DESK-TRUTH"
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/D84-DESK-TRUTH.mjs
   - id: D84-QU-CHN
     title: "Quarantine China asks for a move: staff loses QU-CHN-LEO01, guided wins, the Taiwan court is a mission move and never an upkeep order"
     source: runs/iter-04/decision-call-balance.md 5.3 (staff 89% by waiting, 36 games)

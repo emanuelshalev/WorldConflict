@@ -260,6 +260,111 @@ describe("D84-SETTING: Let the Chief of Staff make my calls restores the full on
   });
 });
 
+describe("D84-DESK-TRUTH: what the desk shows for a crisis is what Execute sends (setupMonth)", () => {
+  // design-review-your-call.md RC-1: a call crisis was left without an answer while the desk said
+  // "Recommended: X", so the engine ran the default. Three answers: default a, cabinet c, chief b
+  let stored: string | null = null;
+  beforeEach(() => {
+    vi.resetModules();
+    stored = null;
+    vi.stubGlobal("window", { location: { search: "" }, innerWidth: 1440 });
+    vi.stubGlobal("localStorage", {
+      getItem: (k: string) => (k.includes(".pending.") ? stored : null),
+      setItem: () => {},
+      removeItem: () => {},
+      key: () => null,
+      length: 0,
+    });
+  });
+  afterEach(() => vi.unstubAllGlobals());
+
+  const opt = (id: string) => ({ id, label: `answer ${id}`, description: "", effects: {}, tensionDelta: 0, actions: [], backedBy: [] });
+  const crisis = (id: string) => ({ id, turn: 1, title: id, situation: "", affectedCountries: [], options: [opt("a"), opt("b"), opt("c")], deadlineTurn: 1, templateId: "t", urgency: "URGENT" as const, defaultOptionId: "a" });
+  const open = async (chiefCalls: boolean) => {
+    const { useGameStore } = await import("../../ui/src/store/gameStore.js");
+    const month = await import("../../ui/src/lib/month.js");
+    useGameStore.setState({
+      saveId: "save-1",
+      gameOver: false,
+      monthKey: null,
+      worldState: { turn: 1, politicalCapital: 4, agenda: [], countries: [], playerCountryId: "USA", turnReport: null } as never,
+      pendingDecisions: [crisis("routine"), crisis("call")] as never,
+      pendingActions: [],
+      decisionChoices: {},
+      reviewed: {},
+      staffOrders: false,
+      chiefCalls,
+      advice: {
+        cabinetPicks: { routine: "c", call: "c" },
+        missionPicks: { call: "b" },
+        meetingPicks: {},
+        deputies: [],
+        staffOrders: [],
+        calls: [{ id: "call", kind: "crisis", title: "call", cards: [], missionCard: "b", calmCard: "c", chiefPick: "b", guide: "", skip: { label: "Skip", text: "", optionId: "a", hurts: [], breaks: [], bonusHurts: [] }, gap: 3, trade: true }],
+        routine: [{ kind: "crisis", id: "routine", optionId: "c", label: "c" }],
+        chief: { decisions: { call: "b" }, orders: [] },
+        prices: {},
+        reserve: 1,
+      } as never,
+    });
+    await month.setupMonth();
+    const shown = (id: string) => {
+      const s = useGameStore.getState();
+      const d = s.pendingDecisions.find((x) => x.id === id)!;
+      return month.crisisSelection(d, s.decisionChoices, s.reviewed);
+    };
+    return { useGameStore, month, shown };
+  };
+
+  it("setting off: the call starts on the recommended answer the desk names, and Accept all leaves it unconfirmed", async () => {
+    const { useGameStore, month, shown } = await open(false);
+    const s = useGameStore.getState();
+    expect(s.decisionChoices).toEqual({ routine: "c", call: "c" });
+    expect(shown("call").text).toBe("Recommended: answer c");
+    expect(shown("call").option?.id).toBe(s.decisionChoices.call);
+    expect(month.pendingApprovals().crises).toEqual(["routine"]);
+    month.approveAll();
+    const after = useGameStore.getState();
+    expect(after.reviewed.call).toBeUndefined();
+    expect(after.decisionChoices.call).toBe("c"); // still sent: what the card shows
+    expect(shown("call").text).toBe("Recommended: answer c");
+  });
+
+  it("setting on: the call starts on the Chief of Staff's pick and Accept all accepts it", async () => {
+    const { useGameStore, month, shown } = await open(true);
+    expect(useGameStore.getState().decisionChoices.call).toBe("b");
+    expect(shown("call").text).toBe("Recommended: answer b");
+    month.approveAll();
+    expect(useGameStore.getState().reviewed.call).toBe(true);
+    expect(useGameStore.getState().decisionChoices.call).toBe("b");
+    expect(shown("call").text).toBe("Accepted: answer b");
+  });
+
+  it("the setting turned on after the month opened: Accept all takes the Chief of Staff's pick", async () => {
+    const { useGameStore, month } = await open(false);
+    useGameStore.setState({ chiefCalls: true });
+    month.approveAll();
+    expect(useGameStore.getState().decisionChoices.call).toBe("b");
+  });
+
+  it("a player's own choice wins over the setting and Accept all", async () => {
+    for (const chief of [false, true]) {
+      const { useGameStore, month, shown } = await open(chief);
+      useGameStore.getState().chooseDecision("call", "a");
+      month.approveAll();
+      expect(useGameStore.getState().decisionChoices.call, `chiefCalls ${chief}`).toBe("a");
+      expect(shown("call").text).toBe("Your pick: answer a");
+      vi.resetModules();
+    }
+  });
+
+  it("a desk saved without the call's answer gets it when the month reopens", async () => {
+    stored = JSON.stringify({ pendingActions: [], decisionChoices: { routine: "b" }, reviewed: { routine: true }, dismissedStaff: [] });
+    const { useGameStore } = await open(false);
+    expect(useGameStore.getState().decisionChoices).toEqual({ routine: "b", call: "c" });
+  });
+});
+
 /** Water-war India seeds (WW is water-war's seed-code prefix), the seat where a strike on Pakistan
  *  is an act of war (decision-call-balance.md 2.1). */
 const WW_IND = ["WW-IND-1", "WW-IND-2", "WW-IND-3", "WW-IND-4", "WW-IND-5", "WW-IND-6", "WW-IND-7", "WW-IND-8"];

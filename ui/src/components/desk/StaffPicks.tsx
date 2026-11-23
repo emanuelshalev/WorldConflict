@@ -1,6 +1,7 @@
 import { useId, useState } from 'react';
 import { IconCheck, IconChecks, IconChevronDown, IconInfoCircle, IconListDetails, IconPencil } from '@tabler/icons-react';
-import { type StaffPickItem, approveAll, approveLabel, approveStaffPick, openStaffPick } from '../../lib/month';
+import { type StaffPickItem, approveAll, approveLabel, approveStaffPick, crisisSelection, openStaffPick } from '../../lib/month';
+import { useGameStore } from '../../store/gameStore';
 import { useRecommendedOpen, useStaffPicks } from '../../lib/useStaffPicks';
 import { TERMS } from '../../lib/glossary';
 import { sound } from '../../lib/sound';
@@ -88,8 +89,25 @@ function PickRow({ item, onDone, onNavigate }: { item: StaffPickItem; onDone: ()
   );
 }
 
+/**
+ * What is still open once nothing waits to be accepted (design-review-your-call.md RC-1): a crisis
+ * Accept all does not confirm (one your advisers disagree on) still goes ahead on the answer its
+ * card shows unless the player changes it, so the button never says every recommendation is decided
+ * while one is open.
+ */
+function useStillOpen(): string | null {
+  return useGameStore((s) => {
+    const open = s.pendingDecisions.filter((d) => !s.reviewed[d.id]);
+    if (!open.length) return null;
+    if (open.length > 1) return `Still open: ${open.length} crises go ahead on their recommended answers unless you change them`;
+    const sel = crisisSelection(open[0], s.decisionChoices, s.reviewed);
+    return `Still open: ${open[0].title} goes ahead on ${sel.text} unless you change it`;
+  });
+}
+
 /** The main button: "Accept all recommended (4)" with what it covers; disabled with a reason at zero. */
 function MainButton({ n, breakdown, against, folded, onUnfold, onApprove, kbd, listId, id }: { n: number; breakdown: string; against: number; folded: boolean; onUnfold: () => void; onApprove: () => void; kbd: boolean; listId: string; id?: string }) {
+  const stillOpen = useStillOpen();
   if (n === 0)
     return (
       <button type="button" id={id} className="wc-btn sp-main" disabled aria-describedby={`${listId}-none`}>
@@ -97,7 +115,7 @@ function MainButton({ n, breakdown, against, folded, onUnfold, onApprove, kbd, l
           <IconChecks size={16} aria-hidden /> {TERMS.approveAll.name.replace(' ({n})', '')}
         </span>
         <small className="sp-main-sub" id={`${listId}-none`}>
-          Nothing to accept: every recommendation is decided
+          {stillOpen ? `Nothing else to accept. ${stillOpen}` : 'Nothing to accept: every recommendation is decided'}
         </small>
       </button>
     );
