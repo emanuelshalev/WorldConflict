@@ -56,7 +56,20 @@ export function ConfirmFace({ kind, question, missionWarning, lines, confirmText
     // Both answers on screen without a scroll (DR-OC-1): in a scrolling container (the map order
     // menu) bring the button row into view once the face has its size (after the grid reflows)
     const raf = requestAnimationFrame(() => {
-      root.current?.querySelector('.ord-confirm-btns')?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
+      // Only the nearest scrolling box moves, never the page: a page with several faces open (the
+      // orders gallery) must not jump, and its scroll position must not depend on timing
+      const btns = root.current?.querySelector<HTMLElement>('.ord-confirm-btns');
+      let box = btns?.parentElement ?? null;
+      while (box && box !== document.body && box !== document.documentElement) {
+        const oy = getComputedStyle(box).overflowY;
+        if ((oy === 'auto' || oy === 'scroll') && box.scrollHeight > box.clientHeight + 1) break;
+        box = box.parentElement;
+      }
+      if (!btns || !box || box === document.body || box === document.documentElement) return;
+      const b = btns.getBoundingClientRect();
+      const c = box.getBoundingClientRect();
+      if (b.bottom > c.bottom) box.scrollTop += b.bottom - c.bottom + 8;
+      else if (b.top < c.top) box.scrollTop -= c.top - b.top + 8;
     });
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return;
