@@ -17,7 +17,7 @@ import { useModalFocus } from '../lib/useModalFocus';
 import { mergeRemoteRuns } from '../lib/runs';
 import { cellsToEmoji, drawClassicCard, monthCells, publicSite, shareImage } from '../lib/shareCard';
 import { RevealSequence } from './reveal/RevealSequence';
-import { END_SCENE } from './reveal/model';
+import { endScene } from './reveal/model';
 import { CodexEndLine } from './learn/CodexEndLine';
 import { ExplainText } from './learn/ExplainText';
 
@@ -220,7 +220,7 @@ export function EndScreen() {
     <div ref={ref} className="overlay" role="dialog" aria-modal="true" aria-label="Result">
       <div className="end">
         <SceneFrame
-          kind={END_SCENE[gameOver.reason] ?? (lost ? 'streets' : 'address')}
+          kind={endScene(gameOver.reason, { flashpointId: world.flashpointId, regime: me.regimeType }, lost)}
           home={me.id}
           mood={lost ? 'bad' : 'good'}
           size="card"

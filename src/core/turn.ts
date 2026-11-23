@@ -7,6 +7,7 @@ import { EventEngine } from "./events.js";
 import { beginMonth, explainMonth, type MonthStart } from "./explain.js";
 import { sharesLandBorder } from "./geography.js";
 import { generateAgenda, MEETING_SLOTS } from "./meetings.js";
+import { impactContext, itemPrices } from "./missionImpact.js";
 import { generateNewspaper } from "./newspaper.js";
 import { computeOutcome, earlyFailure } from "./objectives.js";
 import { engineOrderFor } from "./orders.js";
@@ -131,6 +132,7 @@ export class TurnEngine {
     // The month's starting picture, for the debrief (others' view of us, fronts, hot zones)
     this.start = {
       rel: new Map(world.countries.map((c) => [c.id, c.relations[world.playerCountryId] ?? 0])),
+      mine: new Map(Object.entries(playerBefore?.relations ?? {})),
       front: new Map(world.wars.map((w) => [w.id, w.frontline])),
       hot: new Map(world.hotspots.map((h) => [h.id, { ...h }])),
       tension: world.globalTension,
@@ -587,6 +589,7 @@ export class TurnEngine {
   private month: MonthStart | null = null;
   private start: {
     rel: Map<string, number>;
+    mine: Map<string, number>;
     front: Map<string, number>;
     hot: Map<string, Hotspot>;
     tension: number;
@@ -597,9 +600,26 @@ export class TurnEngine {
     this.injectedFrom = new Map();
     const player = world.countries.find((c) => c.id === world.playerCountryId);
     if (!player) return injected;
+    // D-84 R6: the mission side of an item costs PUSH_PC more when another answer helps no goal,
+    // priced on the picture the player saw (the state before any answer resolves)
+    const ctx = impactContext(world);
+    const prices = new Map(
+      [...world.pendingDecisions, ...world.agenda].map((d) => [d.id, itemPrices(world, d, ctx)]),
+    );
+    const priceOf = (itemId: string, optionId: string) => prices.get(itemId)?.[optionId] ?? 0;
+    /** An answer the bank cannot pay is not taken (the desk shows it blocked before the press). */
+    const unaffordable = (itemId: string, optionId: string, title: string) => {
+      const price = priceOf(itemId, optionId);
+      if (price <= world.politicalCapital) return false;
+      this.report?.causes.push(
+        `${title}: not enough political capital for that answer (needs ${price}, ${world.politicalCapital} left), so the cabinet waited`,
+      );
+      return true;
+    };
 
     for (const pending of [...world.pendingDecisions]) {
       let choice = choices.find((c) => c.decisionId === pending.id);
+      if (choice && unaffordable(pending.id, choice.optionId, pending.title)) choice = undefined;
       const byDefault = !choice;
       if (!choice && world.turn > pending.deadlineTurn - 1) {
         // Ignored crises resolve themselves: usually not in your favor
@@ -613,6 +633,7 @@ export class TurnEngine {
       if (!option) continue;
 
       const snapBefore = outcomeSnap(world, player);
+      if (!byDefault) world.politicalCapital -= priceOf(pending.id, option.id);
       applyEffects(world, player, option.effects);
       world.globalTension = clamp01(world.globalTension + option.tensionDelta);
       injected.push(...option.actions);
@@ -661,7 +682,8 @@ export class TurnEngine {
       const deputy = meeting.options.find((o) => o.id === meeting.defaultOptionId);
       let option = picked ? meeting.options.find((o) => o.id === picked.optionId) : undefined;
       if (option && option !== deputy) {
-        if (attended >= MEETING_SLOTS) option = undefined;
+        if (attended >= MEETING_SLOTS || unaffordable(meeting.id, option.id, meeting.title))
+          option = undefined;
         else attended++;
       }
       option ??= deputy;
@@ -669,6 +691,7 @@ export class TurnEngine {
       const them = findCountry(world, meeting.withCountry);
       const bandBefore = bandOf(player, them);
       const snapBefore = outcomeSnap(world, player);
+      if (option !== deputy) world.politicalCapital -= priceOf(meeting.id, option.id);
       applyEffects(world, player, option.effects);
       world.globalTension = clamp01(world.globalTension + option.tensionDelta);
       const facts = decisionFacts(
@@ -1393,6 +1416,19 @@ export class TurnEngine {
       .sort((a, b) => Math.abs(b.after - b.before) - Math.abs(a.after - a.before))
       .slice(0, 5)
       .map((r) => ({ ...r, before: Math.round(r.before), after: Math.round(r.after) }));
+    // Our own view of everyone we dealt with this month, start to end (one decimal)
+    const dealt = new Set<string>([
+      ...report.orders.map((o) => o.target).filter((t): t is string => !!t),
+      ...report.decisions.map((d) => d.withCountry).filter((t): t is string => !!t),
+    ]);
+    const tenth = (v: number) => Math.round(v * 10) / 10;
+    report.yourView = [...dealt]
+      .filter((id) => id !== player.id && start.mine.has(id))
+      .map((id) => ({
+        id,
+        before: tenth(start.mine.get(id) ?? 0),
+        after: tenth(player.relations[id] ?? 0),
+      }));
     // AI moves that touch us: aimed at us or an ally, or by a country at war with us
     const rank = (t: string) =>
       t === "NUCLEAR_STRIKE"

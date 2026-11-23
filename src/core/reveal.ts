@@ -10,7 +10,13 @@ import {
 } from "./achievements.js";
 import { emptyChronicle } from "./chronicle.js";
 import type { RealityData, SignatureData } from "./data-loader.js";
-import { conditionMeasure, evaluateCondition, shortLabel, stayedInPower } from "./objectives.js";
+import {
+  conditionMeasure,
+  evaluateCondition,
+  STAY_IN_POWER,
+  shortLabel,
+  stayedInPower,
+} from "./objectives.js";
 import { judgementLine, type PressQuote, pressQuotes, verdictLabel } from "./reveal-text.js";
 import { classifyLeadership } from "./scoring.js";
 import { militaryStrength } from "./systems/military.js";
@@ -189,6 +195,8 @@ export interface RevealPayload {
     difficulty: Difficulty;
     seatDifficulty: "STEADY" | "TOUGH" | "BRUTAL" | null;
     title: string;
+    /** The seat's regime at the end (the closing scene: no election for a one-party state). */
+    regime?: string;
     months: number;
     maxTurns: number;
     finalDate: string;
@@ -372,10 +380,21 @@ function timingConditions(world: WorldState): { from: number; to: number } | nul
 export function presidencyScore(world: WorldState, chronicle: Chronicle): PresidencyScore {
   const outcome = world.outcome;
   const conditions = outcome?.conditions ?? [
-    { label: "Stay in power", met: stayedInPower(world), bonus: false },
+    { label: STAY_IN_POWER, met: stayedInPower(world), bonus: false },
   ];
   const primary = conditions.filter((c) => !c.bonus);
   const bonusMet = conditions.filter((c) => c.bonus && c.met).length;
+  // The goals the desk counts (GoalLine: objective.primary); staying in power is said apart
+  // (QA3R-2b: the verdict said 5 of 5 where the desk had said 4 of 4)
+  const survival = primary.find((c) => c.label === STAY_IN_POWER);
+  const goals = primary.filter((c) => c !== survival);
+  const removed = survival && !survival.met ? ", removed from office" : "";
+  const missionDetail = goals.length
+    ? `${goals.filter((c) => c.met).length} of ${goals.length} goals met${removed}, ${bonusMet} bonus`
+    : `${survival?.met === false ? "Removed from office" : "Stayed in power"}, ${bonusMet} bonus`;
+  // The Finish compares with par, the usual score for the seat; when the mission's own score goal
+  // is another number, the line names both (QA3R-2c: "missed 120 by 3" beside "par 115")
+  const scoreGoal = world.objective?.primary.find((c) => c.kind === "SCORE_PAR")?.min;
   const primaryShare = primary.length ? primary.filter((c) => c.met).length / primary.length : 0;
   const mission = Math.round(300 * primaryShare + Math.min(100, 50 * bonusMet));
 
@@ -424,7 +443,7 @@ export function presidencyScore(world: WorldState, chronicle: Chronicle): Presid
         label: "Mission",
         value: mission,
         max: 400,
-        detail: `${primary.filter((c) => c.met).length} of ${primary.length} goals met, ${bonusMet} bonus`,
+        detail: missionDetail,
       },
       {
         id: "timing",
@@ -447,7 +466,10 @@ export function presidencyScore(world: WorldState, chronicle: Chronicle): Presid
         label: "Finish",
         value: finish,
         max: 200,
-        detail: `Final score ${world.score.total} against par ${par}`,
+        detail:
+          scoreGoal !== undefined && scoreGoal !== par
+            ? `Final score ${world.score.total} against par ${par}, the usual score for this seat (your goal was ${scoreGoal}+)`
+            : `Final score ${world.score.total} against par ${par}`,
       },
     ],
   };
@@ -555,9 +577,14 @@ function momentView(m: ChronicleMoment, rows: ChronicleSample[]): MomentView {
   const detail = m.kind === "CRISIS" ? (m.choice ?? "") : m.detail;
   const short = detail.replace(/[.!?]+$/, "");
   const objective = m.kind === "OBJECTIVE_MET" || m.kind === "OBJECTIVE_LOST";
+  // Crises and orders cite their own numbers, never the month's largest move (QA3R-2d)
+  const own = m.kind === "ORDER" || m.kind === "CRISIS";
+  const lead = short.length <= 60 ? short : "";
   const cons = objective
     ? short
-    : consequence(rows, m.turn, short.length <= 60 ? short : "", m.tone);
+    : own
+      ? [lead, m.fact].filter(Boolean).join(", ")
+      : consequence(rows, m.turn, lead, m.tone);
   return {
     turn: m.turn,
     month: m.turn + 1,
@@ -1109,6 +1136,7 @@ export function buildReveal(world: WorldState, ctx: RevealContext = {}): RevealP
       difficulty: world.difficulty,
       seatDifficulty: ctx.seatDifficulty ?? null,
       title: world.objective?.title ?? "",
+      ...(me ? { regime: me.regimeType } : {}),
       months,
       maxTurns: world.maxTurns,
       finalDate: world.date,

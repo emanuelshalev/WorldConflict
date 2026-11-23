@@ -5,10 +5,12 @@ import {
   allianceOdds,
   canDeclareWar,
   ceasefireChance,
+  ceasefireCooling,
   denounceApprovalDelta,
   mediationChance,
   TERMS_COST,
   TERMS_THRESHOLD,
+  talksAgainTurn,
   targetAdvantage,
 } from "./systems/diplomacy.js";
 import { effectiveForce, monthlyDefenseBudgetM } from "./systems/military.js";
@@ -193,8 +195,17 @@ export function previewAction(world: WorldState, action: Action): ActionPreview 
       );
       if (!war) break;
       const advantage = targetAdvantage(war, actor);
-      base.successChance = Math.round(ceasefireChance(war, actor, target) * 100);
+      base.successChance = Math.round(ceasefireChance(war, actor, target, world.turn) * 100);
       effects.push(eff("Both nations", "War", "ends if accepted", "Mobilization winds down"));
+      if (ceasefireCooling(war, actor, world.turn))
+        effects.push(
+          eff(
+            tname,
+            "Talks",
+            "refused",
+            `They turned down an offer lately and will not talk again before month ${talksAgainTurn(war) + 1}`,
+          ),
+        );
       if (advantage >= TERMS_THRESHOLD) {
         base.summary = `Sue for peace on ${possessive(tname)} terms: they have what they wanted.`;
         effects.push(
@@ -552,6 +563,18 @@ export function missionWarning(world: WorldState, action: Action): string | null
             text: `${name(c.targetId)} is pledged to defend ${target.name}: this war can fail "${c.label}"`,
             bonus,
             certain: false,
+          });
+        else if (
+          action.type === "MILITARY_AIRSTRIKE" &&
+          targetId === c.targetId &&
+          target &&
+          isNuclearOperational(target)
+        )
+          // A peacetime strike on a nuclear power is an act of war (TurnEngine.actOfWar)
+          found.push({
+            text: `${name(c.targetId)} is a nuclear power: striking it means war, failing "${c.label}"`,
+            bonus,
+            certain: true,
           });
         else if (hostile && targetId === c.targetId)
           found.push({

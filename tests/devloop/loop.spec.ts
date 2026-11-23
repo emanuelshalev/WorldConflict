@@ -4,7 +4,7 @@
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { afterAll, afterEach, describe, expect, it } from "vitest";
 // @ts-expect-error: plain ESM module without type declarations
 import * as loop from "../../devloop/kit/loop.mjs";
@@ -501,7 +501,7 @@ describe("bash guard (Claude Code PreToolUse)", () => {
 
   it("follows cd and -C to the directory each git command runs in", () => {
     const v = findViolations("cd /srv/repo && git -C sub pull --rebase", "/home");
-    expect(v[0].dir).toBe("/srv/repo/sub");
+    expect(v[0].dir).toBe(resolve("/srv/repo/sub")); // a drive-letter path on Windows
   });
 
   it("blocks only in the shared checkout and honours a guard override", async () => {

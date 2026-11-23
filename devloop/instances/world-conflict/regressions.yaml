@@ -25,7 +25,7 @@ findings:
     title: Political capital is named one way everywhere and the warning points at its meter
     source: RS-001 (CEO, "political credit" vs the small bar); D-45; QA0-5
     covers: [ui/src/components/Hud.tsx, ui/src/components/desk/CommandRail.tsx, ui/src/lib/pointAt.ts, ui/src/lib/glossary.ts, ui/src/components/orders/OrderCard.tsx, ui/src/components/game/CapitalSeal.tsx]
-    changed: "2026-11-23 verify gate fixes: RS-001-2.mjs approves the staff picks before looking for an unaffordable order; staff picks spend nothing until approved (F-02-4, D-58), so month 1 no longer opens with seals spent. Same need tested, plus the meters must agree after the spend"
+    changed: "2026-11-23 verify gate fixes: RS-001-2.mjs approves the staff picks before looking for an unaffordable order; staff picks spend nothing until approved (F-02-4, D-58), so month 1 no longer opens with seals spent. Same need tested, plus the meters must agree after the spend. 2026-11-23 D-84: with one seal left after the staff picks, the script chooses a target country when no unaffordable order is listed (orders that cost more all need one)"
     guards:
       - vitest: tests/ui-glossary.spec.ts
         name: finds no banned synonym
@@ -158,14 +158,23 @@ findings:
       - vitest: tests/ui-month.spec.ts
         name: never arrows or abbreviations
       - vitest: tests/ui-glossary.spec.ts
+      - vitest: tests/ui-newcomers.spec.ts
+        name: "QA3R-7a"
+    note: "QA3R-7a (iteration 3 repro, GUARD GAP): Iran relations -90+ and a lone comma in the month-1 goal sentence. Negative floors in words, punctuation glued to its goal. At most three goals named was not taken: F-02-1 names every primary goal (Noah failed on the fifth); design call left to the Game Designer"
   - id: F-00-4
     title: A game, not a dashboard (illustrated option cards, titles never cut off)
     source: iter-00 triage F-00-4; design-feel; RS-001 dashboard point (partly, see open list)
-    covers: [ui/src/components/game/**, ui/src/components/desk/YourMove.tsx, ui/src/scenes/**, ui/src/styles/**]
+    covers: [ui/src/components/game/**, ui/src/components/desk/YourMove.tsx, ui/src/scenes/**, ui/src/styles/**, ui/src/components/reveal/stages.tsx, ui/src/components/reveal/model.ts]
     guards:
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-01-4.mjs
       - vitest: tests/ui/kinds.spec.ts
         name: "R7: no repeat backdrop"
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-00-4.mjs
+      - vitest: tests/ui-numbers.spec.ts
+        name: "the result card stamp never sits on the big number (QA3R-6a)"
+      - vitest: tests/ui-numbers.spec.ts
+        name: "moment axis labels never overlap (QA3R-6a)"
+    note: "QA3R-6a (iteration 3 repro, GUARD GAP): Accept all over the second recommendation and the list squeezed to 60 px at 1024 x 768, goal line and leader name cut at 1024 and 1440; F-00-4.mjs checks months 1 and 2 at 390, 1024, 1440 and 1920; the result card stamp moves off the big number; reveal axis labels take a free side or none"
   - id: F-00-5
     title: No contradictions (art vs outcome, check mark over a failed order, deltas, Your call)
     source: iter-00 triage F-00-5; QA repro #6, #7
@@ -179,6 +188,9 @@ findings:
         name: one source for the month
       - vitest: tests/regressions/ui-store.spec.ts
         name: never labelled 'Your call'
+      - vitest: tests/ui-numbers.spec.ts
+        name: "closing scene and score count"
+    note: "QA3R-3g (iteration 3 repro, GUARD GAP): 377 seats, majority won closed a China flashpoint; endScene never uses the election scene for a flashpoint end or a one-party state, on both mount points"
   - id: F-00-6
     title: Generated prose reads naturally and leaders do not repeat each other's replies
     source: iter-00 triage F-00-6; QA repro #8a, #8c
@@ -187,12 +199,18 @@ findings:
       - vitest: tests/core/headlines.spec.ts
       - vitest: tests/core/repetition.spec.ts
         name: no reaction line appears twice in one month
+      - vitest: tests/core/repetition.spec.ts
+        name: "no reaction line more than twice a session (QA3R-1a)"
+    note: "QA3R-1a (iteration 3 repro, GUARD GAP): the same call reply came back 5 to 7 times a game from different leaders; SESSION_LINE_MAX caps any line at two a session across speakers, guarded on the nine control seeds with three policies"
   - id: F-00-7
     title: No repetition (same crisis or caller every month, same scene twice running)
     source: iter-00 triage F-00-7; QA repro #10
     covers: [src/core/meetings.ts, src/core/crises.ts, src/core/advisors.ts, ui/src/scenes/kinds.ts]
     guards:
       - vitest: tests/core/repetition.spec.ts
+      - vitest: tests/core/advisors.spec.ts
+        name: "staff courts on the control seeds"
+    note: "QA3R-1b (iteration 3 repro, GUARD GAP): Court Poland at -99, Court Iran every other month; COURT_FLOOR -85 and at most two courts of one country in six months without a primary goal, guarded on the nine control seeds"
   - id: F-00-8
     title: "Approve all is not a winning autopilot: the cabinet pick can hurt the mission, and says so"
     source: iter-00 triage F-00-8; D-46 (rework), D-49 (staff band accepted at 78% for now)
@@ -202,7 +220,9 @@ findings:
         name: the mission pick scores at least as well as the cabinet pick
       - vitest: tests/core/mission-advice.spec.ts
         name: mission notes on every flashpoint seat
-    note: the staff autopilot win rate (D-49) is a balance band, not guarded here
+      - vitest: tests/core/advisors.spec.ts
+        name: "staff courts on the control seeds"
+    note: "the staff autopilot win rate (D-49) is a balance band, not guarded here | QA3R-4a (iteration 3 repro, GUARD GAP, balance call): Accept all wins 6 of 7 flashpoint control seeds after iteration 4 (7 of 7 with mission picks). No band set: options for the Game Designer in runs/iter-04/accept-all-balance.md (D-76)"
   - id: F-00-9
     title: A month takes two screens (result card, then the next desk); the paper closes on Escape
     source: iter-00 triage F-00-9; D-46
@@ -300,6 +320,9 @@ findings:
     covers: [src/core/reveal.ts, src/core/achievements.ts, src/core/chronicle.ts, src/core/objectives.ts, ui/src/components/reveal/**]
     guards:
       - vitest: tests/core/consistency.spec.ts
+      - vitest: tests/core/consistency.spec.ts
+        name: "the reveal counts goals like the desk and names the score goal"
+    note: "QA3R-2b, QA3R-2c (iteration 3 repro, GUARD GAP): the verdict counted Stay in power as a goal (5 of 5 vs the desk 4 of 4); the Finish line said par 115 beside a goal of 120. Guarded on the control seeds and every flashpoint seat"
   - id: F-01-3
     title: Numbers agree across HUD, result card, debrief and paper (single source)
     source: iter-01 triage F-01-3 (numbers part; attribution is QA2-S2-1, open); B-11
@@ -309,6 +332,11 @@ findings:
         name: one source for the month
       - vitest: tests/core/consistency.spec.ts
         name: start values come from the take-office snapshot
+      - vitest: tests/ui-numbers.spec.ts
+        name: "your own view of a country and the mission summary"
+      - vitest: tests/core/outcome-status.spec.ts
+        name: "report.yourView on the control seeds"
+    note: "QA3R-2a, QA3R-2e (iteration 3 repro, GUARD GAP): the card said Your view of Iran -75 to -68 while the month ended at -89; the report carries yourView and the card leads with the month total. The Mission sheet said 0 of 0 on track in a Term; desk and sheet share missionSummary"
   - id: F-01-4
     title: Month 1 shows only the crisis, its cards and Execute; the rest behind Show the whole desk
     source: iter-01 triage F-01-4; D-55; QA2 verified
@@ -332,6 +360,9 @@ findings:
     guards:
       - vitest: tests/ui-ease.spec.ts
         name: F-01-6 how much does it do
+      - vitest: tests/ui-ease.spec.ts
+        name: "F-01-6 how much does it do"
+    note: "QA3R-4b (iteration 3 repro, GUARD GAP, deferred): capital ends at the cap in 57 of 84 staff months; making the staff spend more is the same balance call as QA3R-4a (runs/iter-04/accept-all-balance.md), so no guard yet"
   - id: F-01-7
     title: Historical plausibility (era filter for events, AI orders and pacts; non-states refused with a reason)
     source: iter-01 triage F-01-7; B-17; QA2 verified (its over-reach on the West Bank was QA2-S1-2, now restored)
@@ -339,6 +370,8 @@ findings:
     guards:
       - vitest: tests/core/era-filter.spec.ts
       - vitest: tests/api/era-playable.spec.ts
+      - vitest: tests/core/crisis-fit.spec.ts
+    note: "QA3R-3a, QA3R-3e (iteration 3 repro, GUARD GAP): 1990 outbreak with a global vaccine effort; Gaza reconstruction offered to Russia and Afghan refugees, Iran sanctions and Gaza on a Scarborough game. Era wording for the outbreak, donor list for Gaza, at most one off-theatre world crisis per flashpoint"
   - id: F-01-S2-mobilize
     title: Staff never re-suggest Mobilize at full mobilization; it is refused before Execute
     source: iter-01 triage "other S2" (Dan); QA2 verified
@@ -651,6 +684,9 @@ findings:
         name: "F-02-5: map and desk show one order card; the Desk switch always answers (Sam)"
       - script: devloop/instances/world-conflict/runs/iter-03/fix-newcomers-shots.mjs
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/QA3-S2-1.mjs
+      - vitest: tests/ui-glossary.spec.ts
+        name: "one verb for a recommended order on every surface (QA3R-5e)"
+    note: "QA3R-5e (iteration 3 repro, GUARD GAP): Accept order on the map vs Accept on the desk; the D-72 fix made both Accept order, now guarded across OrderCard tile, row and StaffPicks"
   - id: QA2-AC3
     title: In-game globe 876 px at 1920 (target 900) and its top under the goal line
     source: runs/iter-02/qa-verify.md (world map AC3)
@@ -672,6 +708,7 @@ findings:
     title: "Recommendations are listed under \"Recommended\" next to every Accept control; the button names its count and never accepts unseen (wording D-72)"
     source: real-signals/RS-005-ceo-staff-picks-unclear-2026-11-23.md (CEO playtest); D-64; words D-71, D-72
     covers: [ui/src/components/desk/StaffPicks.tsx, ui/src/components/desk/CommandRail.tsx, ui/src/components/desk/Navigator.tsx, ui/src/lib/useStaffPicks.ts, ui/src/lib/month.ts, ui/src/styles/staff-picks.css, ui/src/lib/glossary.ts]
+    changed: "design-review-your-call.md RC-1: the greyed-out Accept all may read \"Nothing else to accept. Still open: <crisis title>\" while a crisis Accept all leaves open (a call with no answer yet), and the first-use line reads \"...; a crisis listed here goes ahead on its recommended answer unless you change it, one not listed is yours to answer.\" (design-rereview-your-call.md N-2); the guard accepts that reason as well as \"Nothing to accept\""
     guards:
       - vitest: tests/ui-staff-picks.spec.ts
       - vitest: tests/ui-glossary.spec.ts
@@ -707,6 +744,9 @@ findings:
         name: "the reveal's moments agree with their numbers (QA S2-1)"
       - vitest: tests/core/reveal.spec.ts
         name: "matches the committed payload fixture the UI builds against"
+      - vitest: tests/core/outcome-status.spec.ts
+        name: "the reveal's moments agree with play on the control seeds (QA3R-2d)"
+    note: "QA3R-2d (iteration 3 repro, GUARD GAP): war start under went well, the same month in both lists, a mission-carrying answer under went badly, an order citing the month stat. Moments carry their own fact; guarded on the control seed replays and a war replay"
   - id: F-02-8
     title: No recycled or misattributed lines; no courting the enemy's camp
     source: priya-flash 035-m9 (recycled Trump quote), 051-end-seen (Russian state TV "they blinked"), 026-m5 (Court Belarus for Ukraine)
@@ -716,6 +756,9 @@ findings:
         name: "speaker and stance checks (F-02-8)"
       - vitest: tests/core/repetition.spec.ts
         name: "anti-repetition"
+      - vitest: tests/core/outcome-status.spec.ts
+        name: "through and after a ceasefire, on the control seeds"
+    changed: "2026-11-23 iteration 4 (QA3R-1c, D-76): REGRESSED, Court Belarus came back to Ukraine after the month-5 ceasefire on CO-UKR-MAYA1 (the enemy camp only counted allies of a country at war with us). Now an enemy is a country at war with us, a historical rival or one below -40; the guard plays the nine control seeds, and CO-UKR-MAYA1 with staff and with a monthly ceasefire offer through and after the war"
   - id: F-02-3
     title: Wild moves have loud consequences; postable image share card
     source: leo-stream 012-ex1, 013-num (strike on China's nuclear sites raised approval); 046-rank (clipped text card)
@@ -747,6 +790,9 @@ findings:
     covers: [ui/src/components/learn/FamiliarityPrompt.tsx, ui/src/lib/familiaritySample.ts]
     guards:
       - vitest: tests/ui-familiarity-sample.spec.ts
+      - vitest: tests/ui-familiarity-sample.spec.ts
+        name: "familiarity sample fits the flashpoint (QA3R-3f)"
+    note: "QA3R-3f (iteration 3 repro, GUARD GAP): every 2026 flashpoint still showed the Donetsk line; each flashpoint has its own line"
   - id: QA3-S3-2
     title: "One word Recommended, one verb Accept (D-72, D-73): no Cabinet pick, if approved, On Approve; the order ideas are Orders to consider, never a second count next to Review n recommended"
     source: runs/iter-03/qa-verify.md S3-2; ledger D-72, D-73
@@ -773,6 +819,172 @@ findings:
         name: counts months like the HUD
       - vitest: tests/api/seats-replay.spec.ts
         name: a branch from month N
+  # ------------------------------------------------------------------------------------------
+  # Iteration 3 repro, NEW items (runs/iter-03/qa-repro.md; stability package D-76)
+  # ------------------------------------------------------------------------------------------
+  - id: QA3R-3h
+    title: One ceasefire offer a month does not end a stalemated war by repetition; a refusal is remembered
+    source: runs/iter-03/qa-repro.md 3h (cease policy ended the Ukraine war in month 3 on all three Ukraine control seeds)
+    covers: [src/core/systems/diplomacy.ts, src/core/preview.ts, src/core/turn.ts]
+    guards:
+      - vitest: tests/core/wild-moves.spec.ts
+        name: "a ceasefire offer every month does not end a stalemate by repetition (QA3R-3h)"
+    note: "A side that refused does not talk again for two months (REFUSAL_MEMORY); the preview says until when. Harness before and after: runs/iter-04/accept-all-balance.md"
+  - id: QA3R-3c
+    title: The UN board is a 15-seat Security Council
+    source: runs/iter-03/qa-repro.md 3c (shots/marcus-term/025-m6e.png, YES 14 NO 2)
+    covers: [ui/src/scenes/art/UnVote.tsx, ui/src/scenes/art/unTally.ts]
+    guards:
+      - vitest: tests/ui/kinds.spec.ts
+        name: "the UN vote board is a 15-seat council (QA3R-3c)"
+  - id: QA3R-2i
+    title: The Presidency Score never paints 0 before it counts
+    source: runs/iter-03/qa-repro.md 2i
+    covers: [ui/src/components/reveal/stages.tsx, ui/src/lib/useCountUp.ts]
+    guards:
+      - vitest: tests/ui-numbers.spec.ts
+        name: "the verdict score is never painted 0 while it waits to count"
+  - id: QA3R-5b
+    title: Map mode is kept from month to month (only month 1 opens on the desk)
+    source: runs/iter-03/qa-repro.md 5b (Olivia, Noah)
+    covers: [ui/src/lib/month.ts, ui/src/store/gameStore.ts]
+    guards:
+      - vitest: tests/ui-month.spec.ts
+        name: "a new month keeps the mode the player chose"
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/QA3R-5.mjs
+  - id: QA3R-5f
+    title: The Map / Desk switch is visible on phones, outside the menu, as a full tap target
+    source: runs/iter-03/qa-repro.md 5f (shots/noah-phone/019-menu.png)
+    covers: [ui/src/styles/hud.css, ui/src/styles/desk-stage.css, ui/src/styles/ease.css, ui/src/components/Hud.tsx]
+    guards:
+      - vitest: tests/ui-month.spec.ts
+        name: "no stylesheet hides the Map / Desk switch at phone widths"
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/QA3R-5.mjs
+  - id: QA3R-5d
+    title: A near miss on a small island state (Taiwan, the Philippines) opens it
+    source: runs/iter-03/qa-repro.md 5d (Sam, Scarborough)
+    covers: [ui/src/components/MapView.tsx, ui/src/lib/mapPick.ts]
+    guards:
+      - vitest: tests/ui-month.spec.ts
+        name: "a near miss picks the smallest country drawn within the tap slop"
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/QA3R-5d.mjs
+  # ------------------------------------------------------------------------------------------
+  # Design review of build-order-cards (runs/iter-04/design-review-order-cards.md, D-81)
+  # ------------------------------------------------------------------------------------------
+  - id: DR-OC-1
+    title: "The danger confirmation in the Map order menu is whole: title once, Cancel and Give the order on one line each and inside the menu's visible box"
+    source: runs/iter-04/design-review-order-cards.md required change 1 (S2; zoom-map-confirm-3440.jpg, month-2-map-confirm-1024x768.jpg)
+    covers: [ui/src/components/orders/ConfirmFace.tsx, ui/src/components/orders/OrderCard.tsx, ui/src/components/MapActionMenu.tsx, ui/src/styles/orders.css]
+    changed: "re-review (design-rereview-order-cards.md C1, C3): the guard also checks that the menu header's close button stays in view while the face is open (sticky header), that Cancel and Escape restore the menu's scroll position, and that pointing at another order shows no hover forecast beside the face"
+    guards:
+      - vitest: tests/ui-order-cards-render.spec.ts
+        name: "every danger order confirms first (D-75), and the face shows title, family word and icon"
+      - vitest: tests/ui-order-cards-render.spec.ts
+        name: "the face keeps a title line only when the question does not name the order (DR-OC-1)"
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-OC-1.mjs
+  - id: DR-OC-2
+    title: "All orders groups by family, headed by the same family word as every card's chip (no Intelligence or Domestic headings)"
+    source: runs/iter-04/design-review-order-cards.md required change 2 (S3; m1-catalog-russia-3440x1440-CEO.jpg, m1-confirm-danger-1920x1080.jpg)
+    covers: [ui/src/components/orders/OrderCatalog.tsx, ui/src/lib/orders.ts, ui/src/lib/glossary.ts]
+    guards:
+      - vitest: tests/ui-order-catalog-families.spec.ts
+        name: "All orders is grouped by family, under the family words (DR-OC-2)"
+      - vitest: tests/ui-orders-parity.spec.ts
+        name: "files every order under one family group and gives it a blurb"
+  - id: DR-OC-3
+    title: "The catalogue is dense again: rows on a phone (6 or more orders a screen), tiles near their earlier height from 600 px up"
+    source: runs/iter-04/design-review-order-cards.md required change 3 (S3; m1-catalog-russia-390x844.jpg, audit-phone.txt)
+    covers: [ui/src/components/orders/OrderCatalog.tsx, ui/src/components/orders/OrderCard.tsx, ui/src/styles/orders.css]
+    changed: "re-review (design-rereview-order-cards.md C2, C4): rows are counted where the player sees them (inside the desk stage, above the command bar; the first version counted rows under the bar), in the reviewer's state (target Russia, Military group at the top) as well as with no target; floors 4 and 5, not the target of 6 (see the guard's note); a press on an available phone row opens its blurb and forecast without adding it, Add adds it. Review 3 (design-review3-order-cards.md new problems 2 to 4): the opened row's forecast is at least 80% of the row's width and Add stays within its first 80 px; the hint line only shows with no target; a phone search hit behaves as a list row (a tap shows the forecast, Add adds)"
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-OC-3.mjs
+  - id: DR-OC-4
+    title: "On the phone desk catalogue a danger order's Cancel and Give the order open above the fixed command bar, wherever the row was pressed"
+    source: runs/iter-04/design-rereview-order-cards.md new problem 1 (S2; reach-airstrike-military-390x844-70pct.jpg, probe-face-reach-phone.txt)
+    covers: [ui/src/components/orders/ConfirmFace.tsx, ui/src/components/desk/CommandRail.tsx, ui/src/styles/desk-stage.css, ui/src/styles/month.css, ui/src/components/desk/Coach.tsx]
+    changed: "review 3 (design-review3-order-cards.md new problems 1 and 5): with an order of the player's own added first, the first month's coach bubble stands on the bar; the guard checks at 390x844 and 360x740 that no bubble shows while a face is open, that both answers are uncovered at the centre and four corners, that a tap on Give the order queues the order, and that Cancel leaves the list where the player had it"
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-OC-4.mjs
+  # ------------------------------------------------------------------------------------------
+  # D-84 "Your call" (iteration 4 build-your-call; decision-accept-all.md, decision-call-balance.md)
+  # ------------------------------------------------------------------------------------------
+  - id: D84-CLASSIFY
+    title: "Each crisis is a call or routine, never both; at most 2 calls a month; Accept all decides the routine only"
+    source: ledger D-84 (runs/iter-04/decision-accept-all.md R1, R3)
+    covers: [src/core/advisors.ts, src/core/missionImpact.ts, scripts/policies.ts]
+    guards:
+      - vitest: tests/core/your-call.spec.ts
+        name: "D84-CLASSIFY"
+  - id: D84-ADVISERS
+    title: "Every call names two advisers, and none backs a goal-hurting card when a safe card exists (D-72)"
+    source: ledger D-84 (runs/iter-04/decision-accept-all.md R5); D-72
+    covers: [src/core/advisors.ts, src/core/missionImpact.ts]
+    guards:
+      - vitest: tests/core/your-call.spec.ts
+        name: "D84-ADVISERS"
+  - id: D84-UPKEEP
+    title: "The staff propose up to 3 upkeep orders, never a mission order, and leave the reserve"
+    source: ledger D-84 (runs/iter-04/decision-accept-all.md R9)
+    covers: [src/core/advisors.ts]
+    guards:
+      - vitest: tests/core/your-call.spec.ts
+        name: "D84-UPKEEP"
+  - id: D84-PRICE
+    title: "The mission side of an item costs PUSH_PC when another answer helps no goal, and the engine charges it"
+    source: ledger D-84 (runs/iter-04/decision-accept-all.md R6)
+    covers: [src/core/costs.ts, src/core/missionImpact.ts, src/core/turn.ts, src/core/availability.ts]
+    guards:
+      - vitest: tests/core/your-call.spec.ts
+        name: "D84-PRICE"
+  - id: D84-SETTING
+    title: "Let the Chief of Staff make my calls (opt-in, off by default) restores the full one-press month"
+    source: ledger D-84 (runs/iter-04/decision-accept-all.md R8)
+    covers: [src/core/advisors.ts, ui/src/lib/month.ts, ui/src/store/gameStore.ts, ui/src/components/SettingsModal.tsx]
+    guards:
+      - vitest: tests/core/your-call.spec.ts
+        name: "D84-SETTING"
+  - id: D84-BANDS-CONTROL
+    title: "Accept all alone does not win the flashpoint control seeds; guided play spends its capital"
+    source: ledger D-84 (runs/iter-04/decision-accept-all.md 6.1); QA3R-4b
+    covers: [src/core/advisors.ts, src/core/costs.ts, scripts/policies.ts]
+    guards:
+      - vitest: tests/core/your-call.spec.ts
+        name: "D84-BANDS-CONTROL"
+  - id: D84-ACTOFWAR
+    title: "A peacetime strike on a nuclear power breaks a no-war goal; no adviser backs a goal-breaking card while another breaks none (water-war India month 1)"
+    source: runs/iter-04/decision-call-balance.md 2.1 and 5.1 (India callpush 6% against callhold 100%, 36 games)
+    covers: [src/core/missionImpact.ts, src/core/advisors.ts, src/core/preview.ts]
+    guards:
+      - vitest: tests/core/your-call.spec.ts
+        name: "D84-ACTOFWAR"
+  - id: D84-CALL-TRAP
+    title: "The calm card is never a trap: always the calm card does not beat always the mission card (water-war India, flashpoint control seeds)"
+    source: runs/iter-04/decision-call-balance.md 5.2 (the 36-game bands are in tests/balance/bands.spec.ts, opt-in)
+    covers: [src/core/advisors.ts, src/core/missionImpact.ts, scripts/policies.ts]
+    guards:
+      - vitest: tests/core/your-call.spec.ts
+        name: "D84-CALL-TRAP"
+  - id: D84-DESK-TRUTH
+    title: "What the desk says will happen to each crisis is what Execute does: an answer shown is the answer sent; a call left open (Chief of Staff setting off) shows no answer and says what leaving it does, which is what the engine runs; with the setting on, the Chief of Staff's pick everywhere; the turn report and the replay record agree; Accept all never says every recommendation is decided while a crisis is still open"
+    source: runs/iter-04/design-review-your-call.md RC-1 (S1; probe-accept-all-usa.txt, probe-accept-all-ukr.txt, usa-aa-m2-after-1440x900.jpg)
+    covers: [ui/src/lib/month.ts, ui/src/components/desk/StaffPicks.tsx, ui/src/components/desk/YourMove.tsx, ui/src/components/desk/CommandRail.tsx, ui/src/store/gameStore.ts, ui/src/lib/budget.ts]
+    guards:
+      - vitest: tests/core/your-call.spec.ts
+        name: "D84-DESK-TRUTH"
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/D84-DESK-TRUTH.mjs
+  - id: D84-BADGE-FIT
+    title: "On a phone (390 and 360 wide) a crisis selection badge, the open call's \"No answer yet. If you leave it: ...\" and a long \"Your pick\" or \"Accepted\" included, wraps inside the screen: never clipped, never wider than the screen, no horizontal scroll"
+    source: runs/iter-04/design-rereview-your-call.md RC2-1 (S2; badge clipped at 390x844 and 360x740)
+    covers: [ui/src/styles/month.css, ui/src/components/desk/YourMove.tsx, ui/src/lib/month.ts]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/D84-BADGE-FIT.mjs
+  - id: D84-QU-CHN
+    title: "Quarantine China asks for a move: staff loses QU-CHN-LEO01, guided wins, the Taiwan court is a mission move and never an upkeep order"
+    source: runs/iter-04/decision-call-balance.md 5.3 (staff 89% by waiting, 36 games)
+    covers: [data/flashpoints/quarantine.json, src/core/advisors.ts]
+    guards:
+      - vitest: tests/core/your-call.spec.ts
+        name: "D84-QU-CHN"
 # ------------------------------------------------------------------------------------------
 # Not listed (still open or not a code fix); add them here when a fix lands with its guard:
 #   RS-001-6  dashboard feel, "serious visual design": the ledger keeps it not done (D-37 check)

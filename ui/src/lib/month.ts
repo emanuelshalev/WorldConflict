@@ -14,6 +14,7 @@ import {
   committedActions,
   countryName,
   fetchPreview,
+  leftAnswer,
   orderKey,
   useGameStore,
 } from '../store/gameStore';
@@ -40,11 +41,59 @@ interface Stored {
 
 const storeKey = (key: string) => `worldconflict.pending.${key}`;
 /** Mirrors src/core/advisors.ts STAFF_ORDERS, RESERVE_PC and MIN_ODDS (tests compare them). */
-export const STAFF_ORDERS = 2;
+export const STAFF_ORDERS = 3;
 /** The staff always leave this much political capital for the player's own orders. */
 export const RESERVE_PC = 1;
 /** Orders with worse odds than this are left for the player to decide. */
 export const MIN_ODDS = 0.35;
+
+/**
+ * The crises that are "Your call" this month (D-84): Accept all never decides them, unless the
+ * player turned on "Let the Chief of Staff make my calls" (then Accept all takes advice.chief).
+ */
+export function callCrisisIds(s: GameState = useGameStore.getState()): Set<string> {
+  return new Set((s.advice?.calls ?? []).filter((c) => c.kind === 'crisis').map((c) => c.id));
+}
+
+/** An answer's D-84 price (src/core/costs.ts PUSH_PC), charged by the engine when it is chosen. */
+function answerPrice(s: GameState, itemId: string, optionId: string): number {
+  return s.advice?.prices?.[itemId]?.[optionId] ?? 0;
+}
+
+/** The Chief of Staff's answer to a call crisis, when the player lets them make the calls. */
+function chiefPickFor(s: GameState, d: PendingDecision): DecisionOption | undefined {
+  if (!s.chiefCalls || !callCrisisIds(s).has(d.id)) return undefined;
+  const id = s.advice?.chief?.decisions[d.id];
+  return id ? d.options.find((o) => o.id === id) : undefined;
+}
+
+/**
+ * The crisis answers the desk starts on, paid for in order, so what the desk shows is what Execute
+ * sends (design-review-your-call.md RC-1). A crisis takes the staff pick. A call (D-84) stays the
+ * player's: it gets no answer (the desk says what leaving it does, crisisSelection) unless the
+ * Chief of Staff makes the calls, then it starts on their pick. An answer the player chose
+ * (reviewed) is always kept; an unreviewed call answer follows the setting.
+ */
+export function crisisChoices(s: GameState, current: Record<string, string>, reviewed: Record<string, true> = s.reviewed): Record<string, string> {
+  const world = s.worldState;
+  const choices: Record<string, string> = { ...current };
+  if (!world) return choices;
+  const calls = callCrisisIds(s);
+  let pc = world.politicalCapital;
+  for (const d of s.pendingDecisions) {
+    const held = d.options.find((o) => o.id === choices[d.id]);
+    let pick: DecisionOption | undefined;
+    if (calls.has(d.id) && !reviewed[d.id]) pick = chiefPickFor(s, d);
+    else pick = held ?? crisisStaffPick(d, world.objective, pc);
+    if (!pick) {
+      delete choices[d.id];
+      continue;
+    }
+    choices[d.id] = pick.id;
+    pc += (pick.effects.pc ?? 0) - (s.advice?.prices?.[d.id]?.[pick.id] ?? 0);
+  }
+  return choices;
+}
 
 function readStored(key: string): Stored | null {
   try {
@@ -66,6 +115,14 @@ export function firstFocus(): DeskFocus {
 
 let setupRunning: string | null = null;
 
+/**
+ * The view a new month opens in (QA3R-5b): the player's own choice of Map or Desk is kept from
+ * month to month; only a session's first month opens on the desk.
+ */
+export function monthDeskMode(turn: number, current: 'map' | 'desk'): 'map' | 'desk' {
+  return turn === 0 ? 'desk' : current;
+}
+
 export async function setupMonth(): Promise<void> {
   const s = useGameStore.getState();
   const world = s.worldState;
@@ -86,22 +143,19 @@ export async function setupMonth(): Promise<void> {
     }
     const stored = readStored(key);
     if (stored) {
-      useGameStore.setState({ ...stored, monthKey: key, deskMode: 'desk' });
+      // A saved desk follows the same rules: a crisis gets a missing staff pick, an unreviewed call
+      // follows the Chief of Staff setting (no answer when it is off)
+      const reviewed = stored.reviewed ?? {};
+      useGameStore.setState({ ...stored, reviewed, decisionChoices: crisisChoices(s, stored.decisionChoices ?? {}, reviewed), monthKey: key, deskMode: monthDeskMode(world.turn, s.deskMode) });
       useGameStore.setState({ focus: firstFocus() });
       return;
     }
-    // 1. Crises: the staff pick, paid for in order
-    const choices: Record<string, string> = { ...s.decisionChoices };
-    let pc = world.politicalCapital;
-    for (const d of s.pendingDecisions) {
-      if (choices[d.id]) continue;
-      const pick = crisisStaffPick(d, world.objective, pc);
-      choices[d.id] = pick.id;
-      pc += pick.effects.pc ?? 0;
-    }
-    useGameStore.setState({ decisionChoices: choices, reviewed: {}, dismissedStaff: [], monthKey: key, deskMode: 'desk' });
+    // 1. Crises: the staff pick, paid for in order; a call is left open, or takes the Chief of
+    //    Staff's pick when the player lets them make the calls (crisisChoices)
+    const choices = crisisChoices(s, s.decisionChoices, {});
+    useGameStore.setState({ decisionChoices: choices, reviewed: {}, dismissedStaff: [], monthKey: key, deskMode: monthDeskMode(world.turn, s.deskMode) });
     useGameStore.setState({ focus: firstFocus() });
-    // 2. Orders: up to two safe staff proposals within the capital (the engine's staffOrders rule:
+    // 2. Orders: up to STAFF_ORDERS (three) safe staff proposals within the capital (the engine's staffOrders rule:
     //    affordable after the crisis picks, leaving RESERVE_PC). Proposals hold nothing, so the
     //    running total of proposed costs stands in for the capital they would take.
     if (!useGameStore.getState().staffOrders) return;
@@ -130,6 +184,17 @@ export async function setupMonth(): Promise<void> {
       proposedPc += pcCost(sug.action.type);
       queued++;
     }
+    // 3. The mission move is the player's call (D-84); with the Chief of Staff making the calls,
+    //    their first mission proposal joins the recommended orders
+    if (!useGameStore.getState().chiefCalls) return;
+    for (const sug of s.advice?.chief?.orders ?? []) {
+      const now = useGameStore.getState();
+      if (now.monthKey !== key) return;
+      if (now.pendingActions.some((a) => orderKey(a) === orderKey(sug.action))) continue;
+      const preview = await fetchPreview(sug.action);
+      if (!preview || preview.blocked || useGameStore.getState().monthKey !== key) continue;
+      useGameStore.getState().addPendingAction({ ...sug.action, preview, origin: 'staff', why: `${sug.who}: ${sug.why}`, proposed: true });
+    }
   } finally {
     setupRunning = null;
   }
@@ -144,7 +209,11 @@ export function pendingApprovals(): { crises: string[]; orders: number[]; meetin
   const s = useGameStore.getState();
   const world = s.worldState;
   if (!world) return { crises: [], orders: [], meetings: [], deputies: [] };
-  const crises = s.pendingDecisions.filter((d) => !s.reviewed[d.id]).map((d) => d.id);
+  // A call stays open unless the Chief of Staff makes the calls and has a pick for it (D-84)
+  const calls = callCrisisIds(s);
+  const crises = s.pendingDecisions
+    .filter((d) => !s.reviewed[d.id] && (!calls.has(d.id) || (s.chiefCalls && !!s.advice?.chief?.decisions[d.id])))
+    .map((d) => d.id);
   let pc = Math.max(0, capitalLeft(s));
   let slots = MAX_ORDERS - committedActions(s.pendingActions).length;
   const orders: number[] = [];
@@ -165,7 +234,8 @@ export function pendingApprovals(): { crises: string[]; orders: number[]; meetin
     if (s.decisionChoices[m.id]) continue;
     const o = meetingSuggestion(m);
     if (!o) continue;
-    const cost = -(o.effects.pc ?? 0);
+    // Its D-84 price too (the engine charges it, the meters count it, lib/budget.ts)
+    const cost = -(o.effects.pc ?? 0) + answerPrice(s, m.id, o.id);
     if (cost > 0 && cost > pc) continue;
     pc -= Math.max(0, cost);
     meetings.push({ id: m.id, optionId: o.id });
@@ -188,7 +258,15 @@ export function approveAll(): void {
   const s = useGameStore.getState();
   const reviewed = { ...s.reviewed };
   const choices = { ...s.decisionChoices };
-  for (const id of crises) reviewed[id] = true;
+  for (const id of crises) {
+    reviewed[id] = true;
+    // A call the player has not touched (not reviewed) takes the Chief of Staff's pick when the
+    // setting is on, also when it was turned on after the month opened; a player's own choice is
+    // reviewed already and never in this list
+    const d = s.pendingDecisions.find((x) => x.id === id);
+    const chief = d ? chiefPickFor(s, d) : undefined;
+    if (chief) choices[id] = chief.id;
+  }
   for (const m of meetings) {
     choices[m.id] = m.optionId;
     reviewed[m.id] = true;
@@ -200,6 +278,15 @@ export function approveAll(): void {
   }
   useGameStore.setState({ reviewed, decisionChoices: choices });
 }
+
+// The Chief of Staff setting changed mid-month: a call the player has not answered follows it at
+// once (their pick when on, no answer when off), so the desk and Execute never disagree
+useGameStore.subscribe((st, prev) => {
+  if (st.chiefCalls === prev.chiefCalls || !st.monthKey) return;
+  const choices = crisisChoices(st, st.decisionChoices);
+  const same = Object.keys(choices).length === Object.keys(st.decisionChoices).length && Object.entries(choices).every(([k, v]) => st.decisionChoices[k] === v);
+  if (!same) useGameStore.setState({ decisionChoices: choices });
+});
 
 // Save the desk on every change, per save and month
 useGameStore.subscribe((st, prev) => {
@@ -251,10 +338,25 @@ export interface Selection {
   word: string;
 }
 
+/**
+ * What leaving a crisis without an answer does, in the desk's words (leftAnswer mirrors the engine):
+ * "If you leave it: Break the strike", with the answer's political capital cost when it has one.
+ */
+export function leaveText(d: PendingDecision, world: Pick<WorldState, 'turn'> | null | undefined = useGameStore.getState().worldState): string {
+  const o = leftAnswer(world, d);
+  if (!o) return 'If you leave it: no answer is given and the crisis passes';
+  const cost = Math.max(0, -(o.effects.pc ?? 0));
+  return `If you leave it: ${o.label}${cost ? ` · ◆ ${cost}` : ''}`;
+}
+
 /** The named selection state of a crisis (never "Your call"). */
 export function crisisSelection(d: PendingDecision, choices: Record<string, string>, reviewed: Record<string, true>): Selection {
-  const cab = cabinetPick(d);
-  const chosen = d.options.find((o) => o.id === choices[d.id]) ?? cab;
+  // The recommended answer: the Chief of Staff's on a call when they make the calls, else the
+  // cabinet's. The answer shown is the one in choices, which is what Execute sends; a crisis with
+  // no answer (a call left open, D-84) shows none and says what leaving it does
+  const cab = chiefPickFor(useGameStore.getState(), d) ?? cabinetPick(d);
+  const chosen = d.options.find((o) => o.id === choices[d.id]);
+  if (!chosen) return { kind: 'waiting', text: `No answer yet. ${leaveText(d)}`, word: 'No answer yet' };
   if (!reviewed[d.id]) return { kind: 'cabinet', option: chosen, text: `Recommended: ${chosen.label}`, word: 'Recommended' };
   if (chosen.id === cab.id) return { kind: 'approved', option: chosen, text: `Accepted: ${chosen.label}`, word: 'Accepted' };
   return { kind: 'yours', option: chosen, text: `Your pick: ${chosen.label}`, word: 'Your pick' };
@@ -369,6 +471,8 @@ export function planSummary(state: GameState = useGameStore.getState()): PlanLin
   if (yours) parts.push(`your pick on ${n(yours, 'crisis', 'crises')}`);
   if (approved) parts.push(`${n(approved, 'recommended answer')} accepted`);
   if (cabinet) parts.push(`recommended answer on ${n(cabinet, 'crisis', 'crises')}`);
+  const open = crises.filter((c) => c.kind === 'waiting').length;
+  if (open) parts.push(`no answer yet on ${n(open, 'crisis', 'crises')}`);
   const committed = committedActions(state.pendingActions);
   const staff = committed.filter((a) => a.origin === 'staff').length;
   const mine = committed.length - staff;
@@ -516,7 +620,7 @@ export function staffPickItems(state: GameState = useGameStore.getState()): Staf
       what: `Crisis: ${d.title} · goes ahead unless you change it`,
       change: changeLine(effectWords(o).slice(0, 2).map((w) => w.text)),
       tag: missionTag(state.missionImpact[id]?.[o.id], state.objectiveStatus),
-      cost: Math.max(0, -(o.effects.pc ?? 0)),
+      cost: Math.max(0, -(o.effects.pc ?? 0) + answerPrice(state, id, o.id)),
       fits: true,
       optionId: o.id,
     });
@@ -549,7 +653,7 @@ export function staffPickItems(state: GameState = useGameStore.getState()): Staf
     const m = agenda.find((x) => x.id === p.id);
     const o = m?.options.find((x) => x.id === p.optionId);
     if (!m || !o) continue;
-    const cost = Math.max(0, -(o.effects.pc ?? 0));
+    const cost = Math.max(0, -(o.effects.pc ?? 0) + answerPrice(state, m.id, o.id));
     items.push({
       key: `meeting:${m.id}`,
       kind: 'meeting',

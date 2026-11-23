@@ -1,0 +1,49 @@
+state           viewport        pageScr  inner  innerPx  below  width  L/R px     cut  cover  fails  regions (e=expanded c=collapsed b=below m=missing)
+------------------------------------------------------------------------------------------------------------------------
+month-1         3440x1440 CEO   0        0      0        0      0.45   943/0      0    0      1      state:e capital:e mission:e your-move:e recommended:c execute:e
+    use-the-width: used width 0.45 < 0.85 (empty left 943px, right 0px, largest gap 958px)
+month-1         2560x1440       0        0      0        0      0.60   503/0      0    0      1      state:e capital:e mission:e your-move:e recommended:c execute:e
+    use-the-width: used width 0.60 < 0.85 (empty left 503px, right 0px, largest gap 518px)
+month-1         1920x1080       0        1      126      1      0.80   183/0      0    0      3      state:e capital:e mission:e your-move:e recommended:c execute:e
+    no-inner-scroll: 1 inner scroll region(s) hold controls or listed regions: div#desk-stage.desk-stage "Your goal. You win if all four hold at t" (126px hidden, 1 control(s) out of view)
+    no-hidden-items: 1 control(s) or region(s) below the fold: button.show-desk "Show the whole desk Advisors, 0 orders, " (container)
+    use-the-width: used width 0.80 < 0.85 (empty left 183px, right 0px, largest gap 198px)
+month-1         1440x900        0        1      148      3      0.96   24/0       0    0      2      state:e capital:e mission:e your-move:e recommended:c execute:e
+    no-inner-scroll: 1 inner scroll region(s) hold controls or listed regions: div#desk-stage.desk-stage "Your goal. You win if all four hold at t" (148px hidden, 3 control(s) out of view)
+    no-hidden-items: 3 control(s) or region(s) below the fold: button.fx-size-btn "How much?" (container); button.fx-size-btn "How much?" (container); button.show-desk "Show the whole desk Advisors, 0 orders, " (container)
+month-1         1366x768        0        1      309      10     0.95   24/0       1    0      2      state:e capital:e mission:e your-move:e recommended:c execute:e
+    no-inner-scroll: 1 inner scroll region(s) hold controls or listed regions: div#desk-stage.desk-stage "Your goal. You win if all four hold at t" (309px hidden, 10 control(s) out of view)
+    no-hidden-items: 10 control(s) or region(s) below the fold: button.wc-card-hit "Accept in principle. Hurts: Score of 82+" (container); button.fx-more "+3 more" (container); button.fx-size-btn "How much?" (container); button.wc-card-hit "Only by referendum. Hurts: Keep Washingt" (container); button.fx-more "+1 more" (container); button.fx-size-btn "How much?" (container) ...
+result-card     3440x1440 CEO   0        0      0        0      0.28   1230/1230  0    0      0      result:e next:e
+result-card     2560x1440       0        0      0        0      0.38   790/790    0    0      0      result:e next:e
+result-card     1920x1080       0        0      0        0      0.51   470/470    0    0      0      result:e next:e
+result-card     1440x900        0        0      0        0      0.68   230/230    0    0      0      result:e next:e
+result-card     1366x768        0        0      0        0      0.72   193/193    0    0      0      result:e next:e
+month-2-desk    3440x1440 CEO   0        3      1570     25     0.45   943/0      0    2      4      state:e capital:e mission:e your-move:e recommended:e execute:e
+    no-inner-scroll: 3 inner scroll region(s) hold controls or listed regions: div#desk-stage.desk-stage "GDP -2.4% OIL +3.1 GOLD +0.8 BONDS 4.62%" (355px hidden, 4 control(s) out of view); div.rail-body "Political capital 6 of 6 left Staff prop" (628px hidden, 10 control(s) out of view); ul#_r_1r_-list.sp-list "Recommended, waiting for you to accept" (587px hidden, 8 control(s) out of view)
+    no-hidden-items: 25 control(s) or region(s) below the fold: button.link.adv-more "Show 2 more" (container); button.also-row "4 calls and meetings Recommended: staff " (container); button.also-row "0 orders in this month, 2 recommended or" (container); button.also-row "All orders Search or browse every order " (container); button.slot-card.crisis "Energy price shock: Recommended: Subsidi" (cont
+    use-the-width: used width 0.45 < 0.85 (empty left 943px, right 0px, largest gap 958px)
+    not-covered: 2 control(s) covered at their centre: button.link.ord-dismiss "Remove" under button.wc-card-hit "Court United Kingdom, proposed by staff:"; button.link.ord-dismiss "Remove" under button.wc-card-hit "Court United States, proposed by staff: "
+month-2-desk    2560x1440       0        3      1570     25     0.60   503/0      0    2      4      state:e capital:e mission:e your-move:e recommended:e execute:e
+    no-inner-scroll: 3 inner scroll region(s) hold controls or listed regions: div#desk-stage.desk-stage "GDP -2.4% OIL +3.1 GOLD +0.8 BONDS 4.62%" (355px hidden, 4 control(s) out of view); div.rail-body "Political capital 6 of 6 left Staff prop" (628px hidden, 10 control(s) out of view); ul#_r_1r_-list.sp-list "Recommended, waiting for you to accept" (587px hidden, 8 control(s) out of view)
+    no-hidden-items: 25 control(s) or region(s) below the fold: button.link.adv-more "Show 2 more" (container); button.also-row "4 calls and meetings Recommended: staff " (container); button.also-row "0 orders in this month, 2 recommended or" (container); button.also-row "All orders Search or browse every order " (container); button.slot-card.crisis "Energy price shock: Recommended: Subsidi" (cont
+    use-the-width: used width 0.60 < 0.85 (empty left 503px, right 0px, largest gap 518px)
+    not-covered: 2 control(s) covered at their centre: button.link.ord-dismiss "Remove" under button.wc-card-hit "Court United Kingdom, proposed by staff:"; button.link.ord-dismiss "Remove" under button.wc-card-hit "Court United States, proposed by staff: "
+month-2-desk    1920x1080       0        3      2270     41     0.80   183/0      0    0      3      state:e capital:e mission:e your-move:e recommended:e execute:e
+    no-inner-scroll: 3 inner scroll region(s) hold controls or listed regions: div#desk-stage.desk-stage "GDP -2.4% OIL +3.1 GOLD +0.8 BONDS 4.62%" (695px hidden, 13 control(s) out of view); div.rail-body "Political capital 6 of 6 left Staff prop" (751px hidden, 10 control(s) out of view); ul#_r_1r_-list.sp-list "Recommended, waiting for you to accept" (824px hidden, 10 control(s) out of view)
+    no-hidden-items: 41 control(s) or region(s) below the fold: button.wc-btn.primary "Do it (◆ 4)" (container); button.wc-card-hit "Court United Kingdom, proposed by staff:" (container); button.link.ord-dismiss "Remove" (container); button.ord-act.act-available "Accept order: Court United Kingdom" (container); button.wc-card-hit "Court United States, proposed by staff: " (container); button.link.
+    use-the-width: used width 0.80 < 0.85 (empty left 183px, right 0px, largest gap 198px)
+month-2-desk    1440x900        0        3      2405     43     0.96   24/0       1    0      2      state:e capital:e mission:e your-move:e recommended:e execute:e
+    no-inner-scroll: 3 inner scroll region(s) hold controls or listed regions: div#desk-stage.desk-stage "GDP -2.4% OIL +3.1 GOLD +0.8 BONDS 4.62%" (694px hidden, 13 control(s) out of view); div.rail-body "Political capital 6 of 6 left Staff prop" (751px hidden, 10 control(s) out of view); ul#_r_1r_-list.sp-list "Recommended, waiting for you to accept" (960px hidden, 12 control(s) out of view)
+    no-hidden-items: 43 control(s) or region(s) below the fold: button.wc-btn.primary "Do it (◆ 4)" (container); button.wc-card-hit "Court United Kingdom, proposed by staff:" (container); button.link.ord-dismiss "Remove" (container); button.ord-act.act-available "Accept order: Court United Kingdom" (container); button.wc-card-hit "Court United States, proposed by staff: " (container); button.link.
+month-2-desk    1366x768        0        3      2019     39     0.95   24/0       7    0      3      state:e capital:e mission:e your-move:e recommended:b execute:b
+    no-inner-scroll: 3 inner scroll region(s) hold controls or listed regions: div#desk-stage.desk-stage "GDP -2.4% OIL +3.1 GOLD +0.8 BONDS 4.62%" (927px hidden, 17 control(s) out of view); div.rail-body "Political capital 6 of 6 left Orders thi" (236px hidden, 2 control(s) out of view); ul#_r_1r_-list.sp-list "Recommended, waiting for you to accept" (856px hidden, 12 control(s) out of view)
+    no-hidden-items: 39 control(s) or region(s) below the fold: button.fx-size-btn "How much?" (container); button.fx-more "+1 more" (container); button.fx-size-btn "How much?" (container); button.fx-size-btn "How much?" (container); button.wc-btn.primary "Do it (◆ 4)" (container); button.wc-card-hit "Court United Kingdom, proposed by staff:" (container) ...
+    state-visible: region(s) neither on screen nor collapsed into a visible counted summary: execute (below)
+month-2-map     3440x1440 CEO   0        0      0        0      1.00   0/0        0    0      0      state:e capital:e mission:e your-move:c recommended:c execute:e
+month-2-map     2560x1440       0        0      0        0      1.00   0/0        0    0      0      state:e capital:e mission:e your-move:c recommended:c execute:e
+month-2-map     1920x1080       0        0      0        0      1.00   0/0        0    0      0      state:e capital:e mission:e your-move:c recommended:c execute:e
+month-2-map     1440x900        0        0      0        0      1.00   0/0        1    0      0      state:e capital:e mission:e your-move:c recommended:c execute:e
+month-2-map     1366x768        0        0      0        0      1.00   0/0        3    0      0      state:e capital:e mission:e your-move:c recommended:c execute:e
+
+20 measurement(s), 25 violation(s)

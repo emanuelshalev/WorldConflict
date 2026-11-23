@@ -107,7 +107,7 @@ export const TERMS = {
     name: 'Recommended',
     compact: 'Recommended ({n})',
     // The first-use line next to every Accept control (RS-005, D-72 wording)
-    definition: 'Your advisers recommend these for this month. Orders and meetings wait for you to accept; a crisis goes ahead on its recommended answer unless you change it.',
+    definition: 'Your advisers recommend these for this month. Orders and meetings wait for you to accept; a crisis listed here goes ahead on its recommended answer unless you change it, one not listed is yours to answer.',
     banned: [],
   },
   proposed: {
@@ -162,9 +162,39 @@ export const TERMS = {
     compact: 'No undo',
     banned: [],
   },
+  yourCall: {
+    id: 'yourCall',
+    // D-84 R11: the month's one or two decisions Accept all leaves to the player
+    name: 'Your call',
+    compact: 'Your call',
+    definition: 'A decision your advisers disagree on, or the move for your mission. Accept all recommended never decides it: you choose a card, or skip and the cost is named.',
+    banned: [],
+  },
+  chiefCalls: {
+    id: 'chiefCalls',
+    // D-84: the opt-in setting that restores the full one-press Accept all
+    name: 'Let the Chief of Staff make my calls',
+    compact: 'Chief of Staff makes my calls',
+    // Interim wording while this build has no Your call screen (design-review-your-call.md RC-4)
+    definition: "When on, the crises your advisers disagree on start on the Chief of Staff's answer (the one that serves your mission, or the calm one when political capital is short) and Accept all recommended also accepts them; the Chief of Staff also proposes the first order for your mission. Fully in effect from the next month.",
+    banned: [],
+  },
 } as const satisfies Record<string, Term>;
 
 export type TermId = keyof typeof TERMS;
+
+/**
+ * The family word on every order card's chip (design-order-cards.md section 4): one word per
+ * order family, shown with the family colour and the pictogram, never colour alone.
+ */
+export const ORDER_FAMILY_WORDS = {
+  diplo: 'Diplomacy',
+  mil: 'Military',
+  nuke: 'Nuclear',
+  intel: 'Covert',
+  econ: 'Economy',
+  home: 'Home',
+} as const;
 
 /** Fill `{n}` / `{m}` in a term's name or compact form. */
 export function term(text: string, n?: number | string, m?: number | string): string {

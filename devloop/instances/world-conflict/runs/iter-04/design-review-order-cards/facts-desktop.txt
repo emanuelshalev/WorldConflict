@@ -1,0 +1,264 @@
+
+## catalog no target 3440x1440
+visible cards 16; page horizontal scroll false
+card sizes: court:invalid:225x252 denounce:invalid:225x252 offer-pact:invalid:225x252 ceasefire:invalid:225x252 mediate:invalid:225x252 break-pact:invalid:225x284 declare-war:invalid:225x284 mobilize:available:225x284 demobilize:available:225x284 procure:available:225x284 deploy-border:invalid:225x284 withdraw-border:invalid:225x284 airstrike-military:invalid:225x304 airstrike-nuclear:invalid:225x304 fund-nuclear:available:225x304 nuclear-strike:invalid:225x304
+controls under 44px: 2
+  ord-fix "Pick a country" 123x36
+  ord-info "How much? Forecast" 130x32
+text overflowing its box: 0
+  
+
+## catalog no target 2560x1440
+visible cards 16; page horizontal scroll false
+card sizes: court:invalid:225x252 denounce:invalid:225x252 offer-pact:invalid:225x252 ceasefire:invalid:225x252 mediate:invalid:225x252 break-pact:invalid:225x284 declare-war:invalid:225x284 mobilize:available:225x284 demobilize:available:225x284 procure:available:225x284 deploy-border:invalid:225x284 withdraw-border:invalid:225x284 airstrike-military:invalid:225x304 airstrike-nuclear:invalid:225x304 fund-nuclear:available:225x304 nuclear-strike:invalid:225x304
+controls under 44px: 2
+  ord-fix "Pick a country" 123x36
+  ord-info "How much? Forecast" 130x32
+text overflowing its box: 0
+  
+
+## catalog no target 1920x1080
+visible cards 12; page horizontal scroll false
+card sizes: court:invalid:225x252 denounce:invalid:225x252 offer-pact:invalid:225x252 ceasefire:invalid:225x252 mediate:invalid:225x252 break-pact:invalid:225x284 declare-war:invalid:225x284 mobilize:available:225x284 demobilize:available:225x284 procure:available:225x284 deploy-border:invalid:225x284 withdraw-border:invalid:225x284
+controls under 44px: 1
+  ord-fix "Pick a country" 123x36
+text overflowing its box: 0
+  
+
+## catalog no target 1440x900
+visible cards 6; page horizontal scroll false
+card sizes: court:invalid:242x252 denounce:invalid:242x252 offer-pact:invalid:242x252 ceasefire:invalid:242x252 mediate:invalid:242x252 break-pact:invalid:242x252
+controls under 44px: 1
+  ord-fix "Pick a country" 123x36
+text overflowing its box: 0
+  
+
+## catalog no target 1366x768
+visible cards 4; page horizontal scroll false
+card sizes: court:invalid:333x252 denounce:invalid:333x252 offer-pact:invalid:333x252 ceasefire:invalid:333x252
+controls under 44px: 1
+  ord-fix "Pick a country" 123x36
+text overflowing its box: 0
+  
+
+## catalog Russia 3440x1440
+visible cards 16; page horizontal scroll false
+card sizes: court:invalid:225x350 denounce:available:225x350 offer-pact:invalid:225x350 ceasefire:available:225x350 mediate:invalid:225x350 break-pact:invalid:225x356 declare-war:invalid:225x356 mobilize:available:225x299 demobilize:available:225x299 procure:available:225x299 deploy-border:available:225x299 withdraw-border:available:225x299 airstrike-military:available:225x329 airstrike-nuclear:available:225x329 fund-nuclear:available:225x329 nuclear-strike:invalid:225x329
+controls under 44px: 2
+  ord-info "How much? Forecast" 130x32
+  ord-fix "Propose a ceasefire" 160x36
+text overflowing its box: 0
+  
+
+## catalog Russia 2560x1440
+visible cards 16; page horizontal scroll false
+card sizes: court:invalid:225x350 denounce:available:225x350 offer-pact:invalid:225x350 ceasefire:available:225x350 mediate:invalid:225x350 break-pact:invalid:225x356 declare-war:invalid:225x356 mobilize:available:225x299 demobilize:available:225x299 procure:available:225x299 deploy-border:available:225x299 withdraw-border:available:225x299 airstrike-military:available:225x329 airstrike-nuclear:available:225x329 fund-nuclear:available:225x329 nuclear-strike:invalid:225x329
+controls under 44px: 2
+  ord-info "How much? Forecast" 130x32
+  ord-fix "Propose a ceasefire" 160x36
+text overflowing its box: 0
+  
+
+## catalog Russia 1920x1080
+visible cards 7; page horizontal scroll false
+card sizes: court:invalid:225x350 denounce:available:225x350 offer-pact:invalid:225x350 ceasefire:available:225x350 mediate:invalid:225x350 break-pact:invalid:225x356 declare-war:invalid:225x356
+controls under 44px: 2
+  ord-info "How much? Forecast" 130x32
+  ord-fix "Propose a ceasefire" 160x36
+text overflowing its box: 0
+  
+
+## catalog Russia 1440x900
+visible cards 6; page horizontal scroll false
+card sizes: court:invalid:242x306 denounce:available:242x306 offer-pact:invalid:242x306 ceasefire:available:242x330 mediate:invalid:242x330 break-pact:invalid:242x330
+controls under 44px: 1
+  ord-info "How much? Forecast" 130x32
+text overflowing its box: 0
+  
+
+## catalog Russia 1366x768
+visible cards 4; page horizontal scroll false
+card sizes: court:invalid:333x294 denounce:available:333x294 offer-pact:invalid:333x326 ceasefire:available:333x326
+controls under 44px: 2
+  ord-fix "Propose a ceasefire instead" 214x36
+  ord-info "How much? Forecast" 130x32
+text overflowing its box: 0
+  
+
+## confirm face 3440x1440
+visible cards 19; page horizontal scroll false
+card sizes: break-pact:invalid:225x356 declare-war:invalid:225x356 mobilize:available:225x299 demobilize:available:225x299 procure:available:225x299 deploy-border:available:225x299 withdraw-border:available:225x299 airstrike-military:confirming:225x389 airstrike-nuclear:available:225x389 fund-nuclear:available:225x389 nuclear-strike:invalid:225x389 spy:available:225x279 counter-intel:available:225x279 sabotage:available:225x279 destabilize:available:225x279 arm-rebels:available:225x279 disinformation:available:225x399 assassinate:invalid:225x399 coup:invalid:225x399
+controls under 44px: 1
+  ord-info "How much? Forecast" 130x32
+text overflowing its box: 0
+  
+
+## confirm face 2560x1440
+visible cards 19; page horizontal scroll false
+card sizes: break-pact:invalid:225x356 declare-war:invalid:225x356 mobilize:available:225x299 demobilize:available:225x299 procure:available:225x299 deploy-border:available:225x299 withdraw-border:available:225x299 airstrike-military:confirming:225x389 airstrike-nuclear:available:225x389 fund-nuclear:available:225x389 nuclear-strike:invalid:225x389 spy:available:225x279 counter-intel:available:225x279 sabotage:available:225x279 destabilize:available:225x279 arm-rebels:available:225x279 disinformation:available:225x399 assassinate:invalid:225x399 coup:invalid:225x399
+controls under 44px: 1
+  ord-info "How much? Forecast" 130x32
+text overflowing its box: 0
+  
+
+## confirm face 1920x1080
+visible cards 16; page horizontal scroll false
+card sizes: break-pact:invalid:225x356 declare-war:invalid:225x356 mobilize:available:225x299 demobilize:available:225x299 procure:available:225x299 deploy-border:available:225x299 withdraw-border:available:225x299 airstrike-military:confirming:225x389 airstrike-nuclear:available:225x389 fund-nuclear:available:225x389 nuclear-strike:invalid:225x389 spy:available:225x279 counter-intel:available:225x279 sabotage:available:225x279 destabilize:available:225x279 arm-rebels:available:225x279
+controls under 44px: 1
+  ord-info "How much? Forecast" 130x32
+text overflowing its box: 0
+  
+
+## confirm face 1440x900
+visible cards 9; page horizontal scroll false
+card sizes: mobilize:available:242x279 demobilize:available:242x279 procure:available:242x279 deploy-border:available:242x370 withdraw-border:available:242x370 airstrike-military:confirming:242x370 airstrike-nuclear:available:242x299 fund-nuclear:available:242x299 nuclear-strike:invalid:242x299
+controls under 44px: 1
+  ord-info "How much? Forecast" 130x32
+text overflowing its box: 0
+  
+
+## confirm face 1366x768
+visible cards 8; page horizontal scroll false
+card sizes: mobilize:available:333x307 demobilize:available:333x307 procure:available:333x326 deploy-border:available:333x326 withdraw-border:available:333x334 airstrike-military:confirming:333x334 airstrike-nuclear:available:333x326 fund-nuclear:available:333x326
+controls under 44px: 1
+  ord-info "How much? Forecast" 130x32
+text overflowing its box: 0
+  
+
+## orders added 3440x1440
+visible cards 21; page horizontal scroll false
+card sizes: court:invalid:225x381 denounce:available:225x381 offer-pact:invalid:225x381 ceasefire:unaffordable:225x381 mediate:invalid:225x381 break-pact:invalid:225x356 declare-war:invalid:225x356 mobilize:queued:225x329 demobilize:available:225x329 procure:available:225x329 deploy-border:available:225x329 withdraw-border:available:225x329 airstrike-military:unaffordable:225x411 airstrike-nuclear:unaffordable:225x411 fund-nuclear:unaffordable:225x411 nuclear-strike:invalid:225x411 spy:unaffordable:225x360 counter-intel:unaffordable:225x360 sabotage:unaffordable:225x360 destabilize:unaffordable:225x360 arm-rebels:unaffordable:225x360
+controls under 44px: 3
+  ord-info "How much? Forecast" 130x32
+  ord-fix "Propose a ceasefire" 160x36
+  ord-remove "Remove" 85x36
+text overflowing its box: 0
+  
+
+## orders added 2560x1440
+visible cards 21; page horizontal scroll false
+card sizes: court:invalid:225x381 denounce:available:225x381 offer-pact:invalid:225x381 ceasefire:unaffordable:225x381 mediate:invalid:225x381 break-pact:invalid:225x356 declare-war:invalid:225x356 mobilize:queued:225x329 demobilize:available:225x329 procure:available:225x329 deploy-border:available:225x329 withdraw-border:available:225x329 airstrike-military:unaffordable:225x411 airstrike-nuclear:unaffordable:225x411 fund-nuclear:unaffordable:225x411 nuclear-strike:invalid:225x411 spy:unaffordable:225x360 counter-intel:unaffordable:225x360 sabotage:unaffordable:225x360 destabilize:unaffordable:225x360 arm-rebels:unaffordable:225x360
+controls under 44px: 3
+  ord-info "How much? Forecast" 130x32
+  ord-fix "Propose a ceasefire" 160x36
+  ord-remove "Remove" 85x36
+text overflowing its box: 0
+  
+
+## orders added 1920x1080
+visible cards 16; page horizontal scroll false
+card sizes: court:invalid:225x381 denounce:available:225x381 offer-pact:invalid:225x381 ceasefire:unaffordable:225x381 mediate:invalid:225x381 break-pact:invalid:225x356 declare-war:invalid:225x356 mobilize:queued:225x329 demobilize:available:225x329 procure:available:225x329 deploy-border:available:225x329 withdraw-border:available:225x329 airstrike-military:unaffordable:225x411 airstrike-nuclear:unaffordable:225x411 fund-nuclear:unaffordable:225x411 nuclear-strike:invalid:225x411
+controls under 44px: 3
+  ord-info "How much? Forecast" 130x32
+  ord-fix "Propose a ceasefire" 160x36
+  ord-remove "Remove" 85x36
+text overflowing its box: 0
+  
+
+## orders added 1440x900
+visible cards 7; page horizontal scroll false
+card sizes: court:invalid:242x306 denounce:available:242x306 offer-pact:invalid:242x306 ceasefire:unaffordable:242x381 mediate:invalid:242x381 break-pact:invalid:242x381 declare-war:invalid:242x356
+controls under 44px: 2
+  ord-info "How much? Forecast" 130x32
+  ord-fix "Propose a ceasefire" 160x36
+text overflowing its box: 0
+  
+
+## orders added 1366x768
+visible cards 6; page horizontal scroll false
+card sizes: court:invalid:333x294 denounce:available:333x294 offer-pact:invalid:333x347 ceasefire:unaffordable:333x347 mediate:invalid:333x311 break-pact:invalid:333x311
+controls under 44px: 4
+  ord-fix "Propose a ceasefire instead" 214x36
+  ord-info "How much? Forecast" 130x32
+  ord-fix "Remove Mobilize forces (frees ◆ 1)" 260x36
+  ord-fix "Propose a ceasefire" 160x36
+text overflowing its box: 0
+  
+
+## month 2 desk 3440x1440
+visible cards 3; page horizontal scroll false
+card sizes: court:available:495x187 court:available:495x187 ceasefire:available:495x105
+controls under 44px: 1
+  link "Remove" 47x18
+text overflowing its box: 0
+  
+
+## month 2 desk 2560x1440
+visible cards 3; page horizontal scroll false
+card sizes: court:available:495x187 court:available:495x187 ceasefire:available:495x105
+controls under 44px: 1
+  link "Remove" 47x18
+text overflowing its box: 0
+  
+
+## month 2 desk 1920x1080
+visible cards 0; page horizontal scroll false
+card sizes: 
+controls under 44px: 0
+  
+text overflowing its box: 0
+  
+
+## month 2 desk 1440x900
+visible cards 0; page horizontal scroll false
+card sizes: 
+controls under 44px: 0
+  
+text overflowing its box: 0
+  
+
+## month 2 desk 1366x768
+visible cards 0; page horizontal scroll false
+card sizes: 
+controls under 44px: 0
+  
+text overflowing its box: 0
+  
+
+## map menu 3440x1440
+visible cards 5; page horizontal scroll false
+card sizes: ceasefire:available:174x260 airstrike-military:available:174x260 deploy-border:available:174x230 spy:available:174x230 destabilize:available:174x213
+controls under 44px: 1
+  ord-info "How much? Forecast" 130x32
+text overflowing its box: 0
+  
+
+## map confirm 3440x1440
+visible cards 5; page horizontal scroll false
+card sizes: ceasefire:available:174x498 airstrike-military:confirming:174x498 deploy-border:available:174x230 spy:available:174x230 destabilize:available:174x213
+controls under 44px: 1
+  ord-info "How much? Forecast" 130x32
+text overflowing its box: 0
+  
+
+## map menu 2560x1440
+visible cards 5; page horizontal scroll false
+card sizes: ceasefire:available:174x260 airstrike-military:available:174x260 deploy-border:available:174x230 spy:available:174x230 destabilize:available:174x213
+controls under 44px: 1
+  ord-info "How much? Forecast" 130x32
+text overflowing its box: 0
+  
+
+## map menu 1920x1080
+visible cards 5; page horizontal scroll false
+card sizes: ceasefire:available:174x260 airstrike-military:available:174x260 deploy-border:available:174x230 spy:available:174x230 destabilize:available:174x213
+controls under 44px: 1
+  ord-info "How much? Forecast" 130x32
+text overflowing its box: 0
+  
+
+## map menu 1440x900
+visible cards 5; page horizontal scroll false
+card sizes: ceasefire:available:174x260 airstrike-military:available:174x260 deploy-border:available:174x230 spy:available:174x230 destabilize:available:174x213
+controls under 44px: 1
+  ord-info "How much? Forecast" 130x32
+text overflowing its box: 0
+  
+
+## map menu 1366x768
+visible cards 4; page horizontal scroll false
+card sizes: ceasefire:available:174x260 airstrike-military:available:174x260 deploy-border:available:174x230 spy:available:174x230
+controls under 44px: 1
+  ord-info "How much? Forecast" 130x32
+text overflowing its box: 0
+  

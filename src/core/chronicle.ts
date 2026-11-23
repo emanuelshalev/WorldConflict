@@ -1,3 +1,4 @@
+import { againstMission, optionImpact } from "./missionImpact.js";
 import { objectiveStatus, stayedInPower } from "./objectives.js";
 import type { WarMonthSummary } from "./systems/military.js";
 import type {
@@ -137,6 +138,29 @@ export function engineStaffPick(decision: PendingDecision): DecisionOption | und
 
 type Fact = { label: string; before: number; after: number; unit?: string; good?: boolean };
 
+/** One fact in words, for a moment's consequence: "Approval 50% to 53%". */
+function factText(f: Fact): string {
+  const v = (x: number) =>
+    f.unit === "$B" ? `$${Math.round(x)}B` : `${Math.round(x)}${f.unit === "%" ? "%" : ""}`;
+  return `${f.label} ${v(f.before)} to ${v(f.after)}`;
+}
+
+/**
+ * The moment's own headline number (QA3R-2d): the fact that moved the most in the direction of
+ * its tone, never a stat from another card that month.
+ */
+export function momentFact(
+  facts: Fact[] | undefined,
+  tone: ChronicleMoment["tone"],
+): string | undefined {
+  const scored = (facts ?? [])
+    .filter((f) => Math.round(f.after) !== Math.round(f.before))
+    .map((f) => ({ f, w: factWeight([f]) }))
+    .filter(({ w }) => (tone === "good" ? w > 0 : tone === "bad" ? w < 0 : true))
+    .sort((a, b) => Math.abs(b.w) - Math.abs(a.w));
+  return scored[0] ? factText(scored[0].f) : undefined;
+}
+
 /** A signed weight from measured facts: positive when the month moved the right way. */
 export function factWeight(facts: Fact[] | undefined): number {
   let w = 0;
@@ -254,14 +278,23 @@ export function recordMonth(
       (p) => p.title === d.title && (!d.templateId || p.templateId === d.templateId),
     );
     const pick = pending ? engineStaffPick(pending) : undefined;
-    const weight = factWeight(d.facts);
+    // An answer that carries the mission is a cost paid, never a moment that went badly (QA3R-2d:
+    // "Coalition of the willing: Accept it publicly" under went badly while it met the goal)
+    const option = pending?.options.find((o) => o.id === d.optionId);
+    const impact = option && before ? optionImpact(before, option) : undefined;
+    const carries = !!impact && impact.helps.length > 0 && !againstMission(impact);
+    const raw = factWeight(d.facts);
+    const weight = carries ? Math.max(0, raw) : raw;
+    const tone = toneOf(weight);
+    const fact = momentFact(d.facts, tone);
     moments.push({
       turn,
       kind: "CRISIS",
       title: d.title,
       detail: d.headline ?? d.choice,
-      tone: toneOf(weight),
+      tone,
       weight,
+      ...(fact ? { fact } : {}),
       choice: d.choice,
       ...(pick && d.optionId ? { staffPick: pick.id === d.optionId } : {}),
       ...(d.withCountry ? { with: d.withCountry } : {}),
@@ -303,15 +336,22 @@ export function recordMonth(
         continue;
       }
     }
-    const weight = factWeight(o.facts);
-    if (Math.abs(weight) < 2 && !(o.ok && o.type === "DIPLOMACY_DECLARE_WAR")) continue;
+    const raw = factWeight(o.facts);
+    const war = o.ok && o.type === "DIPLOMACY_DECLARE_WAR";
+    if (Math.abs(raw) < 2 && !war) continue;
+    // Going to war never went well (QA3R-2d: "Declare war on Japan" under went well beside
+    // "War on Japan" under went badly)
+    const weight = o.ok && !war ? raw : Math.min(raw, -2);
+    const tone = o.ok && !war ? toneOf(weight) : "bad";
+    const fact = momentFact(o.facts, tone);
     orderMoments.push({
       turn,
       kind: "ORDER",
       title: o.label,
       detail: (o.story || o.detail).split(/(?<=[.!?])\s/)[0] ?? "",
-      tone: o.ok ? toneOf(weight) : "bad",
-      weight: o.ok ? weight : Math.min(weight, -2),
+      tone,
+      weight,
+      ...(fact ? { fact } : {}),
       ...(o.target ? { with: o.target } : {}),
     });
   }

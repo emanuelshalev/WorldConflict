@@ -1,0 +1,6 @@
+m1 badges: Recommended: More escorts, no strikes [321x36 at 386,496 radius 999px]
+m2 badges: Recommended: Meet their demands [292x36 at 415,412 radius 999px]
+m2 Recommended panel: Recommended 9 What is this? Your advisers recommend these for this month. Orders and meetings wait for you to accept; a crisis listed here goes ahead on its recommended answer unless you change it, one not listed is yours to answer. Recommended by Interior Minister Crisis answer: Meet their demands Crisis: General strike · goes ahead unless you change it Will change: Approval up · Economy down Helps: approval 56%+ Accept answer Change Recommended by Intelligence Chief Crisis answer: Counter-intelligence sweep Crisis: Foreign interference · goes ahead unless you change it Will change: Counter-intel up · Stability up Helps: Stability of 60%+ (bonus) Accept answer Change Recommended by Intellig
+nav labels: Mission: Open the strait. 3 of 5 on track · month 2 of 12. Open the mission sheet || General strike: Recommended: Meet their demands || Foreign interference: Recommended: Counter-intelligence sweep || General strike: Recommended: Meet their demands || Foreign interference: Recommended: Counter-intelligence sweep
+meeting badges: Recommended: Meet their demands [292x36 at 415,447 radius 999px]
+errors: 

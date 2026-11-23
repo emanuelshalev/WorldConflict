@@ -21,7 +21,8 @@ import { familiaritySample, sampleMarks } from '../../lib/familiaritySample';
  */
 function Sample({ level }: { level: LearnLevel }) {
   const date = useGameStore((s) => s.worldState?.date);
-  const sample = familiaritySample(date);
+  const flashpointId = useGameStore((s) => s.worldState?.flashpointId);
+  const sample = familiaritySample(date, flashpointId);
   const n = sampleMarks(sample);
   return (
     <p className="lx-sample" aria-hidden data-era={sample.era}>

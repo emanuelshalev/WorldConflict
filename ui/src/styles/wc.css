@@ -1659,10 +1659,11 @@ button {
 .suggestion .who { display: flex; align-items: center; gap: 5px; padding: 2px 4px 0; }
 .suggestion b,
 .suggestion .why { padding: 0 4px; }
-.suggestion.fam-mil:hover { border-color: #ff5a4f; }
-.suggestion.fam-diplo:hover { border-color: #4c8dff; }
-.suggestion.fam-intel:hover { border-color: #36c5f0; }
-.suggestion.fam-home:hover { border-color: #b48cff; }
+.suggestion.fam-mil:hover { border-color: var(--fam-mil); }
+.suggestion.fam-diplo:hover { border-color: var(--fam-diplo); }
+.suggestion.fam-intel:hover { border-color: var(--fam-intel); }
+.suggestion.fam-econ:hover { border-color: var(--fam-econ); }
+.suggestion.fam-home:hover { border-color: var(--fam-home); }
 .order-pill svg { flex: none; }
 .lead > .scene { margin-bottom: 14px; border-radius: 4px; box-shadow: none; }
 .paper-cols .story > .scene { margin-bottom: 8px; border-radius: 3px; box-shadow: none; }

@@ -1,0 +1,11 @@
+state           viewport        pageScr  inner  innerPx  below  width  L/R px     cut  cover  fails  regions (e=expanded c=collapsed b=below m=missing)
+------------------------------------------------------------------------------------------------------------------------
+month-1         390x844         0        1      1308     15     1.00   0/0        0    1      0      state:e capital:e mission:e your-move:e recommended:c execute:e
+m1-catalog-notarget  390x844         0        1      8224     58     1.00   0/0        5    1      1      state:e capital:e mission:e your-move:m recommended:c execute:e
+    collapsed-not-hidden: region(s) neither on screen nor collapsed into a visible counted summary: your-move (missing)
+m1-catalog-russia  390x844         0        1      9099     63     1.00   0/0        5    1      1      state:e capital:e mission:e your-move:m recommended:c execute:e
+    collapsed-not-hidden: region(s) neither on screen nor collapsed into a visible counted summary: your-move (missing)
+month-2-desk    390x844         0        1      2072     25     1.00   0/0        0    0      0      state:e capital:e mission:e your-move:e recommended:c execute:e
+month-2-map     390x844         0        0      0        0      1.00   0/0        0    0      0      state:e capital:e mission:e your-move:c recommended:c execute:e
+
+5 measurement(s), 2 violation(s)

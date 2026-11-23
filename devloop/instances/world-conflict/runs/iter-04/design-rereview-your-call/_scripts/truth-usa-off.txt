@@ -1,0 +1,34 @@
+
+== usa-off month 1 (turn 0) calls=["crisis:dec_us_midterm_clock_0","move:mission-move"] chief={"dec_us_midterm_clock_0":"escort"}
+  crisis "The January clock" id=dec_us_midterm_clock_0 deadline=1 default=escort options=strike:Hit the IRGC navy now(pc 0) | escort:More escorts, no strikes(pc 0) | oman:Reply via Muscat(pc 0)
+  Accept all button: ""
+  desk "The January clock": {"badge":"No answer yet. If you leave it: no answer is given and the crisis passes","chosenCards":[],"badgeBox":{"top":496,"bottom":532,"vh":900},"stageTop":226}
+  plan text: No answer yet on 1 crisis, 1 recommended order not accepted (it will not run), deputies take 4 meetings.
+  SENT decisions: []
+  REPORT crisis decisions: []
+  report causes: []
+  report screen mentions "The January clock": NO
+
+== usa-off month 2 (turn 1) calls=["crisis:dec_general_strike_0_0","move:mission-move"] chief={"dec_general_strike_0_0":"concede"}
+  crisis "General strike" id=dec_general_strike_0_0 deadline=1 default=break options=concede:Meet their demands(pc 0) | break:Break the strike(pc 0) | mediate:Personally mediate(pc -2)
+  crisis "Foreign interference" id=dec_foreign_interference_0_9 deadline=1 default=sweep options=sweep:Counter-intelligence sweep(pc -1) | expose:Expose them publicly(pc 0) | retaliate:Pay China back in kind(pc -1)
+  Accept all button: "Accept all recommended (7) Shift+A 1 crisis answer, 2 orders, 3 meetings, 1 meeting for a deputy"
+  desk "General strike": {"badge":"No answer yet. If you leave it: Break the strike","chosenCards":[],"badgeBox":{"top":412,"bottom":448,"vh":900},"stageTop":142,"aria":["No answer yet. If you leave it: Break the strike"]}
+  desk "Foreign interference": {"also":"Recommended: Counter-intelligence sweep","aria":["Recommended: Counter-intelligence sweep"]}
+  plan text: Recommended answer on 1 crisis, no answer yet on 1 crisis, 2 recommended orders not accepted (they will not run), deputies take 4 meetings.
+  SENT decisions: [{"decisionId":"dec_foreign_interference_0_9","optionId":"sweep"}]
+  REPORT crisis decisions: [{"title":"General strike","choice":"Break the strike (no decision taken)"},{"title":"Foreign interference","choice":"Counter-intelligence sweep"}]
+  report causes: []
+  report screen mentions "General strike": NO
+  report screen mentions "Foreign interference": NO
+
+== usa-off month 3 (turn 2) calls=["move:mission-move"] chief={}
+  crisis "India's offer" id=dec_trade_offer_1_0 deadline=2 default=decline options=accept:Sign it(pc 0) | negotiate:Renegotiate the terms(pc -1) | decline:Politely decline(pc 0)
+  Accept all button: "Accept all recommended (7) Shift+A 1 crisis answer, 2 orders, 3 meetings, 1 meeting for a deputy"
+  desk "India's offer": {"badge":"Recommended: Sign it","chosenCards":[],"badgeBox":{"top":412,"bottom":448,"vh":900},"stageTop":142,"aria":["Recommended: Sign it"]}
+  plan text: Recommended answer on 1 crisis, 2 recommended orders not accepted (they will not run), deputies take 4 meetings.
+  SENT decisions: [{"decisionId":"dec_trade_offer_1_0","optionId":"accept"}]
+  REPORT crisis decisions: [{"title":"India's offer","choice":"Sign it"}]
+  report causes: []
+  report screen mentions "India's offer": NO
+errors: 

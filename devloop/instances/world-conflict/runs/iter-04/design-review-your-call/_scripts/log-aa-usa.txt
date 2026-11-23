@@ -1,0 +1,33 @@
+######## month 1
+crisis dec_us_midterm_clock_0 "The January clock" IS A CALL default=escort cabinetPick=oman call.mission=oman call.calm=escort skip=escort | strike=Hit the IRGC navy now ; escort=More escorts, no strikes ; oman=Reply via Muscat
+  guide: For your mission: Reply via Muscat. To keep things calm: More escorts, no strikes. || skip text: The cabinet waits: More escorts, no strikes. It costs Voters stay on side.
+routine n=5
+before: main= | count= | items=
+before: strip/bar=Recommended answer on 1 crisis, 1 recommended order not accepted (it will not run), deputies take 4 meetings. 1 recommended answer works against your mission: Reply via Muscat. Review
+before: crisis rec line=
+Accept all pressed: false
+after: main= | count= | items=
+after: strip/bar=Recommended answer on 1 crisis, 1 recommended order not accepted (it will not run), deputies take 4 meetings. 1 recommended answer works against your mission: Reply via Muscat. Review
+after: Recommended words on the screen=Recommended: Reply via Muscat
+after: "Your call" on screen: false
+SENT dec_us_midterm_clock_0: (none sent: engine default escort) | desk said Recommended: oman | call  <== DESK SAID ONE ANSWER, ENGINE RESOLVES ANOTHER
+result card: DEFENSE DESK DEC 2026 · YOUR MONTH THIS MONTH +4 Front (your side) THE MONTH Your forces gain ground against Iran Mission: stability 56 → 47%, needs 60%. Your mission bar moved. Tap it any time to see what each goal needs. The numbers, the score and the rest of the month See everything Read the paper Next month
+######## month 2
+crisis dec_general_strike_0_0 "General strike" IS A CALL default=break cabinetPick=concede call.mission=concede call.calm=mediate skip=break | concede=Meet their demands ; break=Break the strike ; mediate=Personally mediate
+  guide: For your mission: Meet their demands. To keep things calm: Personally mediate. || skip text: The cabinet waits: Break the strike. It costs Voters stay on side.
+crisis dec_foreign_interference_0_9 "Foreign interference" routine default=sweep cabinetPick=sweep call.mission=undefined call.calm=undefined skip=undefined | sweep=Counter-intelligence sweep ; expose=Expose them publicly ; retaliate=Pay China back in kind
+routine n=7
+before: main=Accept all recommended (7) Shift+A 1 crisis answer, 2 orders, 3 meetings, 1 meeting for a deputy | count=7 | items=Crisis answer: Counter-intelligence sweep || Order: Hunt foreign spies || Order: Spy on Iran || Meeting: Promise full support || Meeting: Promise full support || Meeting: Back the stabilization force || Deputy takes: Interview: the evening news
+before: strip/bar=Recommended answer on 2 crises, 2 recommended orders not accepted (they will not run), deputies take 4 meetings.
+before: crisis rec line=
+Accept all pressed: true
+after: main=Accept all recommended Nothing to accept: every recommendation is decided | count=0 | items=
+after: strip/bar=1 recommended answer accepted, recommended answer on 1 crisis, 2 recommended orders accepted, you attend 3 meetings.
+after: Recommended words on the screen=Recommended: Meet their demands
+after: "Your call" on screen: false
+SENT dec_general_strike_0_0: (none sent: engine default break) | desk said Recommended: concede | call  <== DESK SAID ONE ANSWER, ENGINE RESOLVES ANOTHER
+SENT dec_foreign_interference_0_9: sweep | desk said Recommended: sweep | routine
+REPORT crisis "General strike": choice="Break the strike (no decision taken)" optionId=break headline=Trump's answer: Break the strike
+REPORT crisis "Foreign interference": choice="Counter-intelligence sweep" optionId=sweep headline=Trump chooses: Counter-intelligence sweep
+result card: CLASSIFIED CLASSIFIED JAN 2027 · YOUR MONTH DONE +20 Counter-intelligence WHAT YOUR CHOICE DID You chose: Counter-intelligence sweep Trump chooses: Counter-intelligence sweep DONE, at a cost: Political capital -1 “About time. This is what we elected them for.” On the street Mission: approval 43 → 38%, needs 56%. The numbers, the score and the rest of the month See everything Read the paper Next month
+page errors: none

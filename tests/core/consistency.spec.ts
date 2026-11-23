@@ -3,11 +3,13 @@ import { decide, playerOrders } from "../../scripts/policies.js";
 import { generateDeterministicIntents } from "../../src/agents/fallback.js";
 import { ATTACK_CHOICE, DEPOSED_REASONS, SHOTS } from "../../src/core/achievements.js";
 import { createDataLoader, type DataLoader } from "../../src/core/data-loader.js";
-import { evaluateCondition } from "../../src/core/objectives.js";
-import { buildReveal, type RevealPayload } from "../../src/core/reveal.js";
+import { computeOutcome, evaluateCondition, objectiveStatus } from "../../src/core/objectives.js";
+import { emptyChronicle } from "../../src/core/chronicle.js";
+import { buildReveal, presidencyScore, type RevealPayload } from "../../src/core/reveal.js";
 import { combineSeed, SeededRandom } from "../../src/core/seed.js";
 import { TurnEngine } from "../../src/core/turn.js";
 import type { Chronicle, WorldState } from "../../src/core/types.js";
+import { FLASHPOINT_CONTROL, playControl } from "../fixtures/control.js";
 
 /**
  * F-01-2: the end-of-game reveal must never contradict play. Plays finished sessions with the
@@ -250,5 +252,47 @@ describe("reported cases (iteration 1 panel)", () => {
     expect(r.verdict.victory).toBe(false);
     expect(r.verdict.classification).toBe("So Close");
     expect(r.verdict.missedLine).toMatch(/ by 1\b/);
+  });
+});
+
+// QA3R-2b, QA3R-2c (F-01-2): the verdict counted "Stay in power" as a goal (5 of 5 where the desk
+// said 4 of 4), and the Finish line said "par 115" beside a mission goal of 120.
+describe("the reveal counts goals like the desk and names the score goal (QA3R-2b, 2c)", () => {
+  it("control seeds: the Mission line counts the desk's goals", () => {
+    for (const code of FLASHPOINT_CONTROL) {
+      const g = playControl(code, "staff");
+      const w = g.final;
+      if (!w.gameOver) continue;
+      const r = buildReveal(w);
+      const mission = r.presidency.parts.find((p) => p.id === "mission")!;
+      const desk = objectiveStatus(w).filter((s) => !s.bonus).length;
+      const m = mission.detail.match(/(\d+) of (\d+) goals/);
+      expect(m?.[2], `${code}: ${mission.detail}`).toBe(String(desk));
+    }
+  });
+
+  it("every flashpoint seat: the Finish line names the mission's score goal when it is not par", () => {
+    const loader = createDataLoader();
+    for (const fp of loader.loadAvailableFlashpoints())
+      for (const { countryId: side } of fp.playable) {
+        const w = loader.newGame({
+          scenarioId: fp.scenarioId,
+          playerCountryId: side,
+          seed: 7,
+          mode: "FLASHPOINT",
+          flashpointId: fp.id,
+        });
+        w.outcome = computeOutcome(w);
+        const ps = presidencyScore(w, emptyChronicle());
+        const finish = ps.parts.find((p) => p.id === "finish")!.detail;
+        const goal = w.objective?.primary.find((c) => c.kind === "SCORE_PAR")?.min;
+        const par = w.objective?.par ?? 100;
+        expect(finish, `${fp.id} ${side}`).toContain(`par ${par}`);
+        if (goal !== undefined && goal !== par)
+          expect(finish, `${fp.id} ${side}`).toContain(`goal was ${goal}+`);
+        const mission = ps.parts.find((p) => p.id === "mission")!.detail;
+        const desk = objectiveStatus(w).filter((s) => !s.bonus).length;
+        expect(mission, `${fp.id} ${side}`).toMatch(new RegExp(`of ${desk} goals`));
+      }
   });
 });

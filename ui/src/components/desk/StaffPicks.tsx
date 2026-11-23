@@ -1,6 +1,7 @@
 import { useId, useState } from 'react';
 import { IconCheck, IconChecks, IconChevronDown, IconInfoCircle, IconListDetails, IconPencil } from '@tabler/icons-react';
 import { type StaffPickItem, approveAll, approveLabel, approveStaffPick, openStaffPick } from '../../lib/month';
+import { useGameStore } from '../../store/gameStore';
 import { useRecommendedOpen, useStaffPicks } from '../../lib/useStaffPicks';
 import { TERMS } from '../../lib/glossary';
 import { sound } from '../../lib/sound';
@@ -34,6 +35,9 @@ function writeKey(k: string, v: string): void {
 }
 
 type Variant = 'rail' | 'sheet' | 'strip';
+
+/** A short desktop rail, where the list, Accept all and Execute need every pixel (staff-picks.css). */
+const SHORT_RAIL = () => typeof window !== 'undefined' && window.innerWidth >= 900 && window.innerHeight <= 820;
 
 /** One verb, Accept (D-72); each pick's own button names what it accepts. */
 const ACCEPT_WORD: Record<StaffPickItem['kind'], string> = { crisis: 'Accept answer', order: 'Accept order', meeting: 'Accept meeting', deputy: 'Accept deputy' };
@@ -85,8 +89,21 @@ function PickRow({ item, onDone, onNavigate }: { item: StaffPickItem; onDone: ()
   );
 }
 
+/**
+ * What is still open once nothing waits to be accepted (design-review-your-call.md RC-1): a crisis
+ * Accept all does not decide (one your advisers disagree on) is named, so the button never says
+ * every recommendation is decided while one is open. Its card says what leaving it does.
+ */
+function useStillOpen(): string | null {
+  return useGameStore((s) => {
+    const open = s.pendingDecisions.filter((d) => !s.reviewed[d.id]).map((d) => d.title);
+    return open.length ? `Still open: ${open.join(', ')}` : null;
+  });
+}
+
 /** The main button: "Accept all recommended (4)" with what it covers; disabled with a reason at zero. */
 function MainButton({ n, breakdown, against, folded, onUnfold, onApprove, kbd, listId, id }: { n: number; breakdown: string; against: number; folded: boolean; onUnfold: () => void; onApprove: () => void; kbd: boolean; listId: string; id?: string }) {
+  const stillOpen = useStillOpen();
   if (n === 0)
     return (
       <button type="button" id={id} className="wc-btn sp-main" disabled aria-describedby={`${listId}-none`}>
@@ -94,7 +111,7 @@ function MainButton({ n, breakdown, against, folded, onUnfold, onApprove, kbd, l
           <IconChecks size={16} aria-hidden /> {TERMS.approveAll.name.replace(' ({n})', '')}
         </span>
         <small className="sp-main-sub" id={`${listId}-none`}>
-          Nothing to accept: every recommendation is decided
+          {stillOpen ? `Nothing else to accept. ${stillOpen}` : 'Nothing to accept: every recommendation is decided'}
         </small>
       </button>
     );
@@ -131,7 +148,9 @@ export function StaffPicks({ variant, onNavigate }: { variant: Variant; onNaviga
   const whyId = `${base}-why`;
   const listId = `${base}-list`;
   const mainId = `${base}-main`;
-  const [why, setWhy] = useState(() => readKey(SEEN_KEY) !== '1');
+  // On a short desk rail (820 px or less) the first-use explanation starts closed so Accept all and
+  // Execute keep their room; "What is this?" opens it (design review of stability-iter4)
+  const [why, setWhy] = useState(() => readKey(SEEN_KEY) !== '1' && !(variant === 'rail' && SHORT_RAIL()));
   // Map mode starts folded behind "Review n recommended" (D-72; the globe keeps its room): on large
   // screens the list opens in the strip, on phones, tablets and short screens as a sheet over the
   // globe (staff-picks.css, 1280 x 820). The player's choice is remembered (lib/useStaffPicks).

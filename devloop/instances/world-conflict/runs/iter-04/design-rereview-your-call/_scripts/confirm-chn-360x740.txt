@@ -1,0 +1,16 @@
+== chn-360x740 month 1
+  m1 badge {"text":"No answer yet. If you leave it: no answer is given and the crisis passes","l":64,"r":346,"top":296,"hgt":69,"lines":3,"vw":360,"sw":280,"cw":280,"covered":"ok,ok,ok,ok","clip":""}
+  recommended sentence: 
+  answer labels: Inspect every energy cargo | Selective boardings | Keep it on paper
+== chn-360x740 month 2
+  m2 badge {"text":"No answer yet. If you leave it: Seal the border","l":64,"r":346,"top":296,"hgt":50,"lines":2,"vw":360,"sw":280,"cw":280,"covered":"ok,ok,ok,ok","clip":""}
+  recommended sentence: 
+  answer labels: Open the borders | Seal the border | Pay a third country to host them
+  m2-picked-longest badge {"text":"Accepted: Pay a third country to host them","l":64,"r":346,"top":296,"hgt":50,"lines":2,"vw":360,"sw":280,"cw":280,"covered":"ok,ok,ok,ok","clip":""}
+  badges now: Accepted: Pay a third country to host them
+  sheet recommended sentence: Your advisers recommend these for this month. Orders and meetings wait for you to accept; a crisis listed here goes ahead on its recommended answer unless you change it, one not listed is yours to answer.
+  button: Accept all recommended Nothing to accept: every recommendation is decided
+  could not close sheet
+  m2-after-accept badge {"text":"Accepted: Pay a third country to host them","l":64,"r":346,"top":296,"hgt":50,"lines":2,"vw":360,"sw":280,"cw":280,"covered":"P.plan-line,DIV.readiness,DIV.bar-backdrop,P.plan-line","clip":""}
+  sel-badges on the page: 1
+errors: 

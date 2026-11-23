@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useExecute } from '../../lib/useExecute';
 import { IconAlertTriangle, IconCheck, IconChevronDown, IconChevronUp, IconLayoutDashboard, IconPlus, IconSend, IconX } from '@tabler/icons-react';
 import { MEETING_SLOTS, type PendingAction, useGameStore } from '../../store/gameStore';
 import { flag } from '../../lib/format';
 import { pcCost } from '../../lib/actions';
 import { budgetShare, budgetStatus, money } from '../../lib/budget';
-import { crisisSelection, pcIncome, planSummary, proposalEffects } from '../../lib/month';
+import { crisisSelection, leaveText, pcIncome, planSummary, proposalEffects } from '../../lib/month';
 import { StaffPicks } from './StaffPicks';
 import { useRecommendedOpen, useStaffPicks } from '../../lib/useStaffPicks';
 import { approveProposal } from '../../store/gameStore';
@@ -145,12 +145,12 @@ export function Tray() {
             </span>
             <span className="slot-text">
               <b>{o?.label ?? 'No answer yet'}</b>
-              <small>{d.title}</small>
+              <small>{o ? d.title : `${d.title}. ${leaveText(d, world)}`}</small>
             </span>
             {sel.kind === 'yours' || sel.kind === 'approved' ? (
               <Stamp word={sel.kind === 'yours' ? 'YOUR PICK' : 'ACCEPTED'} size="sm" animate={false} tilt={-4} />
             ) : (
-              <span className="sel-mini">Recommended</span>
+              <span className="sel-mini">{sel.kind === 'waiting' ? 'Open' : 'Recommended'}</span>
             )}
           </button>
         );
@@ -351,6 +351,46 @@ export function CommandBar({ catalogTarget, simple = false }: { catalogTarget: s
   const choices = useGameStore((s) => s.decisionChoices);
   const ex = useExecute();
   const [sheet, setSheet] = useState(false);
+  // The bar lies over the desk stage: its height goes to --cmd-bar-h (the stage's --cover-bottom),
+  // so an order's confirmation brought into view there ends above the bar (DR-OC-4). The coach
+  // bubble standing on the bar covers more of the stage: --cmd-cover-h is the bar plus the bubble,
+  // the stage's bottom padding, so the lowest rows can scroll clear of it too. The bubble itself is
+  // hidden while a confirmation is open (month.css), so the face only has the bar to clear
+  const watch = useRef<{ off: () => void } | null>(null);
+  const barRef = useCallback((el: HTMLElement | null) => {
+    watch.current?.off();
+    watch.current = null;
+    const root = document.documentElement;
+    if (!el) {
+      root.style.removeProperty('--cmd-bar-h');
+      root.style.removeProperty('--cmd-cover-h');
+      return;
+    }
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => set()) : null;
+    const set = () => {
+      const r = el.getBoundingClientRect();
+      let top = r.top;
+      for (const b of el.querySelectorAll<HTMLElement>('.coach-bubble')) {
+        top = Math.min(top, b.getBoundingClientRect().top);
+        ro?.observe(b);
+      }
+      root.style.setProperty('--cmd-bar-h', `${Math.ceil(r.height)}px`);
+      root.style.setProperty('--cmd-cover-h', `${Math.ceil(r.bottom - top)}px`);
+    };
+    set();
+    ro?.observe(el);
+    // A bubble comes and goes without resizing the bar; it also rises 6 px as it fades in
+    const mo = typeof MutationObserver !== 'undefined' ? new MutationObserver(set) : null;
+    mo?.observe(el, { childList: true, subtree: true });
+    el.addEventListener('animationend', set);
+    watch.current = {
+      off: () => {
+        ro?.disconnect();
+        mo?.disconnect();
+        el.removeEventListener('animationend', set);
+      },
+    };
+  }, []);
   const b = budgetStatus();
   if (!world || !b) return null;
   const attending = (world.agenda ?? []).filter((m) => choices[m.id] && choices[m.id] !== m.defaultOptionId).length;
@@ -358,7 +398,7 @@ export function CommandBar({ catalogTarget, simple = false }: { catalogTarget: s
   return (
     <>
       {sheet && <div className="bar-backdrop" onClick={() => setSheet(false)} aria-hidden />}
-      <aside className={`cmd-bar${sheet ? ' sheet-open' : ''}`} aria-label="This month">
+      <aside ref={barRef} className={`cmd-bar${sheet ? ' sheet-open' : ''}`} aria-label="This month">
         {sheet && (
           <div className="bar-sheet">
             <ContextMap catalogTarget={catalogTarget} />

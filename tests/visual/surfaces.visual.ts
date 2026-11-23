@@ -2,6 +2,7 @@
 // Config and how to run: ./playwright.config.ts. Every page runs with reduced motion, CSS
 // animations disabled, a fixed clock and, where something is live (the WebGL globe, the ticker,
 // dates), a mask over it.
+import { fileURLToPath } from 'node:url';
 import { expect, type Page, test } from 'playwright/test';
 
 const API = (process.env.VISUAL_API_URL ?? 'http://localhost:8080/api').replace(/\/$/, '');
@@ -42,8 +43,16 @@ async function settle(page: Page, ms = 600, fastForward = true) {
   // Fast-forward 8 s of page time so camera flights and timed transitions finish even when the
   // machine is slow, then stop the clock. The reveal opts out: its first stage auto-advances.
   if (fastForward) await page.clock.runFor(8000);
-  // Pause one page-second ahead (a long jump would fire every pending timer at once)
-  await page.clock.pauseAt(new Date((await page.evaluate(() => Date.now())) + 1000));
+  // Pause one page-second ahead (a long jump would fire every pending timer at once). On a busy
+  // machine the page clock can pass that point before the call lands: try again further ahead.
+  for (const ahead of [1000, 3000, 8000]) {
+    try {
+      await page.clock.pauseAt(new Date((await page.evaluate(() => Date.now())) + ahead));
+      break;
+    } catch (e) {
+      if (ahead === 8000) throw e;
+    }
+  }
   await page.evaluate(() => {
     for (const svg of document.querySelectorAll('svg')) {
       svg.pauseAnimations?.();
@@ -128,7 +137,7 @@ test.describe('title', () => {
       // pins, compare everything around it. The globe has its own acceptance script (worldmap.mjs).
       await expect(page).toHaveScreenshot(`title-${width}.png`, {
         mask: liveMasks(page, { canvas: false }),
-        style: '.maplibregl-canvas, .maplibregl-marker, .maplibregl-popup { visibility: hidden !important; }',
+        stylePath: fileURLToPath(new URL('./hide-globe.css', import.meta.url)),
       });
     });
   }

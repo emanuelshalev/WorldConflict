@@ -1,0 +1,30 @@
+######## month 1
+crisis dec_ua_free_zone_0 "The free economic zone" IS A CALL default=referendum cabinetPick=counter call.mission=counter call.calm=accept skip=referendum | accept=Accept in principle ; referendum=Only by referendum ; counter=Reject it and strike
+  guide: For your mission: Reject it and strike. To keep things calm: Accept in principle. || skip text: The cabinet waits: Only by referendum. It costs Keep Washington engaged.
+routine n=5
+before: main= | count= | items=
+before: strip/bar=Recommended answer on 1 crisis, 1 recommended order not accepted (it will not run), deputies take 4 meetings. 1 recommended answer works against your mission: Reject it and strike. Review
+before: crisis rec line=
+Accept all pressed: false
+after: main= | count= | items=
+after: strip/bar=Recommended answer on 1 crisis, 1 recommended order not accepted (it will not run), deputies take 4 meetings. 1 recommended answer works against your mission: Reject it and strike. Review
+after: Recommended words on the screen=Recommended: Reject it and strike
+after: "Your call" on screen: false
+SENT dec_ua_free_zone_0: (none sent: engine default referendum) | desk said Recommended: counter | call  <== DESK SAID ONE ANSWER, ENGINE RESOLVES ANOTHER
+result card: DEFENSE DESK DEC 2026 · YOUR MONTH THIS MONTH +1 Front (your side) THE MONTH Your forces gain ground against Russia Mission (Score of 82+): score 100 → 97, needs 82. Your mission bar moved. Tap it any time to see what each goal needs. The numbers, the score and the rest of the month See everything Read the paper Next month
+######## month 2
+crisis dec_energy_shock_0_0 "Energy price shock" IS A CALL default=ride cabinetPick=subsidize call.mission=subsidize call.calm=subsidize skip=ride | subsidize=Subsidize fuel ; producers=Court the producers ; ride=Ride it out
+  guide: Your advisers agree on Subsidize fuel. || skip text: The cabinet waits: Ride it out.
+routine n=6
+before: main=Accept all recommended (6) Shift+A 2 orders, 3 meetings, 1 meeting for a deputy | count=6 | items=Order: National address || Order: Reform program || Meeting: Promise full support || Meeting: Promise full support || Meeting: Call up more reservists || Deputy takes: Interview: the evening news
+before: strip/bar=Recommended answer on 1 crisis, 2 recommended orders not accepted (they will not run), deputies take 4 meetings.
+before: crisis rec line=
+Accept all pressed: true
+after: main=Accept all recommended Nothing to accept: every recommendation is decided | count=0 | items=
+after: strip/bar=Recommended answer on 1 crisis, 2 recommended orders accepted, you attend 3 meetings.
+after: Recommended words on the screen=Recommended: Subsidize fuel
+after: "Your call" on screen: false
+SENT dec_energy_shock_0_0: (none sent: engine default ride) | desk said Recommended: subsidize | call  <== DESK SAID ONE ANSWER, ENGINE RESOLVES ANOTHER
+REPORT crisis "Energy price shock": choice="Ride it out (no decision taken)" optionId=ride headline=Zelensky decides: Ride it out
+result card: LIVE · ADDRESS JAN 2027 · YOUR MONTH DONE +4 Approval WHAT YOUR CHOICE DID You ordered: National address National address DONE Mission: stability 49 → 56%, needs 55%. The numbers, the score and the rest of the month See everything Read the paper Next month
+page errors: none

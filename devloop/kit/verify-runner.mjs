@@ -36,7 +36,7 @@
 // count (config.loop.recordModes, default ['default', 'full']) without --only, --skip or extra flags,
 // and only when HEAD did not move and no code file had uncommitted changes. `loop: false` turns it
 // off; without a loop config the runner works exactly as before.
-import { spawn, spawnSync } from 'node:child_process';
+import { execFileSync, spawn, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import net from 'node:net';
 import path from 'node:path';
@@ -118,6 +118,13 @@ function run(cmd, args, { cwd, env, logFile, timeoutMs, detached = false }) {
 }
 
 function killTree(child, signal = 'SIGTERM') {
+  if (process.platform === 'win32') {
+    // No process groups on Windows: a signal stops only the wrapper and leaves the server on its port
+    try {
+      execFileSync('taskkill', ['/PID', String(child.pid), '/T', '/F'], { stdio: 'ignore' });
+    } catch {}
+    return;
+  }
   try {
     process.kill(-child.pid, signal); // the whole process group (npx -> tsx -> node)
   } catch {

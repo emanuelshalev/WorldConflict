@@ -229,6 +229,9 @@ export function objectiveStatus(world: WorldState): ConditionStatus[] {
   });
 }
 
+/** The survival condition every session carries beside its objectives. */
+export const STAY_IN_POWER = "Stay in power";
+
 /** Stars: 0 = failed; 1 = primary objectives met; +1 per bonus met (max 3). */
 export function computeOutcome(world: WorldState): NonNullable<WorldState["outcome"]> {
   const survived = stayedInPower(world);
@@ -245,7 +248,7 @@ export function computeOutcome(world: WorldState): NonNullable<WorldState["outco
     victory: primaryMet,
     stars,
     conditions: [
-      { label: "Stay in power", met: survived, bonus: false },
+      { label: STAY_IN_POWER, met: survived, bonus: false },
       ...statuses.map((s) => ({ label: s.label, met: s.met, bonus: s.bonus })),
     ],
   };

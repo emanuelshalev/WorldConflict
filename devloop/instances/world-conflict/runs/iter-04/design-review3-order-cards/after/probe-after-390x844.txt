@@ -1,0 +1,6 @@
+390x844 no target, Diplomacy at the top: 5 whole rows in 297..743 (73,71,73,73,73 px)
+390x844 Russia, Military at the top: 4 whole rows in 297..743 (92,74,71,74 px)
+390x844 opened Mobilize row: row 358x289, forecast 332 px wide, Add 10 px below the row top
+390x844 search hit tap: forecast true, state available
+390x844 Give the order on the last row with the coach on the bar: queued
+page errors: none

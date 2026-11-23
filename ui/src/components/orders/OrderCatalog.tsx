@@ -1,6 +1,6 @@
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { useGameStore } from '../../store/gameStore';
-import { CATEGORIES, ORDERS, ORDERS_BY_CATEGORY, type OrderDef, orderLabel } from '../../lib/orders';
+import { FAMILIES, FAMILY_WORD, ORDERS, ORDERS_BY_FAMILY, type OrderDef, orderLabel } from '../../lib/orders';
 import { usePointTarget } from '../../lib/pointAt';
 import { OrderCard, type OrderCardHandle } from './OrderCard';
 import { CountryPicker, type CountryPickerHandle } from './CountryPicker';
@@ -25,8 +25,27 @@ interface Hit {
 export const MAX_HITS = 8;
 
 /**
+ * Below this width the catalogue lists its groups as 76 px `OrderCard` rows, not tiles
+ * (design-order-cards.md section 5, DR-OC-3): a phone screen then holds 6 or more orders.
+ */
+export const ROWS_QUERY = '(max-width: 599px)';
+
+const subscribeRows = (cb: () => void) => {
+  const mq = typeof window !== 'undefined' && window.matchMedia ? window.matchMedia(ROWS_QUERY) : null;
+  mq?.addEventListener('change', cb);
+  return () => mq?.removeEventListener('change', cb);
+};
+const rowsNow = () => (typeof window !== 'undefined' && window.matchMedia ? window.matchMedia(ROWS_QUERY).matches : false);
+
+/** True while the viewport is phone-narrow (rows instead of tiles). */
+function useCatalogRows(): boolean {
+  return useSyncExternalStore(subscribeRows, rowsNow, () => false);
+}
+
+/**
  * The desk's "All orders" (design-orders.md §4.5): a target picker, a search box and every order
- * as an `OrderCard` tile grouped by category. With no target, targeted cards read "Pick a country
+ * as an `OrderCard` tile grouped by family, under the family word its chips carry (rows on a
+ * phone). With no target, targeted cards read "Pick a country
  * first." and their fix focuses the picker. Search hits are `OrderCard` rows with the same states;
  * Up/Down moves the cursor and Enter acts on the hit under it, exactly like pressing that card: it
  * queues an available order, opens the confirm face of an irreversible one (focus on the safe
@@ -41,6 +60,7 @@ export function OrderCatalog({ target, setTarget, onOpenOrder, title = 'All orde
   const setFocus = useGameStore((s) => s.setFocus);
   const [q, setQ] = useState('');
   const [sel, setSel] = useState(0);
+  const rows = useCatalogRows();
   const picker = useRef<CountryPickerHandle>(null);
   const handles = useRef<Array<OrderCardHandle | null>>([]);
   const pickerPoint = usePointTarget('target', 'ord-target');
@@ -122,7 +142,7 @@ export function OrderCatalog({ target, setTarget, onOpenOrder, title = 'All orde
         />
       </div>
       {query ? (
-        <div className="ord-hits" id="ord-hits" role="listbox" aria-label="Matching orders">
+        <div className={rows ? 'ord-hits ord-cat-rows' : 'ord-hits'} id="ord-hits" role="listbox" aria-label="Matching orders">
           {hits.length === 0 && <p className="hint">No order matches.</p>}
           {hits.map((h, i) => (
             <div key={`${h.def.id}:${h.target ?? ''}`} id={`ord-hit-${i}`} role="option" aria-selected={i === at} onPointerEnter={() => setSel(i)}>
@@ -133,6 +153,9 @@ export function OrderCatalog({ target, setTarget, onOpenOrder, title = 'All orde
                 selected={i === at}
                 onOpen={openOrder}
                 hoverPreview={false}
+                // On a phone a search hit behaves as a list row: a tap shows the forecast, Add adds
+                // (Enter in the search box still acts on the highlighted hit)
+                pressForecast={rows}
                 handle={(r) => {
                   handles.current[i] = r;
                 }}
@@ -141,19 +164,43 @@ export function OrderCatalog({ target, setTarget, onOpenOrder, title = 'All orde
           ))}
         </div>
       ) : (
-        CATEGORIES.map((cat) => (
-          <section key={cat} className="ord-cat" aria-label={cat}>
-            <div className="nav-head">
-              {cat}
-              {targetName && ORDERS_BY_CATEGORY[cat].some((o) => o.targeted) && <span className="ord-cat-target"> · {targetName}</span>}
-            </div>
-            <div className="ord-grid">
-              {ORDERS_BY_CATEGORY[cat].map((def) => (
-                <OrderCard key={def.id} def={def} targetId={def.targeted ? target || undefined : undefined} onPickTarget={pickTarget} onOpen={openOrder} />
-              ))}
-            </div>
-          </section>
-        ))
+        <>
+          {/* Only while it applies (S4): with a target chosen, every row's own Forecast cue and Add
+              button say the rest, and the line would cost the list a row */}
+          {rows && !target && (
+            <p className="ord-cat-hint" data-cat-hint="">
+              Pick a country first: orders aimed at a country say Pick until you choose one. Tap an order for its forecast; Add puts it in this month.
+            </p>
+          )}
+          {FAMILIES.map((fam) => {
+          const word = FAMILY_WORD[fam];
+          const list = ORDERS_BY_FAMILY[fam];
+          if (!list.length) return null;
+          return (
+            <section key={fam} className={`ord-cat fam-${fam}`} aria-label={word} data-order-family={fam}>
+              <div className="nav-head ord-cat-head" data-family-heading={word}>
+                <i className="ord-cat-mark" aria-hidden />
+                {word}
+                {targetName && list.some((o) => o.targeted) && <span className="ord-cat-target"> · {targetName}</span>}
+              </div>
+              <div className={rows ? 'ord-list ord-cat-rows' : 'ord-grid'}>
+                {list.map((def) => (
+                  <OrderCard
+                    key={def.id}
+                    def={def}
+                    targetId={def.targeted ? target || undefined : undefined}
+                    variant={rows ? 'row' : 'tile'}
+                    hoverPreview={rows ? false : undefined}
+                    pressForecast={rows}
+                    onPickTarget={pickTarget}
+                    onOpen={openOrder}
+                  />
+                ))}
+              </div>
+            </section>
+          );
+          })}
+        </>
       )}
     </article>
   );

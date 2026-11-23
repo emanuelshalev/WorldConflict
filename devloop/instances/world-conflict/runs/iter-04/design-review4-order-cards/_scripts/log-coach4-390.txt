@@ -1,0 +1,75 @@
+390x844 coach at start: none
+390x844 no target: hint "Pick a country first: orders aimed at a country say Pick until you choose one. Tap an order for its forecast; Add puts it in this month." h54; catalogue children detail-title > catalog-top > ord-cat-hint > ord-cat > ord-cat > ord-cat
+390x844 after Mobilize: state queued; coach execute 188,660 190x91 vis=visible pe=auto
+390x844 no target, coach step 3 coverage: stage visible 297..743 = 446 px tall x 390; bubble 188,660..378,751 (190x91); bubble over stage 83 px of height (19%), 9% of the visible stage area; stage padding-bottom 196px; --cmd-cover-h 184px --cmd-bar-h 101px
+390x844 fund-nuclear @0.3 rowTop 253 Add y 263: NO FACE after tap on Add; coach execute 188,660 190x91 vis=visible pe=auto; state available
+390x844 policing-hard @0.5 rowTop 502 Add y 512..556
+   face 415..713 h298 | Cancel 33,648..696 [c:ok tl:ok tr:ok bl:ok br:ok] | Give the order 173,648..696 [c:ok tl:ok tr:ok bl:ok br:ok] | bar top 743
+   coach before: execute 188,660 190x91 vis=visible pe=auto | during: execute 188,660 190x91 vis=hidden pe=none | after Cancel: execute 188,660 190x91 vis=visible pe=auto | same place: true
+   list 2656 -> 2743 (face) -> 2585 after Cancel; restored false; page 0; then face open 0, order available
+390x844 policing-hard @0.5 rowTop 502 Add y 512..556
+   face 415..713 h298 | Cancel 33,648..696 [c:ok tl:ok tr:ok bl:ok br:ok] | Give the order 173,648..696 [c:ok tl:ok tr:ok bl:ok br:ok] | bar top 743
+   coach before: execute 188,660 190x91 vis=visible pe=auto | during: execute 188,660 190x91 vis=hidden pe=none | after Give: execute 188,660 190x91 vis=visible pe=auto | same place: true
+   list 2656 -> 2743 (face) -> 2585 after Give; restored false; page 0; then face open 0, order queued
+390x844 fund-nuclear @0.7 rowTop 591 Add y 601..645
+   face 415..713 h298 | Cancel 33,648..696 [c:ok tl:ok tr:ok bl:ok br:ok] | Give the order 173,648..696 [c:ok tl:ok tr:ok bl:ok br:ok] | bar top 743
+   coach before: execute 188,660 190x91 vis=visible pe=auto | during: execute 188,660 190x91 vis=hidden pe=none | after Cancel: execute 188,660 190x91 vis=visible pe=auto | same place: true
+   list 1331 -> 1507 (face) -> 1331 after Cancel; restored true; page 0; then face open 0, order available
+390x844 fund-nuclear @0.7 rowTop 591 Add y 601..645
+   face 415..713 h298 | Cancel 33,648..696 [c:ok tl:ok tr:ok bl:ok br:ok] | Give the order 173,648..696 [c:ok tl:ok tr:ok bl:ok br:ok] | bar top 743
+   coach before: execute 188,660 190x91 vis=visible pe=auto | during: execute 188,660 190x91 vis=hidden pe=none | after Give: execute 188,660 190x91 vis=visible pe=auto | same place: true
+   list 1331 -> 1507 (face) -> 1331 after Give; restored true; page 0; then face open 0, order queued
+390x844 policing-hard @lowest rowTop 602 Add y 612..656
+   face 415..713 h298 | Cancel 33,648..696 [c:ok tl:ok tr:ok bl:ok br:ok] | Give the order 173,648..696 [c:ok tl:ok tr:ok bl:ok br:ok] | bar top 743
+   coach before: execute 188,660 190x91 vis=visible pe=auto | during: execute 188,660 190x91 vis=hidden pe=none | after Escape: execute 188,660 190x91 vis=visible pe=auto | same place: true
+   list 2556 -> 2743 (face) -> 2556 after Escape; restored true; page 0; then face open 0, order available
+390x844 policing-hard @lowest rowTop 602 Add y 612..656
+   face 415..713 h298 | Cancel 33,648..696 [c:ok tl:ok tr:ok bl:ok br:ok] | Give the order 173,648..696 [c:ok tl:ok tr:ok bl:ok br:ok] | bar top 743
+   coach before: execute 188,660 190x91 vis=visible pe=auto | during: execute 188,660 190x91 vis=hidden pe=none | after Give: execute 188,660 190x91 vis=visible pe=auto | same place: true
+   list 2556 -> 2743 (face) -> 2556 after Give; restored true; page 0; then face open 0, order queued
+390x844 caveat A: policing-soft Add 294,684 70x44 under bubble x 188..378: 100% of Add covered; a tap on Add's centre -> state available -> available, face open 0, coach execute 188,660 190x91 vis=visible pe=auto
+390x844 caveat A: policing-hard Add 294,684 70x44 under bubble x 188..378: 100% of Add covered; a tap on Add's centre -> state available -> available, face open 0, coach execute 188,660 190x91 vis=visible pe=auto
+390x844 list scrolled to the end: last row policing-hard Add 512..556, bubble top 660: clear true; Add centre on top: true
+390x844 opened row policing-soft (notarget): open true; card 358x216 at y419; foot 17..373 w356; expand w332; title top 426; Add top 433 (row top +14); plate top 424 (+5); state available
+390x844 Russia: no hint element; catalogue children detail-title > catalog-top > ord-cat > ord-cat > ord-cat > ord-cat
+390x844 Russia, coach step 3 coverage: stage visible 297..743 = 446 px tall x 390; bubble 188,660..378,751 (190x91); bubble over stage 83 px of height (19%), 9% of the visible stage area; stage padding-bottom 196px; --cmd-cover-h 184px --cmd-bar-h 101px
+390x844 Russia danger rows: deploy-border=available airstrike-military=available airstrike-nuclear=available fund-nuclear=available arm-rebels=available assassinate=invalid coup=invalid break-pact=invalid declare-war=invalid nuclear-strike=invalid policing-hard=available
+390x844 deploy-border @0.3 rowTop 253 Add y 263: NO FACE after tap on Add; coach execute 188,660 190x91 vis=visible pe=auto; state available
+390x844 deploy-border @0.3 rowTop 253 Add y 263: NO FACE after tap on Add; coach execute 188,660 190x91 vis=visible pe=auto; state available
+390x844 airstrike-military @0.5 rowTop 422 Add y 432..476
+   face 413..712 h299 | Cancel 33,647..695 [c:ok tl:ok tr:ok bl:ok br:ord-confirm-btns] | Give the order 173,647..695 [c:ok tl:ok tr:ok bl:ok br:ord-confirm-btns] | bar top 743
+   coach before: execute 188,660 190x91 vis=visible pe=auto | during: execute 188,660 190x91 vis=hidden pe=none | after Escape: execute 188,660 190x91 vis=visible pe=auto | same place: true
+   list 1447 -> 1456 (face) -> 1447 after Escape; restored true; page 0; then face open 0, order available
+390x844 airstrike-military @0.5 rowTop 422 Add y 432..476
+   face 413..712 h299 | Cancel 33,647..695 [c:ok tl:ok tr:ok bl:ok br:ord-confirm-btns] | Give the order 173,647..695 [c:ok tl:ok tr:ok bl:ok br:ord-confirm-btns] | bar top 743
+   coach before: execute 188,660 190x91 vis=visible pe=auto | during: execute 188,660 190x91 vis=hidden pe=none | after Give: execute 188,660 190x91 vis=visible pe=auto | same place: true
+   list 1447 -> 1456 (face) -> 1447 after Give; restored true; page 0; then face open 0, order queued
+390x844 arm-rebels @0.7 rowTop 591 Add y 601..645
+   face 483..721 h238 | Cancel 33,656..704 [c:ok tl:ok tr:ok bl:ok br:ord-confirm-btns] | Give the order 173,656..704 [c:ok tl:ok tr:ok bl:ok br:ok] | bar top 743
+   coach before: execute 188,660 190x91 vis=visible pe=auto | during: execute 188,660 190x91 vis=hidden pe=none | after Cancel: execute 188,660 190x91 vis=visible pe=auto | same place: true
+   list 2113 -> 2221 (face) -> 2113 after Cancel; restored true; page 0; then face open 0, order available
+390x844 arm-rebels @0.7 rowTop 591 Add y 601..645
+   face 483..721 h238 | Cancel 33,656..704 [c:ok tl:ok tr:ok bl:ok br:ord-confirm-btns] | Give the order 173,656..704 [c:ok tl:ok tr:ok bl:ok br:ok] | bar top 743
+   coach before: execute 188,660 190x91 vis=visible pe=auto | during: execute 188,660 190x91 vis=hidden pe=none | after Give: execute 188,660 190x91 vis=visible pe=auto | same place: true
+   list 2113 -> 2221 (face) -> 2113 after Give; restored true; page 0; then face open 0, order queued
+390x844 airstrike-nuclear @0.7 rowTop 591 Add y 601..645
+   face 415..713 h298 | Cancel 33,648..696 [c:ok tl:ok tr:ok bl:ok br:ok] | Give the order 173,648..696 [c:ok tl:ok tr:ok bl:ok br:ok] | bar top 743
+   coach before: execute 188,660 190x91 vis=visible pe=auto | during: execute 188,660 190x91 vis=hidden pe=none | after Give: execute 188,660 190x91 vis=visible pe=auto | same place: true
+   list 1397 -> 1573 (face) -> 1397 after Give; restored true; page 0; then face open 0, order queued
+390x844 policing-hard @lowest rowTop 602 Add y 612..656
+   face 415..713 h298 | Cancel 33,648..696 [c:ok tl:ok tr:ok bl:ok br:ok] | Give the order 173,648..696 [c:ok tl:ok tr:ok bl:ok br:ok] | bar top 743
+   coach before: execute 188,660 190x91 vis=visible pe=auto | during: execute 188,660 190x91 vis=hidden pe=none | after Cancel: execute 188,660 190x91 vis=visible pe=auto | same place: true
+   list 2949 -> 3136 (face) -> 2949 after Cancel; restored true; page 0; then face open 0, order available
+390x844 policing-hard @lowest rowTop 602 Add y 612..656
+   face 415..713 h298 | Cancel 33,648..696 [c:ok tl:ok tr:ok bl:ok br:ok] | Give the order 173,648..696 [c:ok tl:ok tr:ok bl:ok br:ok] | bar top 743
+   coach before: execute 188,660 190x91 vis=visible pe=auto | during: execute 188,660 190x91 vis=hidden pe=none | after Give: execute 188,660 190x91 vis=visible pe=auto | same place: true
+   list 2949 -> 3136 (face) -> 2949 after Give; restored true; page 0; then face open 0, order queued
+390x844 airstrike-military @lowest rowTop 602 Add y 612..656
+   face 413..712 h299 | Cancel 33,647..695 [c:ok tl:ok tr:ok bl:ok br:ord-confirm-btns] | Give the order 173,647..695 [c:ok tl:ok tr:ok bl:ok br:ord-confirm-btns] | bar top 743
+   coach before: execute 188,660 190x91 vis=visible pe=auto | during: execute 188,660 190x91 vis=hidden pe=none | after Give: execute 188,660 190x91 vis=visible pe=auto | same place: true
+   list 1267 -> 1456 (face) -> 1267 after Give; restored true; page 0; then face open 0, order queued
+390x844 airstrike-military @0.25 rowTop 211 Add y 221: NO FACE after tap on Add; coach execute 188,660 190x91 vis=visible pe=auto; state available
+390x844 caveat A: airstrike-military Add 294,683 70x44 under bubble x 188..378: 100% of Add covered; a tap on Add's centre -> state available -> available, face open 0, coach execute 188,660 190x91 vis=visible pe=auto
+390x844 list scrolled to the end: last row policing-hard Add 512..556, bubble top 660: clear true; Add centre on top: true
+390x844 opened row spy (russia): open true; card 358x266 at y295; foot 17..373 w356; expand w332; title top 302; Add top 305 (row top +10); plate top 300 (+5); state available
+THREW locator.boundingBox: Timeout 8000ms exceeded.

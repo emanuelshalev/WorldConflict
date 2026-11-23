@@ -97,6 +97,11 @@ export const ANACHRONISMS: Array<{ term: RegExp; from: number; what: string }> =
   { term: /\bHamas\b/, from: 1988, what: "Hamas (1987)" },
   { term: /\bHezbollah\b/, from: 1983, what: "Hezbollah (1982)" },
   { term: /\bOPEC\b/, from: 1961, what: "OPEC (Sept 1960)" },
+  {
+    term: /\bvaccine effort\b|\bnovel respiratory virus\b/i,
+    from: 2000,
+    what: "global vaccine diplomacy (2000s)",
+  },
   { term: /\bIAEA\b/, from: 1958, what: "IAEA (1957)" },
 ];
 

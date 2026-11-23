@@ -65,12 +65,20 @@ describe("QA repro #7: a crisis is never labelled 'Your call'", () => {
       defaultOptionId: "abstain",
     };
     useGameStore.setState({ advice: { cabinetPicks: { d1: "abstain" }, missionPicks: {}, meetingPicks: {} } as never });
+    // A crisis with no answer (a call left open, D-84) shows none and says what leaving it does
+    // (design-review-your-call.md RC-1); it is never labelled Your call either
     const cases = [
-      crisisSelection(d, {}, {}),
+      crisisSelection(d, { d1: "abstain" }, {}),
       crisisSelection(d, { d1: "abstain" }, { d1: true }),
       crisisSelection(d, { d1: "join" }, { d1: true }),
+      crisisSelection(d, {}, {}),
     ];
-    expect(cases.map((c) => c.text)).toEqual(["Recommended: Abstain", "Accepted: Abstain", "Your pick: Join the sanctions"]);
+    expect(cases.map((c) => c.text)).toEqual([
+      "Recommended: Abstain",
+      "Accepted: Abstain",
+      "Your pick: Join the sanctions",
+      "No answer yet. If you leave it: no answer is given and the crisis passes",
+    ]);
     for (const c of cases) expect(`${c.text} ${c.word}`).not.toMatch(/your call/i);
   });
 });

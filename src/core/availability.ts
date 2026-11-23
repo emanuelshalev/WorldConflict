@@ -1,9 +1,10 @@
 import { actionCostM, actionCostPC, MAX_ORDERS, PC_CAP, politicalCapitalIncome } from "./costs.js";
 import { eraAbsent, opposingCamps, worldYear } from "./era.js";
+import { impactContext, itemPrices } from "./missionImpact.js";
 import { allianceOdds, canDeclareWar } from "./systems/diplomacy.js";
 import { monthlyDefenseBudgetM } from "./systems/military.js";
 import { possessive, withArticle } from "./text.js";
-import type { Action, CountryState, WorldState } from "./types.js";
+import type { Action, CountryState, PendingDecision, WorldState } from "./types.js";
 
 /**
  * Order availability: why an order can or can't be given, as a machine-readable
@@ -385,17 +386,23 @@ export function monthStateFor(
   const me = world.countries.find((c) => c.id === world.playerCountryId);
   const pick = (id: string) => choices.find((c) => c.decisionId === id)?.optionId;
   let answers = 0;
+  // A chosen answer on the mission side also pays its D-84 price (costs.ts PUSH_PC)
+  const ctx = choices.length ? impactContext(world) : null;
+  const price = (item: PendingDecision, id: string | undefined) =>
+    id && ctx ? (itemPrices(world, item, ctx)[id] ?? 0) : 0;
   for (const d of world.pendingDecisions) {
     const chosen = pick(d.id);
     const o = d.options.find((x) => x.id === (chosen ?? d.defaultOptionId ?? d.options[0]?.id));
     const pc = o?.effects.pc ?? 0;
     if (pc < 0 || chosen) answers += pc;
+    answers -= price(d, chosen);
   }
   for (const m of world.agenda ?? []) {
     const chosen = pick(m.id);
     const o = m.options.find((x) => x.id === (chosen ?? m.defaultOptionId));
     const pc = o?.effects.pc ?? 0;
     if (pc < 0 || chosen) answers += pc;
+    if (chosen !== m.defaultOptionId) answers -= price(m, chosen);
   }
   const costs = queued.map((a) => actionCostPC(a));
   const pcLeft = Math.max(0, world.politicalCapital + answers) - costs.reduce((s, c) => s + c, 0);

@@ -1,0 +1,135 @@
+C3 catalogue 1440x900 no face open: hover deploy-border at 664,117 -> forecast shown 0
+C3 catalogue 1440x900 face open 1
+C3 catalogue 1440x900 face open: hover deploy-border at 664,117 -> forecast shown 0
+C3 catalogue 1440x900 face open: hover mobilize at 664,-227 -> forecast shown 0
+C3 catalogue 1440x900 face open: hover spy at 409,1180 -> forecast shown 0
+C3 catalogue 1440x900 face open: hover airstrike-nuclear at 664,404 -> forecast shown 0
+C3 catalogue 1440x900 after Escape: hover deploy-border at 664,117 -> forecast shown 1 "Strike military targets in Russia Precision airstrike on Russia's military targets. 42% ch"
+C3 catalogue 3440x1440 no face open: hover deploy-border at 2142,316 -> forecast shown 2 "Strike military targets in Russia Precision airstrike on Russia's military targets. 42% ch"
+C3 catalogue 3440x1440 face open 1
+C3 catalogue 3440x1440 face open: hover deploy-border at 2142,316 -> forecast shown 0
+C3 catalogue 3440x1440 face open: hover mobilize at 1426,316 -> forecast shown 0
+C3 catalogue 3440x1440 face open: hover spy at 1187,1495 -> forecast shown 0
+C3 catalogue 3440x1440 face open: hover airstrike-nuclear at 1664,660 -> forecast shown 0
+C3 catalogue 3440x1440 after Escape: hover deploy-border at 2142,316 -> forecast shown 2 "Strike military targets in Russia Precision airstrike on Russia's military targets. 42% ch"
+C3 map 3440x1440 no face open: hover deploy-border at 1913,801 -> forecast shown 1 "Mass troops facing Russia Deploy 50,000 troops to the Russia border. Russia: Relations (Su"
+C3 map 3440x1440 face open: hover deploy-border at 2097,531 -> forecast shown 0
+C3 map 3440x1440 face open: no mobilize
+C3 map 3440x1440 face open: no propose-ceasefire
+C3 map 3440x1440 face open: hover spy at 1913,1083 -> forecast shown 0
+
+## C1 map 3440x1440
+  opened: menu 1815,388 380x941 scroll 0/0 page 0; head 1816,389 378x92 visible true onTop true close 1826,399 217x44 onTop true; first tile top 491 head bottom 481; face none face-top minus head-bottom null; title x0
+     Cancel none
+     Give none
+  Strike at menu bottom: menu 1815,388 380x941 scroll 0/0 page 0; head 1816,389 378x92 visible true onTop true close 1826,399 217x44 onTop true; first tile top 491 head bottom 481; face none face-top minus head-bottom null; title x0
+     Cancel none
+     Give none
+  face open: menu 1815,388 380x982 scroll 0/0 page 0; head 1816,389 378x92 visible true onTop true close 1826,399 217x44 onTop true; first tile top 491 head bottom 481; face 1826,731 358x301 face-top minus head-bottom 250; title x1
+     Cancel "Cancel" 1843,968 130x48 lines 1 centre ok insideMenu true
+     Give "Give the order" 1983,968 184x48 lines 1 centre ok insideMenu true
+  after Cancel: menu 1815,388 380x941 scroll 0/0 page 0; head 1816,389 378x92 visible true onTop true close 1826,399 217x44 onTop true; first tile top 491 head bottom 481; face none face-top minus head-bottom null; title x0
+     Cancel none
+     Give none restored true
+  reopened: scroll 0
+  after Escape: menu 1815,388 380x941 scroll 0/0 page 0; head 1816,389 378x92 visible true onTop true close 1826,399 217x44 onTop true; first tile top 491 head bottom 481; face none face-top minus head-bottom null; title x0
+     Cancel none
+     Give none restored true
+  at top: first tile top 491 head bottom 481
+C3 map 1920x1080 no face open: hover deploy-border at 1131,591 -> forecast shown 1 "Mass troops facing Russia Deploy 50,000 troops to the Russia border. Russia: Relations (Su"
+C3 map 1920x1080 face open: hover deploy-border at 1315,321 -> forecast shown 0
+C3 map 1920x1080 face open: no mobilize
+C3 map 1920x1080 face open: no propose-ceasefire
+C3 map 1920x1080 face open: hover spy at 1131,873 -> forecast shown 0
+
+## C1 map 1920x1080
+  opened: menu 1033,178 380x813 scroll 0/128 page 0; head 1034,179 378x92 visible true onTop true close 1044,189 217x44 onTop true; first tile top 281 head bottom 271; face none face-top minus head-bottom null; title x0
+     Cancel none
+     Give none
+  Strike at menu bottom: menu 1033,178 380x813 scroll 0/128 page 0; head 1034,179 378x92 visible true onTop true close 1044,189 217x44 onTop true; first tile top 281 head bottom 271; face none face-top minus head-bottom null; title x0
+     Cancel none
+     Give none
+  face open: menu 1033,178 380x813 scroll 0/169 page 0; head 1034,179 378x92 visible true onTop true close 1044,189 217x44 onTop true; first tile top 281 head bottom 271; face 1044,521 358x301 face-top minus head-bottom 250; title x1
+     Cancel "Cancel" 1061,758 130x48 lines 1 centre ok insideMenu true
+     Give "Give the order" 1201,758 184x48 lines 1 centre ok insideMenu true
+  after Cancel: menu 1033,178 380x813 scroll 0/128 page 0; head 1034,179 378x92 visible true onTop true close 1044,189 217x44 onTop true; first tile top 281 head bottom 271; face none face-top minus head-bottom null; title x0
+     Cancel none
+     Give none restored true
+  reopened: scroll 0
+  after Escape: menu 1033,178 380x813 scroll 0/128 page 0; head 1034,179 378x92 visible true onTop true close 1044,189 217x44 onTop true; first tile top 281 head bottom 271; face none face-top minus head-bottom null; title x0
+     Cancel none
+     Give none restored true
+  at top: first tile top 281 head bottom 271
+C3 map 1440x900 no face open: hover deploy-border at 878,591 -> forecast shown 1 "Mass troops facing Russia Deploy 50,000 troops to the Russia border. Russia: Relations (Su"
+C3 map 1440x900 face open: hover deploy-border at 1062,278 -> forecast shown 0
+C3 map 1440x900 face open: no mobilize
+C3 map 1440x900 face open: no propose-ceasefire
+C3 map 1440x900 face open: hover spy at 878,830 -> forecast shown 0
+
+## C1 map 1440x900
+  opened: menu 780,178 380x633 scroll 0/308 page 0; head 781,179 378x92 visible true onTop true close 791,189 217x44 onTop true; first tile top 281 head bottom 271; face none face-top minus head-bottom null; title x0
+     Cancel none
+     Give none
+  Strike at menu bottom: menu 780,178 380x633 scroll 0/308 page 0; head 781,179 378x92 visible true onTop true close 791,189 217x44 onTop true; first tile top 281 head bottom 271; face none face-top minus head-bottom null; title x0
+     Cancel none
+     Give none
+  face open: menu 780,178 380x633 scroll 43/349 page 0; head 781,179 378x92 visible true onTop true close 791,189 217x44 onTop true; first tile top 238 head bottom 271; face 791,478 358x301 face-top minus head-bottom 207; title x1
+     Cancel "Cancel" 808,715 130x48 lines 1 centre ok insideMenu true
+     Give "Give the order" 948,715 184x48 lines 1 centre ok insideMenu true
+  after Cancel: menu 780,178 380x633 scroll 0/308 page 0; head 781,179 378x92 visible true onTop true close 791,189 217x44 onTop true; first tile top 281 head bottom 271; face none face-top minus head-bottom null; title x0
+     Cancel none
+     Give none restored true
+  reopened: scroll 43
+  after Escape: menu 780,178 380x633 scroll 0/308 page 0; head 781,179 378x92 visible true onTop true close 791,189 217x44 onTop true; first tile top 281 head bottom 271; face none face-top minus head-bottom null; title x0
+     Cancel none
+     Give none restored true
+  at top: first tile top 281 head bottom 271
+C3 map 1366x768 no face open: hover deploy-border at 829,591 -> forecast shown 1 "Mass troops facing Russia Deploy 50,000 troops to the Russia border. Russia: Relations (Su"
+C3 map 1366x768 face open: hover deploy-border at 1013,96 -> forecast shown 0
+C3 map 1366x768 face open: no mobilize
+C3 map 1366x768 face open: no propose-ceasefire
+C3 map 1366x768 face open: hover spy at 829,648 -> forecast shown 0
+
+## C1 map 1366x768
+  opened: menu 731,178 380x451 scroll 0/490 page 0; head 732,179 378x92 visible true onTop true close 742,189 217x44 onTop true; first tile top 281 head bottom 271; face none face-top minus head-bottom null; title x0
+     Cancel none
+     Give none
+  Strike at menu bottom: menu 731,178 380x451 scroll 0/490 page 0; head 732,179 378x92 visible true onTop true close 742,189 217x44 onTop true; first tile top 281 head bottom 271; face none face-top minus head-bottom null; title x0
+     Cancel none
+     Give none
+  face open: menu 731,178 380x451 scroll 225/531 page 0; head 732,179 378x92 visible true onTop true close 742,189 217x44 onTop true; first tile top 56 head bottom 271; face 742,296 358x301 face-top minus head-bottom 25; title x1
+     Cancel "Cancel" 759,533 130x48 lines 1 centre ok insideMenu true
+     Give "Give the order" 899,533 184x48 lines 1 centre ok insideMenu true
+  after Cancel: menu 731,178 380x451 scroll 0/490 page 0; head 732,179 378x92 visible true onTop true close 742,189 217x44 onTop true; first tile top 281 head bottom 271; face none face-top minus head-bottom null; title x0
+     Cancel none
+     Give none restored true
+  reopened: scroll 225
+  after Escape: menu 731,178 380x451 scroll 0/490 page 0; head 732,179 378x92 visible true onTop true close 742,189 217x44 onTop true; first tile top 281 head bottom 271; face none face-top minus head-bottom null; title x0
+     Cancel none
+     Give none restored true
+  at top: first tile top 281 head bottom 271
+C3 map 1024x768 no face open: hover deploy-border at 657,593 -> forecast shown 1 "Mass troops facing Russia Deploy 50,000 troops to the Russia border. Russia: Relations (Su"
+C3 map 1024x768 face open: hover deploy-border at 841,88 -> forecast shown 0
+C3 map 1024x768 face open: no mobilize
+C3 map 1024x768 face open: no propose-ceasefire
+C3 map 1024x768 face open: hover spy at 657,640 -> forecast shown 0
+
+## C1 map 1024x768
+  opened: menu 559,180 380x441 scroll 0/500 page 0; head 560,181 378x92 visible true onTop true close 570,191 217x44 onTop true; first tile top 283 head bottom 273; face none face-top minus head-bottom null; title x0
+     Cancel none
+     Give none
+  Strike at menu bottom: menu 559,180 380x441 scroll 0/500 page 0; head 560,181 378x92 visible true onTop true close 570,191 217x44 onTop true; first tile top 283 head bottom 273; face none face-top minus head-bottom null; title x0
+     Cancel none
+     Give none
+  face open: menu 559,180 380x441 scroll 235/541 page 0; head 560,181 378x92 visible true onTop true close 570,191 217x44 onTop true; first tile top 48 head bottom 273; face 570,288 358x301 face-top minus head-bottom 15; title x1
+     Cancel "Cancel" 587,525 130x48 lines 1 centre ok insideMenu true
+     Give "Give the order" 727,525 184x48 lines 1 centre ok insideMenu true
+  after Cancel: menu 559,180 380x441 scroll 0/500 page 0; head 560,181 378x92 visible true onTop true close 570,191 217x44 onTop true; first tile top 283 head bottom 273; face none face-top minus head-bottom null; title x0
+     Cancel none
+     Give none restored true
+  reopened: scroll 235
+  after Escape: menu 559,180 380x441 scroll 0/500 page 0; head 560,181 378x92 visible true onTop true close 570,191 217x44 onTop true; first tile top 283 head bottom 273; face none face-top minus head-bottom null; title x0
+     Cancel none
+     Give none restored true
+  at top: first tile top 283 head bottom 273
+page errors: none

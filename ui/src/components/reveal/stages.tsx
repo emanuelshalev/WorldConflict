@@ -3,7 +3,7 @@ import { SceneFrame } from '../../scenes/SceneFrame';
 import type { DeclassifiedCard as DeclassifiedData, MomentView, RevealPayload, RelationRow as RelationData, SeriesView, TruthVerdict } from '../../store/gameStore';
 import { flag } from '../../lib/format';
 import { sound } from '../../lib/sound';
-import { useCountUp } from '../../lib/useCountUp';
+import { countText, useCountUp } from '../../lib/useCountUp';
 import { seatName, type StoredRun } from '../../lib/runs';
 import { tierRank } from './sealArt';
 import { GradeBox, VerdictStamp } from './VerdictStamp';
@@ -15,7 +15,8 @@ import {
   countLine,
   fmtValue,
   lastMonthLabel,
-  END_SCENE,
+  endScene,
+  placeAxisLabels,
   monthLetters,
   momentsHeadline,
   seenHeadline,
@@ -64,7 +65,7 @@ export function CountStage({ r, animate, scene = true }: StageProps & { scene?: 
       {scene && (
         <div className="rv-scene">
           <SceneFrame
-            kind={END_SCENE[r.verdict.reason ?? ''] ?? (lost ? 'streets' : 'address')}
+            kind={endScene(r.verdict.reason, r.seat, lost)}
             home={r.seat.countryId}
             mood={lost ? 'bad' : 'good'}
             size="card"
@@ -98,7 +99,7 @@ export function CountStage({ r, animate, scene = true }: StageProps & { scene?: 
 
 export function ScoreTally({ r, animate, best }: { r: RevealPayload; animate: boolean; best: number | null }) {
   const p = r.presidency;
-  const shown = Math.round(useCountUp(p.total, animate ? 900 : 1, animate ? 1300 : 0));
+  const shown = countText(p.total, useCountUp(p.total, animate ? 900 : 1, animate ? 1300 : 0));
   const record = best !== null && p.total > best;
   return (
     <div className="rv-card rv-tally">
@@ -281,10 +282,18 @@ export function MomentAxis({ r, animate }: { r: RevealPayload; animate: boolean 
   const pad = 26;
   const x = (m: number) => pad + (months <= 1 ? 0 : ((m - 1) * (w - pad * 2)) / (months - 1));
   const every = months > 24 ? Math.ceil(months / 12) : months > 12 && narrow ? 3 : narrow && months > 8 ? 2 : 1;
+  // A long label first drops its bracketed numbers ("Keep Washington engaged (relations 70+)"): the
+  // list below the axis carries them; only then is it shortened
   const short = (s: string, big: boolean) => {
     const max = narrow ? (big ? 22 : 16) : big ? 40 : 26;
-    return s.length > max ? `${s.slice(0, max - 1).trimEnd()}…` : s;
+    const plain = s.length > max ? s.replace(/\s*\([^)]*\)\s*$/, '') : s;
+    return plain.length > max ? `${plain.slice(0, max - 1).trimEnd()}…` : plain;
   };
+  // Labels never overlap: each takes the side with room, or stays a dot (QA3R-6a)
+  const anchorOf = (m: AxisMark) => (x(m.month) < 60 ? 'start' : x(m.month) > w - 60 ? 'end' : 'middle') as 'start' | 'middle' | 'end';
+  const sides = placeAxisLabels(
+    marks.map((m) => ({ x: x(m.month), width: short(m.label, m.big).length * (m.big ? 8.4 : 7) + 4, anchor: anchorOf(m), big: m.big })),
+  );
   return (
     <div className="rv-card rv-axiscard">
       <div ref={ref}>
@@ -303,9 +312,9 @@ export function MomentAxis({ r, animate }: { r: RevealPayload; animate: boolean 
           )}
           {marks.map((m, k) => {
             const r0 = m.big ? 11 : 7;
-            const up = k % 2 === 0;
-            const showLabel = !narrow || m.big;
-            const anchor = x(m.month) < 60 ? 'start' : x(m.month) > w - 60 ? 'end' : 'middle';
+            const up = sides[k] === 'up';
+            const showLabel = (!narrow || m.big) && sides[k] !== null;
+            const anchor = anchorOf(m);
             return (
               <g key={`${m.month}-${m.label}`} className={animate ? 'rv-pop' : ''} style={animate ? ({ animationDelay: `${300 + k * 120}ms` } as CSSProperties) : undefined}>
                 {m.big && <circle cx={x(m.month)} cy={y} r={r0 + 6} fill="none" stroke={m.color} strokeOpacity={0.4} />}

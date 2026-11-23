@@ -1,0 +1,77 @@
+mode full: catalogue visible true; pressed/selected controls: Desk |  | Full desk |  | All orders
+C4 no target 390x844: at top: first row top 724; catalogue top 495; bar top 743; hint 54 px "Pick a country first: orders aimed at a country say Pick until you choose one. Tap an order for its forecast; Add puts it in this month."
+   spy: stage visible 297..743 (446 px), whole rows 5
+   mobilize: stage visible 297..743 (446 px), whole rows 5
+C4 no target 360x740: at top: first row top 724; catalogue top 495; bar top 639; hint 54 px "Pick a country first: orders aimed at a country say Pick until you choose one. Tap an order for its forecast; Add puts it in this month."
+   spy: stage visible 297..639 (342 px), whole rows 4
+   mobilize: stage visible 297..639 (342 px), whole rows 3
+no target: available rows 9; danger rows (open a face): fund-nuclear, policing-hard
+full notarget 390x844 fund-nuclear @0.3 rowTop=253: Cancel[Cancel 33,552..600 130x48 centre:BUTTON corners:0000 clearOfBar:true] Give[Give the order 173,552..600 184x48 centre:BUTTON corners:1000 clearOfBar:true] barTop 743
+   scroll before {"stage":1667,"page":0,"winY":0,"anc":"desk-stage=1667"} during {"stage":1601,"page":0,"winY":0,"anc":"desk-stage=1601"} after Cancel {"stage":1601,"page":0,"winY":0,"anc":"desk-stage=1601"} restored:false state:available
+full notarget 390x844 fund-nuclear @0.7 rowTop=591: Cancel[Cancel 33,648..696 130x48 centre:BUTTON corners:0000 clearOfBar:true] Give[Give the order 173,648..696 184x48 centre:coach-bubble corners:1000 clearOfBar:true] barTop 743
+   scroll before {"stage":1329,"page":0,"winY":0,"anc":"desk-stage=1329"} during {"stage":1505,"page":0,"winY":0,"anc":"desk-stage=1505"} after Escape {"stage":1329,"page":0,"winY":0,"anc":"desk-stage=1329"} restored:true state:available
+full notarget 390x844 fund-nuclear @last rowTop=836: Cancel[Cancel 33,648..696 130x48 centre:BUTTON corners:0000 clearOfBar:true] Give[Give the order 173,648..696 184x48 centre:coach-bubble corners:1000 clearOfBar:true] barTop 743
+   scroll before {"stage":1084,"page":0,"winY":0,"anc":"desk-stage=1084"} during {"stage":1505,"page":0,"winY":0,"anc":"desk-stage=1505"} after Give {"stage":1387,"page":0,"winY":0,"anc":"desk-stage=1387"} restored:false state:queued
+full notarget 390x844 policing-hard @0.3 rowTop=578: Cancel[Cancel 33,647..695 130x48 centre:BUTTON corners:1000 clearOfBar:true] Give[Give the order 173,647..695 184x48 centre:coach-bubble corners:1000 clearOfBar:true] barTop 743
+   scroll before {"stage":2494,"page":0,"winY":0,"anc":"desk-stage=2494"} during {"stage":2658,"page":0,"winY":0,"anc":"desk-stage=2658"} after Cancel {"stage":2494,"page":0,"winY":0,"anc":"desk-stage=2494"} restored:true state:available
+full notarget 390x844 policing-hard @0.7 rowTop=591: Cancel[Cancel 33,647..695 130x48 centre:BUTTON corners:1000 clearOfBar:true] Give[Give the order 173,647..695 184x48 centre:coach-bubble corners:1000 clearOfBar:true] barTop 743
+   scroll before {"stage":2481,"page":0,"winY":0,"anc":"desk-stage=2481"} during {"stage":2658,"page":0,"winY":0,"anc":"desk-stage=2658"} after Escape {"stage":2481,"page":0,"winY":0,"anc":"desk-stage=2481"} restored:true state:available
+full notarget 390x844 policing-hard @last rowTop=835: Cancel[Cancel 33,647..695 130x48 centre:BUTTON corners:1000 clearOfBar:true] Give[Give the order 173,647..695 184x48 centre:coach-bubble corners:1000 clearOfBar:true] barTop 743
+   scroll before {"stage":2237,"page":0,"winY":0,"anc":"desk-stage=2237"} during {"stage":2658,"page":0,"winY":0,"anc":"desk-stage=2658"} after Give {"stage":2494,"page":0,"winY":0,"anc":"desk-stage=2494"} restored:false state:queued
+full notarget 360x740 fund-nuclear @0.3 rowTop=222: Cancel[Cancel 33,552..600 115x48 centre:BUTTON corners:1000 clearOfBar:true] Give[Give the order 158,552..600 169x48 centre:B corners:1000 clearOfBar:true] barTop 639
+   scroll before {"stage":1745,"page":0,"winY":0,"anc":"desk-stage=1745"} during {"stage":1648,"page":0,"winY":0,"anc":"desk-stage=1648"} after Cancel {"stage":1648,"page":0,"winY":0,"anc":"desk-stage=1648"} restored:false state:available
+full notarget 360x740 fund-nuclear @0.7 rowTop=518: Cancel[Cancel 33,548..596 115x48 centre:BUTTON corners:1000 clearOfBar:true] Give[Give the order 158,548..596 169x48 centre:B corners:1000 clearOfBar:true] barTop 639
+   scroll before {"stage":1449,"page":0,"winY":0,"anc":"desk-stage=1449"} during {"stage":1652,"page":0,"winY":0,"anc":"desk-stage=1652"} after Escape {"stage":1505,"page":0,"winY":0,"anc":"desk-stage=1505"} restored:false state:available
+full notarget 360x740 fund-nuclear @last rowTop=732: Cancel[Cancel 33,548..596 115x48 centre:BUTTON corners:1000 clearOfBar:true] Give[Give the order 158,548..596 169x48 centre:B corners:1000 clearOfBar:true] barTop 639
+   scroll before {"stage":1235,"page":0,"winY":0,"anc":"desk-stage=1235"} during {"stage":1652,"page":0,"winY":0,"anc":"desk-stage=1652"} after Give {"stage":1505,"page":0,"winY":0,"anc":"desk-stage=1505"} restored:false state:queued
+full notarget 360x740 policing-hard @0.3 rowTop=474: Cancel[Cancel 33,546..594 115x48 centre:BUTTON corners:0000 clearOfBar:true] Give[Give the order 158,546..594 169x48 centre:B corners:1000 clearOfBar:true] barTop 639
+   scroll before {"stage":2687,"page":0,"winY":0,"anc":"desk-stage=2687"} during {"stage":2867,"page":0,"winY":0,"anc":"desk-stage=2867"} after Cancel {"stage":2687,"page":0,"winY":0,"anc":"desk-stage=2687"} restored:true state:available
+full notarget 360x740 policing-hard @0.7 rowTop=518: Cancel[Cancel 33,546..594 115x48 centre:BUTTON corners:0000 clearOfBar:true] Give[Give the order 158,546..594 169x48 centre:B corners:1000 clearOfBar:true] barTop 639
+   scroll before {"stage":2643,"page":0,"winY":0,"anc":"desk-stage=2643"} during {"stage":2867,"page":0,"winY":0,"anc":"desk-stage=2867"} after Escape {"stage":2678,"page":0,"winY":0,"anc":"desk-stage=2678"} restored:false state:available
+full notarget 360x740 policing-hard @last rowTop=733: Cancel[Cancel 33,546..594 115x48 centre:BUTTON corners:0000 clearOfBar:true] Give[Give the order 158,546..594 169x48 centre:B corners:1000 clearOfBar:true] barTop 639
+   scroll before {"stage":2428,"page":0,"winY":0,"anc":"desk-stage=2428"} during {"stage":2867,"page":0,"winY":0,"anc":"desk-stage=2867"} after Give {"stage":2678,"page":0,"winY":0,"anc":"desk-stage=2678"} restored:false state:queued
+C4 Russia 390x844: at top: first row top 688; catalogue top 495; bar top 743; hint 18 px "Tap an order for its forecast; Add puts it in this month."
+   spy: stage visible 297..743 (446 px), whole rows 5
+   mobilize: stage visible 297..743 (446 px), whole rows 5
+C4 Russia 360x740: at top: first row top 706; catalogue top 495; bar top 639; hint 36 px "Tap an order for its forecast; Add puts it in this month."
+   spy: stage visible 297..639 (342 px), whole rows 3
+   mobilize: stage visible 297..639 (342 px), whole rows 3
+Russia: available rows 20; danger rows: deploy-border, airstrike-military, airstrike-nuclear, fund-nuclear, arm-rebels, policing-hard
+full russia 390x844 deploy-border @0.3 rowTop=253: Cancel[Cancel 33,533..581 130x48 centre:BUTTON corners:1000 clearOfBar:true] Give[Give the order 173,533..581 184x48 centre:BUTTON corners:1000 clearOfBar:true] barTop 743
+   scroll before {"stage":1453,"page":0,"winY":0,"anc":"desk-stage=1453"} during {"stage":1387,"page":0,"winY":0,"anc":"desk-stage=1387"} after Cancel {"stage":1387,"page":0,"winY":0,"anc":"desk-stage=1387"} restored:false state:available
+full russia 390x844 deploy-border @0.7 rowTop=591: Cancel[Cancel 33,650..698 130x48 centre:BUTTON corners:1000 clearOfBar:true] Give[Give the order 173,650..698 184x48 centre:B corners:1000 clearOfBar:true] barTop 743
+   scroll before {"stage":1115,"page":0,"winY":0,"anc":"desk-stage=1115"} during {"stage":1270,"page":0,"winY":0,"anc":"desk-stage=1270"} after Escape {"stage":1115,"page":0,"winY":0,"anc":"desk-stage=1115"} restored:true state:available
+full russia 390x844 deploy-border @last rowTop=836: Cancel[Cancel 33,650..698 130x48 centre:BUTTON corners:1000 clearOfBar:true] Give[Give the order 173,650..698 184x48 centre:B corners:1000 clearOfBar:true] barTop 743
+   scroll before {"stage":870,"page":0,"winY":0,"anc":"desk-stage=870"} during {"stage":1270,"page":0,"winY":0,"anc":"desk-stage=1270"} after Give {"stage":1182,"page":0,"winY":0,"anc":"desk-stage=1182"} restored:false state:queued
+full russia 390x844 policing-hard @0.3 rowTop=578: Cancel[Cancel 33,647..695 130x48 centre:BUTTON corners:1000 clearOfBar:true] Give[Give the order 173,647..695 184x48 centre:coach-bubble corners:1000 clearOfBar:true] barTop 743
+   scroll before {"stage":2909,"page":0,"winY":0,"anc":"desk-stage=2909"} during {"stage":3073,"page":0,"winY":0,"anc":"desk-stage=3073"} after Cancel {"stage":2909,"page":0,"winY":0,"anc":"desk-stage=2909"} restored:true state:available
+full russia 390x844 policing-hard @0.7 rowTop=591: Cancel[Cancel 33,647..695 130x48 centre:BUTTON corners:1000 clearOfBar:true] Give[Give the order 173,647..695 184x48 centre:coach-bubble corners:1000 clearOfBar:true] barTop 743
+   scroll before {"stage":2896,"page":0,"winY":0,"anc":"desk-stage=2896"} during {"stage":3073,"page":0,"winY":0,"anc":"desk-stage=3073"} after Escape {"stage":2896,"page":0,"winY":0,"anc":"desk-stage=2896"} restored:true state:available
+full russia 390x844 policing-hard @last rowTop=835: Cancel[Cancel 33,647..695 130x48 centre:BUTTON corners:1000 clearOfBar:true] Give[Give the order 173,647..695 184x48 centre:coach-bubble corners:1000 clearOfBar:true] barTop 743
+   scroll before {"stage":2652,"page":0,"winY":0,"anc":"desk-stage=2652"} during {"stage":3073,"page":0,"winY":0,"anc":"desk-stage=3073"} after Give {"stage":2909,"page":0,"winY":0,"anc":"desk-stage=2909"} restored:false state:queued
+full russia 360x740 deploy-border @0.3 rowTop=222: Cancel[Cancel 33,533..581 115x48 centre:BUTTON corners:1000 clearOfBar:true] Give[Give the order 158,533..581 169x48 centre:B corners:1000 clearOfBar:true] barTop 639
+   scroll before {"stage":1617,"page":0,"winY":0,"anc":"desk-stage=1617"} during {"stage":1520,"page":0,"winY":0,"anc":"desk-stage=1520"} after Cancel {"stage":1520,"page":0,"winY":0,"anc":"desk-stage=1520"} restored:false state:available
+full russia 360x740 deploy-border @0.7 rowTop=518: Cancel[Cancel 33,550..598 115x48 centre:BUTTON corners:1000 clearOfBar:true] Give[Give the order 158,550..598 169x48 centre:B corners:1000 clearOfBar:true] barTop 639
+   scroll before {"stage":1321,"page":0,"winY":0,"anc":"desk-stage=1321"} during {"stage":1503,"page":0,"winY":0,"anc":"desk-stage=1503"} after Escape {"stage":1377,"page":0,"winY":0,"anc":"desk-stage=1377"} restored:false state:available
+full russia 360x740 deploy-border @last rowTop=732: Cancel[Cancel 33,550..598 115x48 centre:BUTTON corners:1000 clearOfBar:true] Give[Give the order 158,550..598 169x48 centre:B corners:1000 clearOfBar:true] barTop 639
+   scroll before {"stage":1107,"page":0,"winY":0,"anc":"desk-stage=1107"} during {"stage":1503,"page":0,"winY":0,"anc":"desk-stage=1503"} after Give {"stage":1377,"page":0,"winY":0,"anc":"desk-stage=1377"} restored:false state:queued
+full russia 360x740 policing-hard @0.3 rowTop=474: Cancel[Cancel 33,545..593 115x48 centre:BUTTON corners:0000 clearOfBar:true] Give[Give the order 158,545..593 169x48 centre:B corners:0010 clearOfBar:true] barTop 639
+   scroll before {"stage":3437,"page":0,"winY":0,"anc":"desk-stage=3437"} during {"stage":3617,"page":0,"winY":0,"anc":"desk-stage=3617"} after Cancel {"stage":3437,"page":0,"winY":0,"anc":"desk-stage=3437"} restored:true state:available
+full russia 360x740 policing-hard @0.7 rowTop=518: Cancel[Cancel 33,545..593 115x48 centre:BUTTON corners:0000 clearOfBar:true] Give[Give the order 158,545..593 169x48 centre:B corners:0010 clearOfBar:true] barTop 639
+   scroll before {"stage":3393,"page":0,"winY":0,"anc":"desk-stage=3393"} during {"stage":3617,"page":0,"winY":0,"anc":"desk-stage=3617"} after Escape {"stage":3428,"page":0,"winY":0,"anc":"desk-stage=3428"} restored:false state:available
+full russia 360x740 policing-hard @last rowTop=733: Cancel[Cancel 33,545..593 115x48 centre:BUTTON corners:0000 clearOfBar:true] Give[Give the order 158,545..593 169x48 centre:B corners:0010 clearOfBar:true] barTop 639
+   scroll before {"stage":3178,"page":0,"winY":0,"anc":"desk-stage=3178"} during {"stage":3617,"page":0,"winY":0,"anc":"desk-stage=3617"} after Give {"stage":3428,"page":0,"winY":0,"anc":"desk-stage=3428"} restored:false state:queued
+C2 390x844 mobilize: row 74 px; hit 356x72; act 70x44 "Add"; cue "Forecast" 67x18 colour rgb(163, 174, 191)
+   first tap: open, row 421 px; blurb "Call up the reserves. Rivals read it as a threat."; forecast "Call up the reserves. Rivals read it as a threat. Call up reserves and surge readiness (+20% mobilization). Ukraine: Mobilization about +20 Ukraine: Stability about -2 Rivals read mobilization as a threat (-3 relations w"; cue now "Hide forecast"; queued 0->0; face 0
+   second tap: closed; queued 0
+C2 390x844 spy: row 74 px; hit 356x72; act 70x44 "Add"; cue "Forecast" 67x18 colour rgb(163, 174, 191)
+   first tap: open, row 379 px; blurb "Sharpens your estimate of the forces and economy of Russia."; forecast "Sharpens your estimate of the forces and economy of Russia. Run an intelligence operation against Russia, sharpen our picture of their true capabilities. 82% chance it works Exposure risk: relations collapse with Russia."; cue now "Hide forecast"; queued 0->0; face 0
+   second tap: closed; queued 0
+C2 390x844 deploy-border: row 93 px; hit 356x91; act 70x44 "Add"; cue "Forecast" 67x18 colour rgb(163, 174, 191)
+   first tap: open, row 381 px; blurb "Station troops on the border with Russia: steady pressure every month."; forecast "Station troops on the border with Russia: steady pressure every month. Deploy 50,000 troops to the Russia border. Russia: Relations -8 now, -3/month Tension +0.5/month Russia will increase military spending in response."; cue now "Hide forecast"; queued 0->0; face 0
+   second tap: closed; queued 0
+unavailable rows: court, offer-pact, mediate, break-pact, declare-war, nuclear-strike, assassinate, coup
+C2 390x844-unavailable court: row 74 px; hit 356x72; act 70x44 "Why"; cue "none" 
+   first tap: NOT open; queued 0->0; face 0
+   second tap: closed; queued 0
+page errors: none

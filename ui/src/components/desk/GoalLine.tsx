@@ -1,6 +1,6 @@
 import { IconLayoutColumns, IconLayoutList, IconTarget } from '@tabler/icons-react';
 import { type ConditionStatus, useGameStore } from '../../store/gameStore';
-import { missionSentence, nowNeed, stateOf, stepObjective, useGoalHighlight } from '../../lib/goals';
+import { goalPunct, missionSentence, missionSummary, nowNeed, stateOf, stepObjective, useGoalHighlight } from '../../lib/goals';
 import { MISSION_SENTENCE_ID, showMissionSentence } from '../../lib/month';
 import '../../styles/month.css';
 
@@ -39,13 +39,11 @@ export function GoalLine() {
   const point = useGoalHighlight((s) => s.point);
   if (!world || gameOver) return null;
   const primary = status.filter((c) => !c.bonus);
-  const onTrack = primary.filter((c) => stateOf(c) === 'on_track').length;
-  const month = Math.min(world.turn + 1, world.maxTurns);
   const title = world.objective?.title ?? 'Stay in power';
   const step = stepObjective(status);
   const stepC = step >= 0 ? status[step] : undefined;
   const stepText = stepC ? nowNeed(stepC) ?? stepC.short ?? stepC.label : null;
-  const summary = primary.length ? `${onTrack} of ${primary.length} on track · month ${month} of ${world.maxTurns}` : `Month ${month} of ${world.maxTurns}`;
+  const summary = missionSummary(status, world.turn, world.maxTurns);
   // Month 1: the goal line links to the one-sentence goal above the crisis instead of a step
   const first = world.turn === 0;
   return (
@@ -95,15 +93,28 @@ export function MissionLine() {
       <span>
         <b className="mission-line-k">Your goal. </b>
         {m.lead}
-        {m.goals.map((g, i) => (
-          <span key={g.index}>
-            {i > 0 && (i === m.goals.length - 1 ? ' and ' : ', ')}
-            <button type="button" className="mission-goal" onClick={() => point(g.index)} title="Show it in the goal line and what moves it">
-              {g.text}
-            </button>
-          </span>
-        ))}
-        {m.goals.length > 0 && '.'}
+        {m.goals.map((g, i) => {
+          // The punctuation stays glued to its goal, so a comma never wraps onto a line of its own
+          const { after, join } = goalPunct(i, m.goals.length);
+          return (
+            <span key={g.index}>
+              <span className="mission-goal-unit">
+                {/* The punctuation sits inside the button's box (a button is laid out as an
+                    inline block), after the last word, so it wraps with it on the phone (RC-5);
+                    only the goal text is underlined and named */}
+                <button type="button" className="mission-goal" onClick={() => point(g.index)} title="Show it in the goal line and what moves it">
+                  <span className="mission-goal-text">{g.text}</span>
+                  {after && (
+                    <span className="mission-goal-punct" aria-hidden>
+                      {after}
+                    </span>
+                  )}
+                </button>
+              </span>
+              {join}
+            </span>
+          );
+        })}
       </span>
     </p>
   );

@@ -1,0 +1,4 @@
+390: no war with the United States, [57-276@302] punct 273@302 || no shooting war across the Strait, [57-303@323] punct 300@323 || Washington still talking, not decoupling (relations kept above -88), [57-361@367] punct 246@367 || bring Taipei to the table (relations kept above -55) [57-361@410] punct - || score of 120+. [86-188@432] punct 185@432
+390: docScrollW 390
+360: no war with the United States, [57-276@302] punct 273@302 || no shooting war across the Strait, [57-303@323] punct 300@323 || Washington still talking, not decoupling (relations kept above -88), [57-331@389] punct 88@389 || bring Taipei to the table (relations kept above -55) [57-331@432] punct - || score of 120+. [86-188@454] punct 185@454
+360: docScrollW 360

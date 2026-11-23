@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { TERMS } from '../lib/glossary';
 import { IconCpu, IconX } from '@tabler/icons-react';
 import {
   type AITier,
@@ -73,6 +74,8 @@ function Inner({ onClose }: { onClose: () => void }) {
   const usage = useGameStore((s) => s.aiTotalUsage);
   const staffOrders = useGameStore((s) => s.staffOrders);
   const setStaffOrders = useGameStore((s) => s.setStaffOrders);
+  const chiefCalls = useGameStore((s) => s.chiefCalls);
+  const setChiefCalls = useGameStore((s) => s.setChiefCalls);
   const showTicker = useGameStore((s) => s.showTicker);
   const setShowTicker = useGameStore((s) => s.setShowTicker);
   const world = useGameStore((s) => s.worldState);
@@ -132,7 +135,13 @@ function Inner({ onClose }: { onClose: () => void }) {
           <label className="setting-row">
             <input type="checkbox" checked={staffOrders} onChange={(e) => setStaffOrders(e.target.checked)} />
             <span>
-              <b>Staff propose orders</b> Each month your staff propose up to two safe orders, always leaving at least ◆ 1 for you. A recommended order spends nothing until you accept it (one by one or with Accept all recommended) and does not run unless you do. Turning this off applies from next month.
+              <b>Staff propose orders</b> Each month your staff propose up to three safe orders, always leaving at least ◆ 1 for you. A recommended order spends nothing until you accept it (one by one or with Accept all recommended) and does not run unless you do. Turning this off applies from next month.
+            </span>
+          </label>
+          <label className="setting-row">
+            <input type="checkbox" checked={chiefCalls} onChange={(e) => setChiefCalls(e.target.checked)} />
+            <span>
+              <b>{TERMS.chiefCalls.name}</b> {TERMS.chiefCalls.definition}
             </span>
           </label>
           <label className="setting-row">

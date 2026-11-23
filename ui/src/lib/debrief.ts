@@ -137,7 +137,7 @@ function orderCard(o: Order, i: number): OutcomeCardData {
 /** Merge everything about one country into one card: meetings, orders, their moves, their view of you. */
 const HOSTILE = /DENOUNCE|DECLARE_WAR|AIRSTRIKE|DEPLOY_BORDER|BREAK_ALLIANCE|NUCLEAR|INTEL_|MOBILIZE/;
 
-function countryCard(id: string, decisions: Array<[Decision, number]>, orders: Array<[Order, number]>, moveList: Array<{ type: string; label: string; target?: string }>, rel?: { before: number; after: number }, home?: string): OutcomeCardData {
+function countryCard(id: string, decisions: Array<[Decision, number]>, orders: Array<[Order, number]>, moveList: Array<{ type: string; label: string; target?: string }>, rel?: { before: number; after: number }, home?: string, ownRel?: { before: number; after: number }): OutcomeCardData {
   const moves = moveList.map((m) => m.label);
   const hostile = moveList.some((m) => HOSTILE.test(m.type));
   const relDelta = rel ? rel.after - rel.before : 0;
@@ -163,8 +163,18 @@ function countryCard(id: string, decisions: Array<[Decision, number]>, orders: A
   // numbers and the verdict tell one story
   // The month total leads; your move's own effect on their view follows as its share, so "Court
   // Poland" is never credited with a drop that Poland's own moves caused
-  const facts = rel ? lead.facts.map((f) => (/ view of you$/.test(f.label) ? { ...f, label: 'Their view, from your move', share: true } : f)) : [...lead.facts];
+  // Your own view of them works the same way (QA3R-2a): it is the number a relation goal
+  // measures, so the month total leads, as on the result card's mission row
+  const ownView = ownRel ? lead.facts.some((f) => /^Your view of /.test(f.label)) : false;
+  const facts = lead.facts.map((f) =>
+    rel && / view of you$/.test(f.label)
+      ? { ...f, label: 'Their view, from your move', share: true }
+      : ownView && /^Your view of /.test(f.label)
+        ? { ...f, label: 'Your view, from your move', share: true }
+        : f,
+  );
   if (rel) facts.unshift({ label: `${possessiveName(countryName(id))} view of you this month`, before: rel.before, after: rel.after });
+  if (ownView && ownRel) facts.unshift({ label: `Your view of ${countryName(id)} this month`, before: ownRel.before, after: ownRel.after });
   const firstOrder = orders[0]?.[0];
   // R5 with the engine's statuses (F-02-2): one card, one status. Your items set it; a card with
   // only their moves has none (no stamp), so "China moves against you" is never stamped FAILED.
@@ -223,6 +233,7 @@ export function buildPages(report: TurnReport, world: WorldState): DebriefPage[]
   const decisions = report.decisions.map((d, i) => [d, i] as [Decision, number]);
   const orders = report.orders.map((o, i) => [o, i] as [Order, number]);
   const relations = new Map((report.relations ?? []).map((r) => [r.id, r]));
+  const yourView = new Map((report.yourView ?? []).map((r) => [r.id, r]));
   const moves = (report.world ?? []).filter((m) => m.target === home);
 
   // 1. Highlight
@@ -260,7 +271,7 @@ export function buildPages(report: TurnReport, world: WorldState): DebriefPage[]
   };
   const diplomacy = [...byCountry.entries()]
     .sort((a, b) => weight(b[0], b[1]) - weight(a[0], a[1]))
-    .map(([id, v]) => countryCard(id, v.d, v.o, v.m, relations.get(id), home));
+    .map(([id, v]) => countryCard(id, v.d, v.o, v.m, relations.get(id), home, yourView.get(id)));
   // Staff-handled meetings: the ones that moved something get a line; routine ones one count (R4)
   const deputyMeetings = decisions.filter(([d]) => d.attended === false && d.kind !== 'CRISIS');
   const routine = deputyMeetings.filter(([d]) => !d.watch && !(d.facts ?? []).length).length;

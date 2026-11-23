@@ -1,0 +1,15 @@
+desktop: catalogue states, target Russia: court:invalid(AT_WAR) denounce:available offer-pact:invalid(PACT_REFUSED) ceasefire:available mediate:invalid(PARTY_TO_WAR) break-pact:invalid(NOT_ALLIED) declare-war:invalid(ALREADY_AT_WAR) mobilize:available demobilize:available procure:available deploy-border:available withdraw-border:available airstrike-military:available airstrike-nuclear:available fund-nuclear:available nuclear-strike:invalid(NO_WARHEADS) spy:available counter-intel:available sabotage:available destabilize:available arm-rebels:available disinformation:available assassinate:invalid(TOO_PROTECTED) coup:invalid(TOO_STABLE) address:available reform:available policing-soft:available policing-hard:available
+desktop: confirm face "MILITARY Strike military targets in Russia Strike military targets in Russia? A risky order: check it is the one you meant. What your staff expect: Russia: Relations -30 Tension +8 Russia may retaliate: militarily or through proxies. Cancel Give the order", focus on "Cancel"
+desktop: after Enter on the default focus: confirm open false, card state available
+desktop: added mobilize: true, state now queued
+desktop: added reform: true, state now queued
+desktop: catalogue states after adding: court:invalid(AT_WAR) denounce:available offer-pact:invalid(PACT_REFUSED) ceasefire:unaffordable(NO_CAPITAL) mediate:invalid(PARTY_TO_WAR) break-pact:invalid(NOT_ALLIED) declare-war:invalid(ALREADY_AT_WAR) mobilize:queued(DUPLICATE) demobilize:available procure:available deploy-border:available withdraw-border:available airstrike-military:unaffordable(NO_CAPITAL) airstrike-nuclear:unaffordable(NO_CAPITAL) fund-nuclear:unaffordable(NO_CAPITAL) nuclear-strike:invalid(NO_WARHEADS) spy:unaffordable(NO_CAPITAL) counter-intel:unaffordable(NO_CAPITAL) sabotage:unaffordable(NO_CAPITAL) destabilize:unaffordable(NO_CAPITAL) arm-rebels:unaffordable(NO_CAPITAL) disinformation:unaffordable(NO_CAPITAL) assassinate:invalid(TOO_PROTECTED) coup:invalid(TOO_STABLE) address:unaffordable(NO_CAPITAL) reform:queued(DUPLICATE) policing-soft:available policing-hard:available
+desktop: unaffordable card "DIPLOMACY Propose ceasefire to Russia 11% chance Needs ◆ 1, you have ◆ 0. Remove Mobilize forces (frees ◆ 1) or wait: +3 next month How much? Forecast"
+desktop: invalid card "DIPLOMACY Court Russia You are at war with Russia. Propose a ceasefire instead How much? Forecast"
+desktop: proposed card "Court United Kingdom DIPLOMACY Proposed by staff (Foreign Minister) · ◆ 1 if accepted Remove Will change: United Kingdom: Relations +5 to +7 Foreign Minister: Mission: United Kingdom needs 93+, now 83. Helps: UK relations 93+ Accept order"
+desktop 3440x1440-CEO: map menu after click: 5 order cards; menu el 1
+desktop 2560x1440: map menu after click: 5 order cards; menu el 1
+desktop 1920x1080: map menu after click: 5 order cards; menu el 1
+desktop 1440x900: map menu after click: 5 order cards; menu el 1
+desktop 1366x768: map menu after click: 5 order cards; menu el 1
+desktop: page errors: none
