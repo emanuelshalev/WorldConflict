@@ -41,6 +41,14 @@ function Stat({ label, value, delta, danger, suffix = '', minor = false, point }
   );
 }
 
+
+/**
+ * Below this width the secondary buttons (Cabinet, World, Chronicle, Mission and record, the news
+ * ticker, Settings) fold into Menu, so the top bar ends inside the window (design review of
+ * stability-iter4); every control stays one tap away in the Menu panel. Mirrors hud.css.
+ */
+const MENU_FOLD = 1600;
+
 export function Hud() {
   const world = useGameStore((s) => s.worldState);
   const setDrawer = useGameStore((s) => s.setDrawer);
@@ -198,7 +206,7 @@ export function Hud() {
         <button className="icon-btn hide-phone" title="Settings and AI" aria-label="Settings" onClick={() => openModal('settings')}>
           <IconSettings size={18} />
         </button>
-        <button className="icon-btn" title="Menu" aria-label="Menu" onClick={() => (window.innerWidth <= 600 ? setMenu((v) => !v) : openModal('saveLoad'))} aria-expanded={menu}>
+        <button className="icon-btn" title="Menu" aria-label="Menu" onClick={() => (window.innerWidth < MENU_FOLD ? setMenu((v) => !v) : openModal('saveLoad'))} aria-expanded={menu}>
           <IconMenu2 size={18} />
         </button>
       </div>
@@ -215,6 +223,12 @@ export function Hud() {
           </button>
           <button type="button" className="wc-btn ghost" onClick={() => setDrawer('codex')}>
             <IconBook size={16} aria-hidden /> Codex
+          </button>
+          <button type="button" className="wc-btn ghost hud-menu-wide" onClick={() => setDrawer('objective')}>
+            <IconBook2 size={16} aria-hidden /> Mission and record
+          </button>
+          <button type="button" className="wc-btn ghost hud-menu-wide" onClick={() => setShowTicker(!showTicker)}>
+            {showTicker ? <IconBroadcastOff size={16} aria-hidden /> : <IconBroadcast size={16} aria-hidden />} {showTicker ? 'Hide the news ticker' : 'Show the news ticker'}
           </button>
           <button type="button" className="wc-btn ghost" onClick={() => setDeskMode(deskMode === 'map' ? 'desk' : 'map')}>
             {deskMode === 'map' ? <IconLayoutDashboard size={16} aria-hidden /> : <IconMap2 size={16} aria-hidden />} {deskMode === 'map' ? 'Desk' : 'Map'}

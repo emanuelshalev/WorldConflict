@@ -282,9 +282,12 @@ export function MomentAxis({ r, animate }: { r: RevealPayload; animate: boolean 
   const pad = 26;
   const x = (m: number) => pad + (months <= 1 ? 0 : ((m - 1) * (w - pad * 2)) / (months - 1));
   const every = months > 24 ? Math.ceil(months / 12) : months > 12 && narrow ? 3 : narrow && months > 8 ? 2 : 1;
+  // A long label first drops its bracketed numbers ("Keep Washington engaged (relations 70+)"): the
+  // list below the axis carries them; only then is it shortened
   const short = (s: string, big: boolean) => {
     const max = narrow ? (big ? 22 : 16) : big ? 40 : 26;
-    return s.length > max ? `${s.slice(0, max - 1).trimEnd()}…` : s;
+    const plain = s.length > max ? s.replace(/\s*\([^)]*\)\s*$/, '') : s;
+    return plain.length > max ? `${plain.slice(0, max - 1).trimEnd()}…` : plain;
   };
   // Labels never overlap: each takes the side with room, or stays a dot (QA3R-6a)
   const anchorOf = (m: AxisMark) => (x(m.month) < 60 ? 'start' : x(m.month) > w - 60 ? 'end' : 'middle') as 'start' | 'middle' | 'end';
