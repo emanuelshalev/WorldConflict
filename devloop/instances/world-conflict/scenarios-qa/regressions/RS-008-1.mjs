@@ -185,7 +185,8 @@ function judge(a, label, { mode, month }) {
   if (a.planForm === 'bar') g.check(a.barPrimaries?.length === 1 && /Execute month/.test(a.barPrimaries[0]) && a.barReview, `${at} AC-25 / D4: the bar's one primary is Execute and its list button reads "Review n recommended" (${a.barPrimaries?.join(', ')})`);
   if (a.answers) {
     g.check(a.answersFace && a.lastIsSkip, `${at} AC-5 / D5 / D9: each answer is one card with a Choose face, Skip is the last card`);
-    g.check(/Free|Costs|Nothing happens|cabinet|answers|usual answer/.test(a.skipText), `${at} D5: the Skip card says what happens instead ("${a.skipText.slice(0, 70)}")`);
+    // A call's Skip card is the leave sentence (D-85 item 5, lib/month leaveText): what the engine runs, or that the crisis passes
+    g.check(/Free|Costs|Nothing happens|cabinet|answers|usual answer|^Leave it open ?If you leave it(, the crisis passes with no effect|: \S)/.test(a.skipText), `${at} D5: the Skip card says what happens instead ("${a.skipText.slice(0, 70)}")`);
     if (month === 4) g.check(/^\d+ done, \d+ to go$/.test(a.where.trim()), `${at} AC-2: progress in words ("${a.where}")`);
   }
   if (a.W >= 1024 && a.H <= 900 && a.skipOk !== null) g.check(a.skipOk, `${at} AC-26: the Skip card is in view without overlap`);
