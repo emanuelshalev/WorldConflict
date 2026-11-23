@@ -188,7 +188,7 @@ export function Chronicle() {
     </b>
   );
   return (
-    <div ref={ref} className="overlay" onClick={close} role="dialog" aria-modal="true" aria-label="Monthly report">
+    <div ref={ref} className="overlay paper-overlay" onClick={close} role="dialog" aria-modal="true" aria-label="Monthly report">
       <button type="button" className="wc-btn primary paper-next" onClick={(e) => {
           e.stopPropagation();
           close();

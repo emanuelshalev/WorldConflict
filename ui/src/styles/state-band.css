@@ -1,0 +1,65 @@
+/* The state band (design-layout.md L-5, section 5): dedicated, always visible, never scrolls,
+   never covered. Two lines at every desktop size, one line at U (3200 wide and up); labels shorten
+   by layout class in StateBand.tsx, never by ellipsis. Breakpoints as in layout.css (L-20). */
+.state-band {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: 'l1 right' 'l2 l2';
+  align-items: center; gap: .35rem 1.25rem; padding: .45rem var(--pad, 1.25rem);
+  background: #0f1520; border-bottom: 1px solid var(--line); font-size: .9375rem; color: var(--text-2);
+}
+.sb-l1, .sb-l2 { display: flex; align-items: center; gap: .4rem 1.25rem; min-width: 0; }
+.sb-l1 { grid-area: l1; flex-wrap: wrap; }
+.sb-l2 { grid-area: l2; flex-wrap: wrap; }
+.sb-right { grid-area: right; display: flex; align-items: center; gap: .6rem; justify-self: end; }
+.sb-who { white-space: nowrap; color: var(--text-1); font-size: 1rem; }
+.sb-month { white-space: nowrap; color: var(--text-1); }
+.sb-month .sb-v { font-family: var(--font-ui); font-weight: 650; font-size: .9375rem; }
+.sb-elect { color: var(--accent); }
+.sb-warn { color: var(--war); }
+.sb-grp { display: flex; align-items: center; flex-wrap: wrap; gap: .3rem 1.1rem; min-width: 0; }
+.sb-lbl { color: var(--text-3); white-space: nowrap; }
+.sb-s { white-space: nowrap; color: var(--text-2); }
+.sb-s.over, .sb-s.over .sb-v { color: var(--war); }
+.sb-v { color: var(--text-1); font-size: 1rem; font-weight: 700; }
+.sb-pc .sb-v { color: var(--accent); }
+.sb-v { animation: sb-flash 300ms ease-out; }
+@keyframes sb-flash { from { background: rgba(242, 169, 59, .35); border-radius: 4px; } to { background: transparent; } }
+@media (prefers-reduced-motion: reduce) { .sb-v { animation: none; } }
+.sb-s small { margin-left: 3px; font-size: .9375rem; }
+.sb-div { width: 1px; align-self: stretch; min-height: 1.25rem; background: var(--line-2); }
+.state-band .wc-btn.small { min-height: 2.25rem; font-size: .9375rem; padding: .2rem .7rem; white-space: nowrap; }
+.sb-mission { gap: .6rem; font-weight: 400; color: var(--text-1); }
+.sb-mission b { font-weight: 700; }
+.sb-open { color: var(--accent); font-weight: 700; }
+.sb-explain-note { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1rem; padding: .5rem .75rem; border-radius: .6rem; background: var(--surface-1); color: var(--text-1); font-size: .9375rem; }
+.sb-menu { position: relative; display: flex; align-items: center; gap: 6px; }
+.sb-menu-pop { position: absolute; right: 0; top: calc(100% + 6px); z-index: 40; display: grid; gap: 4px; min-width: 15rem; padding: 8px; border: 1.5px solid var(--line-2); border-radius: .75rem; background: var(--surface-1); box-shadow: var(--shadow); }
+.sb-menu-pop .wc-btn { justify-content: flex-start; min-height: 2.75rem; font-size: .9375rem; }
+.sb-menu .icon-btn { width: 40px; height: 40px; }
+.sb-menu .hud-sound { width: 40px; height: 40px; }
+.state-band .mode-seg { margin: 0; }
+.state-band .mode-seg button { display: inline-flex; align-items: center; gap: 5px; min-height: 2.25rem; font-size: .9375rem; }
+/* U: one line (who, month, mission | this month, your country | switches) */
+@media (min-width: 3200px) {
+  .state-band { grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: 'l1 l2 right'; }
+  .sb-l2 { justify-content: center; flex-wrap: nowrap; }
+}
+@media (max-width: 1599px) {
+  .sb-l1, .sb-l2 { gap: .35rem .9rem; }
+  .sb-grp { gap: .3rem .8rem; }
+  .sb-menu .icon-btn { width: 36px; height: 36px; }
+}
+@media (max-width: 1279px) {
+  .state-band { gap: .3rem .75rem; }
+  .sb-menu .hud-sound, .sb-menu .cost-chip { display: none; }
+}
+/* Phones: one line and "State" (the sheet holds the rest) */
+.state-band.is-phone { display: block; padding: 6px 10px 4px; }
+.state-band.is-phone .sb-line { display: flex; align-items: center; gap: 10px; font-size: 15px; }
+.state-band.is-phone .sb-more { margin-left: auto; min-height: 44px; }
+.sb-sheet { display: grid; gap: 10px; padding: 10px 2px 12px; }
+.sb-sheet-who { margin: 0; color: var(--text-1); }
+.sb-sheet-grid { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+.sb-sheet .sb-mission { justify-content: space-between; min-height: 44px; text-align: left; }
+.sb-menu.is-phone { flex-wrap: wrap; }
+.sb-menu.is-phone .icon-btn { width: 44px; height: 44px; }
+.state-band .mode-seg span { display: inline !important; }

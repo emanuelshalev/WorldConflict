@@ -8,7 +8,7 @@ import { readFileSync } from "node:fs";
 import { buildPages } from "../ui/src/lib/debrief.js";
 import { factTone, fmtValue, isMonthStat, shareFacts, shownDelta, splitMonth } from "../ui/src/lib/numbers.js";
 import { defaultSide } from "../ui/src/lib/sides.js";
-import { missionSummary } from "../ui/src/lib/goals.js";
+import { goalsLine, missionSummary } from "../ui/src/lib/goals.js";
 import { cardData, endScene, kindRank, placeAxisLabels, rankHeadline, rankLines } from "../ui/src/components/reveal/model.js";
 import { countText } from "../ui/src/lib/useCountUp.js";
 import type { RevealPayload, TurnReport, WorldState } from "../ui/src/store/gameStore.js";
@@ -195,8 +195,11 @@ describe("your own view of a country and the mission summary (QA3R-2a, 2e)", () 
     expect(missionSummary([], 3, 48)).not.toMatch(/0 of 0/);
     const bonusOnly = [{ label: "Score 115+", met: false, bonus: true } as never];
     expect(missionSummary(bonusOnly, 0, 48)).toBe("Month 1 of 48");
-    // Every mount point uses the shared summary, none builds its own "of N on track"
-    for (const f of ["ui/src/components/Drawers.tsx", "ui/src/components/desk/GoalLine.tsx"]) {
+    // Every mount point uses the shared summary, none builds its own "of N on track" (the goal
+    // line became the state band's Mission button in iteration 4, D-80)
+    expect(goalsLine([])).toBeNull();
+    expect(goalsLine(bonusOnly)).toBeNull();
+    for (const f of ["ui/src/components/Drawers.tsx", "ui/src/components/StateBand.tsx"]) {
       const src = readFileSync(f, "utf-8");
       expect(src, f).toContain("missionSummary(");
       expect(src, f).not.toMatch(/\{onTrack\} of \{/);

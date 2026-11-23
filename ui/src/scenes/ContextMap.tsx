@@ -57,9 +57,10 @@ function contextFor(world: WorldState, focus: DeskFocus, actions: PendingAction[
   return { home, target: enemy, effect: enemy ? 'war' : 'none', caption: enemy ? `${me} at war with ${countryName(enemy)}` : me };
 }
 
-export function ContextMap({ catalogTarget }: { catalogTarget?: string | null }): JSX.Element | null {
+export function ContextMap({ catalogTarget, focus: subject }: { catalogTarget?: string | null; /** The agenda's subject (design-layout L-7 context column) instead of the store's focus. */ focus?: DeskFocus }): JSX.Element | null {
   const world = useGameStore((s) => s.worldState);
-  const focus = useGameStore((s) => s.focus);
+  const stored = useGameStore((s) => s.focus);
+  const focus = subject ?? stored;
   const actions = useGameStore((s) => s.pendingActions);
   if (!world) return null;
   const ctx = contextFor(world, focus, actions, catalogTarget);

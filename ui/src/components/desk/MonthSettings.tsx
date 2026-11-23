@@ -34,7 +34,7 @@ export function MonthSettings() {
       </label>
       <div className="setting-row">
         <span>
-          <b>Show me around again</b> The three tips of the first month: your move, your advisors, Execute. The desk: what needs you on the left, the item you are on in the middle, what you will do this month on the right.
+          <b>Show me around again</b> The three tips of the first month: your move, your advisors, Execute. The desk: the month's things on the left, the thing you are on in the middle, what will happen on the right.
         </span>
         <button
           type="button"

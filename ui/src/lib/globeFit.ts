@@ -47,11 +47,16 @@ export function gameInsets(el: HTMLElement): Insets {
   const over = (r: DOMRect) => r.width > 0 && r.height > 0 && r.left < c.right && r.right > c.left && r.top < c.bottom && r.bottom > c.top;
   // The HUD and the goal line under it both cover the top of the canvas (QA AC3: the disc's top
   // was drawn under the goal line)
-  for (const sel of ['.hud', '.goal-line']) {
+  for (const sel of ['[data-region="state"]', '[data-region="bar"]']) {
     const r = document.querySelector(sel)?.getBoundingClientRect();
     if (r && over(r) && r.top < c.top + c.height / 2) out.top = Math.max(out.top, r.bottom - c.top);
   }
-  for (const sel of ['.cmd-strip', '.ticker']) {
+  // Map mode panels (design-layout L-14): the camera centres the subject in the gap between them
+  const left = document.querySelector('[data-map-panel="left"] .mapcard')?.getBoundingClientRect();
+  if (left && over(left)) out.left = Math.max(out.left, left.right - c.left);
+  const right = document.querySelector('[data-map-panel="right"]')?.getBoundingClientRect();
+  if (right && over(right)) out.right = Math.max(out.right, c.right - right.left);
+  for (const sel of ['.plan.f-bar', '.ticker']) {
     const r = document.querySelector(sel)?.getBoundingClientRect();
     if (r && over(r) && r.top > c.top + c.height / 2) out.bottom = Math.max(out.bottom, c.bottom - r.top);
   }

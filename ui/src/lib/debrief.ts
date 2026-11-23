@@ -277,7 +277,7 @@ export function buildPages(report: TurnReport, world: WorldState): DebriefPage[]
   const routine = deputyMeetings.filter(([d]) => !d.watch && !(d.facts ?? []).length).length;
   const staffHandled = [
     ...deputyMeetings.filter(([d]) => d.watch || (d.facts ?? []).length).map(([d]) => `${d.speaker ?? d.title}: ${d.choice.replace(/ \(you did not attend\)$/, '')}${d.watch ? `. ${d.watch}` : ''}`),
-    ...(routine ? [`Your staff handled ${routine} routine meeting${routine > 1 ? 's' : ''}`] : []),
+    ...(routine ? [`Your ministers took ${routine} small meeting${routine > 1 ? 's' : ''}`] : []),
   ];
   const inCard = new Set([...byCountry.keys()]);
   const abroad = (report.world ?? []).filter((m) => m.target !== home && !inCard.has(m.actor)).slice(0, 4).map((m) => m.label);
@@ -332,7 +332,7 @@ export function buildPages(report: TurnReport, world: WorldState): DebriefPage[]
   if (highlight) pages.push({ key: 'highlight', title: 'The month', cards: [highlight], footnotes: [] });
   const dipCards = diplomacy.filter((c) => !isHighlight(c));
   const dipFoot = [
-    ...(staffHandled.length ? [{ title: 'Handled by your staff', items: staffHandled }] : []),
+    ...(staffHandled.length ? [{ title: 'Taken by your ministers', items: staffHandled }] : []),
     ...(movers.length ? [{ title: 'Also changed their view of you', items: movers }] : []),
     ...(abroad.length ? [{ title: 'Meanwhile abroad', items: abroad }] : []),
   ];

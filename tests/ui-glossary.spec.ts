@@ -155,22 +155,30 @@ describe("UI glossary", () => {
     expect(TERMS.capital.definition).toContain("◆ 6");
   });
 
-  it("names the Recommended group, one verb Accept, and explains it in one line (RS-005, D-72)", () => {
+  it("names the Recommended group, one verb Choose, and explains it in one line (RS-005, D-72, D-73)", () => {
     expect(TERMS.recommended.name).toBe("Recommended");
-    expect(TERMS.recommended.definition).toBe("Your advisers recommend these for this month. Orders and meetings wait for you to accept; a crisis goes ahead on its recommended answer unless you change it.");
+    expect(TERMS.recommended.definition).toBe("Your advisers recommend these for this month. A recommended order runs only if you choose it; a crisis or meeting you leave goes ahead on its recommended or usual answer.");
     expect(TERMS.staffPick.name).toBe("Recommended by {role}");
-    expect(TERMS.approveAll.name).toBe("Accept all recommended ({n})");
+    // D-73: with the agenda's per-item Choose, the bulk button is "Choose all recommended" and defines itself
+    expect(TERMS.approveAll.name).toBe("Choose all recommended ({n})");
+    expect(TERMS.approveAll.definition).toBe("Chooses the recommended answer for every thing still to do.");
+    expect(TERMS.choose.name).toBe("Choose");
+    expect(TERMS.reviewRecommended.name).toBe("Review {n} recommended");
     // The old phrasing is banned in UI strings and the gameplay guide
     const banned = BANNED.filter((b) => b.term === "staffPick" || b.term === "approveAll").map((b) => b.re);
-    for (const old of ["Approve 4 staff picks", "Staff picks", "Approve all"]) expect(banned.some((re) => re.test(old)), old).toBe(true);
-    for (const ok of ["Accept all recommended (4)", "Review 4 recommended", "Recommended by Foreign Minister"]) expect(banned.some((re) => re.test(ok)), ok).toBe(false);
+    for (const old of ["Approve 4 staff picks", "Staff picks", "Approve all", "Accept all recommended (4)", "Accept order"]) expect(banned.some((re) => re.test(old)), old).toBe(true);
+    for (const ok of ["Choose all recommended (4)", "Review 4 recommended", "Recommended by Foreign Minister"]) expect(banned.some((re) => re.test(ok)), ok).toBe(false);
   });
 
-  it("bans the iteration 3 leftovers: one word Recommended, one verb Accept (QA3-S3-2, D-72, D-73)", () => {
+  it("bans the iteration 3 leftovers: one word Recommended, one verb Choose (QA3-S3-2, D-72, D-73, design-agenda 0.4)", () => {
     const hit = (text: string) => BANNED.some((b) => b.re.test(text));
-    for (const old of ["Cabinet pick", "Accept cabinet pick", "Cabinet pick · good for your mission", "◆ 1 if approved", "On Approve, staff attend 3", "2 staff proposals to approve", "proposals wait for your approval", "Your advisors suggest", "Approve order"])
+    for (const old of ["Cabinet pick", "Accept cabinet pick", "Cabinet pick · good for your mission", "◆ 1 if approved", "On Approve, staff attend 3", "2 staff proposals to approve", "proposals wait for your approval", "Your advisors suggest", "Approve order",
+      // D-73: Accept is gone for recommendations
+      "Accept recommended", "◆ 1 if accepted", "Accepted: Abstain", "Orders and meetings wait for you to accept", "Accept answer",
+      // design-agenda 0.4 / 0.12 WP-A6: the agenda's plain words
+      "Send a deputy", "A deputy goes", "Handled by your staff", "Now: needs you", "Routine meetings (2)", "Proposed orders"])
       expect(hit(old), old).toBe(true);
-    for (const ok of ["Recommended: Abstain", "Accept recommended", "◆ 1 if accepted", "Recommended: staff attend 3", "Orders to consider (5)", "2 of them recommended", "Approval about +4", "Accepted: Abstain"])
+    for (const ok of ["Recommended: Abstain", "Choose", "◆ 1 if chosen", "Recommended: staff attend 3", "Orders to consider (5)", "2 of them recommended", "Approval about +4", "You chose: Abstain", "Skip this call: your Foreign Minister answers", "Small meetings (2)", "Recommended orders (2)", "Accept the reforms"])
       expect(hit(ok), ok).toBe(false);
     expect(TERMS.orderIdeas.name).toBe("Orders to consider");
   });
@@ -199,18 +207,21 @@ describe("UI glossary", () => {
   });
 });
 
-// QA3R-5e (F-02-5, RS-005, D-72): one proposal verb on every mount point. The order card (tile on
-// the desk and map, row in the phone sheet and dossier) accepts a recommended order with the same
-// words as the Recommended group (StaffPicks).
-describe("one verb for a recommended order on every surface (QA3R-5e)", () => {
-  it("OrderCard tile and row use the StaffPicks order verb", () => {
-    const picks = readFileSync("ui/src/components/desk/StaffPicks.tsx", "utf8");
-    const verb = /order:\s*'([^']+)'/.exec(picks)?.[1];
-    expect(verb).toMatch(/^Accept\b/);
+// QA3R-5e (F-02-5, RS-005, D-72, D-73): one verb for a recommended order on every mount point. The
+// order card (tile on the desk and map, row in the phone sheet and dossier) chooses a recommended
+// order with the same verb as the agenda's answer cards (Choose); the Plan's rows only Open.
+describe("one verb for a recommended order on every surface (QA3R-5e, D-73)", () => {
+  it("OrderCard tile and row use the agenda's verb, Choose", () => {
+    const verb = "Choose order";
+    expect(TERMS.choose.name).toBe("Choose");
     const card = readFileSync("ui/src/components/orders/OrderCard.tsx", "utf8");
     const tile = card.slice(card.indexOf("const proposalLine"), card.indexOf("const addLine"));
     expect(tile).toContain(`> ${verb}{`);
     expect(card).toMatch(new RegExp(`add: isProposal \\? '${verb}'`));
-    expect(card).not.toMatch(/\bApprove\b/);
+    expect(card).not.toMatch(/\bApprove\b|\bAccept order\b/);
+    // The Plan's recommendation rows have Open, never their own Accept (D-72 D8)
+    const plan = readFileSync("ui/src/components/desk/Plan.tsx", "utf8");
+    expect(plan).toContain("aria-label={`Open: ${it.title}`}");
+    expect(plan).not.toMatch(/>\s*Accept\b/);
   });
 });

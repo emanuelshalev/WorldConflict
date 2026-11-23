@@ -34,6 +34,16 @@ export function missionSummary(status: ConditionStatus[], turn: number, maxTurns
   return primary.length ? `${onTrack} of ${primary.length} on track · month ${month} of ${maxTurns}` : `Month ${month} of ${maxTurns}`;
 }
 
+/**
+ * The state band's mission words (design-layout section 5): "3 of 5 goals on track", or null when
+ * the session has no primary goals (a Term), never "0 of 0" (QA3R-2e). Same count as missionSummary.
+ */
+export function goalsLine(status: ConditionStatus[]): string | null {
+  const primary = status.filter((c) => !c.bonus);
+  if (!primary.length) return null;
+  return `${primary.filter((c) => stateOf(c) === 'on_track').length} of ${primary.length} goals on track`;
+}
+
 export function stateOf(c: ConditionStatus): ObjectiveState {
   return c.state ?? (c.failed ? 'failed' : c.met ? 'on_track' : 'off_track');
 }

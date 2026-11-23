@@ -688,7 +688,7 @@ function calendarAnswer(ctx: BrainContext): string {
     (m.kind === 'PRESS' && p.approval < 45 ? 2 : 0);
   const pick = [...agenda].sort((a, b) => weight(b) - weight(a)).slice(0, 3);
   const skip = agenda.filter((m) => !pick.includes(m));
-  return `You have time for three. Take ${pick.map((m) => m.speaker).join(', ')}.${skip.length ? ` Send a deputy to ${skip.map((m) => m.speaker).join(' and ')}: a small snub, but survivable.` : ''}`;
+  return `You have time for three. Take ${pick.map((m) => m.speaker).join(', ')}.${skip.length ? ` Let your ministers take ${skip.map((m) => m.speaker).join(' and ')}: a small snub, but survivable.` : ''}`;
 }
 
 function riskAnswer(ctx: BrainContext): string {
