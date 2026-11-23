@@ -7,6 +7,7 @@ import { PersonalityAI } from "../src/agents/fallback.js";
 import { buildAdvice } from "../src/core/advisors.js";
 import { actionCostPC } from "../src/core/costs.js";
 import { impactContext, itemPrices } from "../src/core/missionImpact.js";
+import { isNuclearOperational } from "../src/core/systems/nuclear.js";
 import type { SeededRandom } from "../src/core/seed.js";
 import type {
   Action,
@@ -208,11 +209,22 @@ export function decide(policy: string, decisions: PendingDecision[], rng: Seeded
   // cannot pay is blocked before the press, so it is never chosen
   const ctx = impactContext(world);
   let pc = world.politicalCapital;
+  // A peacetime strike on a nuclear power is an act of war (TurnEngine.actOfWar): a competent
+  // player weighs it like a declaration of war (decision-call-balance.md 5.1 item 4)
+  const me = world.countries.find((c) => c.id === world.playerCountryId);
+  const actOfWar = (o: DecisionOption) =>
+    o.actions.some((a) => {
+      if (a.type !== "MILITARY_AIRSTRIKE" || !a.targetCountryId) return false;
+      if (me?.atWarWith.includes(a.targetCountryId)) return false;
+      const t = world.countries.find((c) => c.id === a.targetCountryId);
+      return t !== undefined && isNuclearOperational(t);
+    });
   return decisions.map((d) => {
     const prices = itemPrices(world, d, ctx);
     const price = (o: DecisionOption) => prices[o.id] ?? 0;
     const value = (o: DecisionOption) =>
-      optionValue(o, key) +
+      optionValue(o, key) -
+      (actOfWar(o) ? 20 : 0) +
       ("kind" in d ? (o.effects.pc ?? 0) * pcWeight : 0) -
       price(o) * ("kind" in d ? pcWeight + 2 : 2);
     const open = d.options.filter((o) => price(o) <= pc);
