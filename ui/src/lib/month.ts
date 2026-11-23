@@ -55,6 +55,11 @@ export function callCrisisIds(s: GameState = useGameStore.getState()): Set<strin
   return new Set((s.advice?.calls ?? []).filter((c) => c.kind === 'crisis').map((c) => c.id));
 }
 
+/** An answer's D-84 price (src/core/costs.ts PUSH_PC), charged by the engine when it is chosen. */
+function answerPrice(s: GameState, itemId: string, optionId: string): number {
+  return s.advice?.prices?.[itemId]?.[optionId] ?? 0;
+}
+
 /** The Chief of Staff's answer to a call crisis, when the player lets them make the calls. */
 function chiefPickFor(s: GameState, d: PendingDecision): DecisionOption | undefined {
   if (!s.chiefCalls || !callCrisisIds(s).has(d.id)) return undefined;
@@ -229,7 +234,8 @@ export function pendingApprovals(): { crises: string[]; orders: number[]; meetin
     if (s.decisionChoices[m.id]) continue;
     const o = meetingSuggestion(m);
     if (!o) continue;
-    const cost = -(o.effects.pc ?? 0);
+    // Its D-84 price too (the engine charges it, the meters count it, lib/budget.ts)
+    const cost = -(o.effects.pc ?? 0) + answerPrice(s, m.id, o.id);
     if (cost > 0 && cost > pc) continue;
     pc -= Math.max(0, cost);
     meetings.push({ id: m.id, optionId: o.id });
@@ -614,7 +620,7 @@ export function staffPickItems(state: GameState = useGameStore.getState()): Staf
       what: `Crisis: ${d.title} · goes ahead unless you change it`,
       change: changeLine(effectWords(o).slice(0, 2).map((w) => w.text)),
       tag: missionTag(state.missionImpact[id]?.[o.id], state.objectiveStatus),
-      cost: Math.max(0, -(o.effects.pc ?? 0)),
+      cost: Math.max(0, -(o.effects.pc ?? 0) + answerPrice(state, id, o.id)),
       fits: true,
       optionId: o.id,
     });
@@ -647,7 +653,7 @@ export function staffPickItems(state: GameState = useGameStore.getState()): Staf
     const m = agenda.find((x) => x.id === p.id);
     const o = m?.options.find((x) => x.id === p.optionId);
     if (!m || !o) continue;
-    const cost = Math.max(0, -(o.effects.pc ?? 0));
+    const cost = Math.max(0, -(o.effects.pc ?? 0) + answerPrice(state, m.id, o.id));
     items.push({
       key: `meeting:${m.id}`,
       kind: 'meeting',
