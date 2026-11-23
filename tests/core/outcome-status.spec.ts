@@ -7,7 +7,11 @@ import { pressQuotes } from "../../src/core/reveal-text.js";
 import { decisionOutcome, orderOutcome } from "../../src/core/status.js";
 import { TurnEngine } from "../../src/core/turn.js";
 import type { Action, WorldState } from "../../src/core/types.js";
+import { CONTROL_SEEDS, playControl } from "../fixtures/control.js";
 import { fixtureWorld } from "../fixtures/reveal/hormuz-usa.js";
+
+const playerAtWar = (w: WorldState, id: string) =>
+  w.countries.find((c) => c.id === w.playerCountryId)?.atWarWith.includes(id) ?? false;
 
 /**
  * F-02-2: one outcome vocabulary. The engine gives every resolved item one status (DONE,
@@ -165,5 +169,36 @@ describe("speaker and stance checks (F-02-8)", () => {
       const s = computeSuggestions(w, 8);
       expect(s.some((x) => x.label === "Court Belarus")).toBe(false);
     }
+  });
+
+  // QA3R-1c (F-02-8 REGRESSED): after the month-5 ceasefire on CO-UKR-MAYA1 Russia's camp came
+  // back as courtable. The stance holds through and after a war, on every control seed: an enemy
+  // is a country we are at war with, a historical rival, or one we hold below -40.
+  it("staff never suggest courting an ally of the enemy, through and after a ceasefire, on the control seeds", () => {
+    const maya = playControl("CO-UKR-MAYA1", "staff");
+    expect(maya.months.some((m) => !playerAtWar(m.after, "RUS"))).toBe(true);
+    const labels = maya.months.flatMap((m) => [
+      ...computeSuggestions(m.before, 8).map((s) => s.label),
+      ...m.advice.staffOrders.map((s) => s.label),
+    ]);
+    expect(labels).not.toContain("Court Belarus");
+    for (const code of CONTROL_SEEDS)
+      for (const m of playControl(code, "staff").months) {
+        const w = m.before;
+        const me = w.countries.find((c) => c.id === w.playerCountryId)!;
+        const rivals = new Set(me.history?.historicalRivals ?? []);
+        const enemy = (id: string) =>
+          me.atWarWith.includes(id) || rivals.has(id) || (me.relations[id] ?? 0) < -40;
+        for (const s of computeSuggestions(w, 8)) {
+          if (s.action.type !== "DIPLOMACY_IMPROVE_RELATIONS")
+            continue;
+          if (/^Mission:/.test(s.why)) continue;
+          const t = w.countries.find((c) => c.id === s.action.targetCountryId)!;
+          expect(
+            t.alliances.filter((a) => a !== me.id && enemy(a)),
+            `${code} m${w.turn + 1} ${s.label}`,
+          ).toEqual([]);
+        }
+      }
   });
 });
