@@ -1,0 +1,7 @@
+inputs in catalogue: 1; using placeholder "Search: spy iran, court china, reform"
+390x844 after typing: deploy-border state available open false; card 358x100; foot none; Add +10 70x44 "Add"; faces 0; hits 8
+390x844 first tap 119,338 on BUTTON.wc-card-hit inRow true: deploy-border state available open true; card 358x314; foot w356; Add +14 70x44 "Add"; faces 0; hits 8
+390x844 second tap 119,334 on BUTTON.wc-card-hit inRow true: deploy-border state available open false; card 358x93; foot none; Add +10 70x44 "Add"; faces 0; hits 8
+390x844 list row spy, tap 119,333 on BUTTON.wc-card-hit inRow true: open true
+390x844 list row spy, tap 119,333 on BUTTON.wc-card-hit inRow true: open false
+page errors: none

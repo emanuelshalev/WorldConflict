@@ -1,0 +1,2 @@
+1440 spy:available 269x300 | declare-war:unaffordable 269x334 | nuclear-strike:invalid 269x273 | court:queued 269x298 | denounce:invalid 269x226 | mobilize:available 269x300
+390 spy:available 358x300 | declare-war:unaffordable 358x321 | nuclear-strike:invalid 358x254 | court:queued 358x298 | denounce:invalid 358x226 | mobilize:available 358x281

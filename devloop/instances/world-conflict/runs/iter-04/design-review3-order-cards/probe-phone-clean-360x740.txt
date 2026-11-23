@@ -1,0 +1,17 @@
+coach at start: none
+360x740 coach=none airstrike-military @0.4 rowTop 296 Add at y 340: list 1765 -> 1748 (40 ms) -> 1748 (face) -> 1699 after Cancel; restored false; page 0
+   Cancel y 548..596 [centre:ok left:ok right:ok top:ok bottom:ok] | Give the order y 548..596 [centre:ok left:ok right:ok top:ok bottom:ok] | bar top 639 | coach none
+   then: face still open 0, order available
+360x740 coach=none airstrike-military @0.7 rowTop 518 Add at y 562: list 1543 -> 1748 (40 ms) -> 1748 (face) -> 1543 after Escape; restored true; page 0
+   Cancel y 548..596 [centre:ok left:ok right:ok top:ok bottom:ok] | Give the order y 548..596 [centre:ok left:ok right:ok top:ok bottom:ok] | bar top 639 | coach none
+   then: face still open 0, order available
+360x740 coach=execute airstrike-military @bottom rowTop 506 Add at y 550: list 1555 -> 1748 (40 ms) -> 1748 (face) -> 1555 after Give; restored true; page 0
+   Cancel y 548..596 [centre:ok left:ok right:ok top:ok bottom:ok] | Give the order y 548..596 [centre:ok left:ok right:ok top:ok bottom:ok] | bar top 639 | coach none
+   then: face still open 0, order queued
+360x740 coach=execute policing-hard @0.4 rowTop 474 Add at y 487: list 3554 -> 3734 (40 ms) -> 3734 (face) -> 3554 after Cancel; restored true; page 0
+   Cancel y 546..594 [centre:ok left:ok right:ok top:ok bottom:ok] | Give the order y 546..594 [centre:COACH left:ok right:COACH top:COACH bottom:COACH] | bar top 639 | coach 176,527..639
+   then: face still open 0, order available
+360x740 coach=execute policing-hard @0.7 rowTop 518 Add at y 531: list 3510 -> 3510 (40 ms) -> 3510 (face) -> 3510 after Escape; restored true; page 0
+   no face
+   then: face still open 0, order available
+THREW locator.boundingBox: Timeout 8000ms exceeded.

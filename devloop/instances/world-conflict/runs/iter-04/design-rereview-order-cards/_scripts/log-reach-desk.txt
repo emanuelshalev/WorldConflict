@@ -1,0 +1,13 @@
+1366x768 airstrike-military pressed with its top at y=346 (45%): Cancel 582..630 inViewport true onTop button; Give 582..630 inViewport true onTop button
+1366x768 airstrike-military pressed with its top at y=538 (70%): Cancel 652..700 inViewport true onTop button; Give 652..700 inViewport true onTop button
+1366x768 airstrike-military pressed with its top at y=653 (85%): Cancel 652..700 inViewport true onTop button; Give 652..700 inViewport true onTop button
+1366x768 policing-hard pressed with its top at y=377 (45%): Cancel 631..679 inViewport true onTop button; Give 631..679 inViewport true onTop button
+1366x768 policing-hard pressed with its top at y=538 (70%): Cancel 650..698 inViewport true onTop button; Give 650..698 inViewport true onTop button
+1366x768 policing-hard pressed with its top at y=653 (85%): Cancel 650..698 inViewport true onTop button; Give 650..698 inViewport true onTop button
+1440x900 airstrike-military pressed with its top at y=405 (45%): Cancel 659..707 inViewport true onTop button; Give 717..765 inViewport true onTop button
+1440x900 airstrike-military pressed with its top at y=630 (70%): Cancel 732..780 inViewport true onTop button; Give 790..838 inViewport true onTop button
+1440x900 airstrike-military pressed with its top at y=765 (85%): Cancel 732..780 inViewport true onTop button; Give 790..838 inViewport true onTop button
+1440x900 policing-hard pressed with its top at y=447 (45%): Cancel 726..774 inViewport true onTop button; Give 784..832 inViewport true onTop button
+1440x900 policing-hard pressed with its top at y=630 (70%): Cancel 726..774 inViewport true onTop button; Give 784..832 inViewport true onTop button
+1440x900 policing-hard pressed with its top at y=765 (85%): Cancel 726..774 inViewport true onTop button; Give 784..832 inViewport true onTop button
+page errors: none
