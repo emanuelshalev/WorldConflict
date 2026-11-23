@@ -58,10 +58,13 @@
    body (it scrolls) gives way instead. */
 @media (min-width: 900px) and (max-height: 820px) {
   .rail:has(.staff-picks.v-rail) { grid-template-rows: auto minmax(56px, 1fr) minmax(0, auto); }
+  /* explicit rows: with the subject map hidden the body and the foot must not slide up a row
+     (design review of stability-iter4: the foot fell into the 56 px row and clipped Execute) */
+  .rail:has(.staff-picks.v-rail) > .rail-body { grid-row: 2; }
+  .rail:has(.staff-picks.v-rail) > .rail-foot { grid-row: 3; }
   .staff-picks.v-rail > .sp-list:has(> :nth-child(2)) { min-height: 172px; }
   /* the subject map steps aside while picks wait (the stage shows the same subject) */
   .rail:has(.staff-picks.v-rail .sp-list > :nth-child(2)) .context-map { display: none; }
-  .rail-foot > .staff-picks.v-rail:has(> .sp-list > :nth-child(2)) { flex-shrink: 0; }
 }
 /* Phone plan sheet: the whole group fits on the screen, so the title, the picks and Approve are seen together */
 .staff-picks.v-sheet .sp-list { max-height: 36vh; }

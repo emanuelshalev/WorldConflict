@@ -42,8 +42,16 @@ async function settle(page: Page, ms = 600, fastForward = true) {
   // Fast-forward 8 s of page time so camera flights and timed transitions finish even when the
   // machine is slow, then stop the clock. The reveal opts out: its first stage auto-advances.
   if (fastForward) await page.clock.runFor(8000);
-  // Pause one page-second ahead (a long jump would fire every pending timer at once)
-  await page.clock.pauseAt(new Date((await page.evaluate(() => Date.now())) + 1000));
+  // Pause one page-second ahead (a long jump would fire every pending timer at once). On a busy
+  // machine the page clock can pass that point before the call lands: try again further ahead.
+  for (const ahead of [1000, 3000, 8000]) {
+    try {
+      await page.clock.pauseAt(new Date((await page.evaluate(() => Date.now())) + ahead));
+      break;
+    } catch (e) {
+      if (ahead === 8000) throw e;
+    }
+  }
   await page.evaluate(() => {
     for (const svg of document.querySelectorAll('svg')) {
       svg.pauseAnimations?.();

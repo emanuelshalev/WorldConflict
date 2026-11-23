@@ -5,7 +5,8 @@
 import { launch } from '../../../../kit/kit.mjs';
 
 const out = process.argv[2] ?? '/tmp/playtest/fix-newcomers';
-const devices = (process.argv[3] ?? 'phone,tablet,laptop').split(',');
+// The guard runner passes the base URL as the next argument: that is not a device list
+const devices = (/^https?:/.test(process.argv[3] ?? '') ? 'phone,tablet,laptop' : (process.argv[3] ?? 'phone,tablet,laptop')).split(',');
 let failed = 0;
 const check = (dev, name, ok, note = '') => {
   if (!ok) failed++;

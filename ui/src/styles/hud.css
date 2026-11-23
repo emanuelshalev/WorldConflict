@@ -52,6 +52,18 @@
   .game-top .hud-menu .hide-phone:not(.hud-sound) { display: none; }
   .game-top .hud-menu .icon-btn:not(.hide-phone) { display: inline-flex; }
 }
+/* Below 1600 the secondary buttons fold into Menu (MENU_FOLD in Hud.tsx); Menu opens them as a
+   panel under the bar, so the bar ends inside the window and every control stays reachable */
+@media (min-width: 601px) and (max-width: 1599px) {
+  .game-top .hud-menu .hide-phone:not(.hud-sound):not(.cost-chip) { display: none; }
+  .hud-phone-menu { display: grid; position: absolute; right: 12px; top: calc(100% + 4px); z-index: 60; grid-template-columns: minmax(0, 1fr); gap: 4px; min-width: 240px; padding: 8px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-1, #0c111d); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55); }
+  .hud-phone-menu .wc-btn { min-height: 40px; justify-content: flex-start; }
+}
+@media (max-width: 600px) {
+  .hud-phone-menu .hud-menu-wide { grid-column: 1 / -1; }
+  /* The name wraps between words rather than being cut now that the Map switch shares the row */
+  .game-top .hud-who b { white-space: normal !important; overflow: visible !important; text-overflow: clip !important; overflow-wrap: normal; line-height: 1.15; }
+}
 
 /* Phone: row 1 who + sound + menu; row 2 Approval, Stability, Political capital and More */
 @media (max-width: 600px) {

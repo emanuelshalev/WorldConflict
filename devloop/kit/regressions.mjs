@@ -250,8 +250,8 @@ const ensure = (d) => (fs.mkdirSync(d, { recursive: true }), d);
 function runVitest(files, out, root) {
   const report = path.join(ensure(out), 'vitest-guards.json');
   fs.rmSync(report, { force: true });
-  const vitest = path.join(root, 'node_modules', '.bin', 'vitest');
-  const r = spawnSync(vitest, ['run', ...files, '--reporter=json', `--outputFile=${report}`], { cwd: root, encoding: 'utf8', maxBuffer: 64 << 20 });
+  const vitest = path.join(root, 'node_modules', 'vitest', 'vitest.mjs'); // the package entry: .bin shims do not spawn on Windows
+  const r = spawnSync(process.execPath, [vitest, 'run', ...files, '--reporter=json', `--outputFile=${report}`], { cwd: root, encoding: 'utf8', maxBuffer: 64 << 20 });
   fs.writeFileSync(path.join(out, 'vitest-guards.log'), `${r.stdout ?? ''}\n${r.stderr ?? ''}`);
   const byFile = new Map();
   if (!fs.existsSync(report)) return { byFile, error: (r.stderr || r.stdout || 'vitest produced no report').slice(-2000) };
@@ -442,8 +442,8 @@ if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
     if (process.argv.includes('--dry')) process.exit(0);
     let failed = false;
     if (suites.length) {
-      const vitest = path.join(root, 'node_modules', '.bin', 'vitest');
-      const r = spawnSync(vitest, ['run', ...suites], { cwd: root, stdio: 'inherit' });
+      const vitest = path.join(root, 'node_modules', 'vitest', 'vitest.mjs'); // the package entry: .bin shims do not spawn on Windows
+      const r = spawnSync(process.execPath, [vitest, 'run', ...suites], { cwd: root, stdio: 'inherit' });
       failed ||= r.status !== 0;
     }
     if (findings.length) {

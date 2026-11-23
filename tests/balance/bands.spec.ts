@@ -58,10 +58,10 @@ function band(check: string, ok: boolean, msg: string, seat?: string) {
 }
 
 beforeAll(async () => {
-  const tsx = path.join(root, "node_modules", ".bin", "tsx");
+  const tsx = path.join(root, "node_modules", "tsx", "dist", "cli.mjs"); // .bin shims do not spawn on Windows
   const outs = await Promise.all(
     RUNS.map((r) =>
-      run(tsx, ["scripts/simulate.ts", ...r.args, "--countries", r.countries.join(","), "--games", String(GAMES), "--policy", POLICIES, "--json", "1"], {
+      run(process.execPath, [tsx, "scripts/simulate.ts", ...r.args, "--countries", r.countries.join(","), "--games", String(GAMES), "--policy", POLICIES, "--json", "1"], {
         cwd: root,
         maxBuffer: 32 << 20,
       }),

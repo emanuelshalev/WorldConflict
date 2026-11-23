@@ -65,7 +65,7 @@ function scanTsx(file: string, out: Hit[]) {
   const code = readFileSync(file, "utf8");
   const lines = code.split("\n");
   const src = ts.createSourceFile(file, code, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
-  const rel = relative(ROOT, file);
+  const rel = relative(ROOT, file).replaceAll("\\", "/");
   const okLine = (node: ts.Node) => {
     const { line } = src.getLineAndCharacterOfPosition(node.getStart(src));
     return /\/\/\s*glossary-ok\s*$/.test(lines[line] ?? "");
