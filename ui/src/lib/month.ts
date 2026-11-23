@@ -360,12 +360,13 @@ export interface MissionTag {
   more: number;
 }
 
-/** A goal's name in a tag: its numbers in brackets when short ("stability 78%+"), else the short label. */
+/**
+ * A goal's name in a tag, a goal list or a consequence line: the words the mission line uses (its
+ * short label, "Voters stay on side"), never the raw threshold in its brackets ("approval 56%+"),
+ * which reads as a number without a goal. The numbers stay one press away on the mission.
+ */
 export function goalName(c: Pick<ConditionStatus, 'label' | 'short'> | undefined, fallback = ''): string {
   if (!c) return fallback;
-  const inner = /\(([^)]+)\)/.exec(c.label)?.[1];
-  // "stability 78%+", "US relations 70+"; a bare "relations 40+" does not say whose, so the label wins
-  if (inner && inner.length <= 26 && /\d/.test(inner) && !/^relations\b/i.test(inner)) return inner;
   return c.short ?? c.label.replace(/\s*[(:].*$/, '');
 }
 
