@@ -229,7 +229,7 @@ export function AdvisorList({ compact = false, max = 3 }: { compact?: boolean; m
           <span>
             {TERMS.orderIdeas.name} <span className="num">({rows.length})</span>
           </span>
-          <span className="num">{orderIdeasNote(rows, shown.length)}</span>
+          <span className="num">{orderIdeasNote(rows, shown)}</span>
         </h3>
       )}
       {!compact && <CoachBubble step="advisors" place="above" />}
