@@ -11,7 +11,7 @@
 //   init --iteration N --stage S [--since ISO]  create the state file (once, when adopting the controller)
 //   start <Stage>                           enter a stage (same rules as advance --to)
 //   advance [--to Stage]                    move to the next legal stage; refuses when a precondition fails
-//   record <gate> --result pass|fail [--commit <sha>] [--evidence <path>] [--note "..."]
+//   record <gate> --result pass|fail [--commit <sha>] [--evidence <path>] [--note "..."] [--verdict v]
 //                                           record a gate result on a commit (and its code tree)
 //   check <action> [--commit <sha>] [--tree <tree-ish>]
 //                                           exit 0 when every rule for the action holds, else 1 with reasons
@@ -35,7 +35,8 @@
 //   "gates": ["verify", "qa", "triage", "status-refresh"],
 //   "rules": { "<id>": { "on": "enter:Use" | ["publish", ...], "gate": "qa",
 //                        "match": "code" | "commit" | "iteration" | "stage" | "after-merge" | "owed",
-//                        "minTier": "T3", "why": "..." } },          // "on" may end in ":*" (every enter:)
+//                        "minTier": "T3", "accept": ["pass"], "why": "..." } },  // "on" may end in ":*" (every enter:);
+//                                                          // "accept": the results that satisfy the rule (default pass)
 //   "owes": { "merge": "T1", "publish": "T1", "exit:Use": "T2" },   // status refreshes owed by events
 //   "statusProtocol": "../status-protocol.json",                    // for merge/publish auto refresh
 //   "code": { "include": ["src/**", ...], "exclude": ["**/*.md"] },  // what counts as code for "code" matches
@@ -54,7 +55,8 @@
 // last merge into the shared branch (none needed when nothing was merged); "owed" that no status
 // refresh is owed (owed by the events in "owes", cleared by `record status-refresh --tier T` of that
 // tier or higher, which kit/status-refresh.mjs writes). The latest record wins: a fail after a pass
-// on the same code blocks again.
+// on the same code blocks again. The `quality` gate is recorded by kit/evaluate.mjs --record (pass
+// when the scorecard says the release gate is met; the record carries the verdict and reasons).
 import { spawnSync } from 'node:child_process';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
@@ -303,8 +305,8 @@ export function evaluate(ctx, action, opts = {}, state = readState(ctx)) {
       what = `after the merge of ${last.branch} at ${last.t}`;
     } else throw new Error(`rule ${id}: unknown match ${match}`);
     const latest = pool.sort((a, b) => Date.parse(a.t) - Date.parse(b.t)).at(-1);
-    let ok = latest?.result === 'pass';
-    let detail = latest ? `${rule.gate} ${latest.result} on ${what} at ${latest.t}` : `no ${rule.gate} record on ${what}`;
+    let ok = latest != null && asList(rule.accept ?? 'pass').includes(latest.result);
+    let detail = latest ? `${rule.gate} ${latest.result}${latest.verdict ? ` (${latest.verdict})` : ''} on ${what} at ${latest.t}` : `no ${rule.gate} record on ${what}`;
     let overridden = null;
     if (!ok) {
       overridden = activeOverride(ctx, state, id);
@@ -563,7 +565,8 @@ export function main(argv, cwd = process.cwd()) {
       return 0;
     }
     case 'record': {
-      const rec = record(ctx, { gate: pos[1], result: opt.result, commit: opt.commit ?? 'HEAD', evidence: opt.evidence, note: opt.note, extra: opt.tier ? { tier: opt.tier } : undefined });
+      const extra = { ...(opt.tier ? { tier: opt.tier } : {}), ...(opt.verdict ? { verdict: opt.verdict } : {}) };
+      const rec = record(ctx, { gate: pos[1], result: opt.result, commit: opt.commit ?? 'HEAD', evidence: opt.evidence, note: opt.note, extra: Object.keys(extra).length ? extra : undefined });
       console.log(`recorded ${rec.gate} ${rec.result} on ${rec.commit.slice(0, 9)} (code tree ${rec.codeTree})`);
       return 0;
     }

@@ -41,7 +41,8 @@
     "verify",
     "qa",
     "triage",
-    "status-refresh"
+    "status-refresh",
+    "quality"
   ],
   "rules": {
     "verify-before-use": {
@@ -78,6 +79,13 @@
       "on": "enter:*",
       "match": "owed",
       "why": "Refresh the status page after merges and customer rounds"
+    },
+    "quality-gate": {
+      "on": "enter:Gate",
+      "gate": "quality",
+      "match": "code",
+      "accept": ["pass"],
+      "why": "The release gate is decided from the quality scorecard (kit/evaluate.mjs --record): gate met, or an override with a reason"
     },
     "t3-before-plan": {
       "on": "enter:Plan",
