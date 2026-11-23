@@ -1,0 +1,9 @@
+390x844 undefined: "MILITARY" face 358x265; buttons start 200 px below the face top, row 48 px; [Keep the peace] [Declare war]; 9 text lines; scrolls inside itself: no; class ord-confirm kind-war
+390x844 undefined: "NUCLEAR" face 358x263; buttons start 198 px below the face top, row 48 px; [Stand down] [Hold to authorize
+Press and hold for about one second to authorize.]; 9 text lines; scrolls inside itself: no; class ord-confirm kind-nuclear
+390x844 undefined: "MILITARY" face 358x257; buttons start 192 px below the face top, row 48 px; [Cancel] [Give the order]; 6 text lines; scrolls inside itself: no; class ord-confirm kind-mission
+360x740 undefined: "MILITARY" face 328x265; buttons start 200 px below the face top, row 48 px; [Keep the peace] [Declare war]; 9 text lines; scrolls inside itself: no; class ord-confirm kind-war
+360x740 undefined: "NUCLEAR" face 328x263; buttons start 198 px below the face top, row 48 px; [Stand down] [Hold to authorize
+Press and hold for about one second to authorize.]; 9 text lines; scrolls inside itself: no; class ord-confirm kind-nuclear
+360x740 undefined: "MILITARY" face 328x257; buttons start 192 px below the face top, row 48 px; [Cancel] [Give the order]; 6 text lines; scrolls inside itself: no; class ord-confirm kind-mission
+page errors: none

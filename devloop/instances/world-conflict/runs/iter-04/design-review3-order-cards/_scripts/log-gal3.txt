@@ -1,0 +1,10 @@
+1440x900 load 1: page scroll 0, page height 7839, cards 55, faces open 3, layout hash 0fbb80619a
+1440x900 load 2: page scroll 0, page height 7839, cards 55, faces open 3, layout hash 0fbb80619a
+1440x900 load 3: page scroll 0, page height 7839, cards 55, faces open 3, layout hash 0fbb80619a
+1440x900: three loads identical true
+1440x900 page errors: none
+phone load 1: page scroll 0, page height 11890, cards 55, faces open 3, layout hash 5677c13105
+phone load 2: page scroll 0, page height 11890, cards 55, faces open 3, layout hash 5677c13105
+phone load 3: page scroll 0, page height 11890, cards 55, faces open 3, layout hash 5677c13105
+phone: three loads identical true
+phone page errors: none

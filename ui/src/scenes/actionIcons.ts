@@ -62,20 +62,22 @@ export const ACTION_ICON: Record<string, Icon> = {
   DOMESTIC_POLICING: IconHandStop,
 };
 
-export function actionFamily(type: string | undefined): 'diplo' | 'mil' | 'nuke' | 'intel' | 'home' {
+export function actionFamily(type: string | undefined): 'diplo' | 'mil' | 'nuke' | 'intel' | 'econ' | 'home' {
   if (!type) return 'home';
   if (type.startsWith('DIPLOMACY')) return type === 'DIPLOMACY_DECLARE_WAR' ? 'mil' : 'diplo';
   if (type.startsWith('NUCLEAR')) return 'nuke';
+  if (type === 'DOMESTIC_REFORM') return 'econ';
   if (type.startsWith('MILITARY') || type.startsWith('ECONOMY')) return 'mil';
   if (type.startsWith('INTEL')) return 'intel';
   return 'home';
 }
 
+/** The family accents (design-order-cards.md section 4); the CSS tokens `--fam-*` in orders.css match. */
 export const FAMILY_COLOR = {
-  diplo: '#4c8dff',
-  mil: '#ff5a4f',
+  diplo: '#4691ff',
+  mil: '#ff7d4f',
   nuke: '#f5d547',
-  intel: '#36c5f0',
-  home: '#b48cff',
+  intel: '#f48fd2',
+  econ: '#1fbf95',
+  home: '#f1ede4',
 } as const;
-

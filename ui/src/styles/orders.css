@@ -5,40 +5,171 @@
    confirming (red face). Kept out of wc.css so its owner stays conflict-free.
    ========================================================================= */
 :root {
-  --fam-diplo: #4c8dff;
-  --fam-mil: #ff5a4f;
+  /* Order families (design-order-cards.md section 4, D-66): accent = edge, plate, band tint;
+     ink = family words on dark; chip = family chip fill. tests/ui-order-families.spec.ts checks
+     the WCAG contrast of every pair. */
+  --plate-ink: #0c1322;
+  --fam-diplo: #4691ff;
+  --fam-diplo-ink: #8cbbff;
+  --fam-diplo-chip: #243858;
+  --fam-mil: #ff7d4f;
+  --fam-mil-ink: #ffae92;
+  --fam-mil-chip: #41353c;
   --fam-nuke: #f5d547;
-  --fam-intel: #36c5f0;
-  --fam-home: #b48cff;
+  --fam-nuke-ink: #f9e58d;
+  --fam-nuke-chip: #40433a;
+  --fam-intel: #f48fd2;
+  --fam-intel-ink: #f8bae3;
+  --fam-intel-chip: #3f3851;
+  --fam-econ: #1fbf95;
+  --fam-econ-ink: #74d7bd;
+  --fam-econ-chip: #1d3f47;
+  --fam-home: #f1ede4;
+  --fam-home-ink: #f6f4ee;
+  --fam-home-chip: #3f4754;
+  /* The lighter order card paper (was #1f2939 / #161d2a), scoped to order cards */
+  --ord-card-top: #273349;
+  --ord-card-bot: #1b2435;
+  --ord-card-line: #45546b;
+  --ord-plate-off: #c7ced9;
   --ord-amber: rgba(242, 169, 59, 0.6);
   --ord-green: rgba(86, 197, 150, 0.75);
 }
 
-.ord-wrap {
+.ord-wrap,
+.ord-confirm {
   position: relative;
   min-width: 0;
+  --card-top: var(--ord-card-top);
+  --card-bot: var(--ord-card-bot);
+  --card-line: var(--ord-card-line);
 }
-.ord-wrap.fam-diplo { --fam: var(--fam-diplo); }
-.ord-wrap.fam-mil { --fam: var(--fam-mil); }
-.ord-wrap.fam-nuke { --fam: var(--fam-nuke); }
-.ord-wrap.fam-intel { --fam: var(--fam-intel); }
-.ord-wrap.fam-home { --fam: var(--fam-home); }
+.fam-diplo { --fam: var(--fam-diplo); --fam-ink: var(--fam-diplo-ink); --fam-chip: var(--fam-diplo-chip); }
+.fam-mil { --fam: var(--fam-mil); --fam-ink: var(--fam-mil-ink); --fam-chip: var(--fam-mil-chip); }
+.fam-nuke { --fam: var(--fam-nuke); --fam-ink: var(--fam-nuke-ink); --fam-chip: var(--fam-nuke-chip); }
+.fam-intel { --fam: var(--fam-intel); --fam-ink: var(--fam-intel-ink); --fam-chip: var(--fam-intel-chip); }
+.fam-econ { --fam: var(--fam-econ); --fam-ink: var(--fam-econ-ink); --fam-chip: var(--fam-econ-chip); }
+.fam-home { --fam: var(--fam-home); --fam-ink: var(--fam-home-ink); --fam-chip: var(--fam-home-chip); }
+
+/* ---------- Pictogram plate, family chip, family band ---------- */
+.ord-pict { display: block; flex: none; }
+.ord-plate {
+  --plate: 52px;
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--plate);
+  height: var(--plate);
+  border-radius: calc(var(--plate) * 0.27);
+  background: var(--fam);
+  color: var(--plate-ink);
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.22), 0 0 0 3px var(--card-top), 0 6px 14px rgba(0, 0, 0, 0.35);
+}
+.ord-plate.fam-nuke { background: repeating-linear-gradient(-45deg, var(--fam) 0 7px, #e8c62f 7px 14px); }
+.ord-plate-check {
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--good);
+  color: #06180f;
+  box-shadow: 0 0 0 2px var(--card-top);
+}
+.ord-famchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 22px;
+  padding: 0 9px 0 7px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--fam) 60%, transparent);
+  background: var(--fam-chip);
+  color: var(--fam-ink);
+  font: 750 11.5px/1 var(--font-ui);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.ord-famchip i { width: 8px; height: 8px; border-radius: 2px; background: var(--fam); transform: rotate(45deg); }
+.ord-famchip.fam-nuke i { background: repeating-linear-gradient(-45deg, var(--fam) 0 2px, #222 2px 4px); }
+.ord-famband {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: radial-gradient(120% 140% at 85% 0%, color-mix(in srgb, var(--fam) 55%, #0b1220) 0%, color-mix(in srgb, var(--fam) 18%, #0b1220) 55%, #0b1220 100%);
+}
+.ord-famband::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.18;
+  background-image: repeating-linear-gradient(90deg, var(--fam) 0 1px, transparent 1px 14px), repeating-linear-gradient(0deg, var(--fam) 0 1px, transparent 1px 14px);
+}
+.ord-famband-wm { position: absolute; right: -6px; top: -8px; color: var(--fam); opacity: 0.35; transform: rotate(-8deg); }
+.ord-bandchip { position: absolute; left: 12px; top: 7px; z-index: 1; }
+.ord-bandchip .ord-famchip { min-height: 20px; font-size: 10.5px; background: rgba(7, 9, 15, 0.78); }
 
 /* ---------- Tile ---------- */
+/* 84 px band (was 104, 62 before the order cards): the plate overlaps it by 44 px, so the tile is
+   back near its earlier height without losing the lit band (DR-OC-3) */
 .ord-tile > .wc-card {
-  --card-art-h: 62px;
+  --card-art-h: 84px;
   height: 100%;
   grid-template-rows: var(--card-art-h) 1fr;
-  /* family stripe on the left edge */
-  border-left: 3px solid var(--fam, var(--line-2));
+  /* the top 38% of the paper takes 9% of the family accent */
+  background: linear-gradient(180deg, color-mix(in srgb, var(--fam) 9%, var(--card-top)) 0%, var(--card-top) 38%, var(--card-bot) 100%);
 }
-.ord-tile.ord-compact > .wc-card { --card-art-h: 40px; }
-.ord-tile > .wc-card .wc-card-body { gap: 8px; padding: 10px 12px 12px; }
-.ord-tile > .wc-card .wc-card-title { font-size: 17px; }
+/* The 6 px family edge (Nuclear: hazard stripes) */
+.ord-wrap > .wc-card::before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  top: -1px;
+  bottom: -1px;
+  width: 6px;
+  z-index: 3;
+  border-radius: var(--card-radius, 14px) 0 0 var(--card-radius, 14px);
+  background: var(--fam, var(--line-2));
+  pointer-events: none;
+}
+.ord-wrap.fam-nuke > .wc-card::before { background: repeating-linear-gradient(-45deg, var(--fam) 0 6px, #1a1a1a 6px 12px); }
+.ord-wrap > .wc-card .wc-card-art .scene { filter: saturate(1.08) brightness(1.08); }
+.ord-tile > .wc-card .wc-card-art::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(200deg, transparent 35%, color-mix(in srgb, var(--fam) 38%, transparent) 100%), linear-gradient(0deg, rgba(7, 9, 15, 0.55), transparent 55%);
+}
+.ord-tile.ord-compact > .wc-card .wc-card-art::after { background: linear-gradient(0deg, rgba(7, 9, 15, 0.45), transparent 60%); }
+.ord-tile.ord-compact > .wc-card { --card-art-h: 54px; }
+.ord-tile > .wc-card .wc-card-body { gap: 8px; padding: 10px 12px 12px 16px; position: relative; }
+.ord-tile > .wc-card .wc-card-lead {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  min-width: 0;
+  margin-top: -44px;
+}
+.ord-tile > .wc-card .wc-card-lead .ord-famchip { margin-bottom: 4px; }
+.ord-tile.ord-compact > .wc-card .wc-card-lead { margin-top: -30px; }
+.ord-tile > .wc-card .wc-card-title { font-size: 17px; font-weight: 700; }
 .ord-tile.ord-compact > .wc-card .wc-card-title { font-size: 15px; }
-.ord-tile.ord-compact > .wc-card .wc-card-body { gap: 6px; padding: 8px 10px 10px; }
+.ord-tile.ord-compact > .wc-card .wc-card-body { gap: 6px; padding: 8px 10px 10px 14px; }
 .ord-tile > .wc-card .wc-card-desc { font-size: 14px; }
-.ord-tile .wc-card-stamp { top: calc(var(--card-art-h) - 30px); right: 10px; }
+/* The ORDERED stamp sits in the band, clear of the plate, the family chip and the cost seals
+   (spec 9.3: nothing covers the cost seals): left of the seal column on a tile, under it on a
+   compact tile, where the band chip holds the top left */
+.ord-tile .wc-card-stamp { top: 8px; right: 74px; }
+.ord-tile.ord-compact .wc-card-stamp { top: 40px; right: 8px; }
+.ord-compact .ord-queued-line { flex-wrap: wrap; }
 .ord-tile.ord-compact .wc-stamp-md { font-size: 12px; padding: 4px 6px; border-width: 2px; outline: none; }
 
 /* Anything clickable inside a card sits above the card's press target */
@@ -200,48 +331,73 @@
 }
 
 /* ---------- States ---------- */
-.ord-wrap > .wc-card.is-playable:hover { border-left-color: var(--fam); }
+.ord-wrap > .wc-card.is-playable:hover { border-color: color-mix(in srgb, var(--fam) 70%, transparent); }
 .ord-wrap.is-busy > .wc-card { opacity: 0.75; cursor: progress; }
 .ord-wrap.is-selected > .wc-card { box-shadow: var(--card-shadow), 0 0 0 2px var(--accent); }
 
 /* Unaffordable: amber edge, the art desaturated, the words at full contrast */
-.ord-wrap.st-unaffordable > .wc-card { border-color: var(--ord-amber); border-left-color: var(--accent); }
+.ord-wrap.st-unaffordable > .wc-card { border-color: rgba(242, 169, 59, 0.7); }
+.ord-wrap.st-unaffordable .ord-plate { filter: saturate(0.6); }
+.ord-wrap.st-unaffordable > .wc-card .wc-card-art .scene { filter: saturate(0.5) brightness(0.8); }
 .ord-wrap.st-unaffordable > .wc-card .wc-card-body { filter: none; }
 .ord-wrap.st-unaffordable > .wc-card .wc-card-title { color: var(--text-1); }
 
 /* Invalid: flat, dashed, greyscale art; text never below 4.5:1 */
 .ord-wrap.st-invalid > .wc-card {
-  background: var(--surface-1);
+  background: linear-gradient(180deg, #1f2838, #181f2c);
   border: 1px dashed var(--line-2);
-  border-left: 3px dashed var(--line-2);
   box-shadow: none;
 }
+.ord-wrap.st-invalid > .wc-card::before { background: repeating-linear-gradient(180deg, var(--fam) 0 6px, transparent 6px 11px); opacity: 0.7; }
+/* The neutral plate keeps the pictogram dark and readable (11.71:1) */
+.ord-wrap.st-invalid .ord-plate { background: var(--ord-plate-off); }
+/* "Pick a country first" is not a rule against the order: the plate keeps its family colour,
+   so the catalog before a target is picked still reads by family at a glance */
+.ord-wrap.st-invalid[data-order-code='NEEDS_TARGET'] .ord-plate { background: var(--fam); }
+.ord-wrap.st-invalid[data-order-code='NEEDS_TARGET'] .ord-plate.fam-nuke { background: repeating-linear-gradient(-45deg, var(--fam) 0 7px, #e8c62f 7px 14px); }
 .ord-wrap.st-invalid > .wc-card .wc-card-body { filter: none; }
 .ord-wrap.st-invalid > .wc-card .wc-card-art { filter: grayscale(1); opacity: 0.7; }
+.ord-wrap.st-invalid > .wc-card .wc-card-art .scene { filter: grayscale(1) brightness(0.6); }
 .ord-wrap.st-invalid > .wc-card .wc-card-title { color: var(--text-2); }
 
 /* Queued: green edge and wash, the ORDERED stamp */
 .ord-wrap.st-queued > .wc-card.wc-card {
-  border-color: var(--ord-green);
-  border-left-color: var(--good);
+  border: 2px solid rgba(86, 197, 150, 0.85);
   background: linear-gradient(rgba(86, 197, 150, 0.12), rgba(86, 197, 150, 0.04)), linear-gradient(var(--card-top), var(--card-bot));
 }
+.ord-wrap.is-proposal > .wc-card.wc-card { border: 2px dashed rgba(242, 169, 59, 0.85); }
 .ord-wrap.st-queued > .wc-card .wc-stamp { --stamp-ink: var(--ink-good); }
 
 /* ---------- Row: phone sheet, search hits, staff picks, dossier ---------- */
 .ord-row > .wc-card.wc-card-row {
-  grid-template-columns: 64px minmax(0, 1fr);
-  min-height: 68px;
-  border-left: 3px solid var(--fam, var(--line-2));
+  grid-template-columns: 72px minmax(0, 1fr);
+  min-height: 76px;
   border-radius: 12px;
+  /* the family tints the left third of the row */
+  background: linear-gradient(90deg, color-mix(in srgb, var(--fam) 12%, var(--card-top)) 0%, var(--card-top) 30%, var(--card-bot) 100%);
 }
-.ord-row > .wc-card .wc-card-art { min-height: 64px; }
-.ord-row > .wc-card .wc-card-body { padding: 10px 104px 10px 12px; gap: 3px; align-content: center; }
-.ord-row > .wc-card .wc-card-title { font-size: 16px; }
-.ord-row > .wc-card .wc-card-cost { left: 4px; bottom: 4px; }
-.ord-row > .wc-card .wc-cost { min-height: 24px; padding: 2px 3px; }
-.ord-row > .wc-card .wc-card-stamp { left: 4px; top: 20px; }
+.ord-row > .wc-card::before { border-radius: 12px 0 0 12px; }
+.ord-row > .wc-card .wc-card-art {
+  min-height: 72px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 0 6px 6px;
+  background: none;
+  overflow: visible;
+}
+.ord-row > .wc-card .wc-card-art .ord-plate { box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.22); }
+.ord-row > .wc-card .wc-card-body { padding: 10px 104px 10px 10px; gap: 3px; align-content: center; }
+.ord-row > .wc-card .wc-card-title { font-size: 16px; font-weight: 700; }
+.ord-row > .wc-card .wc-card-cost { position: relative; inset: auto; margin-top: -8px; z-index: 1; }
+.ord-row > .wc-card .wc-cost { min-height: 22px; padding: 2px 4px; }
+.ord-row > .wc-card .wc-cost-free { padding: 2px 8px; font-size: 12px; }
+.ord-row > .wc-card .wc-card-stamp { left: auto; right: 12px; top: auto; bottom: -9px; }
 .ord-row > .wc-card .wc-stamp-sm { font-size: 11px; padding: 2px 4px; }
+.ord-row .ord-famchip { justify-self: start; }
+/* The plate keeps its family colour when unavailable (state is never shown on the plate's hue) */
+.ord-wrap > .wc-card.is-unavailable .wc-card-art { filter: none; }
 .ord-meta { display: grid; gap: 2px; font-size: 13px; line-height: 1.35; color: var(--text-2); }
 .ord-meta-line { font-family: var(--font-mono); color: var(--text-1); }
 .ord-meta-blurb { color: var(--text-2); display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
@@ -268,7 +424,7 @@
 .ord-act.act-queued { border-color: var(--ord-green); color: var(--good); }
 .ord-act.act-unaffordable { border-color: var(--ord-amber); color: var(--accent); }
 .ord-act.act-invalid { border-style: dashed; color: var(--text-2); }
-.ord-row.st-invalid > .wc-card { border-left-style: dashed; }
+.ord-row.st-invalid > .wc-card { background: #1d2534; }
 /* "Approve order" is wider than the other row actions: keep the text clear of it (QA S2-1) */
 .ord-row.is-proposal > .wc-card .wc-card-body { padding-right: 150px; }
 @media (max-width: 480px) {
@@ -277,7 +433,8 @@
 }
 
 /* ---------- Slot: the rail tray ---------- */
-.ord-slot > .wc-card { padding-right: 52px; }
+.ord-slot > .wc-card { padding-right: 52px; padding-left: 12px; }
+.ord-slot > .wc-card .wc-card-art { display: grid; place-items: center; background: none; overflow: visible; }
 .ord-slot > .wc-card .wc-card-body .wc-card-desc { display: none; }
 .ord-slot-tag { font-size: 13px; color: var(--text-2); }
 .ord-slot-remove {
@@ -323,7 +480,19 @@
   from { transform: perspective(700px) rotateY(-90deg); opacity: 0.4; }
   to { transform: perspective(700px) rotateY(0); opacity: 1; }
 }
-.ord-confirm-q { margin: 0; font-size: 19px; line-height: 1.2; font-weight: 750; }
+.ord-confirm-q { margin: 0; font-size: 19px; line-height: 1.2; font-weight: 750; overflow-wrap: anywhere; }
+/* Plate and family chip lead the question's line: the order's title is said once (DR-OC-1) */
+.ord-confirm-head { display: flex; align-items: flex-start; gap: 12px; min-width: 0; }
+.ord-confirm-id { display: grid; gap: 5px; min-width: 0; }
+.ord-confirm-head .ord-confirm-q { font-size: 17px; }
+.ord-confirm-chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.ord-confirm-title { font-size: 14px; font-weight: 650; color: #ffd0d0; overflow-wrap: anywhere; }
+.kind-mission .ord-confirm-title { color: #ffe2a0; }
+/* Confirming: a red plate with the order's pictogram (Nuclear keeps its hazard stripes) */
+.ord-plate.is-confirm { box-shadow: 0 0 0 3px #3a1517, 0 0 0 5px rgba(229, 56, 59, 0.5); }
+.kind-war .ord-plate.is-confirm:not(.fam-nuke),
+.kind-danger .ord-plate.is-confirm:not(.fam-nuke) { background: #ff6b6d; }
+.kind-mission .ord-plate.is-confirm { box-shadow: 0 0 0 3px #33270e, 0 0 0 5px rgba(245, 194, 75, 0.5); }
 .ord-confirm-sub { margin: 0; font-size: 14px; color: #f3c9c9; }
 .ord-confirm-mission {
   margin: 0;
@@ -336,12 +505,17 @@
   font-weight: 600;
 }
 .ord-confirm-lines { margin: 0; padding-left: 18px; display: grid; gap: 3px; font-size: 14px; line-height: 1.35; }
-.ord-confirm-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
+/* Side by side when both labels fit on one line, else stacked full width: a label never wraps or
+   runs past its button (DR-OC-1) */
+.ord-confirm-btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
 .ord-confirm-safe,
 .ord-confirm-go {
   position: relative;
+  flex: 1 1 auto;
+  min-width: 44px;
   min-height: 48px;
-  padding: 0 12px;
+  padding: 0 14px;
+  white-space: nowrap;
   border-radius: 10px;
   font: 750 15px var(--font-ui);
   cursor: pointer;
@@ -399,6 +573,49 @@
 .ord-cat { margin-bottom: 18px; }
 .ord-cat .nav-head { margin-bottom: 8px; }
 .ord-cat-target { color: var(--text-2); text-transform: none; letter-spacing: 0; }
+/* The group heading is the family word, marked with the family's diamond like the chip */
+.ord-cat .ord-cat-head { align-items: center; justify-content: flex-start; gap: 8px; padding-left: 0; }
+.ord-cat-mark { flex: none; width: 9px; height: 9px; border-radius: 2px; background: var(--fam); transform: rotate(45deg); }
+.ord-cat.fam-nuke .ord-cat-mark { background: repeating-linear-gradient(-45deg, var(--fam) 0 2px, #222 2px 4px); }
+/* Phone catalogue rows (DR-OC-3): two lines a row, the title, then the family chip with the cost
+   and odds beside it; the blurb waits for the forecast (a tap), as in the map sheet, and "Pick a
+   country first." is said once above the groups, not on every targeted row (their button says Pick) */
+.ord-cat-hint { margin: 0 0 4px; font-size: 14px; color: var(--text-1); }
+/* No browser scroll anchoring inside the catalogue: when a row turns into its confirmation near the
+   top of the list, Chrome re-anchored and moved the list (66 px at 360x740) and again on Cancel; the
+   face alone decides whether the list moves, and puts back only what it moved (S4). The stage that
+   scrolls the catalogue too: at the end of the list Chrome anchored on the pager below it and
+   pushed the face's question off the top */
+.ord-catalog,
+.desk-stage:has(.ord-catalog) { overflow-anchor: none; }
+.ord-cat-rows { gap: 6px; }
+.ord-catalog .ord-cat:has(.ord-cat-rows) { margin-bottom: 12px; }
+.ord-catalog .ord-cat:has(.ord-cat-rows) .nav-head { padding-top: 4px; padding-bottom: 2px; margin-bottom: 6px; }
+.ord-cat-rows .ord-famchip { min-height: 20px; }
+.ord-cat-rows .ord-row > .wc-card.wc-card-row { min-height: 64px; }
+.ord-cat-rows .ord-row > .wc-card .wc-card-art { min-height: 60px; padding-top: 4px; padding-bottom: 4px; }
+.ord-cat-rows .ord-row > .wc-card .wc-card-body { padding-top: 6px; padding-bottom: 6px; padding-right: 92px; gap: 2px; }
+.ord-cat-rows .ord-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; }
+.ord-cat-rows .ord-meta > * { min-width: 0; }
+.ord-cat-rows .ord-meta-blurb,
+.ord-cat-rows .ord-wrap[data-order-code='NEEDS_TARGET'] .ord-meta-why { display: none; }
+/* Add sits level with the title (10 px is the middle of a two-line row), so it stays put when the
+   row opens its forecast (S3) */
+.ord-cat-rows .ord-act { top: 10px; min-width: 70px; }
+/* The forecast cue shares the chip's line (the row itself is the 44 px target), the cost and odds
+   wrap below: no extra height (C2) */
+.ord-cat-rows .ord-meta .ord-famchip { order: 0; }
+.ord-cat-rows .ord-meta-fc { order: 1; display: inline-flex; align-items: center; gap: 2px; font-size: 13px; color: var(--text-2); text-decoration: underline; text-underline-offset: 3px; }
+.ord-cat-rows .ord-meta > :not(.ord-famchip):not(.ord-meta-fc) { order: 2; }
+.ord-cat-rows .ord-expand { margin-top: 6px; display: grid; gap: 6px; }
+/* An opened row (S3): the blurb and forecast run the card's full width under the title line, not
+   in the column beside Add; the plate keeps to the title line */
+.wc-card-row .wc-card-foot { grid-row: 3; grid-column: 1 / -1; min-width: 0; }
+.ord-row > .wc-card .wc-card-foot { padding: 0 12px 12px; }
+.ord-row > .wc-card .wc-card-foot .ord-expand { margin-top: 0; }
+.ord-cat-rows .ord-wrap.is-open > .wc-card .wc-card-art { justify-content: flex-start; }
+.ord-expand-blurb { margin: 0; font-size: 14px; line-height: 1.35; color: var(--text-1); }
+.ord-cat-rows .ord-row.is-proposal > .ord-act { transform: none; }
 .ord-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -441,7 +658,18 @@
   padding: 10px;
   font-size: 14px;
 }
-.ord-menu .mam-head { padding-bottom: 10px; margin-bottom: 10px; }
+/* The header (country, relation, capital left, close) never scrolls away: it sticks to the top of
+   the menu over the tiles (a confirming tile is z-index 4). MapActionMenu sets the menu's
+   scroll-padding-top to its height, so a confirmation scrolled into view ends below it (DR-OC-1) */
+.ord-menu .mam-head {
+  position: sticky;
+  top: -10px;
+  z-index: 6;
+  margin: -10px -10px 10px;
+  padding: 10px 10px 10px;
+  background: #0c111b;
+  border-radius: var(--r-md) var(--r-md) 0 0;
+}
 .ord-menu .mam-title b { font-size: 17px; }
 .ord-menu .mam-rel { font-size: 13px; }
 .ord-menu .mam-pc {
@@ -453,7 +681,12 @@
   white-space: nowrap;
 }
 .ord-menu .mam-close { min-width: 36px; min-height: 36px; justify-content: center; align-items: center; }
-.ord-mam-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: stretch; }
+/* dense: the tile after a confirming one fills the cell it left */
+.ord-mam-grid { display: grid; grid-template-columns: 1fr 1fr; grid-auto-flow: row dense; gap: 10px; align-items: stretch; }
+/* A confirming tile takes the menu's full width, so its question and buttons are not squeezed
+   into a 170 px column and its row does not stretch the neighbour (DR-OC-1) */
+.ord-menu .ord-wrap.is-confirming { grid-column: 1 / -1; }
+.ord-menu .ord-confirm { min-height: 0; }
 .ord-menu .mam-more { margin-top: 10px; }
 .ord-menu .mam-dossier { min-height: 44px; font-size: 14px; }
 .ord-menu .mam-hint { font-size: 13px; }
@@ -479,6 +712,13 @@
 .og-note { font-size: 13px; color: var(--text-2); }
 .og-phone { display: grid; gap: 8px; max-width: 390px; }
 .og-map { position: relative; height: 640px; border-radius: 14px; border: 1px solid var(--line); background: radial-gradient(80% 90% at 30% 40%, #13243b, #0b1422); overflow: hidden; }
+.og-dossier { height: 1500px; max-width: 420px; }
+.og-dossier > .dossier { position: absolute !important; top: 12px !important; bottom: auto !important; max-height: calc(100% - 24px) !important; }
+.og-picts { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); --card-top: var(--ord-card-top); }
+.og-pict { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--ord-card-line); background: var(--ord-card-top); min-width: 0; }
+.og-pict-bare { color: var(--text-1); display: grid; place-items: center; width: 28px; }
+.og-pict-name { display: grid; gap: 2px; min-width: 0; font-size: 14px; }
+.og-pict-name span { color: var(--fam-ink); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; }
 .og-catalog { max-width: 980px; padding: 16px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface-1); }
 
 /* Long chips and lines never push past the card edge */

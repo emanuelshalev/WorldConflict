@@ -1,0 +1,25 @@
+## 1440x900
+horizontal page scroll: false
+ORDERED stamps:
+  court stamp 945,-2677 118x37 overlaps seal: no
+  court stamp 325,-1311 67x22 overlaps seal: no
+  court(compact) stamp 546,-867 80x24 overlaps seal: no
+  court(compact) stamp 327,391 67x19 overlaps seal: no
+cards with "free" more than once: 0
+  
+button labels on 2+ lines: 3
+  "Remove a staff order (frees ◆ 1)" 239x49 lines 2
+  "Remove a staff order (frees ◆ 1)" 148x49 lines 2
+  "Remove a staff order (frees ◆ 1)" 196x49 lines 2
+## 390x844
+horizontal page scroll: false
+ORDERED stamps:
+  court stamp 180,-3304 118x37 overlaps seal: no
+  court stamp 293,-1030 67x22 overlaps seal: no
+  court(compact) stamp 543,-568 80x24 overlaps seal: no
+  court(compact) stamp 269,741 67x19 overlaps seal: no
+cards with "free" more than once: 0
+  
+button labels on 2+ lines: 1
+  "Remove a staff order (frees ◆ 1)" 145x49 lines 2
+page errors: none

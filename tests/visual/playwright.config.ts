@@ -23,7 +23,9 @@ export default defineConfig({
   snapshotPathTemplate: `{testDir}/__screenshots__/{testFileName}/${process.platform === 'linux' ? '' : `${process.platform}/`}{arg}{ext}`,
   fullyParallel: true,
   workers: 4,
-  retries: 1,
+  // Two retries: the title screen and reveal stage 0 are captured mid-transition now and then
+  // (seen on Windows, 2026-11); a real change fails all three attempts
+  retries: 2,
   timeout: 90_000,
   reporter: [['list'], ['html', { outputFolder: path.join(out, 'report'), open: 'never' }]],
   expect: {

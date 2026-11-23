@@ -1,0 +1,7 @@
+1366x768: menu present 1 at map point 717,243
+C1 1366x768: menu scrolled (Mass troops tile 40 px under the header) to 286; Strike tile top 312 (menu 178..629)
+C1 1366x768: before 286 -> face 286 -> Cancel 286 (restored true) -> face again 286 -> Escape 286 (restored true)
+1024x768: menu present 1 at map point 545,244
+C1 1024x768: menu scrolled (Mass troops tile 40 px under the header) to 286; Strike tile top 314 (menu 180..621)
+C1 1024x768: before 286 -> face 286 -> Cancel 286 (restored true) -> face again 286 -> Escape 286 (restored true)
+page errors: none

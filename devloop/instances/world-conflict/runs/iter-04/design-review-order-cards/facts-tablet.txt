@@ -1,0 +1,59 @@
+
+## catalog no target 1024x768
+visible cards 4; page horizontal scroll false
+card sizes: court:invalid:322x252 denounce:invalid:322x252 offer-pact:invalid:322x252 ceasefire:invalid:322x252
+controls under 44px: 1
+  ord-fix "Pick a country" 123x36
+text overflowing its box: 0
+  
+
+## catalog Russia 1024x768
+visible cards 4; page horizontal scroll false
+card sizes: court:invalid:322x294 denounce:available:322x294 offer-pact:invalid:322x326 ceasefire:available:322x326
+controls under 44px: 2
+  ord-fix "Propose a ceasefire instead" 214x36
+  ord-info "How much? Forecast" 130x32
+text overflowing its box: 0
+  
+
+## confirm face 1024x768
+visible cards 6; page horizontal scroll false
+card sizes: procure:available:322x326 deploy-border:available:322x326 withdraw-border:available:322x334 airstrike-military:confirming:322x334 airstrike-nuclear:available:322x326 fund-nuclear:available:322x326
+controls under 44px: 1
+  ord-info "How much? Forecast" 130x32
+text overflowing its box: 0
+  
+
+## orders added 1024x768
+visible cards 5; page horizontal scroll false
+card sizes: declare-war:invalid:322x324 mobilize:queued:322x299 demobilize:available:322x299 procure:available:322x326 deploy-border:available:322x326
+controls under 44px: 3
+  ord-fix "Strike military targets instead" 229x36
+  ord-info "How much? Forecast" 130x32
+  ord-remove "Remove" 85x36
+text overflowing its box: 0
+  
+
+## month 2 desk 1024x768
+visible cards 0; page horizontal scroll false
+card sizes: 
+controls under 44px: 0
+  
+text overflowing its box: 0
+  
+
+## map menu 1024x768
+visible cards 4; page horizontal scroll false
+card sizes: ceasefire:available:174x260 airstrike-military:available:174x260 deploy-border:available:174x230 spy:available:174x230
+controls under 44px: 1
+  ord-info "How much? Forecast" 130x32
+text overflowing its box: 0
+  
+
+## map confirm 1024x768
+visible cards 2; page horizontal scroll false
+card sizes: ceasefire:available:174x498 airstrike-military:confirming:174x498
+controls under 44px: 1
+  ord-info "How much? Forecast" 130x32
+text overflowing its box: 0
+  

@@ -1,0 +1,4 @@
+390x844-airstrike-military: Mobilize queued; coach execute "When you are ready, run the month. Step 3 of 3" at 188,660 190x91 pointer-events auto
+390x844-airstrike-military: airstrike-military row top 591 -> face: Give 173,647 184x48; covered 69% of its area; on top at centre: coach bubble; coach 188,660..751
+390x844-airstrike-military: finger on Give's centre -> face open 0, airstrike-military available
+page errors: none

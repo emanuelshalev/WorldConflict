@@ -1,10 +1,14 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { sound } from '../../lib/sound';
+import type { OrderFamily } from '../../lib/orders';
+import { TERMS } from '../../lib/glossary';
+import { FamilyChip, OrderPlate } from './OrderPictogram';
 
 /** How long the nuclear button must be held, ms (design-orders.md §4.4). */
 export const HOLD_MS = 1200;
 
-export type ConfirmKind = 'war' | 'nuclear' | 'mission';
+/** war and nuclear: irreversible; danger: a risky order (D-75 mis-pick check); mission: a warning. */
+export type ConfirmKind = 'war' | 'nuclear' | 'danger' | 'mission';
 
 export interface ConfirmFaceProps {
   kind: ConfirmKind;
@@ -20,6 +24,11 @@ export interface ConfirmFaceProps {
   cancelText: string;
   onConfirm: () => void;
   onCancel: () => void;
+  /**
+   * The order being confirmed (D-75): the face leads with its pictogram plate and family word,
+   * so a player who picked the wrong card by its icon sees which order this is before giving it.
+   */
+  order?: { id: string; family: OrderFamily; title: string };
 }
 
 /**
@@ -29,7 +38,7 @@ export interface ConfirmFaceProps {
  * 1.2 s press-and-hold (pointer, or Space/Enter held), with a fill bar; releasing early cancels
  * the hold. Esc or a press outside the face cancels. Never a native dialog.
  */
-export function ConfirmFace({ kind, question, missionWarning, lines, confirmText, cancelText, onConfirm, onCancel }: ConfirmFaceProps) {
+export function ConfirmFace({ kind, question, missionWarning, lines, confirmText, cancelText, onConfirm, onCancel, order }: ConfirmFaceProps) {
   const root = useRef<HTMLDivElement>(null);
   const safe = useRef<HTMLButtonElement>(null);
   const [progress, setProgress] = useState(0);
@@ -44,6 +53,38 @@ export function ConfirmFace({ kind, question, missionWarning, lines, confirmText
 
   useEffect(() => {
     safe.current?.focus({ preventScroll: true });
+    // Both answers on screen without a scroll (DR-OC-1): in a scrolling container (the map order
+    // menu) bring the button row into view once the face has its size (after the grid reflows)
+    // The box we scrolled and where it was, so Cancel, Escape or the order given put it back (DR-OC-1)
+    let moved: { box: HTMLElement; top: number } | null = null;
+    const raf = requestAnimationFrame(() => {
+      // Only the nearest scrolling box moves, never the page: a page with several faces open (the
+      // orders gallery) must not jump, and its scroll position must not depend on timing
+      const btns = root.current?.querySelector<HTMLElement>('.ord-confirm-btns');
+      let box = btns?.parentElement ?? null;
+      while (box && box !== document.body && box !== document.documentElement) {
+        const oy = getComputedStyle(box).overflowY;
+        if ((oy === 'auto' || oy === 'scroll') && box.scrollHeight > box.clientHeight + 1) break;
+        box = box.parentElement;
+      }
+      if (!btns || !box || box === document.body || box === document.documentElement) return;
+      const b = btns.getBoundingClientRect();
+      const c = box.getBoundingClientRect();
+      // What lies over the box's edges: its scroll padding (the Map menu's sticky header sets
+      // scroll-padding-top) or --cover-bottom (the phone's fixed command bar over the desk stage,
+      // DR-OC-4). The answers must end clear of both, not under them
+      const cs = getComputedStyle(box);
+      const padTop = Number.parseFloat(cs.scrollPaddingTop) || 0;
+      const padBottom = Math.max(Number.parseFloat(cs.scrollPaddingBottom) || 0, Number.parseFloat(cs.getPropertyValue('--cover-bottom')) || 0);
+      const top = Math.max(c.top, 0) + padTop;
+      const bottom = Math.min(c.bottom, window.innerHeight) - padBottom;
+      let dy = 0;
+      if (b.bottom > bottom) dy = b.bottom - bottom + 8;
+      else if (b.top < top) dy = -(top - b.top + 8);
+      if (!dy) return;
+      moved = { box, top: box.scrollTop };
+      box.scrollTop += dy;
+    });
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return;
       e.stopImmediatePropagation();
@@ -60,6 +101,10 @@ export function ConfirmFace({ kind, question, missionWarning, lines, confirmText
       window.removeEventListener('keydown', onKey, true);
       window.removeEventListener('pointerdown', onDown, true);
       window.clearTimeout(t);
+      cancelAnimationFrame(raf);
+      // Back to where the player was: the face's card shrinks again, so the list does not jump
+      const m = moved as { box: HTMLElement; top: number } | null;
+      if (m) requestAnimationFrame(() => (m.box.scrollTop = m.top));
       if (hold.current) cancelAnimationFrame(hold.current.raf);
     };
   }, []);
@@ -88,13 +133,38 @@ export function ConfirmFace({ kind, question, missionWarning, lines, confirmText
   };
 
   const shown = lines.filter(Boolean).slice(0, 3);
+  // The order's title is said once (DR-OC-1): the question carries it ("Strike military targets in
+  // Russia?"), so a separate title line only appears when the question does not name the order
+  const titleInQuestion = !order || question.toLowerCase().includes(order.title.toLowerCase());
+  const q = (
+    <h3 className="ord-confirm-q" id={titleId} data-confirm-question="">
+      {question}
+    </h3>
+  );
   return (
-    <div ref={root} className={`ord-confirm kind-${kind}`} role="alertdialog" aria-modal="false" aria-labelledby={titleId} data-confirm={kind}>
-      <h3 className="ord-confirm-q" id={titleId}>
-        {question}
-      </h3>
+    <div ref={root} className={`ord-confirm kind-${kind}`} role="alertdialog" aria-modal="false" aria-labelledby={titleId} data-confirm={kind} data-confirm-order={order?.id}>
+      {order ? (
+        <div className="ord-confirm-head">
+          <OrderPlate id={order.id} family={order.family} size={44} className="is-confirm" />
+          <div className="ord-confirm-id">
+            <span className="ord-confirm-chips">
+              <FamilyChip family={order.family} />
+              {(kind === 'war' || kind === 'nuclear') && <span className="ord-chip ord-noundo">{TERMS.noUndo.name}</span>}
+            </span>
+            {!titleInQuestion && (
+              <span className="ord-confirm-title" data-confirm-title="">
+                {order.title}
+              </span>
+            )}
+            {q}
+          </div>
+        </div>
+      ) : (
+        q
+      )}
       {missionWarning && <p className="ord-confirm-mission">{missionWarning}</p>}
-      {kind !== 'mission' && <p className="ord-confirm-sub">There is no undo.{shown.length ? ' What your staff expect:' : ''}</p>}
+      {(kind === 'war' || kind === 'nuclear') && <p className="ord-confirm-sub">There is no undo.{shown.length ? ' What your staff expect:' : ''}</p>}
+      {kind === 'danger' && <p className="ord-confirm-sub">A risky order: check it is the one you meant.{shown.length ? ' What your staff expect:' : ''}</p>}
       {shown.length > 0 && (
         <ul className="ord-confirm-lines">
           {shown.map((l) => (
