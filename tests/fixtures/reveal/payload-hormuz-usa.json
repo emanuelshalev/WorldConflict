@@ -91,7 +91,7 @@
         "label": "Mission",
         "value": 400,
         "max": 400,
-        "detail": "6 of 6 goals met, 2 bonus"
+        "detail": "5 of 5 goals met, 2 bonus"
       },
       {
         "id": "timing",
@@ -302,8 +302,8 @@
         "month": 4,
         "kind": "CRISIS",
         "title": "Tanker hit",
-        "consequence": "Full convoy operation, tension 68 to 66",
-        "text": "Month 4 · Tanker hit · Full convoy operation, tension 68 to 66",
+        "consequence": "Full convoy operation",
+        "text": "Month 4 · Tanker hit · Full convoy operation",
         "tone": "good",
         "weight": 9
       }

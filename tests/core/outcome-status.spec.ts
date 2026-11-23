@@ -7,7 +7,8 @@ import { pressQuotes } from "../../src/core/reveal-text.js";
 import { decisionOutcome, orderOutcome } from "../../src/core/status.js";
 import { TurnEngine } from "../../src/core/turn.js";
 import type { Action, WorldState } from "../../src/core/types.js";
-import { CONTROL_SEEDS, playControl } from "../fixtures/control.js";
+import { againstMission, optionImpact } from "../../src/core/missionImpact.js";
+import { CONTROL_SEEDS, FLASHPOINT_CONTROL, playControl } from "../fixtures/control.js";
 import { fixtureWorld } from "../fixtures/reveal/hormuz-usa.js";
 
 const playerAtWar = (w: WorldState, id: string) =>
@@ -175,9 +176,12 @@ describe("speaker and stance checks (F-02-8)", () => {
   // back as courtable. The stance holds through and after a war, on every control seed: an enemy
   // is a country we are at war with, a historical rival, or one we hold below -40.
   it("staff never suggest courting an ally of the enemy, through and after a ceasefire, on the control seeds", () => {
-    const maya = playControl("CO-UKR-MAYA1", "staff");
-    expect(maya.months.some((m) => !playerAtWar(m.after, "RUS"))).toBe(true);
-    const labels = maya.months.flatMap((m) => [
+    // Staff play and staff play with a ceasefire offer every month (the war ends in the year)
+    const maya = ["staff", "cease"].flatMap((p) =>
+      playControl("CO-UKR-MAYA1", p as "staff" | "cease").months,
+    );
+    expect(maya.some((m) => !playerAtWar(m.before, "RUS"))).toBe(true);
+    const labels = maya.flatMap((m) => [
       ...computeSuggestions(m.before, 8).map((s) => s.label),
       ...m.advice.staffOrders.map((s) => s.label),
     ]);
@@ -201,4 +205,63 @@ describe("speaker and stance checks (F-02-8)", () => {
         }
       }
   });
+});
+
+// QA3R-2d (QA2-S2-1 class): the old guard only checked moments whose text had a number. On the
+// control seeds (staff replays) and the war replay of QU-CHN-LEO01: no war start under went well,
+// no action in both lists in one month, an answer that carries the mission never under went
+// badly, and an order or crisis moment cites only its own numbers.
+describe("the reveal's moments agree with play on the control seeds (QA3R-2d)", () => {
+  const games = [
+    ...FLASHPOINT_CONTROL.map((c) => playControl(c, "staff")),
+    playControl("QU-CHN-LEO01", "war"),
+  ].filter((g) => g.final.gameOver);
+  it("the corpus has finished games, including a war the player started", () => {
+    expect(games.length).toBeGreaterThanOrEqual(6);
+    const war = playControl("QU-CHN-LEO01", "war");
+    expect(war.months[1].after.turnReport?.orders.some((o) => o.type === "DIPLOMACY_DECLARE_WAR" && o.ok)).toBe(true);
+  });
+  for (const g of games)
+    it(`${g.code}${g === games.at(-1) ? " (war)" : ""}`, () => {
+      const r = buildReveal(g.final);
+      const { well, bad } = r.moments;
+      // (1) going to war never went well
+      for (const m of well) {
+        expect(m.kind, m.text).not.toBe("WAR_START");
+        expect(m.title, m.text).not.toMatch(/^(Declare war|War on)/);
+      }
+      // (2) one month never has the same action, or the same war, in both lists
+      const key = (m: (typeof well)[number]) => `${m.month}|${m.title}`;
+      const badKeys = new Set(bad.map(key));
+      for (const m of well) expect(badKeys.has(key(m)), m.text).toBe(false);
+      const warBad = new Set(bad.filter((m) => m.kind === "WAR_START").map((m) => `${m.month}|${m.with}`));
+      for (const m of well.filter((x) => x.kind === "ORDER"))
+        expect(warBad.has(`${m.month}|${m.with}`), m.text).toBe(false);
+      // (3) an answer that carries the mission is never a moment that went badly
+      const ch = g.final.chronicle!;
+      for (const mo of g.months) {
+        for (const d of mo.after.turnReport?.decisions ?? []) {
+          if (d.kind && d.kind !== "CRISIS") continue;
+          const pending = mo.before.pendingDecisions.find((p) => p.title === d.title);
+          const option = pending?.options.find((o) => o.id === d.optionId);
+          if (!option) continue;
+          const impact = optionImpact(mo.before, option);
+          if (!impact.helps.length || againstMission(impact)) continue;
+          const moment = ch.moments.find(
+            (x) => x.kind === "CRISIS" && x.turn === mo.before.turn && x.title === d.title,
+          );
+          expect(moment?.tone, `${g.code} m${mo.before.turn + 1} ${d.title}: ${d.choice}`).not.toBe("bad");
+        }
+      }
+      // (4) an order moment's numbers are that order's own facts
+      for (const m of [...well, ...bad].filter((x) => x.kind === "ORDER")) {
+        const mo = g.months.find((x) => x.before.turn === m.turn);
+        const order = mo?.after.turnReport?.orders.find((o) => o.label === m.title);
+        const pairs = [...m.consequence.matchAll(/(-?\d+)%? to \$?(-?\d+)/g)].map(([, a, b]) => `${a}>${b}`);
+        const own = new Set(
+          (order?.facts ?? []).map((f) => `${Math.round(f.before)}>${Math.round(f.after)}`),
+        );
+        for (const p of pairs) expect(own.has(p), `${g.code} ${m.text}`).toBe(true);
+      }
+    });
 });

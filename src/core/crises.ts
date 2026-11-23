@@ -672,7 +672,10 @@ const HOTSPOT_TEMPLATES: CrisisTemplate[] = [
       const me = ctx.player;
       if (!g || g.phase !== "CEASEFIRE" || g.violence >= 55) return 0;
       if ([g.occupier, g.people, "USA"].includes(me.id)) return 0;
-      return me.gdp > 8e11 || ["SAU", "ARE", "EGY", "TUR"].includes(me.id) ? 1 : 0;
+      // The donors who really sit at that table: the region and the large democracies, never
+      // Russia or China (QA3R-3e: Russia was offered the Cairo pledging conference)
+      if (GAZA_REGION_DONORS.includes(me.id)) return 1;
+      return me.gdp > 8e11 && me.regimeType === "DEMOCRACY" ? 1 : 0;
     },
     build: (ctx) => {
       const g = hot(ctx, "GAZA");
@@ -2179,45 +2182,55 @@ const TEMPLATES: CrisisTemplate[] = [
   {
     id: "shock_pandemic",
     weight: () => 0,
-    build: (ctx) => ({
-      headline: `New virus spreads rapidly in ${ctx.player.name}`,
-      text: "Hospitals in three cities report they are at capacity.",
-      effects: { stability: -6, approval: -4, growth: -0.6 },
-      decision: {
-        title: "Outbreak",
-        situation:
-          "A novel respiratory virus is spreading fast. Hospitals in three cities are at capacity and your health minister wants a decision tonight.",
-        affectedCountries: [ctx.player.id],
-        urgency: "EXISTENTIAL",
-        options: [
-          opt(
-            "lockdown",
-            "Lock the country down",
-            "Flattens the curve. Flattens the economy too.",
-            { growth: -0.5, stability: 5, approval: 3 },
-            { backedBy: ["DOMESTIC_ADVISOR"] },
-          ),
-          opt(
-            "open",
-            "Keep the country open",
-            "Business as usual, and hope.",
-            { approval: 3, growth: 0.2, stability: -3 },
-            {
-              backedBy: ["FINANCE_MINISTER"],
-              followUp: { templateId: "shock_second_wave", delay: 2 },
-            },
-          ),
-          opt(
-            "global",
-            "Lead a global vaccine effort",
-            "Expensive and slow, but the world will remember.",
-            { relationsAllies: 6, approval: 2, gdp: -0.3, pc: -2 },
-            { backedBy: ["FOREIGN_MINISTER"] },
-          ),
-        ],
-        defaultOptionId: "open",
-      },
-    }),
+    build: (ctx) => {
+      // Era wording (QA3R-3a): before 2000 an outbreak is a flu strain met with quarantine and
+      // international aid, not "a novel respiratory virus" and a global vaccine effort
+      const modern = worldYear(ctx.world) >= 2000;
+      return {
+        headline: modern
+          ? `New virus spreads rapidly in ${ctx.player.name}`
+          : `Deadly flu strain spreads in ${ctx.player.name}`,
+        text: "Hospitals in three cities report they are at capacity.",
+        effects: { stability: -6, approval: -4, growth: -0.6 },
+        decision: {
+          title: "Outbreak",
+          situation: modern
+            ? "A novel respiratory virus is spreading fast. Hospitals in three cities are at capacity and your health minister wants a decision tonight."
+            : "A deadly new strain of influenza is spreading fast. Hospitals in three cities are at capacity and your health minister wants a decision tonight.",
+          affectedCountries: [ctx.player.id],
+          urgency: "EXISTENTIAL",
+          options: [
+            opt(
+              "lockdown",
+              "Lock the country down",
+              "Flattens the curve. Flattens the economy too.",
+              { growth: -0.5, stability: 5, approval: 3 },
+              { backedBy: ["DOMESTIC_ADVISOR"] },
+            ),
+            opt(
+              "open",
+              "Keep the country open",
+              "Business as usual, and hope.",
+              { approval: 3, growth: 0.2, stability: -3 },
+              {
+                backedBy: ["FINANCE_MINISTER"],
+                followUp: { templateId: "shock_second_wave", delay: 2 },
+              },
+            ),
+            opt(
+              "global",
+              modern
+                ? "Lead a global vaccine effort"
+                : "Lead an international medical relief effort",
+              "Expensive and slow, but the world will remember.",
+              { relationsAllies: 6, approval: 2, gdp: -0.3, pc: -2 },
+              { backedBy: ["FOREIGN_MINISTER"] },
+            ),
+          ],
+          defaultOptionId: "open",
+        },
+      };
+    },
   },
   {
     id: "shock_second_wave",
@@ -2669,6 +2682,42 @@ function lastMonthScenes(world: WorldState): Set<string> {
   return out;
 }
 
+/** Regional donors at a Gaza reconstruction conference. */
+const GAZA_REGION_DONORS = ["SAU", "ARE", "EGY", "TUR", "QAT", "JOR"];
+
+/**
+ * The flashpoint's cast (QA3R-3e): the player, the objective's countries, everyone fighting a war
+ * with one of them, the player's pacts and historical rivals, and the countries of the authored
+ * crises still to come. A world crisis whose counterpart is outside it is off-theatre.
+ */
+export function flashpointTheatre(world: WorldState): Set<string> {
+  const player = world.countries.find((c) => c.id === world.playerCountryId);
+  const cast = new Set<string>([world.playerCountryId]);
+  const conditions = [...(world.objective?.primary ?? []), ...(world.objective?.bonus ?? [])];
+  for (const c of conditions) {
+    if (c.targetId) cast.add(c.targetId);
+    if (c.otherId) cast.add(c.otherId);
+  }
+  for (const id of [...(player?.alliances ?? []), ...(player?.history?.historicalRivals ?? [])])
+    cast.add(id);
+  for (const s of world.director.scheduled)
+    for (const id of s.decision?.affectedCountries ?? []) cast.add(id);
+  for (const w of world.wars)
+    if (cast.has(w.attackerId) || cast.has(w.defenderId)) {
+      cast.add(w.attackerId);
+      cast.add(w.defenderId);
+    }
+  return cast;
+}
+
+/** The crisis's counterpart: the first affected country other than the player. */
+function counterpart(world: WorldState, draft: CrisisDraft): string | undefined {
+  return draft.decision?.affectedCountries.find((id) => id !== world.playerCountryId);
+}
+
+/** A flashpoint gets at most this many off-theatre world crises in a session. */
+export const OFF_THEATRE_MAX = 1;
+
 /**
  * Runs once per turn, after world events. Produces the player's crises for
  * this month: due follow-ups and scripted crises first, then, if the mode's
@@ -2806,17 +2855,31 @@ export function runDirector(world: WorldState, rng: SeededRandom): DirectorOutpu
       }
       return { t, w };
     }).filter((x) => x.w > 0);
-    const total = weighted.reduce((s, x) => s + x.w, 0);
-    if (total > 0) {
+    // A flashpoint stays on its own story: once its one off-theatre world crisis has run
+    // (refugees from Afghanistan, an Iran sanctions vote, Gaza on a Scarborough game), others are
+    // set aside and the pick is made again (QA3R-3e)
+    const theatre = world.mode === "FLASHPOINT" ? flashpointTheatre(world) : null;
+    const offUsed = director.lastUsed.offTheatre !== undefined;
+    for (let tries = 0; tries < 6; tries++) {
+      const total = weighted.reduce((s, x) => s + x.w, 0);
+      if (total <= 0) break;
       let roll = rng.next() * total;
-      for (const { t, w } of weighted) {
+      const at = weighted.findIndex(({ w }) => {
         roll -= w;
-        if (roll <= 0) {
-          const draft = t.build(ctx);
-          if (draft) emit(t.id, draft);
-          break;
-        }
+        return roll <= 0;
+      });
+      const { t } = weighted[at < 0 ? weighted.length - 1 : at];
+      const draft = t.build(ctx);
+      if (!draft) break;
+      const other = theatre ? counterpart(world, draft) : undefined;
+      const off = !!theatre && !!other && !theatre.has(other);
+      if (off && offUsed) {
+        weighted.splice(at < 0 ? weighted.length - 1 : at, 1);
+        continue;
       }
+      emit(t.id, draft);
+      if (off) director.lastUsed.offTheatre = world.turn;
+      break;
     }
   }
 

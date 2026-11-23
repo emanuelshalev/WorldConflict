@@ -181,10 +181,37 @@ export const TERMS_COST = { approval: 6, legitimacy: 5 };
 /** The side that dictated the peace gets credit at home, short of a victory's +12. */
 export const TERMS_GAIN = { approval: 5, legitimacy: 3 };
 
+/**
+ * A side that refused a ceasefire will not talk again for this many months after the refusal
+ * (QA3R-3h: the same offer every month ended a stalemated war by repetition in month 3). An
+ * offer after the pause gets the full odds again: patience pays, repetition does not.
+ */
+export const REFUSAL_MEMORY = 2;
+
+/** Refusals of a ceasefire in this war that the sides still remember at `turn`. */
+export function recentRefusals(war: { refusedTurns?: number[] }, turn: number): number {
+  return (war.refusedTurns ?? []).filter((t) => t < turn && turn - t <= REFUSAL_MEMORY).length;
+}
+
+/** The first month a new offer can be heard after the last refusal. */
+export function talksAgainTurn(war: { refusedTurns?: number[] }): number {
+  return Math.max(-1, ...(war.refusedTurns ?? [])) + REFUSAL_MEMORY + 1;
+}
+
+/** True while the other side is still cooling off after refusing (and cannot dictate terms). */
+export function ceasefireCooling(
+  war: { attackerId: string; frontline: number; refusedTurns?: number[] },
+  actor: CountryState,
+  turn: number,
+): boolean {
+  return targetAdvantage(war, actor) < TERMS_THRESHOLD && recentRefusals(war, turn) > 0;
+}
+
 export function ceasefireChance(
-  war: { attackerId: string; frontline: number; exhaustion: number },
+  war: { attackerId: string; frontline: number; exhaustion: number; refusedTurns?: number[] },
   actor: CountryState,
   target: CountryState,
+  turn?: number,
 ): number {
   const advantage = targetAdvantage(war, actor);
   let chance =
@@ -198,6 +225,9 @@ export function ceasefireChance(
   } else if (advantage > 55) {
     chance *= 0.3; // ahead, but not yet enough to dictate terms
   }
+  // A side that just said no does not listen to the same offer for two months, unless it can now
+  // dictate terms
+  if (turn !== undefined && ceasefireCooling(war, actor, turn)) return 0;
   return Math.max(0.02, Math.min(0.9, chance));
 }
 
@@ -269,26 +299,31 @@ export function proposeCeasefire(
       (w.attackerId === target.id && w.defenderId === actor.id),
   );
   if (!war) return false;
-  const chance = ceasefireChance(war, actor, target);
-  if (rng.next() < chance) {
-    if (targetAdvantage(war, actor) >= TERMS_THRESHOLD) {
-      // Accepting the winner's terms is humbling, but far cheaper than defeat
-      actor.approval = Math.max(0, actor.approval - TERMS_COST.approval);
-      actor.legitimacy = Math.max(0, actor.legitimacy - TERMS_COST.legitimacy);
-      target.approval = Math.min(100, target.approval + TERMS_GAIN.approval);
-      target.legitimacy = Math.min(100, target.legitimacy + TERMS_GAIN.legitimacy);
-    }
-    world.wars = world.wars.filter((w) => w.id !== war.id);
-    actor.atWarWith = actor.atWarWith.filter((id) => id !== target.id);
-    target.atWarWith = target.atWarWith.filter((id) => id !== actor.id);
-    actor.relations[target.id] = -50;
-    target.relations[actor.id] = -50;
-    actor.mobilizationLevel = Math.max(20, actor.mobilizationLevel - 25);
-    target.mobilizationLevel = Math.max(20, target.mobilizationLevel - 25);
-    world.globalTension = Math.max(0, world.globalTension - 6);
-    return true;
+  // Still cooling off: turned away without talks (no new refusal is remembered)
+  if (ceasefireCooling(war, actor, world.turn)) return false;
+  const chance = ceasefireChance(war, actor, target, world.turn);
+  if (rng.next() >= chance) {
+    war.refusedTurns = [...(war.refusedTurns ?? []), world.turn].filter(
+      (t) => world.turn - t <= REFUSAL_MEMORY,
+    );
+    return false;
   }
-  return false;
+  if (targetAdvantage(war, actor) >= TERMS_THRESHOLD) {
+    // Accepting the winner's terms is humbling, but far cheaper than defeat
+    actor.approval = Math.max(0, actor.approval - TERMS_COST.approval);
+    actor.legitimacy = Math.max(0, actor.legitimacy - TERMS_COST.legitimacy);
+    target.approval = Math.min(100, target.approval + TERMS_GAIN.approval);
+    target.legitimacy = Math.min(100, target.legitimacy + TERMS_GAIN.legitimacy);
+  }
+  world.wars = world.wars.filter((w) => w.id !== war.id);
+  actor.atWarWith = actor.atWarWith.filter((id) => id !== target.id);
+  target.atWarWith = target.atWarWith.filter((id) => id !== actor.id);
+  actor.relations[target.id] = -50;
+  target.relations[actor.id] = -50;
+  actor.mobilizationLevel = Math.max(20, actor.mobilizationLevel - 25);
+  target.mobilizationLevel = Math.max(20, target.mobilizationLevel - 25);
+  world.globalTension = Math.max(0, world.globalTension - 6);
+  return true;
 }
 
 /**
