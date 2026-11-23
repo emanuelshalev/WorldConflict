@@ -2,7 +2,7 @@
 // ratios, agent classification (including auto iterations and work packages) and the package and
 // trial tables, on a throwaway project directory of small fixture transcripts.
 import { execFileSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
@@ -191,5 +191,100 @@ describe("usage ledger orchestrator windows", () => {
     expect(t3.packages).toBe(1);
     expect(t3.usdPerPackage).toBeCloseTo(30.7, 2);
     expect(o.iterationTrend.reduce((a: number, t: Any) => a + t.usd, 0)).toBeCloseTo(o.loop.usd, 1);
+  });
+});
+
+// Usage must survive a move to another machine: what a run reads goes to an archive in the repo,
+// a session nobody can read fails the run, and a page is never overwritten with a thinner ledger.
+describe("usage ledger never loses usage", () => {
+  function project() {
+    const root = mkdtempSync(join(tmpdir(), "usage-ledger-keep-"));
+    made.push(root);
+    const proj = join(root, "transcripts");
+    write(join(proj, "sess.jsonl"), `${turn("m1", "2026-01-01T00:10:00Z", "claude-opus-5-5", usage1)}\n`);
+    const agent = join(proj, "sess", "subagents", "agent-0.jsonl");
+    write(agent, `${turn("a0", "2026-01-01T00:20:00Z", "claude-sonnet-5-5", usage1)}\n`);
+    write(agent.replace(/\.jsonl$/, ".meta.json"), JSON.stringify({ description: "Build: thing" }));
+    const reg: Any = {
+      projectDir: proj,
+      sessions: ["sess"],
+      archiveDir: "archive",
+      loopStart: "2026-01-01T00:00:00Z",
+      orchestrator: { role: "Group Manager", windows: [{ from: "2026-01-01T00:00:00Z", iteration: 1, stage: "Build" }] },
+      iterationWindows: [{ from: "2026-01-01T00:00:00Z", iteration: 1 }],
+      prices: PRICES,
+      rules: [{ desc: "^Build", role: "Engine Engineer", group: "Engineers", iteration: "auto", stage: "Build", workPackage: "$label" }],
+    };
+    const regFile = join(root, "registry.json");
+    const save = () => writeFileSync(regFile, JSON.stringify(reg));
+    save();
+    const run = (...a: string[]) => execFileSync("node", ["devloop/kit/usage-ledger.mjs", regFile, ...a], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
+    const fails = (...a: string[]) => {
+      try {
+        run(...a);
+        return "";
+      } catch (e) {
+        return String((e as Any).stderr);
+      }
+    };
+    return { root, proj, reg, save, run, fails };
+  }
+
+  it("reads a session back from the archive when its transcripts are gone", () => {
+    const p = project();
+    const first = JSON.parse(p.run("--json"));
+    expect(existsSync(join(p.root, "archive", "sess.json"))).toBe(true);
+    rmSync(p.proj, { recursive: true, force: true });
+    const second = JSON.parse(p.run("--json"));
+    expect(second.loop).toEqual(first.loop);
+    expect(second.byGroup).toEqual(first.byGroup);
+    expect(second.agents.map((a: Any) => [a.label, a.workPackage, a.usd])).toEqual(first.agents.map((a: Any) => [a.label, a.workPackage, a.usd]));
+    expect(second.sources.sessions).toEqual(["sess"]);
+  });
+
+  it("keeps archived requests a later transcript no longer holds", () => {
+    const p = project();
+    const first = JSON.parse(p.run("--json"));
+    write(join(p.proj, "sess.jsonl"), `${turn("m2", "2026-01-01T00:30:00Z", "claude-opus-5-5", usage1)}\n`);
+    const second = JSON.parse(p.run("--json"));
+    expect(second.loop.requests).toBe(first.loop.requests + 1);
+  });
+
+  it("fails when a session has no transcripts, no archive and no baseline", () => {
+    const p = project();
+    p.reg.sources = [{ projectDir: join(p.root, "other-machine"), sessions: ["gone"] }];
+    p.save();
+    expect(p.fails("--json")).toContain("gone");
+    expect(JSON.parse(p.run("--json", "--allow-missing")).sources.missing).toEqual(["gone"]);
+  });
+
+  it("adds a baseline for a session it cannot read, and only then", () => {
+    const p = project();
+    const own = JSON.parse(p.run("--json"));
+    writeFileSync(join(p.root, "baseline.json"), JSON.stringify(own));
+    p.reg.sources = [{ projectDir: join(p.root, "other-machine"), sessions: ["gone"] }];
+    p.reg.baselines = [{ file: "baseline.json", sessions: ["gone"], note: "other machine" }];
+    p.save();
+    const both = JSON.parse(p.run("--json"));
+    expect(both.loop.requests).toBe(2 * own.loop.requests);
+    expect(both.loop.usd).toBeCloseTo(2 * own.loop.usd, 2);
+    expect(both.byGroup.find((g: Any) => g.key === "Engineers").requests).toBe(2);
+    expect(both.agents).toHaveLength(2);
+    expect(both.sources.baselines[0].sessions).toEqual(["gone"]);
+    // the same baseline is ignored once its session can be read
+    p.reg.baselines = [{ file: "baseline.json", sessions: ["sess"] }];
+    p.reg.sources = [];
+    p.save();
+    expect(JSON.parse(p.run("--json")).loop.requests).toBe(own.loop.requests);
+  });
+
+  it("refuses to inject a thinner ledger over a fuller page", () => {
+    const p = project();
+    const page = join(p.root, "page.html");
+    writeFileSync(page, '<script>/*USAGE:START*/\nconst USAGE = {"loop":{"requests":99}};\n/*USAGE:END*/</script>');
+    expect(p.fails("--inject", page, "USAGE")).toContain("refusing to inject");
+    expect(readFileSync(page, "utf8")).toContain('"requests":99');
+    p.run("--inject", page, "USAGE", "--allow-shrink");
+    expect(readFileSync(page, "utf8")).toContain('"requests":2');
   });
 });

@@ -9,6 +9,17 @@
 // {
 //   "projectDir": "~/.claude/projects/<project-slug>",
 //   "sessions": ["<session-id>"],
+//   "sources": [{ "projectDir": "~/.claude/projects/<slug on another machine>", "sessions": ["<id>"] }],
+//                                    // optional: more transcript folders (one per machine); projectDir + sessions
+//                                    // above is the first source
+//   "archiveDir": "archive",         // optional, relative to the registry: every run writes what it read to
+//                                    // <archiveDir>/<session>.json and reads it back, merged by request id, so
+//                                    // usage survives a move to another machine or a cleaned transcript folder.
+//                                    // Commit the folder.
+//   "baselines": [{ "file": "baseline.json", "sessions": ["<id>"], "note": "..." }],
+//                                    // optional: a saved ledger output (--json) added to the totals when none of
+//                                    // its sessions has transcripts or an archive here (data from a machine that
+//                                    // can no longer be read)
 //   "loopStart": "ISO time", // usage before this is "Before the loop"
 //   "orchestrator": { "role": "Group Manager", "windowsFrom": ["../progress/stages.jsonl", "../loop/events.jsonl"],
 //                     "windows": [{ "from": "ISO", "iteration": 0, "stage": "Plan" }] }, // windows: hand fallback
@@ -27,13 +38,15 @@
 // token on a model that charges 5%, not a flat 0.1; before D-82 one flat table was used). Items with a
 // workPackage also feed `byPackage` (per package: models, tokens, usd, wall minutes) and `trial` (packages
 // grouped by model, to compare models on equal work).
+//
+// Never lose usage: a session with no transcripts, no archive and no baseline fails the run, and --inject
+// refuses to replace a page whose ledger holds more loop requests than the new one (--allow-shrink overrides).
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
 const args = process.argv.slice(2);
 const reg = JSON.parse(fs.readFileSync(args[0], 'utf8'));
-const projectDir = reg.projectDir.replace(/^~/, os.homedir());
 
 const KINDS = ['input', 'cacheWrite5m', 'cacheWrite1h', 'cacheRead', 'output'];
 // Fallback weights for a model without a price entry (old flat table, cache read corrected to 0.05).
@@ -86,6 +99,7 @@ function readTranscript(file) {
     const cw1h = u.cache_creation?.ephemeral_1h_input_tokens ?? 0;
     const cwAll = u.cache_creation_input_tokens ?? 0;
     const rec = {
+      id,
       t: d.timestamp,
       model: m.model,
       input: u.input_tokens ?? 0,
@@ -174,75 +188,175 @@ function orchestratorWindows(logOnly = false) {
   return (out.length ? out : [...(reg.orchestrator.windows ?? [])]).sort((a, b) => a.from.localeCompare(b.from));
 }
 
-const items = []; // each: { kind, label, role, group, persona, stage, iteration, model, tools, first, last, records }
-for (const sid of reg.sessions) {
-  const main = path.join(projectDir, `${sid}.jsonl`);
+const regDir = path.dirname(path.resolve(args[0]));
+const sources = [
+  ...(reg.projectDir && reg.sessions ? [{ projectDir: reg.projectDir, sessions: reg.sessions }] : []),
+  ...(reg.sources ?? []),
+];
+const archiveDir = reg.archiveDir && !args.includes('--no-archive') ? path.resolve(regDir, reg.archiveDir) : null;
+
+// What this machine's transcripts hold for one session: the orchestrator file and every subagent file.
+function liveSession(dir, sid) {
+  const files = {};
+  const main = path.join(dir, `${sid}.jsonl`);
   if (fs.existsSync(main)) {
     const t = readTranscript(main);
-    const windows = orchestratorWindows();
-    // Split orchestrator usage by time window.
-    const buckets = new Map();
-    for (const r of t.records) {
-      let key = 'pre';
-      if (r.t >= reg.loopStart) {
-        const w = windows.filter((x) => r.t >= x.from).pop();
-        key = w ? `${w.iteration}|${w.stage}` : 'pre';
+    files.main = { kind: 'main', tools: t.tools, first: t.first, last: t.last, records: t.records };
+  }
+  const subDir = path.join(dir, sid, 'subagents');
+  if (fs.existsSync(subDir)) {
+    // Subagent transcripts, including those launched by workflows (subagents/workflows/<run>/).
+    const walk = (d) => {
+      for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+        const full = path.join(d, e.name);
+        if (e.isDirectory()) walk(full);
+        else if (e.name.endsWith('.jsonl')) {
+          const metaFile = full.replace(/\.jsonl$/, '.meta.json');
+          const meta = fs.existsSync(metaFile) ? JSON.parse(fs.readFileSync(metaFile, 'utf8')) : {};
+          const t = readTranscript(full);
+          const key = path.relative(subDir, full).split(path.sep).join('/');
+          files[key] = { kind: 'agent', desc: meta.description ?? e.name, metaModel: meta.model, tools: t.tools, first: t.first, last: t.last, records: t.records };
+        }
       }
-      if (!buckets.has(key)) buckets.set(key, []);
-      buckets.get(key).push(r);
+    };
+    walk(subDir);
+  }
+  return files;
+}
+
+// Archive file: { session, files: { <key>: { kind, desc, metaModel, tools, first, last, models: [...],
+// records: [[id, t, modelIndex, input, cacheWrite5m, cacheWrite1h, cacheRead, output], ...] } } }
+function readArchive(sid) {
+  const f = archiveDir && path.join(archiveDir, `${sid}.json`);
+  if (!f || !fs.existsSync(f)) return {};
+  const a = JSON.parse(fs.readFileSync(f, 'utf8'));
+  const files = {};
+  for (const [key, v] of Object.entries(a.files ?? {}))
+    files[key] = {
+      ...v,
+      models: undefined,
+      records: v.records.map(([id, t, mi, input, cacheWrite5m, cacheWrite1h, cacheRead, output]) => ({ id, t, model: v.models[mi] ?? undefined, input, cacheWrite5m, cacheWrite1h, cacheRead, output })),
+    };
+  return files;
+}
+function writeArchive(sid, files) {
+  if (!archiveDir) return;
+  fs.mkdirSync(archiveDir, { recursive: true });
+  const out = { session: sid, files: {} };
+  for (const key of Object.keys(files).sort()) {
+    const v = files[key];
+    const models = [...new Set(v.records.map((r) => r.model ?? null))];
+    out.files[key] = {
+      kind: v.kind,
+      desc: v.desc,
+      metaModel: v.metaModel,
+      tools: v.tools,
+      first: v.first,
+      last: v.last,
+      models,
+      records: [...v.records]
+        .sort((a, b) => String(a.t).localeCompare(String(b.t)) || String(a.id).localeCompare(String(b.id)))
+        .map((r) => [r.id, r.t, models.indexOf(r.model ?? null), r.input, r.cacheWrite5m, r.cacheWrite1h, r.cacheRead, r.output]),
+    };
+  }
+  const text = `${JSON.stringify(out)}\n`;
+  const f = path.join(archiveDir, `${sid}.json`);
+  if (!fs.existsSync(f) || fs.readFileSync(f, 'utf8') !== text) fs.writeFileSync(f, text);
+}
+// Union by request id; the more complete record wins. Nothing the archive holds is ever dropped.
+function mergeFiles(archived, live) {
+  const out = { ...archived };
+  for (const [key, v] of Object.entries(live)) {
+    const a = out[key];
+    if (!a) {
+      out[key] = v;
+      continue;
     }
-    for (const [key, recs] of buckets) {
-      const [iteration, stage] = key === 'pre' ? [null, 'Before the loop'] : key.split('|');
-      items.push({
-        kind: 'orchestrator',
-        label: key === 'pre' ? 'Orchestration before the loop' : `Orchestration · iter ${iteration} · ${stage}`,
-        role: key === 'pre' ? 'Before the loop' : reg.orchestrator.role,
-        group: key === 'pre' ? 'Before the loop' : 'Orchestration',
-        stage,
-        iteration: iteration == null ? null : Number(iteration),
-        model: recs[0]?.model,
-        records: recs,
-        tools: null,
-      });
+    const byId = new Map(a.records.map((r) => [r.id, r]));
+    for (const r of v.records) {
+      const prev = byId.get(r.id);
+      if (!prev || r.output >= prev.output) byId.set(r.id, r);
+    }
+    const min = (x, y) => (x && y ? (x < y ? x : y) : (x ?? y));
+    const max = (x, y) => (x && y ? (x > y ? x : y) : (x ?? y));
+    out[key] = { ...a, ...v, tools: Math.max(a.tools ?? 0, v.tools ?? 0), first: min(a.first, v.first), last: max(a.last, v.last), records: [...byId.values()] };
+  }
+  return out;
+}
+
+const items = []; // each: { kind, label, role, group, persona, stage, iteration, model, tools, first, last, records }
+const sessionsWithData = new Set();
+const sessionsMissing = [];
+for (const src of sources) {
+  const dir = src.projectDir.replace(/^~/, os.homedir());
+  for (const sid of src.sessions) {
+    const files = mergeFiles(readArchive(sid), liveSession(dir, sid));
+    if (!Object.keys(files).length) {
+      sessionsMissing.push(sid);
+      continue;
+    }
+    sessionsWithData.add(sid);
+    writeArchive(sid, files);
+    if (files.main) {
+      const windows = orchestratorWindows();
+      // Split orchestrator usage by time window.
+      const buckets = new Map();
+      for (const r of files.main.records) {
+        let key = 'pre';
+        if (r.t >= reg.loopStart) {
+          const w = windows.filter((x) => r.t >= x.from).pop();
+          key = w ? `${w.iteration}|${w.stage}` : 'pre';
+        }
+        if (!buckets.has(key)) buckets.set(key, []);
+        buckets.get(key).push(r);
+      }
+      for (const [key, recs] of buckets) {
+        const [iteration, stage] = key === 'pre' ? [null, 'Before the loop'] : key.split('|');
+        items.push({
+          kind: 'orchestrator',
+          label: key === 'pre' ? 'Orchestration before the loop' : `Orchestration · iter ${iteration} · ${stage}`,
+          role: key === 'pre' ? 'Before the loop' : reg.orchestrator.role,
+          group: key === 'pre' ? 'Before the loop' : 'Orchestration',
+          stage,
+          iteration: iteration == null ? null : Number(iteration),
+          model: recs[0]?.model,
+          records: recs,
+          tools: null,
+        });
+      }
+    }
+    for (const [key, t] of Object.entries(files)) {
+      if (t.kind !== 'agent') continue;
+      const desc = t.desc ?? key;
+      let cls = { role: 'Before the loop', group: 'Before the loop', stage: 'Before the loop', iteration: null };
+      if (t.first && t.first >= reg.loopStart) {
+        cls = { role: 'Unclassified', group: 'Unclassified', stage: 'Unclassified', iteration: null };
+        for (const rule of reg.rules) {
+          const m = new RegExp(rule.desc, 'i').exec(desc);
+          if (!m) continue;
+          cls = {
+            role: fill(rule.role, m),
+            group: fill(rule.group ?? rule.role, m),
+            persona: rule.persona ? cap(fill(rule.persona, m)) : undefined,
+            stage: fill(rule.stage, m),
+            iteration: rule.iteration == null ? null : rule.iteration === 'auto' ? iterationAt(t.first) : Number(fill(String(rule.iteration), m)),
+            workstream: rule.workstream ? fill(rule.workstream, m) : undefined,
+            workPackage: rule.workPackage ? fill(rule.workPackage, m, desc).trim() : undefined,
+          };
+          break;
+        }
+      }
+      items.push({ kind: 'agent', label: desc, ...cls, model: t.records[0]?.model ?? t.metaModel, tools: t.tools, first: t.first, last: t.last, records: t.records });
     }
   }
-  const subDir = path.join(projectDir, sid, 'subagents');
-  if (!fs.existsSync(subDir)) continue;
-  // Subagent transcripts, including those launched by workflows (subagents/workflows/<run>/).
-  const files = [];
-  const walk = (dir) => {
-    for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
-      if (e.isDirectory()) walk(path.join(dir, e.name));
-      else if (e.name.endsWith('.jsonl')) files.push(path.join(dir, e.name));
-    }
-  };
-  walk(subDir);
-  for (const full of files) {
-    const f = path.basename(full);
-    const metaFile = full.replace(/\.jsonl$/, '.meta.json');
-    const meta = fs.existsSync(metaFile) ? JSON.parse(fs.readFileSync(metaFile, 'utf8')) : {};
-    const desc = meta.description ?? f;
-    const t = readTranscript(full);
-    let cls = { role: 'Before the loop', group: 'Before the loop', stage: 'Before the loop', iteration: null };
-    if (t.first && t.first >= reg.loopStart) {
-      cls = { role: 'Unclassified', group: 'Unclassified', stage: 'Unclassified', iteration: null };
-      for (const rule of reg.rules) {
-        const m = new RegExp(rule.desc, 'i').exec(desc);
-        if (!m) continue;
-        cls = {
-          role: fill(rule.role, m),
-          group: fill(rule.group ?? rule.role, m),
-          persona: rule.persona ? cap(fill(rule.persona, m)) : undefined,
-          stage: fill(rule.stage, m),
-          iteration: rule.iteration == null ? null : rule.iteration === 'auto' ? iterationAt(t.first) : Number(fill(String(rule.iteration), m)),
-          workstream: rule.workstream ? fill(rule.workstream, m) : undefined,
-          workPackage: rule.workPackage ? fill(rule.workPackage, m, desc).trim() : undefined,
-        };
-        break;
-      }
-    }
-    items.push({ kind: 'agent', label: desc, ...cls, model: t.records[0]?.model ?? meta.model, tools: t.tools, first: t.first, last: t.last, records: t.records });
-  }
+}
+// A baseline stands in for sessions this machine cannot read at all.
+const baselines = (reg.baselines ?? []).filter((b) => !(b.sessions ?? []).some((sid) => sessionsWithData.has(sid)));
+const covered = new Set(baselines.flatMap((b) => b.sessions ?? []));
+const lost = sessionsMissing.filter((sid) => !covered.has(sid));
+if (lost.length && !args.includes('--allow-missing')) {
+  console.error(`usage-ledger: no transcripts, archive or baseline for session(s) ${lost.join(', ')}. Run the ledger on the machine that has them (it writes the archive), add a baseline, or pass --allow-missing.`);
+  process.exit(1);
 }
 
 const agg = (keyFn) => {
@@ -286,7 +400,7 @@ const byPackage = [...new Set(pkgItems.map((i) => i.workPackage))]
     return { key: name, model: models.join(' + '), models, agents: its.length, minutes, iteration: its[0].iteration, ...sum(its.flatMap((i) => i.records)) };
   })
   .sort((a, b) => b.usd - a.usd);
-const trial = [...new Set(byPackage.map((p) => p.model))]
+const trialOf = (byPackage) => [...new Set(byPackage.map((p) => p.model))]
   .map((model) => {
     const ps = byPackage.filter((p) => p.model === model);
     const total = (f) => ps.reduce((a, p) => a + p[f], 0);
@@ -306,6 +420,7 @@ const trial = [...new Set(byPackage.map((p) => p.model))]
     };
   })
   .sort((a, b) => b.usd - a.usd);
+const trial = trialOf(byPackage);
 
 const trendIters = [...new Set(items.filter((i) => inLoop(i) && i.iteration != null).map((i) => i.iteration))].sort((a, b) => a - b);
 const iterationTrend = trendIters.map((n) => {
@@ -351,12 +466,74 @@ const out = {
     .sort((a, b) => b.weighted - a.weighted),
 };
 
+// Baselines: saved ledger outputs, added to every total and table.
+const SKIP = new Set(['key', 'iteration', 'model', 'models', 'usdPerPackage', 'hour', 'label', 'role', 'group', 'persona', 'stage', 'workPackage', 'first']);
+const USD = new Set(['usd', 'orchestrationUsd', 'packageUsd']);
+function addInto(a, b) {
+  for (const [k, v] of Object.entries(b)) {
+    if (SKIP.has(k)) continue;
+    if (typeof v === 'number') a[k] = USD.has(k) ? round2((a[k] ?? 0) + v) : (a[k] ?? 0) + v;
+    else if (k === 'cost' && v) {
+      a.cost ??= {};
+      for (const [c, n] of Object.entries(v)) a.cost[c] = round2((a.cost[c] ?? 0) + n);
+    }
+  }
+  return a;
+}
+function mergeKeyed(mine, theirs, keyOf = (x) => x.key, onNew = (x) => structuredClone(x)) {
+  const m = new Map(mine.map((x) => [keyOf(x), x]));
+  for (const t of theirs ?? []) {
+    const cur = m.get(keyOf(t));
+    if (cur) addInto(cur, t);
+    else m.set(keyOf(t), onNew(t));
+  }
+  return [...m.values()];
+}
+const byWeight = (a, b) => b.weighted - a.weighted;
+for (const b of baselines) {
+  const base = JSON.parse(fs.readFileSync(path.resolve(regDir, b.file), 'utf8'));
+  for (const k of ['total', 'loop', 'beforeLoop']) addInto(out[k], base[k] ?? {});
+  for (const k of ['byIteration', 'byGroup', 'byRole', 'byStage', 'byPersona', 'byModel', 'byIterationStage', 'byIterationModel', 'byIterationGroup'])
+    out[k] = mergeKeyed(out[k], base[k]).sort(byWeight);
+  out.byPackage = mergeKeyed(out.byPackage, base.byPackage).sort((x, y) => y.usd - x.usd);
+  for (const p of out.byPackage) {
+    const theirs = (base.byPackage ?? []).find((x) => x.key === p.key);
+    if (theirs && theirs !== p) {
+      p.models = [...new Set([...(p.models ?? []), ...(theirs.models ?? [])])].sort();
+      p.model = p.models.join(' + ');
+    }
+  }
+  out.trial = trialOf(out.byPackage);
+  out.iterationTrend = mergeKeyed(out.iterationTrend, base.iterationTrend, (x) => x.iteration).sort((x, y) => x.iteration - y.iteration);
+  for (const t of out.iterationTrend) t.usdPerPackage = t.packages ? round2(t.packageUsd / t.packages) : null;
+  const tl = new Map(out.timeline.map((x) => [x.hour, x]));
+  for (const t of base.timeline ?? []) {
+    const cur = tl.get(t.hour) ?? { hour: t.hour, groups: {} };
+    for (const [g, n] of Object.entries(t.groups)) cur.groups[g] = (cur.groups[g] ?? 0) + n;
+    tl.set(t.hour, cur);
+  }
+  out.timeline = [...tl.values()].sort((x, y) => x.hour.localeCompare(y.hour));
+  out.agents = [...out.agents, ...(base.agents ?? [])].sort(byWeight);
+  out.unpricedModels = [...new Set([...out.unpricedModels, ...(base.unpricedModels ?? [])])];
+}
+out.sources = {
+  sessions: [...sessionsWithData],
+  baselines: baselines.map((b) => ({ file: b.file, sessions: b.sessions ?? [], note: b.note ?? null })),
+  missing: lost,
+};
+
 const ix = args.indexOf('--inject');
 if (ix >= 0) {
   const [html, marker] = args.slice(ix + 1);
   const src = fs.readFileSync(html, 'utf8');
   const re = new RegExp(`/\\*${marker}:START\\*/[\\s\\S]*?/\\*${marker}:END\\*/`);
   if (!re.test(src)) throw new Error(`markers /*${marker}:START*/ ... /*${marker}:END*/ not found`);
+  // Never replace a fuller ledger with a thinner one (a machine that cannot read the transcripts).
+  const before = /"loop":\{"requests":(\d+)/.exec(re.exec(src)[0]);
+  if (before && Number(before[1]) > out.loop.requests && !args.includes('--allow-shrink')) {
+    console.error(`usage-ledger: refusing to inject: the page holds ${before[1]} loop requests, this run found ${out.loop.requests}. Usage data would be lost. Check the registry sources, archive and baselines, or pass --allow-shrink.`);
+    process.exit(1);
+  }
   fs.writeFileSync(html, src.replace(re, () => `/*${marker}:START*/\nconst ${marker} = ${JSON.stringify(out)};\n/*${marker}:END*/`));
   console.log(`injected ${marker}: loop USD ${out.loop.usd.toLocaleString()}, weighted ${out.loop.weighted.toLocaleString()}, ${out.agents.length} agents`);
 } else if (args.includes('--json')) {
