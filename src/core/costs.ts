@@ -45,6 +45,27 @@ export const BUDGET_SHARE: Partial<Record<ActionType, number>> = {
 
 export const PC_CAP = 6;
 
+/**
+ * The price of the mission side (D-84 R6): in a crisis or a meeting, an answer that helps at least
+ * one primary goal costs this much more political capital when another answer of the same item
+ * helps none. Paid where the decision resolves (turn.ts), from the recorded choice, so replays
+ * need no new input. Income and the cap are unchanged.
+ */
+export const PUSH_PC = 1;
+
+/**
+ * Extra capital per answer of one crisis or meeting, by option id (only priced answers appear).
+ * `helpsPrimary[i]` says whether option i helps a primary goal (missionImpact.ts optionImpact).
+ */
+export function answerPrices(optionIds: string[], helpsPrimary: boolean[]): Record<string, number> {
+  if (!helpsPrimary.some((h) => !h)) return {};
+  const out: Record<string, number> = {};
+  optionIds.forEach((id, i) => {
+    if (helpsPrimary[i]) out[id] = PUSH_PC;
+  });
+  return out;
+}
+
 /** Player orders per month (crisis-injected orders don't count). */
 export const MAX_ORDERS = 6;
 

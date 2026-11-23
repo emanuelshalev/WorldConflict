@@ -6,6 +6,7 @@
 import { PersonalityAI } from "../src/agents/fallback.js";
 import { buildAdvice } from "../src/core/advisors.js";
 import { actionCostPC } from "../src/core/costs.js";
+import { impactContext, itemPrices } from "../src/core/missionImpact.js";
 import type { SeededRandom } from "../src/core/seed.js";
 import type {
   Action,
@@ -16,18 +17,72 @@ import type {
 } from "../src/core/types.js";
 
 
-/** The staff autopilot's month: crisis picks, meeting answers and orders (design-month 5.4). */
-export function staffMonth(world: WorldState, switchToMission: boolean) {
+/**
+ * The Accept all family (D-84): every policy presses Accept all recommended (the routine: crises
+ * that are not calls on the cabinet pick, meetings, deputies, upkeep orders) and differs on the
+ * month's calls.
+ *   staff: calls skipped (crisis: the engine default; mission move: Hold this month)
+ *   chief: the setting "Let the Chief of Staff make my calls" (advice.chief); staffswitch is its
+ *     old name (the player who switches every crisis to the mission pick)
+ *   guided: Accept all plus the Guide me line on every call (the mission card, the mission move's
+ *     first proposal), which is what the Chief of Staff picks
+ *   callpush / callhold: the two fixed rules, always the mission card / always the calm card of a
+ *     crisis call, and every mission-move proposal the bank can pay
+ */
+export const STAFF_POLICIES = new Set(["staff", "staffswitch", "chief", "guided", "callpush", "callhold"]);
+
+const strip = ({ action: { label: _l, ...a } }: { action: Action & { label: string } }): Action => a;
+
+/** The Accept all month for one of STAFF_POLICIES (true is the old staffswitch flag). */
+export function staffMonth(world: WorldState, policy: string | boolean = "staff") {
+  const p = policy === true ? "chief" : policy === false ? "staff" : policy;
   const advice = buildAdvice(world);
-  const decisions = [
-    ...world.pendingDecisions.map((d) => ({
-      decisionId: d.id,
-      optionId: switchToMission ? advice.missionPicks[d.id] : advice.cabinetPicks[d.id],
-    })),
-    ...Object.entries(advice.meetingPicks).map(([decisionId, optionId]) => ({ decisionId, optionId })),
-  ];
-  const orders: Action[] = advice.staffOrders.map(({ action: { label: _l, ...a } }) => a);
-  return { decisions, orders };
+  const decisions = advice.routine
+    .filter((r) => r.kind !== "order" && r.optionId)
+    .map((r) => ({ decisionId: r.id, optionId: r.optionId as string }));
+  const upkeep = advice.staffOrders.map(strip);
+  const calls: Action[] = [];
+  if (p === "chief" || p === "staffswitch" || p === "guided") {
+    for (const [decisionId, optionId] of Object.entries(advice.chief.decisions))
+      decisions.push({ decisionId, optionId });
+    calls.push(...advice.chief.orders.map(strip));
+  } else if (p === "callpush" || p === "callhold") {
+    let left = capitalAfter(world, advice.prices, decisions, upkeep);
+    for (const call of advice.calls) {
+      if (call.kind === "crisis") {
+        const order = p === "callpush" ? [call.missionCard, call.calmCard] : [call.calmCard, call.missionCard];
+        const card = order.map((id) => call.cards.find((c) => c.id === id)).find((c) => c && c.pc <= left);
+        if (!card) continue;
+        decisions.push({ decisionId: call.id, optionId: card.id });
+        left = capitalAfter(world, advice.prices, decisions, upkeep);
+      } else {
+        for (const c of call.cards)
+          if (c.action && c.pc <= left) {
+            calls.push(strip({ action: c.action }));
+            left -= c.pc;
+          }
+      }
+    }
+  }
+  return { decisions, orders: [...calls, ...upkeep], advice };
+}
+
+/** Political capital left after these answers (their capital and D-84 price) and these orders. */
+export function capitalAfter(
+  world: WorldState,
+  prices: Record<string, Record<string, number>>,
+  decisions: { decisionId: string; optionId: string }[],
+  orders: Action[],
+): number {
+  let pc = world.politicalCapital;
+  for (const { decisionId, optionId } of decisions) {
+    const item = [...world.pendingDecisions, ...world.agenda].find((d) => d.id === decisionId);
+    const o = item?.options.find((x) => x.id === optionId);
+    if (!o) continue;
+    const deputy = world.agenda.some((m) => m.id === decisionId) && item?.defaultOptionId === optionId;
+    pc += (o.effects.pc ?? 0) - (deputy ? 0 : (prices[decisionId]?.[optionId] ?? 0));
+  }
+  return pc - orders.reduce((s, a) => s + actionCostPC(a), 0);
 }
 
 // ----------------------------------------------------------------------------
@@ -149,15 +204,24 @@ export function decide(policy: string, decisions: PendingDecision[], rng: Seeded
   // Meetings: capital spent on a call is capital not spent on orders, so weigh it harder
   // (Flashpoints run on 3 a month), and send a deputy when no answer is worth the time
   const pcWeight = world.mode === "FLASHPOINT" ? 6 : 3;
-  const value = (d: PendingDecision, o: DecisionOption) =>
-    optionValue(o, key) + ("kind" in d ? (o.effects.pc ?? 0) * pcWeight : 0);
-  return decisions.map((d) => ({
-    decisionId: d.id,
-    optionId:
-      policy === "random"
-        ? rng.pick(d.options).id
-        : [...d.options].sort((a, b) => value(d, b) - value(d, a))[0].id,
-  }));
+  // The mission side's price (D-84 R6) is on the card: counted as capital, and a card the bank
+  // cannot pay is blocked before the press, so it is never chosen
+  const ctx = impactContext(world);
+  let pc = world.politicalCapital;
+  return decisions.map((d) => {
+    const prices = itemPrices(world, d, ctx);
+    const price = (o: DecisionOption) => prices[o.id] ?? 0;
+    const value = (o: DecisionOption) =>
+      optionValue(o, key) +
+      ("kind" in d ? (o.effects.pc ?? 0) * pcWeight : 0) -
+      price(o) * ("kind" in d ? pcWeight + 2 : 2);
+    const open = d.options.filter((o) => price(o) <= pc);
+    const pool = open.length ? open : d.options;
+    const pick =
+      policy === "random" ? rng.pick(pool) : [...pool].sort((a, b) => value(b) - value(a))[0];
+    pc = Math.max(0, pc + (pick.effects.pc ?? 0) - price(pick));
+    return { decisionId: d.id, optionId: pick.id };
+  });
 }
 
 export function playerOrders(policy: string, world: WorldState, rng: SeededRandom): Action[] {

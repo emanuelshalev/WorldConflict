@@ -6,7 +6,7 @@
  * foreign numbers come from the player's beliefs (buildPlayerView), never ground truth; memory of
  * last month comes from the turn report. No RNG.
  */
-import { actionCostPC } from "./costs.js";
+import { actionCostPC, PC_CAP } from "./costs.js";
 import { MEETING_SLOTS } from "./meetings.js";
 import {
   actionImpact,
@@ -14,6 +14,7 @@ import {
   type Impact,
   type ImpactContext,
   impactContext,
+  itemPrices,
   optionImpact,
 } from "./missionImpact.js";
 import { type ConditionStatus, type ObjectiveHelp, objectiveStatus } from "./objectives.js";
@@ -33,7 +34,8 @@ export type Advisor =
   | "Defense Minister"
   | "Interior Minister"
   | "Chief of Staff"
-  | "Intelligence Chief";
+  | "Intelligence Chief"
+  | "Finance Minister";
 
 export interface Suggestion {
   who: Advisor;
@@ -69,6 +71,92 @@ export interface Advice {
    * from the cabinet pick. Absent when no option is better for the mission than another.
    */
   missionNotes: Record<string, MissionNote>;
+  /**
+   * "Your call" (D-84): at most MAX_CALLS items a month that Accept all never decides, the crisis
+   * whose answers differ for the mission and the mission move (orders that push a goal). Two named
+   * advisers recommend different cards; none recommends a goal-hurting card when a safe one exists.
+   */
+  calls: YourCall[];
+  /**
+   * Everything Accept all recommended decides (the routine), in agenda order: crises that are not
+   * calls (on their cabinet pick), meetings the staff attend, meetings sent to a deputy, and the
+   * staff's upkeep orders. Its length is the n of "Accept all recommended (n)".
+   */
+  routine: RoutineItem[];
+  /**
+   * What Accept all adds when the setting "Let the Chief of Staff make my calls" is on: the Chief
+   * of Staff's pick on each call (the mission card, else the calm one when the bank cannot pay),
+   * and the mission move's first proposal when it still fits. Absent picks mean Skip / Hold.
+   */
+  chief: { decisions: Record<string, string>; orders: StaffOrder[] };
+  /** Extra political capital per answer (D-84 R6, PUSH_PC): item id to option id to price. */
+  prices: Record<string, Record<string, number>>;
+  /** Political capital the staff leave for the calls (the dearest call card, 1 to 3). */
+  reserve: number;
+}
+
+export interface RoutineItem {
+  kind: "crisis" | "meeting" | "deputy" | "order";
+  /** Crisis or meeting id; for an order, its label. */
+  id: string;
+  optionId?: string;
+  label: string;
+}
+
+/** One card on a call: a crisis answer, a proposed mission order, or Hold this month. */
+export interface CallCard {
+  /** Crisis: the option id. Mission move: "order:<n>" or "hold". */
+  id: string;
+  label: string;
+  /** mission: serves a goal; calm: the steady answer; other: an unbacked answer; hold: no move. */
+  side: "mission" | "calm" | "other" | "hold";
+  /** "Recommended by your <adviser>" (null on cards no adviser backs). */
+  adviser: Advisor | null;
+  /** The adviser's reason, one sentence (null when unbacked). */
+  why: string | null;
+  /** Goals moved, as short labels (missionImpact.ts). */
+  helps: string[];
+  hurts: string[];
+  breaks: string[];
+  bonusHelps: string[];
+  bonusHurts: string[];
+  /** Political capital the card takes in all, the price included. */
+  pc: number;
+  /** The part of pc that is the price of the mission side (PUSH_PC), 0 when unpriced. */
+  price: number;
+  /** Odds of success 0-100 for an order (null = certain or not an order). */
+  successChance: number | null;
+  /** The order a mission-move card queues. */
+  action?: Action & { label: string };
+  /** Shown unavailable before the press when the bank cannot pay (G1: reason and fix). */
+  blocked: { reason: string; fix: string } | null;
+}
+
+export interface YourCall {
+  /** The crisis id, or "mission-move". */
+  id: string;
+  kind: "crisis" | "move";
+  title: string;
+  cards: CallCard[];
+  /** The card that serves the mission, and the calm one (Hold on the mission move). */
+  missionCard: string;
+  calmCard: string;
+  /** What the Chief of Staff takes when the player lets them make the calls (null: Skip/Hold). */
+  chiefPick: string | null;
+  /** The Guide me line (R5): "For your mission: X. To keep things calm: Y." */
+  guide: string;
+  /** Skip with its cost (R7). Crisis: the engine default; move: Hold this month. */
+  skip: {
+    label: string;
+    text: string;
+    /** The answer the engine applies when the call is skipped (null on the mission move). */
+    optionId: string | null;
+    hurts: string[];
+    breaks: string[];
+    bonusHurts: string[];
+  };
+  /** How much more the mission card does for the goals than the calm one (ranking only). */
+  gap: number;
 }
 
 export interface MissionNote {
@@ -103,10 +191,18 @@ export const DANGEROUS = new Set([
   "INTEL_ASSASSINATE",
   "INTEL_COUP",
 ]);
-/** Staff propose at most this many orders a month... */
-export const STAFF_ORDERS = 2;
-/** ...and always leave this much political capital for the player's own orders. */
+/** Staff propose at most this many upkeep orders a month (D-84 R9: never a mission order)... */
+export const STAFF_ORDERS = 3;
+/**
+ * ...and leave a reserve for the month's calls: the dearest card of an open call, at least
+ * RESERVE_PC and at most RESERVE_MAX (D-84 R9).
+ */
 export const RESERVE_PC = 1;
+export const RESERVE_MAX = 3;
+/** At most this many "Your call" items a month (D-84): the mission crisis and the mission move. */
+export const MAX_CALLS = 2;
+/** The mission move shows at most this many proposals (plus Hold this month). */
+export const MOVE_CARDS = 3;
 /** Orders with worse odds than this (percent) are left for the player to decide. */
 export const MIN_ODDS = 35;
 /**
@@ -565,41 +661,52 @@ export function netScore(o: DecisionOption): number {
 }
 
 const backers = (o: DecisionOption) => o.backedBy?.length ?? 0;
-const affordablePool = (d: PendingDecision, pcAvailable: number) => {
-  const ok = d.options.filter(
-    (o) => (o.effects.pc ?? 0) >= 0 || pcAvailable + (o.effects.pc ?? 0) >= 0,
-  );
+
+/** What an answer takes from the bank: its own capital cost plus its D-84 price. */
+export function answerCost(o: DecisionOption, prices: Record<string, number> = {}): number {
+  return Math.max(0, -(o.effects.pc ?? 0)) + (prices[o.id] ?? 0);
+}
+
+const affordablePool = (
+  d: PendingDecision,
+  pcAvailable: number,
+  prices: Record<string, number> = {},
+) => {
+  const ok = d.options.filter((o) => answerCost(o, prices) <= Math.max(0, pcAvailable));
   return ok.length ? ok : d.options;
 };
 
+/** Hurts or breaks a goal, primary or bonus (the D-72 test: no recommendation does this). */
+const hurtsGoal = (i: Impact) => againstMission(i, true);
+
 /**
- * The cabinet pick: the cabinet's consensus. The option most advisors back; ties go to the better
- * net effect, then not the "do nothing" default, then the cheaper one; never one that overdraws the
- * month's capital. It can hurt the mission: only ANALYST keeps the old safety net (no option that
- * works against an objective or takes the country to war, when another exists).
+ * The cabinet pick, the recommended answer on routine things (D-72, D-84 R3, every difficulty):
+ * best for the country (net effect) among the affordable answers that hurt no goal and start no
+ * war; ties go to the answer more advisors back, then not the "do nothing" default, then the
+ * cheaper one. When every answer hurts a goal it is the least harm.
  */
 export function cabinetPick(
   world: WorldState,
   d: PendingDecision,
   pcAvailable = 99,
   ctx: ImpactContext | null = impactContext(world),
+  prices: Record<string, number> = itemPrices(world, d, ctx),
 ): DecisionOption {
-  const pool = affordablePool(d, pcAvailable);
-  let candidates = pool;
-  if (world.difficulty === "ANALYST") {
-    const safe = pool.filter(
-      (o) =>
-        !againstMission(optionImpact(world, o, ctx), true) &&
-        !o.actions.some((a) => a.type === "DIPLOMACY_DECLARE_WAR"),
-    );
-    if (safe.length) candidates = safe;
-  }
-  return [...candidates].sort(
+  const pool = affordablePool(d, pcAvailable, prices);
+  const impact = new Map(pool.map((o) => [o.id, optionImpact(world, o, ctx)]));
+  const safe = pool.filter(
+    (o) =>
+      !hurtsGoal(impact.get(o.id) as Impact) &&
+      !o.actions.some((a) => a.type === "DIPLOMACY_DECLARE_WAR"),
+  );
+  const harm = (o: DecisionOption) => (safe.length ? 0 : (impact.get(o.id) as Impact).score);
+  return [...(safe.length ? safe : pool)].sort(
     (a, b) =>
-      backers(b) - backers(a) ||
+      harm(b) - harm(a) ||
       netScore(b) - netScore(a) ||
+      backers(b) - backers(a) ||
       Number(a.id === d.defaultOptionId) - Number(b.id === d.defaultOptionId) ||
-      -(a.effects.pc ?? 0) + (b.effects.pc ?? 0),
+      answerCost(a, prices) - answerCost(b, prices),
   )[0];
 }
 
@@ -622,9 +729,10 @@ export function missionPick(
   d: PendingDecision,
   pcAvailable = 99,
   ctx: ImpactContext | null = impactContext(world),
+  prices: Record<string, number> = itemPrices(world, d, ctx),
 ): DecisionOption {
-  const pool = affordablePool(d, pcAvailable);
-  const cabinet = cabinetPick(world, d, pcAvailable, ctx);
+  const pool = affordablePool(d, pcAvailable, prices);
+  const cabinet = cabinetPick(world, d, pcAvailable, ctx, prices);
   const impact = new Map(pool.map((o) => [o.id, optionImpact(world, o, ctx)]));
   const p = (o: DecisionOption) => primaryScore(impact.get(o.id) as Impact);
   const b = (o: DecisionOption) => bonusScore(impact.get(o.id) as Impact);
@@ -652,9 +760,10 @@ export function missionNote(
   pcAvailable = 99,
   ctx: ImpactContext | null = impactContext(world),
   cabinet: DecisionOption = cabinetPick(world, d, pcAvailable, ctx),
+  prices: Record<string, number> = itemPrices(world, d, ctx),
 ): MissionNote | null {
-  const pool = affordablePool(d, pcAvailable);
-  const pick = missionPick(world, d, pcAvailable, ctx);
+  const pool = affordablePool(d, pcAvailable, prices);
+  const pick = missionPick(world, d, pcAvailable, ctx, prices);
   const impactOf = (o: DecisionOption) => optionImpact(world, o, ctx);
   const mine = impactOf(pick);
   const scores = pool.map((o) => primaryScore(impactOf(o)) * 100 + bonusScore(impactOf(o)));
@@ -726,13 +835,14 @@ export function meetingPlan(
   const picks: Record<string, string> = {};
   let free = MEETING_SLOTS;
   let pc = Math.max(0, pcAvailable);
+  const ctx = impactContext(world);
   for (const m of meetingPriority(world.agenda ?? [], world.objective)) {
     if (free <= 0) break;
     const o = meetingSuggestion(m);
     if (!o) continue;
-    const cost = -(o.effects.pc ?? 0);
+    const cost = answerCost(o, itemPrices(world, m, ctx));
     if (cost > 0 && cost > pc) continue;
-    pc -= Math.max(0, cost);
+    pc -= cost;
     picks[m.id] = o.id;
     free--;
   }
@@ -779,22 +889,37 @@ export function recentUses(world: WorldState, type: string): number {
   return orderTurns(world, type).filter((t) => t >= world.turn - 6).length;
 }
 
+/** Does this order push the mission (a primary goal; in Term and Legacy a bonus goal too)? D-84 R1 b. */
+export function isMissionOrder(
+  world: WorldState,
+  action: Action,
+  ctx: ImpactContext | null = impactContext(world),
+): boolean {
+  const i = actionImpact(world, action, ctx);
+  return i.helps.length > 0 || (world.mode !== "FLASHPOINT" && i.bonusHelps.length > 0);
+}
+
 /**
- * The orders the staff propose: the top suggestions that are safe (not dangerous, no mission
- * warning, decent odds), varied, affordable after the crisis picks and leaving RESERVE_PC. They
- * run only once approved (Approve all approves every one that still fits, as the harness does).
+ * The orders the staff propose (upkeep, D-84 R9): the top suggestions that are safe (not
+ * dangerous, no mission warning, decent odds), varied, never a mission order (those are the
+ * player's mission move), affordable after the routine picks and leaving `reserve` for the
+ * month's calls. They run only once approved (Accept all approves every one that still fits, as
+ * the harness does).
  */
 export function staffOrders(
   world: WorldState,
   pcAvailable: number,
   suggestions?: Suggestion[],
+  reserve = RESERVE_PC,
 ): StaffOrder[] {
   const out: StaffOrder[] = [];
   const lastLabels = new Set((world.turnReport?.orders ?? []).map((o) => o.label));
+  const ctx = impactContext(world);
   let pc = pcAvailable;
   for (const s of suggestions ?? computeSuggestions(world)) {
     if (out.length >= STAFF_ORDERS) break;
     if (DANGEROUS.has(s.action.type)) continue;
+    if (isMissionOrder(world, s.action, ctx)) continue;
     if (
       out.some(
         (o) =>
@@ -804,7 +929,7 @@ export function staffOrders(
       continue;
     if (lastLabels.has(s.action.label) || !staffMayRepeat(world, s.action.type)) continue;
     const cost = actionCostPC(s.action);
-    if (cost > pc - RESERVE_PC) continue;
+    if (cost > pc - reserve) continue;
     const preview = previewAction(world, s.action);
     if (preview.blocked || preview.missionWarning) continue;
     if (preview.successChance !== null && preview.successChance < MIN_ODDS) continue;
@@ -818,28 +943,339 @@ export function staffOrders(
 // The month's advice and the goal line
 // ----------------------------------------------------------------------------
 
-/** The cabinet's plan for the month: crisis picks paid in order, staff orders, then meetings. */
+// ----------------------------------------------------------------------------
+// Your call (D-84): the month's decisions Accept all leaves to the player
+// ----------------------------------------------------------------------------
+
+const ROLE_NAMES: Record<string, Advisor> = {
+  FOREIGN_MINISTER: "Foreign Minister",
+  DEFENSE_MINISTER: "Defense Minister",
+  FINANCE_MINISTER: "Finance Minister",
+  INTELLIGENCE_CHIEF: "Intelligence Chief",
+  DOMESTIC_ADVISOR: "Interior Minister",
+  CHIEF_OF_STAFF: "Chief of Staff",
+};
+/** The minister whose domain a goal is (R4: the mission card's backer when the data names none). */
+const DOMAIN: Partial<Record<string, Advisor>> = {
+  RELATION_MIN: "Foreign Minister",
+  WAR_ENDED: "Foreign Minister",
+  NO_WAR_WITH: "Foreign Minister",
+  NOT_COLLAPSED: "Foreign Minister",
+  WAR_RESULT: "Defense Minister",
+  NO_NUCLEAR: "Intelligence Chief",
+};
+
+/** Mission value of an impact: primary goals first, bonus goals as the tie-break. */
+const missionValue = (i: Impact) => primaryScore(i) * 100 + bonusScore(i);
+const helpsNone = (i: Impact) => i.helps.length + i.bonusHelps.length === 0;
+
+function domainAdviser(ctx: ImpactContext | null, i: Impact): Advisor {
+  const link = i.links.find((l) => l.effect === "helps" && !l.bonus) ?? i.links.find((l) => l.effect === "helps");
+  const kind = link && ctx ? ctx.conditions[link.index]?.cond.kind : undefined;
+  return (kind && DOMAIN[kind]) || "Interior Minister";
+}
+
+/** Two different named advisers: the mission card's backer, then the calm card's (R4). */
+function adviserPair(
+  ctx: ImpactContext | null,
+  mission: DecisionOption,
+  missionImpact: Impact,
+  calm: DecisionOption,
+): [Advisor, Advisor] {
+  const named = (o: DecisionOption) =>
+    (o.backedBy ?? []).map((r) => ROLE_NAMES[r]).filter((a): a is Advisor => !!a);
+  const m = named(mission).find((a) => a !== "Chief of Staff") ?? domainAdviser(ctx, missionImpact);
+  const c =
+    named(calm).find((a) => a !== m) ?? (m !== "Chief of Staff" ? "Chief of Staff" : "Interior Minister");
+  return [m, c];
+}
+
+const goalsOf = (i: Impact) => ({
+  helps: i.helps,
+  hurts: i.hurts,
+  breaks: i.breaks,
+  bonusHelps: i.bonusHelps,
+  bonusHurts: i.bonusHurts,
+});
+
+const blockedBy = (pc: number, bank: number): CallCard["blocked"] =>
+  pc > bank
+    ? {
+        reason: `Costs political capital ${pc}, you have ${bank}.`,
+        fix: "Choose another card; political capital refills next month.",
+      }
+    : null;
+
+/**
+ * A crisis as a call (R1 a): its answers differ for the mission, and two answers can be backed
+ * without backing one that hurts a goal when a safe one exists (D-72). The mission card is the
+ * safe answer best for the goals; the calm card the safe answer best for the country, one that
+ * helps no goal first. When only one answer is safe there is nothing to argue about: the crisis is
+ * routine and Accept all takes the safe answer. When none is safe, the call is the least harm
+ * against the steadier answer. Null when the crisis is routine.
+ */
+export function crisisCall(
+  world: WorldState,
+  d: PendingDecision,
+  ctx: ImpactContext | null = impactContext(world),
+  prices: Record<string, number> = itemPrices(world, d, ctx),
+  bank = world.politicalCapital,
+): YourCall | null {
+  const opts = d.options.map((o) => ({ o, i: optionImpact(world, o, ctx) }));
+  if (new Set(opts.map((x) => missionValue(x.i))).size < 2) return null;
+  const safe = opts.filter((x) => !hurtsGoal(x.i));
+  if (safe.length === 1) return null;
+  const pool = safe.length ? safe : opts;
+  const mission = [...pool].sort(
+    (a, b) => missionValue(b.i) - missionValue(a.i) || netScore(b.o) - netScore(a.o),
+  )[0];
+  const calm = pool
+    .filter((x) => x !== mission)
+    .sort(
+      (a, b) =>
+        Number(helpsNone(b.i)) - Number(helpsNone(a.i)) ||
+        netScore(b.o) - netScore(a.o) ||
+        answerCost(a.o, prices) - answerCost(b.o, prices),
+    )[0];
+  if (!calm || missionValue(mission.i) <= missionValue(calm.i)) return null;
+  const [mAdv, cAdv] = adviserPair(ctx, mission.o, mission.i, calm.o);
+  const cards: CallCard[] = opts.map(({ o, i }) => {
+    const side = o === mission.o ? "mission" : o === calm.o ? "calm" : "other";
+    const pc = answerCost(o, prices);
+    const helped = i.helps.length ? i.helps : i.bonusHelps;
+    return {
+      id: o.id,
+      label: o.label,
+      side,
+      adviser: side === "mission" ? mAdv : side === "calm" ? cAdv : null,
+      why:
+        side === "mission"
+          ? `It moves ${listWords(helped)}.`
+          : side === "calm"
+            ? helpsNone(i)
+              ? "It keeps the country steady and puts no goal at stake."
+              : `The steadier answer, and it still helps ${listWords(helped)}.`
+            : null,
+      ...goalsOf(i),
+      pc,
+      price: prices[o.id] ?? 0,
+      successChance: null,
+      blocked: blockedBy(pc, bank),
+    };
+  });
+  const card = (o: DecisionOption) => cards.find((c) => c.id === o.id) as CallCard;
+  const chief = [card(mission.o), card(calm.o)].find((c) => !c.blocked)?.id ?? null;
+  const fallback = d.options.find((o) => o.id === d.defaultOptionId) ?? d.options[0];
+  const di = optionImpact(world, fallback, ctx);
+  const lost = [...di.breaks, ...di.hurts];
+  return {
+    id: d.id,
+    kind: "crisis",
+    title: d.title,
+    cards,
+    missionCard: mission.o.id,
+    calmCard: calm.o.id,
+    chiefPick: chief,
+    guide: `For your mission: ${mission.o.label}. To keep things calm: ${calm.o.label}.`,
+    skip: {
+      label: "Skip",
+      text: `The cabinet waits: ${fallback.label}.${lost.length ? ` It costs ${listWords(lost)}.` : ""}`,
+      optionId: fallback.id,
+      hurts: di.hurts,
+      breaks: di.breaks,
+      bonusHurts: di.bonusHurts,
+    },
+    gap: missionValue(mission.i) - missionValue(calm.i),
+  };
+}
+
+/**
+ * The mission move (R1 b): the advisers' proposals that push a goal, safe (not dangerous, no
+ * mission warning, decent odds), one card each (at most MOVE_CARDS), plus Hold this month backed
+ * by another adviser. Null when no order on offer pushes the mission.
+ */
+export function missionMove(
+  world: WorldState,
+  suggestions: Suggestion[],
+  ctx: ImpactContext | null = impactContext(world),
+  bank = world.politicalCapital,
+): YourCall | null {
+  const cards: CallCard[] = [];
+  for (const s of suggestions) {
+    if (cards.length >= MOVE_CARDS) break;
+    if (DANGEROUS.has(s.action.type) || !isMissionOrder(world, s.action, ctx)) continue;
+    if (
+      cards.some(
+        (c) =>
+          c.action?.type === s.action.type &&
+          c.action?.targetCountryId === s.action.targetCountryId,
+      )
+    )
+      continue;
+    const preview = previewAction(world, s.action);
+    if (preview.blocked || preview.missionWarning) continue;
+    if (preview.successChance !== null && preview.successChance < MIN_ODDS) continue;
+    const pc = actionCostPC(s.action);
+    cards.push({
+      id: `order:${cards.length}`,
+      label: s.label,
+      side: "mission",
+      adviser: s.who,
+      why: s.why,
+      ...goalsOf(actionImpact(world, s.action, ctx)),
+      pc,
+      price: 0,
+      successChance: preview.successChance,
+      action: s.action,
+      blocked: blockedBy(pc, bank),
+    });
+  }
+  if (!cards.length) return null;
+  const holdBy: Advisor = cards[0].adviser !== "Chief of Staff" ? "Chief of Staff" : "Interior Minister";
+  const keep = `Political capital ${bank} stays (above ${PC_CAP} is lost).`;
+  cards.push({
+    id: "hold",
+    label: "Hold this month",
+    side: "hold",
+    adviser: holdBy,
+    why: `No move for your mission this month. ${keep}`,
+    helps: [],
+    hurts: [],
+    breaks: [],
+    bonusHelps: [],
+    bonusHurts: [],
+    pc: 0,
+    price: 0,
+    successChance: null,
+    blocked: null,
+  });
+  const first = cards.find((c) => c.side === "mission" && !c.blocked);
+  return {
+    id: "mission-move",
+    kind: "move",
+    title: "The move for your mission",
+    cards,
+    missionCard: cards[0].id,
+    calmCard: "hold",
+    chiefPick: first?.id ?? null,
+    guide: `For your mission: ${cards[0].label}. To keep political capital: Hold this month.`,
+    skip: {
+      label: "Hold this month",
+      text: `No move for your mission. ${keep}`,
+      optionId: null,
+      hurts: [],
+      breaks: [],
+      bonusHurts: [],
+    },
+    gap: 0,
+  };
+}
+
+/**
+ * The cabinet's plan for the month (D-84): the calls (at most MAX_CALLS: the crisis that matters
+ * most for the mission, then the mission move), the routine Accept all decides (other crises on
+ * the cabinet pick paid in order, upkeep orders leaving the reserve for the calls, then meetings),
+ * and what the Chief of Staff adds when the player lets them make the calls.
+ */
 export function buildAdvice(world: WorldState): Advice {
   const ctx = impactContext(world);
   const suggestions = computeSuggestions(world);
+  const bank = world.politicalCapital;
+  const prices: Record<string, Record<string, number>> = {};
+  for (const d of [...world.pendingDecisions, ...(world.agenda ?? [])]) {
+    const p = itemPrices(world, d, ctx);
+    if (Object.keys(p).length) prices[d.id] = p;
+  }
+  const priceOf = (id: string) => prices[id] ?? {};
+
+  // The calls: crises by how much the mission side matters, then the mission move
+  const crisisCalls = world.pendingDecisions
+    .map((d, i) => ({ i, call: crisisCall(world, d, ctx, priceOf(d.id), bank) }))
+    .filter((x): x is { i: number; call: YourCall } => x.call !== null)
+    .sort((a, b) => b.call.gap - a.call.gap || a.i - b.i);
+  const move = missionMove(world, suggestions, ctx, bank);
+  const calls = [
+    ...crisisCalls
+      .slice(0, move ? MAX_CALLS - 1 : MAX_CALLS)
+      .sort((a, b) => a.i - b.i)
+      .map((x) => x.call),
+    ...(move ? [move] : []),
+  ];
+  const callIds = new Set(calls.map((c) => c.id));
+
+  // The routine: cabinet picks on the other crises, paid in order
   const cabinetPicks: Record<string, string> = {};
   const missionPicks: Record<string, string> = {};
   const missionNotes: Record<string, MissionNote> = {};
-  let pc = world.politicalCapital;
-  let pcMission = pc;
+  const routine: RoutineItem[] = [];
+  let pc = bank;
+  let pcMission = bank;
   for (const d of world.pendingDecisions) {
-    const c = cabinetPick(world, d, pc, ctx);
+    const c = cabinetPick(world, d, pc, ctx, priceOf(d.id));
     cabinetPicks[d.id] = c.id;
-    const note = missionNote(world, d, pcMission, ctx, c);
+    const note = missionNote(world, d, pcMission, ctx, c, priceOf(d.id));
     if (note) missionNotes[d.id] = note;
-    pc += c.effects.pc ?? 0;
-    const m = missionPick(world, d, pcMission, ctx);
+    if (!callIds.has(d.id)) {
+      pc -= answerCost(c, priceOf(d.id)) - Math.max(0, c.effects.pc ?? 0);
+      routine.push({ kind: "crisis", id: d.id, optionId: c.id, label: c.label });
+    }
+    const m = missionPick(world, d, pcMission, ctx, priceOf(d.id));
     missionPicks[d.id] = m.id;
-    pcMission += m.effects.pc ?? 0;
+    pcMission -= answerCost(m, priceOf(d.id)) - Math.max(0, m.effects.pc ?? 0);
   }
-  const orders = staffOrders(world, pc, suggestions);
+  // The reserve: the dearest card of an open call, 1 to 3
+  const dearest = Math.max(0, ...calls.flatMap((c) => c.cards.map((x) => x.pc)));
+  const reserve = Math.min(RESERVE_MAX, Math.max(RESERVE_PC, dearest));
+  const orders = staffOrders(world, pc, suggestions, reserve);
   const spent = orders.reduce((s, o) => s + actionCostPC(o.action), 0);
   const meetings = meetingPlan(world, pc - spent);
+  for (const o of orders) routine.push({ kind: "order", id: o.label, label: o.label });
+  const meetingCost = Object.entries(meetings.picks).reduce((s, [id, oid]) => {
+    const o = world.agenda.find((m) => m.id === id)?.options.find((x) => x.id === oid);
+    return s + (o ? answerCost(o, priceOf(id)) - Math.max(0, o.effects.pc ?? 0) : 0);
+  }, 0);
+  for (const m of world.agenda ?? []) {
+    const oid = meetings.picks[m.id];
+    if (oid)
+      routine.push({
+        kind: "meeting",
+        id: m.id,
+        optionId: oid,
+        label: m.options.find((o) => o.id === oid)?.label ?? "",
+      });
+    else if (meetings.deputies.includes(m.id))
+      routine.push({ kind: "deputy", id: m.id, optionId: m.defaultOptionId, label: m.title });
+  }
+
+  // The Chief of Staff's calls (the opt-in setting): mission card, else calm, within the bank
+  let left = pc - spent - meetingCost;
+  const chief: Advice["chief"] = { decisions: {}, orders: [] };
+  for (const call of calls) {
+    call.chiefPick = null;
+    if (call.kind === "crisis") {
+      const pick = [call.missionCard, call.calmCard]
+        .map((id) => call.cards.find((c) => c.id === id) as CallCard)
+        .find((c) => c.pc <= Math.max(0, left));
+      if (!pick) continue;
+      const d = world.pendingDecisions.find((x) => x.id === call.id);
+      const o = d?.options.find((x) => x.id === pick.id);
+      chief.decisions[call.id] = pick.id;
+      call.chiefPick = pick.id;
+      left -= pick.pc - Math.max(0, o?.effects.pc ?? 0);
+    } else {
+      const pick = call.cards.find((c) => c.side === "mission" && c.action && c.pc <= left);
+      call.chiefPick = pick?.id ?? null;
+      if (!pick?.action) continue;
+      chief.orders.push({
+        who: pick.adviser ?? "Chief of Staff",
+        label: pick.label,
+        why: pick.why ?? "",
+        action: pick.action,
+        successChance: pick.successChance,
+      });
+      left -= pick.pc;
+    }
+  }
   return {
     suggestions,
     cabinetPicks,
@@ -848,6 +1284,11 @@ export function buildAdvice(world: WorldState): Advice {
     deputies: meetings.deputies,
     staffOrders: orders,
     missionNotes,
+    calls,
+    routine,
+    chief,
+    prices,
+    reserve,
   };
 }
 

@@ -14,11 +14,12 @@
  *   loop: the "reform / address every month" loop playtesters found, best crisis options
  *   hawk: mobilizes then attacks the main rival
  *   ai: the player's country is driven by PersonalityAI
- *   staff: autopilot ("Approve all" + Execute): cabinet picks on crises, the staff's meeting
- *     answers within the slots, the staff's proposed orders, all approved (src/core/advisors.ts;
- *     on the desk a proposal holds no political capital until approved, F-02-4)
- *   staffswitch: staff, but every cabinet pick that differs from the mission pick is switched
- *     (a player who reads the red mission tags)
+ *   staff: Accept all recommended + Execute (D-84): the routine (crises that are not calls on the
+ *     cabinet pick, meetings, deputies, upkeep orders), every "Your call" skipped
+ *   chief (old name staffswitch): staff with the setting "Let the Chief of Staff make my calls"
+ *   guided: staff plus the Guide me line on every call (mission card, first mission-move proposal)
+ *   callpush / callhold: staff plus always the mission / always the calm card of a crisis call,
+ *     and every mission-move proposal the bank can pay (the two fixed rules, D-84 6.1)
  *
  *   --difficulty ANALYST|STATESMAN|STRONGMAN (default STATESMAN)
  */
@@ -26,7 +27,7 @@ import { generateDeterministicIntents } from "../src/agents/fallback.js";
 import { createDataLoader } from "../src/core/data-loader.js";
 import { combineSeed, SeededRandom } from "../src/core/seed.js";
 import { TurnEngine } from "../src/core/turn.js";
-import { decide, playerOrders, staffMonth } from "./policies.js";
+import { decide, playerOrders, STAFF_POLICIES, staffMonth } from "./policies.js";
 import type { Difficulty, GameMode } from "../src/core/types.js";
 
 const args = new Map<string, string>();
@@ -72,6 +73,7 @@ interface GameMetrics {
   warnedBeforeDeposed: boolean | null;
   pcCappedMonths: number;
   pcRefusals: number;
+  callMonths: number;
 }
 
 const loader = createDataLoader();
@@ -112,11 +114,13 @@ for (const policy of policies) {
         warnedBeforeDeposed: null,
         pcCappedMonths: 0,
         pcRefusals: 0,
+        callMonths: 0,
       };
       let lastWarning = -99;
       for (let t = 0; t < 130 && !world.gameOver; t++) {
         // Players who answer crises also take their meetings (the engine caps them at MEETING_SLOTS)
-        const staff = policy.startsWith("staff") ? staffMonth(world, policy === "staffswitch") : null;
+        const staff = STAFF_POLICIES.has(policy) ? staffMonth(world, policy) : null;
+        if (staff?.advice.calls.length) m.callMonths++;
         const decisions = staff?.decisions ?? decide(policy, [...world.pendingDecisions, ...(process.env.NO_MEET ? [] : world.agenda.filter((m) => !process.env.MEET_KIND || m.kind === process.env.MEET_KIND).slice(0, 3))], rng, world);
         if (process.env.MEET_LOG) for (const d of decisions) { const m = world.agenda.find((x) => x.id === d.decisionId); if (m) console.error(`T${world.turn} ${m.title} -> ${m.options.find((o) => o.id === d.optionId)?.label} ${JSON.stringify(m.options.find((o) => o.id === d.optionId)?.effects)}`); }
         const result = engine.executeTurn(
@@ -193,6 +197,10 @@ for (const policy of policies) {
       tension80: pct(allTension.filter((t) => t >= 80).length, allTension.length),
       pcCapped: pct(
         results.reduce((s, r) => s + r.pcCappedMonths, 0),
+        results.reduce((s, r) => s + r.turns, 0),
+      ),
+      callMonths: pct(
+        results.reduce((s, r) => s + r.callMonths, 0),
         results.reduce((s, r) => s + r.turns, 0),
       ),
       pcRefusalsPerGame: (results.reduce((s, r) => s + r.pcRefusals, 0) / results.length).toFixed(1),

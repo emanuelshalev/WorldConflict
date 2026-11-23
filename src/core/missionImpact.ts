@@ -3,6 +3,7 @@
  * breaks. One pure reading of the state, shared by the desk tags, the advisors' cabinet and
  * mission picks, and the harness, so all three agree. No RNG, no mutation.
  */
+import { answerPrices } from "./costs.js";
 import {
   type ConditionStatus,
   objectiveConditions,
@@ -320,4 +321,21 @@ export function actionImpact(
 /** True when the impact works against a primary objective (or a bonus, when `bonus`). */
 export function againstMission(impact: Impact, bonus = false): boolean {
   return impact.hurts.length + impact.breaks.length > 0 || (bonus && impact.bonusHurts.length > 0);
+}
+
+/**
+ * The extra political capital each answer of a crisis or meeting costs (D-84 R6, costs.ts
+ * PUSH_PC): option id to price, priced answers only. Read from the month's starting state, the
+ * same picture the desk shows and the engine charges.
+ */
+export function itemPrices(
+  world: WorldState,
+  item: { options: DecisionOption[] },
+  ctx: ImpactContext | null = impactContext(world),
+): Record<string, number> {
+  if (!ctx) return {};
+  return answerPrices(
+    item.options.map((o) => o.id),
+    item.options.map((o) => optionImpact(world, o, ctx).helps.length > 0),
+  );
 }
