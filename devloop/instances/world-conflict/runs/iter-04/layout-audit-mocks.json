@@ -1,0 +1,18 @@
+{
+  "regions": [
+    { "id": "state", "selector": "[data-region=state]" },
+    { "id": "item", "selector": "[data-region=item]" },
+    { "id": "plan", "selector": ".app [data-region=plan], .ph .ph-bottom" },
+    { "id": "list", "selector": ".app [data-region=list]", "summary": ".bar .seeall, .ph-state .l2" }
+  ],
+  "content": ["[data-region]", ".ph-body", ".ph-map"],
+  "ignore": [".ph-bottom .below"],
+  "rules": [
+    { "id": "no-inner-scroll", "check": "inner-scroll", "when": { "minWidth": 1366, "minHeight": 768 } },
+    { "id": "no-page-scroll", "check": "page-scroll", "when": { "minWidth": 1024, "minHeight": 768 } },
+    { "id": "no-hidden-items", "check": "below-fold", "when": { "minWidth": 1024, "minHeight": 768 } },
+    { "id": "use-the-width", "check": "used-width", "when": { "minWidth": 1920 }, "min": 0.85 },
+    { "id": "collapsed-not-hidden", "check": "collapsed-not-hidden", "when": { "widths": [390, 1024] }, "regions": ["list"] },
+    { "id": "not-covered", "check": "occluded", "when": { "minWidth": 701 } }
+  ]
+}

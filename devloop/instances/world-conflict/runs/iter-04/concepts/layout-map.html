@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Layout, map</title>
+<link rel="stylesheet" href="layout.css">
+</head>
+<body>
+<!-- Layout mock (D-80, RS-008). Map mode, month 4: card left, plan right from 1600, strip below 1600. -->
+<div class="app">
+<header class="state" data-region="state" aria-label="Your state">
+  <div class="l1"><span class="who">🇺🇸 <span class="wideonly2">President of the </span><span class="tabhide">United States</span></span><span class="month">Month 4 of 12<span class="tabhide"> · April 2027</span></span>
+    <button class="btn goalbtn"><span>Mission<span class="tabhide">: <b>Keep the Strait open without a war</b></span> · <span class="muted">2 of 3 goals on track</span></span><span class="chev">Open ›</span></button></div>
+  <div class="right"><div class="seg" role="tablist" aria-label="View"><button class="" role="tab">Desk</button><button class="on" role="tab">Map</button></div></div>
+  <div class="l2"><div class="grp"><span class="lbl wideonly2">This month</span><span class="s pc">Political capital<span class="wideonly"> (what orders cost)</span> <b class="num">◆ 3 of 6</b></span><button class="btn small">Explain</button><span class="s">Orders <b class="num">0 of 6</b></span><span class="s">Meetings<span class="tabhide"> you take</span> <b class="num">0 of 3</b></span><span class="s">Defense<span class="wideonly"> budget</span> <b class="num">12% used</b></span></div><span class="divv"></span><div class="grp"><span class="lbl wideonly2">Your country</span><span class="s">Approval <b class="num">48%</b></span><span class="s">Stability <b class="num">71</b></span><span class="s"><span class="tabhide">World t</span><span class="tabonly">T</span>ension <b class="num">62</b></span></div></div>
+</header><nav class="bar" data-region="bar" aria-label="This month">
+  <span class="t"><b>2 of 6: Xi Jinping calls</b>1 done, 5 to go</span>
+  <button class="btn">‹ Back</button><button class="btn"><span>Next<span class="nexttitle">: Takaichi visits</span></span> <span class="chev">›</span></button><button class="btn seeall">See all 6 <span class="chev">▾</span></button><button class="btn">Check and execute <span class="chev">›</span></button>
+</nav><main class="mapmain" data-region="main"><svg class="world" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <path d="M560 70 C760 40 1000 90 1110 180 C1150 270 1080 340 990 370 C950 420 900 470 840 480 C770 450 700 400 660 340 C600 280 530 200 560 70Z" fill="#2c3b2f" stroke="#41543f"/>
+  <path d="M1170 220 C1200 250 1215 310 1190 370 C1180 340 1160 280 1170 220Z" fill="#33465a" stroke="#4d6680"/>
+  <path d="M1030 470 C1046 482 1052 515 1036 538 C1026 520 1022 492 1030 470Z" fill="#3d5a7a" stroke="#6b93bd" stroke-width="2"/>
+  <path d="M780 520 C840 560 890 620 870 710 C830 690 780 620 780 520Z" fill="#26332a" stroke="#3a4a3c"/>
+  <path d="M980 450 C1000 470 1005 500 1000 525" stroke="#e5383b" stroke-width="3" stroke-dasharray="6 6" fill="none"/>
+  <path d="M120 120 C260 90 380 130 420 220 C400 300 300 330 200 300 C120 260 80 190 120 120Z" fill="#2a352c" stroke="#3a4a3c"/>
+</svg>
+  <span class="pin" style="left:64%;top:55%"></span><span class="maplabel" style="left:65.6%;top:55%">Taiwan · drills</span><span class="maplabel" style="left:50%;top:26%">China</span><span class="maplabel" style="left:74%;top:30%">Japan</span>
+  <div class="mapstage"><div class="mapleft"><section class="mapcard" data-region="item" aria-label="2 of 6: Xi Jinping calls"><div class="st">2 of 6 · a call · 🇨🇳 China</div><h3>Xi Jinping calls</h3><p>"Pull the patrol back and we can talk."</p><p class="ask" style="font-size:1rem">Choose one of 3 answers, or skip.</p><div class="opts"><button class="opt" data-answer="opt"><span class="body"><span class="name">Hold firm: the patrol stays</span><span class="fx">Keeps the Strait open. China -6.</span></span><span class="face">Choose</span></button><button class="opt" data-answer="opt"><span class="body"><span class="rec optrec">★ Recommended by your Secretary of State</span><span class="name">Propose a hotline · ◆ 1</span><span class="fx">Tension falls a lot. China +5.</span></span><span class="face">Choose</span></button><button class="opt" data-answer="opt"><span class="body"><span class="name">Offer a quiet pause</span><span class="fx"><span class="bad">Hurts "Japan stays on side".</span></span></span><span class="face">Choose</span></button><button class="opt skipopt" data-answer="skip"><span class="body"><span class="or">Or, if you do not want to decide:</span><span class="name">Skip: your Foreign Minister answers</span><span class="fx">Free, China relations -3.</span></span><span class="face">Skip</span></button></div></section><aside class="maplist" data-region="list" aria-label="This month: all 6 things"><h2>This month: 6 things · 1 done</h2><button class="lrow"><span class="t"><b>PLA drills close the north channel</b><span class="lst">Decided: joint patrol with Japan</span></span><span class="face">Open</span></button><button class="lrow now"><span class="t"><b>Xi Jinping calls</b><span class="lst">You are here · to do</span></span><span class="face">Open</span></button><button class="lrow"><span class="t"><b>PM Takaichi visits</b><span class="lst">To do · recommended: reaffirm the alliance</span></span><span class="face">Open</span></button><button class="lrow"><span class="t"><b>Small meetings (2)</b><span class="lst">To do · recommended: your ministers take both</span></span><span class="face">Open</span></button><button class="lrow"><span class="t"><b>Recommended orders (2)</b><span class="lst">To do · Court India, Intelligence on China</span></span><span class="face">Open</span></button><button class="lrow"><span class="t"><b>Your own orders</b><span class="lst">Optional · 3 suggestions, all orders</span></span><span class="face">Open</span></button></aside></div><div class="void"></div><aside class="mapplan plan" data-region="plan" aria-label="What will happen"><div class="list"><h2>What will happen</h2><section class="psec" data-fold="2"><button class="h"><span>Decided (1)</span><span class="tog" hidden></span></button><p class="sum">Joint patrol with Japan</p><div class="rows"><div class="row"><span class="t">You chose: Joint patrol with Japan<small class="opt2">PLA drills close the north channel</small></span><button class="btn small">Change</button></div></div></section><section class="psec" data-fold="3" data-rec-group><button class="h"><span>Recommended (5), still to do</span><span class="tog" hidden></span></button><p class="sum">Xi call, Takaichi visit, small meetings, 2 orders (◆ 3)</p><div class="rows"><div class="row"><span class="t">Xi call: propose a hotline · ◆ 1<small class="opt2">China +5</small></span><button class="btn small">Open ›</button></div><div class="row"><span class="t">Takaichi visit: reaffirm the alliance<small class="opt2">Japan on side +3</small></span><button class="btn small">Open ›</button></div><div class="row"><span class="t">Small meetings: your ministers take both<small class="opt2">Free, no effect</small></span><button class="btn small">Open ›</button></div><div class="row"><span class="t">Order: Court India · ◆ 1<small class="opt2">India +6, approval +2</small></span><button class="btn small">Open ›</button></div><div class="row"><span class="t">Order: Intelligence on China · ◆ 1<small class="opt2">Better estimates of China</small></span><button class="btn small">Open ›</button></div></div>
+  <div class="accept"><button class="btn wide">Accept all recommended (5)</button><span class="def">Chooses the recommended answer for every thing still to do.</span></div></section></div>
+  <div class="execb"><p class="h">If you execute now:</p><ul><li>Your answer to the PLA drills happens.</li><li>Your ministers take 4 meetings for you. <span class="bad">China -3, Japan -2.</span></li><li>The 2 recommended orders do not run (◆ 2 stay).</li></ul><button class="btn primary exec">Execute month 4 <span class="sub">ends the month</span></button></div></aside></div>
+  <div class="strip" data-region="plan">
+  <button class="btn">☰ Review 5 recommended</button>
+  <span class="grow"></span>
+  <div class="endgrp"><span class="conseq"><b>If you execute now:</b> 1 decision, 4 meetings by ministers (China -3, Japan -2), 2 orders do not run.</span><button class="btn primary execmap">Execute month 4 <span class="sub">ends the month</span></button></div>
+</div>
+</main>
+</div>
+<div class="ph">
+<header class="ph-state" data-region="state">
+  <div class="l1"><span>Month <b>4</b></span><span class="pc">◆ <b>3 of 6</b></span><span>Orders <b>0 of 6</b></span><span class="grow"></span><button class="btn small">State ▾</button></div>
+  <div class="l2"><button class="btn small">Desk</button><span class="t"><b>2 of 6 · Map</b>1 done, 5 to go</span><button class="btn small">See all</button></div>
+</header>
+<div class="ph-map"><svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <path d="M560 70 C760 40 1000 90 1110 180 C1150 270 1080 340 990 370 C950 420 900 470 840 480 C770 450 700 400 660 340 C600 280 530 200 560 70Z" fill="#2c3b2f" stroke="#41543f"/>
+  <path d="M1170 220 C1200 250 1215 310 1190 370 C1180 340 1160 280 1170 220Z" fill="#33465a" stroke="#4d6680"/>
+  <path d="M1030 470 C1046 482 1052 515 1036 538 C1026 520 1022 492 1030 470Z" fill="#3d5a7a" stroke="#6b93bd" stroke-width="2"/>
+  <path d="M780 520 C840 560 890 620 870 710 C830 690 780 620 780 520Z" fill="#26332a" stroke="#3a4a3c"/>
+  <path d="M980 450 C1000 470 1005 500 1000 525" stroke="#e5383b" stroke-width="3" stroke-dasharray="6 6" fill="none"/>
+  <path d="M120 120 C260 90 380 130 420 220 C400 300 300 330 200 300 C120 260 80 190 120 120Z" fill="#2a352c" stroke="#3a4a3c"/>
+</svg></div>
+<main class="ph-body" data-region="item"><h1 style="font-size:22px">Xi Jinping calls</h1><div class="opts"><button class="opt" data-answer="opt"><span class="body"><span class="name">Hold firm: the patrol stays</span><span class="fx">Keeps the Strait open. China -6.</span></span><span class="face">Choose</span></button><button class="opt" data-answer="opt"><span class="body"><span class="rec optrec">★ Recommended by your Secretary of State</span><span class="name">Propose a hotline · ◆ 1</span><span class="fx">Tension falls a lot. China +5.</span></span><span class="face">Choose</span></button><button class="opt" data-answer="opt"><span class="body"><span class="name">Offer a quiet pause</span><span class="fx"><span class="bad">Hurts "Japan stays on side".</span></span></span><span class="face">Choose</span></button><button class="opt skipopt" data-answer="skip"><span class="body"><span class="or">Or, if you do not want to decide:</span><span class="name">Skip: your Foreign Minister answers</span><span class="fx">Free, China relations -3.</span></span><span class="face">Skip</span></button></div><button class="btn wide">☰ Review 5 recommended</button></main>
+<div class="ph-bottom"><button class="btn below" hidden>More below</button><p>If you execute now: 1 decision happens, ministers take 4 meetings, 2 orders do not run.</p><button class="btn primary exec">Execute month 4 <span class="sub">ends the month</span></button></div>
+</div>
+<script>
+function fitPlan(list, keep) {
+  const secs = [...list.querySelectorAll('.psec[data-fold]')].sort((a, b) => a.dataset.fold - b.dataset.fold);
+  secs.forEach((s) => s.classList.remove('folded')); list.classList.remove('compact');
+  const steps = [];
+  for (const s of secs) { if (s.dataset.fold !== '1' && !steps.includes('compact')) steps.push('compact'); if (s !== keep) steps.push(s); }
+  if (!steps.includes('compact')) steps.push('compact');
+  for (const st of steps) {
+    if (list.scrollHeight <= list.clientHeight + 1) break;
+    if (st === 'compact') list.classList.add('compact'); else st.classList.add('folded');
+  }
+  if (keep && list.scrollHeight > list.clientHeight + 1) keep.classList.add('folded');
+  secs.forEach((s) => { const b = s.querySelector('.tog'); if (b) b.textContent = s.classList.contains('folded') ? 'Show' : ''; b && (b.hidden = !s.classList.contains('folded')); });
+}
+function fitAll() { document.querySelectorAll('.app .plan .list, .app .mapplan .list').forEach((l) => fitPlan(l)); belowCue(); }
+document.addEventListener('click', (e) => {
+  const h = e.target.closest('.psec > .h'); if (!h) return;
+  const s = h.parentElement; if (!s.classList.contains('folded')) return;
+  fitPlan(s.closest('.list'), s);
+});
+function belowCue() {
+  const cue = document.querySelector('.ph .below'); if (!cue || !cue.offsetParent && getComputedStyle(cue).display === 'none' && !cue.hidden) return;
+  const bar = document.querySelector('.ph .ph-bottom'); const limit = bar ? bar.getBoundingClientRect().top : innerHeight;
+  const below = [...document.querySelectorAll('.ph [data-answer]')].filter((el) => el.getBoundingClientRect().bottom > limit + 1);
+  if (!below.length) { cue.hidden = true; return; }
+  cue.hidden = false;
+  const skip = below.some((el) => el.dataset.answer === 'skip'); const n = below.filter((el) => el.dataset.answer !== 'skip').length;
+  const parts = []; if (n) parts.push(n + (n === 1 ? ' more answer' : ' more answers')); if (skip) parts.push(n ? 'Skip' : 'Skip card');
+  cue.textContent = parts.join(' and ') + ' below ↓';
+  cue.onclick = () => below[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+addEventListener('resize', fitAll); addEventListener('scroll', belowCue, { passive: true });
+fitAll(); setTimeout(fitAll, 50);
+</script>
+</body>
+</html>

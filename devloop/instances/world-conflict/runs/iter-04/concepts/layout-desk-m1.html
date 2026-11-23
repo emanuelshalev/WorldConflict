@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Layout, month 1</title>
+<link rel="stylesheet" href="layout.css">
+</head>
+<body>
+<!-- Layout mock (D-80, RS-008). Month 1, the simple desk: goal sentence, 2 things. -->
+<div class="app">
+<header class="state" data-region="state" aria-label="Your state">
+  <div class="l1"><span class="who">🇺🇸 <span class="wideonly2">President of the </span><span class="tabhide">United States</span></span><span class="month">Month 1 of 12<span class="tabhide"> · January 2027</span></span>
+    <button class="btn goalbtn"><span>Mission<span class="tabhide">: <b>Keep the Strait open without a war</b></span> · <span class="muted">month 1 of 12</span></span><span class="chev">Open ›</span></button></div>
+  <div class="right"><div class="seg" role="tablist" aria-label="View"><button class="on" role="tab">Desk</button><button class="" role="tab">Map</button></div></div>
+  <div class="l2"><div class="grp"><span class="lbl wideonly2">This month</span><span class="s pc">Political capital<span class="wideonly"> (what orders cost)</span> <b class="num">◆ 3 of 6</b></span><button class="btn small">Explain</button><span class="s">Orders <b class="num">0 of 6</b></span></div><span class="divv"></span><div class="grp"><span class="lbl wideonly2">Your country</span><span class="s">Approval <b class="num">52%</b></span><span class="s">Stability <b class="num">74</b></span><span class="s"><span class="tabhide">World t</span><span class="tabonly">T</span>ension <b class="num">58</b></span></div></div>
+</header><nav class="bar" data-region="bar" aria-label="This month">
+  <span class="t"><b>1 of 2: PLA warships ring Taiwan</b>0 of 2 done. Choose or skip each, then check and execute.</span>
+  <button class="btn"><span>Next<span class="nexttitle">: the recommended order</span></span> <span class="chev">›</span></button><button class="btn seeall">See all 2 <span class="chev">▾</span></button><button class="btn">Check and execute <span class="chev">›</span></button>
+</nav><main class="main" data-region="main">
+  <aside class="col-list" data-region="list" aria-label="This month: 2 things"><h2>This month: 2 things</h2><p class="hint">Go through them in order, or open either.</p><button class="lrow now"><span class="t"><b>PLA warships ring Taiwan</b><span class="lst">You are here · to do</span></span><span class="face">Open</span></button><button class="lrow"><span class="t"><b>Recommended order: address the nation</b><span class="lst">To do · ◆ 1</span></span><span class="face">Open</span></button>
+    <p class="flat"><b>Your ministers take this month's 3 meetings</b> (no effect). From month 2 you choose.</p><div class="grow"></div><div class="facts mission"><h3>Your mission: month 4 of 12</h3><div class="r"><span>The Strait stays open</span><span>On track</span></div><div class="r"><span>No war with China</span><span>On track</span></div><div class="r"><span>Japan stays on your side</span><span>At risk</span></div></div></aside>
+  <section class="item" data-region="item" aria-label="1 of 2: PLA warships ring Taiwan"><div class="thing">
+  <div class="sit"><p class="goal1"><b>Your goal.</b> You win if all three hold at the end of month 12: the Strait stays open, no war with China, and Japan stays on your side.</p><p class="intro1">This month you have <b>2 things</b> to go through. For each one, choose an answer or skip it. Then check what will happen and execute.</p><div class="hero crisis"><svg viewBox="0 0 800 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path d="M0 140 Q200 128 400 140 T800 140 V200 H0Z" fill="#10233a"/><path d="M430 70 q30 -30 60 0 q-10 40 -30 60 q-25 -20 -30 -60z" fill="#2a3d55"/><g fill="#8fa0b8"><path d="M120 128 h70 l-10 10 h-52z"/><path d="M260 112 h60 l-8 9 h-44z"/><path d="M600 124 h66 l-9 10 h-50z"/></g></svg><div class="shade"></div><div class="txt"><div class="kick">Crisis · urgent · 🇨🇳 China and 🇹🇼 Taiwan</div><h1>PLA warships ring Taiwan</h1><p>Thirty ships have closed the north channel for "drills". Taipei asks what you will do.</p></div></div><div class="story"><h3>How it got here</h3><ol><li><span class="when">2026</span><span>Taiwan elects a president Beijing calls a separatist.</span></li><li><span class="when">December</span><span>PLA exercises grow from 10 to 30 ships.</span></li><li><span class="when">Month 1</span><span>The north channel closes for "drills". Taipei calls you.</span></li></ol></div></div>
+  <div class="ans"><p class="ask">What do you do? Choose one of 3 answers, or skip (last card).</p><div class="opts"><button class="opt" data-answer="opt"><span class="body"><span class="rec ">★ Recommended by your Defense Secretary: "It shows Beijing we will not back off, with Japan beside us."</span><span class="name">Joint patrol with Japan</span><span class="fx"><span class="good">Keeps the Strait open (your goal).</span> Tension rises.</span><span class="more">Free. Japan relations +4. China relations -4.</span></span><span class="face">Choose</span></button><button class="opt" data-answer="opt"><span class="body"><span class="name">Quiet message to Beijing</span><span class="fx">Tension falls. Taiwan trusts you less.</span><span class="more">Free. Taiwan relations -5. The ships stay for now.</span></span><span class="face">Choose</span></button><button class="opt" data-answer="opt"><span class="body"><span class="name">Sanctions on PLA firms · costs ◆ 1</span><span class="fx"><span class="bad">China relations fall sharply: risks your goal "no war with China".</span></span><span class="more">Costs ◆ 1 of your 3. China relations -12, trade with China falls.</span></span><span class="face">Choose</span></button><button class="opt skipopt" data-answer="skip"><span class="body"><span class="or">Or, if you do not want to decide:</span><span class="name">Skip for now: your cabinet decides</span><span class="fx">They go with the recommended answer, joint patrol with Japan. You can come back before you execute.</span></span><span class="face">Skip</span></button></div><div class="facts advice"><h3>What your advisers say</h3><div class="r"><span><b>Defense Secretary</b>: "A joint patrol shows Beijing we will not back off, with Japan beside us."</span></div><div class="r"><span><b>Secretary of State</b>: "A quiet message keeps the door open, but Taipei will feel it."</span></div><div class="r"><span><b>Treasury Secretary</b>: "Sanctions now cost us more than they cost the PLA."</span></div></div></div>
+  <div class="ctx"><div class="ctxmap"><svg viewBox="0 0 600 360" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <path d="M0 0 H360 C380 60 340 120 300 170 C260 220 230 300 180 360 H0Z" fill="#2c3b2f" stroke="#41543f"/>
+  <path d="M430 170 C455 190 462 240 440 290 C425 270 418 210 430 170Z" fill="#3d5a7a" stroke="#6b93bd" stroke-width="2"/>
+  <path d="M520 0 C560 40 580 90 600 110 V0Z" fill="#33465a" stroke="#4d6680"/>
+  <path d="M380 150 C400 175 405 210 398 250" stroke="#e5383b" stroke-width="3" stroke-dasharray="6 6" fill="none"/>
+  <g fill="#8fa0b8"><path d="M372 190 h22 l-4 5 h-15z"/><path d="M360 230 h22 l-4 5 h-15z"/><path d="M455 140 h22 l-4 5 h-15z"/></g>
+</svg><span class="cap">Taiwan Strait · thirty PLA ships</span></div><div class="facts goals"><h3>Your 3 goals, month 1</h3><div class="r"><span>The Strait stays open</span><span>On track</span></div><div class="r"><span>No war with China</span><span>On track</span></div><div class="r"><span>Japan stays on your side</span><span>On track</span></div></div>
+    <div class="bg"><h3 style="font-size:.9375rem;color:var(--text-2)">How a month works</h3><p>Go through the things on the left, one at a time. Each ends with your choice or a skip. On the right you see what will happen; Execute ends the month and the world answers.</p><button class="btn small">Read the briefing ›</button></div></div>
+</div></section>
+  <aside class="plan" data-region="plan" aria-label="What will happen"><div class="list"><h2>What will happen</h2><p class="muted" style="font-size:.9375rem;margin:.25rem 0 .5rem">Nothing decided yet.</p><section class="psec" data-fold="3" data-rec-group><button class="h"><span>Recommended (2), still to do</span><span class="tog" hidden></span></button><p class="sum">the crisis answer and 1 order (◆ 1)</p><div class="rows"><div class="row"><span class="t">Crisis: joint patrol with Japan<small class="opt2">Tension rises</small></span><button class="btn small">Open ›</button></div><div class="row"><span class="t">Order: address the nation · ◆ 1<small class="opt2">Approval about +3</small></span><button class="btn small">Open ›</button></div></div>
+  <div class="accept"><button class="btn wide">Accept all recommended (2)</button><span class="def">Chooses the recommended answer for every thing still to do.</span></div></section></div>
+  <div class="execb"><p class="h">If you execute now:</p><ul><li>The cabinet's answer to the crisis: joint patrol with Japan.</li><li>The recommended order does not run (◆ 1 stays).</li><li>Your ministers take this month's 3 meetings (no effect).</li></ul><button class="btn primary exec">Execute month 1 <span class="sub">ends the month</span></button></div></aside>
+</main><div class="strip deskstrip" data-region="plan" aria-label="What will happen">
+  <button class="btn">☰ Review 2 recommended</button>
+  <span class="grow"></span>
+  <div class="endgrp"><span class="conseq"><b>If you execute now:</b> the cabinet answers the crisis, 1 order does not run, ministers take 3 meetings.</span><button class="btn primary execmap">Execute month 1 <span class="sub">ends the month</span></button></div>
+</div>
+</div>
+<div class="ph">
+<header class="ph-state" data-region="state">
+  <div class="l1"><span>Month <b>1</b></span><span class="pc">◆ <b>3 of 6</b></span><span>Things <b>0 of 2</b></span><span class="grow"></span><button class="btn small">State ▾</button></div>
+  <div class="l2"><button class="btn small">‹ Back</button><span class="t"><b>1 of 2 · PLA warships ring Taiwan</b>0 done, 2 to go</span><button class="btn small">See all</button></div>
+</header>
+<main class="ph-body" data-region="item"><p class="goal1"><b>Your goal.</b> You win if all three hold at the end of month 12: the Strait stays open, no war with China, and Japan stays on your side.</p><p class="intro1">This month you have <b>2 things</b> to go through. For each one, choose an answer or skip it. Then check what will happen and execute.</p><div class="ph-kick" style="color:#ff9a9c">Crisis · urgent</div><h1>PLA warships ring Taiwan</h1><p class="ph-quote">Thirty ships have closed the north channel. Taipei asks what you will do.</p><p class="ask">What do you do? Choose one of 3 answers, or skip (last card).</p><div class="opts"><button class="opt" data-answer="opt"><span class="body"><span class="rec ">★ Recommended by your Defense Secretary: "It shows Beijing we will not back off, with Japan beside us."</span><span class="name">Joint patrol with Japan</span><span class="fx"><span class="good">Keeps the Strait open (your goal).</span> Tension rises.</span><span class="more">Free. Japan relations +4. China relations -4.</span></span><span class="face">Choose</span></button><button class="opt" data-answer="opt"><span class="body"><span class="name">Quiet message to Beijing</span><span class="fx">Tension falls. Taiwan trusts you less.</span><span class="more">Free. Taiwan relations -5. The ships stay for now.</span></span><span class="face">Choose</span></button><button class="opt" data-answer="opt"><span class="body"><span class="name">Sanctions on PLA firms · costs ◆ 1</span><span class="fx"><span class="bad">China relations fall sharply: risks your goal "no war with China".</span></span><span class="more">Costs ◆ 1 of your 3. China relations -12, trade with China falls.</span></span><span class="face">Choose</span></button><button class="opt skipopt" data-answer="skip"><span class="body"><span class="or">Or, if you do not want to decide:</span><span class="name">Skip for now: your cabinet decides</span><span class="fx">They go with the recommended answer, joint patrol with Japan. You can come back before you execute.</span></span><span class="face">Skip</span></button></div></main>
+<div class="ph-bottom"><button class="btn below" hidden>More below</button><button class="btn big">Next: the recommended order <span class="chev">›</span></button></div>
+</div>
+<script>
+function fitPlan(list, keep) {
+  const secs = [...list.querySelectorAll('.psec[data-fold]')].sort((a, b) => a.dataset.fold - b.dataset.fold);
+  secs.forEach((s) => s.classList.remove('folded')); list.classList.remove('compact');
+  const steps = [];
+  for (const s of secs) { if (s.dataset.fold !== '1' && !steps.includes('compact')) steps.push('compact'); if (s !== keep) steps.push(s); }
+  if (!steps.includes('compact')) steps.push('compact');
+  for (const st of steps) {
+    if (list.scrollHeight <= list.clientHeight + 1) break;
+    if (st === 'compact') list.classList.add('compact'); else st.classList.add('folded');
+  }
+  if (keep && list.scrollHeight > list.clientHeight + 1) keep.classList.add('folded');
+  secs.forEach((s) => { const b = s.querySelector('.tog'); if (b) b.textContent = s.classList.contains('folded') ? 'Show' : ''; b && (b.hidden = !s.classList.contains('folded')); });
+}
+function fitAll() { document.querySelectorAll('.app .plan .list, .app .mapplan .list').forEach((l) => fitPlan(l)); belowCue(); }
+document.addEventListener('click', (e) => {
+  const h = e.target.closest('.psec > .h'); if (!h) return;
+  const s = h.parentElement; if (!s.classList.contains('folded')) return;
+  fitPlan(s.closest('.list'), s);
+});
+function belowCue() {
+  const cue = document.querySelector('.ph .below'); if (!cue || !cue.offsetParent && getComputedStyle(cue).display === 'none' && !cue.hidden) return;
+  const bar = document.querySelector('.ph .ph-bottom'); const limit = bar ? bar.getBoundingClientRect().top : innerHeight;
+  const below = [...document.querySelectorAll('.ph [data-answer]')].filter((el) => el.getBoundingClientRect().bottom > limit + 1);
+  if (!below.length) { cue.hidden = true; return; }
+  cue.hidden = false;
+  const skip = below.some((el) => el.dataset.answer === 'skip'); const n = below.filter((el) => el.dataset.answer !== 'skip').length;
+  const parts = []; if (n) parts.push(n + (n === 1 ? ' more answer' : ' more answers')); if (skip) parts.push(n ? 'Skip' : 'Skip card');
+  cue.textContent = parts.join(' and ') + ' below ↓';
+  cue.onclick = () => below[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+addEventListener('resize', fitAll); addEventListener('scroll', belowCue, { passive: true });
+fitAll(); setTimeout(fitAll, 50);
+</script>
+</body>
+</html>
