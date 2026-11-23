@@ -30,7 +30,8 @@ for (const device of devices) {
     // F-02-1: month 1 states the goal in one sentence above the crisis
     const sentence = p.locator('[data-mission-sentence]');
     const text = (await sentence.textContent().catch(() => '')) ?? '';
-    check(device, 'month 1 goal sentence', /You win if/.test(text) && /Israel/.test(text), text.slice(0, 160));
+    // The daily crisis rotates by date, so check the shape, not one crisis: a win condition naming a concrete place or actor
+    check(device, 'month 1 goal sentence', /You win if/.test(text) && /\b(?!You\b|Your\b|Contain\b|Keep\b|Stay\b)[A-Z][a-z]{2,}/.test(text.replace(/^Your goal\.\s*You win if/, '')), text.slice(0, 160));
     const sBox = await sentence.boundingBox().catch(() => null);
     const stage = await p.locator('.stage.is-primary').first().boundingBox().catch(() => null);
     check(device, 'goal sentence sits above the crisis', !!sBox && !!stage && sBox.y < stage.y);
@@ -76,15 +77,20 @@ for (const device of devices) {
       await p.getByRole('tab', { name: /Map/ }).first().click();
       await p.waitForFunction(() => !!window.__wcMap, null, { timeout: 15000 });
       await p.waitForTimeout(2000);
-      const pt = await p.evaluate(() => {
+      // The daily crisis (and so the camera) changes by date: tap well-known countries in view until one opens its menu
+      const pts = await p.evaluate(() => {
         const m = window.__wcMap;
-        const q = m.project([-102, 23.5]); // Mexico
         const r = m.getContainer().getBoundingClientRect();
-        return { x: r.left + q.x, y: r.top + q.y };
+        const places = [[45, 24], [53, 32], [35, 39], [79, 22], [103, 35], [90, 60], [-100, 40], [-102, 23.5], [-52, -10], [10, 51], [2, 46], [31, 49], [69, 30], [30, 26], [139, 36]];
+        return places.map((ll) => m.project(ll)).filter((q) => q.x > 60 && q.y > 60 && q.x < r.width - 60 && q.y < r.height - 120).map((q) => ({ x: r.left + q.x, y: r.top + q.y }));
       });
-      await p.mouse.click(pt.x, pt.y);
-      await p.waitForTimeout(1200);
-      const menuUp = await p.locator('.map-action-menu').isVisible().catch(() => false);
+      let menuUp = false;
+      for (const pt of pts.slice(0, 5)) {
+        await p.mouse.click(pt.x, pt.y);
+        await p.waitForTimeout(1200);
+        menuUp = await p.locator('.map-action-menu').isVisible().catch(() => false);
+        if (menuUp) break;
+      }
       await s.look('map-menu');
       await p.locator('[data-desk-switch]').click();
       await p.waitForTimeout(1000);

@@ -35,7 +35,7 @@ export default {
       cmd: 'npx',
       args: ['tsx', 'src/api/server.ts'],
       // JSON saves in the run folder: never touches dev.db or saves/
-      env: (ctx) => ({ PORT: String(ctx.ports.api), DB_DRIVER: 'json', SAVES_DIR: path.join(ctx.out, 'saves'), CORS_ORIGINS: ctx.urls.ui ?? '' }),
+      env: (ctx) => ({ PORT: String(ctx.ports.api), DB_DRIVER: 'json', WC_DAILY_DATE: '2026-11-22' /* guards and baselines must not depend on the calendar */, SAVES_DIR: path.join(ctx.out, 'saves'), CORS_ORIGINS: ctx.urls.ui ?? '' }),
       port: 8640,
       ready: (ctx) => `${ctx.urls.api}/health`,
     },
