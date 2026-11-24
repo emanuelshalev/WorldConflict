@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 /**
@@ -82,5 +83,53 @@ describe("QA repro #7: a crisis is never labelled 'Your call'", () => {
       "No answer yet. If you leave it, the crisis passes with no effect",
     ]);
     for (const c of cases) expect(`${c.text} ${c.word}`).not.toMatch(/your call/i);
+  });
+});
+
+/**
+ * QA4-S2-2 (iter-04 qa-verify, same root as F-02-4): "Free ◆ 1" on an unaffordable order card
+ * removed Reform program, an unapproved staff proposal that holds nothing, instead of the order
+ * holding the capital. The block's slots count committed orders only (monthView), while
+ * removePendingAction indexes every pendingAction, proposals included.
+ */
+describe("QA4-S2-2: Free ◆ n removes the order its label names", () => {
+  it("frees the committed order, keeps the proposal, and the blocked order becomes affordable", async () => {
+    const store = await import("../../ui/src/store/gameStore.js");
+    const { availabilityOf } = await import("../../ui/src/lib/availability.js");
+    const { useGameStore, monthView } = store;
+    useGameStore.setState({
+      worldState: {
+        turn: 1,
+        politicalCapital: 1,
+        playerCountryId: "USA",
+        countries: [{ id: "USA", gdp: 2.5e13, militaryBudgetPercent: 3.4 }],
+        agenda: [],
+      } as never,
+      pendingDecisions: [],
+      decisionChoices: {},
+      pcIncome: 2,
+      pcCap: 6,
+      pendingActions: [
+        { type: "DOMESTIC_REFORM", label: "Reform program", origin: "staff", proposed: true } as never,
+        { type: "INTEL_GATHER", targetCountryId: "IRN", label: "Spy on Iran", origin: "player" } as never,
+      ],
+    });
+    const strike = { type: "MILITARY_AIRSTRIKE", targetCountryId: "IRN", params: { targetType: "NUCLEAR" }, targeted: true };
+    const before = availabilityOf(strike, monthView());
+    expect(before.state).toBe("unaffordable");
+    const slot = before.block?.slots?.[0];
+    expect(slot).toBe(0);
+    // The label the card shows is the committed order's (MonthView counts committed orders)
+    expect(monthView().queuedLabels[slot as number]).toBe("Spy on Iran");
+    expect(store.committedIndex(useGameStore.getState().pendingActions, slot as number)).toBe(1);
+    store.removeQueuedSlot(slot as number);
+    expect(useGameStore.getState().pendingActions.map((a) => a.label)).toEqual(["Reform program"]);
+    expect(availabilityOf(strike, monthView()).state).toBe("available");
+  });
+
+  it("every Free / Remove fix on an order card goes through the slot translation", () => {
+    const card = readFileSync("ui/src/components/orders/OrderCard.tsx", "utf-8");
+    expect(card).not.toMatch(/\bremove\(slot\)/);
+    expect(card.match(/removeQueuedSlot\(slot\)/g)?.length).toBe(2);
   });
 });
