@@ -1130,6 +1130,49 @@
       "iteration": 4,
       "stage": "Triage",
       "tier": "T1"
+    },
+    {
+      "gate": "verify",
+      "result": "pass",
+      "commit": "993d4df89ba7af44aed883d41cde6f05c490efaf",
+      "codeTree": "e1a9a12db9c1db80",
+      "evidence": ".verify/summary.json",
+      "note": "modes default",
+      "t": "2026-11-24T17:12:42.669Z",
+      "iteration": 4,
+      "stage": "Triage",
+      "steps": [
+        "registry",
+        "test",
+        "lint",
+        "ui-lint",
+        "build",
+        "smoke",
+        "reveal",
+        "visual",
+        "regressions",
+        "balance"
+      ]
+    },
+    {
+      "gate": "qa",
+      "result": "pass",
+      "commit": "9a72d0aba15ccb39bd2e540937771c83a1beb539",
+      "codeTree": "e1a9a12db9c1db80",
+      "evidence": "devloop/instances/world-conflict/runs/iter-04/qa-recheck-triage.md",
+      "t": "2026-11-24T17:12:52.038Z",
+      "iteration": 4,
+      "stage": "Triage"
+    },
+    {
+      "gate": "design-review",
+      "result": "pass",
+      "commit": "9a72d0aba15ccb39bd2e540937771c83a1beb539",
+      "codeTree": "e1a9a12db9c1db80",
+      "evidence": "devloop/instances/world-conflict/runs/iter-04/qa-recheck-triage.md",
+      "t": "2026-11-24T17:12:52.290Z",
+      "iteration": 4,
+      "stage": "Triage"
     }
   ],
   "merges": [
