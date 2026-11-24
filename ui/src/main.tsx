@@ -1,5 +1,7 @@
 import { StrictMode, lazy, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
+// Fonts ship with the app (pinned @fontsource packages), never from Google Fonts
+import './styles/fonts.css'
 import './index.css'
 import './styles/feel.css'
 import './styles/learn.css'
