@@ -1,0 +1,24 @@
+  -> REPORT: decisions ["Incident with North Korea: Condemn publicly (no decision taken) [DONE]","Phone call: Chancellor Friedrich Merz: Promise full support [DONE]","Phone call: President Vladimir Putin: Reassure: no threat intended [DONE]","Staff meeting: the front: Let them handle it (you did not attend) [DONE]","State visit: Prime Minister Sanae Takaichi: A working lunch [DONE]"]
+     orders ["National address: DONE Diminishing returns, the public has heard it before (60% effect)","Reform program: DONE Stability now, growth later: the long-run trend edges up","Mobilize forces: DONE Carried out"]
+     causes ["North Korea fires missiles over neighbors' waters","War weariness weighs on the public mood"]; headlines ["North Korea fires missiles over neighbors' waters","United States: Reform program"]
+
+===== MONTH 4 (2027-02) PC 3 approval 47 stability 60 score 99
+  goal: The shooting stops: no US–Iran war at the end (Hormuz reopens) behind now= need=
+  goal: Iran never tests a bomb ON TRACK now= need=
+  goal: Voters stay on side (approval 56%+) behind now=47.1 need=56 <- this month's step
+  goal: The Gulf still trusts you (UAE relations 66+) ON TRACK now=73.4 need=66
+  goal: Israel stays on side (relations 61+) ON TRACK now=76.3 need=61
+  goal (bonus): Score of 111+ behind now=99 need=111
+  goal (bonus): Stability of 60%+ ON TRACK now=60.2 need=60
+  CRISIS dec_us_mine_2 Tanker hit in the strait (deadline turn 3, now 3): Expanding convoy escorts restores some traffic and commits more ships to a narrow, crowded sea. Striking the IRGC naval bases punishes the mining and invites Iranian missiles on Gulf hosts. A quiet signal through Oman mi
+    - convoy: Full convoy operation {"mobilization":8,"growth":0.3,"approval":2,"relations:ARE":5,"relations:SAU":4} t3 acts=
+    - bases: Strike the IRGC naval bases {"approval":5,"relations:IRN":-12,"relations:ARE":-6,"relations:SAU":-4} t8 acts=MILITARY_AIRSTRIKE:IRN
+    - wait: Wait for the minehunters {"approval":-5,"growth":-0.4} t0 acts= [default]
+  YOUR CALL Tanker hit in the strait: guide "Your advisers agree on Full convoy operation. The others cost you: The shooting stops, The Gulf still trusts you and Voters stay on side." | chief convoy | trade true
+    [mission] Full convoy operation by Defense Minister+Chief of Staff "It moves Voters stay on side and The Gulf still trusts you." helps=Voters stay on side,The Gulf still trusts you hurts= breaks= bonus+= bonus-= pc=1 (price 1) odds=-
+    [other] Strike the IRGC naval bases by - helps=Iran never tests a bomb,Voters stay on side hurts=The shooting stops,The Gulf still trusts you breaks= bonus+= bonus-= pc=1 (price 1) odds=-
+    [other] Wait for the minehunters by - helps= hurts=Voters stay on side breaks= bonus+= bonus-= pc=0 odds=-
+  YOUR CALL The move for your mission: guide "For your mission: Court United Arab Emirates. To keep political capital: Hold this month." | chief order:0 | trade true
+    [mission] Court United Arab Emirates by Foreign Minister "Mission: United Arab Emirates needs 66+, now 73: keep the margin." helps=The Gulf still trusts you hurts= breaks= bonus+= bonus-= pc=1 odds=-
+    [hold] Hold this month by Chief of Staff "No move for your mission this month. Political capital 3 stays (above 6 is lost)." helps= hurts= breaks= bonus+= bonus-= pc=0 odds=-
+  ROUTINE (Accept all 5): order:Court Yemen | meeting:Promise full support | meeting:Promise full support | meeting:Call up more reservists | deputy:Interview: the evening news

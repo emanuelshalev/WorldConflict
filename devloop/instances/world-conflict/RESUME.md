@@ -45,3 +45,7 @@ Windows turns font smoothing off in a Remote Desktop session, and the visual ste
 ## Pause before iteration 5 (CEO instruction, 2026-11-24)
 
 After iteration 4 is published (and the OpenClaw deploy of main is requested and reported), stop. Do not start iteration 5 (no planning agents, no packages, no advance of the controller into iteration 5) until the CEO says to continue. Open at that point: the orchestration model (the CEO was offered Opus 5.5 for the orchestrator in a fresh session, Fable 5.2 as a subagent for hard calls; not decided).
+
+## Iteration 5 backlog from the iteration 4 play pass and design review (2026-11-24)
+
+Play pass (`runs/iter-04/play-pass.md`, 21 seats, 36 seeds): real decision in 63.3% of months 2 to 12 against the D-84 target of 80%. Game Designer items: S2-1 give a winning player a move (protect a lead, chase the bonus goal); S2-2 leaving a call gets its default answer without the capital cost, so skipping beats choosing in 553 calls (needs a harness re-run); S2-3 leaving the month 1 call is free and slightly better; S2-4 Scarborough Line too easy; S2-5 (C2-1) the Chief of Staff budget counts unaccepted staff proposals; S2-6 "For your mission" names an answer that helps no goal in 1,233 calls; C-4 Taiwan relations fall 6.5 to 18 points in month 1; no card ever offers a ceasefire to Hormuz USA; seven S3s. Design review (`runs/iter-04/design-review-integrated.md`): 17 S3 findings DR-INT-8 to DR-INT-24 carried. First package of iteration 5: scaling (D-88).
