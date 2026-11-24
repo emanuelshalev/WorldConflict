@@ -100,18 +100,18 @@ export function capitalOutlook(state: GameState = useGameStore.getState(), free 
   return { now, spent: now - left, left, income, cap, next: Math.min(cap, kept + income), lost: Math.max(0, kept + income - cap) };
 }
 
-/** "◆ 2 is lost: you can hold at most ◆ 6" when next month's income overflows, else ''. */
-const lostWords = (o: CapitalOutlook) => (o.lost ? ` (◆ ${o.lost} of the new capital is lost: you can hold at most ◆ ${o.cap})` : '');
+/** " (◆ 2 lost: you can hold at most ◆ 6)" when next month's income overflows, else ''. */
+const lostWords = (o: CapitalOutlook) => (o.lost ? ` (◆ ${o.lost} lost: you can hold at most ◆ ${o.cap})` : '');
 
 /**
- * The plan's capital line: "Political capital: ◆ 5 now, ◆ 3 spent this month, ◆ 2 left. You start
- * next month with ◆ 5 (+3)."
+ * The plan's capital line: "Political capital: ◆ 5 now, ◆ 3 spent, ◆ 2 left. You start next month
+ * with ◆ 5 (+3)." Short, so the rail keeps Choose all in view at 1366x768 (RS-008-1).
  */
 export function capitalLine(state: GameState = useGameStore.getState()): string {
   const o = capitalOutlook(state);
   if (!o) return '';
-  const use = o.spent > 0 ? `◆ ${o.spent} spent this month` : o.spent < 0 ? `◆ ${-o.spent} gained this month` : 'nothing spent this month';
-  return `Political capital: ◆ ${o.now} now, ${use}, ◆ ${o.left} left. You start next month with ◆ ${o.next} (+${o.income})${lostWords(o)}.`;
+  const use = o.spent > 0 ? `◆ ${o.spent} spent` : o.spent < 0 ? `◆ ${-o.spent} gained` : 'nothing spent';
+  return `Political capital: ◆ ${o.now} now, ${use}, ◆ ${o.left} left. You start next month with ◆ ${o.next} (+${o.income}${o.lost ? `, ◆ ${o.lost} lost: you can hold at most ◆ ${o.cap}` : ''}).`;
 }
 
 /** What holding (no order) keeps, after the month's other choices: "◆ 1 is left, and you start next month with ◆ 4." */

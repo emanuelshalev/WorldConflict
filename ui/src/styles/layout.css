@@ -325,6 +325,9 @@ html { font-size: clamp(16px, calc(0.42vmin + 11.5px), 22px); }
 .execb-h { margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-1); }
 .execb ul, .rv-exec ul { margin: 0 0 .4rem; padding-left: 1.25rem; font-size: 1rem; color: var(--text-1); line-height: 1.4; }
 .execb-pc { margin: 0 0 .3rem; font-size: .9375rem; color: var(--text-2); line-height: 1.4; }
+/* Short screens (1366x768): the rail's Execute block keeps Choose all in view (RS-008-1, AC-L6); the
+   band, the Hold card and Check and execute still state the capital */
+@media (max-height: 800px) { .plan .execb-pc { display: none; } }
 .plan-over { display: flex; gap: .4rem; align-items: center; justify-content: center; background: none; border: 0; color: var(--war); font: inherit; font-size: .9375rem; cursor: pointer; min-height: 2.25rem; }
 .execute-btn .ex-sub { font-size: .9375rem; }
 @media (max-height: 820px) {
@@ -518,7 +521,9 @@ html { font-size: clamp(16px, calc(0.42vmin + 11.5px), 22px); }
 [data-fit='1'] .ask-staff, [data-fit='2'] .ask-staff, [data-fit='3'] .ask-staff,
 [data-fit='1'] .intro1, [data-fit='2'] .intro1, [data-fit='3'] .intro1 { display: none !important; }
 [data-fit='2'] .fx-rest, [data-fit='3'] .fx-rest, [data-fit='2'] .opt-more, [data-fit='3'] .opt-more,
-[data-fit='2'] .rec-why, [data-fit='3'] .rec-why, [data-fit='2'] .opt-after, [data-fit='3'] .opt-after { display: none !important; }
+[data-fit='2'] .rec-why, [data-fit='3'] .rec-why, [data-fit='2'] .opt-after, [data-fit='3'] .opt-after,
+/* DR-INT-4: the goals a mixed answer helps go with the effect words (the card's label keeps them) */
+[data-fit='2'] [data-mt-also], [data-fit='3'] [data-mt-also] { display: none !important; }
 [data-fit='3'] .th-hero { height: auto !important; aspect-ratio: auto !important; flex: none !important; background: var(--surface-1); }
 [data-fit='3'] .th-hero > .scene, [data-fit='3'] .th-hero .shade { display: none; }
 [data-fit='3'] .th-hero .txt { position: static; padding: .55rem 1rem; }

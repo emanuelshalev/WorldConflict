@@ -981,6 +981,11 @@ export function MapView() {
       }
       const item = currentItem(agendaItems(st), st.agendaKey);
       const key = item?.key ?? null;
+      // Picking a target on the map (F-01-1): the player turns the globe, the camera stays put
+      if (st.mapPick) {
+        lastSubject.current = key;
+        return;
+      }
       if (key === lastSubject.current) return;
       lastSubject.current = key;
       const id = mapSubject(item, st);

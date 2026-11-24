@@ -51,6 +51,8 @@ export interface SkipMeaning {
   means: string;
   /** "You can still open the call again before you execute." */
   after: string;
+  /** The same without the capital numbers, where the plan's capital line already states them */
+  short?: string;
 }
 
 const KIND_VERB: Record<Meeting['kind'], string> = { CALL: 'calls', VISIT: 'visits', STAFF: 'meets you', PRESS: 'interviews you' };
@@ -311,7 +313,8 @@ export function skipMeaning(item: AgendaItem, state: GameState = useGameStore.ge
   if (item.kind === 'move') {
     const mv = item.yourCall;
     // The engine's words say no order is given; the numbers are the band's (lib/budget capitalOutlook, DR-INT-2)
-    return { label: mv?.skip.label ?? 'Hold this month', means: `${mv?.skip.text ?? 'No move for your mission.'} ${keepLine(state)}`, after: 'You can still make your move before you execute.' };
+    const text = mv?.skip.text ?? 'No move for your mission.';
+    return { label: mv?.skip.label ?? 'Hold this month', means: `${text} ${keepLine(state)}`, short: text, after: 'You can still make your move before you execute.' };
   }
   if (item.kind === 'crisis' && item.decision) {
     const d = item.decision;
@@ -531,7 +534,7 @@ export function executeNow(state: GameState = useGameStore.getState()): string[]
   const items = agendaItems(state);
   // A call with an answer the player did not press is on the Chief of Staff's pick (setting on): it runs
   const callItems = items.filter((x) => x.call && x.state !== 'decided' && (x.kind === 'move' ? !x.rec || x.state === 'skipped' : !!x.leave));
-  for (const c of callItems) out.push(`${c.state === 'skipped' ? `You skipped your call, ${c.title}:` : `Your call, ${c.title}, is open:`} ${skipMeaning(c, state).means}`);
+  for (const c of callItems) out.push(`${c.state === 'skipped' ? `You skipped your call, ${c.title}:` : `Your call, ${c.title}, is open:`} ${(({ short, means }) => short ?? means)(skipMeaning(c, state))}`);
   const chief = items.filter((x) => x.call && x.kind === 'crisis' && x.state !== 'decided' && !x.leave);
   for (const c of chief) out.push(`The Chief of Staff's answer to ${c.title} applies: ${c.rec}.`);
   const callIds = new Set([...callItems, ...chief].map((c) => c.decision?.id).filter(Boolean));

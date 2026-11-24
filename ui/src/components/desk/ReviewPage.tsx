@@ -60,7 +60,7 @@ export function ReviewPage({ phone = false }: { phone?: boolean }) {
                   <span className="prow-t">
                     {x.title}
                     {/* The leave sentence already says "If you leave it" (no doubled prefix) */}
-                    <small>{/^If you leave it/.test(skipMeaning(x).means) ? skipMeaning(x).means : `If you execute now: ${skipMeaning(x).means}`}</small>
+                    <small>{/^If you leave it/.test(skipMeaning(x).means) ? skipMeaning(x).means : `If you execute now: ${skipMeaning(x).short ?? skipMeaning(x).means}`}</small>
                   </span>
                   <button type="button" className="wc-btn small" onClick={() => openItem(x.key)} aria-label={`Open: ${x.title}`}>
                     Open
