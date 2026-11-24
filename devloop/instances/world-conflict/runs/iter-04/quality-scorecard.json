@@ -1,0 +1,1895 @@
+{
+  "product": "World Conflict",
+  "spec": "devloop/instances/world-conflict/quality.json",
+  "iteration": 4,
+  "commit": "10d39da0e3839d858592653fc1825f1115042ab4",
+  "evaluatedAt": "2026-11-24T17:13:31.623Z",
+  "verdict": "not-met",
+  "reasons": [
+    "veto real-signals-open failed (2 vs <= 0)",
+    "open-s1-s2 failed (9 vs <= 0)",
+    "recommend-weighted failed (5.86 vs >= 7 +/- 0.237)",
+    "recommend-floor failed (4 vs >= 6 +/- 1)",
+    "game-feel failed (6.05 vs >= 7 +/- 0.186)",
+    "agency failed (6.09 vs >= 7 +/- 0.243)",
+    "olivia-ruth-complete failed (false vs = true)",
+    "goals-open failed (10 vs <= 0)",
+    "regressed not measured: devloop/instances/world-conflict/runs/iter-04/qa-repro.md does not exist",
+    "guard-gaps not measured: devloop/instances/world-conflict/runs/iter-04/qa-repro.md does not exist",
+    "accept-all-wins not measured (0.127 vs <= 0.3): stale: measured on commit 5b6716a32, iteration 4; per-commit needs 10d39da0e",
+    "guided-wins not measured (true vs = true): stale: measured on commit 5b6716a32, iteration 4; per-commit needs 10d39da0e",
+    "call-balance not measured (-14.8 vs <= 8): stale: measured on commit 5b6716a32, iteration 4; per-commit needs 10d39da0e",
+    "real-decisions not measured (1.18 vs >= 1): stale: measured on commit 5b6716a32, iteration 4; per-commit needs 10d39da0e"
+  ],
+  "counts": {
+    "pass": 9,
+    "fail": 15,
+    "noise": 0,
+    "notMeasured": 7,
+    "blocking": 18,
+    "total": 31
+  },
+  "dimensions": [
+    {
+      "id": "functional",
+      "label": "Functional correctness",
+      "metrics": [
+        {
+          "id": "verify-green",
+          "label": "Verify gate green on the commit",
+          "direction": "bool",
+          "threshold": true,
+          "cadence": "per-commit",
+          "blocking": true,
+          "veto": false,
+          "gate": "gate.md: npm test, lints, build, smoke green (one verify run)",
+          "status": "pass",
+          "value": true,
+          "band": 0,
+          "noise": "a deterministic run",
+          "measured": {
+            "at": "2026-11-24T17:12:42.669Z",
+            "commit": "993d4df89",
+            "iteration": 4,
+            "ageHours": 0,
+            "iterationsBehind": 0,
+            "evidence": ".verify/summary.json"
+          },
+          "detail": "verify pass; modes default"
+        },
+        {
+          "id": "guards-pass",
+          "label": "Every finding guard passes",
+          "direction": "bool",
+          "threshold": true,
+          "cadence": "per-commit",
+          "blocking": true,
+          "veto": false,
+          "gate": "gate.md: every registry guard passes",
+          "status": "pass",
+          "value": true,
+          "band": 0,
+          "noise": "guards are deterministic tests and replays",
+          "measured": {
+            "at": "2026-11-24T17:12:42.669Z",
+            "commit": "993d4df89",
+            "iteration": 4,
+            "ageHours": 0,
+            "iterationsBehind": 0,
+            "evidence": ".verify/summary.json"
+          },
+          "detail": "step regressions in a pass run; modes default"
+        },
+        {
+          "id": "registry-unguarded",
+          "label": "Findings without a guard",
+          "direction": "lower",
+          "threshold": 0,
+          "cadence": "per-commit",
+          "blocking": true,
+          "veto": false,
+          "gate": "method/triage.md: a finding without a guard cannot be marked fixed",
+          "status": "pass",
+          "value": 0,
+          "band": 0,
+          "noise": "read from the registry at the commit",
+          "measured": {
+            "at": "2026-11-24T09:12:57-08:00",
+            "commit": "10d39da0e",
+            "iteration": 4,
+            "ageHours": 0,
+            "iterationsBehind": 0,
+            "evidence": "devloop/instances/world-conflict/regressions.yaml"
+          },
+          "detail": "140 findings, 259 guards"
+        },
+        {
+          "id": "balance-in-bands",
+          "label": "Balance harness inside the bands",
+          "direction": "bool",
+          "threshold": true,
+          "cadence": "per-commit",
+          "blocking": true,
+          "veto": false,
+          "gate": "gate.md: balance harness inside the CLAUDE.md bands",
+          "status": "pass",
+          "value": true,
+          "band": 0,
+          "noise": "the reduced harness is seeded; the band edges carry the sampling noise",
+          "measured": {
+            "at": "2026-11-24T17:12:42.669Z",
+            "commit": "993d4df89",
+            "iteration": 4,
+            "ageHours": 0,
+            "iterationsBehind": 0,
+            "evidence": ".verify/summary.json"
+          },
+          "detail": "step balance in a pass run; modes default"
+        },
+        {
+          "id": "balance-bands-failed",
+          "label": "Balance bands out of range (harness log)",
+          "direction": "lower",
+          "threshold": 0,
+          "cadence": "per-iteration",
+          "blocking": false,
+          "veto": false,
+          "status": "pass",
+          "value": 0,
+          "band": 0,
+          "noise": "seeded harness; use --games 36 near a band edge (CLAUDE.md)",
+          "measured": {
+            "at": "2026-11-23T21:22:40.840Z",
+            "commit": "5b6716a32",
+            "iteration": 4,
+            "ageHours": 19.8,
+            "iterationsBehind": 0,
+            "evidence": ".verify\\balance.log"
+          },
+          "detail": "72 bands at 12 games per seat: 70 ok, 0 failed, 2 exempt"
+        }
+      ]
+    },
+    {
+      "id": "reliability",
+      "label": "Reliability and stability",
+      "metrics": [
+        {
+          "id": "open-s1-s2",
+          "label": "Open S1 or S2 findings (triage clusters)",
+          "direction": "lower",
+          "threshold": 0,
+          "cadence": "per-iteration",
+          "blocking": true,
+          "veto": false,
+          "gate": "gate.md: no open S1 or S2 finding",
+          "status": "fail",
+          "value": 9,
+          "band": 0,
+          "noise": "a triage decision, not a sample",
+          "measured": {
+            "at": "2026-11-24T14:54:49.000Z",
+            "commit": null,
+            "iteration": 4,
+            "ageHours": 2.3,
+            "iterationsBehind": 0,
+            "evidence": "devloop/instances/world-conflict/runs/iter-04/triage.md"
+          },
+          "detail": "9 row(s): F-04-1, F-04-2, F-04-3, F-04-5, F-04-6, F-04-7, F-04-8, F-04-9, F-04-10"
+        },
+        {
+          "id": "regressed",
+          "label": "REGRESSED findings (QA repro)",
+          "direction": "lower",
+          "threshold": 0,
+          "cadence": "per-iteration",
+          "blocking": true,
+          "veto": false,
+          "gate": "gate.md: no REGRESSED finding; G13",
+          "status": "not-measured",
+          "value": null,
+          "band": null,
+          "reason": "devloop/instances/world-conflict/runs/iter-04/qa-repro.md does not exist",
+          "detail": null
+        },
+        {
+          "id": "guard-gaps",
+          "label": "GUARD GAP items (QA repro)",
+          "direction": "lower",
+          "threshold": 0,
+          "cadence": "per-iteration",
+          "blocking": true,
+          "veto": false,
+          "gate": "D-76: a GUARD GAP counts as REGRESSED for gating",
+          "status": "not-measured",
+          "value": null,
+          "band": null,
+          "reason": "devloop/instances/world-conflict/runs/iter-04/qa-repro.md does not exist",
+          "detail": null
+        },
+        {
+          "id": "real-signals-open",
+          "label": "Open real signals at S2 or worse",
+          "direction": "lower",
+          "threshold": 0,
+          "cadence": "per-commit",
+          "blocking": true,
+          "veto": true,
+          "gate": "D-78 and P11: open real signals at S2+ veto the gate (Goodhart guard)",
+          "status": "fail",
+          "value": 2,
+          "band": 0,
+          "noise": "veto: noise ignored",
+          "measured": {
+            "at": "2026-11-24T09:12:57-08:00",
+            "commit": "10d39da0e",
+            "iteration": 4,
+            "ageHours": 0,
+            "iterationsBehind": 0,
+            "evidence": "devloop/instances/world-conflict/real-signals"
+          },
+          "detail": "open at S2 or worse: RS-006 S2, RS-008 S2"
+        },
+        {
+          "id": "quitters",
+          "label": "Customers who would quit",
+          "direction": "lower",
+          "threshold": 0,
+          "cadence": "per-iteration",
+          "blocking": false,
+          "veto": false,
+          "status": "fail",
+          "value": 4,
+          "band": 0,
+          "noise": "behaviour (a stated quit point), not a score; any quit is reported",
+          "measured": {
+            "at": "2026-11-24T14:30:33.000Z",
+            "commit": null,
+            "iteration": 4,
+            "ageHours": 2.7,
+            "iterationsBehind": 0,
+            "evidence": "devloop/instances/world-conflict/runs/iter-04/sessions"
+          },
+          "detail": "would quit: leo, noah, olivia, sam"
+        }
+      ]
+    },
+    {
+      "id": "experience",
+      "label": "User experience",
+      "metrics": [
+        {
+          "id": "recommend-weighted",
+          "label": "Weighted recommend",
+          "direction": "higher",
+          "threshold": 7,
+          "cadence": "per-iteration",
+          "blocking": true,
+          "veto": false,
+          "gate": "gate.md: weighted recommend >= 7.0",
+          "status": "fail",
+          "value": 5.86,
+          "band": 0.237,
+          "noise": "1 x se 0.237 (persona sd 0.69 from 27 retest pairs (iterations 1-4), sqrt(sum w^2) 0.345)",
+          "measured": {
+            "at": "2026-11-24T14:30:33.000Z",
+            "commit": null,
+            "iteration": 4,
+            "ageHours": 2.7,
+            "iterationsBehind": 0,
+            "evidence": "devloop/instances/world-conflict/runs/iter-04/sessions"
+          },
+          "detail": "weighted recommend 5.86 over 9 sessions; build 2083597, 876ea58"
+        },
+        {
+          "id": "recommend-floor",
+          "label": "Lowest persona recommend",
+          "direction": "higher",
+          "threshold": 6,
+          "cadence": "per-iteration",
+          "blocking": true,
+          "veto": false,
+          "gate": "gate.md: no persona below 6",
+          "status": "fail",
+          "value": 4,
+          "band": 1,
+          "noise": "D-59: a one-point move of one persona is noise",
+          "measured": {
+            "at": "2026-11-24T14:30:33.000Z",
+            "commit": null,
+            "iteration": 4,
+            "ageHours": 2.7,
+            "iterationsBehind": 0,
+            "evidence": "devloop/instances/world-conflict/runs/iter-04/sessions"
+          },
+          "detail": "lowest recommend: noah, olivia at 4; build 2083597, 876ea58"
+        },
+        {
+          "id": "game-feel",
+          "label": "Weighted feels like a game",
+          "direction": "higher",
+          "threshold": 7,
+          "cadence": "per-iteration",
+          "blocking": true,
+          "veto": false,
+          "gate": "gate.md: weighted feels-like-a-game >= 7.0",
+          "status": "fail",
+          "value": 6.05,
+          "band": 0.186,
+          "noise": "1 x se 0.186 (persona sd 0.54 from 27 retest pairs (iterations 1-4), sqrt(sum w^2) 0.345)",
+          "measured": {
+            "at": "2026-11-24T14:30:33.000Z",
+            "commit": null,
+            "iteration": 4,
+            "ageHours": 2.7,
+            "iterationsBehind": 0,
+            "evidence": "devloop/instances/world-conflict/runs/iter-04/sessions"
+          },
+          "detail": "weighted feels_like_a_game 6.05 over 9 sessions; build 2083597, 876ea58"
+        },
+        {
+          "id": "agency",
+          "label": "Weighted agency",
+          "direction": "higher",
+          "threshold": 7,
+          "cadence": "per-iteration",
+          "blocking": true,
+          "veto": false,
+          "gate": "gate.md: weighted agency >= 7.0",
+          "status": "fail",
+          "value": 6.09,
+          "band": 0.243,
+          "noise": "1 x se 0.243 (persona sd 0.71 from 27 retest pairs (iterations 1-4), sqrt(sum w^2) 0.345)",
+          "measured": {
+            "at": "2026-11-24T14:30:33.000Z",
+            "commit": null,
+            "iteration": 4,
+            "ageHours": 2.7,
+            "iterationsBehind": 0,
+            "evidence": "devloop/instances/world-conflict/runs/iter-04/sessions"
+          },
+          "detail": "weighted agency 6.09 over 9 sessions; build 2083597, 876ea58"
+        },
+        {
+          "id": "olivia-ruth-complete",
+          "label": "Olivia and Ruth complete a session",
+          "direction": "bool",
+          "threshold": true,
+          "cadence": "per-iteration",
+          "blocking": true,
+          "veto": false,
+          "gate": "gate.md: the early quitter and the low-gaming news follower complete a first session",
+          "status": "fail",
+          "value": false,
+          "band": 0,
+          "noise": "behaviour (quit point and scenario outcome), not a score",
+          "measured": {
+            "at": "2026-11-24T14:30:33.000Z",
+            "commit": null,
+            "iteration": 4,
+            "ageHours": 2.7,
+            "iterationsBehind": 0,
+            "evidence": "devloop/instances/world-conflict/runs/iter-04/sessions"
+          },
+          "detail": "olivia would quit, ruth completed"
+        },
+        {
+          "id": "control-end-reached",
+          "label": "Control games that reached the end",
+          "direction": "higher",
+          "threshold": 0.8,
+          "cadence": "per-iteration",
+          "blocking": false,
+          "veto": false,
+          "format": "percent",
+          "status": "not-measured",
+          "value": null,
+          "band": null,
+          "reason": "no table with columns persona, end reached in devloop/instances/world-conflict/runs/iter-04/triage.md",
+          "detail": null
+        },
+        {
+          "id": "control-second-game",
+          "label": "Control players who started a second game",
+          "direction": "higher",
+          "threshold": 0.5,
+          "cadence": "per-iteration",
+          "blocking": false,
+          "veto": false,
+          "format": "percent",
+          "status": "fail",
+          "value": 0.444,
+          "band": 0,
+          "noise": "behaviour on fixed control seeds (D-59)",
+          "measured": {
+            "at": "2026-11-24T14:54:49.000Z",
+            "commit": null,
+            "iteration": 4,
+            "ageHours": 2.3,
+            "iterationsBehind": 0,
+            "evidence": "devloop/instances/world-conflict/runs/iter-04/triage.md"
+          },
+          "detail": "4 of 9: Maya, Ruth, Priya, Leo"
+        },
+        {
+          "id": "affordance-friction",
+          "label": "Affordance friction rows",
+          "direction": "lower",
+          "threshold": 9,
+          "cadence": "per-iteration",
+          "blocking": false,
+          "veto": false,
+          "status": "fail",
+          "value": 24,
+          "band": 3,
+          "noise": "row counts depend on how much each persona writes; about one row per persona either way",
+          "measured": {
+            "at": "2026-11-24T14:30:33.000Z",
+            "commit": null,
+            "iteration": 4,
+            "ageHours": 2.7,
+            "iterationsBehind": 0,
+            "evidence": "devloop/instances/world-conflict/runs/iter-04/sessions"
+          },
+          "detail": "24 affordance rows: dan 3, leo 2, marcus 1, maya 4, noah 3, olivia 2, priya 6, ruth 2, sam 1"
+        },
+        {
+          "id": "naming-friction",
+          "label": "Naming friction rows",
+          "direction": "lower",
+          "threshold": 9,
+          "cadence": "per-iteration",
+          "blocking": false,
+          "veto": false,
+          "status": "fail",
+          "value": 18,
+          "band": 3,
+          "noise": "as affordance friction",
+          "measured": {
+            "at": "2026-11-24T14:30:33.000Z",
+            "commit": null,
+            "iteration": 4,
+            "ageHours": 2.7,
+            "iterationsBehind": 0,
+            "evidence": "devloop/instances/world-conflict/runs/iter-04/sessions"
+          },
+          "detail": "18 naming rows: dan 2, leo 1, marcus 1, maya 2, noah 2, olivia 2, priya 2, ruth 4, sam 2"
+        },
+        {
+          "id": "clarity",
+          "label": "Weighted clarity",
+          "direction": "higher",
+          "threshold": 7,
+          "cadence": "per-iteration",
+          "blocking": false,
+          "veto": false,
+          "status": "fail",
+          "value": 5.64,
+          "band": 0.214,
+          "noise": "1 x se 0.214 (persona sd 0.62 from 27 retest pairs (iterations 1-4), sqrt(sum w^2) 0.345)",
+          "measured": {
+            "at": "2026-11-24T14:30:33.000Z",
+            "commit": null,
+            "iteration": 4,
+            "ageHours": 2.7,
+            "iterationsBehind": 0,
+            "evidence": "devloop/instances/world-conflict/runs/iter-04/sessions"
+          },
+          "detail": "weighted clarity 5.64 over 9 sessions; build 2083597, 876ea58"
+        },
+        {
+          "id": "accept-all-wins",
+          "label": "Accept all alone: pooled wins (harness staff policy)",
+          "direction": "lower",
+          "threshold": 0.3,
+          "cadence": "per-commit",
+          "blocking": true,
+          "veto": false,
+          "gate": "D-84: Accept all recommended is not a winning strategy",
+          "status": "not-measured",
+          "value": 0.127,
+          "band": 0,
+          "reason": "stale: measured on commit 5b6716a32, iteration 4; per-commit needs 10d39da0e",
+          "measured": {
+            "at": "2026-11-23T21:22:40.840Z",
+            "commit": "5b6716a32",
+            "iteration": 4,
+            "ageHours": 19.8,
+            "iterationsBehind": 0,
+            "evidence": ".verify\\balance.log"
+          },
+          "detail": "72 bands at 12 games per seat: 70 ok, 0 failed, 2 exempt"
+        },
+        {
+          "id": "guided-wins",
+          "label": "Guided play: pooled wins (harness guided policy), band 65 to 90%",
+          "direction": "bool",
+          "threshold": true,
+          "cadence": "per-commit",
+          "blocking": true,
+          "veto": false,
+          "gate": "D-84: a newcomer who follows the Guide me line can win",
+          "status": "not-measured",
+          "value": true,
+          "band": 0,
+          "reason": "stale: measured on commit 5b6716a32, iteration 4; per-commit needs 10d39da0e",
+          "measured": {
+            "at": "2026-11-23T21:22:40.840Z",
+            "commit": "5b6716a32",
+            "iteration": 4,
+            "ageHours": 19.8,
+            "iterationsBehind": 0,
+            "evidence": ".verify\\balance.log"
+          },
+          "detail": "72 bands at 12 games per seat: 70 ok, 0 failed, 2 exempt"
+        },
+        {
+          "id": "call-balance",
+          "label": "Calm side above mission side of the call (points; always the calm card minus always the mission card, pooled)",
+          "direction": "lower",
+          "threshold": 8,
+          "cadence": "per-commit",
+          "blocking": true,
+          "veto": false,
+          "gate": "D-84 revision: the calm card is never a trap (directional call bands, decision-call-balance.md 5.2)",
+          "status": "not-measured",
+          "value": -14.8,
+          "band": 0,
+          "reason": "stale: measured on commit 5b6716a32, iteration 4; per-commit needs 10d39da0e",
+          "measured": {
+            "at": "2026-11-23T21:22:40.840Z",
+            "commit": "5b6716a32",
+            "iteration": 4,
+            "ageHours": 19.8,
+            "iterationsBehind": 0,
+            "evidence": ".verify\\balance.log"
+          },
+          "detail": "72 bands at 12 games per seat: 70 ok, 0 failed, 2 exempt"
+        },
+        {
+          "id": "real-decisions",
+          "label": "Real decisions per month (guided harness, flashpoint control seeds, months 2 to 12; the play pass confirms by hand)",
+          "direction": "higher",
+          "threshold": 1,
+          "cadence": "per-commit",
+          "blocking": true,
+          "veto": false,
+          "gate": "D-81 play pass; D-84",
+          "status": "not-measured",
+          "value": 1.18,
+          "band": 0,
+          "reason": "stale: measured on commit 5b6716a32, iteration 4; per-commit needs 10d39da0e",
+          "measured": {
+            "at": "2026-11-23T21:22:40.840Z",
+            "commit": "5b6716a32",
+            "iteration": 4,
+            "ageHours": 19.8,
+            "iterationsBehind": 0,
+            "evidence": ".verify\\balance.log"
+          },
+          "detail": "72 bands at 12 games per seat: 70 ok, 0 failed, 2 exempt"
+        }
+      ]
+    },
+    {
+      "id": "visual",
+      "label": "Visual quality",
+      "metrics": [
+        {
+          "id": "visual-score",
+          "label": "Weighted visual",
+          "direction": "higher",
+          "threshold": 7,
+          "cadence": "per-iteration",
+          "blocking": false,
+          "veto": false,
+          "status": "pass",
+          "value": 7.42,
+          "band": 0.147,
+          "noise": "1 x se 0.147 (persona sd 0.43 from 27 retest pairs (iterations 1-4), sqrt(sum w^2) 0.345)",
+          "measured": {
+            "at": "2026-11-24T14:30:33.000Z",
+            "commit": null,
+            "iteration": 4,
+            "ageHours": 2.7,
+            "iterationsBehind": 0,
+            "evidence": "devloop/instances/world-conflict/runs/iter-04/sessions"
+          },
+          "detail": "weighted visual 7.42 over 9 sessions; build 2083597, 876ea58"
+        },
+        {
+          "id": "visual-baselines",
+          "label": "Visual regression baselines",
+          "direction": "higher",
+          "threshold": 20,
+          "cadence": "per-commit",
+          "blocking": false,
+          "veto": false,
+          "status": "pass",
+          "value": 67,
+          "band": 0,
+          "noise": "a file count at the commit",
+          "measured": {
+            "at": "2026-11-24T09:12:57-08:00",
+            "commit": "10d39da0e",
+            "iteration": 4,
+            "ageHours": 0,
+            "iterationsBehind": 0,
+            "evidence": "tests/visual/__screenshots__"
+          },
+          "detail": "67 baselines in tests/visual/__screenshots__"
+        },
+        {
+          "id": "visual-run",
+          "label": "Visual regression run passes",
+          "direction": "bool",
+          "threshold": true,
+          "cadence": "per-commit",
+          "blocking": false,
+          "veto": false,
+          "status": "pass",
+          "value": true,
+          "band": 0,
+          "noise": "pixel comparison with a tolerance set in the config",
+          "measured": {
+            "at": "2026-11-24T17:12:42.669Z",
+            "commit": "993d4df89",
+            "iteration": 4,
+            "ageHours": 0,
+            "iterationsBehind": 0,
+            "evidence": ".verify/summary.json"
+          },
+          "detail": "step visual in a pass run; modes default"
+        }
+      ]
+    },
+    {
+      "id": "performance",
+      "label": "Performance",
+      "metrics": [
+        {
+          "id": "perf-budget",
+          "label": "Perf budget tests failing (tests/perf)",
+          "direction": "lower",
+          "threshold": 0,
+          "cadence": "per-iteration",
+          "blocking": false,
+          "veto": false,
+          "status": "pass",
+          "value": 0,
+          "band": 0,
+          "noise": "budgets are best of 5 runs with headroom (tests/perf)",
+          "measured": {
+            "at": "2026-11-23T20:57:56.354Z",
+            "commit": "5b6716a32",
+            "iteration": 4,
+            "ageHours": 20.3,
+            "iterationsBehind": 0,
+            "evidence": ".verify/test.log"
+          },
+          "detail": "4 passed, 0 failed; codex match, all flashpoint text 13.17 ms; codex match, one desk screen 0.072 ms"
+        }
+      ]
+    },
+    {
+      "id": "value",
+      "label": "Product value",
+      "metrics": [
+        {
+          "id": "goals-open",
+          "label": "Game goals G1 to G13 not done",
+          "direction": "lower",
+          "threshold": 0,
+          "cadence": "per-commit",
+          "blocking": true,
+          "veto": false,
+          "gate": "gate.md: every game goal verified by QA and confirmed by the panel (status done in goals.md)",
+          "status": "fail",
+          "value": 10,
+          "band": 0,
+          "noise": "a Group Manager status, read at the commit",
+          "measured": {
+            "at": "2026-11-24T09:12:57-08:00",
+            "commit": "10d39da0e",
+            "iteration": 4,
+            "ageHours": 0,
+            "iterationsBehind": 0,
+            "evidence": "devloop/instances/world-conflict/goals.md"
+          },
+          "detail": "10 row(s): G4, G5, G6, G7, G8, G9, G10, G11, G12, G13"
+        },
+        {
+          "id": "fun",
+          "label": "Weighted fun",
+          "direction": "higher",
+          "threshold": 7,
+          "cadence": "per-iteration",
+          "blocking": false,
+          "veto": false,
+          "status": "fail",
+          "value": 6.19,
+          "band": 0.165,
+          "noise": "1 x se 0.165 (persona sd 0.48 from 27 retest pairs (iterations 1-4), sqrt(sum w^2) 0.345)",
+          "measured": {
+            "at": "2026-11-24T14:30:33.000Z",
+            "commit": null,
+            "iteration": 4,
+            "ageHours": 2.7,
+            "iterationsBehind": 0,
+            "evidence": "devloop/instances/world-conflict/runs/iter-04/sessions"
+          },
+          "detail": "weighted fun 6.19 over 9 sessions; build 2083597, 876ea58"
+        },
+        {
+          "id": "replay",
+          "label": "Weighted replay",
+          "direction": "higher",
+          "threshold": 7,
+          "cadence": "per-iteration",
+          "blocking": false,
+          "veto": false,
+          "status": "fail",
+          "value": 5.6,
+          "band": 0.223,
+          "noise": "1 x se 0.223 (persona sd 0.65 from 27 retest pairs (iterations 1-4), sqrt(sum w^2) 0.345)",
+          "measured": {
+            "at": "2026-11-24T14:30:33.000Z",
+            "commit": null,
+            "iteration": 4,
+            "ageHours": 2.7,
+            "iterationsBehind": 0,
+            "evidence": "devloop/instances/world-conflict/runs/iter-04/sessions"
+          },
+          "detail": "weighted replay 5.6 over 9 sessions; build 2083597, 876ea58"
+        }
+      ]
+    }
+  ],
+  "trend": {
+    "iterations": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "verdicts": [
+      {
+        "iteration": 0,
+        "verdict": "not-met",
+        "commit": null
+      },
+      {
+        "iteration": 1,
+        "verdict": "not-met",
+        "commit": "3e7ee390bcc18d2af3e644066e953f7303e65c32"
+      },
+      {
+        "iteration": 2,
+        "verdict": "not-met",
+        "commit": "67c9b115048f47e74bd25a3c797506c7d2c8a84b"
+      },
+      {
+        "iteration": 3,
+        "verdict": "not-met",
+        "commit": "06f937bc896e487fb5bef856d8ad95611da04640"
+      },
+      {
+        "iteration": 4,
+        "verdict": "not-met",
+        "commit": "10d39da0e3839d858592653fc1825f1115042ab4"
+      }
+    ],
+    "dimensions": {
+      "functional": {
+        "label": "Functional correctness",
+        "points": [
+          {
+            "iteration": 0,
+            "pass": 0,
+            "fail": 0,
+            "noise": 0,
+            "notMeasured": 5,
+            "total": 5
+          },
+          {
+            "iteration": 1,
+            "pass": 0,
+            "fail": 0,
+            "noise": 0,
+            "notMeasured": 5,
+            "total": 5
+          },
+          {
+            "iteration": 2,
+            "pass": 0,
+            "fail": 0,
+            "noise": 0,
+            "notMeasured": 5,
+            "total": 5
+          },
+          {
+            "iteration": 3,
+            "pass": 4,
+            "fail": 0,
+            "noise": 0,
+            "notMeasured": 1,
+            "total": 5
+          },
+          {
+            "iteration": 4,
+            "pass": 5,
+            "fail": 0,
+            "noise": 0,
+            "notMeasured": 0,
+            "total": 5
+          }
+        ]
+      },
+      "reliability": {
+        "label": "Reliability and stability",
+        "points": [
+          {
+            "iteration": 0,
+            "pass": 0,
+            "fail": 1,
+            "noise": 0,
+            "notMeasured": 4,
+            "total": 5
+          },
+          {
+            "iteration": 1,
+            "pass": 0,
+            "fail": 2,
+            "noise": 0,
+            "notMeasured": 3,
+            "total": 5
+          },
+          {
+            "iteration": 2,
+            "pass": 0,
+            "fail": 1,
+            "noise": 0,
+            "notMeasured": 4,
+            "total": 5
+          },
+          {
+            "iteration": 3,
+            "pass": 1,
+            "fail": 3,
+            "noise": 0,
+            "notMeasured": 1,
+            "total": 5
+          },
+          {
+            "iteration": 4,
+            "pass": 0,
+            "fail": 3,
+            "noise": 0,
+            "notMeasured": 2,
+            "total": 5
+          }
+        ]
+      },
+      "experience": {
+        "label": "User experience",
+        "points": [
+          {
+            "iteration": 0,
+            "pass": 2,
+            "fail": 6,
+            "noise": 0,
+            "notMeasured": 6,
+            "total": 14
+          },
+          {
+            "iteration": 1,
+            "pass": 1,
+            "fail": 7,
+            "noise": 0,
+            "notMeasured": 6,
+            "total": 14
+          },
+          {
+            "iteration": 2,
+            "pass": 1,
+            "fail": 7,
+            "noise": 0,
+            "notMeasured": 6,
+            "total": 14
+          },
+          {
+            "iteration": 3,
+            "pass": 2,
+            "fail": 8,
+            "noise": 0,
+            "notMeasured": 4,
+            "total": 14
+          },
+          {
+            "iteration": 4,
+            "pass": 0,
+            "fail": 9,
+            "noise": 0,
+            "notMeasured": 5,
+            "total": 14
+          }
+        ]
+      },
+      "visual": {
+        "label": "Visual quality",
+        "points": [
+          {
+            "iteration": 0,
+            "pass": 1,
+            "fail": 0,
+            "noise": 0,
+            "notMeasured": 2,
+            "total": 3
+          },
+          {
+            "iteration": 1,
+            "pass": 1,
+            "fail": 1,
+            "noise": 0,
+            "notMeasured": 1,
+            "total": 3
+          },
+          {
+            "iteration": 2,
+            "pass": 1,
+            "fail": 1,
+            "noise": 0,
+            "notMeasured": 1,
+            "total": 3
+          },
+          {
+            "iteration": 3,
+            "pass": 3,
+            "fail": 0,
+            "noise": 0,
+            "notMeasured": 0,
+            "total": 3
+          },
+          {
+            "iteration": 4,
+            "pass": 3,
+            "fail": 0,
+            "noise": 0,
+            "notMeasured": 0,
+            "total": 3
+          }
+        ]
+      },
+      "performance": {
+        "label": "Performance",
+        "points": [
+          {
+            "iteration": 0,
+            "pass": 0,
+            "fail": 0,
+            "noise": 0,
+            "notMeasured": 1,
+            "total": 1
+          },
+          {
+            "iteration": 1,
+            "pass": 0,
+            "fail": 0,
+            "noise": 0,
+            "notMeasured": 1,
+            "total": 1
+          },
+          {
+            "iteration": 2,
+            "pass": 0,
+            "fail": 0,
+            "noise": 0,
+            "notMeasured": 1,
+            "total": 1
+          },
+          {
+            "iteration": 3,
+            "pass": 0,
+            "fail": 0,
+            "noise": 0,
+            "notMeasured": 1,
+            "total": 1
+          },
+          {
+            "iteration": 4,
+            "pass": 1,
+            "fail": 0,
+            "noise": 0,
+            "notMeasured": 0,
+            "total": 1
+          }
+        ]
+      },
+      "value": {
+        "label": "Product value",
+        "points": [
+          {
+            "iteration": 0,
+            "pass": 0,
+            "fail": 2,
+            "noise": 0,
+            "notMeasured": 1,
+            "total": 3
+          },
+          {
+            "iteration": 1,
+            "pass": 0,
+            "fail": 2,
+            "noise": 0,
+            "notMeasured": 1,
+            "total": 3
+          },
+          {
+            "iteration": 2,
+            "pass": 0,
+            "fail": 2,
+            "noise": 0,
+            "notMeasured": 1,
+            "total": 3
+          },
+          {
+            "iteration": 3,
+            "pass": 0,
+            "fail": 2,
+            "noise": 0,
+            "notMeasured": 1,
+            "total": 3
+          },
+          {
+            "iteration": 4,
+            "pass": 0,
+            "fail": 3,
+            "noise": 0,
+            "notMeasured": 0,
+            "total": 3
+          }
+        ]
+      }
+    },
+    "metrics": {
+      "verify-green": [
+        {
+          "iteration": 0,
+          "value": true,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 1,
+          "value": true,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 2,
+          "value": true,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 3,
+          "value": true,
+          "status": "pass"
+        },
+        {
+          "iteration": 4,
+          "value": true,
+          "status": "pass"
+        }
+      ],
+      "guards-pass": [
+        {
+          "iteration": 0,
+          "value": true,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 1,
+          "value": true,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 2,
+          "value": true,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 3,
+          "value": true,
+          "status": "pass"
+        },
+        {
+          "iteration": 4,
+          "value": true,
+          "status": "pass"
+        }
+      ],
+      "registry-unguarded": [
+        {
+          "iteration": 0,
+          "value": null,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 1,
+          "value": null,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 2,
+          "value": null,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 3,
+          "value": 0,
+          "status": "pass"
+        },
+        {
+          "iteration": 4,
+          "value": 0,
+          "status": "pass"
+        }
+      ],
+      "balance-in-bands": [
+        {
+          "iteration": 0,
+          "value": true,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 1,
+          "value": true,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 2,
+          "value": true,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 3,
+          "value": true,
+          "status": "pass"
+        },
+        {
+          "iteration": 4,
+          "value": true,
+          "status": "pass"
+        }
+      ],
+      "balance-bands-failed": [
+        {
+          "iteration": 0,
+          "value": 0,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 1,
+          "value": 0,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 2,
+          "value": 0,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 3,
+          "value": 0,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 4,
+          "value": 0,
+          "status": "pass"
+        }
+      ],
+      "open-s1-s2": [
+        {
+          "iteration": 0,
+          "value": null,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 1,
+          "value": 5,
+          "status": "fail"
+        },
+        {
+          "iteration": 2,
+          "value": null,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 3,
+          "value": 9,
+          "status": "fail"
+        },
+        {
+          "iteration": 4,
+          "value": 9,
+          "status": "fail"
+        }
+      ],
+      "regressed": [
+        {
+          "iteration": 0,
+          "value": null,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 1,
+          "value": null,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 2,
+          "value": null,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 3,
+          "value": 1,
+          "status": "fail"
+        },
+        {
+          "iteration": 4,
+          "value": null,
+          "status": "not-measured"
+        }
+      ],
+      "guard-gaps": [
+        {
+          "iteration": 0,
+          "value": null,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 1,
+          "value": null,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 2,
+          "value": null,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 3,
+          "value": 16,
+          "status": "fail"
+        },
+        {
+          "iteration": 4,
+          "value": null,
+          "status": "not-measured"
+        }
+      ],
+      "real-signals-open": [
+        {
+          "iteration": 0,
+          "value": null,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 1,
+          "value": null,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 2,
+          "value": null,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 3,
+          "value": null,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 4,
+          "value": 2,
+          "status": "fail"
+        }
+      ],
+      "quitters": [
+        {
+          "iteration": 0,
+          "value": 7,
+          "status": "fail"
+        },
+        {
+          "iteration": 1,
+          "value": 1,
+          "status": "fail"
+        },
+        {
+          "iteration": 2,
+          "value": 4,
+          "status": "fail"
+        },
+        {
+          "iteration": 3,
+          "value": 0,
+          "status": "pass"
+        },
+        {
+          "iteration": 4,
+          "value": 4,
+          "status": "fail"
+        }
+      ],
+      "recommend-weighted": [
+        {
+          "iteration": 0,
+          "value": 4.86,
+          "status": "fail"
+        },
+        {
+          "iteration": 1,
+          "value": 6.19,
+          "status": "fail"
+        },
+        {
+          "iteration": 2,
+          "value": 6.33,
+          "status": "fail"
+        },
+        {
+          "iteration": 3,
+          "value": 6.22,
+          "status": "fail"
+        },
+        {
+          "iteration": 4,
+          "value": 5.86,
+          "status": "fail"
+        }
+      ],
+      "recommend-floor": [
+        {
+          "iteration": 0,
+          "value": 3,
+          "status": "fail"
+        },
+        {
+          "iteration": 1,
+          "value": 5,
+          "status": "fail"
+        },
+        {
+          "iteration": 2,
+          "value": 5,
+          "status": "fail"
+        },
+        {
+          "iteration": 3,
+          "value": 5,
+          "status": "fail"
+        },
+        {
+          "iteration": 4,
+          "value": 4,
+          "status": "fail"
+        }
+      ],
+      "game-feel": [
+        {
+          "iteration": 0,
+          "value": 6.06,
+          "status": "fail"
+        },
+        {
+          "iteration": 1,
+          "value": 6.85,
+          "status": "fail"
+        },
+        {
+          "iteration": 2,
+          "value": 6.64,
+          "status": "fail"
+        },
+        {
+          "iteration": 3,
+          "value": 6.51,
+          "status": "fail"
+        },
+        {
+          "iteration": 4,
+          "value": 6.05,
+          "status": "fail"
+        }
+      ],
+      "agency": [
+        {
+          "iteration": 0,
+          "value": 5,
+          "status": "fail"
+        },
+        {
+          "iteration": 1,
+          "value": 5.92,
+          "status": "fail"
+        },
+        {
+          "iteration": 2,
+          "value": 6.15,
+          "status": "fail"
+        },
+        {
+          "iteration": 3,
+          "value": 6.34,
+          "status": "fail"
+        },
+        {
+          "iteration": 4,
+          "value": 6.09,
+          "status": "fail"
+        }
+      ],
+      "olivia-ruth-complete": [
+        {
+          "iteration": 0,
+          "value": false,
+          "status": "fail"
+        },
+        {
+          "iteration": 1,
+          "value": false,
+          "status": "fail"
+        },
+        {
+          "iteration": 2,
+          "value": false,
+          "status": "fail"
+        },
+        {
+          "iteration": 3,
+          "value": true,
+          "status": "pass"
+        },
+        {
+          "iteration": 4,
+          "value": false,
+          "status": "fail"
+        }
+      ],
+      "control-end-reached": [
+        {
+          "iteration": 0,
+          "value": null,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 1,
+          "value": null,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 2,
+          "value": null,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 3,
+          "value": 0.778,
+          "status": "fail"
+        },
+        {
+          "iteration": 4,
+          "value": null,
+          "status": "not-measured"
+        }
+      ],
+      "control-second-game": [
+        {
+          "iteration": 0,
+          "value": null,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 1,
+          "value": null,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 2,
+          "value": null,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 3,
+          "value": 0.556,
+          "status": "pass"
+        },
+        {
+          "iteration": 4,
+          "value": 0.444,
+          "status": "fail"
+        }
+      ],
+      "affordance-friction": [
+        {
+          "iteration": 0,
+          "value": 0,
+          "status": "pass"
+        },
+        {
+          "iteration": 1,
+          "value": 0,
+          "status": "pass"
+        },
+        {
+          "iteration": 2,
+          "value": 0,
+          "status": "pass"
+        },
+        {
+          "iteration": 3,
+          "value": 24,
+          "status": "fail"
+        },
+        {
+          "iteration": 4,
+          "value": 24,
+          "status": "fail"
+        }
+      ],
+      "naming-friction": [
+        {
+          "iteration": 0,
+          "value": 3,
+          "status": "pass"
+        },
+        {
+          "iteration": 1,
+          "value": 21,
+          "status": "fail"
+        },
+        {
+          "iteration": 2,
+          "value": 16,
+          "status": "fail"
+        },
+        {
+          "iteration": 3,
+          "value": 21,
+          "status": "fail"
+        },
+        {
+          "iteration": 4,
+          "value": 18,
+          "status": "fail"
+        }
+      ],
+      "clarity": [
+        {
+          "iteration": 0,
+          "value": 5.41,
+          "status": "fail"
+        },
+        {
+          "iteration": 1,
+          "value": 6.3,
+          "status": "fail"
+        },
+        {
+          "iteration": 2,
+          "value": 6.29,
+          "status": "fail"
+        },
+        {
+          "iteration": 3,
+          "value": 6.36,
+          "status": "fail"
+        },
+        {
+          "iteration": 4,
+          "value": 5.64,
+          "status": "fail"
+        }
+      ],
+      "accept-all-wins": [
+        {
+          "iteration": 0,
+          "value": 0.127,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 1,
+          "value": 0.127,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 2,
+          "value": 0.127,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 3,
+          "value": 0.127,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 4,
+          "value": 0.127,
+          "status": "not-measured"
+        }
+      ],
+      "guided-wins": [
+        {
+          "iteration": 0,
+          "value": true,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 1,
+          "value": true,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 2,
+          "value": true,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 3,
+          "value": true,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 4,
+          "value": true,
+          "status": "not-measured"
+        }
+      ],
+      "call-balance": [
+        {
+          "iteration": 0,
+          "value": -14.8,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 1,
+          "value": -14.8,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 2,
+          "value": -14.8,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 3,
+          "value": -14.8,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 4,
+          "value": -14.8,
+          "status": "not-measured"
+        }
+      ],
+      "real-decisions": [
+        {
+          "iteration": 0,
+          "value": 1.18,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 1,
+          "value": 1.18,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 2,
+          "value": 1.18,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 3,
+          "value": 1.18,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 4,
+          "value": 1.18,
+          "status": "not-measured"
+        }
+      ],
+      "visual-score": [
+        {
+          "iteration": 0,
+          "value": 7.51,
+          "status": "pass"
+        },
+        {
+          "iteration": 1,
+          "value": 7.82,
+          "status": "pass"
+        },
+        {
+          "iteration": 2,
+          "value": 7.91,
+          "status": "pass"
+        },
+        {
+          "iteration": 3,
+          "value": 7.44,
+          "status": "pass"
+        },
+        {
+          "iteration": 4,
+          "value": 7.42,
+          "status": "pass"
+        }
+      ],
+      "visual-baselines": [
+        {
+          "iteration": 0,
+          "value": null,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 1,
+          "value": 0,
+          "status": "fail"
+        },
+        {
+          "iteration": 2,
+          "value": 0,
+          "status": "fail"
+        },
+        {
+          "iteration": 3,
+          "value": 22,
+          "status": "pass"
+        },
+        {
+          "iteration": 4,
+          "value": 67,
+          "status": "pass"
+        }
+      ],
+      "visual-run": [
+        {
+          "iteration": 0,
+          "value": true,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 1,
+          "value": true,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 2,
+          "value": true,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 3,
+          "value": true,
+          "status": "pass"
+        },
+        {
+          "iteration": 4,
+          "value": true,
+          "status": "pass"
+        }
+      ],
+      "perf-budget": [
+        {
+          "iteration": 0,
+          "value": 0,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 1,
+          "value": 0,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 2,
+          "value": 0,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 3,
+          "value": 0,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 4,
+          "value": 0,
+          "status": "pass"
+        }
+      ],
+      "goals-open": [
+        {
+          "iteration": 0,
+          "value": null,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 1,
+          "value": null,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 2,
+          "value": null,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 3,
+          "value": null,
+          "status": "not-measured"
+        },
+        {
+          "iteration": 4,
+          "value": 10,
+          "status": "fail"
+        }
+      ],
+      "fun": [
+        {
+          "iteration": 0,
+          "value": 5.5,
+          "status": "fail"
+        },
+        {
+          "iteration": 1,
+          "value": 6.4,
+          "status": "fail"
+        },
+        {
+          "iteration": 2,
+          "value": 6.28,
+          "status": "fail"
+        },
+        {
+          "iteration": 3,
+          "value": 6.32,
+          "status": "fail"
+        },
+        {
+          "iteration": 4,
+          "value": 6.19,
+          "status": "fail"
+        }
+      ],
+      "replay": [
+        {
+          "iteration": 0,
+          "value": 4.42,
+          "status": "fail"
+        },
+        {
+          "iteration": 1,
+          "value": 5.88,
+          "status": "fail"
+        },
+        {
+          "iteration": 2,
+          "value": 5.54,
+          "status": "fail"
+        },
+        {
+          "iteration": 3,
+          "value": 5.79,
+          "status": "fail"
+        },
+        {
+          "iteration": 4,
+          "value": 5.6,
+          "status": "fail"
+        }
+      ]
+    }
+  }
+}
