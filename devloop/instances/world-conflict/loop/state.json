@@ -1,8 +1,8 @@
 {
   "version": 1,
   "iteration": 4,
-  "stage": "Triage",
-  "stageSince": "2026-11-24T14:55:58.032Z",
+  "stage": "Report",
+  "stageSince": "2026-11-24T17:15:48.517Z",
   "records": [
     {
       "gate": "verify",
@@ -1214,6 +1214,18 @@
       "iteration": 4,
       "stage": "Triage",
       "tier": "T1"
+    },
+    {
+      "gate": "status-refresh",
+      "result": "pass",
+      "commit": "e5ca954a58e9cb203635a5c0c420ca3978857da8",
+      "codeTree": "e1a9a12db9c1db80",
+      "evidence": "dev_plan/project_status.html",
+      "note": "status-refresh T2",
+      "t": "2026-11-24T17:17:29.931Z",
+      "iteration": 4,
+      "stage": "Report",
+      "tier": "T2"
     }
   ],
   "merges": [
@@ -1375,6 +1387,11 @@
       "tier": "T1",
       "because": "merge of fix-triage-iter4",
       "t": "2026-11-24T17:12:58.046Z"
+    },
+    {
+      "tier": "T2",
+      "because": "Triage done",
+      "t": "2026-11-24T17:15:48.519Z"
     }
   ],
   "blocked": []
