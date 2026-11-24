@@ -238,3 +238,66 @@ describe("F-04-2: the result card of an Execute with nothing chosen", () => {
     expect(checked).toBeGreaterThanOrEqual(3);
   });
 });
+
+/**
+ * F-04-9 (REGRESSED F-00-1): the paper listed "REFUSED Court United Kingdom" with the reason only
+ * in a hover title (Priya, CO-UKR-PRIY1, months 3 to 12), the advisers recommended that court at
+ * 94 against a cap of 95, and Dan's staff suggested a pact with China that was blocked every month.
+ */
+describe("F-04-9: a refusal is explained in the paper, and the staff never suggest a blocked order", () => {
+  beforeEach(() => {
+    vi.resetModules();
+    stubBrowser();
+  });
+  afterEach(() => vi.unstubAllGlobals());
+
+  it("F-04-9: CO-UKR-PRIY1 with Court United Kingdom every month: every REFUSED or FAILED row of the paper prints the engine's reason", async () => {
+    const { generateDeterministicIntents } = await import("../../src/agents/fallback.js");
+    const { TurnEngine } = await import("../../src/core/turn.js");
+    const { staffMonth } = await import("../../scripts/policies.js");
+    const { paperStatusItems } = await import("../../ui/src/lib/outcome.js");
+    const engine = new TurnEngine();
+    let w = newControlWorld("CO-UKR-PRIY1");
+    let refused = 0;
+    for (let t = 0; t < 12 && !w.gameOver; t++) {
+      const s = staffMonth(w, "chief");
+      const court: Action = { type: "DIPLOMACY_IMPROVE_RELATIONS", targetCountryId: "GBR" };
+      const orders = [court];
+      w = engine.executeTurn(w, orders, generateDeterministicIntents(w), s.decisions).newState;
+      const report = w.turnReport!;
+      for (const row of paperStatusItems(report as never, 99)) {
+        if (row.s !== "REFUSED" && row.s !== "FAILED") continue;
+        expect(row.shownWhy, `month ${t + 1} ${row.s} ${row.label}`).toBeTruthy();
+        if (row.s === "REFUSED") refused++;
+      }
+      const o = report.orders.find((x) => x.type === court.type && x.target === "GBR");
+      if (o?.status === "REFUSED")
+        expect(paperStatusItems(report as never, 99).find((r) => r.label === o.label)?.shownWhy).toMatch(/as good as they get/);
+    }
+    expect(refused, "Court United Kingdom refused at the cap").toBeGreaterThanOrEqual(3);
+  });
+
+  it("F-04-9: no staff suggestion is an order the engine refuses, and no court of a met goal near the cap (control seeds, chief)", async () => {
+    const { orderRules, RELATIONS_MAX } = await import("../../src/core/availability.js");
+    let months = 0;
+    for (const code of ["CO-UKR-PRIY1", "CO-UKR-MAYA1", "T2026-RUS-DAN01", "QU-CHN-LEO01", "HC-ARE-NOAH1"]) {
+      for (const m of playControl(code, "chief").months) {
+        const w = m.before;
+        const me = w.countries.find((c) => c.id === w.playerCountryId);
+        for (const s of m.advice.suggestions) {
+          const at = `${code} month ${w.turn + 1}: ${s.label}`;
+          expect(orderRules(w, s.action as Action)?.reason ?? null, at).toBeNull();
+          if (s.action.type === "DIPLOMACY_IMPROVE_RELATIONS" && s.action.targetCountryId) {
+            const goal = [...(w.objective?.primary ?? []), ...(w.objective?.bonus ?? [])].find(
+              (c) => c.kind === "RELATION_MIN" && c.targetId === s.action.targetCountryId,
+            );
+            const now = me?.relations[s.action.targetCountryId] ?? 0;
+            if (goal && now >= (goal.min ?? 0)) expect(now, at).toBeLessThan(RELATIONS_MAX - 5);
+          }
+        }
+        months++;
+      }
+    }
+    expect(months).toBeGreaterThan(40);
+  });
+});

@@ -139,6 +139,9 @@ function block(
   return { code, reason, fix, points, ...extra };
 }
 
+/** Courting stops here: a view of 95 or more is as good as it gets (RELATIONS_MAXED). */
+export const RELATIONS_MAX = 95;
+
 /**
  * The rule layer for any actor: the world-state reasons an order is invalid,
  * or null. The engine applies it to the player's own orders at Execute.
@@ -179,7 +182,7 @@ export function actionRules(
         return block("AT_WAR", `You are at war with ${T}.`, "Propose a ceasefire instead", null, {
           alt: { type: "DIPLOMACY_PROPOSE_CEASEFIRE" },
         });
-      if ((actor.relations[target.id] ?? 0) >= 95)
+      if ((actor.relations[target.id] ?? 0) >= RELATIONS_MAX)
         return block("RELATIONS_MAXED", `Relations with ${T} are as good as they get.`);
       break;
     case "DIPLOMACY_PROPOSE_ALLIANCE": {

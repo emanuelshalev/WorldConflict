@@ -122,7 +122,8 @@ export function computeSuggestions(world: WorldState | null, view: PlayerViewCou
       if (c.kind === 'RELATION_MIN' && c.targetId && !me.atWarWith.includes(c.targetId)) {
         const need = c.min ?? 0;
         const now = rel(c.targetId);
-        if (now < need + 10) {
+        // F-04-9 (engine advisors.ts COURT_CAP_MARGIN): a met goal near the cap of 95 is not courted
+        if (now < need + 10 && !(now >= need && now >= 90)) {
           const gap = now < need ? `needs ${need}+, now ${now}` : `needs ${need}+, now ${now}: keep the margin`;
           out.push(court(c.targetId, (now < need ? 96 : 88) + boost, `Mission: ${countryName(c.targetId)} ${gap}.${courtStalled(c.targetId) ? ' Last month did not move them; keep at it and avoid crisis options that anger them.' : ''}`));
         }

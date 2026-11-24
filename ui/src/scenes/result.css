@@ -29,6 +29,7 @@
 .paper-status .s-partly { color: var(--accent); }
 .paper-status .s-failed, .paper-status .s-refused { color: #ff8486; }
 .paper-status .s-no_effect { color: #b9b2a2; }
+.paper-status .paper-why { color: #d8d1c2; font-size: 14px; }
 .rc-quote { margin: 0; padding: 2px 0 2px 12px; border-left: 3px solid var(--line-2); }
 .rc-quote p { margin: 0; font-family: var(--font-serif); font-style: italic; font-size: 16px; }
 .rc-quote cite { font-style: normal; font-size: 15px; color: var(--text-3); }
