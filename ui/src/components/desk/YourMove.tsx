@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { IconMessageCircle, IconSearch } from '@tabler/icons-react';
 import { type CallCard, type DecisionOption, type Impact, type Meeting, MEETING_SLOTS, type MissionNote, type PendingDecision, approveProposal, countryName, crisisAnswer, orderKey, useGameStore, usePlayerCountry } from '../../store/gameStore';
 import { ADVISOR_NAMES, flag, monthLabel } from '../../lib/format';
-import { cabinetPick, crisisSelection, effectWords, goalName, guideLede, meetingAdviser, meetingPick, meetingSelection, missionPick, missionTag, proposalEffects, splitLede } from '../../lib/month';
+import { cabinetPick, crisisSelection, effectWords, goalName, guideLede, meetingAdviser, meetingPick, meetingSelection, missionPick, missionTag, mixedLine, proposalEffects, splitLede } from '../../lib/month';
 import { type AgendaItem, advisersLine, agendaItems, callWhy, callSides, chooseAnswer, chooseMove, chooseSmall, costPhrase, currentItem, meetingTitle, ministerFor, skipItem, skipMeaning, undoSkip, unchooseMove } from '../../lib/agenda';
 import { TERMS } from '../../lib/glossary';
 import { SceneFrame } from '../../scenes/SceneFrame';
@@ -368,11 +368,23 @@ function DecisionThing({ item, compact }: { item: AgendaItem; compact: boolean }
             const bestLine = best?.id === o.id && bestText ? ` ${bestText.best}.` : '';
             // The map card is shorter (D5): the goal it moves, else its strongest effect
             const fx = compact ? (
-              mt ? <span className={`mt mt-${mt.tone}`}>{mt.text}.</span> : <>{words[0] ?? 'No effect we can see'}.</>
+              mt?.also ? (
+                // A mixed answer on the short map card: one honest line for both sides (QA4-S2-4);
+                // the goals by name are on the desk's card, one click away (Desk)
+                <span className={`mt mt-${mt.tone}`} data-mt-mixed="" title={`${mt.text}. ${mt.also.text}.`}>
+                  {mixedLine(mt)}.
+                </span>
+              ) : mt ? (
+                <span className={`mt mt-${mt.tone}`}>{mt.text}.</span>
+              ) : (
+                <>{words[0] ?? 'No effect we can see'}.</>
+              )
             ) : (
               <>
-                {mt && <span className={`mt mt-${mt.tone}`}>{mt.text}{mt.more > 0 ? ` (+${mt.more} more)` : ''}. </span>}
+                {mt && <span className={`mt mt-${mt.tone}`} data-mt-main={mt.also ? '' : undefined}>{mt.text}{mt.more > 0 ? ` (+${mt.more} more)` : ''}. </span>}
                 {mt?.also && <span className={`mt mt-${mt.also.tone}`} data-mt-also="">{mt.also.text}. </span>}
+                {/* A card folded to fit keeps both sides of a mixed answer on one line (QA4-S2-4) */}
+                {mt?.also && <span className={`mt mt-${mt.tone}`} data-mt-fold="" title={`${mt.text}. ${mt.also.text}.`}>{mixedLine(mt)}. </span>}
                 <span className={mt ? 'fx-rest' : undefined}>
                   {words.join('. ')}
                   {words.length ? '.' : ''}
