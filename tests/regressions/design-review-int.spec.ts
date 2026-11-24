@@ -185,3 +185,71 @@ describe("DR-INT-2: every political capital number on the desk is the engine's",
     expect(checked).toBeGreaterThanOrEqual(12);
   });
 });
+
+/**
+ * QA4-S2-3 (iter-04 qa-verify, REGRESSED class of DR-INT-3 and D84-ADVISERS): Ask your staff, "The
+ * Qatari text: what do you advise?", had the Chief of Staff recommend "Accept the framework" (hurts
+ * two goals) while the desk said the Chief of Staff recommends, and will apply, "Counter: zero
+ * enrichment". ui/src/utils/advisorBrain.ts ranked the answers with its own scoring. An adviser's
+ * pick for a call now comes from the engine's call cards (advice.calls), setting on and off.
+ */
+describe("QA4-S2-3: Ask your staff names the desk's card for every call", () => {
+  beforeEach(() => {
+    vi.resetModules();
+    vi.stubGlobal("window", { location: { search: "" }, innerWidth: 1920 });
+    vi.stubGlobal("localStorage", { getItem: () => null, setItem: () => {}, removeItem: () => {} });
+  });
+  afterEach(() => vi.unstubAllGlobals());
+
+  it("each adviser names the card the desk says they back (the Chief of Staff's pick when they make the calls), never a goal-hurting card while a safe one exists", async () => {
+    const { answerQuestion } = await import("../../ui/src/utils/advisorBrain.js");
+    const { ADVISOR_NAMES } = await import("../../ui/src/lib/format.js");
+    const corpus = [
+      ...hormuz(12).map((world) => ({ where: `hormuz-usa m${world.turn + 1}`, world })),
+      ...CONTROL_SEEDS.flatMap((code) =>
+        (["staff", "staffswitch"] as const).flatMap((p) => playControl(code, p, 6).months.map((m) => ({ where: `${code} ${p} m${m.before.turn + 1}`, world: m.before }))),
+      ),
+    ];
+    let asked = 0;
+    let unsafeAvoided = 0;
+    for (const { where, world } of corpus) {
+      const advice = buildAdvice(world);
+      const player = world.countries.find((c) => c.id === world.playerCountryId);
+      for (const call of advice.calls.filter((c) => c.kind === "crisis")) {
+        const lost = (c: (typeof call.cards)[number]) => c.hurts.length + c.breaks.length + c.bonusHurts.length;
+        const safeExists = call.cards.some((c) => lost(c) === 0);
+        for (const chiefCalls of [false, true]) {
+          for (const [role, name] of Object.entries(ADVISOR_NAMES)) {
+            const reply = answerQuestion(role, `${call.title}: what do you advise?`, {
+              worldState: world as never,
+              playerView: [],
+              player: player as never,
+              advice: advice as never,
+              chiefCalls,
+            });
+            const at = `${where} "${call.title}" ${name} (setting ${chiefCalls ? "on" : "off"}): ${reply}`;
+            const chief = chiefCalls ? call.cards.find((c) => c.id === call.chiefPick) : undefined;
+            const expected = name === "Chief of Staff" && chief ? chief : call.cards.find((c) => c.advisers.includes(name));
+            asked++;
+            for (const card of call.cards) {
+              if (card === expected) continue;
+              // No other card is named as this adviser's recommendation
+              expect(reply, at).not.toContain(`my recommendation is: ${card.label}.`);
+            }
+            if (expected) {
+              expect(reply, at).toContain(`my recommendation is: ${expected.label}.`);
+              if (safeExists) {
+                expect(lost(expected), at).toBe(0);
+                unsafeAvoided++;
+              }
+            } else expect(reply, at).not.toMatch(/my recommendation is/);
+            // With the setting on, the reply says which answer applies, the plan's sentence
+            if (chief) expect(reply, at).toContain(chief.label);
+          }
+        }
+      }
+    }
+    expect(asked).toBeGreaterThan(100);
+    expect(unsafeAvoided).toBeGreaterThan(0);
+  });
+});

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { llmRequestBody, useGameStore } from '../store/gameStore'
 import type { CountryFull, War, WorldState } from '../store/gameStore';
-import { answerQuestion } from '../utils/advisorBrain';
+import { answerQuestion, asksAboutDeskItem } from '../utils/advisorBrain';
 import { useModalFocus } from '../lib/useModalFocus';
 import { ExplainText } from './learn/ExplainText';
 import { orderFor } from '../lib/orders';
@@ -372,6 +372,17 @@ export function AdvisorModal() {
   // Get chat history for current advisor from store
   const currentChatHistory = activeAdvisorRole ? (advisorChatHistory[activeAdvisorRole] || []) : [];
 
+  // A new message starts at the top of the chat area, so a reply is read from its first line
+  // instead of sitting below the fold of the scroll area (QA4-S2-3)
+  const chatCount = currentChatHistory.length;
+  useEffect(() => {
+    const end = chatEndRef.current;
+    const box = end?.closest<HTMLElement>('.chat-messages-container');
+    const last = end?.previousElementSibling as HTMLElement | null | undefined;
+    if (!box || !last) return;
+    box.scrollTop += last.getBoundingClientRect().top - box.getBoundingClientRect().top - 8;
+  }, [chatCount]);
+
   // Auto-generate briefing when modal opens with a pre-selected advisor
   useEffect(() => {
     if (activeModal === 'advisor' && activeAdvisorRole && worldState && !initialFetchDone.current) {
@@ -459,12 +470,14 @@ export function AdvisorModal() {
     setLoading(true);
     setError(null);
 
-    const { playerView, llmSettings } = useGameStore.getState();
+    const { playerView, llmSettings, advice, chiefCalls } = useGameStore.getState();
     const player = worldState?.countries.find((c) => c.id === worldState.playerCountryId);
     if (worldState && player) {
       // If the player plugged in an LLM, let it answer with full game context;
       // otherwise (or on failure) the built-in knowledge engine responds.
-      const llm = llmRequestBody(llmSettings);
+      // A question about this month's crisis or meeting is answered from the engine's advice, the
+      // same cards the desk shows, so the adviser never contradicts the desk (QA4-S2-3)
+      const llm = asksAboutDeskItem(worldState, userMessage) ? null : llmRequestBody(llmSettings);
       if (llm && saveId) {
         try {
           const res = await fetch(ADVISOR_API_URL, {
@@ -486,6 +499,8 @@ export function AdvisorModal() {
         worldState,
         playerView,
         player,
+        advice,
+        chiefCalls,
       });
       // Add a small delay to make it feel more natural
       setTimeout(() => {
