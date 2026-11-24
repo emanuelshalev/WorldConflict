@@ -832,6 +832,18 @@
       "t": "2026-11-24T08:54:10.917Z",
       "iteration": 4,
       "stage": "Build"
+    },
+    {
+      "gate": "status-refresh",
+      "result": "pass",
+      "commit": "c7591feaf6b1a89425700ab6c13a8b2b80193fa1",
+      "codeTree": "e66375c15e9e3718",
+      "evidence": "dev_plan/project_status.html",
+      "note": "status-refresh T1",
+      "t": "2026-11-24T08:55:31.332Z",
+      "iteration": 4,
+      "stage": "Build",
+      "tier": "T1"
     }
   ],
   "merges": [
@@ -879,6 +891,15 @@
       "iteration": 4,
       "stage": "Build",
       "treeMatches": true
+    },
+    {
+      "t": "2026-11-24T08:54:17.912Z",
+      "branch": "build-agenda-layout",
+      "commit": "c7591feaf6b1a89425700ab6c13a8b2b80193fa1",
+      "codeTree": "e66375c15e9e3718",
+      "iteration": 4,
+      "stage": "Build",
+      "treeMatches": true
     }
   ],
   "overrides": [],
@@ -918,6 +939,11 @@
       "tier": "T1",
       "because": "merge of fix-loop-progress",
       "t": "2026-11-23T21:22:49.232Z"
+    },
+    {
+      "tier": "T1",
+      "because": "merge of build-agenda-layout",
+      "t": "2026-11-24T08:54:17.914Z"
     }
   ],
   "blocked": []
