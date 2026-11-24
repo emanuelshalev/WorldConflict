@@ -43,11 +43,15 @@ export function bandOf(player: CountryState, other: CountryState | undefined): B
   return "cool";
 }
 
+/** Leaders whose family name comes first ("Kim Jong Un" is Kim, QA4-S3-12). */
+const FAMILY_FIRST = /^(Kim|Mao|Deng|Jiang|Hu|Xi|Lee|Lai|Tsai|Park|Moon|Yoon|To)\s/;
 const surnameOf = (name: string) =>
+  FAMILY_FIRST.exec(name)?.[1] ??
   name
     .split(" ")
     .filter((p) => !/^(jr\.?|sr\.?|ii|iii|iv)$/i.test(p))
-    .at(-1) ?? name;
+    .at(-1) ??
+  name;
 
 // ----------------------------------------------------------------------------
 // Lines, by kind and tone. {L} = their leader's surname, {C} = their country, {Y} = your country.

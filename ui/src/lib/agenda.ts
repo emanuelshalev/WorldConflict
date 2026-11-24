@@ -380,6 +380,8 @@ export interface ReviewRow {
   cost: number;
   detail: string;
   tone?: 'risk' | 'help';
+  /** What a mixed answer also helps, in the help colour after a risk detail (QA4-S3-9). */
+  also?: string;
 }
 
 const capFirst = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -388,10 +390,10 @@ export function reviewRows(state: GameState = useGameStore.getState()): ReviewRo
   const items = agendaItems(state);
   const price = (id: string, oid: string) => state.advice?.prices?.[id]?.[oid] ?? 0;
   const answerCost = (o: DecisionOption | undefined, id: string, priced: boolean) => (o ? -(o.effects.pc ?? 0) + (priced ? price(id, o.id) : 0) : 0);
-  const answerDetail = (id: string, o: DecisionOption | undefined): Pick<ReviewRow, 'detail' | 'tone'> => {
+  const answerDetail = (id: string, o: DecisionOption | undefined): Pick<ReviewRow, 'detail' | 'tone' | 'also'> => {
     if (!o) return { detail: '' };
     const mt = missionTag(state.missionImpact[id]?.[o.id], state.objectiveStatus);
-    if (mt) return { detail: [mt.text, mt.also?.text].filter(Boolean).join('. '), tone: mt.tone === 'risk' ? 'risk' : 'help' };
+    if (mt) return { detail: mt.text, tone: mt.tone === 'risk' ? 'risk' : 'help', also: mt.also?.text };
     return { detail: effectWords(o).slice(0, 2).map((w) => w.text).join('. ') };
   };
   const out: ReviewRow[] = [];
