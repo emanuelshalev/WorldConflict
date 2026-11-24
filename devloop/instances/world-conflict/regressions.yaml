@@ -1116,6 +1116,16 @@ findings:
     covers: [src/core/reactions.ts]
     guards:
       - vitest: tests/core/leader-surname.spec.ts
+  # ------------------------------------------------------------------------------------------
+  # Iteration 4 customer round (runs/iter-04/triage.md section 4, fix now), fixed on fix-triage-iter4
+  # ------------------------------------------------------------------------------------------
+  - id: F-04-10
+    title: "The Finance Minister's briefing reads debt as a percent of GDP (Russia 20%, never 2000%) and calls it a drag only above 100%"
+    source: runs/iter-04/triage.md F-04-10 (dan-term, Debt-to-GDP 2000%; every seat off by 100)
+    covers: [ui/src/lib/financeBrief.ts, ui/src/components/AdvisorModal.tsx]
+    guards:
+      - vitest: tests/regressions/triage-iter4.spec.ts
+        name: "F-04-10"
 # ------------------------------------------------------------------------------------------
 # Not listed (still open or not a code fix); add them here when a fix lands with its guard:
 #   RS-001-6  dashboard feel, "serious visual design": the ledger keeps it not done (D-37 check)
