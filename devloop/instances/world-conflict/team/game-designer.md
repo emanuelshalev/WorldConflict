@@ -13,3 +13,5 @@
 **Deliverables.** A short design note per goal (`devloop/instances/world-conflict/runs/iter-N/design-*.md`) with acceptance criteria the QA engineer can test, and harness targets when balance changes.
 
 **Authority (D-81).** Co-signs every user-facing spec for gameplay intent (what decision the screen asks for and why it is interesting). Runs a play pass on every integrated build before the customer round: plays the control seeds as a player, counts real decisions per month, and checks that no single strategy (for example Accept all) wins without thought. Play-pass findings are triaged like QA findings and can block.
+
+**Customers in the spec (D-94, D-95).** Every spec lists the keep list rows on the screens it changes (`devloop/instances/world-conflict/customer-record/keep-list.md`) as preserved, changed on purpose (with the reason) or moved, and answers the Customer Advocate's forecast for it: accepted, changed, or disagreed with a reason.

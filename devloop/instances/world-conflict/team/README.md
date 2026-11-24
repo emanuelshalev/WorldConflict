@@ -11,4 +11,5 @@ Internal personas that build the game. They run as separate agent sessions from 
 | Frontend Engineer | `frontend-engineer.md` | React UI, interaction, animation, performance | QA |
 | Engine Engineer | `engine-engineer.md` | Simulation, rules, previews, reasons API, determinism | QA |
 | QA Engineer | `qa-engineer.md` | Tests, playtest harness, reproduction of every reported bug, regression scenarios | Group Manager |
+| Customer Advocate | `customer-advocate.md` | The customer record, the keep list, the forecast of each customer's reaction in Plan and Design, the forecast review after the round | Group Manager, designers |
 | Content & Realism Consultant | `content-consultant.md` | Facts, leaders, crisis writing, debriefs | Game Designer |

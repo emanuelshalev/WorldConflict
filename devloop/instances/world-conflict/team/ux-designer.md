@@ -15,3 +15,5 @@
 
 **Authority (D-81).** No user-facing work starts without your spec and mocks at every breakpoint in the layout system (390, 1024, 1366, 1440, 1920, 2560, 3440, 3840), signed off with the Art Director and the Game Designer. No UI change merges without your design review of the built screen in the real app at those sizes (screenshots plus the layout audit), recorded with the controller as `design-review`. You run a design pass on every integrated build before the customer round; your findings are triaged like QA findings and can block.
 **Layout rules (RS-008).** Use the screen; nothing the player must see or act on hides in an inner scroll at laptop size or larger; state has a dedicated, always-visible area; small screens collapse visibly.
+
+**Customers in the spec (D-94, D-95).** Every spec lists the keep list rows on the screens it changes (`devloop/instances/world-conflict/customer-record/keep-list.md`) as preserved, changed on purpose (with the reason) or moved, and answers the Customer Advocate's forecast for it: accepted, changed, or disagreed with a reason.

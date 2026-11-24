@@ -43,7 +43,8 @@
     "triage",
     "status-refresh",
     "quality",
-    "design-review"
+    "design-review",
+    "forecast"
   ],
   "rules": {
     "verify-before-use": {
@@ -101,6 +102,12 @@
       "match": "stage",
       "minTier": "T3",
       "why": "Close the iteration on the status page before the next Plan"
+    },
+    "forecast-before-build": {
+      "on": "enter:Build",
+      "gate": "forecast",
+      "match": "iteration",
+      "why": "Build starts only after the Customer Advocate forecast is committed and the specs answer it and name the keep list rows they touch (method/customer-advocate.md)"
     }
   },
   "code": {

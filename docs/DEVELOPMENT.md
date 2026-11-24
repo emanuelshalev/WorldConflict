@@ -182,6 +182,8 @@ The game is developed with a synthetic-customer loop: persona agents are intervi
 
 `npm run playtest:smoke` runs the instance's smoke playtest (start today's flashpoint, play three months through the UI, fail on page errors or a stuck flow); `node devloop/kit/finish-flashpoint.mjs` plays a flashpoint to the end and screenshots each reveal stage. Both need `npm run dev` (or `DEVLOOP_BASE_URL`).
 
+Customer feedback is kept as one linked record: `node devloop/kit/customer-record.mjs devloop/instances/world-conflict` regenerates `devloop/instances/world-conflict/customer-record/` from every round's session reports (one file per customer across all rounds, what they liked, and an index tying each round to its published tag and the build played). A builder role, the Customer Advocate, reads it to keep a list of what customers like (which designs must preserve or change on purpose) and to forecast each customer's reaction to a plan or a spec before anything is built; the forecast is scored after the round ([devloop/method/customer-advocate.md](../devloop/method/customer-advocate.md)).
+
 ## Conventions
 
 - Conventional commits (`feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`).

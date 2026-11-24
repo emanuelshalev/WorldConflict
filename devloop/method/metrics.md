@@ -10,3 +10,5 @@
 | Scenario heatmap | Scenario outcome (achieved / partial / abandoned) by archetype and build | Greener |
 | Gate scores | Weighted recommend and the instance's key scores, with floors | Up to the gate |
 | Decision traceability | Share of shipped changes with a ledger entry citing evidence | 100% |
+| Forecast accuracy | Share of the Customer Advocate's per-customer predictions that held (direction of recommend, end reached, quit point), and the distance between the forecast range and the measured weighted recommend (customer-advocate.md) | Up |
+| Keep list state | Keep list rows holding, weakened and lost in the latest round | No row lost without a decision |

@@ -1,6 +1,6 @@
 # How we work (current state)
 
-Version 1.7, 2026-11-23. Changed only through journal entries (`instances/*/journal.md`) and mirrored on the instance status page.
+Version 1.8, 2026-11-24. Changed only through journal entries (`instances/*/journal.md`) and mirrored on the instance status page.
 
 ## Principles
 1. **Customers decide, builders build.** Synthetic customers run in fresh sessions, blind to design intent and the goal list, on a different model from the builders where possible.
@@ -22,16 +22,20 @@ Version 1.7, 2026-11-23. Changed only through journal entries (`instances/*/jour
 17. **Estimate and learn**: record every stage transition (and units of work done) with `kit/progress.mjs` (the controller does it on every `loop advance`), so the status page shows progress and ETAs from our own history; review estimate accuracy at each Report stage and adjust the method when a stage stays off.
 18. **The gate is measured, noise included.** Each instance declares its release gate as metrics in `quality.json` (source, threshold, noise band, cadence, blocking or informative, veto); `kit/evaluate.mjs` scores them from existing outputs (method/quality.md). Inside the noise band a metric is neither pass nor fail; a stale or missing measurement is "not measured", never a pass; open real signals at S2 or worse veto the gate. The Gate stage reads the recorded verdict, and the status page shows the scorecard and its trend per dimension.
 19. **Use the screen, hide nothing.** A change to a screen's layout runs the layout audit (`kit/layout-audit.mjs`, `method/layout-audit.md`) at every viewport from phone to the largest monitor, the owner's own screen first: no inner scrolling or content below the fold for what the player must see or act on at laptop size or larger, the width used on wide screens, small screens collapse visibly (a summary with a count). Its report and screenshots are the evidence for the `design-review` gate that merges touching the UI need.
+20. **Keep what customers like.** Positives are collected as carefully as friction (what, where, why, how strongly, would they miss it) and kept in a keep list with weights and evidence. A plan or spec that touches a keep list row says preserved, changed on purpose or moved; a row lost without a decision is a finding of at least S2, like a regression (method/customer-advocate.md).
+21. **Predict before building, check after.** A Customer Advocate, a separate agent whose only job is to know the customer record, forecasts each customer's reaction to the candidate goals in Plan and to each spec in Design, from evidence only. The forecast is committed before Build, never edited, and scored against the round in Triage; its accuracy is tracked and shown. The panel still decides: a forecast is input, never a gate result.
+22. **Customer feedback is a record, not a pile.** Session reports, briefs and triage files are never edited or deleted after a round; `kit/customer-record.mjs` generates one linked record from them (per customer and per project state: iteration, published commit, build played, clusters and decisions) that anyone can read in one place.
+23. **Customers play as they live.** Each customer plays on their own device and in their own session length. The builders' reference screen is for design reviews and engineer checks, never a reason to move a customer off their device.
 
 ## Iteration
 | Stage | Who | Output |
 |---|---|---|
-| 1. Plan | Group Manager | 3 to 5 goals for the iteration, each tied to findings and gate criteria |
-| 2. Design | Designer, UX, Art Director | Specs, concepts, acceptance criteria (`runs/iter-NN/design-*.md`) |
+| 1. Plan | Group Manager, Customer Advocate | 3 to 5 goals for the iteration, each tied to findings and gate criteria; the Advocate's view of who gains, who loses and what on the keep list is touched (`runs/iter-NN/advocate-forecast.md`, part 1) |
+| 2. Design | Designer, UX, Art Director, Customer Advocate | Specs, concepts, acceptance criteria (`runs/iter-NN/design-*.md`), each naming the keep list rows it touches; the Advocate's forecast per customer (part 2), answered in the spec, committed before Build |
 | 3. Build | Engineers (parallel agents) | Code, tests, ledger entries |
 | 4. Verify | QA | `verify` gate green: tests, lints, build, smoke, visual regression, balance bands, every regression guard |
-| 5. Use | Customer panel (blind, parallel) | Schema-valid session reports with screenshots |
-| 6. Triage | Group Manager + QA | Regression check against the registry first, then clusters, reproduced bugs, decisions; every fix adds a guard |
+| 5. Use | Customer panel (blind, parallel, each on their own device) | Schema-valid session reports with screenshots, positives recorded as carefully as friction |
+| 6. Triage | Group Manager + QA + Customer Advocate | Regression check against the registry first, then clusters, reproduced bugs, decisions; every fix adds a guard; customer record regenerated, keep list updated, forecast reviewed against the round |
 | 7. Report | Group Manager | Status page, journal; after a green verify gate, fast-forward `main` to the finished iteration and tag it `iter-N` so the owner can playtest it from `main` |
 | 8. Gate | Group Manager | Quality scorecard recorded (`kit/evaluate.mjs --record`). Pass: release candidate tag. Fail: next iteration |
 
