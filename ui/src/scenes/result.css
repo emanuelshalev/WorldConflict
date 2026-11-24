@@ -145,6 +145,12 @@
   .paper-overlay .lead > .scene { grid-column: 1; grid-row: 1 / span 8; aspect-ratio: 16 / 9; max-height: 46vh; width: 100%; }
   .paper-overlay .lead > :not(.scene) { grid-column: 2; max-width: 38rem; }
 }
+/* 1600 to 2239 (1920x1080, the reference screen, D-87): the body column is about 720 to 1000 px
+   wide, so 38rem left a third of it empty while the chips wrapped to three rows and pushed Next
+   month below the fold (RS-008 at 1920x1080). The body takes up to 48rem of its column. */
+@media (min-width: 1600px) and (max-width: 2239px) {
+  .rc-body { max-width: 48rem; }
+}
 .paper-overlay .story p { font-size: 15px; }
 .paper-overlay .story .kicker { font-size: 15px; }
 @media (min-width: 2240px) {
