@@ -388,7 +388,8 @@ function DecisionThing({ item, compact }: { item: AgendaItem; compact: boolean }
             // month 3: "costs ◆ 2" while the band moved by 1)
             const counted = meeting ? 0 : -((crisisAnswer(useGameStore.getState(), d as PendingDecision)?.effects.pc ?? 0) - (choices[d.id] ? (advice?.prices?.[d.id]?.[choices[d.id]] ?? 0) : 0));
             const delta = -pc - counted;
-            const ref = choices[d.id] ? 'your answer' : 'leaving it';
+            // Name the answer the band counts (a routine crisis starts on the cabinet's, not the player's)
+            const ref = choices[d.id] ? (d.options.find((x) => x.id === choices[d.id])?.label ?? 'the chosen answer') : 'leaving it';
             const against = !meeting && counted > 0 && choices[d.id] !== o.id ? (delta > 0 ? ` (◆ ${delta} more than ${ref})` : delta < 0 ? ` (◆ ${-delta} less than ${ref})` : ` (as much as ${ref})`) : '';
             const costText = pc < 0 ? ` · costs ◆ ${-pc}${against}` : against ? ` · free${against}` : '';
             const more = [
