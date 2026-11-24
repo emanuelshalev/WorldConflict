@@ -40,6 +40,22 @@ function DeltaBar({ f }: { f: ReportFact }) {
   const pct = /view|relation/i.test(f.label) ? (f.after + 100) / 2 : Math.max(0, Math.min(100, f.after));
   const tone = factTone(f);
   const d = shownDelta(f.before, f.after, f.unit, f.share);
+  // Political capital: what this answer cost or gave, never the bank in the middle of the month
+  // ("5 → 3" when the player had ◆ 0 left at Execute, design review DR-INT-2). A cost is not a
+  // failure: spent capital is drawn plain, not red
+  if (f.unit === '◆') {
+    const n = Math.round(f.after - f.before);
+    return (
+      <div className={`rc-delta share ${n > 0 ? 'good' : 'flat'}`} data-capital-fact="">
+        <div className="rc-delta-top">
+          <span>Political capital, this choice</span>
+          <span className="num">
+            <em>{n < 0 ? `◆ ${-n} spent` : n > 0 ? `◆ ${n} gained` : 'nothing spent'}</em>
+          </span>
+        </div>
+      </div>
+    );
+  }
   if (f.share)
     return (
       <div className={`rc-delta share ${tone}`}>

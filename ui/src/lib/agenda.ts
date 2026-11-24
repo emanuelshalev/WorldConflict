@@ -1,8 +1,9 @@
 import { type CallCard, type DecisionOption, type GameState, type Meeting, type PendingDecision, type QueueResult, type YourCall, countryName, orderKey, queueOrder, useGameStore } from '../store/gameStore';
 import { ADVISOR_NAMES } from './format';
-import { type CallSet, approveAll, cabinetPick, callSet, crisisChoices, leaveText, meetingAdviser, meetingPick, primaryItem, splitLede } from './month';
+import { type CallSet, approveAll, cabinetPick, callSet, crisisChoices, effectWords, leaveText, meetingAdviser, meetingPick, missionTag, primaryItem, proposalEffects, splitLede } from './month';
 import { pcCost } from './actions';
 import { goalInSentence } from './goals';
+import { keepLine } from './budget';
 
 /**
  * The month as a guided agenda (design-agenda.md 0, round 3; design-layout.md 6). One list, one
@@ -292,7 +293,8 @@ export function skipMeaning(item: AgendaItem, state: GameState = useGameStore.ge
   }
   if (item.kind === 'move') {
     const mv = item.yourCall;
-    return { label: mv?.skip.label ?? 'Hold this month', means: mv?.skip.text ?? 'No move for your mission.', after: 'You can still make your move before you execute.' };
+    // The engine's words say no order is given; the numbers are the band's (lib/budget capitalOutlook, DR-INT-2)
+    return { label: mv?.skip.label ?? 'Hold this month', means: `${mv?.skip.text ?? 'No move for your mission.'} ${keepLine(state)}`, after: 'You can still make your move before you execute.' };
   }
   if (item.kind === 'crisis' && item.decision) {
     const d = item.decision;
@@ -308,7 +310,7 @@ export function skipMeaning(item: AgendaItem, state: GameState = useGameStore.ge
   if (item.kind === 'meetings') return { label: 'Skip: your ministers take them', means: 'Each one gets the usual answer. Free, no effect.', after: 'You can open them again before you execute.' };
   if (item.kind === 'orders') {
     const pc = (item.orders ?? []).reduce((s, i) => s + (state.pendingActions[i]?.proposed ? pcCost(state.pendingActions[i].type) : 0), 0);
-    return { label: 'Skip: they do not run', means: pc ? `Nothing happens. ◆ ${pc} stays for your own orders.` : 'Nothing happens.', after: 'You can choose them before you execute.' };
+    return { label: 'Skip: they do not run', means: pc ? `Nothing happens, and their ◆ ${pc} is not spent.` : 'Nothing happens.', after: 'You can choose them before you execute.' };
   }
   return { label: 'No more orders this month', means: 'Unspent political capital carries over (up to ◆ 6).', after: 'You can add orders before you execute.' };
 }
@@ -337,9 +339,77 @@ export function executeMeaning(item: AgendaItem, state: GameState = useGameStore
   if (item.kind === 'meetings') return 'Your ministers take them, each with the usual answer. Free, no effect.';
   if (item.kind === 'orders') {
     const pc = (item.orders ?? []).reduce((s, i) => s + (state.pendingActions[i]?.proposed ? pcCost(state.pendingActions[i].type) : 0), 0);
-    return `Not given unless you choose them${pc ? `: ◆ ${pc} stays for your own orders` : ''}.`;
+    return `Not given unless you choose them${pc ? ` (their ◆ ${pc} is not spent)` : ''}.`;
   }
   return 'No orders of your own: unspent political capital carries over (up to ◆ 6).';
+}
+
+/**
+ * One row of "You chose" on the review page (design review DR-INT-7): what it answers (the crisis,
+ * meeting or group), the answer or order, what it costs in political capital (the band's rule:
+ * the answer's own capital with its D-84 price, an order's PC cost; negative when it gives) and its
+ * mission tag or strongest effect.
+ */
+export interface ReviewRow {
+  key: string;
+  /** The thing it belongs to (Change opens it), or the own order's index. */
+  itemKey: string;
+  orderIndex?: number;
+  question: string;
+  answer: string;
+  cost: number;
+  detail: string;
+  tone?: 'risk' | 'help';
+}
+
+const capFirst = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+export function reviewRows(state: GameState = useGameStore.getState()): ReviewRow[] {
+  const items = agendaItems(state);
+  const price = (id: string, oid: string) => state.advice?.prices?.[id]?.[oid] ?? 0;
+  const answerCost = (o: DecisionOption | undefined, id: string, priced: boolean) => (o ? -(o.effects.pc ?? 0) + (priced ? price(id, o.id) : 0) : 0);
+  const answerDetail = (id: string, o: DecisionOption | undefined): Pick<ReviewRow, 'detail' | 'tone'> => {
+    if (!o) return { detail: '' };
+    const mt = missionTag(state.missionImpact[id]?.[o.id], state.objectiveStatus);
+    if (mt) return { detail: [mt.text, mt.also?.text].filter(Boolean).join('. '), tone: mt.tone === 'risk' ? 'risk' : 'help' };
+    return { detail: effectWords(o).slice(0, 2).map((w) => w.text).join('. ') };
+  };
+  const out: ReviewRow[] = [];
+  const orderRow = (item: AgendaItem | undefined, question: string, i: number): ReviewRow => {
+    const a = state.pendingActions[i];
+    const fx = proposalEffects(a);
+    return { key: `order-${i}`, itemKey: item?.key ?? 'own', orderIndex: i, question, answer: `Order: ${a.label}`, cost: pcCost(a.type), detail: a.preview?.missionWarning ?? (fx ? `Will change: ${fx}` : ''), tone: a.preview?.missionWarning ? 'risk' : undefined };
+  };
+  for (const x of items) {
+    if (x.state !== 'decided' || x.kind === 'own') continue;
+    if (x.kind === 'crisis' && x.decision) {
+      const d = x.decision;
+      const o = d.options.find((y) => y.id === state.decisionChoices[d.id]);
+      out.push({ key: x.key, itemKey: x.key, question: d.title, answer: o?.label ?? '', cost: answerCost(o, d.id, true), ...answerDetail(d.id, o) });
+    } else if (x.kind === 'meeting' && x.meeting) {
+      const m = x.meeting;
+      const o = m.options.find((y) => y.id === state.decisionChoices[m.id]);
+      const deputy = o?.id === m.defaultOptionId;
+      out.push({ key: x.key, itemKey: x.key, question: x.title, answer: deputy ? `Your ${ministerFor(m)} takes it${o ? `: ${o.label}` : ''}` : (o?.label ?? ''), cost: answerCost(o, m.id, !deputy), ...answerDetail(m.id, o) });
+    } else if (x.kind === 'meetings') {
+      const cost = (x.meetings ?? []).reduce((s, m) => {
+        const o = m.options.find((y) => y.id === state.decisionChoices[m.id]);
+        return s + answerCost(o, m.id, !!o && o.id !== m.defaultOptionId);
+      }, 0);
+      out.push({ key: x.key, itemKey: x.key, question: x.title, answer: capFirst(x.stateText.replace(/^Decided: /, '')), cost, detail: '' });
+    } else if (x.kind === 'orders' || x.kind === 'move') {
+      for (const i of x.orders ?? []) if (state.pendingActions[i] && !state.pendingActions[i].proposed) out.push(orderRow(x, x.title, i));
+    }
+  }
+  state.pendingActions.forEach((a, i) => {
+    if (!a.proposed && a.origin !== 'staff') out.push(orderRow(undefined, 'Your own order', i));
+  });
+  return out;
+}
+
+/** "◆ 2", "Free", "Gives ◆ 1": a row's cost in the band's unit. */
+export function costLabel(cost: number): string {
+  return cost > 0 ? `◆ ${cost}` : cost < 0 ? `Gives ◆ ${-cost}` : 'Free';
 }
 
 // ============================================================================
@@ -466,7 +536,7 @@ export function executeNow(state: GameState = useGameStore.getState()): string[]
   if (committed.length) out.push(`${committed.length} order${committed.length === 1 ? ' runs' : 's run'} (◆ ${committed.reduce((s, a) => s + pcCost(a.type), 0)}).`);
   if (waiting.length) {
     const pc = waiting.reduce((s, a) => s + pcCost(a.type), 0);
-    out.push(`The ${waiting.length === 1 ? 'recommended order does' : `${waiting.length} recommended orders do`} not run${pc ? ` (◆ ${pc} stay${pc === 1 ? 's' : ''})` : ''}.`);
+    out.push(`The ${waiting.length === 1 ? 'recommended order does' : `${waiting.length} recommended orders do`} not run${pc ? ` (their ◆ ${pc} is not spent)` : ''}.`);
   }
   if (!out.length) out.push('Nothing is decided: the month runs on its own.');
   return out.slice(0, Math.max(3, callItems.length + 1));

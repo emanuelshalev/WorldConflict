@@ -7,6 +7,7 @@ import { type StaffPickItem, approveLabel, planSummary } from '../../lib/month';
 import { useStaffPicks } from '../../lib/useStaffPicks';
 import { type AgendaItem, agendaItems, chooseAllRecommended, executeNow, openCalls, openItem, undoSkip } from '../../lib/agenda';
 import { type PlanSection, useFitPlan } from '../../lib/layout';
+import { capitalLine } from '../../lib/budget';
 import { TERMS } from '../../lib/glossary';
 import { CoachBubble } from './Coach';
 import { sound } from '../../lib/sound';
@@ -81,6 +82,10 @@ function ExecuteBlock({ form }: { form: PlanForm }) {
           <li key={l}>{l}</li>
         ))}
       </ul>
+      {/* The one capital sentence (lib/budget capitalOutlook, DR-INT-2): now, spent, left, next month */}
+      <p className="execb-pc" data-capital-line="">
+        {capitalLine()}
+      </p>
       <Blocked />
       <div className="ex-wrap">
         <CoachBubble step="execute" place="above" />

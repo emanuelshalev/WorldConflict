@@ -33,7 +33,8 @@ describe("month words", () => {
 
   it("gives at most one mission tag: breaks, then hurts, then helps, then a bonus", () => {
     const sanaa = impact({ helps: ["The Houthis pushed off the coast"], hurts: ["The kingdom holds its nerve"], links: [{ index: 0, effect: "helps", bonus: false }, { index: 2, effect: "hurts", bonus: false }] });
-    expect(missionTag(sanaa, status)).toEqual({ tone: "risk", text: "Hurts: The kingdom holds its nerve", more: 1 });
+    // A mixed answer says both; "+n more" after Hurts never counts a goal it helps (DR-INT-4)
+    expect(missionTag(sanaa, status)).toEqual({ tone: "risk", text: "Hurts: The kingdom holds its nerve", more: 0, also: { tone: "help", text: "Helps: The Houthis pushed off the coast" } });
     const oman = impact({ helps: ["The kingdom holds its nerve"], links: [{ index: 2, effect: "helps", bonus: false }] });
     expect(missionTag(oman, status)?.text).toBe("Helps: The kingdom holds its nerve");
     const invite = impact({ bonusHelps: ["Washington firmly behind you"], links: [{ index: 3, effect: "helps", bonus: true }] });

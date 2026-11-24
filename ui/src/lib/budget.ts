@@ -70,6 +70,57 @@ export function budgetStatus(state: GameState = useGameStore.getState()): Budget
   };
 }
 
+/**
+ * Political capital in one picture, the single source for every sentence that names a number
+ * (design review DR-INT-2): what you have now (the bank), what this month's choices spend (the
+ * band's rule, budgetStatus: answers with their D-84 price, an open call at what leaving it does,
+ * chosen orders), what is left at Execute (the band's number), and what you start next month
+ * with (the engine's rule, turn.ts: left plus the monthly income, capped). `free` is capital a
+ * sentence assumes is not spent (Hold this month frees nothing: no move order is chosen then).
+ */
+export interface CapitalOutlook {
+  now: number;
+  spent: number;
+  left: number;
+  income: number;
+  cap: number;
+  next: number;
+  /** Next month's income that does not fit under the cap. */
+  lost: number;
+}
+
+export function capitalOutlook(state: GameState = useGameStore.getState(), free = 0): CapitalOutlook | null {
+  const b = budgetStatus(state);
+  if (!b) return null;
+  const cap = state.pcCap || b.pc.cap;
+  const income = state.pcIncome;
+  const left = b.pc.left + free;
+  const now = b.pc.bank;
+  const kept = Math.max(0, left);
+  return { now, spent: now - left, left, income, cap, next: Math.min(cap, kept + income), lost: Math.max(0, kept + income - cap) };
+}
+
+/** "◆ 2 is lost: you can hold at most ◆ 6" when next month's income overflows, else ''. */
+const lostWords = (o: CapitalOutlook) => (o.lost ? ` (◆ ${o.lost} of the new capital is lost: you can hold at most ◆ ${o.cap})` : '');
+
+/**
+ * The plan's capital line: "Political capital: ◆ 5 now, ◆ 3 spent this month, ◆ 2 left. You start
+ * next month with ◆ 5 (+3)."
+ */
+export function capitalLine(state: GameState = useGameStore.getState()): string {
+  const o = capitalOutlook(state);
+  if (!o) return '';
+  const use = o.spent > 0 ? `◆ ${o.spent} spent this month` : o.spent < 0 ? `◆ ${-o.spent} gained this month` : 'nothing spent this month';
+  return `Political capital: ◆ ${o.now} now, ${use}, ◆ ${o.left} left. You start next month with ◆ ${o.next} (+${o.income})${lostWords(o)}.`;
+}
+
+/** What holding (no order) keeps, after the month's other choices: "◆ 1 is left, and you start next month with ◆ 4." */
+export function keepLine(state: GameState = useGameStore.getState(), free = 0): string {
+  const o = capitalOutlook(state, free);
+  if (!o) return '';
+  return `After your other choices ◆ ${o.left} is left, and you start next month with ◆ ${o.next}${lostWords(o)}.`;
+}
+
 export function money(m: number): string {
   return m >= 1000 ? `$${(m / 1000).toFixed(1)}B` : `$${Math.round(m)}M`;
 }

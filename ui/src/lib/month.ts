@@ -430,8 +430,11 @@ export function meetingSelection(m: Meeting, choices: Record<string, string>, re
 export interface MissionTag {
   tone: 'risk' | 'help' | 'bonus';
   text: string;
-  /** Other objectives this option also moves (shown as "+1 more"). */
+  /** Other goals moved the same way as the tag says (shown as "+1 more"): a "Hurts" tag counts
+   *  only goals it breaks or hurts, never the ones it helps (design review DR-INT-4). */
   more: number;
+  /** A mixed answer: what it also helps, named ("Helps: Iran never tests a bomb and ..."). */
+  also?: { tone: 'help' | 'bonus'; text: string };
 }
 
 /**
@@ -444,18 +447,32 @@ export function goalName(c: Pick<ConditionStatus, 'label' | 'short'> | undefined
   return c.short ?? c.label.replace(/\s*[(:].*$/, '');
 }
 
-/** At most one mission tag: breaks, then hurts, then helps, then helps a bonus (design-month 3.4). */
+/**
+ * The mission tag: breaks, then hurts, then helps, then helps a bonus (design-month 3.4). Its "+n
+ * more" counts only goals moved the same way; an answer that hurts one goal and helps another says
+ * both, the helped goals named in `also` (design review DR-INT-4: "Hurts: X (+2 more)" counted
+ * the goals the answer helps).
+ */
 export function missionTag(impact: Impact | undefined, status: ConditionStatus[]): MissionTag | null {
   if (!impact) return null;
   const name = (effect: 'helps' | 'hurts' | 'breaks', bonus: boolean, fallback: string) => {
     const link = impact.links?.find((l) => l.effect === effect && l.bonus === bonus);
     return goalName(link ? status[link.index] : undefined, fallback);
   };
-  const total = impact.breaks.length + impact.hurts.length + impact.helps.length + impact.bonusHelps.length;
-  if (impact.breaks.length) return { tone: 'risk', text: `Breaks: ${name('breaks', false, impact.breaks[0])}`, more: total - 1 };
-  if (impact.hurts.length) return { tone: 'risk', text: `Hurts: ${name('hurts', false, impact.hurts[0])}`, more: total - 1 };
-  if (impact.helps.length) return { tone: 'help', text: `Helps: ${name('helps', false, impact.helps[0])}`, more: total - 1 };
-  if (impact.bonusHelps.length) return { tone: 'bonus', text: `Helps: ${name('helps', true, impact.bonusHelps[0])} (bonus)`, more: total - 1 };
+  /** Every goal helped, by name (the links when they name them all, else the engine's labels). */
+  const helped = (bonus: boolean, fallback: string[]) => {
+    const linked = (impact.links ?? []).filter((l) => l.effect === 'helps' && l.bonus === bonus).map((l) => goalName(status[l.index], ''));
+    return linked.length === fallback.length && linked.every(Boolean) ? linked : fallback;
+  };
+  const list = (xs: string[]) => (xs.length <= 2 ? xs.join(' and ') : `${xs.slice(0, 2).join(', ')} and ${xs.length - 2} more`);
+  const risk = impact.breaks.length + impact.hurts.length;
+  const helps = helped(false, impact.helps);
+  const bonus = helped(true, impact.bonusHelps);
+  const also = helps.length ? { tone: 'help' as const, text: `Helps: ${list(helps)}` } : bonus.length ? { tone: 'bonus' as const, text: `Helps: ${list(bonus)} (bonus)` } : undefined;
+  if (impact.breaks.length) return { tone: 'risk', text: `Breaks: ${name('breaks', false, impact.breaks[0])}`, more: risk - 1, ...(also ? { also } : {}) };
+  if (impact.hurts.length) return { tone: 'risk', text: `Hurts: ${name('hurts', false, impact.hurts[0])}`, more: risk - 1, ...(also ? { also } : {}) };
+  if (impact.helps.length) return { tone: 'help', text: `Helps: ${name('helps', false, impact.helps[0])}`, more: impact.helps.length + impact.bonusHelps.length - 1 };
+  if (impact.bonusHelps.length) return { tone: 'bonus', text: `Helps: ${name('helps', true, impact.bonusHelps[0])} (bonus)`, more: impact.bonusHelps.length - 1 };
   return null;
 }
 

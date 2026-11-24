@@ -1,7 +1,7 @@
 import { useGameStore } from '../../store/gameStore';
-import { type AgendaItem, agendaItems, executeMeaning, openCalls, openItem, skipMeaning, undoSkip } from '../../lib/agenda';
+import { type AgendaItem, agendaItems, costLabel, executeMeaning, openCalls, openItem, reviewRows, skipMeaning, undoSkip } from '../../lib/agenda';
+import { capitalLine } from '../../lib/budget';
 import { TERMS } from '../../lib/glossary';
-import { pcCost } from '../../lib/actions';
 import { ExecuteButton, Recommended } from './Plan';
 import { executeNow } from '../../lib/agenda';
 import { useStaffPicks } from '../../lib/useStaffPicks';
@@ -35,16 +35,16 @@ export function ReviewPage({ phone = false }: { phone?: boolean }) {
   useGameStore((s) => s.decisionChoices);
   useGameStore((s) => s.reviewed);
   useGameStore((s) => s.skipped);
-  const actions = useGameStore((s) => s.pendingActions);
   const setFocus = useGameStore((s) => s.setFocus);
   const items = agendaItems();
   const { n } = useStaffPicks();
-  const chose = items.filter((x) => x.state === 'decided' && x.kind !== 'own');
   const calls = openCalls(items);
   const left = items.filter((x) => x.state === 'todo' && !x.call);
   const skipped = items.filter((x) => x.state === 'skipped');
-  const mine = actions.map((a, i) => ({ a, i })).filter((x) => !x.a.proposed && x.a.origin !== 'staff');
-  const many = chose.length + left.length + skipped.length + mine.length > 8;
+  useGameStore((s) => s.pendingActions);
+  // One row per answer or order: what it answers, the answer, its cost, its mission tag (DR-INT-7)
+  const rows = reviewRows();
+  const many = rows.length + left.length + skipped.length > 8;
   return (
     <article className={`review-page${many ? ' compact' : ''}`} aria-label="Check what will happen" data-review="">
       <div className="rv-rows">
@@ -71,31 +71,32 @@ export function ReviewPage({ phone = false }: { phone?: boolean }) {
           </section>
         )}
         <section aria-label="You chose">
-          <h2>You chose ({chose.length + mine.length})</h2>
-          {chose.length + mine.length === 0 && <p className="muted">Nothing yet.</p>}
-          <ul className="prows">
-            {chose.map((x) => (
-              <li key={x.key} className="prow">
-                <span className="prow-t">
-                  {x.stateText.replace(/^Decided: /, '')}
-                  <small>{x.title}</small>
+          <h2>You chose ({rows.length})</h2>
+          {rows.length === 0 && <p className="muted">Nothing yet.</p>}
+          <ul className="prows rv-chose">
+            {rows.map((r) => (
+              <li key={r.key} className="prow rv-row" data-review-row="chose">
+                <span className="rv-q" data-rv-q="">
+                  {r.question}
                 </span>
-                <button type="button" className="wc-btn small" onClick={() => openItem(x.key)} aria-label={`Change: ${x.title}`}>
-                  Change
-                </button>
-              </li>
-            ))}
-            {mine.map(({ a, i }) => (
-              <li key={`${a.label}-${i}`} className="prow">
-                <span className="prow-t">
-                  Order: {a.label}
-                  {pcCost(a.type) ? ` · ◆ ${pcCost(a.type)}` : ''}
-                  <small>Your own order</small>
+                <span className="rv-a">
+                  <b>{r.answer}</b>
+                  {r.detail && <span className={`rv-d${r.tone ? ` mt-${r.tone}` : ''}`}>{r.detail}</span>}
                 </span>
-                <button type="button" className="wc-btn small" onClick={() => {
-                    useGameStore.setState({ review: false });
-                    setFocus({ kind: 'order', id: String(i) });
-                  }} aria-label={`Change: ${a.label}`}>
+                <span className={`rv-cost${r.cost > 0 ? '' : ' is-free'}`} data-rv-cost="">
+                  {costLabel(r.cost)}
+                </span>
+                <button
+                  type="button"
+                  className="wc-btn small"
+                  onClick={() => {
+                    if (r.itemKey === 'own' && r.orderIndex !== undefined) {
+                      useGameStore.setState({ review: false });
+                      setFocus({ kind: 'order', id: String(r.orderIndex) });
+                    } else openItem(r.itemKey);
+                  }}
+                  aria-label={`Change: ${r.question}`}
+                >
                   Change
                 </button>
               </li>
@@ -150,6 +151,9 @@ export function ReviewPage({ phone = false }: { phone?: boolean }) {
             <li key={l}>{l}</li>
           ))}
         </ul>
+        <p className="execb-pc" data-capital-line="">
+          {capitalLine()}
+        </p>
         {!phone && (
           <div className="ex-wrap">
             <CoachBubble step="execute" place="above" />

@@ -168,9 +168,18 @@ html { font-size: clamp(16px, calc(0.42vmin + 11.5px), 22px); }
   .goals.in-ctx { display: grid; }
   .th-hero { height: clamp(12rem, 34vh, 30rem); }
 }
-/* The simple things (small meetings, recommended orders) and own orders: no scene, two columns when wide */
-.thing.is-simple .opts { grid-template-columns: minmax(0, 1fr); }
-@container item (min-width: 56rem) { .thing.is-simple .opts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* The simple things (small meetings, recommended orders, the mission move): no scene and no
+   situation column. The text header spans the Thing and the cards share its whole width below it,
+   as many columns as fit at 24rem or more, from the top (design review DR-INT-1: in the ans column
+   beside an empty header box the cards were 200 to 280 px, word per line, the face over the title) */
+.thing.is-simple { grid-template-columns: minmax(0, 1fr) !important; grid-template-areas: none !important; grid-template-rows: auto auto !important; align-content: start; }
+.thing.is-simple > * { grid-area: auto !important; }
+.thing.is-simple .th-sit > .th-hero.is-text { height: auto !important; aspect-ratio: auto !important; max-height: none !important; }
+.thing.is-simple .opts { grid-template-columns: repeat(auto-fill, minmax(min(100%, 24rem), 1fr)) !important; grid-auto-rows: auto !important; align-items: stretch; }
+.thing.is-simple .opts > .skip-wrap:nth-child(odd):last-child { grid-column: auto; }
+/* Undo / Remove belong to their card: under it, at its right edge, not floating between cards */
+.thing.is-simple .opt-pair { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; gap: .3rem; align-items: stretch; }
+.thing.is-simple .opt-pair > .wc-btn { justify-self: end; min-height: 2.25rem; }
 .thing.is-own { display: flex; flex-direction: column; gap: var(--gap); }
 /* The heading block keeps its height: `.thing > *` lets items shrink (min-height 0), and in this
    flex column the All orders button then ran under "Orders to consider" (visual review, 1440). */
@@ -315,6 +324,7 @@ html { font-size: clamp(16px, calc(0.42vmin + 11.5px), 22px); }
 .execb { flex: none; padding: .75rem var(--pad) 1rem; border-top: 1px solid var(--line-2); background: #0c121b; display: grid; gap: .35rem; }
 .execb-h { margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-1); }
 .execb ul, .rv-exec ul { margin: 0 0 .4rem; padding-left: 1.25rem; font-size: 1rem; color: var(--text-1); line-height: 1.4; }
+.execb-pc { margin: 0 0 .3rem; font-size: .9375rem; color: var(--text-2); line-height: 1.4; }
 .plan-over { display: flex; gap: .4rem; align-items: center; justify-content: center; background: none; border: 0; color: var(--war); font: inherit; font-size: .9375rem; cursor: pointer; min-height: 2.25rem; }
 .execute-btn .ex-sub { font-size: .9375rem; }
 @media (max-height: 820px) {
@@ -356,9 +366,23 @@ html { font-size: clamp(16px, calc(0.42vmin + 11.5px), 22px); }
 .review-page.compact .prow-t small { display: none; }
 .rv-exec { display: grid; gap: .5rem; align-content: start; padding: 1rem; border-radius: 1rem; background: var(--surface-1); }
 .rv-exec ul { font-size: 1.0625rem; }
+/* "You chose" (DR-INT-7): each row says what it answers, the answer, its cost and its mission tag,
+   in columns across the page (what it answers | the answer | cost | Change) */
+.rv-chose .rv-row { display: grid; grid-template-columns: minmax(0, 15rem) minmax(0, 1fr) minmax(4.5rem, auto) auto; align-items: center; gap: .2rem 1rem; padding: .45rem 0; border-bottom: 1px solid var(--line); }
+.rv-q { font-size: .9375rem; color: var(--text-2); line-height: 1.3; }
+.rv-a { display: grid; min-width: 0; line-height: 1.35; }
+.rv-a b { font-weight: 600; color: var(--text-1); }
+.rv-d { font-size: .9375rem; color: var(--text-2); }
+.rv-d.mt-risk { color: #ff9a9c; }
+.rv-d.mt-help { color: #8fe3bd; }
+.rv-cost { justify-self: end; font-weight: 700; color: var(--accent); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.rv-cost.is-free { color: var(--text-2); font-weight: 500; }
+@container item (max-width: 40rem) {
+  .rv-chose .rv-row { grid-template-columns: minmax(0, 1fr) auto auto; }
+  .rv-chose .rv-q { grid-column: 1 / -1; }
+}
 @container item (min-width: 56rem) {
-  .review-page { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
-  .rv-exec { max-width: 34rem; }
+  .review-page { grid-template-columns: minmax(0, 1.5fr) minmax(22rem, 1fr); }
 }
 
 /* ---------- the order views inside the Thing ---------- */
@@ -522,7 +546,9 @@ html { font-size: clamp(16px, calc(0.42vmin + 11.5px), 22px); }
    rows, then folds "Left to your advisers" to one line, then the Recommended rows (Choose all and
    its line stay); the open calls keep their consequence line */
 .rv-sum { display: none; margin: 0; font-size: .9375rem; color: var(--text-2); }
-[data-fit] .review-page .prow-t small { display: none; }
+[data-fit='1'] .review-page .prow-t small, [data-fit='2'] .review-page .prow-t small, [data-fit='3'] .review-page .prow-t small { display: none; }
+/* What a chosen row answers and costs always shows; its tag goes first when the page must compact */
+[data-fit='2'] .review-page .rv-d, [data-fit='3'] .review-page .rv-d { display: none; }
 [data-fit] .review-page .rv-calls .prow-t small { display: block; }
 [data-fit='2'] .review-page .rv-left .prows, [data-fit='3'] .review-page .rv-left .prows { display: none; }
 [data-fit='2'] .review-page .rv-left .rv-sum, [data-fit='3'] .review-page .rv-left .rv-sum { display: block; }
