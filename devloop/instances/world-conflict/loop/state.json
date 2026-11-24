@@ -856,6 +856,29 @@
       "iteration": 4,
       "stage": "Build",
       "tier": "T1"
+    },
+    {
+      "gate": "verify",
+      "result": "pass",
+      "commit": "5ad6a8263bdaaa220269f025d4eb6417768b347c",
+      "codeTree": "38af7de3f921cf35",
+      "evidence": ".verify/summary.json",
+      "note": "modes default",
+      "t": "2026-11-24T10:00:07.070Z",
+      "iteration": 4,
+      "stage": "Build",
+      "steps": [
+        "registry",
+        "test",
+        "lint",
+        "ui-lint",
+        "build",
+        "smoke",
+        "reveal",
+        "visual",
+        "regressions",
+        "balance"
+      ]
     }
   ],
   "merges": [
