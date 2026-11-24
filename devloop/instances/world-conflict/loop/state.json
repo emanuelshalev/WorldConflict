@@ -915,6 +915,51 @@
       "iteration": 4,
       "stage": "Build",
       "tier": "T1"
+    },
+    {
+      "gate": "status-refresh",
+      "result": "pass",
+      "commit": "bd01387993d7a0d12c84892e028c5264a2c27a24",
+      "codeTree": "38af7de3f921cf35",
+      "evidence": "dev_plan/project_status.html",
+      "note": "status-refresh T1",
+      "t": "2026-11-24T11:41:14.936Z",
+      "iteration": 4,
+      "stage": "Build",
+      "tier": "T1"
+    },
+    {
+      "gate": "verify",
+      "result": "pass",
+      "commit": "b48a4f5ab47291f3da39124556b31e57af0b61ba",
+      "codeTree": "3357db078eef93a5",
+      "evidence": ".verify/summary.json",
+      "note": "modes default",
+      "t": "2026-11-24T11:59:00.826Z",
+      "iteration": 4,
+      "stage": "Build",
+      "steps": [
+        "registry",
+        "test",
+        "lint",
+        "ui-lint",
+        "build",
+        "smoke",
+        "reveal",
+        "visual",
+        "regressions",
+        "balance"
+      ]
+    },
+    {
+      "gate": "design-review",
+      "result": "pass",
+      "commit": "98f6f52a1d086ebc6ae024e426516aef1698e511",
+      "codeTree": "3357db078eef93a5",
+      "evidence": "devloop/instances/world-conflict/runs/iter-04/design-recheck-integrated.md",
+      "t": "2026-11-24T11:59:10.714Z",
+      "iteration": 4,
+      "stage": "Build"
     }
   ],
   "merges": [
