@@ -13,6 +13,7 @@ Builders are persona agents too, but they never grade their own work: customers 
 | Backend/Engine Engineer | Domain logic, structured reasons for every refusal, determinism or correctness invariants |
 | QA Engineer | Tests, harnesses, smoke playtests, reproduction of every reported bug, regression checks |
 | Domain Consultant | Accuracy of content in the product's domain |
+| Customer Advocate | The customer record, the keep list, a forecast of each customer's reaction in Plan and Design, and the review of that forecast after the round (customer-advocate.md). Builds and designs nothing; argues from evidence only |
 
 ## Charter template
 See `../templates/team/role.md`. Rules shared by every role: spec before code for anything user-facing; every change has a ledger entry; never remove a capability without an owner decision.

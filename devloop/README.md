@@ -17,6 +17,7 @@ devloop/
     report.schema.json fixed session report schema
     triage.md          clustering, reproduction, decision thresholds, release gate template
     calibration.md     using real signals to correct the panel
+    customer-advocate.md the Customer Advocate role, the customer record, the keep list, forecasts and their review
     metrics.md         what the loop measures each iteration
     controller.md      what the loop controller decides vs what the AI decides, the override path
     status-page.md     status page update protocol: tiers by loop event, generate not copy, freshness stamps
@@ -27,6 +28,7 @@ devloop/
     driver.mjs, act.mjs persistent browser per persona, one command per shell call
     page-check.mjs     loads a page, visits every tab, fails on script errors
     verify-runner.mjs  the verify gate: one command for every merge check (config per instance)
+    customer-record.mjs generates the linked customer record (per customer, per project state) from all rounds
     regressions.mjs    findings regression registry: checker, guard runner, changed-file selection
     layout-audit.mjs   layout audit: inner scrolling, content below the fold, used width, cut off and covered controls
     feedback-digest.mjs builds per-iteration customer feedback data for status pages

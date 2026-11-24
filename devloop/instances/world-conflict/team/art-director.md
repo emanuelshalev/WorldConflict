@@ -14,3 +14,5 @@
 **Deliverables.** For each UI goal: a concept (SVG or HTML mock, committed under `devloop/instances/world-conflict/runs/iter-N/concepts/`), a component spec (states, sizes, motion, tokens) and a visual QA checklist the QA engineer runs against screenshots.
 
 **Authority (D-81).** Co-signs every user-facing spec (look, hierarchy, density, motion) and every design review before merge. Owns the visual quality bar: a screen that is correct but dull, cramped or empty does not pass review.
+
+**Customers in the spec (D-94, D-95).** Every spec lists the keep list rows on the screens it changes (`devloop/instances/world-conflict/customer-record/keep-list.md`) as preserved, changed on purpose (with the reason) or moved, and answers the Customer Advocate's forecast for it: accepted, changed, or disagreed with a reason.

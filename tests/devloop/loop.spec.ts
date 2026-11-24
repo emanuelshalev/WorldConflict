@@ -539,3 +539,63 @@ describe("bash guard (Claude Code PreToolUse)", () => {
     expect(stderr).toMatch(/--ff-only/);
   });
 });
+
+describe("two sizes of verify: the quick gate for tooling, the full gate for the product (when.outside)", () => {
+  const cfg = () => ({
+    gates: ["verify", "qa", "triage", "status-refresh", "verify-quick"],
+    rules: {
+      ...baseConfig().rules,
+      "verify-before-merge": { on: "merge", gate: "verify", match: "code", when: { outside: ["kit/tool.mjs", "tests/kit/**"] } },
+      "verify-quick-before-merge": { on: "merge", gate: "verify-quick", match: "code" },
+    },
+    code: { include: ["src/**", "kit/**", "tests/**", "package.json"] },
+  });
+  const log = () => {};
+
+  it("a tooling-only merge needs the quick gate and not the full one", () => {
+    const { root, ctx, ev } = makeRepo(cfg());
+    loop.init(ctx, { iteration: 1, stage: "Build" });
+    git(root, "checkout", "-q", "-b", "work");
+    commit(root, "kit/tool.mjs", "export const t = 1;\n");
+    commit(root, "tests/kit/tool.spec.ts", "export {};\n");
+    commit(root, "notes.md", "docs are not code\n");
+    git(root, "checkout", "-q", "dev");
+    expect(() => merge({ cwd: root, config: join(root, CFG), branch: "work", log })).toThrow(/verify-quick-before-merge/);
+    const c = loop.evaluate(ctx, "merge", { commit: "work" });
+    expect(c.results.find((x: { rule: string }) => x.rule === "verify-before-merge")).toMatchObject({ ok: true, skipped: true });
+    expect(loop.formatResults(c)).toMatch(/every code file it touches is within kit\/tool\.mjs, tests\/kit\/\*\*/);
+    pass(ctx, "verify-quick", ev, "work");
+    const r = merge({ cwd: root, config: join(root, CFG), branch: "work", log });
+    expect(r.commit).toBe(git(root, "rev-parse", "HEAD"));
+  });
+
+  it("a merge that also touches the product or other kit files still needs the full gate", () => {
+    const { root, ctx, ev } = makeRepo(cfg());
+    loop.init(ctx, { iteration: 1, stage: "Build" });
+    git(root, "checkout", "-q", "-b", "work");
+    commit(root, "kit/tool.mjs", "export const t = 1;\n");
+    commit(root, "kit/runner.mjs", "export const gate = 1;\n");
+    pass(ctx, "verify-quick", ev, "work");
+    git(root, "checkout", "-q", "dev");
+    expect(() => merge({ cwd: root, config: join(root, CFG), branch: "work", log })).toThrow(/verify-before-merge/);
+    pass(ctx, "verify", ev, "work");
+    const r = merge({ cwd: root, config: join(root, CFG), branch: "work", log });
+    expect(r.commit).toBe(git(root, "rev-parse", "HEAD"));
+  });
+
+  it("a quick run records verify-quick only; a full pass records both", async () => {
+    const { root, ctx, ev } = makeRepo(cfg());
+    loop.init(ctx, { iteration: 1, stage: "Verify" });
+    const head = git(root, "rev-parse", "HEAD");
+    const config = { loop: { config: join(root, CFG) } };
+    const base = { root, ok: true, evidence: ev, headAtStart: head, steps: ["test"] };
+    const run = (modes: string[], over: Record<string, unknown> = {}) =>
+      recordInLoop(config, { modes: new Set(modes), flags: new Set(), opts: { only: null, skip: new Set(), serve: false }, ...over }, base);
+    expect(await run(["quick"], { opts: { only: new Set(["test"]), skip: new Set(), serve: false } })).toBeNull();
+    expect(await run(["quick"])).toMatchObject({ gate: "verify-quick", result: "pass", commit: head });
+    const gatesOf = () => loop.readState(ctx).records.map((r: { gate: string }) => r.gate);
+    expect(gatesOf()).toEqual(["verify-quick"]);
+    expect(await run(["default"])).toMatchObject({ gate: "verify", result: "pass" });
+    expect(gatesOf()).toEqual(["verify-quick", "verify", "verify-quick"]);
+  });
+});

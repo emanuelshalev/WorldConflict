@@ -38,6 +38,9 @@
 //                        "minTier": "T3", "accept": ["pass"], "why": "...",
 //                        "when": { "paths": ["ui/", "data/codex/**"] } } },  // "on" may end in ":*" (every enter:);
 //                                                          // "accept": the results that satisfy the rule (default pass);
+//                                                          // "when.outside": the rule applies only when the change
+//                                                          // touches a code file outside those paths (a full gate
+//                                                          // for product changes, a quick one for tooling)
 //                                                          // "when.paths": the rule applies only when the change
 //                                                          // touches those paths (merge: the merge result against the
 //                                                          // shared branch; check: base...commit), else it is skipped
@@ -296,10 +299,18 @@ export function evaluate(ctx, action, opts = {}, state = readState(ctx)) {
   };
   for (const [id, rule] of rulesFor(ctx.cfg, action)) {
     // "when": { "paths": [...] }: the rule applies only when the change touches one of these paths
-    if (rule.when?.paths) {
-      const hits = changedPaths().filter((f) => pathMatches(f, asList(rule.when.paths)));
-      if (!hits.length) {
-        results.push({ rule: id, ok: true, why: rule.why, detail: `not applicable: the change touches none of ${asList(rule.when.paths).join(', ')}`, skipped: true });
+    // "when": { "outside": [...] }: the rule applies only when the change touches a code file
+    // (config "code") outside these paths; with both keys, either one makes the rule apply
+    if (rule.when?.paths || rule.when?.outside) {
+      const files = changedPaths();
+      const hits = rule.when.paths ? files.filter((f) => pathMatches(f, asList(rule.when.paths))) : [];
+      const code = asList(ctx.cfg.code?.include ?? []);
+      const beyond = rule.when.outside ? files.filter((f) => (!code.length || pathMatches(f, code)) && !pathMatches(f, asList(rule.when.outside))) : [];
+      if (!hits.length && !beyond.length) {
+        const parts = [];
+        if (rule.when.paths) parts.push(`the change touches none of ${asList(rule.when.paths).join(', ')}`);
+        if (rule.when.outside) parts.push(`every code file it touches is within ${asList(rule.when.outside).join(', ')}`);
+        results.push({ rule: id, ok: true, why: rule.why, detail: `not applicable: ${parts.join('; ')}`, skipped: true });
         continue;
       }
     }

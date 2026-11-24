@@ -1,4 +1,4 @@
-# Triage protocol (version 1.0)
+# Triage protocol (version 1.1)
 
 Sits between the panel and the backlog. Output: `<instance>/runs/iter-NN/triage.md` and `findings.json`.
 
@@ -14,6 +14,9 @@ Sits between the panel and the backlog. Output: `<instance>/runs/iter-NN/triage.
 6. **Ledger.** Every decision that changes the product gets an entry in `<instance>/ledger.md`.
 7. **Regression registry.** Every finding marked fixed gets an entry in `<instance>/regressions.yaml` with at least one automated guard (a unit test, or a UI scenario that replays the customer's reproduction steps). The verify gate runs all guards before every merge and every panel round; a finding without a guard cannot be marked fixed. An entry has an id, a one-line title, the source, `covers:` globs (the code it guards, used by change-based selection) and guards: a unit test file plus test name substring, or a short scenario under `<instance>/scenarios-qa/regressions/<id>.mjs`. Scenario guards run several at a time against the same servers, so a scenario starts its own game and browser profile and writes only under the output folder it is given; one that cannot gets `serial: true` and runs alone. The meta-check fails when an entry has no guard, a guard file or test name disappears, or a backlog item marked Done is missing (format and checker: `kit/regressions.mjs`).
 8. **Regression check on new feedback.** Before clustering a new round, compare its friction and bugs with the registry. A previously fixed finding that reappears is marked REGRESSED, treated as at least S2, and fixed before new work; the guard that missed it is strengthened.
+9. **Positives.** Collect every `liked` row, `would_miss_most` and `pull_to_continue` like friction: cluster by the thing liked, sum the panel weights. The triage report has a section "What customers liked" with the clusters, and a line per keep list row: holds, weakened or lost. A lost row with no decision behind it is filed as a finding (at least S2).
+10. **Customer record.** Regenerate it (`kit/customer-record.mjs`) once the clusters are written, and commit it with the triage. The Customer Advocate then updates the keep list and writes the forecast review (customer-advocate.md).
+11. **Next plan.** The candidate goals for the next iteration go to the Customer Advocate before the Group Manager fixes them.
 
 ## Release gate (template)
 Each instance defines concrete thresholds in `<instance>/gate.md`. The template:

@@ -23,6 +23,10 @@
     "variant": {
       "type": "string"
     },
+    "device": {
+      "type": "string",
+      "description": "the device and screen this session was played on (the persona variant's own device unless the brief says otherwise)"
+    },
     "panel_version": {
       "type": "string"
     },
@@ -104,7 +108,9 @@
               "naming",
               "parity",
               "other",
-              "affordance"
+              "affordance",
+              "trust",
+              "layout"
             ]
           },
           "screenshot": {
@@ -176,7 +182,63 @@
       "type": "array",
       "items": {
         "type": "string"
+      },
+      "description": "short positive moments (kept for older reports; new reports also fill liked)"
+    },
+    "liked": {
+      "type": "array",
+      "description": "what this customer liked, as carefully as friction is recorded: read by the Customer Advocate to build the keep list and to predict reactions to changes (method/customer-advocate.md)",
+      "items": {
+        "type": "object",
+        "required": [
+          "what",
+          "where",
+          "why",
+          "strength",
+          "would_miss"
+        ],
+        "properties": {
+          "what": {
+            "type": "string",
+            "description": "the thing itself, named as it appears on screen"
+          },
+          "where": {
+            "type": "string",
+            "description": "screen and element, and the moment (which month, after what)"
+          },
+          "why": {
+            "type": "string",
+            "description": "what it gave this person: in their own words"
+          },
+          "strength": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "description": "1 = nice touch, 3 = a reason to keep playing, 5 = the reason I would tell someone about this"
+          },
+          "would_miss": {
+            "type": "boolean",
+            "description": "would this person notice and mind if it were gone or changed"
+          },
+          "screenshot": {
+            "type": "string"
+          }
+        }
       }
+    },
+    "would_miss_most": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "the one thing this person would miss most if it were removed, or null"
+    },
+    "pull_to_continue": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "what made this person want to play one more month or one more game, at the moment it happened; null if nothing did"
     },
     "scores": {
       "type": "object",
