@@ -403,3 +403,141 @@ describe("F-04-1: an answer the player cannot afford says so on its card, before
     expect(core.answerBlock(world, 2, 0, 0, [])).toBeNull();
   });
 });
+
+/**
+ * QA re-check (iteration 4, truth sweep): CO-UKR-MAYA1 and CO-UKR-PRIY1 month 12, the player chose
+ * "Sign the ceasefire" and the result card said "Not from your choice: the war with Russia is over"
+ * while the paper put the signing under "Elsewhere". A war the player's own answer or order ended
+ * this month carries `endedBy` in the engine report, and every surface credits the player.
+ */
+describe("QA4R-2: a war your own move ended is credited to you", () => {
+  beforeEach(() => {
+    vi.resetModules();
+    stubBrowser();
+  });
+  afterEach(() => vi.unstubAllGlobals());
+
+  /** Play `code` with the chief until the signing table is open, then sign. */
+  async function signed(code: string) {
+    const { generateDeterministicIntents } = await import("../../src/agents/fallback.js");
+    const { TurnEngine } = await import("../../src/core/turn.js");
+    const { staffMonth } = await import("../../scripts/policies.js");
+    const engine = new TurnEngine();
+    let w = newControlWorld(code);
+    for (let t = 0; t < 12 && !w.gameOver; t++) {
+      const s = staffMonth(w, "chief");
+      const table = w.pendingDecisions.find((d) => d.templateId === "ua_signing_table");
+      const atWar = w.countries.find((c) => c.id === w.playerCountryId)?.atWarWith.includes("RUS");
+      if (table && atWar) {
+        const decisions = [...s.decisions.filter((d) => d.decisionId !== table.id), { decisionId: table.id, optionId: "sign" }];
+        return engine.executeTurn(w, s.orders, generateDeterministicIntents(w), decisions).newState;
+      }
+      w = engine.executeTurn(w, s.orders, generateDeterministicIntents(w), s.decisions).newState;
+    }
+    return null;
+  }
+
+  it("QA4R-2: Sign the ceasefire (MAYA1, PRIY1): the report, the result card, the paper and See everything credit the player", async () => {
+    let checked = 0;
+    for (const code of ["CO-UKR-MAYA1", "CO-UKR-PRIY1"]) {
+      const after = await signed(code);
+      if (!after) continue;
+      const report = after.turnReport!;
+      const at = `${code} month ${after.turn}`;
+      const sign = report.decisions.findIndex((d) => d.title === "The signing table" && d.optionId === "sign");
+      expect(sign, `${at}: the signing is in the report`).toBeGreaterThanOrEqual(0);
+      const war = report.wars.find((w) => w.vs === "RUS");
+      expect(war?.ended, `${at}: the war with Russia ended`).toBe(true);
+      expect(war?.endedBy, `${at}: the engine names the player's move that ended it`).toEqual({ ref: "decision", index: sign });
+      const text = await resultCardText(after);
+      expect(text, at).not.toContain("Not from your choice");
+      expect(text, at).toMatch(/Your choice ended the war with Russia/);
+      const lead = after.newspaper[0];
+      expect(lead.description, `${at} paper: ${lead.description}`).not.toMatch(/Elsewhere[^.]*Sign the ceasefire/);
+      expect(`${lead.headline} ${lead.description}`, `${at} paper`).toMatch(/Sign the ceasefire/);
+      const { buildPages } = await import("../../ui/src/lib/debrief.js");
+      const hl = buildPages(report as never, after as never)[0]?.cards[0];
+      expect(hl?.lines.map((l) => l.text).join(" ") ?? "", `${at} See everything`).toMatch(/Your choice: Sign the ceasefire/);
+      checked++;
+    }
+    expect(checked).toBeGreaterThanOrEqual(1);
+  });
+
+  it("QA4R-2: a ceasefire order that ends the war is credited to the order (Ukraine control seeds, cease)", async () => {
+    let checked = 0;
+    for (const code of UKR_CONTROL) {
+      for (const m of playControl(code, "cease").months) {
+        const r = m.after.turnReport!;
+        const war = r.wars.find((w) => w.vs === "RUS" && w.ended);
+        const o = r.orders.findIndex((x) => x.type === "DIPLOMACY_PROPOSE_CEASEFIRE" && x.target === "RUS" && x.ok);
+        if (!war || o < 0) continue;
+        expect(war.endedBy, `${code} month ${m.after.turn}`).toEqual({ ref: "order", index: o });
+        const text = await resultCardText(m.after);
+        expect(text).not.toContain("Not from your choice");
+        expect(text).toMatch(/ended the war with Russia/);
+        expect(m.after.newspaper[0].description).not.toMatch(/Elsewhere[^.]*Propose a ceasefire/i);
+        checked++;
+      }
+    }
+    expect(checked, "a ceasefire order ended the war in at least one control game").toBeGreaterThanOrEqual(1);
+  });
+
+  it("QA4R-2: a front that moved on its own is still not credited to the player (control seeds)", async () => {
+    let fronts = 0;
+    for (const code of UKR_CONTROL) {
+      for (const m of playControl(code, "staff").months) {
+        const r = m.after.turnReport!;
+        for (const w of r.wars) if (!w.ended) expect(w.endedBy, `${code} month ${m.after.turn}`).toBeUndefined();
+        const hl = r.highlight?.ref === "war" ? r.wars[r.highlight.index] : undefined;
+        if (hl && !hl.endedBy && r.yourMove) {
+          expect(await resultCardText(m.after)).toContain("Not from your choice");
+          fronts++;
+        }
+      }
+    }
+    expect(fronts).toBeGreaterThanOrEqual(1);
+  });
+});
+
+/**
+ * F-04-9 remainder (QA re-check, iteration 4): CO-UKR-PRIY1 month 5, the staff recommended Court
+ * United Kingdom (needs 93+, now 90); a crisis answer the same month lifted the relation to the cap
+ * first, and the order came back REFUSED as if it had been forbidden. An order that has nothing
+ * left to do because of the player's own earlier move this month is NO_EFFECT with a reason that
+ * says so, and, like every order stopped before it acts, costs no political capital.
+ */
+describe("F-04-9: an order your own earlier move made pointless is NO_EFFECT, not REFUSED", () => {
+  async function month(startRel: number, court: boolean) {
+    const { generateDeterministicIntents } = await import("../../src/agents/fallback.js");
+    const { TurnEngine } = await import("../../src/core/turn.js");
+    const { RELATIONS_MAX } = await import("../../src/core/availability.js");
+    const w = structuredClone(newControlWorld("CO-UKR-PRIY1"));
+    const me = w.countries.find((c) => c.id === w.playerCountryId)!;
+    me.relations.GBR = startRel;
+    const d = w.pendingDecisions[0];
+    expect(d, "PRIY1 month 1 opens with a crisis").toBeTruthy();
+    const opt = d.options[0];
+    opt.effects = { ...opt.effects, "relations:GBR": RELATIONS_MAX };
+    const orders: Action[] = court ? [{ type: "DIPLOMACY_IMPROVE_RELATIONS", targetCountryId: "GBR" }] : [];
+    const after = new TurnEngine().executeTurn(w, orders, generateDeterministicIntents(w), [{ decisionId: d.id, optionId: opt.id }]).newState;
+    return { after, o: after.turnReport?.orders.find((x) => x.type === "DIPLOMACY_IMPROVE_RELATIONS" && x.target === "GBR") };
+  }
+
+  it("F-04-9: a crisis answer took the relation to the cap first: the court is NO_EFFECT, says why, and spends nothing", async () => {
+    const { after, o } = await month(88, true);
+    expect(o?.status, JSON.stringify(o)).toBe("NO_EFFECT");
+    expect(o?.reason).toMatch(/your own move earlier this month/i);
+    expect(o?.reason).toMatch(/United Kingdom/);
+    const without = (await month(88, false)).after;
+    expect(after.politicalCapital, "no political capital spent on it").toBe(without.politicalCapital);
+    const { paperStatusItems } = await import("../../ui/src/lib/outcome.js");
+    const row = paperStatusItems(after.turnReport as never, 99).find((r) => r.label === o?.label);
+    expect(row?.s).toBe("NO_EFFECT");
+  });
+
+  it("F-04-9: a relation already at the cap when the month began is still REFUSED", async () => {
+    const { o } = await month(95, true);
+    expect(o?.status).toBe("REFUSED");
+    expect(o?.reason).toMatch(/as good as they get/);
+  });
+});

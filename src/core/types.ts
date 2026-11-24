@@ -859,6 +859,9 @@ export const PlayerTurnReportSchema = z.object({
         frontBefore: z.number(),
         frontAfter: z.number(),
         ended: z.boolean().default(false),
+        // The player's own answer or order that ended this war this month (a ceasefire signed or
+        // ordered): every surface credits the player, never "not from your choice"
+        endedBy: z.object({ ref: z.enum(["decision", "order"]), index: z.number() }).optional(),
       }),
     )
     .default([]),

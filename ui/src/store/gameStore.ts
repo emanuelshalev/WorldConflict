@@ -393,7 +393,8 @@ export interface TurnReport {
   /** Your own view of the countries you dealt with, month start to month end (QA3R-2a). */
   yourView?: Array<{ id: string; before: number; after: number }>;
   world?: Array<{ actor: string; type: string; target?: string; label: string; status?: OutcomeStatus }>;
-  wars?: Array<{ vs: string; frontBefore: number; frontAfter: number; ended: boolean }>;
+  /** endedBy: the player's own answer or order that ended this war this month (engine report). */
+  wars?: Array<{ vs: string; frontBefore: number; frontAfter: number; ended: boolean; endedBy?: { ref: 'decision' | 'order'; index: number } }>;
   hot?: Array<{ id: string; name: string; metric: string; before: number; after: number; phase: string }>;
   tension?: { before: number; after: number };
   highlight?: { ref: 'decision' | 'order' | 'war'; index: number };

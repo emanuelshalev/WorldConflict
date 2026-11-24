@@ -115,7 +115,13 @@ export function ResultCard({ report, world, home, onNext, onEverything, onPaper,
   const hd = h?.ref === 'decision' ? report.decisions[h.index] : undefined;
   const ho = h?.ref === 'order' ? report.orders[h.index] : undefined;
   const warHl = report.highlight?.ref === 'war' ? report.wars?.[report.highlight.index] : undefined;
-  const meanwhile = own && warHl ? warHl : undefined;
+  // A war the player's own answer or order ended is the player's (engine report endedBy), never
+  // "not from your choice" (QA re-check, iteration 4: Sign the ceasefire, CO-UKR-MAYA1 month 12)
+  const meanwhile = own && warHl && !warHl.endedBy ? warHl : undefined;
+  const endedByYou = warHl?.ended && warHl.endedBy ? warHl : undefined;
+  const ender = endedByYou?.endedBy;
+  const enderIsMove = !!ender && !!report.yourMove && ender.ref === report.yourMove.ref && ender.index === report.yourMove.index;
+  const enderLabel = ender ? (ender.ref === 'decision' ? report.decisions[ender.index]?.choice : report.orders[ender.index]?.label) : undefined;
   const chose = hd ? hd.choice.replace(/\s*\((no decision taken|you did not attend)\)\s*$/, '') : ho?.label;
   // A crisis left open went ahead on its default answer: never "You chose" (design-rereview C2-2)
   const leftOpen = !!hd && leftOpenChoice(hd.choice);
@@ -206,6 +212,11 @@ export function ResultCard({ report, world, home, onNext, onEverything, onPaper,
                   ? `your forces gain ground against ${countryName(meanwhile.vs)}`
                   : `${countryName(meanwhile.vs)} pushes your forces back`}{' '}
               (front {meanwhile.frontBefore} → {meanwhile.frontAfter}).
+            </p>
+          )}
+          {endedByYou && (
+            <p className="rc-meanwhile" data-result-ended-by-you="">
+              {enderIsMove || !enderLabel ? 'Your choice' : `Your ${ender?.ref === 'order' ? 'order' : 'answer'} "${enderLabel}"`} ended the war with {countryName(endedByYou.vs)} (front {endedByYou.frontBefore} → {endedByYou.frontAfter}).
             </p>
           )}
           {card?.reaction && (

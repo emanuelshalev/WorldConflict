@@ -1198,10 +1198,11 @@ findings:
   - id: F-04-9
     title: "A refusal is never unexplained: the paper prints the engine's reason beside every REFUSED or FAILED order and answer; the staff never suggest an order the engine would refuse (a pact across the bloc line, a court at the cap) and do not court a met goal within 5 of the cap of 95"
     source: runs/iter-04/triage.md F-04-9 (priya CO-UKR-PRIY1 Court United Kingdom months 3 to 12; dan's pact with China every month); REGRESSED F-00-1
-    covers: [ui/src/components/Chronicle.tsx, ui/src/lib/outcome.ts, src/core/advisors.ts, src/core/availability.ts, ui/src/lib/staff.ts]
+    covers: [ui/src/components/Chronicle.tsx, ui/src/lib/outcome.ts, src/core/advisors.ts, src/core/availability.ts, ui/src/lib/staff.ts, src/core/status.ts]
     guards:
       - vitest: tests/regressions/triage-iter4.spec.ts
         name: "F-04-9"
+    changed: "2026-11-24 QA re-check (runs/iter-04/qa-recheck-triage.md, PARTLY: PRIY1 month 5, Court United Kingdom came back REFUSED after a same-month crisis answer took the relation to the cap first): an order that a rule stops only because the player's own earlier move this month already did its job is NO_EFFECT with that reason (status.ts orderOutcome overtaken), and, like every order stopped before it acts, spends no political capital. A relation already at the cap when the month began stays REFUSED"
   - id: F-04-8
     title: "Art never states a result that did not happen: a call answer is never drawn as election night, and the election, UN vote, parliament and markets art print no seat count, tally, result banner or growth figure the game does not pass (one vote, one picture on the card and in the paper)"
     source: runs/iter-04/triage.md F-04-8 (marcus 377 SEATS MAJORITY WON, priya YES 11 NO 2 vs YES 8 NO 5); REGRESSED QA1-S3-1, F-00-5
@@ -1217,6 +1218,14 @@ findings:
       - vitest: tests/regressions/triage-iter4.spec.ts
         name: "F-04-1"
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-00-1.mjs
+    changed: "2026-11-24 QA re-check (runs/iter-04/qa-recheck-triage.md, NEW S2 caused by 6aef9cd): at ◆ 0 the crisis cards with the Remove control beside them squeezed to 316 of 571 px and ran over each other (HC-ARE-NOAH1 and CO-UKR-RUTH1 month 2). The Remove control now sits under its card (layout.css .opt-pair[data-short]) and the answer rows keep their content height; F-00-1.mjs checks both seats' crisis at 1920x1080: every card as wide as the others, no overlap, no text outside its card, Leave it open under the answers and on screen"
+  - id: QA4R-2
+    title: "A war the player's own answer or order ended this month is credited to the player: the engine report names the move (wars[].endedBy), the result card says Your choice ended the war (never Not from your choice), the paper's lead tells the signing as the leader's act (not under Elsewhere), See everything names the choice"
+    source: runs/iter-04/qa-recheck-triage.md truth sweep (CO-UKR-MAYA1 and CO-UKR-PRIY1 month 12, Sign the ceasefire); code from e46fb5b
+    covers: [src/core/turn.ts, src/core/types.ts, ui/src/scenes/ResultCard.tsx, ui/src/lib/debrief.ts, ui/src/store/gameStore.ts]
+    guards:
+      - vitest: tests/regressions/triage-iter4.spec.ts
+        name: "QA4R-2"
   - id: F-04-6
     title: "The result card's button row (See everything, Read the paper, Next month) is whole and on screen at 1920x1080 in every month: the row is pinned to the bottom of the card and the content gives way (the quote and war line, then the chips, then the details behind their toggle; a scroll only as the last step)"
     source: runs/iter-04/triage.md F-04-6 (maya CO-UKR-MAYA1 month 7, ruth, priya); REGRESSED F-00-9, QA1-S3-5, RS-008

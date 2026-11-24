@@ -253,12 +253,14 @@ export function buildPages(report: TurnReport, world: WorldState): DebriefPage[]
   else if (h?.ref === 'war' && report.wars?.[h.index]) {
     const w = report.wars[h.index];
     const moved = w.frontAfter - w.frontBefore;
+    // The player's own answer or order that ended it (engine report), named on the card
+    const by = w.endedBy?.ref === 'decision' ? report.decisions[w.endedBy.index]?.choice : w.endedBy?.ref === 'order' ? report.orders[w.endedBy.index]?.label : undefined;
     highlight = {
       key: 'war',
       kicker: `War · ${countryName(w.vs)}`,
       country: w.vs,
       headline: w.ended ? `The war with ${countryName(w.vs)} is over` : moved >= 0 ? `Your forces gain ground against ${countryName(w.vs)}` : `${countryName(w.vs)} pushes your forces back`,
-      lines: [],
+      lines: by ? [{ text: `Your choice: ${by}`, icon: w.endedBy?.ref === 'decision' ? report.decisions[w.endedBy.index]?.kind : report.orders[w.endedBy?.index ?? -1]?.type }] : [],
       facts: [{ label: 'Front (your side)', before: w.frontBefore, after: w.frontAfter }],
       verdict: moved >= 0 ? 'good' : 'bad',
       scene: 'war_room',
