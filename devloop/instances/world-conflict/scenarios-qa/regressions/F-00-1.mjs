@@ -30,6 +30,35 @@ const blockedCards = (p) =>
       })),
   );
 
+/**
+ * QA re-check (iteration 4): at ◆ 0 the crisis cards with a Remove control beside them squeezed
+ * into narrow overlapping columns (HC-ARE-NOAH1 and CO-UKR-RUTH1 month 2). Every answer card of the
+ * open item is as wide as the others, nothing overlaps, no card's text runs out of its box, and
+ * Leave it open stays under the answers and on screen (1920x1080).
+ */
+async function cardsFit(g, q, at) {
+  const geo = await q.$$eval('article.thing .opts button.opt', (els) =>
+    els.map((e) => {
+      const r = e.getBoundingClientRect();
+      return { x: r.x, y: r.y, w: r.width, h: r.height, over: Math.max(e.scrollHeight - e.clientHeight, Math.round((e.querySelector('.opt-body')?.getBoundingClientRect().bottom ?? 0) - r.bottom)), short: !!e.closest('[data-short]'), name: (e.querySelector('.opt-name')?.textContent ?? '').slice(0, 30), skip: e.classList.contains('skipopt') };
+    }),
+  );
+  const fixes = await q.$$eval('article.thing .opts [data-fix]', (els) => els.map((e) => { const r = e.getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height }; }));
+  const widest = Math.max(...geo.map((c) => c.w));
+  g.check(geo.some((c) => c.short), `${at}: ${geo.filter((c) => c.short).length} unaffordable card(s) with a Remove control`);
+  for (const c of geo) {
+    g.check(c.w >= widest - 2, `${at}: "${c.name}" is as wide as the other answers (${Math.round(c.w)} of ${Math.round(widest)} px)`);
+    g.check(c.over <= 1, `${at}: "${c.name}": its text stays inside the card (${c.over} px over)`);
+  }
+  const boxes = [...geo, ...fixes];
+  const hit = (a, b) => a.x < b.x + b.w - 1 && b.x < a.x + a.w - 1 && a.y < b.y + b.h - 1 && b.y < a.y + a.h - 1;
+  const overlaps = boxes.flatMap((a, i) => boxes.slice(i + 1).filter((b) => hit(a, b)).map(() => i));
+  g.check(overlaps.length === 0, `${at}: no answer card or Remove control overlaps another (${overlaps.length})`);
+  const skipBox = await q.locator('article.thing .opts .skipopt').first().boundingBox();
+  g.check(!!skipBox && geo.every((c) => c.skip || c.y + c.h <= skipBox.y + 1), `${at}: every answer sits above Leave it open`);
+  g.check(!!skipBox && skipBox.y + skipBox.height <= 1080, `${at}: Leave it open is on screen`);
+}
+
 await run('F-00-1', async (g, track) => {
   const s = track(await startGame({ variant: 'f001', device: 'laptop', out, base }));
   const p = s.page;
@@ -108,10 +137,37 @@ await run('F-00-1', async (g, track) => {
   const priced = (await answerCards(q)).filter((c) => /costs ◆ \d+/.test(c.text) && !/less than|as much as/.test(c.text) && !/Your choice/.test(c.text));
   g.check(priced.length >= 1, `the crisis has ${priced.length} answer(s) that cost ◆`);
   for (const c of priced) g.check(c.off && /Needs ◆ \d+, you have ◆ 0\./.test(c.off2), `crisis answer not live, reason on the card: ${c.text.slice(0, 60)}`);
+  await cardsFit(g, q, 'Noah month 2, Incident with Sudan');
+  await n.page.screenshot({ path: path.join(out, 'f041-crisis-at-0.png') });
   // pressing one anyway changes nothing
   const before = (await q.locator('body').innerText()).match(/Political capital left ◆ \d+/)?.[0];
   await q.locator('article.thing .opts button.opt:disabled').first().dispatchEvent('click');
   await q.waitForTimeout(300);
   g.check((await q.locator('body').innerText()).match(/Political capital left ◆ \d+/)?.[0] === before, 'pressing it anyway changes nothing');
   g.check(!n.errors.length, `Noah month 2: no page errors (${n.errors.slice(0, 2).join(' | ')})`);
+  // The same crisis cards on CO-UKR-RUTH1 month 2 (the assassination attempt), every ◆ spent
+  const rv = await apiSave(api, 1, { countryId: 'UKR', flashpointId: 'ceasefire-or-collapse', seedCode: 'CO-UKR-RUTH1' }, 'f001r');
+  const rn = await openSaved(base, '1920x1080', rv);
+  track({ page: rn.page, out, close: () => rn.browser.close() });
+  const r = rn.page;
+  await r.getByRole('button', { name: /^Choose all recommended/ }).first().click();
+  await r.waitForTimeout(600);
+  const left = async () => Number(((await r.locator('body').innerText()).match(/Political capital left ◆ (\d+)/) ?? [])[1]);
+  if ((await left()) > 0 && (await openAllOrders({ page: r }))) {
+    await r.locator('[data-order-catalog]').first().waitFor();
+    for (const id of ['reform', 'address', 'counter-intel', 'policing-soft', 'mobilize']) {
+      if ((await left()) === 0) break;
+      if (!(await showCatalogCard(r, `[data-order-id="${id}"][data-order-state="available"]`))) continue;
+      await r.locator(`[data-order-catalog] [data-order-id="${id}"] .wc-card-hit`).first().click().catch(() => {});
+      await r.waitForTimeout(800);
+    }
+    await r.keyboard.press('Escape');
+    await r.waitForTimeout(400);
+  }
+  g.check((await left()) === 0, `Ruth month 2: the band reads ◆ 0 left (${await left()})`);
+  const title = await r.locator('.lrow .lrow-t > b').filter({ hasText: /assassination/i }).first().textContent().catch(() => null);
+  g.check(!!title && (await openThing(r, title.trim())), `Ruth month 2: the assassination crisis opens (${title})`);
+  await cardsFit(g, r, 'Ruth month 2, the assassination attempt');
+  await rn.page.screenshot({ path: path.join(out, 'f041-ruth-crisis-at-0.png') });
+  g.check(!rn.errors.length, `Ruth month 2: no page errors (${rn.errors.slice(0, 2).join(' | ')})`);
 });
