@@ -8,6 +8,7 @@ import { buildAdvice, deskImpact, missionStatus, suggestionImpact } from "../../
 import { politicalCapitalIncome, PC_CAP } from "../../src/core/costs.js";
 import { createDataLoader } from "../../src/core/data-loader.js";
 import type { Action, WorldState } from "../../src/core/types.js";
+import { playControl, playerRel, UKR_CONTROL } from "../fixtures/control.js";
 
 const loader = createDataLoader();
 
@@ -110,5 +111,64 @@ describe("F-04-4: the state band names its capital number as what is left", () =
     const text = textOf(renderToStaticMarkup(createElement(StateBand)));
     expect(text).toContain(`Political capital left ◆ ${o?.left} of 6`);
     expect(text).not.toContain("what orders cost");
+  });
+});
+
+/** The result card of one engine month, rendered on the desk's store as the app shows it. */
+async function resultCardText(after: WorldState): Promise<string> {
+  const { store } = await desk(after);
+  store.useGameStore.setState({ objectiveStatus: missionStatus(after, buildAdvice(after).suggestions) as never });
+  const { ResultCard } = await import("../../ui/src/scenes/ResultCard.js");
+  const report = after.turnReport;
+  if (!report) throw new Error("no report");
+  const noop = () => {};
+  return textOf(
+    renderToStaticMarkup(
+      createElement(ResultCard, {
+        report: report as never,
+        world: after as never,
+        home: after.playerCountryId,
+        onNext: noop,
+        onEverything: noop,
+        onPaper: noop,
+      }),
+    ),
+  );
+}
+
+describe("F-04-3: a relation goal on the result card names whose view it is", () => {
+  beforeEach(() => {
+    vi.resetModules();
+    stubBrowser();
+  });
+  afterEach(() => vi.unstubAllGlobals());
+
+  it("F-04-3: the mission line reads your view of <country> with the engine's number (Ukraine control seeds)", async () => {
+    let checked = 0;
+    for (const code of UKR_CONTROL) {
+      for (const m of playControl(code, "chief").months) {
+        const after = m.after;
+        const report = after.turnReport;
+        if (!report?.missionBefore || !after.objective) continue;
+        const status = missionStatus(after, buildAdvice(after).suggestions);
+        // the row the card shows: the relation goal that moved this month (if any)
+        const conds = [...after.objective.primary, ...(after.objective.bonus ?? [])];
+        const moved = status
+          .map((c, i) => ({ c, i, before: report.missionBefore?.[i] }))
+          .filter((x) => x.c.unit === "view" && x.before != null && Math.round(x.before) !== Math.round(x.c.now ?? 0));
+        if (!moved.length) continue;
+        const text = await resultCardText(after);
+        const mission = /Mission[^:]*: ([^.]*)/.exec(text)?.[1] ?? "";
+        const row = moved.find((x) => mission.includes(`${Math.round(x.before ?? 0)} → ${Math.round(x.c.now ?? 0)}`));
+        if (!row) continue; // another goal moved more and leads the line
+        const cond = conds.find((c) => c.label === row.c.label);
+        const name = after.countries.find((c) => c.id === cond?.targetId)?.name ?? "?";
+        const at = `${code} month ${after.turn}: "${mission}"`;
+        expect(mission, at).toMatch(new RegExp(`your view of (the )?${name}`));
+        expect(Math.round(row.c.now ?? 0), at).toBe(Math.round(playerRel(after, cond?.targetId ?? "")));
+        checked++;
+      }
+    }
+    expect(checked, "months whose mission line is a relation goal").toBeGreaterThanOrEqual(3);
   });
 });

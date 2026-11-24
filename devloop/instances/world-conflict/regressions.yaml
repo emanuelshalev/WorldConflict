@@ -339,7 +339,10 @@ findings:
         name: "your own view of a country and the mission summary"
       - vitest: tests/core/outcome-status.spec.ts
         name: "report.yourView on the control seeds"
+      - vitest: tests/regressions/triage-iter4.spec.ts
+        name: "F-04-3"
     note: "QA3R-2a, QA3R-2e (iteration 3 repro, GUARD GAP): the card said Your view of Iran -75 to -68 while the month ended at -89; the report carries yourView and the card leads with the month total. The Mission sheet said 0 of 0 on track in a Term; desk and sheet share missionSummary"
+    changed: "2026-11-24 F-04-3 (iteration 4 customer round, REGRESSED: the result card's mission line Keep Washington engaged: 39 → 48 beside United States' view of you 37 → 43; the guard checked the debrief country card, not the result card): the mission line and the Mission sheet name the direction (your view of the United States), guarded by rendering the result card on the Ukraine control seeds"
   - id: F-01-4
     title: Month 1 shows only the crisis, its cards and Execute; the rest behind Show the whole desk
     source: iter-01 triage F-01-4; D-55; QA2 verified
@@ -1145,6 +1148,13 @@ findings:
         name: "F-04-4"
       - vitest: tests/ui-glossary.spec.ts
         name: finds no banned synonym
+  - id: F-04-3
+    title: "A relation goal names whose view it measures (your view of the United States 39 → 48, needs 33) on the result card's mission line and the Mission sheet, so it never reads as the card's \"their view of you\" with another number"
+    source: runs/iter-04/triage.md F-04-3 (maya, olivia, ruth, priya, leo, sam, marcus; Washington 39 → 48 vs 37 → 43); REGRESSED F-01-3 (QA3R-2a)
+    covers: [ui/src/lib/goals.ts, ui/src/scenes/ResultCard.tsx, ui/src/components/Drawers.tsx, ui/src/components/BackstoryModal.tsx]
+    guards:
+      - vitest: tests/regressions/triage-iter4.spec.ts
+        name: "F-04-3"
 # ------------------------------------------------------------------------------------------
 # Not listed (still open or not a code fix); add them here when a fix lands with its guard:
 #   RS-001-6  dashboard feel, "serious visual design": the ledger keeps it not done (D-37 check)

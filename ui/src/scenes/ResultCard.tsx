@@ -13,7 +13,7 @@ import { Stamp } from '../components/game/Stamp';
 import { CoachResultLine } from '../components/desk/Coach';
 import { Segments } from '../components/desk/Segments';
 import { useLayout } from '../lib/layout';
-import { metricWord, stepObjective } from '../lib/goals';
+import { metricWord, stepObjective, viewWords } from '../lib/goals';
 import { scoreLine, useScoreWhy } from '../lib/scoreWhy';
 import { useModalFocus } from '../lib/useModalFocus';
 import { type AfterMonth, readAfterMonth, writeAfterMonth } from '../lib/afterMonth';
@@ -212,7 +212,9 @@ export function ResultCard({ report, world, home, onNext, onEverything, onPaper,
           {mm && mm.c.now !== undefined && (
             <button type="button" className="rc-mission" onClick={() => useGameStore.getState().setDrawer('objective')}>
               <span>
-                Mission{['front', 'score'].includes(metricWord(mm.c)) ? ` (${mm.c.short ?? ''})` : ''}: <b>{metricWord(mm.c)} {r1(mm.before)} → {r1(mm.c.now)}{u(mm.c)}</b>
+                {/* F-04-3: a relation goal names its direction (your view of them), so it never
+                    reads as the card's "their view of you" with another number */}
+                Mission{['front', 'score'].includes(metricWord(mm.c)) || viewWords(mm.c, world) ? ` (${mm.c.short ?? ''})` : ''}: <b>{metricWord(mm.c, world)} {r1(mm.before)} → {r1(mm.c.now)}{u(mm.c)}</b>
                 {mm.c.need !== undefined ? `, needs ${r1(mm.c.need)}${u(mm.c)}.` : '.'}
               </span>
               <Segments status={status} size="lg" />

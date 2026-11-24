@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import type { ConditionStatus, ObjectiveState } from '../store/gameStore';
+import type { ConditionStatus, ObjectiveCondition, ObjectiveState } from '../store/gameStore';
+import { withArticle } from './format';
 
 /**
  * Goal line helpers (design-month.md 3.3): an objective's state, its metric in words, now and
@@ -49,7 +50,28 @@ export function stateOf(c: ConditionStatus): ObjectiveState {
 }
 
 /** The metric a condition counts, in words: "stability", "front", "score", "US relations". */
-export function metricWord(c: ConditionStatus): string {
+/** What metricWord needs from the world to name a relation goal's direction. */
+export interface GoalWorld {
+  objective?: { primary: ObjectiveCondition[]; bonus?: ObjectiveCondition[] } | null;
+  countries: Array<{ id: string; name: string }>;
+}
+
+/**
+ * A relation goal is judged on YOUR view of the country (objectives.ts RELATION_MIN reads
+ * me.relations[target]); the result card's country facts are THEIR view of you. Both numbers
+ * are right, so the goal's number names its direction (F-04-3): "your view of the United States".
+ */
+export function viewWords(c: ConditionStatus, world?: GoalWorld | null): string | null {
+  if (c.unit !== 'view' || !world?.objective) return null;
+  const conds = [...world.objective.primary, ...(world.objective.bonus ?? [])];
+  const cond = conds.find((x) => x.kind === 'RELATION_MIN' && x.label === c.label);
+  const name = cond?.targetId ? world.countries.find((x) => x.id === cond.targetId)?.name : undefined;
+  return name ? `your view of ${withArticle(name)}` : null;
+}
+
+export function metricWord(c: ConditionStatus, world?: GoalWorld | null): string {
+  const view = viewWords(c, world);
+  if (view) return view;
   const inner = /\(([^)]+)\)/.exec(c.label)?.[1] ?? '';
   if (c.unit === '%') {
     const stat = /approval|stability|legitimacy/i.exec(inner || c.label)?.[0];
@@ -68,9 +90,9 @@ export function metricWord(c: ConditionStatus): string {
 const fmt = (v: number, unit?: string) => `${Math.round(v)}${unit === '%' ? '%' : ''}`;
 
 /** "stability 62%, needs 78%", or null when the condition has no number. */
-export function nowNeed(c: ConditionStatus): string | null {
+export function nowNeed(c: ConditionStatus, world?: GoalWorld | null): string | null {
   if (c.now === undefined || c.need === undefined) return null;
-  return `${metricWord(c)} ${fmt(c.now, c.unit)}, needs ${fmt(c.need, c.unit)}`;
+  return `${metricWord(c, world)} ${fmt(c.now, c.unit)}, needs ${fmt(c.need, c.unit)}`;
 }
 
 /** This month's step: the engine's pick, else the off-track objective with the largest gap. */
