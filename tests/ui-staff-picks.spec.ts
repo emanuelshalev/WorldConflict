@@ -244,7 +244,8 @@ describe("RS-005: staff picks are listed next to their Approve button", () => {
   it("a call card's reason names goals in sentence case (C-2, engine adviser lines)", async () => {
     const agenda = await import("../ui/src/lib/agenda.js");
     const card = { why: "It moves Voters stay on side and Taipei comes to the table.", helps: ["Voters stay on side", "Taipei comes to the table"], hurts: [], breaks: [], bonusHelps: [] };
-    expect(agenda.callWhy(card)).toBe("It moves voters stay on side and Taipei comes to the table.");
+    expect(agenda.callWhy(card)).toBe("It helps your goals: voters stay on side and Taipei comes to the table.");
+    expect(agenda.callWhy({ ...card, why: "The steadier answer, and it still helps Voters stay on side." })).toBe("The steadier answer, and it still helps voters stay on side.");
     expect(agenda.callWhy({ ...card, why: null })).toBe("");
   });
 

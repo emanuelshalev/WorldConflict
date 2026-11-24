@@ -172,7 +172,9 @@ html { font-size: clamp(16px, calc(0.42vmin + 11.5px), 22px); }
 .thing.is-simple .opts { grid-template-columns: minmax(0, 1fr); }
 @container item (min-width: 56rem) { .thing.is-simple .opts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .thing.is-own { display: flex; flex-direction: column; gap: var(--gap); }
-.own-head { display: grid; gap: .5rem; justify-items: start; max-width: var(--read); }
+/* The heading block keeps its height: `.thing > *` lets items shrink (min-height 0), and in this
+   flex column the All orders button then ran under "Orders to consider" (visual review, 1440). */
+.own-head { flex: none; display: grid; gap: .5rem; justify-items: start; max-width: var(--read); }
 .own-head p { margin: 0; font-size: 1rem; color: var(--text-2); }
 .thing.is-own .skip-wrap { max-width: 40rem; }
 
@@ -445,11 +447,13 @@ html { font-size: clamp(16px, calc(0.42vmin + 11.5px), 22px); }
   .ph-thingline .wc-btn { min-height: 44px; }
   .ph-thingline .mode-seg button { flex: 1; min-height: 44px; min-width: 44px; padding: 0 8px; justify-content: center; }
 }
-/* The layer switcher stays in the map's free gap: right of the card (it wraps), left of the floating Plan */
+/* The layer switcher stays in the map's free gap: right of the card (it wraps), left of the floating Plan.
+   The wider steps repeat the base selector: with a weaker one the base rule won at every width and
+   the switcher started under the card at 3440 (visual review, Map month 4). */
 .game:not([data-cls='P']).mode-map .map-stage .layer-bar { left: calc(clamp(24rem, 28vw, 40rem) + 2 * var(--gap)) !important; flex-wrap: wrap; justify-content: flex-end; }
-@media (min-width: 1600px) { .game.mode-map .map-stage .layer-bar { left: calc(clamp(26rem, 26vw, 42rem) + 2 * var(--gap)) !important; } }
-@media (min-width: 2240px) { .game.mode-map .map-stage .layer-bar { left: calc(clamp(26rem, 24vw, 44rem) + 2 * var(--gap)) !important; } }
-@media (min-width: 3200px) { .game.mode-map .map-stage .layer-bar { left: calc(clamp(26rem, 22vw, 46rem) + 2 * var(--gap)) !important; } }
+@media (min-width: 1600px) { .game:not([data-cls='P']).mode-map .map-stage .layer-bar { left: calc(clamp(26rem, 26vw, 42rem) + 2 * var(--gap)) !important; } }
+@media (min-width: 2240px) { .game:not([data-cls='P']).mode-map .map-stage .layer-bar { left: calc(clamp(26rem, 24vw, 44rem) + 2 * var(--gap)) !important; } }
+@media (min-width: 3200px) { .game:not([data-cls='P']).mode-map .map-stage .layer-bar { left: calc(clamp(26rem, 22vw, 46rem) + 2 * var(--gap)) !important; } }
 @media (min-width: 1600px) { .mode-map .map-stage .layer-bar { right: calc(25rem + 2 * var(--gap)) !important; } }
 @media (min-width: 2240px) { .mode-map .map-stage .layer-bar { right: calc(27rem + 2 * var(--gap)) !important; } }
 @media (min-width: 3200px) { .mode-map .map-stage .layer-bar { right: calc(28rem + 2 * var(--gap)) !important; } }

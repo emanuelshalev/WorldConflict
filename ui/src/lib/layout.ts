@@ -88,10 +88,12 @@ export interface PlanFit {
 /**
  * The fit loop shared by the Plan (L-10) and the Thing: raise the level one step at a time while
  * the element's content is taller than its box, from 0 again whenever the content (`key`), the
- * room (its size) or the fonts change. The element itself never scrolls.
+ * room (its size) or the fonts change. The element itself never scrolls. `also`: more elements whose
+ * overflow counts too (the map card inside the left column: the column is the room, the card and the
+ * List under it share it), measured but not watched for size.
  */
-export function useFitLevel(ref: RefObject<HTMLElement | null>, key: string, max: number): number {
-  const [size, setSize] = useState(0);
+export function useFitLevel(ref: RefObject<HTMLElement | null>, key: string, max: number, also: Array<RefObject<HTMLElement | null>> = []): number {
+  const [size, setSize] = useState('');
   // Web fonts change how the text wraps: measure again once they are in
   const [fonts, setFonts] = useState(0);
   // The level belongs to one signature (content, room, fonts): a new one starts from 0
@@ -102,9 +104,11 @@ export function useFitLevel(ref: RefObject<HTMLElement | null>, key: string, max
   useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (el.scrollHeight > el.clientHeight + 1 && level < max) setSt({ sig, level: level + 1 });
+    const over = [el, ...also.map((r) => r.current)].some((e) => !!e && e.scrollHeight > e.clientHeight + 1);
+    if (over && level < max) setSt({ sig, level: level + 1 });
     else if (st.sig !== sig) setSt({ sig, level });
+    // `also` is a stable list of refs from the caller (read through .current)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ref, level, max, sig, st.sig]);
   useEffect(() => {
     const f = typeof document !== 'undefined' ? document.fonts : undefined;
@@ -121,10 +125,21 @@ export function useFitLevel(ref: RefObject<HTMLElement | null>, key: string, max
   useEffect(() => {
     const el = ref.current;
     if (!el || typeof ResizeObserver === 'undefined') return;
-    const ro = new ResizeObserver(() => setSize(Math.round(el.clientHeight * 10000 + el.clientWidth)));
+    // With `also`, the column's other children (the Map List) can grow after the fit has settled
+    // (their rows arrive later) without the column changing size: their heights count as room too,
+    // or the fit stops one step short and the List runs off the screen (visual review, 3440 Map
+    // month 4). The stepped elements themselves are left out: they change with the level.
+    const stepped = also.map((r) => r.current);
+    const others = stepped.length ? [...el.children].filter((c) => !stepped.includes(c as HTMLElement)) : [];
+    const ro = new ResizeObserver(() => setSize(`${el.clientHeight}x${el.clientWidth}|${others.map((c) => Math.round(c.getBoundingClientRect().height)).join(',')}`));
     ro.observe(el);
+    for (const c of others) ro.observe(c);
     return () => ro.disconnect();
-  }, [ref]);
+    // `key` re-attaches the observer when the content changes: the element can mount after the
+    // hook (Map mode renders its column only while on), and the observer must follow it. `also` is a
+    // stable list of refs from the caller (read through .current)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ref, key]);
   return level;
 }
 

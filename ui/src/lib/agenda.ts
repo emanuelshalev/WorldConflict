@@ -458,9 +458,11 @@ export function callSides(item: AgendaItem, state: GameState = useGameStore.getS
 /**
  * A call card's reason in the desk's sentence case: the engine names goals by their labels ("It moves
  * Voters stay on side."), which read lower case inside a sentence unless they start with a name.
+ * A goal label is a whole clause ("voters stay on side"), so "It moves" before it does not read as
+ * English: the desk says "It helps your goals: ..." instead (visual review of the month 4 baseline).
  */
 export function callWhy(card: Pick<CallCard, 'why' | 'helps' | 'hurts' | 'breaks' | 'bonusHelps'>): string {
-  let why = card.why ?? '';
+  let why = (card.why ?? '').replace(/^It moves /, 'It helps your goals: ');
   for (const g of new Set([...card.helps, ...card.hurts, ...card.breaks, ...card.bonusHelps])) if (g) why = why.split(` ${g}`).join(` ${goalInSentence(g)}`);
   return why;
 }

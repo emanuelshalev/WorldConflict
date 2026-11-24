@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useGameStore } from '../../store/gameStore';
 import { useFitLevel, useLayout } from '../../lib/layout';
 import { Thing } from './YourMove';
@@ -25,9 +25,14 @@ export function MapMonth() {
   const setTarget = useGameStore((s) => s.setOrderTarget);
   const on = deskMode === 'map' && !gameOver;
   const cardRef = useRef<HTMLDivElement>(null);
+  const leftRef = useRef<HTMLDivElement>(null);
   const agendaKey = useGameStore((s) => s.agendaKey);
   const choices = useGameStore((s) => s.decisionChoices);
-  const fit = useFitLevel(cardRef, `${agendaKey}|${focus.kind}|${Object.keys(choices).length}|${on}`, 3);
+  // The room is the left column: from 2240 wide the List floats under the card, and a card that
+  // fits on its own could still push the List's last rows off the screen (visual review, 3440 Map
+  // month 4); the card compacts until both fit. The column keeps a fixed size while the card steps.
+  const fitAlso = useMemo(() => [cardRef], []);
+  const fit = useFitLevel(leftRef, `${agendaKey}|${focus.kind}|${Object.keys(choices).length}|${on}|${L.mapList}|${listOpen}`, 3, fitAlso);
   // The globe re-fits to the new free box when the panels come and go
   useEffect(() => {
     const t = window.setTimeout(() => window.dispatchEvent(new Event('resize')), 60);
@@ -58,7 +63,7 @@ export function MapMonth() {
   return (
     <>
       <section className="map-month" aria-label="This month on the map">
-        <div className="map-left" data-map-panel="left">
+        <div className="map-left" data-map-panel="left" ref={leftRef}>
           <div className="mapcard" data-region="item" ref={cardRef} data-fit={fit}>
             {detail ? <Detail target={target} setTarget={setTarget} /> : <Thing compact />}
           </div>

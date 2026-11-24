@@ -7,6 +7,9 @@
 .rc-visual { position: relative; background: #060a12; min-height: 280px; }
 .rc-visual > .scene { position: absolute; inset: 0; width: 100%; height: 100%; aspect-ratio: auto; border-radius: 0; box-shadow: none; }
 .rc-blank { position: absolute; inset: 0; background: radial-gradient(80% 60% at 50% 40%, #16233a, #070a12); }
+/* The scene's own chip (POOL FEED, LIVE) sits in the same corner: it moves under the date stamp
+   instead of showing through it (visual review, result 1920) */
+.result-card .scene-bug { top: 52px; left: 14px; }
 .rc-date { position: absolute; left: 14px; top: 14px; z-index: 2; padding: 6px 10px; border-radius: 4px; background: rgba(5, 8, 14, .85); font: 700 15px/1 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--text-1); }
 .rc-step { position: absolute; right: 18px; bottom: 22px; z-index: 2; }
 /* With the big number along the bottom, the stamp goes to the top corner so it never covers the
@@ -134,6 +137,9 @@
   .paper-overlay .paper-cols { display: block; column-width: 22rem; column-gap: 2rem; }
   .paper-overlay .paper-cols .story { break-inside: avoid; }
   .paper-overlay .paper-next { top: calc(var(--band-h, 0px) + 14px); }
+  /* Where the band is one line (3440) the button lands on the dateline: its right end ("Month n
+     of m") stays clear of it (visual review, paper 3440) */
+  .paper-overlay .masthead .dateline { padding-right: 11rem; }
   /* The lead: its picture on the left at 16:9 (never the full page width), the story beside it */
   .paper-overlay .lead { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); column-gap: 2rem; align-items: start; }
   .paper-overlay .lead > .scene { grid-column: 1; grid-row: 1 / span 8; aspect-ratio: 16 / 9; max-height: 46vh; width: 100%; }

@@ -194,7 +194,9 @@ export function StateBand() {
 
   const pc = (
     <span className={`sb-s sb-pc${pcLeft < 0 ? ' over' : ''}`} data-point="capital">
-      {wide ? 'Political capital (what orders cost)' : TERMS.capital.name} <V v={`◆ ${pcLeft} of ${pcCap}`} />
+      {/* (at U the band is one line, L-5: from month 2 with a call the gloss pushed it to two; the
+          Explain button beside it says what capital is) */}
+      {wide && cls !== 'U' ? 'Political capital (what orders cost)' : TERMS.capital.name} <V v={`◆ ${pcLeft} of ${pcCap}`} />
     </span>
   );
   const explainBtn = (
