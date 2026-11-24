@@ -1,8 +1,8 @@
 {
   "version": 1,
   "iteration": 4,
-  "stage": "Build",
-  "stageSince": "2026-11-23T05:42:30.308Z",
+  "stage": "Verify",
+  "stageSince": "2026-11-24T12:00:28.156Z",
   "records": [
     {
       "gate": "verify",
