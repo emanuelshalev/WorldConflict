@@ -111,3 +111,4 @@
 {"t":"2026-11-24T17:37:39.825Z","kind":"publish","iteration":4,"commit":"06b900614af9019ab1f1e796bc515a33d63b66da","tag":"iter-4","branch":"main","pushed":true}
 {"t":"2026-11-24T17:37:39.896Z","kind":"owed","tier":"T1","because":"publish of iter-4"}
 {"t":"2026-11-24T17:44:11.468Z","kind":"record","gate":"status-refresh","result":"pass","commit":"06b900614af9019ab1f1e796bc515a33d63b66da","codeTree":"e1a9a12db9c1db80","evidence":"dev_plan/project_status.html","note":"status-refresh T1","iteration":4,"stage":"Gate","tier":"T1"}
+{"t":"2026-11-24T19:13:43.029Z","kind":"record","gate":"verify","result":"pass","commit":"1d5ad4f2e3702f1b6c5ad8e263ffb3c6e6579980","codeTree":"492dadeb3622e5d5","evidence":".verify/summary.json","note":"modes default","iteration":4,"stage":"Gate","steps":["registry","test","lint","ui-lint","build","smoke","reveal","visual","regressions","balance"]}
