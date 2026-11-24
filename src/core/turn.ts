@@ -1540,17 +1540,63 @@ export class TurnEngine {
               : 0),
         0,
       );
+    // F-04-7: the player's act of war (a declaration, an airstrike or a nuclear strike, ordered or
+    // set off by a crisis answer) is the story of the month, above any answer or treaty
+    const ACT_OF_WAR = 100;
+    const warAnswers = new Set<number>();
+    const struck = new Set<string>();
+    for (const a of resolved.get(player.id) ?? []) {
+      if (!ACTS_OF_WAR.has(a.type) || !a.targetCountryId) continue;
+      struck.add(a.targetCountryId);
+      const from = this.injectedFrom.get(a);
+      if (from !== undefined) warAnswers.add(from);
+    }
+    const warOrder = (o: PlayerTurnReport["orders"][number]) =>
+      !!o.type && ACTS_OF_WAR.has(o.type) && o.status !== "REFUSED";
+    for (const o of report.orders) if (warOrder(o) && o.target) struck.add(o.target);
+    // The country you struck does not answer a call warmly the same month (Erdogan, Lai)
+    report.decisions.forEach((d, i) => {
+      if (!d.withCountry || !struck.has(d.withCountry) || d.kind === "CRISIS") return;
+      if (
+        d.attended === false ||
+        (d.reaction && d.reaction.tone !== "warm" && d.reaction.tone !== "neutral")
+      )
+        return;
+      const them = findCountry(world, d.withCountry);
+      if (!them) return;
+      const seed = hashParts(world.seed, world.turn, d.title, i, "struck");
+      d.reaction = orderReaction({ them, player }, -10, undefined, seed);
+      if (d.kind === "CALL" || d.kind === "VISIT")
+        d.headline = outcomeHeadline(
+          d.kind,
+          "angry",
+          { them, player, title: d.title, choice: d.choice },
+          seed,
+        );
+    });
     let best: PlayerTurnReport["highlight"];
     let bestScore = -1;
     report.decisions.forEach((d, i) => {
       if (d.attended === false) return;
-      const sc = size(d.facts) + (d.kind === "CRISIS" ? 8 : 0);
+      const sc =
+        size(d.facts) + (d.kind === "CRISIS" ? 8 : 0) + (warAnswers.has(i) ? ACT_OF_WAR : 0);
       if (sc > bestScore) [best, bestScore] = [{ ref: "decision", index: i }, sc];
     });
     report.orders.forEach((o, i) => {
-      const sc = size(o.facts) + (/war|ceasefire|pact|strike|coup/i.test(o.label) && o.ok ? 15 : 0);
+      const sc =
+        size(o.facts) +
+        (/war|ceasefire|pact|strike|coup/i.test(o.label) && o.ok ? 15 : 0) +
+        (warOrder(o) ? ACT_OF_WAR : 0);
       if (sc > bestScore) [best, bestScore] = [{ ref: "order", index: i }, sc];
     });
+    // F-04-2: when the player chose nothing, a crisis that ran on its default answer is the
+    // month's move ("Left open: ..."), never an empty "quiet month" over a crisis that moved approval
+    if (!best)
+      report.decisions.forEach((d, i) => {
+        if (d.kind !== "CRISIS" || d.attended !== false) return;
+        const sc = size(d.facts) + (warAnswers.has(i) ? ACT_OF_WAR : 0);
+        if (sc > bestScore) [best, bestScore] = [{ ref: "decision", index: i }, sc];
+      });
     // The player's own move of the month, chosen before the fronts compete for the highlight:
     // a front that moved on its own can lead the paper, never "What your choice did"
     const own = best as PlayerTurnReport["highlight"];
@@ -1664,6 +1710,13 @@ export class TurnEngine {
 }
 
 // --------------------------------------------------------------------
+/** The player's acts of war: they lead the month's report and the paper (F-04-7). */
+const ACTS_OF_WAR = new Set<string>([
+  "DIPLOMACY_DECLARE_WAR",
+  "MILITARY_AIRSTRIKE",
+  "NUCLEAR_STRIKE",
+]);
+
 /** Each reform in the last 6 months cuts the next one's effect to this share. */
 const REFORM_DECAY = 0.8;
 

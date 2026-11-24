@@ -138,6 +138,8 @@ function orderCard(o: Order, i: number): OutcomeCardData {
 
 /** Merge everything about one country into one card: meetings, orders, their moves, their view of you. */
 const HOSTILE = /DENOUNCE|DECLARE_WAR|AIRSTRIKE|DEPLOY_BORDER|BREAK_ALLIANCE|NUCLEAR|INTEL_|MOBILIZE/;
+/** The player's acts of war (engine turn.ts ACTS_OF_WAR): they lead the country's card. */
+const ACT_OF_WAR = /^(DIPLOMACY_DECLARE_WAR|MILITARY_AIRSTRIKE|NUCLEAR_STRIKE)$/;
 
 function countryCard(id: string, decisions: Array<[Decision, number]>, orders: Array<[Order, number]>, moveList: Array<{ type: string; label: string; target?: string }>, rel?: { before: number; after: number }, home?: string, ownRel?: { before: number; after: number }): OutcomeCardData {
   const moves = moveList.map((m) => m.label);
@@ -147,7 +149,12 @@ function countryCard(id: string, decisions: Array<[Decision, number]>, orders: A
   // R5: one card, one verdict. If one of your own orders failed, it leads the card
   const failed = orders.find(([o]) => statusOf(o) === 'FAILED' || statusOf(o) === 'REFUSED');
   if (failed) orders = [failed, ...orders.filter((x) => x !== failed)];
-  const lead: OutcomeCardData = failed ? orderCard(failed[0], failed[1]) : decisions[0] ? decisionCard(decisions[0][0], decisions[0][1]) : orders[0] ? orderCard(orders[0][0], orders[0][1]) : {
+  // F-04-7: your act of war on this country (a declaration or a strike) leads its card, above a
+  // call or a visit the same month and above another order that failed
+  const act = orders.find(([o]) => ACT_OF_WAR.test(o.type ?? '') && statusOf(o) !== 'REFUSED');
+  if (act) orders = [act, ...orders.filter((x) => x !== act)];
+  const failLeads = !!failed && (!act || act === failed);
+  const lead: OutcomeCardData = act ? orderCard(act[0], act[1]) : failed ? orderCard(failed[0], failed[1]) : decisions[0] ? decisionCard(decisions[0][0], decisions[0][1]) : orders[0] ? orderCard(orders[0][0], orders[0][1]) : {
     key: `c-${id}`,
     kicker: countryName(id),
     country: id,
@@ -157,8 +164,8 @@ function countryCard(id: string, decisions: Array<[Decision, number]>, orders: A
     verdict: hostile ? 'bad' : relDelta > 0 ? 'good' : 'neutral',
   };
   const extra: CardLine[] = [
-    ...decisions.slice(failed ? 0 : 1).map(([d]) => ({ text: `${KIND_WORD[d.kind ?? 'CRISIS']}: ${d.choice}`, icon: d.kind })),
-    ...orders.slice(failed || !decisions[0] ? 1 : 0).map(([o]) => { const s = statusOf(o) ?? 'DONE'; return { text: `${o.label}${s === 'DONE' ? '' : ` (${STATUS_WORD[s].toLowerCase()})`}`, icon: o.type, ok: s !== 'FAILED' && s !== 'REFUSED' }; }),
+    ...decisions.slice(failed || act ? 0 : 1).map(([d]) => ({ text: `${KIND_WORD[d.kind ?? 'CRISIS']}: ${d.choice}`, icon: d.kind })),
+    ...orders.slice(failed || act || !decisions[0] ? 1 : 0).map(([o]) => { const s = statusOf(o) ?? 'DONE'; return { text: `${o.label}${s === 'DONE' ? '' : ` (${STATUS_WORD[s].toLowerCase()})`}`, icon: o.type, ok: s !== 'FAILED' && s !== 'REFUSED' }; }),
     ...moves.map((m) => ({ text: `They: ${m.replace(/^[^:]+: /, '')}`, icon: 'THEM' })),
   ];
   // Their view of you over the whole month (all your dealings plus theirs), so the reply, the
@@ -187,7 +194,7 @@ function countryCard(id: string, decisions: Array<[Decision, number]>, orders: A
   const verdict: Verdict = status ? verdictOf(status) : lead.verdict;
   const other = decisions[0] ? decisionCard(decisions[0][0], decisions[0][1]) : undefined;
   const failWord = failedStatus === 'REFUSED' ? 'refused' : 'failed';
-  const headline = failed ? `${failed[0].label} ${failWord}${other ? `; ${other.headline.charAt(0).toLowerCase()}${other.headline.slice(1)}` : ''}` : lead.headline;
+  const headline = failLeads && failed ? `${failed[0].label} ${failWord}${other ? `; ${other.headline.charAt(0).toLowerCase()}${other.headline.slice(1)}` : ''}` : lead.headline;
   return {
     ...lead,
     headline,
@@ -201,7 +208,7 @@ function countryCard(id: string, decisions: Array<[Decision, number]>, orders: A
     status,
     reason,
     kicker: `${countryName(id)}${mine ? '' : ' · their move'}${decisions.length + orders.length + moves.length > 1 ? ` · ${decisions.length + orders.length + moves.length} items` : ''}`,
-    scene: failed ? orderScene(failed[0], 'bad') : lead.scene && sceneForOutcome(lead.scene, verdict),
+    scene: failLeads && failed ? orderScene(failed[0], 'bad') : lead.scene && sceneForOutcome(lead.scene, verdict),
     map: { target: id, effect: firstOrder ? mapEffect(firstOrder.type) ?? 'court' : decisions[0] ? 'court' : 'denounce' },
   };
 }

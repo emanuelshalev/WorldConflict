@@ -8,7 +8,7 @@ import { buildAdvice, deskImpact, missionStatus, suggestionImpact } from "../../
 import { politicalCapitalIncome, PC_CAP } from "../../src/core/costs.js";
 import { createDataLoader } from "../../src/core/data-loader.js";
 import type { Action, WorldState } from "../../src/core/types.js";
-import { playControl, playerRel, UKR_CONTROL } from "../fixtures/control.js";
+import { newControlWorld, playControl, playerRel, UKR_CONTROL } from "../fixtures/control.js";
 
 const loader = createDataLoader();
 
@@ -170,5 +170,71 @@ describe("F-04-3: a relation goal on the result card names whose view it is", ()
       }
     }
     expect(checked, "months whose mission line is a relation goal").toBeGreaterThanOrEqual(3);
+  });
+});
+
+describe("F-04-7: the country you struck leads its card with the strike, not the call", () => {
+  beforeEach(() => {
+    vi.resetModules();
+    stubBrowser();
+  });
+  afterEach(() => vi.unstubAllGlobals());
+
+  it("F-04-7: a call and an airstrike on one country the same month: the card's headline is the strike (control seeds)", async () => {
+    const { generateDeterministicIntents } = await import("../../src/agents/fallback.js");
+    const { TurnEngine } = await import("../../src/core/turn.js");
+    const { staffMonth } = await import("../../scripts/policies.js");
+    const engine = new TurnEngine();
+    let checked = 0;
+    for (const code of ["CO-UKR-MAYA1", "CA-USA-OLIV1", "SL-CHN-SAM01", "QU-CHN-LEO01"]) {
+      let w = newControlWorld(code);
+      for (let t = 0; t < 12 && !w.gameOver; t++) {
+        const s = staffMonth(w, "chief");
+        const call = w.agenda.find(
+          (m) => (m.kind === "CALL" || m.kind === "VISIT") && m.withCountry && m.withCountry !== w.playerCountryId && s.decisions.some((d) => d.decisionId === m.id),
+        );
+        if (call?.withCountry) {
+          const strike: Action = { type: "MILITARY_AIRSTRIKE", targetCountryId: call.withCountry, params: { targetType: "MILITARY" } };
+          const after = engine.executeTurn(w, [...s.orders, strike], generateDeterministicIntents(w), s.decisions).newState;
+          const o = after.turnReport?.orders.find((x) => x.type === "MILITARY_AIRSTRIKE");
+          if (o && o.status !== "REFUSED") {
+            await desk(after);
+            const { buildPages } = await import("../../ui/src/lib/debrief.js");
+            const pages = buildPages(after.turnReport as never, after as never);
+            const card = pages.flatMap((p) => p.cards).find((c) => c.key === `c-${call.withCountry}`);
+            const at = `${code} month ${t + 1}, strike on ${call.withCountry} after "${call.title}"`;
+            expect(card?.headline?.startsWith(o.label), `${at}: "${card?.headline}"`).toBe(true);
+            expect(card?.reaction?.tone, at).not.toBe("warm");
+            checked++;
+            break;
+          }
+        }
+        w = engine.executeTurn(w, s.orders, generateDeterministicIntents(w), s.decisions).newState;
+      }
+    }
+    expect(checked).toBeGreaterThanOrEqual(2);
+  });
+});
+
+describe("F-04-2: the result card of an Execute with nothing chosen", () => {
+  beforeEach(() => {
+    vi.resetModules();
+    stubBrowser();
+  });
+  afterEach(() => vi.unstubAllGlobals());
+
+  it("F-04-2: HC-ARE-NOAH1 months 1 to 6 with nothing chosen: a crisis that ran on its default is Left open, never A quiet month", async () => {
+    let checked = 0;
+    for (const m of playControl("HC-ARE-NOAH1", "none", 6).months) {
+      const report = m.after.turnReport;
+      const ran = report?.decisions.find((d) => d.kind === "CRISIS" && /\(no decision taken\)$/.test(d.choice));
+      if (!ran) continue;
+      const text = await resultCardText(m.after);
+      const at = `month ${m.after.turn}: ${text.slice(0, 240)}`;
+      expect(text, at).not.toContain("A quiet month");
+      expect(text, at).toMatch(/Left open: /);
+      checked++;
+    }
+    expect(checked).toBeGreaterThanOrEqual(3);
   });
 });
