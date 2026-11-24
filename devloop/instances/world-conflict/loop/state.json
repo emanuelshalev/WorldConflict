@@ -1095,6 +1095,41 @@
       "iteration": 4,
       "stage": "Triage",
       "tier": "T2"
+    },
+    {
+      "gate": "verify",
+      "result": "fail",
+      "commit": "53f5a1429a7bb738fbfc6536b5657ff08e99e223",
+      "codeTree": "1255ed454146945c",
+      "evidence": ".verify/summary.json",
+      "note": "modes default",
+      "t": "2026-11-24T16:18:35.524Z",
+      "iteration": 4,
+      "stage": "Triage",
+      "steps": [
+        "registry",
+        "test",
+        "lint",
+        "ui-lint",
+        "build",
+        "smoke",
+        "reveal",
+        "visual",
+        "regressions",
+        "balance"
+      ]
+    },
+    {
+      "gate": "status-refresh",
+      "result": "pass",
+      "commit": "690316bd4ee8e1816cbef4fbcc99c90e91f298b8",
+      "codeTree": "ab2437794b9c4192",
+      "evidence": "dev_plan/project_status.html",
+      "note": "status-refresh T1",
+      "t": "2026-11-24T16:22:11.329Z",
+      "iteration": 4,
+      "stage": "Triage",
+      "tier": "T1"
     }
   ],
   "merges": [
