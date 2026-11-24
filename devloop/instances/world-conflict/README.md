@@ -36,7 +36,7 @@ One command before every merge (runner `../../kit/verify-runner.mjs`, config `ve
 
 | Command | Runs | Time (20-core dev box) |
 |---|---|---|
-| `npm run verify -- --quick` | registry check, `npm test`, biome, UI eslint, build | about 30 s |
+| `npm run verify -- --quick` | registry check, `npm test`, biome, UI eslint, build ; records the `verify-quick` gate, which is enough to merge a change whose code is all process tooling (D-98, `../../method/controller.md`) | about 1 min |
 | `npm run verify` | quick + balance bands, smoke (3 months), reveal fast-forward, visual regression, finding guards | about 7 min |
 | `npm run verify -- --ui` | UI eslint, UI build, smoke, reveal, visual | about 3.5 min |
 | `npm run verify -- --full` | default + orders and world map acceptance scripts | about 13 min |

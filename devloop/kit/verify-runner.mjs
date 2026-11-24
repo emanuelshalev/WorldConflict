@@ -33,7 +33,8 @@
 // Loop controller (optional): when a loop config is found (config.loop.config, $DEVLOOP_LOOP_CONFIG,
 // or the only devloop/instances/*/loop/config.json), a full gate run records its result with
 // `kit/loop.mjs record verify` on the commit and code tree it ran on. Only runs of a recording mode
-// count (config.loop.recordModes, default ['default', 'full']) without --only, --skip or extra flags,
+// count (config.loop.recordModes, default ['default', 'full']; a run of config.loop.quickModes, default
+// ['quick'], records the lighter `verify-quick` gate when the loop config has it) without --only, --skip or extra flags,
 // and only when HEAD did not move and no code file had uncommitted changes. `loop: false` turns it
 // off; without a loop config the runner works exactly as before.
 import { execFileSync, spawn, spawnSync } from 'node:child_process';
@@ -306,8 +307,13 @@ function gitHead(cwd) {
 export async function recordInLoop(config, parsed, { root, ok, evidence, headAtStart, steps }) {
   if (config.loop === false || !headAtStart) return null;
   const recordModes = config.loop?.recordModes ?? ['default', 'full'];
-  const counted = !parsed.opts.only && parsed.opts.skip.size === 0 && parsed.flags.size === 0 && !parsed.opts.serve && [...parsed.modes].some((m) => recordModes.includes(m));
-  if (!counted) return null;
+  const quickModes = config.loop?.quickModes ?? ['quick'];
+  const whole = !parsed.opts.only && parsed.opts.skip.size === 0 && parsed.flags.size === 0 && !parsed.opts.serve;
+  const counted = whole && [...parsed.modes].some((m) => recordModes.includes(m));
+  // A quick run (tests, lints, build) is its own gate, `verify-quick`: enough for a merge that only
+  // touches tooling (rule with "when.outside" in the loop config), never for a product change
+  const quick = whole && !counted && [...parsed.modes].some((m) => quickModes.includes(m));
+  if (!counted && !quick) return null;
   let loop;
   let ctx;
   try {
@@ -327,7 +333,18 @@ export async function recordInLoop(config, parsed, { root, ok, evidence, headAtS
       console.log(`loop: ${dirty.length} code file(s) had uncommitted changes (${dirty.slice(0, 3).join(', ')}${dirty.length > 3 ? ', ...' : ''}); result not recorded`);
       return null;
     }
-    const rec = loop.record(ctx, { gate: 'verify', result: ok ? 'pass' : 'fail', commit: head, evidence, note: `modes ${[...parsed.modes].join(',')}`, extra: { steps } });
+    const hasQuick = (ctx.cfg.gates ?? []).includes('verify-quick');
+    const note = `modes ${[...parsed.modes].join(',')}`;
+    const result = ok ? 'pass' : 'fail';
+    if (quick) {
+      if (!hasQuick) return null;
+      const q = loop.record(ctx, { gate: 'verify-quick', result, commit: head, evidence, note, extra: { steps } });
+      console.log(`loop: recorded verify-quick ${q.result} on ${q.commit.slice(0, 9)} (code tree ${q.codeTree})`);
+      return q;
+    }
+    const rec = loop.record(ctx, { gate: 'verify', result, commit: head, evidence, note, extra: { steps } });
+    // the full gate contains the quick one
+    if (hasQuick) loop.record(ctx, { gate: 'verify-quick', result, commit: head, evidence, note: `${note} (full run)`, extra: { steps } });
     console.log(`loop: recorded verify ${rec.result} on ${rec.commit.slice(0, 9)} (code tree ${rec.codeTree})`);
     return rec;
   } catch (e) {
