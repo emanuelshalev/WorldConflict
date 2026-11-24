@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { IconMessageCircle, IconSearch } from '@tabler/icons-react';
-import { type CallCard, type DecisionOption, type Impact, type Meeting, MEETING_SLOTS, type MissionNote, type PendingDecision, approveProposal, countryName, orderKey, useGameStore, usePlayerCountry } from '../../store/gameStore';
+import { type CallCard, type DecisionOption, type Impact, type Meeting, MEETING_SLOTS, type MissionNote, type PendingDecision, approveProposal, countryName, crisisAnswer, orderKey, useGameStore, usePlayerCountry } from '../../store/gameStore';
 import { ADVISOR_NAMES, flag, monthLabel } from '../../lib/format';
 import { cabinetPick, crisisSelection, effectWords, goalName, guideLede, meetingAdviser, meetingPick, meetingSelection, missionPick, missionTag, proposalEffects, splitLede } from '../../lib/month';
 import { type AgendaItem, advisersLine, agendaItems, callWhy, callSides, chooseAnswer, chooseMove, chooseSmall, costPhrase, currentItem, meetingTitle, ministerFor, skipItem, skipMeaning, undoSkip, unchooseMove } from '../../lib/agenda';
@@ -372,6 +372,7 @@ function DecisionThing({ item, compact }: { item: AgendaItem; compact: boolean }
             ) : (
               <>
                 {mt && <span className={`mt mt-${mt.tone}`}>{mt.text}{mt.more > 0 ? ` (+${mt.more} more)` : ''}. </span>}
+                {mt?.also && <span className={`mt mt-${mt.also.tone}`} data-mt-also="">{mt.also.text}. </span>}
                 <span className={mt ? 'fx-rest' : undefined}>
                   {words.join('. ')}
                   {words.length ? '.' : ''}
@@ -382,6 +383,15 @@ function DecisionThing({ item, compact }: { item: AgendaItem; compact: boolean }
             // On a call the card's advisers are the engine's (C-2); elsewhere the authored backers,
             // none on an answer that breaks a goal while another breaks none (RC-6)
             const backers = cc ? [] : shownBackers(o, missionImpact[d.id]);
+            // The band already counts what this crisis does to capital now (the chosen answer, or
+            // what leaving it does): say what choosing this card changes there (DR-INT-2, Hormuz
+            // month 3: "costs ◆ 2" while the band moved by 1)
+            const counted = meeting ? 0 : -((crisisAnswer(useGameStore.getState(), d as PendingDecision)?.effects.pc ?? 0) - (choices[d.id] ? (advice?.prices?.[d.id]?.[choices[d.id]] ?? 0) : 0));
+            const delta = -pc - counted;
+            // Name the answer the band counts (a routine crisis starts on the cabinet's, not the player's)
+            const ref = choices[d.id] ? (d.options.find((x) => x.id === choices[d.id])?.label ?? 'the chosen answer') : 'leaving it';
+            const against = !meeting && counted > 0 && choices[d.id] !== o.id ? (delta > 0 ? ` (◆ ${delta} more than ${ref})` : delta < 0 ? ` (◆ ${-delta} less than ${ref})` : ` (as much as ${ref})`) : '';
+            const costText = pc < 0 ? ` · costs ◆ ${-pc}${against}` : against ? ` · free${against}` : '';
             const more = [
               pc < 0 ? `Costs ◆ ${-pc}${price ? ` (◆ ${price} of it is the price of the mission side)` : ''}.` : pc > 0 ? `Gives ◆ ${pc}.` : 'Free.',
               backers.length ? `Backed by the ${backers.join(' and the ')}.` : '',
@@ -394,7 +404,7 @@ function DecisionThing({ item, compact }: { item: AgendaItem; compact: boolean }
             return (
               <AnswerCard
                 key={o.id}
-                title={`${o.label}${pc < 0 ? ` · costs ◆ ${-pc}` : ''}`}
+                title={`${o.label}${costText}`}
                 rec={ccRec ?? (isRec ? `★ Recommended by your ${recBy}: "${reason}"` : undefined)}
                 fx={fx}
                 fxTone={mt ? (mt.tone === 'risk' ? 'risk' : 'help') : undefined}
@@ -405,7 +415,7 @@ function DecisionThing({ item, compact }: { item: AgendaItem; compact: boolean }
                   chooseAnswer(item, o.id);
                   sound.play('stamp');
                 }}
-                aria={`${o.label}${ccRec ? `, ${advisersLine(cc as CallCard).toLowerCase()}` : isRec ? `, recommended by your ${recBy}` : ''}${mt ? `. ${mt.text}` : ''}${words.length ? `. ${words.join(', ')}` : ''}. Choose`}
+                aria={`${o.label}${ccRec ? `, ${advisersLine(cc as CallCard).toLowerCase()}` : isRec ? `, recommended by your ${recBy}` : ''}${mt ? `. ${mt.text}` : ''}${mt?.also ? `. ${mt.also.text}` : ''}${words.length ? `. ${words.join(', ')}` : ''}. Choose`}
               />
             );
           })}

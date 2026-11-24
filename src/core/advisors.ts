@@ -6,7 +6,7 @@
  * foreign numbers come from the player's beliefs (buildPlayerView), never ground truth; memory of
  * last month comes from the turn report. No RNG.
  */
-import { actionCostPC, PC_CAP } from "./costs.js";
+import { actionCostPC } from "./costs.js";
 import { MEETING_SLOTS } from "./meetings.js";
 import {
   actionEffects,
@@ -1081,6 +1081,10 @@ export function crisisCall(
     const side = o === mission.o ? "mission" : o === calm.o ? "calm" : "other";
     const pc = answerCost(o, prices);
     const helped = i.helps.length ? i.helps : i.bonusHelps;
+    // The goals this answer hurts, named in its adviser's words (design review DR-INT-3): a quote
+    // never says "puts no goal at stake" on a card whose own tag says it hurts one
+    const lost = [...i.breaks, ...i.hurts, ...i.bonusHurts];
+    const though = lost.length ? `, though it hurts ${listWords(lost)}` : "";
     return {
       id: o.id,
       label: o.label,
@@ -1090,12 +1094,14 @@ export function crisisCall(
       why:
         side === "mission"
           ? helped.length
-            ? `It moves ${listWords(helped)}.`
+            ? `It moves ${listWords(helped)}${though}.`
             : "It is the answer that costs your mission least."
           : side === "calm"
             ? helpsNone(i)
-              ? "It keeps the country steady and puts no goal at stake."
-              : `The steadier answer, and it still helps ${listWords(helped)}.`
+              ? lost.length
+                ? `The steadier answer${though}: every answer here costs a goal.`
+                : "It keeps the country steady and puts no goal at stake."
+              : `The steadier answer, and it still helps ${listWords(helped)}${though}.`
             : null,
       ...goalsOf(i),
       pc,
@@ -1185,7 +1191,9 @@ export function missionMove(
   if (!cards.length) return null;
   const holdBy: Advisor =
     cards[0].advisers[0] !== "Chief of Staff" ? "Chief of Staff" : "Interior Minister";
-  const keep = `Political capital ${bank} stays (above ${PC_CAP} is lost).`;
+  // What the player keeps is the desk's to say (ui/src/lib/budget.ts capitalOutlook): the engine
+  // sees the bank before this month's choices, so a number here was never what stays (DR-INT-2)
+  const keep = "No order, so no political capital is spent on it.";
   cards.push({
     id: "hold",
     label: "Hold this month",

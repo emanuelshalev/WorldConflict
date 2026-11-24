@@ -494,16 +494,21 @@ async function game(size) {
       const c = m.getCenter();
       const a = m.project([c.lng - 90, 0]);
       const b = m.project([c.lng + 90, 0]);
-      const w = window.__wcStore.getState().worldState;
-      const me = w.countries.find((x) => x.id === w.playerCountryId);
-      const cap = me?.capital;
+      const st = window.__wcStore.getState();
+      const w = st.worldState;
+      // L-14 (iter-04 design-layout.md, DR-INT-5): Map mode centres the subject of the open item,
+      // the crisis's first foreign country; with no crisis open, the player's own capital
+      const open = document.querySelector('[data-map-panel="left"] article.thing')?.getAttribute('aria-label');
+      const d = st.pendingDecisions?.find((x) => x.title === open);
+      const subject = d ? (d.affectedCountries.find((id) => id !== w.playerCountryId) ?? w.playerCountryId) : w.playerCountryId;
+      const cap = w.countries.find((x) => x.id === subject)?.capital;
       const ang = cap ? (Math.acos(Math.sin((c.lat * Math.PI) / 180) * Math.sin((cap[1] * Math.PI) / 180) + Math.cos((c.lat * Math.PI) / 180) * Math.cos((cap[1] * Math.PI) / 180) * Math.cos(((cap[0] - c.lng) * Math.PI) / 180)) * 180) / Math.PI : 999;
-      return { d: Math.hypot(b.x - a.x, b.y - a.y), ang };
+      return { d: Math.hypot(b.x - a.x, b.y - a.y), ang, subject };
     });
     // Whole pixels, as globe-fit.mjs and the note: the three-pass fit lands within a fraction of a
     // pixel of its target (899.74 for 900 failed while the note printed "D 900")
-    if (size.w === 1920) mark(3, Math.round(g.d) >= 900 && g.ang < 80, `1920 in game: D ${Math.round(g.d)} (at least 900), capital ${Math.round(g.ang)} deg from the centre`);
-    else mark(3, g.ang < 80, `${size.w} in game: D ${Math.round(g.d)}, capital ${Math.round(g.ang)} deg from the centre`);
+    if (size.w === 1920) mark(3, Math.round(g.d) >= 900 && g.ang < 80, `1920 in game: D ${Math.round(g.d)} (at least 900), subject ${g.subject} ${Math.round(g.ang)} deg from the centre`);
+    else mark(3, g.ang < 80, `${size.w} in game: D ${Math.round(g.d)}, subject ${g.subject} ${Math.round(g.ang)} deg from the centre`);
     await p.screenshot({ path: path.join(out, `game-${size.w}.png`) });
     const o = await overlapCheck(p, { layers: ['country-labels'], game: true });
     if (!o.error) {
