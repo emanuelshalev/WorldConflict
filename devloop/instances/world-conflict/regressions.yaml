@@ -418,12 +418,15 @@ findings:
   - id: QA1-S3-1
     title: Option art follows the choice ("no strikes" is not an airstrike); card and paper agree
     source: iter-01 qa-verify S3-1; QA2 FIXED
-    covers: [ui/src/scenes/kinds.ts, ui/src/lib/monthArt.ts]
+    covers: [ui/src/scenes/kinds.ts, ui/src/lib/monthArt.ts, ui/src/scenes/art/Election.tsx, ui/src/scenes/art/UnVote.tsx, ui/src/scenes/art/Parliament.tsx, ui/src/scenes/art/EconTv.tsx]
     guards:
       - vitest: tests/ui-ease.spec.ts
         name: QA S3-1 art follows the choice
       - vitest: tests/ui/kinds.spec.ts
         name: "R1: the picture follows the choice"
+      - vitest: tests/ui/kinds.spec.ts
+        name: "F-04-8"
+    changed: "2026-11-24 F-04-8 (iteration 4 customer round, REGRESSED: Promise full support on a call drawn as election night, 377 SEATS MAJORITY WON; one UN vote tallied YES 11 on the card and YES 8 in the paper; kinds.spec covered no strikes and endScene, not call answers, and nothing checked that art prints no count): election night only for an election, and the election, UN, parliament and markets art state no count, tally or figure the game does not pass"
   - id: QA1-S3-3
     title: The 1024 HUD shows all seven resources in words
     source: iter-01 qa-verify S3-3 (orders AC17); QA2 FIXED
@@ -1191,6 +1194,13 @@ findings:
     guards:
       - vitest: tests/regressions/triage-iter4.spec.ts
         name: "F-04-9"
+  - id: F-04-8
+    title: "Art never states a result that did not happen: a call answer is never drawn as election night, and the election, UN vote, parliament and markets art print no seat count, tally, result banner or growth figure the game does not pass (one vote, one picture on the card and in the paper)"
+    source: runs/iter-04/triage.md F-04-8 (marcus 377 SEATS MAJORITY WON, priya YES 11 NO 2 vs YES 8 NO 5); REGRESSED QA1-S3-1, F-00-5
+    covers: [ui/src/scenes/kinds.ts, ui/src/scenes/art/Election.tsx, ui/src/scenes/art/UnVote.tsx, ui/src/scenes/art/Parliament.tsx, ui/src/scenes/art/EconTv.tsx]
+    guards:
+      - vitest: tests/ui/kinds.spec.ts
+        name: "F-04-8"
 # ------------------------------------------------------------------------------------------
 # Not listed (still open or not a code fix); add them here when a fix lands with its guard:
 #   RS-001-6  dashboard feel, "serious visual design": the ledger keeps it not done (D-37 check)

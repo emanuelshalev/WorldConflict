@@ -37,7 +37,9 @@ export default function EconTv({ a, mood, figure }: SceneArtProps) {
   const line = `M${pts.join(' L')}`;
   const area = `${line} L${X1},204 L${X0},204 Z`;
   const tone = mood === 'bad' ? '#ff4b4b' : mood === 'good' ? '#2fe39a' : '#f3c24c';
-  const big = figure ?? (mood === 'bad' ? '-2.4%' : mood === 'good' ? '+1.8%' : '+0.3%');
+  // F-04-8: the headline number is the game's figure when one is passed, else none (a mood-made
+  // GDP figure stated a growth rate the player's country never had)
+  const big = figure ?? '';
   const arrow = mood === 'bad' ? 'M0 0 l7 10 l7 -10 Z' : 'M0 10 l7 -10 l7 10 Z';
   const lastY = ys[N - 1];
   const acc = a[0] === '#ffffff' ? a[1] : a[0];
