@@ -43,7 +43,9 @@
     "triage",
     "status-refresh",
     "quality",
-    "design-review"
+    "design-review",
+    "forecast",
+    "verify-quick"
   ],
   "rules": {
     "verify-before-use": {
@@ -74,7 +76,30 @@
       "on": "merge",
       "gate": "verify",
       "match": "code",
-      "why": "verify must pass before any merge (principle 12); the pass must be on the merge result"
+      "when": {
+        "outside": [
+          "devloop/kit/customer-record.mjs",
+          "devloop/kit/feedback-digest.mjs",
+          "devloop/kit/evaluate.mjs",
+          "devloop/kit/progress.mjs",
+          "devloop/kit/status-refresh.mjs",
+          "devloop/kit/usage-ledger.mjs",
+          "devloop/kit/page-check.mjs",
+          "devloop/kit/loop.mjs",
+          "devloop/kit/merge.mjs",
+          "devloop/kit/publish.mjs",
+          "devloop/kit/install-hooks.mjs",
+          "devloop/kit/hooks/**",
+          "tests/devloop/**"
+        ]
+      },
+      "why": "verify must pass before any merge (principle 12); the pass must be on the merge result. A merge whose code changes are all process tooling (the listed kit files and their tests) needs only the quick gate (verify-quick-before-merge, D-98); anything in the product, the guards or the gate machinery needs the full gate"
+    },
+    "verify-quick-before-merge": {
+      "on": "merge",
+      "gate": "verify-quick",
+      "match": "code",
+      "why": "Every merge needs at least tests, lints and build green on the merge result (npm run verify -- --quick records it; a full pass counts)"
     },
     "status-refresh-owed": {
       "on": "enter:*",
@@ -110,6 +135,12 @@
         ]
       },
       "why": "Merges that touch the UI need the UX Designer and Art Director's review of the built screen at every breakpoint (screenshots plus the layout audit), D-81"
+    },
+    "forecast-before-build": {
+      "on": "enter:Build",
+      "gate": "forecast",
+      "match": "iteration",
+      "why": "Build starts only after the Customer Advocate forecast is committed and the specs answer it and name the keep list rows they touch (method/customer-advocate.md)"
     }
   },
   "code": {

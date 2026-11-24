@@ -1284,6 +1284,36 @@
         "regressions",
         "balance"
       ]
+    },
+    {
+      "gate": "verify-quick",
+      "result": "pass",
+      "commit": "1029fa614ce1a382895857438d184316fbc8067d",
+      "codeTree": "492dadeb3622e5d5",
+      "evidence": ".verify/summary.json",
+      "note": "modes quick",
+      "t": "2026-11-24T19:15:30.804Z",
+      "iteration": 4,
+      "stage": "Gate",
+      "steps": [
+        "registry",
+        "test",
+        "lint",
+        "ui-lint",
+        "build"
+      ]
+    },
+    {
+      "gate": "status-refresh",
+      "result": "pass",
+      "commit": "1029fa614ce1a382895857438d184316fbc8067d",
+      "codeTree": "492dadeb3622e5d5",
+      "evidence": "dev_plan/project_status.html",
+      "note": "status-refresh T1",
+      "t": "2026-11-24T19:16:07.083Z",
+      "iteration": 4,
+      "stage": "Gate",
+      "tier": "T1"
     }
   ],
   "merges": [
@@ -1376,6 +1406,15 @@
       "iteration": 4,
       "stage": "Triage",
       "treeMatches": true
+    },
+    {
+      "t": "2026-11-24T19:13:56.228Z",
+      "branch": "process-customer-advocate",
+      "commit": "1029fa614ce1a382895857438d184316fbc8067d",
+      "codeTree": "492dadeb3622e5d5",
+      "iteration": 4,
+      "stage": "Gate",
+      "treeMatches": true
     }
   ],
   "overrides": [],
@@ -1463,6 +1502,11 @@
       "tier": "T1",
       "because": "publish of iter-4",
       "t": "2026-11-24T17:37:39.896Z"
+    },
+    {
+      "tier": "T1",
+      "because": "merge of process-customer-advocate",
+      "t": "2026-11-24T19:13:56.230Z"
     }
   ],
   "blocked": []

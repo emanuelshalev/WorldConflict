@@ -76,3 +76,5 @@
 {"t":"2026-11-24T17:17:43.953Z","iteration":4,"stage":"Gate","rows":[{"stage":"Gate","status":"now","elapsedMin":0.0021333333333333334,"progress":0.004923076923076923,"etaMin":0.7645333333333334,"lowMin":0.40311490256410265,"highMin":1.3526358974358976,"expTokens":0}],"iterationEtaMin":0.7645333333333334}
 {"t":"2026-11-24T17:37:40.047Z","iteration":4,"stage":null,"rows":[],"iterationEtaMin":0}
 {"t":"2026-11-24T17:43:47.762Z","iteration":4,"stage":null,"rows":[],"iterationEtaMin":0}
+{"t":"2026-11-24T19:13:56.389Z","iteration":4,"stage":null,"rows":[],"iterationEtaMin":0}
+{"t":"2026-11-24T19:15:46.019Z","iteration":4,"stage":null,"rows":[],"iterationEtaMin":0}
