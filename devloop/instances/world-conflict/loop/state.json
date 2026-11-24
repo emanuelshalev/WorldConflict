@@ -764,6 +764,41 @@
       "iteration": 4,
       "stage": "Build",
       "tier": "T1"
+    },
+    {
+      "gate": "verify",
+      "result": "fail",
+      "commit": "2fe14d8fb6e77816d721bc237735c5db04f3a2f7",
+      "codeTree": "f6ec94e930d2f590",
+      "evidence": ".verify/summary.json",
+      "note": "modes default",
+      "t": "2026-11-24T06:58:11.903Z",
+      "iteration": 4,
+      "stage": "Build",
+      "steps": [
+        "registry",
+        "test",
+        "lint",
+        "ui-lint",
+        "build",
+        "smoke",
+        "reveal",
+        "visual",
+        "regressions",
+        "balance"
+      ]
+    },
+    {
+      "gate": "status-refresh",
+      "result": "pass",
+      "commit": "0969091602594795977b2571754bfb35d51ff251",
+      "codeTree": "81d5a699b3f73a30",
+      "evidence": "dev_plan/project_status.html",
+      "note": "status-refresh T1",
+      "t": "2026-11-24T06:58:50.507Z",
+      "iteration": 4,
+      "stage": "Build",
+      "tier": "T1"
     }
   ],
   "merges": [
