@@ -1004,6 +1004,30 @@ findings:
     guards:
       - vitest: tests/core/your-call.spec.ts
         name: "D84-QU-CHN"
+  - id: DR-MS-1
+    title: "Every order of every family in All orders can be found and added with the mouse at every desktop size: one family at a time behind tabs with counts, the chosen family fits the frame (tiles, compact tiles, then rows in columns), never clipped, a danger order goes through its whole confirmation"
+    source: runs/iter-04/design-review-month-screen.md S1-1 (catalogue cut off at 3440x1440 to 1024x768, no scroll, no tabs)
+    covers: [ui/src/components/orders/OrderCatalog.tsx, ui/src/components/desk/Detail.tsx, ui/src/styles/orders.css, ui/src/styles/layout.css, ui/src/lib/layout.ts, ui/src/components/orders/OrderCard.tsx]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-MS-1.mjs
+  - id: DR-MS-2
+    title: "The List never clips a row: after Choose all and with 0, 1 and 6 own orders, every row of the column, the See all panel and the Map float is whole and uncovered at 3440x1440, 1920x1080, 1440x900, 1366x768 and 1024x768; its fit rule compacts the rows, folds the hint and mission foot, runs title and state on, then folds the done rows and the other rows to do into rows with Show"
+    source: runs/iter-04/design-review-month-screen.md S2-1 (1920x1080 after Choose all, See all at 1366 and 1024 and in Map mode)
+    covers: [ui/src/components/desk/AgendaList.tsx, ui/src/styles/layout.css, ui/src/lib/layout.ts, ui/src/components/desk/MapMonth.tsx, ui/src/components/Desk.tsx]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-MS-2.mjs
+  - id: DR-MS-3
+    title: "The review page says what Execute really does: meetings name the minister's default answer, the recommended orders are not given, a crisis that is not a call names the cabinet's answer, an open call says what leaving it does; the POST body and the turn report agree (desktop and phone)"
+    source: runs/iter-04/design-review-month-screen.md S2-2 ("Left to your advisers", "Recommended: X")
+    covers: [ui/src/components/desk/ReviewPage.tsx, ui/src/lib/agenda.ts, ui/src/lib/month.ts, ui/src/styles/layout.css]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-MS-3.mjs
+  - id: DR-MS-4
+    title: "What your advisers say comes from the same source as the answer cards: on a call every voice speaks for the card that names it and for no other, and \"your advisers agree\" shows only when one card holds every adviser (Hormuz USA, Quarantine China)"
+    source: runs/iter-04/design-review-month-screen.md S2-3 (carried C-2; Tanker hit in the strait)
+    covers: [ui/src/components/desk/YourMove.tsx, ui/src/lib/agenda.ts]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-MS-4.mjs
 # ------------------------------------------------------------------------------------------
 # Not listed (still open or not a code fix); add them here when a fix lands with its guard:
 #   RS-001-6  dashboard feel, "serious visual design": the ledger keeps it not done (D-37 check)

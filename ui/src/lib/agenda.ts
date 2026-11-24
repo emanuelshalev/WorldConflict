@@ -313,6 +313,35 @@ export function skipMeaning(item: AgendaItem, state: GameState = useGameStore.ge
   return { label: 'No more orders this month', means: 'Unspent political capital carries over (up to ◆ 6).', after: 'You can add orders before you execute.' };
 }
 
+/**
+ * What Execute does with a thing still to do, in one sentence (design review S2-2, the D84-DESK-TRUTH
+ * rule): a call left open says what leaving it does (the leave sentence), a crisis that is not a
+ * call runs the answer the desk starts on (the cabinet's, in choices), a meeting is taken by its
+ * minister on the default answer, the recommended orders are not given, and no own order means the
+ * capital carries over. Never "left to your advisers" or "Recommended": nobody carries out a
+ * recommendation the player did not choose.
+ */
+export function executeMeaning(item: AgendaItem, state: GameState = useGameStore.getState()): string {
+  if (item.kind === 'crisis' && item.decision && item.call) return skipMeaning(item, state).means;
+  if (item.kind === 'move') return skipMeaning(item, state).means;
+  if (item.kind === 'crisis' && item.decision) {
+    const d = item.decision;
+    const pick = d.options.find((o) => o.id === state.decisionChoices[d.id]) ?? cabinetPick(d);
+    return `Your cabinet's answer goes: ${pick.label}.`;
+  }
+  if (item.kind === 'meeting' && item.meeting) {
+    const m = item.meeting;
+    const o = m.options.find((x) => x.id === m.defaultOptionId);
+    return `Your ${ministerFor(m)} takes it${o ? `: ${o.label}` : ''}. ${costPhrase(o)}.`;
+  }
+  if (item.kind === 'meetings') return 'Your ministers take them, each with the usual answer. Free, no effect.';
+  if (item.kind === 'orders') {
+    const pc = (item.orders ?? []).reduce((s, i) => s + (state.pendingActions[i]?.proposed ? pcCost(state.pendingActions[i].type) : 0), 0);
+    return `Not given unless you choose them${pc ? `: ◆ ${pc} stays for your own orders` : ''}.`;
+  }
+  return 'No orders of your own: unspent political capital carries over (up to ◆ 6).';
+}
+
 // ============================================================================
 // Acting on the agenda (one way to decide: Choose; one shortcut: Choose all recommended)
 // ============================================================================

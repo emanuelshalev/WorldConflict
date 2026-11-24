@@ -1,4 +1,4 @@
-import { type RefObject, useEffect, useLayoutEffect, useState } from 'react';
+import { type RefObject, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { create } from 'zustand';
 
 /**
@@ -92,7 +92,7 @@ export interface PlanFit {
  * overflow counts too (the map card inside the left column: the column is the room, the card and the
  * List under it share it), measured but not watched for size.
  */
-export function useFitLevel(ref: RefObject<HTMLElement | null>, key: string, max: number, also: Array<RefObject<HTMLElement | null>> = []): number {
+export function useFitLevel(ref: RefObject<HTMLElement | null>, key: string, max: number, also: Array<RefObject<HTMLElement | null>> = [], watchChildren = false): number {
   const [size, setSize] = useState('');
   // Web fonts change how the text wraps: measure again once they are in
   const [fonts, setFonts] = useState(0);
@@ -110,6 +110,22 @@ export function useFitLevel(ref: RefObject<HTMLElement | null>, key: string, max
     // `also` is a stable list of refs from the caller (read through .current)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ref, level, max, sig, st.sig]);
+  // `watchChildren`: the content can grow on its own after the fit settled (the order catalogue's
+  // cards once their forecasts arrive) without the box changing size or the key changing. Its
+  // children are watched and an overflow then steps the level up, never down (they also change
+  // size with the level, so a reset there would loop; the key and the room reset it)
+  const sigRef = useRef(sig);
+  sigRef.current = sig;
+  useEffect(() => {
+    const el = ref.current;
+    if (!watchChildren || !el || typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(() => {
+      if (el.scrollHeight <= el.clientHeight + 1) return;
+      setSt((s) => (s.sig === sigRef.current && s.level < max ? { sig: s.sig, level: s.level + 1 } : s));
+    });
+    for (const c of el.children) ro.observe(c);
+    return () => ro.disconnect();
+  }, [ref, key, max, watchChildren]);
   useEffect(() => {
     const f = typeof document !== 'undefined' ? document.fonts : undefined;
     if (!f) return;

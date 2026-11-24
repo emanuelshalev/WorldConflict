@@ -2,6 +2,7 @@
 // Every guard is called as `node <guard>.mjs <outDir> <baseUrl> <apiUrl>` and exits non-zero on failure.
 import fs from 'node:fs';
 import path from 'node:path';
+import { chromium } from 'playwright';
 import { launch } from '../../../../kit/kit.mjs';
 
 export function args(id) {
@@ -126,6 +127,85 @@ export async function startGame({ variant, device, out, base, seat = SEAT, init 
   await s.page.waitForTimeout(800);
   return s;
 }
+
+/**
+ * A save made through the API (new game on the seat, `months` months resolved with no orders and
+ * the default answers), for guards that measure a later month without playing up to it.
+ */
+export async function apiSave(api, months = 0, seat = SEAT, tag = 'guard') {
+  const post = (p, body) => fetch(`${api}${p}`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }).then((r) => r.json());
+  const guest = `guest-${tag}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+  const body = { playerCountryId: seat.countryId, mode: seat.mode ?? 'FLASHPOINT', playerId: guest, saveName: tag };
+  if (seat.flashpointId) body.flashpointId = seat.flashpointId;
+  if (seat.seedCode) body.seedCode = seat.seedCode;
+  else body.seed = seat.seed;
+  const d = await post('/new-game', body);
+  if (!d.success) throw new Error(`new game: ${JSON.stringify(d).slice(0, 200)}`);
+  for (let i = 0; i < months; i++) {
+    // The API allows a few /turn calls a second per client: wait out a 429
+    for (let k = 0; ; k++) {
+      const t = await post('/turn', { saveId: d.saveId, playerActions: [], decisions: [] });
+      if (t.success) break;
+      if (k > 8 || !/RATE/.test(JSON.stringify(t))) throw new Error(`turn: ${JSON.stringify(t).slice(0, 200)}`);
+      await new Promise((r) => setTimeout(r, 500 + 300 * k));
+    }
+  }
+  return { guest, save: d.saveId };
+}
+
+/**
+ * Open a save from the title with Continue in a fresh browser at a size ("1920x1080"; 700 wide or
+ * less is a touch phone); the coach is finished. Returns { browser, page, errors }; close the browser.
+ */
+export async function openSaved(base, size, sv, { init } = {}) {
+  const [w, h] = size.split('x').map(Number);
+  const browser = await chromium.launch({ args: process.env.DEVLOOP_SOFTWARE_GL ? [] : ['--enable-gpu', '--ignore-gpu-blocklist', '--use-gl=angle', '--use-angle=gl'] });
+  const ctx = await browser.newContext(w <= 700 ? { viewport: { width: w, height: h }, deviceScaleFactor: 2, isMobile: true, hasTouch: true } : { viewport: { width: w, height: h } });
+  const page = await ctx.newPage();
+  page.setDefaultTimeout(8000);
+  const errors = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  await page.addInitScript(
+    ([g, s]) => {
+      if (sessionStorage.getItem('guard-init')) return;
+      sessionStorage.setItem('guard-init', '1');
+      localStorage.setItem('worldconflict.guest', g);
+      localStorage.setItem('worldconflict.lastSave', s);
+      localStorage.setItem('worldconflict.sound', JSON.stringify({ muted: true }));
+      localStorage.setItem('worldconflict.coach', 'done');
+    },
+    [sv.guest, sv.save],
+  );
+  if (init) await page.addInitScript(init);
+  await page.goto(base);
+  await page.getByRole('button', { name: /^Continue/i }).first().click({ timeout: 30000 });
+  await page.locator('[data-region="item"]').first().waitFor({ timeout: 30000 });
+  await page.waitForTimeout(1200);
+  return { browser, page, errors };
+}
+
+/**
+ * Runs in the page: is this element whole and on top? Inside the viewport, inside every ancestor
+ * that clips (overflow other than visible), and the element (or a descendant) is what is under its
+ * centre and its four corners inset by 4 px (elementFromPoint). Returns '' or what is wrong.
+ */
+export const WHOLE_JS = `(el) => {
+  const r = el.getBoundingClientRect();
+  if (r.width < 1 || r.height < 1) return 'not shown';
+  if (r.top < -0.5 || r.left < -0.5 || r.bottom > innerHeight + 0.5 || r.right > innerWidth + 0.5) return 'outside the viewport (' + Math.round(r.top) + '..' + Math.round(r.bottom) + ' of ' + innerHeight + ')';
+  for (let a = el.parentElement; a && a !== document.body; a = a.parentElement) {
+    const s = getComputedStyle(a);
+    if (s.overflowX === 'visible' && s.overflowY === 'visible') continue;
+    const q = a.getBoundingClientRect();
+    if (r.top < q.top - 0.5 || r.bottom > q.bottom + 0.5 || r.left < q.left - 0.5 || r.right > q.right + 0.5) return 'clipped by ' + a.tagName.toLowerCase() + '.' + [...a.classList].slice(0, 2).join('.') + ' (' + Math.round(r.top) + '..' + Math.round(r.bottom) + ' in ' + Math.round(q.top) + '..' + Math.round(q.bottom) + ')';
+  }
+  const pts = [[r.left + r.width / 2, r.top + r.height / 2], [r.left + 4, r.top + 4], [r.right - 4, r.top + 4], [r.left + 4, r.bottom - 4], [r.right - 4, r.bottom - 4]];
+  for (const [x, y] of pts) {
+    const at = document.elementFromPoint(x, y);
+    if (!at || !(el.contains(at) || at.contains(el))) return 'covered at ' + Math.round(x) + ',' + Math.round(y) + ' by ' + (at ? at.tagName.toLowerCase() + '.' + [...at.classList].slice(0, 2).join('.') : 'nothing');
+  }
+  return '';
+}`;
 
 /** Visible text of the page, whitespace collapsed. */
 export const bodyText = async (page) => (await page.locator('body').innerText()).replace(/\s+/g, ' ');

@@ -3,7 +3,8 @@ import { useGameStore } from '../../store/gameStore';
 import { type AgendaItem, agendaItems, agendaProgress, currentItem, openItem, simpleAgenda } from '../../lib/agenda';
 import { STATE_WORD, stateOf } from '../../lib/goals';
 import { TERMS } from '../../lib/glossary';
-import { useLayout } from '../../lib/layout';
+import { useRef, useState } from 'react';
+import { useFitLevel, useLayout } from '../../lib/layout';
 
 /**
  * The month's things (design-agenda 0.12 D2, design-layout L-19): one component, forms `column`
@@ -53,17 +54,51 @@ export function AgendaList({ form }: { form: ListForm }) {
   useGameStore((s) => s.skipped);
   useGameStore((s) => s.deskShown);
   const L = useLayout();
-  if (!world) return null;
-  const items = agendaItems();
+  const ref = useRef<HTMLElement>(null);
+  // The group a fold's Show opened (accordion: the other group folds), or null
+  const [shown, setShown] = useState<'decided' | 'todo' | null>(null);
+  const items = world ? agendaItems() : [];
   const cur = review ? undefined : currentItem(items, agendaKey);
+  // The fit rule of the List (design review S2-1, L-13: the List never scrolls and never clips a
+  // row): while its rows do not fit its box, 1 compact rows (no recommended answer in them), 2 fold
+  // the hint and the mission foot, 3 each row on as few lines as it needs (title and state run on),
+  // 4 fold the decided rows into one row with Show, 5 fold the other rows still to do (never the
+  // one on screen, an open call or Your own orders), 6 the folds name only their count (their titles stay in the Show button's label). Phones (the sheet) keep the page's own scroll.
+  const fitKey = `${form}|${shown}|${cur?.key}|${items.map((x) => `${x.key}:${x.state}:${x.stateText}`).join(',')}`;
+  const level = useFitLevel(ref, fitKey, form === 'sheet' ? 0 : 6);
+  if (!world) return null;
   const { done, left } = agendaProgress(items);
   const simple = simpleAgenda();
   const meetings = world.agenda?.length ?? 0;
   // At 1920 the rows say only the state; wider screens add what is recommended (Art Director, 12)
-  const full = form !== 'column' || L.cls === 'W' || L.cls === 'U';
+  const full = (form !== 'column' || L.cls === 'W' || L.cls === 'U') && level < 1;
   const close = () => useGameStore.setState({ listOpen: false });
+  // Done: decided or skipped; the rest (to do, optional) is still to do
+  const isDone = (it: AgendaItem) => it.state === 'decided' || it.state === 'skipped';
+  // Never folded: the row on screen, an open call, and Your own orders (the way to every order)
+  const keep = (it: AgendaItem) => it.key === cur?.key || (it.call && it.state === 'todo') || it.kind === 'own';
+  const foldDecided = shown === 'todo' || (shown !== 'decided' && level >= 4);
+  const foldTodo = shown === 'decided' || (shown !== 'todo' && level >= 5);
+  const folded = (it: AgendaItem) => !keep(it) && ((foldDecided && isDone(it)) || (foldTodo && !isDone(it)));
+  const group = (g: 'decided' | 'todo') => items.filter((it) => folded(it) && (g === 'todo' ? !isDone(it) : isDone(it)));
+  const fold = (g: 'decided' | 'todo') => {
+    const its = group(g);
+    if (!its.length) return null;
+    const word = g === 'todo' ? `${its.length} more to do` : `${its.length} done`;
+    return (
+      <li key={`fold-${g}`}>
+        <button type="button" className="lrow lrow-fold" onClick={() => setShown(g)} data-list-fold={g} aria-label={`Show ${word}: ${its.map((x) => x.title).join(', ')}`}>
+          <span className="lrow-t">
+            <b>{word}</b>
+            {level < 6 && <span className="lrow-st">{its.map((x) => x.title).join(', ')}</span>}
+          </span>
+          <span className="face">Show</span>
+        </button>
+      </li>
+    );
+  };
   return (
-    <section className={`agenda-list f-${form}`} data-region="list" data-form={form} id="agenda-list" aria-label={`This month: ${items.length} things`} data-agenda="">
+    <section ref={ref} className={`agenda-list f-${form}${level >= 1 ? ' is-compact' : ''}${level >= 3 ? ' is-runon' : ''}`} data-region="list" data-form={form} id="agenda-list" aria-label={`This month: ${items.length} things`} data-agenda="" data-fit={form === 'sheet' ? undefined : level}>
       <div className="al-head">
         <h2>This month: {items.length} things</h2>
         {(form === 'panel' || form === 'sheet') && (
@@ -72,11 +107,18 @@ export function AgendaList({ form }: { form: ListForm }) {
           </button>
         )}
       </div>
-      <p className="al-hint">
-        {done} done, {left} to go. Open any of them.
-      </p>
+      {level < 2 && (
+        <p className="al-hint">
+          {done} done, {left} to go. Open any of them.
+        </p>
+      )}
       <ul className="al-rows">
         {items.map((it) => {
+          if (folded(it)) {
+            // The fold's row stands where its first row was
+            const g = isDone(it) ? 'decided' : 'todo';
+            return group(g)[0]?.key === it.key ? fold(g) : null;
+          }
           const here = cur?.key === it.key;
           return (
             <li key={it.key}>
@@ -110,7 +152,7 @@ export function AgendaList({ form }: { form: ListForm }) {
         </div>
       )}
       {form === 'column' && <span className="al-grow" aria-hidden />}
-      {form === 'column' && L.tallPlus && <Mission />}
+      {form === 'column' && L.tallPlus && level < 2 && <Mission />}
     </section>
   );
 }

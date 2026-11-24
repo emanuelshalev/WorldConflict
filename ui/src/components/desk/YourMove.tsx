@@ -200,18 +200,53 @@ function GoalsAtStake({ id, options, cls }: { id: string; options: DecisionOptio
   );
 }
 
-/** "What your advisers say": each backer's voice, so Recommended stays a view, not the answer. */
-function Advisers({ options, onAsk }: { options: DecisionOption[]; onAsk: () => void }) {
-  const voices = new Map<string, string>();
-  for (const o of options)
-    for (const b of o.backedBy) if (!voices.has(b)) voices.set(b, `${splitLede(o.description)[0]} (${shortLabel(o)})`);
+interface AdviserVoice {
+  who: string[];
+  said: string;
+  label: string;
+  optionId: string;
+}
+
+/**
+ * The voices of "What your advisers say", from the same source as the answer cards' Recommended
+ * lines, so an adviser never backs one answer on its card and another below (design review S2-3,
+ * C-2): on a call, the engine's call cards (the advisers a card names speak for it, in the card's
+ * own words); elsewhere the recommended answer's adviser and backers first, then the other answers'
+ * shown backers (none on an answer that breaks a goal while another breaks none). Each adviser
+ * speaks once; advisers for the same answer share one line.
+ */
+function adviserVoices(options: DecisionOption[], cards: CallCard[] | null, rec: DecisionOption | undefined, impacts: Record<string, Impact> | undefined, recBy?: string): AdviserVoice[] {
+  const byAdviser = new Map<string, AdviserVoice>();
+  const say = (who: string, v: Omit<AdviserVoice, 'who'>) => {
+    if (!byAdviser.has(who)) byAdviser.set(who, { who: [who], ...v });
+  };
+  if (cards) {
+    for (const c of cards) for (const who of c.advisers) say(who, { said: callWhy(c) || c.label, label: c.label.replace(/\s*[:(].*$/, ''), optionId: c.id });
+  } else {
+    const line = (o: DecisionOption) => ({ said: splitLede(o.description)[0], label: shortLabel(o), optionId: o.id });
+    // The adviser the recommended card names speaks for it, even when its authored backers are hidden
+    if (rec && recBy) say(recBy, line(rec));
+    const ordered = rec ? [rec, ...options.filter((o) => o.id !== rec.id)] : options;
+    for (const o of ordered) for (const who of shownBackers(o, impacts)) say(who, line(o));
+  }
+  const out: AdviserVoice[] = [];
+  for (const [who, v] of byAdviser) {
+    const same = out.find((x) => x.optionId === v.optionId);
+    if (same) same.who.push(who);
+    else out.push({ ...v, who: [who] });
+  }
+  return out;
+}
+
+/** "What your advisers say": each adviser's voice, so Recommended stays a view, not the answer. */
+function Advisers({ voices, onAsk }: { voices: AdviserVoice[]; onAsk: () => void }) {
   return (
-    <section className="th-facts advice" aria-label="What your advisers say">
+    <section className="th-facts advice" aria-label="What your advisers say" data-advisers="">
       <h3>What your advisers say</h3>
-      {[...voices.entries()].slice(0, 3).map(([who, said]) => (
-        <p key={who} className="r">
+      {voices.slice(0, 3).map(({ who, said, label, optionId }) => (
+        <p key={optionId} className="r" data-voice={who.join(',')} data-voice-option={optionId}>
           <span>
-            <b>{ADVISOR_NAMES[who] ?? who}</b>: "{said}"
+            <b>{who.join(' and ')}</b>: "{said}" ({label})
           </span>
         </p>
       ))}
@@ -246,7 +281,10 @@ function DecisionThing({ item, compact }: { item: AgendaItem; compact: boolean }
   const rec = meeting ? meetingPick(meeting) : sel.kind === 'cabinet' && sel.option ? sel.option : cabinetPick(d);
   // "Your call" (D-84): the engine's cards name who recommends which answer (design review C-2)
   const call = item.call ? callSides(item) : null;
-  const agree = !!call?.call && call.call.missionCard === call.call.calmCard;
+  // "Agree" only while one card holds every adviser who backs a card (design review S2-3): the
+  // heading, the cards and the voices below all read the engine's call cards
+  const backedCards = call?.call ? call.call.cards.filter((c) => c.advisers.length > 0) : [];
+  const agree = !!call?.call && call.call.missionCard === call.call.calmCard && backedCards.length <= 1;
   const note = meeting ? undefined : advice?.missionNotes?.[d.id];
   const best = meeting ? undefined : advice?.missionNotes ? (note ? d.options.find((o) => o.id === note.optionId) : undefined) : missionPick(d);
   const bestText = note ? bestTagText(note) : undefined;
@@ -289,6 +327,13 @@ function DecisionThing({ item, compact }: { item: AgendaItem; compact: boolean }
           {!compact && optionSizes(options[0] ?? { effects: {} }, countryName).length > 0 && (
             <button type="button" className="wc-btn small ask-sizes" aria-pressed={sizes} onClick={() => setSizes((v) => !v)} data-effect-sizes="">
               {sizes ? 'Hide sizes' : 'How much?'}
+            </button>
+          )}
+          {/* Ask your staff beside the crisis where "What your advisers say" is not shown (below
+              1300 tall or 1600 wide; design review S3) */}
+          {!compact && (
+            <button type="button" className="wc-btn small ask-staff" onClick={consult} data-ask-staff="">
+              <IconMessageCircle size={15} aria-hidden /> Ask your staff
             </button>
           )}
         </div>
@@ -373,7 +418,7 @@ function DecisionThing({ item, compact }: { item: AgendaItem; compact: boolean }
           </p>
         )}
         {difficulty === 'ANALYST' && !meeting && !compact && <p className="move-note">Easy: your cabinet never picks against your mission.</p>}
-        {!compact && <Advisers options={options} onAsk={consult} />}
+        {!compact && <Advisers voices={adviserVoices(options, call?.call ? call.call.cards.filter((c) => options.some((o) => o.id === c.id)) : null, rec, missionImpact[d.id], call ? undefined : recBy)} onAsk={consult} />}
       </div>
       {!compact && (
         <div className="th-ctx">

@@ -1,5 +1,5 @@
 import { useGameStore } from '../../store/gameStore';
-import { agendaItems, openCalls, openItem, skipMeaning, undoSkip } from '../../lib/agenda';
+import { type AgendaItem, agendaItems, executeMeaning, openCalls, openItem, skipMeaning, undoSkip } from '../../lib/agenda';
 import { TERMS } from '../../lib/glossary';
 import { pcCost } from '../../lib/actions';
 import { ExecuteButton, Recommended } from './Plan';
@@ -9,10 +9,28 @@ import { CoachBubble } from './Coach';
 
 /**
  * "Check what will happen" (design-agenda 0.1, 0.12 D11; design-layout section 4): one page in the
- * main area instead of the Thing and the Plan. You chose / Left to your advisers / You skipped,
+ * main area instead of the Thing and the Plan. You chose / Not decided / You skipped,
  * each row with Change or Undo, and "If you execute now" with Execute. Two columns from 1280
  * wide, one below; on phones it is the review screen with the only Execute of the phone desk.
  */
+/**
+ * The folded "Not decided" line (the page's fit rule hides the rows): what Execute does with them,
+ * by kind, in the rows' own words (design review S2-2).
+ */
+function leftSummary(left: AgendaItem[]): string {
+  const meetings = left.filter((x) => x.kind === 'meeting').length + left.filter((x) => x.kind === 'meetings').reduce((s, x) => s + (x.meetings?.length ?? 0), 0);
+  const crises = left.filter((x) => x.kind === 'crisis');
+  const orders = left.filter((x) => x.kind === 'orders');
+  const parts = [
+    ...crises.map((x) => executeMeaning(x).replace(/\.$/, ` (${x.title})`)),
+    meetings ? `your ministers take ${meetings === 1 ? 'the meeting' : `${meetings} meetings`} on the usual answer${meetings === 1 ? '' : 's'}` : '',
+    ...orders.map((x) => `the recommended order${(x.orders?.length ?? 0) === 1 ? ' is' : 's are'} not given unless you choose ${(x.orders?.length ?? 0) === 1 ? 'it' : 'them'}`),
+    left.some((x) => x.kind === 'own') ? 'no orders of your own' : '',
+  ].filter(Boolean);
+  const s = parts.join('; ');
+  return s ? `If you execute now: ${s.charAt(0).toLowerCase()}${s.slice(1)}.` : '';
+}
+
 export function ReviewPage({ phone = false }: { phone?: boolean }) {
   useGameStore((s) => s.decisionChoices);
   useGameStore((s) => s.reviewed);
@@ -38,10 +56,11 @@ export function ReviewPage({ phone = false }: { phone?: boolean }) {
             </h2>
             <ul className="prows">
               {calls.map((x) => (
-                <li key={x.key} className="prow">
+                <li key={x.key} className="prow" data-review-row="call">
                   <span className="prow-t">
                     {x.title}
-                    <small>If you execute now: {skipMeaning(x).means}</small>
+                    {/* The leave sentence already says "If you leave it" (no doubled prefix) */}
+                    <small>{/^If you leave it/.test(skipMeaning(x).means) ? skipMeaning(x).means : `If you execute now: ${skipMeaning(x).means}`}</small>
                   </span>
                   <button type="button" className="wc-btn small" onClick={() => openItem(x.key)} aria-label={`Open: ${x.title}`}>
                     Open
@@ -83,16 +102,18 @@ export function ReviewPage({ phone = false }: { phone?: boolean }) {
             ))}
           </ul>
         </section>
+        {/* Each row says what Execute will really do with it (design review S2-2, D84-DESK-TRUTH):
+            nobody carries out a recommendation the player did not choose */}
         {left.length > 0 && (
-          <section aria-label="Left to your advisers" className="rv-left">
-            <h2>Left to your advisers ({left.length})</h2>
-            <p className="rv-sum">{left.map((x) => x.title).join(', ')}. Choose all recommended decides them.</p>
+          <section aria-label="Not decided" className="rv-left" data-not-decided="">
+            <h2>Not decided ({left.length})</h2>
+            <p className="rv-sum">{leftSummary(left)} Choose all recommended decides them.</p>
             <ul className="prows">
               {left.map((x) => (
-                <li key={x.key} className="prow">
+                <li key={x.key} className="prow" data-review-row={x.kind}>
                   <span className="prow-t">
                     {x.title}
-                    <small>{x.rec ? `Recommended: ${x.rec}` : 'To do'}</small>
+                    <small>If you execute now: {executeMeaning(x)}</small>
                   </span>
                   <button type="button" className="wc-btn small" onClick={() => openItem(x.key)} aria-label={`Open: ${x.title}`}>
                     Open

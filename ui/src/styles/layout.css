@@ -203,7 +203,8 @@ html { font-size: clamp(16px, calc(0.42vmin + 11.5px), 22px); }
   }
 }
 @media (min-height: 1200px) and (min-width: 1600px) { .opt-more { display: block; } }
-@media (min-height: 1300px) and (min-width: 1600px) { .th-ans > .th-facts.advice { display: grid; } }
+@media (min-height: 1300px) and (min-width: 1600px) { .th-ans > .th-facts.advice { display: grid; } .ask-row > .ask-staff { display: none; } }
+.ask-staff { flex: none; min-height: 2.25rem; display: inline-flex; align-items: center; gap: .35rem; }
 
 /* L-8 short screens (820 tall or less): compact in a fixed order, never scroll */
 @media (max-height: 820px) and (min-width: 701px) {
@@ -260,6 +261,24 @@ html { font-size: clamp(16px, calc(0.42vmin + 11.5px), 22px); }
   border: 1.5px solid var(--line-2); border-radius: 1rem; box-shadow: 0 16px 40px rgba(0, 0, 0, .55); }
 .agenda-list.f-float { border: 1.5px solid var(--line-2); border-radius: 1rem; background: var(--panel-bg); box-shadow: 0 16px 40px rgba(0, 0, 0, .55); padding: 1rem; }
 .agenda-list.f-float .lrow { min-height: 3rem; padding: .35rem .7rem; }
+/* The List's fit rule (AgendaList, design review S2-1): its box is the room, it never scrolls;
+   compact rows, then rows that run title and state on, then folds with Show (data-fit 4 and 5).
+   The Map float takes what the column leaves under the card */
+.agenda-list.f-float { flex: 0 1 auto; min-height: 0; overflow: hidden; }
+/* Once the rule steps, the box is the whole room (a fold must not shrink the box it is measured
+   in, or the room it frees is never given back) */
+.agenda-list.f-float:not([data-fit='0']) { flex: 1 1 auto; }
+.agenda-list.f-panel:not([data-fit='0']) { height: calc(100% - 2 * var(--pad)); }
+.agenda-list.is-compact { gap: .35rem; }
+.agenda-list.is-compact .al-rows { gap: .35rem; }
+.agenda-list.is-compact .lrow { min-height: 2.75rem; padding: .3rem .6rem; }
+.agenda-list.is-runon .lrow-t { display: block; }
+.agenda-list.is-runon .lrow-t > b::after { content: ' · '; font-weight: 400; color: var(--text-2); }
+.agenda-list.is-runon .lrow-st { display: inline; }
+.agenda-list.is-runon .lrow .face { padding: .2rem .55rem; }
+.agenda-list.is-runon .al-rows { gap: .3rem; }
+.agenda-list.is-runon .lrow { min-height: 2.5rem; padding: .25rem .6rem; }
+.lrow-fold { border-style: dashed; }
 
 /* ---------- the Plan (L-9, L-10, L-11, L-19) ---------- */
 .plan { display: flex; flex-direction: column; min-height: 0; min-width: 0; background: var(--region-bg); }
@@ -344,6 +363,9 @@ html { font-size: clamp(16px, calc(0.42vmin + 11.5px), 22px); }
 
 /* ---------- the order views inside the Thing ---------- */
 .item > .detail { height: 100%; overflow: hidden; display: flex; flex-direction: column; gap: .5rem; }
+/* All orders fills the item and fits its own panel (OrderCatalog fit rule, design review S1-1;
+   opening it always brings the desk back, setFocus, so it never sits in the Map card) */
+.item > .detail.is-catalog > .ord-catalog { flex: 1 1 auto; min-height: 0; }
 .detail-back { align-self: flex-start; min-height: 2.25rem; }
 
 /* ---------- Map mode (L-14): card left, Plan float right from 1600, bar below ---------- */

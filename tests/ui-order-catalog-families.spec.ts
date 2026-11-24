@@ -41,8 +41,11 @@ describe("All orders is grouped by family, under the family words (DR-OC-2)", ()
     expect(famOf("spy")).toBe("intel");
   });
 
-  it("renders one group per family, headed by the chip word of every card in it", () => {
+  it("renders one group per family, headed by the chip word of every card in it (phone: every family in the page)", () => {
+    // Phones list every family in the page's own scroll, each under its heading
+    vi.stubGlobal("window", { location: { search: "" }, innerWidth: 390, matchMedia: () => ({ matches: true, addEventListener() {}, removeEventListener() {} }) });
     const html = unescape(renderToStaticMarkup(createElement(OrderCatalog, { target: "", setTarget: () => undefined })));
+    vi.stubGlobal("window", { location: { search: "" }, innerWidth: 1440, matchMedia: () => ({ matches: false, addEventListener() {}, removeEventListener() {} }) });
     const sections = [...html.matchAll(/<section[^>]*data-order-family="(\w+)"[^>]*>([\s\S]*?)<\/section>/g)];
     expect(sections.map((m) => m[1])).toEqual(FAMILIES.filter((f) => ORDERS_BY_FAMILY[f].length));
     let cards = 0;
@@ -63,13 +66,25 @@ describe("All orders is grouped by family, under the family words (DR-OC-2)", ()
     for (const old of ["Intelligence", "Domestic"]) expect(headings).not.toContain(old);
   });
 
+  it("wider than a phone, one tab per family (its word and count, FAMILIES order) and the chosen family's cards under its own word (design review S1-1)", () => {
+    const html = unescape(renderToStaticMarkup(createElement(OrderCatalog, { target: "", setTarget: () => undefined })));
+    const tabs = [...html.matchAll(/data-family-tab="([^"]+)"[^>]*>[\s\S]*?<span class="ord-tab-n num">(\d+)<\/span>/g)].map((m) => [m[1], Number(m[2])]);
+    expect(tabs).toEqual(FAMILIES.filter((f) => ORDERS_BY_FAMILY[f].length).map((f) => [FAMILY_WORD[f], ORDERS_BY_FAMILY[f].length]));
+    const panel = [...html.matchAll(/<section[^>]*data-order-family="(\w+)"[^>]*>([\s\S]*?)<\/section>/g)];
+    expect(panel).toHaveLength(1);
+    const [, fam, body] = panel[0];
+    const chips = [...body.matchAll(/data-family-word="([^"]+)"/g)].map((m) => m[1]);
+    expect(chips.length).toBe(ORDERS_BY_FAMILY[fam as keyof typeof ORDERS_BY_FAMILY].length);
+    for (const c of chips) expect(c).toBe(FAMILY_WORD[fam as keyof typeof FAMILY_WORD]);
+  });
+
   it("the old categories are retired from the UI registry and the catalogue", () => {
     const orders = readFileSync(join(ROOT, "ui/src/lib/orders.ts"), "utf8");
     expect(orders).not.toMatch(/\bcategory\s*:/);
     expect(orders).not.toMatch(/OrderCategory|ORDERS_BY_CATEGORY|CATEGORIES/);
     const catalog = readFileSync(join(ROOT, "ui/src/components/orders/OrderCatalog.tsx"), "utf8");
-    expect(catalog).toMatch(/FAMILIES\.map/);
-    expect(catalog).toMatch(/FAMILY_WORD\[fam\]/);
+    expect(catalog).toMatch(/FAMILIES\.(map|filter)/);
+    expect(catalog).toMatch(/FAMILY_WORD\[f(am)?\]/);
     expect(catalog).not.toMatch(/'(Intelligence|Domestic)'/);
   });
 });

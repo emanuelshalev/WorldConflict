@@ -14,7 +14,7 @@ import { useAdvisorRows } from '../../lib/advisorRows';
  * when its module exists; until then the desk keeps its own catalog below. Vite resolves the
  * glob at build time, so a missing file is simply an empty map.
  */
-type CatalogProps = { target: string; setTarget: (id: string) => void };
+type CatalogProps = { target: string; setTarget: (id: string) => void; lead?: React.ReactNode };
 const ORDER_CATALOG = Object.values(import.meta.glob<{ OrderCatalog?: ComponentType<CatalogProps> }>('../orders/OrderCatalog.tsx', { eager: true }))[0]?.OrderCatalog;
 
 interface OrderDef {
@@ -95,12 +95,17 @@ function SuggestionsDetail() {
 
 const IRREVERSIBLE = new Set(['DIPLOMACY_DECLARE_WAR', 'NUCLEAR_STRIKE']);
 
-function CatalogDetail({ target, setTarget }: { target: string; setTarget: (id: string) => void }) {
+function CatalogDetail({ target, setTarget, lead }: CatalogProps) {
   if (ORDER_CATALOG) {
     const Catalog = ORDER_CATALOG;
-    return <Catalog target={target} setTarget={setTarget} />;
+    return <Catalog target={target} setTarget={setTarget} lead={lead} />;
   }
-  return <DeskCatalog target={target} setTarget={setTarget} />;
+  return (
+    <>
+      {lead}
+      <DeskCatalog target={target} setTarget={setTarget} />
+    </>
+  );
 }
 
 function DeskCatalog({ target, setTarget }: { target: string; setTarget: (id: string) => void }) {
@@ -229,18 +234,22 @@ export function Detail({ target, setTarget }: { target: string; setTarget: (id: 
   const focus = useGameStore((s) => s.focus);
   const actions = useGameStore((s) => s.pendingActions);
   const setFocus = useGameStore((s) => s.setFocus);
+  const back = (
+    <button type="button" className="wc-btn small detail-back" onClick={() => setFocus({ kind: 'mission' })}>
+      <IconArrowLeft size={14} aria-hidden /> Back to the month
+    </button>
+  );
   let body: React.ReactNode = null;
-  if (focus.kind === 'catalog') body = <CatalogDetail target={target} setTarget={setTarget} />;
+  // All orders puts the way back on its own top line (the catalogue's height goes to the orders)
+  if (focus.kind === 'catalog') body = <CatalogDetail target={target} setTarget={setTarget} lead={back} />;
   else if (focus.kind === 'order') {
     const i = Number(focus.id);
     body = actions[i] ? <OrderDetail a={actions[i]} index={i} /> : null;
   }
   if (!body) body = <SuggestionsDetail />;
   return (
-    <section className="detail" aria-live="polite" aria-label="Order views">
-      <button type="button" className="wc-btn small detail-back" onClick={() => setFocus({ kind: 'mission' })}>
-        <IconArrowLeft size={14} aria-hidden /> Back to the month
-      </button>
+    <section className={`detail${focus.kind === 'catalog' ? ' is-catalog' : ''}`} aria-live="polite" aria-label="Order views">
+      {focus.kind !== 'catalog' && back}
       {body}
     </section>
   );
