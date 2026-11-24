@@ -234,11 +234,12 @@ findings:
   - id: F-00-9
     title: A month takes two screens (result card, then the next desk); the paper closes on Escape
     source: iter-00 triage F-00-9; D-46
-    covers: [ui/src/scenes/ResultCard.tsx, ui/src/scenes/MonthDebrief.tsx, ui/src/components/Chronicle.tsx, ui/src/lib/afterMonth.ts, ui/src/App.tsx]
+    covers: [ui/src/scenes/ResultCard.tsx, ui/src/scenes/MonthDebrief.tsx, ui/src/components/Chronicle.tsx, ui/src/lib/afterMonth.ts, ui/src/App.tsx, ui/src/scenes/result.css]
     guards:
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-00-9.mjs
       - vitest: tests/ui-ease.spec.ts
         name: the result card keeps Next month in view
+    changed: "2026-11-24 F-04-6 (iteration 4 customer round, REGRESSED: Next month 6 px on screen at 1920x1080 in month 7 of CO-UKR-MAYA1 under a Remember banner; F-00-9.mjs only looked at month 1 at laptop and tablet size, with a viewport-only test): F-00-9.mjs also plays CO-UKR-MAYA1 months 1 to 8 at 1920x1080 (Choose all, Execute) and checks Next month and the button row whole and on top (WHOLE_JS: viewport, clipping ancestors, elementFromPoint) every month, plus RS-008's result-card layout rules on the first tall card"
   - id: F-00-10
     title: Real-world context at the end (declassified truth and real-history table)
     source: iter-00 triage F-00-10 (covered by the reveal); D-47
@@ -442,11 +443,12 @@ findings:
   - id: QA1-S3-5
     title: The result card keeps Next month in view at 1024x768
     source: iter-01 qa-verify S3-5; QA2 FIXED
-    covers: [ui/src/scenes/ResultCard.tsx, ui/src/styles/**]
+    covers: [ui/src/scenes/ResultCard.tsx, ui/src/styles/**, ui/src/scenes/result.css]
     guards:
       - vitest: tests/ui-ease.spec.ts
         name: (QA S3-5)
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-00-9.mjs
+    changed: "2026-11-24 F-04-6: F-00-9.mjs now also covers 1920x1080 over 8 months of CO-UKR-MAYA1 (the month 7 tall card that put Next month below the screen)"
   - id: QA1-S3-6
     title: '"Leadership score" no longer appears in the reveal or the game'
     source: iter-01 qa-verify S3-6 (B-15 UI side); QA2 FIXED
@@ -742,7 +744,8 @@ findings:
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-008.mjs
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-008-1.mjs
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-008-2.mjs
-    changed: "RS-008-2 (build-agenda-layout preview, runs/iter-04/build-preview/m1-3440x1440.png): the month 1 coach covers no heading or control at 3440x1440, 1440x900, 1024x768 and 390x844 (step 1 lay over the question heading; step 3 over the list from the bar at 1024x768); step 3 shows on the phone's review screen, where Execute is the next action (it never showed on a phone); goals are named with the mission line's words, never a raw threshold (\"Hurts: approval 56%+\"). Merge of build-your-call (D-85 item 5): RS-008-1 D5 also accepts a call's Skip card, whose text is the leave sentence (\"Leave it open\", \"If you leave it: <answer>\" or \"If you leave it, the crisis passes with no effect\"), still a statement of what happens instead"
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-00-9.mjs
+    changed: "2026-11-24 F-04-6 (REGRESSED at 1920x1080: the audit's result card is month 1 of CA-USA-OLIV1, never a tall card): F-00-9.mjs runs the result-card layout rules (layout-audit.config.mjs result) on the first card with a Remember banner of CO-UKR-MAYA1 at 1920x1080. RS-008-2 (build-agenda-layout preview, runs/iter-04/build-preview/m1-3440x1440.png): the month 1 coach covers no heading or control at 3440x1440, 1440x900, 1024x768 and 390x844 (step 1 lay over the question heading; step 3 over the list from the bar at 1024x768); step 3 shows on the phone's review screen, where Execute is the next action (it never showed on a phone); goals are named with the mission line's words, never a raw threshold (\"Hurts: approval 56%+\"). Merge of build-your-call (D-85 item 5): RS-008-1 D5 also accepts a call's Skip card, whose text is the leave sentence (\"Leave it open\", \"If you leave it: <answer>\" or \"If you leave it, the crisis passes with no effect\"), still a statement of what happens instead"
     note: "Shipped with the iteration-4 layout (design-layout.md, build-agenda-layout): CEO 3440x1440 0 violations in month 1, the result card, month 2 desk and Map (used width 1.00); all 32 measurements pass. The config now uses the five regions on their real selectors and applies the scroll rules from 1024x768 (the spec's bar, was 1366). RS-008-1 adds AC-L2, L3, L6 to L14 and the agenda criteria (AC-2, AC-5, AC-21, AC-25 to AC-27, AF-14) at 3440x1440, 3840x2160, 2560x1440, 1920x1080, 1599x900, 1440x900, 1366x820, 1366x768, 1024x768 and 390x844. Iter-3 baseline (06f937b + iter-3 UI on the shared dev server, seat CA-USA-OLIV1), 29 violations in 32 measurements. CEO 3440x1440: month 1 used width 0.45 (943 px empty left); month 2 desk 3 inner scrollers (desk stage, rail body, Recommended list; 1495 px hidden), 24 controls below their fold, used width 0.45, 2 covered Remove links; Map mode passes. 1366x768 and 1440x900: inner scrolling in every desk state (month 2: 2585 / 2379 px hidden, 49 / 42 controls out of view). 1920x1080: same plus used width 0.80. 2560 and 3840: used width 0.60 / 0.40. Phone and tablet collapse rules hold."
   - id: F-02-2
     title: One outcome vocabulary; status words never contradict outcomes
@@ -1214,6 +1217,12 @@ findings:
       - vitest: tests/regressions/triage-iter4.spec.ts
         name: "F-04-1"
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-00-1.mjs
+  - id: F-04-6
+    title: "The result card's button row (See everything, Read the paper, Next month) is whole and on screen at 1920x1080 in every month: the row is pinned to the bottom of the card and the content gives way (the quote and war line, then the chips, then the details behind their toggle; a scroll only as the last step)"
+    source: runs/iter-04/triage.md F-04-6 (maya CO-UKR-MAYA1 month 7, ruth, priya); REGRESSED F-00-9, QA1-S3-5, RS-008
+    covers: [ui/src/scenes/ResultCard.tsx, ui/src/scenes/result.css, ui/src/lib/layout.ts]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-00-9.mjs
 # ------------------------------------------------------------------------------------------
 # Not listed (still open or not a code fix); add them here when a fix lands with its guard:
 #   RS-001-6  dashboard feel, "serious visual design": the ledger keeps it not done (D-37 check)

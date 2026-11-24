@@ -12,7 +12,7 @@ import { SceneFrame } from './SceneFrame';
 import { Stamp } from '../components/game/Stamp';
 import { CoachResultLine } from '../components/desk/Coach';
 import { Segments } from '../components/desk/Segments';
-import { useLayout } from '../lib/layout';
+import { useFitLevel, useLayout } from '../lib/layout';
 import { metricWord, stepObjective, viewWords } from '../lib/goals';
 import { scoreLine, useScoreWhy } from '../lib/scoreWhy';
 import { useModalFocus } from '../lib/useModalFocus';
@@ -151,7 +151,14 @@ export function ResultCard({ report, world, home, onNext, onEverything, onPaper,
   // (design-layout L-12, WP-L2); smaller ones keep them one press away
   const L = useLayout();
   const [moreChoice, setMoreChoice] = useState<boolean | null>(null);
-  const moreOpen = moreChoice ?? (L.width >= 1600 && L.tall);
+  // F-04-6: the card is one screen and its button row never leaves it. When the body is taller than
+  // its box (a Remember banner, a long headline, chips on two rows) the content gives way, one step
+  // at a time (result.css [data-fit]): 1 the quote and the war line (both in the details and the
+  // paper), 2 the chips (in See everything), 3 the details fold behind their toggle unless the
+  // player opened them, 4 the body scrolls under the pinned row (only when nothing else is left)
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const fit = useFitLevel(bodyRef, `${world.turn}|${String(moreChoice)}`, 4, [], true);
+  const moreOpen = moreChoice ?? (L.width >= 1600 && L.tall && fit < 3);
   const setMoreOpen = (f: (v: boolean) => boolean) => setMoreChoice(f(moreOpen));
   const u = (c: ConditionStatus) => (c.unit === '%' ? '%' : '');
   return (
@@ -176,7 +183,7 @@ export function ResultCard({ report, world, home, onNext, onEverything, onPaper,
             </span>
           )}
         </div>
-        <div className="rc-body">
+        <div className="rc-body" ref={bodyRef} data-fit={fit}>
           {resolved && (
             <p className="rc-remember">
               Remember {resolved.title}? <b>{resolved.headline}</b>
