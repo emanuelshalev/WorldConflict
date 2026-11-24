@@ -1136,6 +1136,15 @@ findings:
     guards:
       - vitest: tests/core/consistency.spec.ts
         name: "F-04-5"
+  - id: F-04-4
+    title: "The state band names its capital number as what is left (Political capital left ◆ n of 6, the plan's left), never \"(what orders cost)\" beside it; Explain says the same"
+    source: runs/iter-04/triage.md F-04-4 (sam, priya, dan, marcus, maya: band ◆ 4 read against the plan's ◆ 5 now)
+    covers: [ui/src/components/StateBand.tsx, ui/src/lib/glossary.ts]
+    guards:
+      - vitest: tests/regressions/triage-iter4.spec.ts
+        name: "F-04-4"
+      - vitest: tests/ui-glossary.spec.ts
+        name: finds no banned synonym
 # ------------------------------------------------------------------------------------------
 # Not listed (still open or not a code fix); add them here when a fix lands with its guard:
 #   RS-001-6  dashboard feel, "serious visual design": the ledger keeps it not done (D-37 check)
