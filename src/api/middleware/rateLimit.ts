@@ -35,12 +35,21 @@ function checkRateLimit(clientId: string, path: string, config: RateLimitConfig)
     return true;
   }
 
-  if (entry.count >= config.maxRequests) {
+  if (entry.count >= config.maxRequests * rateLimitScale()) {
     return false;
   }
 
   entry.count++;
   return true;
+}
+
+/**
+ * Multiplier on every limit (default 1). A test gate that drives several browsers against one
+ * local server at once sets it (RATE_LIMIT_SCALE=10, say); production leaves it unset.
+ */
+export function rateLimitScale(): number {
+  const n = Number(process.env.RATE_LIMIT_SCALE);
+  return Number.isFinite(n) && n >= 1 ? n : 1;
 }
 
 const RATE_LIMITS: Record<string, RateLimitConfig> = {
