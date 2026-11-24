@@ -844,6 +844,18 @@
       "iteration": 4,
       "stage": "Build",
       "tier": "T1"
+    },
+    {
+      "gate": "status-refresh",
+      "result": "pass",
+      "commit": "fb9d4d655b04f12cb28b003894ea180bedda34f5",
+      "codeTree": "e66375c15e9e3718",
+      "evidence": "dev_plan/project_status.html",
+      "note": "status-refresh T1",
+      "t": "2026-11-24T09:55:45.933Z",
+      "iteration": 4,
+      "stage": "Build",
+      "tier": "T1"
     }
   ],
   "merges": [
