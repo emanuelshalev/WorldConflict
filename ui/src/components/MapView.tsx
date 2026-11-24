@@ -16,6 +16,7 @@ import {
 } from '@tabler/icons-react';
 import { useGameStore } from '../store/gameStore';
 import { pushRecentTarget, mapMenuShown } from '../lib/ease';
+import { agendaItems, currentItem, mapSubject } from '../lib/agenda';
 import '../styles/picker.css';
 import type { Hotspot, PlayerViewCountry, War, WorldState } from '../store/gameStore';
 import { CountryDetailPanel } from './CountryDetailPanel';
@@ -964,6 +965,43 @@ export function MapView() {
       map.jumpTo({ center: [capital[0], lat], ...(Number.isFinite(fit) ? { zoom: fitter.fitAt(lat) } : {}) });
     }
   }, [playerCountryId, mapReady, fitter]);
+
+  // Map mode follows the open item (L-14, DR-INT-5): on entering Map mode and on every change of the
+  // open item the globe turns to the item's subject (the crisis's first foreign country, the
+  // meeting's partner, the order's target), latitude held within 35 degrees, at the fit or the
+  // player's own deeper zoom; the padding (gameInsets) puts it in the middle of the free gap.
+  const lastSubject = useRef<string | null>(null);
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapReady) return;
+    const follow = (st: ReturnType<typeof useGameStore.getState>) => {
+      if (st.deskMode !== 'map') {
+        lastSubject.current = null;
+        return;
+      }
+      const item = currentItem(agendaItems(st), st.agendaKey);
+      const key = item?.key ?? null;
+      if (key === lastSubject.current) return;
+      lastSubject.current = key;
+      const id = mapSubject(item, st);
+      const at = id ? (st.worldState?.countries.find((c) => c.id === id)?.capital ?? COUNTRY_CENTERS[id]) : undefined;
+      if (!at) return;
+      const lat = Math.max(-35, Math.min(35, at[1]));
+      const fit = fitter.fitAt(lat);
+      const zoom = Number.isFinite(fit) ? Math.max(fit, Math.min(map.getZoom(), fit + 2)) : map.getZoom();
+      const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+      map.easeTo({ center: [at[0], lat], zoom, duration: reduced ? 0 : 700 });
+    };
+    // Let the layout settle (the panels set the padding) before the first turn
+    const t = window.setTimeout(() => follow(useGameStore.getState()), 60);
+    const unsub = useGameStore.subscribe((st, prev) => {
+      if (st.deskMode !== prev.deskMode || st.agendaKey !== prev.agendaKey || st.decisionChoices !== prev.decisionChoices || st.pendingActions !== prev.pendingActions) follow(st);
+    });
+    return () => {
+      window.clearTimeout(t);
+      unsub();
+    };
+  }, [mapReady, fitter]);
 
   // ------------------------------------------------------------------
   // Data -> map sync, split so each source is uploaded only when its data changes

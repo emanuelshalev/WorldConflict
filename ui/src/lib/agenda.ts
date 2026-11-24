@@ -266,6 +266,23 @@ function pushMove(state: GameState, items: AgendaItem[], calls: CallSet): void {
   });
 }
 
+/**
+ * The country a thing is about, for the Map mode camera (design-layout L-14, design review
+ * DR-INT-5): a crisis's first foreign country (the hotspot's land for Gaza), a meeting's caller,
+ * the target of the move's or the recommended orders' first order; the player's own country when
+ * nothing names another (a strike at home, an order with no target). Null for Your own orders.
+ */
+export function mapSubject(item: AgendaItem | undefined, state: GameState = useGameStore.getState()): string | null {
+  const me = state.worldState?.playerCountryId ?? null;
+  if (!item) return null;
+  if (item.decision) return item.decision.affectedCountries.find((id) => id !== me) ?? me;
+  if (item.meeting) return item.meeting.withCountry ?? me;
+  if (item.kind === 'move') return item.yourCall?.cards.find((c) => c.action?.targetCountryId)?.action?.targetCountryId ?? me;
+  if (item.kind === 'orders') return (item.orders ?? []).map((i) => state.pendingActions[i]?.targetCountryId).find(Boolean) ?? me;
+  if (item.kind === 'meetings') return item.meetings?.map((m) => m.withCountry).find(Boolean) ?? me;
+  return null;
+}
+
 /** The calls still open (D-84 R8): listed before Execute. */
 export function openCalls(items: readonly AgendaItem[]): AgendaItem[] {
   return items.filter((x) => x.call && x.state === 'todo');

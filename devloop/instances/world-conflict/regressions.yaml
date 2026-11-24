@@ -1029,6 +1029,53 @@ findings:
     covers: [ui/src/components/desk/YourMove.tsx, ui/src/lib/agenda.ts]
     guards:
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-MS-4.mjs
+  - id: DR-INT-1
+    title: "The move for your mission and Recommended orders use the middle of the screen at 1920x1080: each card at least 380 px wide, its name (two lines at most) and recommendation whole and not under the card face, Undo and Remove under their own card, no gap under the question, before and after choosing, no page scroll"
+    source: runs/iter-04/design-review-integrated.md DR-INT-1 (cards 194 to 272 px wide, the face over the name, Undo outside its card)
+    covers: [ui/src/components/desk/YourMove.tsx, ui/src/styles/layout.css]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-INT-1.mjs
+  - id: DR-INT-2
+    title: "One picture of political capital (budget.ts capitalOutlook): the plan, the Hold card and the review page name the band's number as left and next month's start, the engine starts the next month with exactly that number, an answer card says how much more or less it costs than what the band already counts, and the result card names a choice's capital as spent or gained, never the bank A to B"
+    source: runs/iter-04/design-review-integrated.md DR-INT-2 ("Political capital 3 stays (above 6 is lost)" with 0 of 6 in the band; result card "5 → 3 (-2)")
+    covers: [ui/src/lib/budget.ts, ui/src/lib/agenda.ts, ui/src/components/desk/Plan.tsx, ui/src/components/desk/YourMove.tsx, ui/src/components/desk/ReviewPage.tsx, ui/src/scenes/ResultCard.tsx, src/core/advisors.ts]
+    guards:
+      - vitest: tests/regressions/design-review-int.spec.ts
+        name: "DR-INT-2: every political capital number on the desk is the engine's"
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-INT-2.mjs
+  - id: DR-INT-3
+    title: "An adviser's quote never contradicts its card: no \"puts no goal at stake\" on an answer that hurts a goal, and every goal the answer hurts is named (engine advisors.ts crisisCall)"
+    source: runs/iter-04/design-review-integrated.md DR-INT-3 ("More escorts, no strikes: puts no goal at stake" over "Hurts: Voters stay on side")
+    covers: [src/core/advisors.ts, ui/src/components/desk/YourMove.tsx]
+    guards:
+      - vitest: tests/regressions/design-review-int.spec.ts
+        name: "DR-INT-3: an adviser's quote never contradicts its card"
+  - id: DR-INT-4
+    title: "The mission tag counts hurts as hurts (+n more counts breaks and hurts only) and a mixed answer also names the goals it helps"
+    source: runs/iter-04/design-review-integrated.md DR-INT-4 ("Hurts: ... (+3 more)" counting helped goals)
+    covers: [ui/src/lib/month.ts, ui/src/components/desk/YourMove.tsx]
+    guards:
+      - vitest: tests/regressions/design-review-int.spec.ts
+        name: "DR-INT-4: the mission tag counts hurts as hurts and names what it helps"
+      - vitest: tests/ui-month.spec.ts
+  - id: DR-INT-5
+    title: "Map mode turns to the subject of the open item (L-14): the crisis's first foreign country sits in the free gap between the item card and the Plan float, within 60 degrees of the camera, months 1 to 4 at 1920x1080"
+    source: runs/iter-04/design-review-integrated.md DR-INT-5 (North America shown for Iran crises)
+    covers: [ui/src/components/MapView.tsx, ui/src/lib/agenda.ts, ui/src/lib/globeFit.ts]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-INT-5.mjs
+  - id: DR-INT-6
+    title: "Ask your staff speaks the game's words in the desk's style: no engine identifier, risk code, country code, raw number or emoji, \"advisers\" not \"Advisors\", orders in the order vocabulary with their cost, every suggested question, the input with its placeholder and Send whole at 1920x1080"
+    source: runs/iter-04/design-review-integrated.md DR-INT-6 ("DIPLOMACY_IMPROVE_RELATIONS" under LOW, chips and placeholder cut)
+    covers: [ui/src/components/AdvisorModal.tsx, ui/src/styles/wc.css, ui/src/App.css]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-INT-6.mjs
+  - id: DR-INT-7
+    title: "Check and execute: every You chose row says what it answers and what it costs (◆ n, Free or Gives ◆ n), starts with a capital, whole and uncovered; the capital line names the band's number as left; the rows and the Execute block use the item's width; no page scroll"
+    source: runs/iter-04/design-review-integrated.md DR-INT-7 (bare answers, no costs, left two thirds used)
+    covers: [ui/src/components/desk/ReviewPage.tsx, ui/src/lib/agenda.ts, ui/src/styles/layout.css]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-INT-7.mjs
 # ------------------------------------------------------------------------------------------
 # Not listed (still open or not a code fix); add them here when a fix lands with its guard:
 #   RS-001-6  dashboard feel, "serious visual design": the ledger keeps it not done (D-37 check)
