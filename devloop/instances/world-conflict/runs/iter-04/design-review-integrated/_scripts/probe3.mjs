@@ -1,0 +1,35 @@
+// Probe the orders catalogue, map, review, execute, result, paper on month 1.
+import { browser, openTitle, shot, facts, text, buttons, mkLog } from './lib.mjs';
+const log = mkLog('log-probe3.txt');
+const b = await browser();
+const { page } = await openTitle(b);
+const btn = (re) => page.getByRole('button', { name: re }).first();
+const tryClick = async (re, t = 8000) => btn(re).click({ timeout: t }).then(() => true, (e) => { log('MISS', String(re), e.message.split('\n')[0]); return false; });
+const dump = async (tag, n = 2500, onlyNew = true) => { await shot(page, `p-${tag}`); const t = await text(page); const i = t.indexOf('Open any of them.'); log(`--- ${tag} text`, t.slice(0, n)); log(`${tag} buttons`, (await buttons(page)).filter((x) => !/^(Mission:|Explain|Your country|Score|Desk|Map @|Some help|Sound|Menu|Whole world|Zoom|Relations|Regimes|Military @1439|Economic|Stability @|Intel|Nuclear @1747|Guide|Hide)/.test(x))); log(`${tag} facts`, await facts(page)); };
+await tryClick(/^Take office/);
+await page.waitForTimeout(2500);
+await tryClick(/^Take office/);
+await page.waitForTimeout(2500);
+await tryClick(/Reply via Muscat/);
+await page.waitForTimeout(800);
+await page.getByRole('button', { name: /^All orders/ }).first().click();
+await page.waitForTimeout(1200);
+await tryClick(/^Target: choose a country/);
+await page.waitForTimeout(800);
+await dump('20-target-open', 400);
+// pick Iran
+const iran = page.getByRole('option', { name: /Iran/ }).first();
+if (await iran.isVisible().catch(() => false)) await iran.click(); else await page.getByText(/^Iran$/).first().click().catch((e) => log('MISS iran', e.message.split('\n')[0]));
+await page.waitForTimeout(1000);
+await dump('21-target-iran', 400);
+await tryClick(/^Military \d/);
+await page.waitForTimeout(1000);
+await dump('22-military', 400);
+await tryClick(/^Economy \d/);
+await page.waitForTimeout(1000);
+await dump('23-economy', 400);
+await tryClick(/^Covert \d/);
+await page.waitForTimeout(1000);
+await dump('24-covert', 400);
+log('errors', page.errors);
+await b.close();
