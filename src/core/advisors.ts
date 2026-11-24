@@ -6,6 +6,7 @@
  * foreign numbers come from the player's beliefs (buildPlayerView), never ground truth; memory of
  * last month comes from the turn report. No RNG.
  */
+import { capitalBlock, orderRules, RELATIONS_MAX } from "./availability.js";
 import { actionCostPC } from "./costs.js";
 import { MEETING_SLOTS } from "./meetings.js";
 import {
@@ -223,6 +224,11 @@ export const MIN_ODDS = 35;
 export const COURT_FLOOR = -85;
 /** The same court (type + target) at most twice in six months unless a mission needs it. */
 export const COURT_REPEAT_MAX = 2;
+/**
+ * F-04-9: a met relation goal this close to the cap (RELATIONS_MAX) is not courted to keep the
+ * margin (Priya, Court United Kingdom at 94: refused at Execute after a same-month answer).
+ */
+export const COURT_CAP_MARGIN = 5;
 
 const nameOf = (world: WorldState, id: string) =>
   world.countries.find((c) => c.id === id)?.name ?? id;
@@ -321,8 +327,15 @@ export function computeSuggestions(world: WorldState, limit = 5): Suggestion[] {
     if (c.kind === "RELATION_MIN" && c.targetId && !player.atWarWith.includes(c.targetId)) {
       const need = c.min ?? 0;
       const now = rel(c.targetId);
-      // A bonus goal is optional: no court the staff repeat month after month (QA3R-1b)
-      if (now < need + 10 && !(bonus && courtedRecently(c.targetId) >= COURT_REPEAT_MAX)) {
+      // A bonus goal is optional: no court the staff repeat month after month (QA3R-1b).
+      // F-04-9: a met goal within reach of the cap is not courted to "keep the margin": a
+      // same-month answer can lift the view past it and the court is then refused
+      const nearCap = now >= need && now >= RELATIONS_MAX - COURT_CAP_MARGIN;
+      if (
+        now < need + 10 &&
+        !nearCap &&
+        !(bonus && courtedRecently(c.targetId) >= COURT_REPEAT_MAX)
+      ) {
         const gap =
           now < need ? `needs ${need}+, now ${now}` : `needs ${need}+, now ${now}: keep the margin`;
         out.push(
@@ -605,12 +618,14 @@ export function computeSuggestions(world: WorldState, limit = 5): Suggestion[] {
       why: "Rivals are always probing. A spy hunt shields us for 3 months.",
       action: { type: "INTEL_COUNTER_INTEL", label: "Hunt foreign spies" },
     });
-  // One suggestion per order: keep the highest-priority reason
+  // One suggestion per order: keep the highest-priority reason. F-04-9: never an order the
+  // engine would refuse (a pact across the bloc line, a court at the cap), the same rule as Execute
   const seen = new Set<string>();
   return out
     .sort((a, b) => b.p - a.p)
     .filter((s) => {
       if (seen.has(s.label)) return false;
+      if (s.action && orderRules(world, s.action as Action)) return false;
       seen.add(s.label);
       return true;
     })
@@ -1030,13 +1045,11 @@ export function isTrade(cards: CallCard[]): boolean {
   );
 }
 
-const blockedBy = (pc: number, bank: number): CallCard["blocked"] =>
-  pc > bank
-    ? {
-        reason: `Costs political capital ${pc}, you have ${bank}.`,
-        fix: "Choose another card; political capital refills next month.",
-      }
-    : null;
+/** The order cards' NO_CAPITAL copy (availability.ts capitalBlock, F-04-1), as a call card's block. */
+const blockedBy = (world: WorldState, pc: number, bank: number): CallCard["blocked"] => {
+  const short = capitalBlock(world, pc, bank);
+  return short ? { reason: short.reason, fix: short.fix ?? "" } : null;
+};
 
 /**
  * A crisis as a call (R1 a): its answers differ for the mission. The mission card is the answer
@@ -1108,7 +1121,7 @@ export function crisisCall(
       price: prices[o.id] ?? 0,
       successChance: null,
       home: homeOf(o.effects),
-      blocked: blockedBy(pc, bank),
+      blocked: blockedBy(world, pc, bank),
     };
   });
   const card = (o: DecisionOption) => cards.find((c) => c.id === o.id) as CallCard;
@@ -1185,7 +1198,7 @@ export function missionMove(
       successChance: preview.successChance,
       home: homeOf(actionEffects(s.action)),
       action: s.action,
-      blocked: blockedBy(pc, bank),
+      blocked: blockedBy(world, pc, bank),
     });
   }
   if (!cards.length) return null;

@@ -1,4 +1,4 @@
-import { actionRules, orderKey } from "./availability.js";
+import { actionRules, orderKey, RELATIONS_MAX } from "./availability.js";
 import { recordMonth } from "./chronicle.js";
 import { actionCostM, actionCostPC, MAX_ORDERS, PC_CAP, politicalCapitalIncome } from "./costs.js";
 import { applyEffects, raiseCrisis, runDirector, scheduleFollowUp } from "./crises.js";
@@ -153,6 +153,11 @@ export class TurnEngine {
     // Phase 0: resolve the player's pending crisis decisions
     // ------------------------------------------------------------------
     const injectedActions: Action[] = this.resolveDecisions(world, decisionChoices);
+    // The player's view of each country once the month's answers are in (F-04-9: an order those
+    // answers made pointless is NO_EFFECT, not REFUSED)
+    const afterAnswers = new Map(
+      Object.entries(world.countries.find((c) => c.id === world.playerCountryId)?.relations ?? {}),
+    );
 
     // ------------------------------------------------------------------
     // Phase 1: world events + the player's crises (drama director)
@@ -223,11 +228,31 @@ export class TurnEngine {
           const rule = actionRules(world, actor, action);
           if (rule) {
             push(rejectedActions, actor.id, { action, reason: rule.reason });
+            // F-04-9: courting a country the player's own answer this month already took to the
+            // cap has nothing left to do; it is not a forbidden order (no capital spent either way)
+            const t = action.targetCountryId;
+            const overtaken =
+              rule.code === "RELATIONS_MAXED" &&
+              t &&
+              (this.start?.mine.get(t) ?? 0) < RELATIONS_MAX &&
+              (afterAnswers.get(t) ?? 0) >= RELATIONS_MAX
+                ? `Nothing left to do: your own move earlier this month already took relations with ${withArticle(world.countries.find((c) => c.id === t)?.name ?? t)} as high as they go`
+                : undefined;
+            const tag = orderTag(world, action);
             report.orders.push({
-              ...orderTag(world, action),
+              ...tag,
               ok: false,
               detail: rule.reason,
               code: rule.code,
+              ...(overtaken
+                ? orderOutcome({
+                    ...tag,
+                    ok: false,
+                    detail: rule.reason,
+                    code: rule.code,
+                    overtaken,
+                  })
+                : {}),
             });
             continue;
           }
@@ -296,7 +321,15 @@ export class TurnEngine {
           ? world.countries.find((c) => c.id === action.targetCountryId)
           : undefined;
         const snapBefore = reported ? snapshot(world, actor, orderTarget) : null;
+        const actionWars = isPlayer ? enemiesOf(world, actor.id) : null;
         const outcome = this.applyAction(world, actor, action, rng, events, governmentChanges);
+        if (actionWars && outcome.ok) {
+          // A ceasefire the player ordered, or one a crisis answer set off, ended a war
+          const from = injected.has(action) ? this.injectedFrom.get(action) : undefined;
+          if (from !== undefined) this.creditEnded(world, actor.id, actionWars, "decision", from);
+          else if (reported)
+            this.creditEnded(world, actor.id, actionWars, "order", report.orders.length);
+        }
         if (hitsPlayer && playerState) {
           covertDamage += Math.max(0, stabilityBefore - playerState.stability);
         } else if (covertTarget) {
@@ -586,6 +619,11 @@ export class TurnEngine {
   private report: PlayerTurnReport | null = null;
   /** Orders a crisis answer set in motion, and the report decision they came from. */
   private injectedFrom = new Map<Action, number>();
+  /**
+   * The player's wars that the player's own move ended this month (a ceasefire answer or order),
+   * by enemy id: the report credits the player, never "not from your choice" (QA re-check, iter 4).
+   */
+  private endedBy = new Map<string, { ref: "decision" | "order"; index: number }>();
   private month: MonthStart | null = null;
   private start: {
     rel: Map<string, number>;
@@ -595,9 +633,23 @@ export class TurnEngine {
     tension: number;
   } | null = null;
 
+  /** Credit the player's move for every war of theirs that is gone since `before`. */
+  private creditEnded(
+    world: WorldState,
+    playerId: string,
+    before: Set<string>,
+    ref: "decision" | "order",
+    index: number,
+  ) {
+    const now = enemiesOf(world, playerId);
+    for (const id of before)
+      if (!now.has(id) && !this.endedBy.has(id)) this.endedBy.set(id, { ref, index });
+  }
+
   private resolveDecisions(world: WorldState, choices: DecisionChoice[]): Action[] {
     const injected: Action[] = [];
     this.injectedFrom = new Map();
+    this.endedBy = new Map();
     const player = world.countries.find((c) => c.id === world.playerCountryId);
     if (!player) return injected;
     // D-84 R6: the mission side of an item costs PUSH_PC more when another answer helps no goal,
@@ -634,7 +686,15 @@ export class TurnEngine {
 
       const snapBefore = outcomeSnap(world, player);
       if (!byDefault) world.politicalCapital -= priceOf(pending.id, option.id);
+      const crisisWars = enemiesOf(world, player.id);
       applyEffects(world, player, option.effects);
+      this.creditEnded(
+        world,
+        player.id,
+        crisisWars,
+        "decision",
+        this.report?.decisions.length ?? 0,
+      );
       world.globalTension = clamp01(world.globalTension + option.tensionDelta);
       injected.push(...option.actions);
       for (const a of option.actions) this.injectedFrom.set(a, this.report?.decisions.length ?? 0);
@@ -692,7 +752,15 @@ export class TurnEngine {
       const bandBefore = bandOf(player, them);
       const snapBefore = outcomeSnap(world, player);
       if (option !== deputy) world.politicalCapital -= priceOf(meeting.id, option.id);
+      const meetingWars = enemiesOf(world, player.id);
       applyEffects(world, player, option.effects);
+      this.creditEnded(
+        world,
+        player.id,
+        meetingWars,
+        "decision",
+        this.report?.decisions.length ?? 0,
+      );
       world.globalTension = clamp01(world.globalTension + option.tensionDelta);
       const facts = decisionFacts(
         world,
@@ -1479,11 +1547,13 @@ export class TurnEngine {
       const defender = id.split("_")[2];
       if (attacker !== player.id && defender !== player.id) continue;
       const mine = (f: number) => (attacker === player.id ? f : 100 - f);
+      const vs = attacker === player.id ? defender : attacker;
       report.wars.push({
-        vs: attacker === player.id ? defender : attacker,
+        vs,
         frontBefore: Math.round(mine(front)),
         frontAfter: Math.round(mine(now?.frontline ?? front)),
         ended: !now,
+        ...(!now && this.endedBy.has(vs) ? { endedBy: this.endedBy.get(vs) } : {}),
       });
     }
     for (const w of world.wars.filter((x) => ours(x) && !start.front.has(x.id))) {
@@ -1540,17 +1610,63 @@ export class TurnEngine {
               : 0),
         0,
       );
+    // F-04-7: the player's act of war (a declaration, an airstrike or a nuclear strike, ordered or
+    // set off by a crisis answer) is the story of the month, above any answer or treaty
+    const ACT_OF_WAR = 100;
+    const warAnswers = new Set<number>();
+    const struck = new Set<string>();
+    for (const a of resolved.get(player.id) ?? []) {
+      if (!ACTS_OF_WAR.has(a.type) || !a.targetCountryId) continue;
+      struck.add(a.targetCountryId);
+      const from = this.injectedFrom.get(a);
+      if (from !== undefined) warAnswers.add(from);
+    }
+    const warOrder = (o: PlayerTurnReport["orders"][number]) =>
+      !!o.type && ACTS_OF_WAR.has(o.type) && o.status !== "REFUSED";
+    for (const o of report.orders) if (warOrder(o) && o.target) struck.add(o.target);
+    // The country you struck does not answer a call warmly the same month (Erdogan, Lai)
+    report.decisions.forEach((d, i) => {
+      if (!d.withCountry || !struck.has(d.withCountry) || d.kind === "CRISIS") return;
+      if (
+        d.attended === false ||
+        (d.reaction && d.reaction.tone !== "warm" && d.reaction.tone !== "neutral")
+      )
+        return;
+      const them = findCountry(world, d.withCountry);
+      if (!them) return;
+      const seed = hashParts(world.seed, world.turn, d.title, i, "struck");
+      d.reaction = orderReaction({ them, player }, -10, undefined, seed);
+      if (d.kind === "CALL" || d.kind === "VISIT")
+        d.headline = outcomeHeadline(
+          d.kind,
+          "angry",
+          { them, player, title: d.title, choice: d.choice },
+          seed,
+        );
+    });
     let best: PlayerTurnReport["highlight"];
     let bestScore = -1;
     report.decisions.forEach((d, i) => {
       if (d.attended === false) return;
-      const sc = size(d.facts) + (d.kind === "CRISIS" ? 8 : 0);
+      const sc =
+        size(d.facts) + (d.kind === "CRISIS" ? 8 : 0) + (warAnswers.has(i) ? ACT_OF_WAR : 0);
       if (sc > bestScore) [best, bestScore] = [{ ref: "decision", index: i }, sc];
     });
     report.orders.forEach((o, i) => {
-      const sc = size(o.facts) + (/war|ceasefire|pact|strike|coup/i.test(o.label) && o.ok ? 15 : 0);
+      const sc =
+        size(o.facts) +
+        (/war|ceasefire|pact|strike|coup/i.test(o.label) && o.ok ? 15 : 0) +
+        (warOrder(o) ? ACT_OF_WAR : 0);
       if (sc > bestScore) [best, bestScore] = [{ ref: "order", index: i }, sc];
     });
+    // F-04-2: when the player chose nothing, a crisis that ran on its default answer is the
+    // month's move ("Left open: ..."), never an empty "quiet month" over a crisis that moved approval
+    if (!best)
+      report.decisions.forEach((d, i) => {
+        if (d.kind !== "CRISIS" || d.attended !== false) return;
+        const sc = size(d.facts) + (warAnswers.has(i) ? ACT_OF_WAR : 0);
+        if (sc > bestScore) [best, bestScore] = [{ ref: "decision", index: i }, sc];
+      });
     // The player's own move of the month, chosen before the fronts compete for the highlight:
     // a front that moved on its own can lead the paper, never "What your choice did"
     const own = best as PlayerTurnReport["highlight"];
@@ -1664,6 +1780,13 @@ export class TurnEngine {
 }
 
 // --------------------------------------------------------------------
+/** The player's acts of war: they lead the month's report and the paper (F-04-7). */
+const ACTS_OF_WAR = new Set<string>([
+  "DIPLOMACY_DECLARE_WAR",
+  "MILITARY_AIRSTRIKE",
+  "NUCLEAR_STRIKE",
+]);
+
 /** Each reform in the last 6 months cuts the next one's effect to this share. */
 const REFORM_DECAY = 0.8;
 
@@ -1837,21 +1960,35 @@ function playerLead(
     const w = report.wars[h.index];
     const them = world.countries.find((c) => c.id === w.vs)?.name ?? w.vs;
     const moved = w.frontAfter - w.frontBefore;
+    // A war the leader's own answer or order ended is told as the leader's act, not as news from
+    // elsewhere (QA re-check, iteration 4: "Elsewhere, Zelensky answered ... Sign the ceasefire")
+    const byD = w.endedBy?.ref === "decision" ? report.decisions[w.endedBy.index] : undefined;
+    const byO = w.endedBy?.ref === "order" ? report.orders[w.endedBy.index] : undefined;
     headline = w.ended
       ? `The war with ${them} is over`
       : moved >= 0
         ? `${player.name} gains ground against ${them}`
         : `${them} pushes ${possessive(player.name)} forces back`;
-    lede = w.ended
-      ? `After months of fighting, the guns fall silent on the ${player.name}-${them} front.`
-      : `The front moved ${Math.abs(moved)} points ${moved >= 0 ? "in our favour" : "against us"} this month (now ${w.frontAfter} of 100 from our side).`;
+    lede = byD
+      ? `${byD.kind === "CRISIS" ? crisisLede(who, byD.title, byD.choice) : `${who} answered "${byD.title.replace(/[.?:]$/, "")}" with "${byD.choice.replace(/\.$/, "")}".`} The guns fall silent on the ${player.name}-${them} front.`
+      : byO
+        ? `${who} ordered "${byO.label}", and the guns fall silent on the ${player.name}-${them} front.`
+        : w.ended
+          ? `After months of fighting, the guns fall silent on the ${player.name}-${them} front.`
+          : `The front moved ${Math.abs(moved)} points ${moved >= 0 ? "in our favour" : "against us"} this month (now ${w.frontAfter} of 100 from our side).`;
     related.push(w.vs);
   }
   // Context: up to two other things the leader did this month, each phrased on its own terms
   const cname = (id?: string) => withArticle(world.countries.find((c) => c.id === id)?.name ?? "");
+  const credited = h.ref === "war" ? report.wars[h.index]?.endedBy : undefined;
   const others = [
     ...report.decisions
-      .filter((d, i) => d.attended !== false && !(h.ref === "decision" && i === h.index))
+      .filter(
+        (d, i) =>
+          d.attended !== false &&
+          !(h.ref === "decision" && i === h.index) &&
+          !(credited?.ref === "decision" && credited.index === i),
+      )
       .map((d) =>
         d.kind === "CALL"
           ? `took a call from ${cname(d.withCountry)} ("${d.choice.replace(/\.$/, "")}")`
@@ -1860,7 +1997,12 @@ function playerLead(
             : `answered "${d.title.replace(/[.?:]$/, "")}" with "${d.choice.replace(/\.$/, "")}"`,
       ),
     ...report.orders
-      .filter((o, i) => o.ok && !(h.ref === "order" && i === h.index))
+      .filter(
+        (o, i) =>
+          o.ok &&
+          !(h.ref === "order" && i === h.index) &&
+          !(credited?.ref === "order" && credited.index === i),
+      )
       .map((o) => `ordered "${o.label}"`),
   ].slice(0, 2);
   const context = others.length ? `Elsewhere, ${surname} ${others.join(" and ")}.` : "";
@@ -1905,4 +2047,14 @@ function push<K, V>(map: Map<K, V[]>, key: K, value: V): void {
 }
 function push2(map: Map<string, Action[]>, key: string, value: Action): void {
   push(map, key, value);
+}
+
+/** The countries the player is at war with (by the war list, which endWar updates). */
+function enemiesOf(world: WorldState, playerId: string): Set<string> {
+  const out = new Set<string>();
+  for (const w of world.wars) {
+    if (w.attackerId === playerId) out.add(w.defenderId);
+    else if (w.defenderId === playerId) out.add(w.attackerId);
+  }
+  return out;
 }

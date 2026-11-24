@@ -1,6 +1,6 @@
 import { useSceneUid } from './uid';
 import type { SceneArtProps } from './types';
-import { BOARD_SPLIT, COUNCIL, councilTally, councilVotes } from './unTally';
+import { BOARD_SPLIT, COUNCIL } from './unTally';
 import './public.css';
 
 const CX = 320;
@@ -31,25 +31,23 @@ const LEAVES = Array.from({ length: 7 }, (_, i) => i);
 
 export default function UnVote({ a, mood }: SceneArtProps) {
   const uid = useSceneUid();
+  // F-04-8: the board shows the fifteen seats in session, no tally: the game has no vote count,
+  // and a tally drawn from the mood gave one vote two results (card YES 11, paper YES 8)
+  const lit = '#7fd3d6';
+  // The gallery's raised hands follow the mood (a picture of the room, not a count)
   const yesCut = mood === 'good' ? 7 : mood === 'bad' ? 2 : 4.5;
-  const votes = councilVotes(mood);
-  const vote = (i: number) => votes[i];
-  const col = { y: '#2fe08a', n: '#ff5148', a: '#f5c142' };
-  const { yes, no } = councilTally(mood);
   const key = mood === 'bad' ? '#ff9a7a' : mood === 'good' ? '#ffe2a0' : '#fff0cc';
   const board = (x: number, off: number, n: number) => (
     <g>
       <rect x={x} y="50" width="132" height="150" rx="5" fill="#04121a" stroke="#c9a24f" strokeOpacity="0.55" />
       <rect x={x + 4} y="54" width="124" height="16" rx="2" fill="#0c2a33" />
-      <text x={x + 10} y="66" fontSize="9" className="unv-label" fill={col.y}>YES {yes}</text>
-      <text x={x + 122} y="66" fontSize="9" textAnchor="end" className="unv-label" fill={col.n}>NO {no}</text>
+      <text x={x + 66} y="66" fontSize="8" textAnchor="middle" className="unv-label" fill="#bfe3e6" letterSpacing="1.5">IN SESSION</text>
       {COUNCIL.slice(off, off + n).map((c, j) => {
-        const v = vote(off + j);
         return (
           <g key={c}>
             <rect x={x + 6} y={75 + j * 13.4} width="120" height="11" rx="1.5" fill="#0a1f27" />
             <text x={x + 12} y={84 + j * 13.4} fontSize="8" className="unv-label" fill="#bfe3e6" letterSpacing="1">{c}</text>
-            <rect className="unv-light" x={x + 42} y={77.5 + j * 13.4} width="76" height="6" rx="1" fill={col[v]} style={{ animationDelay: `${(off + j) * 0.35}s` }} />
+            <rect className="unv-light" x={x + 42} y={77.5 + j * 13.4} width="76" height="6" rx="1" fill={lit} style={{ animationDelay: `${(off + j) * 0.35}s` }} />
           </g>
         );
       })}

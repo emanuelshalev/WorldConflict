@@ -207,7 +207,7 @@ function lastMonth(c: ConditionStatus, turn: number): string | null {
 /** One objective row of the Mission sheet: state, now and need, last month, and what helps now. */
 function ObjectiveRow({ c, turn }: { c: ConditionStatus; turn: number }) {
   const state = stateOf(c);
-  const nn = nowNeed(c);
+  const nn = nowNeed(c, useGameStore.getState().worldState);
   const helps = (c.helps ?? []).slice(0, 3);
   const go = (h: NonNullable<ConditionStatus['helps']>[number]) => {
     const s = useGameStore.getState();

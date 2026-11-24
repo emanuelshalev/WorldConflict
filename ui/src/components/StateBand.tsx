@@ -3,7 +3,7 @@ import { IconBook, IconDeviceFloppy, IconBroadcast, IconBroadcastOff, IconChevro
 import { budgetStatus } from '../lib/budget';
 import { useGameStore, usePlayerCountry } from '../store/gameStore';
 import { flag, monthLabel } from '../lib/format';
-import { TERMS } from '../lib/glossary';
+import { CAPITAL_LEFT, TERMS } from '../lib/glossary';
 import { pcIncome } from '../lib/month';
 import { goalsLine, missionSummary } from '../lib/goals';
 import { useLayout } from '../lib/layout';
@@ -194,9 +194,9 @@ export function StateBand() {
 
   const pc = (
     <span className={`sb-s sb-pc${pcLeft < 0 ? ' over' : ''}`} data-point="capital">
-      {/* (at U the band is one line, L-5: from month 2 with a call the gloss pushed it to two; the
-          Explain button beside it says what capital is) */}
-      {wide && cls !== 'U' ? 'Political capital (what orders cost)' : TERMS.capital.name} <V v={`◆ ${pcLeft} of ${pcCap}`} />
+      {/* F-04-4: the number is what is left after this month's choices (the plan's "◆ n left"),
+          so the label says left; the Explain button beside it says what capital is */}
+      {CAPITAL_LEFT} <V v={`◆ ${pcLeft} of ${pcCap}`} />
     </span>
   );
   const explainBtn = (
@@ -285,7 +285,7 @@ export function StateBand() {
   );
   const note = explain && (
     <div className="sb-explain-note" role="note">
-      <b>{TERMS.capital.name}</b>: what your orders cost. You get +{pcIncome(world)} each month, up to ◆ {pcCap}. Unspent capital carries over. Now: ◆ {pcLeft} of {pcCap}
+      <b>{TERMS.capital.name}</b>: what your orders cost. You get +{pcIncome(world)} each month, up to ◆ {pcCap}. Unspent capital carries over. Left after this month's choices: ◆ {pcLeft} of {pcCap}
       {b && b.pc.orders ? `, ◆ ${b.pc.orders} on orders` : ''}.
       <button type="button" className="wc-btn small" onClick={() => setExplain(false)}>
         Close

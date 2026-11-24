@@ -139,6 +139,9 @@ function block(
   return { code, reason, fix, points, ...extra };
 }
 
+/** Courting stops here: a view of 95 or more is as good as it gets (RELATIONS_MAXED). */
+export const RELATIONS_MAX = 95;
+
 /**
  * The rule layer for any actor: the world-state reasons an order is invalid,
  * or null. The engine applies it to the player's own orders at Execute.
@@ -179,7 +182,7 @@ export function actionRules(
         return block("AT_WAR", `You are at war with ${T}.`, "Propose a ceasefire instead", null, {
           alt: { type: "DIPLOMACY_PROPOSE_CEASEFIRE" },
         });
-      if ((actor.relations[target.id] ?? 0) >= 95)
+      if ((actor.relations[target.id] ?? 0) >= RELATIONS_MAX)
         return block("RELATIONS_MAXED", `Relations with ${T} are as good as they get.`);
       break;
     case "DIPLOMACY_PROPOSE_ALLIANCE": {
@@ -312,6 +315,52 @@ function refillLine(world: WorldState, me: CountryState): string {
 }
 
 /**
+ * NO_CAPITAL for anything that spends `pc` more than is left: an order, or an answer that costs
+ * political capital (F-04-1: the answer card says so before the tap). The UI mirrors it in
+ * ui/src/lib/availability.ts capitalBlock() with the same copy.
+ */
+export function capitalBlock(
+  world: WorldState,
+  pc: number,
+  left: number,
+  queuedCosts: number[] = [],
+): OrderBlock | null {
+  const me = world.countries.find((c) => c.id === world.playerCountryId);
+  const have = Math.max(0, left);
+  if (!me || pc <= have) return null;
+  const gap = pc - have;
+  const frees = queuedCosts.filter((c) => c >= gap).sort((a, b) => a - b)[0];
+  // Beside a Remove fix, waiting means next month's income even with the bank full now (F-04-1)
+  const refill = frees ? `+${politicalCapitalIncome(world, me)} next month` : refillLine(world, me);
+  const fix = frees
+    ? `Remove an order (frees ◆ ${frees}), or wait: ${refill}`
+    : world.politicalCapital >= PC_CAP
+      ? refill
+      : `Wait: ${refill}`;
+  return block("NO_CAPITAL", `Needs ◆ ${pc}, you have ◆ ${have}.`, fix, "capital", {
+    need: { have, need: pc, refill: politicalCapitalIncome(world, me) },
+  });
+}
+
+/**
+ * An answer (crisis, meeting) the player cannot afford (F-04-1): `extra` is what choosing it adds
+ * to the capital already counted, `price` its D-84 price. resolveDecisions does not take an answer
+ * whose price the bank cannot pay, and one that spends what the queued orders need gets an order
+ * refused. Mirrors answerBlock() in ui/src/lib/availability.ts, same copy as capitalBlock().
+ */
+export function answerBlock(
+  world: WorldState,
+  extra: number,
+  price: number,
+  left: number,
+  queuedCosts: number[] = [],
+): OrderBlock | null {
+  const orders = queuedCosts.reduce((s, c) => s + c, 0);
+  if (extra <= Math.max(0, left) || (price <= 0 && orders <= 0)) return null;
+  return capitalBlock(world, extra, left, queuedCosts);
+}
+
+/**
  * The month layer: budgets and selection for the player's unsent month, or null.
  * Order of checks: DUPLICATE (rendered as queued), ORDER_LIMIT, NO_CAPITAL, NO_DEFENSE_BUDGET.
  */
@@ -331,21 +380,8 @@ export function monthBlock(
       "Remove an order",
       "orders",
     );
-  const pc = actionCostPC(action);
-  const have = Math.max(0, month.pcLeft);
-  if (pc > have) {
-    const gap = pc - have;
-    const frees = (month.queuedCosts ?? []).filter((c) => c >= gap).sort((a, b) => a - b)[0];
-    const refill = refillLine(world, me);
-    const fix = frees
-      ? `Remove an order (frees ◆ ${frees}), or wait: ${refill}`
-      : world.politicalCapital >= PC_CAP
-        ? refill
-        : `Wait: ${refill}`;
-    return block("NO_CAPITAL", `Needs ◆ ${pc}, you have ◆ ${have}.`, fix, "capital", {
-      need: { have, need: pc, refill: politicalCapitalIncome(world, me) },
-    });
-  }
+  const short = capitalBlock(world, actionCostPC(action), month.pcLeft, month.queuedCosts);
+  if (short) return short;
   const costM = actionCostM(action, me);
   if (costM > 0) {
     const budgetM = monthlyDefenseBudgetM(me);

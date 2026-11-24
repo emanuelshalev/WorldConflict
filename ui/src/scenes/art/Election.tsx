@@ -58,7 +58,6 @@ export default function Election({ a, mood }: SceneArtProps) {
   const total = SEATS.length;
   const seatsA = Math.round(total * sa);
   const seatsB = Math.round(total * sb);
-  const shown = Math.round(650 * sa);
   const key = mood === 'bad' ? '#7aa0ff' : mood === 'good' ? '#ffd27a' : '#c9b6ff';
   const lum = (pr * 299 + pg * 587 + pb * 114) / 1000;
   return (
@@ -127,12 +126,13 @@ export default function Election({ a, mood }: SceneArtProps) {
           <circle key={i} className="elec-seat" cx={p.x} cy={p.y} r="3.7" fill={fill} stroke={lum > 200 && i < seatsA ? '#000' : 'none'} strokeOpacity="0.3" style={{ animationDelay: `${(i / total) * 2.2}s` }} />
         );
       })}
-      <text x={CX} y="180" textAnchor="middle" fontSize="30" className="elec-label" fill="#fff">{shown}</text>
-      <text x={CX} y="196" textAnchor="middle" fontSize="8" className="elec-label" fill="#aab3e0" letterSpacing="3">SEATS</text>
+      {/* F-04-8: the art states no seat count and no result: the game has no seat numbers, and
+          the same picture illustrated a phone call as "377 SEATS MAJORITY WON" */}
+      <text x={CX} y="190" textAnchor="middle" fontSize="8" className="elec-label" fill="#aab3e0" letterSpacing="3">SEATS</text>
       <rect x="174" y="200" width="292" height="14" fill={party} opacity="0.85" />
       <rect x="174" y="200" width="292" height="14" fill="#000" opacity="0.3" />
       <text x="320" y="210.5" textAnchor="middle" fontSize="8.5" className="elec-label" fill="#fff" letterSpacing="2.5">
-        {mood === 'bad' ? 'MAJORITY LOST' : mood === 'good' ? 'MAJORITY WON' : 'TOO CLOSE TO CALL'}
+        ELECTION NIGHT
       </text>
       <rect className="elec-sweep" x="174" y="50" width="60" height="164" fill="#fff" opacity="0.05" />
 

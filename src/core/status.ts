@@ -83,11 +83,18 @@ export interface OrderOutcomeInput {
   /** A roll the order made: covert ops, airstrikes, mediation. */
   chance?: { success: boolean; exposed?: boolean; partial?: string; none?: string };
   target?: string; // the target's name, for reasons
+  /**
+   * A rule stopped the order, but only because the player's own earlier move this month already
+   * did what it was for (F-04-9: a crisis answer took the relation to the cap before Court ran).
+   * Nothing was tried, so, like a refusal, nothing was spent; it is not a refusal. The reason.
+   */
+  overtaken?: string;
 }
 
 /** The status of one player order. */
 export function orderOutcome(o: OrderOutcomeInput): Outcome {
   const why = clean(o.detail);
+  if (o.code && o.overtaken) return { status: "NO_EFFECT", reason: clean(o.overtaken) };
   if (o.code) return { status: "REFUSED", reason: why || "Not allowed this month" };
   if (!o.ok)
     return REFUSAL.test(why)

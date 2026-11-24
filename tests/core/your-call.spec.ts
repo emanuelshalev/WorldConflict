@@ -167,7 +167,8 @@ describe("D84-PRICE: the mission side costs PUSH_PC when another answer helps no
     const { world, d } = pricedWorld(0);
     const call = buildAdvice(world).calls.find((c) => c.id === d.id);
     const push = call?.cards.find((c) => c.id === "push");
-    expect(push?.blocked?.reason).toMatch(/political capital 1, you have 0/);
+    // the order cards' copy (F-04-1)
+    expect(push?.blocked?.reason).toBe("Needs ◆ 1, you have ◆ 0.");
     expect(push?.blocked?.fix.length).toBeGreaterThan(0);
     expect(call?.chiefPick).toBe("calm");
     const after = run(world, "push");

@@ -233,7 +233,8 @@ export const OPTION_KEYWORDS: ReadonlyArray<{ re: RegExp; scene: SceneKind; fami
   { re: /reform|decree|\border\b|emergency (security )?powers|stimulus|subsidi[sz]e|bail out|austerity|\btax|fire them|prosecute/i, scene: 'exec_order', family: 'domestic' },
   { re: /condemn|denounc|statement|name and shame|expose|blame|\bdeny|reject it publicly|downplay|forgery/i, scene: 'press', family: 'diplomacy' },
   { re: /\bpact\b|treaty|\bsign\b|sign it|\bdeal\b|accord|agreement|pledge/i, scene: 'signing', family: 'diplomacy' },
-  { re: /run on|campaign|promise/i, scene: 'election', family: 'domestic' },
+  // F-04-8: election night only for an election; "Promise full support" on a call is not one
+  { re: /run on|campaign|\belections?\b/i, scene: 'election', family: 'domestic' },
   { re: /markets|\bfuel\b|producers|\boil\b/i, scene: 'econ_tv', family: 'domestic' },
 ];
 

@@ -14,13 +14,16 @@ findings:
   - id: RS-001-1
     title: Never blocked without a reason; no repeated, unexplained refusal message
     source: RS-001 (CEO playtest of v0.9.0); D-45
-    covers: [src/core/availability.ts, src/core/preview.ts, ui/src/lib/availability.ts, ui/src/components/orders/**, ui/src/store/gameStore.ts]
+    covers: [src/core/availability.ts, src/core/preview.ts, ui/src/lib/availability.ts, ui/src/components/orders/**, ui/src/store/gameStore.ts, ui/src/components/desk/YourMove.tsx]
     guards:
       - vitest: tests/core/availability.spec.ts
         name: "Availability: preview and Execute agree"
       - vitest: tests/ui-availability.spec.ts
         name: availabilityOf precedence
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-00-1.mjs
+      - vitest: tests/regressions/triage-iter4.spec.ts
+        name: "F-04-1"
+    changed: "2026-11-24 F-04-1 (iteration 4 customer round, REGRESSED: Choose on an answer card the player could not afford did nothing, the reason sat in the card's detail line, hidden below 1200 tall, and only a meter callout spoke; the guards covered the orders catalogue, Detail and the map menu, not the month screen's answer cards): the mission move, crisis and meeting answer cards are disabled with the order cards' NO_CAPITAL copy and the Remove fix, before the press"
   - id: RS-001-2
     title: Political capital is named one way everywhere and the warning points at its meter
     source: RS-001 (CEO, "political credit" vs the small bar); D-45; QA0-5
@@ -132,12 +135,17 @@ findings:
   - id: F-00-1
     title: Refused orders always show a reason (and a fix) on the card, before any tap
     source: iter-00 triage F-00-1; QA repro #4; D-45
-    covers: [src/core/availability.ts, ui/src/lib/availability.ts, ui/src/components/orders/**, ui/src/components/desk/Detail.tsx, ui/src/components/MapActionMenu.tsx]
+    covers: [src/core/availability.ts, ui/src/lib/availability.ts, ui/src/components/orders/**, ui/src/components/desk/Detail.tsx, ui/src/components/MapActionMenu.tsx, ui/src/components/Chronicle.tsx, ui/src/lib/outcome.ts, ui/src/components/desk/YourMove.tsx]
     guards:
       - vitest: tests/core/availability.spec.ts
         name: "Availability: rule layer"
       - vitest: tests/ui-availability.spec.ts
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-00-1.mjs
+      - vitest: tests/regressions/triage-iter4.spec.ts
+        name: "F-04-9"
+      - vitest: tests/regressions/triage-iter4.spec.ts
+        name: "F-04-1"
+    changed: "2026-11-24 F-04-9 (iteration 4 customer round, REGRESSED: the paper listed REFUSED Court United Kingdom with the reason only in a hover title; the guards covered the orders catalogue, Detail and the map menu, not the paper): the paper's status list prints the engine's reason on every REFUSED or FAILED row (lib/outcome.ts paperStatusItems). 2026-11-24 F-04-1: F-00-1.mjs also plays HC-ARE-NOAH1 month 2 at 1920x1080 with every ◆ spent and checks the mission move and a crisis answer: not live, the cost, what you have and the fix on the card, a Remove control beside it, a press changes nothing"
   - id: F-00-2
     title: The goal is clear (no dead Mission 2/4 pill; which move helps; why the score moved)
     source: iter-00 triage F-00-2; D-46
@@ -226,11 +234,12 @@ findings:
   - id: F-00-9
     title: A month takes two screens (result card, then the next desk); the paper closes on Escape
     source: iter-00 triage F-00-9; D-46
-    covers: [ui/src/scenes/ResultCard.tsx, ui/src/scenes/MonthDebrief.tsx, ui/src/components/Chronicle.tsx, ui/src/lib/afterMonth.ts, ui/src/App.tsx]
+    covers: [ui/src/scenes/ResultCard.tsx, ui/src/scenes/MonthDebrief.tsx, ui/src/components/Chronicle.tsx, ui/src/lib/afterMonth.ts, ui/src/App.tsx, ui/src/scenes/result.css]
     guards:
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-00-9.mjs
       - vitest: tests/ui-ease.spec.ts
         name: the result card keeps Next month in view
+    changed: "2026-11-24 F-04-6 (iteration 4 customer round, REGRESSED: Next month 6 px on screen at 1920x1080 in month 7 of CO-UKR-MAYA1 under a Remember banner; F-00-9.mjs only looked at month 1 at laptop and tablet size, with a viewport-only test): F-00-9.mjs also plays CO-UKR-MAYA1 months 1 to 8 at 1920x1080 (Choose all, Execute) and checks Next month and the button row whole and on top (WHOLE_JS: viewport, clipping ancestors, elementFromPoint) every month, plus RS-008's result-card layout rules on the first tall card"
   - id: F-00-10
     title: Real-world context at the end (declassified truth and real-history table)
     source: iter-00 triage F-00-10 (covered by the reveal); D-47
@@ -322,7 +331,10 @@ findings:
       - vitest: tests/core/consistency.spec.ts
       - vitest: tests/core/consistency.spec.ts
         name: "the reveal counts goals like the desk and names the score goal"
+      - vitest: tests/core/consistency.spec.ts
+        name: "F-04-5"
     note: "QA3R-2b, QA3R-2c (iteration 3 repro, GUARD GAP): the verdict counted Stay in power as a goal (5 of 5 vs the desk 4 of 4); the Finish line said par 115 beside a goal of 120. Guarded on the control seeds and every flashpoint seat"
+    changed: "2026-11-24 F-04-5 (iteration 4 customer round, REGRESSED: MISSION COMPLETE · A peace that holds with the war on and the seal of the same name locked; the guard checked goal counts, not the title): consistency.spec.ts now checks every flashpoint seat: no mission title equals its seal name, and a title naming a peace or ceasefire needs a no-war goal"
   - id: F-01-3
     title: Numbers agree across HUD, result card, debrief and paper (single source)
     source: iter-01 triage F-01-3 (numbers part; attribution is QA2-S2-1, open); B-11
@@ -336,7 +348,10 @@ findings:
         name: "your own view of a country and the mission summary"
       - vitest: tests/core/outcome-status.spec.ts
         name: "report.yourView on the control seeds"
+      - vitest: tests/regressions/triage-iter4.spec.ts
+        name: "F-04-3"
     note: "QA3R-2a, QA3R-2e (iteration 3 repro, GUARD GAP): the card said Your view of Iran -75 to -68 while the month ended at -89; the report carries yourView and the card leads with the month total. The Mission sheet said 0 of 0 on track in a Term; desk and sheet share missionSummary"
+    changed: "2026-11-24 F-04-3 (iteration 4 customer round, REGRESSED: the result card's mission line Keep Washington engaged: 39 → 48 beside United States' view of you 37 → 43; the guard checked the debrief country card, not the result card): the mission line and the Mission sheet name the direction (your view of the United States), guarded by rendering the result card on the Ukraine control seeds"
   - id: F-01-4
     title: Month 1 shows only the crisis, its cards and Execute; the rest behind Show the whole desk
     source: iter-01 triage F-01-4; D-55; QA2 verified
@@ -409,12 +424,15 @@ findings:
   - id: QA1-S3-1
     title: Option art follows the choice ("no strikes" is not an airstrike); card and paper agree
     source: iter-01 qa-verify S3-1; QA2 FIXED
-    covers: [ui/src/scenes/kinds.ts, ui/src/lib/monthArt.ts]
+    covers: [ui/src/scenes/kinds.ts, ui/src/lib/monthArt.ts, ui/src/scenes/art/Election.tsx, ui/src/scenes/art/UnVote.tsx, ui/src/scenes/art/Parliament.tsx, ui/src/scenes/art/EconTv.tsx]
     guards:
       - vitest: tests/ui-ease.spec.ts
         name: QA S3-1 art follows the choice
       - vitest: tests/ui/kinds.spec.ts
         name: "R1: the picture follows the choice"
+      - vitest: tests/ui/kinds.spec.ts
+        name: "F-04-8"
+    changed: "2026-11-24 F-04-8 (iteration 4 customer round, REGRESSED: Promise full support on a call drawn as election night, 377 SEATS MAJORITY WON; one UN vote tallied YES 11 on the card and YES 8 in the paper; kinds.spec covered no strikes and endScene, not call answers, and nothing checked that art prints no count): election night only for an election, and the election, UN, parliament and markets art state no count, tally or figure the game does not pass"
   - id: QA1-S3-3
     title: The 1024 HUD shows all seven resources in words
     source: iter-01 qa-verify S3-3 (orders AC17); QA2 FIXED
@@ -425,11 +443,12 @@ findings:
   - id: QA1-S3-5
     title: The result card keeps Next month in view at 1024x768
     source: iter-01 qa-verify S3-5; QA2 FIXED
-    covers: [ui/src/scenes/ResultCard.tsx, ui/src/styles/**]
+    covers: [ui/src/scenes/ResultCard.tsx, ui/src/styles/**, ui/src/scenes/result.css]
     guards:
       - vitest: tests/ui-ease.spec.ts
         name: (QA S3-5)
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-00-9.mjs
+    changed: "2026-11-24 F-04-6: F-00-9.mjs now also covers 1920x1080 over 8 months of CO-UKR-MAYA1 (the month 7 tall card that put Next month below the screen)"
   - id: QA1-S3-6
     title: '"Leadership score" no longer appears in the reveal or the game'
     source: iter-01 qa-verify S3-6 (B-15 UI side); QA2 FIXED
@@ -725,7 +744,8 @@ findings:
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-008.mjs
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-008-1.mjs
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-008-2.mjs
-    changed: "RS-008-2 (build-agenda-layout preview, runs/iter-04/build-preview/m1-3440x1440.png): the month 1 coach covers no heading or control at 3440x1440, 1440x900, 1024x768 and 390x844 (step 1 lay over the question heading; step 3 over the list from the bar at 1024x768); step 3 shows on the phone's review screen, where Execute is the next action (it never showed on a phone); goals are named with the mission line's words, never a raw threshold (\"Hurts: approval 56%+\"). Merge of build-your-call (D-85 item 5): RS-008-1 D5 also accepts a call's Skip card, whose text is the leave sentence (\"Leave it open\", \"If you leave it: <answer>\" or \"If you leave it, the crisis passes with no effect\"), still a statement of what happens instead"
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-00-9.mjs
+    changed: "2026-11-24 F-04-6 (REGRESSED at 1920x1080: the audit's result card is month 1 of CA-USA-OLIV1, never a tall card): F-00-9.mjs runs the result-card layout rules (layout-audit.config.mjs result) on the first card with a Remember banner of CO-UKR-MAYA1 at 1920x1080. RS-008-2 (build-agenda-layout preview, runs/iter-04/build-preview/m1-3440x1440.png): the month 1 coach covers no heading or control at 3440x1440, 1440x900, 1024x768 and 390x844 (step 1 lay over the question heading; step 3 over the list from the bar at 1024x768); step 3 shows on the phone's review screen, where Execute is the next action (it never showed on a phone); goals are named with the mission line's words, never a raw threshold (\"Hurts: approval 56%+\"). Merge of build-your-call (D-85 item 5): RS-008-1 D5 also accepts a call's Skip card, whose text is the leave sentence (\"Leave it open\", \"If you leave it: <answer>\" or \"If you leave it, the crisis passes with no effect\"), still a statement of what happens instead"
     note: "Shipped with the iteration-4 layout (design-layout.md, build-agenda-layout): CEO 3440x1440 0 violations in month 1, the result card, month 2 desk and Map (used width 1.00); all 32 measurements pass. The config now uses the five regions on their real selectors and applies the scroll rules from 1024x768 (the spec's bar, was 1366). RS-008-1 adds AC-L2, L3, L6 to L14 and the agenda criteria (AC-2, AC-5, AC-21, AC-25 to AC-27, AF-14) at 3440x1440, 3840x2160, 2560x1440, 1920x1080, 1599x900, 1440x900, 1366x820, 1366x768, 1024x768 and 390x844. Iter-3 baseline (06f937b + iter-3 UI on the shared dev server, seat CA-USA-OLIV1), 29 violations in 32 measurements. CEO 3440x1440: month 1 used width 0.45 (943 px empty left); month 2 desk 3 inner scrollers (desk stage, rail body, Recommended list; 1495 px hidden), 24 controls below their fold, used width 0.45, 2 covered Remove links; Map mode passes. 1366x768 and 1440x900: inner scrolling in every desk state (month 2: 2585 / 2379 px hidden, 49 / 42 controls out of view). 1920x1080: same plus used width 0.80. 2560 and 3840: used width 0.60 / 0.40. Phone and tablet collapse rules hold."
   - id: F-02-2
     title: One outcome vocabulary; status words never contradict outcomes
@@ -740,6 +760,9 @@ findings:
         name: "debrief cards carry the engine's status"
       - vitest: tests/ui-outcomes.spec.ts
         name: "the result card"
+      - vitest: tests/core/wild-moves.spec.ts
+        name: "F-04-2"
+    changed: "2026-11-24 F-04-2 (iteration 4 customer round, REGRESSED: A quiet month: the world moved on its own over a crisis that ran on its default and moved approval, HC-ARE-NOAH1 months 3 to 5; no guard played a month with nothing chosen): when the player chose nothing, the crisis that ran on its default is yourMove and the result card's Left open line names it"
   - id: QA2-S2-1
     title: Reveal moments never cite an improving number under "went badly" or a falling one under "went well"
     source: qa-verify.md S2-1 (finish-laptop/003-reveal-2.png)
@@ -771,8 +794,13 @@ findings:
     guards:
       - vitest: tests/core/wild-moves.spec.ts
       - vitest: tests/core/aftermath.spec.ts
+      - vitest: tests/core/wild-moves.spec.ts
+        name: "F-04-7"
       - vitest: tests/ui-outcomes.spec.ts
         name: "the share card (F-02-3, Leo: clipped lines)"
+      - vitest: tests/regressions/triage-iter4.spec.ts
+        name: "F-04-7"
+    changed: "2026-11-24 F-04-7 (iteration 4 customer round, REGRESSED: Declare war on Taiwan led by a crisis answer, Strike first led by Sign the treaty on QU-CHN-LEO01, Erdogan and Lai answering warmly the month they were struck; the guard checked the war answer and the domestic cost, not what the month leads with): wild-moves.spec.ts now checks that an act of war (order or crisis answer, Choose all and chief on the control seeds) leads yourMove, the highlight and the paper, and that the struck country never answers a call warmly that month; the country card leads with the strike"
   # ------------------------------------------------------------------------------------------
   # Iteration 3 QA verify findings (runs/iter-03/qa-verify.md), fixed on fix-iter3-qa
   # ------------------------------------------------------------------------------------------
@@ -1116,6 +1144,94 @@ findings:
     covers: [src/core/reactions.ts]
     guards:
       - vitest: tests/core/leader-surname.spec.ts
+  # ------------------------------------------------------------------------------------------
+  # Iteration 4 customer round (runs/iter-04/triage.md section 4, fix now), fixed on fix-triage-iter4
+  # ------------------------------------------------------------------------------------------
+  - id: F-04-10
+    title: "The Finance Minister's briefing reads debt as a percent of GDP (Russia 20%, never 2000%) and calls it a drag only above 100%"
+    source: runs/iter-04/triage.md F-04-10 (dan-term, Debt-to-GDP 2000%; every seat off by 100)
+    covers: [ui/src/lib/financeBrief.ts, ui/src/components/AdvisorModal.tsx]
+    guards:
+      - vitest: tests/regressions/triage-iter4.spec.ts
+        name: "F-04-10"
+  - id: F-04-5
+    title: "The verdict never promises an outcome the mission did not require: no mission title equals its seal name, a title naming a peace needs a no-war goal (Ceasefire or Collapse, Ukraine: Keep Ukraine standing)"
+    source: runs/iter-04/triage.md F-04-5 (priya, MISSION COMPLETE · A peace that holds with the war on); REGRESSED F-01-2
+    covers: [data/flashpoints/**, src/core/reveal.ts, src/core/reveal-text.ts, src/core/objectives.ts]
+    guards:
+      - vitest: tests/core/consistency.spec.ts
+        name: "F-04-5"
+  - id: F-04-4
+    title: "The state band names its capital number as what is left (Political capital left ◆ n of 6, the plan's left), never \"(what orders cost)\" beside it; Explain says the same"
+    source: runs/iter-04/triage.md F-04-4 (sam, priya, dan, marcus, maya: band ◆ 4 read against the plan's ◆ 5 now)
+    covers: [ui/src/components/StateBand.tsx, ui/src/lib/glossary.ts]
+    guards:
+      - vitest: tests/regressions/triage-iter4.spec.ts
+        name: "F-04-4"
+      - vitest: tests/ui-glossary.spec.ts
+        name: finds no banned synonym
+  - id: F-04-3
+    title: "A relation goal names whose view it measures (your view of the United States 39 → 48, needs 33) on the result card's mission line and the Mission sheet, so it never reads as the card's \"their view of you\" with another number"
+    source: runs/iter-04/triage.md F-04-3 (maya, olivia, ruth, priya, leo, sam, marcus; Washington 39 → 48 vs 37 → 43); REGRESSED F-01-3 (QA3R-2a)
+    covers: [ui/src/lib/goals.ts, ui/src/scenes/ResultCard.tsx, ui/src/components/Drawers.tsx, ui/src/components/BackstoryModal.tsx]
+    guards:
+      - vitest: tests/regressions/triage-iter4.spec.ts
+        name: "F-04-3"
+  - id: F-04-2
+    title: "An Execute with nothing chosen reports the crisis that ran on its default as the month's move (Left open: <answer>), never A quiet month over a crisis that moved approval, never a war front as the choice"
+    source: runs/iter-04/triage.md F-04-2 (noah's quit point, HC-ARE-NOAH1 months 3 to 6); REGRESSED F-02-2, D84-DESK-TRUTH
+    covers: [src/core/turn.ts, ui/src/scenes/ResultCard.tsx, ui/src/lib/debrief.ts]
+    guards:
+      - vitest: tests/core/wild-moves.spec.ts
+        name: "F-04-2"
+      - vitest: tests/regressions/triage-iter4.spec.ts
+        name: "F-04-2"
+  - id: F-04-7
+    title: "The player's act of war (declare war, an airstrike or a nuclear strike; an order or a crisis answer that sets one off) leads yourMove, the highlight, the paper and the struck country's card; that country's leader never answers a call or a visit warmly the same month"
+    source: runs/iter-04/triage.md F-04-7 (leo QU-CHN-LEO01 months 6 and 8, dan T2026-RUS-DAN01 month 12); REGRESSED F-02-3
+    covers: [src/core/turn.ts, ui/src/lib/debrief.ts]
+    guards:
+      - vitest: tests/core/wild-moves.spec.ts
+        name: "F-04-7"
+      - vitest: tests/regressions/triage-iter4.spec.ts
+        name: "F-04-7"
+  - id: F-04-9
+    title: "A refusal is never unexplained: the paper prints the engine's reason beside every REFUSED or FAILED order and answer; the staff never suggest an order the engine would refuse (a pact across the bloc line, a court at the cap) and do not court a met goal within 5 of the cap of 95"
+    source: runs/iter-04/triage.md F-04-9 (priya CO-UKR-PRIY1 Court United Kingdom months 3 to 12; dan's pact with China every month); REGRESSED F-00-1
+    covers: [ui/src/components/Chronicle.tsx, ui/src/lib/outcome.ts, src/core/advisors.ts, src/core/availability.ts, ui/src/lib/staff.ts, src/core/status.ts]
+    guards:
+      - vitest: tests/regressions/triage-iter4.spec.ts
+        name: "F-04-9"
+    changed: "2026-11-24 QA re-check (runs/iter-04/qa-recheck-triage.md, PARTLY: PRIY1 month 5, Court United Kingdom came back REFUSED after a same-month crisis answer took the relation to the cap first): an order that a rule stops only because the player's own earlier move this month already did its job is NO_EFFECT with that reason (status.ts orderOutcome overtaken), and, like every order stopped before it acts, spends no political capital. A relation already at the cap when the month began stays REFUSED"
+  - id: F-04-8
+    title: "Art never states a result that did not happen: a call answer is never drawn as election night, and the election, UN vote, parliament and markets art print no seat count, tally, result banner or growth figure the game does not pass (one vote, one picture on the card and in the paper)"
+    source: runs/iter-04/triage.md F-04-8 (marcus 377 SEATS MAJORITY WON, priya YES 11 NO 2 vs YES 8 NO 5); REGRESSED QA1-S3-1, F-00-5
+    covers: [ui/src/scenes/kinds.ts, ui/src/scenes/art/Election.tsx, ui/src/scenes/art/UnVote.tsx, ui/src/scenes/art/Parliament.tsx, ui/src/scenes/art/EconTv.tsx]
+    guards:
+      - vitest: tests/ui/kinds.spec.ts
+        name: "F-04-8"
+  - id: F-04-1
+    title: "An answer the player cannot afford says so on the card before the press: the mission move's order cards and the crisis and meeting answers are not live, and show what it costs, what you have and what would free it (the order cards' NO_CAPITAL copy, one copy in ui/src/lib/availability.ts and src/core/availability.ts), with the Remove control beside the card"
+    source: runs/iter-04/triage.md F-04-1 (ruth, noah, maya; HC-ARE-NOAH1 month 2 at ◆ 0, Order National address); REGRESSED RS-001-1, F-00-1
+    covers: [ui/src/components/desk/YourMove.tsx, ui/src/lib/availability.ts, src/core/availability.ts, src/core/advisors.ts]
+    guards:
+      - vitest: tests/regressions/triage-iter4.spec.ts
+        name: "F-04-1"
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-00-1.mjs
+    changed: "2026-11-24 QA re-check (runs/iter-04/qa-recheck-triage.md, NEW S2 caused by 6aef9cd): at ◆ 0 the crisis cards with the Remove control beside them squeezed to 316 of 571 px and ran over each other (HC-ARE-NOAH1 and CO-UKR-RUTH1 month 2). The Remove control now sits under its card (layout.css .opt-pair[data-short]) and the answer rows keep their content height; F-00-1.mjs checks both seats' crisis at 1920x1080: every card as wide as the others, no overlap, no text outside its card, Leave it open under the answers and on screen"
+  - id: QA4R-2
+    title: "A war the player's own answer or order ended this month is credited to the player: the engine report names the move (wars[].endedBy), the result card says Your choice ended the war (never Not from your choice), the paper's lead tells the signing as the leader's act (not under Elsewhere), See everything names the choice"
+    source: runs/iter-04/qa-recheck-triage.md truth sweep (CO-UKR-MAYA1 and CO-UKR-PRIY1 month 12, Sign the ceasefire); code from e46fb5b
+    covers: [src/core/turn.ts, src/core/types.ts, ui/src/scenes/ResultCard.tsx, ui/src/lib/debrief.ts, ui/src/store/gameStore.ts]
+    guards:
+      - vitest: tests/regressions/triage-iter4.spec.ts
+        name: "QA4R-2"
+  - id: F-04-6
+    title: "The result card's button row (See everything, Read the paper, Next month) is whole and on screen at 1920x1080 in every month: the row is pinned to the bottom of the card and the content gives way (the quote and war line, then the chips, then the details behind their toggle; a scroll only as the last step)"
+    source: runs/iter-04/triage.md F-04-6 (maya CO-UKR-MAYA1 month 7, ruth, priya); REGRESSED F-00-9, QA1-S3-5, RS-008
+    covers: [ui/src/scenes/ResultCard.tsx, ui/src/scenes/result.css, ui/src/lib/layout.ts]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-00-9.mjs
 # ------------------------------------------------------------------------------------------
 # Not listed (still open or not a code fix); add them here when a fix lands with its guard:
 #   RS-001-6  dashboard feel, "serious visual design": the ledger keeps it not done (D-37 check)

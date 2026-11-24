@@ -150,11 +150,10 @@ export default function Parliament({ a, mood }: SceneArtProps) {
         <text x="219" y="90" className="parl-label" fontSize="14" fill="#46e08a">YES</text>
         <rect x="258" y="80" width="130" height="12" rx="2" fill="#13261c" />
         <rect className="parl-bar" x="258" y="80" width={130 * (t.yes / total) * 1.4} height="12" rx="2" fill="#2fd27a" />
-        <text x="422" y="90" textAnchor="end" className="parl-label" fontSize="14" fill="#e8fff1">{t.yes}</text>
+        {/* F-04-8: no vote count: the game has none, and a mood-made tally contradicted itself */}
         <text x="219" y="112" className="parl-label" fontSize="14" fill="#ff6a5c">NO</text>
         <rect x="258" y="102" width="130" height="12" rx="2" fill="#2a1414" />
         <rect className="parl-bar parl-bar2" x="258" y="102" width={130 * (t.no / total) * 1.4} height="12" rx="2" fill="#ef4a3c" />
-        <text x="422" y="112" textAnchor="end" className="parl-label" fontSize="14" fill="#ffe9e6">{t.no}</text>
         <rect x="207" y="120" width="226" height="15" fill="#000" opacity="0.25" />
         {Array.from({ length: 27 }, (_, i) => (
           <rect key={i} className="parl-pip" x={214 + i * 8} y="124" width="5" height="6" rx="1" fill={i / 27 < yesShare ? '#2fd27a' : '#ef4a3c'} style={{ animationDelay: `${i * 0.08}s` }} />

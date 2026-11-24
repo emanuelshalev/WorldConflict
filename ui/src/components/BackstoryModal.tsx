@@ -106,7 +106,7 @@ export function BackstoryModal() {
           <ul className="briefing-goals" data-briefing-goals="all">
             {primary.map((c) => {
               const s = stateOf(c);
-              const nn = nowNeed(c);
+              const nn = nowNeed(c, worldState);
               return (
                 <li key={c.label}>
                   <i className={`gseg s-${s}`} aria-hidden />

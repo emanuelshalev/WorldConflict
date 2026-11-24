@@ -296,3 +296,23 @@ describe("the reveal counts goals like the desk and names the score goal (QA3R-2
       }
   });
 });
+
+describe("the mission title never promises what its goals do not require (F-04-5)", () => {
+  it("F-04-5: no mission title equals its seal name, and a peace title needs a no-war goal", () => {
+    const loader = createDataLoader();
+    const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+    for (const fp of loader.loadAvailableFlashpoints())
+      for (const [side, obj] of Object.entries(fp.objectives)) {
+        const where = `${fp.id} ${side}: "${obj.title}"`;
+        // the seal is earned on top of the mission; a verdict "MISSION COMPLETE · <seal name>"
+        // beside a locked seal reads as a contradiction (Priya, CO-UKR-PRIY1)
+        if (obj.signature) expect(norm(obj.title), where).not.toBe(norm(obj.signature.name));
+        // a title that names a peace or a ceasefire needs a goal the war breaks
+        if (/\b(peace|ceasefire|armistice)\b/i.test(obj.title))
+          expect(
+            obj.primary.some((c) => c.kind === "WAR_ENDED" || c.kind === "NO_WAR_WITH"),
+            where,
+          ).toBe(true);
+      }
+  });
+});

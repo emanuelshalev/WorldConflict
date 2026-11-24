@@ -1,4 +1,5 @@
-import type { OutcomeStatus, ReportFact } from '../store/gameStore';
+import type { OutcomeStatus, ReportFact, TurnReport } from '../store/gameStore';
+import { cleanChoice, leftOpenChoice } from '../scenes/kinds';
 import type { StampWord } from '../components/game/Stamp';
 import { factTone } from './numbers';
 
@@ -58,4 +59,31 @@ export function resultWord(status: OutcomeStatus, lead?: ReportFact): string {
   const word = STATUS_WORD[status];
   if (lead && factTone(lead) === 'bad' && (status === 'DONE' || status === 'PARTLY')) return `${word}, at a cost`;
   return word;
+}
+
+/** One row of the paper's "Your orders and answers" list. */
+export interface PaperStatusItem {
+  label: string;
+  s: OutcomeStatus;
+  /** The engine's reason, printed beside a refusal or a failure (F-04-9), else only on hover. */
+  why?: string;
+  shownWhy?: string;
+}
+
+/**
+ * What became of each of your orders and answers, in the engine's words (F-02-2). A REFUSED or
+ * FAILED row prints its reason in the row itself (F-04-9: "REFUSED Court United Kingdom" with the
+ * reason only in a hover title told the player nothing).
+ */
+export function paperStatusItems(report: Pick<TurnReport, 'decisions' | 'orders'>, max = 6): PaperStatusItem[] {
+  const items: PaperStatusItem[] = [
+    ...report.decisions
+      .filter((d) => d.attended !== false)
+      .map((d) => ({ label: `${leftOpenChoice(d.choice) ? 'Left open: ' : ''}${cleanChoice(d.choice)}`, s: statusOf(d) as OutcomeStatus, why: d.reason })),
+    ...report.orders.map((o) => ({ label: o.label, s: statusOf(o) as OutcomeStatus, why: o.reason ?? (statusOf(o) === 'REFUSED' || statusOf(o) === 'FAILED' ? o.detail : undefined) })),
+  ].filter((x) => x.s);
+  return items.slice(0, max).map((x) => ({
+    ...x,
+    shownWhy: (x.s === 'REFUSED' || x.s === 'FAILED') && x.why ? x.why.replace(/\.\s*$/, '') : undefined,
+  }));
 }

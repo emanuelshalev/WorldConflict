@@ -10,11 +10,10 @@ import { BigMoment } from './BigMoment';
 import { useCoach } from '../lib/coach';
 import '../scenes/result.css';
 import { SceneFrame } from '../scenes/SceneFrame';
-import { cleanChoice, leftOpenChoice, sceneForAction, sceneForCrisis, sceneForNews } from '../scenes/kinds';
+import { sceneForAction, sceneForCrisis, sceneForNews } from '../scenes/kinds';
 import { ExplainText } from './learn/ExplainText';
 import { monthScene } from '../lib/monthArt';
-import { STATUS_WORD, statusOf } from '../lib/outcome';
-import type { OutcomeStatus } from '../store/gameStore';
+import { paperStatusItems, STATUS_WORD } from '../lib/outcome';
 
 const MOMENT_COLOR: Record<string, string> = {
   'CLOSE CALL': '#b3261e',
@@ -278,15 +277,14 @@ export function Chronicle() {
             ))}
             {/* What became of each of your orders and answers, in the engine's words (F-02-2) */}
             {(() => {
-              const items = [
-                ...report.decisions.filter((d) => d.attended !== false).map((d) => ({ label: `${leftOpenChoice(d.choice) ? 'Left open: ' : ''}${cleanChoice(d.choice)}`, s: statusOf(d), why: d.reason })),
-                ...report.orders.map((o) => ({ label: o.label, s: statusOf(o), why: o.reason })),
-              ].filter((x) => x.s).slice(0, 6);
+              // A refusal or a failure prints its reason in the row (F-04-9), not only on hover
+              const items = paperStatusItems(report);
               return items.length > 0 ? (
                 <ul className="paper-status" aria-label="Your orders and answers">
                   {items.map((x, i) => (
                     <li key={`${x.label}-${i}`} data-status={x.s} title={x.why}>
-                      <b className={`s-${(x.s as string).toLowerCase()}`}>{STATUS_WORD[x.s as OutcomeStatus]}</b> {x.label}
+                      <b className={`s-${x.s.toLowerCase()}`}>{STATUS_WORD[x.s]}</b> {x.label}
+                      {x.shownWhy && <span className="paper-why">: {x.shownWhy}</span>}
                     </li>
                   ))}
                 </ul>

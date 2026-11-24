@@ -12,8 +12,8 @@ import { SceneFrame } from './SceneFrame';
 import { Stamp } from '../components/game/Stamp';
 import { CoachResultLine } from '../components/desk/Coach';
 import { Segments } from '../components/desk/Segments';
-import { useLayout } from '../lib/layout';
-import { metricWord, stepObjective } from '../lib/goals';
+import { useFitLevel, useLayout } from '../lib/layout';
+import { metricWord, stepObjective, viewWords } from '../lib/goals';
 import { scoreLine, useScoreWhy } from '../lib/scoreWhy';
 import { useModalFocus } from '../lib/useModalFocus';
 import { type AfterMonth, readAfterMonth, writeAfterMonth } from '../lib/afterMonth';
@@ -115,7 +115,13 @@ export function ResultCard({ report, world, home, onNext, onEverything, onPaper,
   const hd = h?.ref === 'decision' ? report.decisions[h.index] : undefined;
   const ho = h?.ref === 'order' ? report.orders[h.index] : undefined;
   const warHl = report.highlight?.ref === 'war' ? report.wars?.[report.highlight.index] : undefined;
-  const meanwhile = own && warHl ? warHl : undefined;
+  // A war the player's own answer or order ended is the player's (engine report endedBy), never
+  // "not from your choice" (QA re-check, iteration 4: Sign the ceasefire, CO-UKR-MAYA1 month 12)
+  const meanwhile = own && warHl && !warHl.endedBy ? warHl : undefined;
+  const endedByYou = warHl?.ended && warHl.endedBy ? warHl : undefined;
+  const ender = endedByYou?.endedBy;
+  const enderIsMove = !!ender && !!report.yourMove && ender.ref === report.yourMove.ref && ender.index === report.yourMove.index;
+  const enderLabel = ender ? (ender.ref === 'decision' ? report.decisions[ender.index]?.choice : report.orders[ender.index]?.label) : undefined;
   const chose = hd ? hd.choice.replace(/\s*\((no decision taken|you did not attend)\)\s*$/, '') : ho?.label;
   // A crisis left open went ahead on its default answer: never "You chose" (design-rereview C2-2)
   const leftOpen = !!hd && leftOpenChoice(hd.choice);
@@ -151,7 +157,14 @@ export function ResultCard({ report, world, home, onNext, onEverything, onPaper,
   // (design-layout L-12, WP-L2); smaller ones keep them one press away
   const L = useLayout();
   const [moreChoice, setMoreChoice] = useState<boolean | null>(null);
-  const moreOpen = moreChoice ?? (L.width >= 1600 && L.tall);
+  // F-04-6: the card is one screen and its button row never leaves it. When the body is taller than
+  // its box (a Remember banner, a long headline, chips on two rows) the content gives way, one step
+  // at a time (result.css [data-fit]): 1 the quote and the war line (both in the details and the
+  // paper), 2 the chips (in See everything), 3 the details fold behind their toggle unless the
+  // player opened them, 4 the body scrolls under the pinned row (only when nothing else is left)
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const fit = useFitLevel(bodyRef, `${world.turn}|${String(moreChoice)}`, 4, [], true);
+  const moreOpen = moreChoice ?? (L.width >= 1600 && L.tall && fit < 3);
   const setMoreOpen = (f: (v: boolean) => boolean) => setMoreChoice(f(moreOpen));
   const u = (c: ConditionStatus) => (c.unit === '%' ? '%' : '');
   return (
@@ -176,7 +189,7 @@ export function ResultCard({ report, world, home, onNext, onEverything, onPaper,
             </span>
           )}
         </div>
-        <div className="rc-body">
+        <div className="rc-body" ref={bodyRef} data-fit={fit}>
           {resolved && (
             <p className="rc-remember">
               Remember {resolved.title}? <b>{resolved.headline}</b>
@@ -201,6 +214,11 @@ export function ResultCard({ report, world, home, onNext, onEverything, onPaper,
               (front {meanwhile.frontBefore} → {meanwhile.frontAfter}).
             </p>
           )}
+          {endedByYou && (
+            <p className="rc-meanwhile" data-result-ended-by-you="">
+              {enderIsMove || !enderLabel ? 'Your choice' : `Your ${ender?.ref === 'order' ? 'order' : 'answer'} "${enderLabel}"`} ended the war with {countryName(endedByYou.vs)} (front {endedByYou.frontBefore} → {endedByYou.frontAfter}).
+            </p>
+          )}
           {card?.reaction && (
             <blockquote className={`rc-quote t-${card.reaction.tone}`}>
               <p>
@@ -212,7 +230,9 @@ export function ResultCard({ report, world, home, onNext, onEverything, onPaper,
           {mm && mm.c.now !== undefined && (
             <button type="button" className="rc-mission" onClick={() => useGameStore.getState().setDrawer('objective')}>
               <span>
-                Mission{['front', 'score'].includes(metricWord(mm.c)) ? ` (${mm.c.short ?? ''})` : ''}: <b>{metricWord(mm.c)} {r1(mm.before)} → {r1(mm.c.now)}{u(mm.c)}</b>
+                {/* F-04-3: a relation goal names its direction (your view of them), so it never
+                    reads as the card's "their view of you" with another number */}
+                Mission{['front', 'score'].includes(metricWord(mm.c)) || viewWords(mm.c, world) ? ` (${mm.c.short ?? ''})` : ''}: <b>{metricWord(mm.c, world)} {r1(mm.before)} → {r1(mm.c.now)}{u(mm.c)}</b>
                 {mm.c.need !== undefined ? `, needs ${r1(mm.c.need)}${u(mm.c)}.` : '.'}
               </span>
               <Segments status={status} size="lg" />

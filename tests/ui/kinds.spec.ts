@@ -179,3 +179,57 @@ describe("the UN vote board is a 15-seat council (QA3R-3c)", () => {
     expect(src).toContain("COUNCIL.slice(");
   });
 });
+
+/**
+ * F-04-8 (iteration 4 customer round, REGRESSED QA1-S3-1 and F-00-5): Marcus's call answer
+ * "Promise full support" was drawn as election night, "377 SEATS MAJORITY WON"; Priya saw one UN
+ * vote tallied YES 11 NO 2 on the result card and YES 8 NO 5 in the paper (the tally came from the
+ * scene's mood). Art that states a fact must come from the game's data or state no number.
+ */
+describe("F-04-8: art never states a result that did not happen", () => {
+  /** Every meeting answer label in src/core/meetings.ts (calls, visits, staff, press). */
+  function meetingAnswers(): string[] {
+    const src = readFileSync("src/core/meetings.ts", "utf8");
+    return [...src.matchAll(/^\s+"([A-Z][^"]{3,80})",?$/gm)].map((m) => m[1]);
+  }
+
+  it("F-04-8: no crisis, flashpoint or meeting answer draws election night unless it is about an election", () => {
+    const labels = [...engineOptions().map(([, l]) => l), ...flashpointOptions().map(([, l]) => l), ...meetingAnswers()];
+    expect(labels).toContain("Promise full support");
+    const wrong = labels.filter(
+      (l) => optionKeyword(l)?.scene === "election" && !/\belect|\bcampaign|\bballot|\bpolls?\b|run on/i.test(l),
+    );
+    expect(wrong).toEqual([]);
+    expect(sceneForDecision({ kind: "CALL", title: "Phone call", label: "Promise full support" })).not.toBe("election");
+  });
+
+  it("F-04-8: the election and UN vote art print no seat count, tally or result banner (every mood)", async () => {
+    const { createElement } = await import("../../ui/node_modules/react/index.js");
+    const { renderToStaticMarkup } = await import("../../ui/node_modules/react-dom/server.node.js");
+    const Election = (await import("../../ui/src/scenes/art/Election")).default;
+    const UnVote = (await import("../../ui/src/scenes/art/UnVote")).default;
+    for (const mood of ["good", "bad", "neutral"] as const)
+      for (const [name, Art] of [["Election", Election], ["UnVote", UnVote]] as const) {
+        const svg = renderToStaticMarkup(createElement(Art as never, { a: "USA", b: "RUS", mood } as never));
+        const texts = [...svg.matchAll(/<text[^>]*>([^<]*)<\/text>/g)].map((m) => m[1]);
+        const at = `${name} ${mood}: ${texts.join(" | ")}`;
+        expect(texts.filter((t) => /\d/.test(t)), at).toEqual([]);
+        expect(texts.filter((t) => /MAJORITY|YES|NO\b|WON|LOST/.test(t)), at).toEqual([]);
+      }
+  });
+  it("F-04-8: the parliament division and the markets screen state no count or figure of their own", async () => {
+    const { createElement } = await import("../../ui/node_modules/react/index.js");
+    const { renderToStaticMarkup } = await import("../../ui/node_modules/react-dom/server.node.js");
+    const Parliament = (await import("../../ui/src/scenes/art/Parliament")).default;
+    const EconTv = (await import("../../ui/src/scenes/art/EconTv")).default;
+    const texts = (el: unknown) => [...renderToStaticMarkup(el as never).matchAll(/<text[^>]*>([^<]*)</g)].map((m) => m[1]);
+    for (const mood of ["good", "bad", "neutral"] as const) {
+      const parl = texts(createElement(Parliament as never, { a: ["#fff", "#00f", "#f00"], b: ["#fff", "#00f", "#f00"], mood } as never));
+      expect(parl.filter((t) => /\d/.test(t)), `Parliament ${mood}`).toEqual([]);
+      const econ = texts(createElement(EconTv as never, { a: ["#fff", "#00f", "#f00"], b: ["#fff", "#00f", "#f00"], mood } as never));
+      for (const fake of ["-2.4%", "+1.8%", "+0.3%"]) expect(econ, `EconTv ${mood}`).not.toContain(fake);
+    }
+    const real = texts(createElement(EconTv as never, { a: ["#fff", "#00f", "#f00"], b: ["#fff", "#00f", "#f00"], mood: "bad", figure: "-1.2%" } as never));
+    expect(real).toContain("-1.2%");
+  });
+});

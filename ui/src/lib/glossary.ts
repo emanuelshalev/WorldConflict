@@ -26,8 +26,9 @@ export const TERMS = {
     token: '◆',
     definition:
       'What your orders cost. You get +2 each month (+3 in a Flashpoint), up to ◆ 6. Unspent capital carries over.',
-    // "Capital city" is the map legend's city dot, not the resource
-    banned: [/\bpolitical credit\b/i, /^\s*credits?\s*$/i, /\bPC\b/, /\bCap\b/, /\bCAP\b/, /(?<!Political |political )\bCapital\b(?! city)/],
+    // "Capital city" is the map legend's city dot, not the resource. F-04-4: the band shows what
+    // is left after this month's choices; "(what orders cost)" beside it read as the bank
+    banned: [/\bpolitical capital \(what orders cost\)/i, /\bpolitical credit\b/i, /^\s*credits?\s*$/i, /\bPC\b/, /\bCap\b/, /\bCAP\b/, /(?<!Political |political )\bCapital\b(?! city)/],
   },
   orders: {
     id: 'orders',
@@ -222,3 +223,9 @@ export const ORDER_FAMILY_WORDS = {
 export function term(text: string, n?: number | string, m?: number | string): string {
   return text.split('{n}').join(String(n ?? '')).split('{m}').join(String(m ?? ''));
 }
+
+/**
+ * The state band's capital label (F-04-4): the number beside it is what is left after this
+ * month's choices (budget.ts `left`, the plan's "◆ n left"), so the label says so.
+ */
+export const CAPITAL_LEFT = `${TERMS.capital.name} left`;

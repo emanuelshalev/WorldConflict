@@ -105,6 +105,11 @@ html { font-size: clamp(16px, calc(0.42vmin + 11.5px), 22px); }
 .skip-status p { margin: 0; flex: 1; }
 .opt-pair { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .5rem; align-items: center; min-height: 0; }
 .opt-pair > .wc-btn { min-height: 2.75rem; }
+/* An unaffordable answer (F-04-1) keeps the width of its neighbours: the Remove control goes under
+   the card at its right edge, never beside it (QA re-check: beside it the crisis cards squeezed to
+   316 of 571 px at ◆ 0 and ran over each other) */
+.opt-pair[data-short] { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(min-content, 1fr) auto; gap: .3rem; align-items: stretch; }
+.opt-pair[data-short] > .wc-btn { justify-self: end; min-height: 2.25rem; }
 
 /* ---------- the Thing: columns by its own width (L-7) ---------- */
 .thing { display: grid; gap: var(--gap); height: 100%; min-height: 0; grid-template-columns: minmax(0, 1fr); align-content: start; }
@@ -204,6 +209,9 @@ html { font-size: clamp(16px, calc(0.42vmin + 11.5px), 22px); }
     .th-story li:last-child::before { background: var(--accent); }
     .th-story .when { font-size: .9375rem; color: var(--text-2); font-weight: 650; }
     .th-ans > .opts { flex: 1 1 auto; grid-auto-rows: minmax(0, 1fr); max-height: 56rem; }
+    /* A card with its Remove control under it (F-04-1) needs more than an equal share: every row
+       keeps at least its content, the spare height still goes to all rows alike */
+    .th-ans > .opts:has(> .opt-pair[data-short]) { grid-auto-rows: minmax(min-content, 1fr); }
     .opt { align-content: center; }
     .th-ctx > .context-map { flex: 1 1 auto; min-height: 12rem; }
     .th-ctx > .context-map .outcome-map { height: 100%; }

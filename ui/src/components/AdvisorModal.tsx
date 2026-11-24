@@ -6,6 +6,7 @@ import { useModalFocus } from '../lib/useModalFocus';
 import { ExplainText } from './learn/ExplainText';
 import { orderFor } from '../lib/orders';
 import { pcCost } from '../lib/actions';
+import { financeBriefing } from '../lib/financeBrief';
 
 const ADVISOR_API_URL = `${(import.meta.env.VITE_API_BASE ?? '/api').replace(/\/$/, '')}/chat/advisor`;
 
@@ -199,20 +200,17 @@ function generateLocalBriefing(advisorId: string, worldState: WorldState | null)
     }
 
     case 'FINANCE_MINISTER': {
-      const gdp = playerCountry.gdp || 0;
       const growth = playerCountry.realGrowth ?? 0; // the HUD's growth, never growthRate (CLAUDE.md)
-      const debt = playerCountry.debtGdpRatio || 0;
       const milBudget = Math.round((playerCountry.militaryBudgetPercent || 0) * 10) / 10;
       const recommendations: AdvisorResponse['recommendations'] = [];
-      const warnings: string[] = [];
       const opportunities: string[] = [];
-
-      if (growth < 0) {
-        warnings.push(`Our economy is contracting at ${(growth * 100).toFixed(1)}% annually. This is unsustainable and will erode our national power.`);
-      }
-      if (debt > 1.0) {
-        warnings.push(`National debt has reached ${(debt * 100).toFixed(0)}% of GDP. This is hampering economic growth.`);
-      }
+      // debtGdpRatio is a percent of GDP (F-04-10): figures and warnings come from one function
+      const { analysis, warnings } = financeBriefing({
+        gdp: playerCountry.gdp || 0,
+        realGrowth: growth,
+        debtGdpRatio: playerCountry.debtGdpRatio || 0,
+        militaryBudgetPercent: playerCountry.militaryBudgetPercent || 0,
+      });
       if (milBudget > 8) {
         recommendations.push({
           action: { type: 'ECONOMY_ADJUST_MILITARY_BUDGET', value: milBudget - 1 },
@@ -227,7 +225,7 @@ function generateLocalBriefing(advisorId: string, worldState: WorldState | null)
 
       return {
         role: 'FINANCE_MINISTER',
-        analysis: `Economic report: GDP stands at $${(gdp / 1e12).toFixed(2)} trillion with ${growth >= 0 ? '+' : ''}${(growth * 100).toFixed(1)}% growth. Debt-to-GDP ratio is ${(debt * 100).toFixed(0)}%. Military budget consumes ${milBudget}% of GDP.`,
+        analysis,
         recommendations,
         warnings: warnings.length > 0 ? warnings : undefined,
         opportunities: opportunities.length > 0 ? opportunities : undefined,
