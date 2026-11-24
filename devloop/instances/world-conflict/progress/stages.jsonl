@@ -91,3 +91,6 @@
 {"t":"2026-11-24T14:55:58.032Z","iteration":4,"stage":"Triage","kind":"start"}
 {"t":"2026-11-24T17:15:48.517Z","iteration":4,"stage":"Triage","kind":"end"}
 {"t":"2026-11-24T17:15:48.517Z","iteration":4,"stage":"Report","kind":"start"}
+{"t":"2026-11-24T17:17:43.825Z","iteration":4,"stage":"Report","kind":"end"}
+{"t":"2026-11-24T17:17:43.825Z","iteration":4,"stage":"Gate","kind":"start"}
+{"t":"2026-11-24T17:37:39.873Z","iteration":4,"stage":"Gate","kind":"end","note":"closed when iter-4 was published"}
