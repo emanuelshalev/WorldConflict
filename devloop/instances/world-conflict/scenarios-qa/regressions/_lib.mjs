@@ -355,3 +355,38 @@ export async function openThing(page, title) {
   await page.waitForTimeout(400);
   return on();
 }
+
+/** The game's four font families (ui/src/styles/fonts.css), shipped with the app (QA4-S2-1). */
+export const GAME_FONTS = ['Geist', 'Geist Mono', 'Instrument Serif', 'Newsreader'];
+
+/** Hosts the game must never load a font from (goal 5: no Google Fonts request). */
+export const FONT_HOSTS = /fonts\.googleapis\.com|fonts\.gstatic\.com/;
+
+/**
+ * Runs in the page: load each game font family (regular, and italic where the game uses it) and
+ * report what failed. A family is good when document.fonts.load() resolves with a face, check()
+ * is true afterwards and none of its faces is in "error" (a missing package serves index.html as the
+ * font and the face errors), and every font file came from the page's own origin.
+ */
+export function fontsReport(page) {
+  return page.evaluate(async (families) => {
+    await document.fonts.ready;
+    const bad = [];
+    const loads = families.flatMap((f) => [`16px "${f}"`, ...(/Serif|Newsreader/.test(f) ? [`italic 16px "${f}"`] : [])]);
+    for (const spec of loads) {
+      try {
+        const faces = await document.fonts.load(spec, 'Abc');
+        if (!faces.length) bad.push(`${spec}: no face declared`);
+        else if (!document.fonts.check(spec, 'Abc')) bad.push(`${spec}: not loaded`);
+      } catch (e) {
+        bad.push(`${spec}: ${e?.message ?? e}`);
+      }
+    }
+    const errored = [...document.fonts].filter((x) => x.status === 'error').map((x) => `${x.family} ${x.style} ${x.unicodeRange.slice(0, 12)}`);
+    if (errored.length) bad.push(`${errored.length} face(s) in error (${errored.slice(0, 3).join('; ')})`);
+    const files = performance.getEntriesByType('resource').filter((r) => /\.woff2(\?|$)/.test(r.name));
+    const foreign = files.filter((r) => new URL(r.name).origin !== location.origin).map((r) => r.name);
+    if (foreign.length) bad.push(`font files from another host: ${foreign.slice(0, 2).join(', ')}`);
+    return { bad, files: files.length, faces: [...document.fonts].filter((x) => x.status === 'loaded').length };
+  }, GAME_FONTS);
+}

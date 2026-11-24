@@ -73,7 +73,7 @@ dev_plan/          spec, reviews, project_status.html
 ## Commands
 
 ```bash
-npm run dev                     # API + UI
+npm run dev                     # API + UI (first checks node_modules against package.json in . and ui/)
 npm test                        # all tests; the timing tests in tests/perf run after the main suite
 npx vitest run tests/core/drama.spec.ts
 npm run lint && (cd ui && npm run lint)
