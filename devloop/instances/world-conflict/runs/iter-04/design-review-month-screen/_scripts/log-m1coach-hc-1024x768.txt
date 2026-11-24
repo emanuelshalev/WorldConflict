@@ -1,0 +1,8 @@
+step1 {"text":"This is your move this month. Pick one. Step 1 of 3","box":"20,399 352x70","covers":[]}
+facts {"size":"1024x768","root":"16px","pageScroll":"768/768","hscroll":false,"state":"🇺🇸 Month 1 of 12 Mission · 3 of 5 goals on track Open › Political capital ◆ 3 of 6 Explain Orders 0 of 6 Your calls 2 open Your country Tension 78 Desk Map Some help Menu","stateH":100,"outView":[],"small":["Mission · 3 of 5 goals on trac 282x36","Explain 77x36","Your country 135x36","Desk 81x36","Map 75x36","Some help 124x40","Menu 85x36","Hide 54x27"],"scrollers":[],"coach":["This is your move this month. Pick one. Step 1 of 3 @20,399 352x70"]}
+choose fail locator.click: Timeout 3000ms exceeded.
+after choose {"text":"This is your move this month. Pick one. Step 1 of 3","box":"20,399 352x70","covers":[]} 1 of 3: The January clock · Your call 0 of 3 done. Choose or skip each, then check and execute. Back Next See all 3 Check and execute
+state 🇺🇸 Month 1 of 12 Mission · 3 of 5 goals on track Open › Political capital ◆ 3 of 6 Explain Orders 0 of 6 Your calls 2 open Your country Tension 78 Desk Map Some help Menu
+next 0 2 of 3: The move for your mission · Your call 0 of 3 done. Choose or skip each, then check and execute. Back Next See al null
+next 1 3 of 3: Recommended orders (1) 0 of 3 done. Choose or skip each, then check and execute. Back See all 3 Check and execut null
+next 2 3 of 3: Recommended orders (1) 0 of 3 done. Choose or skip each, then check and execute. Back See all 3 Check and execut null

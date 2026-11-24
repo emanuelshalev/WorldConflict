@@ -1,0 +1,8 @@
+390x844 month 1 diplo {"top":165,"bottom":780,"band":615,"covered":0,"coveredShare":0,"floaters":[],"whole":6,"heights":"74,72,111,93,93,92","hscroll":false}
+390x844 month 1 mil {"top":165,"bottom":780,"band":615,"covered":0,"coveredShare":0,"floaters":[],"whole":6,"heights":"74,76,72,74,93,74","hscroll":false}
+390x844 month 2 diplo {"top":165,"bottom":780,"band":615,"covered":0,"coveredShare":0,"floaters":[],"whole":6,"heights":"74,72,111,93,93,92","hscroll":false}
+390x844 month 2 mil {"top":165,"bottom":780,"band":615,"covered":0,"coveredShare":0,"floaters":[],"whole":6,"heights":"74,74,72,74,93,74","hscroll":false}
+360x740 month 1 diplo {"top":165,"bottom":676,"band":511,"covered":0,"coveredShare":0,"floaters":[],"whole":4,"heights":"74,74,111,111","hscroll":false}
+360x740 month 1 mil {"top":165,"bottom":676,"band":511,"covered":0,"coveredShare":0,"floaters":[],"whole":4,"heights":"113,76,74,94","hscroll":false}
+360x740 month 2 diplo {"top":165,"bottom":676,"band":511,"covered":0,"coveredShare":0,"floaters":[],"whole":4,"heights":"74,74,111,111","hscroll":false}
+360x740 month 2 mil {"top":165,"bottom":676,"band":511,"covered":0,"coveredShare":0,"floaters":[],"whole":4,"heights":"113,94,74,94","hscroll":false}

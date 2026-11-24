@@ -1,0 +1,8 @@
+step1 {"text":"This is your move this month. Pick one. Step 1 of 3","box":"1230,297 386x70","covers":[]}
+facts {"size":"3440x1440","root":"17.548px","pageScroll":"1440/1440","hscroll":false,"state":"🇺🇸 President of the United States Month 1 of 12 · Nov 2026 Mission: Open the strait · 3 of 5 goals on track Open › Political capital ◆ 3 of 6 Explain Orders 0 of 6 Your calls 2 open Your country Approval 44% Stability 56 World tension 78 Score 100 Desk Map Some help Menu","stateH":64,"outView":[],"small":[],"scrollers":[],"coach":["This is your move this month. Pick one. Step 1 of 3 @1230,297 386x70"]}
+choose fail locator.click: Timeout 3000ms exceeded.
+after choose {"text":"This is your move this month. Pick one. Step 1 of 3","box":"1230,297 386x70","covers":[]} 1 of 3: The January clock · Your call 0 done, 3 to go Back Next: The move for your mission Check and execute
+state 🇺🇸 President of the United States Month 1 of 12 · Nov 2026 Mission: Open the strait · 3 of 5 goals on track Open › Political capital ◆ 3 of 6 Explain Orders 0 of 6 Your calls 2 open Your country Approval 44% Stability 56 World tension 78 Score 100 
+next 0 2 of 3: The move for your mission · Your call 0 done, 3 to go Back Next: Recommended orders (1) Check and execute null
+next 1 3 of 3: Recommended orders (1) 0 done, 3 to go Back Check and execute null
+next 2 3 of 3: Recommended orders (1) 0 done, 3 to go Back Check and execute null

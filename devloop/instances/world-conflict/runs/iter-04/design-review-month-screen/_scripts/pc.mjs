@@ -1,0 +1,13 @@
+import { browser, newSave, openSave, shot, text, log, API, SEATS } from './lib.mjs';
+import { openThing } from 'file:///C:/MyData/git/WorldConflict-agenda/devloop/instances/world-conflict/scenarios-qa/regressions/_lib.mjs';
+const b = await browser();
+const sv = await newSave(SEATS.hc, 4);
+const l = await (await fetch(`${API}/load/${sv.save}`)).json();
+log('log-pc.txt', 'engine pc', l.worldState?.politicalCapital, 'pending', (l.pendingDecisions ?? l.worldState?.pendingDecisions ?? []).map((d) => d.title));
+const { page: p } = await openSave(b, '1920x1080', sv);
+log('log-pc.txt', 'band', (await text(p, '[data-region="state"]')).slice(0, 200));
+await openThing(p, 'Impeachment looms');
+await shot(p, 'pc-m5-impeachment-1920x1080');
+log('log-pc.txt', 'impeachment', (await text(p, '[data-region="item"]')).slice(0, 1200));
+log('log-pc.txt', 'plan', (await text(p, '[data-region="plan"]')).slice(0, 1200));
+await b.close();
