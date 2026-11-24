@@ -9,6 +9,7 @@ import {
   type PendingAction,
   type PendingDecision,
   type WorldState,
+  type YourCall,
   approveProposal,
   capitalLeft,
   committedActions,
@@ -37,6 +38,8 @@ interface Stored {
   decisionChoices: Record<string, string>;
   reviewed: Record<string, true>;
   dismissedStaff: string[];
+  /** Agenda items skipped on purpose (lib/agenda.ts); absent on desks saved before the agenda. */
+  skipped?: Record<string, true>;
 }
 
 const storeKey = (key: string) => `worldconflict.pending.${key}`;
@@ -83,7 +86,8 @@ export function crisisChoices(s: GameState, current: Record<string, string>, rev
   for (const d of s.pendingDecisions) {
     const held = d.options.find((o) => o.id === choices[d.id]);
     let pick: DecisionOption | undefined;
-    if (calls.has(d.id) && !reviewed[d.id]) pick = chiefPickFor(s, d);
+    // A call the player skipped on purpose stays without an answer (lib/agenda skipItem)
+    if (calls.has(d.id) && !reviewed[d.id]) pick = s.skipped?.[`crisis:${d.id}`] ? undefined : chiefPickFor(s, d);
     else pick = held ?? crisisStaffPick(d, world.objective, pc);
     if (!pick) {
       delete choices[d.id];
@@ -102,6 +106,46 @@ function readStored(key: string): Stored | null {
   } catch {
     return null;
   }
+}
+
+// ============================================================================
+// "Your call" (D-84, decision-accept-all.md R1, R2): the things Choose all never decides
+// ============================================================================
+
+export interface CallSet {
+  /** Crises that are calls (decision ids). */
+  crises: Set<string>;
+  /** Meetings that are calls: none since D-84 (the engine's calls are crises and the mission move). */
+  meetings: Set<string>;
+  /** The mission move's orders (orderKey of each card that queues one). */
+  moves: Set<string>;
+  /** The engine's call by id ('move' for the mission move). */
+  byId: Record<string, YourCall>;
+  /** The mission move, when the engine sends one. */
+  move?: YourCall;
+  /** "Let the Chief of Staff make my calls" (Settings): Choose all decides them too. */
+  chief: boolean;
+}
+
+/**
+ * The month's calls, as the engine sends them (`advice.calls`, src/core/advisors.ts buildAdvice):
+ * the crises that matter most for the mission, then the mission move. Nothing is derived here, so
+ * the desk and the engine always agree on what is a call.
+ */
+export function callSet(state: GameState = useGameStore.getState()): CallSet {
+  const out: CallSet = { crises: new Set(), meetings: new Set(), moves: new Set(), byId: {}, chief: !!state.chiefCalls };
+  if (!state.worldState) return out;
+  for (const c of state.advice?.calls ?? []) {
+    if (c.kind === 'move') {
+      out.byId.move = c;
+      out.move = c;
+      for (const card of c.cards) if (card.action) out.moves.add(orderKey(card.action));
+    } else {
+      out.byId[c.id] = c;
+      out.crises.add(c.id);
+    }
+  }
+  return out;
 }
 
 /** The first thing that needs the player: a crisis, else a meeting, else the staff orders. */
@@ -146,14 +190,14 @@ export async function setupMonth(): Promise<void> {
       // A saved desk follows the same rules: a crisis gets a missing staff pick, an unreviewed call
       // follows the Chief of Staff setting (no answer when it is off)
       const reviewed = stored.reviewed ?? {};
-      useGameStore.setState({ ...stored, reviewed, decisionChoices: crisisChoices(s, stored.decisionChoices ?? {}, reviewed), monthKey: key, deskMode: monthDeskMode(world.turn, s.deskMode) });
+      useGameStore.setState({ skipped: {}, ...stored, reviewed, decisionChoices: crisisChoices({ ...s, skipped: stored.skipped ?? {} }, stored.decisionChoices ?? {}, reviewed), agendaKey: null, review: false, listOpen: false, monthKey: key, deskMode: monthDeskMode(world.turn, s.deskMode) });
       useGameStore.setState({ focus: firstFocus() });
       return;
     }
     // 1. Crises: the staff pick, paid for in order; a call is left open, or takes the Chief of
     //    Staff's pick when the player lets them make the calls (crisisChoices)
-    const choices = crisisChoices(s, s.decisionChoices, {});
-    useGameStore.setState({ decisionChoices: choices, reviewed: {}, dismissedStaff: [], monthKey: key, deskMode: monthDeskMode(world.turn, s.deskMode) });
+    const choices = crisisChoices({ ...s, skipped: {} }, s.decisionChoices, {});
+    useGameStore.setState({ decisionChoices: choices, reviewed: {}, dismissedStaff: [], skipped: {}, agendaKey: null, review: false, listOpen: false, monthKey: key, deskMode: monthDeskMode(world.turn, s.deskMode) });
     useGameStore.setState({ focus: firstFocus() });
     // 2. Orders: up to STAFF_ORDERS (three) safe staff proposals within the capital (the engine's staffOrders rule:
     //    affordable after the crisis picks, leaving RESERVE_PC). Proposals hold nothing, so the
@@ -209,23 +253,29 @@ export function pendingApprovals(): { crises: string[]; orders: number[]; meetin
   const s = useGameStore.getState();
   const world = s.worldState;
   if (!world) return { crises: [], orders: [], meetings: [], deputies: [] };
+  // A thing the player skipped on purpose is not "still to do" (design-agenda 0.12): Choose all leaves it
+  const skipped = s.skipped ?? {};
   // A call stays open unless the Chief of Staff makes the calls and has a pick for it (D-84)
   const calls = callCrisisIds(s);
   const crises = s.pendingDecisions
-    .filter((d) => !s.reviewed[d.id] && (!calls.has(d.id) || (s.chiefCalls && !!s.advice?.chief?.decisions[d.id])))
+    .filter((d) => !s.reviewed[d.id] && !skipped[`crisis:${d.id}`] && (!calls.has(d.id) || (s.chiefCalls && !!s.advice?.chief?.decisions[d.id])))
     .map((d) => d.id);
+  const moves = callSet(s).moves;
   let pc = Math.max(0, capitalLeft(s));
   let slots = MAX_ORDERS - committedActions(s.pendingActions).length;
   const orders: number[] = [];
   s.pendingActions.forEach((a, i) => {
-    if (!a.proposed) return;
+    // A skipped group leaves its orders out: the mission move (Hold) or the recommended orders
+    if (!a.proposed || (moves.has(orderKey(a)) ? skipped.move : skipped.orders)) return;
     const cost = pcCost(a.type);
     if (cost > pc || slots <= 0) return;
     pc -= cost;
     slots--;
     orders.push(i);
   });
-  const agenda = world.agenda ?? [];
+  // Month 1 (lib/agenda simpleAgenda): the ministers take the meetings with the usual answer, so
+  // nothing about them is recommended or chosen, unless the player asked to see them
+  const agenda = world.turn < 1 && !s.deskShown ? [] : (world.agenda ?? []);
   const attending = agenda.filter((m) => s.decisionChoices[m.id] && s.decisionChoices[m.id] !== m.defaultOptionId).length;
   let free = MEETING_SLOTS - attending;
   const meetings: Array<{ id: string; optionId: string }> = [];
@@ -291,9 +341,9 @@ useGameStore.subscribe((st, prev) => {
 // Save the desk on every change, per save and month
 useGameStore.subscribe((st, prev) => {
   if (!st.monthKey || setupRunning === st.monthKey) return;
-  if (st.pendingActions === prev.pendingActions && st.decisionChoices === prev.decisionChoices && st.reviewed === prev.reviewed && st.dismissedStaff === prev.dismissedStaff) return;
+  if (st.pendingActions === prev.pendingActions && st.decisionChoices === prev.decisionChoices && st.reviewed === prev.reviewed && st.dismissedStaff === prev.dismissedStaff && st.skipped === prev.skipped) return;
   try {
-    const data: Stored = { pendingActions: st.pendingActions, decisionChoices: st.decisionChoices, reviewed: st.reviewed, dismissedStaff: st.dismissedStaff };
+    const data: Stored = { pendingActions: st.pendingActions, decisionChoices: st.decisionChoices, reviewed: st.reviewed, dismissedStaff: st.dismissedStaff, skipped: st.skipped };
     localStorage.setItem(storeKey(st.monthKey), JSON.stringify(data));
   } catch {
     /* storage unavailable or full */
@@ -340,11 +390,14 @@ export interface Selection {
 
 /**
  * What leaving a crisis without an answer does, in the desk's words (leftAnswer mirrors the engine):
- * "If you leave it: Break the strike", with the answer's political capital cost when it has one.
+ * "If you leave it: Break the strike", with the answer's political capital cost when it has one;
+ * before its deadline month "If you leave it, the crisis passes with no effect" (design-rereview
+ * N-3: the sentence says "no answer" once, in "No answer yet"). The one source for the badge, the
+ * Skip card and the plan (D-85 item 5).
  */
 export function leaveText(d: PendingDecision, world: Pick<WorldState, 'turn'> | null | undefined = useGameStore.getState().worldState): string {
   const o = leftAnswer(world, d);
-  if (!o) return 'If you leave it: no answer is given and the crisis passes';
+  if (!o) return 'If you leave it, the crisis passes with no effect';
   const cost = Math.max(0, -(o.effects.pc ?? 0));
   return `If you leave it: ${o.label}${cost ? ` · ◆ ${cost}` : ''}`;
 }
@@ -358,7 +411,7 @@ export function crisisSelection(d: PendingDecision, choices: Record<string, stri
   const chosen = d.options.find((o) => o.id === choices[d.id]);
   if (!chosen) return { kind: 'waiting', text: `No answer yet. ${leaveText(d)}`, word: 'No answer yet' };
   if (!reviewed[d.id]) return { kind: 'cabinet', option: chosen, text: `Recommended: ${chosen.label}`, word: 'Recommended' };
-  if (chosen.id === cab.id) return { kind: 'approved', option: chosen, text: `Accepted: ${chosen.label}`, word: 'Accepted' };
+  if (chosen.id === cab.id) return { kind: 'approved', option: chosen, text: `You chose: ${chosen.label}`, word: 'You chose' };
   return { kind: 'yours', option: chosen, text: `Your pick: ${chosen.label}`, word: 'Your pick' };
 }
 
@@ -367,10 +420,10 @@ export function meetingSelection(m: Meeting, choices: Record<string, string>, re
   const pick = choices[m.id];
   const sugg = meetingPick(m);
   if (!pick) return { kind: 'waiting', option: sugg, text: sugg ? `Staff would answer: ${sugg.label}` : 'Waiting for you', word: 'Waiting' };
-  if (pick === m.defaultOptionId) return { kind: 'deputy', text: 'A deputy goes', word: 'Deputy' };
+  if (pick === m.defaultOptionId) return { kind: 'deputy', text: 'Your minister takes it', word: 'Minister' };
   const o = m.options.find((x) => x.id === pick);
   if (o && sugg && o.id === sugg.id && !reviewed[m.id]) return { kind: 'cabinet', option: o, text: `Staff attend: ${o.label}`, word: 'Staff attend' };
-  if (o && sugg && o.id === sugg.id) return { kind: 'approved', option: o, text: `Accepted: ${o.label}`, word: 'Accepted' };
+  if (o && sugg && o.id === sugg.id) return { kind: 'approved', option: o, text: `You chose: ${o.label}`, word: 'You chose' };
   return { kind: 'yours', option: o, text: `Your pick: ${o?.label ?? ''}`, word: 'Your pick' };
 }
 
@@ -381,12 +434,13 @@ export interface MissionTag {
   more: number;
 }
 
-/** A goal's name in a tag: its numbers in brackets when short ("stability 78%+"), else the short label. */
+/**
+ * A goal's name in a tag, a goal list or a consequence line: the words the mission line uses (its
+ * short label, "Voters stay on side"), never the raw threshold in its brackets ("approval 56%+"),
+ * which reads as a number without a goal. The numbers stay one press away on the mission.
+ */
 export function goalName(c: Pick<ConditionStatus, 'label' | 'short'> | undefined, fallback = ''): string {
   if (!c) return fallback;
-  const inner = /\(([^)]+)\)/.exec(c.label)?.[1];
-  // "stability 78%+", "US relations 70+"; a bare "relations 40+" does not say whose, so the label wins
-  if (inner && inner.length <= 26 && /\d/.test(inner) && !/^relations\b/i.test(inner)) return inner;
   return c.short ?? c.label.replace(/\s*[(:].*$/, '');
 }
 
@@ -483,7 +537,7 @@ export function planSummary(state: GameState = useGameStore.getState()): PlanLin
   const agenda = world?.agenda ?? [];
   const attend = agenda.filter((m) => state.decisionChoices[m.id] && state.decisionChoices[m.id] !== m.defaultOptionId).length;
   if (attend) parts.push(`you attend ${n(attend, 'meeting')}`);
-  else if (agenda.length) parts.push(`deputies take ${n(agenda.length, 'meeting')}`);
+  else if (agenda.length) parts.push(`your ministers take ${n(agenda.length, 'meeting')}`);
   const text = parts.length ? parts.join(', ').replace(/^./, (c) => c.toUpperCase()) : 'Nothing decided yet: the month runs on its own';
   const against: PlanLine['against'] = [];
   state.pendingDecisions.forEach((d, i) => {
@@ -604,6 +658,7 @@ export function staffPickItems(state: GameState = useGameStore.getState()): Staf
   const world = state.worldState;
   if (!world) return [];
   const { crises, orders, meetings, deputies } = pendingApprovals();
+  const calls = callSet(state);
   const items: StaffPickItem[] = [];
   for (const id of crises) {
     const d = state.pendingDecisions.find((x) => x.id === id);
@@ -639,7 +694,7 @@ export function staffPickItems(state: GameState = useGameStore.getState()): Staf
       id: String(i),
       title: `Order: ${a.label}`,
       by: who || 'Chief of Staff',
-      what: cost ? `Spends ◆ ${cost} if accepted` : 'Free',
+      what: cost ? `Spends ◆ ${cost} if chosen` : 'Free',
       change: fx ? `Will change: ${fx}` : '',
       tag: warn ? { tone: 'risk', text: warn, more: 0 } : missionTag(state.orderImpact[a.label], state.objectiveStatus),
       cost,
@@ -676,7 +731,7 @@ export function staffPickItems(state: GameState = useGameStore.getState()): Staf
       key: `deputy:${m.id}`,
       kind: 'deputy',
       id: m.id,
-      title: `Deputy takes: ${m.title}`,
+      title: `Your ${ADVISOR_NAMES[meetingAdviser(m)] ?? 'Chief of Staff'} takes: ${m.title}`,
       by: 'Chief of Staff',
       what: o ? `Default answer: ${o.label}` : 'Default answer',
       change: o ? changeLine(effectWords(o).slice(0, 2).map((w) => w.text)) : '',
@@ -689,7 +744,7 @@ export function staffPickItems(state: GameState = useGameStore.getState()): Staf
   // Proposals Approve all would leave out: still shown, so the list matches the plan
   const counted = new Set(orders);
   state.pendingActions.forEach((a, i) => {
-    if (a.proposed && !counted.has(i)) order(i, false);
+    if (a.proposed && !counted.has(i) && !(calls.moves.has(orderKey(a)) ? state.skipped?.move : state.skipped?.orders)) order(i, false);
   });
   return items;
 }
@@ -702,7 +757,7 @@ export function staffPicksBreakdown(items: readonly StaffPickItem[]): string {
   if (c('crisis')) parts.push(n(c('crisis'), 'crisis answer', 'crisis answers'));
   if (c('order')) parts.push(n(c('order'), 'order', 'orders'));
   if (c('meeting')) parts.push(n(c('meeting'), 'meeting', 'meetings'));
-  if (c('deputy')) parts.push(n(c('deputy'), 'meeting for a deputy', 'meetings for a deputy'));
+  if (c('deputy')) parts.push(n(c('deputy'), 'meeting for your ministers', 'meetings for your ministers'));
   return parts.join(', ');
 }
 

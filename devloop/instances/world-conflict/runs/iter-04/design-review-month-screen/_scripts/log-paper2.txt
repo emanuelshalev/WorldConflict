@@ -1,0 +1,6 @@
+3440x1440 trial ok
+3440x1440 read paper visible true
+3440x1440 {"size":"3440x1440","root":"17.548px","pageScroll":"1440/1440","hscroll":false,"state":"🇺🇸 President of the United States Month 5 of 12 · Mar 2027 Mission: Open the strait · 3 of 5 goals on track Open › Political capital ◆ 4 of 6 Explain Orders 0 of 6 Meetings you take 0 of 3 Defense budget 0% used Your calls 2 open Your country Approval 30%▼6 Stability 16▼12 World tension 70▼1 Score","stateH":64,"outView":["Next month ▸"],"small":[],"scrollers":["div.overlay.paper-overlay 1461/1376"],"coach":[]}
+1920x1080 trial ok
+1920x1080 read paper visible true
+1920x1080 {"size":"1920x1080","root":"16.036px","pageScroll":"1080/1080","hscroll":false,"state":"🇺🇸 President of the United States Month 5 of 12 · Mar 2027 Mission: Open the strait · 3 of 5 goals on track Open › This month Political capital (what orders cost) ◆ 4 of 6 Explain Orders 0 of 6 Meetings you take 0 of 3 Defense budget 0% used Your calls 2 open Your country Approval 30%▼6 Stability ","stateH":144,"outView":["i2 names","i1 name","i2 names","i2 names","i1 name","i1 name","i2 names","Next month ▸"],"small":[],"scrollers":["div.overlay.paper-overlay 1418/936"],"coach":[]}

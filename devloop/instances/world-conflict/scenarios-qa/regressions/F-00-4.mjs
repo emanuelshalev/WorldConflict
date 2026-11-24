@@ -5,16 +5,19 @@
 // 1440 and 1920 wide: every visible button in the rail, the Recommended group and the option cards
 // answers a tap at its centre (elementFromPoint is the button or inside it, after scrolling it into
 // its scroller's view); no goal-line or HUD text is cut (scrollWidth > clientWidth); on the result
-// card the stamp does not cover a fact label.
+// card the stamp does not cover a fact label. Iteration 4 (D-80): the rail is the Plan, the HUD and
+// the goal line are the state band and the month bar; "Accept all" is "Choose all" (D-73) and, below
+// 1280 wide, the Plan's bar shows "Review n recommended" in its place; the Recommended list folds
+// by the fit rule (a folded section shows its summary and Show) instead of scrolling.
 //   node devloop/instances/world-conflict/scenarios-qa/regressions/F-00-4.mjs <outDir> <baseUrl> <apiUrl>
 import path from 'node:path';
-import { args, run, startGame } from './_lib.mjs';
+import { args, run, startGame, toPhoneReview } from './_lib.mjs';
 
 const { out, base } = args('F-00-4');
 /** The Ukraine control seat (scenarios.yaml control: maya), 7 recommended in month 2. */
 const MAYA = { flashpointId: 'ceasefire-or-collapse', countryId: 'UKR', title: 'Ceasefire or Collapse', seedCode: 'CO-UKR-MAYA1' };
-const BUTTONS = '.rail button, [data-staff-picks] button, .stage.is-primary .move-card button';
-const CUT = '.goal-line .goal-title, .goal-line .goal-sum, .goal-line .goal-step, .game-top .hud-who b, .game-top .stat label, .game-top .stat .val';
+const BUTTONS = '[data-region="plan"] button, [data-staff-picks] button, [data-region="item"] .thing .opt';
+const CUT = '.state-band .sb-who, .state-band .sb-month, .state-band .sb-mission, .state-band .sb-s, .month-bar .mb-where b, .month-bar .mb-where span, .month-bar .mb-btn';
 
 /** Buttons whose centre is covered by something else, after scrolling each into view. */
 async function covered(p) {
@@ -61,9 +64,9 @@ await run('F-00-4', async (g, track) => {
         await p.waitForTimeout(700);
       }
       const bad = await covered(p);
-      g.check(!bad.length, `${w} month ${month}: every rail, Recommended and option button answers a tap at its centre (${bad.slice(0, 3).join('; ') || 'all clear'})`);
+      g.check(!bad.length, `${w} month ${month}: every Plan, Recommended and answer button answers a tap at its centre (${bad.slice(0, 3).join('; ') || 'all clear'})`);
       // Execute and Accept all stay fully on screen whatever the list needs
-      for (const name of [/Execute month/i, /^Accept all recommended|^Review \d+ recommended/i]) {
+      for (const name of [/Execute month/i, /^Choose all recommended|^Review \d+ recommended/i]) {
         const b = p.getByRole('button', { name }).first();
         if (!(await b.count())) continue;
         const r = await b.evaluate((e) => {
@@ -75,15 +78,16 @@ await run('F-00-4', async (g, track) => {
       const cuts = await cut(p);
       // The top bar fits the window: nothing in it runs past the right edge (the menu stays reachable)
       const over = await p.evaluate(() =>
-        [...document.querySelectorAll('.game-top .hud > *, .game-top .hud-menu > *')]
+        [...document.querySelectorAll('.game-top .state-band > *, .game-top .sb-menu > *, .game-top .month-bar > *')]
           .filter((e) => e.getBoundingClientRect().width > 0 && getComputedStyle(e).display !== 'none')
           .filter((e) => e.getBoundingClientRect().right > innerWidth + 1)
           .map((e) => (e.getAttribute('aria-label') ?? e.className ?? '').toString().slice(0, 30)),
       );
       g.check(!over.length, `${w} month ${month}: the top bar fits the window (${over.slice(0, 3).join('; ') || 'all inside'})`);
       await s.look(`${w}-month${month}`);
-      g.check(!cuts.length, `${w} month ${month}: no goal-line or HUD text is cut (${cuts.slice(0, 3).join('; ') || 'none'})`);
+      g.check(!cuts.length, `${w} month ${month}: no state band or month bar text is cut (${cuts.slice(0, 3).join('; ') || 'none'})`);
       if (month === 2) break;
+      await toPhoneReview(p);
       if (!(await s.click(/Execute month/i, { timeout: 10000 }))) throw new Error('Execute month not clickable');
       const next = p.getByRole('button', { name: /^Next month/i }).first();
       await next.waitFor({ timeout: 30000 });
@@ -108,24 +112,20 @@ await run('F-00-4', async (g, track) => {
   }
 
   // Short and mid-width screens with a full Recommended list (design review of stability-iter4,
-  // D-81): CO-UKR-MAYA1 month 2 has 7 recommended. At each size, months 1 and 2: Execute and Accept
-  // all are fully on screen and answer a tap, one whole recommendation is in view, and every
-  // top-bar control is on screen.
+  // D-81): CO-UKR-MAYA1 month 2 has 7 recommended. At each size, months 1 and 2: Execute and Choose
+  // all (or, below 1280, Review n recommended) are fully on screen and answer a tap, one whole
+  // recommendation (or its folded section's summary with Show) is in view, and every top-bar
+  // control is on screen.
   for (const size of ['1366x768', '1366x820', '1024x768', '1440x900', '1599x900']) {
     const s = track(await startGame({ variant: `f004-${size}`, device: size, out: path.join(out, size), base, seat: MAYA }));
     const p = s.page;
     for (const month of [1, 2]) {
       await p.waitForTimeout(800);
-      const show = p.getByRole('button', { name: /Show the whole desk|Show budgets, orders and meetings/i }).first();
-      if (await show.isVisible().catch(() => false)) {
-        await show.click();
-        await p.waitForTimeout(700);
-      }
-      const accept = p.getByRole('button', { name: /^Accept all recommended \(\d+\)/ }).first();
+      const accept = p.getByRole('button', { name: /^Choose all recommended \(\d+\)|^Review \d+ recommended/ }).first();
       await accept.waitFor({ state: 'attached', timeout: 8000 }).catch(() => {});
       await p.waitForTimeout(400);
       const at = `${size} month ${month}`;
-      for (const [label, loc] of [['Execute month', p.getByRole('button', { name: /Execute month/i }).first()], ['Accept all recommended', accept]]) {
+      for (const [label, loc] of [['Execute month', p.getByRole('button', { name: /Execute month/i }).first()], ['Choose all recommended or Review n recommended', accept]]) {
         const r = await loc
           .evaluate((e) => {
             const x = e.getBoundingClientRect();
@@ -136,13 +136,16 @@ await run('F-00-4', async (g, track) => {
         g.check(r.on && r.tap, `${at}: ${label} is fully on screen and answers a tap (${r.top} to ${r.bottom})`);
       }
       const whole = await p.evaluate(() => {
-        const list = document.querySelector('.rail .staff-picks.v-rail .sp-list');
-        const item = list?.querySelector('.sp-item');
-        if (!list || !item) return { ok: false, why: 'no list' };
-        list.scrollTop = 0;
-        const lb = list.getBoundingClientRect();
-        const ib = item.getBoundingClientRect();
-        return { ok: ib.top >= lb.top - 1 && ib.bottom <= lb.bottom + 1 && ib.bottom <= innerHeight, why: `item ${Math.round(ib.top)}-${Math.round(ib.bottom)} in list ${Math.round(lb.top)}-${Math.round(lb.bottom)}` };
+        const plan = document.querySelector('[data-region="plan"]');
+        if (!plan) return { ok: false, why: 'no plan' };
+        // Below 1280 the Plan is the bar: its "Review n recommended" stands for the list (L-11)
+        if (plan.getAttribute('data-form') === 'bar') return { ok: !!plan.querySelector('.pbar-review'), why: 'bar form with Review' };
+        const inView = (e) => { const b = e.getBoundingClientRect(); const box = e.closest('.plan-list')?.getBoundingClientRect(); return b.width > 0 && b.top >= 0 && b.bottom <= innerHeight && (!box || b.bottom <= box.bottom + 1); };
+        const item = plan.querySelector('[data-staff-picks] .sp-item');
+        if (item) return { ok: inView(item), why: `first recommendation ${Math.round(item.getBoundingClientRect().top)}-${Math.round(item.getBoundingClientRect().bottom)}` };
+        const sum = plan.querySelector('[data-staff-picks] .psec-sum');
+        const tog = plan.querySelector('[data-staff-picks] .psec-tog');
+        return { ok: !!sum && !!tog && inView(sum) && inView(tog), why: 'folded: summary and Show' };
       });
       g.check(whole.ok, `${at}: one whole recommendation is in view (${whole.why})`);
       const off = await p.evaluate(() =>
@@ -155,17 +158,17 @@ await run('F-00-4', async (g, track) => {
       await s.look(`${size}-month${month}`);
       // Folded controls stay one tap away: Menu opens a panel with every secondary control
       if (month === 2) {
-        await p.locator('.game-top').getByRole('button', { name: 'Menu' }).first().click();
+        await p.locator('.game-top').getByRole('button', { name: /^Menu/ }).first().click();
         await p.waitForTimeout(400);
         const panel = await p.evaluate(() => {
-          const words = ['Cabinet', 'World', 'Chronicle', 'Settings', 'Mission and record'];
+          const words = ['Cabinet', 'World', 'Chronicle', 'Settings', 'Mission'];
           const visible = (e) => { const x = e.getBoundingClientRect(); return x.width > 0 && x.right <= innerWidth + 1 && x.bottom <= innerHeight + 1; };
-          const inBar = [...document.querySelectorAll('.game-top .hud-menu button')].filter(visible).map((e) => e.getAttribute('aria-label') ?? '');
-          const inPanel = [...document.querySelectorAll('.game-top .hud-phone-menu button')].filter(visible).map((e) => (e.textContent ?? '').trim());
-          return words.filter((w) => !inBar.includes(w) && !inPanel.some((t) => t.endsWith(w)));
+          const inBar = [...document.querySelectorAll('.game-top .state-band button')].filter(visible).map((e) => (e.textContent ?? '').trim());
+          const inPanel = [...document.querySelectorAll('.game-top .sb-menu-pop button')].filter(visible).map((e) => (e.textContent ?? '').trim());
+          return words.filter((w) => !inBar.some((t) => t.startsWith(w)) && !inPanel.some((t) => t.endsWith(w)));
         });
         g.check(!panel.length, `${at}: every secondary control is in the bar or in the Menu panel (${panel.join(', ') || 'all reachable'})`);
-        await p.locator('.game-top').getByRole('button', { name: 'Menu' }).first().click().catch(() => {});
+        await p.locator('.game-top').getByRole('button', { name: /^Menu/ }).first().click().catch(() => {});
         await p.waitForTimeout(300);
       }
       if (month === 2) break;

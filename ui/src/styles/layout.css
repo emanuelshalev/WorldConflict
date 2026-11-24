@@ -1,0 +1,529 @@
+/* =========================================================================
+   The game screen's layout system (design-layout.md, D-80, RS-008).
+   Five regions: State (state-band.css), Bar (the month bar), List (the
+   month's things), Thing (the current thing) and Plan (what will happen).
+   Width is spent on more regions and more Thing columns, never on longer
+   lines or a centred column (L-2); one root size scaled by the short side
+   (L-3); nothing the player must see or act on scrolls inside a box at
+   1024 x 768 and up (L-6); short screens compact, tall ones fill (L-8, L-12).
+
+   Breakpoints (L-20, the same numbers as ui/src/lib/layout.ts), and no other
+   width in the game screen's CSS:
+     P <= 700 < T <= 1279 < L <= 1599 < D <= 2239 < W <= 3199 < U
+     short: max-height 820   tall: min-height 900
+     tall-plus: min-height 1200   tall-max: min-height 1300
+   The Thing lays itself out by its own width (container `item`, L-7):
+     < 38rem one column; 38rem two answer columns; 56rem situation | answers;
+     96rem situation | answers | context.
+   ========================================================================= */
+
+/* L-3: 16 px up to 1080 tall, 17.5 px at 1440 tall, 20.6 px at 2160 tall */
+html { font-size: clamp(16px, calc(0.42vmin + 11.5px), 22px); }
+
+.game {
+  --pad: 1.25rem;
+  --gap: 1rem;
+  --read: 38rem;
+  --region-bg: #0e141e;
+  --panel-bg: rgba(16, 23, 34, 0.97);
+  --face-line: #8496ad;
+  --btn-line: #5a6b82;
+  /* The map no longer runs under the band: the band is opaque and in the flow */
+  --under-top: 0px;
+}
+@media (min-width: 3200px) { .game { --pad: 1.5rem; --gap: 1.25rem; } }
+
+.game-top { position: relative; z-index: 20; display: grid; grid-template-columns: minmax(0, 1fr); }
+
+/* ---------- the month bar (D-72 D2): a sentence and labelled buttons ---------- */
+.month-bar { display: flex; align-items: center; gap: .625rem; padding: .5rem var(--pad); border-bottom: 1px solid var(--line); background: var(--region-bg); min-width: 0; }
+.mb-where { flex: 1; min-width: 0; margin: 0; display: grid; font-size: .9375rem; color: var(--text-2); line-height: 1.3; }
+.mb-where b { font-size: 1.125rem; color: var(--text-1); }
+.mb-show { display: inline-flex; align-items: center; gap: .5rem; margin-right: .25rem; }
+.mb-show-l { font-size: .9375rem; color: var(--text-2); }
+.month-bar .seg button { min-height: 2.25rem; font-size: .9375rem; padding: .25rem .85rem; white-space: nowrap; }
+.mb-btn { min-height: 2.75rem; font-size: .9375rem; white-space: nowrap; flex: none; }
+.mb-next-t { font-weight: 700; }
+
+/* ---------- the desk: List | Thing | Plan (L-1, section 3) ---------- */
+.desk-screen {
+  position: absolute; inset: 0; z-index: 18; min-height: 0;
+  display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-areas: 'item' 'plan';
+  background: radial-gradient(120% 90% at 50% 0%, #0d1424 0%, var(--bg-0) 60%);
+}
+.desk-screen > .item { grid-area: item; }
+.desk-screen > .plan { grid-area: plan; }
+.desk-screen > .agenda-list { grid-area: list; }
+@media (min-width: 1280px) {
+  .desk-screen { grid-template-columns: minmax(0, 1fr) 26rem; grid-template-rows: minmax(0, 1fr); grid-template-areas: 'item plan'; }
+  .desk-screen.has-list { grid-template-columns: 20rem minmax(0, 1fr) 26rem; grid-template-areas: 'list item plan'; }
+  .desk-screen.is-review { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'item'; }
+  .desk-screen.is-review.has-list { grid-template-columns: 20rem minmax(0, 1fr); grid-template-areas: 'list item'; }
+}
+@media (min-width: 1600px) {
+  .desk-screen.has-list { grid-template-columns: 20rem minmax(0, 1fr) 25rem; }
+  .desk-screen.is-review.has-list { grid-template-columns: 20rem minmax(0, 1fr); }
+}
+@media (min-width: 2240px) {
+  .desk-screen.has-list { grid-template-columns: 21rem minmax(0, 1fr) 27rem; }
+  .desk-screen.is-review.has-list { grid-template-columns: 21rem minmax(0, 1fr); }
+}
+@media (min-width: 3200px) {
+  .desk-screen.has-list { grid-template-columns: 22rem minmax(0, 1fr) 28rem; }
+  .desk-screen.is-review.has-list { grid-template-columns: 22rem minmax(0, 1fr); }
+}
+
+/* The Thing region: its own container, never a scroll box (L-6) */
+.item { position: relative; min-width: 0; min-height: 0; padding: var(--pad); overflow: hidden; container: item / inline-size; }
+
+/* ---------- clickable: one look (AF rules) ---------- */
+.opt {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: .875rem; width: 100%; min-height: 0;
+  padding: .75rem 1rem; text-align: left; color: var(--text-1); font: inherit;
+  border: 1.5px solid var(--btn-line); border-radius: .875rem; background: linear-gradient(180deg, #243044, #1b2433); box-shadow: 0 3px 0 #05080d; cursor: pointer;
+}
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.opt:disabled { cursor: not-allowed; opacity: .75; }
+.opt.is-chosen { border-color: var(--accent); background: linear-gradient(180deg, #2c3446, #232a38); }
+.opt-body { display: grid; gap: .2rem; min-width: 0; }
+.opt-rec { font-size: .9375rem; color: var(--text-1); font-weight: 400; }
+.opt-name { font-size: 1.125rem; font-weight: 700; line-height: 1.25; }
+.opt-fx { font-size: 1rem; color: var(--text-2); line-height: 1.4; }
+.opt-fx .mt-help, .opt-fx .mt-bonus { color: #8fe3bd; }
+.opt-fx .mt-risk { color: #ff9a9c; }
+.opt-more { display: none; font-size: .9375rem; color: var(--text-2); line-height: 1.4; }
+.opt-off { font-size: .9375rem; color: #ff9a9c; }
+.opt .face { padding: .45rem 1rem; border-radius: .625rem; border: 1.5px solid var(--face-line); background: #2f3d53; font-weight: 700; white-space: nowrap; font-size: 1rem; }
+.opt.is-chosen .face { border-color: var(--accent); color: var(--accent); }
+.opt.skipopt { background: linear-gradient(180deg, #1f2836, #19212e); }
+.opt-or { margin: 0 0 .35rem; font-size: .9375rem; color: var(--text-2); }
+.skip-wrap { display: flex; flex-direction: column; min-height: 0; }
+.skip-wrap .opt { flex: 1 1 auto; }
+.skip-status { display: flex; align-items: center; gap: .75rem; padding: .7rem 1rem; border-radius: .75rem; background: var(--surface-1); font-size: 1rem; }
+.skip-status p { margin: 0; flex: 1; }
+.opt-pair { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .5rem; align-items: center; min-height: 0; }
+.opt-pair > .wc-btn { min-height: 2.75rem; }
+
+/* ---------- the Thing: columns by its own width (L-7) ---------- */
+.thing { display: grid; gap: var(--gap); height: 100%; min-height: 0; grid-template-columns: minmax(0, 1fr); align-content: start; }
+.thing > * { min-width: 0; min-height: 0; }
+.th-sit, .th-ans, .th-ctx { display: flex; flex-direction: column; gap: .75rem; min-width: 0; min-height: 0; }
+.th-sit > *, .th-ans > *, .th-ctx > * { flex: none; }
+.th-ctx { display: none; }
+.sit-more { display: flex; }
+.th-hero { position: relative; flex: none; height: clamp(7.5rem, 22vh, 18rem); border-radius: 1rem; overflow: hidden; background: radial-gradient(120% 90% at 75% 30%, #34507a, #0b1220 70%); }
+.th-hero > .scene { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; aspect-ratio: auto; border-radius: 0; box-shadow: none; }
+.th-hero .shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(6, 9, 14, .05) 25%, rgba(6, 9, 14, .92)); }
+.th-hero .txt { position: absolute; left: 1.25rem; right: 1.25rem; bottom: .9rem; }
+.th-hero .kick { font-size: .9375rem; color: var(--accent); font-weight: 650; }
+.th-hero.is-crisis { box-shadow: inset 0 0 0 2px var(--war); }
+.th-hero.is-crisis .kick { color: #ff9a9c; }
+.hero-title { font-family: var(--font-display); font-size: 1.875rem; line-height: 1.15; margin: .1rem 0 .2rem; color: var(--text-1); }
+.hero-quote { margin: 0; font-size: 1.0625rem; color: #dbe2ec; max-width: var(--read); line-height: 1.4; }
+.th-hero.is-text { height: auto; background: var(--surface-1); }
+.th-hero.is-text .txt { position: static; padding: .875rem 1.1rem; }
+.ask-row { position: relative; display: flex; align-items: baseline; gap: .75rem; }
+.ask { flex: 1; margin: 0; font-size: 1.1875rem; font-weight: 700; color: var(--text-1); line-height: 1.3; }
+.ask-sizes { flex: none; min-height: 2.25rem; }
+.opts { display: grid; gap: .75rem; grid-template-columns: minmax(0, 1fr); min-height: 0; }
+.intro1, .thing .mission-line { margin: 0; font-size: 1.0625rem; max-width: var(--read); line-height: 1.45; }
+.thing .mission-line { padding: .7rem 1rem; border-left: 3px solid var(--good); background: var(--surface-1); border-radius: 0 .5rem .5rem 0; }
+.th-facts { display: grid; gap: .35rem; padding: .875rem 1rem; border-radius: .75rem; background: var(--surface-1); }
+.th-facts h3, .th-story h3, .bg h3 { margin: 0; font-size: .9375rem; color: var(--text-2); font-weight: 650; }
+.th-facts .r { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 1rem; margin: 0; font-size: 1rem; }
+.al-mission .r { grid-template-columns: minmax(0, 1fr) auto; }
+.th-facts .r span:last-child { color: var(--text-2); text-align: right; }
+.th-facts.advice { display: none; }
+.th-facts.advice .r { grid-template-columns: minmax(0, 1fr); }
+.th-facts.advice .r span:last-child { color: var(--text-1); text-align: left; }
+.th-facts.advice .wc-btn { justify-self: start; margin-top: .25rem; }
+.goals.in-ctx { display: none; }
+.th-story { display: none; }
+.bg { display: grid; gap: .5rem; justify-items: start; }
+.bg p { margin: 0; font-size: 1rem; color: var(--text-2); max-width: var(--read); line-height: 1.5; }
+.th-ctx .context-map { border: 0; border-radius: .75rem; overflow: hidden; }
+.th-ctx .context-map .outcome-map { height: clamp(10rem, 30vh, 26rem); }
+.move-disagree, .move-note { margin: 0; font-size: .9375rem; color: var(--text-2); }
+.move-disagree b { color: var(--text-1); }
+
+@container item (min-width: 38rem) {
+  .opts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .opts > .skip-wrap:nth-child(odd):last-child { grid-column: 1 / -1; }
+}
+@container item (min-width: 56rem) {
+  .thing { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: 'sit ans'; }
+  .thing > .th-sit { grid-area: sit; }
+  .thing > .th-ans { grid-area: ans; }
+  .thing > .sit-more { grid-area: sit; display: none; }
+  .opts { grid-template-columns: minmax(0, 1fr); }
+  .opts > .skip-wrap:nth-child(odd):last-child { grid-column: auto; }
+  .th-hero { height: clamp(10rem, 30vh, 22rem); }
+}
+@container item (min-width: 96rem) {
+  .thing { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr) minmax(0, 1fr); grid-template-areas: 'sit ans ctx'; }
+  .thing > .th-ctx { grid-area: ctx; display: flex; }
+  .goals.in-sit { display: none; }
+  .goals.in-ctx { display: grid; }
+  .th-hero { height: clamp(12rem, 34vh, 30rem); }
+}
+/* The simple things (small meetings, recommended orders) and own orders: no scene, two columns when wide */
+.thing.is-simple .opts { grid-template-columns: minmax(0, 1fr); }
+@container item (min-width: 56rem) { .thing.is-simple .opts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.thing.is-own { display: flex; flex-direction: column; gap: var(--gap); }
+/* The heading block keeps its height: `.thing > *` lets items shrink (min-height 0), and in this
+   flex column the All orders button then ran under "Orders to consider" (visual review, 1440). */
+.own-head { flex: none; display: grid; gap: .5rem; justify-items: start; max-width: var(--read); }
+.own-head p { margin: 0; font-size: 1rem; color: var(--text-2); }
+.thing.is-own .skip-wrap { max-width: 40rem; }
+
+/* L-12 fill (1600 wide, 900 tall and up): every column reaches the bottom; the scene takes the
+   spare height (its picture keeps at least a 16:9 band), the story keeps its own height (entries
+   never spread: the gap is capped), the answers share the column, the context map grows. */
+@media (min-height: 900px) and (min-width: 1600px) {
+  .thing { height: 100%; grid-template-rows: minmax(0, 1fr); }
+  .thing.is-own { height: auto; }
+  @container item (min-width: 56rem) {
+    /* Art Director: the scene keeps its 16:9 picture (no face or flag cut); the story under it
+       shows more entries on taller screens instead of spreading a few (Group Manager) */
+    .th-sit > .th-hero { flex: none; height: auto; aspect-ratio: 16 / 9; max-height: 44vh; }
+    .th-story { display: flex; flex-direction: column; gap: .5rem; padding: .875rem 1rem; border-radius: .75rem; background: var(--surface-1); overflow: hidden; }
+    .th-story ol { list-style: none; margin: 0; padding: 0 0 0 1rem; border-left: 2px solid var(--line-2); display: flex; flex-direction: column; gap: .75rem; }
+    .th-story li { position: relative; display: grid; gap: .1rem; font-size: 1rem; max-width: var(--read); line-height: 1.4; }
+    .th-story li::before { content: ''; position: absolute; left: calc(-1rem - 6px); top: .45rem; width: 10px; height: 10px; border-radius: 50%; background: var(--line-2); }
+    .th-story li:last-child::before { background: var(--accent); }
+    .th-story .when { font-size: .9375rem; color: var(--text-2); font-weight: 650; }
+    .th-ans > .opts { flex: 1 1 auto; grid-auto-rows: minmax(0, 1fr); max-height: 56rem; }
+    .opt { align-content: center; }
+    .th-ctx > .context-map { flex: 1 1 auto; min-height: 12rem; }
+    .th-ctx > .context-map .outcome-map { height: 100%; }
+    .thing.is-simple .th-sit > .th-hero { flex: none; }
+    .thing.is-simple .th-ans > .opts { flex: none; grid-auto-rows: auto; }
+  }
+}
+@media (min-height: 1200px) and (min-width: 1600px) { .opt-more { display: block; } }
+@media (min-height: 1300px) and (min-width: 1600px) { .th-ans > .th-facts.advice { display: grid; } .ask-row > .ask-staff { display: none; } }
+.ask-staff { flex: none; min-height: 2.25rem; display: inline-flex; align-items: center; gap: .35rem; }
+
+/* L-8 short screens (820 tall or less): compact in a fixed order, never scroll */
+@media (max-height: 820px) and (min-width: 701px) {
+  .th-hero { height: 8.5rem !important; }
+  .hero-quote { display: none; }
+  .th-hero .txt { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: .9rem; }
+  .item { padding-top: .75rem; padding-bottom: .75rem; }
+  .opts { gap: .6rem; }
+  .opt { padding: .55rem .9rem; }
+  .goals, .th-story, .th-facts.advice, .intro1, .sit-more, .move-note { display: none !important; }
+  .thing .mission-line { font-size: .9375rem; padding: .45rem .8rem; }
+}
+@media (max-height: 820px) and (min-width: 701px) and (max-width: 1599px) {
+  .thing:not(.is-own) { grid-template-columns: minmax(0, 1fr) !important; grid-template-areas: none !important; }
+  .thing > * { grid-area: auto !important; }
+  .th-ctx { display: none !important; }
+  @container item (min-width: 38rem) { .thing:not(.is-simple) .opts { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } }
+}
+/* Tablet and short: the scene band is a text header (L-8 step 5) */
+@media (max-height: 820px) and (min-width: 701px) and (max-width: 1279px) {
+  .th-hero { height: auto !important; background: var(--surface-1); }
+  .th-hero > .scene, .th-hero .shade { display: none; }
+  .th-hero .txt { position: static; padding: .55rem 1rem; }
+  .hero-title { font-size: 1.5rem; }
+  .ask { font-size: 1.0625rem; }
+  .opt { gap: .6rem; }
+  .opt .face { padding: .35rem .7rem; }
+}
+
+/* ---------- the List (L-19 forms) ---------- */
+.agenda-list { display: flex; flex-direction: column; gap: .5rem; min-height: 0; padding: var(--pad) 1rem; background: var(--region-bg); }
+.agenda-list > * { flex: none; }
+.agenda-list > .al-grow { flex: 1 1 auto; }
+.agenda-list.f-column { border-right: 1px solid var(--line); overflow: hidden; }
+.al-head { display: flex; align-items: center; gap: .5rem; }
+.al-head h2 { flex: 1; margin: 0; font-size: 1.0625rem; color: var(--text-1); }
+.al-hint { margin: 0; font-size: .9375rem; color: var(--text-2); }
+.al-rows { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .5rem; }
+.al-rows > li { flex: none; }
+.lrow { display: flex; gap: .75rem; align-items: center; width: 100%; min-height: 3.5rem; padding: .5rem .75rem; text-align: left; color: var(--text-1); font: inherit;
+  border: 1.5px solid var(--btn-line); border-radius: .75rem; background: linear-gradient(180deg, #243044, #1b2433); box-shadow: 0 3px 0 #05080d; cursor: pointer; }
+.lrow:hover { border-color: var(--face-line); }
+.lrow-t { flex: 1; display: grid; min-width: 0; }
+.lrow-t b { font-size: 1rem; }
+.lrow-st { font-size: .9375rem; color: var(--text-2); }
+.lrow.now { border-color: var(--accent); }
+.lrow.now .lrow-st { color: var(--accent); }
+.lrow .face { flex: none; padding: .3rem .7rem; border-radius: .55rem; border: 1.5px solid var(--face-line); background: #2f3d53; font-weight: 700; font-size: .9375rem; }
+.al-flat { display: grid; gap: .5rem; justify-items: start; padding: .75rem .875rem; border-radius: .625rem; background: var(--surface-1); font-size: .9375rem; color: var(--text-2); }
+.al-flat p { margin: 0; }
+.al-flat-btns { display: flex; flex-wrap: wrap; gap: .5rem; }
+.al-mission h3 { font-size: .9375rem; }
+.agenda-list.f-panel { position: absolute; z-index: 6; top: var(--pad); left: var(--pad); width: min(30rem, calc(100% - 2 * var(--pad))); max-height: calc(100% - 2 * var(--pad)); overflow: hidden;
+  border: 1.5px solid var(--line-2); border-radius: 1rem; box-shadow: 0 16px 40px rgba(0, 0, 0, .55); }
+.agenda-list.f-float { border: 1.5px solid var(--line-2); border-radius: 1rem; background: var(--panel-bg); box-shadow: 0 16px 40px rgba(0, 0, 0, .55); padding: 1rem; }
+.agenda-list.f-float .lrow { min-height: 3rem; padding: .35rem .7rem; }
+/* The List's fit rule (AgendaList, design review S2-1): its box is the room, it never scrolls;
+   compact rows, then rows that run title and state on, then folds with Show (data-fit 4 and 5).
+   The Map float takes what the column leaves under the card */
+.agenda-list.f-float { flex: 0 1 auto; min-height: 0; overflow: hidden; }
+/* Once the rule steps, the box is the whole room (a fold must not shrink the box it is measured
+   in, or the room it frees is never given back) */
+.agenda-list.f-float:not([data-fit='0']) { flex: 1 1 auto; }
+.agenda-list.f-panel:not([data-fit='0']) { height: calc(100% - 2 * var(--pad)); }
+.agenda-list.is-compact { gap: .35rem; }
+.agenda-list.is-compact .al-rows { gap: .35rem; }
+.agenda-list.is-compact .lrow { min-height: 2.75rem; padding: .3rem .6rem; }
+.agenda-list.is-runon .lrow-t { display: block; }
+.agenda-list.is-runon .lrow-t > b::after { content: ' · '; font-weight: 400; color: var(--text-2); }
+.agenda-list.is-runon .lrow-st { display: inline; }
+.agenda-list.is-runon .lrow .face { padding: .2rem .55rem; }
+.agenda-list.is-runon .al-rows { gap: .3rem; }
+.agenda-list.is-runon .lrow { min-height: 2.5rem; padding: .25rem .6rem; }
+.lrow-fold { border-style: dashed; }
+
+/* ---------- the Plan (L-9, L-10, L-11, L-19) ---------- */
+.plan { display: flex; flex-direction: column; min-height: 0; min-width: 0; background: var(--region-bg); }
+.plan.f-rail { border-left: 1px solid var(--line); }
+.plan.f-float { height: 100%; border: 1.5px solid var(--line-2); border-radius: 1rem; overflow: hidden; background: var(--panel-bg); box-shadow: 0 16px 40px rgba(0, 0, 0, .55); }
+.plan-list { flex: 1 1 auto; min-height: 0; padding: .25rem var(--pad) .5rem; overflow: hidden; display: flex; flex-direction: column; }
+.plan-list > * { flex: none; }
+.plan-h { font-size: 1.1875rem; margin: .9rem 0 .25rem; color: var(--text-1); }
+.psec { border-bottom: 1px solid var(--line); padding: .45rem 0; display: grid; gap: .35rem; }
+.psec:last-of-type { border-bottom: 0; }
+.psec-h { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem .5rem; min-height: 2.25rem; }
+.psec-t, .plan .sp-heading { margin: 0; font-size: .9375rem; font-weight: 650; color: var(--text-2); }
+.psec-tog { margin-left: auto; min-height: 2.25rem; }
+.psec-sum { flex-basis: 100%; margin: 0; font-size: .9375rem; color: var(--text-2); }
+.psec-all { align-self: flex-start; margin-top: .4rem; min-height: 2.25rem; }
+.prows, .sp-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .15rem; }
+.prows > li, .sp-list > li { flex: none; }
+.prow, .sp-item { display: flex; gap: .625rem; align-items: center; padding: .25rem 0; font-size: 1rem; }
+.prow-t, .sp-text { flex: 1; min-width: 0; display: grid; }
+.prow-t small, .sp-change, .sp-risk, .sp-reason { font-size: .9375rem; color: var(--text-2); }
+.sp-risk, .sp-reason { color: #ff9a9c; }
+.sp-by { font-size: .9375rem; color: var(--text-2); }
+.sp-name { font-size: 1rem; font-weight: 600; color: var(--text-1); }
+.sp-item.is-off { opacity: .85; }
+.prow .wc-btn, .sp-item .wc-btn { flex: none; min-height: 2.25rem; white-space: nowrap; }
+.plan-list.compact .prow-t small { display: none; }
+.plan-list.tight .sp-by, .plan-list.tight .plan-h { display: none; }
+.sp-main { display: grid !important; justify-items: center; align-content: center; gap: 2px; width: 100%; min-height: 2.75rem; padding: .4rem .75rem; margin-top: .3rem; text-align: center; }
+.sp-main-label { display: inline-flex; align-items: center; gap: .4rem; font-size: 1rem; font-weight: 700; }
+.sp-main-sub { font-size: .9375rem; font-weight: 500; color: var(--text-2); }
+.sp-main:disabled { cursor: not-allowed; opacity: .85; }
+.sp-why { margin: 0; font-size: .9375rem; color: var(--text-2); }
+.plan .plan-against { margin: .35rem 0 0; font-size: max(.9375rem, 15px); color: #ff9a9b; line-height: 1.4; }
+.execb { flex: none; padding: .75rem var(--pad) 1rem; border-top: 1px solid var(--line-2); background: #0c121b; display: grid; gap: .35rem; }
+.execb-h { margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-1); }
+.execb ul, .rv-exec ul { margin: 0 0 .4rem; padding-left: 1.25rem; font-size: 1rem; color: var(--text-1); line-height: 1.4; }
+.plan-over { display: flex; gap: .4rem; align-items: center; justify-content: center; background: none; border: 0; color: var(--war); font: inherit; font-size: .9375rem; cursor: pointer; min-height: 2.25rem; }
+.execute-btn .ex-sub { font-size: .9375rem; }
+@media (max-height: 820px) {
+  .execb { padding-top: .5rem; padding-bottom: .6rem; gap: .2rem; }
+  .execb ul { margin-bottom: .2rem; }
+  .execute-btn { min-height: 3.5rem; }
+  .plan-h { margin: .5rem 0 0; font-size: 1.0625rem; }
+  .psec { padding: .3rem 0; gap: .2rem; }
+}
+
+/* The bar form (L-11): Review n recommended | the consequence | Execute */
+.plan.f-bar { position: relative; flex-direction: row; align-items: center; gap: 1rem; padding: .6rem var(--pad); border-top: 1px solid var(--line-2); background: rgba(12, 17, 26, .98); z-index: 20; }
+.pbar-grp { display: flex; align-items: center; gap: .6rem; flex: none; }
+.pbar-l { font-size: .9375rem; color: var(--text-2); }
+.pbar-review { min-height: 2.75rem; white-space: nowrap; }
+.pbar-line { flex: 1; min-width: 0; margin: 0; font-size: .9375rem; color: var(--text-2); }
+.pbar-line b { color: var(--text-1); }
+.pbar-exec { flex: none; display: flex; align-items: center; gap: .75rem; padding-left: 1rem; border-left: 1px solid var(--line-2); }
+.plan.f-bar .execute-btn { min-height: 3.25rem; width: auto; padding: 0 1.5rem; }
+.plan.f-bar .ex-main { font-size: 1.05rem; }
+.plan-panel { position: absolute; left: var(--pad); bottom: calc(100% + .5rem); width: min(32rem, calc(100vw - 2 * var(--pad))); max-height: calc(100vh - 14rem); overflow: hidden;
+  display: grid; gap: .5rem; padding: 1rem; border: 1.5px solid var(--line-2); border-radius: 1rem; background: var(--panel-bg); box-shadow: 0 16px 40px rgba(0, 0, 0, .55); }
+.plan.f-rail, .plan.f-float { position: relative; }
+.plan-beside { left: auto; right: calc(100% + .5rem); top: .5rem; bottom: auto; width: min(32rem, 60vw); max-height: calc(100% - 1rem); z-index: 30; }
+.plan.f-rail .plan-beside { right: calc(100% + .5rem); }
+/* Beside the rail every row and Choose all, with its Still open line, fit with no scroll (L-10) */
+.plan-beside { width: min(36rem, 60vw); padding: .75rem 1rem; gap: .35rem; }
+.plan-beside .prow, .plan-beside .sp-item { padding: 0; }
+.plan-panel-h { display: flex; align-items: center; justify-content: space-between; }
+.plan-panel-h h2 { margin: 0; font-size: 1.1875rem; }
+
+/* ---------- the review page ("Check what will happen") ---------- */
+.review-page { display: grid; gap: var(--gap); height: 100%; min-height: 0; grid-template-columns: minmax(0, 1fr); align-content: start; }
+.review-page > * { min-width: 0; min-height: 0; }
+.rv-rows { display: flex; flex-direction: column; gap: .6rem; }
+.rv-rows section { display: grid; gap: .2rem; }
+.rv-rows h2 { margin: .4rem 0 0; font-size: 1rem; color: var(--text-2); }
+.rv-rows .muted { margin: 0; color: var(--text-2); }
+.review-page.compact .prow-t small { display: none; }
+.rv-exec { display: grid; gap: .5rem; align-content: start; padding: 1rem; border-radius: 1rem; background: var(--surface-1); }
+.rv-exec ul { font-size: 1.0625rem; }
+@container item (min-width: 56rem) {
+  .review-page { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+  .rv-exec { max-width: 34rem; }
+}
+
+/* ---------- the order views inside the Thing ---------- */
+.item > .detail { height: 100%; overflow: hidden; display: flex; flex-direction: column; gap: .5rem; }
+/* All orders fills the item and fits its own panel (OrderCatalog fit rule, design review S1-1;
+   opening it always brings the desk back, setFocus, so it never sits in the Map card) */
+.item > .detail.is-catalog > .ord-catalog { flex: 1 1 auto; min-height: 0; }
+.detail-back { align-self: flex-start; min-height: 2.25rem; }
+
+/* ---------- Map mode (L-14): card left, Plan float right from 1600, bar below ---------- */
+.map-month { position: absolute; inset: 0; z-index: 5; pointer-events: none; display: grid; grid-template-columns: clamp(24rem, 28vw, 40rem) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); gap: var(--gap); padding: var(--gap); }
+.map-month > * { pointer-events: auto; min-height: 0; }
+.map-month > .map-gap { pointer-events: none; }
+.map-left { position: relative; display: flex; flex-direction: column; gap: var(--gap); min-height: 0; pointer-events: none; }
+.map-left > * { pointer-events: auto; flex: none; }
+.mapcard { container: item / inline-size; align-self: stretch; max-height: 100%; min-height: 0; overflow: hidden; padding: 1rem; border-radius: 1rem; background: var(--panel-bg); border: 1.5px solid var(--line-2); box-shadow: 0 16px 40px rgba(0, 0, 0, .55); }
+.mapcard .th-sit { display: block; }
+.mapcard .thing { height: auto; grid-template-columns: minmax(0, 1fr) !important; grid-template-areas: none !important; }
+.mapcard .thing > * { grid-area: auto !important; }
+.mapcard .th-hero { height: auto !important; background: transparent; box-shadow: none; }
+.mapcard .th-hero > .scene, .mapcard .th-hero .shade { display: none; }
+.mapcard .th-hero .txt { position: static; padding: 0; }
+.mapcard .hero-title { font-size: 1.3rem; }
+.mapcard .hero-quote { font-size: 1rem; color: var(--text-2); }
+.mapcard .opts { grid-template-columns: minmax(0, 1fr) !important; gap: .5rem; grid-auto-rows: auto !important; }
+.mapcard .opt { padding: .55rem .8rem; }
+.mapcard .opt-name { font-size: 1rem; }
+.mapcard .opt-fx { font-size: .9375rem; }
+.mapcard .opt-more { display: none !important; }
+.mapcard .ask { font-size: 1rem; }
+.map-right { min-height: 0; display: flex; }
+.map-right > .plan { flex: 1; }
+@media (max-width: 1599px) { .mapcard .opt-rec { display: none; } }
+@media (max-height: 820px) and (min-width: 701px) {
+  .mapcard { padding: .75rem; }
+  .mapcard .hero-quote, .mapcard .ask-row, .mapcard .opt-or, .mapcard .opt-after, .mapcard .skipopt .opt-fx { display: none !important; }
+  .mapcard .hero-title { font-size: 1.125rem; }
+  .mapcard .opt { padding: .3rem .7rem; }
+  /* A call's badge and Skip card fit with the answers on a short screen (D-85, AC-26) */
+  .mapcard .opts { gap: .3rem; }
+  .mapcard .th-ans .sel-badge { min-height: 0; padding: 2px 10px; margin-bottom: 6px; line-height: 1.25; }
+  .mapcard[data-fit='3'] .th-hero .txt { padding: .3rem .75rem; }
+}
+@media (min-width: 1600px) { .map-month { grid-template-columns: clamp(26rem, 26vw, 42rem) minmax(0, 1fr) 25rem; } }
+@media (min-width: 2240px) { .map-month { grid-template-columns: clamp(26rem, 24vw, 44rem) minmax(0, 1fr) 27rem; } }
+@media (min-width: 3200px) { .map-month { grid-template-columns: clamp(26rem, 22vw, 46rem) minmax(0, 1fr) 28rem; } }
+.mode-map .game-body > .plan.f-bar { grid-row: 2; }
+/* The card column ends above the Plan bar (row 2): the fit rule then compacts the card instead of the bar covering its Skip card */
+.mode-map .game-body > .map-month:not(.is-phone) { grid-row: 1 / 2; }
+/* The map's zoom buttons move out from under the card */
+.mode-map .map-stage .maplibregl-ctrl-bottom-left { left: calc(clamp(24rem, 28vw, 40rem) + 2 * var(--gap)); }
+@media (min-width: 1600px) { .mode-map .map-stage .maplibregl-ctrl-bottom-left { left: calc(clamp(26rem, 26vw, 42rem) + 2 * var(--gap)); } }
+@media (min-width: 2240px) { .mode-map .map-stage .maplibregl-ctrl-bottom-left { left: calc(clamp(26rem, 24vw, 44rem) + 2 * var(--gap)); } }
+@media (min-width: 3200px) { .mode-map .map-stage .maplibregl-ctrl-bottom-left { left: calc(clamp(26rem, 22vw, 46rem) + 2 * var(--gap)); } }
+
+/* ---------- Phones: their own tree (L-15) ---------- */
+@media (max-width: 700px) {
+  html { font-size: 16px; }
+  .game[data-cls='P'] { display: block; overflow-x: hidden; overflow-y: auto; font-size: 17px; }
+  /* What lies over the page's list (PhoneMonth useCoverHeights): an order's confirmation brought
+     into view ends below the sticky top and above the bottom bar (ConfirmFace, DR-OC-4) */
+  .game[data-cls='P'] { scroll-padding-top: var(--ph-top-h, 0px); --cover-bottom: var(--ph-bottom-h, 0px); }
+  .game[data-cls='P'] .game-top { position: sticky; top: 0; z-index: 30; }
+  .game[data-cls='P'] .game-body { display: block; position: static; }
+  .game[data-cls='P'].mode-desk .game-body > .map-stage { position: absolute; inset: 0; height: 100vh; }
+  .game[data-cls='P'].mode-map .game-body > .map-stage { height: 34vh; }
+  .game[data-cls='P'] .ticker { display: none; }
+  .phone-month, .map-month.is-phone { position: relative; z-index: 18; display: block; min-height: calc(100vh - 7rem); background: var(--bg-0); padding: 0; pointer-events: auto; inset: auto; }
+  .ph-body { padding: 14px 14px 20px; container: item / inline-size; }
+  .ph-body .thing { height: auto; grid-template-columns: minmax(0, 1fr) !important; grid-template-areas: none !important; }
+  .ph-body .thing > * { grid-area: auto !important; }
+  .ph-body .th-ctx { display: none !important; }
+  .ph-body .th-hero { height: auto; min-height: 9rem; }
+  .ph-body .th-hero .txt { position: relative; padding: 4.5rem 1rem .9rem; left: 0; right: 0; bottom: 0; }
+  .ph-body .hero-title { font-size: 26px; }
+  .ph-body .hero-quote { display: block; font-size: 18px; }
+  .ph-body .goals, .ph-body .th-story, .ph-body .th-facts.advice, .ph-body .sit-more { display: none !important; }
+  .ph-body .opts { grid-template-columns: minmax(0, 1fr) !important; }
+  .ph-body .opt { grid-template-columns: minmax(0, 1fr); min-height: 44px; }
+  .ph-body .opt .face { justify-self: start; }
+  .ph-body .review-page { grid-template-columns: minmax(0, 1fr); }
+  .map-month.is-phone .mapcard { border-radius: 0; border: 0; box-shadow: none; max-height: none; overflow: visible; background: var(--bg-0); }
+  /* The bottom bar stays slim over the list (C4): 48 px buttons, the safe area below them */
+  .ph-bottom { position: sticky; bottom: 0; z-index: 25; display: grid; gap: 6px; padding: 6px 14px calc(8px + env(safe-area-inset-bottom)); background: rgba(12, 17, 26, .98); border-top: 1px solid var(--line-2); }
+  .ph-conseq { margin: 0; font-size: 15px; color: var(--text-2); text-align: center; }
+  .ph-conseq b { color: var(--text-1); }
+  .ph-below { justify-content: center; min-height: 44px; font-size: 15px; font-weight: 600; }
+  /* An open call's leave sentence, in the amber of a question waiting (N-3), while its badge is below */
+  .ph-leave { margin: 0; padding: 6px 10px; border: 1.5px dashed var(--accent); border-radius: 10px; background: rgba(242, 169, 59, 0.14); color: var(--text-1); font-size: 15px; line-height: 1.35; text-align: center; }
+  .ph-next { width: 100%; min-height: 48px; font-size: 18px; justify-content: center; }
+  .ph-bottom .execute-btn { min-height: 52px; }
+  .ph-sheet { position: fixed; inset: auto 0 0 0; z-index: 40; max-height: calc(100vh - 3rem); overflow: hidden; border-top: 1.5px solid var(--line-2); border-radius: 1rem 1rem 0 0; box-shadow: 0 -16px 40px rgba(0, 0, 0, .6); }
+  .ph-sheet .agenda-list { padding: 14px; }
+  .ph-sheet.ph-rec { display: grid; gap: 8px; padding: 14px; background: var(--panel-bg); bottom: 0; }
+  .ph-sheet.ph-rec .al-close { justify-self: end; min-height: 44px; }
+  .ph-bottom .pbar-review { min-height: 44px; justify-content: center; }
+  .rv-exec .psec { border-bottom: 1px solid var(--line); margin-bottom: .4rem; }
+  /* The thing line is one block (C4, design review 4 of the order cards: 6 order rows a screen):
+     Back (its arrow) left, the title and the count in the middle, See all over the Desk / Map
+     switch on the right. It was three rows (Back, title, See all; then the switch alone), 161 px */
+  .ph-thingline { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: 'back where all' 'back where mode'; align-items: start; gap: 6px 8px; padding: 6px 10px; }
+  .ph-thingline .ph-back { grid-area: back; min-width: 44px; padding: 0 8px; justify-content: center; }
+  .ph-thingline .ph-back-word { display: none; }
+  .ph-thingline .mb-where { grid-area: where; align-self: center; }
+  .ph-thingline .mb-where b { font-size: 16px; line-height: 1.3; }
+  .ph-thingline .see-all { grid-area: all; justify-content: center; }
+  .ph-thingline .mode-seg { grid-area: mode; justify-self: stretch; margin: 0; padding: 0; }
+  .ph-thingline .wc-btn { min-height: 44px; }
+  .ph-thingline .mode-seg button { flex: 1; min-height: 44px; min-width: 44px; padding: 0 8px; justify-content: center; }
+}
+/* The layer switcher stays in the map's free gap: right of the card (it wraps), left of the floating Plan.
+   The wider steps repeat the base selector: with a weaker one the base rule won at every width and
+   the switcher started under the card at 3440 (visual review, Map month 4). */
+.game:not([data-cls='P']).mode-map .map-stage .layer-bar { left: calc(clamp(24rem, 28vw, 40rem) + 2 * var(--gap)) !important; flex-wrap: wrap; justify-content: flex-end; }
+@media (min-width: 1600px) { .game:not([data-cls='P']).mode-map .map-stage .layer-bar { left: calc(clamp(26rem, 26vw, 42rem) + 2 * var(--gap)) !important; } }
+@media (min-width: 2240px) { .game:not([data-cls='P']).mode-map .map-stage .layer-bar { left: calc(clamp(26rem, 24vw, 44rem) + 2 * var(--gap)) !important; } }
+@media (min-width: 3200px) { .game:not([data-cls='P']).mode-map .map-stage .layer-bar { left: calc(clamp(26rem, 22vw, 46rem) + 2 * var(--gap)) !important; } }
+@media (min-width: 1600px) { .mode-map .map-stage .layer-bar { right: calc(25rem + 2 * var(--gap)) !important; } }
+@media (min-width: 2240px) { .mode-map .map-stage .layer-bar { right: calc(27rem + 2 * var(--gap)) !important; } }
+@media (min-width: 3200px) { .mode-map .map-stage .layer-bar { right: calc(28rem + 2 * var(--gap)) !important; } }
+
+/* The Thing's own fit (it never scrolls): when the content of a thing is taller than the room (a
+   long crisis, four answers, month 1's goal sentence on a laptop), detail leaves in the order of
+   L-8: (1) the optional blocks (goals in this call, how it got here, the advisers, the month 1
+   intro: their facts are also on the cards), (2) the effect words after the goal tag, the detail
+   lines and the recommendation's reason, (3) the scene picture (a text header) and the question
+   and "Or, if you do not want to decide" lines. */
+[data-fit='1'] .th-facts.goals, [data-fit='2'] .th-facts.goals, [data-fit='3'] .th-facts.goals,
+[data-fit='1'] .th-story, [data-fit='2'] .th-story, [data-fit='3'] .th-story,
+[data-fit='1'] .th-facts.advice, [data-fit='2'] .th-facts.advice, [data-fit='3'] .th-facts.advice,
+/* Ask your staff beside the crisis is the first thing to go when the Thing must compact (it is
+   always in Menu, Cabinet) */
+[data-fit='1'] .ask-staff, [data-fit='2'] .ask-staff, [data-fit='3'] .ask-staff,
+[data-fit='1'] .intro1, [data-fit='2'] .intro1, [data-fit='3'] .intro1 { display: none !important; }
+[data-fit='2'] .fx-rest, [data-fit='3'] .fx-rest, [data-fit='2'] .opt-more, [data-fit='3'] .opt-more,
+[data-fit='2'] .rec-why, [data-fit='3'] .rec-why, [data-fit='2'] .opt-after, [data-fit='3'] .opt-after { display: none !important; }
+[data-fit='3'] .th-hero { height: auto !important; aspect-ratio: auto !important; flex: none !important; background: var(--surface-1); }
+[data-fit='3'] .th-hero > .scene, [data-fit='3'] .th-hero .shade { display: none; }
+[data-fit='3'] .th-hero .txt { position: static; padding: .55rem 1rem; }
+[data-fit='3'] .ask-row, [data-fit='3'] .opt-or, [data-fit='3'] .hero-quote { display: none !important; }
+
+/* AC-L7 / AC-22: nothing a player reads in the game screen's regions is under 15 px (buttons, the
+   learning chip, the paragraph explain mark) */
+.game [data-region] .wc-btn, .game [data-region] .wc-btn.small { font-size: max(.9375rem, 15px); }
+.game [data-region] .lx-info { font-size: 15px; }
+.game [data-region] .lx-info-i { font-size: 15px; }
+.state-band .lx-chip, .state-band .lx-chip-label { font-size: max(.9375rem, 15px); }
+.game [data-region] .lx-situation { font-size: 15px; }
+.game [data-region] .context-cap, .game [data-region] .om-name, .game [data-region] .om-label { font-size: max(.9375rem, 15px); }
+/* The map card's order ideas: one full-width card per row, the avatar gives its width to the card
+   (as on phones), so a 24rem card never crushes them (QA1-S2-1) */
+.mapcard .adv-list { grid-template-columns: minmax(0, 1fr) !important; }
+.mapcard .adv-row.adv-card { grid-template-columns: minmax(0, 1fr); padding: 10px; }
+.mapcard .adv-row.adv-card > .adv-avatar, .mapcard .big-move { display: none; }
+/* "Your call" (D-84): the Chief of Staff's Guide me sentence above the cards; plain text, not a control */
+.call-guide { margin: 0; padding: .55rem .9rem; border-left: 3px solid var(--intel); background: var(--surface-1); border-radius: 0 .5rem .5rem 0; font-size: 1rem; max-width: var(--read); }
+.lrow.is-call .lrow-st b { color: var(--intel); font-weight: 700; }
+.sp-calls { color: var(--intel); font-weight: 650; }
+.sb-calls.open .sb-v { color: var(--intel); }
+/* The review page never scrolls either (design-layout section 4): with the item's fit it compacts the
+   rows, then folds "Left to your advisers" to one line, then the Recommended rows (Choose all and
+   its line stay); the open calls keep their consequence line */
+.rv-sum { display: none; margin: 0; font-size: .9375rem; color: var(--text-2); }
+[data-fit] .review-page .prow-t small { display: none; }
+[data-fit] .review-page .rv-calls .prow-t small { display: block; }
+[data-fit='2'] .review-page .rv-left .prows, [data-fit='3'] .review-page .rv-left .prows { display: none; }
+[data-fit='2'] .review-page .rv-left .rv-sum, [data-fit='3'] .review-page .rv-left .rv-sum { display: block; }
+[data-fit='3'] .review-page .rv-exec .sp-list, [data-fit='3'] .review-page .rv-exec .sp-heading { display: none; }

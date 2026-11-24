@@ -40,8 +40,9 @@ export const TERMS = {
     id: 'meetings',
     name: 'Meetings',
     compact: 'Meetings {n} of 3',
-    definition: 'You attend up to 3 meetings a month. A deputy handles the rest with the default answer.',
-    banned: [/\bin person\b/i, /\b\d\s*\/\s*3\b/],
+    definition: 'You take up to 3 meetings a month yourself. Your ministers take the rest with the usual answer.',
+    // design-agenda 0.4 and 0.12 (WP-A6): the agenda's plain words replace the iteration 3 ones
+    banned: [/\bin person\b/i, /\b\d\s*\/\s*3\b/, /\bdeput(y|ies)\b/i, /\bhandled\b/i, /\bneeds you\b/i, /\broutine meetings?\b/i, /\bproposed orders?\b/i],
   },
   defense: {
     id: 'defense',
@@ -98,7 +99,7 @@ export const TERMS = {
     // D-71/D-72: the panel chose "Recommended"; each one names its adviser ("Recommended by Foreign Minister")
     name: 'Recommended by {role}',
     compact: 'Recommended',
-    definition: 'What one of your advisers recommends. Accept it or choose yourself.',
+    definition: 'What one of your advisers recommends. Choose it, or choose another answer yourself.',
     // QA3-S3-2: the crisis tag and button said "Cabinet pick" / "Accept cabinet pick"
     banned: [/^\s*Suggested\s*$/, /\bStaff suggests\b/i, /^\s*Staff\s*$/, /\bstaff picks?\b/i, /\bcabinet(?:'s)? picks?\b/i],
   },
@@ -106,24 +107,53 @@ export const TERMS = {
     id: 'recommended',
     name: 'Recommended',
     compact: 'Recommended ({n})',
-    // The first-use line next to every Accept control (RS-005, D-72 wording)
-    definition: 'Your advisers recommend these for this month. Orders and meetings wait for you to accept; a crisis listed here goes ahead on its recommended answer unless you change it, one not listed is yours to answer.',
+    // The line under the group (RS-005, D-72 wording; D-73: one verb, Choose). N-2 (design-rereview-your-call.md):
+    // a crisis not in the list (a call left open) does not go ahead on the Recommended tag
+    definition: 'Your advisers recommend these for this month. A recommended order runs only if you choose it; a crisis or meeting listed here goes ahead on its recommended or usual answer unless you change it, one not listed is yours to answer.',
+    banned: [],
+  },
+  reviewRecommended: {
+    id: 'reviewRecommended',
+    // The bar form of the Plan and Map mode (D-72 D4): opens the list, chooses nothing
+    name: 'Review {n} recommended',
+    compact: 'Review {n}',
+    banned: [],
+  },
+  yourCall: {
+    id: 'yourCall',
+    // D-84 (R11): a thing Choose all never decides; two advisers recommend different answers by name
+    name: 'Your call',
+    compact: 'Your call',
+    definition: 'A decision that is yours: a crisis your advisers disagree on, or the move for your mission. Choose all recommended never decides it: you choose a card, or skip and the card says what leaving it does.',
+    banned: [],
+  },
+  choose: {
+    id: 'choose',
+    // The one per-item verb (D-72 D8, D-73): on every answer card, the recommended one included
+    name: 'Choose',
+    compact: 'Choose',
     banned: [],
   },
   proposed: {
     id: 'proposed',
     name: 'Proposed by staff',
     compact: 'Proposed',
-    definition: 'An order your advisers recommend. It spends no political capital until you accept it, and it does not run unless you do.',
+    definition: 'An order your advisers recommend. It spends no political capital until you choose it, and it does not run unless you do.',
     banned: [/\bpre-?queued\b/i],
   },
   approveAll: {
     id: 'approveAll',
-    // One verb, Accept (D-72); the count in brackets
-    name: 'Accept all recommended ({n})',
-    compact: 'Accept all ({n})',
-    // QA3-S3-2: one verb (D-73), so no "if approved", "On Approve" or "to approve" next to Accept
+    // D-73: with the agenda's per-item Choose, the bulk button is "Choose all recommended"; the count in brackets
+    name: 'Choose all recommended ({n})',
+    compact: 'Choose all ({n})',
+    // The line under the button: it defines itself as choosing (design-agenda 0.12)
+    definition: 'Chooses the recommended answer for every routine thing still to do.',
+    // QA3-S3-2 and D-73: one verb, Choose. No Approve, and no Accept for a recommendation
     banned: [
+      /\bAccept (all|order|answer|meeting|deputy|recommended|recommendations?)\b/i,
+      /\bAccepted: /,
+      /\bif accepted\b/i,
+      /\b(until|for) you (to )?accept\b/i,
       /^\s*Approve\s+\d*\s*$/,
       /\bApprove all\b/i,
       /\bApprove \d+ (staff )?picks?\b/i,
@@ -162,21 +192,13 @@ export const TERMS = {
     compact: 'No undo',
     banned: [],
   },
-  yourCall: {
-    id: 'yourCall',
-    // D-84 R11: the month's one or two decisions Accept all leaves to the player
-    name: 'Your call',
-    compact: 'Your call',
-    definition: 'A decision your advisers disagree on, or the move for your mission. Accept all recommended never decides it: you choose a card, or skip and the cost is named.',
-    banned: [],
-  },
   chiefCalls: {
     id: 'chiefCalls',
     // D-84: the opt-in setting that restores the full one-press Accept all
     name: 'Let the Chief of Staff make my calls',
     compact: 'Chief of Staff makes my calls',
-    // Interim wording while this build has no Your call screen (design-review-your-call.md RC-4)
-    definition: "When on, the crises your advisers disagree on start on the Chief of Staff's answer (the one that serves your mission, or the calm one when political capital is short) and Accept all recommended also accepts them; the Chief of Staff also proposes the first order for your mission. Fully in effect from the next month.",
+    // RC-4 (design-review-your-call.md), on the month screen with its Your call cards (D-85 item 5)
+    definition: "Off: Choose all recommended decides the routine things only; your calls (a crisis your advisers disagree on, the move for your mission) start with no answer and wait for you. On: each call starts on the Chief of Staff's answer (the one that serves your mission, or the calm one when political capital is short) and Choose all recommended chooses it too. A crisis call you have not answered follows the setting at once; the order for your mission from the next month.",
     banned: [],
   },
 } as const satisfies Record<string, Term>;

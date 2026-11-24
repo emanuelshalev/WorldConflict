@@ -570,6 +570,31 @@
 /* ---------- Catalog and lists ---------- */
 .ord-catalog-top { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
 .ord-catalog-top > * { flex: 1 1 220px; min-height: 44px; }
+/* Wider than a phone (design-layout.md section 7, design review S1-1): one family at a time behind
+   tabs with counts, in a panel that fills the rest of the frame and never scrolls; the fit rule
+   (OrderCatalog, data-fit) steps the cards down until the family fits: tiles, compact tiles, rows
+   in columns. The top line carries Back, the title, search and the target. */
+.ord-catalog.is-tabs { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+.ord-catalog.is-tabs > * { flex: none; }
+.ord-catalog.is-tabs .ord-catalog-top { align-items: center; margin-bottom: 8px; }
+.ord-catalog.is-tabs .ord-catalog-top > .detail-back,
+.ord-catalog.is-tabs .ord-catalog-top > .detail-title { flex: 0 0 auto; margin: 0; }
+.ord-catalog.is-tabs .ord-catalog-top > .detail-back { min-height: 44px; }
+.ord-tabs { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 10px; }
+.ord-tab { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border-radius: 10px; border: 1.5px solid var(--line-2); background: var(--surface-1, transparent); color: var(--text-1); font: 650 15px var(--font-ui); cursor: pointer; }
+.ord-tab:hover { border-color: var(--card-line-hover); }
+.ord-tab[aria-selected='true'] { border-color: var(--fam, var(--accent)); background: var(--surface-2, rgba(255, 255, 255, .06)); color: var(--text-0, #fff); box-shadow: inset 0 -3px 0 var(--fam, var(--accent)); }
+.ord-tab-n { color: var(--text-2); font-weight: 600; }
+.ord-tab.fam-nuke .ord-cat-mark { background: repeating-linear-gradient(-45deg, var(--fam) 0 2px, #222 2px 4px); }
+.ord-tabs-target { margin-left: auto; font-size: 15px; color: var(--text-2); }
+.ord-catalog.is-tabs > .ord-tabpanel { flex: 1 1 auto; min-height: 0; overflow: hidden; }
+.ord-tabpanel > .ord-cat { margin: 0; }
+.ord-tabpanel .ord-cat-rows.is-cols, .ord-hits.is-cols { display: grid; grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr)); gap: 8px; align-items: start; }
+/* A danger order's confirm face takes the panel while it is open (it is taller than a card, and the
+   panel never scrolls); Cancel brings the family back */
+.ord-tabpanel .ord-grid:has(.is-confirming) > .ord-wrap:not(.is-confirming),
+.ord-tabpanel .ord-cat-rows:has(.is-confirming) > .ord-wrap:not(.is-confirming) { display: none; }
+.ord-tabpanel .ord-wrap.is-confirming { grid-column: 1 / -1; max-width: 44rem; }
 .ord-cat { margin-bottom: 18px; }
 .ord-cat .nav-head { margin-bottom: 8px; }
 .ord-cat-target { color: var(--text-2); text-transform: none; letter-spacing: 0; }
@@ -734,3 +759,19 @@
 .ord-proposal-fx { margin: 4px 0; font-size: 13px; color: var(--text-1); }
 .ord-meta-proposed { color: var(--accent); }
 .ord-dismiss { font-size: 13px; min-height: 0; padding: 0 2px; }
+
+/* Catalogue rows on the desk (the fit rule's last step): a staff proposal keeps its "Proposed by
+   staff" line and Remove; its forecast is in the card's hover preview, not a block that doubles the
+   row (design review S1-1, 1024x768) */
+.ord-tabpanel .ord-cat-rows .ord-proposal-fx { display: none; }
+/* The fit rule's last step (data-fit 3): denser rows (a narrower picture column, a smaller title,
+   a narrower Add), so three columns hold long titles ("Assassinate leader of Venezuela") in two
+   lines and a family of 8 takes three rows (1024x768) */
+.ord-catalog[data-fit='3'] .ord-tabpanel .ord-cat-rows.is-cols { grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); gap: 6px; }
+.ord-catalog[data-fit='3'] .ord-tabpanel .ord-row > .wc-card.wc-card-row { grid-template-columns: 56px minmax(0, 1fr); }
+.ord-catalog[data-fit='3'] .ord-tabpanel .ord-row .wc-card-title { font-size: 15px; }
+.ord-catalog[data-fit='3'] .ord-tabpanel .ord-row > .wc-card.wc-card-row { min-height: 0; }
+.ord-catalog[data-fit='3'] .ord-tabpanel .ord-row > .wc-card .wc-card-art { min-height: 52px; padding-top: 2px; padding-bottom: 2px; }
+.ord-catalog[data-fit='3'] .ord-tabpanel .ord-row > .wc-card .wc-card-body { padding-top: 4px; padding-bottom: 4px; padding-right: 80px; padding-left: 8px; }
+.ord-catalog[data-fit='3'] .ord-tabs, .ord-catalog[data-fit='3'] .ord-catalog-top { margin-bottom: 4px; }
+.ord-catalog[data-fit='3'] .ord-tabpanel .ord-row .wc-card-reason { margin-bottom: 4px; }

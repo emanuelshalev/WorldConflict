@@ -1,0 +1,6 @@
+1920x1080 m2 before {"list":"205..1056 oy=hidden sh=851 ch=851","rows":8,"last":"872..949","ticker":1056,"form":"column"}
+1920x1080 m2 after choose all {"list":"205..1056 oy=hidden sh=974 ch=851","rows":9,"last":"1073..1150","ticker":1056,"form":"column"}
+1920x1080 m5 before {"list":"205..1056 oy=hidden sh=860 ch=851","rows":9,"last":"959..1036","ticker":1056,"form":"column"}
+1920x1080 m5 after choose all {"list":"205..1056 oy=hidden sh=974 ch=851","rows":9,"last":"1073..1150","ticker":1056,"form":"column"}
+2560x1440 m5 before {"list":"177..1416 oy=hidden sh=1289 ch=1239","rows":9,"last":"1141..1228","ticker":1416,"form":"column"}
+2560x1440 m5 after choose all {"list":"177..1416 oy=hidden sh=1267 ch=1239","rows":9,"last":"1119..1206","ticker":1416,"form":"column"}

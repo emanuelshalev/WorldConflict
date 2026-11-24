@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { readFileSync } from "node:fs";
 
 // The UI store reads window.location at import; a bare stand-in is enough for these pure helpers
 vi.hoisted(() => {
@@ -102,6 +103,20 @@ describe("the result card", () => {
     expect(own?.lines[0]?.text).toMatch(/More escorts/);
     // Without an engine yourMove, a war highlight still never becomes the choice
     expect(yourMoveCard({ ...r, yourMove: undefined, decisions: [] })).toBeNull();
+  });
+
+  it("C2-2 (design-rereview-your-call.md): a crisis left open is never the leader's answer or the player's choice", () => {
+    const r = report({
+      decisions: [{ title: "General strike", choice: "Break the strike (no decision taken)", kind: "CRISIS", attended: true, headline: "Trump's answer: Break the strike", facts: [], status: "DONE" }],
+      yourMove: { ref: "decision", index: 0 },
+    });
+    const own = yourMoveCard(r);
+    expect(own?.headline).toBe("Left open: Break the strike");
+    expect(own?.lines[0]?.text).toBe("You left it open: Break the strike went ahead by default");
+    const all = buildPages(r, world).flatMap((p) => p.cards);
+    for (const c of all) expect(`${c.headline} ${c.lines.map((l) => l.text).join(" ")}`).not.toMatch(/Trump's answer|^You: /);
+    // The result card's "You chose" line reads "Left open" for it (ResultCard.tsx leftOpen)
+    expect(readFileSync("ui/src/scenes/ResultCard.tsx", "utf-8")).toContain("{leftOpen ? 'Left open' : `You ${ho ? 'ordered' : 'chose'}`}");
   });
 
   it("Priya: a -9 under a done choice reads 'Done, at a cost', never 'A step forward'", () => {

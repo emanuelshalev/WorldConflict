@@ -3,7 +3,7 @@
 // confirm face (no native dialog) focused on the safe answer; a second Enter cancels; nothing is queued.
 // Dan typed "nuclear strike india" (Water War as Pakistan, at peace with India) and Enter queued
 // the first hit, "Strike nuclear sites in India", an act of war, at once.
-import { args, run, startGame } from './_lib.mjs';
+import { args, openAllOrders, run, startGame } from './_lib.mjs';
 
 const DAN = { flashpointId: 'water-war', countryId: 'PAK', title: 'Water War', seed: 4242 };
 
@@ -14,12 +14,15 @@ await run('F-00-13', async (g, track) => {
   const p = s.page;
   let dialogs = 0;
   p.on('dialog', () => dialogs++);
-  await s.click(/^Full desk$/);
-  // Free capital so every war order is affordable: remove a staff order
+  // Free capital so every war order is affordable: remove a recommended order (the month's
+  // "Recommended orders" thing; proposals hold nothing since F-02-4, so this is belt and braces)
   const removes = () => p.getByRole('button', { name: /^Remove / }).count();
+  if (!(await p.locator('[data-agenda-item="orders"]').first().isVisible().catch(() => false))) await p.locator('.see-all').first().click().catch(() => {});
+  await p.locator('[data-agenda-item="orders"]').first().click().catch(() => {});
+  await p.waitForTimeout(500);
   await p.getByRole('button', { name: /^Remove / }).first().click().catch(() => {});
   await p.waitForTimeout(800);
-  if (!(await s.click(/^All orders/))) throw new Error('no All orders');
+  if (!(await openAllOrders(s))) throw new Error('no All orders');
   const box = p.locator('#catalog-search');
   await box.waitFor();
   const before = await removes();
@@ -31,6 +34,8 @@ await run('F-00-13', async (g, track) => {
     ['nuclear strike india', /^(war|mission|danger)$/],
     ['declare war india', /^war$/],
   ]) {
+    // The pointer must not rest on a hit (pointer-enter moves the cursor there): park it on the band
+    await p.mouse.move(2, 2);
     await box.fill(query);
     await p.waitForTimeout(900);
     const first = (await p.locator('#ord-hits [role="option"]').first().innerText().catch(() => '')).replace(/\s+/g, ' ');

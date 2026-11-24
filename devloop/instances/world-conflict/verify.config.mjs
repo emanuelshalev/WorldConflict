@@ -108,7 +108,11 @@ export default {
       args: (ctx) => ['playwright', 'test', '-c', 'tests/visual/playwright.config.ts', ...(ctx.flags.has('update-visual') ? ['--update-snapshots'] : [])],
       env: (ctx) => ({ VISUAL_BASE_URL: `${ctx.urls.ui}/`, VISUAL_API_URL: `${ctx.urls.api}/api`, VISUAL_OUT: path.join(ctx.out, 'visual') }),
       needs: ['api', 'ui'],
-      timeoutMs: 600_000,
+      // A clean run takes about 4.5 minutes on Windows (35 tests, four workers, the 3440 layout
+      // pages the heaviest). A real layout change fails each of the 13 layout tests three times at
+      // roughly a minute an attempt, about 10 more minutes: 20 minutes keeps that run's report
+      // instead of cutting it off (600 s did, 2026-11-23)
+      timeoutMs: 1_200_000,
       summarize: (log) => [...log.matchAll(/^\s*(\d+ (?:failed|flaky|passed))/gm)].map((m) => m[1]).join(', '),
     },
     {
@@ -118,7 +122,8 @@ export default {
       args: (ctx) => ['devloop/kit/regressions.mjs', registry, 'run', '--out', path.join(ctx.out, 'regressions')],
       env: browserEnv,
       needs: ['api', 'ui'],
-      timeoutMs: 1_200_000,
+      // 113 findings take about 20 minutes alone on one machine, longer beside a design review
+      timeoutMs: 2_400_000,
       summarize: lastLine(/\d+\/\d+ findings guarded.*/g),
     },
     {

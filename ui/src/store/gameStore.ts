@@ -735,6 +735,14 @@ export interface GameState extends CodexSlice {
   reviewed: Record<string, true>;
   /** Staff orders the player removed this month (order keys): never re-added. */
   dismissedStaff: string[];
+  /** Agenda items the player skipped on purpose this month (lib/agenda.ts keys, design-agenda 0.3). */
+  skipped: Record<string, true>;
+  /** The agenda item on the Thing (lib/agenda.ts key); null = the first one still to do. */
+  agendaKey: string | null;
+  /** "Check what will happen": the review page replaces the Thing and the Plan. */
+  review: boolean;
+  /** The See all panel (laptops and tablets) or sheet (phones) is open. */
+  listOpen: boolean;
   /** `${saveId}:${turn}` once this month's defaults are applied. */
   monthKey: string | null;
   deskMode: 'map' | 'desk';
@@ -752,10 +760,10 @@ export interface GameState extends CodexSlice {
   setFocus: (focus: DeskFocus) => void;
   /** Settings: the staff pre-queue up to 3 orders each month. */
   staffOrders: boolean;
-  setStaffOrders: (on: boolean) => void;
-  /** Settings (D-84, off by default): "Let the Chief of Staff make my calls"; Accept all also decides the calls. */
+  /** Settings (D-84, off by default): "Let the Chief of Staff make my calls": Choose all decides calls too. */
   chiefCalls: boolean;
   setChiefCalls: (on: boolean) => void;
+  setStaffOrders: (on: boolean) => void;
   advisorDraft: string | null; // a question pre-filled when you consult from a crisis or meeting
   consult: (role: string, question: string) => void;
   score: Score | null;
@@ -1017,6 +1025,10 @@ export const useGameStore = create<GameState>((set) => ({
   decisionChoices: {},
   reviewed: {},
   dismissedStaff: [],
+  skipped: {},
+  agendaKey: null,
+  review: false,
+  listOpen: false,
   monthKey: null,
   deskMode: 'desk',
   setDeskMode: (mode) => set({ deskMode: mode }),
@@ -1115,6 +1127,10 @@ export const useGameStore = create<GameState>((set) => ({
       decisionChoices: {},
       reviewed: {},
       dismissedStaff: [],
+      skipped: {},
+      agendaKey: null,
+      review: false,
+      listOpen: false,
       monthKey: null,
       error: null,
       errorBase: null,
@@ -1147,6 +1163,10 @@ export const useGameStore = create<GameState>((set) => ({
       pendingActions: [],
       reviewed: {},
       dismissedStaff: [],
+      skipped: {},
+      agendaKey: null,
+      review: false,
+      listOpen: false,
       monthKey: null,
       lastTurnFeedback: null,
       advisorChatHistory: {},

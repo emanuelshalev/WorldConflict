@@ -23,20 +23,21 @@ const status: ConditionStatus[] = [
 const impact = (p: Partial<Impact>): Impact => ({ helps: [], hurts: [], breaks: [], bonusHelps: [], bonusHurts: [], score: 0, links: [], ...p });
 
 describe("month words", () => {
-  it("names a goal by its numbers when they say whose, else by its label", () => {
-    expect(goalName(status[2])).toBe("stability 78%+");
-    expect(goalName(status[3])).toBe("US relations 70+");
+  it("names a goal with the mission line's words, never its raw threshold", () => {
+    expect(goalName(status[2])).toBe("The kingdom holds its nerve");
+    expect(goalName(status[3])).toBe("Washington firmly behind you");
+    expect(goalName({ label: "Voters stay on side (approval 56%+)" })).toBe("Voters stay on side");
     expect(goalName(status[4])).toBe("Israel stays on side");
     expect(goalName(status[0])).toBe("The Houthis pushed off the coast");
   });
 
   it("gives at most one mission tag: breaks, then hurts, then helps, then a bonus", () => {
     const sanaa = impact({ helps: ["The Houthis pushed off the coast"], hurts: ["The kingdom holds its nerve"], links: [{ index: 0, effect: "helps", bonus: false }, { index: 2, effect: "hurts", bonus: false }] });
-    expect(missionTag(sanaa, status)).toEqual({ tone: "risk", text: "Hurts: stability 78%+", more: 1 });
+    expect(missionTag(sanaa, status)).toEqual({ tone: "risk", text: "Hurts: The kingdom holds its nerve", more: 1 });
     const oman = impact({ helps: ["The kingdom holds its nerve"], links: [{ index: 2, effect: "helps", bonus: false }] });
-    expect(missionTag(oman, status)?.text).toBe("Helps: stability 78%+");
+    expect(missionTag(oman, status)?.text).toBe("Helps: The kingdom holds its nerve");
     const invite = impact({ bonusHelps: ["Washington firmly behind you"], links: [{ index: 3, effect: "helps", bonus: true }] });
-    expect(missionTag(invite, status)).toEqual({ tone: "bonus", text: "Helps: US relations 70+ (bonus)", more: 0 });
+    expect(missionTag(invite, status)).toEqual({ tone: "bonus", text: "Helps: Washington firmly behind you (bonus)", more: 0 });
     expect(missionTag(impact({}), status)).toBeNull();
   });
 

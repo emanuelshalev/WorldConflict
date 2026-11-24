@@ -242,6 +242,9 @@ const isSceneKind = (s: unknown): s is SceneKind => typeof s === 'string' && (SC
 /** The label without the engine's suffixes ("(no decision taken)", "(you did not attend)"). */
 export const cleanChoice = (label: string) => label.replace(/\s*\((no decision taken|you did not attend)\)\s*$/, '').trim();
 
+/** A crisis the player left open: the engine marks the answer that ran "(no decision taken)" (turn.ts). */
+export const leftOpenChoice = (label: string) => /\(no decision taken\)\s*$/.test(label);
+
 /** The keyword entry an option label matches, if any. */
 export function optionKeyword(label: string): (typeof OPTION_KEYWORDS)[number] | undefined {
   // A negated phrase names what you will not do: "More escorts, no strikes" is not an air strike

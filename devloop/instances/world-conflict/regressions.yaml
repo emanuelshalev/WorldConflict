@@ -24,7 +24,7 @@ findings:
   - id: RS-001-2
     title: Political capital is named one way everywhere and the warning points at its meter
     source: RS-001 (CEO, "political credit" vs the small bar); D-45; QA0-5
-    covers: [ui/src/components/Hud.tsx, ui/src/components/desk/CommandRail.tsx, ui/src/lib/pointAt.ts, ui/src/lib/glossary.ts, ui/src/components/orders/OrderCard.tsx, ui/src/components/game/CapitalSeal.tsx]
+    covers: [ui/src/components/Hud.tsx, ui/src/components/desk/Plan.tsx, ui/src/lib/pointAt.ts, ui/src/lib/glossary.ts, ui/src/components/orders/OrderCard.tsx, ui/src/components/game/CapitalSeal.tsx]
     changed: "2026-11-23 verify gate fixes: RS-001-2.mjs approves the staff picks before looking for an unaffordable order; staff picks spend nothing until approved (F-02-4, D-58), so month 1 no longer opens with seals spent. Same need tested, plus the meters must agree after the spend. 2026-11-23 D-84: with one seal left after the staff picks, the script chooses a target country when no unaffordable order is listed (orders that cost more all need one)"
     guards:
       - vitest: tests/ui-glossary.spec.ts
@@ -50,7 +50,7 @@ findings:
   - id: RS-001-5
     title: Suggestions are visible, with a why line, on the desk and the map
     source: RS-001 (CEO, "where are the suggestions?"); D-46
-    covers: [src/core/advisors.ts, ui/src/components/desk/AdvisorList.tsx, ui/src/components/desk/CommandRail.tsx, ui/src/lib/advisorRows.ts, ui/src/styles/month.css]
+    covers: [src/core/advisors.ts, ui/src/components/desk/AdvisorList.tsx, ui/src/components/desk/Plan.tsx, ui/src/lib/advisorRows.ts, ui/src/styles/month.css]
     changed: "2026-11-23 verify gate fixes: shared guard QA1-S2-1.mjs, see QA1-S2-1. 2026-11-22 iteration 3 QA: REGRESSED on the desk (QA3-S2-1, cards one letter per line; QA1-S2-1 checked the Map strip only); fixed in month.css, and QA3-S2-1.mjs now checks the desk list at 390, 1440 and 1920, Focus and Full desk, months 1 and 2"
     guards:
       - vitest: tests/core/advisors.spec.ts
@@ -277,14 +277,14 @@ findings:
   - id: QA0-5
     title: HUD and rail capital meters show the same number of seals
     source: iter-00 qa-repro #5 (HUD filled what is left, rail what is spent)
-    covers: [ui/src/components/Hud.tsx, ui/src/components/desk/CommandRail.tsx, ui/src/components/game/CapitalSeal.tsx]
+    covers: [ui/src/components/Hud.tsx, ui/src/components/desk/Plan.tsx, ui/src/components/game/CapitalSeal.tsx]
     changed: "2026-11-23 verify gate fixes: shared guard RS-001-2.mjs updated for F-02-4 (D-58), see RS-001-2; the meters are now compared before and after approving the staff picks"
     guards:
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-001-2.mjs
   - id: QA0-7
     title: An approved staff pick never reads "Your call"
     source: iter-00 qa-repro #7
-    covers: [ui/src/lib/month.ts, ui/src/components/desk/Navigator.tsx, ui/src/components/desk/Detail.tsx, ui/src/components/desk/YourMove.tsx]
+    covers: [ui/src/lib/month.ts, ui/src/components/desk/AgendaList.tsx, ui/src/components/desk/Detail.tsx, ui/src/components/desk/YourMove.tsx]
     guards:
       - vitest: tests/regressions/ui-store.spec.ts
         name: never labelled 'Your call'
@@ -393,7 +393,7 @@ findings:
   - id: QA1-S2-1
     title: Advisors are readable in Map mode at 1024 and 1440 (no squashed, overlapping rows)
     source: iter-01 qa-verify S2-1; QA2 FIXED
-    covers: [ui/src/components/desk/CommandRail.tsx, ui/src/components/desk/AdvisorList.tsx, ui/src/components/orders/OrderCard.tsx, ui/src/lib/advisorRows.ts, ui/src/styles/ease.css, ui/src/styles/**]
+    covers: [ui/src/components/desk/Plan.tsx, ui/src/components/desk/AdvisorList.tsx, ui/src/components/orders/OrderCard.tsx, ui/src/lib/advisorRows.ts, ui/src/styles/ease.css, ui/src/styles/**]
     changed: "2026-11-23 verify gate fixes: REGRESSED and fixed. The AC3 fold (D-58) hid the advisors without a count, the strip hid Show more, and the shared order card (F-02-5) drew Approve order over its text. The fold now names the count, the strip reaches every suggestion and the row text clears the button. The guard checks the folded count, one-tap open, Show N more, the card title (.wc-card-title) and text under any control; the full-card hit area is excluded from the button overlap check"
     guards:
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/QA1-S2-1.mjs
@@ -652,6 +652,7 @@ findings:
     title: Newcomers drown before the first choice (auto-open briefing, text wall, unknown goal, unkind ranking)
     source: runs/iter-02/sessions/olivia-laptop.md, runs/iter-02/sessions/noah-phone.md
     covers: [ui/src/components/learn/**, ui/src/components/desk/**, ui/src/lib/goals.ts, ui/src/components/reveal/model.ts]
+    changed: "2026-11-23 iteration 4 month screen: fix-newcomers-shots.mjs also reads the month screen (the crisis Thing's scene band and quote, its answer cards checked against the options' descriptions, the recommended orders Thing's Choose, a new check that a proposal's Choose is on screen); the Desk switch carries data-desk-switch again"
     guards:
       - vitest: tests/ui-learn.spec.ts
         name: "never auto-opens the briefing at any level unless the player turns it on"
@@ -705,23 +706,26 @@ findings:
     guards:
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-004.mjs
   - id: RS-005
-    title: "Recommendations are listed under \"Recommended\" next to every Accept control; the button names its count and never accepts unseen (wording D-72)"
-    source: real-signals/RS-005-ceo-staff-picks-unclear-2026-11-23.md (CEO playtest); D-64; words D-71, D-72
-    covers: [ui/src/components/desk/StaffPicks.tsx, ui/src/components/desk/CommandRail.tsx, ui/src/components/desk/Navigator.tsx, ui/src/lib/useStaffPicks.ts, ui/src/lib/month.ts, ui/src/styles/staff-picks.css, ui/src/lib/glossary.ts]
-    changed: "design-review-your-call.md RC-1: the greyed-out Accept all may read \"Nothing else to accept. Still open: <crisis title>\" while a crisis Accept all leaves open (a call with no answer yet), and the first-use line reads \"...; a crisis listed here goes ahead on its recommended answer unless you change it, one not listed is yours to answer.\" (design-rereview-your-call.md N-2); the guard accepts that reason as well as \"Nothing to accept\""
+    title: "Recommendations are listed under \"Recommended\" next to every Choose all control; the button names its count and never chooses unseen (wording D-72, one verb Choose D-73)"
+    source: real-signals/RS-005-ceo-staff-picks-unclear-2026-11-23.md (CEO playtest); D-64; words D-71, D-72, D-73
+    covers: [ui/src/components/desk/Plan.tsx, ui/src/components/desk/ReviewPage.tsx, ui/src/components/desk/PhoneMonth.tsx, ui/src/components/desk/MapMonth.tsx, ui/src/lib/useStaffPicks.ts, ui/src/lib/month.ts, ui/src/lib/agenda.ts, ui/src/lib/glossary.ts]
+    changed: "design-review-your-call.md RC-1 (build-your-call), ported to the iteration-4 month screen (build-agenda-layout): the greyed-out Choose all recommended reads \"Nothing else to choose. Still open: <title>\" while a call Choose all leaves open (a call with no answer yet), and the Recommended definition reads \"...; a crisis listed here goes ahead on its recommended answer unless you change it, one not listed is yours to answer.\" (design-rereview-your-call.md N-2); the guard accepts that reason as well as \"Nothing to choose\". The old desk's StaffPicks, CommandRail and Navigator are gone; Plan.tsx, ReviewPage.tsx, PhoneMonth.tsx and MapMonth.tsx carry the button"
     guards:
       - vitest: tests/ui-staff-picks.spec.ts
       - vitest: tests/ui-glossary.spec.ts
         name: names the Recommended group
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-005.mjs
+    note: "Iteration 4 (D-80, D-73): the QA3-S3-3 inner-scroll check became the fit rule check (no scroll box in the Plan, every row's Open tappable, Show opens a folded section); rows have Open instead of Accept (D-72 D8); the navigator count check became the state band count (the navigator is gone); the phone list is on the review screen (AC-21)."
   - id: RS-008
-    title: "The game screen uses the space and hides nothing: no inner scrolling for month items, state or actions at 1366x768 and up, width used at 1920 and up, small screens collapse visibly (layout audit)"
+    title: "The game screen uses the space and hides nothing: no inner scrolling for month items, state or actions at 1024x768 and up, width used at 1920 and up, small screens collapse visibly (layout audit)"
     source: real-signals/RS-008-ceo-layout-wide-screen-2026-11-23.md (CEO playtest of iter-3 at 3440x1440); D-80
-    status: open
-    covers: [ui/src/components/Desk.tsx, ui/src/components/desk/**, ui/src/components/Hud.tsx, ui/src/scenes/ResultCard.tsx, ui/src/styles/**, devloop/kit/layout-audit.mjs, devloop/instances/world-conflict/layout-audit.config.mjs]
+    covers: [ui/src/App.tsx, ui/src/components/Desk.tsx, ui/src/components/StateBand.tsx, ui/src/components/desk/**, ui/src/lib/coach.ts, ui/src/lib/month.ts, ui/src/scenes/ResultCard.tsx, ui/src/lib/layout.ts, ui/src/styles/**, ui/src/scenes/result.css, devloop/kit/layout-audit.mjs, devloop/instances/world-conflict/layout-audit.config.mjs]
     guards:
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-008.mjs
-    note: "Open until the D-80 layout ships; the fixing build removes status: open. Iter-3 baseline (06f937b + iter-3 UI on the shared dev server, seat CA-USA-OLIV1), 29 violations in 32 measurements. CEO 3440x1440: month 1 used width 0.45 (943 px empty left); month 2 desk 3 inner scrollers (desk stage, rail body, Recommended list; 1495 px hidden), 24 controls below their fold, used width 0.45, 2 covered Remove links; Map mode passes. 1366x768 and 1440x900: inner scrolling in every desk state (month 2: 2585 / 2379 px hidden, 49 / 42 controls out of view). 1920x1080: same plus used width 0.80. 2560 and 3840: used width 0.60 / 0.40. Phone and tablet collapse rules hold."
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-008-1.mjs
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-008-2.mjs
+    changed: "RS-008-2 (build-agenda-layout preview, runs/iter-04/build-preview/m1-3440x1440.png): the month 1 coach covers no heading or control at 3440x1440, 1440x900, 1024x768 and 390x844 (step 1 lay over the question heading; step 3 over the list from the bar at 1024x768); step 3 shows on the phone's review screen, where Execute is the next action (it never showed on a phone); goals are named with the mission line's words, never a raw threshold (\"Hurts: approval 56%+\"). Merge of build-your-call (D-85 item 5): RS-008-1 D5 also accepts a call's Skip card, whose text is the leave sentence (\"Leave it open\", \"If you leave it: <answer>\" or \"If you leave it, the crisis passes with no effect\"), still a statement of what happens instead"
+    note: "Shipped with the iteration-4 layout (design-layout.md, build-agenda-layout): CEO 3440x1440 0 violations in month 1, the result card, month 2 desk and Map (used width 1.00); all 32 measurements pass. The config now uses the five regions on their real selectors and applies the scroll rules from 1024x768 (the spec's bar, was 1366). RS-008-1 adds AC-L2, L3, L6 to L14 and the agenda criteria (AC-2, AC-5, AC-21, AC-25 to AC-27, AF-14) at 3440x1440, 3840x2160, 2560x1440, 1920x1080, 1599x900, 1440x900, 1366x820, 1366x768, 1024x768 and 390x844. Iter-3 baseline (06f937b + iter-3 UI on the shared dev server, seat CA-USA-OLIV1), 29 violations in 32 measurements. CEO 3440x1440: month 1 used width 0.45 (943 px empty left); month 2 desk 3 inner scrollers (desk stage, rail body, Recommended list; 1495 px hidden), 24 controls below their fold, used width 0.45, 2 covered Remove links; Map mode passes. 1366x768 and 1440x900: inner scrolling in every desk state (month 2: 2585 / 2379 px hidden, 49 / 42 controls out of view). 1920x1080: same plus used width 0.80. 2560 and 3840: used width 0.60 / 0.40. Phone and tablet collapse rules hold."
   - id: F-02-2
     title: One outcome vocabulary; status words never contradict outcomes
     source: dan-term 030-hs (staff meeting FAILED while mobilization 85 to 95 applied); marcus-term 010-m1f (FAILED on a vote cast and on China/Russia moves); priya-flash 011-ex1 (-9 labelled A step forward); maya-phone 018-m4d (front move as "what your choice did"); QA S2-1 (Hormuz USA month 1)
@@ -807,7 +811,7 @@ findings:
   - id: QA3-S3-3
     title: At 1440 x 900 the desk rail keeps Execute, Accept all and whole seals in view; the Recommended list scrolls inside it, every item reachable
     source: runs/iter-03/qa-verify.md S3-3
-    covers: [ui/src/styles/staff-picks.css, ui/src/styles/desk-stage.css, ui/src/components/desk/CommandRail.tsx, ui/src/components/desk/StaffPicks.tsx]
+    covers: [ui/src/styles/staff-picks.css, ui/src/styles/desk-stage.css, ui/src/components/desk/Plan.tsx]
     guards:
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/RS-005.mjs
   - id: QA3-S3-4
@@ -894,17 +898,30 @@ findings:
   - id: DR-OC-3
     title: "The catalogue is dense again: rows on a phone (6 or more orders a screen), tiles near their earlier height from 600 px up"
     source: runs/iter-04/design-review-order-cards.md required change 3 (S3; m1-catalog-russia-390x844.jpg, audit-phone.txt)
-    covers: [ui/src/components/orders/OrderCatalog.tsx, ui/src/components/orders/OrderCard.tsx, ui/src/styles/orders.css]
-    changed: "re-review (design-rereview-order-cards.md C2, C4): rows are counted where the player sees them (inside the desk stage, above the command bar; the first version counted rows under the bar), in the reviewer's state (target Russia, Military group at the top) as well as with no target; floors 4 and 5, not the target of 6 (see the guard's note); a press on an available phone row opens its blurb and forecast without adding it, Add adds it. Review 3 (design-review3-order-cards.md new problems 2 to 4): the opened row's forecast is at least 80% of the row's width and Add stays within its first 80 px; the hint line only shows with no target; a phone search hit behaves as a list row (a tap shows the forecast, Add adds)"
+    covers: [ui/src/components/orders/OrderCatalog.tsx, ui/src/components/orders/OrderCard.tsx, ui/src/styles/orders.css, ui/src/components/desk/PhoneMonth.tsx]
+    changed: "iteration 4 phone tree (build-agenda-layout): All orders opens from See all and rows are counted between the sticky top and the bottom bar, on top where they are (_lib.mjs phoneList; DR-OC-6 holds the target of 6). Re-review (design-rereview-order-cards.md C2, C4): rows are counted where the player sees them (inside the desk stage, above the command bar; the first version counted rows under the bar), in the reviewer's state (target Russia, Military group at the top) as well as with no target; floors 4 and 5, not the target of 6 (see the guard's note); a press on an available phone row opens its blurb and forecast without adding it, Add adds it. Review 3 (design-review3-order-cards.md new problems 2 to 4): the opened row's forecast is at least 80% of the row's width and Add stays within its first 80 px; the hint line only shows with no target; a phone search hit behaves as a list row (a tap shows the forecast, Add adds)"
     guards:
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-OC-3.mjs
   - id: DR-OC-4
     title: "On the phone desk catalogue a danger order's Cancel and Give the order open above the fixed command bar, wherever the row was pressed"
     source: runs/iter-04/design-rereview-order-cards.md new problem 1 (S2; reach-airstrike-military-390x844-70pct.jpg, probe-face-reach-phone.txt)
-    covers: [ui/src/components/orders/ConfirmFace.tsx, ui/src/components/desk/CommandRail.tsx, ui/src/styles/desk-stage.css, ui/src/styles/month.css, ui/src/components/desk/Coach.tsx]
-    changed: "review 3 (design-review3-order-cards.md new problems 1 and 5): with an order of the player's own added first, the first month's coach bubble stands on the bar; the guard checks at 390x844 and 360x740 that no bubble shows while a face is open, that both answers are uncovered at the centre and four corners, that a tap on Give the order queues the order, and that Cancel leaves the list where the player had it"
+    covers: [ui/src/components/orders/ConfirmFace.tsx, ui/src/components/desk/PhoneMonth.tsx, ui/src/styles/layout.css, ui/src/styles/desk-stage.css, ui/src/styles/month.css, ui/src/components/desk/Coach.tsx]
+    changed: "review 3 (design-review3-order-cards.md new problems 1 and 5): with an order of the player's own added first, the first month's coach bubble stands on the bar; the guard checks at 390x844 and 360x740 that no bubble shows while a face is open, that both answers are uncovered at the centre and four corners, that a tap on Give the order queues the order, and that Cancel leaves the list where the player had it. Iteration 4 phone tree (build-agenda-layout): the page scroller, its sticky top and the bottom bar replace the desk stage and the command bar; PhoneMonth passes their heights to the scroller (scroll-padding-top, --cover-bottom) and the answers must end between both; the coach's step 3 is not on the phone list (DR-OC-5)"
     guards:
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-OC-4.mjs
+  - id: DR-OC-5
+    title: "Condition CA: in month 1 no coach tip stands over the phone order list; every row button is pressable, or a tip covers at most 10% of the list"
+    source: runs/iter-04/design-review4-order-cards.md condition CA (caveat A; coach step 3 over 19% of the list at 390x844, 33% at 360x740, Add under it dead)
+    covers: [ui/src/components/desk/PhoneMonth.tsx, ui/src/components/desk/Coach.tsx, ui/src/components/desk/Plan.tsx, ui/src/components/desk/ReviewPage.tsx, ui/src/styles/layout.css, ui/src/styles/month.css, ui/src/lib/coach.ts]
+    note: "Owner build-agenda-layout. On the iteration-4 phone tree the coach's step 3 bubble stands on Execute (desktop Plan, review screen off the phone), not on the phone list, so the guard passes on the branch as it is; checked against a build with the old placement (the bubble on the phone bottom bar): it fails at 13% (390x844) and 16% (360x740) with Mobilize, Break pact and others under the bubble."
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-OC-5.mjs
+  - id: DR-OC-6
+    title: "Condition C4: at least 6 whole, uncovered order rows per phone screen at 390x844 (less chrome above the phone list; the state line never runs off the screen)"
+    source: runs/iter-04/design-review4-order-cards.md condition C4 (carried from design-rereview-order-cards.md C4; 5 and 4 rows at 390x844, 3 at 360x740)
+    covers: [ui/src/components/desk/PhoneMonth.tsx, ui/src/components/StateBand.tsx, ui/src/styles/layout.css, ui/src/styles/state-band.css, ui/src/components/orders/OrderCatalog.tsx, ui/src/components/orders/OrderCard.tsx, ui/src/styles/orders.css]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-OC-6.mjs
   # ------------------------------------------------------------------------------------------
   # D-84 "Your call" (iteration 4 build-your-call; decision-accept-all.md, decision-call-balance.md)
   # ------------------------------------------------------------------------------------------
@@ -967,7 +984,8 @@ findings:
   - id: D84-DESK-TRUTH
     title: "What the desk says will happen to each crisis is what Execute does: an answer shown is the answer sent; a call left open (Chief of Staff setting off) shows no answer and says what leaving it does, which is what the engine runs; with the setting on, the Chief of Staff's pick everywhere; the turn report and the replay record agree; Accept all never says every recommendation is decided while a crisis is still open"
     source: runs/iter-04/design-review-your-call.md RC-1 (S1; probe-accept-all-usa.txt, probe-accept-all-ukr.txt, usa-aa-m2-after-1440x900.jpg)
-    covers: [ui/src/lib/month.ts, ui/src/components/desk/StaffPicks.tsx, ui/src/components/desk/YourMove.tsx, ui/src/components/desk/CommandRail.tsx, ui/src/store/gameStore.ts, ui/src/lib/budget.ts]
+    covers: [ui/src/lib/month.ts, ui/src/lib/agenda.ts, ui/src/components/desk/Plan.tsx, ui/src/components/desk/YourMove.tsx, ui/src/components/desk/PhoneMonth.tsx, ui/src/store/gameStore.ts, ui/src/lib/budget.ts]
+    changed: "iteration 4 month screen (build-agenda-layout, merge of build-your-call): StaffPicks, CommandRail and Navigator are gone; each crisis is opened from the List (_lib.mjs openThing) and its sentence is the badge under the question on the Thing (article.thing .sel-badge, same text as before from lib/month crisisSelection); Choose all recommended in the Plan rail; wording You chose (D-73) and the N-3 leave sentence ('If you leave it, the crisis passes with no effect'). Every check of the old guard is kept"
     guards:
       - vitest: tests/core/your-call.spec.ts
         name: "D84-DESK-TRUTH"
@@ -975,7 +993,8 @@ findings:
   - id: D84-BADGE-FIT
     title: "On a phone (390 and 360 wide) a crisis selection badge, the open call's \"No answer yet. If you leave it: ...\" and a long \"Your pick\" or \"Accepted\" included, wraps inside the screen: never clipped, never wider than the screen, no horizontal scroll"
     source: runs/iter-04/design-rereview-your-call.md RC2-1 (S2; badge clipped at 390x844 and 360x740)
-    covers: [ui/src/styles/month.css, ui/src/components/desk/YourMove.tsx, ui/src/lib/month.ts]
+    covers: [ui/src/styles/month.css, ui/src/components/desk/YourMove.tsx, ui/src/lib/month.ts, ui/src/components/desk/PhoneMonth.tsx, ui/src/styles/layout.css]
+    changed: "iteration 4 month screen (build-agenda-layout): the badge is on the Thing under the question (article.thing .sel-badge, wraps in its column, .th-ans .sel-badge) and each crisis is opened from the List; meetings carry no selection badge on this screen (their state is the List row and the Plan), so the meeting forms of the sentence (A deputy goes, Staff would answer) are no longer measured; after Choose all the You chose badges are measured (D-73)"
     guards:
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/D84-BADGE-FIT.mjs
   - id: D84-QU-CHN
@@ -985,6 +1004,30 @@ findings:
     guards:
       - vitest: tests/core/your-call.spec.ts
         name: "D84-QU-CHN"
+  - id: DR-MS-1
+    title: "Every order of every family in All orders can be found and added with the mouse at every desktop size: one family at a time behind tabs with counts, the chosen family fits the frame (tiles, compact tiles, then rows in columns), never clipped, a danger order goes through its whole confirmation"
+    source: runs/iter-04/design-review-month-screen.md S1-1 (catalogue cut off at 3440x1440 to 1024x768, no scroll, no tabs)
+    covers: [ui/src/components/orders/OrderCatalog.tsx, ui/src/components/desk/Detail.tsx, ui/src/styles/orders.css, ui/src/styles/layout.css, ui/src/lib/layout.ts, ui/src/components/orders/OrderCard.tsx]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-MS-1.mjs
+  - id: DR-MS-2
+    title: "The List never clips a row: after Choose all and with 0, 1 and 6 own orders, every row of the column, the See all panel and the Map float is whole and uncovered at 3440x1440, 1920x1080, 1440x900, 1366x768 and 1024x768; its fit rule compacts the rows, folds the hint and mission foot, runs title and state on, then folds the done rows and the other rows to do into rows with Show"
+    source: runs/iter-04/design-review-month-screen.md S2-1 (1920x1080 after Choose all, See all at 1366 and 1024 and in Map mode)
+    covers: [ui/src/components/desk/AgendaList.tsx, ui/src/styles/layout.css, ui/src/lib/layout.ts, ui/src/components/desk/MapMonth.tsx, ui/src/components/Desk.tsx]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-MS-2.mjs
+  - id: DR-MS-3
+    title: "The review page says what Execute really does: meetings name the minister's default answer, the recommended orders are not given, a crisis that is not a call names the cabinet's answer, an open call says what leaving it does; the POST body and the turn report agree (desktop and phone)"
+    source: runs/iter-04/design-review-month-screen.md S2-2 ("Left to your advisers", "Recommended: X")
+    covers: [ui/src/components/desk/ReviewPage.tsx, ui/src/lib/agenda.ts, ui/src/lib/month.ts, ui/src/styles/layout.css]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-MS-3.mjs
+  - id: DR-MS-4
+    title: "What your advisers say comes from the same source as the answer cards: on a call every voice speaks for the card that names it and for no other, and \"your advisers agree\" shows only when one card holds every adviser (Hormuz USA, Quarantine China)"
+    source: runs/iter-04/design-review-month-screen.md S2-3 (carried C-2; Tanker hit in the strait)
+    covers: [ui/src/components/desk/YourMove.tsx, ui/src/lib/agenda.ts]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-MS-4.mjs
 # ------------------------------------------------------------------------------------------
 # Not listed (still open or not a code fix); add them here when a fix lands with its guard:
 #   RS-001-6  dashboard feel, "serious visual design": the ledger keeps it not done (D-37 check)

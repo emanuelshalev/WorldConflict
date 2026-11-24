@@ -10,7 +10,7 @@ import { BigMoment } from './BigMoment';
 import { useCoach } from '../lib/coach';
 import '../scenes/result.css';
 import { SceneFrame } from '../scenes/SceneFrame';
-import { sceneForAction, sceneForCrisis, sceneForNews } from '../scenes/kinds';
+import { cleanChoice, leftOpenChoice, sceneForAction, sceneForCrisis, sceneForNews } from '../scenes/kinds';
 import { ExplainText } from './learn/ExplainText';
 import { monthScene } from '../lib/monthArt';
 import { STATUS_WORD, statusOf } from '../lib/outcome';
@@ -188,7 +188,7 @@ export function Chronicle() {
     </b>
   );
   return (
-    <div ref={ref} className="overlay" onClick={close} role="dialog" aria-modal="true" aria-label="Monthly report">
+    <div ref={ref} className="overlay paper-overlay" onClick={close} role="dialog" aria-modal="true" aria-label="Monthly report">
       <button type="button" className="wc-btn primary paper-next" onClick={(e) => {
           e.stopPropagation();
           close();
@@ -279,7 +279,7 @@ export function Chronicle() {
             {/* What became of each of your orders and answers, in the engine's words (F-02-2) */}
             {(() => {
               const items = [
-                ...report.decisions.filter((d) => d.attended !== false).map((d) => ({ label: d.choice.replace(/\s*\((no decision taken|you did not attend)\)\s*$/, ''), s: statusOf(d), why: d.reason })),
+                ...report.decisions.filter((d) => d.attended !== false).map((d) => ({ label: `${leftOpenChoice(d.choice) ? 'Left open: ' : ''}${cleanChoice(d.choice)}`, s: statusOf(d), why: d.reason })),
                 ...report.orders.map((o) => ({ label: o.label, s: statusOf(o), why: o.reason })),
               ].filter((x) => x.s).slice(0, 6);
               return items.length > 0 ? (

@@ -34,6 +34,16 @@ export function missionSummary(status: ConditionStatus[], turn: number, maxTurns
   return primary.length ? `${onTrack} of ${primary.length} on track · month ${month} of ${maxTurns}` : `Month ${month} of ${maxTurns}`;
 }
 
+/**
+ * The state band's mission words (design-layout section 5): "3 of 5 goals on track", or null when
+ * the session has no primary goals (a Term), never "0 of 0" (QA3R-2e). Same count as missionSummary.
+ */
+export function goalsLine(status: ConditionStatus[]): string | null {
+  const primary = status.filter((c) => !c.bonus);
+  if (!primary.length) return null;
+  return `${primary.filter((c) => stateOf(c) === 'on_track').length} of ${primary.length} goals on track`;
+}
+
 export function stateOf(c: ConditionStatus): ObjectiveState {
   return c.state ?? (c.failed ? 'failed' : c.met ? 'on_track' : 'off_track');
 }
@@ -101,6 +111,11 @@ export interface MissionSentence {
 const NUMBER_WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
 /** First words that are not names, so they read lower case inside the sentence. */
 const COMMON_FIRST = /^(The|A|An|No|Voters|Your|Keep|Stay|Hold|End|Win|Score|Stability|Legitimacy|Approval|Make|Mend|Front|Never|Peace|Survive|Our|At|Get|Stop|Protect|Defend|Avoid|Reach|Bring)\b/;
+
+/** A goal name inside a sentence: "voters stay on side", but "Taipei comes to the table". */
+export function goalInSentence(name: string): string {
+  return COMMON_FIRST.test(name) ? name.charAt(0).toLowerCase() + name.slice(1) : name;
+}
 
 /** One goal in plain words: the short label, plus the number it is judged on when the label has one. */
 export function goalPhrase(c: { label: string; short?: string }): string {

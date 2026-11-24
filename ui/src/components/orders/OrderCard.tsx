@@ -128,7 +128,7 @@ export function OrderCard({
   const pc = entry?.costPC ?? pcCost(def.type);
   const share = entry && entry.budgetM > 0 && entry.costM > 0 ? entry.costM / entry.budgetM : defenseShareOf(def.type);
   const isQueued = avail.state === 'queued';
-  // A staff proposal for this very order (F-02-4): the card offers Accept order, and shows what it changes
+  // A staff proposal for this very order (F-02-4): the card offers Choose order (D-73), and shows what it changes
   const myKey = orderKey(orderAction(def, st.targetId, st.targetName));
   const proposalIndex = useGameStore((s) => s.pendingActions.findIndex((a) => a.proposed && orderKey(a) === myKey));
   const proposal = useGameStore((s) => (proposalIndex >= 0 ? s.pendingActions[proposalIndex] : undefined));
@@ -341,7 +341,7 @@ export function OrderCard({
       <div className="ord-add-line">
         {avail.state === 'available' && (
           <span className="ord-add">
-            <IconCheck size={14} aria-hidden /> Accept order{pc ? ` (spends ◆ ${pc})` : ''}
+            <IconCheck size={14} aria-hidden /> Choose order{pc ? ` (spends ◆ ${pc})` : ''}
           </span>
         )}
         <button type="button" className="ord-remove" onClick={() => remove(proposalIndex)} data-fix="">
@@ -374,7 +374,7 @@ export function OrderCard({
   if (variant === 'row') {
     const slot = block?.code === 'NO_CAPITAL' ? block.slots?.[0] : undefined;
     const actKind = avail.state === 'available' ? 'add' : isQueued ? 'remove' : slot !== undefined ? 'free' : block?.code === 'NEEDS_TARGET' ? 'pick' : 'why';
-    const actText = { add: isProposal ? 'Accept order' : 'Add', remove: 'Remove', free: `Free ◆ ${slot !== undefined ? month.queuedCosts[slot] : 0}`, pick: 'Pick', why: 'Why' }[actKind];
+    const actText = { add: isProposal ? 'Choose order' : 'Add', remove: 'Remove', free: `Free ◆ ${slot !== undefined ? month.queuedCosts[slot] : 0}`, pick: 'Pick', why: 'Why' }[actKind];
     // A free order says "free" once, on its seal badge, not again in the meta line
     const metaParts = [
       ...(pc ? [`◆ ${pc}`] : []),
@@ -442,7 +442,7 @@ export function OrderCard({
               <span className="ord-meta-line ord-meta-proposed">
                 {TERMS.proposed.name}
                 {staff ? ` (${staff})` : ''}
-                {pc ? ` · ◆ ${pc} if accepted` : ''}{' '}
+                {pc ? ` · ◆ ${pc} if chosen` : ''}{' '}
                 <button type="button" className="link ord-dismiss" onClick={() => remove(proposalIndex)}>
                   Remove
                 </button>

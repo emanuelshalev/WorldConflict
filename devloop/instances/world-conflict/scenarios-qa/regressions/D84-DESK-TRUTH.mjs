@@ -3,16 +3,21 @@
 // nothing and the engine did something else. Rule: what the desk says will happen to each open
 // crisis is what the POST /api/turn body (or, with no answer, the engine) does, and what the turn
 // report and the replay record (world.inputs) record. A crisis with an answer shows it
-// ("Recommended: X", "Accepted: X", "Your pick: X") and sends it. A call with "Let the Chief of
+// ("Recommended: X", "You chose: X", "Your pick: X") and sends it. A call with "Let the Chief of
 // Staff make my calls" off shows "No answer yet. If you leave it: Y" (with Y's cost when it has
 // one): nothing is sent and the report shows Y "(no decision taken)", or no entry when the desk
-// says the crisis passes. With the setting on, the Chief of Staff's pick everywhere.
+// says the crisis passes ("No answer yet. If you leave it, the crisis passes with no effect"). With
+// the setting on, the Chief of Staff's pick everywhere.
 // Guard: Hormuz Convoy USA (seed 4242) and CO-UKR-MAYA1, months 1 and 2: setting off with and
-// without Accept all recommended, and setting on with Accept all. The greyed-out Accept all never
+// without Choose all recommended, and setting on with Choose all. The greyed-out Choose all never
 // says "every recommendation is decided" while a crisis is still open.
+// Iteration 4 month screen (build-agenda-layout): one thing at a time; each crisis is opened from the
+// List (_lib.mjs openThing) and its sentence is the badge under the question (`article.thing
+// .sel-badge`). Wording: "You chose" for a recommended answer chosen (D-73), "Choose all
+// recommended", and the leave sentence before the deadline month (N-3).
 //   node devloop/instances/world-conflict/scenarios-qa/regressions/D84-DESK-TRUTH.mjs <outDir> <baseUrl> <apiUrl>
 import path from 'node:path';
-import { args, run, startGame } from './_lib.mjs';
+import { args, openThing, run, startGame } from './_lib.mjs';
 
 const { out, base, api } = args('D84-DESK-TRUTH');
 const SEATS = [
@@ -25,30 +30,19 @@ const VARIANTS = [
   { key: '-chief', accept: true, chief: true },
 ];
 const MONTHS = 2;
-const PASSES = 'no answer is given and the crisis passes';
+const PASSES = 'No answer yet. If you leave it, the crisis passes with no effect';
 
-/** The selection text the desk shows for a crisis: its stage badge, its "Also on your desk" row or its navigator row. */
-const deskText = (p, title) =>
-  p.evaluate((t) => {
-    const clean = (s) => (s ?? '').replace(/\s+/g, ' ').trim();
-    for (const a of document.querySelectorAll('article.stage')) {
-      if (clean(a.querySelector('.stage-title')?.textContent) === t) {
-        const b = a.querySelector('.sel-badge');
-        if (b) return clean(b.textContent);
-      }
-    }
-    for (const r of document.querySelectorAll('.also-row')) if (clean(r.querySelector('b')?.textContent) === t) return clean(r.querySelector('small')?.textContent);
-    for (const e of document.querySelectorAll('[aria-label]')) {
-      const l = e.getAttribute('aria-label') ?? '';
-      if (l.startsWith(`${t}: `)) return clean(l.slice(t.length + 2));
-    }
-    return '';
-  }, title);
+/** The selection text the desk shows for a crisis: the badge under the question on its Thing. */
+async function deskText(p, title) {
+  if (!(await openThing(p, title))) return '';
+  return p.evaluate(() => (document.querySelector('article.thing .th-ans .sel-badge')?.textContent ?? '').replace(/\s+/g, ' ').trim());
+}
 
 /** What the desk says will happen: { pick } for an answer it shows, { left, cost } for a crisis with none. */
 function readDesk(text) {
-  const named = /^(Recommended|Accepted|Your pick):\s*(.+)$/.exec(text);
+  const named = /^(Recommended|You chose|Your pick):\s*(.+)$/.exec(text);
   if (named) return { pick: named[2] };
+  if (text === PASSES) return { left: PASSES, cost: 0, passes: true };
   const left = /^No answer yet\. If you leave it: (.+?)(?: · ◆ (\d+))?$/.exec(text);
   if (left) return { left: left[1], cost: left[2] ? Number(left[2]) : 0 };
   return {};
@@ -80,8 +74,8 @@ await run('D84-DESK-TRUTH', async (g, track) => {
         if (v.accept) {
           await s.click(/^Review \d+ recommended/i, { timeout: 800 });
           await p.waitForTimeout(400);
-          const pressed = await s.click(/^Accept all recommended/i, { timeout: 1500 });
-          console.log(`     ${where}: Accept all ${pressed ? 'pressed' : 'not offered on this desk'}`);
+          const pressed = await s.click(/^Choose all recommended/i, { timeout: 1500 });
+          console.log(`     ${where}: Choose all ${pressed ? 'pressed' : 'not offered on this desk'}`);
           await p.waitForTimeout(800);
           // The button never claims every recommendation is decided while a crisis is still open
           const main = (await p.locator('.sp-main').allInnerTexts().catch(() => [])).join(' | ').replace(/\s+/g, ' ');
@@ -92,7 +86,7 @@ await run('D84-DESK-TRUTH', async (g, track) => {
             g.check(!still.length, `${where}: "every recommendation is decided" only when no crisis is still open (open: ${still.join(', ') || 'none'})`);
           }
           for (const t of (main.match(/Still open: ([^|]+)/)?.[1] ?? '').split(', ').filter(Boolean))
-            g.check(pending.some((d) => main.includes(d.title)), `${where}: the still-open line names a crisis on the desk ("${t.trim()}")`);
+            g.check(pending.some((d) => main.includes(d.title)) || /move for your mission/i.test(t), `${where}: the still-open line names a call on the desk ("${t.trim()}")`);
         }
         const desk = {};
         for (const d of pending) {
@@ -106,7 +100,7 @@ await run('D84-DESK-TRUTH', async (g, track) => {
             if (call && v.chief && chiefPicks[d.id]) g.check(o?.id === chiefPicks[d.id], `${where} "${d.title}": with the setting on the call shows the Chief of Staff's pick (${chiefPicks[d.id]}, desk ${o?.id})`);
             if (call && !v.chief) g.check(/^Your pick/.test(text), `${where} "${d.title}": with the setting off a call shows an answer only when the player picked one ("${text}")`);
           } else if (said.left) {
-            const passes = said.left === PASSES;
+            const passes = !!said.passes;
             const o = passes ? null : d.options.find((x) => x.label === said.left);
             g.check(passes || !!o, `${where}: the desk names what leaving "${d.title}" does ("${text}")`);
             desk[d.id] = { send: undefined, runs: o?.id ?? null };

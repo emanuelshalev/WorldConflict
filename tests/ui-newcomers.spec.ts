@@ -69,14 +69,15 @@ describe("F-02-1: month 1 states the one goal in one plain sentence (Noah)", () 
     expect(review.text).toBe("You win if all two hold at the review in month 48: legitimacy of 40%+ and stability of 35%+.");
     expect(missionSentence({ objective: null, maxTurns: 120 }).text).toMatch(/no set mission/);
   });
-  it("the desk mounts the sentence above the crisis in month 1 and the goal line links to it", () => {
-    const desk = ui("components/Desk.tsx");
-    expect(desk.indexOf("<MissionLine />")).toBeGreaterThan(-1);
-    expect(desk.indexOf("<MissionLine />")).toBeLessThan(desk.indexOf("<FocusView />"));
-    const line = ui("components/desk/GoalLine.tsx");
-    expect(line).toContain("data-goal-link");
-    expect(line).toContain("showMissionSentence");
+  it("the Thing mounts the sentence above the crisis in month 1 (the goal line became the state band, D-80)", () => {
+    const thing = ui("components/desk/YourMove.tsx");
+    expect(thing.indexOf("<MissionLine />")).toBeGreaterThan(-1);
+    expect(thing.indexOf("<MissionLine />")).toBeLessThan(thing.indexOf("<Hero "));
+    const line = ui("components/desk/MissionLine.tsx");
+    expect(line).toContain("data-mission-sentence");
     expect(line).toContain("world.turn !== 0");
+    // The Mission button in the state band opens what each goal needs
+    expect(ui("components/StateBand.tsx")).toContain("setDrawer('objective')");
   });
 });
 
@@ -96,10 +97,13 @@ describe("F-02-1: Guide me shows fewer words before the first choice (Olivia, No
     const first = d.situation.split(/(?<=[.!?])\s+/)[0];
     expect(guideLede(first).short.replace("…", "").split(/\s+/).length).toBeLessThanOrEqual(16);
   });
-  it("Guide me hides option descriptions until More and opens no panel by itself", () => {
+  it("Guide me shortens the situation and the recommendation before the first choice and opens no panel by itself", () => {
     const move = ui("components/desk/YourMove.tsx");
-    expect(move).toContain("const brief = guide && !more;");
-    expect(move).toMatch(/description=\{brief \? undefined/);
+    // The answer cards carry no option description any more (design-agenda 0.12); Guide me also
+    // shortens the lede and the recommended answer's reason
+    expect(move).toContain("const quote = guide ? guideLede(lede).short : lede;");
+    expect(move).toContain("const reason = guide ? guideLede(splitLede(o.description)[0], 12).short");
+    expect(move).not.toMatch(/description=\{/);
     expect(ui("lib/learn.ts")).toContain("return s.prefs.autoBrief === true;");
     expect(ui("components/learn/explain.ts")).not.toMatch(/open the briefing on each new crisis/);
   });
@@ -201,10 +205,10 @@ describe("F-02-4: staff propose, the player spends (Priya, Dan)", () => {
     expect(src).toContain("capitalLeft(now) - proposedPc - RESERVE_PC");
   });
 
-  it("each staff pick shows what it will change before Approve, in the tray and on the card", () => {
-    expect(ui("components/desk/CommandRail.tsx")).toContain("proposalEffects(a)");
+  it("each recommended order shows what it will change before it is chosen, on its card and in the Plan", () => {
+    expect(ui("components/desk/YourMove.tsx")).toContain("const fx = proposalEffects(a);");
     expect(ui("components/orders/OrderCard.tsx")).toContain("Will change: {proposalFx}");
-    expect(ui("components/desk/CommandRail.tsx")).toContain("proposed={proposed}");
+    expect(ui("components/desk/Plan.tsx")).toContain("{!compact && it.change && <span className=\"sp-change\">{it.change}</span>}");
   });
 });
 
@@ -232,16 +236,19 @@ describe("F-02-5: map and desk show one order card; the Desk switch always answe
     expect(list).toContain("<OrderCard");
     expect(list).toContain("<AdvisorCardRow key={r.key} r={r} compact={compact} />");
     expect(ui("components/desk/Detail.tsx")).toContain("<AdvisorCardRow key={r.key} r={r} />");
-    expect(ui("components/desk/CommandRail.tsx")).toContain("<AdvisorList compact max={2} />");
+    // Map mode's own orders are the same Thing card as the desk's (the strip tray is gone, D-80)
+    expect(ui("components/desk/YourMove.tsx")).toContain("<AdvisorList max={max} />");
     expect(ui("components/MapActionMenu.tsx")).toContain("<OrderCard");
   });
 });
 
 describe("QA AC3: the in-game globe fit", () => {
-  it("counts the goal line, and the map advisor row starts collapsed", () => {
-    expect(ui("lib/globeFit.ts")).toContain("['.hud', '.goal-line']");
-    expect(ui("components/desk/CommandRail.tsx")).toContain("const [tray, setTray] = useState(false);");
-    expect(ui("styles/ease.css")).toMatch(/\.cmd-strip:not\(\.tray-open\) \{ grid-template-areas: 'chips act'; row-gap: 0; \}/);
+  it("counts the state band and the month bar, and centres the globe between the map panels (L-14)", () => {
+    const fit = ui("lib/globeFit.ts");
+    expect(fit).toContain(`['[data-region="state"]', '[data-region="bar"]']`);
+    expect(fit).toContain(`[data-map-panel="left"] .mapcard`);
+    expect(fit).toContain(`[data-map-panel="right"]`);
+    expect(fit).toContain("'.plan.f-bar'");
   });
 });
 
@@ -274,7 +281,7 @@ describe("QA3R-7a: the month-1 goal sentence reads as words on every seat", () =
       expect(text).not.toMatch(/\s,/);
       if (n > 1) expect(text).toMatch(new RegExp(`g${n - 2} and g${n - 1}\\.$`));
     }
-    const src = readFileSync("ui/src/components/desk/GoalLine.tsx", "utf-8");
+    const src = readFileSync("ui/src/components/desk/MissionLine.tsx", "utf-8");
     expect(src).toContain("mission-goal-unit");
     expect(src).not.toMatch(/\? ' and ' : ', '/);
   });

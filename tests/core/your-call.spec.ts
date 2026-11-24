@@ -337,7 +337,7 @@ describe("D84-DESK-TRUTH: what the desk says happens to each crisis is what Exec
 
   it("setting off, before the crisis's deadline month: leaving it passes with no answer", async () => {
     const { shown } = await open(false, 0);
-    expect(shown("call").text).toBe("No answer yet. If you leave it: no answer is given and the crisis passes");
+    expect(shown("call").text).toBe("No answer yet. If you leave it, the crisis passes with no effect"); // N-3 wording
   });
 
   it("an open call holds no price; the meters count what leaving it does, and a picked priced answer pays its price", async () => {
@@ -357,7 +357,7 @@ describe("D84-DESK-TRUTH: what the desk says happens to each crisis is what Exec
     month.approveAll();
     expect(useGameStore.getState().reviewed.call).toBe(true);
     expect(useGameStore.getState().decisionChoices.call).toBe("b");
-    expect(shown("call").text).toBe("Accepted: answer b");
+    expect(shown("call").text).toBe("You chose: answer b"); // D-73: no "Accepted" for a recommendation
   });
 
   it("the setting changed after the month opened: an unanswered call follows it at once", async () => {

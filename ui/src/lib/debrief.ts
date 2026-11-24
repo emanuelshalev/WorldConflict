@@ -2,7 +2,7 @@ import type { OutcomeStatus, Reaction, ReportFact, TurnReport, WorldState } from
 import { STATUS_WORD, statusOf, verdictForStatus } from './outcome';
 import { countryName } from '../store/gameStore';
 import type { SceneKind } from '../scenes/kinds';
-import { actionFamily, guardFamily, sceneForAction, sceneForDecision, sceneForOutcome } from '../scenes/kinds';
+import { actionFamily, cleanChoice, guardFamily, leftOpenChoice, sceneForAction, sceneForDecision, sceneForOutcome } from '../scenes/kinds';
 import type { MapEffect } from '../scenes/OutcomeMap';
 import { mapEffect } from './mapEffect';
 import { shareFacts } from './numbers';
@@ -102,8 +102,10 @@ function decisionCard(d: Decision, i: number): OutcomeCardData {
     key: `d${i}`,
     kicker: `${KIND_WORD[d.kind ?? 'CRISIS'] ?? 'Decision'}${d.withCountry ? ` · ${countryName(d.withCountry)}` : ''}`,
     country: d.withCountry,
-    headline: d.headline ?? d.title,
-    lines: [{ text: `You: ${d.choice.replace(/ \(no decision taken\)$/, ' (no decision taken)')}`, icon: d.kind }],
+    // A crisis left open ran its default answer: the engine's "(no decision taken)" is the truth, so
+    // it is never told as the leader's answer or the player's choice (design-rereview C2-2)
+    headline: leftOpenChoice(d.choice) ? `Left open: ${cleanChoice(d.choice)}` : (d.headline ?? d.title),
+    lines: [{ text: leftOpenChoice(d.choice) ? `You left it open: ${cleanChoice(d.choice)} went ahead by default` : `You: ${d.choice}`, icon: d.kind }],
     reaction: d.reaction,
     facts: shareFacts(d.facts),
     watch: d.watch,
@@ -277,7 +279,7 @@ export function buildPages(report: TurnReport, world: WorldState): DebriefPage[]
   const routine = deputyMeetings.filter(([d]) => !d.watch && !(d.facts ?? []).length).length;
   const staffHandled = [
     ...deputyMeetings.filter(([d]) => d.watch || (d.facts ?? []).length).map(([d]) => `${d.speaker ?? d.title}: ${d.choice.replace(/ \(you did not attend\)$/, '')}${d.watch ? `. ${d.watch}` : ''}`),
-    ...(routine ? [`Your staff handled ${routine} routine meeting${routine > 1 ? 's' : ''}`] : []),
+    ...(routine ? [`Your ministers took ${routine} small meeting${routine > 1 ? 's' : ''}`] : []),
   ];
   const inCard = new Set([...byCountry.keys()]);
   const abroad = (report.world ?? []).filter((m) => m.target !== home && !inCard.has(m.actor)).slice(0, 4).map((m) => m.label);
@@ -332,7 +334,7 @@ export function buildPages(report: TurnReport, world: WorldState): DebriefPage[]
   if (highlight) pages.push({ key: 'highlight', title: 'The month', cards: [highlight], footnotes: [] });
   const dipCards = diplomacy.filter((c) => !isHighlight(c));
   const dipFoot = [
-    ...(staffHandled.length ? [{ title: 'Handled by your staff', items: staffHandled }] : []),
+    ...(staffHandled.length ? [{ title: 'Taken by your ministers', items: staffHandled }] : []),
     ...(movers.length ? [{ title: 'Also changed their view of you', items: movers }] : []),
     ...(abroad.length ? [{ title: 'Meanwhile abroad', items: abroad }] : []),
   ];

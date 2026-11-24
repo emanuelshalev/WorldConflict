@@ -75,7 +75,7 @@ function States() {
           {muscatFx}
         </CardShell>
       </Cell>
-      <Cell label="5. Recommended answer accepted" spec="steel ink" note="Accept all recommended stamps each pre-filled card 90 ms apart, one sound each, at most 4.">
+      <Cell label="5. Recommended answer accepted" spec="steel ink" note="Choose all recommended stamps each pre-filled card 90 ms apart, one sound each, at most 4.">
         <CardShell {...muscat} home="SAU" keyHint={2} tag="cabinet" cost={<CardCost seals={0} />} state="approved" stamp="APPROVED" onPress={() => {}}>
           {muscatFx}
         </CardShell>

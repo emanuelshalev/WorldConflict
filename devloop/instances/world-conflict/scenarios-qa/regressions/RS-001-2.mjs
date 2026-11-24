@@ -6,7 +6,7 @@
 // its cost, with no toast; and at 1024 the HUD shows all seven resources in words (QA1 S3-3).
 // Since F-02-4 (D-58) staff picks spend nothing until approved: the guard approves them first so
 // an order is out of reach (month 1 used to open with the staff's seals already spent).
-import { args, bodyText, run, startGame } from './_lib.mjs';
+import { openAllOrders, args, bodyText, run, showCatalogCard, startGame } from './_lib.mjs';
 
 const { out, base } = args('RS-001-2');
 const BANNED = [/political credit/i, /\bcredits?\b/i, /\bCAP\b/, /\bAPPR\b/, /\bSTAB\b/, /Leadership score/i];
@@ -20,38 +20,46 @@ const fullSeals = (p) =>
 await run('RS-001-2', async (g, track) => {
   const s = track(await startGame({ variant: 'rs0012', device: 'laptop', out, base }));
   const p = s.page;
-  await s.click(/^Full desk$/);
+  // Iteration 4 (D-80): the HUD is the state band; month 2 shows every thing of the month
   await p.waitForTimeout(600);
-  const hudText = await p.locator('.hud').first().innerText();
-  g.check(/Political capital/.test(hudText), 'the HUD names "Political capital"');
+  const hudText = await p.locator('[data-region="state"]').first().innerText();
+  g.check(/Political capital/.test(hudText), 'the state band names "Political capital"');
   const text = await bodyText(p);
   const hits = BANNED.filter((re) => re.test(text)).map(String);
   g.check(hits.length === 0, `no other name for it on the desk (${hits.join(', ') || 'none'})`);
 
-  // QA repro #5: the HUD and the rail draw the same number of full seals
+  // QA repro #5: the HUD and the rail drew different numbers of seals. There is one capital figure
+  // now, the state band's "◆ n of 6"; no other capital meter may disagree with it
+  const pcNow = () => p.locator('[data-region="state"] [data-point="capital"]').first().innerText().then((t) => Number(/◆ (-?\d+) of/.exec(t)?.[1] ?? NaN));
   const meters = await fullSeals(p);
-  g.check(meters.length >= 2 && meters.every((m) => m.full === meters[0].full), `HUD and rail capital meters agree ${JSON.stringify(meters.map((m) => m.full))}`);
+  const pc0 = await pcNow();
+  g.check(Number.isFinite(pc0) && meters.every((m) => m.full === pc0), `one capital figure (◆ ${pc0}); any seal meter agrees ${JSON.stringify(meters.map((m) => m.full))}`);
 
   // Staff picks are proposals that spend nothing until approved (F-02-4, D-58), so month 1 opens
   // with every seal free and no order out of reach. Spend the way a player does: approve the staff
   // picks, then a 2-seal order is out of reach and the meters must still agree.
-  // The navigator row was "Advisors' suggestions" until QA3-S3-2 (one word, D-72)
-  await s.click(/^(Orders to consider|Advisors' suggestions)/);
+  // The recommended orders are one thing of the month (D-72: Choose on each)
+  await p.locator('[data-agenda-item="orders"]').first().click().catch(async () => {
+    await p.locator('.see-all').first().click().catch(() => {});
+    await p.locator('[data-agenda-item="orders"]').first().click().catch(() => {});
+  });
   await p.waitForTimeout(600);
   for (let k = 0; k < 4; k++) {
-    const approve = p.getByRole('button', { name: /^Accept order: / }).first();
+    const approve = p.locator('[data-thing="orders"] .opt[aria-pressed="false"]').first();
     if (!(await approve.isVisible().catch(() => false))) break;
     await approve.click();
     await p.waitForTimeout(700);
   }
   const spent = await fullSeals(p);
-  g.check(spent.length >= 2 && spent.every((m) => m.full === spent[0].full) && spent[0].full < meters[0].full, `after approving the staff picks the meters agree and show the spend ${JSON.stringify(spent.map((m) => m.full))}`);
+  const pc1 = await pcNow();
+  g.check(pc1 < pc0 && spent.every((m) => m.full === pc1), `after choosing the recommended orders the capital figure shows the spend (◆ ${pc0} -> ◆ ${pc1})`);
 
   // Press an order the player cannot afford: every capital meter is pointed at, with a callout
-  await s.click(/^All orders/);
+  if (!(await openAllOrders(s))) throw new Error('no All orders');
   await p.locator('[data-order-catalog]').first().waitFor();
   await p.waitForTimeout(600);
   const card = p.locator('[data-order-catalog] [data-order-code="NO_CAPITAL"]').first();
+  await showCatalogCard(p, '[data-order-code="NO_CAPITAL"]');
   // With one seal left (D-84: the staff hold fewer) every order that costs more needs a country:
   // choose one so a card the player cannot afford is on the list
   if ((await card.count()) === 0) {
@@ -59,6 +67,8 @@ await run('RS-001-2', async (g, track) => {
     await p.locator('[role="dialog"][aria-label="Choose a country"] [role="option"]').first().click();
     await p.waitForTimeout(600);
   }
+  // One family at a time wider than a phone (DR-MS-1): the tab that holds it
+  await showCatalogCard(p, '[data-order-code="NO_CAPITAL"]');
   g.check((await card.count()) === 1, 'an unaffordable order is on the list');
   const label = (await card.locator('.wc-card-title').first().innerText().catch(() => '')).trim();
   g.check(/Needs ◆ \d, you have ◆ \d\./.test(await card.innerText()), `its card says what it needs and what you have ("${label}")`);
@@ -68,7 +78,7 @@ await run('RS-001-2', async (g, track) => {
   const ms = await p
     .waitForFunction(
       () => {
-        const els = [...document.querySelectorAll('[data-point="capital"]')].filter((e) => e.getBoundingClientRect().width > 0 && e.querySelector('[data-seal]'));
+        const els = [...document.querySelectorAll('[data-point="capital"]')].filter((e) => e.getBoundingClientRect().width > 0);
         return els.length > 0 && els.every((e) => e.classList.contains('is-pointed'));
       },
       null,
@@ -82,20 +92,23 @@ await run('RS-001-2', async (g, track) => {
   g.check((await p.locator('[data-order-catalog] [data-order-state="queued"]').count()) === before, 'nothing was queued');
   g.check((await p.locator('.toast:visible').count()) === 0, 'no toast');
 
-  // Tapping the HUD meter explains it in the same words
-  await p.getByRole('button', { name: /^Political capital: .* What is this\?/ }).first().click();
+  // Explain next to the figure explains it in the same words (D-72 D3: a labelled button, no "?")
+  await p.locator('[data-region="state"]').getByRole('button', { name: /^Explain$/ }).first().click();
   await p.waitForTimeout(300);
-  const note = await p.locator('.hud-explain').first().innerText().catch(() => '');
+  const note = await p.locator('.sb-explain-note').first().innerText().catch(() => '');
   g.check(/Political capital/.test(note) && /up to ◆ 6/.test(note), `the meter explains itself ("${note.replace(/\s+/g, ' ').slice(0, 70)}")`);
   await p.keyboard.press('Escape');
 
-  // QA1 S3-3: at 1024 the HUD keeps all seven words (they used to hide behind "More")
+  // QA1 S3-3: at 1024 every indicator stays in full words: the state band shows political capital,
+  // tension and score (design-layout section 5) and "Your country" opens the rest in one press
   await p.setViewportSize({ width: 1024, height: 768 });
   await p.waitForTimeout(1000);
-  const hud1024 = await p.locator('.hud').first().innerText();
+  await p.locator('[data-region="state"]').getByRole('button', { name: /^Your country/ }).first().click();
+  await p.waitForTimeout(300);
+  const hud1024 = await p.locator('[data-region="state"]').first().innerText();
   const words = ['Approval', 'Stability', 'Legitimacy', 'Economy', 'Political capital', 'World tension', 'Score'];
   const missing = words.filter((w) => !hud1024.includes(w));
-  g.check(missing.length === 0, `1024 HUD shows all seven words (missing: ${missing.join(', ') || 'none'})`);
+  g.check(missing.length === 0, `1024 state band shows all seven words, in the band or under Your country (missing: ${missing.join(', ') || 'none'})`);
   await s.look('hud-1024');
   g.check(!s.errors.length, `no page errors (${s.errors.slice(0, 2).join(' | ')})`);
 });

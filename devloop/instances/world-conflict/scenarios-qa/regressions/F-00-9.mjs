@@ -42,7 +42,8 @@ await run('F-00-9', async (g, track) => {
     await p.waitForTimeout(2000);
     const exec = p.getByRole('button', { name: /Execute month/i }).first();
     g.check(await exec.isVisible(), `${w}: Next month lands on the desk`);
-    const goal = (await p.locator('.goal-line').first().innerText().catch(() => '')).replace(/\s+/g, ' ');
+    // Iteration 4: the month is in the state band (the goal line is gone, D-80)
+    const goal = (await p.locator('[data-region="state"]').first().innerText().catch(() => '')).replace(/\s+/g, ' ');
     g.check(/month 2 of/i.test(goal), `${w}: it is month 2 ("${goal.slice(0, 60)}")`);
     g.check(!s.errors.length, `${w}: no page errors (${s.errors.slice(0, 2).join(' | ')})`);
   }

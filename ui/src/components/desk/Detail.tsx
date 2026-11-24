@@ -1,26 +1,20 @@
-import { type ComponentType, useMemo, useRef, useState } from 'react';
-import { IconArrowLeft, IconArrowRight, IconX } from '@tabler/icons-react';
+import { type ComponentType, useMemo, useState } from 'react';
+import { IconArrowLeft, IconX } from '@tabler/icons-react';
 import { type PendingAction, approveProposal, countryName, queueOrder, useGameStore } from '../../store/gameStore';
 import { pcCost } from '../../lib/actions';
 import { budgetShare } from '../../lib/budget';
 import { TERMS } from '../../lib/glossary';
-import { primaryId, primaryItem } from '../../lib/month';
 import { ActionIcon } from '../../scenes/icons';
-import { deskItems } from '../../lib/deskItems';
-import { DecisionStage } from './YourMove';
 import { CountryPicker } from '../orders/CountryPicker';
-import { AdvisorCardRow, AdvisorList } from './AdvisorList';
+import { AdvisorCardRow } from './AdvisorList';
 import { useAdvisorRows } from '../../lib/advisorRows';
-import { STATE_WORD, nowNeed, stateOf } from '../../lib/goals';
-import { ExplainText } from '../learn/ExplainText';
-import { SituationButton } from '../learn/SituationBriefing';
 
 /**
  * The orders agent's catalog (design-orders.md 4.5: OrderCard tiles with search) mounts here
  * when its module exists; until then the desk keeps its own catalog below. Vite resolves the
  * glob at build time, so a missing file is simply an empty map.
  */
-type CatalogProps = { target: string; setTarget: (id: string) => void };
+type CatalogProps = { target: string; setTarget: (id: string) => void; lead?: React.ReactNode };
 const ORDER_CATALOG = Object.values(import.meta.glob<{ OrderCatalog?: ComponentType<CatalogProps> }>('../orders/OrderCatalog.tsx', { eager: true }))[0]?.OrderCatalog;
 
 interface OrderDef {
@@ -89,7 +83,7 @@ function SuggestionsDetail() {
       <h3 className="detail-title">
         {TERMS.orderIdeas.name} ({rows.length})
       </h3>
-      <p className="hint">The staff propose up to three of these at the start of each month, never one with poor odds or a repeat of last month, and always leave you at least ◆ 1. A recommended order spends nothing until you accept it (or press Accept all recommended); add the others here.</p>
+      <p className="hint">The staff propose up to three of these at the start of each month, never one with poor odds or a repeat of last month, and always leave you at least ◆ 1. A recommended order spends nothing until you choose it (or press Choose all recommended); add the others here.</p>
       <div className="adv-list">
         {rows.map((r) => (
           <AdvisorCardRow key={r.key} r={r} />
@@ -101,12 +95,17 @@ function SuggestionsDetail() {
 
 const IRREVERSIBLE = new Set(['DIPLOMACY_DECLARE_WAR', 'NUCLEAR_STRIKE']);
 
-function CatalogDetail({ target, setTarget }: { target: string; setTarget: (id: string) => void }) {
+function CatalogDetail({ target, setTarget, lead }: CatalogProps) {
   if (ORDER_CATALOG) {
     const Catalog = ORDER_CATALOG;
-    return <Catalog target={target} setTarget={setTarget} />;
+    return <Catalog target={target} setTarget={setTarget} lead={lead} />;
   }
-  return <DeskCatalog target={target} setTarget={setTarget} />;
+  return (
+    <>
+      {lead}
+      <DeskCatalog target={target} setTarget={setTarget} />
+    </>
+  );
 }
 
 function DeskCatalog({ target, setTarget }: { target: string; setTarget: (id: string) => void }) {
@@ -194,9 +193,9 @@ function OrderDetail({ a, index }: { a: PendingAction; index: number }) {
       {a.why && <p className="hint">{a.why}</p>}
       {a.proposed && (
         <p className="hint" data-proposal="">
-          Proposed by staff: nothing is spent until you accept it, and it does not run unless you do.{' '}
+          Recommended by your staff: nothing is spent until you choose it, and it does not run unless you do.{' '}
           <button type="button" className="wc-btn small primary" onClick={() => approveProposal(index)}>
-            Accept order{pcCost(a.type) ? ` (spends ◆ ${pcCost(a.type)})` : ''}
+            Choose order{pcCost(a.type) ? ` (spends ◆ ${pcCost(a.type)})` : ''}
           </button>
         </p>
       )}
@@ -230,90 +229,28 @@ function OrderDetail({ a, index }: { a: PendingAction; index: number }) {
   );
 }
 
-function MissionDetail() {
-  const world = useGameStore((s) => s.worldState);
-  const status = useGameStore((s) => s.objectiveStatus);
-  const setDrawer = useGameStore((s) => s.setDrawer);
-  if (!world?.objective) return null;
-  return (
-    <article>
-      <h3 className="detail-title">{world.objective.title}</h3>
-      <p className="hint">
-        {world.maxTurns - world.turn} months left · score <b className="num">{world.score?.total ?? 0}</b>
-      </p>
-      {world.objective.briefing && <ExplainText as="p" className="situation" text={world.objective.briefing} info where={world.objective.title} />}
-      <div className="lx-situation-row">
-        <SituationButton />
-      </div>
-      <ul className="mission-list">
-        {status.map((c) => {
-          const s = stateOf(c);
-          return (
-            <li key={c.label} className={`s-${s}`}>
-              <i className={c.bonus ? `gdot s-${s}` : `gseg s-${s}`} aria-hidden /> <b>{c.short ?? c.label}</b> {nowNeed(c) ? `: ${nowNeed(c)}` : ''} <span className="mission-state">{STATE_WORD[s]}</span>
-              {c.bonus && <span className="nav-tag">bonus</span>}
-            </li>
-          );
-        })}
-      </ul>
-      <button type="button" className="wc-btn" onClick={() => setDrawer('objective')}>
-        Open the mission sheet
-      </button>
-    </article>
-  );
-}
-
-/** The one item in focus (full desk), with previous/next to walk the desk. */
+/** An order view the month opened (All orders, an order of this month, the order ideas), with the way back. */
 export function Detail({ target, setTarget }: { target: string; setTarget: (id: string) => void }) {
   const focus = useGameStore((s) => s.focus);
-  const decisions = useGameStore((s) => s.pendingDecisions);
-  const agenda = useGameStore((s) => s.worldState?.agenda ?? []);
   const actions = useGameStore((s) => s.pendingActions);
   const setFocus = useGameStore((s) => s.setFocus);
-  useGameStore((s) => s.missionImpact);
-  const ref = useRef<HTMLDivElement>(null);
-  const primary = primaryId(primaryItem());
+  const back = (
+    <button type="button" className="wc-btn small detail-back" onClick={() => setFocus({ kind: 'mission' })}>
+      <IconArrowLeft size={14} aria-hidden /> Back to the month
+    </button>
+  );
   let body: React.ReactNode = null;
-  if (focus.kind === 'crisis') {
-    const d = decisions.find((x) => x.id === focus.id);
-    body = d ? (
-      <>
-        <DecisionStage key={d.id} item={d} primary={d.id === primary} />
-        {d.id === primary && <AdvisorList />}
-      </>
-    ) : null;
-  } else if (focus.kind === 'meeting') {
-    const m = agenda.find((x) => x.id === focus.id);
-    body = m ? <DecisionStage key={m.id} item={m} primary={m.id === primary} /> : null;
-  } else if (focus.kind === 'suggestions') body = <SuggestionsDetail />;
-  else if (focus.kind === 'catalog') body = <CatalogDetail target={target} setTarget={setTarget} />;
+  // All orders puts the way back on its own top line (the catalogue's height goes to the orders)
+  if (focus.kind === 'catalog') body = <CatalogDetail target={target} setTarget={setTarget} lead={back} />;
   else if (focus.kind === 'order') {
     const i = Number(focus.id);
     body = actions[i] ? <OrderDetail a={actions[i]} index={i} /> : null;
-  } else body = <MissionDetail />;
+  }
   if (!body) body = <SuggestionsDetail />;
-  const items = deskItems();
-  const at = items.findIndex((x) => x.kind === focus.kind && (x.id ?? '') === (focus.id ?? ''));
-  const go = (n: number) => {
-    const next = items[at + n];
-    if (next) {
-      setFocus({ kind: next.kind, id: next.id });
-      document.getElementById('desk-stage')?.scrollTo({ top: 0 });
-    }
-  };
   return (
-    <section className="detail" ref={ref} aria-live="polite" aria-label="Item in focus">
+    <section className={`detail${focus.kind === 'catalog' ? ' is-catalog' : ''}`} aria-live="polite" aria-label="Order views">
+      {focus.kind !== 'catalog' && back}
       {body}
-      {at >= 0 && (
-        <div className="detail-nav">
-          <button type="button" className="wc-btn ghost small" disabled={at <= 0} onClick={() => go(-1)}>
-            <IconArrowLeft size={14} aria-hidden /> {items[at - 1]?.label ?? 'Previous'} <kbd>K</kbd>
-          </button>
-          <button type="button" className="wc-btn ghost small" disabled={at >= items.length - 1} onClick={() => go(1)}>
-            {items[at + 1]?.label ?? 'Next'} <IconArrowRight size={14} aria-hidden /> <kbd>J</kbd>
-          </button>
-        </div>
-      )}
     </section>
   );
 }

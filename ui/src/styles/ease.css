@@ -41,48 +41,7 @@
   .move-card .wc-card-stamp { top: 30px; }
 }
 
-/* The rail names each plan item in full (Sam: "Reply via Mu...") */
-.slot-text b { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.25; }
-
-/* Map mode: the command strip on two rows; the advisors get a full-width tray (QA S2-1) */
-.cmd-strip { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: 'chips act' 'adv adv'; row-gap: 8px; }
-.cmd-strip .strip-chips { grid-area: chips; min-width: 0; }
-.cmd-strip .strip-act { grid-area: act; }
-.cmd-strip .strip-advisors { grid-area: adv; min-width: 0; }
-.cmd-strip .strip-advisors .advisors.compact { display: block; }
-.cmd-strip .strip-advisors .adv-list { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
-.cmd-strip .strip-advisors .adv-row { min-width: 0; }
-.cmd-strip .strip-advisors .adv-label { white-space: normal; overflow: visible; }
-.cmd-strip .strip-advisors .adv-add { min-height: 44px; }
-/* The folded toggle names every suggestion: the strip reaches them all (QA S2-1 with AC3) */
-.cmd-strip .strip-advisors .advisors.compact .adv-more { display: inline-flex; align-items: center; }
-.strip-tray-btn { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line-2); background: none; color: var(--text-1); font: inherit; font-size: 13px; cursor: pointer; }
-.strip-tray-btn[aria-expanded='true'] { border-color: var(--intel); color: #9fdcf4; }
-.strip-tray-n { min-width: 22px; height: 22px; margin-left: 4px; padding: 0 6px; border-radius: 999px; background: rgba(79, 179, 217, 0.18); color: #9fdcf4; font-size: 12px; font-weight: 700; display: inline-grid; place-items: center; }
-.cmd-strip .chip-b { min-height: 44px; }
-@media (max-width: 899px) {
-  .cmd-strip { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'chips' 'adv' 'act'; }
-  .cmd-strip .strip-advisors .adv-list { grid-template-columns: minmax(0, 1fr); }
-}
-
-/* 1024 HUD: all seven indicators in full words, compact (QA S3-3, orders AC17) */
-@media (min-width: 901px) and (max-width: 1279px) {
-  .game-top .stat.minor { display: flex; flex-direction: column; }
-  .game-top .hud-more { display: none; }
-  .game-top .hud { gap: 10px; padding: 6px 12px; }
-  .game-top .hud-flag { display: none; }
-  .game-top .hud-who { max-width: 150px; }
-  .game-top .hud-who b { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
-  .game-top .hud-stats { gap: 10px !important; }
-  .game-top .stat .val { font-size: 16px; }
-  .game-top .stat .val small { display: none; }
-  .game-top .stat.tension { width: auto; }
-  .game-top .stat.tension .bar { display: none; }
-  .game-top .stat.capital .wc-seal { width: 18px; height: 18px; }
-  .game-top .pc-left { font-size: 14px; }
-  .mode-seg button { min-height: 44px; }
-  .mode-seg span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-}
+/* (iteration 4: the HUD, rail and command strip blocks moved to layout.css and state-band.css, D-80) */
 
 /* Title at tablet width: the left column stays off the globe's labels and pins (Sam) */
 @media (min-width: 901px) and (max-width: 1279px) {
@@ -98,15 +57,6 @@
 .rv-seed-details[open] > summary { margin-bottom: 8px; color: var(--text-1); }
 .ts2-daily small { font-size: 13px; letter-spacing: 0.08em; }
 
-/* QA AC3: with the advisors collapsed the strip is one row (no empty second row and its gap), and
-   on desktop the chrome above and below the globe is a little tighter, so the disc gets the room */
-@media (min-width: 900px) {
-  .cmd-strip:not(.tray-open) { grid-template-areas: 'chips act'; row-gap: 0; }
-}
 @media (min-width: 1280px) {
-  .cmd-strip { padding-top: 6px; padding-bottom: 6px; }
-  .goal-line { padding-top: 2px; padding-bottom: 2px; }
   .game .ticker { height: 24px; }
 }
-/* An opened advisor row never takes the whole map: it scrolls past 40% of the screen */
-.cmd-strip .strip-advisors { max-height: 40vh; overflow-y: auto; overscroll-behavior: contain; }

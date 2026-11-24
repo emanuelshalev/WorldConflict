@@ -6,13 +6,14 @@ import { MapView } from './components/MapView'
 import { ActionPreviewModal } from './components/ActionPreviewModal'
 import { BackstoryModal } from './components/BackstoryModal'
 import { TitleScreen } from './components/TitleScreen'
-import { Hud } from './components/Hud'
+import { StateBand } from './components/StateBand'
 import { Desk } from './components/Desk'
-import { CommandStrip } from './components/desk/CommandRail'
+import { MapMonth } from './components/desk/MapMonth'
+import { MonthBar } from './components/desk/MonthBar'
+import { useLayout } from './lib/layout'
 import { Drawers } from './components/Drawers'
 import { Chronicle, DangerVignette, Stinger } from './components/Chronicle'
 import { useGameStore, usePlayerCountry } from './store/gameStore'
-import { GoalLine } from './components/desk/GoalLine'
 import { ScoreWhySheet } from './components/ScoreWhy'
 import { useScoreWhy } from './lib/scoreWhy'
 
@@ -165,6 +166,7 @@ function App() {
   const showLogin = useGameStore((s) => s.showLogin)
   const isLoading = useGameStore((s) => s.isLoading)
   const activeModal = useGameStore((s) => s.activeModal)
+  const layout = useLayout()
   if (window.location.hash === '#moments') return (
     <Suspense fallback={null}>
       <MomentGallery />
@@ -176,16 +178,16 @@ function App() {
       {screen === 'title' ? (
         <TitleScreen />
       ) : (
-        <div className={`game mode-${gameOver ? 'map' : deskMode}`}>
+        <div className={`game mode-${gameOver ? 'map' : deskMode}`} data-cls={layout.cls}>
           <div className="game-top">
-            <Hud />
-            <GoalLine />
+            <StateBand />
+            <MonthBar />
           </div>
           <div className="game-body">
             <div className="map-stage">
               <MapView />
             </div>
-            {(deskMode === 'map' || gameOver) && !gameOver && <CommandStrip />}
+            <MapMonth />
             <Desk />
           </div>
           <Ticker />

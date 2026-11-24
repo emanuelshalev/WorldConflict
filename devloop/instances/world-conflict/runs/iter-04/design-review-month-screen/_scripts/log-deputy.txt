@@ -1,0 +1,6 @@
+skip fail locator.click: Timeout 30000ms exceeded.
+390x844 null
+skip fail locator.click: Timeout 30000ms exceeded.
+360x740 null
+390x844 null
+360x740 null

@@ -73,11 +73,13 @@ describe("QA repro #7: a crisis is never labelled 'Your call'", () => {
       crisisSelection(d, { d1: "join" }, { d1: true }),
       crisisSelection(d, {}, {}),
     ];
+    // D-73: the recommended answer chosen reads "You chose" (no "Accepted" for a recommendation);
+    // N-3: the leave sentence says "no answer" once
     expect(cases.map((c) => c.text)).toEqual([
       "Recommended: Abstain",
-      "Accepted: Abstain",
+      "You chose: Abstain",
       "Your pick: Join the sanctions",
-      "No answer yet. If you leave it: no answer is given and the crisis passes",
+      "No answer yet. If you leave it, the crisis passes with no effect",
     ]);
     for (const c of cases) expect(`${c.text} ${c.word}`).not.toMatch(/your call/i);
   });

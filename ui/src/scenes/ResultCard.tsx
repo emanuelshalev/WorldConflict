@@ -7,11 +7,12 @@ import { buildPages, yourMoveCard } from '../lib/debrief';
 import { resultBig } from '../lib/outcome';
 import { StatusLine } from './OutcomeCard';
 import { monthLabel } from '../lib/format';
-import { moodForVerdict } from './kinds';
+import { leftOpenChoice, moodForVerdict } from './kinds';
 import { SceneFrame } from './SceneFrame';
 import { Stamp } from '../components/game/Stamp';
 import { CoachResultLine } from '../components/desk/Coach';
-import { Segments } from '../components/desk/GoalLine';
+import { Segments } from '../components/desk/Segments';
+import { useLayout } from '../lib/layout';
 import { metricWord, stepObjective } from '../lib/goals';
 import { scoreLine, useScoreWhy } from '../lib/scoreWhy';
 import { useModalFocus } from '../lib/useModalFocus';
@@ -100,6 +101,8 @@ export function ResultCard({ report, world, home, onNext, onEverything, onPaper,
   const warHl = report.highlight?.ref === 'war' ? report.wars?.[report.highlight.index] : undefined;
   const meanwhile = own && warHl ? warHl : undefined;
   const chose = hd ? hd.choice.replace(/\s*\((no decision taken|you did not attend)\)\s*$/, '') : ho?.label;
+  // A crisis left open went ahead on its default answer: never "You chose" (design-rereview C2-2)
+  const leftOpen = !!hd && leftOpenChoice(hd.choice);
   // "What your choice did" shows only what the choice itself moved (its own measured facts; month
   // stats as its share). The month's totals, which include everyone else's moves, sit on their own
   // line below, so tension from someone else's nuclear test is never credited to your order.
@@ -128,7 +131,12 @@ export function ResultCard({ report, world, home, onNext, onEverything, onPaper,
     const { good, word } = resultBig(lead0, card?.status);
     return { delta, good, word, label: lead0.label };
   })() : null;
-  const [moreOpen, setMoreOpen] = useState(false);
+  // Tall, wide screens have the room: the numbers, the score and the rest of the month open at once
+  // (design-layout L-12, WP-L2); smaller ones keep them one press away
+  const L = useLayout();
+  const [moreChoice, setMoreChoice] = useState<boolean | null>(null);
+  const moreOpen = moreChoice ?? (L.width >= 1600 && L.tall);
+  const setMoreOpen = (f: (v: boolean) => boolean) => setMoreChoice(f(moreOpen));
   const u = (c: ConditionStatus) => (c.unit === '%' ? '%' : '');
   return (
     <div ref={ref} className="result-overlay" role="dialog" aria-modal="true" aria-label={`${monthLabel(world.date)}: your month`}>
@@ -161,7 +169,7 @@ export function ResultCard({ report, world, home, onNext, onEverything, onPaper,
           <span className="rc-kicker">{own ? 'What your choice did' : 'The month'}</span>
           {chose && (
             <p className="rc-chose">
-              You {ho ? 'ordered' : 'chose'}: <b>{chose}</b>
+              {leftOpen ? 'Left open' : `You ${ho ? 'ordered' : 'chose'}`}: <b>{chose}</b>
             </p>
           )}
           <h2 className="rc-sentence">{card?.headline ?? 'A quiet month: the world moved on its own.'}</h2>

@@ -174,7 +174,7 @@ export async function launch({ variant = 'qa', device = variant, out = `/tmp/pla
     },
     /** The HUD's numbers as text, for reports. */
     async hud() {
-      return page.evaluate(() => (document.querySelector('.hud')?.innerText ?? '').replace(/\s+/g, ' ').trim());
+      return page.evaluate(() => (document.querySelector('[data-region="state"], .hud')?.innerText ?? '').replace(/\s+/g, ' ').trim());
     },
     note(text) {
       log({ act: 'note', text });
