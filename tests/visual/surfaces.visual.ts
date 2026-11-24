@@ -36,13 +36,15 @@ async function prepare(page: Page, width: Width, storage: Record<string, string>
 
 /** Let the page run for `ms`, then stop time: the fake clock pauses
  *  (JS animations, timers and rAF freeze), SVG SMIL animations are paused at a fixed time. */
-async function settle(page: Page, ms = 600, fastForward = true) {
+async function settle(page: Page, ms = 600, fastForward: boolean | number = true) {
   await page.evaluate(() => document.fonts?.ready);
   await page.waitForLoadState('networkidle').catch(() => {});
   await page.waitForTimeout(ms);
   // Fast-forward 8 s of page time so camera flights and timed transitions finish even when the
   // machine is slow, then stop the clock. The reveal opts out: its first stage auto-advances.
-  if (fastForward) await page.clock.runFor(8000);
+  // A number fast-forwards that many ms instead (Map mode: every frame of a skipped flight is a
+  // software-GL globe render, and the globe is hidden in its screenshot anyway).
+  if (fastForward) await page.clock.runFor(fastForward === true ? 8000 : fastForward);
   // Pause one page-second ahead (a long jump would fire every pending timer at once). On a busy
   // machine the page clock can pass that point before the call lands: try again further ahead.
   for (const ahead of [1000, 3000, 8000]) {
@@ -180,7 +182,7 @@ test.describe('desk', () => {
       });
       const data = await res.json();
       expect(data.success, JSON.stringify(data).slice(0, 300)).toBe(true);
-      const turn = await (await request.post(`${API}/turn`, { data: { saveId: data.saveId, playerActions: [], decisions: [] } })).json();
+      const turn = await apiPost(request, '/turn', { saveId: data.saveId, playerActions: [], decisions: [] });
       expect(turn.success, JSON.stringify(turn).slice(0, 300)).toBe(true);
       await prepare(page, width, { 'worldconflict.guest': guest, 'worldconflict.lastSave': data.saveId });
       await pinDaily(page);
@@ -206,15 +208,22 @@ test.describe('desk', () => {
 
 const LAYOUT = { '1366x768': { width: 1366, height: 768 }, '1920x1080': { width: 1920, height: 1080 }, '3440x1440': { width: 3440, height: 1440 } } as const;
 
+/** POST to the API; the server allows 4 /turn calls a second per client, and four workers setting
+ *  up month 4 at once go over it: wait out a 429 and try again. */
+async function apiPost(request: import('playwright/test').APIRequestContext, route: string, data: object) {
+  for (let i = 0; ; i++) {
+    const res = await request.post(`${API}${route}`, { data });
+    if (res.status() !== 429 || i >= 10) return res.json();
+    await new Promise((r) => setTimeout(r, 400 + 300 * i));
+  }
+}
+
 async function openMonth(page: Page, request: import('playwright/test').APIRequestContext, size: keyof typeof LAYOUT, months: number, tag: string) {
   const guest = `guest-visual-layout-${tag}-${size}`;
-  const res = await request.post(`${API}/new-game`, {
-    data: { playerCountryId: 'USA', flashpointId: 'hormuz-convoy', mode: 'FLASHPOINT', seed: 4242, playerId: guest, saveName: 'Visual regression' },
-  });
-  const data = await res.json();
+  const data = await apiPost(request, '/new-game', { playerCountryId: 'USA', flashpointId: 'hormuz-convoy', mode: 'FLASHPOINT', seed: 4242, playerId: guest, saveName: 'Visual regression' });
   expect(data.success, JSON.stringify(data).slice(0, 300)).toBe(true);
   for (let i = 0; i < months; i++) {
-    const turn = await (await request.post(`${API}/turn`, { data: { saveId: data.saveId, playerActions: [], decisions: [] } })).json();
+    const turn = await apiPost(request, '/turn', { saveId: data.saveId, playerActions: [], decisions: [] });
     expect(turn.success, JSON.stringify(turn).slice(0, 300)).toBe(true);
   }
   await page.setViewportSize(LAYOUT[size]);
@@ -228,11 +237,17 @@ async function openMonth(page: Page, request: import('playwright/test').APIReque
   }, { 'worldconflict.guest': guest, 'worldconflict.lastSave': data.saveId });
   await pinDaily(page);
   await page.goto('/');
-  await page.getByRole('button', { name: /^Continue/i }).first().click({ timeout: 30_000 });
-  await page.locator('[data-region="item"]').first().waitFor({ timeout: 30_000 });
+  // (a 3440 title page with three other heavy pages running can take longer than 30 s to answer)
+  await page.getByRole('button', { name: /^Continue/i }).first().click({ timeout: 60_000 });
+  await page.locator('[data-region="item"]').first().waitFor({ timeout: 60_000 });
 }
 
 test.describe('layout', () => {
+  // These are the suite's heaviest pages: up to 3440x1440 under software GL, four at a time, after
+  // a month 4 setup or a whole executed month. Alone each takes 45-75 s; with four workers busy a
+  // 3440 page's stable capture (two identical screenshots) alone can take 30 s or more, so the 90 s
+  // default was hit by load, not by a hang (hangs fail earlier, at their own waits)
+  test.describe.configure({ timeout: 180_000 });
   for (const size of Object.keys(LAYOUT) as Array<keyof typeof LAYOUT>) {
     for (const [state, months] of [['desk-m1', 0], ['desk-m4', 3], ['map-m4', 3]] as const) {
       test(`${state} ${size}`, async ({ page, request }) => {
@@ -241,11 +256,14 @@ test.describe('layout', () => {
           await page.keyboard.press('m');
           await page.locator('.map-month').first().waitFor({ timeout: 10_000 });
         }
-        await settle(page, 2500);
+        // Map mode: 8 s of fast-forwarded camera flight under software GL took most of the 90 s
+        // test budget at 3440 with four workers; 1.5 s of page time lets the card's fit rule and the
+        // panels settle (the globe itself is hidden in the screenshot)
+        await settle(page, 2500, state === 'map-m4' ? 1500 : true);
         // Map mode: the globe (camera, labels) is hidden, not masked, so the panels over it are compared
         await expect(page).toHaveScreenshot(`layout-${state}-${size}.png`, state === 'map-m4'
-          ? { mask: liveMasks(page, { canvas: false }), style: '.maplibregl-canvas, .maplibregl-marker, .maplibregl-popup, .wcm { visibility: hidden !important; }' }
-          : { mask: liveMasks(page) });
+          ? { mask: liveMasks(page, { canvas: false }), stylePath: fileURLToPath(new URL('./hide-map.css', import.meta.url)), timeout: 60_000 }
+          : { mask: liveMasks(page), timeout: 60_000 });
       });
     }
   }
@@ -254,16 +272,28 @@ test.describe('layout', () => {
       test(`${state} ${size}`, async ({ page, request }) => {
         await openMonth(page, request, size, 0, state);
         await page.getByRole('button', { name: /^Choose all recommended/ }).first().click();
-        // A fresh month ignores Execute for 900 ms (useExecute's double-press guard)
-        await page.waitForTimeout(1500);
-        await page.getByRole('button', { name: /Execute month/ }).first().click();
-        await page.locator('.result-card .rc-next').first().waitFor({ timeout: 75_000 });
+        // A fresh month ignores Execute for 900 ms of page time (useExecute's double-press guard).
+        // Under software GL with four workers the fake clock runs slower than the wall clock, and a
+        // press after a fixed 1.5 s wall wait was dropped now and then (the result and paper tests
+        // then waited out their 90 s). Move the page clock on and press again until the month's
+        // /turn request leaves: a press that never sends one fails here, not at the timeout
+        let sent = false;
+        page.on('request', (r) => {
+          if (r.url().includes('/api/turn') && r.method() === 'POST') sent = true;
+        });
+        for (let i = 0; i < 6 && !sent; i++) {
+          await page.clock.runFor(1500);
+          await page.getByRole('button', { name: /Execute month/ }).first().click();
+          for (let t = 0; t < 20 && !sent; t++) await page.waitForTimeout(200);
+        }
+        expect(sent, 'Execute sent the month').toBe(true);
+        await page.locator('.result-card .rc-next').first().waitFor({ timeout: 45_000 });
         if (state === 'paper') {
           await page.getByRole('button', { name: /Read the paper/ }).first().click();
           await page.locator('.paper-overlay').first().waitFor({ timeout: 10_000 });
         }
         await settle(page, 2500);
-        await expect(page).toHaveScreenshot(`layout-${state}-${size}.png`, { mask: liveMasks(page) });
+        await expect(page).toHaveScreenshot(`layout-${state}-${size}.png`, { mask: liveMasks(page), timeout: 60_000 });
       });
     }
   }

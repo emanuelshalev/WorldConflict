@@ -1,0 +1,12 @@
+/* Map mode capture (layout map-m4): the globe (camera, labels) and its markers move with a camera
+   flight that ends at a machine-dependent moment, so they are left out and the panels over the map
+   are compared. Applied through stylePath: toHaveScreenshot has no inline style option and silently
+   ignores one (the map-m4 tests passed `style` before, and the live globe was in their baselines). */
+.maplibregl-canvas,
+.maplibregl-marker,
+.maplibregl-marker *,
+.maplibregl-popup,
+.wcm,
+.wcm * {
+  visibility: hidden !important;
+}
