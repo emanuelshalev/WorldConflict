@@ -13,6 +13,11 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../.
 const inst = 'devloop/instances/world-conflict';
 const registry = `${inst}/regressions.yaml`;
 const browserEnv = (ctx) => ({ DEVLOOP_BASE_URL: `${ctx.urls.ui}/`, DEVLOOP_API_URL: `${ctx.urls.api}/api` });
+// Script guards at once (kit/regressions.mjs --jobs); DEVLOOP_GUARD_JOBS overrides, 1 runs them one by one.
+// 6 measured on the 16-thread Windows desk (2026-11-24): 4 at once left the step at about 11 minutes
+// once worldmap.mjs runs alone (serial: true, it times animations), 6 brings it under 10
+const guardJobs = process.env.DEVLOOP_GUARD_JOBS ?? '6';
+const guardEnv = (ctx) => ({ ...browserEnv(ctx), DEVLOOP_GUARD_JOBS: guardJobs });
 const lastLine = (re) => (log) => (log.match(re) ?? []).slice(-1)[0] ?? '';
 
 export default {
@@ -35,7 +40,10 @@ export default {
       cmd: 'npx',
       args: ['tsx', 'src/api/server.ts'],
       // JSON saves in the run folder: never touches dev.db or saves/
-      env: (ctx) => ({ PORT: String(ctx.ports.api), DB_DRIVER: 'json', WC_DAILY_DATE: '2026-11-22' /* guards and baselines must not depend on the calendar */, SAVES_DIR: path.join(ctx.out, 'saves'), CORS_ORIGINS: ctx.urls.ui ?? '' }),
+      // RATE_LIMIT_SCALE: the finding guards run several browsers against this one server at once
+      // (all from 127.0.0.1), and a guard fast-forwarding months through /api/turn would otherwise
+      // use up the shared 4-a-second budget of another guard's Execute. Gate server only
+      env: (ctx) => ({ PORT: String(ctx.ports.api), DB_DRIVER: 'json', WC_DAILY_DATE: '2026-11-22' /* guards and baselines must not depend on the calendar */, SAVES_DIR: path.join(ctx.out, 'saves'), CORS_ORIGINS: ctx.urls.ui ?? '', RATE_LIMIT_SCALE: '10' }),
       port: 8640,
       ready: (ctx) => `${ctx.urls.api}/health`,
     },
@@ -54,7 +62,7 @@ export default {
       label: 'Changed files: covering suites and guards',
       cmd: 'node',
       args: (ctx) => ['devloop/kit/regressions.mjs', registry, 'changed', '--base', process.env.VERIFY_BASE ?? 'origin/dev/rc1-synthetic-loop', '--out', path.join(ctx.out, 'regressions')],
-      env: browserEnv,
+      env: guardEnv,
       needs: ['api', 'ui'],
       summarize: lastLine(/findings covering them.*|\d+\/\d+ findings.*/g),
     },
@@ -120,10 +128,11 @@ export default {
       label: 'Finding guards (regressions.yaml)',
       cmd: 'node',
       args: (ctx) => ['devloop/kit/regressions.mjs', registry, 'run', '--out', path.join(ctx.out, 'regressions')],
-      env: browserEnv,
+      env: guardEnv,
       needs: ['api', 'ui'],
-      // 113 findings take about 20 minutes alone on one machine, longer beside a design review
-      timeoutMs: 2_400_000,
+      // 117 findings: about 9.5 minutes 6 at a time (worldmap.mjs alone at the end takes 3.5 of
+      // them), 32 minutes one by one. 20 minutes leaves room for a loaded machine; one by one keeps 40
+      timeoutMs: Number(guardJobs) > 1 ? 1_200_000 : 2_400_000,
       summarize: lastLine(/\d+\/\d+ findings guarded.*/g),
     },
     {

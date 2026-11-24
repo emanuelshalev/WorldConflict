@@ -7,9 +7,14 @@
 //   node devloop/kit/regressions.mjs <registry.yaml> changed [--base ref] [--dry]
 //                                    # files changed since base -> suites and guards that cover them
 //
-// Options: --out <dir> (artifacts, default .verify/regressions), --root <dir> (default cwd).
+// Options: --out <dir> (artifacts, default .verify/regressions), --root <dir> (default cwd),
+// --jobs <n> (script guards run at once, default DEVLOOP_GUARD_JOBS or 1).
 // Script guards get DEVLOOP_BASE_URL / DEVLOOP_API_URL from the environment (the verify runner
-// sets them) and are called as `node <script> <outDir> <baseUrl> <apiUrl>`; exit code 0 = pass.
+// sets them) and are called as `node <script> <outDir> <baseUrl> <apiUrl>`; exit code 0 = pass,
+// 5 minutes at most each. With --jobs above 1 they share the servers at the same time, so each must
+// make its own game and browser profile and write only under its <outDir>; a guard that cannot
+// (or is timing-sensitive under load) carries `serial: true`. A line is printed as each one ends;
+// the per-finding table and the summary line follow in registry order, whatever the concurrency.
 //
 // Registry format (a small YAML subset: maps, block lists, [flow, lists], quoted or bare scalars):
 //
@@ -24,12 +29,13 @@
 //         - vitest: tests/ui-orders-parity.spec.ts                  # whole file
 //           name: refused order carries a reason                   # optional: test name substring
 //         - script: devloop/instances/x/scenarios-qa/regressions/F-00-1.mjs
+//           serial: true         # optional: this script guard runs alone, never beside another
 //       note: optional free text
 //       status: open             # optional: an open finding (not fixed yet) whose guard is expected
 //                                # to fail. Its guards run and are reported (OPEN), but never fail
 //                                # the gate; when they pass, the table says so and the fixing build
 //                                # removes `status: open`, which makes it a normal guard.
-import { execFileSync, spawnSync } from 'node:child_process';
+import { execFileSync, spawn, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -214,6 +220,8 @@ export function checkRegistry(reg, root = process.cwd()) {
         problems.push(`${f.id}: guard file ${file} does not exist`);
         continue;
       }
+      if (g.serial != null && g.serial !== true && g.serial !== false) problems.push(`${f.id}: serial must be true or false (got "${g.serial}")`);
+      if (g.serial != null && !g.script) problems.push(`${f.id}: serial applies to script guards only`);
       if (g.vitest && g.name) {
         const names = testNames(fs.readFileSync(abs, 'utf8'));
         const want = String(g.name);
@@ -266,22 +274,155 @@ function runVitest(files, out, root) {
   return { byFile };
 }
 
-function runScript(file, out, root, env) {
+/** Stop a guard and whatever it started (browsers): on Windows a plain kill leaves the children. */
+function killTree(child) {
+  if (process.platform === 'win32' && child.pid) spawnSync('taskkill', ['/pid', String(child.pid), '/T', '/F'], { stdio: 'ignore', windowsHide: true });
+  else child.kill('SIGKILL');
+}
+
+/** Run one script guard as `node <file> <dir> <base> <api>`; resolves { ok, detail, ms }, never rejects. */
+export function runScript(file, out, root, env, timeoutMs = GUARD_TIMEOUT_MS) {
   const dir = ensure(path.join(out, path.basename(file, '.mjs')));
   const base = env.DEVLOOP_BASE_URL ?? 'http://localhost:5173/';
   const api = env.DEVLOOP_API_URL ?? 'http://localhost:8080/api';
-  const r = spawnSync(process.execPath, [file, dir, base, api], { cwd: root, env: { ...process.env, ...env }, encoding: 'utf8', timeout: 300_000, maxBuffer: 64 << 20 });
-  fs.writeFileSync(path.join(dir, 'guard.log'), `${r.stdout ?? ''}\n${r.stderr ?? ''}`);
-  const lastLine = `${r.stdout ?? ''}\n${r.stderr ?? ''}`.trim().split('\n').filter(Boolean).slice(-1)[0] ?? '';
-  return { ok: r.status === 0, detail: r.status === 0 ? '' : r.error ? r.error.message : lastLine.slice(0, 160) };
+  const t0 = Date.now();
+  return new Promise((resolve) => {
+    let text = '';
+    let timedOut = false;
+    let spawnError = null;
+    let settled = false;
+    const child = spawn(process.execPath, [file, dir, base, api], { cwd: root, env: { ...process.env, ...env }, stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true });
+    // stdout and stderr in one log, as they arrive (the guard's own order)
+    const add = (d) => {
+      if (text.length < 64 << 20) text += d;
+    };
+    child.stdout.setEncoding('utf8').on('data', add);
+    child.stderr.setEncoding('utf8').on('data', add);
+    const timer = setTimeout(() => {
+      timedOut = true;
+      killTree(child);
+    }, timeoutMs);
+    const done = (code) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      fs.writeFileSync(path.join(dir, 'guard.log'), `${text}${timedOut ? `\n[regressions] timed out after ${Math.round(timeoutMs / 1000)} s\n` : ''}`);
+      const lastLine = text.trim().split('\n').filter(Boolean).slice(-1)[0] ?? '';
+      const ok = code === 0 && !timedOut && !spawnError;
+      const detail = ok ? '' : timedOut ? `timed out after ${Math.round(timeoutMs / 1000)} s` : spawnError ? spawnError.message : lastLine.trim().slice(0, 160);
+      resolve({ ok, detail, ms: Date.now() - t0 });
+    };
+    child.on('error', (e) => {
+      spawnError = e;
+      done(null);
+    });
+    child.on('close', (code) => done(code));
+  });
 }
 
-/** Run the guards of the given findings; returns rows { id, guard, ok, detail }. */
-export function runGuards(reg, { root = process.cwd(), out = '.verify/regressions', ids = null, env = process.env } = {}) {
+/**
+ * Run `run(item, i)` over the items with at most `jobs` at a time and resolve the results in input
+ * order. An item for which `isSerial(item)` is true runs alone: it waits for the running ones to end
+ * and nothing else starts until it ends. `onDone(result, item, i, finishedCount)` is called as each
+ * one ends. A throw in `run` becomes the result { ok: false, detail }.
+ */
+export function runPool(items, { jobs = 1, isSerial = () => false, run, onDone = () => {} }) {
+  const limit = Math.max(1, Math.floor(Number(jobs)) || 1);
+  const results = new Array(items.length);
+  let next = 0;
+  let running = 0;
+  let alone = false;
+  let finished = 0;
+  return new Promise((resolve) => {
+    const pump = () => {
+      if (finished === items.length) return resolve(results);
+      while (next < items.length && !alone && running < limit) {
+        const i = next;
+        const serial = !!isSerial(items[i]);
+        if (serial && running > 0) break; // let the pool drain first
+        next++;
+        running++;
+        if (serial) alone = true;
+        Promise.resolve()
+          .then(() => run(items[i], i))
+          .then(
+            (r) => (results[i] = r),
+            (e) => (results[i] = { ok: false, detail: String(e?.message ?? e).slice(0, 160) }),
+          )
+          .then(() => {
+            running--;
+            if (serial) alone = false;
+            finished++;
+            try {
+              onDone(results[i], items[i], i, finished);
+            } catch {}
+            pump();
+          });
+      }
+    };
+    pump();
+  });
+}
+
+/** Per-guard timeout (ms). */
+export const GUARD_TIMEOUT_MS = 300_000;
+
+/** Concurrency: the option, else DEVLOOP_GUARD_JOBS, else 1 (one guard after another). */
+export function guardJobs(value = null, env = process.env) {
+  const n = Math.floor(Number(value ?? env.DEVLOOP_GUARD_JOBS ?? 1));
+  return Number.isFinite(n) && n >= 1 ? n : 1;
+}
+
+const fmtSec = (ms) => `${(ms / 1000).toFixed(1)} s`;
+
+/**
+ * The order script guards start in. One at a time: registry order. In parallel: the slowest of the
+ * last run first (times kept in node_modules/.cache/devloop/guard-times.json, which outlives the
+ * gate's output folder; new guards count as slowest), so a long guard does
+ * not start last and hold up the end, and guards marked serial at the end, where they run alone.
+ */
+export function scriptOrder(scripts, serial, jobs, times) {
+  if (jobs <= 1) return scripts;
+  const t = (s) => times[s] ?? Number.POSITIVE_INFINITY;
+  return [...scripts].sort((a, b) => Number(serial.has(a)) - Number(serial.has(b)) || t(b) - t(a));
+}
+
+/**
+ * Run the guards of the given findings; resolves rows { id, guard, ok, detail } in registry order.
+ * Script guards run `jobs` at a time (a guard with `serial: true` runs alone); each prints a line as
+ * it ends. Vitest guards run first, in one vitest call.
+ */
+export async function runGuards(reg, { root = process.cwd(), out = '.verify/regressions', ids = null, env = process.env, jobs = 1, timeoutMs = GUARD_TIMEOUT_MS, times: timesFile = path.join(root, 'node_modules', '.cache', 'devloop', 'guard-times.json'), log = console.log } = {}) {
   const findings = reg.findings.filter((f) => !ids || ids.has(f.id));
+  const outAbs = path.resolve(root, out);
   const vitestFiles = [...new Set(findings.flatMap((f) => f.guards.filter((g) => g.vitest).map((g) => g.vitest)))];
-  const vt = vitestFiles.length ? runVitest(vitestFiles, path.resolve(root, out), root) : { byFile: new Map() };
-  const scriptCache = new Map();
+  const vt = vitestFiles.length ? runVitest(vitestFiles, outAbs, root) : { byFile: new Map() };
+  const scripts = [...new Set(findings.flatMap((f) => f.guards.filter((g) => g.script).map((g) => g.script)))];
+  const serial = new Set(findings.flatMap((f) => f.guards.filter((g) => g.script && g.serial === true).map((g) => g.script)));
+  let times = {};
+  try {
+    times = JSON.parse(fs.readFileSync(timesFile, 'utf8'));
+  } catch {}
+  const order = scriptOrder(scripts, serial, jobs, times);
+  if (order.length) log(`running ${order.length} script guard${order.length > 1 ? 's' : ''}, ${jobs} at a time${serial.size ? ` (${serial.size} alone)` : ''}`);
+  const t0 = Date.now();
+  const results = await runPool(order, {
+    jobs,
+    isSerial: (s) => serial.has(s),
+    run: (s) => runScript(s, outAbs, root, env, timeoutMs),
+    onDone: (r, s, _i, n) => log(`[${String(n).padStart(String(order.length).length)}/${order.length}] ${r.ok ? 'PASS' : 'FAIL'}  ${fmtSec(r.ms ?? 0).padStart(7)}  ${s}${r.ok ? '' : `  ${r.detail}`}`),
+  });
+  if (order.length) {
+    log(`script guards took ${fmtSec(Date.now() - t0)}\n`);
+    order.forEach((s, i) => {
+      if (results[i]?.ms != null) times[s] = results[i].ms;
+    });
+    try {
+      fs.mkdirSync(path.dirname(timesFile), { recursive: true });
+      fs.writeFileSync(timesFile, `${JSON.stringify(times, null, 2)}\n`);
+    } catch {}
+  }
+  const scriptCache = new Map(order.map((s, i) => [s, results[i]]));
   const rows = [];
   for (const f of findings) {
     // An open finding's rows carry `open`: reported, never a regression
@@ -306,7 +447,6 @@ export function runGuards(reg, { root = process.cwd(), out = '.verify/regression
         else if (!ran.length) add({ id: f.id, guard: label, ok: false, detail: 'matching tests were skipped' });
         else add({ id: f.id, guard: label, ok: true, detail: `${ran.length} test${ran.length > 1 ? 's' : ''}` });
       } else if (g.script) {
-        if (!scriptCache.has(g.script)) scriptCache.set(g.script, runScript(g.script, path.resolve(root, out), root, env));
         const r = scriptCache.get(g.script);
         add({ id: f.id, guard: g.script, ok: r.ok, detail: r.detail });
       }
@@ -414,11 +554,12 @@ function opt(name, def = null) {
 if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
   const [file, cmd = 'check'] = process.argv.slice(2);
   if (!file) {
-    console.error('usage: node devloop/kit/regressions.mjs <registry.yaml> check|run|changed [--ids a,b] [--base ref] [--out dir] [--dry]');
+    console.error('usage: node devloop/kit/regressions.mjs <registry.yaml> check|run|changed [--ids a,b] [--jobs n] [--base ref] [--out dir] [--dry]');
     process.exit(2);
   }
   const root = path.resolve(opt('root', process.cwd()));
   const out = opt('out', '.verify/regressions');
+  const jobs = guardJobs(opt('jobs'));
   const reg = loadRegistry(path.resolve(file));
   const problems = checkRegistry(reg, root);
   if (cmd === 'check') {
@@ -427,7 +568,7 @@ if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
     process.exitCode = problems.length ? 1 : 0;
   } else if (cmd === 'run') {
     const ids = opt('ids') ? new Set(opt('ids').split(',')) : null;
-    const rows = runGuards(reg, { root, out, ids });
+    const rows = await runGuards(reg, { root, out, ids, jobs });
     const failed = printTable(rows);
     for (const p of problems) console.log(`PROBLEM ${p}`);
     process.exitCode = failed.length || problems.length ? 1 : 0;
@@ -447,7 +588,7 @@ if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
       failed ||= r.status !== 0;
     }
     if (findings.length) {
-      const rows = runGuards(reg, { root, out, ids: new Set(findings.map((f) => f.id)) });
+      const rows = await runGuards(reg, { root, out, ids: new Set(findings.map((f) => f.id)), jobs });
       failed ||= printTable(rows).length > 0;
     }
     if (!suites.length && !findings.length) console.log('nothing maps to the changed files; run the full gate before merging');

@@ -698,6 +698,7 @@ findings:
         name: "QA AC3: the in-game globe fit"
       - script: devloop/instances/world-conflict/scenarios-qa/globe-fit.mjs
       - script: devloop/instances/world-conflict/scenarios-qa/worldmap.mjs
+        serial: true # AC16/AC17 time the era switch (settle <= 1060 ms, reduced motion <= 240 ms): beside three other guards it measured 1394 ms and 248 ms (2026-11-24)
   - id: RS-004
     title: After the reveal there is always a clear way back to play again
     source: real-signals/RS-004-ceo-end-screen-exit-2026-11-23.md (CEO playtest of iter-2)

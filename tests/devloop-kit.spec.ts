@@ -83,10 +83,10 @@ describe("regressions registry kit", () => {
       return { failed, text: lines.join("\n") };
     };
 
-    it("runs an open finding's guard and reports it without failing the gate", () => {
+    it("runs an open finding's guard and reports it without failing the gate", async () => {
       const reg = registry("open");
       expect(checkRegistry(reg, root)).toEqual([]);
-      const rows = runGuards(reg, { root, out: join(root, "out") });
+      const rows = await runGuards(reg, { root, out: join(root, "out"), log: () => {} });
       expect(rows.find((r: { id: string }) => r.id === "RS-9")).toMatchObject({ ok: false, open: true });
       const { failed, text } = table(rows);
       expect(failed).toEqual([]);
@@ -95,15 +95,15 @@ describe("regressions registry kit", () => {
       expect(text).toMatch(/RS-9 still failing as expected/);
     });
 
-    it("says when an open finding's guard passes, and gates once status: open is removed", () => {
+    it("says when an open finding's guard passes, and gates once status: open is removed", async () => {
       writeFileSync(join(root, "g/fail.mjs"), "process.exit(0);\n");
-      const { failed, text } = table(runGuards(registry("open"), { root, out: join(root, "out") }));
+      const { failed, text } = table(await runGuards(registry("open"), { root, out: join(root, "out"), log: () => {} }));
       expect(failed).toEqual([]);
       expect(text).toMatch(/NOW PASSING: RS-9: remove `status: open`/);
       writeFileSync(join(root, "g/fail.mjs"), "process.exit(1);\n");
       const reg = registry("open");
       reg.findings[1].status = undefined;
-      expect(table(runGuards(reg, { root, out: join(root, "out") })).failed).toEqual(["RS-9"]);
+      expect(table(await runGuards(reg, { root, out: join(root, "out"), log: () => {} })).failed).toEqual(["RS-9"]);
     });
 
     it("rejects an unknown status", () => {
