@@ -960,6 +960,18 @@
       "t": "2026-11-24T11:59:10.714Z",
       "iteration": 4,
       "stage": "Build"
+    },
+    {
+      "gate": "status-refresh",
+      "result": "pass",
+      "commit": "256bc198fd811562caed03fe0baa4fa0a46904ea",
+      "codeTree": "3357db078eef93a5",
+      "evidence": "dev_plan/project_status.html",
+      "note": "status-refresh T1",
+      "t": "2026-11-24T12:00:14.447Z",
+      "iteration": 4,
+      "stage": "Build",
+      "tier": "T1"
     }
   ],
   "merges": [
@@ -1025,6 +1037,15 @@
       "iteration": 4,
       "stage": "Build",
       "treeMatches": true
+    },
+    {
+      "t": "2026-11-24T11:59:11.775Z",
+      "branch": "fix-design-review-iter4",
+      "commit": "256bc198fd811562caed03fe0baa4fa0a46904ea",
+      "codeTree": "3357db078eef93a5",
+      "iteration": 4,
+      "stage": "Build",
+      "treeMatches": true
     }
   ],
   "overrides": [],
@@ -1074,6 +1095,11 @@
       "tier": "T1",
       "because": "merge of kit-parallel-guards",
       "t": "2026-11-24T10:00:15.637Z"
+    },
+    {
+      "tier": "T1",
+      "because": "merge of fix-design-review-iter4",
+      "t": "2026-11-24T11:59:11.777Z"
     }
   ],
   "blocked": []
