@@ -45,7 +45,7 @@
   },
   "objectives": {
     "UKR": {
-      "title": "A peace that holds",
+      "title": "Keep Ukraine standing",
       "briefing": "You are Ukraine's president under martial law, with half your power grid gone and the Americans pushing a map across the table. Keep the front from breaking, keep the country standing through the winter and keep Washington in the room. A ceasefire counts only if Ukraine is still on its feet when the ink dries.",
       "primary": [
         {"kind": "WAR_RESULT", "targetId": "RUS", "min": 42, "label": "Hold the front: Russia never past 58 (or a ceasefire)"},

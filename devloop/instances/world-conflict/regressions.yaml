@@ -322,7 +322,10 @@ findings:
       - vitest: tests/core/consistency.spec.ts
       - vitest: tests/core/consistency.spec.ts
         name: "the reveal counts goals like the desk and names the score goal"
+      - vitest: tests/core/consistency.spec.ts
+        name: "F-04-5"
     note: "QA3R-2b, QA3R-2c (iteration 3 repro, GUARD GAP): the verdict counted Stay in power as a goal (5 of 5 vs the desk 4 of 4); the Finish line said par 115 beside a goal of 120. Guarded on the control seeds and every flashpoint seat"
+    changed: "2026-11-24 F-04-5 (iteration 4 customer round, REGRESSED: MISSION COMPLETE · A peace that holds with the war on and the seal of the same name locked; the guard checked goal counts, not the title): consistency.spec.ts now checks every flashpoint seat: no mission title equals its seal name, and a title naming a peace or ceasefire needs a no-war goal"
   - id: F-01-3
     title: Numbers agree across HUD, result card, debrief and paper (single source)
     source: iter-01 triage F-01-3 (numbers part; attribution is QA2-S2-1, open); B-11
@@ -1126,6 +1129,13 @@ findings:
     guards:
       - vitest: tests/regressions/triage-iter4.spec.ts
         name: "F-04-10"
+  - id: F-04-5
+    title: "The verdict never promises an outcome the mission did not require: no mission title equals its seal name, a title naming a peace needs a no-war goal (Ceasefire or Collapse, Ukraine: Keep Ukraine standing)"
+    source: runs/iter-04/triage.md F-04-5 (priya, MISSION COMPLETE · A peace that holds with the war on); REGRESSED F-01-2
+    covers: [data/flashpoints/**, src/core/reveal.ts, src/core/reveal-text.ts, src/core/objectives.ts]
+    guards:
+      - vitest: tests/core/consistency.spec.ts
+        name: "F-04-5"
 # ------------------------------------------------------------------------------------------
 # Not listed (still open or not a code fix); add them here when a fix lands with its guard:
 #   RS-001-6  dashboard feel, "serious visual design": the ledger keeps it not done (D-37 check)
