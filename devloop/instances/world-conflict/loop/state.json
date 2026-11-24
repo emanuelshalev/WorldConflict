@@ -994,6 +994,61 @@
       "iteration": 4,
       "stage": "Verify",
       "tier": "T1"
+    },
+    {
+      "gate": "status-refresh",
+      "result": "pass",
+      "commit": "04f3429673543c9fad562825c82c5bce024e19fc",
+      "codeTree": "3357db078eef93a5",
+      "evidence": "dev_plan/project_status.html",
+      "note": "status-refresh T1",
+      "t": "2026-11-24T13:53:58.679Z",
+      "iteration": 4,
+      "stage": "Verify",
+      "tier": "T1"
+    },
+    {
+      "gate": "verify",
+      "result": "pass",
+      "commit": "26fb93dda7c15bad76421dd70b7a37a336d813f0",
+      "codeTree": "ab2437794b9c4192",
+      "evidence": ".verify/summary.json",
+      "note": "modes default",
+      "t": "2026-11-24T14:11:37.671Z",
+      "iteration": 4,
+      "stage": "Verify",
+      "steps": [
+        "registry",
+        "test",
+        "lint",
+        "ui-lint",
+        "build",
+        "smoke",
+        "reveal",
+        "visual",
+        "regressions",
+        "balance"
+      ]
+    },
+    {
+      "gate": "qa",
+      "result": "pass",
+      "commit": "71e4f37fbe5b2339d8cb3be9a469de19f1e3e087",
+      "codeTree": "ab2437794b9c4192",
+      "evidence": "devloop/instances/world-conflict/runs/iter-04/qa-recheck.md",
+      "t": "2026-11-24T14:11:48.227Z",
+      "iteration": 4,
+      "stage": "Verify"
+    },
+    {
+      "gate": "design-review",
+      "result": "pass",
+      "commit": "71e4f37fbe5b2339d8cb3be9a469de19f1e3e087",
+      "codeTree": "ab2437794b9c4192",
+      "evidence": "devloop/instances/world-conflict/runs/iter-04/qa-recheck.md",
+      "t": "2026-11-24T14:11:48.512Z",
+      "iteration": 4,
+      "stage": "Verify"
     }
   ],
   "merges": [
