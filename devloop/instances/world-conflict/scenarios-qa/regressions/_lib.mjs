@@ -70,6 +70,38 @@ export async function pinSeat(page, seat = SEAT) {
  * Open All orders the way a player does (iteration 4): the month's "Your own orders" thing (from the
  * List, or See all when the List is folded) holds the All orders button.
  */
+/**
+ * All orders shows one family at a time behind tabs wider than a phone (design review S1-1,
+ * DR-MS-1); phones list every family. Runs `fn(family word | null)` once per family tab (after
+ * choosing it), or once with null when there are no tabs, and returns the results in order.
+ */
+export async function forEachFamily(page, fn) {
+  const tabs = page.locator('[data-order-catalog] [role="tab"][data-family-tab]');
+  const n = await tabs.count();
+  if (!n) return [await fn(null)];
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    const tab = tabs.nth(i);
+    await tab.click();
+    await page.waitForTimeout(350);
+    out.push(await fn(await tab.getAttribute('data-family-tab')));
+  }
+  return out;
+}
+
+/** Bring the first catalogue card matching `sel` into the panel (choosing its family tab); true when found. */
+export async function showCatalogCard(page, sel) {
+  const card = page.locator(`[data-order-catalog] ${sel}`).first();
+  if (await card.count()) return true;
+  const tabs = page.locator('[data-order-catalog] [role="tab"][data-family-tab]');
+  for (let i = 0; i < (await tabs.count()); i++) {
+    await tabs.nth(i).click();
+    await page.waitForTimeout(350);
+    if (await card.count()) return true;
+  }
+  return false;
+}
+
 export async function openAllOrders(s) {
   const p = s.page;
   const direct = p.getByRole('button', { name: /^All orders/ }).first();

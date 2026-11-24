@@ -13,12 +13,14 @@
 //    stays within the row's first 80 px (S3), the hint line shows only with no target, and a search
 //    hit on the phone behaves as a list row (S4);
 //  - widened to 1440x900, tiles are back near their earlier height (an available tile at most 265 px;
+//    read family by family on the tabs of All orders since design review S1-1, where a family whose
+//    tiles do not fit the frame is shown as rows in columns by the fit rule;
 //    about 262 before the order cards, 279 on the first reviewed build).
 // Iteration 4 (build-agenda-layout): the phone month is its own tree; All orders opens from See all,
 // and rows are counted between its sticky top and bottom bar, on top where they are (_lib.mjs
 // phoneList, as DR-OC-6, which holds the design target of 6).
 //   node devloop/instances/world-conflict/scenarios-qa/regressions/DR-OC-3.mjs <outDir> <baseUrl> <apiUrl>
-import { args, openAllOrders, phoneList, phoneScrollToFamily, run, startGame } from './_lib.mjs';
+import { args, forEachFamily, openAllOrders, phoneList, phoneScrollToFamily, run, startGame } from './_lib.mjs';
 
 const { out, base } = args('DR-OC-3');
 const SEAT = { flashpointId: 'ceasefire-or-collapse', countryId: 'UKR', title: 'Ceasefire or Collapse', seedCode: 'CO-UKR-MAYA1' };
@@ -75,18 +77,30 @@ await run('DR-OC-3', async (g, track) => {
   // ---- Desktop width, no target: tiles near the earlier height
   await p.setViewportSize({ width: 1440, height: 900 });
   await p.waitForTimeout(1200);
-  const dk = await p.evaluate(() => {
-    const cards = [...document.querySelectorAll('[data-order-catalog] .ord-cat .ord-wrap')];
-    const heights = cards.map((c) => Math.round(c.getBoundingClientRect().height)).filter((h) => h > 0).sort((a, b) => a - b);
-    const one = (id) => Math.round(document.querySelector(`[data-order-catalog] .ord-wrap[data-order-id="${id}"]`)?.getBoundingClientRect().height ?? 0);
-    return { total: cards.length, tiles: cards.filter((c) => c.classList.contains('ord-tile')).length, median: heights[Math.floor(heights.length / 2)] ?? 0, max: heights.at(-1) ?? 0, mobilize: one('mobilize'), court: one('court') };
+  // Wider than a phone All orders shows one family at a time behind tabs, and a family whose tiles
+  // do not fit the frame steps to compact tiles, then rows in columns (design review S1-1, DR-MS-1):
+  // every family's cards are read on its tab, and rows count only where the frame asked for them
+  const fams = await forEachFamily(p, async (word) => {
+    await p.waitForTimeout(500);
+    return p.evaluate((w) => {
+      const cat = document.querySelector('[data-order-catalog]');
+      const cards = [...cat.querySelectorAll('.ord-cat .ord-wrap')].map((c) => ({ id: c.dataset.orderId, tile: c.classList.contains('ord-tile'), h: Math.round(c.getBoundingClientRect().height) }));
+      return { word: w, fit: Number(cat.getAttribute('data-fit') ?? 0), cards };
+    }, word);
   });
+  const all = fams.flatMap((f) => f.cards.map((c) => ({ ...c, fit: f.fit })));
+  const tiles = all.filter((c) => c.tile && c.h > 0);
+  const heights = tiles.map((c) => c.h).sort((a, b) => a - b);
+  const one = (id) => all.find((c) => c.id === id);
+  const dk = { total: all.length, tiles: tiles.length, rowsByFit: all.filter((c) => !c.tile && c.fit >= 2).length, median: heights[Math.floor(heights.length / 2)] ?? 0, max: heights.at(-1) ?? 0, mobilize: one('mobilize'), court: one('court') };
   await s.look('desktop-catalog');
-  g.check(dk.tiles === dk.total && dk.total === ORDERS, `1440x900: the catalogue is back to ${ORDERS} tiles (${dk.tiles} of ${dk.total})`);
-  g.check(dk.median > 0 && dk.median <= MAX_TILE_MEDIAN, `1440x900: median tile height at most ${MAX_TILE_MEDIAN} px (${dk.median}, tallest ${dk.max})`);
+  console.log(`     1440x900 families: ${fams.map((f) => `${f.word} fit ${f.fit} (${f.cards.length})`).join(', ')}`);
+  g.check(dk.total === ORDERS && dk.tiles + dk.rowsByFit === dk.total, `1440x900: all ${ORDERS} orders across the family tabs, tiles unless the frame asked for rows (${dk.tiles} tiles, ${dk.rowsByFit} rows by the fit rule, of ${dk.total})`);
+  g.check(dk.tiles > 0 && dk.median <= MAX_TILE_MEDIAN, `1440x900: median tile height at most ${MAX_TILE_MEDIAN} px (${dk.median}, tallest ${dk.max})`);
   // The two common shapes: an available tile (Mobilize forces) and one waiting for a target (Court)
-  g.check(dk.mobilize > 0 && dk.mobilize <= MAX_AVAILABLE, `1440x900: an available tile (Mobilize forces) at most ${MAX_AVAILABLE} px (${dk.mobilize})`);
-  g.check(dk.court > 0 && dk.court <= MAX_NEEDS_TARGET, `1440x900: a tile waiting for a target (Court) at most ${MAX_NEEDS_TARGET} px (${dk.court})`);
+  const shape = (c, max, what) => g.check(!!c && (!c.tile || (c.h > 0 && c.h <= max)), `1440x900: ${what} at most ${max} px as a tile (${c ? (c.tile ? c.h : `a row, fit ${c.fit}`) : 'missing'})`);
+  shape(dk.mobilize, MAX_AVAILABLE, 'an available tile (Mobilize forces)');
+  shape(dk.court, MAX_NEEDS_TARGET, 'a tile waiting for a target (Court)');
   await p.setViewportSize({ width: 390, height: 844 });
   await p.waitForTimeout(1200);
 

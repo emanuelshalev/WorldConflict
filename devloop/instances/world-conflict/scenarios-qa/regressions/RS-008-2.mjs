@@ -15,7 +15,7 @@
 //    Your goals in this call): on the month 1 crisis no threshold stands outside the brackets of a
 //    goal's full wording; tags and lists use the mission line's words ("Voters stay on side").
 //   node devloop/instances/world-conflict/scenarios-qa/regressions/RS-008-2.mjs <outDir> <baseUrl> <apiUrl>
-import { args, bodyText, openAllOrders, run, startGame, toPhoneReview } from './_lib.mjs';
+import { args, bodyText, openAllOrders, run, showCatalogCard, startGame, toPhoneReview } from './_lib.mjs';
 
 const { out, base } = args('RS-008-2');
 const SIZES = (process.env.RS0082_SIZES ?? '3440x1440,1440x900,1024x768,390x844').split(',');
@@ -97,6 +97,8 @@ await run('RS-008-2', async (g, track) => {
     // A safe order the seat can give now (a row's Add on the phone, the tile itself on wider screens)
     let given = false;
     for (const id of ['propaganda', 'counter-intel', 'reform', 'procure', 'mobilize']) {
+      // One family at a time wider than a phone (DR-MS-1): the tab that holds it
+      await showCatalogCard(p, `.ord-wrap[data-order-id="${id}"][data-order-state="available"]`);
       const card = p.locator(`[data-order-catalog] .ord-wrap[data-order-id="${id}"][data-order-state="available"]`).first();
       if (!(await card.count())) continue;
       const btn = (await card.locator('.ord-act').count()) ? card.locator('.ord-act') : card.locator('.wc-card-hit');

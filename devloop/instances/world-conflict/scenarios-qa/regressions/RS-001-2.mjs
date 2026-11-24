@@ -6,7 +6,7 @@
 // its cost, with no toast; and at 1024 the HUD shows all seven resources in words (QA1 S3-3).
 // Since F-02-4 (D-58) staff picks spend nothing until approved: the guard approves them first so
 // an order is out of reach (month 1 used to open with the staff's seals already spent).
-import { openAllOrders, args, bodyText, run, startGame } from './_lib.mjs';
+import { openAllOrders, args, bodyText, run, showCatalogCard, startGame } from './_lib.mjs';
 
 const { out, base } = args('RS-001-2');
 const BANNED = [/political credit/i, /\bcredits?\b/i, /\bCAP\b/, /\bAPPR\b/, /\bSTAB\b/, /Leadership score/i];
@@ -59,6 +59,7 @@ await run('RS-001-2', async (g, track) => {
   await p.locator('[data-order-catalog]').first().waitFor();
   await p.waitForTimeout(600);
   const card = p.locator('[data-order-catalog] [data-order-code="NO_CAPITAL"]').first();
+  await showCatalogCard(p, '[data-order-code="NO_CAPITAL"]');
   // With one seal left (D-84: the staff hold fewer) every order that costs more needs a country:
   // choose one so a card the player cannot afford is on the list
   if ((await card.count()) === 0) {
@@ -66,6 +67,8 @@ await run('RS-001-2', async (g, track) => {
     await p.locator('[role="dialog"][aria-label="Choose a country"] [role="option"]').first().click();
     await p.waitForTimeout(600);
   }
+  // One family at a time wider than a phone (DR-MS-1): the tab that holds it
+  await showCatalogCard(p, '[data-order-code="NO_CAPITAL"]');
   g.check((await card.count()) === 1, 'an unaffordable order is on the list');
   const label = (await card.locator('.wc-card-title').first().innerText().catch(() => '')).trim();
   g.check(/Needs ◆ \d, you have ◆ \d\./.test(await card.innerText()), `its card says what it needs and what you have ("${label}")`);

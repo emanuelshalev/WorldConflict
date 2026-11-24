@@ -3,7 +3,7 @@
 // and pressing it anyway queues nothing and raises no toast or native dialog.
 // Repro (runs/iter-00/qa-repro.md #4, leo-stream): All orders, every targeted order was dimmed with no reason.
 import path from 'node:path';
-import { args, openAllOrders, run, startGame } from './_lib.mjs';
+import { args, forEachFamily, openAllOrders, run, showCatalogCard, startGame } from './_lib.mjs';
 
 const { out, base } = args('F-00-1');
 
@@ -33,7 +33,9 @@ await run('F-00-1', async (g, track) => {
   await p.waitForTimeout(800);
 
   // No target yet: every targeted card asks for one, with the fix on the card
-  let cards = await blockedCards(p);
+  // Wider than a phone All orders shows one family at a time (DR-MS-1): read every family's tab
+  const allBlocked = async () => (await forEachFamily(p, () => blockedCards(p))).flat();
+  let cards = await allBlocked();
   const needs = cards.filter((c) => c.code === 'NEEDS_TARGET');
   g.check(needs.length >= 10, `no target: ${needs.length} targeted cards ask for a country`);
   g.check(needs.every((c) => /Pick a country first\./.test(c.reason) && /Pick a country/.test(c.text.replace(c.reason, ''))), 'no target: each says "Pick a country first." and offers Pick a country');
@@ -45,7 +47,7 @@ await run('F-00-1', async (g, track) => {
   await p.waitForTimeout(300);
   await search.press('Enter');
   await p.waitForTimeout(1200);
-  cards = await blockedCards(p);
+  cards = await allBlocked();
   g.check(cards.length >= 3, `Iran picked: ${cards.length} cards are blocked (${cards.map((c) => `${c.id}:${c.code}`).join(', ')})`);
   for (const c of cards) {
     g.check(c.reason.length >= 8 && !/^undefined|null$/.test(c.reason), `${c.id} (${c.code}) shows a reason on the card: "${c.reason}"`);
@@ -54,13 +56,15 @@ await run('F-00-1', async (g, track) => {
   await s.look('blocked-with-reasons', { full: false });
 
   // Pressing a blocked card anyway: nothing queued, no toast, no native dialog
-  const queuedBefore = await p.locator('[data-order-catalog] [data-order-state="queued"]').count();
+  const queuedNow = async () => (await forEachFamily(p, () => p.locator('[data-order-catalog] [data-order-state="queued"]').count())).reduce((a, b) => a + b, 0);
+  const queuedBefore = await queuedNow();
   for (const c of cards.slice(0, 4)) {
+    await showCatalogCard(p, `[data-order-id="${c.id}"]`);
     await p.locator(`[data-order-catalog] [data-order-id="${c.id}"] .wc-card-hit`).first().dispatchEvent('click');
     await p.waitForTimeout(250);
   }
   await p.waitForTimeout(500);
-  g.check((await p.locator('[data-order-catalog] [data-order-state="queued"]').count()) === queuedBefore, 'pressing blocked cards queues nothing');
+  g.check((await queuedNow()) === queuedBefore, 'pressing blocked cards queues nothing');
   g.check((await p.locator('.toast:visible').count()) === 0, 'no toast for a predictable refusal');
   g.check(dialogs === 0, `no native dialog (${dialogs})`);
   g.check(!s.errors.length, `no page errors (${s.errors.slice(0, 2).join(' | ')})`);

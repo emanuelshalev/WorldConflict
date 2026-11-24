@@ -489,6 +489,9 @@ html { font-size: clamp(16px, calc(0.42vmin + 11.5px), 22px); }
 [data-fit='1'] .th-facts.goals, [data-fit='2'] .th-facts.goals, [data-fit='3'] .th-facts.goals,
 [data-fit='1'] .th-story, [data-fit='2'] .th-story, [data-fit='3'] .th-story,
 [data-fit='1'] .th-facts.advice, [data-fit='2'] .th-facts.advice, [data-fit='3'] .th-facts.advice,
+/* Ask your staff beside the crisis is the first thing to go when the Thing must compact (it is
+   always in Menu, Cabinet) */
+[data-fit='1'] .ask-staff, [data-fit='2'] .ask-staff, [data-fit='3'] .ask-staff,
 [data-fit='1'] .intro1, [data-fit='2'] .intro1, [data-fit='3'] .intro1 { display: none !important; }
 [data-fit='2'] .fx-rest, [data-fit='3'] .fx-rest, [data-fit='2'] .opt-more, [data-fit='3'] .opt-more,
 [data-fit='2'] .rec-why, [data-fit='3'] .rec-why, [data-fit='2'] .opt-after, [data-fit='3'] .opt-after { display: none !important; }
