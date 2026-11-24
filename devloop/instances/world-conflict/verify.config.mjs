@@ -122,7 +122,8 @@ export default {
       args: (ctx) => ['devloop/kit/regressions.mjs', registry, 'run', '--out', path.join(ctx.out, 'regressions')],
       env: browserEnv,
       needs: ['api', 'ui'],
-      timeoutMs: 1_200_000,
+      // 113 findings take about 20 minutes alone on one machine, longer beside a design review
+      timeoutMs: 2_400_000,
       summarize: lastLine(/\d+\/\d+ findings guarded.*/g),
     },
     {
