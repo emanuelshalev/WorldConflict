@@ -85,3 +85,5 @@
 {"t":"2026-11-23T06:04:25.197Z","iteration":4,"stage":"Build","kind":"unit-total","units":12,"note":"re-weighted: 5 small packages done; remaining stability merge (1), guided agenda in the new layout (4), order cards (2)"}
 {"t":"2026-11-24T12:00:28.156Z","iteration":4,"stage":"Build","kind":"end"}
 {"t":"2026-11-24T12:00:28.156Z","iteration":4,"stage":"Verify","kind":"start"}
+{"t":"2026-11-24T14:13:34.594Z","iteration":4,"stage":"Verify","kind":"end"}
+{"t":"2026-11-24T14:13:34.594Z","iteration":4,"stage":"Use","kind":"start"}
