@@ -32,3 +32,21 @@ The numbers on the card match the turn report in every month: status, choice, fa
 | S3 | Other seeds: the Leo paper body says "General Secretary Jinping" (surname bug in the paper body). | No |
 
 Screenshot: `sweep-NEW-not-from-your-choice-ceasefire.png`.
+
+## Second re-check (commits a4668ee and 993d4df)
+
+Same worktree and branch, own servers 8760/5760, 1920x1080. Seeds: HC-ARE-NOAH1, CO-UKR-RUTH1, CO-UKR-MAYA1, CO-UKR-PRIY1 (two PRIY1 games). No code changes, nothing committed. 0 page errors, 0 console errors, 0 dialogs, 0 external or failed requests. `tests/regressions/triage-iter4.spec.ts` passes (15 of 15).
+
+### Verdict
+
+**Items 1 and 2 FIXED, item 3 PARTLY.** Nothing untrue found. One S3 is open: the NO_EFFECT row does not print its reason anywhere on screen. That status is new in this round, so this round caused the missing reason.
+
+| Item | Repro | Result | Evidence |
+|---|---|---|---|
+| 1. Crisis answers at ◆ 0 | NOAH1 m2 "Incident with Sudan" and RUTH1 m2 assassination attempt, both at ◆ 0 (Choose all, the mission move and one own order) | **FIXED** | All answer cards are 571 px wide, and no text runs past its card. "Leave it open" sits under the answers and is fully on screen (bottom 1036 of 1080). The unaffordable cards keep "Needs ◆ 1", the reason line, and "Remove a staff order (frees ◆ 1)" under the card at its right edge. On both seats, Remove took one staff order (NOAH: Recommended orders 3 to 2; RUTH: 2 to 1) and freed ◆ 1. Then every card was live and stayed 571 px. The unaffordable order cards at ◆ 0 (All orders, Covert) are unchanged: "Needs ◆ n, you have ◆ 0" and "Remove a staff order". With capital to spare (RUTH m1, ◆ 3), the crisis cards look as they did before. | `r2-1-noah-m2-crisis-at-0.png`, `r2-1-noah-m2-order-cards-at-0.png` |
+| 2. Sign the ceasefire credited | MAYA1 and PRIY1 m12, "Sign the ceasefire" | **FIXED** | The report has `wars[0].endedBy = {decision, 0}`. No "Not from your choice" appears on either seat. MAYA card: "Zelensky chooses: Sign the ceasefire", with the chronicle line "The war with Russia is over". PRIY card: "Your choice ended the war with Russia (front 61 → 61)". Paper: "In the crisis 'The signing table', President Zelensky decided: Sign the ceasefire. The guns fall silent ...", and "Elsewhere" now lists only other moves. See everything: "The war with Russia is over. Your choice: Sign the ceasefire". | `r2-2-maya-m12-sign-result.png`, `r2-2-priya-m12-sign-see-everything.png` |
+| 2b. Month-12 crisis left open | Second PRIY1 game, m12, "The signing table" left open | **TRUE** | The default "Refuse without guarantees" applied, and the war goes on (`ended: false`, front 61 → 61). The card leads with the National address; its chip reads "United States: Left open: Refuse without guarantees". See everything shows "CRISIS · UNITED STATES Left open: Refuse without guarantees" and "WAR · RUSSIA The front holds". No peace is claimed anywhere. | `r2-2-priya-m12-left-open-see-everything.png` |
+| 2c. A front that moves on its own | MAYA1 and PRIY1 m1 to 11 | **Not seen on screen** | In 22 months of play the war was never the month's highlight, so the "Not from your choice" line never came up (as in round 1). The engine guard "a front that moved on its own is still not credited to the player" passes. | (guard only) |
+| 3. Court UK after the answer that reaches the cap | PRIY1 m5 (twice), MAYA1 m5 | **PARTLY** | Report: `Court United Kingdom: NO_EFFECT`, reason "Nothing left to do: your own move earlier this month already took relations with the United Kingdom as high as they go". No capital is spent: the month-5 plan showed 3 spent and 0 left, and month 6 opens at ◆ 4, with the band "◆ 4 of 6" matching the plan "◆ 4 now ... ◆ 4 left" (month 4 into 5 gave ◆ 3). **S3, caused by this round:** the reason is on no screen. The paper prints "NO EFFECT Court United Kingdom", and See everything and the Table print "Court United Kingdom (no effect)", all without the why. The status itself is true. A relation already at the cap when the month began is still REFUSED: checked by the engine guard only, not tried on screen. | `r2-3-priya-m5-no-effect-paper.png` |
+
+These older S3s were seen again and are not counted: intermediate approval in the prose ("Approval climbs to 88" against a month total of 86), and the "war weariness" tension reason.
