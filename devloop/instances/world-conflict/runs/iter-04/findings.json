@@ -1,0 +1,252 @@
+[
+  {
+    "id": "F-04-1",
+    "title": "Choose on an unaffordable answer card does nothing on the card; only a meter callout far away (incl. QA4-S3-3)",
+    "severity": "S2",
+    "weight": 0.41,
+    "personas": ["ruth", "noah", "maya"],
+    "status": "REPRODUCED, REGRESSED RS-001-1 / F-00-1",
+    "decision": "fix now",
+    "evidence": "HC-ARE-NOAH1 month 2 and CO-UKR-RUTH1 months 1-2 at 1920x1080: at 0 capital, Choose on 'National address 1' leaves the card enabled and unchanged; callout 'National address needs 1' on the capital meter only. ui/src/components/desk/YourMove.tsx; guard F-00-1 does not cover desk answer cards."
+  },
+  {
+    "id": "F-04-2",
+    "title": "'A quiet month: the world moved on its own' over a crisis that ran on its default",
+    "severity": "S2",
+    "weight": 0.10,
+    "personas": ["noah"],
+    "status": "REPRODUCED, REGRESSED F-02-2 / D84-DESK-TRUTH",
+    "decision": "fix now",
+    "evidence": "HC-ARE-NOAH1, Execute with nothing chosen: months 3, 4, 5 headline 'A quiet month' while 'Hostages in Iran: Sanctions and silence', 'Ultimatum from Iran: Reject it publicly', 'The insurance war: Ride it out' ran and approval 72 -> 66 (-6 all your choices together); month 6 'Full mobilization' under 'Sudan moves against you'. Cause src/core/turn.ts line 1546 skips attended=false; ResultCard.tsx line 191 fallback."
+  },
+  {
+    "id": "F-04-3",
+    "title": "Relation goals read as contradicting the card: mission line shows your view, card shows their view of you, unlabelled",
+    "severity": "S2",
+    "weight": 0.80,
+    "personas": ["maya", "olivia", "ruth", "priya", "leo", "sam", "marcus"],
+    "status": "REPRODUCED (both numbers correct), REGRESSED F-01-3 (QA3R-2a)",
+    "decision": "fix now",
+    "evidence": "shots/maya-desk/021-m4r.png 'Keep Washington engaged 39 -> 48' vs 'United States' view of you 37 -> 43'; Marcus Iran -82 -> -75 vs -74 -> -69; Leo Taiwan; Priya UK. src/core/objectives.ts RELATION_MIN reads me.relations[target]; card fact is target.relations[player]."
+  },
+  {
+    "id": "F-04-4",
+    "title": "Capital band labelled '(what orders cost)' shows what is left; players compare it with the plan's 'now'",
+    "severity": "S3",
+    "weight": 0.55,
+    "personas": ["maya", "priya", "dan", "sam", "marcus"],
+    "status": "WORKS AS DESIGNED (numbers agree, DR-INT-2 holds), label misleading",
+    "decision": "fix now (one-string wording)",
+    "evidence": "Sam 016-m3: band 4, plan '5 now, 1 spent, 4 left'; Priya 008-m1d: band 2, plan '3 now, 1 spent, 2 left'; Marcus month 3 band 3, plan '5 now, 2 spent, 3 left'. Own run CO-UKR-RUTH1 month 2: band 2, plan '6 now, 4 spent, 2 left'."
+  },
+  {
+    "id": "F-04-5",
+    "title": "Verdict 'MISSION COMPLETE, A peace that holds' while the war goes on and the seal of that name is locked",
+    "severity": "S2",
+    "weight": 0.10,
+    "personas": ["priya"],
+    "status": "REPRODUCED, REGRESSED F-01-2",
+    "decision": "fix now (data retitle, bench:reveal, consistency guard)",
+    "evidence": "Engine CO-UKR-PRIY1, chief policy, 12 months: 4 of 4 primary goals met, UKR still at war with RUS, TERM_COMPLETED. data/flashpoints/ceasefire-or-collapse.json UKR objective title equals the seal name; goals do not require peace. Screenshot priya 060-verdict; Truth row 'No peace by the end'."
+  },
+  {
+    "id": "F-04-6",
+    "title": "Next month button below the screen on tall result cards at 1920x1080",
+    "severity": "S2",
+    "weight": 0.41,
+    "personas": ["maya", "ruth", "priya"],
+    "status": "REPRODUCED, REGRESSED F-00-9 / QA1-S3-5 / RS-008",
+    "decision": "fix now",
+    "evidence": "CO-UKR-MAYA1 Choose all each month: month 7 (Remember banner, 'Promise full support') Next at y 1074..1126 of 1080; other months y 989..1041. Guard F-00-9 checks month 1 at laptop and tablet only. DR-INT-8 linked."
+  },
+  {
+    "id": "F-04-7",
+    "title": "The player's biggest move is not the story: war and strikes led by routine answers; struck leader answers warmly the same month",
+    "severity": "S2",
+    "weight": 0.19,
+    "personas": ["leo", "dan"],
+    "status": "REPRODUCED, REGRESSED F-02-3",
+    "decision": "fix now",
+    "evidence": "Engine QU-CHN-LEO01 month 8 with Declare war on Taiwan: yourMove 'Ultimatum from Japan: Counter-offer' while the order is DONE; paper war headline over protest art (leo 040). Leo 022/023: Strike first led by 'Sign the treaty' (Belarus); Taiwan -99 -> -96 with a warm call. Dan 067: Erdogan 'keeps the door ajar' the month of the strike. turn.ts highlight scoring ignores injected crisis strikes."
+  },
+  {
+    "id": "F-04-8",
+    "title": "Art shows results that did not happen: 377 seats for 'Promise full support', two UN tallies for one vote, war over protest art",
+    "severity": "S2",
+    "weight": 0.27,
+    "personas": ["marcus", "priya", "leo"],
+    "status": "REPRODUCED, REGRESSED QA1-S3-1 / F-00-5",
+    "decision": "fix now",
+    "evidence": "CO-UKR-MAYA1 month 7 screenshot: 'You chose: Promise full support' with '377 SEATS MAJORITY WON'; ui/src/scenes/kinds.ts OPTION_KEYWORDS /run on|campaign|promise/ -> election. ui/src/scenes/art/unTally.ts councilTally(mood) draws mood-driven tallies."
+  },
+  {
+    "id": "F-04-9",
+    "title": "REFUSED without its reason in the paper, for an order the advisers recommend; staff suggest a blocked order",
+    "severity": "S2",
+    "weight": 0.20,
+    "personas": ["priya", "dan"],
+    "status": "REPRODUCED, REGRESSED F-00-1",
+    "decision": "fix now",
+    "evidence": "Engine CO-UKR-PRIY1: Court United Kingdom REFUSED months 3-12 ('as good as they get', availability.ts relations >= 95) while recommended at 'now 94'. ui/src/components/Chronicle.tsx lines 280-292 puts the reason only in a title tooltip."
+  },
+  {
+    "id": "F-04-10",
+    "title": "Finance Minister briefing shows debt 2000% and warns about debt for every country",
+    "severity": "S2",
+    "weight": 0.10,
+    "personas": ["dan"],
+    "status": "REPRODUCED",
+    "decision": "fix now",
+    "evidence": "ui/src/components/AdvisorModal.tsx line 204 debt = debtGdpRatio (stored in percent, RUS 20), line 213 'debt > 1.0', line 230 prints (debt * 100)%."
+  },
+  {
+    "id": "F-04-11",
+    "title": "1990 is not 1990: Japan requests a US base and strikes North Korea, USSR with Russian tricolor, US debt at its 2026 value, ballot-box voices in one-party states",
+    "severity": "S2",
+    "weight": 0.17,
+    "personas": ["marcus", "sam"],
+    "status": "REPRODUCED, REGRESSED F-01-7",
+    "decision": "iteration 5 first package (gate blocker)",
+    "evidence": "Engine T1990-USA-MARC1: month 6 'Japan asks for a naval base in United States', month 7 crisis 'The fine print', month 10 'Japan CRIPPLES North Korea's NUCLEAR PROGRAM', USA debtGdpRatio 123 at start. src/core/reactions.ts vox lines have no regime check. Flag and Gaza force not reproduced."
+  },
+  {
+    "id": "F-04-12",
+    "title": "Clicking through: 7 to 9 things a month with one real call; three quits or near quits",
+    "severity": "S2",
+    "weight": 1.00,
+    "personas": ["maya", "olivia", "ruth", "noah", "priya", "dan", "sam", "leo", "marcus"],
+    "status": "MEASURED (play-pass 63% against 80%), carried play-pass S2-1, S2-4",
+    "decision": "iteration 5 design",
+    "evidence": "Olivia quit month 2 ('7 things to do, 6 recommended orders'), Sam quit month 3, Noah nearly quit month 2 and stopped month 5; self-reported decision months about one in three (Dan, Priya 4 of 12)."
+  },
+  {
+    "id": "F-04-13",
+    "title": "Choose all, Skip and 'who recommends' read as broken promises (D-84, D-85 by design)",
+    "severity": "S3",
+    "weight": 0.53,
+    "personas": ["maya", "ruth", "sam", "olivia"],
+    "status": "WORKS AS DESIGNED (D-84, D-85)",
+    "decision": "iteration 5 wording",
+    "evidence": "Maya pressed Choose all every month expecting the call answered; Sam: Skip means 'no effect' month 1 and 'your cabinet decides' month 2; maya 007-m1c Chief names Court UK while the card credits the Foreign Minister."
+  },
+  {
+    "id": "F-04-14",
+    "title": "Mis-picks: answer cards look alike and the desk moves on after Choose",
+    "severity": "S3",
+    "weight": 0.50,
+    "personas": ["maya", "olivia", "noah", "sam"],
+    "status": "WORKS AS DESIGNED (reversible via Change and review page)",
+    "decision": "iteration 5 design",
+    "evidence": "Maya month 1 'Reject it and strike' (a mobilize answer, no danger order; shown with Change in maya 007-m1c); Olivia, Noah and Sam each mis-picked once."
+  },
+  {
+    "id": "F-04-15",
+    "title": "Repeats: Energy price shock months 2 and 12, assassination attempt months 3 and 13, repeated calls and quotes",
+    "severity": "S3",
+    "weight": 0.46,
+    "personas": ["maya", "priya", "dan", "marcus"],
+    "status": "REPRODUCED, WORKS AS DESIGNED (crises.ts COOLDOWN = 9)",
+    "decision": "iteration 5 content (once per Flashpoint, balance re-run)",
+    "evidence": "Engine CO-UKR-MAYA1 and CO-UKR-PRIY1 'Energy price shock @2,12'; T2026-RUS-DAN01 assassination attempt @3,13."
+  },
+  {
+    "id": "F-04-16",
+    "title": "Big swings on the result card without a named cause",
+    "severity": "S3",
+    "weight": 0.28,
+    "personas": ["dan", "marcus", "noah"],
+    "status": "NOT RUN (same pattern as F-04-2)",
+    "decision": "iteration 5",
+    "evidence": "Dan stability -10 with -3 explained; Marcus tension +13 with a Why? link that changes page; approval -7 led by a French call."
+  },
+  {
+    "id": "F-04-17",
+    "title": "Map mode adds little at 1920: unlabelled markers, wandering globe, verbs and icons differ from the desk, guide covers buttons",
+    "severity": "S3",
+    "weight": 0.90,
+    "personas": ["maya", "olivia", "ruth", "priya", "sam", "leo", "marcus", "dan"],
+    "status": "SEEN in screenshots, not re-run",
+    "decision": "iteration 5",
+    "evidence": "About 40 'Map marker' icons; 'Add to this month' vs 'Choose'; coin vs diamond; 'Mixed: hurts 1 goal, helps 1' without goal names (QA4-S2-4 fold)."
+  },
+  {
+    "id": "F-04-18",
+    "title": "Unknown names and terms; aids not tapped; truth page without aids",
+    "severity": "S3",
+    "weight": 0.83,
+    "personas": ["maya", "olivia", "ruth", "noah", "priya", "dan", "leo"],
+    "status": "SEEN",
+    "decision": "iteration 5 (G12)",
+    "evidence": "Dan at 'I know this': Burnham, Takaichi, Mojtaba Khamenei unmarked; Noah did not know legitimacy or political capital; truth page '1955k', Busan, Zhang Youxia."
+  },
+  {
+    "id": "F-04-19",
+    "title": "Reveal and end polish: share buttons under the footer, month 12 card skipped, ranking jargon, share card stars vs record",
+    "severity": "S3",
+    "weight": 0.32,
+    "personas": ["ruth", "priya", "leo"],
+    "status": "PARTLY CARRIED (QA4-S3-14); Leo's share card and Ruth's month 12 NOT REPRODUCED",
+    "decision": "iteration 5",
+    "evidence": "Session reports ruth, priya, leo; repro owed first in iteration 5."
+  },
+  {
+    "id": "F-04-20",
+    "title": "Way back and replay discoverability: Replay or branch hidden under Save and load",
+    "severity": "S3",
+    "weight": 0.48,
+    "personas": ["marcus", "leo", "maya", "ruth"],
+    "status": "NOT REGRESSED (F-02-6 holds), discoverability",
+    "decision": "iteration 5 (G9)",
+    "evidence": "Menu: Cabinet, World, Chronicle, Codex, Hide the news ticker, Settings, Save and load; Saved games has 'Replay or branch'. Marcus opened the Menu (058-menu) without finding it; Leo's Replay same opening lands on the briefing."
+  },
+  {
+    "id": "F-04-21",
+    "title": "Wording and counters: five counters for one resource, meetings count mismatch, 'You chose' for the cabinet's answer, month labels, header score",
+    "severity": "S3",
+    "weight": 0.51,
+    "personas": ["sam", "priya", "dan", "olivia", "leo"],
+    "status": "SEEN; carried QA4-S3-3, QA4-S3-5, DR-INT-9, DR-INT-12, DR-INT-23, DR-INT-24 confirmed",
+    "decision": "iteration 5 (G3)",
+    "evidence": "HC-ARE-NOAH1 month 2 'You chose: Sign the treaty' for a pact the cabinet answered; Sam 'five counters'; paper 'Month 8 of 12' under month 9."
+  },
+  {
+    "id": "F-04-22",
+    "title": "Polish at 1920: Your country popover never closes, card text overflow, Menu clipped on the report, hotkeys while typing",
+    "severity": "S3",
+    "weight": 0.42,
+    "personas": ["priya", "sam", "ruth", "dan"],
+    "status": "Popover REPRODUCED (DR-INT-21); overflow carried QA4-S3-7; menu clipped NOT REPRODUCED",
+    "decision": "iteration 5 polish",
+    "evidence": "CO-UKR-PRIY1 month 5: aria-expanded stays true after Escape, outside click and Map switch."
+  },
+  {
+    "id": "F-04-23",
+    "title": "Phone layout: dialogs wider than the screen, STEP ACHIEVED over the title, cut tabs, answers two scrolls down",
+    "severity": "S3",
+    "weight": 0.10,
+    "personas": ["noah"],
+    "status": "NOT RUN (phone, D-87 exception); would match F-00-4 at phone width",
+    "decision": "screen-size pass",
+    "evidence": "Noah's session (8 layout rows); D-86, D-87, D-88."
+  },
+  {
+    "id": "F-04-24",
+    "title": "A peacetime strike on a non-nuclear state (NATO member Turkey) brings no war risk or alliance answer and an authored +4 approval",
+    "severity": "S3",
+    "weight": 0.19,
+    "personas": ["dan", "leo"],
+    "status": "WORKS AS DESIGNED (authored +4, cause shown; act-of-war rule covers TESTED+ only)",
+    "decision": "iteration 5 design",
+    "evidence": "crises.ts nuclear_threshold 'strike' {approval: 4}; military.ts executeAirstrike -30/-20 relations, no war; engine T2026-RUS-DAN01 month 12 Turkey view -75 -> -99, no war. Screenshot dan 067-r12b 'Approval, from this +4'."
+  },
+  {
+    "id": "F-04-25",
+    "title": "Play a seed affordance: arrow looks decorative, box opens below the fold on a phone, Flashpoint-style placeholder for a Term",
+    "severity": "S4",
+    "weight": 0.59,
+    "personas": ["maya", "olivia", "dan", "marcus", "noah"],
+    "status": "SEEN, improved (all nine entered their code first try; iteration 3: 8 of 9 struggled)",
+    "decision": "no action (backlog polish)",
+    "evidence": "Session friction rows on the title screen."
+  }
+]
