@@ -879,6 +879,18 @@
         "regressions",
         "balance"
       ]
+    },
+    {
+      "gate": "status-refresh",
+      "result": "pass",
+      "commit": "da3aa6ca04d573f39a1d82b093060813342bdaf0",
+      "codeTree": "38af7de3f921cf35",
+      "evidence": "dev_plan/project_status.html",
+      "note": "status-refresh T1",
+      "t": "2026-11-24T10:01:04.492Z",
+      "iteration": 4,
+      "stage": "Build",
+      "tier": "T1"
     }
   ],
   "merges": [
@@ -935,6 +947,15 @@
       "iteration": 4,
       "stage": "Build",
       "treeMatches": true
+    },
+    {
+      "t": "2026-11-24T10:00:15.634Z",
+      "branch": "kit-parallel-guards",
+      "commit": "da3aa6ca04d573f39a1d82b093060813342bdaf0",
+      "codeTree": "38af7de3f921cf35",
+      "iteration": 4,
+      "stage": "Build",
+      "treeMatches": true
     }
   ],
   "overrides": [],
@@ -979,6 +1000,11 @@
       "tier": "T1",
       "because": "merge of build-agenda-layout",
       "t": "2026-11-24T08:54:17.914Z"
+    },
+    {
+      "tier": "T1",
+      "because": "merge of kit-parallel-guards",
+      "t": "2026-11-24T10:00:15.637Z"
     }
   ],
   "blocked": []
