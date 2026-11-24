@@ -7,7 +7,7 @@
 // the visible card text says both helps and hurts/breaks, at every fit level the screen gives (the
 // folded desk card and the short Map card in one line: "Mixed: hurts 1 goal, helps 1."), and no
 // answer card is cut off.
-// Scenes: Hormuz Convoy as the United States (seed 4242), months 1 to 4, every crisis on the List,
+// Scenes: Hormuz Convoy as the United States (seed 4242), months 1 and 4 (QA4S24_MONTHS for all), every crisis on the List,
 // desk at 1920x1080, 1440x900, 1366x768 and 1024x768, and the Map mode card at 1920x1080 and
 // 1366x768. Fixed and floating elements: the state band, the List, the Plan, the ticker; none moved.
 //   node devloop/instances/world-conflict/scenarios-qa/regressions/QA4-S2-4.mjs <outDir> <baseUrl> <apiUrl>
@@ -17,6 +17,9 @@ import { apiSave, args, openSaved, openThing, run } from './_lib.mjs';
 const { out, base, api } = args('QA4-S2-4');
 const SIZES = (process.env.QA4S24_SIZES ?? '1920x1080,1440x900,1366x768,1024x768').split(',');
 const MAP_SIZES = new Set(['1920x1080', '1366x768']);
+// Months 1 and 4 by default (month 1 folds the desk at 1366, month 4 has the two-line Map card): the
+// gate runs a guard for at most 300 s. QA4S24_MONTHS=1,2,3,4 sweeps every month.
+const MONTHS = (process.env.QA4S24_MONTHS ?? '1,4').split(',').map((m) => Number(m) - 1);
 
 /** The answer cards on screen: label (aria), visible text, the fit level of the region. */
 const cards = (p) =>
@@ -41,7 +44,7 @@ const oneSided = (c) => {
 await run('QA4-S2-4', async (g) => {
   let mixedSeen = 0;
   const fits = new Set();
-  for (const months of [0, 1, 2, 3]) {
+  for (const months of MONTHS) {
     const sv = await apiSave(api, months, undefined, 'qa4s24');
     for (const size of SIZES) {
       const { browser, page: p, errors } = await openSaved(base, size, sv);
