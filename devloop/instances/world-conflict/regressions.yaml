@@ -14,13 +14,16 @@ findings:
   - id: RS-001-1
     title: Never blocked without a reason; no repeated, unexplained refusal message
     source: RS-001 (CEO playtest of v0.9.0); D-45
-    covers: [src/core/availability.ts, src/core/preview.ts, ui/src/lib/availability.ts, ui/src/components/orders/**, ui/src/store/gameStore.ts]
+    covers: [src/core/availability.ts, src/core/preview.ts, ui/src/lib/availability.ts, ui/src/components/orders/**, ui/src/store/gameStore.ts, ui/src/components/desk/YourMove.tsx]
     guards:
       - vitest: tests/core/availability.spec.ts
         name: "Availability: preview and Execute agree"
       - vitest: tests/ui-availability.spec.ts
         name: availabilityOf precedence
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-00-1.mjs
+      - vitest: tests/regressions/triage-iter4.spec.ts
+        name: "F-04-1"
+    changed: "2026-11-24 F-04-1 (iteration 4 customer round, REGRESSED: Choose on an answer card the player could not afford did nothing, the reason sat in the card's detail line, hidden below 1200 tall, and only a meter callout spoke; the guards covered the orders catalogue, Detail and the map menu, not the month screen's answer cards): the mission move, crisis and meeting answer cards are disabled with the order cards' NO_CAPITAL copy and the Remove fix, before the press"
   - id: RS-001-2
     title: Political capital is named one way everywhere and the warning points at its meter
     source: RS-001 (CEO, "political credit" vs the small bar); D-45; QA0-5
@@ -132,7 +135,7 @@ findings:
   - id: F-00-1
     title: Refused orders always show a reason (and a fix) on the card, before any tap
     source: iter-00 triage F-00-1; QA repro #4; D-45
-    covers: [src/core/availability.ts, ui/src/lib/availability.ts, ui/src/components/orders/**, ui/src/components/desk/Detail.tsx, ui/src/components/MapActionMenu.tsx, ui/src/components/Chronicle.tsx, ui/src/lib/outcome.ts]
+    covers: [src/core/availability.ts, ui/src/lib/availability.ts, ui/src/components/orders/**, ui/src/components/desk/Detail.tsx, ui/src/components/MapActionMenu.tsx, ui/src/components/Chronicle.tsx, ui/src/lib/outcome.ts, ui/src/components/desk/YourMove.tsx]
     guards:
       - vitest: tests/core/availability.spec.ts
         name: "Availability: rule layer"
@@ -140,7 +143,9 @@ findings:
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-00-1.mjs
       - vitest: tests/regressions/triage-iter4.spec.ts
         name: "F-04-9"
-    changed: "2026-11-24 F-04-9 (iteration 4 customer round, REGRESSED: the paper listed REFUSED Court United Kingdom with the reason only in a hover title; the guards covered the orders catalogue, Detail and the map menu, not the paper): the paper's status list prints the engine's reason on every REFUSED or FAILED row (lib/outcome.ts paperStatusItems)"
+      - vitest: tests/regressions/triage-iter4.spec.ts
+        name: "F-04-1"
+    changed: "2026-11-24 F-04-9 (iteration 4 customer round, REGRESSED: the paper listed REFUSED Court United Kingdom with the reason only in a hover title; the guards covered the orders catalogue, Detail and the map menu, not the paper): the paper's status list prints the engine's reason on every REFUSED or FAILED row (lib/outcome.ts paperStatusItems). 2026-11-24 F-04-1: F-00-1.mjs also plays HC-ARE-NOAH1 month 2 at 1920x1080 with every ◆ spent and checks the mission move and a crisis answer: not live, the cost, what you have and the fix on the card, a Remove control beside it, a press changes nothing"
   - id: F-00-2
     title: The goal is clear (no dead Mission 2/4 pill; which move helps; why the score moved)
     source: iter-00 triage F-00-2; D-46
@@ -1201,6 +1206,14 @@ findings:
     guards:
       - vitest: tests/ui/kinds.spec.ts
         name: "F-04-8"
+  - id: F-04-1
+    title: "An answer the player cannot afford says so on the card before the press: the mission move's order cards and the crisis and meeting answers are not live, and show what it costs, what you have and what would free it (the order cards' NO_CAPITAL copy, one copy in ui/src/lib/availability.ts and src/core/availability.ts), with the Remove control beside the card"
+    source: runs/iter-04/triage.md F-04-1 (ruth, noah, maya; HC-ARE-NOAH1 month 2 at ◆ 0, Order National address); REGRESSED RS-001-1, F-00-1
+    covers: [ui/src/components/desk/YourMove.tsx, ui/src/lib/availability.ts, src/core/availability.ts, src/core/advisors.ts]
+    guards:
+      - vitest: tests/regressions/triage-iter4.spec.ts
+        name: "F-04-1"
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/F-00-1.mjs
 # ------------------------------------------------------------------------------------------
 # Not listed (still open or not a code fix); add them here when a fix lands with its guard:
 #   RS-001-6  dashboard feel, "serious visual design": the ledger keeps it not done (D-37 check)

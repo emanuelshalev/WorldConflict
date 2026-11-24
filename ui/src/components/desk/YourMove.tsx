@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { IconMessageCircle, IconSearch } from '@tabler/icons-react';
-import { type CallCard, type DecisionOption, type Impact, type Meeting, MEETING_SLOTS, type MissionNote, type PendingDecision, approveProposal, countryName, crisisAnswer, orderKey, useGameStore, usePlayerCountry } from '../../store/gameStore';
+import { type CallCard, type DecisionOption, type Impact, type Meeting, MEETING_SLOTS, type MissionNote, type PendingDecision, approveProposal, countryName, crisisAnswer, monthView, orderKey, removeQueuedSlot, useGameStore, usePlayerCountry } from '../../store/gameStore';
+import { type MonthBlock, type MonthView, answerBlock, capitalBlock } from '../../lib/availability';
 import { ADVISOR_NAMES, flag, monthLabel } from '../../lib/format';
 import { cabinetPick, crisisSelection, effectWords, goalName, guideLede, meetingAdviser, meetingPick, meetingSelection, missionPick, missionTag, mixedLine, proposalEffects, splitLede } from '../../lib/month';
 import { type AgendaItem, advisersLine, agendaItems, callWhy, callSides, chooseAnswer, chooseMove, chooseSmall, costPhrase, currentItem, meetingTitle, ministerFor, skipItem, skipMeaning, undoSkip, unchooseMove } from '../../lib/agenda';
@@ -49,6 +50,7 @@ function AnswerCard({
   more,
   chosen,
   disabled,
+  note,
   onChoose,
   aria,
   face = 'Choose',
@@ -62,6 +64,8 @@ function AnswerCard({
   more?: string;
   chosen?: boolean;
   disabled?: string;
+  /** Why the last press did not take (a refusal that came back from the month), on the card. */
+  note?: string;
   onChoose: () => void;
   aria?: string;
   face?: string;
@@ -79,8 +83,26 @@ function AnswerCard({
         <span className="opt-fx">{fx}</span>
         {more && <span className="opt-more">{more}</span>}
         {disabled && <span className="opt-off">{disabled}</span>}
+        {!disabled && note && <span className="opt-off" role="status">{note}</span>}
       </span>
       <span className="face">{chosen ? 'Your choice' : face}</span>
+    </button>
+  );
+}
+
+/** What a card says when the player cannot afford it (F-04-1): the order cards' words, on the card. */
+const blockLine = (b: MonthBlock) => `${b.reason} ${b.fix ?? ''}`.trim();
+
+/**
+ * The fix beside an unaffordable card (F-04-1): remove the queued order that frees enough, the
+ * same control as the order cards' NO_CAPITAL fix (OrderCard renderFix). Nothing when only waiting helps.
+ */
+function CapitalFix({ block, m }: { block: MonthBlock | null; m: MonthView }) {
+  const slot = block?.slots?.[0];
+  if (!block || slot === undefined) return null;
+  return (
+    <button type="button" className="wc-btn small" data-fix="" onClick={() => removeQueuedSlot(slot)}>
+      Remove {m.queuedStaff[slot] ? 'a staff order' : m.queuedLabels[slot]} (frees ◆ {m.queuedCosts[slot]})
     </button>
   );
 }
@@ -270,6 +292,9 @@ function DecisionThing({ item, compact }: { item: AgendaItem; compact: boolean }
   const advice = useGameStore((s) => s.advice);
   const guide = useGameStore((s) => s.learn.level === 'guide');
   const turn = useGameStore((s) => s.worldState?.turn ?? 0);
+  // The month the answer cards are priced against (F-04-1): re-read when an order comes or goes
+  useGameStore((s) => s.pendingActions);
+  const month = monthView();
   const [sizes, setSizes] = useState(false);
   const me = usePlayerCountry();
   const home = me?.id;
@@ -404,16 +429,21 @@ function DecisionThing({ item, compact }: { item: AgendaItem; compact: boolean }
             const ref = choices[d.id] ? (d.options.find((x) => x.id === choices[d.id])?.label ?? 'the chosen answer') : 'leaving it';
             const against = !meeting && counted > 0 && choices[d.id] !== o.id ? (delta > 0 ? ` (◆ ${delta} more than ${ref})` : delta < 0 ? ` (◆ ${-delta} less than ${ref})` : ` (as much as ${ref})`) : '';
             const costText = pc < 0 ? ` · costs ◆ ${-pc}${against}` : against ? ` · free${against}` : '';
+            // F-04-1: an answer the player cannot afford says so on the card, before the press. A
+            // meeting counts the answer already chosen there (the band holds its cost)
+            const held = meeting && choices[d.id] && choices[d.id] !== o.id ? d.options.find((x) => x.id === choices[d.id]) : undefined;
+            const heldCost = held ? -((held.effects.pc ?? 0) - (held.id !== meeting?.defaultOptionId ? (advice?.prices?.[d.id]?.[held.id] ?? 0) : 0)) : 0;
+            const short = chosenId === o.id || full ? null : answerBlock(meeting ? -pc - heldCost : delta, price, month);
             const more = [
               pc < 0 ? `Costs ◆ ${-pc}${price ? ` (◆ ${price} of it is the price of the mission side)` : ''}.` : pc > 0 ? `Gives ◆ ${pc}.` : 'Free.',
               backers.length ? `Backed by the ${backers.join(' and the ')}.` : '',
-              cc?.blocked ? `${cc.blocked.reason} ${cc.blocked.fix}`.trim() : '',
+              cc?.blocked && !short ? `${cc.blocked.reason} ${cc.blocked.fix}`.trim() : '',
               sizes ? optionSizes(o, countryName).slice(0, 4).map((x) => x.text).join(', ') : '',
             ]
               .filter(Boolean)
               .join(' ');
             const ccRec = cc && cc.advisers.length ? `${advisersLine(cc)}${cc.why ? `: "${guide ? guideLede(callWhy(cc), 14).short : callWhy(cc)}"` : ''}` : undefined;
-            return (
+            const card = (
               <AnswerCard
                 key={o.id}
                 title={`${o.label}${costText}`}
@@ -422,13 +452,22 @@ function DecisionThing({ item, compact }: { item: AgendaItem; compact: boolean }
                 fxTone={mt ? (mt.tone === 'risk' ? 'risk' : 'help') : undefined}
                 more={!compact ? more : undefined}
                 chosen={chosenId === o.id}
-                disabled={full ? 'Your calendar is full: skip another meeting to take this one.' : undefined}
+                disabled={full ? 'Your calendar is full: skip another meeting to take this one.' : short ? blockLine(short) : undefined}
+                face={short ? `Needs ◆ ${short.need?.need ?? ''}` : undefined}
                 onChoose={() => {
                   chooseAnswer(item, o.id);
                   sound.play('stamp');
                 }}
-                aria={`${o.label}${ccRec ? `, ${advisersLine(cc as CallCard).toLowerCase()}` : isRec ? `, recommended by your ${recBy}` : ''}${mt ? `. ${mt.text}` : ''}${mt?.also ? `. ${mt.also.text}` : ''}${words.length ? `. ${words.join(', ')}` : ''}. Choose`}
+                aria={`${o.label}${ccRec ? `, ${advisersLine(cc as CallCard).toLowerCase()}` : isRec ? `, recommended by your ${recBy}` : ''}${mt ? `. ${mt.text}` : ''}${mt?.also ? `. ${mt.also.text}` : ''}${words.length ? `. ${words.join(', ')}` : ''}${short ? `. ${blockLine(short)}` : '. Choose'}`}
               />
+            );
+            return short?.slots?.length ? (
+              <div key={o.id} className="opt-pair" data-short="">
+                {card}
+                <CapitalFix block={short} m={month} />
+              </div>
+            ) : (
+              card
             );
           })}
           <SkipCard item={item} />
@@ -535,6 +574,9 @@ function MoveThing({ item }: { item: AgendaItem }) {
   const status = useGameStore((s) => s.objectiveStatus);
   const guide = useGameStore((s) => s.learn.level === 'guide');
   const [refused, setRefused] = useState<Record<string, string>>({});
+  // The month the cards are priced against (F-04-1): answers and orders move the capital left
+  useGameStore((s) => s.decisionChoices);
+  const month = monthView();
   const mv = item.yourCall;
   if (!mv) return null;
   const cards = mv.cards.filter((c) => c.action);
@@ -565,14 +607,20 @@ function MoveThing({ item }: { item: AgendaItem }) {
               .filter(Boolean)
               .join('. ');
             const odds = c.successChance == null ? '' : `${Math.round(c.successChance <= 1 ? c.successChance * 100 : c.successChance)}% chance.`;
+            // F-04-1: an order the month cannot pay says so on the card before the press (a staff
+            // proposal holds no capital, so it is priced like a new order)
+            const short = chosen ? null : capitalBlock(c.pc ?? 0, month);
             return (
-              <div key={c.id} className="opt-pair">
+              <div key={c.id} className="opt-pair" data-short={short ? '' : undefined}>
                 <AnswerCard
                   title={`Order: ${c.label}${c.pc ? ` · ◆ ${c.pc}` : ''}`}
                   rec={c.advisers.length ? `${advisersLine(c)}${c.why ? `: "${callWhy(c)}"` : ''}` : undefined}
                   fx={goals ? `${goals}.` : 'No goal moves that we can see.'}
                   fxTone={c.breaks.length + c.hurts.length ? 'risk' : c.helps.length ? 'help' : undefined}
-                  more={[odds, a?.proposed ? 'Your Chief of Staff proposes it: Choose all recommended chooses it.' : '', refused[c.id] ?? (c.blocked ? `${c.blocked.reason} ${c.blocked.fix}` : '')].filter(Boolean).join(' ')}
+                  more={[odds, a?.proposed ? 'Your Chief of Staff proposes it: Choose all recommended chooses it.' : ''].filter(Boolean).join(' ')}
+                  disabled={short ? blockLine(short) : undefined}
+                  note={short ? undefined : refused[c.id]}
+                  face={short ? `Needs ◆ ${short.need?.need ?? c.pc}` : undefined}
                   chosen={chosen}
                   onChoose={() => {
                     if (chosen) return;
@@ -581,8 +629,9 @@ function MoveThing({ item }: { item: AgendaItem }) {
                       else if (r && !r.ok) setRefused((m) => ({ ...m, [c.id]: r.block?.reason ?? 'This order needs a confirmation: give it from All orders.' }));
                     });
                   }}
-                  aria={`Order: ${c.label}${c.pc ? `, spends ◆ ${c.pc}` : ''}${c.advisers.length ? `, ${advisersLine(c).toLowerCase()}` : ''}. Choose`}
+                  aria={`Order: ${c.label}${c.pc ? `, spends ◆ ${c.pc}` : ''}${c.advisers.length ? `, ${advisersLine(c).toLowerCase()}` : ''}${short ? `. ${blockLine(short)}` : '. Choose'}`}
                 />
+                <CapitalFix block={short} m={month} />
                 {chosen && (
                   <button type="button" className="wc-btn small" onClick={() => unchooseMove(c)} aria-label={`Undo: ${c.label}`}>
                     Undo

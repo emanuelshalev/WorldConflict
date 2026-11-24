@@ -301,3 +301,105 @@ describe("F-04-9: a refusal is explained in the paper, and the staff never sugge
     expect(months).toBeGreaterThan(40);
   });
 });
+
+describe("F-04-1: an answer the player cannot afford says so on its card, before the press", () => {
+  beforeEach(() => {
+    vi.resetModules();
+    stubBrowser();
+  });
+  afterEach(() => vi.unstubAllGlobals());
+
+  /** Noah's month 2 (HC-ARE-NOAH1, Execute with nothing chosen) with every ◆ spent on queued orders. */
+  async function spentMonth() {
+    const world = structuredClone(playControl("HC-ARE-NOAH1", "none", 2).months[1].before);
+    const order = { type: "INTEL_COUNTER_INTEL" } as Action;
+    let left = Number.NaN;
+    for (let i = 0; i < 3 && left !== 0; i++) {
+      const { store } = await desk(world, {}, [order]);
+      left = store.monthView().pcLeft;
+      world.politicalCapital = Math.max(0, world.politicalCapital - left);
+    }
+    const { store } = await desk(world, {}, [order]);
+    expect(store.monthView().pcLeft, "the case is a month at ◆ 0 with an order queued").toBe(0);
+    return store;
+  }
+
+  /** Each answer card of an agenda item, server-rendered: its markup and whether Choose is live. */
+  async function cardsOf(store: Awaited<ReturnType<typeof spentMonth>>, key: string) {
+    store.useGameStore.setState({ agendaKey: key } as never);
+    const { Thing } = await import("../../ui/src/components/desk/YourMove.js");
+    const html = renderToStaticMarkup(createElement(Thing));
+    return [...html.matchAll(/<button type="button" class="opt[^"]*"[^>]*>[\s\S]*?<\/button>/g)].map((m) => ({
+      html: m[0],
+      text: textOf(m[0]),
+      off: /\sdisabled=""/.test(m[0]),
+    }));
+  }
+
+  it("F-04-1: the mission move's order cards at ◆ 0: disabled, the cost, what you have, the fix", async () => {
+    const store = await spentMonth();
+    const { agendaItems } = await import("../../ui/src/lib/agenda.js");
+    const move = agendaItems().find((x) => x.kind === "move");
+    expect(move, "Noah's month 2 has a mission move").toBeTruthy();
+    const priced = (move?.yourCall?.cards ?? []).filter((c) => c.action && (c.pc ?? 0) > 0);
+    expect(priced.length).toBeGreaterThan(0);
+    const cards = await cardsOf(store, "move");
+    for (const c of priced) {
+      const card = cards.find((x) => x.text.includes(`Order: ${c.label}`));
+      expect(card, c.label).toBeTruthy();
+      expect(card?.off, `${c.label}: Choose is not live at ◆ 0`).toBe(true);
+      expect(card?.text).toContain(`Needs ◆ ${c.pc}, you have ◆ 0.`);
+      expect(card?.text).toMatch(/Remove an order \(frees ◆ 1\), or wait: \+\d next month/);
+    }
+    // the fix is a control beside the card, as on the order cards
+    const html = renderToStaticMarkup(createElement((await import("../../ui/src/components/desk/YourMove.js")).Thing));
+    expect(textOf(html)).toContain("Remove INTEL_COUNTER_INTEL (frees ◆ 1)");
+  });
+
+  it("F-04-1: crisis and meeting answers that cost more than is left are not live, and say why", async () => {
+    const store = await spentMonth();
+    const { agendaItems } = await import("../../ui/src/lib/agenda.js");
+    let priced = 0;
+    for (const item of agendaItems().filter((x) => x.kind === "crisis" || x.kind === "meeting")) {
+      for (const card of await cardsOf(store, item.key)) {
+        // a card that adds ◆ to the month says "costs ◆ n" with no "less than"/"as much as" against
+        const adds = /costs ◆ \d+/.test(card.text) && !/less than|as much as/.test(card.text);
+        if (!adds) continue;
+        priced++;
+        expect(card.off, `${item.title}: ${card.text.slice(0, 80)}`).toBe(true);
+        expect(card.text).toMatch(/Needs ◆ \d+, you have ◆ 0\./);
+      }
+    }
+    expect(priced, "the month has at least one answer that costs capital").toBeGreaterThan(0);
+  });
+
+  it("F-04-1: the order cards and the answer cards use one copy (ui and core availability)", async () => {
+    const ui = await import("../../ui/src/lib/availability.js");
+    const core = await import("../../src/core/availability.js");
+    const world = newControlWorld("HC-ARE-NOAH1");
+    world.politicalCapital = 2;
+    const me = world.countries.find((c) => c.id === world.playerCountryId);
+    const m = {
+      pcLeft: 0,
+      bank: 2,
+      pcIncome: me ? politicalCapitalIncome(world, me) : 2,
+      pcCap: PC_CAP,
+      ordersUsed: 1,
+      queuedKeys: ["x"],
+      queuedCosts: [2],
+      queuedLabels: ["Order"],
+      queuedStaff: [false],
+      defenseUsedM: 0,
+      budgetM: 0,
+      gameOver: false,
+    };
+    const a = ui.answerBlock(2, 1, m);
+    const b = core.answerBlock(world, 2, 1, 0, [2]);
+    expect(a?.reason).toBe("Needs ◆ 2, you have ◆ 0.");
+    expect(a?.reason).toBe(b?.reason);
+    expect(a?.fix).toBe(b?.fix);
+    // an answer whose own cost only empties the bank (no price, no order to lose) stays free
+    expect(ui.answerBlock(2, 0, { ...m, queuedCosts: [], queuedKeys: [], queuedLabels: [], queuedStaff: [] })).toBeNull();
+    expect(core.answerBlock(world, 2, 0, 0, [])).toBeNull();
+  });
+});

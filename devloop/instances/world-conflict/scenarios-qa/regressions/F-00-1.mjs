@@ -2,10 +2,18 @@
 // an order the player cannot give always says why on its card, before any tap, with a fix,
 // and pressing it anyway queues nothing and raises no toast or native dialog.
 // Repro (runs/iter-00/qa-repro.md #4, leo-stream): All orders, every targeted order was dimmed with no reason.
+// F-04-1 (iteration 4): the month screen's answer cards too. HC-ARE-NOAH1 month 2 at ◆ 0, 1920x1080:
+// Choose on "Order: National address · ◆ 1" did nothing and said nothing on the card.
 import path from 'node:path';
-import { args, forEachFamily, openAllOrders, run, showCatalogCard, startGame } from './_lib.mjs';
+import { apiSave, args, forEachFamily, openAllOrders, openSaved, openThing, run, showCatalogCard, startGame } from './_lib.mjs';
 
-const { out, base } = args('F-00-1');
+const { out, base, api } = args('F-00-1');
+
+/** The answer cards of the open month item: Choose live or not, and the card's words. */
+const answerCards = (p) =>
+  p.$$eval('article.thing .opts button.opt', (els) =>
+    els.map((e) => ({ off: e.disabled, name: e.getAttribute('aria-label') ?? '', off2: (e.querySelector('.opt-off')?.textContent ?? '').trim(), text: e.innerText.replace(/\s+/g, ' ') })),
+  );
 
 /** Every card on the order list that is not available or queued, with its reason and a11y name. */
 const blockedCards = (p) =>
@@ -68,4 +76,42 @@ await run('F-00-1', async (g, track) => {
   g.check((await p.locator('.toast:visible').count()) === 0, 'no toast for a predictable refusal');
   g.check(dialogs === 0, `no native dialog (${dialogs})`);
   g.check(!s.errors.length, `no page errors (${s.errors.slice(0, 2).join(' | ')})`);
+
+  // F-04-1: Noah's month 2 at 1920x1080, every ◆ spent (Choose all recommended, then Reform from
+  // All orders): the mission move and a crisis answer that costs ◆ say so on the card, before a press
+  const sv = await apiSave(api, 1, { countryId: 'ARE', flashpointId: 'hormuz-convoy', seedCode: 'HC-ARE-NOAH1' }, 'f001');
+  const n = await openSaved(base, '1920x1080', sv);
+  track({ page: n.page, out, close: () => n.browser.close() });
+  const q = n.page;
+  await q.getByRole('button', { name: /^Choose all recommended/ }).first().click();
+  await q.waitForTimeout(600);
+  g.check(await openAllOrders({ page: q }), 'Noah month 2: All orders opens');
+  await q.locator('[data-order-catalog]').first().waitFor();
+  await showCatalogCard(q, '[data-order-id="reform"]');
+  await q.locator('[data-order-catalog] [data-order-id="reform"] .wc-card-hit').first().click();
+  await q.waitForTimeout(1000);
+  const band = ((await q.locator('body').innerText()).match(/Political capital left ◆ (\d+)/) ?? [])[1];
+  g.check(band === '0', `Noah month 2: the band reads ◆ 0 left (${band})`);
+  await q.keyboard.press('Escape');
+  await q.waitForTimeout(400);
+  g.check(await openThing(q, 'The move for your mission'), 'the mission move opens');
+  const move = (await answerCards(q)).filter((c) => /Order: .* · ◆ \d/.test(c.text) && !/Your choice/.test(c.text));
+  g.check(move.length >= 1, `the move has ${move.length} priced order card(s)`);
+  for (const c of move) {
+    g.check(c.off, `move card is not live at ◆ 0: ${c.text.slice(0, 70)}`);
+    g.check(/Needs ◆ \d+, you have ◆ 0\./.test(c.off2) && /Remove an order \(frees ◆ \d+\)/.test(c.off2), `on the card: cost, what you have, the fix ("${c.off2}")`);
+    g.check(c.name.includes('Needs ◆'), 'its accessible name carries the reason');
+  }
+  g.check((await q.locator('article.thing [data-fix]').count()) >= 1, 'a Remove control sits beside the card (the fix of the order cards)');
+  await n.page.screenshot({ path: path.join(out, 'f041-move-at-0.png') });
+  g.check(await openThing(q, 'Incident with Sudan'), 'the crisis opens');
+  const priced = (await answerCards(q)).filter((c) => /costs ◆ \d+/.test(c.text) && !/less than|as much as/.test(c.text) && !/Your choice/.test(c.text));
+  g.check(priced.length >= 1, `the crisis has ${priced.length} answer(s) that cost ◆`);
+  for (const c of priced) g.check(c.off && /Needs ◆ \d+, you have ◆ 0\./.test(c.off2), `crisis answer not live, reason on the card: ${c.text.slice(0, 60)}`);
+  // pressing one anyway changes nothing
+  const before = (await q.locator('body').innerText()).match(/Political capital left ◆ \d+/)?.[0];
+  await q.locator('article.thing .opts button.opt:disabled').first().dispatchEvent('click');
+  await q.waitForTimeout(300);
+  g.check((await q.locator('body').innerText()).match(/Political capital left ◆ \d+/)?.[0] === before, 'pressing it anyway changes nothing');
+  g.check(!n.errors.length, `Noah month 2: no page errors (${n.errors.slice(0, 2).join(' | ')})`);
 });

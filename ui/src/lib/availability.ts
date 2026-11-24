@@ -124,6 +124,46 @@ export function refillLine(m: Pick<MonthView, 'bank' | 'pcIncome' | 'pcCap'>): s
   return `+${m.pcIncome} next month`;
 }
 
+/**
+ * NO_CAPITAL for anything that spends `pc` more than the band already counts: an order, or an
+ * answer card of the month screen (F-04-1). Mirrors `capitalBlock()` in src/core/availability.ts,
+ * same copy: "Needs ◆ n, you have ◆ m." and the fix (remove an order that frees enough, or wait).
+ */
+export function capitalBlock(pc: number, m: MonthView): MonthBlock | null {
+  const have = Math.max(0, m.pcLeft);
+  if (pc <= have) return null;
+  const gap = pc - have;
+  const slots = freeingSlots(gap, m.queuedCosts, m.queuedStaff);
+  const frees = slots.length ? m.queuedCosts[slots[0]] : 0;
+  // Beside a Remove fix, waiting means next month's income even with the bank full now (F-04-1:
+  // "or wait: Political capital is full" read as no way out)
+  const refill = frees ? `+${m.pcIncome} next month` : refillLine(m);
+  const fix = frees ? `Remove an order (frees ◆ ${frees}), or wait: ${refill}` : m.bank >= m.pcCap ? refill : `Wait: ${refill}`;
+  return {
+    code: 'NO_CAPITAL',
+    reason: `Needs ◆ ${pc}, you have ◆ ${have}.`,
+    fix,
+    points: 'capital',
+    need: { have, need: pc, refill: m.pcIncome },
+    slots,
+    refill,
+  };
+}
+
+/**
+ * An answer card of the month screen (crisis, meeting) the player cannot afford (F-04-1): `extra`
+ * is what choosing it adds to the capital the band already counts, `price` its D-84 price. The
+ * engine does not take an answer whose price the bank cannot pay, and an answer that spends what
+ * the queued orders need gets an order refused: either way the card says so before the press, in
+ * the order cards' words. An answer whose own cost only empties the bank is still free to choose.
+ * Mirrors `answerBlock()` in src/core/availability.ts.
+ */
+export function answerBlock(extra: number, price: number, m: MonthView): MonthBlock | null {
+  const orders = m.queuedCosts.reduce((s, c) => s + c, 0);
+  if (extra <= Math.max(0, m.pcLeft) || (price <= 0 && orders <= 0)) return null;
+  return capitalBlock(extra, m);
+}
+
 /** A month-layer block plus what the card needs to offer its fix as a button. */
 export interface MonthBlock extends OrderBlock {
   /** NO_CAPITAL: the tray slots whose removal alone covers the gap (cheapest first). */
@@ -141,23 +181,8 @@ export function monthBlock(a: OrderLike, m: MonthView, cost?: { pc?: number; m?:
   if (m.ordersUsed >= MAX_ORDERS)
     return { code: 'ORDER_LIMIT', reason: `All ${MAX_ORDERS} orders this month are used.`, fix: 'Remove an order', points: 'orders' };
   const pc = cost?.pc ?? pcCost(a.type);
-  const have = Math.max(0, m.pcLeft);
-  if (pc > have) {
-    const gap = pc - have;
-    const slots = freeingSlots(gap, m.queuedCosts, m.queuedStaff);
-    const frees = slots.length ? m.queuedCosts[slots[0]] : 0;
-    const refill = refillLine(m);
-    const fix = frees ? `Remove an order (frees ◆ ${frees}), or wait: ${refill}` : m.bank >= m.pcCap ? refill : `Wait: ${refill}`;
-    return {
-      code: 'NO_CAPITAL',
-      reason: `Needs ◆ ${pc}, you have ◆ ${have}.`,
-      fix,
-      points: 'capital',
-      need: { have, need: pc, refill: m.pcIncome },
-      slots,
-      refill,
-    };
-  }
+  const short = capitalBlock(pc, m);
+  if (short) return short;
   const costM = cost?.m ?? defenseCostM(a, m.budgetM);
   if (costM > 0) {
     const leftM = m.budgetM - m.defenseUsedM;

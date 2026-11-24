@@ -6,7 +6,7 @@
  * foreign numbers come from the player's beliefs (buildPlayerView), never ground truth; memory of
  * last month comes from the turn report. No RNG.
  */
-import { orderRules, RELATIONS_MAX } from "./availability.js";
+import { capitalBlock, orderRules, RELATIONS_MAX } from "./availability.js";
 import { actionCostPC } from "./costs.js";
 import { MEETING_SLOTS } from "./meetings.js";
 import {
@@ -1045,13 +1045,11 @@ export function isTrade(cards: CallCard[]): boolean {
   );
 }
 
-const blockedBy = (pc: number, bank: number): CallCard["blocked"] =>
-  pc > bank
-    ? {
-        reason: `Costs political capital ${pc}, you have ${bank}.`,
-        fix: "Choose another card; political capital refills next month.",
-      }
-    : null;
+/** The order cards' NO_CAPITAL copy (availability.ts capitalBlock, F-04-1), as a call card's block. */
+const blockedBy = (world: WorldState, pc: number, bank: number): CallCard["blocked"] => {
+  const short = capitalBlock(world, pc, bank);
+  return short ? { reason: short.reason, fix: short.fix ?? "" } : null;
+};
 
 /**
  * A crisis as a call (R1 a): its answers differ for the mission. The mission card is the answer
@@ -1123,7 +1121,7 @@ export function crisisCall(
       price: prices[o.id] ?? 0,
       successChance: null,
       home: homeOf(o.effects),
-      blocked: blockedBy(pc, bank),
+      blocked: blockedBy(world, pc, bank),
     };
   });
   const card = (o: DecisionOption) => cards.find((c) => c.id === o.id) as CallCard;
@@ -1200,7 +1198,7 @@ export function missionMove(
       successChance: preview.successChance,
       home: homeOf(actionEffects(s.action)),
       action: s.action,
-      blocked: blockedBy(pc, bank),
+      blocked: blockedBy(world, pc, bank),
     });
   }
   if (!cards.length) return null;
