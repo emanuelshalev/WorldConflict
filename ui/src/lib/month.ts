@@ -25,6 +25,13 @@ import { MAX_ORDERS } from './budget';
 import { ADVISOR_NAMES, effectArrows } from './format';
 import { TERMS } from './glossary';
 
+/** One honest line for both sides of a mixed answer, for a card folded to fit (QA4-S2-4). */
+export function mixedLine(mt: MissionTag): string | null {
+  if (!mt.also) return null;
+  const n = mt.more + 1;
+  return `Mixed: ${mt.text.startsWith('Breaks') ? 'breaks' : 'hurts'} ${n} ${n > 1 ? 'goals' : 'goal'}, helps ${mt.also.count}`;
+}
+
 /**
  * The month's starting position on the desk: every crisis on the staff pick, up to two staff
  * orders proposed within the capital (F-02-4: proposals spend nothing until approved, and Execute
@@ -433,8 +440,9 @@ export interface MissionTag {
   /** Other goals moved the same way as the tag says (shown as "+1 more"): a "Hurts" tag counts
    *  only goals it breaks or hurts, never the ones it helps (design review DR-INT-4). */
   more: number;
-  /** A mixed answer: what it also helps, named ("Helps: Iran never tests a bomb and ..."). */
-  also?: { tone: 'help' | 'bonus'; text: string };
+  /** A mixed answer: what it also helps, named ("Helps: Iran never tests a bomb and ..."), and how
+   *  many goals: a card folded to fit keeps both sides on one line, never only its Hurts (QA4-S2-4). */
+  also?: { tone: 'help' | 'bonus'; text: string; count: number };
 }
 
 /**
@@ -468,7 +476,11 @@ export function missionTag(impact: Impact | undefined, status: ConditionStatus[]
   const risk = impact.breaks.length + impact.hurts.length;
   const helps = helped(false, impact.helps);
   const bonus = helped(true, impact.bonusHelps);
-  const also = helps.length ? { tone: 'help' as const, text: `Helps: ${list(helps)}` } : bonus.length ? { tone: 'bonus' as const, text: `Helps: ${list(bonus)} (bonus)` } : undefined;
+  const also = helps.length
+    ? { tone: 'help' as const, text: `Helps: ${list(helps)}`, count: helps.length }
+    : bonus.length
+      ? { tone: 'bonus' as const, text: `Helps: ${list(bonus)} (bonus)`, count: bonus.length }
+      : undefined;
   if (impact.breaks.length) return { tone: 'risk', text: `Breaks: ${name('breaks', false, impact.breaks[0])}`, more: risk - 1, ...(also ? { also } : {}) };
   if (impact.hurts.length) return { tone: 'risk', text: `Hurts: ${name('hurts', false, impact.hurts[0])}`, more: risk - 1, ...(also ? { also } : {}) };
   if (impact.helps.length) return { tone: 'help', text: `Helps: ${name('helps', false, impact.helps[0])}`, more: impact.helps.length + impact.bonusHelps.length - 1 };

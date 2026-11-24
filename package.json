@@ -4,6 +4,7 @@
   "description": "World politics simulation and game",
   "main": "index.js",
   "scripts": {
+    "predev": "node ui/scripts/check-deps.mjs . ui",
     "dev": "concurrently \"npm run dev:api\" \"npm run dev:ui\"",
     "dev:api": "tsx watch src/api/server.ts",
     "dev:ui": "cd ui && npm run dev",

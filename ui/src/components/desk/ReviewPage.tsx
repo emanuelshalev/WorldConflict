@@ -81,7 +81,12 @@ export function ReviewPage({ phone = false }: { phone?: boolean }) {
                 </span>
                 <span className="rv-a">
                   <b>{r.answer}</b>
-                  {r.detail && <span className={`rv-d${r.tone ? ` mt-${r.tone}` : ''}`}>{r.detail}</span>}
+                  {r.detail && (
+                    <span className={`rv-d${r.tone ? ` mt-${r.tone}` : ''}`}>
+                      {r.detail}
+                      {r.also && <span className="mt-help">. {r.also}</span>}
+                    </span>
+                  )}
                 </span>
                 <span className={`rv-cost${r.cost > 0 ? '' : ' is-free'}`} data-rv-cost="">
                   {costLabel(r.cost)}

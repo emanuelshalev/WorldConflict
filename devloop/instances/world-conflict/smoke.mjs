@@ -1,7 +1,9 @@
 // QA smoke playtest: start today's flashpoint from the title screen, play three months
-// through the real UI, and fail on page errors or a stuck flow.
+// through the real UI, and fail on page errors, a stuck flow, or the game's fonts not loading from
+// the game itself (QA4-S2-1: a stale ui/node_modules shipped no fonts and nothing failed).
 //   node devloop/instances/world-conflict/smoke.mjs [outDir] [variant]
 import { launch } from '../../kit/kit.mjs';
+import { FONT_HOSTS, fontsReport } from './scenarios-qa/regressions/_lib.mjs';
 
 const out = process.argv[2] ?? '/tmp/playtest/smoke';
 const variant = process.argv[3] ?? 'qa-laptop';
@@ -10,9 +12,13 @@ const fail = (msg) => {
   console.error(`SMOKE FAIL: ${msg}`);
   process.exitCode = 1;
 };
+const google = [];
+s.page.on('request', (r) => FONT_HOSTS.test(r.url()) && google.push(r.url()));
 try {
   await s.goto();
   await s.look('title');
+  const fonts = await fontsReport(s.page);
+  if (fonts.bad.length) fail(`the game's fonts do not load (run npm install in ui/?): ${fonts.bad.slice(0, 3).join(' | ')}`);
   if (!(await s.click(/^Take office/i))) fail('no Take office on the title screen');
   await s.page.waitForTimeout(2500);
   await s.look('briefing');
@@ -57,6 +63,7 @@ try {
       if (i === 9) fail(`month ${month}: stuck after Execute (debrief/paper did not lead back to the desk)`);
     }
   }
+  if (google.length) fail(`requests to Google Fonts: ${google.slice(0, 2).join(' | ')}`);
   if (s.errors.length) fail(`page errors: ${s.errors.slice(0, 3).join(' | ')}`);
 } catch (e) {
   fail(e.message);

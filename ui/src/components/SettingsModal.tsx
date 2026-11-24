@@ -123,7 +123,7 @@ function Inner({ onClose }: { onClose: () => void }) {
     <div className="end" style={{ width: 'min(720px, 100%)' }} onClick={(e) => e.stopPropagation()}>
       <div className="drawer-head">
         <h3 style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          <IconCpu size={20} /> World intelligence
+          <IconCpu size={20} /> Settings
         </h3>
         <button className="icon-btn" onClick={onClose} aria-label="Close">
           <IconX size={18} />

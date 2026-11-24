@@ -1,7 +1,7 @@
 import { type ReactNode, type Ref, useCallback, useEffect, useId, useImperativeHandle, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { IconCheck, IconChevronDown, IconChevronUp, IconInfoCircle, IconLock, IconPlus, IconX } from '@tabler/icons-react';
-import { type ConfirmNeed, type PendingAction, orderKey, queueOrder, useGameStore } from '../../store/gameStore';
+import { type ConfirmNeed, type PendingAction, orderKey, queueOrder, removeQueuedSlot, useGameStore } from '../../store/gameStore';
 import { proposalEffects } from '../../lib/month';
 import { CardCost, CardShell } from '../game/CardShell';
 import { spendSeals } from '../game/SealFlight';
@@ -259,7 +259,7 @@ export function OrderCard({
               type="button"
               className="ord-fix"
               data-fix=""
-              onClick={() => remove(slot)}
+              onClick={() => removeQueuedSlot(slot)}
               onMouseEnter={() => pointAt('capital', { slots: [slot], detail: `${label} needs ◆ ${pc}` })}
             >
               Remove {month.queuedStaff[slot] ? 'a staff order' : month.queuedLabels[slot]} (frees ◆ {month.queuedCosts[slot]})
@@ -374,6 +374,8 @@ export function OrderCard({
   if (variant === 'row') {
     const slot = block?.code === 'NO_CAPITAL' ? block.slots?.[0] : undefined;
     const actKind = avail.state === 'available' ? 'add' : isQueued ? 'remove' : slot !== undefined ? 'free' : block?.code === 'NEEDS_TARGET' ? 'pick' : 'why';
+    // Free names the order it removes (QA4-S2-2): the month's committed order in that slot
+    const freeWhat = actKind === 'free' && slot !== undefined ? `Remove ${month.queuedLabels[slot]} (frees ◆ ${month.queuedCosts[slot]})` : undefined;
     const actText = { add: isProposal ? 'Choose order' : 'Add', remove: 'Remove', free: `Free ◆ ${slot !== undefined ? month.queuedCosts[slot] : 0}`, pick: 'Pick', why: 'Why' }[actKind];
     // A free order says "free" once, on its seal badge, not again in the meta line
     const metaParts = [
@@ -388,7 +390,7 @@ export function OrderCard({
     const onAct = () => {
       if (actKind === 'add') void give(false);
       else if (actKind === 'remove') remove(st.queuedIndex);
-      else if (actKind === 'free' && slot !== undefined) remove(slot);
+      else if (actKind === 'free' && slot !== undefined) removeQueuedSlot(slot);
       else if (actKind === 'pick') {
         pointAt('target');
         onPickTarget?.();
@@ -463,7 +465,7 @@ export function OrderCard({
           </div>
           {info && !rowForecast && expansion}
         </CardShell>
-        <button type="button" className={`ord-act act-${avail.state}`} onClick={onAct} data-fix={off ? '' : undefined} aria-label={`${actText}: ${label}`}>
+        <button type="button" className={`ord-act act-${avail.state}`} onClick={onAct} data-fix={off ? '' : undefined} aria-label={freeWhat ? `${freeWhat}, for ${label}` : `${actText}: ${label}`} title={freeWhat}>
           {actText}
         </button>
       </div>

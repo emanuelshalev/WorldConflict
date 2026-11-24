@@ -936,10 +936,13 @@ findings:
   - id: D84-ADVISERS
     title: "Every call names two advisers, and none backs a goal-hurting card when a safe card exists (D-72)"
     source: ledger D-84 (runs/iter-04/decision-accept-all.md R5); D-72
-    covers: [src/core/advisors.ts, src/core/missionImpact.ts]
+    covers: [src/core/advisors.ts, src/core/missionImpact.ts, ui/src/utils/advisorBrain.ts, ui/src/components/AdvisorModal.tsx]
+    changed: "2026-11-24 QA4-S2-3 (REGRESSED in Ask your staff): the guard now also asks every adviser about every call"
     guards:
       - vitest: tests/core/your-call.spec.ts
         name: "D84-ADVISERS"
+      - vitest: tests/regressions/design-review-int.spec.ts
+        name: "QA4-S2-3: Ask your staff names the desk's card for every call"
   - id: D84-UPKEEP
     title: "The staff propose up to 3 upkeep orders, never a mission order, and leave the reserve"
     source: ledger D-84 (runs/iter-04/decision-accept-all.md R9)
@@ -1046,10 +1049,13 @@ findings:
   - id: DR-INT-3
     title: "An adviser's quote never contradicts its card: no \"puts no goal at stake\" on an answer that hurts a goal, and every goal the answer hurts is named (engine advisors.ts crisisCall)"
     source: runs/iter-04/design-review-integrated.md DR-INT-3 ("More escorts, no strikes: puts no goal at stake" over "Hurts: Voters stay on side")
-    covers: [src/core/advisors.ts, ui/src/components/desk/YourMove.tsx]
+    covers: [src/core/advisors.ts, ui/src/components/desk/YourMove.tsx, ui/src/utils/advisorBrain.ts, ui/src/components/AdvisorModal.tsx]
+    changed: "2026-11-24 QA4-S2-3 (REGRESSED in Ask your staff, which neither guard covered): extended to the Ask your staff answers"
     guards:
       - vitest: tests/regressions/design-review-int.spec.ts
         name: "DR-INT-3: an adviser's quote never contradicts its card"
+      - vitest: tests/regressions/design-review-int.spec.ts
+        name: "QA4-S2-3: Ask your staff names the desk's card for every call"
   - id: DR-INT-4
     title: "The mission tag counts hurts as hurts (+n more counts breaks and hurts only) and a mixed answer also names the goals it helps"
     source: runs/iter-04/design-review-integrated.md DR-INT-4 ("Hurts: ... (+3 more)" counting helped goals)
@@ -1058,6 +1064,7 @@ findings:
       - vitest: tests/regressions/design-review-int.spec.ts
         name: "DR-INT-4: the mission tag counts hurts as hurts and names what it helps"
       - vitest: tests/ui-month.spec.ts
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/QA4-S2-4.mjs
   - id: DR-INT-5
     title: "Map mode turns to the subject of the open item (L-14): the crisis's first foreign country sits in the free gap between the item card and the Plan float, within 60 degrees of the camera, months 1 to 4 at 1920x1080"
     source: runs/iter-04/design-review-integrated.md DR-INT-5 (North America shown for Iran crises)
@@ -1076,6 +1083,39 @@ findings:
     covers: [ui/src/components/desk/ReviewPage.tsx, ui/src/lib/agenda.ts, ui/src/styles/layout.css]
     guards:
       - script: devloop/instances/world-conflict/scenarios-qa/regressions/DR-INT-7.mjs
+  - id: QA4-S2-1
+    title: "The game's fonts load from the game: the UI build fails on a font file that does not resolve, npm run dev stops on a package that is not installed, and the four families load in the browser with no Google Fonts request"
+    source: runs/iter-04/qa-verify.md QA4-S2-1 (every FontFace in error, fallback fonts on every screen, the gate passed)
+    covers: [ui/src/styles/fonts.css, ui/vite.config.ts, ui/package.json, ui/scripts/check-deps.mjs, package.json, ui/index.html, devloop/instances/world-conflict/smoke.mjs]
+    guards:
+      - vitest: tests/ui-fonts-build.spec.ts
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/QA4-S2-1.mjs
+  - id: QA4-S2-2
+    title: "Free ◆ n (and Remove X, frees ◆ n) on an unaffordable order card removes the committed order it names, never a staff proposal"
+    source: runs/iter-04/qa-verify.md QA4-S2-2 (Reform program, an unapproved proposal, removed instead); same root as F-02-4
+    covers: [ui/src/store/gameStore.ts, ui/src/components/orders/OrderCard.tsx, ui/src/lib/availability.ts]
+    guards:
+      - vitest: tests/regressions/ui-store.spec.ts
+        name: "QA4-S2-2"
+  - id: QA4-S2-3
+    title: "Ask your staff never contradicts the desk: on a call each adviser names the engine's card they back (the Chief of Staff's pick when they make the calls), never a goal-hurting card while a safe one exists"
+    source: runs/iter-04/qa-verify.md QA4-S2-3 (REGRESSED class of DR-INT-3, D84-ADVISERS; The Qatari text, month 6)
+    covers: [ui/src/utils/advisorBrain.ts, ui/src/components/AdvisorModal.tsx, src/core/advisors.ts, ui/src/lib/agenda.ts]
+    guards:
+      - vitest: tests/regressions/design-review-int.spec.ts
+        name: "QA4-S2-3: Ask your staff names the desk's card for every call"
+  - id: QA4-S2-4
+    title: "A folded answer card is never one-sided: a mixed answer shows its Helps with its Hurts at every fit level and in the Map card (folded: one line, \"Mixed: hurts 1 goal, helps 2\")"
+    source: runs/iter-04/qa-verify.md QA4-S2-4 (1366x768, every card \"Hurts\" only)
+    covers: [ui/src/lib/month.ts, ui/src/components/desk/YourMove.tsx, ui/src/components/desk/MapMonth.tsx, ui/src/styles/layout.css, ui/src/lib/layout.ts]
+    guards:
+      - script: devloop/instances/world-conflict/scenarios-qa/regressions/QA4-S2-4.mjs
+  - id: QA4-S3-12
+    title: "A leader is named by the family name (General Secretary Kim, not Un)"
+    source: runs/iter-04/qa-verify.md QA4-S3-12
+    covers: [src/core/reactions.ts]
+    guards:
+      - vitest: tests/core/leader-surname.spec.ts
 # ------------------------------------------------------------------------------------------
 # Not listed (still open or not a code fix); add them here when a fix lands with its guard:
 #   RS-001-6  dashboard feel, "serious visual design": the ledger keeps it not done (D-37 check)

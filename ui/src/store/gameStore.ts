@@ -630,6 +630,24 @@ export function committedActions<T extends Pick<PendingAction, 'proposed'>>(acti
   return actions.filter((a) => !a.proposed);
 }
 
+/**
+ * The store index (pendingActions) of the month's `slot`-th committed order. MonthView's queued*
+ * lists and a NO_CAPITAL block's `slots` count committed orders only (proposals hold nothing,
+ * F-02-4), so a slot is never a pendingActions index: translate it here (QA4-S2-2).
+ */
+export function committedIndex(actions: readonly Pick<PendingAction, 'proposed'>[], slot: number): number {
+  let n = -1;
+  for (let i = 0; i < actions.length; i++) if (!actions[i].proposed && ++n === slot) return i;
+  return -1;
+}
+
+/** Remove the month's `slot`-th committed order (a "Free ◆ n" or "Remove X (frees ◆ n)" fix). */
+export function removeQueuedSlot(slot: number): void {
+  const s = useGameStore.getState();
+  const index = committedIndex(s.pendingActions, slot);
+  if (index >= 0) s.removePendingAction(index);
+}
+
 /** What the desk's detail pane shows. */
 export interface DeskFocus {
   kind: 'mission' | 'crisis' | 'meeting' | 'suggestions' | 'catalog' | 'order';

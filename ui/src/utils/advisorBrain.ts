@@ -1,5 +1,8 @@
+import { callWhy } from '../lib/agenda';
+import { ADVISOR_NAMES } from '../lib/format';
+import { goalInSentence } from '../lib/goals';
 import { hotspotLine } from '../lib/hotspots';
-import type { CountryFull, PlayerViewCountry, WorldState } from '../store/gameStore';
+import type { Advice, CallCard, CountryFull, PlayerViewCountry, WorldState, YourCall } from '../store/gameStore';
 
 /**
  * Knowledge-driven advisor Q&A.
@@ -14,6 +17,12 @@ export interface BrainContext {
   worldState: WorldState;
   playerView: PlayerViewCountry[];
   player: CountryFull;
+  /** The month's advice from the engine (advisors.ts): the calls' cards and the staff picks. A
+   *  question about a crisis or a meeting is answered from it, so Ask your staff never contradicts
+   *  the desk (QA4-S2-3, DR-INT-3, D84-ADVISERS). */
+  advice?: Advice | null;
+  /** Settings "Let the Chief of Staff make my calls": the Chief of Staff's pick applies. */
+  chiefCalls?: boolean;
 }
 
 const fmtMoney = (n: number) =>
@@ -371,7 +380,7 @@ export function answerQuestion(
 
   // --- A crisis or meeting named in the question comes first ---
   const deskItem = findDeskItem(ctx, question);
-  if (deskItem) return opener + adviseOnItem(ctx, deskItem, voice.lens);
+  if (deskItem) return opener + adviseOnItem(ctx, deskItem, voice.lens, advisorId);
 
   // --- Gaza and the West Bank: hot zones, not states ---
   const zone = findZone(ctx, q);
@@ -410,12 +419,12 @@ export function answerQuestion(
 
   // --- The desk: a crisis or meeting by name, the calendar, the biggest risk ---
   const item = findDeskItem(ctx, question);
-  if (item) return opener + adviseOnItem(ctx, item, voice.lens);
+  if (item) return opener + adviseOnItem(ctx, item, voice.lens, advisorId);
   if (/who should i (call|meet|see)|calendar|schedule|which meetings|who to meet/.test(q)) return opener + calendarAnswer(ctx);
   if (/biggest risk|main risk|danger|worr|threat to us|weakest/.test(q)) return opener + riskAnswer(ctx);
   if (/this month'?s crisis|the crisis|handle the crisis/.test(q)) {
     const first = ctx.worldState.pendingDecisions[0];
-    if (first) return opener + adviseOnItem(ctx, first, voice.lens);
+    if (first) return opener + adviseOnItem(ctx, first, voice.lens, advisorId);
   }
 
   // --- General questions ---
@@ -612,6 +621,13 @@ function zoneAnswer(ctx: BrainContext, h: Zone, lens: string): string {
 // ---------------------------------------------------------------------------
 type DeskItem = WorldState['pendingDecisions'][number];
 
+/** The question names this month's crisis or meeting: the answer must be the desk's (engine advice). */
+export function asksAboutDeskItem(worldState: WorldState, question: string): boolean {
+  const q = question.toLowerCase();
+  const items: DeskItem[] = [...worldState.pendingDecisions, ...(worldState.agenda ?? [])];
+  return items.some((d) => q.includes(d.title.toLowerCase())) || (/this month'?s crisis|the crisis|handle the crisis/.test(q) && worldState.pendingDecisions.length > 0);
+}
+
 function findDeskItem(ctx: BrainContext, question: string): DeskItem | undefined {
   const q = question.toLowerCase();
   const items: DeskItem[] = [...ctx.worldState.pendingDecisions, ...(ctx.worldState.agenda ?? [])];
@@ -665,15 +681,62 @@ function describeEffects(ctx: BrainContext, o: DeskItem['options'][number]): { g
   return { good, bad };
 }
 
-function adviseOnItem(ctx: BrainContext, item: DeskItem, lens: string): string {
+const goalList = (goals: string[]) => {
+  const g = [...new Set(goals)].map(goalInSentence);
+  return g.length <= 1 ? (g[0] ?? '') : `${g.slice(0, -1).join(', ')} and ${g[g.length - 1]}`;
+};
+const itemName = (item: DeskItem) => item.title.replace(/^(Phone call|Secure line|State visit|Staff meeting|Interview): /, '');
+
+/** A call card as its adviser says it on the desk: the card's reason, and every goal it hurts. */
+function cardLine(card: CallCard): string {
+  const why = callWhy(card);
+  const lost = [...card.breaks, ...card.hurts, ...card.bonusHurts];
+  // The engine's reason names what the card hurts already ("..., though it hurts ...", DR-INT-3)
+  const cost = lost.length && !/\bhurts\b/.test(why) ? ` It hurts ${goalList(lost)}.` : '';
+  return `${why}${cost}`.trim();
+}
+
+/**
+ * A call (D-84) is answered from the engine's cards, the ones the desk shows (QA4-S2-3): the adviser
+ * names the card they back on the desk (CallCard.advisers); with "Let the Chief of Staff make my
+ * calls" on, the Chief of Staff names the answer that applies (chiefPick). An adviser who backs no
+ * card says who does. Never an answer the desk does not recommend.
+ */
+function adviseOnCall(item: DeskItem, call: YourCall, advisorId: string, chiefCalls: boolean): string {
+  const name = itemName(item);
+  const me = ADVISOR_NAMES[advisorId] ?? 'Chief of Staff';
+  const chief = chiefCalls ? call.cards.find((c) => c.id === call.chiefPick) : undefined;
+  const mine = me === 'Chief of Staff' && chief ? chief : call.cards.find((c) => c.advisers.includes(me));
+  const applies = chief && chief !== mine ? ` You let the Chief of Staff make the calls: ${chief.label} applies unless you choose.` : '';
+  if (!mine) {
+    const who = call.cards
+      .filter((c) => c.advisers.length)
+      .map((c) => `your ${c.advisers.join(' and your ')} ${c.advisers.length > 1 ? 'recommend' : 'recommends'} ${c.label}`)
+      .join('; ');
+    return `On "${name}", this is not my desk to call: ${who || 'nobody on the staff backs an answer'}.${applies} Your call, of course.`;
+  }
+  const avoid = call.cards
+    .filter((c) => !c.advisers.length && c !== mine && c.breaks.length + c.hurts.length > 0)
+    .sort((a, b) => b.breaks.length - a.breaks.length || b.hurts.length - a.hurts.length)[0];
+  const avoidLine = avoid ? ` I would avoid "${avoid.label}": it hurts ${goalList([...avoid.breaks, ...avoid.hurts])}.` : '';
+  const mineApplies = chief && chief === mine ? ' You let me make the calls: that is the answer that applies unless you choose another.' : '';
+  return `On "${name}", my recommendation is: ${mine.label}. ${cardLine(mine)}${avoidLine}${mineApplies}${applies} Your call, of course.`;
+}
+
+function adviseOnItem(ctx: BrainContext, item: DeskItem, lens: string, advisorId = 'CHIEF_OF_STAFF'): string {
+  const call = ctx.advice?.calls?.find((c) => c.kind === 'crisis' && c.id === item.id);
+  if (call) return adviseOnCall(item, call, advisorId, !!ctx.chiefCalls);
+  // Not a call: the staff's pick the desk shows (the engine's cabinet pick for a crisis, its
+  // meeting pick for a meeting); the adviser's own lens only when the engine sent none
+  const isMeeting = (ctx.worldState.agenda ?? []).some((m) => m.id === item.id);
+  const staffId = isMeeting ? ctx.advice?.meetingPicks?.[item.id] : ctx.advice?.cabinetPicks?.[item.id];
   const ranked = [...item.options].sort((a, b) => scoreOption(b, lens) - scoreOption(a, lens));
-  const best = ranked[0];
-  const worst = ranked[ranked.length - 1];
+  const best = item.options.find((o) => o.id === staffId) ?? ranked[0];
   if (!best) return 'I have nothing useful on that one yet.';
+  const worst = ranked.filter((o) => o !== best).at(-1) ?? best;
   const e = describeEffects(ctx, best);
   const w = describeEffects(ctx, worst);
-  const name = item.title.replace(/^(Phone call|Secure line|State visit|Staff meeting|Interview): /, '');
-  return `On "${name}", my recommendation is: ${best.label}. ${best.description} It helps ${e.good.join(', ') || 'little directly'}${e.bad.length ? `, at the cost of ${e.bad.join(', ')}` : ''}. ${worst !== best ? `I would avoid "${worst.label}": ${w.bad.length ? `it hurts ${w.bad.join(', ')}` : 'it wastes the moment'}.` : ''} Your call, of course.`;
+  return `On "${itemName(item)}", my recommendation is: ${best.label}. ${best.description} It helps ${e.good.join(', ') || 'little directly'}${e.bad.length ? `, at the cost of ${e.bad.join(', ')}` : ''}. ${worst !== best ? `I would avoid "${worst.label}": ${w.bad.length ? `it hurts ${w.bad.join(', ')}` : 'it wastes the moment'}.` : ''} Your call, of course.`;
 }
 
 function calendarAnswer(ctx: BrainContext): string {
