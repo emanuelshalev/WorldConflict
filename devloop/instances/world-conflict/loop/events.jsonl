@@ -79,3 +79,5 @@
 {"t":"2026-11-24T11:59:11.777Z","kind":"owed","tier":"T1","because":"merge of fix-design-review-iter4"}
 {"t":"2026-11-24T12:00:14.447Z","kind":"record","gate":"status-refresh","result":"pass","commit":"256bc198fd811562caed03fe0baa4fa0a46904ea","codeTree":"3357db078eef93a5","evidence":"dev_plan/project_status.html","note":"status-refresh T1","iteration":4,"stage":"Build","tier":"T1"}
 {"t":"2026-11-24T12:00:28.157Z","kind":"transition","from":"Build","to":"Verify","iteration":4,"overrides":[]}
+{"t":"2026-11-24T12:37:28.812Z","kind":"record","gate":"qa","result":"fail","commit":"97241ad1a39c047896de599b8e9bb1c93d5eb9a3","codeTree":"3357db078eef93a5","evidence":"devloop/instances/world-conflict/runs/iter-04/qa-verify.md","iteration":4,"stage":"Verify"}
+{"t":"2026-11-24T12:38:33.489Z","kind":"record","gate":"status-refresh","result":"pass","commit":"97241ad1a39c047896de599b8e9bb1c93d5eb9a3","codeTree":"3357db078eef93a5","evidence":"dev_plan/project_status.html","note":"status-refresh T1","iteration":4,"stage":"Verify","tier":"T1"}
