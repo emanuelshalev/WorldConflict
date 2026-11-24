@@ -90,3 +90,7 @@
 {"t":"2026-11-24T14:13:27.476Z","kind":"record","gate":"status-refresh","result":"pass","commit":"1218f55390bbae639fc4f0c1e80e986f0a201877","codeTree":"ab2437794b9c4192","evidence":"dev_plan/project_status.html","note":"status-refresh T1","iteration":4,"stage":"Verify","tier":"T1"}
 {"t":"2026-11-24T14:13:34.595Z","kind":"transition","from":"Verify","to":"Use","iteration":4,"overrides":[]}
 {"t":"2026-11-24T14:31:46.311Z","kind":"record","gate":"status-refresh","result":"pass","commit":"7f17159a282644be049c459e93636dbd16973142","codeTree":"ab2437794b9c4192","evidence":"dev_plan/project_status.html","note":"status-refresh T1","iteration":4,"stage":"Use","tier":"T1"}
+{"t":"2026-11-24T14:55:58.034Z","kind":"owed","tier":"T2","because":"Use done"}
+{"t":"2026-11-24T14:55:58.035Z","kind":"transition","from":"Use","to":"Triage","iteration":4,"overrides":[]}
+{"t":"2026-11-24T14:55:59.685Z","kind":"record","gate":"triage","result":"pass","commit":"9d6cd2a419e50507507ae668381fe00928101570","codeTree":"ab2437794b9c4192","evidence":"devloop/instances/world-conflict/runs/iter-04/triage.md","iteration":4,"stage":"Triage"}
+{"t":"2026-11-24T14:59:12.088Z","kind":"record","gate":"status-refresh","result":"pass","commit":"9d6cd2a419e50507507ae668381fe00928101570","codeTree":"ab2437794b9c4192","evidence":"dev_plan/project_status.html","note":"status-refresh T2","iteration":4,"stage":"Triage","tier":"T2"}
