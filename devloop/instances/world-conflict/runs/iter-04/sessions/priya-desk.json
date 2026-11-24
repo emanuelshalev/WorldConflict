@@ -1,0 +1,355 @@
+{
+  "persona": "priya",
+  "variant": "priya-desk",
+  "panel_version": "1.2",
+  "build": "876ea58",
+  "iteration": 4,
+  "minutes_played": 75,
+  "scenarios": [
+    {
+      "id": "P1",
+      "outcome": "achieved",
+      "steps": [
+        "Entered seed CO-UKR-PRIY1 under Play a seed, started Ukraine Flashpoint",
+        "Chose I know this on the familiarity question",
+        "Played all 12 months: crisis calls, mission move, Choose all recommended, Execute",
+        "Played months 5 and 6 in Map mode",
+        "Reached the reveal: count, verdict (A, 696), achievements, moments, how you were seen, numbers, truth, ranking",
+        "Pressed New game, got the title screen, started a Taiwan Flashpoint (second game, briefing only)"
+      ],
+      "turns": 12,
+      "notes": "Ended with mission complete and grade A while the war had not ended (I chose a referendum, Russia never signed)."
+    },
+    {
+      "id": "P2",
+      "outcome": "partial",
+      "steps": [
+        "Read option consequences ('Hurts / Helps') before choosing",
+        "Read the debrief 'The truth' comparing my run with the real November 2026 situation"
+      ],
+      "turns": 12,
+      "notes": "Debrief is strong, but choices such as 'Announce concessions' never say what is conceded."
+    }
+  ],
+  "friction": [
+    {
+      "where": "Title screen, Play a seed",
+      "expected": "A visible place to enter a code",
+      "happened": "Found it at once (button under Today's crisis, box opens, Play this seed). No friction.",
+      "kind": "other",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/priya-desk/002-seed.png"
+    },
+    {
+      "where": "Familiarity question, month 1",
+      "expected": "Explanation options I can ignore",
+      "happened": "Picked 'I know this'. The recommended default 'Some help' is the wrong one for an expert but the choice was clear and quick. Afterwards the top bar button reads 'I know this', which looks like a button that does nothing.",
+      "kind": "affordance",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/sessions/priya-desk/004-afterseed.png"
+    },
+    {
+      "where": "Desk, advisers recommendations",
+      "expected": "Understand who recommends what and why",
+      "happened": "Understood. Foreign Minister / Defense Minister / Interior Minister each recommend one answer with a short reason and the goal effect. Often the Foreign and Defense ministers disagree, which is the interesting part. I followed them about half the time.",
+      "kind": "other",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/sessions/priya-desk/005-m1.png"
+    },
+    {
+      "where": "Month 1 execute bar vs political capital",
+      "expected": "One consistent number for what I have left",
+      "happened": "Header says 'Political capital (what orders cost) 3 of 6', side panel says '3 now, 1 spent, 2 left'. The header number means 'left', which the label does not say.",
+      "kind": "trust",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/sessions/priya-desk/008-m1d.png"
+    },
+    {
+      "where": "Month 2 and later, Choose all recommended",
+      "expected": "Only the cheap routine items",
+      "happened": "It also bought the 2-point Reform program and spent all my capital (0 of 6) without a warning, after I had already paid for a mission move.",
+      "kind": "trust",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/sessions/priya-desk/009-r1.png"
+    },
+    {
+      "where": "Month 4 result card, Mission line",
+      "expected": "Same number for 'United States view of you' in both places",
+      "happened": "Mission line says 'Keep Washington engaged: 41 to 45'. The line below says 'United States view of you 38 to 44 (+6)'.",
+      "kind": "trust",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/sessions/priya-desk/020-r4.png"
+    },
+    {
+      "where": "Month 6 result card",
+      "expected": "UK number to match",
+      "happened": "Mission: 'UK relations 88 to 94'. Detail: 'United Kingdom's view of you 86 to 90'.",
+      "kind": "trust"
+    },
+    {
+      "where": "Month 8 result and newspaper",
+      "expected": "Same UN vote result",
+      "happened": "Result card shows the vote as YES 11, NO 2. The World Chronicle shows YES 8, NO 5 for the same vote. Also paper masthead says 'Month 8 of 12' while the header says month 9 of 12.",
+      "kind": "trust",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/sessions/priya-desk/038-r7.png"
+    },
+    {
+      "where": "Newspaper month 9",
+      "expected": "Approval figures match the header",
+      "happened": "Paper says 'Approval rose from 67% to 74%'. Header and result card said 61% to 73% (+12).",
+      "kind": "trust"
+    },
+    {
+      "where": "Mission line on result cards",
+      "expected": "The mission line shows my four goals",
+      "happened": "It shows 'approval 61 to 73%, needs 75%' and 'stability 51 to 56%, needs 55%' while the header says '4 of 4 goals on track'. Approval and stability are among 6 'all goals' but the header counts 4. I did not know which goal I was looking at.",
+      "kind": "misread",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/sessions/priya-desk/038-r7.png"
+    },
+    {
+      "where": "Month 5 Map mode, first view",
+      "expected": "Globe showing Ukraine and Russia",
+      "happened": "Globe opened on the United States (the crisis country). Whole world button (title Whole world) did nothing visible; Zoom out shrank the globe to a small ball. No rotate hint, no 'centre on my country'. I could not find Ukraine without guessing.",
+      "kind": "affordance",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/sessions/priya-desk/024-map5c.png"
+    },
+    {
+      "where": "Map mode choice cards",
+      "expected": "Same detail as the desk",
+      "happened": "Cards say only 'Mixed: hurts 1 goal, helps 1.' without naming which goal. I had to go back to Desk to know. Also the 'Your goals in this call' list is missing.",
+      "kind": "parity",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/sessions/priya-desk/022-map5.png"
+    },
+    {
+      "where": "Your country dropdown in the top bar (from map month onward)",
+      "expected": "Closes after I look",
+      "happened": "The dropdown with Approval, Stability, Legitimacy, Economy stayed open on every later screen, covering 'Ask your staff', Show toggle and the first page title. Escape did not close it.",
+      "kind": "affordance",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/sessions/priya-desk/035-m7.png"
+    },
+    {
+      "where": "Map Guide panel",
+      "expected": "Closes with the x",
+      "happened": "It sat on top of the right panel and the Choose all button until I found the small x.",
+      "kind": "affordance",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/sessions/priya-desk/027-map5f.png"
+    },
+    {
+      "where": "Result card, bottom Next month button",
+      "expected": "Visible Next month",
+      "happened": "On tall result cards (the 'Remember the manpower wall?' banner) the Next month button is cut off at the bottom of the screen. I scrolled to find it. Pressing Next month sometimes went to the newspaper first and I had to press a second one.",
+      "kind": "hesitation",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/sessions/priya-desk/038-r7.png"
+    },
+    {
+      "where": "Newspaper, 'Your month in Ukraine' list",
+      "expected": "A reason for REFUSED",
+      "happened": "'REFUSED: Court United Kingdom' in month 8 with no reason. I had chosen it as my mission move. I tapped it; nothing happened (not a control). This is the opaque refusal I hate.",
+      "kind": "blocked",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/sessions/priya-desk/043-m9s.png"
+    },
+    {
+      "where": "Newspaper, war pictures",
+      "expected": "Different pictures for Russia/Ukraine, Israel/Iran, Yemen/Saudi",
+      "happened": "The same tank-at-sunset picture with a different flag on all three.",
+      "kind": "other",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/sessions/priya-desk/043-m9s.png"
+    },
+    {
+      "where": "Month 9 'The streets are boiling' choices",
+      "expected": "Know what is conceded",
+      "happened": "'Announce concessions' and 'Clear the squares' say only numbers. As a Ukrainian president I want to know conceded to whom and what.",
+      "kind": "other",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/sessions/priya-desk/018-m4.png"
+    },
+    {
+      "where": "Month 12, Energy price shock reappears",
+      "expected": "A crisis from month 2 to be resolved",
+      "happened": "'Energy price shock' came back in month 12 as a leftover call, 'No answer yet'. Looks like the game repeated an old crisis.",
+      "kind": "other",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/sessions/priya-desk/054-m12.png"
+    },
+    {
+      "where": "Reveal, The verdict versus Achievements",
+      "expected": "Mission complete to mean the peace held",
+      "happened": "Verdict stamp reads MISSION COMPLETE, grade A, 3 stars, 'A peace that holds'. Achievement 'A Peace That Holds' is LOCKED (needs the war to end). The Truth says 'Russia did not sign: no peace by the end'. Three screens disagree.",
+      "kind": "trust",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/sessions/priya-desk/060-verdict.png"
+    },
+    {
+      "where": "Reveal sidebar",
+      "expected": "Jump to any step",
+      "happened": "I clicked The verdict (worked once), then The moments and How you were seen (nothing). Only the orange next button moved me.",
+      "kind": "affordance",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/sessions/priya-desk/061-moments.png"
+    },
+    {
+      "where": "Ranking screen",
+      "expected": "A clear rank",
+      "happened": "'Your first run: a ladder of 108 runs to climb' next to 'Better than 100% of simulated competent leaders' and 'Best known run 696'. Contradictory sense of ranking.",
+      "kind": "misread",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/sessions/priya-desk/067-rank.png"
+    },
+    {
+      "where": "Realism: names",
+      "expected": "Leaders as of Nov 2026",
+      "happened": "Prime Minister Andy Burnham (UK) appears from month 3, President Philippe Moreau (France) from month 8 with an in-game explanation of the French election, PM Mark Carney, Chancellor Merz, PM Takaichi. Moreau is explained, Burnham is not: no line says Starmer is gone. Also Iran 'defeated by the United States in March 2027' and fronts like 'Saudi Arabia smashes through defenses' read like generator noise in the ticker.",
+      "kind": "naming",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/sessions/priya-desk/014-m3.png"
+    },
+    {
+      "where": "Debrief The truth",
+      "expected": "Sourced, accurate figures",
+      "happened": "'Russia gained barely 100 km2 net in 2026, by ISW's count' looks wrong to me (ISW reported far larger). Sources are listed, which I liked, but this figure I would check.",
+      "kind": "other",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/sessions/priya-desk/066-truth.png"
+    },
+    {
+      "where": "Naming knowledge check",
+      "expected": "Names I know",
+      "happened": "I knew every name (Enerhodar, Kramatorsk, ISW, coalition of the willing). Unknown to me: 'Defense budget 0% used', 'Meetings you take 0 of 3' vs 'Your ministers take 4 meetings' (3 versus 4), 'Statesman' seat label and 'Defused' seal, 'step achieved' stamp. The in-game 'i' underlines were hidden by my familiarity choice, which is what I wanted.",
+      "kind": "naming"
+    },
+    {
+      "where": "Title screen, choosing the second game",
+      "expected": "Pick Quarantine (Taiwan) from the list",
+      "happened": "The list text under the globe was not clickable; Quarantine is on the far side of the globe. I used the arrow beside the dropdown three times. OK once found.",
+      "kind": "affordance",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/priya-desk/070-tw2.png"
+    }
+  ],
+  "bugs": [
+    {
+      "title": "Same vote shown with two different tallies",
+      "steps": [
+        "Month 8 crisis Sanctions on Iran: Vote for sanctions",
+        "Compare the result card (YES 11 NO 2) with the World Chronicle (YES 8 NO 5)"
+      ],
+      "expected": "One tally",
+      "actual": "Two different tallies and the masthead says Month 8 of 12 when the header says month 9 of 12",
+      "severity": "S3",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/sessions/priya-desk/038-r7.png"
+    },
+    {
+      "title": "Mission complete with the peace mission locked",
+      "steps": [
+        "Play CO-UKR-PRIY1 to month 12, choose Put it to the people",
+        "Open The verdict and Achievements"
+      ],
+      "expected": "Verdict consistent with the unlocked/locked seal and the debrief",
+      "actual": "MISSION COMPLETE, A, 3 stars, but the seal A Peace That Holds is locked and The Truth says no peace",
+      "severity": "S2",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/sessions/priya-desk/060-verdict.png"
+    },
+    {
+      "title": "Your country dropdown never closes",
+      "steps": [
+        "Open Your country in the top bar (month 5)",
+        "Press Escape, switch Desk/Map, advance months"
+      ],
+      "expected": "Closes on outside click or Escape",
+      "actual": "Stays open on every screen until the end of the game, covering buttons",
+      "severity": "S3",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/sessions/priya-desk/035-m7.png"
+    },
+    {
+      "title": "Whole world button does nothing in Map mode",
+      "steps": [
+        "Month 5 switch to Map",
+        "Press the globe button (Whole world)"
+      ],
+      "expected": "Globe re-centres or zooms out to show every country",
+      "actual": "No change; the view stays on North America",
+      "severity": "S3",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/sessions/priya-desk/024-map5c.png"
+    },
+    {
+      "title": "Refused order with no reason",
+      "steps": [
+        "Choose Court United Kingdom as mission move in month 8",
+        "Read the newspaper list"
+      ],
+      "expected": "A reason next to REFUSED",
+      "actual": "Only the word REFUSED",
+      "severity": "S2",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/sessions/priya-desk/043-m9s.png"
+    },
+    {
+      "title": "Defense minister card text overflows its box (month 1)",
+      "steps": [
+        "Start month 1, read the third answer card of The free economic zone"
+      ],
+      "expected": "Text inside the card",
+      "actual": "Last line 'mission.' sits on the bottom border",
+      "severity": "S4",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/sessions/priya-desk/005-m1.png"
+    }
+  ],
+  "suggestions": [
+    {
+      "what": "When a goal number appears on two lines, use one source. Show the same US and UK numbers on the mission line, the detail, the paper and the reveal.",
+      "goal_served": "Trust in the numbers; learning how the actors react"
+    },
+    {
+      "what": "Make the verdict agree with the debrief: if the war did not end, do not stamp 'A peace that holds' as complete, or rename the mission.",
+      "goal_served": "Realism and clarity for P2 (understand what a choice was meant to achieve)"
+    },
+    {
+      "what": "Give every REFUSED line a reason and make the entry open the explanation.",
+      "goal_served": "Never being blocked without a clear reason"
+    },
+    {
+      "what": "In Map mode centre on my own country, make Whole world work and show the goal named in the Mixed hurts/helps line.",
+      "goal_served": "Investigating the world to learn how actors think"
+    },
+    {
+      "what": "Name the leader changes in the world (Starmer to Burnham) with a one-line chronicle entry the first time they appear.",
+      "goal_served": "Leaders and alliances match reality as of Nov 2026"
+    },
+    {
+      "what": "Make Choose all recommended skip costed items or show the total capital it will spend before it runs.",
+      "goal_served": "Agency over scarce political capital"
+    }
+  ],
+  "delight": [
+    "Month 4 Blackout winter and Month 7 The manpower wall: real dilemmas with real vocabulary (Patriots, refineries, draft age 25 to 23). The goal list under each card told me what each answer cost.",
+    "The consequences chain: 'Remember The manpower wall? Hundreds of thousands march on Ukraine's capital' came back two months later (devloop/instances/world-conflict/runs/iter-04/sessions/priya-desk/038-r7.png).",
+    "The Truth screen: my run against the real world with sources and a BETTER/WORSE tag (devloop/instances/world-conflict/runs/iter-04/sessions/priya-desk/066-truth.png).",
+    "World Chronicle line about London and Paris offering a reassurance force with Moscow calling troops legitimate targets: exactly the real debate.",
+    "Seed entry and the way back (Replay same opening / New world / New game) were clear."
+  ],
+  "scores": {
+    "fun": {
+      "value": 7,
+      "reason": "The dilemmas and the debrief kept me playing 12 months; the routine meetings and Choose all recommended made several months feel like clicking through."
+    },
+    "clarity": {
+      "value": 6,
+      "reason": "Each month is understandable but numbers disagree between mission line, detail and newspaper, and the mission line does not say which goal it shows."
+    },
+    "visual": {
+      "value": 8,
+      "reason": "Handsome and consistent; repeated illustrations and the stuck Your country dropdown and clipped Next button are the flaws."
+    },
+    "feels_like_a_game": {
+      "value": 6,
+      "reason": "More a briefing room with a scoreboard than a game; the Map adds little compared with the Desk."
+    },
+    "agency": {
+      "value": 6,
+      "reason": "I could pick, but REFUSED with no reason, a capital auto-spent by Choose all recommended and concessions that name nothing reduced my sense of control."
+    },
+    "realism": {
+      "value": 6,
+      "reason": "Ukraine content (referendum, mobilisation age, Enerhodar, reassurance force) is credible; the Burnham premiership unexplained, ticker noise and one ISW figure I doubt cost points."
+    },
+    "replay": {
+      "value": 7,
+      "reason": "I want to try Taiwan and Russia seats and compare against the debrief; the ladder and seeds invite another run."
+    },
+    "recommend": {
+      "value": 7,
+      "reason": "I would tell IR classmates to try it for the Truth screen and the dilemmas, with the warning that numbers do not always match."
+    }
+  },
+  "quit_point": null,
+  "verbatim": "I like being told what the Foreign Minister and the Defense Minister want and then being allowed to disagree. But when the verdict says mission complete and the debrief says no peace, which of them is lying to me?",
+  "tasks": {
+    "end_reached": true,
+    "second_game": true
+  }
+}

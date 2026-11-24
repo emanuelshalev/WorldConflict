@@ -1,0 +1,260 @@
+{
+  "persona": "marcus",
+  "variant": "marcus-term",
+  "panel_version": "1.2",
+  "build": "2083597",
+  "iteration": 4,
+  "minutes_played": 55,
+  "scenarios": [
+    {
+      "id": "K2",
+      "outcome": "partial",
+      "steps": [
+        "Entered seed code T1990-USA-MARC1 under Play a seed: opened Jan 1990 United States One Term, Bush",
+        "Chose I know this on the familiarity question",
+        "Played months 1 to 12 (Jan to Dec 1990), months 5 and 6 in Map mode",
+        "Chose answers, recommended meetings and a Court Iran order for the mission most months",
+        "Checked the Diplomacy and Home and security pages of the report for causes"
+      ],
+      "turns": 12,
+      "notes": "Twelve months of a 1990 Term. Cause and effect on my own choices is excellent. The world around me drifts away from 1990 history fast (Japan airstrikes on North Korea, Japan asking for a US naval base, a US general strike, Russian tricolor for the USSR). I did not get to the election."
+    },
+    {
+      "id": "K1",
+      "outcome": "partial",
+      "steps": [
+        "Condemned North Korea in month 1 and Called China quietly in month 11 (same incident template, different country)",
+        "Opened the title menu to look for replay or branch; did not run a second game"
+      ],
+      "turns": 12,
+      "notes": "No true replay of the same crisis with the opposite choice was played this round. The only comparison I could make was across two different countries."
+    }
+  ],
+  "friction": [
+    {
+      "where": "Title screen, Play a seed",
+      "expected": "A hint that a Term code is accepted",
+      "happened": "Placeholder shows HC-USA-3PX, a flashpoint style code. I typed the Term code anyway and it worked, but I did not know it would until it did.",
+      "kind": "hesitation",
+      "screenshot": "sessions/marcus-term/002-seed.png"
+    },
+    {
+      "where": "Title globe, era choice",
+      "expected": "A globe of the era I would play",
+      "happened": "The title globe shows the present day (Ukraine, Gaza, Hormuz crises of 2026). I started a 1990 game with a seed code so I never saw an era picker or a 1990 globe.",
+      "kind": "other",
+      "screenshot": "sessions/marcus-term/001-title.png"
+    },
+    {
+      "where": "Month 1 mission card: The move for your mission",
+      "expected": "Why a US president running for re-election is told to court Iran",
+      "happened": "Advice says Mission: Iran needs -45+, now -75. No goal moves that we can see. I only understood after month 2 when the result card said Mend ties with Iran, needs -45. The mission is Win the coming election, and the Iran goal sits behind All goals (2).",
+      "kind": "naming",
+      "screenshot": "sessions/marcus-term/005-m1b.png"
+    },
+    {
+      "where": "[trust] Result card, Mission line",
+      "expected": "One consistent Iran number",
+      "happened": "Month 5 card: mission Mend ties with Iran -82 to -75 while the same card said Iran's view of you -74 to -69. Month 4: Court Iran in month 3 ended at -83 after being -69. Two directions of the relationship are shown under one label and I could not tell which one counts.",
+      "kind": "other",
+      "screenshot": "sessions/marcus-term/029-r5b.png"
+    },
+    {
+      "where": "Month 5 map: Order menu for Iran",
+      "expected": "Add to this month adds the order",
+      "happened": "Pressing the label Add to this month did nothing (orders stayed 1 of 6). Pressing the same spot by position worked. The open order menu also covers part of the Execute button, so Execute did nothing until I closed the menu with the small X.",
+      "kind": "affordance",
+      "screenshot": "sessions/marcus-term/027-r5.png"
+    },
+    {
+      "where": "Desk, Your own orders, All orders",
+      "expected": "Courting Iran is one step away",
+      "happened": "Six steps from the desk (own orders, All orders, Target dropdown, type Iran, pick Iran, Add). First press of All orders showed nothing; it opened on the second press. On the Map it is three steps. Court Iran was the mission move but was not in the 3 orders to consider most months.",
+      "kind": "backtrack",
+      "screenshot": "sessions/marcus-term/041-m7h.png"
+    },
+    {
+      "where": "[trust] Month 6 result: World tension",
+      "expected": "A reason for tension 35 to 48 in one month",
+      "happened": "Tension jumped +13. The only clue was a ticker line (Pakistan TESTS NUCLEAR WEAPON). The Why? link beside tension took me to another page of the report, not an explanation.",
+      "kind": "other",
+      "screenshot": "sessions/marcus-term/030-why1.png"
+    },
+    {
+      "where": "[trust] Month 10 result: Approval 74 to 67, Stability 72 to 62",
+      "expected": "A named cause for a 10 point stability fall",
+      "happened": "The card led with a French phone call (+4). The cause (a deadly flu spreading in the US, Sep 1990) was only in the ticker and in next month's crisis, Outbreak. Two months passed before the drop made sense.",
+      "kind": "other",
+      "screenshot": "sessions/marcus-term/048-r9.png"
+    },
+    {
+      "where": "Result card art",
+      "expected": "Art that matches the event",
+      "happened": "A phone call with Italy or Turkey shows a screen reading 377 SEATS MAJORITY WON; the lockdown shows the same crowd art as the general strike. Decorative, but it reads as a result I did not get.",
+      "kind": "misread",
+      "screenshot": "sessions/marcus-term/045-r8.png"
+    },
+    {
+      "where": "Advice panel, months 2 and 9",
+      "expected": "To know whom to follow when staff disagree",
+      "happened": "Interior Minister: best for your mission. Finance Minister: puts no goal at stake. Chief of Staff: trust at home. I understood each speaker and the Helps: Mend ties with Iran (bonus) tag, which was the most useful thing in the advice. But the Foreign Minister recommended Court Iran as the mission move while the same card said no goal moves that we can see, which contradicts itself.",
+      "kind": "other",
+      "screenshot": "sessions/marcus-term/016-m4.png"
+    },
+    {
+      "where": "[trust] Desk header, political capital",
+      "expected": "Capital I spend is capital I have",
+      "happened": "From month 5 I sat at the 6 cap with a warning (2 lost: you can hold at most 6). Month 3 header said 3 of 6 while the check list said 5 now, 2 spent, 3 left; the header counts what is left, the list what you had. I read it as a mismatch for a minute.",
+      "kind": "other",
+      "screenshot": "sessions/marcus-term/014-m3c.png"
+    },
+    {
+      "where": "Month 7 and 8 art and ticker",
+      "expected": "The Soviet Union shown as the Soviet Union",
+      "happened": "The Soviet Union is drawn with the Russian white-blue-red tricolor in a 1990 game (month 7 and 8 cards). A military historian notices at once.",
+      "kind": "other",
+      "screenshot": "sessions/marcus-term/042-r7.png"
+    },
+    {
+      "where": "Month 2 General strike; Month 1 to 12 events",
+      "expected": "A 1990 world",
+      "happened": "A general strike paralyses the United States (Feb 1990). Japan launches airstrikes on North Korea (Jul 1990), then South Korea does too. Pakistan fields a nuclear arsenal. Japan asks for a naval base in the US (Nov 1990). 'Back the stabilization force' appears in Gaza in 1990 (a 2025 idea). Saddam says 'we read this as a constructive signal' on the Iraq sanctions vote in June, and August passes with no Kuwait. Debt shown at 123% of GDP for 1990 US (it was near 55%).",
+      "kind": "other",
+      "screenshot": "sessions/marcus-term/049-r9all.png"
+    },
+    {
+      "where": "Month 2 to 12, repeated templates",
+      "expected": "Varied crises",
+      "happened": "The North Korea warship incident of month 1 came back in month 11 as a China incident with the same three answers and same text. Calls from the same leaders (Thatcher, Mulroney, Kaifu) repeat with the same Promise full support answer, so 'choose all recommended' became the real game.",
+      "kind": "dashboard-feel",
+      "screenshot": "sessions/marcus-term/054-r11.png"
+    },
+    {
+      "where": "Menu",
+      "expected": "A visible Replay or Branch from here",
+      "happened": "I opened Menu: Cabinet, World, Chronicle, Codex, Settings, Save and load. I did not find a way to replay the same month with the opposite choice in the menu; the title screen mentions it under Saved games.",
+      "kind": "hesitation",
+      "screenshot": "sessions/marcus-term/058-menu.png"
+    },
+    {
+      "where": "Familiarity question",
+      "expected": "A question I can answer once",
+      "happened": "Clear and quick. I picked I know this since 1990 is my period. The sample sentence helped me choose. I never missed the explanations. For my weak areas (Africa, Southeast Asia) I would have liked a per-region option.",
+      "kind": "other",
+      "screenshot": "sessions/marcus-term/003-seedgo.png"
+    }
+  ],
+  "bugs": [
+    {
+      "title": "Add to this month in the Map order menu ignores a label press",
+      "steps": [
+        "Month 5, Map mode, tap Iran on the globe",
+        "Order menu opens at right, press the text Add to this month under Court Iran"
+      ],
+      "expected": "Order added, Orders 2 of 6",
+      "actual": "Nothing happened (Orders stayed 1 of 6, no Ordered stamp). Pressing the same card by screen position worked. Execute month 5 was also unreachable (menu covers it) and silently did nothing.",
+      "severity": "S3",
+      "screenshot": "sessions/marcus-term/027-r5.png"
+    },
+    {
+      "title": "Why? link beside World tension navigates the report instead of explaining",
+      "steps": [
+        "Month 6 result, World tension 35 to 48",
+        "Press Why?"
+      ],
+      "expected": "A list of what pushed tension up",
+      "actual": "The report jumped to its Home and security page; no explanation of tension was shown",
+      "severity": "S3",
+      "screenshot": "sessions/marcus-term/030-why1.png"
+    },
+    {
+      "title": "1990 world contains post-1990 and impossible events and art",
+      "steps": [
+        "Play the 1990 USA Term for 12 months"
+      ],
+      "expected": "Plausible 1990 events and symbols",
+      "actual": "Russian tricolor for the USSR, Japan airstrikes on North Korea, Japan naval base request in the US, stabilization force in Gaza, US debt 123% of GDP",
+      "severity": "S2",
+      "screenshot": "sessions/marcus-term/042-r7.png"
+    },
+    {
+      "title": "Mission Iran number changes meaning between cards",
+      "steps": [
+        "Months 3 to 5, read the Mission line on each result card and the Iran lines under it"
+      ],
+      "expected": "One Iran figure per goal",
+      "actual": "Mission shows -82 to -75 while Iran's view of you shows -74 to -69 on the same card",
+      "severity": "S2",
+      "screenshot": "sessions/marcus-term/029-r5b.png"
+    }
+  ],
+  "suggestions": [
+    {
+      "what": "Put the single cause of every large move in the lead of the result card (flu outbreak behind a 10 point stability fall, a nuclear test behind +13 tension) and make Why? open the list of causes.",
+      "goal_served": "Cause and effect explained in plain terms after each month"
+    },
+    {
+      "what": "Show the second goal (Mend ties with Iran, needs -45, now -66) on the desk next to the mission title from month 1, and make the Foreign Minister's advice agree with the goal text.",
+      "goal_served": "Clarity; understanding who recommends what and why"
+    },
+    {
+      "what": "A button on the result card: Replay this month with a different answer (branch from here), and a side by side comparison of the two outcomes.",
+      "goal_served": "Replay the same situation with a different choice and compare outcomes"
+    },
+    {
+      "what": "Check the 1990 era pack for flags, names, debt level and events that could not happen (USSR flag, Japan strikes, Gaza stabilization force).",
+      "goal_served": "Historical eras behave plausibly"
+    },
+    {
+      "what": "Make the mission order (Court Iran) a card on the desk every month it is useful, not only when the game offers a mission call.",
+      "goal_served": "Clarity; no UI hunts"
+    }
+  ],
+  "delight": [
+    "Result card on month 1: You chose Condemn publicly, NK view -85 to -90 (-5), approval +2, tension +2, with a sentence of why. This is exactly the cause and effect I wanted (sessions/marcus-term/007-r1.png).",
+    "Map mode: tap Iran and get a menu of orders with odds (Spy on Iran 95%, Destabilize 76%) and plain reasons for the ones I cannot take (sessions/marcus-term/025-map2.png).",
+    "Delayed consequences: 'The outcome of Soviet Union's offer comes in 3 months; we will tell you', then 'Remember Soviet Union's offer?' in month 12.",
+    "The Check what will happen list before Execute, with capital totals that add up (sessions/marcus-term/010-m2c.png).",
+    "The Helps: Mend ties with Iran (bonus) tag on an answer card, which links my choice to my goal."
+  ],
+  "scores": {
+    "fun": {
+      "value": 6,
+      "reason": "Twelve months were engaging while I was reading causes; from month 5 most months were three calls and a press of Choose all recommended."
+    },
+    "clarity": {
+      "value": 6,
+      "reason": "The desk, check list and result cards are well laid out and explain my own choices. Large swings with no named cause, the Iran numbers and the mission wording cost points."
+    },
+    "visual": {
+      "value": 7,
+      "reason": "Clean and consistent at 1920x1080. Art sometimes shows the wrong thing (377 seats for a call, wrong USSR flag) but I skip decoration."
+    },
+    "feels_like_a_game": {
+      "value": 6,
+      "reason": "More of a briefing desk than a game, which suits me. Repeated crises and calls make it feel procedural."
+    },
+    "agency": {
+      "value": 7,
+      "reason": "Never blocked in a way I could not get out of; two small blocks (Add button, Execute covered by the order menu) and one slow path to Court Iran."
+    },
+    "realism": {
+      "value": 4,
+      "reason": "1990 with Japanese airstrikes on North Korea, a US general strike, a Russian tricolor for the USSR, a Japan naval base request and a stabilization force in Gaza does not read as a plausible 1990. Quote format and relation figures were credible."
+    },
+    "replay": {
+      "value": 6,
+      "reason": "Seed codes and a save and load menu promise replay; I did not find a one step replay with the opposite choice, so the main reason I came was not served in this session."
+    },
+    "recommend": {
+      "value": 6,
+      "reason": "I would tell a history friend to try the cause and effect cards, with a warning that the 1990 world drifts quickly into fiction."
+    }
+  },
+  "quit_point": null,
+  "verbatim": "I like being told exactly what my choice did. I do not like being told a flu or a nuclear test moved my country ten points two months after the fact. And why is the Soviet Union flying a Russian flag.",
+  "tasks": {
+    "end_reached": false,
+    "second_game": false
+  }
+}

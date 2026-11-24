@@ -1,0 +1,72 @@
+{
+ "persona": "dan",
+ "variant": "dan-term",
+ "panel_version": "1.2",
+ "build": "2083597",
+ "iteration": 4,
+ "minutes_played": 75,
+ "scenarios": [
+  {"id": "D1", "outcome": "partial", "turns": 12,
+   "steps": ["Entered seed T2026-RUS-DAN01 via Play a seed", "Chose I know this", "Played months 1-12 of One Term as Russia (desk months 1-8, map months 3, 9-12)", "Used All orders, forecasts, Ask your staff, Why your score moved", "Final month: struck Turkey's nuclear facilities as an edge case"],
+   "notes": "Learned the limits well: political capital cap and loss, meeting limit of 3, diminishing returns on National address (named in the report). Did not play to the end of the term, and I still do not know if the 115 score mission is reachable (score drifts 100 to 90, 'heading to 86')."},
+  {"id": "D2", "outcome": "partial", "turns": 12,
+   "steps": ["Repeated National address two months running (+4 then +2.4, 'smaller each time')", "Tried ceasefire proposals (6% then 9%, both failed)", "Struck Turkey nuclear facilities: approval +4, stability +4, tension +12, Erdogan keeps the door ajar"],
+   "notes": "Repeat-spam is correctly discouraged. The Turkey strike looked like a free win, which is the dominant-move smell I hate."}
+ ],
+ "friction": [
+  {"where": "Title screen, Play a seed", "expected": "A code field next to the button", "happened": "Seed box appears only after pressing Play a seed; worked first time, seed accepted", "kind": "hesitation", "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/dan-term/002-seed.png"},
+  {"where": "Familiarity screen, who is who", "expected": "Names I know", "happened": "Mojtaba Khamenei as Supreme Leader, Prime Minister Andy Burnham (UK), Prime Minister Sanae Takaichi (Japan), Kramatorsk fortress belt: newest office holders I would not know; I chose I know this, so no underline helped; the who-is-who strip on the first screen did help for Khamenei only", "kind": "naming", "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/dan-term/003-seed2.png"},
+  {"where": "Month 10 call, Terror in the capital", "expected": "Unfamiliar groups explained", "happened": "'the network' behind the terror in Poland (answer: Strike the network's sponsors) is never named; foreign interference events do not say which agency", "kind": "naming", "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/dan-term/061-m10.png"},
+  {"where": "Crisis cards, How much? button", "expected": "Numbers for the answers", "happened": "Button flips to Hide sizes but crisis answers stay worded as 'down a lot'; only orders get numbers (forecast)", "kind": "affordance", "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/dan-term/005-howmuch.png"},
+  {"where": "Month 2 Why? link under approval", "expected": "Explanation of approval move", "happened": "Opened the full report tab instead; the explanation was in a different tab", "kind": "affordance", "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/dan-term/012-why.png"},
+  {"where": "All orders cards", "expected": "Capital cost as a number", "happened": "Cost shown as coin icons; numbers only appear in the right panel after adding; orders marked free still cost a defense budget percent", "kind": "trust", "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/dan-term/019-mil.png"},
+  {"where": "Your own orders", "expected": "Suggestions I can act on", "happened": "Early months the one suggestion was Offer defense pact to China, disabled ('won't sign in the middle of a war'). A suggestion that can never be used", "kind": "other", "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/dan-term/014-orders.png"},
+  {"where": "Desk top bar, political capital", "expected": "Capital I have", "happened": "Label says what orders cost but the number is what is left after my planned spending (month 9: header 2 of 6, right panel 3 now); it changes as I click", "kind": "trust", "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/dan-term/055-m9.png"},
+  {"where": "Month 3-4 capital", "expected": "Use it or keep it", "happened": "Capital hit the cap of 6 and 1-2 per month was lost; nothing in the default flow pushes you to spend it", "kind": "other", "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/dan-term/028-m4.png"},
+  {"where": "Foreign Minister advice", "expected": "Advice that varies with the situation", "happened": "'Reassure: no threat intended' recommended for nearly every Western call, month after month", "kind": "dashboard-feel", "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/dan-term/028-m4.png"},
+  {"where": "Month 4 report", "expected": "My ceasefire proposal as the headline", "happened": "The only thing I chose myself (failed ceasefire, 6%) sat in a small 'also this month' tile under a staff meeting headline", "kind": "misread", "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/dan-term/035-ev.png"},
+  {"where": "Orders search with no field focused", "expected": "Search box focused", "happened": "Typing 'ceasefire ukraine' with no field focused fired hotkeys (M switched Map to Desk)", "kind": "retry", "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/dan-term/029-cf.png"},
+  {"where": "Month 9 report", "expected": "Reason for stability 54 to 44", "happened": "Choice explained -3; the other -7 has no line under Why your numbers moved (only counter-intelligence, war weariness, economy)", "kind": "trust", "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/dan-term/060-r9c.png"},
+  {"where": "Header, Your calls 1 open", "expected": "To find and close the open call", "happened": "Stayed at 1 open from month 7 to 13 and I could not see which call it was; the assassination-attempt crisis from month 3 reappeared in month 13", "kind": "affordance", "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/dan-term/068-menu.png"},
+  {"where": "Month 11 Kim Jong Un call", "expected": "New situation", "happened": "Identical card to month 3 (same quote, same three answers); the quote 'I did not vote for them, but this was the right call' is used for different choices", "kind": "dashboard-feel", "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/dan-term/063-m11.png"},
+  {"where": "Month 12 Turkey strike result", "expected": "Severe reaction", "happened": "Approval +4, stability +4; Erdogan 'takes the call and keeps the door ajar', Trump 'I will put it to my government'", "kind": "other", "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/dan-term/067-r12b.png"},
+  {"where": "Menu dropdown on report screen", "expected": "Full menu list", "happened": "Dropdown clipped, only Cabinet and World visible", "kind": "other", "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/dan-term/068-menu.png"},
+  {"where": "Mission bar", "expected": "To know if 115 is reachable", "happened": "Score fell 100 to 90 over a year and 'heading to 86' while the mission needs 115; no way to see the lever", "kind": "hesitation", "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/dan-term/054-r8b.png"},
+  {"where": "Map mode, card flow", "expected": "Whole region visible", "happened": "Left card covers part of the globe and the globe auto-rotates to each card; fine, but Europe is often under the card", "kind": "other", "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/dan-term/023-map1.png"},
+  {"where": "Crisis answers with free label", "expected": "Free means safe", "happened": "Nuclear strike on Ukraine card shows 'free' beside NO UNDO; free refers to capital only", "kind": "trust", "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/dan-term/056-mapc.png"}
+ ],
+ "bugs": [
+  {"title": "Finance Minister briefing reports Debt-to-GDP 2000%", "steps": ["Month 1, Ask your staff", "Finance Minister briefing"], "expected": "A plausible ratio (Russia is about 20%)", "actual": "Debt-to-GDP ratio is 2000% with a warning that it hampers growth", "severity": "S2", "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/dan-term/009-staff.png"},
+  {"title": "Strike on Turkey's nuclear facilities is rewarded", "steps": ["Month 12 as Russia", "Answer Turkey nears the threshold with Strike the facilities"], "expected": "Severe diplomatic and domestic consequences", "actual": "Approval +4, stability +4, tension +12, Turkey and US stay conversational", "severity": "S2", "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/dan-term/067-r12b.png"},
+  {"title": "Stability drops with no explanation", "steps": ["Month 9, choose Fire them and prosecute", "Open report, check Why your numbers moved"], "expected": "All of -10 explained", "actual": "-3 explained", "severity": "S3", "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/dan-term/060-r9c.png"},
+  {"title": "Open call counter never clears", "steps": ["Play months 7 to 13", "Watch Your calls in the top bar"], "expected": "Shows which call and clears when answered", "actual": "Stays at 1 open; assassination crisis returns in month 13", "severity": "S3", "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/dan-term/068-menu.png"},
+  {"title": "Menu dropdown clipped on the report screen", "steps": ["Finish a month", "Press Menu"], "expected": "All entries visible", "actual": "Only Cabinet and World visible", "severity": "S4", "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/dan-term/068-menu.png"}
+ ],
+ "suggestions": [
+  {"what": "Show the capital cost as a number on every order card and give the top bar one definition (have now, or left after plan)", "goal_served": "Can find out why every number moved"},
+  {"what": "List every contributor to a big stability or approval move in the report, with sizes, and link Why? to the same card", "goal_served": "Can find out why every number moved"},
+  {"what": "Make the Foreign Minister advice depend on relations so repeated Reassure does not appear, and show the downside of free options (for example Sign it)", "goal_served": "No single dominant strategy"},
+  {"what": "Scale reactions to wild moves (strikes on a third country's nuclear sites) in reputation, allies and approval", "goal_served": "Fake depth; one repeated move wins"},
+  {"what": "Let me see in the mission bar what could lift the score from 90 to 115", "goal_served": "Play a full term as a tough country and understand every rule"}
+ ],
+ "delight": [
+  "Why your score moved panel: four parts, every line with a size (017-now.png)",
+  "National address report line: 'Approval +2.4, smaller each time' (048-r6c.png)",
+  "Forecast on order cards matched what happened (020-fc.png, 039-fc2.png, 041-r5.png)",
+  "Clicking Ukraine on the map opens every order against it with success chances (056-mapc.png)",
+  "Meeting limit with 'Your calendar is full' (043-pre6.png)"
+ ],
+ "scores": {
+  "fun": {"value": 7, "reason": "Real trade-offs in the orders (capital, meeting slots, forecasts) but the routine cabinet flow made most months click-through"},
+  "clarity": {"value": 7, "reason": "Staff advice is clear about who recommends what; the capital number and open-call counter muddy it"},
+  "visual": {"value": 8, "reason": "Handsome scenes and a readable map at 1920x1080"},
+  "feels_like_a_game": {"value": 7, "reason": "Report cards and deadlines feel like a game; the recycled quotes and calls do not"},
+  "agency": {"value": 7, "reason": "Only blocked by a disabled suggestion; I always saw why"},
+  "realism": {"value": 5, "reason": "Debt 2000%, Turkey strike reward, near-identical foreign calls month after month"},
+  "replay": {"value": 6, "reason": "Want to try other seats, but doubt a Term has 48 months of fresh decisions"},
+  "recommend": {"value": 6, "reason": "Good transparency for a strategy fan; depth over time still unproven"}
+ },
+ "quit_point": null,
+ "verbatim": "The numbers are honest, which most games are not. But when the same call from Kim comes back with the same words and the Foreign Minister says reassure again, I start to wonder if there is a game under it.",
+ "tasks": {"end_reached": false, "second_game": false}
+}

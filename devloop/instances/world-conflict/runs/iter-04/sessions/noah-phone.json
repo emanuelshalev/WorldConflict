@@ -1,0 +1,130 @@
+{
+  "persona": "noah",
+  "variant": "noah-phone",
+  "panel_version": "1.2",
+  "build": "2083597",
+  "iteration": 4,
+  "minutes_played": 14,
+  "scenarios": [
+    {
+      "id": "control-HC-ARE-NOAH1",
+      "outcome": "partial",
+      "steps": [
+        "Title screen: tapped Play a seed, typed HC-ARE-NOAH1, started as UAE (Hormuz Convoy)",
+        "Picked Guide me on the news question, Take office",
+        "Months 1-4 played (Desk months 1,2,4; Map months 3,4 order added from a country sheet)",
+        "Pressed the big button in month 4 without answering the crisis, got a quiet-month screen with approval -5",
+        "Stopped at month 5 (would have quit)"
+      ],
+      "turns": 4,
+      "notes": "Seed code worked. Reached month 5 of 12. Did not start a second game: he had quit."
+    },
+    {
+      "id": "N1",
+      "outcome": "partial",
+      "steps": ["Started in about 25 s with the seed box; first big moment (a summit picture and +10) came at the end of month 1, about 3 minutes in"],
+      "turns": 4,
+      "notes": "Starting is fast, but it takes a lot of tapping before anything happens."
+    },
+    {
+      "id": "N2",
+      "outcome": "partial",
+      "steps": ["Spy result screen (+25, PARTLY DONE) and the summit DONE stamp are screenshot-worthy; no share button seen"],
+      "turns": 4
+    }
+  ],
+  "friction": [
+    {"where": "Title screen, Play a seed", "expected": "A box to type the code appears where I tapped", "happened": "The box opened below the button, partly under the fold on a phone; I had to know to look down. Worked fine after that.", "kind": "layout", "screenshot": "shots/noah-phone/002-seed.png"},
+    {"where": "Desk, every decision card heading ('Your call: your advisers disagree...')", "expected": "A normal wide line of text", "happened": "phone: the sentence is squeezed into a narrow column next to the How much? and Ask your staff buttons, ten short lines tall, pushing the answers off screen", "kind": "layout", "screenshot": "shots/noah-phone/005-m1b.png"},
+    {"where": "Desk, month 1 first screen", "expected": "See the crisis and its answers", "happened": "phone: the goal box, the intro and the crisis picture fill the screen; the answers are two scrolls down, hidden behind a bar that says '3 more answers and Skip below'", "kind": "layout", "screenshot": "shots/noah-phone/004-m1.png"},
+    {"where": "Month result screen, STEP ACHIEVED stamp", "expected": "A clear stamp", "happened": "phone: the stamp sits on top of the month title and hides it", "kind": "layout", "screenshot": "shots/noah-phone/030-r2.png"},
+    {"where": "See all 9 list", "expected": "A close button I can reach", "happened": "phone: the list opens as a long panel; the Close button is above the screen and scrolling would not bring it back; I only got out by tapping See all 9 again", "kind": "layout", "screenshot": "shots/noah-phone/021-m2h.png"},
+    {"where": "Ask your staff dialog", "expected": "Read the adviser's answer", "happened": "phone: two-column dialog is wider than the screen, the answer text is cut off at the right edge, I could not read it", "kind": "layout", "screenshot": "shots/noah-phone/038-ask.png"},
+    {"where": "Map mode on the phone", "expected": "A big map to tap", "happened": "phone: the map is a small strip at the top (about 280 px), the crisis and big button sit under it. Tapping Saudi Arabia opened a clear sheet with Add buttons and a Why button; that part was good", "kind": "layout", "screenshot": "shots/noah-phone/032-map1.png"},
+    {"where": "Results screen tabs (The month, Diplomacy, Home front)", "expected": "See all tabs", "happened": "phone: third tab cut off ('Hom'); only works if you notice you can swipe", "kind": "layout", "screenshot": "shots/noah-phone/031-r2b.png"},
+    {"where": "Month 2 (9 things)", "expected": "A few quick choices", "happened": "Nine cards to go through (crisis, pact, mission, call from Xi, Saudi call, interview, orders). Too much for a 60 second patience; I skipped the Interview and Saudi call without reading", "kind": "dashboard-feel", "screenshot": "shots/noah-phone/019-all9.png"},
+    {"where": "Recommended orders card, Choose button when I had too little political capital", "expected": "Something happens or I am told why", "happened": "Tapped Choose twice on Reform program (costs 2, I had 1): nothing, no message. The reason only showed two screens later in Your own orders ('Needs 2, you have 1')", "kind": "blocked", "screenshot": "shots/noah-phone/028-m2o.png"},
+    {"where": "Desk, month 4 before answering", "expected": "A big obvious button to move on", "happened": "In Desk mode there is no Execute button until the last card; only 'Next'. In Map mode the big orange Execute is always there. I did not know that and went to Map to press it", "kind": "affordance", "screenshot": "shots/noah-phone/037-m4.png"},
+    {"where": "Month 1 review, 'Choose' labels", "expected": "More US jets at Al Dhafra (my first tap)", "happened": "My own mis-tap picked the second card (Take the Iranian meeting); the review screen showed it clearly and I could have changed it. Not a game fault, but the two cards look the same", "kind": "misread", "screenshot": "shots/noah-phone/011-m1h.png"},
+    {"where": "Month 5 report after pressing Execute with the crisis unanswered", "expected": "Something happened; I did a big move or nothing", "happened": "'A quiet month: the world moved on its own' with a plain black picture, while approval dropped 78 to 73 and a scandal is pending. Felt like it lied", "kind": "trust", "screenshot": "shots/noah-phone/039-r4.png"},
+    {"where": "Mission line 'Iran relations -70 to -60, needs -90'", "expected": "Higher is good", "happened": "The goal said above -90, the line says needs -90; with minus numbers I could not tell if -60 was good or bad", "kind": "misread", "screenshot": "shots/noah-phone/012-r1.png"},
+    {"where": "Month 1 goal box", "expected": "Short goal", "happened": "Five goals in one long sentence: no open war with Iran, Tehran door open, relations -90, 119 score, approval 80%. Did not read it", "kind": "dashboard-feel", "screenshot": "shots/noah-phone/004-m1.png"},
+    {"where": "Familiarity question", "expected": "Pick how much help", "happened": "I chose Guide me, since I do not know most names. Clear and fast, took 5 seconds", "kind": "other", "screenshot": "shots/noah-phone/003-seed2.png"},
+    {"where": "Names: Al Dhafra, Fujairah, Hormuz, IRGC, Mojtaba Khamenei, Abiy Ahmed, Mohammed bin Salman", "expected": "Know who or where", "happened": "Did not know any of them except Xi. Underlines and the i were there; I did not tap them", "kind": "naming"},
+    {"where": "Terms: pact, treaty, legitimacy, political capital (the diamond), Confidence at home, Intelligence on", "expected": "Plain words", "happened": "Did not know legitimacy or political capital. The diamond number worked once I saw it go down, but nobody said what it was", "kind": "naming", "screenshot": "shots/noah-phone/011-m1h.png"},
+    {"where": "Month 2 Ethiopia pact offer, Decline card", "expected": "All three answers look equal", "happened": "Decline had an orange outline, so it looked like the pick, but the star was on Sign the treaty. Unsure what the orange meant", "kind": "affordance", "screenshot": "shots/noah-phone/014-m2b.png"},
+    {"where": "Sudan crisis in month 2: 'See all' items marked Open", "expected": "Open is a button", "happened": "Open buttons and the cards both look pressable; the whole card did nothing different from the button", "kind": "affordance"}
+  ],
+  "bugs": [
+    {
+      "title": "Choose on an unaffordable order does nothing and says nothing",
+      "steps": ["Month 2, spend capital down to 1", "Open Recommended orders (1) card Reform program (2)", "Tap Choose"],
+      "expected": "A message that I need 2 and have 1, or a disabled button",
+      "actual": "Nothing visible happens; reason only appears on the Your own orders card",
+      "severity": "S3",
+      "screenshot": "shots/noah-phone/028-m2o.png"
+    },
+    {
+      "title": "Ask your staff dialog is cut off on a phone",
+      "steps": ["Phone 390 wide, open any crisis", "Tap Ask your staff"],
+      "expected": "Adviser answer readable",
+      "actual": "Right column runs off the screen; text truncated",
+      "severity": "S2",
+      "screenshot": "shots/noah-phone/038-ask.png"
+    },
+    {
+      "title": "See all list has no reachable Close on a phone",
+      "steps": ["Month 2, tap See all 9", "Scroll the list down", "Look for Close"],
+      "expected": "Close within reach",
+      "actual": "Close scrolls out of view; list only closes by tapping See all again",
+      "severity": "S3",
+      "screenshot": "shots/noah-phone/021-m2h.png"
+    },
+    {
+      "title": "Month report calls a month with -5 approval and a pending scandal 'quiet'",
+      "steps": ["Month 4: leave Corruption scandal unanswered", "Execute"],
+      "expected": "Report names the scandal and what its default did",
+      "actual": "'A quiet month: the world moved on its own', black image; approval 78 to 73 in the details",
+      "severity": "S2",
+      "screenshot": "shots/noah-phone/039-r4.png"
+    },
+    {
+      "title": "STEP ACHIEVED stamp covers the month title on phone",
+      "steps": ["Finish month 2 on a 390 px screen"],
+      "expected": "Stamp clear of the title",
+      "actual": "Stamp overlaps JAN 2027 YOUR MONTH",
+      "severity": "S4",
+      "screenshot": "shots/noah-phone/030-r2.png"
+    }
+  ],
+  "suggestions": [
+    {"what": "Make the biggest button always visible in Desk mode as well, with Skip the rest as a first-class choice", "goal_served": "N1 do something huge fast"},
+    {"what": "Cap a month at 3 things for a new player and fold the rest into Staff decides", "goal_served": "N1, no homework"},
+    {"what": "Let the result screen end with one shareable card (picture, number, one line)", "goal_served": "N2 screenshot"},
+    {"what": "Put the goal as five ticks with one short phrase each, not a sentence", "goal_served": "No walls of text"},
+    {"what": "Show the reason on the Choose button when it cannot be afforded", "goal_served": "Never blocked without knowing why"},
+    {"what": "Phone: stack the call heading above the buttons, make Ask your staff a single column", "goal_served": "Phone play"}
+  ],
+  "delight": [
+    "Seed box worked first time and the first screen after was ready to play",
+    "Summit picture with big green DONE and +10 (shots/noah-phone/012-r1.png)",
+    "Spy on Saudi Arabia: PARTLY DONE +25 intelligence, with the Crown Prince's angry quote (shots/noah-phone/036-r3.png)",
+    "Tapping a country on the map opens a sheet with Add buttons; Why on blocked orders (shots/noah-phone/033-map2.png)"
+  ],
+  "scores": {
+    "fun": {"value": 5, "reason": "The spy move and the summit were fun; the rest was reading cards."},
+    "clarity": {"value": 4, "reason": "I could always find the next button, but I did not know what most words or diamonds meant."},
+    "visual": {"value": 7, "reason": "The result pictures and stamps look good; the black picture in month 5 and the cut-off dialog do not."},
+    "feels_like_a_game": {"value": 5, "reason": "The map sheet feels like a game; the Desk feels like a form."},
+    "agency": {"value": 5, "reason": "Nothing stopped me except one silent Choose, but the month-5 report did not tell me what my choice did."},
+    "realism": {"value": 6, "reason": "I could not judge much; the quotes from leaders felt real."},
+    "replay": {"value": 4, "reason": "I would try another country if a friend dared me, not by myself."},
+    "recommend": {"value": 4, "reason": "I would show friends the spy screen, but I would not say play it, too many steps."}
+  },
+  "quit_point": "Month 5, right after the 'A quiet month' report with a black picture and approval down 5 after I pressed the big button and nothing I chose seemed to matter; before that, month 2 with nine things to go through nearly lost me.",
+  "verbatim": "ok the spy thing was sick but why are there nine cards, I just want to press the big button and see something blow up",
+  "tasks": {
+    "end_reached": false,
+    "second_game": false
+  }
+}

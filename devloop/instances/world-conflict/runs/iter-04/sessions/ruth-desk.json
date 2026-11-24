@@ -1,0 +1,46 @@
+{
+ "persona": "ruth", "variant": "ruth-desk", "panel_version": "1.2", "build": "876ea58", "iteration": 4, "minutes_played": 60,
+ "scenarios": [{"id":"R1","outcome":"achieved","turns":12,"steps":["Entered seed CO-UKR-RUTH1 under Play a seed","Chose Some help","Played 12 months as Ukraine, mostly picking referendum, treaty and negotiation options","Read the reveal including The truth","Pressed New game and started a second game"],"notes":"Mission complete, grade B, 634. The real-world comparison (The truth) answered my wish to see what really happened."}],
+ "friction": [
+  {"where":"Month 2 desk, The move for your mission","expected":"A button I cannot afford says so","happened":"With 0 political capital left, Choose on Court United States did nothing, no message. Month 3 showed a reason on similar cards (calendar full).","kind":"blocked","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/ruth-desk/014-m2e.png"},
+  {"where":"Crisis banner 'If you leave it: <answer>'","expected":"Leaving it means nothing happens","happened":"Leaving a crisis open silently picks a named answer (month 2: Emergency security powers, which hurts a goal). Month 1 said it passes with no effect. Inconsistent.","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/ruth-desk/010-m2.png"},
+  {"where":"Month 1 desk, Choose buttons","expected":"Clear which Choose belongs to which card","happened":"Three near-identical Choose buttons; the Defense Minister card text is clipped at the bottom.","kind":"affordance","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/ruth-desk/005-m1.png"},
+  {"where":"Choose all recommended","expected":"Understand what it leaves out","happened":"It skips the crisis and the mission move; I had to find them in the left list. 'Your call stays open' is unclear wording.","kind":"hesitation","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/ruth-desk/008-m1d.png"},
+  {"where":"Month 5 result card","expected":"One Washington number","happened":"Mission says Washington 36 to 42, the relations line on the same card says United States view of you 34 to 40.","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/ruth-desk/025-r4.png"},
+  {"where":"Month 2 desk, next-month capital preview","expected":"Stable number","happened":"Preview said start next month with 5, then 4 after I added a second order. Consistent but shifting as I click (trust).","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/ruth-desk/009-r1.png"},
+  {"where":"Verdict screen","expected":"Goal was score 82+","happened":"Says final score 86 against par 102, the usual for this seat. Two targets, 82 and 102 (trust).","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/ruth-desk/055-end2.png"},
+  {"where":"Ranking screen","expected":"Plain words","happened":"Competent top 10%, Random staff, Do-nothing staff, ladder, Statesman, Beat 634: gamer jargon.","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/ruth-desk/061-end_rank.png"},
+  {"where":"The truth screen","expected":"Plain numbers","happened":"Russia real military strength 1955k vs 1519k, ISW, Kyiv's 20, Better/Worse labels not explained; I did not know what k meant.","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/ruth-desk/060-end_truth.png"},
+  {"where":"Month 4 and later phone call cards: Sanae Takaichi, Mark Carney","expected":"Who they are","happened":"I knew Merz, Meloni, Macron, Lukashenko; Takaichi and Carney unknown; no explanation on the call cards.","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/ruth-desk/022-m4.png"},
+  {"where":"Month 4 Blackout winter, month 10 Enerhodar","expected":"Patriots, IAEA, Enerhodar explained","happened":"I guessed from the news. Someone who does not follow Ukraine would be lost; 'A guarantee by arsenal' was odd wording.","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/ruth-desk/045-m10.png"},
+  {"where":"Map mode, month 3","expected":"Know what the icons mean","happened":"Dozens of unlabelled round icons (all named Map marker), colours unexplained without opening Guide. Same decision panel as the desk, so I could do everything, but I would never use the map to decide.","kind":"affordance","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/ruth-desk/017-map3.png"},
+  {"where":"Month 6 result card","expected":"Next month button fully visible","happened":"Next month button partly cut off at the bottom edge at 1080 high.","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/ruth-desk/029-r5.png"},
+  {"where":"Month 12 Execute","expected":"See what my last month did","happened":"Straight to the reveal; the month 12 result card is never shown.","kind":"backtrack","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/ruth-desk/054-end1.png"},
+  {"where":"Moments screen, what went badly","expected":"Real failures","happened":"Negotiate through intermediaries listed as bad because political capital went 3 to 2; a cost is not a failure.","kind":"other","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/ruth-desk/057-end_b.png"},
+  {"where":"Title screen, Play a seed","expected":"Find the code box","happened":"Easy to find; the box opened but I had to tap inside it before typing. Fine.","kind":"hesitation","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/ruth-desk/002-seedbox.png"}
+ ],
+ "bugs": [
+  {"title":"Choose on an unaffordable order does nothing and says nothing","steps":["Month 2, spend all political capital","Open The move for your mission","Press Choose on Court United States"],"expected":"Disabled with a reason, as the calendar-full cards do","actual":"Nothing happens, no message","severity":"S2","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/ruth-desk/014-m2e.png"},
+  {"title":"Month 12 result card skipped before the reveal","steps":["Reach month 12","Press Execute month 12"],"expected":"Result card for month 12","actual":"Goes straight to The count","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/ruth-desk/054-end1.png"}
+ ],
+ "suggestions": [
+  {"what":"Disable or explain Choose when I cannot afford it, everywhere","goal_served":"R1: never blocked without a plain reason"},
+  {"what":"Keep The truth, and add a plain-language link to read more on each real event","goal_served":"R1: read what really happened"},
+  {"what":"Replace Competent, Random staff, Do-nothing staff with plain words; explain k","goal_served":"R2: no gamer jargon"},
+  {"what":"Say who each caller is on the card (Takaichi, Carney)","goal_served":"R2: an afternoon without a lookup"}
+ ],
+ "delight": ["Month 5 guarantee on paper and month 6 Land for a promise: real dilemmas a history teacher can argue (Budapest memorandum)","Month 6 callback: Remember Hostages in Belarus? Hostages released after secret talks","The truth screen comparing my world with the real one, with sources","The World Chronicle newspaper page"],
+ "scores": {
+  "fun": {"value":7,"reason":"Dilemmas were absorbing; months 8 to 10 blurred into pressing Choose all recommended."},
+  "clarity": {"value":6,"reason":"Seven or eight things a month and many Choose buttons; advice cards say who recommends what, which helped, but the left list and right panel repeat each other."},
+  "visual": {"value":7,"reason":"Handsome and readable at 1080p, but much small grey text and clipped cards."},
+  "feels_like_a_game": {"value":6,"reason":"More a briefing exercise than a game; fine for me."},
+  "agency": {"value":6,"reason":"One silent dead button (month 2) and a default answer that applies if I do nothing; otherwise I knew why."},
+  "realism": {"value":8,"reason":"Names, sequence and the Abu Dhabi talks comparison feel real; Ukraine content is accurate."},
+  "replay": {"value":6,"reason":"I would try the Middle East, but not tonight."},
+  "recommend": {"value":7,"reason":"I would tell a friend who reads the news, with a warning about the first month."}
+ },
+ "quit_point": null,
+ "verbatim": "Finally something that shows me what really happened next to what I did. But I do not know what half the buttons are for until I press them, and Choose should tell me when it will not work.",
+ "tasks": {"end_reached": true, "second_game": true}
+}

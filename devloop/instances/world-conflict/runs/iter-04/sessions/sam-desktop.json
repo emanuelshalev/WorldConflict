@@ -1,0 +1,61 @@
+{
+  "persona": "sam",
+  "variant": "sam-desktop",
+  "panel_version": "1.2",
+  "build": "2083597",
+  "iteration": 4,
+  "minutes_played": 14,
+  "scenarios": [
+    {"id": "S1", "outcome": "partial", "turns": 4, "notes": "Control game SL-CHN-SAM01 (Flashpoint, China, Scarborough). Played 4 months. Verdict: visibly crafted art and type, but a dense desk with number mismatches and a choose-all-then-execute loop that feels like clicking through.",
+     "steps": ["Title: Play a seed, typed SL-CHN-SAM01, started", "Familiarity: kept Some help", "Month 1 desk, chose two recommended orders and a crisis answer, skipped the mission move", "Month 2 desk, choose all recommended, then Map mode, added Court Philippines from the map", "Month 3 desk, choose all recommended, execute", "Month 4 result card and What happened recap"]},
+    {"id": "S2", "outcome": "partial", "turns": 2, "notes": "Compared the same order on desk (Choose, diamond cost) and map (Add to this month, coin icons, ORDERED stamp). Same outcome, different wording and idiom.",
+     "steps": ["Desk: mission order card with Choose button", "Map: tapped Philippines, order cards with Add to this month", "Added Court Philippines from the map and executed"]}
+  ],
+  "friction": [
+    {"where": "Month 1 desk, third crisis answer card (Pause and express regret)", "expected": "Recommendation line sits inside the card with padding", "happened": "The 'Recommended by your Finance Minister and your Chief of Staff' text overflows above the card top edge and the last line ('mission.') clips at the bottom; the card is cramped compared with the two above. Reference: Suzerain keeps text in fixed frames.", "kind": "dashboard-feel", "screenshot": "sessions/sam-desktop/004-m1.png"},
+    {"where": "Month 1 desk, header counters", "expected": "One resource, one number", "happened": "Header says 'Political capital (what orders cost) 3 of 6', then 'Orders 0 of 6', then 'Your calls 2 open'; left rail says '3 things'; right panel says '3 now, nothing spent'. Five counters for three tasks.", "kind": "trust", "screenshot": "sessions/sam-desktop/004-m1.png"},
+    {"where": "Month 1 'Choose' buttons", "expected": "Pressing the lowest Choose picks the crisis answer", "happened": "I pressed the 3rd 'Choose' and it hit 'Choose all recommended' in the right panel, which committed two orders I had not read. The controls share the label and look.", "kind": "affordance", "screenshot": "sessions/sam-desktop/006-x.png"},
+    {"where": "Month 1 result card", "expected": "The big number matches the small ones", "happened": "Big stamp says 'Approval -6'; the details line says approval 64 to 62 (-2). Mission line says Manila -65 to -56, the row below says -65 to -57 (+8).", "kind": "trust", "screenshot": "sessions/sam-desktop/009-r1.png"},
+    {"where": "Month 3 header vs right panel", "expected": "Same capital", "happened": "Header pill '4 of 6' while the right panel says '5 now, 1 spent, 4 left'. Month 4 result: header '6 of 6', result card '5 to 4 (-1)'.", "kind": "trust", "screenshot": "sessions/sam-desktop/016-m3.png"},
+    {"where": "Month 4 result: stability", "expected": "One stability change", "happened": "Choice card: 'at a cost: Stability -3'. Tile below: Stability -2. Header: 77 down 2.", "kind": "trust", "screenshot": "sessions/sam-desktop/017-r3.png"},
+    {"where": "Skip card wording, month 1 vs month 2", "expected": "Skip means the same thing", "happened": "Month 1: 'Leave it open: the crisis passes with no effect'. Month 2: 'Skip for now: your cabinet decides'. Same Skip button, opposite outcome. The mission card calls it 'Hold this month'.", "kind": "other", "screenshot": "sessions/sam-desktop/010-m2.png"},
+    {"where": "Vocabulary: 'Your call'", "expected": "One word per concept", "happened": "'Your call' labels a crisis, a mission move, and the header counter 'Your calls 2 open'. 'Mission', 'goal' and 'Your goal' are three words for one thing; 'goals on track 2 of 4' vs 'All goals (6)'.", "kind": "naming", "screenshot": "sessions/sam-desktop/004-m1.png"},
+    {"where": "Map mode, order cards", "expected": "Same action looks and reads like the desk", "happened": "Desk says 'Choose' with a diamond cost; map says 'Add to this month' with coin icons, an ORDERED stamp and 'Your choice' badge; the left panel jumps back to card 1 after adding. Map markers are all unlabelled 'Map marker'. The decided list collapses to a comma sentence with 'Show' instead of per-item Change buttons.", "kind": "parity", "screenshot": "sessions/sam-desktop/014-map3.png"},
+    {"where": "Map mode, order cards", "expected": "Clear what 'free' and '6% defense' mean", "happened": "'Mass troops facing Philippines' shows 'free' and '6% defense', 'Spy' shows '95% chance'; nothing says what each figure is.", "kind": "hesitation", "screenshot": "sessions/sam-desktop/013-map2.png"},
+    {"where": "Month 2 crisis answers", "expected": "Distinct consequences", "happened": "'Condemn publicly' and 'Reinforce and shadow them' show identical effect text ('Approval up. Taiwan's view of you down.'), so the choice reads as flavour.", "kind": "dashboard-feel", "screenshot": "sessions/sam-desktop/010-m2.png"},
+    {"where": "Familiarity screen", "expected": "Choice visible from the top of the page", "happened": "The page opened scrolled so the title was cut off. 'Some help' is pre-selected as recommended and I kept it. The explanations are legible and out of the way.", "kind": "other", "screenshot": "sessions/sam-desktop/003-afterseed.png"},
+    {"where": "Names: Scarborough Shoal, Mutual Defense Treaty, Sara Duterte, Lai Ching-te, Shehbaz Sharif", "expected": "Known from general news or explained", "happened": "Scarborough Shoal and Sara Duterte were new; the 'Who is who' strip and 'i names' chips explained them in one line, which worked and stayed out of the way.", "kind": "naming", "screenshot": "sessions/sam-desktop/003-afterseed.png"},
+    {"where": "Result card quote, month 1", "expected": "Tone fits the regime", "happened": "A one-party state leader gets 'We will remember at the ballot box' attributed to 'On the street'. Reads as template text.", "kind": "other", "screenshot": "sessions/sam-desktop/009-r1.png"}
+  ],
+  "bugs": [
+    {"title": "Recommendation text overflows crisis answer card", "steps": ["Start SL-CHN-SAM01", "Take office", "Look at the third answer card of 'How fast to pour'"], "expected": "Text stays inside the card", "actual": "Recommendation text pokes out over the card border above; last line clipped", "severity": "S3", "screenshot": "sessions/sam-desktop/004-m1.png"},
+    {"title": "Result numbers disagree within one card", "steps": ["Month 1: choose Pause and express regret, Execute", "Compare the Approval stamp, the details line and the header"], "expected": "Approval and Philippines relation changes match everywhere", "actual": "Approval -6 stamp vs -2 in details; relation -56 vs -57", "severity": "S2", "screenshot": "sessions/sam-desktop/009-r1.png"},
+    {"title": "Political capital shown differently in header and side panel", "steps": ["Month 3 desk", "Compare header pill and 'If you execute now'"], "expected": "Same number", "actual": "4 of 6 vs 5 now", "severity": "S3", "screenshot": "sessions/sam-desktop/016-m3.png"}
+  ],
+  "suggestions": [
+    {"what": "One resource counter in the header (capital left this month); fold the Orders, Meetings, Defense and Calls counters into a single tray", "goal_served": "S1"},
+    {"what": "Give 'Choose all recommended' a distinct treatment and say what it commits", "goal_served": "S1"},
+    {"what": "Use the map's order card idiom and wording on the desk, or the reverse, so the same order reads the same", "goal_served": "S2"},
+    {"what": "Reconcile every delta on a result card from one source (stamp, details, tiles, header)", "goal_served": "S1"},
+    {"what": "Label map markers with country names on hover and for screen readers", "goal_served": "S2"}
+  ],
+  "delight": [
+    "The title globe with the 'Pick a fire' serif headline and the live ticker: real art direction (sessions/sam-desktop/001-title.png)",
+    "Seed code entry worked first time and the briefing is tidy (003-afterseed.png)",
+    "Result cards with illustrated scenes, serif headline and the DONE stamp; the ORDERED stamp on the map (009-r1.png, 015-r2.png, 017-r3.png)",
+    "Map order cards with icons are more characterful than the desk's text cards (013-map2.png)"
+  ],
+  "scores": {
+    "fun": {"value": 5, "reason": "Four months in I was approving the staff's picks; the result cards are fun to see, the decisions are not yet tense."},
+    "clarity": {"value": 5, "reason": "Plenty of explanation, but five counters for one resource and disagreeing numbers undermine it."},
+    "visual": {"value": 7, "reason": "Title, result illustrations and typography are crafted; cramped cards, an overflow and a text-heavy desk drag it down."},
+    "feels_like_a_game": {"value": 6, "reason": "The title and result scenes feel authored; the desk feels like an admin panel with Choose buttons."},
+    "agency": {"value": 6, "reason": "I always knew what to press, but 'Choose all recommended' then Execute makes my input nearly optional, and Skip means different things."},
+    "realism": {"value": 6, "reason": "Plausible Scarborough dynamics, but a one-party leader quoted about ballot boxes felt templated."},
+    "replay": {"value": 4, "reason": "I would not start a second run until the numbers agree; I did not play a second game."},
+    "recommend": {"value": 5, "reason": "I would tell a friend the art is better than they expect, with a warning that the UI is busy. Not yet 'crafted game', no longer 'AI dashboard'."}
+  },
+  "quit_point": "Month 3 (Jan 2027) desk: after pressing Choose all recommended and Execute without reading a card, I realised the loop was clicking through, and the capital counters disagreed again. I played one more month to finish the record.",
+  "verbatim": "Better than I expected from a title screen, and then the desk turned into a form. Pick one number for my political capital and make every screen agree with it.",
+  "tasks": {"end_reached": false, "second_game": false}
+}

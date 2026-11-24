@@ -1,0 +1,181 @@
+{
+  "persona": "leo",
+  "variant": "leo-stream",
+  "panel_version": "1.2",
+  "build": "876ea58",
+  "iteration": 4,
+  "minutes_played": 55,
+  "scenarios": [
+    {
+      "id": "L1",
+      "outcome": "partial",
+      "turns": 8,
+      "steps": [
+        "Entered seed QU-CHN-LEO01 under Play a seed, took office as Xi (Quarantine flashpoint), answered Some help",
+        "Played months 1-8: Selective boardings, Reinforce, Reject publicly, Strike first, Full rare-earth embargo, Declare war on Taiwan",
+        "Game ended at month 8 with Mission failed (D, 525, Warmonger, The Hawk seal); went through all reveal pages, saved the share card",
+        "Replayed the same opening and played all 12 months peacefully with Choose all recommended; verdict D 577 Reforms Too Late"
+      ],
+      "notes": "The dramatic run was cut short by my own war declaration (mission failed ends the session at month 8). The 12-month end was reached on the replay."
+    },
+    {
+      "id": "L2",
+      "outcome": "partial",
+      "turns": 8,
+      "steps": [
+        "Strike first (crisis answer): DONE, shown as one line, no war and no visual payoff",
+        "Nuclear strike on Japan and on Taiwan: refused with a clear reason: Only in wartime. You are not at war with Japan.",
+        "Declare war on Taiwan: strong NO UNDO confirmation naming that it ends the mission; executed, war covered by a headline strip only"
+      ]
+    }
+  ],
+  "friction": [
+    {
+      "where": "Month 6 result, Strike first (crisis answer)",
+      "expected": "A big on-screen moment for the most aggressive choice",
+      "happened": "Result card showed the Belarus treaty. The strike was a line 'Crisis: Strike first' under a call from Taiwan; the paper headlined the treaty; Taiwan's view of me went UP +3 and world tension -1. Only the later 'Why your numbers moved' said China launches airstrikes on Taiwan",
+      "kind": "dashboard-feel",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/leo-stream/024-m6dip.png"
+    },
+    {
+      "where": "Month 8 result, Declare war on Taiwan",
+      "expected": "Full-screen war stinger",
+      "happened": "Lead card was the corruption scandal answer. War appears as a one-line chronicle strip and a paper headline with a protest-crowd picture (not a war picture)",
+      "kind": "dashboard-feel",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/leo-stream/040-m8r.png"
+    },
+    {
+      "where": "Month results, same Xi-at-desk art",
+      "expected": "Varied visuals",
+      "happened": "The same desk picture came back almost every month for 'your choice'. Looked static on camera",
+      "kind": "dashboard-feel",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/leo-stream/016-m4r.png"
+    },
+    {
+      "where": "Month 1 desk, header vs mission card",
+      "expected": "One goal count",
+      "happened": "Header says '3 of 5 goals on track', mission card lists 3 goals with 1 on track and 'All goals (7)'",
+      "kind": "misread",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/leo-stream/003-seeded.png"
+    },
+    {
+      "where": "Month 1 and 2 result cards, Taiwan's view of you",
+      "expected": "Same starting number",
+      "happened": "Month 1 card: Taiwan's view -80 to -84, but mission line says -80 to -93; month 2 card: -86 to -98 while the mission line says -93 to -98 (trust)",
+      "kind": "other",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/leo-stream/010-m2r.png"
+    },
+    {
+      "where": "Desk, political capital",
+      "expected": "A reason to spend capital",
+      "happened": "Capital sat at 6 of 6 for months and the desk warns '3 lost: you can hold at most 6'; wild orders hide behind Your own orders then All orders, not obvious for a chaos player",
+      "kind": "hesitation",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/leo-stream/020-m6.png"
+    },
+    {
+      "where": "All orders, Nuclear tab",
+      "expected": "Nuclear strike works or says why",
+      "happened": "Card says 'free' and 'NO UNDO' next to a disabled state; after picking a country the reason appears: Only in wartime. You are not at war with Japan. Clear, good. But I had just airstruck Taiwan and was still 'not at war'",
+      "kind": "other",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/leo-stream/035-m8jp.png"
+    },
+    {
+      "where": "Map mode, Military lens",
+      "expected": "Readable map",
+      "happened": "All of China and Russia painted in red hatch, markers piled up on the left edge; could not tell what mattered. The crisis card and choices stayed reachable on the left",
+      "kind": "dashboard-feel",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/leo-stream/017-m5.png"
+    },
+    {
+      "where": "Desk, Choose all recommended",
+      "expected": "Know what the bulk accept commits",
+      "happened": "One click auto-picked answers to ministers' calls (Promise full support, Fire the minister) without me reading them; easy to hit by habit",
+      "kind": "affordance",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/leo-stream/012-m3c.png"
+    },
+    {
+      "where": "Reveal, ranking page",
+      "expected": "Share buttons fully visible",
+      "happened": "Share card, Save card, Phone card and Copy text sit half under the footer bar; had to guess they were buttons. The card showed empty stars while the record table showed filled stars, and seal Landslide instead of The Hawk",
+      "kind": "affordance",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/leo-stream/053-r7.png"
+    },
+    {
+      "where": "Reveal, The moments",
+      "expected": "My war and strike as the highlights",
+      "happened": "Best moment was 'Propose a deconfliction hotline' (the cabinet's pick after my Hold the line did not register); the airstrike never appeared",
+      "kind": "other",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/leo-stream/049-r3.png"
+    },
+    {
+      "where": "Month 5, standoff with Japan",
+      "expected": "Hold the line becomes my answer",
+      "happened": "I pressed Choose for Hold the line, the result says Xi's answer: Propose a deconfliction hotline. Unsure whether my press missed or the game kept the cabinet's pick",
+      "kind": "retry",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/leo-stream/019-m5r.png"
+    },
+    {
+      "where": "Briefing and the truth page",
+      "expected": "Know the names",
+      "happened": "Lai Ching-te, Sanae Takaichi, Shehbaz Sharif, Lukashenko, the Busan truce and Zhang Youxia are names I did not know. The i chips and Who is who strip helped in the briefing; the truth page lists Busan and Zhang Youxia with no explainer",
+      "kind": "naming",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/leo-stream/052-r6.png"
+    },
+    {
+      "where": "Reveal, the verdict",
+      "expected": "Score counting up on camera",
+      "happened": "Score first shows three blank squares for about 2 seconds, then 525; the MISSION FAILED stamp is good",
+      "kind": "hesitation",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/leo-stream/042-end1.png"
+    },
+    {
+      "where": "Replay same opening",
+      "expected": "Starts month 1",
+      "happened": "Landed on the briefing page with Take office; nothing in my month buttons worked until I pressed it. The way back itself was clear (Replay same opening, New world, New game next to the card)",
+      "kind": "backtrack"
+    }
+  ],
+  "bugs": [
+    {
+      "title": "Strike first shows no visible consequence and lowers tension",
+      "steps": ["Seed QU-CHN-LEO01", "Play to month 6, Taiwan is massing troops", "Choose Strike first", "Execute"],
+      "expected": "War, or at least a tension rise and a drop in Taiwan's view of me",
+      "actual": "Taiwan's view +3 and world tension -1 on the Taiwan call card; the strike is only a footnote saying China launches airstrikes on Taiwan",
+      "severity": "S3",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/leo-stream/024-m6dip.png"
+    },
+    {
+      "title": "War headline uses a protest picture",
+      "steps": ["Declare war on Taiwan", "Execute", "Read the paper"],
+      "expected": "A war picture",
+      "actual": "The picture shows protesters with candles and riot police",
+      "severity": "S4",
+      "screenshot": "devloop/instances/world-conflict/runs/iter-04/shots/leo-stream/041-m8paper.png"
+    }
+  ],
+  "suggestions": [
+    {"what": "Give the player's own wild move the lead card, a full-screen stinger and sound, and say it first in the paper and in The moments", "goal_served": "L1, L2: drama and clip-able moments"},
+    {"what": "Put a visible Wild moves shortcut (war, strike, nuclear) on the desk, not three clicks deep", "goal_served": "L2"},
+    {"what": "Vary the result art by choice type instead of the same desk picture", "goal_served": "L1"},
+    {"what": "Make the share buttons fully visible and let me pick the seal (The Hawk) and stars shown on the card", "goal_served": "L1: end card worth posting"}
+  ],
+  "delight": [
+    "Declare war confirmation: NO UNDO, 'This ends your mission', Keep the peace vs Declare war (038-m8war.png)",
+    "MISSION FAILED stamp, grade D, title Warmonger and the History's judgement line (042-end1.png, 050-r4.png)",
+    "The Hawk infamy seal and the share card with the seed code (045-end3.png, 054-share.png)",
+    "Seed code entry worked first try; replay the same opening was one click from the end card"
+  ],
+  "scores": {
+    "fun": {"value": 6, "reason": "The war confirmation and end card were fun; most months were clicking through accepts"},
+    "clarity": {"value": 7, "reason": "Desk, goals and refusal reasons were clear; some numbers disagreed"},
+    "visual": {"value": 6, "reason": "Handsome illustrations and stamps, but repeated desk art and the war moment had no spectacle"},
+    "feels_like_a_game": {"value": 6, "reason": "Decisions with stakes, but the bulk accept makes it feel like admin"},
+    "agency": {"value": 7, "reason": "Wild moves exist and refusals explain themselves; my Hold the line press did not stick"},
+    "realism": {"value": 7, "reason": "The truth page comparing my world with the real one was sharp"},
+    "replay": {"value": 7, "reason": "Replay same opening and the seed code make another go easy"},
+    "recommend": {"value": 6, "reason": "I would show the war confirmation and the end card on stream, not the months in between"}
+  },
+  "quit_point": "Month 6 result (about minute 25): chose Strike first, the biggest button of the game, and the screen led with a treaty with Belarus. On stream that is dead air; I kept going only because the war order was still ahead",
+  "verbatim": "I pressed the scariest thing on the screen and the game talked about a treaty. Give me the explosion, then the stamp.",
+  "tasks": {"end_reached": true, "second_game": true}
+}

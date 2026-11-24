@@ -1,0 +1,46 @@
+{
+"persona":"olivia","variant":"olivia-desk","panel_version":"1.2","build":"876ea58","iteration":4,"minutes_played":14,
+"scenarios":[
+{"id":"O1","outcome":"partial","steps":["Title screen, Play a seed, typed CA-USA-OLIV1, game opened as US president","Chose Guide me at the familiarity question","Month 1: picked an answer, Choose all recommended, Execute, saw +10 Venezuela view"],"turns":5,"notes":"Seed worked at once. First payoff came after about 2.5 minutes, then every month grew to 7-8 things to open."},
+{"id":"O2","outcome":"abandoned","steps":["Looked for a big peace move; found only advisers' small orders (Court Mexico, Spy on Iran, Reform program)","The Iran war ended on its own in month 3 without any choice of mine"],"turns":5,"notes":"Never felt I made peace happen."}
+],
+"friction":[
+{"where":"Title, Play a seed","expected":"A code box on the page","happened":"Button looked greyed out until I pressed it, then a small box opened under it; I found it but the first look said disabled","kind":"affordance","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/olivia-desk/001-title.png"},
+{"where":"Mission screen before month 1","expected":"A start button","happened":"Page opened scrolled down with the president's name cut off; mission box and a 7 goals link read like a form","kind":"dashboard-feel","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/olivia-desk/003-afterseed.png"},
+{"where":"Month 1 desk","expected":"A simple pick","happened":"Four columns of text: 3 things list, goals, advisers, what will happen. Three answers with small grey text about hurts and helps; I read only the buttons","kind":"dashboard-feel","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/olivia-desk/004-m1.png"},
+{"where":"Month 1 call, Choose buttons","expected":"Pick the first card (best for mission)","happened":"I ended up with Back Rodriguez's process, the card that says Hurts approval; the three Choose buttons look identical so I could not tell which answer I had pressed until the next screen (note: part of this was my own click targeting)","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/olivia-desk/005-m1b.png"},
+{"where":"Month 1 desk, Recommended","expected":"Know who recommends what","happened":"Foreign Minister, Chief of Staff, Intelligence Chief each recommend something different; I could not tell who matters. I pressed Choose all recommended and followed all of them","kind":"hesitation","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/olivia-desk/004-m1.png"},
+{"where":"Month 1 result, big +10 vs numbers","expected":"Same number everywhere","happened":"Big +10 and bar 20 to 30 for Venezuela's view, but the mission line says 20 to 29, needs -10","kind":"trust","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/olivia-desk/007-m1result.png"},
+{"where":"Month 2 desk","expected":"Maybe two choices","happened":"7 things, 6 recommended, a list of Open buttons; this is the moment I would have closed the tab","kind":"dashboard-feel","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/olivia-desk/008-m2.png"},
+{"where":"Month 2 right panel","expected":"Capital matches cost","happened":"Reform program costs 2 and capital is 3, yet the panel said the recommended order does not run (their 2 is not spent); after Choose all it ran and capital showed 1 of 6","kind":"trust","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/olivia-desk/008-m2.png"},
+{"where":"Month 3 result mission line","expected":"Read at a glance","happened":"Mission: stability 56 to 62%, needs 25%. Higher than needed but one bar is red; I could not tell if good or bad","kind":"trust","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/olivia-desk/011-m2result.png"},
+{"where":"Month 4 result","expected":"Result of the thing I did","happened":"Text says the war with Iran is over (front 70 to 70) though I never chose anything about Iran; Iran, Mexico, Gaza, Indonesia are names I do not know","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/olivia-desk/015-m3result.png"},
+{"where":"Month 5 result","expected":"Result of General strike","happened":"Headline is Counter-intelligence sweep, a call I never opened; it was picked for me by Choose all recommended. Calls 2 open stays on top with no way to tell which","kind":"misread","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/olivia-desk/019-m4result.png"},
+{"where":"Month 4 start","expected":"Desk","happened":"I pressed Desk and got a full newspaper page that I had not asked for, with its own Next month button","kind":"affordance","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/olivia-desk/016-m4.png"},
+{"where":"Map mode, month 3","expected":"Tap a country to act","happened":"The decision panel stayed on the left so I lost nothing, but the globe is covered by about 40 round icons I cannot read; top tabs Relations, Regimes, Military mean little","kind":"dashboard-feel","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/olivia-desk/012-m3map.png"},
+{"where":"Names","expected":"Know who is who","happened":"Maduro, Machado, Rodriguez, Modi, Khamenei, Merz, Xi, Gaza stabilization force, defence pacts: unknown to me. Guide me underlines them and the who-is-who row helped at the start, but I never opened an explanation","kind":"naming","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/olivia-desk/003-afterseed.png"}
+],
+"bugs":[
+{"title":"Choose all recommended answers calls too and the result headline names a call the player never opened","steps":["Month 4, leave General strike open","Press Choose all recommended","Execute"],"expected":"Calls stay open or the result states which call was answered","actual":"Result headline is for a different crisis (Foreign interference) than the one on screen; chips say Left open: Break the strike","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/olivia-desk/019-m4result.png"},
+{"title":"Capital warning contradicts result","steps":["Month 2, Choose all recommended","Read the If you execute now box"],"expected":"Reform program runs and says so","actual":"First read says the recommended order does not run (their 2 is not spent); it later ran, capital 3 to 1","severity":"S3","screenshot":"devloop/instances/world-conflict/runs/iter-04/shots/olivia-desk/008-m2.png"}
+],
+"suggestions":[
+{"what":"Month desk shows one decision and one big button; hide the list of 7 things behind a small link","goal_served":"O1 fun in two minutes"},
+{"what":"One decisive big move per month (end the war, make peace) with a picture of the result, not 6 small orders","goal_served":"O2 do something big"},
+{"what":"Mark the chosen answer on the card immediately and make the best-for-mission card visually bigger","goal_served":"O1 never feel stupid"},
+{"what":"One consistent number for each change, same on bar, big figure and mission line","goal_served":"clarity"}
+],
+"delight":["The seed code box worked first time and put me into the right game","Month 1 result: handshake picture and a huge +10 appeared the moment I pressed Execute (shots/olivia-desk/007-m1result.png)","The globe on the title screen looks beautiful (shots/olivia-desk/001-title.png)"],
+"scores":{
+"fun":{"value":5,"reason":"One real payoff in month 1 and a nice picture; after that, sorting 7 things per month felt like homework."},
+"clarity":{"value":4,"reason":"The big button is clear, but who recommends what, why numbers differ and what Calls open means were not."},
+"visual":{"value":8,"reason":"Title globe and result scenes are lovely; the desk is dense dark text."},
+"feels_like_a_game":{"value":5,"reason":"Results feel like a game, the desk feels like a work tool."},
+"agency":{"value":4,"reason":"I pressed a wrong-looking answer and could not see which until after; choose-all made choices for me."},
+"realism":{"value":6,"reason":"Names and headlines feel like news, but I cannot judge."},
+"replay":{"value":3,"reason":"I would go back to my own game."},
+"recommend":{"value":4,"reason":"I would send it to a friend who likes reading about politics, not to anyone who wants a quick game."}
+},
+"quit_point":"Month 2 desk (about 3 minutes in): 7 things to do, 6 recommended orders, 4 columns of text, with no clear single choice",
+"verbatim":"The picture and the big plus ten were great. Then I got a list of seven things and I just wanted one button."
+}
