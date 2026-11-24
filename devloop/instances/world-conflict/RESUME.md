@@ -41,3 +41,7 @@ No design reviewer per package. A UI package merges on the automated gate plus t
 ## Screenshots and Remote Desktop (added 2026-11-24)
 
 Windows turns font smoothing off in a Remote Desktop session, and the visual step then fails on about 20 of 35 images with hard-edged text. Before a gate or `--update-visual` on this machine, check it (PowerShell: SystemParametersInfo 0x004A); the CEO allowed turning it on for the session on 2026-11-24 (SPI_SETFONTSMOOTHING 0x004B, type 2 ClearType via 0x200B); a new session needs it again. Never regenerate baselines while it is off. Kit candidate: the visual step checks it first and stops with a clear message.
+
+## Pause before iteration 5 (CEO instruction, 2026-11-24)
+
+After iteration 4 is published (and the OpenClaw deploy of main is requested and reported), stop. Do not start iteration 5 (no planning agents, no packages, no advance of the controller into iteration 5) until the CEO says to continue. Open at that point: the orchestration model (the CEO was offered Opus 5.5 for the orchestrator in a fresh session, Fable 5.2 as a subagent for hard calls; not decided).
