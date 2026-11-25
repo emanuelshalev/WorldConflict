@@ -1,0 +1,5 @@
+# The live event log is rebuilt from the sources and the snapshot; only the snapshot is committed.
+*.db
+*.db-wal
+*.db-shm
+telemetry/

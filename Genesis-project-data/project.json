@@ -1,0 +1,12 @@
+{
+  "id": "world-conflict",
+  "name": "WorldConflict",
+  "tagline": "Geopolitical strategy game. Goal: a release candidate people finish, share and come back to.",
+  "color": "#2a6ad6",
+  "repo": { "url": "https://github.com/emanuelshalev/WorldConflict", "branch": "dev/rc1-synthetic-loop" },
+  "sources": {
+    "devloop": { "instance": "../devloop/instances/world-conflict" },
+    "statusPage": "../dev_plan/project_status.html"
+  },
+  "targets": { "recommend": 7.0, "releaseTargets": 31 }
+}
