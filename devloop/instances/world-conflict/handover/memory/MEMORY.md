@@ -4,3 +4,4 @@
 - [Status page cadence](status-page-cadence.md): refresh and push the status page at every notable event and about hourly, not only at merges
 - [OpenClaw deploy](openclaw-deploy.md): after publish, `openclaw agent --json --message` deploys main to Oracle (conflict.ucent.ai)
 - [Design review rule D-86](design-review-rule-d86.md): one review at end of Build, 1920x1080 reference that scales with resolution, other shapes later
+- [GenesisStudio migration](genesis-studio-migration.md): GenesisStudio will replace devloop and the status page; iteration 5 waits for the user's setup
