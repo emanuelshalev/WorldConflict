@@ -1,3 +1,6 @@
 - [Engagement overhaul decisions](engagement-overhaul-decisions.md): user's mode/roster/AI-tier decisions, branch + status page requirements
-- [Dev env: Node 22](dev-env-node22.md): system node 18 too old; use ~/.local/share/node/current/bin (aarch64)
+- [Dev env on Windows](dev-env-node22.md): Node 24 LTS by PATH prefix, blank npm userconfig, SQLite by hand
 - [devloop RC1 loop](devloop-rc1-loop.md): CEO rules: reusable devloop/ module, dual goals, wide audience, check-ins, status page
+- [Status page cadence](status-page-cadence.md): refresh and push the status page at every notable event and about hourly, not only at merges
+- [OpenClaw deploy](openclaw-deploy.md): after publish, `openclaw agent --json --message` deploys main to Oracle (conflict.ucent.ai)
+- [Design review rule D-86](design-review-rule-d86.md): one review at end of Build, 1920x1080 reference that scales with resolution, other shapes later

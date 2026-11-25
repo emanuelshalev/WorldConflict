@@ -2,7 +2,21 @@
 
 Read this first. Setting up a new machine: `handover/README.md` (Node 22, `npm run setup`, git hooks, Claude settings, memory notes). Then run `node devloop/kit/loop.mjs status`; the controller knows the stage and which gates hold on the current code.
 
-## Where things stand
+## START HERE: state on 2026-11-24 (end of the Windows session)
+
+Everything below this section is history in the order it was written; where it disagrees with this section, this section is right.
+
+- **Published:** `main` = tag `iter-4` (06b9006), deployed to the Oracle server (https://conflict.ucent.ai/). Tags `iter-1` to `iter-4`.
+- **Shared branch:** `dev/rc1-synthetic-loop`, pushed, clean. Ahead of main only by process work (Customer Advocate, customer record, quick gate, status page): no game code differs from `iter-4`.
+- **Loop:** iteration 4, stage Gate, scorecard recorded not-met (recommend 5.86 against 7.0). **PAUSED before iteration 5 by the CEO.** Do not plan or start iteration 5 until the CEO says continue.
+- **Decided for iteration 5 (D-97):** brief of D-90 in this order: 1990 plausibility (F-04-11, regressed), scaling (D-88, `runs/iter-04/design-scale.md`), month density and decisions (F-04-12 with `runs/iter-04/play-pass.md`), then the rest of `runs/iter-04/triage.md` section 4. Orchestrator: Opus 5.5 in a fresh session, Fable 5.2 as a subagent for hard calls.
+- **New since iteration 4 (How we work 1.8, D-93 to D-98):** Customer Advocate (`team/customer-advocate.md`, `devloop/method/customer-advocate.md`), keep list and customer record (`customer-record/`), positives in the report schema, customers on their own devices, controller gate `forecast` before Build, two gate sizes (`npm run verify -- --quick` is enough to merge process tooling). Iteration 5's Plan stage order is in the section "Before iteration 5: new role and rules" at the end of this file.
+- **Open with the CEO:** one line in CLAUDE.md for the customer record tool (needs approval); older items: balance band choice, CLAUDE.md balance text, publishing the status page as a web page.
+- **Work branches:** all merged; none is needed. The Windows machine had a second worktree (`WorldConflict-agenda`) for work branches; on a new machine create one with `git worktree add ../WorldConflict-work dev/rc1-synthetic-loop -b <branch>` when the first package starts.
+- **When the CEO says continue:** `node devloop/kit/loop.mjs status`, close iteration 4 on the status page (T3 refresh, the rule `t3-before-plan`), `loop advance` to Plan, then the Plan stage order named above. First agent to run: the Customer Advocate, part 1 of the forecast on the D-90 candidates.
+- **Carried lists for iteration 5:** sections "Iteration 5 backlog", "Iteration 4 fix rounds merged" and "Review rule" below; `runs/iter-04/triage.md` sections 4 and 6; `customer-record/keep-list.md`.
+
+## Where things stood on 2026-11-23 (history)
 - **main** = tag `iter-3` (06f937b). Tags `iter-1`, `iter-2`, `iter-3`.
 - **dev/rc1-synthetic-loop**: iteration 4, stage **Build**. Merged in iteration 4: the stability package (D-76, merged b7bb900), order cards (RS-007, merged ac41619 after four design reviews; last gate 744 tests, 99/99 guards, 22 visual baselines), loop controller and hooks (D-77), status page protocol, quality scorecard (D-78, D-79), usage ledger at real prices with API-equivalent cost per iteration (D-82, D-83), layout audit with the design-review merge rule (D-80, D-81), the responsive layout design, CLAUDE.md trim (details in docs/ARCHITECTURE.md), WC_DAILY_DATE pin for gate servers, ultrawide 3440x1440 in the kit (the CEO's screen).
 - Decisions this iteration: D-72 to D-84 in `ledger.md` (wording "Recommended", icons, cost package, models, design leads, layout system, "Your call" with an opt-in Chief of Staff setting).

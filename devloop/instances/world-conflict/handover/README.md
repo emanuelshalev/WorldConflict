@@ -1,11 +1,15 @@
 # Handover: continuing on another machine
 
 1. Clone the repository and check out `dev/rc1-synthetic-loop` (work branches listed in `../RESUME.md` are pushed too).
-2. Install Node 22 (the repo needs Node >= 20.19) and run `npm run setup`.
+2. Install Node 24 LTS or 22 (the repo needs Node >= 20.19) and run `npm run setup` (it installs the root and `ui/` packages and creates `.env`; `.env`, `dev.db` and save games are not in git, so API keys are entered again and old save games stay on the old machine). Then `npx playwright install chromium`.
 3. Install the git hooks: `node devloop/kit/install-hooks.mjs` (blocks pushing `main` or `iter-*` tags without a recorded verify pass).
 4. Claude Code project settings: `mkdir -p .claude && cp devloop/instances/world-conflict/handover/claude-settings.json .claude/settings.json` (the shell guard hook against rebase and autostash in the shared checkout, and auto-compaction at about 400k tokens).
 5. Claude memory: copy `memory/*.md` into the new machine's project memory folder, `~/.claude/projects/<repo path with slashes as dashes>/memory/` (for example `~/.claude/projects/-home-<user>-git-WorldConflict/memory/`). Update the Node path note in `dev-env-node22.md` if Node lives elsewhere.
-6. Start the dev servers (`npm run dev`), open Claude Code in the repo and say "resume": the Group Manager reads `../RESUME.md`, then `node devloop/kit/loop.mjs status`.
+6. Screenshots are per operating system. The Windows baselines (`tests/visual/__screenshots__/surfaces.visual.ts/win32/`) are current as of iter-4. The Linux set in the parent folder was last taken before the new month screen of iteration 4, so on a Linux machine the visual step of the first full gate fails: run `npm run verify -- --update-visual`, look at every changed image (size and content), restore `reveal-0-1440.png` if the system's set has one, and commit them as a baseline refresh before any other work. A macOS machine has no set and creates one the same way. On Windows over Remote Desktop, turn font smoothing on first (see RESUME, "Screenshots and Remote Desktop").
+7. Run one full gate before changing anything: `npm run verify` (about 20 minutes). It proves the machine, not the code: main and the shared branch were green on the Windows machine.
+8. Deploying: the deploy request goes through OpenClaw (`openclaw agent --json --message ...`, memory note `openclaw-deploy.md`), which is installed and signed in on the Windows machine only. On another machine either install and sign in OpenClaw, or ask the CEO to send the deploy request from a machine that has it. Never deploy anything but published `main`.
+9. Model: by D-97 the Group Manager session for iteration 5 runs on Opus 5.5; choose it when opening the session.
+10. Start the dev servers (`npm run dev`), open Claude Code in the repo and say "resume": the Group Manager reads `../RESUME.md` (its START HERE section first), then `node devloop/kit/loop.mjs status`. The loop may be paused: RESUME says whether the CEO has to say continue first.
 
 ## Usage data on a new machine or in a new session
 
